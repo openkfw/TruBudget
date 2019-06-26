@@ -52,13 +52,13 @@ const GroupDialogContent = ({
           error={false}
           disabled={editMode}
           icon={<NameIcon />}
-          id="id"
+          data-test="groupid"
           onChange={event => storeGroupId(event.target.value)}
         />
         <TextInputWithIcon
           className={classes.textInput}
           label={editMode ? displayName : strings.common.name}
-          id="name"
+          data-test="groupname"
           error={false}
           disabled={editMode}
           icon={<OrgaIcon />}

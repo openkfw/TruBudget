@@ -1,13 +1,14 @@
-import React from "react";
-import UsersTable from "./UsersTable";
 import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import GroupTable from "./GroupTable";
 import Fab from "@material-ui/core/Fab";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
 import Add from "@material-ui/icons/Add";
-import DialogContainer from "./DialogContainer";
+import React from "react";
+
 import strings from "../../localizeStrings";
+import DialogContainer from "./DialogContainer";
+import GroupTable from "./GroupTable";
+import UsersTable from "./UsersTable";
 
 const styles = {
   container: {
@@ -41,7 +42,7 @@ const Users = props => {
   const onClick = () => (tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup"));
   const permissionIconDisplayed = allowedIntents.includes("global.listPermissions");
   return (
-    <div id="userdashboard" style={styles.container}>
+    <div data-test="userdashboard" style={styles.container}>
       <div style={styles.customWidth}>
         <AppBar position="static" color="default">
           <Tabs
@@ -54,18 +55,20 @@ const Users = props => {
             <Tab label={strings.users.groups} aria-label="groupsTab" />
           </Tabs>
         </AppBar>
-        <div style={styles.createButtonContainer}>
-          <Fab
-            disabled={isCreateButtonDisabled}
-            data-test="create"
-            onClick={onClick}
-            color="primary"
-            style={styles.createButton}
-            aria-label="Add"
-          >
-            <Add />
-          </Fab>
-        </div>
+        {!isCreateButtonDisabled ? (
+          <div style={styles.createButtonContainer}>
+            <Fab
+              disabled={isCreateButtonDisabled}
+              data-test="create"
+              onClick={onClick}
+              color="primary"
+              style={styles.createButton}
+              aria-label="Add"
+            >
+              <Add />
+            </Fab>
+          </div>
+        ) : null}
         {tabIndex === 0 && <UsersTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
         {tabIndex === 1 && <GroupTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
       </div>

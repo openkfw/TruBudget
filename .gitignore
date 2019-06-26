@@ -8,3 +8,4 @@ DOCKER_REGISTRY_PASSWORD
 Untitled*
 node_modules
 yarn-error.log
+.markdownlint.*

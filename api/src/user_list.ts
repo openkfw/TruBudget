@@ -7,6 +7,7 @@ import { Ctx } from "./lib/ctx";
 import * as Group from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
+import { Permissions } from "./service/domain/permissions";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -44,6 +45,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                       displayName: { type: "string", example: "Alice Smith" },
                       organization: { type: "string", example: "Alice's Solutions & Co" },
                       isGroup: { type: "boolean", example: true },
+                      permissions: { type: "object", additionalProperties: true },
                     },
                   },
                 },
@@ -62,6 +64,7 @@ interface ExposedIdentity {
   displayName: string;
   organization?: string;
   isGroup: boolean;
+  permissions: Permissions;
 }
 
 interface Service {
@@ -84,12 +87,14 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         displayName: user.displayName,
         organization: user.organization,
         isGroup: false,
+        permissions: user.permissions,
       }));
 
       const groups: ExposedIdentity[] = (await service.listGroups(ctx, issuer)).map(group => ({
         id: group.id,
         displayName: group.displayName,
         isGroup: true,
+        permissions: group.permissions,
       }));
 
       const code = 200;

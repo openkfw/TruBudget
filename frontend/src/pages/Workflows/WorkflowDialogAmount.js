@@ -67,16 +67,19 @@ class WorkflowDialogAmount extends Component {
               value="N/A"
               control={<Radio color="primary" />}
               label={strings.workflow.workflow_budget_na}
+              data-test="amount-type-na"
             />
             <FormControlLabel
               value="allocated"
               control={<Radio color="primary" />}
               label={strings.workflow.workflow_budget_allocated}
+              data-test="amount-type-allocated"
             />
             <FormControlLabel
               value="disbursed"
               control={<Radio color="primary" />}
               label={strings.workflow.workflow_budget_disbursed}
+              data-test="amount-type-disbursed"
             />
           </RadioGroup>
         </div>
@@ -133,7 +136,7 @@ class WorkflowDialogAmount extends Component {
           type="text"
           multiline={false}
           aria-label="amount"
-          id="amountinput"
+          data-test="amountinput"
           style={{
             width: "20%",
             paddingRight: 20
@@ -152,7 +155,7 @@ class WorkflowDialogAmount extends Component {
           }}
           type="text"
           aria-label="rate"
-          id="rateinput"
+          data-test="rateinput"
           disabled={workflowCurrency === subProjectCurrency}
           style={{
             width: "20%",

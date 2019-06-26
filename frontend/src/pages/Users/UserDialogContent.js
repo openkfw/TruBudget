@@ -36,14 +36,15 @@ const styles = {
 
 const UserDialogContent = ({
   classes,
-  userToAdd,
+  user,
   setDisplayName,
   setOrganization,
   setUsername,
   setPassword,
   organization
 }) => {
-  const { displayName, password, username } = userToAdd;
+  const { displayName, password, username } = user;
+
   return (
     <div className={classes.container}>
       <div className={classes.textInputContainer}>
@@ -53,14 +54,14 @@ const UserDialogContent = ({
           value={displayName}
           error={false}
           icon={<NameIcon />}
-          id="fullname"
+          data-test="fullname"
           onChange={event => setDisplayName(event.target.value)}
         />
         <TextInputWithIcon
           className={classes.textInput}
           label={strings.common.organization}
           value={organization}
-          id="organization"
+          data-test="organization"
           disabled={true}
           error={false}
           icon={<OrgaIcon />}
@@ -68,8 +69,15 @@ const UserDialogContent = ({
         />
       </div>
       <div className={classes.textInputContainer}>
-        <Username username={username} storeUsername={setUsername} failed={false} id="username" />
-        <Password password={password} storePassword={setPassword} failed={false} id="password" />
+        <Username username={username} storeUsername={setUsername} failed={false} data-test="username" />
+        <Password
+          password={password}
+          iconDisplayed={true}
+          setPassword={setPassword}
+          storePassword={setPassword}
+          failed={false}
+          data-test="password"
+        />
       </div>
     </div>
   );

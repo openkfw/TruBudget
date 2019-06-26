@@ -52,6 +52,29 @@ Cypress.Commands.add("login", (username = "mstein", password = "test") => {
     });
 });
 
+Cypress.Commands.add("addUser", (username, userId, password, organization = "KfW") => {
+  cy.request({
+    url: `${baseUrl}/api/global.createUser`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        user: {
+          id: userId,
+          displayName: username,
+          organization: organization,
+          password: password
+        }
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body));
+});
+
 Cypress.Commands.add("fetchProjects", () => {
   cy.request({
     url: `${baseUrl}/api/project.list`,
@@ -180,6 +203,46 @@ Cypress.Commands.add("updateProjectPermissions", (projectId, intent, identity) =
       apiVersion: "1.0",
       data: {
         projectId: projectId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("grantUserPermissions", (userId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/user.intent.grantPermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        userId: userId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("revokeUserPermissions", (userId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/user.intent.revokePermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        userId: userId,
         identity: identity,
         intent: intent
       }

@@ -1,58 +1,51 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
-import Users from "./Users";
-import NotAuthorized from "../Error/NotAuthorized";
-import { canViewUserDashboard } from "../../permissions";
-import {
-  setUsername,
-  setPassword,
-  setDisplayName,
-  setOrganization,
-  resetUserToAdd,
-  setTabIndex,
-  showDashboardDialog,
-  fetchGroups,
-  storeGroupName,
-  storeGroupId,
-  addInitialUserToGroup,
-  removeInitialUserFromGroup,
-  addUser,
-  removeUser,
-  createUserGroup,
-  setAdminPermissions,
-  grantAllUserPermissions,
-  listPermissions,
-} from "./actions";
+import withInitialLoading from "../Loading/withInitialLoading";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
+import {
+  addInitialUserToGroup,
+  addUser,
+  checkAndChangeUserPassword,
+  createUserGroup,
+  fetchGroups,
+  grantAllUserPermissions,
+  listPermissions,
+  removeInitialUserFromGroup,
+  removeUser,
+  resetUserToAdd,
+  setAdminPermissions,
+  setDisplayName,
+  setOrganization,
+  setPassword,
+  setTabIndex,
+  setUsername,
+  showDashboardDialog,
+  storeGroupId,
+  storeGroupName
+} from "./actions";
+import Users from "./Users";
 
 class UserManagementContainer extends Component {
   componentWillMount() {
     this.props.fetchUser();
     this.props.fetchGroups();
-    if(this.props.allowedIntents.includes("global.listPermissions")) {
-      this.props.listGlobalPermissions()
+    if (this.props.allowedIntents.includes("global.listPermissions")) {
+      this.props.listGlobalPermissions();
     }
   }
   componentWillUnmount() {
     this.props.resetState();
   }
   render() {
-    const canView = canViewUserDashboard(this.props.allowedIntents);
-    if (canView) {
-      return <Users {...this.props} />;
-    } else {
-      return <NotAuthorized />;
-    }
+    return <Users {...this.props} />;
   }
 }
 
 const mapStateToProps = state => {
   return {
-    nodes: state.getIn(["users", "nodes"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     users: state.getIn(["login", "user"]),
     userId: state.getIn(["login", "id"]),
@@ -62,14 +55,12 @@ const mapStateToProps = state => {
     groupToAdd: state.getIn(["users", "groupToAdd"]),
     editMode: state.getIn(["users", "editMode"]),
     editDialogShown: state.getIn(["users", "editDialogShown"]),
-    editId: state.getIn(["users", "editId"]),
-
+    editId: state.getIn(["users", "editId"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    //copid from Project
     fetchUser: () => dispatch(fetchUser(true)),
     setDisplayName: displayName => dispatch(setDisplayName(displayName)),
     setOrganization: organization => dispatch(setOrganization(organization)),
@@ -91,7 +82,9 @@ const mapDispatchToProps = dispatch => {
     setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),
     grantAllUserPermissions: userId => dispatch(grantAllUserPermissions(userId)),
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId)),
-    listGlobalPermissions: () => dispatch(listPermissions())
+    listGlobalPermissions: () => dispatch(listPermissions()),
+    checkAndChangeUserPassword: (actingUser, username, userPassword, newPassword) =>
+      dispatch(checkAndChangeUserPassword(actingUser, username, userPassword, newPassword))
   };
 };
 

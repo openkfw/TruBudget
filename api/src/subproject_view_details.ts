@@ -133,6 +133,7 @@ interface ExposedWorkflowitem {
   data: {
     id: string;
     creationUnixTs: string;
+    currency: string | null | undefined;
     displayName: string | null;
     exchangeRate: string | undefined | null;
     billingDate: string | undefined | null;
@@ -267,6 +268,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),
             displayName: workflowitem.displayName,
             exchangeRate: workflowitem.exchangeRate,
+            currency: workflowitem.currency,
             billingDate: workflowitem.billingDate,
             amountType: workflowitem.amountType,
             description: workflowitem.description,

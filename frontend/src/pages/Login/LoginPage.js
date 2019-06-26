@@ -20,7 +20,7 @@ const LoginPage = ({
   storePassword,
   username,
   password,
-  loginWithCredentails,
+  loginWithCredentials,
   loginUnsuccessful,
   environment,
   storeEnvironment,
@@ -72,9 +72,13 @@ const LoginPage = ({
         <Username username={username} storeUsername={storeUsername} id="username" />
         <Password
           password={password}
+          iconDisplayed={true}
           storePassword={storePassword}
+          setPassword={storePassword}
           failed={loginUnsuccessful}
-          nextBestAction={() => loginWithCredentails(username, password)}
+          failedText={strings.common.incorrect_password}
+          label={strings.common.password}
+          nextBestAction={() => loginWithCredentials(username, password)}
           id="password"
         />
         <div
@@ -97,7 +101,7 @@ const LoginPage = ({
           <Button
             aria-label="loginbutton"
             style={{ marginRight: 20, marginTop: 5 }}
-            onClick={() => loginWithCredentails(username, password)}
+            onClick={() => loginWithCredentials(username, password)}
             variant="contained"
             id="loginbutton"
           >

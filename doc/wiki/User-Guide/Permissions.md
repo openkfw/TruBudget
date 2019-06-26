@@ -218,8 +218,6 @@ Following list describes all existing permissions. If you need more information 
 
 | Intent                                        | Description                                                                                                            |
 | :-------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| notification.list                             | show notifications on notification site                                                                                |
-| notification.markRead                         | mark notifications as read with a click on a notification                                                              |
 | network.listActive                            | show how many peers are connected to the current network in the upper right corner (currently logged in user excluded) |
 | global.listPermissions                        | the intent has no influence on the trubudget website                                                                   |
 | global.grantPermission                        | assign admin permissions to a user while creating a user                                                               |

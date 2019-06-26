@@ -257,7 +257,7 @@ const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurren
 
   const amountExplanationTitle = toAmountString(amount, sourceCurrency) + " x " + exchangeRate;
   const amountExplaination = (
-    <Tooltip title={amountExplanationTitle}>
+    <Tooltip data-test="amount-explanation" title={amountExplanationTitle}>
       <SwapIcon />
     </Tooltip>
   );
@@ -307,7 +307,17 @@ const getCardStyle = (workflowSortEnabled, status) => {
   return style;
 };
 
-const ActionButton = ({ notVisible, disabled, onClick, icon, title, workflowSortEnabled, status }) => {
+const ActionButton = ({
+  notVisible,
+  disabled,
+  onClick,
+  icon,
+  title,
+  workflowSortEnabled,
+  status,
+  // eslint-disable-next-line no-useless-computed-key
+  ["data-test"]: dataTest
+}) => {
   return (
     <div style={styles.actionButton}>
       <Tooltip
@@ -322,6 +332,7 @@ const ActionButton = ({ notVisible, disabled, onClick, icon, title, workflowSort
             onClick={onClick}
             style={notVisible ? { ...styles.hide } : getButtonStyle(workflowSortEnabled, status)}
             disabled={disabled}
+            data-test={dataTest}
           >
             {icon}
           </IconButton>
@@ -360,6 +371,7 @@ const renderActionButtons = (
           title={additionalDataDisabled ? "" : strings.common.additional_data}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
+          data-test="additional-data-icon"
         />
         <ActionButton
           notVisible={workflowSortEnabled || status === "closed"}
@@ -369,6 +381,7 @@ const renderActionButtons = (
           title={editDisabled ? "" : strings.common.edit}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
+          data-test="edit-workflowitem"
         />
         <ActionButton
           notVisible={workflowSortEnabled}
@@ -378,6 +391,7 @@ const renderActionButtons = (
           title={permissionsDisabled ? "" : strings.common.show_permissions}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
+          data-test="show-permissions-icon"
         />
         <ActionButton
           notVisible={workflowSortEnabled || status === "closed"}
@@ -447,7 +461,7 @@ export const WorkflowItem = SortableElement(
               </Typography>
             </div>
             <div style={{ ...itemStyle, ...styles.listText, ...styles.workflowCell }}>
-              <Typography variant="body2" style={styles.typographs} component="div">
+              <Typography variant="body2" style={styles.typographs} component="div" data-test="workflowitem-amount">
                 {amountType === "N/A"
                   ? amountTypes(amountType)
                   : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}

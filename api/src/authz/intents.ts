@@ -51,8 +51,6 @@ type Intent =
   | "workflowitem.update"
   | "workflowitem.close"
   | "workflowitem.archive"
-  | "notification.list"
-  | "notification.markRead"
   | "notification.create"
   | "network.registerNode"
   | "network.list"
@@ -76,9 +74,6 @@ export const globalIntents: Intent[] = [
   "network.voteForPermission",
   "network.approveNewOrganization",
   "network.approveNewNodeForExistingOrganization",
-  // TODO: those should probably be user intents rather than global ones:
-  "notification.list",
-  "notification.markRead",
 ];
 
 export const userAssignableIntents: Intent[] = [
@@ -91,8 +86,6 @@ export const userAssignableIntents: Intent[] = [
   "global.createGroup",
   "group.addUser",
   "group.removeUser",
-  "notification.list",
-  "notification.markRead",
   "network.listActive",
   "network.list",
   "network.voteForPermission",
@@ -101,11 +94,7 @@ export const userAssignableIntents: Intent[] = [
   "user.changePassword",
 ];
 
-export const userDefaultIntents: Intent[] = [
-  "notification.list",
-  "notification.markRead",
-  "network.listActive",
-];
+export const userDefaultIntents: Intent[] = ["network.listActive"];
 
 export const userIntents: Intent[] = [
   "user.view",
@@ -215,8 +204,6 @@ export const allIntents: Intent[] = [
   "workflowitem.update",
   "workflowitem.close",
   "workflowitem.archive",
-  "notification.list",
-  "notification.markRead",
   "notification.create",
   "network.registerNode",
   "network.list",

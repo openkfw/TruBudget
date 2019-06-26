@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import {
   storePassword,
   storeUsername,
-  loginWithCredentails,
+  loginWithCredentials,
   logout,
   showLoginError,
   storeEnvironment,
@@ -44,7 +44,7 @@ const mapDispatchToProps = dispatch => {
     storeUsername: username => dispatch(storeUsername(username)),
     storePassword: password => dispatch(storePassword(password)),
     logout: () => dispatch(logout()),
-    loginWithCredentails: (username, password) => dispatch(loginWithCredentails(username, password)),
+    loginWithCredentials: (username, password) => dispatch(loginWithCredentials(username, password)),
     showLoginError: () => dispatch(showLoginError(true)),
     hideLoginError: () => dispatch(showLoginError(false)),
     storeEnvironment: environment => dispatch(storeEnvironment(environment)),

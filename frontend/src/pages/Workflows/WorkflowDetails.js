@@ -135,11 +135,11 @@ function WorkflowDetails({
   projectId,
   subProjectId: subprojectId
 }) {
-  const [tabIndex, setTabIndex] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(0);
   useEffect(
     () => {
       if (!showWorkflowDetails) {
-        setTabIndex(0);
+        setSelectedTab(0);
       }
     },
     [showWorkflowDetails]
@@ -148,27 +148,27 @@ function WorkflowDetails({
   const workflowitem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
 
   let content;
-  if (tabIndex === 0) {
+  if (selectedTab === 0) {
     content = <Overview {...{ users, workflowitem }} />;
-  } else if (tabIndex === 1) {
+  } else if (selectedTab === 1) {
     content = (
       <Documents
         {...{ documents: workflowitem.data.documents, showWorkflowDetails, validateDocument, validatedDocuments }}
       />
     );
-  } else if (tabIndex === 2) {
+  } else if (selectedTab === 2) {
     content = (
       <WorkflowitemHistoryTab subprojectId={subprojectId} projectId={projectId} workflowitemId={workflowitem.data.id} />
     );
   } else {
-    throw new Error(`bug: illegal tab index ${tabIndex}`);
+    throw new Error(`bug: illegal tab index ${selectedTab}`);
   }
 
   return (
     <Dialog open={showWorkflowDetails} style={styles.dialog} onExited={closeWorkflowitemDetailsDialog}>
       <DialogTitle data-test="workflowInfoDialog">{strings.workflow.workflowitem_details}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
-        <Tabs value={tabIndex} onChange={(_, index) => setTabIndex(index)}>
+        <Tabs value={selectedTab} onChange={(_, index) => setSelectedTab(index)}>
           <Tab data-test="workflowitem-overview-tab" label={strings.workflow.workflowitem_details_overview} />
           <Tab data-test="workflowitem-documents-tab" label={strings.workflow.workflowitem_details_documents} />
           <Tab data-test="workflowitem-history-tab" label={strings.workflow.workflowitem_details_history} />
