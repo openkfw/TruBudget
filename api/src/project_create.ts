@@ -30,6 +30,7 @@ interface RequestBodyV1 {
         currencyCode: string;
       }>;
       additionalData?: object;
+      tags?: string[];
     };
   };
 }
@@ -46,6 +47,7 @@ const requestBodyV1Schema = Joi.object({
       thumbnail: Joi.string(),
       projectedBudgets: projectedBudgetListSchema,
       additionalData: AdditionalData.schema,
+      tags: Joi.array().items(Joi.string()),
     }).required(),
   }).required(),
 });
@@ -104,6 +106,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                     },
                   },
                   additionalData: { type: "object", additionalProperties: true },
+                  tags: { type: "array", items: { type: "string", example: "test" } },
                 },
               },
             },
@@ -121,7 +124,9 @@ function mkSwaggerSchema(server: FastifyInstance) {
               properties: {
                 project: {
                   type: "object",
-                  properties: { id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" } },
+                  properties: {
+                    id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                  },
                 },
               },
             },

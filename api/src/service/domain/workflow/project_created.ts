@@ -24,6 +24,7 @@ interface InitialData {
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
+  tags?: string[];
 }
 
 const initialDataSchema = Joi.object({
@@ -40,6 +41,7 @@ const initialDataSchema = Joi.object({
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
+  tags: Joi.array().items(Project.tagsSchema),
 });
 
 export interface Event {
@@ -102,6 +104,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Project.Project>
     permissions: initialData.permissions,
     log: [],
     additionalData: initialData.additionalData,
+    tags: initialData.tags || [],
   };
 
   return Result.mapErr(

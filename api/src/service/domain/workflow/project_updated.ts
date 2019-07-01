@@ -20,6 +20,7 @@ export interface Modification {
   description?: string;
   thumbnail?: string;
   additionalData?: object;
+  tags?: string[];
 }
 
 export const modificationSchema = Joi.object({
@@ -27,7 +28,8 @@ export const modificationSchema = Joi.object({
   description: Joi.string().allow(""),
   thumbnail: Joi.string().allow(""),
   additionalData: AdditionalData.schema,
-}).or("displayName", "description", "thumbnail", "additionalData");
+  tags: Joi.array().items(Project.tagsSchema),
+}).or("displayName", "description", "thumbnail", "additionalData", "tags");
 
 export interface Event {
   type: eventTypeType;
@@ -99,7 +101,8 @@ export function mutate(project: Project.Project, event: Event): Result.Type<void
 
   const update = event.update;
 
-  ["displayName", "description", "thumbnail"].forEach(propname => {
+  // TODO: make sure no tag is entered twice
+  ["displayName", "description", "thumbnail", "tags"].forEach(propname => {
     if (update[propname] !== undefined) {
       project[propname] = update[propname];
     }
