@@ -76,6 +76,7 @@ const displayTags = tags => {
       clickable={false}
       size="small"
       component="span"
+      data-test="project-details-tag"
     />
   ));
 };

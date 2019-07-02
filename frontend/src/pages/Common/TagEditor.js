@@ -36,6 +36,7 @@ const displayTags = (tags, deleteTag) => {
           style={{ margin: "1px" }}
           component="span"
           onDelete={() => deleteTag(tag)}
+          data-test="tageditor-tag"
         />
       ))
     : null;
@@ -104,7 +105,9 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag }) {
           Add
         </Button>
       </div>
-      <div style={styles.tags}>{displayTags(projectTags, value => removeProjectTag(value))}</div>
+      <div style={styles.tags} data-test="taglist">
+        {displayTags(projectTags, value => removeProjectTag(value))}
+      </div>
     </div>
   );
 }

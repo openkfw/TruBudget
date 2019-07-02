@@ -112,7 +112,7 @@ export function hideProjectDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, description, thumbnail, projectedBudgets, additionalData, tags) {
+export function showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags) {
   return {
     type: SHOW_EDIT_DIALOG,
     id,
@@ -120,7 +120,6 @@ export function showEditDialog(id, displayName, description, thumbnail, projecte
     description,
     thumbnail,
     projectedBudgets,
-    additionalData,
     tags
   };
 }

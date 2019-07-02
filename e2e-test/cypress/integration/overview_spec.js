@@ -11,10 +11,11 @@ describe("Overview Page", function() {
 
   it("Show example project", function() {
     cy.fixture("testdata.json").as("data");
-    cy.get("[data-test=projectcard-0]").should("have.length.above", 0);
-    cy.get("[data-test=projectcard-0]")
+    cy.get("[data-test*=projectcard-]").should("have.length.above", 0);
+    cy.get("[data-test*=projectcard-]")
       .eq(0)
       .then($card => {
+        console.log($card.find("[data-test=projectheader] span"));
         expect($card.find("[data-test=projectheader] span").eq(0)).to.contains.text(this.data.displayName);
         expect($card.find("[data-test=projectheader] span").eq(2)).to.have.text("Status: Open");
         expect(

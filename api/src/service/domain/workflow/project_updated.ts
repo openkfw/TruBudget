@@ -101,7 +101,6 @@ export function mutate(project: Project.Project, event: Event): Result.Type<void
 
   const update = event.update;
 
-  // TODO: make sure no tag is entered twice
   ["displayName", "description", "thumbnail", "tags"].forEach(propname => {
     if (update[propname] !== undefined) {
       project[propname] = update[propname];

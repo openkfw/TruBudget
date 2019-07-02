@@ -34,7 +34,6 @@ const styles = {
     maxWidth: 300,
     margin: "35px",
     width: "35%"
-    // height: "590px"
   },
   cardHeader: {
     paddingLeft: 0
@@ -147,7 +146,7 @@ const getTableEntries = ({
     const displayedTags = displayTags(tags || []);
 
     return (
-      <Card aria-label="project" key={index} className={classes.card} data-test={`projectcard-${index}`}>
+      <Card aria-label="project" key={index} className={classes.card} data-test={`projectcard-${id}`}>
         <CardMedia className={classes.media} image={imagePath} />
         <CardActions
           style={{
@@ -202,11 +201,16 @@ const getTableEntries = ({
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
             {displayedTags.length > 0 ? (
-              <ListItem style={{ marginTop: "13px" }} className={classes.listItem} disabled={true}>
+              <ListItem
+                style={{ marginTop: "13px" }}
+                className={classes.listItem}
+                data-test="overview-taglist"
+                disabled={true}
+              >
                 <ListItemIcon>
                   <LabelIcon />
                 </ListItemIcon>
-                <ListItemText data-test="tags" primary="" secondary={displayedTags} />
+                <ListItemText data-test="overview-tags" primary="" secondary={displayedTags} />
               </ListItem>
             ) : null}
             <div className={classes.editContainer}>
