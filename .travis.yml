@@ -80,6 +80,8 @@ jobs:
     - <<: *docker-build
       env: PROJECT_NAME=excel-export
     - stage: notification
+      git:
+        depth: false
       language: minimal
       script:
         - |
@@ -90,6 +92,8 @@ jobs:
           -F "variables[TRAVIS_BRANCH]=$TRAVIS_BRANCH" \
           -F "variables[TRAVIS_BUILD_ID]=t_$TRAVIS_BUILD_ID" \
           -F "variables[TRAVIS_EVENT_TYPE_FOR_BRANCH]=$TRAVIS_EVENT_TYPE-$TRAVIS_BRANCH" \
+          -F "variables[GITHUB_PULL_REQUEST]=$TRAVIS_PULL_REQUEST" \
+          -F "variables[GITHUB_REPOSITORY]=$TRAVIS_REPO_SLUG" \
           "$WEBHOOK_URL"
 
 notifications:
