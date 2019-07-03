@@ -42,7 +42,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
       description:
         "Grant the right to execute a specific intent on the Global scope to a given user.",
       tags: ["global"],
-      summary: "Grant a permission to a group or user",
+      summary: "Grant a permission to a user",
       security: [
         {
           bearerToken: [],
@@ -82,6 +82,7 @@ interface Service {
   grantGlobalPermission(
     ctx: Ctx,
     user: ServiceUser,
+    userOrganization: string,
     grantee: Identity,
     permission: Intent,
   ): Promise<void>;
@@ -96,6 +97,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       groups: (request as AuthenticatedRequest).user.groups,
     };
 
+    const userOrganization = (request as AuthenticatedRequest).user.organization;
+
     const bodyResult = validateRequestBody(request.body);
 
     if (Result.isErr(bodyResult)) {
@@ -109,7 +112,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     const { identity: grantee, intent } = bodyResult.data;
 
     service
-      .grantGlobalPermission(ctx, user, grantee, intent)
+      .grantGlobalPermission(ctx, user, userOrganization, grantee, intent)
       .then(() => {
         const code = 200;
         const body = {

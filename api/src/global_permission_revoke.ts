@@ -42,7 +42,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
       description:
         "Revoke the right to execute a specific intent on the Global scope to a given user.",
       tags: ["global"],
-      summary: "Revoke a permission from a group or user",
+      summary: "Revoke a permission from a user",
       security: [
         {
           bearerToken: [],
@@ -82,6 +82,7 @@ interface Service {
   revokeGlobalPermission(
     ctx: Ctx,
     user: ServiceUser,
+    userOrganization: string,
     revokee: Identity,
     permission: Intent,
   ): Promise<void>;
@@ -96,6 +97,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       groups: (request as AuthenticatedRequest).user.groups,
     };
 
+    const userOrganization: string = (request as AuthenticatedRequest).user.organization;
+
     const bodyResult = validateRequestBody(request.body);
 
     if (Result.isErr(bodyResult)) {
@@ -109,7 +112,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     const { identity: revokee, intent } = bodyResult.data;
 
     service
-      .revokeGlobalPermission(ctx, user, revokee, intent)
+      .revokeGlobalPermission(ctx, user, userOrganization, revokee, intent)
       .then(() => {
         const code = 200;
         const body = {
