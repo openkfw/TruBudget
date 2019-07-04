@@ -1,9 +1,6 @@
-import React from "react";
-
-import PasswordIcon from "@material-ui/icons/Lock";
 import TextField from "@material-ui/core/TextField";
-
-import strings from "../../localizeStrings";
+import PasswordIcon from "@material-ui/icons/Lock";
+import React from "react";
 
 const styles = {
   container: {

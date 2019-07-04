@@ -52,6 +52,7 @@ const pt = {
     password: "Senha",
     project: "Projeto",
     projected_budget: "Orçamento projetado",
+    projected_budget_exists: "O orçamento projetado já existe",
     revoke: "Revogar",
     search: "Procurar",
     show_permissions: "Mostrar permissões",
