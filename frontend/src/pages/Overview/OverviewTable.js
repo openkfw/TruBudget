@@ -94,9 +94,19 @@ const getTableEntries = ({
   classes,
   showEditDialog,
   showProjectPermissions,
-  showProjectAdditionalData
+  showProjectAdditionalData,
+  searchTerm,
+  closeSearchBar
 }) => {
-  return projects.map(({ data, allowedIntents }, index) => {
+  const filteredProjects = projects.filter(
+    project =>
+      project.data.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.data.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.data.description.toLowerCase().includes(searchTerm.toLowerCase())
+    // TODO: If tags are added, search them as well
+    // project.data.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+  return filteredProjects.map(({ data, allowedIntents }, index) => {
     const {
       displayName,
       id,
@@ -133,7 +143,10 @@ const getTableEntries = ({
                 className={classes.button}
                 disabled={!canViewProjectDetails(allowedIntents)}
                 color="primary"
-                onClick={() => history.push("/projects/" + id)}
+                onClick={() => {
+                  closeSearchBar();
+                  history.push("/projects/" + id);
+                }}
                 data-test={`project-view-button-${index}`}
               >
                 <ViewIcon />

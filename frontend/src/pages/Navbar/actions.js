@@ -18,6 +18,9 @@ export const EXPORT_DATA = "EXPORT_DATA";
 export const EXPORT_DATA_SUCCESS = "EXPORT_DATA_SUCCESS";
 export const EXPORT_DATA_FAILED = "EXPORT_DATA_FAILED";
 
+export const SEARCH_TERM = "SEARCH_TERM";
+export const SEARCH_BAR_DISPLAYED = "SEARCH_BAR_DISPLAYED";
+
 export function toggleSidebar() {
   return {
     type: TOGGLE_SIDEBAR
@@ -64,5 +67,19 @@ export function fetchVersions() {
 export function exportData() {
   return {
     type: EXPORT_DATA
+  };
+}
+
+export function storeSearchTerm(searchTerm) {
+  return {
+    type: SEARCH_TERM,
+    searchTerm
+  };
+}
+
+export function storeSearchBarDisplayed(searchBarDisplayed) {
+  return {
+    type: SEARCH_BAR_DISPLAYED,
+    searchBarDisplayed
   };
 }

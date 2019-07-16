@@ -2,7 +2,16 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 
-import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup, fetchVersions, exportData } from "./actions";
+import {
+  toggleSidebar,
+  fetchActivePeers,
+  createBackup,
+  restoreBackup,
+  fetchVersions,
+  exportData,
+  storeSearchTerm,
+  storeSearchBarDisplayed
+} from "./actions";
 import { logout } from "../Login/actions";
 
 import FlyInNotifications from "../Notifications/FlyInNotifications";
@@ -38,7 +47,9 @@ const mapDispatchToProps = {
   createBackup,
   restoreBackup,
   fetchVersions,
-  exportData
+  exportData,
+  storeSearchTerm,
+  storeSearchBarDisplayed
 };
 
 const mapStateToProps = state => {
@@ -62,7 +73,9 @@ const mapStateToProps = state => {
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     groups: state.getIn(["login", "groups"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
-    latestFlyInId: state.getIn(["notifications", "latestFlyInId"])
+    latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
+    searchTerm: state.getIn(["navbar", "searchTerm"]),
+    searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"])
   };
 };
 

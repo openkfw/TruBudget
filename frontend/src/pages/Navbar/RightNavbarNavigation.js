@@ -1,8 +1,8 @@
+import Typography from "@material-ui/core/Typography";
 import React from "react";
 
-import Typography from "@material-ui/core/Typography";
-
 import NavbarIcons from "./NavbarIcons";
+import ProjectSearch from "./ProjectSearch";
 
 const styles = {
   container: {
@@ -17,13 +17,38 @@ const styles = {
   }
 };
 
-const RightNavbarNavigations = ({  peers, numberOfActivePeers, unreadNotificationCount, history, logout, organization }) => {
+const RightNavbarNavigations = ({
+  peers,
+  numberOfActivePeers,
+  unreadNotificationCount,
+  history,
+  logout,
+  organization,
+  storeSearchTerm,
+  searchTerm,
+  searchBarDisplayed,
+  storeSearchBarDisplayed
+}) => {
+  const searchDisabled = history.location.pathname !== "/projects";
   return (
     <div style={styles.container}>
+      <ProjectSearch
+        searchBarDisplayed={searchBarDisplayed}
+        searchTerm={searchTerm}
+        searchDisabled={searchDisabled}
+        storeSearchBarDisplayed={storeSearchBarDisplayed}
+        storeSearchTerm={storeSearchTerm}
+      />
       <Typography variant="button" color="primary" style={styles.organization}>
         {organization}
       </Typography>
-      <NavbarIcons  unreadNotificationCount={unreadNotificationCount} numberOfActivePeers={numberOfActivePeers} peers={peers} history={history} logout={logout} />
+      <NavbarIcons
+        unreadNotificationCount={unreadNotificationCount}
+        numberOfActivePeers={numberOfActivePeers}
+        peers={peers}
+        history={history}
+        logout={logout}
+      />
     </div>
   );
 };
