@@ -6,10 +6,7 @@ import Paper from "@material-ui/core/Paper";
 import Tooltip from "@material-ui/core/Tooltip";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SearchIcon from "@material-ui/icons/Search";
-import AwesomeDebouncePromise from "awesome-debounce-promise";
 import React from "react";
-
-const inputDebounced = asyncFunction => AwesomeDebouncePromise(asyncFunction, 500);
 
 const ProjectSearch = ({
   searchBarDisplayed,
@@ -26,7 +23,7 @@ const ProjectSearch = ({
             <form onSubmit={e => e.preventDefault()} style={{ width: "90%" }}>
               <FormControl style={{ width: "97%", paddingLeft: "5px" }} data-test="project-search-field">
                 <InputBase
-                  onChange={event => inputDebounced(storeSearchTerm(event.target.value))}
+                  onChange={event => storeSearchTerm(event.target.value)}
                   onKeyDown={e => {
                     if (e.key === "Escape" || e.key === "Esc") {
                       storeSearchTerm("");
@@ -52,18 +49,25 @@ const ProjectSearch = ({
         ) : null}
       </div>
       <div>
-        <Tooltip title="Quick search">
-          <IconButton
-            color="primary"
-            onClick={() => {
-              storeSearchTerm("");
-              storeSearchBarDisplayed(!searchBarDisplayed);
-            }}
-            disabled={searchDisabled}
-            data-test="toggle-project-search"
-          >
-            <SearchIcon />
-          </IconButton>
+        <Tooltip
+          title="Quick search"
+          disableHoverListener={searchDisabled}
+          disableFocusListener={searchDisabled}
+          disableTouchListener={searchDisabled}
+        >
+          <div>
+            <IconButton
+              color="primary"
+              onClick={() => {
+                storeSearchTerm("");
+                storeSearchBarDisplayed(!searchBarDisplayed);
+              }}
+              disabled={searchDisabled}
+              data-test="toggle-project-search"
+            >
+              <SearchIcon />
+            </IconButton>
+          </div>
         </Tooltip>
       </div>
     </div>

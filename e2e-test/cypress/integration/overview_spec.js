@@ -15,13 +15,8 @@ describe("Overview Page", function() {
     cy.get("[data-test=projectcard-0]")
       .eq(0)
       .then($card => {
-        console.log($card.find("[data-test=projectheader] span"));
-        expect(
-          $card.find("[data-test=projectheader] span").eq(0)
-        ).to.contains.text(this.data.displayName);
-        expect($card.find("[data-test=projectheader] span").eq(2)).to.have.text(
-          "Status: Open"
-        );
+        expect($card.find("[data-test=projectheader] span").eq(0)).to.contains.text(this.data.displayName);
+        expect($card.find("[data-test=projectheader] span").eq(2)).to.have.text("Status: Open");
         expect(
           $card
             .find("[data-test=projectbudget]")

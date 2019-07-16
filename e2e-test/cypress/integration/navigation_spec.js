@@ -84,9 +84,6 @@ describe("Navigation", function() {
 
         // Check the functionality of the clear button
         cy.get("[data-test=clear-project-search]").click();
-        cy.get("[data-test=project-search-field] input").should("have.value", "");
-
-        cy.get("[data-test=toggle-project-search]").click();
         cy.get("[data-test=project-search-field]").should("not.be.visible");
       });
   });
