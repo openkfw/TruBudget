@@ -1,8 +1,7 @@
-import React from "react";
-
 import Button from "@material-ui/core/Button";
-import ChevronRight from "@material-ui/icons/ChevronRight";
 import Typography from "@material-ui/core/Typography";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import React from "react";
 
 import strings from "../../localizeStrings";
 
@@ -65,7 +64,14 @@ const getPathName = (name, index, currentProject, currentSubProject) => {
   }
 };
 
-const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProject) => {
+const createBreadcrumb = (
+  { pathname },
+  history,
+  currentProject,
+  currentSubProject,
+  storeSearchTerm,
+  storeSearchBarDisplayed
+) => {
   //if currentProject or currentSubProject are null the user has no permission to see the displayName
   //null will be displayed as an empty string
   if (!currentProject) currentProject = "";
@@ -82,22 +88,37 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
     const pathName = getPathName(path, index, currentProject, currentSubProject);
     const formattedPathName = pathName === "" ? redacted : pathName;
     const isLastItem = index === paths.length - 1;
+    const displayedName = index ? formattedPathName : strings.navigation.main_site;
     return (
       <div key={index} style={styles.breadcrumb}>
         <div>{index ? <ChevronRight color="primary" style={{ height: "16px" }} /> : null}</div>
         <Button
           disabled={isLastItem || pathName === ""}
+          data-test={`breadcrumb-${displayedName}`}
           color="primary"
-          onClick={() => history.push(accumulatedPath[index])}
+          onClick={() => {
+            storeSearchBarDisplayed(false);
+            storeSearchTerm("");
+            history.push(accumulatedPath[index]);
+          }}
         >
-          {index ? formattedPathName : strings.navigation.main_site}
+          {displayedName}
         </Button>
       </div>
     );
   });
 };
 
-const MainNavbarNavigation = ({ toggleSidebar, history, route, environment, currentProject, currentSubProject }) => {
+const MainNavbarNavigation = ({
+  toggleSidebar,
+  history,
+  route,
+  environment,
+  currentProject,
+  currentSubProject,
+  storeSearchTerm,
+  storeSearchBarDisplayed
+}) => {
   const productionActive = environment === "Prod";
   const navbarTitle = productionActive ? "TruBudget" : "TruBudget (Test)";
   return (
@@ -105,7 +126,9 @@ const MainNavbarNavigation = ({ toggleSidebar, history, route, environment, curr
       <Typography variant="button" color={productionActive ? "primary" : "secondary"}>
         {navbarTitle}
       </Typography>
-      <div style={styles.breadcrumbs}>{createBreadcrumb(route, history, currentProject, currentSubProject)}</div>
+      <div style={styles.breadcrumbs}>
+        {createBreadcrumb(route, history, currentProject, currentSubProject, storeSearchTerm, storeSearchBarDisplayed)}
+      </div>
     </div>
   );
 };
