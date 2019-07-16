@@ -30,6 +30,7 @@ const LoginPage = ({
   const connectedToAdminNode = -1;
   return (
     <div
+      data-test="loginpage"
       id="loginpage"
       style={{
         backgroundImage: 'url("/welcome.jpg")',
