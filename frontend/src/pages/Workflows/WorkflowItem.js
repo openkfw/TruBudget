@@ -364,8 +364,7 @@ const renderActionButtons = (
     <div style={styles.actionCell}>
       <div style={styles.actions}>
         <ActionButton
-          notVisible={additionalDataDisabled || status === "closed"}
-          disabled={additionalDataDisabled}
+          notVisible={additionalDataDisabled || status === "closed" || additionalDataDisabled}
           onClick={additionalDataDisabled ? undefined : showAdditionalData}
           icon={<MoreIcon />}
           title={additionalDataDisabled ? "" : strings.common.additional_data}
@@ -374,8 +373,7 @@ const renderActionButtons = (
           data-test="additional-data-icon"
         />
         <ActionButton
-          notVisible={workflowSortEnabled || status === "closed"}
-          disabled={editDisabled}
+          notVisible={workflowSortEnabled || status === "closed" || editDisabled}
           onClick={editDisabled ? undefined : edit}
           icon={<EditIcon />}
           title={editDisabled ? "" : strings.common.edit}
@@ -384,8 +382,7 @@ const renderActionButtons = (
           data-test="edit-workflowitem"
         />
         <ActionButton
-          notVisible={workflowSortEnabled}
-          disabled={permissionsDisabled}
+          notVisible={workflowSortEnabled || permissionsDisabled}
           onClick={permissionsDisabled ? undefined : showPerm}
           icon={<PermissionIcon />}
           title={permissionsDisabled ? "" : strings.common.show_permissions}
@@ -394,8 +391,7 @@ const renderActionButtons = (
           data-test="show-permissions-icon"
         />
         <ActionButton
-          notVisible={workflowSortEnabled || status === "closed"}
-          disabled={closeDisabled}
+          notVisible={workflowSortEnabled || status === "closed" || closeDisabled}
           onClick={closeDisabled ? undefined : close}
           icon={<DoneIcon />}
           title={closeDisabled ? "" : strings.common.close}
