@@ -94,7 +94,7 @@ const SubProjectDetails = ({
     <div style={styles.container}>
       <Card style={styles.card}>
         <List>
-          <ListItem>
+          <ListItem data-test="subproject-details-displayname">
             {displayName ? <Avatar>{displayName[0]}</Avatar> : null}
             <ListItemText primary={displayName} secondary={description} />
           </ListItem>

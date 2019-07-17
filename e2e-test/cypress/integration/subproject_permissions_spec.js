@@ -49,4 +49,32 @@ describe("Subproject Permissions", function() {
           .should("not.be.checked");
       });
   });
+
+  it("If a user has permissions to see the subproject details, the subproject details page can be viewed", function() {
+    let projectId;
+    let subprojectId;
+    const subprojectDisplayname = "Permissionstest";
+
+    // Create project, don't give permissions to jxavier
+    cy.createProject("Permissions test", "Permissions test")
+      // Create subproject, give permissions to jxavier
+      .then(({ id }) => {
+        projectId = id;
+        cy.createSubproject(id, subprojectDisplayname);
+      })
+      .then(({ id }) => {
+        subprojectId = id;
+        cy.updateSubprojectPermissions(projectId, subprojectId, "subproject.viewDetails", "jxavier");
+        cy.updateSubprojectPermissions(projectId, subprojectId, "subproject.viewSummary", "jxavier");
+      })
+      .then(() =>
+        // Log in as jxavier
+        cy.login("jxavier", "test")
+      )
+      .then(() => {
+        // Go to subproject page and see that it is working
+        cy.visit(`/projects/${projectId}/${subprojectId}`);
+        cy.get("[data-test=subproject-details-displayname]").contains(subprojectDisplayname);
+      });
+  });
 });
