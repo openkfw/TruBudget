@@ -7,6 +7,7 @@ import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
+import logger from "./lib/logger";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -234,16 +235,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
 
         const projectResult = await service.getProject(ctx, user, projectId);
-        if (Result.isErr(projectResult)) {
-          projectResult.message = `subproject.viewDetails failed: ${projectResult.message}`;
-          throw projectResult;
-        }
-
-        const project: Project.Project = projectResult;
+        const displayName = Result.unwrap_or(Result.map(projectResult, p => p.displayName), "");
 
         const parentProject: ExposedProject = {
-          id: project.id,
-          displayName: project.displayName,
+          id: projectId,
+          displayName,
         };
 
         const workflowitemsResult = await service.getWorkflowitems(
