@@ -17,6 +17,7 @@ import HiddenIcon from "@material-ui/icons/VisibilityOff";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
+import ActionButton from "../Common/ActionButton";
 
 import { amountTypes, fromAmountString, toAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
@@ -307,41 +308,6 @@ const getCardStyle = (workflowSortEnabled, status) => {
   return style;
 };
 
-const ActionButton = ({
-  notVisible,
-  disabled,
-  onClick,
-  icon,
-  title,
-  workflowSortEnabled,
-  status,
-  // eslint-disable-next-line no-useless-computed-key
-  ["data-test"]: dataTest
-}) => {
-  return (
-    <div style={styles.actionButton}>
-      <Tooltip
-        id={"tooltip-" + title}
-        title={title}
-        disableFocusListener={disabled}
-        disableHoverListener={disabled}
-        disableTouchListener={disabled}
-      >
-        <div>
-          <IconButton
-            onClick={onClick}
-            style={notVisible ? { ...styles.hide } : getButtonStyle(workflowSortEnabled, status)}
-            disabled={disabled}
-            data-test={dataTest}
-          >
-            {icon}
-          </IconButton>
-        </div>
-      </Tooltip>
-    </div>
-  );
-};
-
 const renderActionButtons = (
   canEditWorkflow,
   edit,
@@ -371,6 +337,7 @@ const renderActionButtons = (
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="additional-data-icon"
+          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
           notVisible={workflowSortEnabled || status === "closed" || editDisabled}
@@ -380,6 +347,7 @@ const renderActionButtons = (
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="edit-workflowitem"
+          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
           notVisible={workflowSortEnabled || permissionsDisabled}
@@ -389,6 +357,7 @@ const renderActionButtons = (
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="show-permissions-icon"
+          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
           notVisible={workflowSortEnabled || status === "closed" || closeDisabled}
@@ -397,6 +366,7 @@ const renderActionButtons = (
           title={closeDisabled ? "" : strings.common.close}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
+          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
       </div>
     </div>

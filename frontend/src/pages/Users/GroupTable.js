@@ -1,4 +1,3 @@
-import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -11,6 +10,7 @@ import _sortBy from "lodash/sortBy";
 import React from "react";
 
 import strings from "../../localizeStrings";
+import ActionButton from "../Common/ActionButton";
 
 const styles = {
   icon: {
@@ -46,11 +46,15 @@ const GroupsTable = ({ groups, showDashboardDialog, classes, allowedIntents }) =
                 <TableCell>{group.displayName}</TableCell>
                 <TableCell>{group.users.length}</TableCell>
                 <TableCell>
-                  {editGroupDisplayed ? (
-                    <IconButton onClick={() => showDashboardDialog("editGroup", group.groupId)}>
-                      <EditIcon className={classes.icon} />
-                    </IconButton>
-                  ) : null}
+                  <div style={{ display: "flex" }}>
+                    <ActionButton
+                      notVisible={!editGroupDisplayed}
+                      onClick={() => showDashboardDialog("editGroup", group.groupId)}
+                      title={strings.common.edit}
+                      icon={<EditIcon />}
+                      data-test={`edit-group-${group.groupId}`}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             );

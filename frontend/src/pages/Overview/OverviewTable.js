@@ -1,33 +1,31 @@
-import React from "react";
-
-import _isEmpty from "lodash/isEmpty";
-
-import { withStyles } from "@material-ui/core/styles";
-import AmountIcon from "@material-ui/icons/AccountBalance";
-import Fab from "@material-ui/core/Fab";
 import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import ContentAdd from "@material-ui/icons/Add";
-import DateIcon from "@material-ui/icons/DateRange";
-import ViewIcon from "@material-ui/icons/ZoomIn";
-import EditIcon from "@material-ui/icons/Edit";
+import Chip from "@material-ui/core/Chip";
+import Fab from "@material-ui/core/Fab";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import MoreIcon from "@material-ui/icons/MoreHoriz";
+import { withStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import ContentAdd from "@material-ui/icons/Add";
+import DateIcon from "@material-ui/icons/DateRange";
+import EditIcon from "@material-ui/icons/Edit";
 import PermissionIcon from "@material-ui/icons/LockOpen";
+import MoreIcon from "@material-ui/icons/MoreHoriz";
+import ViewIcon from "@material-ui/icons/ZoomIn";
+import _isEmpty from "lodash/isEmpty";
+import React from "react";
 
-import { toAmountString, statusMapping, unixTsToString } from "../../helper";
+import { statusMapping, toAmountString, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canCreateProject, canViewProjectDetails, canEditProject, canViewProjectPermissions } from "../../permissions";
+import { canCreateProject, canEditProject, canViewProjectDetails, canViewProjectPermissions } from "../../permissions";
+import ActionButton from "../Common/ActionButton";
 
 const styles = {
   card: {
@@ -168,51 +166,33 @@ const getTableEntries = ({
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
             <div className={classes.editContainer}>
-              {!additionalDataEmpty ? (
-                <Tooltip id="tooltip-additionalData" title="Additional Data">
-                  <div>
-                    <IconButton
-                      data-test={`adata-button-${index}`}
-                      onClick={() => {
-                        showProjectAdditionalData(id);
-                      }}
-                      disabled={false}
-                    >
-                      <MoreIcon />
-                    </IconButton>
-                  </div>
-                </Tooltip>
-              ) : null}
-              {canViewPermissions ? (
-                <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
-                  <div>
-                    <IconButton
-                      data-test={`pp-button-${index}`}
-                      className={classes.editIcon}
-                      disabled={!canViewPermissions}
-                      onClick={() => showProjectPermissions(id)}
-                    >
-                      <PermissionIcon />
-                    </IconButton>
-                  </div>
-                </Tooltip>
-              ) : null}
-              {isOpen && !editDisabled ? (
-                <Tooltip id="tooltip-pedit" title={strings.common.edit}>
-                  <div>
-                    <IconButton
-                      data-test={`pe-button-${index}`}
-                      className={classes.editIcon}
-                      disabled={editDisabled}
-                      onClick={() => {
-                        showEditDialog(id, displayName, description, thumbnail, projectedBudgets);
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </div>
-                </Tooltip>
-              ) : null}
+              <ActionButton
+                notVisible={additionalDataEmpty}
+                onClick={() => {
+                  showProjectAdditionalData(id);
+                }}
+                title="Additional Data"
+                icon={<MoreIcon />}
+                data-test={`project-overview-additionaldata-${index}`}
+              />
+              <ActionButton
+                notVisible={!canViewPermissions}
+                onClick={() => showProjectPermissions(id)}
+                title={strings.common.show_permissions}
+                icon={<PermissionIcon />}
+                data-test={`pp-button-${index}`}
+                iconButtonStyle={styles.editIcon}
+              />
+              <ActionButton
+                notVisible={!isOpen && editDisabled}
+                onClick={() => {
+                  showEditDialog(id, displayName, description, thumbnail, projectedBudgets);
+                }}
+                title={strings.common.edit}
+                icon={<EditIcon />}
+                data-test={`pe-button-${index}`}
+                iconButtonStyle={styles.editIcon}
+              />
             </div>
           </List>
         </CardContent>
