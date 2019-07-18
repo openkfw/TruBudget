@@ -53,6 +53,7 @@ const pt = {
     project: "Projeto",
     projected_budget: "Orçamento projetado",
     projected_budget_exists: "O orçamento projetado já existe",
+    redacted: "Redigido",
     revoke: "Revogar",
     search: "Procurar",
     show_permissions: "Mostrar permissões",

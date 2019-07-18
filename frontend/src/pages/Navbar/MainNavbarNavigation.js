@@ -73,16 +73,24 @@ const createBreadcrumb = ({ pathname }, history, currentProject, currentSubProje
   let paths = pathname.trim().split("/");
   if (paths.length < 2 || !paths[1]) return null;
 
+  const redacted = strings.common.redacted;
+
   const accumulatedPath = paths.map((path, index, source) => {
     return index ? "/" + source.slice(1, index + 1).join("/") : "/";
   });
   return paths.map((path, index) => {
+    const pathName = getPathName(path, index, currentProject, currentSubProject);
+    const formattedPathName = pathName === "" ? redacted : pathName;
     const isLastItem = index === paths.length - 1;
     return (
       <div key={index} style={styles.breadcrumb}>
         <div>{index ? <ChevronRight color="primary" style={{ height: "16px" }} /> : null}</div>
-        <Button disabled={isLastItem} color="primary" onClick={() => history.push(accumulatedPath[index])}>
-          {index ? getPathName(path, index, currentProject, currentSubProject) : strings.navigation.main_site}
+        <Button
+          disabled={isLastItem || pathName === ""}
+          color="primary"
+          onClick={() => history.push(accumulatedPath[index])}
+        >
+          {index ? formattedPathName : strings.navigation.main_site}
         </Button>
       </div>
     );
