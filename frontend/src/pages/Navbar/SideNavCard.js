@@ -39,6 +39,7 @@ const SideNavCard = ({
       flexDirection: "column",
       overflowY: "auto"
     }}
+    data-test="side-navigation"
   >
     <div
       style={{
@@ -74,33 +75,33 @@ const SideNavCard = ({
     </div>
     <List>
       <Subheader>{strings.navigation.selections}</Subheader>
-      <ListItem button onClick={() => history.push("/")}>
+      <ListItem button onClick={() => history.push("/")} data-test="side-navigation-projects">
         <ListItemIcon>
           <ProjectIcon />
         </ListItemIcon>
         <ListItemText primary={strings.navigation.menu_item_projects} />
       </ListItem>
-      <ListItem button onClick={() => history.push("/notifications")}>
+      <ListItem button onClick={() => history.push("/notifications")} data-test="side-navigation-notifications">
         <ListItemIcon>
           <SocialNotificationIcon />
         </ListItemIcon>
         <ListItemText primary={strings.navigation.menu_item_notifications} />
       </ListItem>
-      <ListItem button onClick={() => history.push("/users")}>
+      <ListItem button onClick={() => history.push("/users")} data-test="side-navigation-users">
         <ListItemIcon>
           <UsersIcon />
         </ListItemIcon>
         <ListItemText primary={strings.navigation.menu_item_users} />
       </ListItem>
       {nodeDashboardEnabled ? (
-        <ListItem button onClick={() => history.push("/nodes")}>
+        <ListItem button onClick={() => history.push("/nodes")} data-test="side-navigation-nodes">
           <ListItemIcon>
             <NodesIcon />
           </ListItemIcon>
           <ListItemText primary={strings.nodesDashboard.nodes} />
         </ListItem>
       ) : null}
-      <ListItem button onClick={exportData}>
+      <ListItem button onClick={exportData} data-test="side-navigation-export">
         <ListItemIcon>
           <ExportIcon />
         </ListItemIcon>

@@ -1,13 +1,12 @@
+import AppBar from "@material-ui/core/AppBar";
+import { withStyles } from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
 import React from "react";
 
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import { withStyles } from "@material-ui/core/styles";
-
-import SideNav from "./SideNav";
 import LeftNavbarNavigation from "./LeftNavbarNavigation";
 import MainNavbarNavigation from "./MainNavbarNavigation";
 import RightNavbarNavigation from "./RightNavbarNavigation";
+import SideNav from "./SideNav";
 
 const styles = {
   root: {
@@ -41,48 +40,60 @@ const Navbar = ({
   restoreBackup,
   classes,
   versions,
-  exportData
-}) => (
-  <div>
-    <AppBar classes={classes} position="absolute">
-      <Toolbar>
-        <LeftNavbarNavigation toggleSidebar={toggleSidebar} />
-        <MainNavbarNavigation
-          productionActive={productionActive}
-          history={history}
-          route={route}
-          currentProject={currentProject}
-          currentSubProject={currentSubProject}
-          environment={environment}
-        />
-        <RightNavbarNavigation
-          organization={organization}
-          unreadNotificationCount={unreadNotificationCount}
-          numberOfActivePeers={numberOfActivePeers}
-          peers={peers}
-          history={history}
-          logout={logout}
-        />
-      </Toolbar>
-    </AppBar>
-    <SideNav
-      toggleSidebar={toggleSidebar}
-      showSidebar={showSidebar}
-      history={history}
-      logout={logout}
-      allowedIntents={allowedIntents}
-      displayName={displayName}
-      organization={organization}
-      avatar={avatar}
-      avatarBackground={avatarBackground}
-      groups={groups}
-      userId={userId}
-      createBackup={createBackup}
-      restoreBackup={restoreBackup}
-      versions={versions}
-      exportData={exportData}
-    />
-  </div>
-);
+  exportData,
+  storeSearchTerm,
+  searchTerm,
+  storeSearchBarDisplayed,
+  searchBarDisplayed
+}) => {
+  return (
+    <div>
+      <AppBar classes={classes} position="absolute">
+        <Toolbar>
+          <LeftNavbarNavigation toggleSidebar={toggleSidebar} />
+          <MainNavbarNavigation
+            productionActive={productionActive}
+            history={history}
+            route={route}
+            currentProject={currentProject}
+            currentSubProject={currentSubProject}
+            environment={environment}
+            storeSearchBarDisplayed={storeSearchBarDisplayed}
+            storeSearchTerm={storeSearchTerm}
+          />
+          <RightNavbarNavigation
+            organization={organization}
+            unreadNotificationCount={unreadNotificationCount}
+            numberOfActivePeers={numberOfActivePeers}
+            peers={peers}
+            history={history}
+            logout={logout}
+            storeSearchTerm={storeSearchTerm}
+            storeSearchBarDisplayed={storeSearchBarDisplayed}
+            searchTerm={searchTerm}
+            searchBarDisplayed={searchBarDisplayed}
+          />
+        </Toolbar>
+      </AppBar>
+      <SideNav
+        toggleSidebar={toggleSidebar}
+        showSidebar={showSidebar}
+        history={history}
+        logout={logout}
+        allowedIntents={allowedIntents}
+        displayName={displayName}
+        organization={organization}
+        avatar={avatar}
+        avatarBackground={avatarBackground}
+        groups={groups}
+        userId={userId}
+        createBackup={createBackup}
+        restoreBackup={restoreBackup}
+        versions={versions}
+        exportData={exportData}
+      />
+    </div>
+  );
+};
 
 export default withStyles(styles)(Navbar);

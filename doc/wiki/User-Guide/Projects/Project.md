@@ -46,6 +46,20 @@ View all projects where the current user has view-permissions on.
 
 ![show projects](../../uploads/Screenshots/view_projects.jpg)
 
+## Filter projects
+
+**Description:**
+
+Filter projects based on name, description and tag in the overview page.
+
+**Instructions:**
+
+1. Navigate to the overview page
+2. Click the "Quick Search" button on the top right
+3. After the search bar appears, type in the term by which you want to filter the projects
+4. The projects are now filtered by your search term
+5. If you want to clear the search field, click on the "X" button next to the text
+
 ## View project details
 
 **Description:**

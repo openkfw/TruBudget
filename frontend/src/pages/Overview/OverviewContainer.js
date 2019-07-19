@@ -10,6 +10,8 @@ import {
   hideProjectAdditionalData
 } from "./actions";
 
+import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
+
 import Overview from "./Overview";
 import globalStyles from "../../styles";
 import { toJS } from "../../helper";
@@ -51,7 +53,11 @@ const mapDispatchToProps = dispatch => {
     fetchAllProjects: showLoading => dispatch(fetchAllProjects(showLoading)),
     showProjectPermissions: id => dispatch(showProjectPermissions(id)),
     showProjectAdditionalData: id => dispatch(showProjectAdditionalData(id)),
-    hideProjectAdditionalData: () => dispatch(hideProjectAdditionalData())
+    hideProjectAdditionalData: () => dispatch(hideProjectAdditionalData()),
+    closeSearchBar: () => {
+      dispatch(storeSearchTerm(""));
+      dispatch(storeSearchBarDisplayed(false));
+    }
   };
 };
 
@@ -62,7 +68,8 @@ const mapStateToProps = state => {
     loggedInUser: state.getIn(["login", "loggedInUser"]),
     roles: state.getIn(["login", "roles"]),
     idForInfo: state.getIn(["overview", "idForInfo"]),
-    isProjectAdditionalDataShown: state.getIn(["overview", "isProjectAdditionalDataShown"])
+    isProjectAdditionalDataShown: state.getIn(["overview", "isProjectAdditionalDataShown"]),
+    searchTerm: state.getIn(["navbar", "searchTerm"])
   };
 };
 

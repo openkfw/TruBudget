@@ -35,14 +35,22 @@ const NotificationIcon = ({ unreadNotificationCount, history, classes }) => {
         }
         color="secondary"
       >
-        <IconButton tooltip={strings.navigation.unread_notifications} onClick={() => history.push("/notifications")}>
+        <IconButton
+          data-test="navbar-notification-button"
+          tooltip={strings.navigation.unread_notifications}
+          onClick={() => history.push("/notifications")}
+        >
           <BubbleIcon color="primary" />
         </IconButton>
       </Badge>
     );
   } else {
     return (
-      <IconButton tooltip={strings.navigation.unread_notifications} onClick={() => history.push("/notifications")}>
+      <IconButton
+        data-test="navbar-notification-button"
+        tooltip={strings.navigation.unread_notifications}
+        onClick={() => history.push("/notifications")}
+      >
         <BubbleIcon color="primary" />
       </IconButton>
     );

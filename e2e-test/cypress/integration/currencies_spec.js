@@ -60,10 +60,8 @@ describe("Overview Page", function() {
     //Fetch projects to get newest one
     cy.reload();
 
-    cy.get("[aria-label=project]")
-      .contains("Test")
-      .parents()
-      .filter("[aria-label=project]")
+    cy.get("[data-test*=projectcard]")
+      .last()
       .find("[data-test=projectbudget]")
       .should("contain", currencies.EUR.symbol);
   });
