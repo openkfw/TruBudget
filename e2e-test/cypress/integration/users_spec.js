@@ -51,7 +51,7 @@ describe("Users/Groups Dashboard", function() {
     cy.location("pathname").should("eq", "/users");
     cy.get("[data-test=userdashboard]").should("be.visible");
 
-    cy.get("[data-test*=edit-permissions-]").should("not.exist");
+    cy.get("[data-test*=edit-user-permissions-]").should("not.exist");
   });
 
   it("Button to add user is visible to user with proper permission", function() {
@@ -75,7 +75,7 @@ describe("Users/Groups Dashboard", function() {
     cy.location("pathname").should("eq", "/users");
     cy.get("[data-test=userdashboard]").should("be.visible");
 
-    cy.get("[data-test*=edit-permissions-]").should("be.visible");
+    cy.get("[data-test*=edit-user-permissions-]").should("be.visible");
   });
 
   it("Create new user", function() {

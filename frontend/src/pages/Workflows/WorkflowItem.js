@@ -17,6 +17,7 @@ import HiddenIcon from "@material-ui/icons/VisibilityOff";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
+import ActionButton from "../Common/ActionButton";
 
 import { amountTypes, fromAmountString, toAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
@@ -307,41 +308,6 @@ const getCardStyle = (workflowSortEnabled, status) => {
   return style;
 };
 
-const ActionButton = ({
-  notVisible,
-  disabled,
-  onClick,
-  icon,
-  title,
-  workflowSortEnabled,
-  status,
-  // eslint-disable-next-line no-useless-computed-key
-  ["data-test"]: dataTest
-}) => {
-  return (
-    <div style={styles.actionButton}>
-      <Tooltip
-        id={"tooltip-" + title}
-        title={title}
-        disableFocusListener={disabled}
-        disableHoverListener={disabled}
-        disableTouchListener={disabled}
-      >
-        <div>
-          <IconButton
-            onClick={onClick}
-            style={notVisible ? { ...styles.hide } : getButtonStyle(workflowSortEnabled, status)}
-            disabled={disabled}
-            data-test={dataTest}
-          >
-            {icon}
-          </IconButton>
-        </div>
-      </Tooltip>
-    </div>
-  );
-};
-
 const renderActionButtons = (
   canEditWorkflow,
   edit,
@@ -364,43 +330,43 @@ const renderActionButtons = (
     <div style={styles.actionCell}>
       <div style={styles.actions}>
         <ActionButton
-          notVisible={additionalDataDisabled || status === "closed"}
-          disabled={additionalDataDisabled}
+          notVisible={additionalDataDisabled || status === "closed" || additionalDataDisabled}
           onClick={additionalDataDisabled ? undefined : showAdditionalData}
           icon={<MoreIcon />}
           title={additionalDataDisabled ? "" : strings.common.additional_data}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="additional-data-icon"
+          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
-          notVisible={workflowSortEnabled || status === "closed"}
-          disabled={editDisabled}
+          notVisible={workflowSortEnabled || status === "closed" || editDisabled}
           onClick={editDisabled ? undefined : edit}
           icon={<EditIcon />}
           title={editDisabled ? "" : strings.common.edit}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="edit-workflowitem"
+          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
-          notVisible={workflowSortEnabled}
-          disabled={permissionsDisabled}
+          notVisible={workflowSortEnabled || permissionsDisabled}
           onClick={permissionsDisabled ? undefined : showPerm}
           icon={<PermissionIcon />}
           title={permissionsDisabled ? "" : strings.common.show_permissions}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="show-permissions-icon"
+          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
-          notVisible={workflowSortEnabled || status === "closed"}
-          disabled={closeDisabled}
+          notVisible={workflowSortEnabled || status === "closed" || closeDisabled}
           onClick={closeDisabled ? undefined : close}
           icon={<DoneIcon />}
           title={closeDisabled ? "" : strings.common.close}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
+          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
       </div>
     </div>

@@ -1,4 +1,3 @@
-import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -12,6 +11,7 @@ import _sortBy from "lodash/sortBy";
 import React from "react";
 
 import strings from "../../localizeStrings";
+import ActionButton from "../Common/ActionButton";
 
 const styles = {
   iconColor: {
@@ -53,22 +53,22 @@ const UsersTable = ({ classes, users, permissionIconDisplayed, showDashboardDial
                 <TableCell>{user.displayName}</TableCell>
                 <TableCell>{user.organization}</TableCell>
                 <TableCell>
-                  {permissionIconDisplayed ? (
-                    <IconButton
-                      data-test={`edit-permissions-${user.id}`}
+                  <div style={{ display: "flex" }}>
+                    <ActionButton
+                      notVisible={!permissionIconDisplayed}
                       onClick={() => showDashboardDialog("editUserPermissions", user.id)}
-                    >
-                      <PermissionIcon className={classes.iconColor} />
-                    </IconButton>
-                  ) : null}
-                  {canEditPassword ? (
-                    <IconButton
-                      data-test={`edit-user-${user.id}`}
+                      title={strings.common.show_permissions}
+                      icon={<PermissionIcon />}
+                      data-test={`edit-user-permissions-${user.id}`}
+                    />
+                    <ActionButton
+                      notVisible={!canEditPassword}
                       onClick={() => showDashboardDialog("editUserPassword", user.id)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  ) : null}
+                      title={strings.common.edit}
+                      icon={<EditIcon />}
+                      data-test={`edit-user-${user.id}`}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             );
