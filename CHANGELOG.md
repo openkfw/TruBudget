@@ -17,7 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- If a user has permissions to view subproject details, but not the permissions to see the parent project, he/she can still view the subproject details [#282](https://github.com/openkfw/TruBudget/issues/282)
 
 <!-- ### Security -->
 

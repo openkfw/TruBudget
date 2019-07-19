@@ -53,6 +53,7 @@ const fr = {
     project: "Projet",
     projected_budget: "Budget prévu",
     projected_budget_exists: "Le budget prévu existe déjà",
+    redacted: "Expurgé",
     revoke: "Revoquer",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",

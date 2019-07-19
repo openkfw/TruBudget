@@ -51,6 +51,7 @@ const de = {
     project: "German: Project",
     projected_budget: "Planbudget",
     projected_budget_exists: "Planbudget existiert bereits",
+    redacted: "Redigiert",
     revoke: "German: revoke",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
