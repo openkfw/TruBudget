@@ -85,6 +85,7 @@ interface Service {
   grantGlobalPermissions(
     ctx: Ctx,
     user: ServiceUser,
+    userOrganization: string,
     grantee: Identity,
     permission: Intent,
   ): Promise<void>;
@@ -101,6 +102,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         id: (request as AuthenticatedRequest).user.userId,
         groups: (request as AuthenticatedRequest).user.groups,
       };
+
+      const userOrganization: string = (request as AuthenticatedRequest).user.organization;
 
       const bodyResult = validateRequestBody(request.body);
 
@@ -124,7 +127,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           if (identitiesAuthorizedFor(globalPermissions, intent).includes(user.id)) {
             continue;
           }
-          await service.grantGlobalPermissions(ctx, user, grantee, intent);
+          await service.grantGlobalPermissions(ctx, user, userOrganization, grantee, intent);
           logger.debug({ grantee, intent }, "permission granted");
         }
 

@@ -12,10 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Organizations and currencies for projected budgets of subprojects can only be selected from values of the parent project [#228](https://github.com/openkfw/TruBudget/issues/228)
+- Global permissions can only be granted/revoked to/from users within the same organizations [#340](https://github.com/openkfw/TruBudget/issues/340)
 
 <!-- ### Deprecated -->
 
-<!-- ### Removed -->
+### Removed
+
+- Permissions button is removed for groups [#345](https://github.com/openkfw/TruBudget/issues/345)
 
 ### Fixed
 
