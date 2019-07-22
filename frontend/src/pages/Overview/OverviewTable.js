@@ -234,11 +234,11 @@ const getTableEntries = ({
               <ActionButton
                 notVisible={!isOpen && editDisabled}
                 onClick={() => {
-                  showEditDialog(id, displayName, description, thumbnail, projectedBudgets);
+                  showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags);
                 }}
                 title={strings.common.edit}
                 icon={<EditIcon />}
-                data-test={`pe-button-${index}`}
+                data-test={`pe-button`}
                 iconButtonStyle={styles.editIcon}
               />
             </div>

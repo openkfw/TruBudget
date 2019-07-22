@@ -45,7 +45,7 @@ describe("Project Tags", function() {
       .then(() => cy.visit(`/projects/${projectId}`))
       .then(() => cy.get("[data-test=project-details-tag]").should("have.length", 1));
   });
-  it("When editing the project, the existing tags are displayed and can be deleted and new ones can be added", function() {
+  it("When editing the project, the existing tags are displayed, can be deleted and new ones can be added", function() {
     const baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     const apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.server();
@@ -67,7 +67,7 @@ describe("Project Tags", function() {
       .then(() => cy.visit("/projects/"))
       .then(() => {
         // Edit the project we just created
-        cy.get(`[data-test=pe-button-${projectId}]`).click();
+        cy.get(`[data-test=projectcard-${projectId}] [data-test=pe-button]`).click();
         // See if it has one tag containing the text "test"
         cy.get("[data-test=tageditor-tag]")
           .should("have.length", 1)
@@ -117,7 +117,7 @@ describe("Project Tags", function() {
       .then(() => cy.visit("/projects/"))
       .then(() => {
         // Edit the project we just created
-        cy.get(`[data-test=pe-button-${projectId}]`).click();
+        cy.get(`[data-test=projectcard-${projectId}] [data-test=pe-button]`).click();
         cy.get("[data-test=tageditor-tag]")
           .should("have.length", 1)
           .contains("test");
