@@ -40,7 +40,7 @@ const initialDataSchema = Joi.object({
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
-});
+}).options({ stripUnknown: true });
 
 export interface Event {
   type: eventTypeType;

@@ -12,7 +12,13 @@ import * as SubprojectCreated from "../service/domain/workflow/subproject_create
 import * as WorkflowitemAssigned from "../service/domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "../service/domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "../service/domain/workflow/workflowitem_created";
-import { Cache2, getCacheInstance, initCache, updateAggregates } from "./cache2";
+import {
+  Cache2,
+  getCacheInstance,
+  initCache,
+  parseBusinessEvents,
+  updateAggregates,
+} from "./cache2";
 import { NotFound } from "./domain/errors/not_found";
 
 describe("The cache updates", () => {
@@ -509,7 +515,400 @@ describe("The cache", () => {
       assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
     });
   });
+
+  describe("The BusinessEvent parsing", () => {
+    context("project events", async () => {
+      const projectStreamItems: any[] = [
+        {
+          publishers: [],
+          keys: [],
+          data: {
+            json: {
+              type: "project_created",
+              source: "http",
+              publisher: "root",
+              project: {
+                id: "90ffe1958bc5734abc70a2464437fe92",
+                status: "open",
+                displayName: "foo",
+                description: "",
+                assignee: "root",
+                thumbnail: "",
+                projectedBudgets: [],
+                permissions: {},
+                additionalData: {},
+              },
+              time: "2019-07-25T12:03:25.315Z",
+            },
+          },
+          confirmations: 0,
+          blocktime: 1,
+          txid: "1",
+        },
+      ];
+      const addUnknownProperty = items => {
+        items.map(item => {
+          item.data.json.project.additionalUnknownProperty = true;
+          return item;
+        });
+        return items;
+      };
+      const makeItemsInvalid = items => {
+        items.map(item => {
+          delete item.data.json.project.id;
+        });
+        return items;
+      };
+      testParsingEvents("projectStream", projectStreamItems, addUnknownProperty, makeItemsInvalid);
+    });
+    context("subproject events", async () => {
+      const subprojectStreamItems: any[] = [
+        {
+          publishers: [],
+          keys: [],
+          data: {
+            json: {
+              type: "subproject_created",
+              source: "http",
+              publisher: "root",
+              projectId: "projectId",
+              subproject: {
+                id: "subprojectId",
+                status: "open",
+                displayName: "foo",
+                description: "",
+                assignee: "root",
+                currency: "EUR",
+                projectedBudgets: [],
+                permissions: {},
+                additionalData: {},
+              },
+              time: "2019-07-25T12:03:25.315Z",
+            },
+          },
+          confirmations: 0,
+          blocktime: 1,
+          txid: "1",
+        },
+      ];
+      const addUnknownProperty = items => {
+        items.map(item => {
+          item.data.json.subproject.additionalUnknownProperty = true;
+          return item;
+        });
+        return items;
+      };
+      const makeItemsInvalid = items => {
+        items.map(item => {
+          delete item.data.json.subproject.id;
+        });
+        return items;
+      };
+      testParsingEvents(
+        "projectStream",
+        subprojectStreamItems,
+        addUnknownProperty,
+        makeItemsInvalid,
+      );
+    });
+    context("workflowitem events", async () => {
+      const workflowitemStreamItems: any[] = [
+        {
+          publishers: [],
+          keys: [],
+          data: {
+            json: {
+              type: "workflowitem_created",
+              source: "http",
+              publisher: "root",
+              projectId: "projectId",
+              subprojectId: "subprojectId",
+              workflowitem: {
+                id: "workflowitemId",
+                status: "open",
+                displayName: "foo",
+                description: "",
+                assignee: "root",
+                amountType: "N/A",
+                documents: [],
+                permissions: {},
+                additionalData: {},
+              },
+              time: "2019-07-25T12:03:25.315Z",
+            },
+          },
+          confirmations: 0,
+          blocktime: 1,
+          txid: "1",
+        },
+      ];
+      const addUnknownProperty = items => {
+        items.map(item => {
+          item.data.json.workflowitem.additionalUnknownProperty = true;
+          return item;
+        });
+        return items;
+      };
+      const makeItemsInvalid = items => {
+        items.map(item => {
+          delete item.data.json.workflowitem.id;
+        });
+        return items;
+      };
+      testParsingEvents(
+        "projectStream",
+        workflowitemStreamItems,
+        addUnknownProperty,
+        makeItemsInvalid,
+      );
+    });
+    context("user events", async () => {
+      const userStreamItems: any[] = [
+        {
+          publishers: [],
+          keys: [],
+          offchain: false,
+          available: true,
+          data: {
+            json: {
+              type: "user_created",
+              source: "http",
+              publisher: "root",
+              user: {
+                id: "userId",
+                displayName: "testuser",
+                organization: "testorga",
+                passwordHash: "$2a$08$eABl",
+                address: "$2a$08$eABl",
+                encryptedPrivKey: "$2a$08$eABl",
+                permissions: {},
+                additionalData: {},
+              },
+              time: "2019-07-25T12:03:25.315Z",
+            },
+          },
+          confirmations: 0,
+          txid: "1",
+        },
+      ];
+      const addUnknownProperty = items => {
+        items.map(item => {
+          item.data.json.user.additionalUnknownProperty = true;
+          return item;
+        });
+        return items;
+      };
+      const makeItemsInvalid = items => {
+        items.map(item => {
+          delete item.data.json.user.id;
+        });
+        return items;
+      };
+      testParsingEvents("usersStream", userStreamItems, addUnknownProperty, makeItemsInvalid);
+    });
+    context("group events", async () => {
+      const groupStreamItems: any[] = [
+        {
+          publishers: [],
+          keys: [],
+          offchain: false,
+          available: true,
+          data: {
+            json: {
+              type: "group_created",
+              source: "http",
+              publisher: "root",
+              group: {
+                id: "groupId",
+                displayName: "testgroup",
+                description: "",
+                members: ["testuser"],
+                permissions: {},
+                additionalData: {},
+              },
+              time: "2019-07-25T12:03:25.315Z",
+            },
+          },
+          confirmations: 0,
+          blocktime: 1,
+          txid: "1",
+        },
+      ];
+      const addUnknownProperty = items => {
+        items.map(item => {
+          item.data.json.group.additionalUnknownProperty = true;
+          return item;
+        });
+        return items;
+      };
+      const makeItemsInvalid = items => {
+        items.map(item => {
+          delete item.data.json.group.id;
+        });
+        return items;
+      };
+      testParsingEvents("usersStream", groupStreamItems, addUnknownProperty, makeItemsInvalid);
+    });
+    context("notification events", async () => {
+      const notificationStreamItems: any[] = [
+        {
+          publishers: [],
+          keys: [],
+          offchain: false,
+          available: true,
+          data: {
+            json: {
+              type: "notification_created",
+              source: "http",
+              time: "2019-07-25T12:03:25.315Z",
+              publisher: "root",
+              notificationId: "7f4f0085-e962-4171-b100-1c9c200cb035",
+              recipient: "test",
+              businessEvent: {
+                type: "project_updated",
+                source: "http",
+                publisher: "root",
+                time: "2019-07-29T16:22:02.026Z",
+                projectId: "projectId",
+                update: {
+                  description: "test",
+                },
+              },
+            },
+          },
+          confirmations: 0,
+          blocktime: 1,
+          txid: "1",
+        },
+      ];
+      const addUnknownProperty = items => {
+        items.map(item => {
+          item.data.json.additionalUnknownProperty = true;
+          return item;
+        });
+        return items;
+      };
+      const makeItemsInvalid = items => {
+        items.map(item => {
+          delete item.data.json.notificationId;
+        });
+        return items;
+      };
+      testParsingEvents(
+        "notificationsStream",
+        notificationStreamItems,
+        addUnknownProperty,
+        makeItemsInvalid,
+      );
+    });
+    context("global permission events", async () => {
+      const globalPermissionStreamItems: any[] = [
+        {
+          data: {
+            json: {
+              type: "global_permission_granted",
+              source: "http",
+              time: "2019-07-25T12:03:25.315Z",
+              publisher: "root",
+              permission: "network.list",
+              grantee: "test",
+            },
+          },
+        },
+        {
+          data: {
+            json: {
+              type: "global_permission_revoked",
+              source: "http",
+              time: "2019-07-25T12:03:25.315Z",
+              publisher: "root",
+              permission: "network.list",
+              revokee: "test",
+            },
+          },
+        },
+      ];
+      const addUnknownProperty = items => {
+        items.map(item => {
+          item.data.json.additionalUnknownProperty = true;
+          return item;
+        });
+        return items;
+      };
+      const makeItemsInvalid = items => {
+        items.map(item => {
+          delete item.data.json.permission;
+        });
+        return items;
+      };
+      testParsingEvents(
+        "globalStream",
+        globalPermissionStreamItems,
+        addUnknownProperty,
+        makeItemsInvalid,
+      );
+    });
+    context("node events", async () => {
+      const globalPermissionStreamItems: any[] = [
+        {
+          data: {
+            json: {
+              type: "node_registered",
+              source: "system",
+              publisher: "root",
+              address: "9vqnbcXq",
+              organization: "test",
+              time: "2019-07-25T12:03:25.315Z",
+            },
+          },
+        },
+      ];
+      const addUnknownProperty = items => {
+        items.map(item => {
+          item.data.json.additionalUnknownProperty = true;
+          return item;
+        });
+        return items;
+      };
+      const makeItemsInvalid = items => {
+        items.map(item => {
+          delete item.data.json.organization;
+        });
+        return items;
+      };
+      testParsingEvents(
+        "nodesStream",
+        globalPermissionStreamItems,
+        addUnknownProperty,
+        makeItemsInvalid,
+      );
+    });
+  });
 });
+
+function testParsingEvents(
+  stream: string,
+  streamItems: any[],
+  addUnknownProperty,
+  makeItemsInvalid,
+) {
+  it("parse valid items", async () => {
+    const parsedEvents = parseBusinessEvents(streamItems, stream);
+    assert.isOk(parsedEvents.every(result => Result.isOk(result)));
+  });
+  it("parse items ignoring unknown properties", async () => {
+    const parsedEvents = parseBusinessEvents(addUnknownProperty(streamItems), stream);
+    assert.isOk(
+      parsedEvents.every(
+        result => Result.isOk(result) && !result.hasOwnProperty("additionalUnknownProperty"),
+      ),
+    );
+  });
+  it("rejects invalid items", async () => {
+    const parsedEvents = parseBusinessEvents(makeItemsInvalid(streamItems), stream);
+    assert.isOk(parsedEvents.every(result => Result.isErr(result)));
+  });
+}
 
 // Helper functions
 function addExampleProject(ctx: Ctx, cache: Cache2, projectId: string): ProjectCreated.Event {

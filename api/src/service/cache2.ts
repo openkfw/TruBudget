@@ -542,7 +542,10 @@ const EVENT_PARSER_MAP = {
   workflowitem_updated: WorkflowitemUpdated.validate,
 };
 
-function parseBusinessEvents(items: Item[], streamName: string): Array<Result.Type<BusinessEvent>> {
+export function parseBusinessEvents(
+  items: Item[],
+  streamName: string,
+): Array<Result.Type<BusinessEvent>> {
   return items
     .map(item => {
       const event = item.data.json;
