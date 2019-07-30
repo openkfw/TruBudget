@@ -515,9 +515,11 @@ describe("The cache", () => {
       assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
     });
   });
-
-  describe("The BusinessEvent parsing", () => {
-    context("project events", async () => {
+  // Test valid, invalid and stream items with an additional property per context
+  // The context is describing which stream items are tested
+  // In a context the variables are prepared for the "testParsingEvents"-function where the assertions are in
+  describe("Converting from Stream Items to BusinessEvent", () => {
+    context("for project stream items", async () => {
       const projectStreamItems: any[] = [
         {
           publishers: [],
@@ -561,7 +563,7 @@ describe("The cache", () => {
       };
       testParsingEvents("projectStream", projectStreamItems, addUnknownProperty, makeItemsInvalid);
     });
-    context("subproject events", async () => {
+    context("for subproject stream items", async () => {
       const subprojectStreamItems: any[] = [
         {
           publishers: [],
@@ -592,17 +594,15 @@ describe("The cache", () => {
         },
       ];
       const addUnknownProperty = items => {
-        items.map(item => {
+        return items.map(item => {
           item.data.json.subproject.additionalUnknownProperty = true;
           return item;
         });
-        return items;
       };
       const makeItemsInvalid = items => {
-        items.map(item => {
+        return items.map(item => {
           delete item.data.json.subproject.id;
         });
-        return items;
       };
       testParsingEvents(
         "projectStream",
@@ -611,7 +611,7 @@ describe("The cache", () => {
         makeItemsInvalid,
       );
     });
-    context("workflowitem events", async () => {
+    context("for workflowitem stream items", async () => {
       const workflowitemStreamItems: any[] = [
         {
           publishers: [],
@@ -662,7 +662,7 @@ describe("The cache", () => {
         makeItemsInvalid,
       );
     });
-    context("user events", async () => {
+    context("for user stream items", async () => {
       const userStreamItems: any[] = [
         {
           publishers: [],
@@ -706,7 +706,7 @@ describe("The cache", () => {
       };
       testParsingEvents("usersStream", userStreamItems, addUnknownProperty, makeItemsInvalid);
     });
-    context("group events", async () => {
+    context("for group stream items", async () => {
       const groupStreamItems: any[] = [
         {
           publishers: [],
@@ -749,7 +749,7 @@ describe("The cache", () => {
       };
       testParsingEvents("usersStream", groupStreamItems, addUnknownProperty, makeItemsInvalid);
     });
-    context("notification events", async () => {
+    context("for notification stream items", async () => {
       const notificationStreamItems: any[] = [
         {
           publishers: [],
@@ -801,7 +801,7 @@ describe("The cache", () => {
         makeItemsInvalid,
       );
     });
-    context("global permission events", async () => {
+    context("for global stream items", async () => {
       const globalPermissionStreamItems: any[] = [
         {
           data: {
@@ -848,7 +848,7 @@ describe("The cache", () => {
         makeItemsInvalid,
       );
     });
-    context("node events", async () => {
+    context("for node stream items", async () => {
       const globalPermissionStreamItems: any[] = [
         {
           data: {
