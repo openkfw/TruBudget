@@ -27,6 +27,7 @@ const baseProject: Project = {
   permissions: { "project.close": [alice, bob, charlie].map(x => x.id) },
   log: [],
   additionalData: {},
+  tags: [],
 };
 const baseSubproject: Subproject = {
   id: "dummy-subproject",

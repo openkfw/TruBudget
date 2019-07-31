@@ -128,3 +128,7 @@ export const preselectCurrency = (parentCurrency, setCurrency) => {
   const preSelectedCurrency = _isUndefined(parentCurrency) ? "EUR" : parentCurrency;
   setCurrency(preSelectedCurrency);
 };
+
+export const formattedTag = tag => {
+  return tag.toLowerCase().replace(/[\s#]/g, "");
+};

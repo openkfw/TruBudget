@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Added search feature for overview page [#347](https://github.com/openkfw/TruBudget/issues/347)
+- Added project tags [#342](https://github.com/openkfw/TruBudget/issues/342)
 
 ### Changed
 

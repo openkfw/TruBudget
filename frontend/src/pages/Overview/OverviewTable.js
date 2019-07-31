@@ -1,4 +1,5 @@
 import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -16,13 +17,14 @@ import AmountIcon from "@material-ui/icons/AccountBalance";
 import ContentAdd from "@material-ui/icons/Add";
 import DateIcon from "@material-ui/icons/DateRange";
 import EditIcon from "@material-ui/icons/Edit";
+import LabelIcon from "@material-ui/icons/LabelOutlined";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import MoreIcon from "@material-ui/icons/MoreHoriz";
 import ViewIcon from "@material-ui/icons/ZoomIn";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 
-import { statusMapping, toAmountString, unixTsToString } from "../../helper";
+import { formattedTag, statusMapping, toAmountString, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import { canCreateProject, canEditProject, canViewProjectDetails, canViewProjectPermissions } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
@@ -86,6 +88,23 @@ const displayProjectBudget = budgets => {
   );
 };
 
+const displayTags = tags => {
+  return tags.map((tag, i) => (
+    <Button
+      variant="outlined"
+      // TODO: This will be used to filter projects by tag
+      onClick={() => null}
+      key={`${tag}-${i}`}
+      style={{ margin: "1px" }}
+      component="span"
+      data-test="overview-tag"
+      size="small"
+    >
+      {`#${formattedTag(tag)}`}
+    </Button>
+  ));
+};
+
 const getTableEntries = ({
   projects,
   history,
@@ -113,7 +132,8 @@ const getTableEntries = ({
       thumbnail = "/Thumbnail_0008.jpg",
       creationUnixTs,
       projectedBudgets,
-      additionalData
+      additionalData,
+      tags
     } = data;
     const budgets = displayProjectBudget(projectedBudgets);
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
@@ -123,8 +143,10 @@ const getTableEntries = ({
     const editDisabled = !(canEditProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
+    const displayedTags = displayTags(tags || []);
+
     return (
-      <Card aria-label="project" key={index} className={classes.card} data-test={`projectcard-${index}`}>
+      <Card aria-label="project" key={index} className={classes.card} data-test={`projectcard-${id}`}>
         <CardMedia className={classes.media} image={imagePath} />
         <CardActions
           style={{
@@ -178,6 +200,19 @@ const getTableEntries = ({
               </ListItemIcon>
               <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
             </ListItem>
+            {displayedTags.length > 0 ? (
+              <ListItem
+                style={{ marginTop: "13px" }}
+                className={classes.listItem}
+                data-test="overview-taglist"
+                disabled={true}
+              >
+                <ListItemIcon>
+                  <LabelIcon />
+                </ListItemIcon>
+                <ListItemText data-test="overview-tags" primary="" secondary={displayedTags} />
+              </ListItem>
+            ) : null}
             <div className={classes.editContainer}>
               <ActionButton
                 notVisible={additionalDataEmpty}
@@ -199,11 +234,11 @@ const getTableEntries = ({
               <ActionButton
                 notVisible={!isOpen && editDisabled}
                 onClick={() => {
-                  showEditDialog(id, displayName, description, thumbnail, projectedBudgets);
+                  showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags);
                 }}
                 title={strings.common.edit}
                 icon={<EditIcon />}
-                data-test={`pe-button-${index}`}
+                data-test={`pe-button`}
                 iconButtonStyle={styles.editIcon}
               />
             </div>

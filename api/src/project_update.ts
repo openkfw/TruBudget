@@ -20,6 +20,7 @@ interface RequestBodyV1 {
     description?: string;
     thumbnail?: string;
     additionalData?: object;
+    tags?: string[];
   };
 }
 
@@ -31,6 +32,7 @@ const requestBodyV1Schema = Joi.object({
     description: Joi.string().allow(""),
     thumbnail: Joi.string().allow(""),
     additionalData: AdditionalData.schema,
+    tags: Joi.array().items(Joi.string()),
   }).required(),
 });
 
@@ -70,6 +72,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
               description: { type: "string", example: "A town should be built" },
               thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
               additionalData: { type: "object" },
+              tags: {
+                type: "array",
+                items: { type: "string", example: "project1" },
+              },
             },
           },
         },
@@ -123,6 +129,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       description: bodyResult.data.description,
       thumbnail: bodyResult.data.thumbnail,
       additionalData: bodyResult.data.additionalData,
+      tags: bodyResult.data.tags,
     };
 
     service

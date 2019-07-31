@@ -28,6 +28,7 @@ const baseProject: Project = {
   },
   log: [],
   additionalData: {},
+  tags: [],
 };
 const baseRepository = {
   getSubprojects: async _projectId => [],

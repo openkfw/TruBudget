@@ -13,7 +13,9 @@ import {
   storeProjectName,
   storeProjectThumbnail,
   storeProjectedBudget,
-  storeDeletedProjectedBudget
+  storeDeletedProjectedBudget,
+  addProjectTag,
+  removeProjectTag
 } from "./actions";
 import ProjectDialog from "./ProjectDialog";
 
@@ -37,8 +39,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createProject: (name, comment, thumbnail, projectedBudgets) =>
-      dispatch(createProject(name, comment, thumbnail, projectedBudgets)),
+    createProject: (name, comment, thumbnail, projectedBudgets, tags) =>
+      dispatch(createProject(name, comment, thumbnail, projectedBudgets, tags)),
     editProject: (id, changes, deletedProjectedBudgets) => dispatch(editProject(id, changes, deletedProjectedBudgets)),
     hideProjectDialog: () => dispatch(hideProjectDialog()),
     storeProjectName: name => dispatch(storeProjectName(name)),
@@ -47,7 +49,9 @@ const mapDispatchToProps = dispatch => {
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
     storeProjectedBudget: projectedBudgets => dispatch(storeProjectedBudget(projectedBudgets)),
     storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message))
+    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
+    addProjectTag: tag => dispatch(addProjectTag(tag)),
+    removeProjectTag: tag => dispatch(removeProjectTag(tag))
   };
 };
 
