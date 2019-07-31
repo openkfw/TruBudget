@@ -29,7 +29,7 @@ const initialDataSchema = Joi.object({
   members: Group.membersSchema.required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
-});
+}).options({ stripUnknown: true });
 
 export interface Event {
   type: eventTypeType;

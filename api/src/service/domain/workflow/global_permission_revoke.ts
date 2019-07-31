@@ -2,7 +2,6 @@ import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
@@ -10,7 +9,6 @@ import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import * as GlobalPermissionRevoked from "./global_permission_revoked";
 import * as GlobalPermissions from "./global_permissions";
-import { sourceProjects } from "./project_eventsourcing";
 
 interface Repository {
   getGlobalPermissions(): Promise<GlobalPermissions.GlobalPermissions>;
@@ -74,12 +72,6 @@ export async function revokeGlobalPermission(
         target: currentGlobalPermissions,
       });
     }
-  }
-
-  // Check that the new event is indeed valid:
-  const { errors } = sourceProjects(ctx, [globalPermissionRevoked]);
-  if (errors.length > 0) {
-    return new InvalidCommand(ctx, globalPermissionRevoked, errors);
   }
 
   return [globalPermissionRevoked];
