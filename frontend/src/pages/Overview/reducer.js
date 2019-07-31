@@ -66,7 +66,7 @@ export default function overviewReducer(state = defaultState, action) {
           .set("description", action.description)
           .set("thumbnail", action.thumbnail)
           .set("projectedBudgets", fromJS(action.projectedBudgets))
-          .set("tags", action.tags),
+          .set("tags", fromJS(action.tags)),
         currentStep: action.currentStep,
         editDialogShown: true
       });
