@@ -6,8 +6,8 @@ import { parseBusinessEvents } from "./cache2";
 interface Testcase {
   stream: string;
   streamItems: any[];
-  addUnknownProperty: (items: any[]) => any[];
-  makeItemsInvalid: (items: any[]) => any[];
+  addUnknownProperty: (items: any[]) => void;
+  makeItemsInvalid: (items: any[]) => void;
 }
 
 // Prepare testcases for all different streamitems
@@ -43,15 +43,13 @@ const projectStreamItems: any[] = [
   },
 ];
 const addUnknownPropertyToProject = items => {
-  return items.map(item => {
+  items.forEach(item => {
     item.data.json.project.additionalUnknownProperty = true;
-    return item;
   });
 };
 const makeProjectItemsInvalid = items => {
-  return items.map(item => {
+  items.forEach(item => {
     delete item.data.json.project.id;
-    return item;
   });
 };
 
@@ -93,15 +91,13 @@ const subprojectStreamItems: any[] = [
   },
 ];
 const addUnknownPropertyToSubproject = items => {
-  return items.map(item => {
+  items.forEach(item => {
     item.data.json.subproject.additionalUnknownProperty = true;
-    return item;
   });
 };
 const makeSubprojectItemsInvalid = items => {
-  return items.map(item => {
+  items.forEach(item => {
     delete item.data.json.subproject.id;
-    return item;
   });
 };
 
@@ -144,15 +140,13 @@ const workflowitemStreamItems: any[] = [
   },
 ];
 const addUnknownPropertyToWorkflowitem = items => {
-  return items.map(item => {
+  items.forEach(item => {
     item.data.json.workflowitem.additionalUnknownProperty = true;
-    return item;
   });
 };
 const makeWorkflowitemItemsInvalid = items => {
-  return items.map(item => {
+  items.forEach(item => {
     delete item.data.json.workflowitem.id;
-    return item;
   });
 };
 
@@ -193,15 +187,13 @@ const userStreamItems: any[] = [
   },
 ];
 const addUnknownPropertyToUser = items => {
-  return items.map(item => {
+  items.forEach(item => {
     item.data.json.user.additionalUnknownProperty = true;
-    return item;
   });
 };
 const makeUserItemsInvalid = items => {
-  return items.map(item => {
+  items.forEach(item => {
     delete item.data.json.user.id;
-    return item;
   });
 };
 
@@ -241,15 +233,13 @@ const groupStreamItems: any[] = [
   },
 ];
 const addUnknownPropertyToGroup = items => {
-  return items.map(item => {
+  items.forEach(item => {
     item.data.json.group.additionalUnknownProperty = true;
-    return item;
   });
 };
 const makeGroupItemsInvalid = items => {
-  return items.map(item => {
+  items.forEach(item => {
     delete item.data.json.group.id;
-    return item;
   });
 };
 
@@ -293,15 +283,13 @@ const notificationStreamItems: any[] = [
   },
 ];
 const addUnknownPropertyToNotification = items => {
-  return items.map(item => {
+  items.forEach(item => {
     item.data.json.additionalUnknownProperty = true;
-    return item;
   });
 };
 const makeNotificationItemsInvalid = items => {
-  return items.map(item => {
+  items.forEach(item => {
     delete item.data.json.notificationId;
-    return item;
   });
 };
 
@@ -340,15 +328,13 @@ const globalPermissionStreamItems: any[] = [
   },
 ];
 const addUnknownPropertyToPermission = items => {
-  return items.map(item => {
+  items.forEach(item => {
     item.data.json.additionalUnknownProperty = true;
-    return item;
   });
 };
 const makePermissionItemsInvalid = items => {
-  return items.map(item => {
+  items.forEach(item => {
     delete item.data.json.permission;
-    return item;
   });
 };
 
@@ -375,15 +361,13 @@ const nodeStreamItems: any[] = [
   },
 ];
 const addUnknownPropertyToNode = items => {
-  return items.map(item => {
+  items.forEach(item => {
     item.data.json.additionalUnknownProperty = true;
-    return item;
   });
 };
 const makeNodeItemsInvalid = items => {
-  return items.map(item => {
+  items.forEach(item => {
     delete item.data.json.organization;
-    return item;
   });
 };
 
@@ -411,10 +395,8 @@ describe("stream item validation (backwards-compatibility)", () => {
         assert.isOk(parsedEvents.every(result => Result.isOk(result)));
       });
       it("validates items with additional unknown property", async () => {
-        const parsedEvents = parseBusinessEvents(
-          testcase.addUnknownProperty(testcase.streamItems),
-          testcase.stream,
-        );
+        testcase.addUnknownProperty(testcase.streamItems);
+        const parsedEvents = parseBusinessEvents(testcase.streamItems, testcase.stream);
         assert.isOk(
           parsedEvents.every(
             result => Result.isOk(result) && !result.hasOwnProperty("additionalUnknownProperty"),
@@ -422,10 +404,8 @@ describe("stream item validation (backwards-compatibility)", () => {
         );
       });
       it("doesn't validate invalid items", async () => {
-        const parsedEvents = parseBusinessEvents(
-          testcase.makeItemsInvalid(testcase.streamItems),
-          testcase.stream,
-        );
+        testcase.makeItemsInvalid(testcase.streamItems);
+        const parsedEvents = parseBusinessEvents(testcase.streamItems, testcase.stream);
         assert.isOk(parsedEvents.every(result => Result.isErr(result)));
       });
     });
