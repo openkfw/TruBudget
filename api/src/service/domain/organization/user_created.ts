@@ -33,7 +33,7 @@ const initialDataSchema = Joi.object({
   encryptedPrivKey: Joi.string().required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
-});
+}).options({ stripUnknown: true });
 
 export interface Event {
   type: eventTypeType;
