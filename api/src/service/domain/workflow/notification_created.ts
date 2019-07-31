@@ -43,7 +43,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema,
   subprojectId: Subproject.idSchema,
   workflowitemId: Workflowitem.idSchema,
-});
+}).options({ stripUnknown: true });
 
 export function createEvent(
   source: string,
