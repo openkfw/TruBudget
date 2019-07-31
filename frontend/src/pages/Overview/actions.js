@@ -37,6 +37,9 @@ export const GRANT_PERMISSION_SUCCESS = "GRANT_PERMISSION_SUCCESS";
 export const REVOKE_PERMISSION = "REVOKE_PERMISSION";
 export const REVOKE_PERMISSION_SUCCESS = "REVOKE_PERMISSION_SUCCESS";
 
+export const ADD_PROJECT_TAG = "ADD_PROJECT_TAG";
+export const REMOVE_PROJECT_TAG = "REMOVE_PROJECT_TAG";
+
 export function fetchAllProjects(showLoading = false) {
   return {
     type: FETCH_ALL_PROJECTS,
@@ -44,13 +47,14 @@ export function fetchAllProjects(showLoading = false) {
   };
 }
 
-export function createProject(name, comment, thumbnail, projectedBudgets) {
+export function createProject(name, comment, thumbnail, projectedBudgets, tags) {
   return {
     type: CREATE_PROJECT,
     name,
     comment,
     thumbnail,
-    projectedBudgets
+    projectedBudgets,
+    tags
   };
 }
 
@@ -108,14 +112,15 @@ export function hideProjectDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, description, thumbnail, projectedBudgets) {
+export function showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags) {
   return {
     type: SHOW_EDIT_DIALOG,
     id,
     displayName,
     description,
     thumbnail,
-    projectedBudgets
+    projectedBudgets,
+    tags
   };
 }
 
@@ -178,5 +183,19 @@ export function revokePermission(projectId, intent, identity, showLoading = fals
     intent,
     identity,
     showLoading
+  };
+}
+
+export function addProjectTag(tag) {
+  return {
+    type: ADD_PROJECT_TAG,
+    tag
+  };
+}
+
+export function removeProjectTag(tag) {
+  return {
+    type: REMOVE_PROJECT_TAG,
+    tag
   };
 }

@@ -59,6 +59,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           assignee: { type: "string", example: "aSmith" },
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                           additionalData: { type: "object", additionalProperties: true },
+                          tags: { type: "array", items: { type: "string", example: "test" } },
                           projectedBudgets: {
                             type: "array",
                             items: {
@@ -174,6 +175,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
               thumbnail: project.thumbnail,
               projectedBudgets: project.projectedBudgets,
               additionalData: project.additionalData,
+              tags: project.tags,
             },
           };
         });

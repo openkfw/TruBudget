@@ -47,8 +47,8 @@ class OverviewContainer extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     showCreationDialog: () => dispatch(showCreationDialog()),
-    showEditDialog: (id, displayName, description, thumbnail, projectedBudgets) =>
-      dispatch(showEditDialog(id, displayName, description, thumbnail, projectedBudgets)),
+    showEditDialog: (id, displayName, description, thumbnail, projectedBudgets, tags) =>
+      dispatch(showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags)),
 
     fetchAllProjects: showLoading => dispatch(fetchAllProjects(showLoading)),
     showProjectPermissions: id => dispatch(showProjectPermissions(id)),
