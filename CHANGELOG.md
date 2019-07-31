@@ -5,7 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+# Changelog
+
 ## [Unreleased]
+
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Security -->
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [1.3.0] - 2019-07-31
 
 ### Added
 
@@ -19,8 +40,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Don't display edit/permission/close button if the user does not have the permissions for the action [#235](https://github.com/openkfw/TruBudget/issues/235)
 - Updated postman collection including a postman environment[#199](https://github.com/openkfw/TruBudget/issues/199)
 
-<!-- ### Deprecated -->
-
 ### Removed
 
 - Permissions button is removed for groups [#345](https://github.com/openkfw/TruBudget/issues/345)
@@ -29,8 +48,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added backwards compatibility for future versions [#360](https://github.com/openkfw/TruBudget/issues/360)
 - If a user has permissions to view subproject details, but not the permissions to see the parent project, he/she can still view the subproject details [#282](https://github.com/openkfw/TruBudget/issues/282)
-
-<!-- ### Security -->
 
 ## [1.2.0] - 2019-06-26
 
@@ -324,7 +341,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.2.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.3.0...master
+[1.3.0]: https://github.com/openkfw/TruBudget/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/openkfw/TruBudget/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/openkfw/TruBudget/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/openkfw/TruBudget/compare/v1.0.0...v1.0.1
