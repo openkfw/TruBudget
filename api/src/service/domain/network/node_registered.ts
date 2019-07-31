@@ -27,7 +27,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   address: Joi.string().required(),
   organization: Joi.string().required(),
-});
+}).options({ stripUnknown: true });
 
 export function createEvent(
   source: string,

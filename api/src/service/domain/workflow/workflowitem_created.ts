@@ -54,7 +54,7 @@ const initialDataSchema = Joi.object({
     .required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
-});
+}).options({ stripUnknown: true });
 
 export interface Event {
   type: eventTypeType;

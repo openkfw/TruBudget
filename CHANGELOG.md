@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Organizations and currencies for projected budgets of subprojects can only be selected from values of the parent project [#228](https://github.com/openkfw/TruBudget/issues/228)
 - Global permissions can only be granted/revoked to/from users within the same organizations [#340](https://github.com/openkfw/TruBudget/issues/340)
 - Don't display edit/permission/close button if the user does not have the permissions for the action [#235](https://github.com/openkfw/TruBudget/issues/235)
+- Updated postman collection including a postman environment[#199](https://github.com/openkfw/TruBudget/issues/199)
 
 <!-- ### Deprecated -->
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Added backwards compatibility for future versions [#360](https://github.com/openkfw/TruBudget/issues/360)
 - If a user has permissions to view subproject details, but not the permissions to see the parent project, he/she can still view the subproject details [#282](https://github.com/openkfw/TruBudget/issues/282)
 
 <!-- ### Security -->

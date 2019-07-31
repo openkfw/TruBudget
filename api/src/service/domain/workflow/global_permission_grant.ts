@@ -76,11 +76,5 @@ export async function grantGlobalPermission(
     }
   }
 
-  // Check that the new event is indeed valid:
-  const { errors } = sourceProjects(ctx, [globalPermissionGranted]);
-  if (errors.length > 0) {
-    return new InvalidCommand(ctx, globalPermissionGranted, errors);
-  }
-
   return [globalPermissionGranted];
 }

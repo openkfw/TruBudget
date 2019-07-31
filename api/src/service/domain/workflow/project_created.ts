@@ -42,7 +42,7 @@ const initialDataSchema = Joi.object({
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
   tags: Joi.array().items(Project.tagsSchema),
-});
+}).options({ stripUnknown: true });
 
 export interface Event {
   type: eventTypeType;
