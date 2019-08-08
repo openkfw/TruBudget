@@ -80,7 +80,7 @@ describe("Navigation", function() {
         cy.get("[data-test=project-search-field]").should("be.visible");
         cy.get("[data-test=project-search-field] input").type(projectDisplayName);
         // Since project name is unique, there can only be one match
-        cy.get("[data-test*=projectcard]").then(res => assert.equal(res.length, 1));
+        cy.get("[data-test*=project-card]").then(res => assert.equal(res.length, 1));
 
         // Check the functionality of the clear button
         cy.get("[data-test=clear-project-search]").click();
@@ -100,7 +100,7 @@ describe("Navigation", function() {
         cy.get("[data-test=project-search-field]").should("be.visible");
         cy.get("[data-test=project-search-field] input").type(projectDisplayName);
         // Since project name is unique, there can only be one match
-        cy.get("[data-test*=projectcard]").then(res => assert.equal(res.length, 1));
+        cy.get("[data-test*=project-card]").then(res => assert.equal(res.length, 1));
 
         // Go to project
         cy.get("[data-test*=project-view-button]")
@@ -129,7 +129,7 @@ describe("Navigation", function() {
         cy.get("[data-test=project-search-field]").should("be.visible");
         cy.get("[data-test=project-search-field] input").type(projectDisplayName);
         // Since project name is unique, there can only be one match
-        cy.get("[data-test*=projectcard]").then(res => assert.equal(res.length, 1));
+        cy.get("[data-test*=project-card]").then(res => assert.equal(res.length, 1));
 
         // Go to project
         cy.get("[data-test=breadcrumb-Main]").click();

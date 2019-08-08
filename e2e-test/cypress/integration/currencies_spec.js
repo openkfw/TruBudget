@@ -60,9 +60,9 @@ describe("Overview Page", function() {
     //Fetch projects to get newest one
     cy.reload();
 
-    cy.get("[data-test*=projectcard]")
+    cy.get("[data-test*=project-card]")
       .last()
-      .find("[data-test=projectbudget]")
+      .find("[data-test=project-budget]")
       .should("contain", currencies.EUR.symbol);
   });
 });
