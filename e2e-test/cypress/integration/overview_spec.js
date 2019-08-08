@@ -11,22 +11,21 @@ describe("Overview Page", function() {
 
   it("Show example project", function() {
     cy.fixture("testdata.json").as("data");
-    cy.get("[data-test*=projectcard-]").should("have.length.above", 0);
-    cy.get("[data-test*=projectcard-]")
+    cy.get("[data-test*=project-card-]").should("have.length.above", 0);
+    cy.get("[data-test*=project-card-]")
       .eq(0)
       .then($card => {
-        console.log($card.find("[data-test=projectheader] span"));
-        expect($card.find("[data-test=projectheader] span").eq(0)).to.contains.text(this.data.displayName);
-        expect($card.find("[data-test=projectheader] span").eq(2)).to.have.text("Status: Open");
+        expect($card.find("[data-test=project-header] span").eq(0)).to.contains.text(this.data.displayName);
+        expect($card.find("[data-test=project-header] span").eq(2)).to.have.text("Status: Open");
         expect(
           $card
-            .find("[data-test=projectbudget]")
+            .find("[data-test=project-budget]")
             .children()
             .first()
         ).to.contains.text("AR$ 32,000,000.00");
         expect(
           $card
-            .find("[data-test=projectcreation]")
+            .find("[data-test=project-creation]")
             .children()
             .first()
         ).not.to.have.text("Jan 01, 1970");
@@ -36,7 +35,7 @@ describe("Overview Page", function() {
   });
 
   it("Shows project creation", function() {
-    cy.get("[data-test=projectcreation]").should("be.visible");
-    cy.get("[data-test=projectcreation] button").should("be.visible");
+    cy.get("[data-test=project-creation]").should("be.visible");
+    cy.get("[data-test=project-creation] button").should("be.visible");
   });
 });

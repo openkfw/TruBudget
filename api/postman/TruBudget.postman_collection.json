@@ -849,7 +849,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://management.azure.com/subscriptions/2cfd0663-1770-4184-974e-63129061d389  # Replace, using a regex/resourceGroups/do_bdt-rg/providers/Microsoft.DocumentDB/databaseAccounts/bdtdash/apis/mongodb/collections?api-version=2015-04-08",
+							"raw": "https://management.azure.com/subscriptions/2cfd0663-1770-4184-974e-63129061d389  # Replace/resourceGroups/do_bdt-rg/providers/Microsoft.DocumentDB/databaseAccounts/bdtdash/apis/mongodb/collections?api-version=2015-04-08",
 							"protocol": "https",
 							"host": [
 								"management",
@@ -858,7 +858,7 @@
 							],
 							"path": [
 								"subscriptions",
-								"2cfd0663-1770-4184-974e-63129061d389  # Replace, using a regex",
+								"2cfd0663-1770-4184-974e-63129061d389  # Replace",
 								"resourceGroups",
 								"do_bdt-rg",
 								"providers",

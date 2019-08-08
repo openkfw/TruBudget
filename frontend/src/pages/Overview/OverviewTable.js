@@ -2,38 +2,25 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
 import Chip from "@material-ui/core/Chip";
 import Fab from "@material-ui/core/Fab";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import { withStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
-import AmountIcon from "@material-ui/icons/AccountBalance";
 import ContentAdd from "@material-ui/icons/Add";
-import DateIcon from "@material-ui/icons/DateRange";
-import EditIcon from "@material-ui/icons/Edit";
-import LabelIcon from "@material-ui/icons/LabelOutlined";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-import MoreIcon from "@material-ui/icons/MoreHoriz";
-import ViewIcon from "@material-ui/icons/ZoomIn";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 
 import { formattedTag, statusMapping, toAmountString, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canCreateProject, canEditProject, canViewProjectDetails, canViewProjectPermissions } from "../../permissions";
-import ActionButton from "../Common/ActionButton";
+import { canCreateProject, canEditProject, canViewProjectPermissions } from "../../permissions";
+import ProjectCard from "./ProjectCard";
 
 const styles = {
   card: {
-    maxWidth: 300,
+    maxWidth: "310px",
     margin: "35px",
-    width: "35%"
+    width: "35%",
+    height: "580px"
   },
   cardHeader: {
     paddingLeft: 0
@@ -54,9 +41,6 @@ const styles = {
     marginTop: "20px",
     justifyContent: "flex-end"
   },
-  editIcon: {
-    color: "black"
-  },
   cardTitle: {
     textOverflow: "ellipsis",
     width: "250px",
@@ -66,6 +50,32 @@ const styles = {
   },
   budgets: {
     marginBottom: "8px"
+  },
+  addProject: {
+    height: "580px",
+    margin: "35px",
+    width: "300px",
+    opacity: "0.7"
+  },
+  addProjectContent: {
+    display: "flex",
+    backgroundColor: "lightgray",
+    flexDirection: "row",
+    maxWidth: "350px",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  tableEntries: {
+    backgroundColor: "transparent",
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
   }
 };
 
@@ -146,105 +156,32 @@ const getTableEntries = ({
     const displayedTags = displayTags(tags || []);
 
     return (
-      <Card aria-label="project" key={index} className={classes.card} data-test={`projectcard-${id}`}>
-        <CardMedia className={classes.media} image={imagePath} />
-        <CardActions
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            height: "20px",
-            alignItems: "flex-end",
-            marginTop: "-40px"
-          }}
-        >
-          <Tooltip id="tooltip-pview" title={strings.common.view}>
-            <div>
-              <Fab
-                className={classes.button}
-                disabled={!canViewProjectDetails(allowedIntents)}
-                color="primary"
-                onClick={() => {
-                  closeSearchBar();
-                  history.push("/projects/" + id);
-                }}
-                data-test={`project-view-button-${index}`}
-              >
-                <ViewIcon />
-              </Fab>
-            </div>
-          </Tooltip>
-        </CardActions>
-        <CardContent>
-          <CardHeader
-            data-test="projectheader"
-            className={classes.cardHeader}
-            title={
-              <div className={classes.cardTitle}>
-                <span>{displayName}</span>
-              </div>
-            }
-            subheader={mappedStatus}
-          />
-          <List>
-            {projectedBudgets.length === 0 ? null : (
-              <ListItem className={classes.listItem} disabled={true}>
-                <ListItemIcon>
-                  <AmountIcon />
-                </ListItemIcon>
-                <ListItemText data-test="projectbudget" primary={budgets} secondary={strings.common.budget} />
-              </ListItem>
-            )}
-            <ListItem className={classes.listItem} disabled={true}>
-              <ListItemIcon>
-                <DateIcon />
-              </ListItemIcon>
-              <ListItemText data-test="projectcreation" primary={dateString} secondary={strings.common.created} />
-            </ListItem>
-            {displayedTags.length > 0 ? (
-              <ListItem
-                style={{ marginTop: "13px" }}
-                className={classes.listItem}
-                data-test="overview-taglist"
-                disabled={true}
-              >
-                <ListItemIcon>
-                  <LabelIcon />
-                </ListItemIcon>
-                <ListItemText data-test="overview-tags" primary="" secondary={displayedTags} />
-              </ListItem>
-            ) : null}
-            <div className={classes.editContainer}>
-              <ActionButton
-                notVisible={additionalDataEmpty}
-                onClick={() => {
-                  showProjectAdditionalData(id);
-                }}
-                title="Additional Data"
-                icon={<MoreIcon />}
-                data-test={`project-overview-additionaldata-${index}`}
-              />
-              <ActionButton
-                notVisible={!canViewPermissions}
-                onClick={() => showProjectPermissions(id)}
-                title={strings.common.show_permissions}
-                icon={<PermissionIcon />}
-                data-test={`pp-button-${index}`}
-                iconButtonStyle={styles.editIcon}
-              />
-              <ActionButton
-                notVisible={!isOpen && editDisabled}
-                onClick={() => {
-                  showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags);
-                }}
-                title={strings.common.edit}
-                icon={<EditIcon />}
-                data-test={`pe-button`}
-                iconButtonStyle={styles.editIcon}
-              />
-            </div>
-          </List>
-        </CardContent>
-      </Card>
+      <ProjectCard
+        key={index}
+        index={index}
+        id={id}
+        allowedIntents={allowedIntents}
+        closeSearchBar={closeSearchBar}
+        history={history}
+        displayName={displayName}
+        mappedStatus={mappedStatus}
+        projectedBudgets={projectedBudgets}
+        budgets={budgets}
+        displayedTags={displayedTags}
+        dateString={dateString}
+        showProjectAdditionalData={showProjectAdditionalData}
+        additionalDataEmpty={additionalDataEmpty}
+        canViewPermissions={canViewPermissions}
+        isOpen={isOpen}
+        showProjectPermissions={showProjectPermissions}
+        editDisabled={editDisabled}
+        showEditDialog={showEditDialog}
+        description={description}
+        thumbnail={thumbnail}
+        tags={tags}
+        classes={classes}
+        imagePath={imagePath}
+      />
     );
   });
 };
@@ -252,33 +189,10 @@ const getTableEntries = ({
 const OverviewTable = props => {
   const tableEntries = getTableEntries(props);
   return (
-    <div
-      aria-label="projects"
-      style={{
-        backgroundColor: "transparent",
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
+    <div aria-label="projects" style={styles.tableEntries}>
       {tableEntries}
-      <Card data-test="projectcreation" style={{ height: "510px", margin: "35px", width: "300px", opacity: "0.7" }}>
-        <div
-          style={{
-            display: "flex",
-            backgroundColor: "lightgray",
-            flexDirection: "row",
-            maxWidth: "350px",
-            height: "100%",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
+      <Card data-test="project-creation" style={styles.addProject}>
+        <div style={styles.addProjectContent}>
           <CardActions>
             <Tooltip id="tooltip-pcreate" title={strings.common.create}>
               <div>
