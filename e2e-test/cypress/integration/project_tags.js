@@ -36,7 +36,7 @@ describe("Project Tags", function() {
       .then(() => cy.visit("/projects/"))
       .then(() =>
         cy
-          .get(`[data-test=projectcard-${projectId}]`)
+          .get(`[data-test=project-card-${projectId}]`)
           .find("[data-test=overview-tags]")
           .find("[data-test=overview-tag]")
           .should("have.length", 1)
@@ -67,7 +67,7 @@ describe("Project Tags", function() {
       .then(() => cy.visit("/projects/"))
       .then(() => {
         // Edit the project we just created
-        cy.get(`[data-test=projectcard-${projectId}] [data-test=pe-button]`).click();
+        cy.get(`[data-test=project-card-${projectId}] [data-test=pe-button]`).click();
         // See if it has one tag containing the text "test"
         cy.get("[data-test=tageditor-tag]")
           .should("have.length", 1)
@@ -88,7 +88,7 @@ describe("Project Tags", function() {
       .then(() => cy.visit("/projects/"))
       .then(() =>
         cy
-          .get(`[data-test=projectcard-${projectId}]`)
+          .get(`[data-test=project-card-${projectId}]`)
           .find("[data-test=overview-tags]")
           .find("[data-test=overview-tag]")
           .should("have.length", 1)
@@ -117,7 +117,7 @@ describe("Project Tags", function() {
       .then(() => cy.visit("/projects/"))
       .then(() => {
         // Edit the project we just created
-        cy.get(`[data-test=projectcard-${projectId}] [data-test=pe-button]`).click();
+        cy.get(`[data-test=project-card-${projectId}] [data-test=pe-button]`).click();
         cy.get("[data-test=tageditor-tag]")
           .should("have.length", 1)
           .contains("test");
@@ -133,7 +133,7 @@ describe("Project Tags", function() {
       .then(() => cy.visit("/projects/"))
       .then(() =>
         cy
-          .get(`[data-test=projectcard-${projectId}]`)
+          .get(`[data-test=project-card-${projectId}]`)
           .find("[data-test=overview-tags]")
           .find("[data-test=overview-tag]")
           // Only the original tag is displayed

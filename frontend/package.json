@@ -17,6 +17,7 @@
     "Philip Pai <philip.pai@accenture.com>"
   ],
   "dependencies": {
+    "@babel/runtime": "^7.5.5",
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
     "accounting": "^0.4.1",
@@ -60,7 +61,12 @@
     "lint": "eslint src"
   },
   "proxy": "http://localhost:8080",
-  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "browser": {
     "moment": false
   }
