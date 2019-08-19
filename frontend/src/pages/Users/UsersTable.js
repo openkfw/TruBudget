@@ -22,7 +22,7 @@ const sortUsers = users => {
   return _sortBy(users, user => user.organization && user.id);
 };
 
-const UsersTable = ({ classes, users, permissionIconDisplayed, showDashboardDialog, userId }) => {
+const UsersTable = ({ classes, users, permissionIconDisplayed, showDashboardDialog, showPasswordDialog, userId }) => {
   const sortedUsers = sortUsers(users.filter(u => u.isGroup !== true));
 
   return (
@@ -63,7 +63,7 @@ const UsersTable = ({ classes, users, permissionIconDisplayed, showDashboardDial
                     />
                     <ActionButton
                       notVisible={!canEditPassword}
-                      onClick={() => showDashboardDialog("editUserPassword", user.id)}
+                      onClick={() => showPasswordDialog(user.id)}
                       title={strings.common.edit}
                       icon={<EditIcon />}
                       data-test={`edit-user-${user.id}`}

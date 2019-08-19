@@ -14,6 +14,9 @@ export const TAB_INDEX = "TAB_INDEX";
 export const SHOW_DASHBOARD_DIALOG = "SHOW_DASHBOARD_DIALOG";
 export const HIDE_DASHBOARD_DIALOG = "HIDE_DASHBOARD_DIALOG";
 
+export const SHOW_PASSWORD_DIALOG = "SHOW_PASSWORD_DIALOG";
+export const HIDE_PASSWORD_DIALOG = "HIDE_PASSWORD_DIALOG";
+
 export const FETCH_GROUPS = "FETCH_GROUPS";
 export const FETCH_GROUPS_SUCCESS = "FETCH_GROUPS_SUCCESS";
 
@@ -50,12 +53,6 @@ export const CHECK_USER_PASSWORD_ERROR = "CHECK_USER_PASSWORD_ERROR";
 
 export const CHANGE_USER_PASSWORD = "CHANGE_USER_PASSWORD";
 export const CHANGE_USER_PASSWORD_SUCCESS = "CHANGE_USER_PASSWORD_SUCCESS";
-
-export const USER_PASSWORD = "USER_PASSWORD";
-export const NEW_USER_PASSWORD = "NEW_USER_PASSWORD";
-export const NEW_USER_PASSWORD_CONFIRMATION = "NEW_USER_PASSWORD_CONFIRMATION";
-
-export const STORE_NEW_PASSWORDS_MATCH = "STORE_NEW_PASSWORDS_MATCH";
 
 export function fetchGroups(showLoading = false) {
   return {
@@ -189,9 +186,22 @@ export function showDashboardDialog(dialogType, editId = null) {
   };
 }
 
+export function showPasswordDialog(editId) {
+  return {
+    type: SHOW_PASSWORD_DIALOG,
+    editId
+  };
+}
+
 export function hideDashboardDialog() {
   return {
     type: HIDE_DASHBOARD_DIALOG
+  };
+}
+
+export function hidePasswordDialog() {
+  return {
+    type: HIDE_PASSWORD_DIALOG
   };
 }
 
@@ -224,33 +234,5 @@ export function checkAndChangeUserPassword(actingUser, username, currentPassword
     username,
     currentPassword,
     newPassword
-  };
-}
-
-export function storeUserPassword(password) {
-  return {
-    type: USER_PASSWORD,
-    password
-  };
-}
-
-export function storeNewPassword(password) {
-  return {
-    type: NEW_USER_PASSWORD,
-    password
-  };
-}
-
-export function storeNewPasswordConfirmation(password) {
-  return {
-    type: NEW_USER_PASSWORD_CONFIRMATION,
-    password
-  };
-}
-
-export function storeNewPasswordsMatch(newPasswordsMatch) {
-  return {
-    type: STORE_NEW_PASSWORDS_MATCH,
-    newPasswordsMatch
   };
 }

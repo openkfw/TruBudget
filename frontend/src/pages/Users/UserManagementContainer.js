@@ -23,6 +23,7 @@ import {
   setTabIndex,
   setUsername,
   showDashboardDialog,
+  showPasswordDialog,
   storeGroupId,
   storeGroupName
 } from "./actions";
@@ -82,6 +83,7 @@ const mapDispatchToProps = dispatch => {
     setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),
     grantAllUserPermissions: userId => dispatch(grantAllUserPermissions(userId)),
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId)),
+    showPasswordDialog: editId => dispatch(showPasswordDialog(editId)),
     listGlobalPermissions: () => dispatch(listPermissions()),
     checkAndChangeUserPassword: (actingUser, username, userPassword, newPassword) =>
       dispatch(checkAndChangeUserPassword(actingUser, username, userPassword, newPassword))

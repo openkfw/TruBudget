@@ -6,8 +6,6 @@ import CreationDialog from "../Common/CreationDialog";
 import GlobalPermissions from "./GlobalPermissions";
 import GroupDialogContent from "./GroupDialogContent";
 import UserDialogContent from "./UserDialogContent";
-import UserPasswordChangeDialogContent from "./UserPasswordChangeDialogContent";
-import { formatString } from "../../helper";
 
 const Dialog = props => {
   const {
@@ -30,17 +28,7 @@ const Dialog = props => {
     permissionsExpanded,
     allowedIntents,
     grantGlobalPermission,
-    revokeGlobalPermission,
-    wrongPasswordGiven,
-    userPassword,
-    newPassword,
-    newPasswordsMatch,
-    storeUserPassword,
-    storeNewPasswordsMatch,
-    newPasswordConfirmation,
-    storeNewPassword,
-    storeNewPasswordConfirmation,
-    checkAndChangeUserPassword
+    revokeGlobalPermission
   } = props;
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
   let title = "";
@@ -80,38 +68,6 @@ const Dialog = props => {
         storeSnackbarMessage(strings.users.group_created);
         showSnackbar();
       };
-      break;
-    case "editUserPassword":
-      title = formatString(strings.users.change_password_for, editId);
-      handleSubmitFunc = () => {
-        storeSnackbarMessage(strings.users.password_change_success);
-        if (newPassword === newPasswordConfirmation) {
-          storeNewPasswordsMatch(true);
-          checkAndChangeUserPassword(props.userId, editId, userPassword, newPassword);
-        } else {
-          storeNewPasswordsMatch(false);
-        }
-      };
-      steps = [
-        {
-          content: (
-            <UserPasswordChangeDialogContent
-              actingUser={props.userId}
-              userId={editId}
-              userPassword={userPassword}
-              newPassword={newPassword}
-              newPasswordConfirmation={newPasswordConfirmation}
-              storeUserPassword={storeUserPassword}
-              storeNewPassword={storeNewPassword}
-              storeNewPasswordConfirmation={storeNewPasswordConfirmation}
-              newPasswordsMatch={newPasswordsMatch}
-              wrongPasswordGiven={wrongPasswordGiven}
-              handleSubmit={handleSubmitFunc}
-            />
-          ),
-          nextDisabled: newPassword === "" && newPasswordConfirmation === ""
-        }
-      ];
       break;
     case "editUserPermissions":
       const userToEditPermissions = users.find(user => user.id === editId);
