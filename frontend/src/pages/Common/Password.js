@@ -1,6 +1,7 @@
 import TextField from "@material-ui/core/TextField";
 import PasswordIcon from "@material-ui/icons/Lock";
 import React from "react";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const styles = {
   container: {
@@ -32,26 +33,29 @@ const Password = ({
   nextBestAction,
   id,
   iconDisplayed,
+  tooltipTitle,
   ...props
 }) => {
   return (
     <div style={styles.container}>
       {iconDisplayed ? <PasswordIcon style={styles.icon} /> : null}
-      <TextField
-        data-test={props["data-test"] || "password-textfield"}
-        style={{ width: "50%" }}
-        label={label}
-        value={password}
-        margin="normal"
-        error={failed}
-        id={id}
-        onBlur={event => storePassword(event.target.value)}
-        onChange={event => (setPassword ? setPassword(event.target.value) : null)}
-        onKeyPress={e => handleEnter(e, nextBestAction)}
-        type="password"
-        helperText={failed ? failedText : null}
-        {...props}
-      />
+      <Tooltip title={tooltipTitle ? tooltipTitle : ""} placement="right">
+        <TextField
+          data-test={props["data-test"] || "password-textfield"}
+          style={{ width: "50%" }}
+          label={label}
+          value={password}
+          margin="normal"
+          error={failed}
+          id={id}
+          onBlur={event => (storePassword ? storePassword(event.target.value) : null)}
+          onChange={event => (setPassword ? setPassword(event.target.value) : null)}
+          onKeyPress={e => handleEnter(e, nextBestAction)}
+          type="password"
+          helperText={failed ? failedText : null}
+          {...props}
+        />
+      </Tooltip>
     </div>
   );
 };

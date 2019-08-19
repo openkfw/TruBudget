@@ -197,10 +197,15 @@ const de = {
     new_user_password: "Neues Passwort",
     new_user_password_confirmation: "Bestätigen Sie das neue Password",
     no_password_match: "Passwörter stimmen nicht überein",
+    invalid_password: "Passwort ungültig",
     change_password_for: "Passwortänderung für {0}",
     password_change_success: "Passwort wurde erfolgreich geändert",
     type_current_password: "Geben Sie das Passwort für {0} ein",
-    type_new_password: "Geben Sie das neue Passwort für {0} ein"
+    type_new_password: "Geben Sie das neue Passwort für {0} ein",
+    password_conditions_preface: "Das Passwort muss:",
+    password_conditions_length: "Mindestens 8 Zeichen lang sein",
+    password_conditions_letter: "Mindestens einen Buchstaben enthalten",
+    password_conditions_number: "Mindestens eine Zahl enthalten"
   },
 
   nodesDashboard: {

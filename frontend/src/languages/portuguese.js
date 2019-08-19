@@ -92,10 +92,15 @@ const pt = {
     new_user_password: "Nova Senha",
     new_user_password_confirmation: "Confirme a Nova Senha",
     no_password_match: "Senhas não combinam",
+    invalid_password: "Sehna inválida",
     change_password_for: "Mudar senha para {0}",
     password_change_success: "Senha mudada com sucesso",
     type_current_password: "Digite a senha atual para o {0}",
-    type_new_password: "Digite a nova senha para o {0}"
+    type_new_password: "Digite a nova senha para o {0}",
+    password_conditions_preface: "Sua senha deve:",
+    password_conditions_length: "Ter no mínimo 8 caracteres",
+    password_conditions_letter: "Conter pelo menos uma letra",
+    password_conditions_number: "Conter pelo menos um número"
   },
 
   nodesDashboard: {

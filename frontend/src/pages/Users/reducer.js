@@ -8,6 +8,8 @@ import {
   TAB_INDEX,
   SHOW_DASHBOARD_DIALOG,
   HIDE_DASHBOARD_DIALOG,
+  SHOW_PASSWORD_DIALOG,
+  HIDE_PASSWORD_DIALOG,
   FETCH_GROUPS_SUCCESS,
   GROUP_ID,
   GROUP_NAME,
@@ -17,17 +19,14 @@ import {
   LIST_GLOBAL_PERMISSIONS_SUCCESS,
   CHECK_USER_PASSWORD_SUCCESS,
   CHECK_USER_PASSWORD_ERROR,
-  NEW_USER_PASSWORD,
-  NEW_USER_PASSWORD_CONFIRMATION,
   CHANGE_USER_PASSWORD_SUCCESS,
-  STORE_NEW_PASSWORDS_MATCH,
-  USER_PASSWORD,
   SET_PASSWORD
 } from "./actions";
 
 const defaultState = fromJS({
   tabIndex: 0,
   dashboardDialogShown: false,
+  passwordDialogShown: false,
   userToAdd: {
     username: "",
     password: "",
@@ -43,11 +42,7 @@ const defaultState = fromJS({
     groupId: "",
     name: "",
     groupUsers: []
-  },
-  userPassword: "",
-  newPassword: "",
-  newPasswordConfirmation: "",
-  newPasswordsMatch: true
+  }
 });
 
 export default function userDashboardReducer(state = defaultState, action) {
@@ -90,36 +85,35 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.merge({
         dashboardDialogShown: false,
         userToAdd: defaultState.get("userToAdd"),
-        wrongPasswordGiven: undefined,
+        authenticationFailed: false,
         userPassword: "",
         newPassword: "",
         newPasswordConfirmation: "",
         newPasswordsMatch: true
+      });
+    case SHOW_PASSWORD_DIALOG:
+      return state.merge({
+        passwordDialogShown: true,
+        editId: action.editId
+      });
+    case HIDE_PASSWORD_DIALOG:
+      return state.merge({
+        passwordDialogShown: false,
+        authenticationFailed: false,
+        editId: defaultState.get("editId")
       });
     case LIST_GLOBAL_PERMISSIONS_SUCCESS:
       return state.set("globalPermissions", action.data);
-    case USER_PASSWORD:
-      return state.set("userPassword", action.password);
-    case NEW_USER_PASSWORD:
-      return state.set("newPassword", action.password);
-    case NEW_USER_PASSWORD_CONFIRMATION:
-      return state.set("newPasswordConfirmation", action.password);
     case CHECK_USER_PASSWORD_SUCCESS:
-      return state.set("wrongPasswordGiven", false);
+      return state.set("authenticationFailed", false);
     case CHECK_USER_PASSWORD_ERROR:
-      return state.set("wrongPasswordGiven", true);
+      return state.set("authenticationFailed", true);
     case CHANGE_USER_PASSWORD_SUCCESS:
       return state.merge({
-        dashboardDialogShown: false,
+        passwordDialogShown: false,
         userToAdd: defaultState.get("userToAdd"),
-        wrongPasswordGiven: undefined,
-        userPassword: "",
-        newPassword: "",
-        newPasswordConfirmation: "",
-        newPasswordsMatch: true
+        authenticationFailed: false
       });
-    case STORE_NEW_PASSWORDS_MATCH:
-      return state.set("newPasswordsMatch", action.newPasswordsMatch);
     default:
       return state;
   }
