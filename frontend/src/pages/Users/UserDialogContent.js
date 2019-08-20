@@ -41,7 +41,8 @@ const UserDialogContent = ({
   setOrganization,
   setUsername,
   setPassword,
-  organization
+  organization,
+  usernameInvalid
 }) => {
   const { displayName, password, username } = user;
 
@@ -69,7 +70,14 @@ const UserDialogContent = ({
         />
       </div>
       <div className={classes.textInputContainer}>
-        <Username username={username} storeUsername={setUsername} failed={false} data-test="username" />
+        <Username
+          username={username}
+          storeUsername={setUsername}
+          failed={usernameInvalid}
+          failedText={strings.users.username_invalid}
+          data-test="username"
+          id="username"
+        />
         <Password
           password={password}
           iconDisplayed={true}

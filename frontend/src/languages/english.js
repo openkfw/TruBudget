@@ -95,7 +95,8 @@ const en = {
     change_password_for: "Change password for {0}",
     password_change_success: "Password successfully changed",
     type_current_password: "Type in current password for {0}",
-    type_new_password: "Type in new password for {0}"
+    type_new_password: "Type in new password for {0}",
+    username_invalid: "Invalid username"
   },
 
   nodesDashboard: {

@@ -200,7 +200,8 @@ const de = {
     change_password_for: "Passwortänderung für {0}",
     password_change_success: "Passwort wurde erfolgreich geändert",
     type_current_password: "Geben Sie das Passwort für {0} ein",
-    type_new_password: "Geben Sie das neue Passwort für {0} ein"
+    type_new_password: "Geben Sie das neue Passwort für {0} ein",
+    username_invalid: "Benutzername ungültig"
   },
 
   nodesDashboard: {

@@ -19,7 +19,8 @@ import {
   storeNewPassword,
   storeNewPasswordConfirmation,
   storeNewPasswordsMatch,
-  storeUserPassword
+  storeUserPassword,
+  setUsernameInvalid
 } from "./actions";
 
 import Dialog from "./Dialog";
@@ -49,7 +50,8 @@ const mapStateToProps = state => {
     userPassword: state.getIn(["users", "userPassword"]),
     newPassword: state.getIn(["users", "newPassword"]),
     newPasswordConfirmation: state.getIn(["users", "newPasswordConfirmation"]),
-    newPasswordsMatch: state.getIn(["users", "newPasswordsMatch"])
+    newPasswordsMatch: state.getIn(["users", "newPasswordsMatch"]),
+    usernameInvalid: state.getIn(["users", "usernameInvalid"])
   };
 };
 
@@ -73,7 +75,8 @@ const mapDispatchToProps = dispatch => {
     storeUserPassword: password => dispatch(storeUserPassword(password)),
     storeNewPassword: password => dispatch(storeNewPassword(password)),
     storeNewPasswordConfirmation: password => dispatch(storeNewPasswordConfirmation(password)),
-    storeNewPasswordsMatch: newPasswordsMatch => dispatch(storeNewPasswordsMatch(newPasswordsMatch))
+    storeNewPasswordsMatch: newPasswordsMatch => dispatch(storeNewPasswordsMatch(newPasswordsMatch)),
+    setUsernameInvalid: usernameInvalid => dispatch(setUsernameInvalid(usernameInvalid))
   };
 };
 

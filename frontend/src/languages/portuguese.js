@@ -95,7 +95,8 @@ const pt = {
     change_password_for: "Mudar senha para {0}",
     password_change_success: "Senha mudada com sucesso",
     type_current_password: "Digite a senha atual para o {0}",
-    type_new_password: "Digite a nova senha para o {0}"
+    type_new_password: "Digite a nova senha para o {0}",
+    username_invalid: "Nome de usuário Inválido"
   },
 
   nodesDashboard: {

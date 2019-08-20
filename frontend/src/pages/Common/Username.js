@@ -5,7 +5,7 @@ import UsernameIcon from "@material-ui/icons/Person";
 import strings from "../../localizeStrings";
 import TextInputWithIcon from "./TextInputWithIcon";
 
-const Username = ({ username, storeUsername, failed, id, ...props }) => {
+const Username = ({ username, storeUsername, failed, id, failedText, ...props }) => {
   return (
     <TextInputWithIcon
       style={{ width: "50%" }}
@@ -16,7 +16,7 @@ const Username = ({ username, storeUsername, failed, id, ...props }) => {
       id={id}
       icon={<UsernameIcon />}
       onChange={event => storeUsername(event.target.value)}
-      helperText={failed ? strings.common.incorrect_username : null}
+      helperText={failed ? failedText : null}
       {...props}
     />
   );

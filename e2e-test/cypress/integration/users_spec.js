@@ -100,4 +100,20 @@ describe("Users/Groups Dashboard", function() {
         expect($th.first()).to.have.text("testuser");
       });
   });
+
+  it("New user cannot be named 'root'", function() {
+    cy.get("[data-test=create]").click();
+    cy.get("[data-test=fullname] input")
+      .type("root")
+      .should("have.value", "root");
+    cy.get("[data-test=username] input")
+      .type("root")
+      .should("have.value", "root");
+    cy.get("[data-test=password] input")
+      .type("test")
+      .should("have.value", "test");
+    cy.get("[data-test=submit]").click();
+    cy.get("#username-helper-text").contains("Invalid username");
+    cy.get("[data-test=cancel]").click();
+  });
 });

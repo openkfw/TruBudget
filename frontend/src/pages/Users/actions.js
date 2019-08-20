@@ -57,6 +57,8 @@ export const NEW_USER_PASSWORD_CONFIRMATION = "NEW_USER_PASSWORD_CONFIRMATION";
 
 export const STORE_NEW_PASSWORDS_MATCH = "STORE_NEW_PASSWORDS_MATCH";
 
+export const SET_USERNAME_INVALID = "SET_USERNAME_INVALID";
+
 export function fetchGroups(showLoading = false) {
   return {
     type: FETCH_GROUPS,
@@ -252,5 +254,12 @@ export function storeNewPasswordsMatch(newPasswordsMatch) {
   return {
     type: STORE_NEW_PASSWORDS_MATCH,
     newPasswordsMatch
+  };
+}
+
+export function setUsernameInvalid(usernameInvalid) {
+  return {
+    type: SET_USERNAME_INVALID,
+    usernameInvalid
   };
 }
