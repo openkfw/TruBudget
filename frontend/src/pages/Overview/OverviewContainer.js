@@ -69,7 +69,8 @@ const mapStateToProps = state => {
     roles: state.getIn(["login", "roles"]),
     idForInfo: state.getIn(["overview", "idForInfo"]),
     isProjectAdditionalDataShown: state.getIn(["overview", "isProjectAdditionalDataShown"]),
-    searchTerm: state.getIn(["navbar", "searchTerm"])
+    searchTerm: state.getIn(["navbar", "searchTerm"]),
+    isRoot: state.getIn(["navbar", "isRoot"])
   };
 };
 

@@ -21,6 +21,8 @@ export const EXPORT_DATA_FAILED = "EXPORT_DATA_FAILED";
 export const SEARCH_TERM = "SEARCH_TERM";
 export const SEARCH_BAR_DISPLAYED = "SEARCH_BAR_DISPLAYED";
 
+export const SET_IS_ROOT = "SET_IS_ROOT";
+
 export function toggleSidebar() {
   return {
     type: TOGGLE_SIDEBAR
@@ -81,5 +83,12 @@ export function storeSearchBarDisplayed(searchBarDisplayed) {
   return {
     type: SEARCH_BAR_DISPLAYED,
     searchBarDisplayed
+  };
+}
+
+export function setIsRoot(isRoot) {
+  return {
+    type: SET_IS_ROOT,
+    isRoot
   };
 }

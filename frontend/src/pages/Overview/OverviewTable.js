@@ -199,7 +199,7 @@ const OverviewTable = props => {
                 <Fab
                   className={props.classes.button}
                   aria-label="create"
-                  disabled={!canCreateProject(props.allowedIntents)}
+                  disabled={!canCreateProject(props.allowedIntents) || props.isRoot}
                   onClick={() => props.showCreationDialog()}
                   color="primary"
                   data-test="create-project-button"
