@@ -2,7 +2,8 @@
 
 This document describes how to set up your environment to start developing and debugging the TruBudget application. The first section describes the recommended tools for development, the second part is dedicated to the installation on your local machine for development and debugging.
 
-## Table of Contents 
+## Table of Contents
+
 - [Contributor Guide](#contributor-guide)
   - [Table of Contents](#table-of-contents)
   - [Software components](#software-components)
@@ -11,6 +12,7 @@ This document describes how to set up your environment to start developing and d
   - [Clone Repository](#clone-repository)
     - [IDE](#ide)
     - [Chrome Developer Tools](#chrome-developer-tools)
+    - [Git-Secrets](#git-secrets)
   - [Developer Setup](#developer-setup)
     - [Blockchain](#blockchain)
       - [Developing on Windows:](#developing-on-windows)
@@ -47,7 +49,6 @@ Follow the instructions on how to setup your [SSH-connection](https://help.githu
 ```bash
 git clone https://github.com/openkfw/TruBudget.git
 ```
-
 
 - HTTPS:
 
@@ -89,6 +90,33 @@ If you are testing and debugging in Google Chrome, we recommend the following ex
 
 - [Redux Developer Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
 
+### Git-Secrets
+
+awslabs/git-secrets is a tool to scan a repository for secrets, credentials or any unwanted text.
+We recommend to install git-secrets and setup git-hooks to prevent committing secrets.
+The setup-script(.githooks/setupGitSecrets.sh) edits your local git-config located in **.git**.
+Changes made by setupGitSecrets.sh:
+
+- change hooks-path to .githooks
+- adds git-secrets-patterns listed in .githooks/git-secrets-patterns
+
+#### How to install?
+
+Install git-secrets
+Follow the instructions on https://github.com/awslabs/git-secrets#installing-git-secrets or use homebrew to install
+
+```bash
+brew install git-secrets
+```
+
+#### How to setup?
+
+Setup git-secrets by execute the shell script in the .githooks folder
+
+```bash
+cd .githooks
+sh setupGitSecrets.sh
+```
 
 ## Developer Setup
 
@@ -96,7 +124,7 @@ If you want to start developing on Trubudget, you need to setup the application 
 
 ### Blockchain
 
-The blockchain works as data layer for the Trubudget application. Therefore, we start by creating an instance of the blockchain. 
+The blockchain works as data layer for the Trubudget application. Therefore, we start by creating an instance of the blockchain.
 
 <br />
 First, navigate to the `/blockchain` folder, install all the npm packages and then start the blockchain via a shellscript:
@@ -232,7 +260,7 @@ npm start
 
 ### Excel-Export (Optional)
 
-There is a service that exports TruBudget data into an Excel sheet. The service is a node package and needs to be started separately. To start the service, follow these commands: 
+There is a service that exports TruBudget data into an Excel sheet. The service is a node package and needs to be started separately. To start the service, follow these commands:
 
 ```bash
 cd ../excel-export
@@ -272,8 +300,7 @@ npm install
 npm start
 ```
 
-The service is then available either on the host and port set by the environment variable or `localhost:8888` by default. 
-
+The service is then available either on the host and port set by the environment variable or `localhost:8888` by default.
 
 ### Frontend
 

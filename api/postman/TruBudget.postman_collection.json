@@ -1,3407 +1,3079 @@
 {
-	"info": {
-		"_postman_id": "5460a9a7-5d7d-4578-981c-b282a966fe3e",
-		"name": "TruBudget",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "user.authenticate",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"root\",\n\t\t\t\"password\": \"asdf\"\n\t\t}\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/user.authenticate",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"user.authenticate"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "user.list",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/user.list",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"user.list"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "user.changePassword",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"userId\": \"tester\",\n    \"newPassword\": \"test\"\n  }\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/user.changePassword",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"user.changePassword"
-							]
-						},
-						"description": "Change a user’s password"
-					},
-					"response": []
-				},
-				{
-					"name": "user.intent.grantPermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"apiVersion\": \"1.0\",\r\n  \"data\": {\r\n    \"identity\": \"tester\",\r\n    \"intent\": \"user.intent.listPermissions\",\r\n    \"userId\": \"tester\"\r\n  }\r\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/user.intent.grantPermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"user.intent.grantPermission"
-							]
-						},
-						"description": "Grant a permission to a user. After this call has returned, the user will be allowed to execute the given intent."
-					},
-					"response": []
-				},
-				{
-					"name": "user.intent.revokePermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"apiVersion\": \"1.0\",\r\n  \"data\": {\r\n    \"identity\": \"aSmith\",\r\n    \"intent\": \"user.intent.listPermissions\",\r\n    \"userId\": \"aSmith\"\r\n  }\r\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/user.intent.revokePermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"user.intent.revokePermission"
-							]
-						},
-						"description": "Revoke a permission from a user. After this call has returned, the user will no longer be able to execute the given intent."
-					},
-					"response": []
-				},
-				{
-					"name": "user.intent.listPermissions",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"apiVersion\": \"1.0\",\r\n  \"data\": {\r\n    \"userId\": \"tester\"\r\n  }\r\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/user.intent.listPermissions?userId=tester",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"user.intent.listPermissions"
-							],
-							"query": [
-								{
-									"key": "userId",
-									"value": "tester"
-								}
-							]
-						},
-						"description": "See the permissions for a given user."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Global",
-			"item": [
-				{
-					"name": "global.createGroup",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"group\":{\n\t\t\t\"id\": \"bb\",\n\t\t\t\"displayName\": \"bb\",\n\t\t\t\"users\": [\"alice\",\"james\"]\n\t\t}\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/global.createGroup",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"global.createGroup"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "global.createProject",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {\"displayName\": \"foo\",\n\t\t\t\"projectedBudgets\": [\n                        {\n                            \"organization\": \"ACMECorp\",\n                            \"value\": \"32000.000\",\n                            \"currencyCode\": \"BRL\"\n                        }\n                    ]\n\t\t}\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/global.createProject",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"global.createProject"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "global.createUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"user\":{\n      \"id\": \"bb\",\n      \"some\":\"a\",\n      \"some1\":\"a\",\n      \"some2\":\"a\",\n      \"some3\":\"a\",\n      \"some4\":\"a\",\n      \"some5\":\"a\",\n      \"some6\":\"a\",\n      \"displayName\": \"bb\",\n      \"organization\": \"Kfw\",\n      \"password\": \"bb\"\n    }\n  }\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/global.createUser",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"global.createUser"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "global.grantAllPermissions",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"jxavier\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/global.grantAllPermissions",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"global.grantAllPermissions"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "global.grantPermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"alice\",\n\t\t\"intent\": \"global.createProject\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/global.grantPermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"global.grantPermission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "global.listPermissions",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/global.listPermissions?projectId={{projectId}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"global.listPermissions"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "global.revokePermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"thouse\",\n\t\t\"intent\": \"notification.list\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/global.revokePermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"global.revokePermission"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Group",
-			"item": [
-				{
-					"name": "group.addUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"bb\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/group.addUser",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"group.addUser"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "group.list",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/group.list",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"group.list"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "group.removeUser",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"bb\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/group.removeUser",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"group.removeUser"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Project",
-			"item": [
-				{
-					"name": "project.assign",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\" : \"notiftest\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.assign",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.assign"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.close",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.close",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.close"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.createSubproject",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subproject\": {\n\t\t\t\"id\": \"MySubproject\",\n\t\t\t\"status\": \"open\",\n\t\t\t\"displayName\": \"myFirstProject\",\n\t\t\t\"description\": \"mydescription\",\n\t\t\t\"amount\": \"500\",\n\t\t\t\"assignee\": \"asmith\",\n\t\t\t\"currency\": \"EUR\",\n\t\t\t\"additionalData\":{\n\t\t\t\t\"some\":\"some\"\n\t\t\t}\n\t\t}\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.createSubproject",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.createSubproject"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.intent.grantPermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"project.viewDetails\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.intent.grantPermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.intent.grantPermission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.intent.listPermissions",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.intent.listPermissions?projectId={{projectId}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.intent.listPermissions"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.list",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"disabled": true
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.list",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.list"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.intent.revokePermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"project.viewDetails\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.intent.revokePermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.intent.revokePermission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.update",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"displayName\": \"somehtingnew\",\n\t\t\"description\": \"newdesc\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.update",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.update"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.budget.updateProjected",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"organization\": \"somehtingnew\",\n\t\t\"currencyCode\": \"EUR\",\n    \t\"value\": \"300.00\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.budget.updateProjected",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.budget.updateProjected"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.viewDetails",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.viewDetails?projectId={{projectId}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.viewDetails"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "project.viewHistory",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/project.viewHistory?projectId={{projectId}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"project.viewHistory"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Subproject",
-			"item": [
-				{
-					"name": "subproject.assign",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"identity\" : \"asmith\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.assign",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.assign"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.close",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.close",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.close"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.createWorkflowitem",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"a\",\n\t\t\"amount\": \"1\",\n\t\t\"currency\": \"EUR\",\n\t\t\"amountType\": \"disbursed\",\n\t\t\"description\": \"\",\n\t\t\"status\": \"open\",\n\t\t\"assignee\":\"mstein\",\n\t\t\"documents\": []\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.createWorkflowitem",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.createWorkflowitem"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.intent.grantPermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"subproject.reorderWorkflowitems\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.intent.grantPermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.intent.grantPermission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.intent.listPermissions",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.intent.listPermissions?projectId={{projectId}}&subprojectId={{subprojectId}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.intent.listPermissions"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								},
-								{
-									"key": "subprojectId",
-									"value": "{{subprojectId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.list",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.list?projectId={{projectId}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.list"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.reorderWorkflowitems",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"ordering\": [\n\t\t\t]\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.reorderWorkflowitems",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.reorderWorkflowitems"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.intent.revokePermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"subproject.close\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.intent.revokePermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.intent.revokePermission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.update",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"somehtingnew\",\n\t\t\"description\": \"newdesc\",\n\t\t\"additionalData\": {\"foo\":\"bar\"}\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.update",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.update"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.viewDetails",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.viewDetails?projectId={{projectId}}&subprojectId={{subprojectId}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.viewDetails"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								},
-								{
-									"key": "subprojectId",
-									"value": "{{subprojectId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.viewHistory",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.viewHistory?projectId={{projectId}}&subprojectId={{subprojectId}}&offset=-30&limit=5",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.viewHistory"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								},
-								{
-									"key": "subprojectId",
-									"value": "{{subprojectId}}"
-								},
-								{
-									"key": "offset",
-									"value": "-30"
-								},
-								{
-									"key": "limit",
-									"value": "5"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "subproject.budget.updateProjected",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"organization\": \"somehtingnew\",\n\t\t\"currencyCode\": \"EUR\",\n    \t\"value\": \"300.00\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/subproject.budget.updateProjected",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"subproject.budget.updateProjected"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Workflowitem",
-			"item": [
-				{
-					"name": "workflowitem.list",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.list?projectId={{projectId}}&subprojectId={{subprojectId}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"workflowitem.list"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								},
-								{
-									"key": "subprojectId",
-									"value": "{{subprojectId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "workflowitem.assign",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"alice\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.assign",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"workflowitem.assign"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "workflowitem.update",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n   \"projectId\": \"{{projectId}}\",\n\t\"subprojectId\": \"{{subprojectId}}\",\n\t\"workflowitemId\": \"{{workflowitem}}\",\n    \"displayName\": \"newDisplayName\",\n    \"description\": \"somedesc\",\n    \"amountType\": \"disbursed\",\n    \"amount\": \"333,00\",\n    \"documents\": [{\n    \t\"id\": \"some\",\n    \t\"base64\": \"sososos\"\n    }]\n  }\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.update",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"workflowitem.update"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "workflowitem.close",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.close",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"workflowitem.close"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "workflowitem.intent.listPermissions",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.listPermissions?projectId={{projectId}}&subprojectId={{subprojectId}}&workflowitemId={{workflowitem}}",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"workflowitem.intent.listPermissions"
-							],
-							"query": [
-								{
-									"key": "projectId",
-									"value": "{{projectId}}"
-								},
-								{
-									"key": "subprojectId",
-									"value": "{{subprojectId}}"
-								},
-								{
-									"key": "workflowitemId",
-									"value": "{{workflowitem}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "workflowitem.intent.grantPermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"workflowitem.close\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.grantPermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"workflowitem.intent.grantPermission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "workflowitem.intent.revokePermission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"workflowitem.close\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.revokePermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"workflowitem.intent.revokePermission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "workflowitem.validateDocument",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"base64String\": \"c29tZWh0aW5n\",\n\t\t\"hash\": \"3FC9B689459D738F8C88A3A48AA9E33542016B7A4052E001AAA536FCA74813CB\"\n\t\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/workflowitem.validateDocument",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"workflowitem.validateDocument"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Notification",
-			"item": [
-				{
-					"name": "notification.list",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"exec": [
-									"pm.test(\"Your test name\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.value).to.eql(100);",
-									"});",
-									"",
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"required\": [\"apiVersion\", \"data\"],",
-									"    \"properties\": {",
-									"        \"apiVersion\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"required\": [\"notifications\"],",
-									"            \"properties\": {",
-									"                \"notifications\": {",
-									"                    \"type\": \"array\",",
-									"                    \"items\": {",
-									"                        \"type\": \"object\",",
-									"                        \"properties\": {",
-									"                            \"id\": { \"type\": \"string\" },",
-									"                            \"url\": ",
-									"                        }",
-									"                    }",
-									"                }",
-									"            }",
-									"        }",
-									"    }",
-									"};",
-									"",
-									"var data1 = [true, false];",
-									"var data2 = [true, 123];",
-									"",
-									"pm.test('Schema is valid', function() {",
-									"  pm.expect(tv4.validate(data1, schema)).to.be.true;",
-									"  pm.expect(tv4.validate(data2, schema)).to.be.true;",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"exec": [
-									"pm.environment.set(\"userId\", \"notiftest\");",
-									"pm.environment.set(\"password\", \"test\");"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/notification.list",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"notification.list"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "notification.markRead",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									"pm.test(\"Your test name\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.value).to.eql(100);",
-									"});",
-									"",
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"required\": [\"apiVersion\", \"data\"],",
-									"    \"properties\": {",
-									"        \"apiVersion\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"required\": [\"notifications\"],",
-									"            \"properties\": {",
-									"                \"notifications\": {",
-									"                    \"type\": \"array\",",
-									"                    \"items\": {",
-									"                        \"type\": \"object\",",
-									"                        \"properties\": {",
-									"                            \"id\": { \"type\": \"string\" },",
-									"                            \"url\": ",
-									"                        }",
-									"                    }",
-									"                }",
-									"            }",
-									"        }",
-									"    }",
-									"};",
-									"",
-									"var data1 = [true, false];",
-									"var data2 = [true, 123];",
-									"",
-									"pm.test('Schema is valid', function() {",
-									"  pm.expect(tv4.validate(data1, schema)).to.be.true;",
-									"  pm.expect(tv4.validate(data2, schema)).to.be.true;",
-									"});"
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"notificationId\": \"2cfd0663-1770-4184-974e-63129061d389\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/notification.markRead",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"notification.markRead"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "notification.count",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/notification.count",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"notification.count"
-							]
-						},
-						"description": "Counts the number of notifications for the authenticated user. Returns the total as well as the number of unread notifications."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Network",
-			"item": [
-				{
-					"name": "network.listActive",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/network.listActive",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"network.listActive"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "network.approveNewNodeForExistingOrganization",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"address\": \"1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/network.approveNewNodeForExistingOrganization",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"network.approveNewNodeForExistingOrganization"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "network.approveNewOrganization",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									"pm.test(\"Your test name\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.value).to.eql(100);",
-									"});",
-									"",
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"required\": [\"apiVersion\", \"data\"],",
-									"    \"properties\": {",
-									"        \"apiVersion\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"required\": [\"notifications\"],",
-									"            \"properties\": {",
-									"                \"notifications\": {",
-									"                    \"type\": \"array\",",
-									"                    \"items\": {",
-									"                        \"type\": \"object\",",
-									"                        \"properties\": {",
-									"                            \"id\": { \"type\": \"string\" },",
-									"                            \"url\": ",
-									"                        }",
-									"                    }",
-									"                }",
-									"            }",
-									"        }",
-									"    }",
-									"};",
-									"",
-									"var data1 = [true, false];",
-									"var data2 = [true, 123];",
-									"",
-									"pm.test('Schema is valid', function() {",
-									"  pm.expect(tv4.validate(data1, schema)).to.be.true;",
-									"  pm.expect(tv4.validate(data2, schema)).to.be.true;",
-									"});"
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"organization\": \"BNDES\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/network.approveNewOrganization",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"network.approveNewOrganization"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "network.voteForPermission",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"address\": \"1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM\",\n    \"vote\": \"admin\"\n  }\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/network.voteForPermission",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"network.voteForPermission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "network.list",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									"pm.test(\"Your test name\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.value).to.eql(100);",
-									"});",
-									"",
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"required\": [\"apiVersion\", \"data\"],",
-									"    \"properties\": {",
-									"        \"apiVersion\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"required\": [\"notifications\"],",
-									"            \"properties\": {",
-									"                \"notifications\": {",
-									"                    \"type\": \"array\",",
-									"                    \"items\": {",
-									"                        \"type\": \"object\",",
-									"                        \"properties\": {",
-									"                            \"id\": { \"type\": \"string\" },",
-									"                            \"url\": ",
-									"                        }",
-									"                    }",
-									"                }",
-									"            }",
-									"        }",
-									"    }",
-									"};",
-									"",
-									"var data1 = [true, false];",
-									"var data2 = [true, 123];",
-									"",
-									"pm.test('Schema is valid', function() {",
-									"  pm.expect(tv4.validate(data1, schema)).to.be.true;",
-									"  pm.expect(tv4.validate(data2, schema)).to.be.true;",
-									"});"
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/network.list",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"network.list"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "network.registerNode",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"address\": \"1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM\",\n\t\t\"organization\": \"BNDES\"\n\t}\n}"
-						},
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/network.registerNode",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"network.registerNode"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "System",
-			"item": [
-				{
-					"name": "readiness",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJyb290IiwiYWRkcmVzcyI6IjFIRm1oc1NacW9HNFVhVjFXTnZmOWhQSktKNlREMjNKaTlXZDZQIiwib3JnYW5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFIRm1oc1NacW9HNFVhVjFXTnZmOWhQSktKNlREMjNKaTlXZDZQIiwiZ3JvdXBzIjpbXSwiaWF0IjoxNTM2NzYyODk4LCJleHAiOjE1MzY3NjY0OTh9.RDy9KDPIoCz3pwP1sdZwP4I0tv3gGfqw4SP7D_SwpwA"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/readiness",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"readiness"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "liveness",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/liveness",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"liveness"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "version",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"exec": [
-									"pm.test(\"Your test name\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.value).to.eql(100);",
-									"});",
-									"",
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"required\": [\"apiVersion\", \"data\"],",
-									"    \"properties\": {",
-									"        \"apiVersion\": {",
-									"            \"type\": \"string\"",
-									"        },",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"required\": [\"notifications\"],",
-									"            \"properties\": {",
-									"                \"notifications\": {",
-									"                    \"type\": \"array\",",
-									"                    \"items\": {",
-									"                        \"type\": \"object\",",
-									"                        \"properties\": {",
-									"                            \"id\": { \"type\": \"string\" },",
-									"                            \"url\": ",
-									"                        }",
-									"                    }",
-									"                }",
-									"            }",
-									"        }",
-									"    }",
-									"};",
-									"",
-									"var data1 = [true, false];",
-									"var data2 = [true, 123];",
-									"",
-									"pm.test('Schema is valid', function() {",
-									"  pm.expect(tv4.validate(data1, schema)).to.be.true;",
-									"  pm.expect(tv4.validate(data2, schema)).to.be.true;",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{rootToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}:{{port}}{{base}}/version",
-							"host": [
-								"{{host}}"
-							],
-							"port": "{{port}}{{base}}",
-							"path": [
-								"version"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "RunnerScripts",
-			"item": [
-				{
-					"name": "CreateSubproject",
-					"item": [
-						{
-							"name": "global.createProject Copy",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											"var jsonData = JSON.parse(responseBody);\r",
-											"postman.setEnvironmentVariable(\"projectIdCopy\", jsonData.data.project.id);\r",
-											"\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {\"displayName\": \"DisneyWorldDomination\",\n\t\t\t\"projectedBudgets\": [\n                        {\n                            \"organization\": \"Disney\",\n                            \"value\": \"32000.000\",\n                            \"currencyCode\": \"BRL\"\n                        }\n                    ]\n\t\t}\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/global.createProject",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"global.createProject"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "project.createSubproject Copy",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											"pm.environment.get(\"projectIdCopy\");"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectIdCopy}}\",\n\t\t\"subproject\": {\n\t\t\t\"id\": \"DisneyWorldinEveryCountry\",\n\t\t\t\"status\": \"open\",\n\t\t\t\"displayName\": \"DisneyWorldinEveryCountry\",\n\t\t\t\"description\": \"Take over the world with Walt Disneys frozen head.\",\n\t\t\t\"assignee\": \"asmith\",\n\t\t\t\"currency\": \"EUR\",\n\t\t\t\"additionalData\":{\n\t\t\t\t\"some\":\"some\"\n\t\t\t}\n\t\t}\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/project.createSubproject",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"project.createSubproject"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"description": "Automatically create a subproject, environment variables will be set accordingly.",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						}
-					],
-					"_postman_isSubFolder": true
-				},
-				{
-					"name": "CreateWorkflowitem",
-					"item": [
-						{
-							"name": "global.createProject Copy",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											"var jsonData = JSON.parse(responseBody);\r",
-											"postman.setEnvironmentVariable(\"projectId\", jsonData.data.project.id);\r",
-											"\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {\"displayName\": \" Wonkas Factory\",\n\t\t\t\"projectedBudgets\": [\n                        {\n                            \"organization\": \"Willy Wonka Choc\",\n                            \"value\": \"32000.000\",\n                            \"currencyCode\": \"BRL\"\n                        }\n                    ]\n\t\t}\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/global.createProject",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"global.createProject"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "project.createSubproject Copy",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											"var jsonData = JSON.parse(responseBody);\r",
-											"postman.setEnvironmentVariable(\"subprojectId\", jsonData.data.subproject.id);"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subproject\": {\n\t\t\t\"id\": \"Chololate Room\",\n\t\t\t\"status\": \"open\",\n\t\t\t\"displayName\": \"Chololate Room\",\n\t\t\t\"description\": \"Wonka's favorite room, and debatably the most important in the factory. The room is a grassy meadow full of flowers and trees, with a chocolate river mixed by waterfall that pipes into all the other rooms in the factory. Everything in the meadow is edible, and a boat ride down the chocolate river allows transit to other rooms in the factory via a dark tunnel.\",\n\t\t\t\"assignee\": \"asmith\",\n\t\t\t\"currency\": \"EUR\",\n\t\t\t\"additionalData\":{\n\t\t\t\t\"some\":\"some\"\n\t\t\t}\n\t\t}\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/project.createSubproject",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"project.createSubproject"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "subproject.createWorkflowitem Copy",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"Melt 1T of chocolate\",\n\t\t\"amount\": \"1\",\n\t\t\"currency\": \"EUR\",\n\t\t\"amountType\": \"disbursed\",\n\t\t\"description\": \"\",\n\t\t\"status\": \"open\",\n\t\t\"assignee\":\"mstein\",\n\t\t\"documents\": []\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/subproject.createWorkflowitem",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"subproject.createWorkflowitem"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"description": "Automatically create Workflowitem, environment variables will be set accordingly.",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						}
-					],
-					"_postman_isSubFolder": true
-				},
-				{
-					"name": "CreateNotification",
-					"item": [
-						{
-							"name": "global.createUser",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											"var jsonData = JSON.parse(responseBody);\r",
-											"postman.setEnvironmentVariable(\"notifuserId\", jsonData.data.user.id);"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"user\":{\n      \"id\": \"testeeeq\",\n      \"displayName\": \"userwithnotif\",\n      \"organization\": \"ACMECorp\",\n      \"password\": \"test\"\n    }\n  }\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/global.createUser",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"global.createUser"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "global.createProject",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											"var jsonData = JSON.parse(responseBody);\r",
-											"postman.setEnvironmentVariable(\"projectId\", jsonData.data.project.id);"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {\"displayName\": \"testpojeeeeqwww\",\n\t\t\t\"projectedBudgets\": [\n                        {\n                            \"organization\": \"ACMECorp\",\n                            \"value\": \"32000.000\",\n                            \"currencyCode\": \"BRL\"\n                        }\n                    ]\n\t\t}\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/global.createProject",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"global.createProject"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "project.assign",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\" : \"{{notifuserId}}\"\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/project.assign",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"project.assign"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "project.intent.grantPermission",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"{{notifuserId}}\",\n\t\t\"intent\": \"project.viewDetails\"\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/project.intent.grantPermission",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"project.intent.grantPermission"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "user.authenticate",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											"var jsonData = JSON.parse(responseBody);\r",
-											"postman.setEnvironmentVariable(\"notifuserToken\", jsonData.data.user.token);"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"{{notifuserId}}\",\n\t\t\t\"password\": \"test\"\n\t\t}\n\t}\n}"
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/user.authenticate",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"user.authenticate"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "notification.list",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											"pm.test(responseBody, true);"
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "2cfd0663-1770-4184-974e-63129061d389",
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{notifuserToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/notification.list",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"notification.list"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"description": "Automatically create a Notification for a new user.",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "2cfd0663-1770-4184-974e-63129061d389",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						}
-					],
-					"_postman_isSubFolder": true
-				}
-			],
-			"description": "Automatically create a new subproject, workflow item or notification using postmans Runner.",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "2cfd0663-1770-4184-974e-63129061d389",
-						"type": "text/javascript",
-						"exec": [
-							"const base = `${pm.environment.get(\"host\")}:${pm.environment.get(\"port\")}${pm.environment.get(\"base\")}`; ",
-							"pm.sendRequest({",
-							"    url: base + \"/user.authenticate\",",
-							"    method: \"POST\",",
-							"    header: {",
-							"        \"content-type\": \"application/json\"",
-							"    },",
-							"    body: {",
-							"        mode: \"raw\",",
-							"        raw: JSON.stringify({",
-							"            \"apiVersion\": \"1.0\",",
-							"            \"data\": {",
-							"                \"user\": {",
-							"                    \"id\": pm.environment.get(\"userId\"),",
-							"                    \"password\": pm.environment.get(\"password\")",
-							"                }",
-							"            }",
-							"        })",
-							"    }",
-							"}, function (err, response) {",
-							"    console.log(response.json());",
-							"    const token = response.json().data.user.token;",
-							"    console.log(token)",
-							"    pm.environment.set(\"rootToken\", token);",
-							"});"
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "2cfd0663-1770-4184-974e-63129061d389",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "liststreams",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "79pgKQusiH3VDVpyzsM6e3kRz6gWNctAwgJvymG3iiuz",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"liststreams\",\n\t\"params\": []\n}"
-				},
-				"url": {
-					"raw": "localhost:8000",
-					"host": [
-						"localhost"
-					],
-					"port": "8000"
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "liststreamitems",
-			"request": {
-				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "79pgKQusiH3VDVpyzsM6e3kRz6gWNctAwgJvymG3iiuz",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "multichainrpc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"method\": \"liststreamitems\",\n\t\"params\": [\"da9001f8e3fb71c30a2c484924afba80\"]\n}"
-				},
-				"url": {
-					"raw": "localhost:8000",
-					"host": [
-						"localhost"
-					],
-					"port": "8000"
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"id": "2cfd0663-1770-4184-974e-63129061d389",
-				"type": "text/javascript",
-				"exec": [
-					"const base = `${pm.environment.get(\"host\")}:${pm.environment.get(\"port\")}${pm.environment.get(\"base\")}`; ",
-					"pm.sendRequest({",
-					"    url: base + \"/user.authenticate\",",
-					"    method: \"POST\",",
-					"    header: {",
-					"        \"content-type\": \"application/json\"",
-					"    },",
-					"    body: {",
-					"        mode: \"raw\",",
-					"        raw: JSON.stringify({",
-					"            \"apiVersion\": \"1.0\",",
-					"            \"data\": {",
-					"                \"user\": {",
-					"                    \"id\": pm.environment.get(\"userId\"),",
-					"                    \"password\": pm.environment.get(\"password\")",
-					"                }",
-					"            }",
-					"        })",
-					"    }",
-					"}, function (err, response) {",
-					"    console.log(response.json());",
-					"    const token = response.json().data.user.token;",
-					"    console.log(token)",
-					"    pm.environment.set(\"rootToken\", token);",
-					"});"
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"id": "2cfd0663-1770-4184-974e-63129061d389",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	]
+  "info": {
+    "_postman_id": "2cfd0663-1770-4184-974e-63129061d389",
+    "name": "TruBudget",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "user.authenticate",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"root\",\n\t\t\t\"password\": \"asdf\"\n\t\t}\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/user.authenticate",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["user.authenticate"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "user.list",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/user.list",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["user.list"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "user.changePassword",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"userId\": \"tester\",\n    \"newPassword\": \"test\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/user.changePassword",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["user.changePassword"]
+            },
+            "description": "Change a user’s password"
+          },
+          "response": []
+        },
+        {
+          "name": "user.intent.grantPermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"apiVersion\": \"1.0\",\r\n  \"data\": {\r\n    \"identity\": \"tester\",\r\n    \"intent\": \"user.intent.listPermissions\",\r\n    \"userId\": \"tester\"\r\n  }\r\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/user.intent.grantPermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["user.intent.grantPermission"]
+            },
+            "description": "Grant a permission to a user. After this call has returned, the user will be allowed to execute the given intent."
+          },
+          "response": []
+        },
+        {
+          "name": "user.intent.revokePermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"apiVersion\": \"1.0\",\r\n  \"data\": {\r\n    \"identity\": \"aSmith\",\r\n    \"intent\": \"user.intent.listPermissions\",\r\n    \"userId\": \"aSmith\"\r\n  }\r\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/user.intent.revokePermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["user.intent.revokePermission"]
+            },
+            "description": "Revoke a permission from a user. After this call has returned, the user will no longer be able to execute the given intent."
+          },
+          "response": []
+        },
+        {
+          "name": "user.intent.listPermissions",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "exec": [""],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"apiVersion\": \"1.0\",\r\n  \"data\": {\r\n    \"userId\": \"tester\"\r\n  }\r\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/user.intent.listPermissions?userId=tester",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["user.intent.listPermissions"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "tester"
+                }
+              ]
+            },
+            "description": "See the permissions for a given user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Global",
+      "item": [
+        {
+          "name": "global.createGroup",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"group\":{\n\t\t\t\"id\": \"bb\",\n\t\t\t\"displayName\": \"bb\",\n\t\t\t\"users\": [\"alice\",\"james\"]\n\t\t}\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/global.createGroup",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["global.createGroup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global.createProject",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {\"displayName\": \"foo\",\n\t\t\t\"projectedBudgets\": [\n                        {\n                            \"organization\": \"ACMECorp\",\n                            \"value\": \"32000.000\",\n                            \"currencyCode\": \"BRL\"\n                        }\n                    ]\n\t\t}\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/global.createProject",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["global.createProject"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global.createUser",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"user\":{\n      \"id\": \"bb\",\n      \"some\":\"a\",\n      \"some1\":\"a\",\n      \"some2\":\"a\",\n      \"some3\":\"a\",\n      \"some4\":\"a\",\n      \"some5\":\"a\",\n      \"some6\":\"a\",\n      \"displayName\": \"bb\",\n      \"organization\": \"Kfw\",\n      \"password\": \"bb\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/global.createUser",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["global.createUser"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global.grantAllPermissions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"jxavier\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/global.grantAllPermissions",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["global.grantAllPermissions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global.grantPermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"alice\",\n\t\t\"intent\": \"global.createProject\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/global.grantPermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["global.grantPermission"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global.listPermissions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/global.listPermissions?projectId={{projectId}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["global.listPermissions"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global.revokePermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"identity\": \"thouse\",\n\t\t\"intent\": \"notification.list\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/global.revokePermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["global.revokePermission"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Group",
+      "item": [
+        {
+          "name": "group.addUser",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"bb\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/group.addUser",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["group.addUser"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "group.list",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/group.list",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["group.list"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "group.removeUser",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"bb\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/group.removeUser",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["group.removeUser"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Project",
+      "item": [
+        {
+          "name": "project.assign",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\" : \"notiftest\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.assign",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.assign"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.close",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.close",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.close"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.createSubproject",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subproject\": {\n\t\t\t\"id\": \"MySubproject\",\n\t\t\t\"status\": \"open\",\n\t\t\t\"displayName\": \"myFirstProject\",\n\t\t\t\"description\": \"mydescription\",\n\t\t\t\"amount\": \"500\",\n\t\t\t\"assignee\": \"asmith\",\n\t\t\t\"currency\": \"EUR\",\n\t\t\t\"additionalData\":{\n\t\t\t\t\"some\":\"some\"\n\t\t\t}\n\t\t}\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.createSubproject",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.createSubproject"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.intent.grantPermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"project.viewDetails\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.intent.grantPermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.intent.grantPermission"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.intent.listPermissions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.intent.listPermissions?projectId={{projectId}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.intent.listPermissions"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.list",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.list",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.list"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.intent.revokePermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"project.viewDetails\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.intent.revokePermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.intent.revokePermission"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"displayName\": \"somehtingnew\",\n\t\t\"description\": \"newdesc\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.update",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.update"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.budget.updateProjected",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"organization\": \"somehtingnew\",\n\t\t\"currencyCode\": \"EUR\",\n    \t\"value\": \"300.00\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.budget.updateProjected",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.budget.updateProjected"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.viewDetails",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.viewDetails?projectId={{projectId}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.viewDetails"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "project.viewHistory",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/project.viewHistory?projectId={{projectId}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["project.viewHistory"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subproject",
+      "item": [
+        {
+          "name": "subproject.assign",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"identity\" : \"asmith\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.assign",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.assign"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.close",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.close",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.close"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.createWorkflowitem",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"a\",\n\t\t\"amount\": \"1\",\n\t\t\"currency\": \"EUR\",\n\t\t\"amountType\": \"disbursed\",\n\t\t\"description\": \"\",\n\t\t\"status\": \"open\",\n\t\t\"assignee\":\"mstein\",\n\t\t\"documents\": []\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.createWorkflowitem",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.createWorkflowitem"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.intent.grantPermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"subproject.reorderWorkflowitems\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.intent.grantPermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.intent.grantPermission"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.intent.listPermissions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.intent.listPermissions?projectId={{projectId}}&subprojectId={{subprojectId}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.intent.listPermissions"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                },
+                {
+                  "key": "subprojectId",
+                  "value": "{{subprojectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.list",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.list?projectId={{projectId}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.list"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.reorderWorkflowitems",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"ordering\": [\n\t\t\t]\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.reorderWorkflowitems",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.reorderWorkflowitems"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.intent.revokePermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"subproject.close\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.intent.revokePermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.intent.revokePermission"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"somehtingnew\",\n\t\t\"description\": \"newdesc\",\n\t\t\"additionalData\": {\"foo\":\"bar\"}\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.update",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.update"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.viewDetails",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.viewDetails?projectId={{projectId}}&subprojectId={{subprojectId}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.viewDetails"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                },
+                {
+                  "key": "subprojectId",
+                  "value": "{{subprojectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.viewHistory",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.viewHistory?projectId={{projectId}}&subprojectId={{subprojectId}}&offset=-30&limit=5",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.viewHistory"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                },
+                {
+                  "key": "subprojectId",
+                  "value": "{{subprojectId}}"
+                },
+                {
+                  "key": "offset",
+                  "value": "-30"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "subproject.budget.updateProjected",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"organization\": \"somehtingnew\",\n\t\t\"currencyCode\": \"EUR\",\n    \t\"value\": \"300.00\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/subproject.budget.updateProjected",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["subproject.budget.updateProjected"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Workflowitem",
+      "item": [
+        {
+          "name": "workflowitem.list",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/workflowitem.list?projectId={{projectId}}&subprojectId={{subprojectId}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["workflowitem.list"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                },
+                {
+                  "key": "subprojectId",
+                  "value": "{{subprojectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "workflowitem.assign",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"alice\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/workflowitem.assign",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["workflowitem.assign"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "workflowitem.update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n   \"projectId\": \"{{projectId}}\",\n\t\"subprojectId\": \"{{subprojectId}}\",\n\t\"workflowitemId\": \"{{workflowitem}}\",\n    \"displayName\": \"newDisplayName\",\n    \"description\": \"somedesc\",\n    \"amountType\": \"disbursed\",\n    \"amount\": \"333,00\",\n    \"documents\": [{\n    \t\"id\": \"some\",\n    \t\"base64\": \"sososos\"\n    }]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/workflowitem.update",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["workflowitem.update"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "workflowitem.close",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/workflowitem.close",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["workflowitem.close"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "workflowitem.intent.listPermissions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.listPermissions?projectId={{projectId}}&subprojectId={{subprojectId}}&workflowitemId={{workflowitem}}",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["workflowitem.intent.listPermissions"],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}"
+                },
+                {
+                  "key": "subprojectId",
+                  "value": "{{subprojectId}}"
+                },
+                {
+                  "key": "workflowitemId",
+                  "value": "{{workflowitem}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "workflowitem.intent.grantPermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"workflowitem.close\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.grantPermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["workflowitem.intent.grantPermission"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "workflowitem.intent.revokePermission",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"workflowitemId\": \"{{workflowitem}}\",\n\t\t\"identity\": \"jxavier\",\n\t\t\"intent\": \"workflowitem.close\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/workflowitem.intent.revokePermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["workflowitem.intent.revokePermission"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "workflowitem.validateDocument",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"base64String\": \"c29tZWh0aW5n\",\n\t\t\"hash\": \"3FC9B689459D738F8C88A3A48AA9E33542016B7A4052E001AAA536FCA74813CB\"\n\t\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/workflowitem.validateDocument",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["workflowitem.validateDocument"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "notification.list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "exec": [
+                  "pm.test(\"Your test name\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.value).to.eql(100);",
+                  "});",
+                  "",
+                  "var schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"required\": [\"apiVersion\", \"data\"],",
+                  "    \"properties\": {",
+                  "        \"apiVersion\": {",
+                  "            \"type\": \"string\"",
+                  "        },",
+                  "        \"data\": {",
+                  "            \"type\": \"object\",",
+                  "            \"required\": [\"notifications\"],",
+                  "            \"properties\": {",
+                  "                \"notifications\": {",
+                  "                    \"type\": \"array\",",
+                  "                    \"items\": {",
+                  "                        \"type\": \"object\",",
+                  "                        \"properties\": {",
+                  "                            \"id\": { \"type\": \"string\" },",
+                  "                            \"url\": ",
+                  "                        }",
+                  "                    }",
+                  "                }",
+                  "            }",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "var data1 = [true, false];",
+                  "var data2 = [true, 123];",
+                  "",
+                  "pm.test('Schema is valid', function() {",
+                  "  pm.expect(tv4.validate(data1, schema)).to.be.true;",
+                  "  pm.expect(tv4.validate(data2, schema)).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "exec": [
+                  "pm.environment.set(\"userId\", \"notiftest\");",
+                  "pm.environment.set(\"password\", \"test\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/notification.list",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["notification.list"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "notification.markRead",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Your test name\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.value).to.eql(100);",
+                  "});",
+                  "",
+                  "var schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"required\": [\"apiVersion\", \"data\"],",
+                  "    \"properties\": {",
+                  "        \"apiVersion\": {",
+                  "            \"type\": \"string\"",
+                  "        },",
+                  "        \"data\": {",
+                  "            \"type\": \"object\",",
+                  "            \"required\": [\"notifications\"],",
+                  "            \"properties\": {",
+                  "                \"notifications\": {",
+                  "                    \"type\": \"array\",",
+                  "                    \"items\": {",
+                  "                        \"type\": \"object\",",
+                  "                        \"properties\": {",
+                  "                            \"id\": { \"type\": \"string\" },",
+                  "                            \"url\": ",
+                  "                        }",
+                  "                    }",
+                  "                }",
+                  "            }",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "var data1 = [true, false];",
+                  "var data2 = [true, 123];",
+                  "",
+                  "pm.test('Schema is valid', function() {",
+                  "  pm.expect(tv4.validate(data1, schema)).to.be.true;",
+                  "  pm.expect(tv4.validate(data2, schema)).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"notificationId\": \"2cfd0663-1770-4184-974e-63129061d389\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/notification.markRead",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["notification.markRead"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "notification.count",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/notification.count",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["notification.count"]
+            },
+            "description": "Counts the number of notifications for the authenticated user. Returns the total as well as the number of unread notifications."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Network",
+      "item": [
+        {
+          "name": "network.listActive",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/network.listActive",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["network.listActive"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "network.approveNewNodeForExistingOrganization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"address\": \"1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/network.approveNewNodeForExistingOrganization",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["network.approveNewNodeForExistingOrganization"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "network.approveNewOrganization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Your test name\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.value).to.eql(100);",
+                  "});",
+                  "",
+                  "var schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"required\": [\"apiVersion\", \"data\"],",
+                  "    \"properties\": {",
+                  "        \"apiVersion\": {",
+                  "            \"type\": \"string\"",
+                  "        },",
+                  "        \"data\": {",
+                  "            \"type\": \"object\",",
+                  "            \"required\": [\"notifications\"],",
+                  "            \"properties\": {",
+                  "                \"notifications\": {",
+                  "                    \"type\": \"array\",",
+                  "                    \"items\": {",
+                  "                        \"type\": \"object\",",
+                  "                        \"properties\": {",
+                  "                            \"id\": { \"type\": \"string\" },",
+                  "                            \"url\": ",
+                  "                        }",
+                  "                    }",
+                  "                }",
+                  "            }",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "var data1 = [true, false];",
+                  "var data2 = [true, 123];",
+                  "",
+                  "pm.test('Schema is valid', function() {",
+                  "  pm.expect(tv4.validate(data1, schema)).to.be.true;",
+                  "  pm.expect(tv4.validate(data2, schema)).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"organization\": \"BNDES\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/network.approveNewOrganization",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["network.approveNewOrganization"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "network.voteForPermission",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"address\": \"1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM\",\n    \"vote\": \"admin\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/network.voteForPermission",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["network.voteForPermission"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "network.list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Your test name\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.value).to.eql(100);",
+                  "});",
+                  "",
+                  "var schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"required\": [\"apiVersion\", \"data\"],",
+                  "    \"properties\": {",
+                  "        \"apiVersion\": {",
+                  "            \"type\": \"string\"",
+                  "        },",
+                  "        \"data\": {",
+                  "            \"type\": \"object\",",
+                  "            \"required\": [\"notifications\"],",
+                  "            \"properties\": {",
+                  "                \"notifications\": {",
+                  "                    \"type\": \"array\",",
+                  "                    \"items\": {",
+                  "                        \"type\": \"object\",",
+                  "                        \"properties\": {",
+                  "                            \"id\": { \"type\": \"string\" },",
+                  "                            \"url\": ",
+                  "                        }",
+                  "                    }",
+                  "                }",
+                  "            }",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "var data1 = [true, false];",
+                  "var data2 = [true, 123];",
+                  "",
+                  "pm.test('Schema is valid', function() {",
+                  "  pm.expect(tv4.validate(data1, schema)).to.be.true;",
+                  "  pm.expect(tv4.validate(data2, schema)).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/network.list",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["network.list"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "network.registerNode",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"address\": \"1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM\",\n\t\t\"organization\": \"BNDES\"\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/network.registerNode",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["network.registerNode"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "readiness",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJyb290IiwiYWRkcmVzcyI6IjFIRm1oc1NacW9HNFVhVjFXTnZmOWhQSktKNlREMjNKaTlXZDZQIiwib3JnYW5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFIRm1oc1NacW9HNFVhVjFXTnZmOWhQSktKNlREMjNKaTlXZDZQIiwiZ3JvdXBzIjpbXSwiaWF0IjoxNTM2NzYyODk4LCJleHAiOjE1MzY3NjY0OTh9.RDy9KDPIoCz3pwP1sdZwP4I0tv3gGfqw4SP7D_SwpwA"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/readiness",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["readiness"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "liveness",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/liveness",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["liveness"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "version",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "exec": [
+                  "pm.test(\"Your test name\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.value).to.eql(100);",
+                  "});",
+                  "",
+                  "var schema = {",
+                  "    \"type\": \"object\",",
+                  "    \"required\": [\"apiVersion\", \"data\"],",
+                  "    \"properties\": {",
+                  "        \"apiVersion\": {",
+                  "            \"type\": \"string\"",
+                  "        },",
+                  "        \"data\": {",
+                  "            \"type\": \"object\",",
+                  "            \"required\": [\"notifications\"],",
+                  "            \"properties\": {",
+                  "                \"notifications\": {",
+                  "                    \"type\": \"array\",",
+                  "                    \"items\": {",
+                  "                        \"type\": \"object\",",
+                  "                        \"properties\": {",
+                  "                            \"id\": { \"type\": \"string\" },",
+                  "                            \"url\": ",
+                  "                        }",
+                  "                    }",
+                  "                }",
+                  "            }",
+                  "        }",
+                  "    }",
+                  "};",
+                  "",
+                  "var data1 = [true, false];",
+                  "var data2 = [true, 123];",
+                  "",
+                  "pm.test('Schema is valid', function() {",
+                  "  pm.expect(tv4.validate(data1, schema)).to.be.true;",
+                  "  pm.expect(tv4.validate(data2, schema)).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/version",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["version"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "RunnerScripts",
+      "item": [
+        {
+          "name": "CreateSubproject",
+          "item": [
+            {
+              "name": "global.createProject Copy",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [
+                      "var jsonData = JSON.parse(responseBody);\r",
+                      "postman.setEnvironmentVariable(\"projectIdCopy\", jsonData.data.project.id);\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {\"displayName\": \"DisneyWorldDomination\",\n\t\t\t\"projectedBudgets\": [\n                        {\n                            \"organization\": \"Disney\",\n                            \"value\": \"32000.000\",\n                            \"currencyCode\": \"BRL\"\n                        }\n                    ]\n\t\t}\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/global.createProject",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["global.createProject"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "project.createSubproject Copy",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": ["pm.environment.get(\"projectIdCopy\");"],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectIdCopy}}\",\n\t\t\"subproject\": {\n\t\t\t\"id\": \"DisneyWorldinEveryCountry\",\n\t\t\t\"status\": \"open\",\n\t\t\t\"displayName\": \"DisneyWorldinEveryCountry\",\n\t\t\t\"description\": \"Take over the world with Walt Disneys frozen head.\",\n\t\t\t\"assignee\": \"asmith\",\n\t\t\t\"currency\": \"EUR\",\n\t\t\t\"additionalData\":{\n\t\t\t\t\"some\":\"some\"\n\t\t\t}\n\t\t}\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/project.createSubproject",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["project.createSubproject"]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Automatically create a subproject, environment variables will be set accordingly.",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "_postman_isSubFolder": true
+        },
+        {
+          "name": "CreateWorkflowitem",
+          "item": [
+            {
+              "name": "global.createProject Copy",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [
+                      "var jsonData = JSON.parse(responseBody);\r",
+                      "postman.setEnvironmentVariable(\"projectId\", jsonData.data.project.id);\r",
+                      "\r",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {\"displayName\": \" Wonkas Factory\",\n\t\t\t\"projectedBudgets\": [\n                        {\n                            \"organization\": \"Willy Wonka Choc\",\n                            \"value\": \"32000.000\",\n                            \"currencyCode\": \"BRL\"\n                        }\n                    ]\n\t\t}\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/global.createProject",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["global.createProject"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "project.createSubproject Copy",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [
+                      "var jsonData = JSON.parse(responseBody);\r",
+                      "postman.setEnvironmentVariable(\"subprojectId\", jsonData.data.subproject.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subproject\": {\n\t\t\t\"id\": \"Chololate Room\",\n\t\t\t\"status\": \"open\",\n\t\t\t\"displayName\": \"Chololate Room\",\n\t\t\t\"description\": \"Wonka's favorite room, and debatably the most important in the factory. The room is a grassy meadow full of flowers and trees, with a chocolate river mixed by waterfall that pipes into all the other rooms in the factory. Everything in the meadow is edible, and a boat ride down the chocolate river allows transit to other rooms in the factory via a dark tunnel.\",\n\t\t\t\"assignee\": \"asmith\",\n\t\t\t\"currency\": \"EUR\",\n\t\t\t\"additionalData\":{\n\t\t\t\t\"some\":\"some\"\n\t\t\t}\n\t\t}\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/project.createSubproject",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["project.createSubproject"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "subproject.createWorkflowitem Copy",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"Melt 1T of chocolate\",\n\t\t\"amount\": \"1\",\n\t\t\"currency\": \"EUR\",\n\t\t\"amountType\": \"disbursed\",\n\t\t\"description\": \"\",\n\t\t\"status\": \"open\",\n\t\t\"assignee\":\"mstein\",\n\t\t\"documents\": []\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/subproject.createWorkflowitem",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["subproject.createWorkflowitem"]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Automatically create Workflowitem, environment variables will be set accordingly.",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "_postman_isSubFolder": true
+        },
+        {
+          "name": "CreateNotification",
+          "item": [
+            {
+              "name": "global.createUser",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [
+                      "var jsonData = JSON.parse(responseBody);\r",
+                      "postman.setEnvironmentVariable(\"notifuserId\", jsonData.data.user.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"apiVersion\": \"1.0\",\n  \"data\": {\n    \"user\":{\n      \"id\": \"testeeeq\",\n      \"displayName\": \"userwithnotif\",\n      \"organization\": \"ACMECorp\",\n      \"password\": \"test\"\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/global.createUser",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["global.createUser"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "global.createProject",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [
+                      "var jsonData = JSON.parse(responseBody);\r",
+                      "postman.setEnvironmentVariable(\"projectId\", jsonData.data.project.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"project\": {\"displayName\": \"testpojeeeeqwww\",\n\t\t\t\"projectedBudgets\": [\n                        {\n                            \"organization\": \"ACMECorp\",\n                            \"value\": \"32000.000\",\n                            \"currencyCode\": \"BRL\"\n                        }\n                    ]\n\t\t}\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/global.createProject",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["global.createProject"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "project.assign",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\" : \"{{notifuserId}}\"\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/project.assign",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["project.assign"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "project.intent.grantPermission",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{rootToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"identity\": \"{{notifuserId}}\",\n\t\t\"intent\": \"project.viewDetails\"\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/project.intent.grantPermission",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["project.intent.grantPermission"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "user.authenticate",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [
+                      "var jsonData = JSON.parse(responseBody);\r",
+                      "postman.setEnvironmentVariable(\"notifuserToken\", jsonData.data.user.token);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"{{notifuserId}}\",\n\t\t\t\"password\": \"test\"\n\t\t}\n\t}\n}"
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/user.authenticate",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["user.authenticate"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "notification.list",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": ["pm.test(responseBody, true);"],
+                    "type": "text/javascript"
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "2cfd0663-1770-4184-974e-63129061d389",
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{notifuserToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{host}}:{{port}}{{base}}/notification.list",
+                  "host": ["{{host}}"],
+                  "port": "{{port}}{{base}}",
+                  "path": ["notification.list"]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Automatically create a Notification for a new user.",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "_postman_isSubFolder": true
+        }
+      ],
+      "description": "Automatically create a new subproject, workflow item or notification using postmans Runner.",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "2cfd0663-1770-4184-974e-63129061d389",
+            "type": "text/javascript",
+            "exec": [
+              "const base = `${pm.environment.get(\"host\")}:${pm.environment.get(\"port\")}${pm.environment.get(\"base\")}`; ",
+              "pm.sendRequest({",
+              "    url: base + \"/user.authenticate\",",
+              "    method: \"POST\",",
+              "    header: {",
+              "        \"content-type\": \"application/json\"",
+              "    },",
+              "    body: {",
+              "        mode: \"raw\",",
+              "        raw: JSON.stringify({",
+              "            \"apiVersion\": \"1.0\",",
+              "            \"data\": {",
+              "                \"user\": {",
+              "                    \"id\": pm.environment.get(\"userId\"),",
+              "                    \"password\": pm.environment.get(\"password\")",
+              "                }",
+              "            }",
+              "        })",
+              "    }",
+              "}, function (err, response) {",
+              "    console.log(response.json());",
+              "    const token = response.json().data.user.token;",
+              "    console.log(token)",
+              "    pm.environment.set(\"rootToken\", token);",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "2cfd0663-1770-4184-974e-63129061d389",
+            "type": "text/javascript",
+            "exec": [""]
+          }
+        }
+      ]
+    },
+    {
+      "name": "liststreams",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "value": "79pgKQusiH3VDVpyzsM6e3kRz6gWNctAwgJvymG3iiuz",
+              "type": "string"
+            },
+            {
+              "key": "username",
+              "value": "multichainrpc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"method\": \"liststreams\",\n\t\"params\": []\n}"
+        },
+        "url": {
+          "raw": "localhost:8000",
+          "host": ["localhost"],
+          "port": "8000"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "liststreamitems",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "password",
+              "value": "79pgKQusiH3VDVpyzsM6e3kRz6gWNctAwgJvymG3iiuz",
+              "type": "string"
+            },
+            {
+              "key": "username",
+              "value": "multichainrpc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"method\": \"liststreamitems\",\n\t\"params\": [\"da9001f8e3fb71c30a2c484924afba80\"]\n}"
+        },
+        "url": {
+          "raw": "localhost:8000",
+          "host": ["localhost"],
+          "port": "8000"
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "2cfd0663-1770-4184-974e-63129061d389",
+        "type": "text/javascript",
+        "exec": [
+          "const base = `${pm.environment.get(\"host\")}:${pm.environment.get(\"port\")}${pm.environment.get(\"base\")}`; ",
+          "pm.sendRequest({",
+          "    url: base + \"/user.authenticate\",",
+          "    method: \"POST\",",
+          "    header: {",
+          "        \"content-type\": \"application/json\"",
+          "    },",
+          "    body: {",
+          "        mode: \"raw\",",
+          "        raw: JSON.stringify({",
+          "            \"apiVersion\": \"1.0\",",
+          "            \"data\": {",
+          "                \"user\": {",
+          "                    \"id\": pm.environment.get(\"userId\"),",
+          "                    \"password\": pm.environment.get(\"password\")",
+          "                }",
+          "            }",
+          "        })",
+          "    }",
+          "}, function (err, response) {",
+          "    console.log(response.json());",
+          "    const token = response.json().data.user.token;",
+          "    console.log(token)",
+          "    pm.environment.set(\"rootToken\", token);",
+          "});"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "2cfd0663-1770-4184-974e-63129061d389",
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ]
 }
