@@ -7,6 +7,7 @@ import { NotFound } from "./domain/errors/not_found";
 import * as Group from "./domain/organization/group";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as GroupQuery from "./group_query";
+import { UserRecord } from "./domain/organization/user_record";
 
 // Globals as test fixture (ignored by the mock'ed code):
 const conn = (null as any) as ConnToken;
@@ -26,6 +27,21 @@ function newGroup(id: string, members: string[]): Group.Group {
   };
 }
 
+const dummy = "Dummy";
+
+const dummyUserRecord: UserRecord = {
+  id: dummy,
+  createdAt: new Date().toISOString(),
+  displayName: dummy,
+  organization: dummy,
+  passwordHash: dummy,
+  address: dummy,
+  encryptedPrivKey: dummy,
+  permissions: {},
+  log: [],
+  additionalData: {},
+};
+
 describe("group_query.resolveUsers()", () => {
   context("given an user", async () => {
     it("returns the user", async () => {
@@ -37,6 +53,8 @@ describe("group_query.resolveUsers()", () => {
         issuer,
         identityToResolve,
         async (_1, _2, _3, groupId) => new NotFound(_2, "group", groupId),
+        async (_1, _2, _3, groupId) =>
+          Promise.resolve(Result.unwrap({ ...dummyUserRecord, id: groupId })),
       );
 
       assert.sameMembers(resolvedUsers, ["Alice"]);
@@ -56,6 +74,8 @@ describe("group_query.resolveUsers()", () => {
           if (groupId === "identityToResolve") return identityToResolve;
           return new NotFound(_2, "group", groupId);
         },
+        async (_1, _2, _3, groupId) =>
+          Promise.resolve(Result.unwrap({ ...dummyUserRecord, id: groupId })),
       );
 
       assert.sameMembers(resolvedUsers, ["Alice"]);
@@ -77,6 +97,7 @@ describe("group_query.resolveUsers()", () => {
           if (groupId === "groupSub") return groupSub;
           return new NotFound(_2, "group", groupId);
         },
+        async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
 
       assert.sameMembers(resolvedUsers, ["Alice", "Bob", "Carol"]);
@@ -98,6 +119,7 @@ describe("group_query.resolveUsers()", () => {
           if (groupId === "groupSub") return groupSub;
           return new NotFound(_2, "group", groupId);
         },
+        async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
 
       assert.sameMembers(resolvedUsers, ["Alice", "Bob", "Carol"]);
@@ -121,6 +143,7 @@ describe("group_query.resolveUsers()", () => {
           if (groupId === "groupSubB") return groupSubB;
           return new NotFound(_2, "group", groupId);
         },
+        async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
 
       assert.sameMembers(resolvedUsers, ["Alice", "Bob"]);
@@ -140,6 +163,7 @@ describe("group_query.resolveUsers()", () => {
           if (groupId === "identityToResolve") return identityToResolve;
           return new NotFound(_2, "group", groupId);
         },
+        async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
 
       assert.sameMembers(resolvedUsers, ["Alice"]);
@@ -161,6 +185,7 @@ describe("group_query.resolveUsers()", () => {
           if (groupId === "groupLoopBack") return groupLoopBack;
           return new NotFound(_2, "group", groupId);
         },
+        async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
 
       assert.sameMembers(users, ["Alice", "Bob"]);

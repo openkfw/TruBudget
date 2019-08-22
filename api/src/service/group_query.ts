@@ -10,6 +10,7 @@ import * as GroupGet from "./domain/organization/group_get";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserRecord from "./domain/organization/user_record";
+import { getUser } from "./user_query";
 
 // TODO move groups handling to domain layer + make sure the cache is only refreshed _once_
 
@@ -77,12 +78,20 @@ export async function resolveUsers(
   serviceUser: ServiceUser,
   identity: Identity,
   getGroupFn: typeof getGroup = getGroup,
+  getUserFn: typeof getUser = getUser,
   groupSet: Set<Group.Id> = new Set(),
 ): Promise<UserRecord.Id[]> {
   const groupResult = await getGroupFn(conn, ctx, serviceUser, identity);
 
+  // if assignee is not a group, it is probably a user
   if (Result.isErr(groupResult)) {
-    return [identity];
+    //check if assignee does exist
+    const userResult = await getUserFn(conn, ctx, serviceUser, identity);
+    if (Result.isErr(userResult)) {
+      throw new NotFound(ctx, "user", identity);
+    } else {
+      return [identity];
+    }
   }
 
   const users: UserRecord.Id[] = [];
@@ -96,6 +105,7 @@ export async function resolveUsers(
         serviceUser,
         member,
         getGroupFn,
+        getUserFn,
         groupSet,
       );
       users.push(...resolvedUsers);
