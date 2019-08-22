@@ -43,10 +43,8 @@ const Navbar = ({
   storeSearchTerm,
   searchTerm,
   storeSearchBarDisplayed,
-  searchBarDisplayed,
-  setIsRoot
+  searchBarDisplayed
 }) => {
-  setIsRoot(userId === "root");
   return (
     <div>
       <AppBar classes={classes} position="absolute">

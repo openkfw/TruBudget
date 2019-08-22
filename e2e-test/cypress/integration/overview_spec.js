@@ -39,7 +39,7 @@ describe("Overview Page", function() {
     cy.get("[data-test=project-creation] button").should("be.visible");
   });
 
-  it("Don't show project creation for 'root' user", function() {
+  it("Disable project creation for 'root' user", function() {
     cy.login("root", "root-secret");
     cy.visit(`/projects`);
     cy.get("[data-test=project-creation]").should("be.visible");
