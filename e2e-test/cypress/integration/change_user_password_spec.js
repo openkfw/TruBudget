@@ -127,4 +127,20 @@ describe("Users/Groups Dashboard", function() {
       .should("be.visible")
       .contains("Password successfully changed");
   });
+
+  it("Root can edit all user passwords", function() {
+    // Log in as root
+    cy.login("root", "root-user");
+    cy.visit("/users");
+
+    // Check if the button is indeed visible
+    cy.get("[data-test=edit-user-auditUser]").should("be.visible");
+    cy.get("[data-test=edit-user-dviolin]").should("be.visible");
+    cy.get("[data-test=edit-user-jdoe]").should("be.visible");
+    cy.get("[data-test=edit-user-jxavier]").should("be.visible");
+    cy.get("[data-test=edit-user-mstein]").should("be.visible");
+    cy.get("[data-test=edit-user-pkleffmann]").should("be.visible");
+    cy.get("[data-test=edit-user-testuser]").should("be.visible");
+    cy.get("[data-test=edit-user-thouse]").should("be.visible");
+  });
 });
