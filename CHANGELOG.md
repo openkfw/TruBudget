@@ -16,12 +16,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - A new user called 'root' cannot be added [#369](https://github.com/openkfw/TruBudget/issues/369)
 - If a user changes his/her password, the new password has to follow security guidelines [#370](https://github.com/openkfw/TruBudget/issues/370)
 
-
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Check if assignee does exist when assigning to a project/subproject/workflowitem [#83](https://github.com/openkfw/TruBudget/issues/83)
 
 <!-- ### Security -->
 
