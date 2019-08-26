@@ -98,11 +98,17 @@ if (
     warn("There are new console logs in the API!");
   }
 
-  // Warn if there was a TODO added in any file
   const allChanges = await getChanges("**/*");
   const { additions: allAdditions } = getContentByType(allChanges);
 
+  // Warn if there was a TODO added in any file
   if (allAdditions.some(addition => addition.includes("TODO"))) {
     warn("A new TODO was added.");
+  }
+
+  // Warn if there was an id added in any file
+  const reg = /[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}/;
+  if (allAdditions.some(addition => reg.test(addition))) {
+    warn("It looks like an ID was added. Please make sure it is not a secret.");
   }
 })();

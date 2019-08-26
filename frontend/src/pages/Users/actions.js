@@ -14,6 +14,9 @@ export const TAB_INDEX = "TAB_INDEX";
 export const SHOW_DASHBOARD_DIALOG = "SHOW_DASHBOARD_DIALOG";
 export const HIDE_DASHBOARD_DIALOG = "HIDE_DASHBOARD_DIALOG";
 
+export const SHOW_PASSWORD_DIALOG = "SHOW_PASSWORD_DIALOG";
+export const HIDE_PASSWORD_DIALOG = "HIDE_PASSWORD_DIALOG";
+
 export const FETCH_GROUPS = "FETCH_GROUPS";
 export const FETCH_GROUPS_SUCCESS = "FETCH_GROUPS_SUCCESS";
 
@@ -191,9 +194,22 @@ export function showDashboardDialog(dialogType, editId = null) {
   };
 }
 
+export function showPasswordDialog(editId) {
+  return {
+    type: SHOW_PASSWORD_DIALOG,
+    editId
+  };
+}
+
 export function hideDashboardDialog() {
   return {
     type: HIDE_DASHBOARD_DIALOG
+  };
+}
+
+export function hidePasswordDialog() {
+  return {
+    type: HIDE_PASSWORD_DIALOG
   };
 }
 

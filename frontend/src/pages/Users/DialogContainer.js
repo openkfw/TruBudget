@@ -1,39 +1,57 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import withInitialLoading from "../Loading/withInitialLoading";
-import { toJS } from "../../helper";
 
+import { toJS } from "../../helper";
+import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import {
-  storeGroupName,
-  storeGroupId,
   addInitialUserToGroup,
-  createUserGroup,
   addUser,
-  removeUser,
-  removeInitialUserFromGroup,
-  hideDashboardDialog,
   createUser,
+  createUserGroup,
   grantGlobalPermission,
+  hideDashboardDialog,
+  hidePasswordDialog,
+  removeInitialUserFromGroup,
+  removeUser,
   revokeGlobalPermission,
   storeNewPassword,
   storeNewPasswordConfirmation,
   storeNewPasswordsMatch,
   storeUserPassword,
-  setUsernameInvalid
+  setUsernameInvalid,
+  storeGroupId,
+  storeGroupName
 } from "./actions";
-
 import Dialog from "./Dialog";
+import PasswordDialog from "./PasswordDialog";
 
 class DialogContainer extends Component {
   render() {
-    return <Dialog {...this.props} />;
+    return (
+      <div>
+        {this.props.dashboardDialogShown ? <Dialog {...this.props} /> : null}
+        {this.props.passwordDialogShown ? (
+          <PasswordDialog
+            classes={this.props.classes}
+            passwordDialogShown={this.props.passwordDialogShown}
+            editId={this.props.editId}
+            storeSnackbarMessage={this.props.storeSnackbarMessage}
+            authenticationFailed={this.props.authenticationFailed}
+            checkAndChangeUserPassword={this.props.checkAndChangeUserPassword}
+            hidePasswordDialog={this.props.hidePasswordDialog}
+            userId={this.props.userId}
+          />
+        ) : null}
+      </div>
+    );
   }
 }
 
 const mapStateToProps = state => {
   return {
     dashboardDialogShown: state.getIn(["users", "dashboardDialogShown"]),
+    passwordDialogShown: state.getIn(["users", "passwordDialogShown"]),
     dialogType: state.getIn(["users", "dialogType"]),
     editId: state.getIn(["users", "editId"]),
     userToAdd: state.getIn(["users", "userToAdd"]),
@@ -51,7 +69,8 @@ const mapStateToProps = state => {
     newPassword: state.getIn(["users", "newPassword"]),
     newPasswordConfirmation: state.getIn(["users", "newPasswordConfirmation"]),
     newPasswordsMatch: state.getIn(["users", "newPasswordsMatch"]),
-    usernameInvalid: state.getIn(["users", "usernameInvalid"])
+    usernameInvalid: state.getIn(["users", "usernameInvalid"]),
+    authenticationFailed: state.getIn(["users", "authenticationFailed"])
   };
 };
 
@@ -70,13 +89,15 @@ const mapDispatchToProps = dispatch => {
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     hideDashboardDialog: () => dispatch(hideDashboardDialog()),
+    hidePasswordDialog: () => dispatch(hidePasswordDialog()),
     grantGlobalPermission: (identity, intent) => dispatch(grantGlobalPermission(identity, intent)),
     revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent)),
     storeUserPassword: password => dispatch(storeUserPassword(password)),
     storeNewPassword: password => dispatch(storeNewPassword(password)),
     storeNewPasswordConfirmation: password => dispatch(storeNewPasswordConfirmation(password)),
     storeNewPasswordsMatch: newPasswordsMatch => dispatch(storeNewPasswordsMatch(newPasswordsMatch)),
-    setUsernameInvalid: usernameInvalid => dispatch(setUsernameInvalid(usernameInvalid))
+    setUsernameInvalid: usernameInvalid => dispatch(setUsernameInvalid(usernameInvalid)),
+    revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent))
   };
 };
 

@@ -290,3 +290,15 @@ Cypress.Commands.add("closeProject", projectId => {
     .its("body")
     .then(body => Promise.resolve(body.data));
 });
+
+Cypress.Commands.add("getUserList", () => {
+  cy.request({
+    url: `${baseUrl}/api/user.list`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data.items));
+});

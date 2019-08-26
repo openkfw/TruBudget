@@ -8,6 +8,7 @@ import { ServiceUser } from "../organization/service_user";
 import { newUserFromEvent } from "./user_eventsourcing";
 import { changeUserPassword, RequestData } from "./user_password_change";
 import { UserRecord } from "./user_record";
+import { PreconditionError } from "../errors/precondition_error";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const root: ServiceUser = { id: "root", groups: [] };
@@ -30,7 +31,7 @@ const passwordChangeUser: UserRecord = {
 
 const requestData: RequestData = {
   userId: dummy,
-  newPassword: "newtest",
+  newPassword: "newtest12345",
 };
 
 const baseRepository = {
@@ -78,7 +79,7 @@ describe("change a user's password: how modifications are applied", () => {
   it("Changes the user's password immediately", async () => {
     const oldPassword = "passwordTest";
     const oldPasswordHash = await hashPassword(oldPassword);
-    const newPassword = "newPassword";
+    const newPassword = "newPassword12345";
     const reqData = {
       userId: dummy,
       newPassword,
@@ -108,5 +109,57 @@ describe("change a user's password: how modifications are applied", () => {
     assert.isTrue(Result.isOk(result));
     assert.isFalse(await isPasswordMatch(oldPassword, sourcedUser.passwordHash));
     assert.isTrue(await isPasswordMatch(newPassword, sourcedUser.passwordHash));
+  });
+});
+
+describe("The new password adheres to security guidelines", () => {
+  it("The password is at least 8 characters long", async () => {
+    const newPassword = "passw1";
+    const reqData = {
+      userId: dummy,
+      newPassword,
+    };
+
+    const result = await changeUserPassword(ctx, alice, reqData, baseRepository);
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, PreconditionError);
+    assert.include((result as PreconditionError).message, "length");
+  });
+
+  it("The password contains at least one letter", async () => {
+    const newPassword = "12345678";
+    const reqData = {
+      userId: dummy,
+      newPassword,
+    };
+
+    const result = await changeUserPassword(ctx, root, reqData, baseRepository);
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, PreconditionError);
+    assert.include((result as PreconditionError).message, "a-z");
+  });
+
+  it("The password contains at least one number", async () => {
+    const newPassword = "newPassword";
+    const reqData = {
+      userId: dummy,
+      newPassword,
+    };
+
+    const result = await changeUserPassword(ctx, root, reqData, baseRepository);
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, PreconditionError);
+    assert.include((result as PreconditionError).message, "0-9");
+  });
+
+  it("If the password matches all criteria, it is valid", async () => {
+    const newPassword = "newPassword12345";
+    const reqData = {
+      userId: dummy,
+      newPassword,
+    };
+
+    const result = await changeUserPassword(ctx, root, reqData, baseRepository);
+    assert.isTrue(Result.isOk(result));
   });
 });

@@ -51,7 +51,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   items: {
                     type: "object",
                     properties: {
-                      id: { type: "string", example: "fff7242a-cd42-45e7-9719-8e41c219d8ee" },
+                      id: { type: "string", example: "2cfd0663-1770-4184-974e-63129061d389" },
                       isRead: { type: "boolean", example: false },
                       businessEvent: {
                         type: "object",

@@ -199,11 +199,16 @@ const fr = {
     new_user_password: "Nouveau mot de passe",
     new_user_password_confirmation: "Confirmer le nouveau mot de passe",
     no_password_match: "Les mots de passe ne correspondent pas",
+    invalid_password: "Mot de passe invalide",
     change_password_for: "Changer le mot de passe pour {0}",
     password_change_success: "Mot de passe changé avec succès",
     type_current_password: "Tapez le mot de passe actuel pour {0}",
     type_new_password: "Tapez le nouveau mot de passe pour {0}",
-    username_invalid: "Nom d'utilisateur invalide"
+    username_invalid: "Nom d'utilisateur invalide",
+    password_conditions_preface: "Votre mot de passe doit:",
+    password_conditions_length: "Comporter au moins 8 caractères",
+    password_conditions_letter: "Contenir au moins une lettre",
+    password_conditions_number: "Contenir au moins un chiffre"
   },
 
   nodesDashboard: {

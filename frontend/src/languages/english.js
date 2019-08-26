@@ -92,11 +92,16 @@ const en = {
     new_user_password: "New password",
     new_user_password_confirmation: "Confirm new password",
     no_password_match: "Passwords don't match",
+    invalid_password: "Password invalid",
     change_password_for: "Change password for {0}",
     password_change_success: "Password successfully changed",
     type_current_password: "Type in current password for {0}",
     type_new_password: "Type in new password for {0}",
-    username_invalid: "Invalid username"
+    username_invalid: "Invalid username",
+    password_conditions_preface: "Your password must:",
+    password_conditions_length: "Be at least 8 characters long",
+    password_conditions_letter: "Contain at least one letter",
+    password_conditions_number: "Contain at least one number"
   },
 
   nodesDashboard: {

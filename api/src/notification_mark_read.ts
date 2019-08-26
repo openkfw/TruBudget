@@ -56,7 +56,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                 items: {
                   type: "string",
                   description: "Notification ID",
-                  example: "fff7242a-cd42-45e7-9719-8e41c219d8ee",
+                  example: "2cfd0663-1770-4184-974e-63129061d389",
                 },
               },
             },
