@@ -23,8 +23,7 @@ import {
   STORE_NEW_PASSWORDS_MATCH,
   USER_PASSWORD,
   SET_PASSWORD,
-  SET_USERNAME_INVALID,
-  SET_PASSWORD
+  SET_USERNAME_INVALID
 } from "./actions";
 
 const defaultState = fromJS({
@@ -52,7 +51,6 @@ const defaultState = fromJS({
   newPasswordConfirmation: "",
   newPasswordsMatch: true,
   usernameInvalid: false
-  }
 });
 
 export default function userDashboardReducer(state = defaultState, action) {

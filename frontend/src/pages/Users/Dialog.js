@@ -39,8 +39,7 @@ const Dialog = props => {
     storeNewPassword,
     storeNewPasswordConfirmation,
     checkAndChangeUserPassword,
-    setUsernameInvalid,
-    revokeGlobalPermission
+    setUsernameInvalid
   } = props;
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
   let title = "";
