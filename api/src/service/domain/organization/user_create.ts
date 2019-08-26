@@ -66,14 +66,14 @@ export async function createUser(
     additionalData: data.additionalData || {},
   };
 
-  const unfinishedBusinessEvent = UserCreated.createEvent(source, publisher, eventTemplate);
+  const createEvent = UserCreated.createEvent(source, publisher, eventTemplate);
 
   if (Result.isErr(validate(data))) {
-    return new PreconditionError(ctx, unfinishedBusinessEvent, "can not create user called 'root'");
+    return new PreconditionError(ctx, createEvent, "can not create user called 'root'");
   }
 
   if (await repository.userExists(data.userId)) {
-    return new PreconditionError(ctx, unfinishedBusinessEvent, "user already exists");
+    return new PreconditionError(ctx, createEvent, "user already exists");
   }
 
   // Check authorization (if not root):
@@ -94,8 +94,6 @@ export async function createUser(
   const keyPair = await repository.createKeyPair();
   eventTemplate.address = keyPair.address;
   eventTemplate.encryptedPrivKey = await repository.encrypt(keyPair.privkey);
-
-  const createEvent = UserCreated.createEvent(source, publisher, eventTemplate);
 
   // Check that the event is valid by trying to "apply" it:
   const result = UserCreated.createFrom(ctx, createEvent);
