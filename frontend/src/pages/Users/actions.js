@@ -54,6 +54,14 @@ export const CHECK_USER_PASSWORD_ERROR = "CHECK_USER_PASSWORD_ERROR";
 export const CHANGE_USER_PASSWORD = "CHANGE_USER_PASSWORD";
 export const CHANGE_USER_PASSWORD_SUCCESS = "CHANGE_USER_PASSWORD_SUCCESS";
 
+export const USER_PASSWORD = "USER_PASSWORD";
+export const NEW_USER_PASSWORD = "NEW_USER_PASSWORD";
+export const NEW_USER_PASSWORD_CONFIRMATION = "NEW_USER_PASSWORD_CONFIRMATION";
+
+export const STORE_NEW_PASSWORDS_MATCH = "STORE_NEW_PASSWORDS_MATCH";
+
+export const SET_USERNAME_INVALID = "SET_USERNAME_INVALID";
+
 export function fetchGroups(showLoading = false) {
   return {
     type: FETCH_GROUPS,
@@ -234,5 +242,40 @@ export function checkAndChangeUserPassword(actingUser, username, currentPassword
     username,
     currentPassword,
     newPassword
+  };
+}
+
+export function storeUserPassword(password) {
+  return {
+    type: USER_PASSWORD,
+    password
+  };
+}
+
+export function storeNewPassword(password) {
+  return {
+    type: NEW_USER_PASSWORD,
+    password
+  };
+}
+
+export function storeNewPasswordConfirmation(password) {
+  return {
+    type: NEW_USER_PASSWORD_CONFIRMATION,
+    password
+  };
+}
+
+export function storeNewPasswordsMatch(newPasswordsMatch) {
+  return {
+    type: STORE_NEW_PASSWORDS_MATCH,
+    newPasswordsMatch
+  };
+}
+
+export function setUsernameInvalid(usernameInvalid) {
+  return {
+    type: SET_USERNAME_INVALID,
+    usernameInvalid
   };
 }

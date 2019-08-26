@@ -15,6 +15,11 @@ import {
   removeInitialUserFromGroup,
   removeUser,
   revokeGlobalPermission,
+  storeNewPassword,
+  storeNewPasswordConfirmation,
+  storeNewPasswordsMatch,
+  storeUserPassword,
+  setUsernameInvalid,
   storeGroupId,
   storeGroupName
 } from "./actions";
@@ -59,6 +64,12 @@ const mapStateToProps = state => {
     globalPermissions: state.getIn(["users", "globalPermissions"]),
     permissionsExpanded: state.getIn(["users", "permissionsExpanded"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
+    wrongPasswordGiven: state.getIn(["users", "wrongPasswordGiven"]),
+    userPassword: state.getIn(["users", "userPassword"]),
+    newPassword: state.getIn(["users", "newPassword"]),
+    newPasswordConfirmation: state.getIn(["users", "newPasswordConfirmation"]),
+    newPasswordsMatch: state.getIn(["users", "newPasswordsMatch"]),
+    usernameInvalid: state.getIn(["users", "usernameInvalid"]),
     authenticationFailed: state.getIn(["users", "authenticationFailed"])
   };
 };
@@ -80,6 +91,12 @@ const mapDispatchToProps = dispatch => {
     hideDashboardDialog: () => dispatch(hideDashboardDialog()),
     hidePasswordDialog: () => dispatch(hidePasswordDialog()),
     grantGlobalPermission: (identity, intent) => dispatch(grantGlobalPermission(identity, intent)),
+    revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent)),
+    storeUserPassword: password => dispatch(storeUserPassword(password)),
+    storeNewPassword: password => dispatch(storeNewPassword(password)),
+    storeNewPasswordConfirmation: password => dispatch(storeNewPasswordConfirmation(password)),
+    storeNewPasswordsMatch: newPasswordsMatch => dispatch(storeNewPasswordsMatch(newPasswordsMatch)),
+    setUsernameInvalid: usernameInvalid => dispatch(setUsernameInvalid(usernameInvalid)),
     revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent))
   };
 };

@@ -28,7 +28,18 @@ const Dialog = props => {
     permissionsExpanded,
     allowedIntents,
     grantGlobalPermission,
-    revokeGlobalPermission
+    revokeGlobalPermission,
+    wrongPasswordGiven,
+    userPassword,
+    newPassword,
+    newPasswordsMatch,
+    storeUserPassword,
+    storeNewPasswordsMatch,
+    newPasswordConfirmation,
+    storeNewPassword,
+    storeNewPasswordConfirmation,
+    checkAndChangeUserPassword,
+    setUsernameInvalid
   } = props;
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
   let title = "";
@@ -45,13 +56,18 @@ const Dialog = props => {
         }
       ];
       handleSubmitFunc = () => {
-        createUser(displayName, userOrganization, username, password);
-        if (hasAdminPermissions) {
-          grantAllUserPermissions(username);
+        if (username !== "root") {
+          setUsernameInvalid(false);
+          createUser(displayName, userOrganization, username, password);
+          if (hasAdminPermissions) {
+            grantAllUserPermissions(username);
+          }
+          hideDashboardDialog();
+          storeSnackbarMessage(strings.users.user_created);
+          showSnackbar();
+        } else {
+          setUsernameInvalid(true);
         }
-        hideDashboardDialog();
-        storeSnackbarMessage(strings.users.user_created);
-        showSnackbar();
       };
       break;
     case "addGroup":

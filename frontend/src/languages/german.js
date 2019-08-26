@@ -202,6 +202,7 @@ const de = {
     password_change_success: "Passwort wurde erfolgreich geändert",
     type_current_password: "Geben Sie das Passwort für {0} ein",
     type_new_password: "Geben Sie das neue Passwort für {0} ein",
+    username_invalid: "Benutzername ungültig",
     password_conditions_preface: "Das Passwort muss:",
     password_conditions_length: "Mindestens 8 Zeichen lang sein",
     password_conditions_letter: "Mindestens einen Buchstaben enthalten",

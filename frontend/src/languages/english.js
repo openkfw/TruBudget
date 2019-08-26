@@ -97,6 +97,7 @@ const en = {
     password_change_success: "Password successfully changed",
     type_current_password: "Type in current password for {0}",
     type_new_password: "Type in new password for {0}",
+    username_invalid: "Invalid username",
     password_conditions_preface: "Your password must:",
     password_conditions_length: "Be at least 8 characters long",
     password_conditions_letter: "Contain at least one letter",

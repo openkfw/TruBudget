@@ -20,7 +20,10 @@ import {
   CHECK_USER_PASSWORD_SUCCESS,
   CHECK_USER_PASSWORD_ERROR,
   CHANGE_USER_PASSWORD_SUCCESS,
-  SET_PASSWORD
+  STORE_NEW_PASSWORDS_MATCH,
+  USER_PASSWORD,
+  SET_PASSWORD,
+  SET_USERNAME_INVALID
 } from "./actions";
 
 const defaultState = fromJS({
@@ -42,7 +45,12 @@ const defaultState = fromJS({
     groupId: "",
     name: "",
     groupUsers: []
-  }
+  },
+  userPassword: "",
+  newPassword: "",
+  newPasswordConfirmation: "",
+  newPasswordsMatch: true,
+  usernameInvalid: false
 });
 
 export default function userDashboardReducer(state = defaultState, action) {
@@ -114,6 +122,10 @@ export default function userDashboardReducer(state = defaultState, action) {
         userToAdd: defaultState.get("userToAdd"),
         authenticationFailed: false
       });
+    case STORE_NEW_PASSWORDS_MATCH:
+      return state.set("newPasswordsMatch", action.newPasswordsMatch);
+    case SET_USERNAME_INVALID:
+      return state.set("usernameInvalid", action.usernameInvalid);
     default:
       return state;
   }

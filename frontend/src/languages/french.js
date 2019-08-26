@@ -204,6 +204,7 @@ const fr = {
     password_change_success: "Mot de passe changé avec succès",
     type_current_password: "Tapez le mot de passe actuel pour {0}",
     type_new_password: "Tapez le nouveau mot de passe pour {0}",
+    username_invalid: "Nom d'utilisateur invalide",
     password_conditions_preface: "Votre mot de passe doit:",
     password_conditions_length: "Comporter au moins 8 caractères",
     password_conditions_letter: "Contenir au moins une lettre",
