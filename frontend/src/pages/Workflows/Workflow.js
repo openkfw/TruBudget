@@ -10,7 +10,7 @@ import { canCreateWorkflowItems } from "../../permissions";
 
 const Workflow = props => {
   const subprojectStatus = props.status;
-  const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents);
+  const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents) && !props.isRoot;
   const createDisabled = props.workflowSortEnabled
     ? props.workflowSortEnabled
     : !allowedToCreateWorkflows || subprojectStatus === "closed";

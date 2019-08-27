@@ -1,4 +1,4 @@
-describe("Subproject's history", function() {
+describe("Subproject edit", function() {
   before(() => {
     cy.login();
   });
