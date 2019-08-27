@@ -7,7 +7,8 @@ import {
   FETCH_ACTIVE_PEERS_SUCCESS,
   FETCH_VERSIONS_SUCCESS,
   SEARCH_TERM,
-  SEARCH_BAR_DISPLAYED
+  SEARCH_BAR_DISPLAYED,
+  SET_IS_ROOT
 } from "./actions";
 import { LOGOUT } from "../Login/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
@@ -24,7 +25,8 @@ const defaultState = fromJS({
   currentSubProject: " ",
   versions: null,
   searchTerm: "",
-  searchBarDisplayed: false
+  searchBarDisplayed: false,
+  isRoot: false
 });
 
 export default function navbarReducer(state = defaultState, action) {
@@ -55,6 +57,8 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set("searchBarDisplayed", action.searchBarDisplayed);
     case LOGOUT:
       return defaultState;
+    case SET_IS_ROOT:
+      return state.set("isRoot", action.isRoot);
     default:
       return state;
   }

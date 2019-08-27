@@ -56,7 +56,8 @@ const mapStateToProps = state => {
     groupToAdd: state.getIn(["users", "groupToAdd"]),
     editMode: state.getIn(["users", "editMode"]),
     editDialogShown: state.getIn(["users", "editDialogShown"]),
-    editId: state.getIn(["users", "editId"])
+    editId: state.getIn(["users", "editId"]),
+    isRoot: state.getIn(["navbar", "isRoot"])
   };
 };
 

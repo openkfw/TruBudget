@@ -10,7 +10,8 @@ import {
   fetchVersions,
   exportData,
   storeSearchTerm,
-  storeSearchBarDisplayed
+  storeSearchBarDisplayed,
+  setIsRoot
 } from "./actions";
 import { logout } from "../Login/actions";
 
@@ -23,6 +24,9 @@ class NavbarContainer extends Component {
   componentDidMount() {
     this.props.fetchActivePeers();
     this.props.fetchVersions();
+    if (this.props.userId === "root") {
+      this.props.setIsRoot(this.props.userId === "root");
+    }
   }
 
   render() {
@@ -49,7 +53,8 @@ const mapDispatchToProps = {
   fetchVersions,
   exportData,
   storeSearchTerm,
-  storeSearchBarDisplayed
+  storeSearchBarDisplayed,
+  setIsRoot
 };
 
 const mapStateToProps = state => {
@@ -75,7 +80,8 @@ const mapStateToProps = state => {
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
     latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
     searchTerm: state.getIn(["navbar", "searchTerm"]),
-    searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"])
+    searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
+    isRoot: state.getIn(["login", "isRoot"])
   };
 };
 

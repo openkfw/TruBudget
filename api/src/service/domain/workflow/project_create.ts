@@ -106,6 +106,13 @@ export async function createProject(
         errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: permissions })],
       };
     }
+  } else {
+    return {
+      newEvents: [],
+      errors: [
+        new PreconditionError(ctx, createEvent, "user 'root' is not allowed to create projects"),
+      ],
+    };
   }
 
   // Check that the event is valid:
