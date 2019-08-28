@@ -184,8 +184,8 @@ export default function detailviewReducer(state = defaultState, action) {
     case SHOW_WORKFLOWITEM_PERMISSIONS:
       return state.merge({
         workflowItemReference: action.wId,
-        permissions: fromJS({}),
-        temporaryPermissions: fromJS({}),
+        permissions: defaultState.get("permissions"),
+        temporaryPermissions: defaultState.getIn("temporaryPermissions"),
         showWorkflowPermissions: true
       });
     case HIDE_WORKFLOWITEM_PERMISSIONS:

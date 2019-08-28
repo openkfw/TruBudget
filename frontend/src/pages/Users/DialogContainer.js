@@ -21,12 +21,20 @@ import {
   storeUserPassword,
   setUsernameInvalid,
   storeGroupId,
-  storeGroupName
+  storeGroupName,
+  addTemporaryPermission,
+  removeTemporaryPermission
 } from "./actions";
 import Dialog from "./Dialog";
 import PasswordDialog from "./PasswordDialog";
 
 class DialogContainer extends Component {
+  componentDidUpdate(nextProps) {
+    if (!this.props.dashboardDialogShown && nextProps.dashboardDialogShown) {
+      this.props.listGlobalPermissions();
+    }
+  }
+
   render() {
     return (
       <div>
@@ -62,6 +70,7 @@ const mapStateToProps = state => {
     editMode: state.getIn(["users", "editMode"]),
     editDialogShown: state.getIn(["users", "editDialogShown"]),
     globalPermissions: state.getIn(["users", "globalPermissions"]),
+    temporaryGlobalPermissions: state.getIn(["users", "temporaryGlobalPermissions"]),
     permissionsExpanded: state.getIn(["users", "permissionsExpanded"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     wrongPasswordGiven: state.getIn(["users", "wrongPasswordGiven"]),
@@ -97,7 +106,8 @@ const mapDispatchToProps = dispatch => {
     storeNewPasswordConfirmation: password => dispatch(storeNewPasswordConfirmation(password)),
     storeNewPasswordsMatch: newPasswordsMatch => dispatch(storeNewPasswordsMatch(newPasswordsMatch)),
     setUsernameInvalid: usernameInvalid => dispatch(setUsernameInvalid(usernameInvalid)),
-    revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent))
+    addTemporaryPermission: (permission, userId) => dispatch(addTemporaryPermission(permission, userId)),
+    removeTemporaryPermission: (permission, userId) => dispatch(removeTemporaryPermission(permission, userId))
   };
 };
 

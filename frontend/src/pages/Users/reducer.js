@@ -21,9 +21,10 @@ import {
   CHECK_USER_PASSWORD_ERROR,
   CHANGE_USER_PASSWORD_SUCCESS,
   STORE_NEW_PASSWORDS_MATCH,
-  USER_PASSWORD,
   SET_PASSWORD,
-  SET_USERNAME_INVALID
+  SET_USERNAME_INVALID,
+  ADD_TEMPORARY_GLOBAL_PERMISSION,
+  REMOVE_TEMPORARY_GLOBAL_PERMISSION
 } from "./actions";
 
 const defaultState = fromJS({
@@ -37,6 +38,7 @@ const defaultState = fromJS({
     displayName: ""
   },
   globalPermissions: {},
+  temporaryGlobalPermissions: {},
   editId: "",
   dialogType: "",
   groups: [],
@@ -94,10 +96,8 @@ export default function userDashboardReducer(state = defaultState, action) {
         dashboardDialogShown: false,
         userToAdd: defaultState.get("userToAdd"),
         authenticationFailed: false,
-        userPassword: "",
-        newPassword: "",
-        newPasswordConfirmation: "",
-        newPasswordsMatch: true
+        globalPermissions: defaultState.get("globalPermissions"),
+        temporaryGlobalPermissions: defaultState.get("temporaryGlobalPermissions")
       });
     case SHOW_PASSWORD_DIALOG:
       return state.merge({
@@ -111,7 +111,7 @@ export default function userDashboardReducer(state = defaultState, action) {
         editId: defaultState.get("editId")
       });
     case LIST_GLOBAL_PERMISSIONS_SUCCESS:
-      return state.set("globalPermissions", action.data);
+      return state.set("globalPermissions", fromJS(action.data)).set("temporaryGlobalPermissions", fromJS(action.data));
     case CHECK_USER_PASSWORD_SUCCESS:
       return state.set("authenticationFailed", false);
     case CHECK_USER_PASSWORD_ERROR:
@@ -126,6 +126,12 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.set("newPasswordsMatch", action.newPasswordsMatch);
     case SET_USERNAME_INVALID:
       return state.set("usernameInvalid", action.usernameInvalid);
+    case ADD_TEMPORARY_GLOBAL_PERMISSION:
+      return state.updateIn(["temporaryGlobalPermissions", action.permission], users => users.push(action.userId));
+    case REMOVE_TEMPORARY_GLOBAL_PERMISSION:
+      return state.updateIn(["temporaryGlobalPermissions", action.permission], users =>
+        users.filter(user => user !== action.userId)
+      );
     default:
       return state;
   }

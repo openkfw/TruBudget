@@ -62,6 +62,9 @@ export const STORE_NEW_PASSWORDS_MATCH = "STORE_NEW_PASSWORDS_MATCH";
 
 export const SET_USERNAME_INVALID = "SET_USERNAME_INVALID";
 
+export const ADD_TEMPORARY_GLOBAL_PERMISSION = "ADD_TEMPORARY_GLOBAL_PERMISSION";
+export const REMOVE_TEMPORARY_GLOBAL_PERMISSION = " REMOVE_TEMPORARY_GLOBAL_PERMISSION";
+
 export function fetchGroups(showLoading = false) {
   return {
     type: FETCH_GROUPS,
@@ -277,5 +280,21 @@ export function setUsernameInvalid(usernameInvalid) {
   return {
     type: SET_USERNAME_INVALID,
     usernameInvalid
+  };
+}
+
+export function addTemporaryPermission(permission, userId) {
+  return {
+    type: ADD_TEMPORARY_GLOBAL_PERMISSION,
+    permission,
+    userId
+  };
+}
+
+export function removeTemporaryPermission(permission, userId) {
+  return {
+    type: REMOVE_TEMPORARY_GLOBAL_PERMISSION,
+    permission,
+    userId
   };
 }

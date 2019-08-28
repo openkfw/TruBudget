@@ -79,8 +79,8 @@ export default function overviewReducer(state = defaultState, action) {
       return state.merge({
         idForPermissions: defaultState.get("id"),
         permissionDialogShown: false,
-        permissions: fromJS({}),
-        temporaryPermissions: fromJS({})
+        permissions: defaultState.get("permissions"),
+        temporaryPermissions: defaultState.get("temporaryPermissions")
       });
     case SHOW_PROJECT_ADDITIONAL_DATA:
       return state.merge({
