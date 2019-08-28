@@ -20,7 +20,9 @@ import {
   HIDE_PROJECT_ADDITIONAL_DATA,
   SHOW_PROJECT_ADDITIONAL_DATA,
   ADD_PROJECT_TAG,
-  REMOVE_PROJECT_TAG
+  REMOVE_PROJECT_TAG,
+  ADD_TEMPORARY_PROJECT_PERMISSION,
+  REMOVE_TEMPORARY_PROJECT_PERMISSION
 } from "./actions";
 
 const defaultState = fromJS({
@@ -39,6 +41,7 @@ const defaultState = fromJS({
   },
   idForPermissions: "",
   permissions: {},
+  temporaryPermissions: {},
   permissionDialogShown: false,
   currentStep: 0,
   initialFetch: false,
@@ -76,7 +79,8 @@ export default function overviewReducer(state = defaultState, action) {
       return state.merge({
         idForPermissions: defaultState.get("id"),
         permissionDialogShown: false,
-        permissions: fromJS({})
+        permissions: fromJS({}),
+        temporaryPermissions: fromJS({})
       });
     case SHOW_PROJECT_ADDITIONAL_DATA:
       return state.merge({
@@ -94,7 +98,9 @@ export default function overviewReducer(state = defaultState, action) {
       });
 
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:
-      return state.set("permissions", fromJS(action.permissions));
+      return state
+        .set("permissions", fromJS(action.permissions))
+        .set("temporaryPermissions", fromJS(action.permissions));
     case PROJECT_NAME:
       return state.setIn(["projectToAdd", "displayName"], action.name);
     case PROJECT_PROJECTED_BUDGET:
@@ -139,6 +145,12 @@ export default function overviewReducer(state = defaultState, action) {
       return state.merge({
         projects: fromJS(action.projects)
       });
+    case ADD_TEMPORARY_PROJECT_PERMISSION:
+      return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
+    case REMOVE_TEMPORARY_PROJECT_PERMISSION:
+      return state.updateIn(["temporaryPermissions", action.permission], users =>
+        users.filter(user => user !== action.userId)
+      );
     case LOGOUT:
       return defaultState;
     default:

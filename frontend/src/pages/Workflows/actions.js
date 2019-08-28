@@ -106,6 +106,9 @@ export const HAVE_WORKFLOW_ITEM_CHANGED = "HAVE_WORKFLOW_ITEM_CHANGED";
 
 export const LIVE_UPDATE_SUBPROJECT = "LIVE_UPDATE_SUBPROJECT";
 
+export const ADD_TEMPORARY_WORKFLOWITEM_PERMISSION = "ADD_TEMPORARY_WORKFLOWITEM_PERMISSION";
+export const REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION = " REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION";
+
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
@@ -546,5 +549,21 @@ export function showHistory() {
 export function hideHistory() {
   return {
     type: HIDE_HISTORY
+  };
+}
+
+export function addTemporaryPermission(permission, userId) {
+  return {
+    type: ADD_TEMPORARY_WORKFLOWITEM_PERMISSION,
+    permission,
+    userId
+  };
+}
+
+export function removeTemporaryPermission(permission, userId) {
+  return {
+    type: REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION,
+    permission,
+    userId
   };
 }

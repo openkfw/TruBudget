@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
+import PermissionDialog from "../Common/Permissions/PermissionDialog";
 import {
   fetchWorkflowItemPermissions,
   grantWorkflowItemPermission,
   hideWorkflowItemPermissions,
-  revokeWorkflowItemPermission
+  revokeWorkflowItemPermission,
+  addTemporaryPermission,
+  removeTemporaryPermission
 } from "./actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
@@ -15,7 +17,7 @@ import { workflowItemIntentOrder } from "../../permissions";
 
 class WorkflowItemPermissionsContainer extends Component {
   componentWillReceiveProps(nextProps) {
-    if (!this.props.show && nextProps.show) {
+    if (!this.props.permissionDialogShown && nextProps.permissionDialogShown) {
       this.props.fetchWorkflowItemPermissions(nextProps.projectId, nextProps.subProjectId, nextProps.wId, true);
       this.props.fetchUser();
     }
@@ -37,7 +39,7 @@ class WorkflowItemPermissionsContainer extends Component {
 
   render() {
     return (
-      <PermissionsScreen
+      <PermissionDialog
         {...this.props}
         grant={this.grant}
         revoke={this.revoke}
@@ -51,9 +53,10 @@ class WorkflowItemPermissionsContainer extends Component {
 const mapStateToProps = state => {
   return {
     permissions: state.getIn(["workflow", "permissions"]),
+    temporaryPermissions: state.getIn(["workflow", "temporaryPermissions"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     user: state.getIn(["login", "user"]),
-    show: state.getIn(["workflow", "showWorkflowPermissions"]),
+    permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"]),
     wId: state.getIn(["workflow", "workflowItemReference"]),
     myself: state.getIn(["login", "id"])
   };
@@ -61,14 +64,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onClose: () => dispatch(hideWorkflowItemPermissions()),
+    hidePermissionDialog: () => dispatch(hideWorkflowItemPermissions()),
     grant: (pId, sId, wId, permission, user) =>
       dispatch(grantWorkflowItemPermission(pId, sId, wId, permission, user, true)),
     revoke: (pId, sId, wId, permission, user) =>
       dispatch(revokeWorkflowItemPermission(pId, sId, wId, permission, user, true)),
     fetchWorkflowItemPermissions: (pId, spId, wId, showLoading) =>
       dispatch(fetchWorkflowItemPermissions(pId, spId, wId, showLoading)),
-    fetchUser: () => dispatch(fetchUser(true))
+    fetchUser: () => dispatch(fetchUser(true)),
+    addTemporaryPermission: (permission, userId) => dispatch(addTemporaryPermission(permission, userId)),
+    removeTemporaryPermission: (permission, userId) => dispatch(removeTemporaryPermission(permission, userId))
   };
 };
 
