@@ -30,7 +30,8 @@ const styles = theme => ({
   },
   message: {
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
+    maxWidth: "100%"
   }
 });
 

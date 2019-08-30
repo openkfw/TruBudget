@@ -53,7 +53,8 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     paddingTop: "18px",
-    width: "31%"
+    width: "31%",
+    overflowWrap: "break-word"
   },
   projectAssignee: {
     display: "flex",

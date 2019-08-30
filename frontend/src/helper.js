@@ -132,3 +132,11 @@ export const preselectCurrency = (parentCurrency, setCurrency) => {
 export const formattedTag = tag => {
   return tag.toLowerCase().replace(/[\s#]/g, "");
 };
+
+export const shortenedDisplayName = displayName => {
+  const maxLength = 50;
+  if (displayName.length > maxLength) {
+    return displayName.slice(0, maxLength) + "...";
+  }
+  return displayName;
+};

@@ -1,7 +1,7 @@
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 
-import { compareObjects, fromAmountString } from "../../helper";
+import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
 import ProjectDialogContent from "./ProjectDialogContent";
@@ -17,7 +17,7 @@ const handleCreate = props => {
     tags
   );
   onDialogCancel();
-  storeSnackbarMessage(strings.common.added + " " + strings.common.project + " " + displayName);
+  storeSnackbarMessage(strings.common.added + " " + strings.common.project + " " + shortenedDisplayName(displayName));
 };
 
 const handleEdit = props => {
@@ -39,7 +39,9 @@ const handleEdit = props => {
       },
       changes.deletedProjectedBudgets
     );
-    storeSnackbarMessage(strings.common.edited + " " + strings.common.project + " " + projectToAdd.displayName);
+    storeSnackbarMessage(
+      strings.common.edited + " " + strings.common.project + " " + shortenedDisplayName(projectToAdd.displayName)
+    );
   }
   onDialogCancel();
 };

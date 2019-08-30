@@ -5,7 +5,7 @@ import _isEmpty from "lodash/isEmpty";
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
 import SubprojectDialogContent from "./SubprojectDialogContent";
-import { compareObjects, fromAmountString } from "../../helper";
+import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
 
 const handleCreate = props => {
   const { createSubProject, onDialogCancel, subprojectToAdd, location, storeSnackbarMessage } = props;
@@ -18,7 +18,9 @@ const handleCreate = props => {
     projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) }))
   );
   onDialogCancel();
-  storeSnackbarMessage(strings.common.added + " " + strings.common.subproject + " " + displayName);
+  storeSnackbarMessage(
+    strings.common.added + " " + strings.common.subproject + " " + shortenedDisplayName(displayName)
+  );
 };
 
 const handleEdit = props => {
@@ -36,7 +38,9 @@ const handleEdit = props => {
       },
       changes.deletedProjectedBudgets
     );
-    storeSnackbarMessage(strings.common.edited + " " + strings.common.subproject + " " + subprojectToAdd.displayName);
+    storeSnackbarMessage(
+      strings.common.edited + " " + strings.common.subproject + " " + shortenedDisplayName(subprojectToAdd.displayName)
+    );
   }
 
   onDialogCancel();
@@ -67,10 +71,7 @@ const SubprojectDialog = props => {
     {
       title: strings.project.project_details,
       content: <SubprojectDialogContent {...props} />,
-      nextDisabled:
-        _isEmpty(subprojectToAdd.displayName) ||
-        _isEmpty(subprojectToAdd.currency) ||
-        _isEmpty(changes)
+      nextDisabled: _isEmpty(subprojectToAdd.displayName) || _isEmpty(subprojectToAdd.currency) || _isEmpty(changes)
     }
   ];
   return (

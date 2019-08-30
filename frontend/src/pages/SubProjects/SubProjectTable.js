@@ -22,8 +22,29 @@ import { canEditSubProject, canViewSubProjectDetails, canViewSubProjectPermissio
 import ActionButton from "../Common/ActionButton";
 
 const styles = {
+  subprojectTable: {
+    tableLayout: "fixed"
+  },
   tableText: {
     fontSize: "14px"
+  },
+  displayName: {
+    fontSize: "14px",
+    width: "40%",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  },
+  projectdBudget: {
+    fontSize: "14px",
+    width: "20%"
+  },
+  status: {
+    fontSize: "14px",
+    width: "20%"
+  },
+  actions: {
+    fontSize: "14px",
+    width: "20%"
   },
   buttonContainer: {
     display: "flex",
@@ -101,10 +122,10 @@ const getTableEntries = (
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
         <TableRow key={index}>
-          <TableCell className={classes.tableText}>{displayName}</TableCell>
-          <TableCell className={classes.tableText}>{amountString}</TableCell>
-          <TableCell className={classes.tableText}>{statusMapping(status)}</TableCell>
-          <TableCell>
+          <TableCell className={classes.displayName}>{displayName}</TableCell>
+          <TableCell className={classes.projectdBudget}>{amountString}</TableCell>
+          <TableCell className={classes.status}>{statusMapping(status)}</TableCell>
+          <TableCell className={classes.actions}>
             <div className={classes.buttonContainer}>
               <div className={classes.button}>
                 <ActionButton
@@ -176,13 +197,13 @@ const SubProjectTable = ({
   return (
     <Card>
       <CardHeader title={strings.common.subprojects} />
-      <Table data-test="ssp-table">
+      <Table data-test="ssp-table" className={classes.subprojectTable}>
         <TableHead>
           <TableRow>
-            <TableCell className={classes.tableText}>{strings.common.subproject}</TableCell>
-            <TableCell className={classes.tableText}>{strings.common.projected_budget}</TableCell>
-            <TableCell className={classes.tableText}>{strings.common.status}</TableCell>
-            <TableCell className={classes.tableText}> </TableCell>
+            <TableCell className={classes.displayName}>{strings.common.subproject}</TableCell>
+            <TableCell className={classes.projectdBudget}>{strings.common.projected_budget}</TableCell>
+            <TableCell className={classes.status}>{strings.common.status}</TableCell>
+            <TableCell className={classes.actions}> </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{tableEntries}</TableBody>
