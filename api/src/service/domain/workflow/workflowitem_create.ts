@@ -1,7 +1,7 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import Intent from "../../../authz/intents";
+import Intent, { subprojectIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
@@ -132,6 +132,12 @@ export async function createWorkflowitem(
         "failed to create workflowitem, permission check failed",
       );
     }
+  } else {
+    return new PreconditionError(
+      ctx,
+      workflowitemCreated,
+      "user 'root' is not allowed to create workflowitems",
+    );
   }
 
   // Check that the event is valid:

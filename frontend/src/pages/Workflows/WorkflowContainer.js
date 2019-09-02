@@ -195,7 +195,8 @@ const mapStateToProps = state => {
     projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
     idForInfo: state.getIn(["workflow", "idForInfo"]),
     isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"]),
-    isLoading: state.getIn(["workflow", "isHistoryLoading"])
+    isLoading: state.getIn(["workflow", "isHistoryLoading"]),
+    isRoot: state.getIn(["navbar", "isRoot"])
   };
 };
 
