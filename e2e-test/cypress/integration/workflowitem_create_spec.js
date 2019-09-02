@@ -1,4 +1,4 @@
-describe("Workflowitem edit", function() {
+describe("Workflowitem create", function() {
   let projectId;
   let subprojectId;
 
@@ -112,26 +112,6 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=cancel]").click();
     }
   );
-});
-
-describe("Workflowitem create", function() {
-  let projectId;
-  let subprojectId;
-
-  before(() => {
-    cy.login();
-
-    cy.createProject("workflowitem create test project", "workflowitem create test", [])
-      .then(({ id }) => {
-        projectId = id;
-        return cy.createSubproject(projectId, "workflowitem create test", "EUR");
-      })
-      .then(({ id }) => {
-        subprojectId = id;
-      });
-    cy.login();
-    cy.visit(`/projects/${projectId}/${subprojectId}`);
-  });
 
   it("Root can not create a Workflowitem", function() {
     cy.login("root", "root-secret");
