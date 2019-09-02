@@ -52,7 +52,7 @@ class SubProjectContainer extends Component {
   };
 
   render() {
-    const canCreateSubproject = canCreateSubProject(this.props.allowedIntents);
+    const canCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = canCloseProject(this.props.allowedIntents);
     const projectId = this.projectId;
@@ -131,7 +131,8 @@ const mapStateToProps = state => {
     thumbnail: state.getIn(["detailview", "thumbnail"]),
     projectedBudgets: state.getIn(["detailview", "projectedBudgets"]),
     isSubProjectAdditionalDataShown: state.getIn(["detailview", "isSubProjectAdditionalDataShown"]),
-    idForInfo: state.getIn(["detailview", "idForInfo"])
+    idForInfo: state.getIn(["detailview", "idForInfo"]),
+    isRoot: state.getIn(["navbar", "isRoot"])
   };
 };
 
