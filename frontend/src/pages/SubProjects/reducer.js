@@ -24,7 +24,9 @@ import {
   SUBPROJECT_DELETED_PROJECTED_BUDGET,
   SUBPROJECT_NAME,
   SUBPROJECT_PROJECTED_BUDGETS,
-  OPEN_HISTORY
+  OPEN_HISTORY,
+  ADD_TEMPORARY_SUBPROJECT_PERMISSION,
+  REMOVE_TEMPORARY_SUBPROJECT_PERMISSION
 } from "./actions";
 
 const historyPageSize = 50;
@@ -62,7 +64,8 @@ const defaultState = fromJS({
   showSubProjectPermissions: false,
   isSubProjectAdditionalDataShown: false,
   idForInfo: "",
-  permissions: [],
+  permissions: {},
+  temporaryPermissions: {},
   idForPermissions: "",
   showProjectAssignees: false,
   projectAssignee: "",
@@ -89,7 +92,8 @@ export default function detailviewReducer(state = defaultState, action) {
 
     case SHOW_SUBPROJECT_PERMISSIONS:
       return state.merge({
-        permissions: fromJS({}),
+        permissions: defaultState.get("permissions"),
+        temporaryPermissions: defaultState.get("temporaryPermissions"),
         idForPermissions: action.id,
         showSubProjectPermissions: true
       });
@@ -99,7 +103,9 @@ export default function detailviewReducer(state = defaultState, action) {
         isSubProjectAdditionalDataShown: true
       });
     case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
-      return state.set("permissions", fromJS(action.permissions));
+      return state
+        .set("permissions", fromJS(action.permissions))
+        .set("temporaryPermissions", fromJS(action.permissions));
     case HIDE_SUBPROJECT_PERMISSIONS:
       return state.set("showSubProjectPermissions", false);
     case SHOW_SUBPROJECT_CREATE:
@@ -182,6 +188,12 @@ export default function detailviewReducer(state = defaultState, action) {
         subprojectToAdd: defaultState.getIn(["subprojectToAdd"])
       });
     }
+    case ADD_TEMPORARY_SUBPROJECT_PERMISSION:
+      return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
+    case REMOVE_TEMPORARY_SUBPROJECT_PERMISSION:
+      return state.updateIn(["temporaryPermissions", action.permission], users =>
+        users.filter(user => user !== action.userId)
+      );
     case LOGOUT:
       return defaultState;
     default:

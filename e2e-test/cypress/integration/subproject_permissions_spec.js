@@ -15,7 +15,7 @@ describe("Subproject Permissions", function() {
     cy.location("pathname").should("eq", `/projects/${projects[0].data.id}`);
   });
 
-  it("Show and subproject permissions correctly", function() {
+  it("Show subproject permissions correctly", function() {
     cy.get("[data-test=spp-button-0]").click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test=permission-close]").click();
@@ -33,7 +33,7 @@ describe("Subproject Permissions", function() {
         const checkedItems = $list.find("input:checked");
         expect(checkedItems).to.have.lengthOf(
           this.data.subprojects[0].permissions["subproject.intent.grantPermission"]
-            ? this.data.subprojects[0].permissions["subproject.intent.grantPermission"].length + 1
+            ? this.data.subprojects[0].permissions["subproject.intent.grantPermission"].length
             : 1
         );
       })
@@ -47,7 +47,32 @@ describe("Subproject Permissions", function() {
         cy.wrap(firstUnchecked, options)
           .click(options)
           .should("not.be.checked");
-      });
+      })
+      .then(() => cy.get("[data-test=permission-list]").type("{esc}"))
+      .then(() => cy.get("[data-test=permission-submit]").click())
+      .then(() => cy.get("[data-test=spp-button-0]").click())
+      .then(() => {
+        cy.get("[data-test='permission-select-subproject.intent.grantPermission']").click();
+        cy.get("[data-test='permission-list']").should("be.visible");
+      })
+      // Restore status to make test re-runnable
+      .then($list => {
+        const checkedItems = $list.find("input:checked");
+        expect(checkedItems).to.have.lengthOf(
+          this.data.subprojects[0].permissions["subproject.intent.grantPermission"]
+            ? this.data.subprojects[0].permissions["subproject.intent.grantPermission"].length + 1
+            : 2
+        );
+        const lastChecked = $list.find("input:checked").last();
+        // Use timeout to wait for animation to finish
+        const options = { force: true, timeout: 60000 };
+        cy.wrap(lastChecked, options)
+          .click(options)
+          .should("not.be.checked");
+        cy.get("[data-test=permission-search] input").type("{esc}");
+      })
+      .then(() => cy.get("[data-test=permission-container]").should("be.visible"))
+      .then(() => cy.get("[data-test=permission-submit]").click());
   });
 
   it("If a user has permissions to see the subproject details, the subproject details page can be viewed", function() {

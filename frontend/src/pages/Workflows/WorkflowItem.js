@@ -336,7 +336,7 @@ const renderActionButtons = (
           title={additionalDataDisabled ? "" : strings.common.additional_data}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
-          data-test="additional-data-icon"
+          data-test="additional-workflowitem-data-icon"
           iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
@@ -356,7 +356,7 @@ const renderActionButtons = (
           title={permissionsDisabled ? "" : strings.common.show_permissions}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
-          data-test="show-permissions-icon"
+          data-test="show-workflowitem-permissions"
           iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton

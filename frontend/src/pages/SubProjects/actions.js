@@ -56,6 +56,9 @@ export const LIVE_UPDATE_PROJECT = "LIVE_UPDATE_PROJECT";
 
 export const OPEN_HISTORY = "OPEN_HISTORY";
 
+export const ADD_TEMPORARY_SUBPROJECT_PERMISSION = "ADD_TEMPORARY_SUBPROJECT_PERMISSION";
+export const REMOVE_TEMPORARY_SUBPROJECT_PERMISSION = " REMOVE_TEMPORARY_SUBPROJECT_PERMISSION";
+
 export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_SUBPROJECT_PERMISSIONS,
@@ -259,5 +262,21 @@ export function liveUpdateProject(projectId) {
 export function showHistory() {
   return {
     type: OPEN_HISTORY
+  };
+}
+
+export function addTemporaryPermission(permission, userId) {
+  return {
+    type: ADD_TEMPORARY_SUBPROJECT_PERMISSION,
+    permission,
+    userId
+  };
+}
+
+export function removeTemporaryPermission(permission, userId) {
+  return {
+    type: REMOVE_TEMPORARY_SUBPROJECT_PERMISSION,
+    permission,
+    userId
   };
 }

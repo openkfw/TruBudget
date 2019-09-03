@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
+import PermissionDialog from "../Common/Permissions/PermissionDialog";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
@@ -9,7 +9,14 @@ import { fetchUser } from "../Login/actions";
 import _isEmpty from "lodash/isEmpty";
 import { projectIntentOrder } from "../../permissions";
 import strings from "../../localizeStrings";
-import { hideProjectPermissions, fetchProjectPermissions, grantPermission, revokePermission } from "./actions";
+import {
+  hideProjectPermissions,
+  fetchProjectPermissions,
+  grantPermission,
+  revokePermission,
+  addTemporaryPermission,
+  removeTemporaryPermission
+} from "./actions";
 
 class ProjectPermissionsContainer extends Component {
   componentWillMount() {
@@ -17,7 +24,7 @@ class ProjectPermissionsContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.show && nextProps.show) {
+    if (!this.props.permissionDialogShown && nextProps.permissionDialogShown) {
       const projectId = nextProps.id;
       this.props.fetchProjectPermissions(projectId, true);
     }
@@ -41,7 +48,7 @@ class ProjectPermissionsContainer extends Component {
     const allowedIntents = this.getAllowedIntents();
 
     return (
-      <PermissionsScreen
+      <PermissionDialog
         {...this.props}
         title={strings.project.project_permissions_title}
         intentOrder={projectIntentOrder}
@@ -54,8 +61,9 @@ class ProjectPermissionsContainer extends Component {
 const mapStateToProps = state => {
   return {
     permissions: state.getIn(["overview", "permissions"]),
+    temporaryPermissions: state.getIn(["overview", "temporaryPermissions"]),
     user: state.getIn(["login", "user"]),
-    show: state.getIn(["overview", "permissionDialogShown"]),
+    permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
     myself: state.getIn(["login", "id"]),
     id: state.getIn(["overview", "idForPermissions"])
   };
@@ -63,11 +71,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onClose: () => dispatch(hideProjectPermissions()),
+    hidePermissionDialog: () => dispatch(hideProjectPermissions()),
     grant: (projectId, permission, identity) => dispatch(grantPermission(projectId, permission, identity, true)),
     revoke: (projectId, permission, identity) => dispatch(revokePermission(projectId, permission, identity, true)),
     fetchProjectPermissions: (projectId, showLoading) => dispatch(fetchProjectPermissions(projectId, showLoading)),
-    fetchUser: showLoading => dispatch(fetchUser(showLoading))
+    fetchUser: showLoading => dispatch(fetchUser(showLoading)),
+    addTemporaryPermission: (permission, userId) => dispatch(addTemporaryPermission(permission, userId)),
+    removeTemporaryPermission: (permission, userId) => dispatch(removeTemporaryPermission(permission, userId))
   };
 };
 

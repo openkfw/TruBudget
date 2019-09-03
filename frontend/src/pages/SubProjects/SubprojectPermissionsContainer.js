@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import _isEmpty from "lodash/isEmpty";
 
-import PermissionsScreen from "../Common/Permissions/PermissionsScreen";
+import PermissionDialog from "../Common/Permissions/PermissionDialog";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
@@ -11,12 +11,14 @@ import {
   hideSubProjectPermissions,
   grantSubProjectPermission,
   revokeSubProjectPermission,
-  fetchSubProjectPermissions
+  fetchSubProjectPermissions,
+  addTemporaryPermission,
+  removeTemporaryPermission
 } from "./actions";
 
 class SubProjectPermissionsContainer extends Component {
   componentWillReceiveProps(nextProps) {
-    if (!this.props.show && nextProps.show) {
+    if (!this.props.permissionDialogShown && nextProps.permissionDialogShown) {
       this.props.fetchSubProjectPermissions(nextProps.projectId, nextProps.subprojectId, true);
       this.props.fetchUser();
     }
@@ -38,8 +40,8 @@ class SubProjectPermissionsContainer extends Component {
   getAllowedIntents = () => {
     const { subProjects, subprojectId } = this.props;
     if (subProjects && !_isEmpty(subprojectId)) {
-      const subproject =  subProjects.find(subproject => subproject.data.id === subprojectId);
-      if (subproject){
+      const subproject = subProjects.find(subproject => subproject.data.id === subprojectId);
+      if (subproject) {
         return subproject.allowedIntents;
       }
     }
@@ -49,7 +51,7 @@ class SubProjectPermissionsContainer extends Component {
   render() {
     const allowedIntents = this.getAllowedIntents();
     return (
-      <PermissionsScreen
+      <PermissionDialog
         {...this.props}
         grant={this.grant}
         revoke={this.revoke}
@@ -63,21 +65,26 @@ class SubProjectPermissionsContainer extends Component {
 const mapStateToProps = state => {
   return {
     permissions: state.getIn(["detailview", "permissions"]),
+    temporaryPermissions: state.getIn(["detailview", "temporaryPermissions"]),
     subprojectId: state.getIn(["detailview", "idForPermissions"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     user: state.getIn(["login", "user"]),
-    show: state.getIn(["detailview", "showSubProjectPermissions"]),
+    permissionDialogShown: state.getIn(["detailview", "showSubProjectPermissions"]),
     myself: state.getIn(["login", "id"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onClose: () => dispatch(hideSubProjectPermissions()),
+    hidePermissionDialog: () => dispatch(hideSubProjectPermissions()),
     grant: (pId, sId, permission, user) => dispatch(grantSubProjectPermission(pId, sId, permission, user, true)),
     revoke: (pId, sId, permission, user) => dispatch(revokeSubProjectPermission(pId, sId, permission, user, true)),
     fetchSubProjectPermissions: (pId, sId, showLoading) => dispatch(fetchSubProjectPermissions(pId, sId, showLoading)),
-    fetchUser: () => dispatch(fetchUser(true))
+    fetchUser: () => dispatch(fetchUser(true)),
+    addTemporaryPermission: (subprojectId, permission, userId) =>
+      dispatch(addTemporaryPermission(subprojectId, permission, userId)),
+    removeTemporaryPermission: (subprojectId, permission, userId) =>
+      dispatch(removeTemporaryPermission(subprojectId, permission, userId))
   };
 };
 

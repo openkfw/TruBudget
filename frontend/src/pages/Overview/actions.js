@@ -40,6 +40,9 @@ export const REVOKE_PERMISSION_SUCCESS = "REVOKE_PERMISSION_SUCCESS";
 export const ADD_PROJECT_TAG = "ADD_PROJECT_TAG";
 export const REMOVE_PROJECT_TAG = "REMOVE_PROJECT_TAG";
 
+export const ADD_TEMPORARY_PROJECT_PERMISSION = "ADD_TEMPORARY_PROJECT_PERMISSION";
+export const REMOVE_TEMPORARY_PROJECT_PERMISSION = " REMOVE_TEMPORARY_PROJECT_PERMISSION";
+
 export function fetchAllProjects(showLoading = false) {
   return {
     type: FETCH_ALL_PROJECTS,
@@ -197,5 +200,21 @@ export function removeProjectTag(tag) {
   return {
     type: REMOVE_PROJECT_TAG,
     tag
+  };
+}
+
+export function addTemporaryPermission(permission, userId) {
+  return {
+    type: ADD_TEMPORARY_PROJECT_PERMISSION,
+    permission,
+    userId
+  };
+}
+
+export function removeTemporaryPermission(permission, userId) {
+  return {
+    type: REMOVE_TEMPORARY_PROJECT_PERMISSION,
+    permission,
+    userId
   };
 }

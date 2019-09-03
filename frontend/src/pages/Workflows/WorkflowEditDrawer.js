@@ -8,7 +8,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 
 import { workflowItemIntentOrder } from "../../permissions";
-import { PermissionsTable } from "../Common/Permissions/PermissionsScreen";
+import PermissionTable from "../Common/Permissions/PermissionsTable";
 import AssigneeSelection from "../Common/AssigneeSelection";
 
 import _isEmpty from "lodash/isEmpty";
@@ -115,7 +115,7 @@ const WorkflowEditDrawer = props => {
             <AssigneeSelection assigneeId={tempDrawerAssignee} users={users} assign={assign} />
           </CardContent>
         </Card>
-        <PermissionsTable
+        <PermissionTable
           permissions={permissions}
           intentOrder={workflowItemIntentOrder}
           user={users}
