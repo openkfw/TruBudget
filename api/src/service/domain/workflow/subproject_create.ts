@@ -80,9 +80,7 @@ export async function createSubproject(
   const badEntry = findDuplicateBudgetEntry(subprojectCreated.subproject.projectedBudgets);
   if (badEntry !== undefined) {
     const error = new Error(
-      `more than one projected budget for organization ${badEntry.organization} and currency ${
-        badEntry.currencyCode
-      }`,
+      `more than one projected budget for organization ${badEntry.organization} and currency ${badEntry.currencyCode}`,
     );
     return new InvalidCommand(ctx, subprojectCreated, [error]);
   }
@@ -98,9 +96,7 @@ export async function createSubproject(
     const error = new PreconditionError(
       ctx,
       subprojectCreated,
-      `cannot get project permissions for project ${projectId}: ${
-        projectPermissionsResult.message
-      }`,
+      `cannot get project permissions for project ${projectId}: ${projectPermissionsResult.message}`,
     );
     return error;
   }
@@ -121,6 +117,12 @@ export async function createSubproject(
         target: { projectId, projectPermissions },
       });
     }
+  } else {
+    return new PreconditionError(
+      ctx,
+      subprojectCreated,
+      "user 'root' is not allowed to create subprojects",
+    );
   }
 
   // Check that the event is valid:

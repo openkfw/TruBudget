@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Allow user 'root' to change the passwords of all users[#366](https://github.com/openkfw/TruBudget/issues/366)
 - Disallow root to create projects [#375](https://github.com/openkfw/TruBudget/issues/375)
 - Disallow root to add workflowitems [#380](https://github.com/openkfw/TruBudget/issues/380)
+- Disallow root to create subprojects [#378](https://github.com/openkfw/TruBudget/issues/378)
+
 
 <!-- ### Deprecated -->
 
