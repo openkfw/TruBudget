@@ -129,7 +129,7 @@ const ProjectDetails = props => {
         </List>
         <div style={styles.projectedBudget}>
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
-          <Table>
+          <Table padding="none">
             <TableHead>
               <TableRow>
                 <TableCell>{strings.common.organization}</TableCell>

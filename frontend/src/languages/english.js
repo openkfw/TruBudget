@@ -25,6 +25,7 @@ const en = {
     completion: "Completion",
     create: "Create",
     created: "Created",
+    currency: "Currency",
     disbursed_budget: "Disbursed Budget",
     disbursement: "Projected",
     disconnected: "Offline",
@@ -135,7 +136,7 @@ const en = {
     project_budget_authority_role_description: "The authority enabled to modify the budget line of the project",
     project_close_info: "At least one subproject item has not been closed yet.",
     project_comment: "Comment",
-    project_currency: "Currency",
+    project_currency: "Project currency",
     project_details: "Details",
     project_disbursement_authority_role: "Select disbursement authority role",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
@@ -152,21 +153,21 @@ const en = {
   },
 
   subproject: {
-    subproject_add_title: "Add new Subproject",
-    subproject_assigned_organization: "Assigned Organization",
-    subproject_budget_amount: "Sub-project  budget amount",
+    subproject_add_title: "Add new subproject",
+    subproject_assigned_organization: "Assigned organization",
+    subproject_budget_amount: "Subproject  budget amount",
     subproject_budget_amount_description: "e.g.",
     subproject_close_info: "At least one workflow item has not been closed yet",
     subproject_close_not_allowed: "You are not allowed to close the subproject",
-    subproject_comment: "Sub-project Comment",
+    subproject_comment: "Subproject comment",
     subproject_completion_string: "{0} of {1} done",
-    subproject_currency: "Sub-project Currency",
-    subproject_edit_title: "Edit Subproject",
+    subproject_currency: "Subproject currency",
+    subproject_edit_title: "Edit subproject",
     subproject_permissions_title: "Set permissions for subproject",
-    subproject_preview: "Subproject Preview",
+    subproject_preview: "Subproject preview",
     subproject_select_button: "Select",
-    subproject_title: "Sub-Project title",
-    subproject_title_description: "Name of the sub-project"
+    subproject_title: "Subproject title",
+    subproject_title_description: "Name of the subproject"
   },
 
   workflow: {
@@ -214,7 +215,7 @@ const en = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Type",
     workflow_upload_document: "Upload",
-    workflowitem_details: "Workflowitem item details",
+    workflowitem_details: "Workflowitem details",
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "History",
     workflowitem_details_overview: "Overview"
