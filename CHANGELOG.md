@@ -11,26 +11,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
-### Changed
-
-- A new user called 'root' cannot be added [#369](https://github.com/openkfw/TruBudget/issues/369)
-- If a user changes his/her password, the new password has to follow security guidelines [#370](https://github.com/openkfw/TruBudget/issues/370)
-- Disallow root to create projects [#375](https://github.com/openkfw/TruBudget/issues/375)
-- Disallow root to add workflowitems [#380](https://github.com/openkfw/TruBudget/issues/380)
-- Disallow root to create subprojects [#378](https://github.com/openkfw/TruBudget/issues/378)
-- Allow user 'root' to change the passwords of all users [#366](https://github.com/openkfw/TruBudget/issues/366)
-- Rework the editing of project/subproject/workflowitem/global permissions [#245](https://github.com/openkfw/TruBudget/issues/245)
-- Improve project/subproject details-layout and handling of long names [#274](https://github.com/openkfw/TruBudget/issues/274)
+<!-- ### Changed -->
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
 
+<!-- ### Fixed -->
+
+<!-- ### Security -->
+
+## [1.4.0] - 2019-09-04
+
+### Changed
+
+- A new user called 'root' cannot be added [#369](https://github.com/openkfw/TruBudget/issues/369)
+- If a user changes his/her password, the new password has to follow security guidelines [#370](https://github.com/openkfw/TruBudget/issues/370)
+- Disallow root to create projects [#375](https://github.com/openkfw/TruBudget/issues/375)
+- Disallow root to create subprojects [#378](https://github.com/openkfw/TruBudget/issues/378)
+- Disallow root to add workflowitems [#380](https://github.com/openkfw/TruBudget/issues/380)
+- Allow user 'root' to change the passwords of all users [#366](https://github.com/openkfw/TruBudget/issues/366)
+- Rework the editing of project/subproject/workflowitem/global permissions [#245](https://github.com/openkfw/TruBudget/issues/245)
+- Improve project/subproject details-layout and handling of long names [#274](https://github.com/openkfw/TruBudget/issues/274)
+
 ### Fixed
 
 - Check if assignee does exist when assigning to a project/subproject/workflowitem [#83](https://github.com/openkfw/TruBudget/issues/83)
-
-<!-- ### Security -->
 
 ## [1.3.0] - 2019-07-31
 
@@ -347,7 +353,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.3.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.4.0...master
+[1.4.0]: https://github.com/openkfw/TruBudget/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/openkfw/TruBudget/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/openkfw/TruBudget/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/openkfw/TruBudget/compare/v1.0.1...v1.1.0
