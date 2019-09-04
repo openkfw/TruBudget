@@ -53,7 +53,8 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     paddingTop: "18px",
-    width: "31%"
+    width: "31%",
+    overflowWrap: "break-word"
   },
   projectAssignee: {
     display: "flex",
@@ -128,7 +129,7 @@ const ProjectDetails = props => {
         </List>
         <div style={styles.projectedBudget}>
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
-          <Table>
+          <Table padding="none">
             <TableHead>
               <TableRow>
                 <TableCell>{strings.common.organization}</TableCell>

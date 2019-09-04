@@ -25,6 +25,7 @@ const fr = {
     completion: "Achèvement",
     create: "Créer",
     created: "Créé",
+    currency: "Devise",
     disbursed_budget: "Budget décaissé",
     disbursement: "Décaissements prévus",
     disconnected: "Déconnecté",

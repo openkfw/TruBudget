@@ -210,7 +210,7 @@ export default class Budget extends React.Component {
                   <DropDown
                     style={styles.dropdown}
                     value={this.state.currency}
-                    floatingLabel={strings.project.project_currency}
+                    floatingLabel={strings.common.currency}
                     onChange={e => this.setCurrency(e)}
                     id="currencies"
                     disabled={

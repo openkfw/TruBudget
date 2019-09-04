@@ -25,6 +25,7 @@ const de = {
     completion: "German: Completion",
     create: "German: Create",
     created: "Created",
+    currency: "Währung",
     disbursed_budget: "Disbursed Budget",
     disbursement: "Disbursement",
     disconnected: "Offline",

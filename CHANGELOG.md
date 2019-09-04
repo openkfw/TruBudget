@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Disallow root to create subprojects [#378](https://github.com/openkfw/TruBudget/issues/378)
 - Allow user 'root' to change the passwords of all users [#366](https://github.com/openkfw/TruBudget/issues/366)
 - Rework the editing of project/subproject/workflowitem/global permissions [#245](https://github.com/openkfw/TruBudget/issues/245)
+- Improve project/subproject details-layout and handling of long names [#274](https://github.com/openkfw/TruBudget/issues/274)
 
 <!-- ### Deprecated -->
 

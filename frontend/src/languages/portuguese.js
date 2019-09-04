@@ -25,6 +25,7 @@ const pt = {
     completion: "Conclusão",
     create: "Criar",
     created: "Data de criação",
+    currency: "Moeda",
     disbursed_budget: "Desembolsado",
     disbursement: "Projetado",
     disconnected: "Desligada",
