@@ -9,6 +9,7 @@ const LogoutIcon = ({ history, logout }) => {
   return (
     <IconButton
       id="logoutbutton"
+      data-test="navbar-logout-button"
       tooltip={strings.navigation.logout}
       onClick={() => {
         logout();

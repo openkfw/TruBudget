@@ -1,25 +1,27 @@
+import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import Chip from "@material-ui/core/Chip";
+import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Avatar from "@material-ui/core/Avatar";
-import Card from "@material-ui/core/Card";
-import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import DoneIcon from "@material-ui/icons/Check";
 import DateIcon from "@material-ui/icons/DateRange";
 import AssigneeIcon from "@material-ui/icons/Group";
+import LabelIcon from "@material-ui/icons/Label";
 import _isUndefined from "lodash/isUndefined";
 import React from "react";
 
-import { statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
+import { formattedTag, statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import ProjectAnalyticsDialog from "../Analytics/ProjectAnalyticsDialog";
 import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
@@ -43,11 +45,41 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    paddingTop: "18px"
+    paddingTop: "18px",
+    width: "32%"
+  },
+  projectDetails: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingTop: "18px",
+    width: "31%",
+    overflowWrap: "break-word"
+  },
+  projectAssignee: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingTop: "18px",
+    width: "31%"
   },
   analytics: {
     padding: "12px 0 "
   }
+};
+
+const displayTags = tags => {
+  return tags.map((tag, i) => (
+    <Chip
+      key={`${tag}-${i}`}
+      label={`#${formattedTag(tag)}`}
+      style={{ margin: "1px" }}
+      clickable={false}
+      size="small"
+      component="span"
+      data-test="project-details-tag"
+    />
+  ));
 };
 
 const ProjectDetails = props => {
@@ -64,16 +96,18 @@ const ProjectDetails = props => {
     closeProject,
     canClose,
     projectProjectedBudgets,
-    openAnalyticsDialog
+    openAnalyticsDialog,
+    projectTags
   } = props;
   const mappedStatus = statusMapping(projectStatus);
   const statusIcon = statusIconMapping[projectStatus];
   const openSubprojects = subProjects.find(subproject => subproject.data.status === "open");
   const closeDisabled = !(canClose && _isUndefined(openSubprojects)) || projectStatus === "closed";
+  const tags = displayTags(projectTags || []);
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <List>
+        <List style={styles.projectDetails}>
           <ListItem>
             {projectName ? <Avatar>{projectName[0]}</Avatar> : null}
             <ListItemText primary={projectName} secondary={projectComment} />
@@ -84,10 +118,18 @@ const ProjectDetails = props => {
             </Avatar>
             <ListItemText primary={unixTsToString(projectTS)} secondary={strings.common.created} />
           </ListItem>
+          {tags.length > 0 ? (
+            <ListItem>
+              <Avatar>
+                <LabelIcon />
+              </Avatar>
+              <ListItemText primary={tags} />
+            </ListItem>
+          ) : null}
         </List>
         <div style={styles.projectedBudget}>
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
-          <Table>
+          <Table padding="none">
             <TableHead>
               <TableRow>
                 <TableCell>{strings.common.organization}</TableCell>
@@ -112,7 +154,7 @@ const ProjectDetails = props => {
             </Button>
           </div>
         </div>
-        <List>
+        <List style={styles.projectAssignee}>
           <ListItem>
             <Avatar>{statusIcon}</Avatar>
             <ListItemText primary={mappedStatus} secondary={strings.common.status} />

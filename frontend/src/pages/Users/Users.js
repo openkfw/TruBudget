@@ -70,7 +70,7 @@ const Users = props => {
           </div>
         ) : null}
         {tabIndex === 0 && <UsersTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
-        {tabIndex === 1 && <GroupTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
+        {tabIndex === 1 && <GroupTable {...props} />}
       </div>
       <DialogContainer {...props} />
     </div>

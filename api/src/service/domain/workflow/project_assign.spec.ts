@@ -25,6 +25,7 @@ const baseProject: Project = {
   permissions: { "project.assign": [alice, bob, charlie].map(x => x.id) },
   log: [],
   additionalData: {},
+  tags: [],
 };
 
 describe("assign project: authorization", () => {

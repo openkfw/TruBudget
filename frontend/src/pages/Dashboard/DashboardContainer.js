@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import { fetchNodeInformation } from './actions';
-import Dashboard from './Dashboard';
-import globalStyles from '../../styles.js';
+import { fetchNodeInformation } from "./actions";
+import Dashboard from "./Dashboard";
+import globalStyles from "../../styles.js";
 
 class DashboardContainer extends Component {
   componentWillMount() {
@@ -14,20 +14,20 @@ class DashboardContainer extends Component {
       <div style={globalStyles.innerContainer}>
         <Dashboard {...this.props} />
       </div>
-    )
+    );
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     fetchNodeInformation: () => dispatch(fetchNodeInformation())
   };
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    nodeInformation: state.getIn(['dashboard', 'nodeInformation']).toJS()
-  }
-}
+    nodeInformation: state.getIn(["dashboard", "nodeInformation"]).toJS()
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardContainer);

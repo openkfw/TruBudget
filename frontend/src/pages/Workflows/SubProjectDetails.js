@@ -33,7 +33,8 @@ const styles = {
     flexDirection: "row",
     width: "100%",
     marginBottom: "24px",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   card: {
     width: "100%",
@@ -44,7 +45,23 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    paddingTop: "18px"
+    paddingTop: "18px",
+    width: "32%"
+  },
+  subprojectDetails: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingTop: "18px",
+    width: "31%",
+    overflowWrap: "break-word"
+  },
+  subprojectAssignee: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingTop: "18px",
+    width: "31%"
   },
   analytics: {
     padding: "12px 0 "
@@ -93,8 +110,8 @@ const SubProjectDetails = ({
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
-        <List>
-          <ListItem>
+        <List style={styles.subprojectDetails}>
+          <ListItem data-test="subproject-details-displayname">
             {displayName ? <Avatar>{displayName[0]}</Avatar> : null}
             <ListItemText primary={displayName} secondary={description} />
           </ListItem>
@@ -113,7 +130,7 @@ const SubProjectDetails = ({
         </List>
         <div style={styles.projectedBudget}>
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
-          <Table>
+          <Table padding="none">
             <TableHead>
               <TableRow>
                 <TableCell>{strings.common.organization}</TableCell>
@@ -138,7 +155,7 @@ const SubProjectDetails = ({
             </Button>
           </div>
         </div>
-        <List>
+        <List style={styles.subprojectAssignee}>
           <ListItem>
             <Avatar>{statusIcon}</Avatar>
             <ListItemText primary={mappedStatus} secondary={strings.common.status} />

@@ -28,7 +28,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   permission: Joi.valid(globalIntents).required(),
   grantee: Joi.string().required(),
-});
+}).options({ stripUnknown: true });
 
 export function createEvent(
   source: string,

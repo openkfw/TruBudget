@@ -8,7 +8,7 @@ import strings from "../../localizeStrings";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
 import DocumentUpload from "../Documents/DocumentUpload";
 import Identifier from "../Common/Identifier";
-import { compareObjects, fromAmountString } from "../../helper";
+import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
 import _isEmpty from "lodash/isEmpty";
 
 const styles = {
@@ -29,7 +29,9 @@ const handleCreate = props => {
     status,
     documents
   );
-  storeSnackbarMessage(strings.common.created + " " + strings.common.workflowItem + " " + displayName);
+  storeSnackbarMessage(
+    strings.common.created + " " + strings.common.workflowItem + " " + shortenedDisplayName(displayName)
+  );
   onDialogCancel();
 };
 
@@ -57,7 +59,9 @@ const handleEdit = props => {
     }
     editWorkflowItem(projectId, subprojectId, workflowToAdd.id, changes);
   }
-  storeSnackbarMessage(strings.common.edited + " " + strings.common.workflowItem + " " + workflowToAdd.displayName);
+  storeSnackbarMessage(
+    strings.common.edited + " " + strings.common.workflowItem + " " + shortenedDisplayName(workflowToAdd.displayName)
+  );
   onDialogCancel();
 };
 

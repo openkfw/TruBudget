@@ -8,7 +8,7 @@
     "danger": "danger"
   },
   "devDependencies": {
-    "danger": "^7.1.3",
-    "lodash": "^4.17.11"
+    "danger": "^9.1.3",
+    "lodash": "^4.17.14"
   }
 }

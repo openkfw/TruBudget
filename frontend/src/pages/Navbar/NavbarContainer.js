@@ -2,7 +2,17 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 
-import { toggleSidebar, fetchActivePeers, createBackup, restoreBackup, fetchVersions, exportData } from "./actions";
+import {
+  toggleSidebar,
+  fetchActivePeers,
+  createBackup,
+  restoreBackup,
+  fetchVersions,
+  exportData,
+  storeSearchTerm,
+  storeSearchBarDisplayed,
+  setIsRoot
+} from "./actions";
 import { logout } from "../Login/actions";
 
 import FlyInNotifications from "../Notifications/FlyInNotifications";
@@ -14,6 +24,9 @@ class NavbarContainer extends Component {
   componentDidMount() {
     this.props.fetchActivePeers();
     this.props.fetchVersions();
+    if (this.props.userId === "root") {
+      this.props.setIsRoot(this.props.userId === "root");
+    }
   }
 
   render() {
@@ -38,7 +51,10 @@ const mapDispatchToProps = {
   createBackup,
   restoreBackup,
   fetchVersions,
-  exportData
+  exportData,
+  storeSearchTerm,
+  storeSearchBarDisplayed,
+  setIsRoot
 };
 
 const mapStateToProps = state => {
@@ -62,7 +78,10 @@ const mapStateToProps = state => {
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     groups: state.getIn(["login", "groups"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
-    latestFlyInId: state.getIn(["notifications", "latestFlyInId"])
+    latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
+    searchTerm: state.getIn(["navbar", "searchTerm"]),
+    searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
+    isRoot: state.getIn(["login", "isRoot"])
   };
 };
 

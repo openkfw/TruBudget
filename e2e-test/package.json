@@ -1,6 +1,6 @@
 {
   "name": "trubudget-e2e-test",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
   ],
   "main": "index.js",
   "devDependencies": {
-    "cypress": "^3.1.5",
+    "cypress": "^3.4.1",
     "cypress-file-upload": "^3.1.1",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.2.0",

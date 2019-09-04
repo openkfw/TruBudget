@@ -13,6 +13,10 @@ import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 export type Id = string;
 
 export const idSchema = Joi.string().max(32);
+export const tagsSchema = Joi.string()
+  .lowercase()
+  .regex(/^(\w+[_.-]*)+\w+$/)
+  .max(15);
 
 export interface Project {
   id: Id;
@@ -27,6 +31,7 @@ export interface Project {
   log: ProjectTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
+  tags: string[];
 }
 
 const schema = Joi.object({
@@ -49,6 +54,11 @@ const schema = Joi.object({
     .required()
     .items(projectTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
+  tags: Joi.array()
+    .items(tagsSchema)
+    .required()
+    .unique()
+    .default([]),
 });
 
 export function validate(input: any): Result.Type<Project> {

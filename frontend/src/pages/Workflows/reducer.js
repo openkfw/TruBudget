@@ -51,7 +51,9 @@ import {
   WORKFLOW_PURPOSE,
   WORKFLOW_STATUS,
   WORKFLOWITEMS_SELECTED,
-  OPEN_HISTORY
+  OPEN_HISTORY,
+  ADD_TEMPORARY_WORKFLOWITEM_PERMISSION,
+  REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION
 } from "./actions";
 
 const historyPageSize = 50;
@@ -83,6 +85,7 @@ const defaultState = fromJS({
   showWorkflowPermissions: false,
   workflowItemReference: "",
   permissions: {},
+  temporaryPermissions: {},
   creationDialogShown: false,
   showDetails: false,
   showDetailsItemId: "",
@@ -181,7 +184,8 @@ export default function detailviewReducer(state = defaultState, action) {
     case SHOW_WORKFLOWITEM_PERMISSIONS:
       return state.merge({
         workflowItemReference: action.wId,
-        permissions: fromJS({}),
+        permissions: defaultState.get("permissions"),
+        temporaryPermissions: defaultState.getIn("temporaryPermissions"),
         showWorkflowPermissions: true
       });
     case HIDE_WORKFLOWITEM_PERMISSIONS:
@@ -199,7 +203,9 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("isWorkflowitemAdditionalDataShown", false);
 
     case FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS:
-      return state.set("permissions", fromJS(action.permissions));
+      return state
+        .set("permissions", fromJS(action.permissions))
+        .set("temporaryPermissions", fromJS(action.permissions));
     case WORKFLOW_CREATION_STEP:
       return state.set("currentStep", action.step);
     case WORKFLOW_NAME:
@@ -327,6 +333,12 @@ export default function detailviewReducer(state = defaultState, action) {
       return defaultState;
     case OPEN_HISTORY:
       return state.set("showHistory", true).set("isHistoryLoading", true);
+    case ADD_TEMPORARY_WORKFLOWITEM_PERMISSION:
+      return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
+    case REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION:
+      return state.updateIn(["temporaryPermissions", action.permission], users =>
+        users.filter(user => user !== action.userId)
+      );
     default:
       return state;
   }

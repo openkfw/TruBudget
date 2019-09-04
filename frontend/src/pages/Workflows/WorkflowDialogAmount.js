@@ -112,7 +112,7 @@ class WorkflowDialogAmount extends Component {
       >
         <DropwDown
           style={{ minWidth: 160 }}
-          floatingLabel={strings.project.project_currency}
+          floatingLabel={strings.common.currency}
           value={workflowCurrency}
           onChange={value => {
             if (value === this.props.subProjectCurrency) {

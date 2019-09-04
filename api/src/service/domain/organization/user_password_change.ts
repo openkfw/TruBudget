@@ -19,7 +19,11 @@ export interface RequestData {
 
 const requestDataSchema = Joi.object({
   userId: UserRecord.idSchema.required(),
-  newPassword: Joi.string().required(),
+  newPassword: Joi.string()
+    .min(8)
+    .regex(/[a-zA-z]/)
+    .regex(/[0-9]/)
+    .required(),
 });
 
 export function validate(input: any): Result.Type<RequestData> {
@@ -40,10 +44,14 @@ export async function changeUserPassword(
 ): Promise<Result.Type<BusinessEvent[]>> {
   const source = ctx.source;
   const publisher = issuer.id;
+  const validationResult = validate(data);
   const passwordChanged = UserPasswordChanged.createEvent(source, publisher, {
     id: data.userId,
     passwordHash: await repository.hash(data.newPassword),
   });
+  if (Result.isErr(validationResult)) {
+    return new PreconditionError(ctx, passwordChanged, validationResult.message);
+  }
 
   const userResult = await repository.getUser(data.userId);
   if (Result.isErr(userResult)) {

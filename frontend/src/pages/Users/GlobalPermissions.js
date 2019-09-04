@@ -44,11 +44,12 @@ const renderPermissions = (
       const checked = globalPermissions[intent] ? globalPermissions[intent].includes(resourceId) : false;
       const isLoggedInUser = resourceId === loggedInUserId;
       const disabled = checked
-        ? (allowedIntents.includes("global.revokePermission") && !isLoggedInUser)
-        : (allowedIntents.includes("global.grantPermission")  && !isLoggedInUser)
+        ? allowedIntents.includes("global.revokePermission") && !isLoggedInUser
+        : allowedIntents.includes("global.grantPermission") && !isLoggedInUser;
       return (
         <FormControlLabel
           key={intent}
+          data-test={`permission-${intent}`}
           control={
             <Checkbox
               className={classes.checkbox}
@@ -56,8 +57,8 @@ const renderPermissions = (
               disabled={!disabled}
               onChange={() =>
                 globalPermissions[intent] && globalPermissions[intent].includes(resourceId)
-                  ? revokeGlobalPermission(resourceId, intent)
-                  : grantGlobalPermission(resourceId, intent)
+                  ? revokeGlobalPermission(intent, resourceId)
+                  : grantGlobalPermission(intent, resourceId)
               }
             />
           }
@@ -93,7 +94,7 @@ const GlobalPermissions = props => {
     loggedInUserId
   );
   return (
-    <div className={classes.root}>
+    <div className={classes.root} data-test="global-permissions-dialog">
       <div className={classes.detailsDiv}>{permissions}</div>
     </div>
   );

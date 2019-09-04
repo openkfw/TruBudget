@@ -23,6 +23,7 @@ import {
   setTabIndex,
   setUsername,
   showDashboardDialog,
+  showPasswordDialog,
   storeGroupId,
   storeGroupName
 } from "./actions";
@@ -55,7 +56,8 @@ const mapStateToProps = state => {
     groupToAdd: state.getIn(["users", "groupToAdd"]),
     editMode: state.getIn(["users", "editMode"]),
     editDialogShown: state.getIn(["users", "editDialogShown"]),
-    editId: state.getIn(["users", "editId"])
+    editId: state.getIn(["users", "editId"]),
+    isRoot: state.getIn(["navbar", "isRoot"])
   };
 };
 
@@ -82,6 +84,7 @@ const mapDispatchToProps = dispatch => {
     setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),
     grantAllUserPermissions: userId => dispatch(grantAllUserPermissions(userId)),
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId)),
+    showPasswordDialog: editId => dispatch(showPasswordDialog(editId)),
     listGlobalPermissions: () => dispatch(listPermissions()),
     checkAndChangeUserPassword: (actingUser, username, userPassword, newPassword) =>
       dispatch(checkAndChangeUserPassword(actingUser, username, userPassword, newPassword))

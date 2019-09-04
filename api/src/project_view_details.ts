@@ -56,6 +56,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         description: { type: "string", example: "A town should be built" },
                         assignee: { type: "string", example: "aSmith" },
                         thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                        tags: {
+                          type: "array",
+                          items: { type: "string", example: "/Thumbnail_0001.jpg" },
+                        },
                         projectedBudgets: {
                           type: "array",
                           items: {
@@ -110,6 +114,7 @@ interface ExposedProject {
       currencyCode: string;
     }>;
     additionalData: object;
+    tags?: string[];
   };
 }
 
@@ -186,6 +191,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             thumbnail: project.thumbnail,
             projectedBudgets: project.projectedBudgets,
             additionalData: project.additionalData,
+            tags: project.tags,
           },
         };
 

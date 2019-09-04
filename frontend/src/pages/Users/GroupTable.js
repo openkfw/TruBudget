@@ -1,17 +1,16 @@
-import React from "react";
+import Paper from "@material-ui/core/Paper";
+import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import IconButton from "@material-ui/core/IconButton";
-import Paper from "@material-ui/core/Paper";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-
-import _sortBy from "lodash/sortBy";
 import EditIcon from "@material-ui/icons/Edit";
+import _sortBy from "lodash/sortBy";
+import React from "react";
+
 import strings from "../../localizeStrings";
-import { withStyles } from "@material-ui/core/styles";
+import ActionButton from "../Common/ActionButton";
 
 const styles = {
   icon: {
@@ -21,7 +20,7 @@ const styles = {
 const sortGroups = groups => {
   return _sortBy(groups, group => group.id && group.displayName);
 };
-const GroupsTable = ({ groups, permissionIconDisplayed, showDashboardDialog, classes, allowedIntents }) => {
+const GroupsTable = ({ groups, showDashboardDialog, classes, allowedIntents }) => {
   const editGroupDisplayed = allowedIntents.includes("global.createGroup");
 
   const sortedGroups = sortGroups(groups);
@@ -47,16 +46,15 @@ const GroupsTable = ({ groups, permissionIconDisplayed, showDashboardDialog, cla
                 <TableCell>{group.displayName}</TableCell>
                 <TableCell>{group.users.length}</TableCell>
                 <TableCell>
-                  {editGroupDisplayed ? (
-                    <IconButton onClick={() => showDashboardDialog("editGroup", group.groupId)}>
-                      <EditIcon className={classes.icon} />
-                    </IconButton>
-                  ) : null}
-                  {permissionIconDisplayed ? (
-                    <IconButton onClick={() => showDashboardDialog("editGroupPermissions", group.groupId)}>
-                      <PermissionIcon className={classes.icon} />
-                    </IconButton>
-                  ) : null}
+                  <div style={{ display: "flex" }}>
+                    <ActionButton
+                      notVisible={!editGroupDisplayed}
+                      onClick={() => showDashboardDialog("editGroup", group.groupId)}
+                      title={strings.common.edit}
+                      icon={<EditIcon />}
+                      data-test={`edit-group-${group.groupId}`}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             );

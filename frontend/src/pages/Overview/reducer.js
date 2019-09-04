@@ -18,7 +18,11 @@ import {
   SHOW_EDIT_DIALOG,
   SHOW_PROJECT_PERMISSIONS,
   HIDE_PROJECT_ADDITIONAL_DATA,
-  SHOW_PROJECT_ADDITIONAL_DATA
+  SHOW_PROJECT_ADDITIONAL_DATA,
+  ADD_PROJECT_TAG,
+  REMOVE_PROJECT_TAG,
+  ADD_TEMPORARY_PROJECT_PERMISSION,
+  REMOVE_TEMPORARY_PROJECT_PERMISSION
 } from "./actions";
 
 const defaultState = fromJS({
@@ -31,10 +35,13 @@ const defaultState = fromJS({
     description: "",
     thumbnail: "/Thumbnail_0001.jpg",
     projectedBudgets: [],
-    deletedProjectedBudgets: []
+    deletedProjectedBudgets: [],
+    additionalData: {},
+    tags: []
   },
   idForPermissions: "",
   permissions: {},
+  temporaryPermissions: {},
   permissionDialogShown: false,
   currentStep: 0,
   initialFetch: false,
@@ -61,7 +68,8 @@ export default function overviewReducer(state = defaultState, action) {
           .set("displayName", action.displayName)
           .set("description", action.description)
           .set("thumbnail", action.thumbnail)
-          .set("projectedBudgets", fromJS(action.projectedBudgets)),
+          .set("projectedBudgets", fromJS(action.projectedBudgets))
+          .set("tags", fromJS(action.tags)),
         currentStep: action.currentStep,
         editDialogShown: true
       });
@@ -71,7 +79,8 @@ export default function overviewReducer(state = defaultState, action) {
       return state.merge({
         idForPermissions: defaultState.get("id"),
         permissionDialogShown: false,
-        permissions: fromJS({})
+        permissions: defaultState.get("permissions"),
+        temporaryPermissions: defaultState.get("temporaryPermissions")
       });
     case SHOW_PROJECT_ADDITIONAL_DATA:
       return state.merge({
@@ -89,7 +98,9 @@ export default function overviewReducer(state = defaultState, action) {
       });
 
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:
-      return state.set("permissions", fromJS(action.permissions));
+      return state
+        .set("permissions", fromJS(action.permissions))
+        .set("temporaryPermissions", fromJS(action.permissions));
     case PROJECT_NAME:
       return state.setIn(["projectToAdd", "displayName"], action.name);
     case PROJECT_PROJECTED_BUDGET:
@@ -113,6 +124,17 @@ export default function overviewReducer(state = defaultState, action) {
       return newState;
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
+    case ADD_PROJECT_TAG: {
+      const tags = state.getIn(["projectToAdd", "tags"]) || [];
+      if (!tags.some(tag => tag === action.tag)) {
+        return state.setIn(["projectToAdd", "tags"], [...tags, action.tag]);
+      }
+      return state;
+    }
+    case REMOVE_PROJECT_TAG: {
+      const tags = state.getIn(["projectToAdd", "tags"]);
+      return state.setIn(["projectToAdd", "tags"], tags.filter(tag => tag !== action.tag));
+    }
     case PROJECT_THUMBNAIL:
       return state.setIn(["projectToAdd", "thumbnail"], action.thumbnail);
     case CREATE_PROJECT_SUCCESS:
@@ -123,6 +145,12 @@ export default function overviewReducer(state = defaultState, action) {
       return state.merge({
         projects: fromJS(action.projects)
       });
+    case ADD_TEMPORARY_PROJECT_PERMISSION:
+      return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
+    case REMOVE_TEMPORARY_PROJECT_PERMISSION:
+      return state.updateIn(["temporaryPermissions", action.permission], users =>
+        users.filter(user => user !== action.userId)
+      );
     case LOGOUT:
       return defaultState;
     default:

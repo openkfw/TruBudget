@@ -52,7 +52,7 @@ class SubProjectContainer extends Component {
   };
 
   render() {
-    const canCreateSubproject = canCreateSubProject(this.props.allowedIntents);
+    const canCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = canCloseProject(this.props.allowedIntents);
     const projectId = this.projectId;
@@ -121,17 +121,18 @@ const mapStateToProps = state => {
     projectAssignee: state.getIn(["detailview", "projectAssignee"]),
     projectTS: state.getIn(["detailview", "projectTS"]),
     projectProjectedBudgets: state.getIn(["detailview", "projectProjectedBudgets"]),
+    projectTags: state.getIn(["detailview", "projectTags"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
     showProjectAssignees: state.getIn(["detailview", "showProjectAssignees"]),
     showHistory: state.getIn(["notifications", "showHistory"]),
     loggedInUser: state.getIn(["login", "loggedInUser"]),
     roles: state.getIn(["login", "roles"]),
-    user: state.getIn(["login", "user"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     thumbnail: state.getIn(["detailview", "thumbnail"]),
     projectedBudgets: state.getIn(["detailview", "projectedBudgets"]),
     isSubProjectAdditionalDataShown: state.getIn(["detailview", "isSubProjectAdditionalDataShown"]),
-    idForInfo: state.getIn(["detailview", "idForInfo"])
+    idForInfo: state.getIn(["detailview", "idForInfo"]),
+    isRoot: state.getIn(["navbar", "isRoot"])
   };
 };
 

@@ -1,4 +1,4 @@
-describe("Workflowitem's history", function() {
+describe("Workflowitem edit", function() {
   let projectId;
   let subprojectId;
 
@@ -35,7 +35,7 @@ describe("Workflowitem's history", function() {
     cy.get("[data-test=rateinput] input").should("be.disabled");
   });
 
-  it("After selecting another currencty, the exchange rate can be entered and is saved correctly", function() {
+  it("After selecting another currency, the exchange rate can be entered and is saved correctly", function() {
     // Create a workflow item
     cy.get("[data-test=createWorkflowitem]").click();
     cy.get("[data-test=nameinput] input").type("Test");
@@ -112,4 +112,34 @@ describe("Workflowitem's history", function() {
       cy.get("[data-test=cancel]").click();
     }
   );
+});
+
+describe("Workflowitem create", function() {
+  let projectId;
+  let subprojectId;
+
+  before(() => {
+    cy.login();
+
+    cy.createProject("workflowitem create test project", "workflowitem create test", [])
+      .then(({ id }) => {
+        projectId = id;
+        return cy.createSubproject(projectId, "workflowitem create test", "EUR");
+      })
+      .then(({ id }) => {
+        subprojectId = id;
+      });
+    cy.login();
+    cy.visit(`/projects/${projectId}/${subprojectId}`);
+  });
+
+  it("Root can not create a Workflowitem", function() {
+    cy.login("root", "root-secret");
+    cy.visit(`/projects/${projectId}/${subprojectId}`);
+
+    // When root is logged in the create workflow item button
+    // is disabled
+    cy.get("[data-test=createWorkflowitem]").should("be.visible");
+    cy.get("[data-test=createWorkflowitem]").should("be.disabled");
+  });
 });

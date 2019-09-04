@@ -2666,7 +2666,7 @@ const schemas = {
         properties: {
           beforeId: {
             type: "string",
-            example: "9452eaa6-f28b-455c-bcb8-1ea0bc57946d",
+            example: "2cfd0663-1770-4184-974e-63129061d389",
           },
         },
       },
@@ -2893,7 +2893,7 @@ const schemas = {
             type: "object",
             additionalProperties: false,
             properties: {
-              notificationId: { type: "string", example: "c9a6d74d-9508-4960-b39e-72f90f292b74" },
+              notificationId: { type: "string", example: "2cfd0663-1770-4184-974e-63129061d389" },
             },
             required: ["notificationId"],
           },
@@ -2936,7 +2936,7 @@ const schemas = {
             properties: {
               notificationIds: {
                 type: "array",
-                items: { type: "string", example: "c9a6d74d-9508-4960-b39e-72f90f292b74" },
+                items: { type: "string", example: "2cfd0663-1770-4184-974e-63129061d389" },
               },
             },
             required: ["notificationIds"],

@@ -91,7 +91,7 @@ The next step is to setup your first user.
 
 Your first step is creating a new user. Follow the instruction on [User-Guide: Setup a User](./doc/wiki/User-Guide/Users-Groups/User.md). Don't forget to grant permissions to your users.
 
-Now you can create you first project, subproject and workflow items following the [User-Guide: Ressources](./doc/wiki/User-Guide#projects).
+Now you can create you first project, subproject and workflow items following the [User-Guide: Resources](./doc/wiki/User-Guide#projects).
 
 TruBudget is a distributed platform built on Blockchain, so let's add a new node to our network!
 

@@ -5,15 +5,6 @@ const currencies = {
   XOF: { symbol: "CFA", format: "%s %v" }
 };
 
-function clickEditProject(projectName) {
-  cy.get("[aria-label=project]")
-    .contains(projectName)
-    .parents()
-    .filter("[aria-label=project]")
-    .find("[data-test^='pe-button']")
-    .click();
-}
-
 const currenciesArray = Object.keys(currencies);
 const standardBudget = [
   {
@@ -32,6 +23,10 @@ describe("Overview Page", function() {
   it("Shows all the currencies dropdown when creating a project", function() {
     cy.get("[data-test=create-project-button]").click();
     cy.get("[data-test=creation-dialog]").should("be.visible");
+
+    // Type in organization name to activate currency dropdown
+    cy.get("[data-test=organizationinput").type("Test");
+
     cy.get("[data-test=dropdown-currencies]").should("be.visible");
     cy.get("[data-test=dropdown-currencies-click]").click();
     currenciesArray.forEach(currency => {
@@ -44,6 +39,10 @@ describe("Overview Page", function() {
   it("Selects every currency successively", function() {
     cy.get("[data-test=create-project-button]").click();
     cy.get("[data-test=creation-dialog]").should("be.visible");
+
+    // Type in organization name to activate currency dropdown
+    cy.get("[data-test=organizationinput").type("Test");
+
     cy.get("[data-test=dropdown-currencies]").should("be.visible");
     cy.get("[data-test=dropdown-currencies-click]").click();
     currenciesArray.forEach(currency => {
@@ -61,11 +60,9 @@ describe("Overview Page", function() {
     //Fetch projects to get newest one
     cy.reload();
 
-    cy.get("[aria-label=project]")
-      .contains("Test")
-      .parents()
-      .filter("[aria-label=project]")
-      .find("[data-test=projectbudget]")
+    cy.get("[data-test*=project-card]")
+      .last()
+      .find("[data-test=project-budget]")
       .should("contain", currencies.EUR.symbol);
   });
 });

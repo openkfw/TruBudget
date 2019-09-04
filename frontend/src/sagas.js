@@ -393,7 +393,14 @@ export function* fetchVersionsSaga() {
 
 export function* createProjectSaga(action) {
   yield execute(function*() {
-    yield callApi(api.createProject, action.name, action.comment, action.thumbnail, action.projectedBudgets);
+    yield callApi(
+      api.createProject,
+      action.name,
+      action.comment,
+      action.thumbnail,
+      action.projectedBudgets,
+      action.tags
+    );
     yield showSnackbarSuccess();
     yield put({
       type: CREATE_PROJECT_SUCCESS

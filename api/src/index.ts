@@ -223,20 +223,41 @@ registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, () =>
  */
 
 GlobalPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
-  grantGlobalPermission: (ctx, user, grantee, permission) =>
-    GlobalPermissionGrantService.grantGlobalPermission(db, ctx, user, grantee, permission),
+  grantGlobalPermission: (ctx, user, userOrganization, grantee, permission) =>
+    GlobalPermissionGrantService.grantGlobalPermission(
+      db,
+      ctx,
+      user,
+      userOrganization,
+      grantee,
+      permission,
+    ),
 });
 
 GlobalPermissionsGrantAllAPI.addHttpHandler(server, URL_PREFIX, {
   getGlobalPermissions: (ctx, user) =>
     GlobalPermissionsGetService.getGlobalPermissions(db, ctx, user),
-  grantGlobalPermissions: (ctx, user, grantee, permission) =>
-    GlobalPermissionGrantService.grantGlobalPermission(db, ctx, user, grantee, permission),
+  grantGlobalPermissions: (ctx, user, userOrganization, grantee, permission) =>
+    GlobalPermissionGrantService.grantGlobalPermission(
+      db,
+      ctx,
+      user,
+      userOrganization,
+      grantee,
+      permission,
+    ),
 });
 
 GlobalPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
-  revokeGlobalPermission: (ctx, user, revokee, permission) =>
-    GlobalPermissionRevokeService.revokeGlobalPermission(db, ctx, user, revokee, permission),
+  revokeGlobalPermission: (ctx, user, userOrganization, revokee, permission) =>
+    GlobalPermissionRevokeService.revokeGlobalPermission(
+      db,
+      ctx,
+      user,
+      userOrganization,
+      revokee,
+      permission,
+    ),
 });
 
 GlobalPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {

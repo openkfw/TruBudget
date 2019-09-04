@@ -1,9 +1,8 @@
-import { withStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Chip from "@material-ui/core/Chip";
-import IconButton from "@material-ui/core/IconButton";
+import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -20,10 +19,32 @@ import React from "react";
 import { statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
 import { canEditSubProject, canViewSubProjectDetails, canViewSubProjectPermissions } from "../../permissions";
+import ActionButton from "../Common/ActionButton";
 
 const styles = {
+  subprojectTable: {
+    tableLayout: "fixed"
+  },
   tableText: {
     fontSize: "14px"
+  },
+  displayName: {
+    fontSize: "14px",
+    width: "40%",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  },
+  projectdBudget: {
+    fontSize: "14px",
+    width: "20%"
+  },
+  status: {
+    fontSize: "14px",
+    width: "20%"
+  },
+  actions: {
+    fontSize: "14px",
+    width: "20%"
   },
   buttonContainer: {
     display: "flex",
@@ -101,71 +122,48 @@ const getTableEntries = (
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
         <TableRow key={index}>
-          <TableCell className={classes.tableText}>{displayName}</TableCell>
-          <TableCell className={classes.tableText}>{amountString}</TableCell>
-          <TableCell className={classes.tableText}>{statusMapping(status)}</TableCell>
-          <TableCell>
+          <TableCell className={classes.displayName}>{displayName}</TableCell>
+          <TableCell className={classes.projectdBudget}>{amountString}</TableCell>
+          <TableCell className={classes.status}>{statusMapping(status)}</TableCell>
+          <TableCell className={classes.actions}>
             <div className={classes.buttonContainer}>
               <div className={classes.button}>
-                {!additionalDataEmpty ? (
-                  <Tooltip id="tooltip-additionalData" title="Additional Data">
-                    <div>
-                      <IconButton
-                        data-test={`adata-button-${index}`}
-                        onClick={() => {
-                          showSubProjectAdditionalData(id);
-                        }}
-                        disabled={false}
-                      >
-                        <MoreIcon />
-                      </IconButton>
-                    </div>
-                  </Tooltip>
-                ) : null}
+                <ActionButton
+                  notVisible={additionalDataEmpty}
+                  onClick={() => {
+                    showSubProjectAdditionalData(id);
+                  }}
+                  title="Additional Data"
+                  icon={<MoreIcon />}
+                  data-test={`subproject-additionaldata-${index}`}
+                />
               </div>
               <div className={classes.button}>
-                {isOpen && !editDisabled ? (
-                  <Tooltip id="tooltip-pedit" title={strings.common.edit}>
-                    <div>
-                      <IconButton
-                        disabled={editDisabled}
-                        onClick={() => showEditDialog(id, displayName, description, currency, projectedBudgets)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </div>
-                  </Tooltip>
-                ) : null}
+                <ActionButton
+                  notVisible={!isOpen && editDisabled}
+                  onClick={() => showEditDialog(id, displayName, description, currency, projectedBudgets)}
+                  title={strings.common.edit}
+                  icon={<EditIcon />}
+                  data-test={`subproject-edit-button-${index}`}
+                />
               </div>
               <div className={classes.button}>
-                {canViewPermissions ? (
-                  <Tooltip id="tooltip-ppermissions" title={strings.common.show_permissions}>
-                    <div>
-                      <IconButton
-                        data-test={"spp-button-" + index}
-                        disabled={!canViewPermissions}
-                        onClick={() => showSubProjectPermissions(id)}
-                        variant="contained"
-                      >
-                        <PermissionIcon />
-                      </IconButton>
-                    </div>
-                  </Tooltip>
-                ) : null}
+                <ActionButton
+                  notVisible={!canViewPermissions}
+                  onClick={() => showSubProjectPermissions(id)}
+                  title={strings.common.show_permissions}
+                  icon={<PermissionIcon />}
+                  data-test={"spp-button-" + index}
+                />
               </div>
               <div className={classes.button}>
-                {canViewSubProjectDetails(allowedIntents) ? (
-                  <Tooltip id="tooltip-inspect" title={strings.common.view}>
-                    <div>
-                      <IconButton
-                        disabled={!canViewSubProjectDetails(allowedIntents)}
-                        onClick={() => history.push("/projects/" + location.pathname.split("/")[2] + "/" + id)}
-                      >
-                        <LaunchIcon />
-                      </IconButton>
-                    </div>
-                  </Tooltip>
-                ) : null}
+                <ActionButton
+                  notVisible={!canViewSubProjectDetails(allowedIntents)}
+                  onClick={() => history.push("/projects/" + location.pathname.split("/")[2] + "/" + id)}
+                  title={strings.common.view}
+                  icon={<LaunchIcon />}
+                  data-test={`subproject-view-details-${index}`}
+                />
               </div>
             </div>
           </TableCell>
@@ -199,13 +197,13 @@ const SubProjectTable = ({
   return (
     <Card>
       <CardHeader title={strings.common.subprojects} />
-      <Table data-test="ssp-table">
+      <Table data-test="ssp-table" className={classes.subprojectTable}>
         <TableHead>
           <TableRow>
-            <TableCell className={classes.tableText}>{strings.common.subproject}</TableCell>
-            <TableCell className={classes.tableText}>{strings.common.projected_budget}</TableCell>
-            <TableCell className={classes.tableText}>{strings.common.status}</TableCell>
-            <TableCell className={classes.tableText}> </TableCell>
+            <TableCell className={classes.displayName}>{strings.common.subproject}</TableCell>
+            <TableCell className={classes.projectdBudget}>{strings.common.projected_budget}</TableCell>
+            <TableCell className={classes.status}>{strings.common.status}</TableCell>
+            <TableCell className={classes.actions}> </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{tableEntries}</TableBody>

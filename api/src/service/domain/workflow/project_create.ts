@@ -31,6 +31,7 @@ export interface RequestData {
   thumbnail?: string;
   projectedBudgets?: ProjectedBudget[];
   additionalData?: AdditionalData.AdditionalData;
+  tags?: string[];
 }
 
 const requestDataSchema = Joi.object({
@@ -42,6 +43,7 @@ const requestDataSchema = Joi.object({
   thumbnail: Joi.string().allow(""),
   projectedBudgets: projectedBudgetListSchema,
   additionData: AdditionalData.schema,
+  tags: Joi.array().items(Project.tagsSchema),
 });
 
 export function validate(input: any): Result.Type<RequestData> {
@@ -73,6 +75,7 @@ export async function createProject(
     projectedBudgets: data.projectedBudgets || [],
     permissions: newDefaultPermissionsFor(creatingUser),
     additionalData: data.additionalData || {},
+    tags: data.tags || [],
   });
 
   // Make sure for each organization and currency there is only one entry:
@@ -103,6 +106,13 @@ export async function createProject(
         errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: permissions })],
       };
     }
+  } else {
+    return {
+      newEvents: [],
+      errors: [
+        new PreconditionError(ctx, createEvent, "user 'root' is not allowed to create projects"),
+      ],
+    };
   }
 
   // Check that the event is valid:
