@@ -4,7 +4,10 @@ import Immutable, { fromJS } from "immutable";
 import strings from "../../localizeStrings";
 import { LOGOUT } from "../Login/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
+import { FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
+import { FETCH_SUBPROJECT_PERMISSIONS, FETCH_SUBPROJECT_PERMISSIONS_SUCCESS } from "../SubProjects/actions";
 import {
+  ADD_TEMPORARY_WORKFLOWITEM_PERMISSION,
   ASSIGN_WORKFLOWITEM_SUCCESS,
   CREATE_WORKFLOW_SUCCESS,
   DEFAULT_WORKFLOW_EXCHANGERATE,
@@ -12,34 +15,42 @@ import {
   EDIT_WORKFLOW_ITEM_SUCCESS,
   ENABLE_BUDGET_EDIT,
   ENABLE_WORKFLOW_EDIT,
+  FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
-  SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
-  FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
+  FETCH_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
   HIDE_SUBPROJECT_ASSIGNEES,
+  HIDE_SUBPROJECT_CONFIRMATION_DIALOG,
   HIDE_WORKFLOW_DETAILS,
   HIDE_WORKFLOW_DIALOG,
   HIDE_WORKFLOW_PREVIEW,
-  HIDE_WORKFLOWITEM_PERMISSIONS,
   HIDE_WORKFLOWITEM_ADDITIONAL_DATA,
+  HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG,
+  HIDE_WORKFLOWITEM_PERMISSIONS,
+  OPEN_HISTORY,
+  REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION,
   RESET_SUCCEEDED_WORKFLOWITEMS,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   SAVE_WORKFLOW_ITEM_BEFORE_SORT,
+  SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
   SET_WORKFLOW_DRAWER_PERMISSIONS,
   SHOW_SUBPROJECT_ASSIGNEES,
+  SHOW_SUBPROJECT_CONFIRMATION_DIALOG,
   SHOW_WORKFLOW_CREATE,
   SHOW_WORKFLOW_DETAILS,
   SHOW_WORKFLOW_EDIT,
   SHOW_WORKFLOW_PREVIEW,
-  SHOW_WORKFLOWITEM_PERMISSIONS,
   SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
+  SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
+  SHOW_WORKFLOWITEM_PERMISSIONS,
   STORE_WORKFLOW_ASSIGNEE,
   STORE_WORKFLOWACTIONS,
   SUBMIT_BATCH_FOR_WORKFLOW,
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
   SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
+  TRIGGER_SUBPROJECT_APPLY_ACTIONS,
   UPDATE_WORKFLOW_ORDER,
   WORKFLOW_AMOUNT,
   WORKFLOW_AMOUNT_TYPE,
@@ -50,10 +61,7 @@ import {
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
   WORKFLOW_STATUS,
-  WORKFLOWITEMS_SELECTED,
-  OPEN_HISTORY,
-  ADD_TEMPORARY_WORKFLOWITEM_PERMISSION,
-  REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION
+  WORKFLOWITEMS_SELECTED
 } from "./actions";
 
 const historyPageSize = 50;
@@ -84,7 +92,7 @@ const defaultState = fromJS({
   },
   showWorkflowPermissions: false,
   workflowItemReference: "",
-  permissions: {},
+  permissions: { project: {}, subproject: {}, workflowitem: {}, workflowitemId: "" },
   temporaryPermissions: {},
   creationDialogShown: false,
   showDetails: false,
@@ -116,7 +124,25 @@ const defaultState = fromJS({
   submitDone: false,
   submitInProgress: false,
   idForInfo: "",
-  isWorkflowitemAdditionalDataShown: false
+  isWorkflowitemAdditionalDataShown: false,
+  confirmation: {
+    subproject: {
+      visible: false,
+      actions: [],
+      assignee: { id: "", displayName: "" }
+    },
+    workflowitem: {
+      visible: false,
+      id: "",
+      actions: [],
+      assignee: { id: "", displayName: "" }
+    }
+  },
+  isFetchingProjectPermissions: false,
+  isFetchingSubProjectPermissions: false,
+  isFetchingWorkflowitemPermissions: false,
+  permittedToGrant: false,
+  applyActions: true
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -191,7 +217,8 @@ export default function detailviewReducer(state = defaultState, action) {
     case HIDE_WORKFLOWITEM_PERMISSIONS:
       return state.merge({
         workflowItemReference: defaultState.getIn(["workflowItemReference"]),
-        showWorkflowPermissions: false
+        showWorkflowPermissions: defaultState.getIn(["showWorkflowPermissions"]),
+        permissions: defaultState.getIn(["permissions"])
       });
 
     case SHOW_WORKFLOWITEM_ADDITIONAL_DATA:
@@ -201,11 +228,27 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case HIDE_WORKFLOWITEM_ADDITIONAL_DATA:
       return state.set("isWorkflowitemAdditionalDataShown", false);
-
+    case FETCH_PROJECT_PERMISSIONS:
+      return state.set("isFetchingProjectPermissions", true);
+    case FETCH_PROJECT_PERMISSIONS_SUCCESS:
+      return state
+        .setIn(["permissions", "project"], fromJS(action.permissions))
+        .set("isFetchingProjectPermissions", false);
+    case FETCH_SUBPROJECT_PERMISSIONS:
+      return state.set("isFetchingSubprojectPermissions", true);
+    case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
+      return state
+        .setIn(["permissions", "subproject"], fromJS(action.permissions))
+        .set("isFetchingSubprojectPermissions", false);
+    case FETCH_WORKFLOWITEM_PERMISSIONS:
+      return state
+        .set("isFetchingWorkflowitemPermissions", true)
+        .setIn(["permissions", "workflowitemId"], action.workflowitemId);
     case FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS:
       return state
-        .set("permissions", fromJS(action.permissions))
-        .set("temporaryPermissions", fromJS(action.permissions));
+        .setIn(["permissions", "workflowitem"], fromJS(action.permissions))
+        .set("temporaryPermissions", fromJS(action.permissions))
+        .set("isFetchingWorkflowitemPermissions", false);
     case WORKFLOW_CREATION_STEP:
       return state.set("currentStep", action.step);
     case WORKFLOW_NAME:
@@ -285,6 +328,39 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         submitInProgress: true
       });
+    case SHOW_SUBPROJECT_CONFIRMATION_DIALOG:
+      return state.merge({
+        confirmation: {
+          subproject: {
+            visible: true,
+            actions: fromJS(action.actions),
+            assignee: fromJS(action.assignee)
+          },
+          workflowitem: defaultState.getIn(["confirmation", "workflowitem"])
+        },
+        permittedToGrant: action.permittedToGrant,
+        applyActions: true
+      });
+    case HIDE_SUBPROJECT_CONFIRMATION_DIALOG:
+      return state.set("confirmation", defaultState.get("confirmation"));
+    case SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG:
+      return state.merge({
+        confirmation: {
+          subproject: defaultState.getIn(["confirmation", "subproject"]),
+          workflowitem: {
+            visible: true,
+            id: action.id,
+            actions: fromJS(action.actions),
+            assignee: fromJS(action.assignee)
+          }
+        },
+        permittedToGrant: action.permittedToGrant,
+        applyActions: true
+      });
+    case HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG:
+      return state.set("confirmation", defaultState.get("confirmation"));
+    case TRIGGER_SUBPROJECT_APPLY_ACTIONS:
+      return state.set("applyActions", !state.get("applyActions"));
     case UPDATE_WORKFLOW_ORDER:
       return state.merge({
         workflowItems: fromJS(action.workflowItems)

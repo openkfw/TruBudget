@@ -38,7 +38,7 @@ const mapStateToProps = state => {
     tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
     tempDrawerAssignee: state.getIn(["workflow", "tempDrawerAssignee"]),
     currentWorkflowitemPermissions: state.getIn(["workflow", "permissions"]),
-    permissions: state.getIn(["workflow", "permissions"]),
+    permissions: state.getIn(["workflow", "permissions", "workflowitem"]),
     users: state.getIn(["login", "user"]),
     workflowActions: state.getIn(["workflow", "workflowActions"]),
     submittedWorkflowItems: state.getIn(["workflow", "submittedWorkflowItems"]),

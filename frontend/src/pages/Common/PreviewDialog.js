@@ -54,7 +54,9 @@ const getDialogActions = props => {
   );
   const progressInfo = (
     <Typography key="progressInfo" style={{ flex: 1 }}>
-      {strings.formatString(strings.preview.actions_done, nSubmittedItems, nItemsToSubmit)}
+      {nItemsToSubmit !== undefined
+        ? strings.formatString(strings.preview.actions_done, nSubmittedItems, nItemsToSubmit)
+        : null}
     </Typography>
   );
   const leftActions = <div key="leftactions">{cancelButton}</div>;

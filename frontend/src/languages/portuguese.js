@@ -23,12 +23,14 @@ const pt = {
     comment: "Comentário",
     comment_description: "Adicione comentário",
     completion: "Conclusão",
+    confirm: "Confirme",
     create: "Criar",
     created: "Data de criação",
     currency: "Moeda",
     disbursed_budget: "Desembolsado",
     disbursement: "Projetado",
     disconnected: "Desligada",
+    display_name: "Mostrar nome",
     done: "Finalizar",
     edit: "Editar",
     edited: "Editado",
@@ -230,6 +232,11 @@ const pt = {
     possible_action: "Ações possíveis",
     not_possible_action: "Não há ações possíveis",
     actions_done: "{0} de {1} ações realizadas"
+  },
+
+  confirmation: {
+    assigning_text: "Se {0} for designado, {0} requer permissões adicionais para visualizar o recurso.:",
+    view_permissions_title: "Conceder permissões de visualização"
   },
 
   analytics: {

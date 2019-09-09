@@ -12,7 +12,7 @@ import React from "react";
 
 import { formattedTag, statusMapping, toAmountString, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canCreateProject, canEditProject, canViewProjectPermissions } from "../../permissions";
+import { canCreateProject, canUpdateProject, canViewProjectPermissions } from "../../permissions";
 import ProjectCard from "./ProjectCard";
 
 const styles = {
@@ -150,7 +150,7 @@ const getTableEntries = ({
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = unixTsToString(creationUnixTs);
     const isOpen = status !== "closed";
-    const editDisabled = !(canEditProject(allowedIntents) && isOpen);
+    const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
     const displayedTags = displayTags(tags || []);

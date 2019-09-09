@@ -52,6 +52,14 @@ export const REVOKE_SUBPROJECT_PERMISSION_SUCCESS = "REVOKE_SUBPROJECT_PERMISSIO
 export const FETCH_SUBPROJECT_PERMISSIONS = "FETCH_SUBPROJECT_PERMISSIONS";
 export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSIONS_SUCCESS";
 
+export const SHOW_PROJECT_CONFIRMATION_DIALOG = "SHOW_PROJECT_CONFIRMATION_DIALOG";
+export const HIDE_PROJECT_CONFIRMATION_DIALOG = "HIDE_PROJECT_CONFIRMATION_DIALOG";
+export const TRIGGER_APPLY_ACTIONS = "TRIGGER_APPLY_ACTIONS";
+
+export const EXECUTE_CONFIRMED_ACTIONS = "EXECUTE_CONFIRMED_ACTIONS";
+export const EXECUTE_CONFIRMED_ACTIONS_FAILURE = "EXECUTE_CONFIRMED_ACTIONS_FAILURE";
+export const EXECUTE_CONFIRMED_ACTIONS_SUCCESS = "EXECUTE_CONFIRMED_ACTIONS_SUCCESS";
+
 export const LIVE_UPDATE_PROJECT = "LIVE_UPDATE_PROJECT";
 
 export const OPEN_HISTORY = "OPEN_HISTORY";
@@ -265,6 +273,35 @@ export function showHistory() {
   };
 }
 
+export function triggerApplyActions() {
+  return {
+    type: TRIGGER_APPLY_ACTIONS
+  };
+}
+
+export function showProjectConfirmationDialog(actions, assignee, permittedToGrant = false) {
+  return {
+    type: SHOW_PROJECT_CONFIRMATION_DIALOG,
+    actions,
+    assignee,
+    permittedToGrant
+  };
+}
+export function hideProjectConfirmationDialog() {
+  return {
+    type: HIDE_PROJECT_CONFIRMATION_DIALOG
+  };
+}
+
+export function executeConfirmedActions(actions, projectId = "", subprojectId = "", showLoading = false) {
+  return {
+    type: EXECUTE_CONFIRMED_ACTIONS,
+    actions,
+    projectId,
+    subprojectId,
+    showLoading
+  };
+}
 export function addTemporaryPermission(permission, userId) {
   return {
     type: ADD_TEMPORARY_SUBPROJECT_PERMISSION,

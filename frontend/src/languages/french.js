@@ -23,12 +23,14 @@ const fr = {
     comment: "Commentaire",
     comment_description: "Ajouter des commentaires",
     completion: "Achèvement",
+    confirm: "Confirmer",
     create: "Créer",
     created: "Créé",
     currency: "Devise",
     disbursed_budget: "Budget décaissé",
     disbursement: "Décaissements prévus",
     disconnected: "Déconnecté",
+    display_name: "Afficher un nom",
     done: "Terminé",
     edit: "Modifier",
     edited: "Modifié",
@@ -231,6 +233,12 @@ const fr = {
     possible_action: "Actions possibles",
     not_possible_action: "Actions impossibles",
     actions_done: "{0} de {1} actions realisées"
+  },
+  confirmation: {
+    grant_and_assign: "Grant & Assign",
+    assigning_text:
+      "Si {0} doit être attribué, {0} nécessite des autorisations supplémentaires pour afficher la ressource.:",
+    view_permissions_title: "Accorder des autorisations d'affichage?"
   },
 
   analytics: {

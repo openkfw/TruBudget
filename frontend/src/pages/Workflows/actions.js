@@ -106,6 +106,12 @@ export const HAVE_WORKFLOW_ITEM_CHANGED = "HAVE_WORKFLOW_ITEM_CHANGED";
 
 export const LIVE_UPDATE_SUBPROJECT = "LIVE_UPDATE_SUBPROJECT";
 
+export const TRIGGER_SUBPROJECT_APPLY_ACTIONS = "TRIGGER_SUBPROJECT_APPLY_ACTIONS";
+export const SHOW_SUBPROJECT_CONFIRMATION_DIALOG = "SHOW_SUBPROJECT_CONFIRMATION_DIALOG";
+export const HIDE_SUBPROJECT_CONFIRMATION_DIALOG = "HIDE_SUBPROJECT_CONFIRMATION_DIALOG";
+
+export const SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG = "SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG";
+export const HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG = "HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG";
 export const ADD_TEMPORARY_WORKFLOWITEM_PERMISSION = "ADD_TEMPORARY_WORKFLOWITEM_PERMISSION";
 export const REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION = " REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION";
 
@@ -549,6 +555,44 @@ export function showHistory() {
 export function hideHistory() {
   return {
     type: HIDE_HISTORY
+  };
+}
+
+export function triggerApplyActions() {
+  return {
+    type: TRIGGER_SUBPROJECT_APPLY_ACTIONS
+  };
+}
+
+export function showSubprojectConfirmationDialog(actions, assignee, permittedToGrant = false) {
+  return {
+    type: SHOW_SUBPROJECT_CONFIRMATION_DIALOG,
+    actions,
+    assignee,
+    permittedToGrant
+  };
+}
+export function hideSubprojectConfirmationDialog(actions = [], assignee = "") {
+  return {
+    type: HIDE_SUBPROJECT_CONFIRMATION_DIALOG,
+    actions,
+    assignee
+  };
+}
+export function showWorkflowitemConfirmationDialog(workflowitemId, actions, assignee, permittedToGrant = false) {
+  return {
+    type: SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
+    id: workflowitemId,
+    actions,
+    assignee,
+    permittedToGrant
+  };
+}
+export function hideWorkflowitemConfirmationDialog(actions = [], assignee = "") {
+  return {
+    type: HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG,
+    actions,
+    assignee
   };
 }
 

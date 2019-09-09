@@ -23,12 +23,14 @@ const de = {
     comment: "Kommentar",
     comment_description: "Add some comments",
     completion: "German: Completion",
+    confirm: "Bestätigen",
     create: "German: Create",
     created: "Created",
     currency: "Währung",
     disbursed_budget: "Disbursed Budget",
     disbursement: "Disbursement",
     disconnected: "Offline",
+    display_name: "Anzeige-Name",
     done: "Done",
     edit: "German: Edit",
     edited: "German: Edited",
@@ -229,6 +231,12 @@ const de = {
     possible_action: "German: Possible actions",
     not_possible_action: "German: Not possible actions",
     actions_done: "German: {0} from {1} actions done"
+  },
+
+  confirmation: {
+    assigning_text:
+      "Wenn {0} zugewiesen werden soll, benötigt {0} zusätzliche Berechtigungen um die Ressource anzeigen zu können:",
+    view_permissions_title: "Vergabe von Lese-Berechtigungen?"
   },
 
   analytics: {

@@ -60,7 +60,7 @@ class ProjectPermissionsContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    permissions: state.getIn(["overview", "permissions"]),
+    permissions: state.getIn(["overview", "permissions", "project"]),
     temporaryPermissions: state.getIn(["overview", "temporaryPermissions"]),
     user: state.getIn(["login", "user"]),
     permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),

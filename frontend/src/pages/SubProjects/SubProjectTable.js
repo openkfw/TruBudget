@@ -18,7 +18,7 @@ import React from "react";
 
 import { statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canEditSubProject, canViewSubProjectDetails, canViewSubProjectPermissions } from "../../permissions";
+import { canUpdateSubProject, canViewSubProjectDetails, canViewSubProjectPermissions } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
 
 const styles = {
@@ -113,7 +113,7 @@ const getTableEntries = (
   return subProjects.map(({ data, allowedIntents }, index) => {
     const { currency, status, description, displayName, id, projectedBudgets, additionalData } = data;
     const isOpen = status !== "closed";
-    const editDisabled = !(canEditSubProject(allowedIntents) && isOpen);
+    const editDisabled = !(canUpdateSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
     const redacted = displayName === null && _isEmpty(projectedBudgets);
     const additionalDataEmpty = _isEmpty(additionalData);
