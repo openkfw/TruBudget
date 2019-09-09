@@ -192,9 +192,28 @@ Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EU
     }));
 });
 
-Cypress.Commands.add("updateProjectPermissions", (projectId, intent, identity) => {
+Cypress.Commands.add("grantProjectPermission", (projectId, intent, identity) => {
   cy.request({
     url: `${baseUrl}/api/project.intent.grantPermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId: projectId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
+Cypress.Commands.add("revokeProjectPermission", (projectId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/project.intent.revokePermission`,
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`
@@ -301,4 +320,16 @@ Cypress.Commands.add("getUserList", () => {
   })
     .its("body")
     .then(body => Promise.resolve(body.data.items));
+});
+
+Cypress.Commands.add("listProjectPermissions", projectId => {
+  cy.request({
+    url: `${baseUrl}/api/project.intent.listPermissions?projectId=${projectId}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
 });
