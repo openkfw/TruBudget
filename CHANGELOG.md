@@ -20,7 +20,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- The api endpoint "project.intent.listPermissions" checks for the right permission [#393](https://github.com/openkfw/TruBudget/issues/393)
 
 <!-- ### Security -->
 
