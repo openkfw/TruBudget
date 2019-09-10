@@ -5,7 +5,7 @@ import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import { Permissions } from "./domain/permissions";
 import * as Project from "./domain/workflow/project";
-import * as ProjectGet from "./domain/workflow/project_get";
+import * as ProjectPermissionsList from "./domain/workflow/project_permissions_list";
 
 export async function getProjectPermissions(
   conn: ConnToken,
@@ -13,20 +13,17 @@ export async function getProjectPermissions(
   serviceUser: ServiceUser,
   projectId: Project.Id,
 ): Promise<Result.Type<Permissions>> {
-  // TODO This should be modeled on the domain layer, similar to global_permissions_get.
-  // TODO There, authorization for project.intent.listPermissions should be checked.
-  const projectResult = await Cache.withCache(conn, ctx, async cache =>
-    ProjectGet.getProject(ctx, serviceUser, projectId, {
-      getProject: async projectId => {
-        return cache.getProject(projectId);
+  const projectPermissionsResult = await Cache.withCache(conn, ctx, async cache =>
+    ProjectPermissionsList.getProjectPermissions(ctx, serviceUser, projectId, {
+      getProject: async pId => {
+        return cache.getProject(pId);
       },
     }),
   );
-
-  if (Result.isErr(projectResult)) {
-    projectResult.message = `could not fetch project permissions: ${projectResult.message}`;
-    return projectResult;
+  if (Result.isErr(projectPermissionsResult)) {
+    projectPermissionsResult.message = `could not fetch project permissions: ${projectPermissionsResult.message}`;
+    return projectPermissionsResult;
   }
 
-  return projectResult.permissions;
+  return projectPermissionsResult;
 }
