@@ -31,6 +31,10 @@ describe("Project Assignee", function() {
     });
   });
   it("Confirming the confirmation dialog assigns the selected user and grants view Permissions", function() {
+    let permissionsBeforeTesting = {};
+    cy.listProjectPermissions(projects[0].data.id).then(permissions => {
+      permissionsBeforeTesting = permissions;
+    });
     cy.server();
     cy.route("GET", apiRoute + `/project.intent.listPermissions**`).as("fetchPermissions");
     cy.get("[data-test=assignee-selection]").click();
@@ -50,8 +54,14 @@ describe("Project Assignee", function() {
         });
       //check view permissions
       cy.listProjectPermissions(projects[0].data.id).then(permissions => {
-        assert.equal(permissions["project.viewSummary"].length, 2);
-        assert.equal(permissions["project.viewDetails"].length, 2);
+        assert.equal(
+          permissions["project.viewSummary"].length,
+          permissionsBeforeTesting["project.viewSummary"].length + 1
+        );
+        assert.equal(
+          permissions["project.viewDetails"].length,
+          permissionsBeforeTesting["project.viewDetails"].length + 1
+        );
         const identity = permissions["project.viewDetails"].filter(i => i.valueOf() !== "mstein".valueOf())[0];
         // revoke view permissions
         cy.revokeProjectPermission(projects[0].data.id, "project.viewSummary", identity);
@@ -60,6 +70,10 @@ describe("Project Assignee", function() {
     });
   });
   it("Canceling the confirmation dialog doesn't assign nor grant view permissions", function() {
+    let permissionsBeforeTesting = {};
+    cy.listProjectPermissions(projects[0].data.id).then(permissions => {
+      permissionsBeforeTesting = permissions;
+    });
     cy.server();
     cy.route("GET", apiRoute + `/project.intent.listPermissions**`).as("fetchPermissions");
     cy.get("[data-test=assignee-selection]").click();
@@ -79,7 +93,10 @@ describe("Project Assignee", function() {
         });
       //check view permissions
       cy.listProjectPermissions(projects[0].data.id).then(permissions => {
-        assert.equal(permissions["project.intent.listPermissions"].length, 2);
+        assert.equal(
+          permissions["project.intent.listPermissions"].length,
+          permissionsBeforeTesting["project.intent.listPermissions"].length
+        );
       });
     });
   });
