@@ -53,6 +53,7 @@ const fr = {
     open: "Ouvert",
     organization: "Organisation",
     password: "Mot de passe",
+    permission: "Autorisation",
     project: "Projet",
     projected_budget: "Budget prévu",
     projected_budget_exists: "Le budget prévu existe déjà",
@@ -67,6 +68,7 @@ const fr = {
     task_status: "Etat de la tâche",
     total_budget: "budget total",
     tag: "Tag",
+    type: "Type",
     add_tag_text: "Ajouter un tag au projet",
     tag_already_exists: "Le tag existe déjà!",
     invalid_tag: "Tag invalide",
@@ -235,9 +237,9 @@ const fr = {
     actions_done: "{0} de {1} actions realisées"
   },
   confirmation: {
-    grant_and_assign: "Grant & Assign",
     assigning_text:
       "Si {0} doit être attribué, {0} nécessite des autorisations supplémentaires pour afficher la ressource.:",
+    grant_and_assign: "Accorder & Assigner",
     view_permissions_title: "Accorder des autorisations d'affichage?"
   },
 

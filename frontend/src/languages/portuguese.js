@@ -53,6 +53,7 @@ const pt = {
     open: "Aberto",
     organization: "Organização",
     password: "Senha",
+    permission: "Permissão",
     project: "Projeto",
     projected_budget: "Orçamento projetado",
     projected_budget_exists: "O orçamento projetado já existe",
@@ -67,6 +68,7 @@ const pt = {
     task_status: "Status da tarefa",
     total_budget: "Orçamento total",
     tag: "Tag",
+    type: "Tipo",
     add_tag_text: "Adicionar tag ao projeto",
     tag_already_exists: "Tag já existe!",
     invalid_tag: "Tag inválida",
@@ -236,6 +238,7 @@ const pt = {
 
   confirmation: {
     assigning_text: "Se {0} for designado, {0} requer permissões adicionais para visualizar o recurso.:",
+    grant_and_assign: "Conceder & Atribuir",
     view_permissions_title: "Conceder permissões de visualização"
   },
 

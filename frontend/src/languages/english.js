@@ -235,8 +235,8 @@ const en = {
     actions_done: "{0} from {1} actions done"
   },
   confirmation: {
-    grant_and_assign: "Grant & Assign",
     assigning_text: "{0} needs additional permissions to view the {1}:",
+    grant_and_assign: "Grant & Assign",
     view_permissions_title: "Additional permissions required"
   },
 

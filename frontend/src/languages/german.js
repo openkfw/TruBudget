@@ -51,6 +51,7 @@ const de = {
     open: "Open",
     organization: "German: Organization",
     password: "Passwort",
+    permission: "Berechtigung",
     project: "German: Project",
     projected_budget: "Planbudget",
     projected_budget_exists: "Planbudget existiert bereits",
@@ -69,6 +70,7 @@ const de = {
     task_status: "Task status",
     total_budget: "Gesamt Budget",
     thumbnail: "German: Thumbnail",
+    type: "Typ",
     update: "German: Update",
     username: "Username",
     id: "German: Id",
@@ -236,6 +238,7 @@ const de = {
   confirmation: {
     assigning_text:
       "Wenn {0} zugewiesen werden soll, benötigt {0} zusätzliche Berechtigungen um die Ressource anzeigen zu können:",
+    grant_and_assign: "Gewähren & Zuweisen",
     view_permissions_title: "Vergabe von Lese-Berechtigungen?"
   },
 
