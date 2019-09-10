@@ -39,25 +39,29 @@ describe("Subproject's history", function() {
       .should("contain", "created subproject");
   });
 
-  it("The history is sorted from new to old", function() {
+  it.only("The history is sorted from new to old", function() {
     // Change assignee to create new history event
     cy.get("[data-test=assignee-selection] [role=button]")
       .first()
       .click();
     cy.get("[role=listbox]")
       .find("[value=jdoe]")
+      .click();
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.get("[role=listbox]")
+      .find("[data-test=search-assignee-field]")
       .click()
       .type("{esc}");
 
     cy.get("#subproject-history-button").click();
 
-    // Count history items => should be two
+    // Count history items => should be four
     cy.get("[data-test=history-list] li.history-item")
       .first()
       .should("be.visible");
     cy.get("[data-test=history-list]")
       .find("li.history-item")
-      .should("have.length", 2);
+      .should("have.length", 4);
 
     // Make sure the oldest entry is the create event
     cy.get("[data-test=history-list]")
@@ -69,6 +73,6 @@ describe("Subproject's history", function() {
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .first()
-      .should("contain", "assigned subproject");
+      .should("contain", "granted permission");
   });
 });

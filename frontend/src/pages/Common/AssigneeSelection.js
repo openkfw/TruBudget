@@ -170,7 +170,11 @@ class AssigneeSelection extends Component {
           <div className="noFocus" style={styles.formControlContainer}>
             <FormControl>
               <InputLabel>{strings.common.search}</InputLabel>
-              <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
+              <Input
+                inputProps={{ "data-test": "search-assignee-field" }}
+                value={this.state.searchTerm}
+                onChange={e => this.setState({ searchTerm: e.target.value })}
+              />
             </FormControl>
           </div>
           <div data-test="assignee-list">
