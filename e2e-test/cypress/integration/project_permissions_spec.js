@@ -1,6 +1,5 @@
 describe("Project Permissions", function() {
   let projects = undefined;
-  const forceoption = { force: true };
 
   before(() => {
     cy.login();
@@ -22,7 +21,7 @@ describe("Project Permissions", function() {
     cy.get("[data-test=permission-container]").should("not.be.visible");
   });
 
-  it.only("Grant and revoke permissions", function() {
+  it("Grant and revoke permissions", function() {
     let permissionsBeforeTesting = {};
     cy.listProjectPermissions(projects[0].data.id).then(permissions => {
       permissionsBeforeTesting = permissions;
@@ -38,8 +37,9 @@ describe("Project Permissions", function() {
         const checkedItems = $list.find("input:checked");
         expect(checkedItems).to.have.lengthOf(permissionsBeforeTesting["project.intent.listPermissions"].length);
         const firstUnchecked = $list.find("input:not(:checked)").first();
+        // Use timeout to wait for animation to finish
         cy.get(firstUnchecked)
-          .click(forceoption)
+          .click()
           .should("be.checked");
       })
       .then(() =>
@@ -66,7 +66,7 @@ describe("Project Permissions", function() {
                 const lastChecked = $list.find("input:checked").first();
                 // Use timeout to wait for animation to finish
                 cy.get(lastChecked)
-                  .click(forceoption)
+                  .click()
                   .should("not.be.checked");
               })
               .then(() =>
