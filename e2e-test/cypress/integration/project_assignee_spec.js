@@ -25,7 +25,7 @@ describe("Project Assignee", function() {
         .then($list => {
           const firstUnchecked = $list.find("input:not(:checked)").first();
           // Is only able to click if project permissions are fetched
-          cy.wrap(firstUnchecked).click();
+          cy.get(firstUnchecked).click();
           cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
         });
     });
@@ -44,13 +44,11 @@ describe("Project Assignee", function() {
         .then($list => {
           const firstUnchecked = $list.find("input:not(:checked)").first();
           // Is only able to click if project permissions are fetched
-          cy.wrap(firstUnchecked).click();
+          cy.get(firstUnchecked).click();
           cy.get("[data-test=confirmation-dialog-confirm]")
             .should("be.visible")
             .click();
-          cy.wrap(firstUnchecked)
-            .should("be.visible")
-            .should("be.checked");
+          cy.get(firstUnchecked).should("be.checked");
         });
       //check view permissions
       cy.listProjectPermissions(projects[0].data.id).then(permissions => {
@@ -83,13 +81,11 @@ describe("Project Assignee", function() {
         .then($list => {
           const firstUnchecked = $list.find("input:not(:checked)").first();
           // Is only able to click if project permissions are fetched
-          cy.wrap(firstUnchecked).click();
+          cy.get(firstUnchecked).click();
           cy.get("[data-test=confirmation-dialog-cancel]")
             .should("be.visible")
             .click();
-          cy.wrap(firstUnchecked)
-            .should("be.visible")
-            .should("not.be.checked");
+          cy.get(firstUnchecked).should("not.be.checked");
         });
       //check view permissions
       cy.listProjectPermissions(projects[0].data.id).then(permissions => {
@@ -114,7 +110,7 @@ describe("Project Assignee", function() {
         .then($list => {
           const firstUnchecked = $list.find("input:not(:checked)").first();
           // Is only able to click if project permissions are fetched
-          cy.wrap(firstUnchecked).click();
+          cy.get(firstUnchecked).click();
           cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
         });
 
