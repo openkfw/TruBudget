@@ -76,7 +76,7 @@ const fr = {
     update: "Mettre à jour",
     username: "Nom d'utilisateur",
     view: "Vue",
-    workflowItem: "Élement de workflow",
+    workflowitem: "Élement de workflow",
     no_history: "Aucun évenement",
     history_end: "Dernier évènement atteint"
   },

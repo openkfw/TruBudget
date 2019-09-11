@@ -79,7 +79,7 @@ function addHeader(table, headline, classes) {
       </TableRow>
       <TableRow className={classes.headerRow} key={headline + "-columns"}>
         <TableCell className={classes.columnHeaderCell} style={{ flex: 6 }}>
-          {strings.common.workflowItem}
+          {strings.common.workflowitem}
         </TableCell>
         <TableCell className={classes.columnHeaderCell} style={{ flex: 12 }}>
           {strings.common.action}

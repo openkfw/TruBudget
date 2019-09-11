@@ -131,7 +131,7 @@ class WorkflowAssigneeContainer extends Component {
           onConfirm={this.confirmDialog}
           onCancel={hideConfirmationDialog}
           permittedToGrant={permittedToGrant}
-          resource={strings.common.workflowItem}
+          resource={strings.common.workflowitem}
         />
       </div>
     );

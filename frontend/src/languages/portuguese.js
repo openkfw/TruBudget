@@ -76,7 +76,7 @@ const pt = {
     update: "Atualizar",
     username: "Id do usuário",
     view: "Visualizar",
-    workflowItem: "Item de workflow",
+    workflowitem: "Item de workflow",
     history_end: "Fim do histórico",
     no_history: "Sem histórico"
   },

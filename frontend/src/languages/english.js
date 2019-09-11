@@ -76,7 +76,7 @@ const en = {
     update: "Update",
     username: "Username",
     view: "View",
-    workflowItem: "WorkflowItem",
+    workflowitem: "Workflowitem",
     history_end: "Last event reached",
     no_history: "No events"
   },

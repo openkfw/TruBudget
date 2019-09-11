@@ -76,7 +76,7 @@ const de = {
     id: "German: Id",
     name: "German: Name",
     view: "German: View",
-    workflowItem: "German: WorkflowItem",
+    workflowitem: "German: WorkflowItem",
     history_end: "Keine weiteren Ereignisse",
     no_history: "Keine Ereignisse"
   },
