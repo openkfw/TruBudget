@@ -40,6 +40,7 @@ const styles = {
     overflow: "hidden",
     textOverflow: "ellipsis"
   },
+  listSubHeader: { top: "auto" },
   disabled: {}
 };
 
@@ -86,7 +87,7 @@ class AssigneeSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.users.users} </ListSubheader>
+          <ListSubheader style={styles.listSubHeader}> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -106,7 +107,7 @@ class AssigneeSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.users.groups} </ListSubheader>
+          <ListSubheader style={styles.listSubHeader}> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );

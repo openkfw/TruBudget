@@ -2,7 +2,6 @@ describe("Project Assignee", function() {
   let projects = undefined;
   let baseUrl = undefined;
   let apiRoute = undefined;
-  const forcedOptions = { forced: true };
 
   before(() => {
     cy.login();
@@ -26,7 +25,7 @@ describe("Project Assignee", function() {
         .then($list => {
           const firstUnchecked = $list.find("input:not(:checked)").first();
           // Is only able to click if project permissions are fetched
-          cy.get(firstUnchecked).click(forcedOptions);
+          cy.get(firstUnchecked).click();
           cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
         });
     });
@@ -45,7 +44,9 @@ describe("Project Assignee", function() {
         .then($list => {
           const firstUnchecked = $list.find("input:not(:checked)").first();
           // Is only able to click if project permissions are fetched
-          cy.get(firstUnchecked).click(forcedOptions);
+          cy.get(firstUnchecked)
+            .should("not.be.checked")
+            .check();
           cy.get("[data-test=confirmation-dialog-confirm]")
             .should("be.visible")
             .click();
@@ -82,7 +83,9 @@ describe("Project Assignee", function() {
         .then($list => {
           const firstUnchecked = $list.find("input:not(:checked)").first();
           // Is only able to click if project permissions are fetched
-          cy.get(firstUnchecked).click(forcedOptions);
+          cy.get(firstUnchecked)
+            .should("not.be.checked")
+            .check();
           cy.get("[data-test=confirmation-dialog-cancel]")
             .should("be.visible")
             .click();
@@ -111,7 +114,9 @@ describe("Project Assignee", function() {
         .then($list => {
           const firstUnchecked = $list.find("input:not(:checked)").first();
           // Is only able to click if project permissions are fetched
-          cy.get(firstUnchecked).click(forcedOptions);
+          cy.get(firstUnchecked)
+            .should("not.be.checked")
+            .check();
           cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
         });
 
