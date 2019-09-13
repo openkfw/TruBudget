@@ -144,7 +144,7 @@ const ProjectCard = ({
               iconButtonStyle={styles.editIcon}
             />
             <ActionButton
-              notVisible={!isOpen && editDisabled}
+              notVisible={!isOpen || editDisabled}
               onClick={() => {
                 showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags);
               }}

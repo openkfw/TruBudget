@@ -140,7 +140,7 @@ const getTableEntries = (
               </div>
               <div className={classes.button}>
                 <ActionButton
-                  notVisible={!isOpen && editDisabled}
+                  notVisible={!isOpen || editDisabled}
                   onClick={() => showEditDialog(id, displayName, description, currency, projectedBudgets)}
                   title={strings.common.edit}
                   icon={<EditIcon />}
