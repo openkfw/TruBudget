@@ -23,12 +23,14 @@ const pt = {
     comment: "Comentário",
     comment_description: "Adicione comentário",
     completion: "Conclusão",
+    confirm: "Confirme",
     create: "Criar",
     created: "Data de criação",
     currency: "Moeda",
     disbursed_budget: "Desembolsado",
     disbursement: "Projetado",
     disconnected: "Desligada",
+    display_name: "Mostrar nome",
     done: "Finalizar",
     edit: "Editar",
     edited: "Editado",
@@ -51,6 +53,7 @@ const pt = {
     open: "Aberto",
     organization: "Organização",
     password: "Senha",
+    permission: "Permissão",
     project: "Projeto",
     projected_budget: "Orçamento projetado",
     projected_budget_exists: "O orçamento projetado já existe",
@@ -65,6 +68,7 @@ const pt = {
     task_status: "Status da tarefa",
     total_budget: "Orçamento total",
     tag: "Tag",
+    type: "Tipo",
     add_tag_text: "Adicionar tag ao projeto",
     tag_already_exists: "Tag já existe!",
     invalid_tag: "Tag inválida",
@@ -72,7 +76,7 @@ const pt = {
     update: "Atualizar",
     username: "Id do usuário",
     view: "Visualizar",
-    workflowItem: "Item de workflow",
+    workflowitem: "Item de workflow",
     history_end: "Fim do histórico",
     no_history: "Sem histórico"
   },
@@ -230,6 +234,12 @@ const pt = {
     possible_action: "Ações possíveis",
     not_possible_action: "Não há ações possíveis",
     actions_done: "{0} de {1} ações realizadas"
+  },
+
+  confirmation: {
+    assigning_text: "Se {0} for designado, {0} requer permissões adicionais para visualizar o recurso.:",
+    grant_and_assign: "Conceder & Atribuir",
+    view_permissions_title: "Conceder permissões de visualização"
   },
 
   analytics: {

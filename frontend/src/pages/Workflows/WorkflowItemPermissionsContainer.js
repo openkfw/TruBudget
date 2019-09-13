@@ -52,7 +52,7 @@ class WorkflowItemPermissionsContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    permissions: state.getIn(["workflow", "permissions"]),
+    permissions: state.getIn(["workflow", "permissions", "workflowitem"]),
     temporaryPermissions: state.getIn(["workflow", "temporaryPermissions"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     user: state.getIn(["login", "user"]),

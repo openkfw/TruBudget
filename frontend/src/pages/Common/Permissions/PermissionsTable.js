@@ -8,6 +8,7 @@ import React from "react";
 
 import strings from "../../../localizeStrings";
 import PermissionSelection from "./PermissionSelection";
+import { makePermissionReadable } from "../../../helper";
 
 const renderPermission = (name, userList, permissions, myself, grant, revoke, disabled) => {
   return (
@@ -24,7 +25,7 @@ const renderPermission = (name, userList, permissions, myself, grant, revoke, di
             disabled={disabled}
           />
         }
-        secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
+        secondary={makePermissionReadable(name)}
       />
     </ListItem>
   );

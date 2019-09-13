@@ -23,12 +23,14 @@ const de = {
     comment: "Kommentar",
     comment_description: "Add some comments",
     completion: "German: Completion",
+    confirm: "Bestätigen",
     create: "German: Create",
     created: "Created",
     currency: "Währung",
     disbursed_budget: "Disbursed Budget",
     disbursement: "Disbursement",
     disconnected: "Offline",
+    display_name: "Anzeige-Name",
     done: "Done",
     edit: "German: Edit",
     edited: "German: Edited",
@@ -49,6 +51,7 @@ const de = {
     open: "Open",
     organization: "German: Organization",
     password: "Passwort",
+    permission: "Berechtigung",
     project: "German: Project",
     projected_budget: "Planbudget",
     projected_budget_exists: "Planbudget existiert bereits",
@@ -67,12 +70,13 @@ const de = {
     task_status: "Task status",
     total_budget: "Gesamt Budget",
     thumbnail: "German: Thumbnail",
+    type: "Typ",
     update: "German: Update",
     username: "Username",
     id: "German: Id",
     name: "German: Name",
     view: "German: View",
-    workflowItem: "German: WorkflowItem",
+    workflowitem: "German: WorkflowItem",
     history_end: "Keine weiteren Ereignisse",
     no_history: "Keine Ereignisse"
   },
@@ -229,6 +233,13 @@ const de = {
     possible_action: "German: Possible actions",
     not_possible_action: "German: Not possible actions",
     actions_done: "German: {0} from {1} actions done"
+  },
+
+  confirmation: {
+    assigning_text:
+      "Wenn {0} zugewiesen werden soll, benötigt {0} zusätzliche Berechtigungen um die Ressource anzeigen zu können:",
+    grant_and_assign: "Gewähren & Zuweisen",
+    view_permissions_title: "Vergabe von Lese-Berechtigungen?"
   },
 
   analytics: {

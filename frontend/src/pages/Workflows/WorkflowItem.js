@@ -438,6 +438,7 @@ export const WorkflowItem = SortableElement(
                 projectId={parentProject ? parentProject.id : ""}
                 subprojectId={subprojectId}
                 workflowitemId={id}
+                workflowitemDisplayName={displayName}
                 disabled={!canAssign}
                 users={users}
                 assignee={assignee}

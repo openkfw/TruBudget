@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-<!-- ### Added -->
+### Added
+
+- Assigning a user opens a confirmation dialog if the assignee has no permission to view the project/subproject/workflowitem[#389](https://github.com/openkfw/TruBudget/pull/389)
+  <!-- Linked pull request on purpose since it sums up the issue at its best -->
 
 <!-- ### Changed -->
 

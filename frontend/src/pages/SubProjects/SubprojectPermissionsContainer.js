@@ -64,7 +64,7 @@ class SubProjectPermissionsContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    permissions: state.getIn(["detailview", "permissions"]),
+    permissions: state.getIn(["detailview", "permissions", "subproject"]),
     temporaryPermissions: state.getIn(["detailview", "temporaryPermissions"]),
     subprojectId: state.getIn(["detailview", "idForPermissions"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),

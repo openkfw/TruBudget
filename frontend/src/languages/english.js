@@ -23,12 +23,14 @@ const en = {
     comment: "Comment",
     comment_description: "Add some comments",
     completion: "Completion",
+    confirm: "Confirm",
     create: "Create",
     created: "Created",
     currency: "Currency",
     disbursed_budget: "Disbursed Budget",
     disbursement: "Projected",
     disconnected: "Offline",
+    display_name: "Display Name",
     done: "Done",
     edit: "Edit",
     edited: "Edited",
@@ -51,6 +53,7 @@ const en = {
     open: "Open",
     organization: "Organization",
     password: "Password",
+    permission: "Permission",
     project: "Project",
     projected_budget: "Projected Budget",
     projected_budget_exists: "Projected budget already exists",
@@ -69,10 +72,11 @@ const en = {
     task_status: "Task status",
     total_budget: "Total Budget",
     thumbnail: "Thumbnail",
+    type: "Type",
     update: "Update",
     username: "Username",
     view: "View",
-    workflowItem: "WorkflowItem",
+    workflowitem: "Workflowitem",
     history_end: "Last event reached",
     no_history: "No events"
   },
@@ -224,11 +228,16 @@ const en = {
   preview: {
     preview: "Preview",
     assign_action_text: "assign {0}",
-    grant_permission_action_text: "grant {0} to {1}",
+    grant_permission_action_text: "grant {0}",
     revoke_permission_action_text: "revoke {0} from {1}",
     possible_action: "Possible actions",
     not_possible_action: "Not possible actions",
     actions_done: "{0} from {1} actions done"
+  },
+  confirmation: {
+    assigning_text: "{0} needs additional permissions to view the {1}:",
+    grant_and_assign: "Grant & Assign",
+    view_permissions_title: "Additional permissions required"
   },
 
   analytics: {
