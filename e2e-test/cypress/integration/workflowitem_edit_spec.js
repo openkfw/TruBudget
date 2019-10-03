@@ -113,33 +113,3 @@ describe("Workflowitem edit", function() {
     }
   );
 });
-
-describe("Workflowitem create", function() {
-  let projectId;
-  let subprojectId;
-
-  before(() => {
-    cy.login();
-
-    cy.createProject("workflowitem create test project", "workflowitem create test", [])
-      .then(({ id }) => {
-        projectId = id;
-        return cy.createSubproject(projectId, "workflowitem create test", "EUR");
-      })
-      .then(({ id }) => {
-        subprojectId = id;
-      });
-    cy.login();
-    cy.visit(`/projects/${projectId}/${subprojectId}`);
-  });
-
-  it("Root can not create a Workflowitem", function() {
-    cy.login("root", "root-secret");
-    cy.visit(`/projects/${projectId}/${subprojectId}`);
-
-    // When root is logged in the create workflow item button
-    // is disabled
-    cy.get("[data-test=createWorkflowitem]").should("be.visible");
-    cy.get("[data-test=createWorkflowitem]").should("be.disabled");
-  });
-});

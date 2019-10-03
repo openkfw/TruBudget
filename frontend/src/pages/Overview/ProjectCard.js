@@ -87,7 +87,7 @@ const ProjectCard = ({
           data-test="project-header"
           className={classes.cardHeader}
           title={
-            <div className={classes.cardTitle}>
+            <div className={classes.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
               <span>{displayName}</span>
             </div>
           }
@@ -150,6 +150,7 @@ const ProjectCard = ({
               }}
               title={strings.common.edit}
               icon={<EditIcon />}
+              id={`pe-button-${index}`}
               data-test={`pe-button`}
               iconButtonStyle={styles.editIcon}
             />

@@ -211,6 +211,7 @@ Cypress.Commands.add("grantProjectPermission", (projectId, intent, identity) => 
     .its("body")
     .then(body => Promise.resolve(body.data));
 });
+
 Cypress.Commands.add("revokeProjectPermission", (projectId, intent, identity) => {
   cy.request({
     url: `${baseUrl}/api/project.intent.revokePermission`,
@@ -222,6 +223,48 @@ Cypress.Commands.add("revokeProjectPermission", (projectId, intent, identity) =>
       apiVersion: "1.0",
       data: {
         projectId: projectId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("grantSubprojectPermission", (projectId, subprojectId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/subproject.intent.grantPermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId: projectId,
+        subprojectId: subprojectId,
+        identity: identity,
+        intent: intent
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("revokeSubprojectPermission", (projectId, subprojectId, intent, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/subproject.intent.revokePermission`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId: projectId,
+        subprojectId: subprojectId,
         identity: identity,
         intent: intent
       }

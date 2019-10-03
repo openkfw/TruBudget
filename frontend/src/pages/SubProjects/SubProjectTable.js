@@ -122,7 +122,9 @@ const getTableEntries = (
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
         <TableRow key={index}>
-          <TableCell className={classes.displayName}>{displayName}</TableCell>
+          <TableCell className={classes.displayName} data-test={`subproject-title-${index}`}>
+            {displayName}
+          </TableCell>
           <TableCell className={classes.projectdBudget}>{amountString}</TableCell>
           <TableCell className={classes.status}>{statusMapping(status)}</TableCell>
           <TableCell className={classes.actions}>
