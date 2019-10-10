@@ -127,11 +127,16 @@ export default function userDashboardReducer(state = defaultState, action) {
     case SET_USERNAME_INVALID:
       return state.set("usernameInvalid", action.usernameInvalid);
     case ADD_TEMPORARY_GLOBAL_PERMISSION:
-      return state.updateIn(["temporaryGlobalPermissions", action.permission], users => users.push(action.userId));
+      if (state.getIn(["temporaryGlobalPermissions", action.permission]) !== undefined) {
+        return state.updateIn(["temporaryGlobalPermissions", action.permission], users => [...users, action.userId]);
+      } else {
+        return state.mergeIn(["temporaryGlobalPermissions"], { [action.permission]: [action.userId] });
+      }
     case REMOVE_TEMPORARY_GLOBAL_PERMISSION:
-      return state.updateIn(["temporaryGlobalPermissions", action.permission], users =>
-        users.filter(user => user !== action.userId)
-      );
+      return state.updateIn(["temporaryGlobalPermissions", action.permission], users => [
+        ...users.slice(0, users.indexOf(action.userId)),
+        ...users.slice(users.indexOf(action.userId) + 1)
+      ]);
     default:
       return state;
   }
