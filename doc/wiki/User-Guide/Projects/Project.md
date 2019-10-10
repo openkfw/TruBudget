@@ -87,6 +87,7 @@ Create a new project defining title, comment and budgets.
 
 **Notes:**
 
+- The root user may not create projects.
 - Do not forget to permit other users to view/edit the newly created project.
 - You have to add at least one budget before you can submit the project.
 - To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the blockchain.
@@ -205,14 +206,14 @@ The history contains all activities done directly refer to the current project.
 ## Project tags
 
 **Notes:**
-- Starting with v1.3.0, projects can have tags to add additional data to them, group them and make them searchable. 
-- Tags can be added when creating or editing the project, either via the UI or the API. 
-- Tags should not contain whitespaces or any special characters except "_", "." or "-". 
-- Tags can contain alphanumeric characters and can be up to 15 characters. 
+
+- Starting with v1.3.0, projects can have tags to add additional data to them, group them and make them searchable.
+- Tags can be added when creating or editing the project, either via the UI or the API.
+- Tags should not contain whitespaces or any special characters except "\_", "." or "-".
+- Tags can contain alphanumeric characters and can be up to 15 characters.
 - Tags cannot not start or end with the special characters listed above
 
 **Instructions:**
-
 
 1. Click the button to add a new or edit an existing project
 2. Type the tag name in the "Tag" field

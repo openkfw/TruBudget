@@ -79,6 +79,7 @@ Create a new subproject defining title, comment, currency and budget.
 
 **Notes:**
 
+- The root user may not create subprojects.
 - Do not forget to permit other users to view/edit the newly created subproject.
 - You have to add at least one budget before you can submit the project.
 - To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the blockchain.
