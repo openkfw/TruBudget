@@ -9,8 +9,8 @@ import UserDialogContent from "./UserDialogContent";
 
 const createActions = (permissions, temporayPermissions) => {
   const actions = [];
-  Object.keys(permissions).forEach(key => {
-    const permissionIds = permissions[key];
+  Object.keys(temporayPermissions).forEach(key => {
+    const permissionIds = permissions[key] || [];
     const temporaryPermissionIds = temporayPermissions[key];
 
     const revokeIds = permissionIds.filter(id => !temporaryPermissionIds.includes(id));
