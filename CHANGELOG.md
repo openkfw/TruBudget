@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Security -->
 
+## [1.4.1] - 2019-10-11
+
+### Fixed
+
+- Root user cannot grant global permissions (admin permissions) to first user
+
+### Known Issues
+
+- Multiple workflowitems cannot be edited at once nor reordered [#397](https://github.com/openkfw/TruBudget/issues/397)
+
 ## [1.4.0] - 2019-09-04
 
 ### Changed
@@ -353,7 +363,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.4.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.4.1...master
+[1.4.0]: https://github.com/openkfw/TruBudget/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/openkfw/TruBudget/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/openkfw/TruBudget/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/openkfw/TruBudget/compare/v1.1.0...v1.2.0
