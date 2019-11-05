@@ -36,7 +36,7 @@ frontend:
   provisioningProd:
     isRequired: "true"
     image:
-      repository: trubudget/provisioning
+      repository: eep-portal/provisioning
     env:
       API_HOST: api-prod
       API_PORT: 8080
@@ -46,7 +46,7 @@ frontend:
   provisioningTest:
     isRequired: "false"
     image:
-      repository: trubudget/provisioning
+      repository: eep-portal/provisioning
     env:
       API_HOST: api-test
       API_PORT: 8080
@@ -62,4 +62,4 @@ frontend:
 
 e2e:
   image:
-    registry: trubudget/e2e-test
+    registry: eep-portal/e2e-test

@@ -2,7 +2,7 @@
 version: "3.2"
 services:
   provision-prod:
-    image: trubudget/provisioning:${TAG}
+    image: eep-portal/provisioning:${TAG}
     command: ["npm", "start"]
     environment:
       API_HOST: api
@@ -14,7 +14,7 @@ services:
       - api
 
   provision-test:
-    image: trubudget/provisioning:${TAG}
+    image: eep-portal/provisioning:${TAG}
     command: ["npm", "start"]
     environment:
       API_HOST: testapi

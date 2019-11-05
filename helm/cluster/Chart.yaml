@@ -1,4 +1,4 @@
 apiVersion: v1
 description: A Helm chart for Kubernetes
-name: trubudget-cluster
+name: eep-portal-cluster
 version: 0.1.0

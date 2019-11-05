@@ -1,7 +1,7 @@
 # Helm Chart TruBudget <!-- omit in TOC -->
 
 - [Prerequisites](#prerequisites)
-- [Deploy TruBudget components to your cluster](#deploy-trubudget-components-to-your-cluster)
+- [Deploy TruBudget components to your cluster](#deploy-eep-portal-components-to-your-cluster)
 - [Configuration](#configuration)
 - [Deploy Provisioning component to Kubernetes](#deploy-provisioning-component-to-kubernetes)
 - [Deploy E2E component to Kubernetes](#deploy-e2e-component-to-kubernetes)
@@ -37,7 +37,7 @@ helm dep update
 Deploy components
 
 ```bash
-helm install . --name trubudget --namespace my-namespace --set tags.minimal=true
+helm install . --name eep-portal --namespace my-namespace --set tags.minimal=true
 ```
 
 This will deploy following components:
@@ -52,7 +52,7 @@ This will deploy following components:
 Delete chart
 
 ```bash
-helm delete --purge trubudget
+helm delete --purge eep-portal
 ```
 
 ## Configuration
@@ -65,9 +65,9 @@ The following table lists the most important configurable parameters of the TruB
 | `tags.blockchain`                  | Includes blockchain-prod-1 and blockchain-test1 components in deployed chart                                                 | `false`                                |
 | `tags.api`                         | Includes api-prod-1 and api-test1 components in deployed chart                                                               | `false`                                |
 | `tags.frontend`                    | Includes frontend-1 components in deployed chart                                                                             | `false`                                |
-| `global.image.tag`                 | `trubudget` image tag                                                                                                        | `master`                               |
-| `global.fqdn`                      | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
-| `global.fqdn`                      | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
+| `global.image.tag`                 | `eep-portal` image tag                                                                                                        | `master`                               |
+| `global.fqdn`                      | ingress host                                                                                                                 | `my-eep-portal-url.com`                 |
+| `global.fqdn`                      | ingress host                                                                                                                 | `my-eep-portal-url.com`                 |
 | `global.env.ENVIRONMENT_TYPE=PROD` | if set to `PROD`, the blockchain resource will be set deployed as `statefulset`and persist its data on a PV                  | `DEV`                                  |
 | `global.env.ENVIRONMENT_TYPE=TEST` | if set to `TEST`, same as `DEV`, except that blockchai nservice account will be excluded from chart                          | `DEV`                                  |
 | `global.env.EXPOSE_MC`             | if set to `true`, the blockchain application will check for the external service IP before starting and use it as externalIp | `false`                                |
@@ -80,7 +80,7 @@ _Tip_: Edit the default [values.yaml](cluster/values.yaml) file that specifies t
 Alternatively, specify each parameter using the `--set key=value[,key=value]` argument to helm install. For example,
 
 ```bash
-helm install . --name trubudget --namespace my-namespace --set tags.minimal=true --set frontend-1.ingress.enabled=true
+helm install . --name eep-portal --namespace my-namespace --set tags.minimal=true --set frontend-1.ingress.enabled=true
 ```
 
 ## Deploy Provisioning component to Kubernetes

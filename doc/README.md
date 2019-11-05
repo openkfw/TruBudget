@@ -9,7 +9,7 @@ Welcome to the TruBudget documentation! This guide aims to provide you with info
 [Introduction](./Introduction.md) - Some basics of TruBudget
 
 - [Environment Variables](./Introduction.md#environment-variables)
-- [Organizations and Nodes](./Introduction.md#organizations-and-nodes-in-trubudget)
+- [Organizations and Nodes](./Introduction.md#organizations-and-nodes-in-eep-portal)
 
 
 [Tutorials](./tutorials) - Guides to get started with running TruBudget

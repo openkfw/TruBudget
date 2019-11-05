@@ -12,7 +12,7 @@ provisioning:
   prod:
     isRequired: true
     image:
-      repository: trubudget/provisioning
+      repository: eep-portal/provisioning
     env:
       API_HOST: api-prod-1
       API_PORT: 8080
@@ -22,7 +22,7 @@ provisioning:
   test:
     isRequired: true
     image:
-      repository: trubudget/provisioning
+      repository: eep-portal/provisioning
     env:
       API_HOST: api-test-1
       API_PORT: 8080

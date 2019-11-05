@@ -10,7 +10,7 @@
   - [Close workflowitem](#close-workflowitem)
   - [View the history of a workflowitem](#view-the-history-of-a-workflowitem)
   - [Reorder Workflowitems](#reorder-workflowitems)
-  - [Documents in TruBudget](#documents-in-trubudget)
+  - [Documents in TruBudget](#documents-in-eep-portal)
     - [Add document to workflowitem](#add-document-to-workflowitem)
     - [Validate a document](#validate-a-document)
 

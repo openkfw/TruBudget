@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   api:
-    image: trubudget/api:${TAG}
+    image: eep-portal/api:${TAG}
     environment:
       RPC_HOST: bc-slave
       RPC_PORT: ${RPC_PORT}
@@ -17,7 +17,7 @@ services:
       - bc-slave
 
   bc-slave:
-    image: trubudget/blockchain:${TAG}
+    image: eep-portal/blockchain:${TAG}
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
@@ -34,7 +34,7 @@ services:
       - "7447:7447"
 
   testapi:
-    image: trubudget/api:${TAG}
+    image: eep-portal/api:${TAG}
     environment:
       RPC_HOST: test-bc-slave
       RPC_PORT: ${RPC_PORT}
@@ -51,7 +51,7 @@ services:
       - test-bc-slave
 
   test-bc-slave:
-    image: trubudget/blockchain:${TAG}
+    image: eep-portal/blockchain:${TAG}
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
@@ -68,7 +68,7 @@ services:
       - "7448:7447"
 
   frontend:
-    image: trubudget/frontend:${TAG}
+    image: eep-portal/frontend:${TAG}
     environment:
       PROD_API_HOST: api
       PROD_API_PORT: ${API_PORT}
@@ -84,7 +84,7 @@ services:
       - "80:80"
 
   export:
-    image: trubudget/excel-export:${TAG}
+    image: eep-portal/excel-export:${TAG}
     environment:
       PROD_API_HOST: api
       PROD_API_PORT: ${API_PORT}

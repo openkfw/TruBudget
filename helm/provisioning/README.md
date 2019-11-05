@@ -32,7 +32,7 @@ cd provisioning
 Deploy components
 
 ```bash
-helm install . --name trubudget-provisioning --namespace my-namespace
+helm install . --name eep-portal-provisioning --namespace my-namespace
 ```
 
 This will deploy a pod with two provisioning containers (one for prod, one for test), to create test data.
@@ -47,7 +47,7 @@ kubectl logs provisioning -c provision-test
 Delete chart
 
 ```bash
-helm delete --purge trubudget-provisioning
+helm delete --purge eep-portal-provisioning
 ```
 
 ## Configuration
@@ -56,7 +56,7 @@ The following table lists configurable parameters of the Provisioning chart and 
 
 | Parameter                      | Description                                                       | Default           |
 | ------------------------------ | ----------------------------------------------------------------- | ----------------- |
-| `global.image.tag`             | `trubudget/provisioning` image tag                                | `master`          |
+| `global.image.tag`             | `eep-portal/provisioning` image tag                                | `master`          |
 | `provisioning.prod.isRequired` | enable/disable container responsible to create data for api-prod  | `true`            |
 | `provisioning.test.isRequired` | enable/disable container responsible to create data for api-test  | `true`            |
 | `provisioning.prod/test.env`   | contains environment variables to connect to api, e.g. `API_HOST` | check values.yaml |

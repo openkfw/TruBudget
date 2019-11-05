@@ -33,7 +33,7 @@ helm dep update
 Deploy components
 
 ```bash
-helm install . --name trubudget-e2e --namespace my-namespace
+helm install . --name eep-portal-e2e --namespace my-namespace
 ```
 
 This will deploy a pod with two provisioning containers (one for prod, one for test), to create test data.
@@ -47,7 +47,7 @@ kubectl exec -n=my-namespace -it e2e-tests --  npm run e2etest -- --config baseU
 Delete chart
 
 ```bash
-helm delete --purge trubudget-e2e
+helm delete --purge eep-portal-e2e
 ```
 
 ## Configuration
@@ -56,7 +56,7 @@ The following table lists configurable parameters of the E2E chart and their def
 
 | Parameter          | Description                        | Default  |
 | ------------------ | ---------------------------------- | -------- |
-| `global.image.tag` | `trubudget/provisioning` image tag | `master` |
+| `global.image.tag` | `eep-portal/provisioning` image tag | `master` |
 
 _Tip_: Edit the default [values.yaml](values.yaml) file that specifies the values for the above parameters, before executing the helm command.
 

@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   api:
-    image: trubudget/api:${TAG}
+    image: eep-portal/api:${TAG}
     environment:
       RPC_HOST: master
       RPC_PORT: ${RPC_PORT}
@@ -17,14 +17,14 @@ services:
       - master
 
   master:
-    image: trubudget/blockchain:${TAG}
+    image: eep-portal/blockchain:${TAG}
     environment:
       RPC_PORT: ${RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
 
   frontend:
-    image: trubudget/frontend:${TAG}
+    image: eep-portal/frontend:${TAG}
     ports:
       - "80:80" # Mapping the nginx port
     environment:
@@ -36,7 +36,7 @@ services:
       - api
 
   provisioning:
-    image: trubudget/provisioning:${TAG}
+    image: eep-portal/provisioning:${TAG}
     command: ["npm", "start"]
     environment:
       API_HOST: api

@@ -1,10 +1,10 @@
-# Default values for trubudget-cluster.
+# Default values for eep-portal-cluster.
 
 global:
   branch: my-branch
   image:
     tag: master
-  fqdn: my-trubudget-url.com
+  fqdn: my-eep-portal-url.com
   env:
     ENVIRONMENT_TYPE: DEV
     EXPOSE_MC: false
@@ -169,7 +169,7 @@ frontend-1:
   provisioningProd:
     isRequired: "true"
     image:
-      repository: trubudget/provisioning
+      repository: eep-portal/provisioning
     env:
       API_HOST: api-prod-1
       API_PORT: 8080
@@ -179,7 +179,7 @@ frontend-1:
   provisioningTest:
     isRequired: "true"
     image:
-      repository: trubudget/provisioning
+      repository: eep-portal/provisioning
     env:
       API_HOST: api-test-1
       API_PORT: 8080

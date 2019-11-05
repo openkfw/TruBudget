@@ -3,7 +3,7 @@
 replicaCount: 1
 
 image:
-  repository: trubudget/frontend
+  repository: eep-portal/frontend
   pullPolicy: Always
 
 frontend:
@@ -39,7 +39,7 @@ service:
 
 provisioningProd:
   image:
-    repository: trubudget/provisioning
+    repository: eep-portal/provisioning
   env:
     API_HOST: api
     API_PORT: 8080
@@ -49,7 +49,7 @@ provisioningProd:
 
 provisioningTest:
   image:
-    repository: trubudget/provisioning
+    repository: eep-portal/provisioning
   env:
     API_HOST: api
     API_PORT: 8080

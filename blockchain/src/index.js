@@ -246,7 +246,7 @@ app.post("/chain", async (req, res) => {
           autostart = true;
           res.send("OK");
         } else {
-          console.log("Not a valid trubudget backup....");
+          console.log("Not a valid eep-portal backup....");
           res.status(400).send("Not a valid TruBudget backup");
         }
       } else {

@@ -1,14 +1,14 @@
 version: "3"
 services:
   blockchain:
-    image: trubudget/blockchain:master
+    image: eep-portal/blockchain:master
     environment:
       RPC_PORT: 8000
       ORGANIZATION: UmbrellaCorp
     ports:
       - "8000:8000"
   api:
-    image: trubudget/api:master
+    image: eep-portal/api:master
     ports:
       - "8080:8080"
     environment:

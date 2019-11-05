@@ -1,5 +1,5 @@
 {
-  "name": "trubudget-api",
+  "name": "eep-portal-api",
   "version": "1.4.0",
   "private": true,
   "repository": {
@@ -20,7 +20,7 @@
   "apidoc": {
     "name": "TruBudget",
     "title": "TruBudget",
-    "url": "https://trubudget.net/api",
+    "url": "https://eep-portal.net/api",
     "order": [
       "User",
       "Global",

@@ -219,10 +219,10 @@ Following list describes all existing permissions. If you need more information 
 | Intent                                        | Description                                                                                                            |
 | :-------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
 | network.listActive                            | show how many peers are connected to the current network in the upper right corner (currently logged in user excluded) |
-| global.listPermissions                        | the intent has no influence on the trubudget website                                                                   |
+| global.listPermissions                        | the intent has no influence on the eep-portal website                                                                   |
 | global.grantPermission                        | assign admin permissions to a user while creating a user                                                               |
 | global.grantAllPermissions                    | assign admin permissions to a user while creating a user                                                               |
-| global.revokePermission                       | the intent has no influence on the trubudget website                                                                   |
+| global.revokePermission                       | the intent has no influence on the eep-portal website                                                                   |
 | global.createProject                          | create a project on the overview site                                                                                  |
 | global.createUser                             | create a user with or without admin permissions (requires global.grantPermission)                                      |
 | global.createGroup                            | create a group with or without admin permissions                                                                       |
@@ -235,7 +235,7 @@ Following list describes all existing permissions. If you need more information 
 | project.viewSummary                           | show the project on the overview site                                                                                  |
 | project.viewDetails                           | show the project's details by accessing the project details site                                                       |
 | project.assign                                | assign a user/group to the project                                                                                     |
-| project.update                                | the intent has no influence on the trubudget website                                                                   |
+| project.update                                | the intent has no influence on the eep-portal website                                                                   |
 | project.intent.listPermissions                | show which user/group has which permission on the project                                                              |
 | project.intent.grantPermission                | grant project permissions to a user/group                                                                              |
 | project.intent.revokePermission               | revoke project permissions from a user/group                                                                           |
