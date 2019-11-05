@@ -1,10 +1,10 @@
 {
-  "name": "trubudget-e2e-test",
+  "name": "eep-portal-e2e-test",
   "version": "1.4.0",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/openkfw/TruBudget"
+    "url": "https://github.com/realChainLife/TruBudget"
   },
   "license": "GPL-3.0-or-later",
   "author": "Jure Zakotnik <Jure.Zakotnik@kfw.de>",

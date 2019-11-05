@@ -63,8 +63,8 @@ npm run build
 This will create a production build of the application which will be located in the ```build/``` folder. The content of the folder needs to be simply put on a webserver. If you are interested on how your application performs in production mode, you can simply use the ```Dockerfile```.
 
 ```bash
-docker build -t trubudget-frontend .
-docker run -p 80:80 -it trubudget-frontend
+docker build -t eep-portal-frontend .
+docker run -p 80:80 -it eep-portal-frontend
 ```
 
 This will build the application and run it in an NGINX webserver which is accesible under ```http://localhost/```
@@ -86,14 +86,14 @@ The Proxy Paths are defined through 4 environment variables of the container:
 That means, running the following docker commands
 
 ```bash
-docker build -t trubudget-frontend .
+docker build -t eep-portal-frontend .
 docker run \
   -p 80:80 \
   -e PROD_API_HOST=127.0.0.1 \
   -e PROD_API_PORT=8081 \
   -e TEST_API_HOST=127.0.0.2 \
   -e TEST_API_PORT=8082 \
-  -it trubudget-frontend
+  -it eep-portal-frontend
 ```
 
 will result in the following ```nginx.conf``` file.

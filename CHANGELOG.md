@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Assigning a user opens a confirmation dialog if the assignee has no permission to view the project/subproject/workflowitem[#389](https://github.com/openkfw/TruBudget/pull/389)
+- Assigning a user opens a confirmation dialog if the assignee has no permission to view the project/subproject/workflowitem[#389](https://github.com/realChainLife/TruBudget/pull/389)
   <!-- Linked pull request on purpose since it sums up the issue at its best -->
 
 <!-- ### Changed -->
@@ -22,8 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- The api endpoint "project.intent.listPermissions" checks for the right permission [#393](https://github.com/openkfw/TruBudget/issues/393)
-- The edit button of a project/subproject shouldn't be shown when the user has no permissions to update [#396](https://github.com/openkfw/TruBudget/issues/395)
+- The api endpoint "project.intent.listPermissions" checks for the right permission [#393](https://github.com/realChainLife/TruBudget/issues/393)
+- The edit button of a project/subproject shouldn't be shown when the user has no permissions to update [#396](https://github.com/realChainLife/TruBudget/issues/395)
 
 <!-- ### Security -->
 
@@ -31,188 +31,188 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- A new user called 'root' cannot be added [#369](https://github.com/openkfw/TruBudget/issues/369)
-- If a user changes his/her password, the new password has to follow security guidelines [#370](https://github.com/openkfw/TruBudget/issues/370)
-- Disallow root to create projects [#375](https://github.com/openkfw/TruBudget/issues/375)
-- Disallow root to create subprojects [#378](https://github.com/openkfw/TruBudget/issues/378)
-- Disallow root to add workflowitems [#380](https://github.com/openkfw/TruBudget/issues/380)
-- Allow user 'root' to change the passwords of all users [#366](https://github.com/openkfw/TruBudget/issues/366)
-- Rework the editing of project/subproject/workflowitem/global permissions [#245](https://github.com/openkfw/TruBudget/issues/245)
-- Improve project/subproject details-layout and handling of long names [#274](https://github.com/openkfw/TruBudget/issues/274)
+- A new user called 'root' cannot be added [#369](https://github.com/realChainLife/TruBudget/issues/369)
+- If a user changes his/her password, the new password has to follow security guidelines [#370](https://github.com/realChainLife/TruBudget/issues/370)
+- Disallow root to create projects [#375](https://github.com/realChainLife/TruBudget/issues/375)
+- Disallow root to create subprojects [#378](https://github.com/realChainLife/TruBudget/issues/378)
+- Disallow root to add workflowitems [#380](https://github.com/realChainLife/TruBudget/issues/380)
+- Allow user 'root' to change the passwords of all users [#366](https://github.com/realChainLife/TruBudget/issues/366)
+- Rework the editing of project/subproject/workflowitem/global permissions [#245](https://github.com/realChainLife/TruBudget/issues/245)
+- Improve project/subproject details-layout and handling of long names [#274](https://github.com/realChainLife/TruBudget/issues/274)
 
 ### Fixed
 
-- Check if assignee does exist when assigning to a project/subproject/workflowitem [#83](https://github.com/openkfw/TruBudget/issues/83)
+- Check if assignee does exist when assigning to a project/subproject/workflowitem [#83](https://github.com/realChainLife/TruBudget/issues/83)
 
 ## [1.3.0] - 2019-07-31
 
 ### Added
 
-- Added search feature for overview page [#347](https://github.com/openkfw/TruBudget/issues/347)
-- Added project tags [#342](https://github.com/openkfw/TruBudget/issues/342)
+- Added search feature for overview page [#347](https://github.com/realChainLife/TruBudget/issues/347)
+- Added project tags [#342](https://github.com/realChainLife/TruBudget/issues/342)
 
 ### Changed
 
-- Organizations and currencies for projected budgets of subprojects can only be selected from values of the parent project [#228](https://github.com/openkfw/TruBudget/issues/228)
-- Global permissions can only be granted/revoked to/from users within the same organizations [#340](https://github.com/openkfw/TruBudget/issues/340)
-- Don't display edit/permission/close button if the user does not have the permissions for the action [#235](https://github.com/openkfw/TruBudget/issues/235)
-- Updated postman collection including a postman environment[#199](https://github.com/openkfw/TruBudget/issues/199)
+- Organizations and currencies for projected budgets of subprojects can only be selected from values of the parent project [#228](https://github.com/realChainLife/TruBudget/issues/228)
+- Global permissions can only be granted/revoked to/from users within the same organizations [#340](https://github.com/realChainLife/TruBudget/issues/340)
+- Don't display edit/permission/close button if the user does not have the permissions for the action [#235](https://github.com/realChainLife/TruBudget/issues/235)
+- Updated postman collection including a postman environment[#199](https://github.com/realChainLife/TruBudget/issues/199)
 
 ### Removed
 
-- Permissions button is removed for groups [#345](https://github.com/openkfw/TruBudget/issues/345)
+- Permissions button is removed for groups [#345](https://github.com/realChainLife/TruBudget/issues/345)
 
 ### Fixed
 
-- Added backwards compatibility for future versions [#360](https://github.com/openkfw/TruBudget/issues/360)
-- If a user has permissions to view subproject details, but not the permissions to see the parent project, he/she can still view the subproject details [#282](https://github.com/openkfw/TruBudget/issues/282)
+- Added backwards compatibility for future versions [#360](https://github.com/realChainLife/TruBudget/issues/360)
+- If a user has permissions to view subproject details, but not the permissions to see the parent project, he/she can still view the subproject details [#282](https://github.com/realChainLife/TruBudget/issues/282)
 
 ## [1.2.0] - 2019-06-26
 
 ### Added
 
-- UI feature to change a user's password [#325](https://github.com/openkfw/TruBudget/issues/325)
+- UI feature to change a user's password [#325](https://github.com/realChainLife/TruBudget/issues/325)
 
 ### Changed
 
-- Every user can see the users and groups table [#333](https://github.com/openkfw/TruBudget/issues/333)
+- Every user can see the users and groups table [#333](https://github.com/realChainLife/TruBudget/issues/333)
 
 ### Removed
 
-- Removed permissions related to notifications [#316](https://github.com/openkfw/TruBudget/issues/316)
+- Removed permissions related to notifications [#316](https://github.com/realChainLife/TruBudget/issues/316)
 
 ### Fixed
 
-- Display correct currency when editing workflow items [#281](https://github.com/openkfw/TruBudget/issues/281)
+- Display correct currency when editing workflow items [#281](https://github.com/realChainLife/TruBudget/issues/281)
 
 ## [1.1.0] - 2019-06-12
 
 ### Added
 
-- New API endpoint to change a user's password [#79](https://github.com/openkfw/TruBudget/issues/79)
-- New API endpoints to grant, revoke and list permissions [#310](https://github.com/openkfw/TruBudget/issues/310)
-- Different background color for unread notifications [#300](https://github.com/openkfw/TruBudget/issues/300)
+- New API endpoint to change a user's password [#79](https://github.com/realChainLife/TruBudget/issues/79)
+- New API endpoints to grant, revoke and list permissions [#310](https://github.com/realChainLife/TruBudget/issues/310)
+- Different background color for unread notifications [#300](https://github.com/realChainLife/TruBudget/issues/300)
 
 ### Changed
 
-- Notification displays name of parent project and subproject [#298](https://github.com/openkfw/TruBudget/issues/298)
-- Move 'Read All' button to the left side [#301](https://github.com/openkfw/TruBudget/issues/301)
-- Don't display view button if user is not allowed to see project/subproject [#302](https://github.com/openkfw/TruBudget/issues/302)
+- Notification displays name of parent project and subproject [#298](https://github.com/realChainLife/TruBudget/issues/298)
+- Move 'Read All' button to the left side [#301](https://github.com/realChainLife/TruBudget/issues/301)
+- Don't display view button if user is not allowed to see project/subproject [#302](https://github.com/realChainLife/TruBudget/issues/302)
 
 ### Fixed
 
-- Empty history displayed after API call is finished [#294](https://github.com/openkfw/TruBudget/issues/294)
-- Last page of notifications displays correct number of items [#288](https://github.com/openkfw/TruBudget/issues/288)
-- Prevent assignee selection from overflowing [#299](https://github.com/openkfw/TruBudget/issues/299)
-- Display correct name in notifications [#292](https://github.com/openkfw/TruBudget/issues/292)
-- Workflowitem amount is only displayed if amount and exchange rate are available [#297](https://github.com/openkfw/TruBudget/issues/297)
-- User is not logged out when viewing a workflow item's history [#317](https://github.com/openkfw/TruBudget/issues/317)
+- Empty history displayed after API call is finished [#294](https://github.com/realChainLife/TruBudget/issues/294)
+- Last page of notifications displays correct number of items [#288](https://github.com/realChainLife/TruBudget/issues/288)
+- Prevent assignee selection from overflowing [#299](https://github.com/realChainLife/TruBudget/issues/299)
+- Display correct name in notifications [#292](https://github.com/realChainLife/TruBudget/issues/292)
+- Workflowitem amount is only displayed if amount and exchange rate are available [#297](https://github.com/realChainLife/TruBudget/issues/297)
+- User is not logged out when viewing a workflow item's history [#317](https://github.com/realChainLife/TruBudget/issues/317)
 
 ## [1.0.1] - 2019-05-21
 
 ### Changed
 
-- Increased Multichain Version to 2.0.1 [#273](https://github.com/openkfw/TruBudget/issues/273)
+- Increased Multichain Version to 2.0.1 [#273](https://github.com/realChainLife/TruBudget/issues/273)
 
 ### Fixed
 
-- Correct number of history items is displayed when history drawer/list is opened [#275](https://github.com/openkfw/TruBudget/issues/275)
-- Display formatted string when user edits or deletes projected budget [#279](https://github.com/openkfw/TruBudget/issues/279)
-- Previously added documents stay visible after addition of a new document [#268](https://github.com/openkfw/TruBudget/issues/268)
-- Navigation on notifications page now works as expected [#287](https://github.com/openkfw/TruBudget/pull/287)
-- The link to the project/subproject is now active when the user has permissions to see it [#284](https://github.com/openkfw/TruBudget/issues/284)
-- The link to the project/subproject in fly-in notifications correctly redirects the user [#285](https://github.com/openkfw/TruBudget/issues/285)
-- When a workflow item is assigned, the new assignee gets notified [#272](https://github.com/openkfw/TruBudget/issues/272)
+- Correct number of history items is displayed when history drawer/list is opened [#275](https://github.com/realChainLife/TruBudget/issues/275)
+- Display formatted string when user edits or deletes projected budget [#279](https://github.com/realChainLife/TruBudget/issues/279)
+- Previously added documents stay visible after addition of a new document [#268](https://github.com/realChainLife/TruBudget/issues/268)
+- Navigation on notifications page now works as expected [#287](https://github.com/realChainLife/TruBudget/pull/287)
+- The link to the project/subproject is now active when the user has permissions to see it [#284](https://github.com/realChainLife/TruBudget/issues/284)
+- The link to the project/subproject in fly-in notifications correctly redirects the user [#285](https://github.com/realChainLife/TruBudget/issues/285)
+- When a workflow item is assigned, the new assignee gets notified [#272](https://github.com/realChainLife/TruBudget/issues/272)
 
 ## [1.0.0] - 2019-05-08
 
 ### Added
 
-- Projected budget ratio on project analytics screen [#242](https://github.com/openkfw/TruBudget/pull/242)
-- New endpoint `/workflowitem.viewHistory` that returns all changes that have been applied to a particular workflowitem in chronological order. [#252](https://github.com/openkfw/TruBudget/issues/252)
-- Each workflowitem's history can now be displayed individually in the frontend. [#252](https://github.com/openkfw/TruBudget/issues/252)
-- User gets notified when the projected budget of a project/subproject he/she is assigned to is updated or deleted [#283](https://github.com/openkfw/TruBudget/issues/283)
+- Projected budget ratio on project analytics screen [#242](https://github.com/realChainLife/TruBudget/pull/242)
+- New endpoint `/workflowitem.viewHistory` that returns all changes that have been applied to a particular workflowitem in chronological order. [#252](https://github.com/realChainLife/TruBudget/issues/252)
+- Each workflowitem's history can now be displayed individually in the frontend. [#252](https://github.com/realChainLife/TruBudget/issues/252)
+- User gets notified when the projected budget of a project/subproject he/she is assigned to is updated or deleted [#283](https://github.com/realChainLife/TruBudget/issues/283)
 
 ### Changed
 
-- When adding subprojects, projected budgets are not mandatory anymore [#229](https://github.com/openkfw/TruBudget/issues/229)
-- Added groups to provisioning [#57](https://github.com/openkfw/TruBudget/issues/57)
-- In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/openkfw/TruBudget/issues/176)
-- The `additional data` button is now available on all levels and is only displayed if additional data is available [#91](https://github.com/openkfw/TruBudget/issues/91)
-- The frontend no longer displays workflowitem history events in a subproject's history; similarly, a project's history no longer contains the historic events of its subprojects. [#252](https://github.com/openkfw/TruBudget/issues/252)
+- When adding subprojects, projected budgets are not mandatory anymore [#229](https://github.com/realChainLife/TruBudget/issues/229)
+- Added groups to provisioning [#57](https://github.com/realChainLife/TruBudget/issues/57)
+- In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container instead [#176](https://github.com/realChainLife/TruBudget/issues/176)
+- The `additional data` button is now available on all levels and is only displayed if additional data is available [#91](https://github.com/realChainLife/TruBudget/issues/91)
+- The frontend no longer displays workflowitem history events in a subproject's history; similarly, a project's history no longer contains the historic events of its subprojects. [#252](https://github.com/realChainLife/TruBudget/issues/252)
 
 ### Deprecated
 
-- `/project.viewHistory` deprecated in favor of `/project.viewHistory.v2`. [#252](https://github.com/openkfw/TruBudget/issues/252)
-- `/subproject.viewHistory` deprecated in favor of `/subproject.viewHistory.v2`. [#252](https://github.com/openkfw/TruBudget/issues/252)
+- `/project.viewHistory` deprecated in favor of `/project.viewHistory.v2`. [#252](https://github.com/realChainLife/TruBudget/issues/252)
+- `/subproject.viewHistory` deprecated in favor of `/subproject.viewHistory.v2`. [#252](https://github.com/realChainLife/TruBudget/issues/252)
 
 ### Fixed
 
-- Fixed line of YAML file for master deployments via docker-compose, so that image of excel export service is pulled correctly [#223](https://github.com/openkfw/TruBudget/issues/223)
-- Backup/restore works again. [#237](https://github.com/openkfw/TruBudget/issues/237)
-- Budgets on project analytics do not contain open workflow items [#230](https://github.com/openkfw/TruBudget/issues/230)
-- Fixed a bug where on smaller screens the action buttons (create & cancel) are hidden and no item could be created [#240](https://github.com/openkfw/TruBudget/issues/240)
-- Increase frontend stability [#263](https://github.com/openkfw/TruBudget/pull/263)
+- Fixed line of YAML file for master deployments via docker-compose, so that image of excel export service is pulled correctly [#223](https://github.com/realChainLife/TruBudget/issues/223)
+- Backup/restore works again. [#237](https://github.com/realChainLife/TruBudget/issues/237)
+- Budgets on project analytics do not contain open workflow items [#230](https://github.com/realChainLife/TruBudget/issues/230)
+- Fixed a bug where on smaller screens the action buttons (create & cancel) are hidden and no item could be created [#240](https://github.com/realChainLife/TruBudget/issues/240)
+- Increase frontend stability [#263](https://github.com/realChainLife/TruBudget/pull/263)
 
 ## [1.0.0-beta.9] - 2019-04-23
 
 ### Added
 
-- Export all visible data for a certain user into an excel sheet [#67](https://github.com/openkfw/TruBudget/issues/67)
-- Analytics dashboard on project/subproject level [#202](https://github.com/openkfw/TruBudget/pull/202)
+- Export all visible data for a certain user into an excel sheet [#67](https://github.com/realChainLife/TruBudget/issues/67)
+- Analytics dashboard on project/subproject level [#202](https://github.com/realChainLife/TruBudget/pull/202)
 
 ### Changed
 
-- Only allow the point character as the decimal sign for a workflowitems' amount and exchangeRate fields. While we generally try to avoid interpreting amounts, this change is important to ensure that values on the chain can be read without knowing the author's locale settings. [#216](https://github.com/openkfw/TruBudget/issues/216)
+- Only allow the point character as the decimal sign for a workflowitems' amount and exchangeRate fields. While we generally try to avoid interpreting amounts, this change is important to ensure that values on the chain can be read without knowing the author's locale settings. [#216](https://github.com/realChainLife/TruBudget/issues/216)
 
 ### Fixed
 
-- `subproject.list` did not return `additionalData` [#214](https://github.com/openkfw/TruBudget/issues/214)
+- `subproject.list` did not return `additionalData` [#214](https://github.com/realChainLife/TruBudget/issues/214)
 
 ## [1.0.0-beta.8] - 2019-04-11
 
 ### Added
 
-- Digit grouping when typing amount of projected budgets [#159](https://github.com/openkfw/TruBudget/issue/159)
-- Edit projected budgets of projects and subprojects [#129](https://github.com/openkfw/TruBudget/issue/129)
-- External Webhook [#158](https://github.com/openkfw/TruBudget/pull/158)
+- Digit grouping when typing amount of projected budgets [#159](https://github.com/realChainLife/TruBudget/issue/159)
+- Edit projected budgets of projects and subprojects [#129](https://github.com/realChainLife/TruBudget/issue/129)
+- External Webhook [#158](https://github.com/realChainLife/TruBudget/pull/158)
 
 ### Changed
 
-- Reject workflowitem update when document would be overwritten [#205](https://github.com/openkfw/TruBudget/pull/205)
+- Reject workflowitem update when document would be overwritten [#205](https://github.com/realChainLife/TruBudget/pull/205)
 
 ### Fixed
 
-- Schema for workflowitem_update [#212](https://github.com/openkfw/TruBudget/pull/212)
-- Sorting of Swagger documentation [#207](https://github.com/openkfw/TruBudget/issues/207)
-- Editing of workflowitem when amount type is changed to allocated/disbursed [#171](https://github.com/openkfw/TruBudget/issues/171)
-- Alignment of columns in workflowitem table [#141](https://github.com/openkfw/TruBudget/issues/141)
-- Display of error snackbar after failed login [#170](https://github.com/openkfw/TruBudget/issues/170)
-- Increased the stability of the event sourcing code by replacing the "immer" dependency with a custom implementation. [#196](https://github.com/openkfw/TruBudget/pull/196)
-- Provisioning error related to readiness of blockchain/api [#193](https://github.com/openkfw/TruBudget/issue/193)
+- Schema for workflowitem_update [#212](https://github.com/realChainLife/TruBudget/pull/212)
+- Sorting of Swagger documentation [#207](https://github.com/realChainLife/TruBudget/issues/207)
+- Editing of workflowitem when amount type is changed to allocated/disbursed [#171](https://github.com/realChainLife/TruBudget/issues/171)
+- Alignment of columns in workflowitem table [#141](https://github.com/realChainLife/TruBudget/issues/141)
+- Display of error snackbar after failed login [#170](https://github.com/realChainLife/TruBudget/issues/170)
+- Increased the stability of the event sourcing code by replacing the "immer" dependency with a custom implementation. [#196](https://github.com/realChainLife/TruBudget/pull/196)
+- Provisioning error related to readiness of blockchain/api [#193](https://github.com/realChainLife/TruBudget/issue/193)
 
 ## [1.0.0-beta.7] - 2019-04-03
 
 ### Added
 
-- [Code of conduct](./CODE_OF_CONDUCT.md) and [contributing guidelines](./CONTRIBUTING.md) [#156](https://github.com/openkfw/TruBudget/issues/156)
-- Refined [getting-started guide](./README.md) [#185](https://github.com/openkfw/TruBudget/pull/185) and installation guides [#180](https://github.com/openkfw/TruBudget/pull/180)
+- [Code of conduct](./CODE_OF_CONDUCT.md) and [contributing guidelines](./CONTRIBUTING.md) [#156](https://github.com/realChainLife/TruBudget/issues/156)
+- Refined [getting-started guide](./README.md) [#185](https://github.com/realChainLife/TruBudget/pull/185) and installation guides [#180](https://github.com/realChainLife/TruBudget/pull/180)
 
 ### Changed
 
-- Error message for user logging in on another organization's node [#174](https://github.com/openkfw/TruBudget/issues/174)
-- JWT validity set to 8 hours [#160](https://github.com/openkfw/TruBudget/issue/160)
+- Error message for user logging in on another organization's node [#174](https://github.com/realChainLife/TruBudget/issues/174)
+- JWT validity set to 8 hours [#160](https://github.com/realChainLife/TruBudget/issue/160)
 
 ### Fixed
 
-- notifications do not work according to wrong notification.list schema [#182](https://github.com/openkfw/TruBudget/issues/182) [#183](https://github.com/openkfw/TruBudget/issues/183)
-- uploading document does not produce history output [#85](https://github.com/openkfw/TruBudget/issues/85)
-- display of user names in history [#87](https://github.com/openkfw/TruBudget/issues/87)
-- not authorized HTTP status code [#177](https://github.com/openkfw/TruBudget/pull/177)
-- Swagger documentation [#146](https://github.com/openkfw/TruBudget/issue/146)
-- upload documents using Firefox [#121](https://github.com/openkfw/TruBudget/issue/121)
-- provisioning script [#149](https://github.com/openkfw/TruBudget/issue/149)
-- e2e test for updated display of organization [#145](https://github.com/openkfw/TruBudget/issue/145)
+- notifications do not work according to wrong notification.list schema [#182](https://github.com/realChainLife/TruBudget/issues/182) [#183](https://github.com/realChainLife/TruBudget/issues/183)
+- uploading document does not produce history output [#85](https://github.com/realChainLife/TruBudget/issues/85)
+- display of user names in history [#87](https://github.com/realChainLife/TruBudget/issues/87)
+- not authorized HTTP status code [#177](https://github.com/realChainLife/TruBudget/pull/177)
+- Swagger documentation [#146](https://github.com/realChainLife/TruBudget/issue/146)
+- upload documents using Firefox [#121](https://github.com/realChainLife/TruBudget/issue/121)
+- provisioning script [#149](https://github.com/realChainLife/TruBudget/issue/149)
+- e2e test for updated display of organization [#145](https://github.com/realChainLife/TruBudget/issue/145)
 
 ## [1.0.0-beta.6] - 2019-03-22
 
@@ -359,18 +359,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.4.0...master
-[1.4.0]: https://github.com/openkfw/TruBudget/compare/v1.3.0...v1.4.0
-[1.3.0]: https://github.com/openkfw/TruBudget/compare/v1.2.0...v1.3.0
-[1.2.0]: https://github.com/openkfw/TruBudget/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/openkfw/TruBudget/compare/v1.0.1...v1.1.0
-[1.0.1]: https://github.com/openkfw/TruBudget/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.9...v1.0.0
-[1.0.0-beta.9]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.8...v1.0.0-beta.9
-[1.0.0-beta.8]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...v1.0.0-beta.8
-[1.0.0-beta.7]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.6...v1.0.0-beta.7
-[1.0.0-beta.6]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.5...v1.0.0-beta.6
-[1.0.0-beta.5]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.4...v1.0.0-beta.5
-[1.0.0-beta.4]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.3...v1.0.0-beta.4
-[1.0.0-beta.3]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.2...v1.0.0-beta.3
-[1.0.0-beta.2]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.1...v1.0.0-beta.2
+[unreleased]: https://github.com/realChainLife/TruBudget/compare/v1.4.0...master
+[1.4.0]: https://github.com/realChainLife/TruBudget/compare/v1.3.0...v1.4.0
+[1.3.0]: https://github.com/realChainLife/TruBudget/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/realChainLife/TruBudget/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/realChainLife/TruBudget/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/realChainLife/TruBudget/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.9...v1.0.0
+[1.0.0-beta.9]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.8...v1.0.0-beta.9
+[1.0.0-beta.8]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.7...v1.0.0-beta.8
+[1.0.0-beta.7]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.6...v1.0.0-beta.7
+[1.0.0-beta.6]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.5...v1.0.0-beta.6
+[1.0.0-beta.5]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.4...v1.0.0-beta.5
+[1.0.0-beta.4]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.3...v1.0.0-beta.4
+[1.0.0-beta.3]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.2...v1.0.0-beta.3
+[1.0.0-beta.2]: https://github.com/realChainLife/TruBudget/compare/v1.0.0-beta.1...v1.0.0-beta.2

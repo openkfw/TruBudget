@@ -1,10 +1,10 @@
-# Default values for trubudget-api.
+# Default values for eep-portal-api.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
 
 image:
-  repository: trubudget/api
+  repository: eep-portal/api
   pullPolicy: Always
 
 api:

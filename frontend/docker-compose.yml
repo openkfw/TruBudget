@@ -1,14 +1,14 @@
 version: "3"
 services:
   blockchain-master:
-    image: trubudget/blockchain:master
+    image: eep-portal/blockchain:master
     environment:
       RPC_PORT: 8000
       ORGANIZATION: ACMECorp
     ports:
       - "4000:8000"
   blockchain-slave:
-    image: trubudget/blockchain:master
+    image: eep-portal/blockchain:master
     environment:
       RPC_PORT: 8000
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
@@ -20,7 +20,7 @@ services:
       - "8001:8000"
 
   provisioning:
-    image: trubudget/provisioning:master
+    image: eep-portal/provisioning:master
     command: ["npm", "start"]
     environment:
       API_HOST: masterapi
@@ -32,7 +32,7 @@ services:
       - masterapi
 
   masterapi:
-    image: trubudget/api:master
+    image: eep-portal/api:master
     ports:
       - "8080:8080"
     environment:
@@ -54,7 +54,7 @@ services:
       - blockchain-master
 
   excel-export:
-    image: trubudget/excel-export:master
+    image: eep-portal/excel-export:master
     ports:
       - "8888:8888"
     environment:

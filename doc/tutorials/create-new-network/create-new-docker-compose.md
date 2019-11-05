@@ -38,7 +38,7 @@ Make sure that the following ports are not blocked by other processes: `80`, `80
 Start with checking out the repository:
 
 ```bash
-git clone https://github.com/openkfw/TruBudget
+git clone https://github.com/realChainLife/TruBudget
 cd TruBudget
 ```
 
@@ -151,7 +151,7 @@ testapi_1         | POST /api/workflowitem.intent.grantPermission [user=mstein b
 testapi_1         | Publishing workflowitem.intent.grantPermission to 2ac3cfed87f243c7ef05f8d3aff3e656/["b829cb0de28d621435ed5e66fe16255f_workflows","1d734c6c12f1d5e2cd112856ea39ae1e"]
 provision-test_1  | Subproject "Primary School" > "Equipment" created.
 provision-test_1  | Project "Primary School" created.
-trubudget_provision-test_1 exited with code 0
+eep-portal_provision-test_1 exited with code 0
 ```
 
 No need to worry regarding the provisioning container. Both provisioning containers (provision-test, provision-prod) will exit with **error code 0** once the network was successfully provisioned.

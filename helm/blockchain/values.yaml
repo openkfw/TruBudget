@@ -3,7 +3,7 @@
 replicaCount: 1
 
 image:
-  repository: trubudget/blockchain
+  repository: eep-portal/blockchain
   pullPolicy: Always
 
 bc:

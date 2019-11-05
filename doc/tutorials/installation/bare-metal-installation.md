@@ -12,7 +12,7 @@ If you decide to use more than one virtual machines, execute the commands only o
 
 ## Table of Contents
 
-- [Installing TruBudget Directly on a Machine](#installing-trubudget-directly-on-a-machine)
+- [Installing TruBudget Directly on a Machine](#installing-eep-portal-directly-on-a-machine)
   - [Table of Contents](#table-of-contents)
     - [Install of Software](#install-of-software)
   - [Known Issues](#known-issues)

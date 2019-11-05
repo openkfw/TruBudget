@@ -116,7 +116,7 @@ If you receive an error running `npm install`, that looks like the following:
 726 verbose stack     at maybeClose (internal/child_process.js:936:16)
 726 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:220:5)
 727 verbose pkgid sodium-native@2.1.6
-728 verbose cwd /root/trubudget/api
+728 verbose cwd /root/eep-portal/api
 729 verbose Linux 4.15.0-1025-azure
 730 verbose argv "/usr/bin/node" "/usr/bin/npm" "install"
 731 verbose node v9.11.2
