@@ -18,7 +18,7 @@ We use issues for everything, so can can ask questions as well as raise problems
 suggestions by simply [creating a GitHub issue]. Also, feel free to reach out to us on
 [Gitter].
 
-[creating a github issue]: https://github.com/openkfw/TruBudget/issues/new
+[creating a github issue]: https://github.com/realChainLife/TruBudget/issues/new
 
 ## Architecture Decisions
 
@@ -35,7 +35,7 @@ starting a discussion on [Gitter] or by opening a [new GitHub issue].
 Best practices and layout is documented in README files next to the source files they
 describe. For example, take a look at [api/src/](api/src/) to get started.
 
-[new github issue]: https://github.com/openkfw/TruBudget/issues/new
+[new github issue]: https://github.com/realChainLife/TruBudget/issues/new
 [code of conduct]: CODE_OF_CONDUCT.md
 [jure zakotnik]: https://github.com/jzakotnik
 [gitter]: https://gitter.im/Tru-Community/community

@@ -1,6 +1,6 @@
 # TruBudget <!-- omit in TOC -->
 
-[![build status](https://travis-ci.com/openkfw/TruBudget.svg?branch=master)](https://travis-ci.com/openkfw/TruBudget)
+[![build status](https://travis-ci.com/realChainLife/TruBudget.svg?branch=master)](https://travis-ci.com/realChainLife/TruBudget)
 [![gitter chat](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/Tru-Community/community)
 
 # Table of Contents <!-- omit in TOC -->

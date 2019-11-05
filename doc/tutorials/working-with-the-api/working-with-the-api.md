@@ -24,8 +24,8 @@ The documentation for this endpoints is generated with each deployment of the AP
 
 ### Using Postman
 
-One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/openkfw/TruBudget/blob/master/api/postman/TruBudget.postman_collection.json) ready to be imported into Postman.
+One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/realChainLife/TruBudget/blob/master/api/postman/TruBudget.postman_collection.json) ready to be imported into Postman.
 
 ## How to Contribute
 
-The API is structured into layers (application layer, service layer, domain layer) and each of these layers has its own language. There is a README file in each of the layers, where the structure of the API and the current layer is described in detail. You can start [here](https://github.com/openkfw/TruBudget/blob/master/api/src/README.md) to get detailed information.
+The API is structured into layers (application layer, service layer, domain layer) and each of these layers has its own language. There is a README file in each of the layers, where the structure of the API and the current layer is described in detail. You can start [here](https://github.com/realChainLife/TruBudget/blob/master/api/src/README.md) to get detailed information.
