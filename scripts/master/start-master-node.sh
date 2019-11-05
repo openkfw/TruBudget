@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Starting TruBudget"
+echo "Starting EEPPortal"
 
 COMPOSE="docker-compose -f docker-compose/master/master-node.yml -p eep-portal"
 

@@ -346,7 +346,7 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
   const { cache2: cache } = conn;
 
   // The cache contains all streams that have "kind" in their details (e.g., the "root"
-  // stream doesn't have this as it's created by MultiChain and not used by TruBudget)
+  // stream doesn't have this as it's created by MultiChain and not used by EEPPortal)
   // and are not excluded by the STREAM_BLACKLIST:
   const streams = (await conn.multichainClient.streams(onlyStreamName)).filter(
     stream =>

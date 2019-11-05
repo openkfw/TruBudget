@@ -1,6 +1,6 @@
 # Cluster Helm Chart <!-- omit in TOC -->
 
-Deploys all components of TruBudget.
+Deploys all components of EEPPortal.
 
 # Table of Contents
 

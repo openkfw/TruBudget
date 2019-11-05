@@ -15,7 +15,7 @@ If there is an error upon starting the API with the message "readiness: MultiCha
 If you see the following error message:
 
 ```bash
-[2018-10-03T12:13:23.950Z] INFO (TruBudget/16981 on servername): Connecting to MultiChain node
+[2018-10-03T12:13:23.950Z] INFO (EEPPortal/16981 on servername): Connecting to MultiChain node
     protocol: "http"
     host: "127.0.0.1"
     port: 8000
@@ -24,9 +24,9 @@ If you see the following error message:
 Register fastify endpoint
 schema id ignored er58c69eg298c87e3899119e025eff1f
 schema id ignored fe9c2b24ade9a92360b3a898665678ac
-[2018-10-03T12:13:24.318Z] INFO (TruBudget/16981 servername): server is listening on 8080
-[2018-10-03T12:13:24.585Z] WARN (TruBudget/16981 servername):  "readiness: MultiChain connection failed"
-[2018-10-03T12:13:24.586Z] ERROR (TruBudget/16981 servername): MultiChain connection/permissions not ready yet
+[2018-10-03T12:13:24.318Z] INFO (EEPPortal/16981 servername): server is listening on 8080
+[2018-10-03T12:13:24.585Z] WARN (EEPPortal/16981 servername):  "readiness: MultiChain connection failed"
+[2018-10-03T12:13:24.586Z] ERROR (EEPPortal/16981 servername): MultiChain connection/permissions not ready yet
 ```
 
 then locate the running instances of the blockchain
@@ -183,7 +183,7 @@ You can find a detailed solution on [Stackoverflow](https://stackoverflow.com/a/
 
 ### Port 80 used by PID 4
 
-This means that there is a system process blocking port 80. If you want to use TruBudget in production, you should find and disable that process. If you want to test TruBudget on your machine, an easy way to fix it is to set the exposed ports in the Yaml file to a different one. Locate the file `docker-compose/local/master-node.yml` (or the one in the `master` folder) and change the following part
+This means that there is a system process blocking port 80. If you want to use EEPPortal in production, you should find and disable that process. If you want to test EEPPortal on your machine, an easy way to fix it is to set the exposed ports in the Yaml file to a different one. Locate the file `docker-compose/local/master-node.yml` (or the one in the `master` folder) and change the following part
 
 ```yml
 frontend:

@@ -1717,7 +1717,7 @@ function* exportDataSaga() {
   yield execute(
     function*() {
       const data = yield callApi(api.export);
-      saveAs(data, "TruBudget_Export.xlsx");
+      saveAs(data, "EEPPortal_Export.xlsx");
       yield put({
         type: EXPORT_DATA_SUCCESS
       });

@@ -10,7 +10,7 @@ Superceded by [10. multi node setup](0010-multi-node-setup.md)
 
 Even though Multichain (like Bitcoin) has to be bootstrapped from a single node, we're aiming at a system design that doesn't rely on a single party being involved in most administrative tasks, such as adding additional nodes to an existing deployment.
 
-This ADR discusses terminology and setup of the TruBudget network.
+This ADR discusses terminology and setup of the EEPPortal network.
 
 ## Decision
 
@@ -39,12 +39,12 @@ There are two ways an organization can join the network:
 
 #### Trusted vs. managed access
 
-In the TruBudget network, there are two types of organizational access to the network: _admin_ and _basic_. The main difference is that with admin the node can also _mine_ and write to so-called "admin" streams. In TruBudget, each organization should have exactly one address (the _organization address_) with admin permissions; all other node addresses should have basic access only. This ensures that a single organization cannot manipulate the network without other organizations noticing.
+In the EEPPortal network, there are two types of organizational access to the network: _admin_ and _basic_. The main difference is that with admin the node can also _mine_ and write to so-called "admin" streams. In EEPPortal, each organization should have exactly one address (the _organization address_) with admin permissions; all other node addresses should have basic access only. This ensures that a single organization cannot manipulate the network without other organizations noticing.
 
-In other words, connecting as a new organization **B** to an existing TruBudget network of organization **A** works as follows:
+In other words, connecting as a new organization **B** to an existing EEPPortal network of organization **A** works as follows:
 
 1. **A** gives **B** the API URL of any one of their nodes.
-1. **B** runs TruBudget for the first time, pointing it to the given URL. Since the instance address is unknown to **A**'s node, the connection fails; instead, the administrator of **A** will see the connection request in TruBudget's connection dashboard. Meanwhile, the node of **B** continues its connection attempts.
+1. **B** runs EEPPortal for the first time, pointing it to the given URL. Since the instance address is unknown to **A**'s node, the connection fails; instead, the administrator of **A** will see the connection request in EEPPortal's connection dashboard. Meanwhile, the node of **B** continues its connection attempts.
 1. The administrator of **A** verifies the address by calling **B**, asking them for confirmation. The administrator then chooses "trusted access" for the connection request. The address of the node of **B** is now **B**'s organization key.
 1. Now that the `connect` permission has been granted, **B**'s node is finally able to establish a connection, joining the network and fetching all existing data in the process. Since the organization stream for **B** is not yet present, the node infers it's **B**'s first node; consequently, the node creates the organization stream and initializes the "vault" stream-item with its encrypted private key (= organization key).
 

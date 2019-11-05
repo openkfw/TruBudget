@@ -1,4 +1,4 @@
-# TruBudget
+# EEPPortal
 
 ## Setup
 

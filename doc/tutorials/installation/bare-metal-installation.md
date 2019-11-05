@@ -1,6 +1,6 @@
-# Installing TruBudget Directly on a Machine
+# Installing EEPPortal Directly on a Machine
 
-The following section describes how to install the software needed to run TruBudget directly on Debian/Ubuntu/Fedora machines without the use of Docker, Docker-Compose or Kubernetes (also called _installing bare metal_).
+The following section describes how to install the software needed to run EEPPortal directly on Debian/Ubuntu/Fedora machines without the use of Docker, Docker-Compose or Kubernetes (also called _installing bare metal_).
 
 This guide will setup the following components:
 
@@ -12,7 +12,7 @@ If you decide to use more than one virtual machines, execute the commands only o
 
 ## Table of Contents
 
-- [Installing TruBudget Directly on a Machine](#installing-eep-portal-directly-on-a-machine)
+- [Installing EEPPortal Directly on a Machine](#installing-eep-portal-directly-on-a-machine)
   - [Table of Contents](#table-of-contents)
     - [Install of Software](#install-of-software)
   - [Known Issues](#known-issues)
