@@ -27,7 +27,7 @@ Clone the Github repository of the components onto the designated machines.
 Clone the repository:
 
 ```
-git clone https://github.com/openkfw/TruBudget.git
+git clone https://github.com/realChainLife/TruBudget.git
 cd TruBudget
 ```
 

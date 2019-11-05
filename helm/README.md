@@ -16,10 +16,10 @@ Make sure to have [Helm](https://github.com/helm/helm/blob/master/docs/install.m
 helm init
 ```
 
-Clone `openkfw/TruBudget` repository and go to `helm` folder.
+Clone `realChainLife/TruBudget` repository and go to `helm` folder.
 
 ```bash
-git clone https://github.com/openkfw/TruBudget.git
+git clone https://github.com/realChainLife/TruBudget.git
 cd TruBudget/helm
 ```
 

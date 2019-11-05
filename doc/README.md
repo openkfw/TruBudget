@@ -1,10 +1,10 @@
 # TruBudget Documentation
 
-> For the **latest release**, the **Getting Started** section or the **FAQ** visit our initial [README.md](https://github.com/openkfw/TruBudget/blob/master/README.md)
+> For the **latest release**, the **Getting Started** section or the **FAQ** visit our initial [README.md](https://github.com/realChainLife/TruBudget/blob/master/README.md)
 
 Welcome to the TruBudget documentation! This guide aims to provide you with information about the different parts of TruBudget.
 
-[Readme](https://github.com/openkfw/TruBudget/blob/master/README.md) - Introduction and first example
+[Readme](https://github.com/realChainLife/TruBudget/blob/master/README.md) - Introduction and first example
 
 [Introduction](./Introduction.md) - Some basics of TruBudget
 

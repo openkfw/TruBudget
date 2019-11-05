@@ -47,13 +47,13 @@ Clone the repository from Github:
 Follow the instructions on how to setup your [SSH-connection](https://help.github.com/en/articles/connecting-to-github-with-ssh)
 
 ```bash
-git clone https://github.com/openkfw/TruBudget.git
+git clone https://github.com/realChainLife/TruBudget.git
 ```
 
 - HTTPS:
 
 ```bash
-git clone https://github.com/openkfw/TruBudget.git
+git clone https://github.com/realChainLife/TruBudget.git
 ```
 
 ### IDE
@@ -157,7 +157,7 @@ If you are developing on Windows, we recommend using the Git Bash to run the `st
 
 The API takes care of the communication between the blockchain and the frontend and basically serves as backend. The proper setting of environment variables is crucial, so the API can communicate with the blockchain correctly.
 
-The `/api/src` folder contains README files on each level which describe the layout and architecture of the API. You can start reading [here](https://github.com/openkfw/TruBudget/blob/master/api/src/README.md)
+The `/api/src` folder contains README files on each level which describe the layout and architecture of the API. You can start reading [here](https://github.com/realChainLife/TruBudget/blob/master/api/src/README.md)
 
 To start the api open your favorite shell, navigate to your api folder and follow these instructions:
 
@@ -396,6 +396,6 @@ npm run test:here <folderName> <describeString>
 # FAQ
 | Description           | Link                                                                                                              |
 | :-------------------- | :---------------------------------------------------------------------------------------------------------------- |
-| How to run e2e-tests? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#end-to-end-tests |
-| How to run unit-test? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#unit-tests       |
+| How to run e2e-tests? | https://github.com/realChainLife/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#end-to-end-tests |
+| How to run unit-test? | https://github.com/realChainLife/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#unit-tests       |
 -->

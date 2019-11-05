@@ -38,7 +38,7 @@ Make sure that the following ports are not blocked by other processes: `80`, `80
 Start with checking out the repository:
 
 ```bash
-git clone https://github.com/openkfw/TruBudget
+git clone https://github.com/realChainLife/TruBudget
 cd TruBudget
 ```
 
