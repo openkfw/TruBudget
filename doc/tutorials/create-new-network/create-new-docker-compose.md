@@ -38,11 +38,11 @@ Make sure that the following ports are not blocked by other processes: `80`, `80
 Start with checking out the repository:
 
 ```bash
-git clone https://github.com/realChainLife/TruBudget
-cd TruBudget
+git clone https://github.com/realChainLife/EEPPortal
+cd EEPPortal
 ```
 
-This will create a local copy of the source code in a folder called `TruBudget` (= your local checkout).
+This will create a local copy of the source code in a folder called `EEPPortal` (= your local checkout).
 
 If you work with an existing checkout, make sure you have the latest changes:
 
@@ -54,13 +54,13 @@ In order to pull the images from the Docker Hub, you need to be logged in with y
 
 ### Clean installation
 
-If you have previously started a TruBudget instance and want to start a new Blockchain network without previously stored data, remove the Docker volumes with:
+If you have previously started a EEPPortal instance and want to start a new Blockchain network without previously stored data, remove the Docker volumes with:
 
 ```bash
 rm -r /tmp/bc*
 ```
 
-If this is either your first time starting TruBudget or you want to resume where you left off, skip this step.
+If this is either your first time starting EEPPortal or you want to resume where you left off, skip this step.
 
 ## Create a new Blockchain network
 
@@ -87,7 +87,7 @@ volumes:
 ```
 
 The next step is to set all required environment properties, otherwise Docker will not receive the required parameters to start the deployment.
-If you want to start with the standard configuration we reccomend copying the `.env_example` file and rename it to `.env` in the `TruBudget` base folder:
+If you want to start with the standard configuration we reccomend copying the `.env_example` file and rename it to `.env` in the `EEPPortal` base folder:
 
 ```bash
 cp .env_example .env

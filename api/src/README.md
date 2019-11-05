@@ -1,6 +1,6 @@
-# Hacking TruBudget
+# Hacking EEPPortal
 
-Welcome to the **TruBudget API Source Directory**. This readme file offers an introduction into how the code here is organized. It also mentions some best practices along the way.
+Welcome to the **EEPPortal API Source Directory**. This readme file offers an introduction into how the code here is organized. It also mentions some best practices along the way.
 
 Contents:
 

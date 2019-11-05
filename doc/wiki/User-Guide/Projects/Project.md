@@ -12,7 +12,7 @@
   - [Permissions on project](#Permissions-on-project)
   - [Create a subproject](#Create-a-subproject)
 
-Projects are currently the highest layer of abstraction in TruBudget. They represent the overall intention of what you trying to achieve, like building a school in Malawi.
+Projects are currently the highest layer of abstraction in EEPPortal. They represent the overall intention of what you trying to achieve, like building a school in Malawi.
 
 There are some different permissions which affect projects.
 

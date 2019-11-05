@@ -75,9 +75,9 @@ const registerSwagger = (
     routePrefix: `${urlPrefix}/documentation`,
     swagger: {
       info: {
-        title: "TruBudget API documentation",
+        title: "EEPPortal API documentation",
         description:
-          "The documentation contains all endpoints used for TruBudget blockchain communication." +
+          "The documentation contains all endpoints used for EEPPortal blockchain communication." +
           "\nStart at the 'user.authenticate' endpoint to receive a token which is needed for authentication " +
           "at almost every endpoint.\nTo use the token click on the 'Authorize' Button at the top right",
         version: "0.1.0",

@@ -1,25 +1,25 @@
-# TruBudget Documentation
+# EEPPortal Documentation
 
-> For the **latest release**, the **Getting Started** section or the **FAQ** visit our initial [README.md](https://github.com/realChainLife/TruBudget/blob/master/README.md)
+> For the **latest release**, the **Getting Started** section or the **FAQ** visit our initial [README.md](https://github.com/realChainLife/EEPPortal/blob/master/README.md)
 
-Welcome to the TruBudget documentation! This guide aims to provide you with information about the different parts of TruBudget.
+Welcome to the EEPPortal documentation! This guide aims to provide you with information about the different parts of EEPPortal.
 
-[Readme](https://github.com/realChainLife/TruBudget/blob/master/README.md) - Introduction and first example
+[Readme](https://github.com/realChainLife/EEPPortal/blob/master/README.md) - Introduction and first example
 
-[Introduction](./Introduction.md) - Some basics of TruBudget
+[Introduction](./Introduction.md) - Some basics of EEPPortal
 
 - [Environment Variables](./Introduction.md#environment-variables)
 - [Organizations and Nodes](./Introduction.md#organizations-and-nodes-in-eep-portal)
 
 
-[Tutorials](./tutorials) - Guides to get started with running TruBudget
+[Tutorials](./tutorials) - Guides to get started with running EEPPortal
 
 - [Installation](./tutorials/installation/)
 - [Starting a new network](./tutorials/create-new-network)
 - [Connecting to existing network](./tutorials/connect-to-network)
 - [Developer setup](./tutorials/contribute/Contributor-Guide.md)
 
-[User Guide](./wiki/User-Guide/README.md) - How to interact with TruBudget via the frontend
+[User Guide](./wiki/User-Guide/README.md) - How to interact with EEPPortal via the frontend
 
 - [Projects/Subprojects/Workflowitems](./wiki/User-Guide/Projects)
 - [Users and Groups](./wiki/User-Guide/Users-Groups)
@@ -38,7 +38,7 @@ Welcome to the TruBudget documentation! This guide aims to provide you with info
 An architectural decision record (ADR) is a document that captures an important architectural decision made along with its context and consequences.
 For more information about what an ADR is visit the [architecture_decision_record-project](https://github.com/joelparkerhenderson/architecture_decision_record) on github.
 
-Following table shows a list of TruBudget's ADRs:
+Following table shows a list of EEPPortal's ADRs:
 
 | Title                                         | Link                                                                                     |
 | :-------------------------------------------- | :--------------------------------------------------------------------------------------- |

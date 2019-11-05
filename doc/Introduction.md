@@ -2,7 +2,7 @@
 
 ## Environment variables
 
-All installation and user guides have one thing in common: They all use environment variables to customize the setup of TruBudget. To get started, you should know about the environment variables, their purpose and how to set them.
+All installation and user guides have one thing in common: They all use environment variables to customize the setup of EEPPortal. To get started, you should know about the environment variables, their purpose and how to set them.
 
 ### Setting environment variables
 
@@ -24,18 +24,18 @@ echo %VARIABLE% (Windows)
 
 > Note: In this case we assume you use the standard command line tool for Linux/OS X (which is Bash) and Windows (which is CMD).
 
-### Environment Variables in TruBudget
+### Environment Variables in EEPPortal
 
 The following environment variables are used either in the development mode or for installations (in the `.env` file) and need to be set:
 
 - ORGANIZATION (required): In the blockchain network, each node is represented by its organization name. This environment variable sets this organization name. It is used to create the organization stream on the blockchain and is also displayed in the frontend's top right corner.
 - ORGANIZATION_VAULT_SECRET (required): This is the key to en-/decrypt user data. If you want to add a new node for your organization and you want users to be able to log in on either node, make sure that both nodes have the same organization vault secret.
-  **Caution: If you want to run TruBudget in production, make sure NOT to use the default value from the `.env_example` file!**
-- API_PORT (default: 8080): The port used to expose the API for your installation. Example: If you run TruBudget locally and set API_PORT to `8080`, you can reach the API via `localhost:8080/api`.
+  **Caution: If you want to run EEPPortal in production, make sure NOT to use the default value from the `.env_example` file!**
+- API_PORT (default: 8080): The port used to expose the API for your installation. Example: If you run EEPPortal locally and set API_PORT to `8080`, you can reach the API via `localhost:8080/api`.
 - RPC_PORT: The port used to expose the blockchain of your installation. This will only be used internally for the communication between the API and the blockchain.
 - TAG (default: master): Used for installations via `docker-compose` only. The tag defines the version of the image that is pulled from the docker hub.
 - ROOT_SECRET (default: random): The root secret is the password for the root user. If you start with an empty blockchain, the root user is needed to add other users, approve new nodes,... If you don't set a value via the environment variable, the API generates one randomly and prints it to the console.
-  > Caution: If you want to run TruBudget in production, make sure to set a secure root secret.
+  > Caution: If you want to run EEPPortal in production, make sure to set a secure root secret.
 - P2P_TEST_HOST/P2P_PROD_HOST (required for slave nodes): The IP address of the blockchain master node you want to connect to. Since there are usually two instances (one for TEST and one for PROD) started, you need to set the environment variables accordingly.
 - P2P_TEST_PORT/P2P_PROD_PORT (required for slave nodes): The port on which the master node has exposed the blockchain for the test and prod instance.
 - API_TEST_HOST/API_PROD_HOST (required for slave nodes): The IP address of the API master node you want to connect to. Since there are usually two instances (one for TEST and one for PROD) started, you need to set the environment variables accordingly. (The IP addresses are usually the same as for the P2P host address).
@@ -47,13 +47,13 @@ The following environment variables are used either in the development mode or f
 - MULTICHAIN_DIR (default: "/root"): The path to the multichain folder where the blockchain data is persisted. For installations via `docker-compose`, this refers to the path within the docker container of the blockchain. For bare metal installations, this refers to the path on the machine the blockchain is running on.
 - EXTERNAL_IP: The IP address with which the current node can be reached. Example: If you have a VM running on 52.52.52.52 and you want to start a slave node from this VM to connect to a master running on 53.53.53.53, you set the `EXTERNAL_IP` to 52.52.52.52 on this node.
 - ACCESS_CONTROL_ALLOW_ORIGIN: This environment variable is needed for the feature "Export to Excel". Since the export service uses CORS (Cross Origin Resource Sharing), the domain by which it can be called needs to be set. Setting this value to `"*"` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
-- PORT: This variable sets the port on which the service that exports TruBudget data to Excel is exposed. Caution: This currently only works for local setups and **not** for setups via `docker-compose`.
+- PORT: This variable sets the port on which the service that exports EEPPortal data to Excel is exposed. Caution: This currently only works for local setups and **not** for setups via `docker-compose`.
 
-## Organizations and Nodes in TruBudget
+## Organizations and Nodes in EEPPortal
 
-One of the terms used most in TruBudget is _organization_. This section describes what organizations are in the context of TruBudget and how they interact with each other.
+One of the terms used most in EEPPortal is _organization_. This section describes what organizations are in the context of EEPPortal and how they interact with each other.
 
-An _organization_ is a stakeholder in the funding process (e.g. Ministry of X). TruBudget is designed to connect multiple organizations together. Each organization creates their own users. Each user is associated to exactly one organization and can only login to nodes of that organization.
+An _organization_ is a stakeholder in the funding process (e.g. Ministry of X). EEPPortal is designed to connect multiple organizations together. Each organization creates their own users. Each user is associated to exactly one organization and can only login to nodes of that organization.
 
 An organization can run one or more nodes. Each organization has exactly one wallet that can be used to vote when granting or revoking permissions to other wallet addresses, which is key to preventing a 51%-attack against the network. This means that even if one organization has multiple nodes, it gets only _one_ vote for adding new organizations to the network.
 

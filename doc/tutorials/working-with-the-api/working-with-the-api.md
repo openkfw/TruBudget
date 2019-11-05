@@ -1,10 +1,10 @@
 # How to work with the API
 
-We created a frontend to use TruBudget and interact with the blockchain, but we also created an API that handles all the interactions and contains all the business logic. If you don't like to use frontends or if you want to connect TruBudget to other existing systems, the API is your friend.
+We created a frontend to use EEPPortal and interact with the blockchain, but we also created an API that handles all the interactions and contains all the business logic. If you don't like to use frontends or if you want to connect EEPPortal to other existing systems, the API is your friend.
 
 ## How to use the API
 
-> Note: for the examples in this guide, TruBudget was [started locally](../contribute/Contributor-Guide.md) and the API_PORT is set to `8080`.
+> Note: for the examples in this guide, EEPPortal was [started locally](../contribute/Contributor-Guide.md) and the API_PORT is set to `8080`.
 
 ### Calling the API
 
@@ -24,8 +24,8 @@ The documentation for this endpoints is generated with each deployment of the AP
 
 ### Using Postman
 
-One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/realChainLife/TruBudget/blob/master/api/postman/TruBudget.postman_collection.json) ready to be imported into Postman.
+One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/realChainLife/EEPPortal/blob/master/api/postman/EEPPortal.postman_collection.json) ready to be imported into Postman.
 
 ## How to Contribute
 
-The API is structured into layers (application layer, service layer, domain layer) and each of these layers has its own language. There is a README file in each of the layers, where the structure of the API and the current layer is described in detail. You can start [here](https://github.com/realChainLife/TruBudget/blob/master/api/src/README.md) to get detailed information.
+The API is structured into layers (application layer, service layer, domain layer) and each of these layers has its own language. There is a README file in each of the layers, where the structure of the API and the current layer is described in detail. You can start [here](https://github.com/realChainLife/EEPPortal/blob/master/api/src/README.md) to get detailed information.

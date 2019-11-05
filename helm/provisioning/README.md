@@ -4,7 +4,7 @@
 - [Deploy Provisioning components to your cluster](#deploy-provisioning-components-to-your-cluster)
 - [Configuration](#configuration)
 
-# Deploy TruBudget Provisioning to Kubernetes with Helm <!-- omit in TOC -->
+# Deploy EEPPortal Provisioning to Kubernetes with Helm <!-- omit in TOC -->
 
 ## Prerequisites
 
@@ -14,11 +14,11 @@ Make sure to have [Helm](https://github.com/helm/helm/blob/master/docs/install.m
 helm init
 ```
 
-Clone `realChainLife/TruBudget` repository and go to `helm` folder.
+Clone `realChainLife/EEPPortal` repository and go to `helm` folder.
 
 ```bash
-git clone https://github.com/realChainLife/TruBudget.git
-cd TruBudget/helm
+git clone https://github.com/realChainLife/EEPPortal.git
+cd EEPPortal/helm
 ```
 
 ## Deploy Provisioning components to your cluster
