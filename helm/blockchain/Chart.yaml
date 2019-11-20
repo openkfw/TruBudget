@@ -1,4 +1,4 @@
 apiVersion: v1
-description: EEPPortal Blockchain
+description: EEP-Portal Blockchain
 name: blockchain
 version: 0.1.0

@@ -1,6 +1,6 @@
 ## Overview
 
-This directory contains EEPPortal domain/business logic, along with business event and entity definitions.
+This directory contains EEP-Portal domain/business logic, along with business event and entity definitions.
 
 The domain is split into sub-domains, each located in a dedicated directory (note that `errors` is not a domain on its own). The following graphic shows those domains along with the domain entities they contain:
 
@@ -100,7 +100,7 @@ Finally, files with names that end with `_eventsourcing` (e.g. `project_eventsou
 
 It is important that when events are applied, any precondition and authorization checks are performed _again_. This prevents the following attack from happening:
 
-- A user in the EEPPortal node has no permissions to do a certain change, but the user has access to the EEPPortal host.
+- A user in the EEP-Portal node has no permissions to do a certain change, but the user has access to the EEP-Portal host.
 - The user uses the MultiChain CLI to add a new event to the chain, which contains the change the user is not authorized for.
 - The new event is propagated in the network and thus "sourced" by all other nodes.
 - Assuming nodes don't run the authorization check also when sourcing the event, the unauthorized change has become effective and visible in the network.

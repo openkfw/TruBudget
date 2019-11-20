@@ -1,7 +1,7 @@
 {
   "repository": {
     "type": "git",
-    "url": "https://github.com/realChainLife/EEPPortal"
+    "url": "https://github.com/realChainLife/EEP-Portal"
   },
   "license": "GPL-3.0-or-later",
   "scripts": {

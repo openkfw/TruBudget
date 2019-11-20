@@ -247,7 +247,7 @@ app.post("/chain", async (req, res) => {
           res.send("OK");
         } else {
           console.log("Not a valid eep-portal backup....");
-          res.status(400).send("Not a valid EEPPortal backup");
+          res.status(400).send("Not a valid EEP-Portal backup");
         }
       } else {
         res.status(400).send("Metadata not available");

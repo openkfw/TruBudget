@@ -12,6 +12,6 @@ We need an overview for the execution architecture
 
 ## Decision
 
-EEPPortal can be deployed either locally or in the cloud using Docker. Interfaces are exposed via web interface and via blockchain connection.
+EEP-Portal can be deployed either locally or in the cloud using Docker. Interfaces are exposed via web interface and via blockchain connection.
 
 ![Overview of architecture](./0007-execution-architecture-overview.png)

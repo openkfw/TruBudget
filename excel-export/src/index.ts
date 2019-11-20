@@ -65,7 +65,7 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       );
-      res.setHeader("Content-Disposition", "attachment; filename=EEPPortal_Export.xlsx");
+      res.setHeader("Content-Disposition", "attachment; filename=EEP-Portal_Export.xlsx");
       res.setHeader("Transfer-Encoding", "chunked");
 
       await writeXLSX(axios, token, res, base);
@@ -80,6 +80,6 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
   res.end();
 });
 
-console.log(`Starting EEPPortal export server on ${serverPort}`);
+console.log(`Starting EEP-Portal export server on ${serverPort}`);
 
 server.listen(serverPort);

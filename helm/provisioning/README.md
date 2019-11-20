@@ -4,7 +4,7 @@
 - [Deploy Provisioning components to your cluster](#deploy-provisioning-components-to-your-cluster)
 - [Configuration](#configuration)
 
-# Deploy EEPPortal Provisioning to Kubernetes with Helm <!-- omit in TOC -->
+# Deploy EEP-Portal Provisioning to Kubernetes with Helm <!-- omit in TOC -->
 
 ## Prerequisites
 
@@ -14,11 +14,11 @@ Make sure to have [Helm](https://github.com/helm/helm/blob/master/docs/install.m
 helm init
 ```
 
-Clone `realChainLife/EEPPortal` repository and go to `helm` folder.
+Clone `realChainLife/EEP-Portal` repository and go to `helm` folder.
 
 ```bash
-git clone https://github.com/realChainLife/EEPPortal.git
-cd EEPPortal/helm
+git clone https://github.com/realChainLife/EEP-Portal.git
+cd EEP-Portal/helm
 ```
 
 ## Deploy Provisioning components to your cluster

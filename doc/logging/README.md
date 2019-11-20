@@ -1,9 +1,9 @@
 # Logging
 
 ## API Log 
-The API is the central part of the EEPPortal application. It handles the requests from the frontend and manages the data that is written to the blockchain. Therefore logging is a cruicial part of the API's operation, so that the administrator is informed of where and when errors occur. 
+The API is the central part of the EEP-Portal application. It handles the requests from the frontend and manages the data that is written to the blockchain. Therefore logging is a cruicial part of the API's operation, so that the administrator is informed of where and when errors occur. 
 
-EEPPortal can be installed in 3 possible flavors: 
+EEP-Portal can be installed in 3 possible flavors: 
 * Bare Metal - All componends (Node.js, Multichain, nginx, etc.) are installed directly onto the machine that will be running the application
 * Docker-Compose - All parts of the application are available as docker images, so they are pulled from a registry and started by docker on the host machine
 * Kubernetes - The containers with the different parts of the application are managed and orchestrated by Kubernetes

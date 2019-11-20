@@ -8,7 +8,7 @@ Draft
 
 ## Context
 
-This ADR discusses how to handle breaking schema changes of the data-model in the context of a distributed application (EEPPortal).
+This ADR discusses how to handle breaking schema changes of the data-model in the context of a distributed application (EEP-Portal).
 
 ### Explanation of the current implementation
 Data is currently stored in streams. A stream contains none, 1, or multiple items. These items can either represent the complete data-set at time of creation or data change (for example an event). In streams that represent the complete data in every item, the last item represents the current state. In streams where items only contain data changes, the items are sourced from the first to the latest in order to get the current state of the data (event-sourcing).
@@ -22,11 +22,11 @@ An item of type `Ressource` currently doesn't contain a `dataVersion` field. Fur
 For items of type `Event` the dataVersion is only checked when performing a read requests. When performing a write/publish request to streams containing items from type `Event` no check is performed.
 
 ### Subject for change
-Before the upcoming release we want to unify the dataformats. More precisly the plan is to get rid of the `HEX` dataformat and only use `JSON`. Hence, we have to introduce a breaking change regarding in our items of type `Ressource`. Items created by a node running the new version of Trubudget will be in `JSON` and can't be read by Nodes running an older version of EEPPortal (which is expecting `HEX`).
+Before the upcoming release we want to unify the dataformats. More precisly the plan is to get rid of the `HEX` dataformat and only use `JSON`. Hence, we have to introduce a breaking change regarding in our items of type `Ressource`. Items created by a node running the new version of Trubudget will be in `JSON` and can't be read by Nodes running an older version of EEP-Portal (which is expecting `HEX`).
 
 For changing the dataformat in the current case there is no technical solution, how to gracefully migrate. Hence, we will do it on an organisational level (updating all versions simultanously).
 
-But for future updates we want to be better prepared handling version conflicts between different distributed nodes in a EEPPortal network.
+But for future updates we want to be better prepared handling version conflicts between different distributed nodes in a EEP-Portal network.
 
 ### Options
 In general we need to distinguish on how data is read from the stream.

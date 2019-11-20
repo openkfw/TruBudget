@@ -120,7 +120,7 @@ const MainNavbarNavigation = ({
   storeSearchBarDisplayed
 }) => {
   const productionActive = environment === "Prod";
-  const navbarTitle = productionActive ? "EEPPortal" : "EEPPortal (Test)";
+  const navbarTitle = productionActive ? "EEP-Portal" : "EEP-Portal (Test)";
   return (
     <div style={styles.container}>
       <Typography variant="button" color={productionActive ? "primary" : "secondary"}>

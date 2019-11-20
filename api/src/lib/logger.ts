@@ -4,7 +4,7 @@ import pino = require("pino");
 // Log Parameters
 const logLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
 const prettyPrintOptions = ["false", "off", "0", "no", "n"];
-const name = "EEPPortal";
+const name = "EEP-Portal";
 const hostname = os.hostname();
 const base = { hostname };
 const prettyPrintInput = process.env.PRETTY_PRINT || "";

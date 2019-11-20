@@ -10,11 +10,11 @@
   - [Close workflowitem](#close-workflowitem)
   - [View the history of a workflowitem](#view-the-history-of-a-workflowitem)
   - [Reorder Workflowitems](#reorder-workflowitems)
-  - [Documents in EEPPortal](#documents-in-eep-portal)
+  - [Documents in EEP-Portal](#documents-in-eep-portal)
     - [Add document to workflowitem](#add-document-to-workflowitem)
     - [Validate a document](#validate-a-document)
 
-Workflowitems are the lowest level of abstraction in EEPPortal. Workflowitems are steps/task that need to be fulfilled to mark a suproject as done, like Budget allocation, Tender publication, Contract signature, Payment final installment,..
+Workflowitems are the lowest level of abstraction in EEP-Portal. Workflowitems are steps/task that need to be fulfilled to mark a suproject as done, like Budget allocation, Tender publication, Contract signature, Payment final installment,..
 
 There are some different permissions which affect workflowitems.
 
@@ -271,11 +271,11 @@ If workflowitems are not closed or redacted( user has no view permission) the us
 6. Click and pull a workflowitem to the new position in the workflowitem queue
 7. When finished reordering submit the change and exit "edit"-mode with a click on the "done"-icon at the same position the "edit" button has been before.
 
-## Documents in EEPPortal
+## Documents in EEP-Portal
 
 **Description:**
 
-EEPPortal features validation of documents. If a file (like a contract, invoice, etc.) is part of the general workflow of a subproject, the document can be "added" to a workflowitem and later be validated by another user. The word "added" is written in quotes because the document itself is not uploaded in any way - instead, a fingerprint is computed and only that fingerprint is stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and compared to the original.
+EEP-Portal features validation of documents. If a file (like a contract, invoice, etc.) is part of the general workflow of a subproject, the document can be "added" to a workflowitem and later be validated by another user. The word "added" is written in quotes because the document itself is not uploaded in any way - instead, a fingerprint is computed and only that fingerprint is stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and compared to the original.
 
 ### Add document to workflowitem
 

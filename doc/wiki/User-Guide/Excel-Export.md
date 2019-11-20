@@ -1,12 +1,12 @@
 ## Excel Export
 
-EEPPortal now features the possibility to export all the data visible to one user into an Excel Workbook. This feature is enabled through a new service that needs to be started separately. If you want to know how to start the service, please see the [tutorials](../../tutorials) section. 
+EEP-Portal now features the possibility to export all the data visible to one user into an Excel Workbook. This feature is enabled through a new service that needs to be started separately. If you want to know how to start the service, please see the [tutorials](../../tutorials) section. 
 
 ### Exporting Data
 
-To export the EEPPortal data: 
+To export the EEP-Portal data: 
 1. Click on the hamburger menu on the top left corner to open the side menu
-2. Select "Export" - the Excel file containing the EEPPortal data is automatically downloaded and saved to your local drive
+2. Select "Export" - the Excel file containing the EEP-Portal data is automatically downloaded and saved to your local drive
 
 ![open menu](../uploads/Screenshots/excel_export_1.jpg)
 ![export data](../uploads/Screenshots/excel_export_2.jpg)

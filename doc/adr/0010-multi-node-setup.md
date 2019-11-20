@@ -10,7 +10,7 @@ Draft
 
 Even though Multichain (like Bitcoin) has to be bootstrapped from a single node, we're aiming at a system design that doesn't rely on a single node being involved in most administrative tasks, such as adding additional nodes to an existing deployment.
 
-This ADR discusses terminology and setup of the EEPPortal network.
+This ADR discusses terminology and setup of the EEP-Portal network.
 
 ## Decision
 

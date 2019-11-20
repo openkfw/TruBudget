@@ -1,4 +1,4 @@
-`docker-compose` files for running EEPPortal:
+`docker-compose` files for running EEP-Portal:
 
 - [`local`](./local/): builds images from source
 - [`master`](./master/): uses images from Docker Hub

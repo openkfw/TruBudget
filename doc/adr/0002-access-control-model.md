@@ -85,5 +85,5 @@ each intent the groups allowed to execute that intent:
 ## Consequences
 
 With the proposed changes in place, our users will be able to impose their respective
-organizational structures onto EEPPortal's resources in a way that should be flexible
+organizational structures onto EEP-Portal's resources in a way that should be flexible
 enough and straight-forward to integrate with their existing directory servers.

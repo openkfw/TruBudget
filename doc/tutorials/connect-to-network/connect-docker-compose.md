@@ -1,6 +1,6 @@
 # Connect to an existing Blockchain network
 
-This guide describes how to connect a node to an existing EEPPortal network. The steps are the same for new organizations and new nodes for an existing organizations. For new nodes of existing organizations, make sure to use the same `ORGANIZATION_VAULT_KEY` as all the other nodes of this organization.
+This guide describes how to connect a node to an existing EEP-Portal network. The steps are the same for new organizations and new nodes for an existing organizations. For new nodes of existing organizations, make sure to use the same `ORGANIZATION_VAULT_KEY` as all the other nodes of this organization.
 
 ## Table of Contents
 
@@ -85,7 +85,7 @@ volumes:
 _Windows users_: With Docker for Windows it's not possible to mount the volumes with this configuration. To be able do use the Docker-Compose installation you need to comment (or remove) the lines with the `volumes` configuration.
 
 The next step is to set all required environment properties, otherwise Docker will not receive the required parameters to start the deployment.
-If you want to start with the standard configuration we reccomend copying the `.env_example` file and rename it to `.env` in the `EEPPortal` base folder:
+If you want to start with the standard configuration we reccomend copying the `.env_example` file and rename it to `.env` in the `EEP-Portal` base folder:
 
 ```bash
 cp .env_example .env
@@ -183,24 +183,24 @@ api_1            | Connecting to MultiChain node at http://bc-slave:8000
 api_1            | server is listening on 8080
 testapi_1        | Connecting to MultiChain node at http://test-bc-slave:8000
 testapi_1        | server is listening on 8080
-api_1            | [2018-08-10T08:42:37.357Z] DEBUG (EEPPortal/1 on e0fdf1eb41e2): Created stream org:TheOrganizat with options {"kind":"organization","name":"org:TheOrganizat"}
-api_1            | [2018-08-10T08:42:37.372Z] TRACE (EEPPortal/1 on e0fdf1eb41e2):
+api_1            | [2018-08-10T08:42:37.357Z] DEBUG (EEP-Portal/1 on e0fdf1eb41e2): Created stream org:TheOrganizat with options {"kind":"organization","name":"org:TheOrganizat"}
+api_1            | [2018-08-10T08:42:37.372Z] TRACE (EEP-Portal/1 on e0fdf1eb41e2):
 api_1            |     addressFromWallet: "[redacted]"
 api_1            |     privkey: "[redacted]"
-testapi_1        | [2018-08-10T08:42:37.387Z] DEBUG (EEPPortal/1 on 14d2111cc40d): Created stream org:TheOrganizat with options {"kind":"organization","name":"org:TheOrganizat"}
-api_1            | [2018-08-10T08:42:37.387Z] TRACE (EEPPortal/1 on e0fdf1eb41e2): wrote hex string to chain: 282 bytes
-api_1            | [2018-08-10T08:42:37.387Z] INFO (EEPPortal/1 on e0fdf1eb41e2): Initializing organization address to local wallet address: [redacted]
-api_1            | [2018-08-10T08:42:37.387Z] DEBUG (EEPPortal/1 on e0fdf1eb41e2): Publishing wallet address to org:TheOrganizat/"address"
-testapi_1        | [2018-08-10T08:42:37.399Z] TRACE (EEPPortal/1 on 14d2111cc40d):
+testapi_1        | [2018-08-10T08:42:37.387Z] DEBUG (EEP-Portal/1 on 14d2111cc40d): Created stream org:TheOrganizat with options {"kind":"organization","name":"org:TheOrganizat"}
+api_1            | [2018-08-10T08:42:37.387Z] TRACE (EEP-Portal/1 on e0fdf1eb41e2): wrote hex string to chain: 282 bytes
+api_1            | [2018-08-10T08:42:37.387Z] INFO (EEP-Portal/1 on e0fdf1eb41e2): Initializing organization address to local wallet address: [redacted]
+api_1            | [2018-08-10T08:42:37.387Z] DEBUG (EEP-Portal/1 on e0fdf1eb41e2): Publishing wallet address to org:TheOrganizat/"address"
+testapi_1        | [2018-08-10T08:42:37.399Z] TRACE (EEP-Portal/1 on 14d2111cc40d):
 testapi_1        |     addressFromWallet: "[redacted]"
 testapi_1        |     privkey: "[redacted]"
-api_1            | [2018-08-10T08:42:37.407Z] INFO (EEPPortal/1 on e0fdf1eb41e2): organization address: [redacted]
-testapi_1        | [2018-08-10T08:42:37.420Z] TRACE (EEPPortal/1 on 14d2111cc40d): wrote hex string to chain: 282 bytes
-testapi_1        | [2018-08-10T08:42:37.421Z] INFO (EEPPortal/1 on 14d2111cc40d): Initializing organization address to local wallet address: [redacted]
-testapi_1        | [2018-08-10T08:42:37.421Z] DEBUG (EEPPortal/1 on 14d2111cc40d): Publishing wallet address to org:TheOrganizat/"address"
-testapi_1        | [2018-08-10T08:42:37.435Z] INFO (EEPPortal/1 on 14d2111cc40d): organization address: [redacted]
-api_1            | [2018-08-10T08:42:37.445Z] DEBUG (EEPPortal/1 on e0fdf1eb41e2): Created stream users:TheOrganiz with options {"kind":"users","name":"users:TheOrganiz"}
-testapi_1        | [2018-08-10T08:42:37.474Z] DEBUG (EEPPortal/1 on 14d2111cc40d): Created stream users:TheOrganiz with options {"kind":"users","name":"users:TheOrganiz"}
+api_1            | [2018-08-10T08:42:37.407Z] INFO (EEP-Portal/1 on e0fdf1eb41e2): organization address: [redacted]
+testapi_1        | [2018-08-10T08:42:37.420Z] TRACE (EEP-Portal/1 on 14d2111cc40d): wrote hex string to chain: 282 bytes
+testapi_1        | [2018-08-10T08:42:37.421Z] INFO (EEP-Portal/1 on 14d2111cc40d): Initializing organization address to local wallet address: [redacted]
+testapi_1        | [2018-08-10T08:42:37.421Z] DEBUG (EEP-Portal/1 on 14d2111cc40d): Publishing wallet address to org:TheOrganizat/"address"
+testapi_1        | [2018-08-10T08:42:37.435Z] INFO (EEP-Portal/1 on 14d2111cc40d): organization address: [redacted]
+api_1            | [2018-08-10T08:42:37.445Z] DEBUG (EEP-Portal/1 on e0fdf1eb41e2): Created stream users:TheOrganiz with options {"kind":"users","name":"users:TheOrganiz"}
+testapi_1        | [2018-08-10T08:42:37.474Z] DEBUG (EEP-Portal/1 on 14d2111cc40d): Created stream users:TheOrganiz with options {"kind":"users","name":"users:TheOrganiz"}
 ```
 
 You are now successfully connected to the network and should be able to access the frontend via port 80 on the server that it is running on. Use the **root** user and the password that was defined in the `.env` file to initially login to the frontend and to create users of your organization.

@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Starting EEPPortal"
+echo "Starting EEP-Portal"
 
 COMPOSE="docker-compose -f docker-compose/master/master-node.yml -p eep-portal"
 

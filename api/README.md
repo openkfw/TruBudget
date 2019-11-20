@@ -1,4 +1,4 @@
-# EEPPortal
+# EEP-Portal
 
 ## Setup
 

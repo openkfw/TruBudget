@@ -1,6 +1,6 @@
 # Cluster Helm Chart <!-- omit in TOC -->
 
-Deploys all components of EEPPortal.
+Deploys all components of EEP-Portal.
 
 # Table of Contents
 

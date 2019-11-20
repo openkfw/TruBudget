@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Starting and connecting to existing EEPPortal Node"
+echo "Starting and connecting to existing EEP-Portal Node"
 
 COMPOSE="docker-compose -f docker-compose/master/slave-node.yml -p eep-portal"
 

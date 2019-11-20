@@ -1,6 +1,6 @@
-# EEPPortal Provisioning
+# EEP-Portal Provisioning
 
-Initialize a newly created EEPPortal node (MultiChain + API) with data. The script can handle multiple environments, which can be defined using JSON files in `src/data/<ENVIRONMENT>/` and selected using the environment variable `ENVIRONMENT_TYPE`.
+Initialize a newly created EEP-Portal node (MultiChain + API) with data. The script can handle multiple environments, which can be defined using JSON files in `src/data/<ENVIRONMENT>/` and selected using the environment variable `ENVIRONMENT_TYPE`.
 
 First, install the dependencies:
 

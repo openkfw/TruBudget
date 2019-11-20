@@ -1,12 +1,12 @@
-# Helm Chart EEPPortal <!-- omit in TOC -->
+# Helm Chart EEP-Portal <!-- omit in TOC -->
 
 - [Prerequisites](#prerequisites)
-- [Deploy EEPPortal components to your cluster](#deploy-eep-portal-components-to-your-cluster)
+- [Deploy EEP-Portal components to your cluster](#deploy-eep-portal-components-to-your-cluster)
 - [Configuration](#configuration)
 - [Deploy Provisioning component to Kubernetes](#deploy-provisioning-component-to-kubernetes)
 - [Deploy E2E component to Kubernetes](#deploy-e2e-component-to-kubernetes)
 
-# Deploy EEPPortal to Kubernetes with Helm <!-- omit in TOC -->
+# Deploy EEP-Portal to Kubernetes with Helm <!-- omit in TOC -->
 
 ## Prerequisites
 
@@ -16,16 +16,16 @@ Make sure to have [Helm](https://github.com/helm/helm/blob/master/docs/install.m
 helm init
 ```
 
-Clone `realChainLife/EEPPortal` repository and go to `helm` folder.
+Clone `realChainLife/EEP-Portal` repository and go to `helm` folder.
 
 ```bash
-git clone https://github.com/realChainLife/EEPPortal.git
-cd EEPPortal/helm
+git clone https://github.com/realChainLife/EEP-Portal.git
+cd EEP-Portal/helm
 ```
 
 > _Note_: If you enable PVs make sure the underlying infrastructure is supporting PV provisioning.
 
-## Deploy EEPPortal components to your cluster
+## Deploy EEP-Portal components to your cluster
 
 Navigate to the cluster folder and update dependencies
 
@@ -57,7 +57,7 @@ helm delete --purge eep-portal
 
 ## Configuration
 
-The following table lists the most important configurable parameters of the EEPPortal chart and their default values. For a full list check the [values.yaml](cluster/values.yaml) file.
+The following table lists the most important configurable parameters of the EEP-Portal chart and their default values. For a full list check the [values.yaml](cluster/values.yaml) file.
 
 | Parameter                          | Description                                                                                                                  | Default                                |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |

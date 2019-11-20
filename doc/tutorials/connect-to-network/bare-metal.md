@@ -22,8 +22,8 @@ Clone the Github repository of the components onto the designated machines.
 Clone the repository:
 
 ```
-git clone https://github.com/realChainLife/EEPPortal.git
-cd EEPPortal
+git clone https://github.com/realChainLife/EEP-Portal.git
+cd EEP-Portal
 ```
 
 If you work with an existing checkout, make sure you have the latest changes:
@@ -151,21 +151,21 @@ The `api.log` should look similar to:
 (the log includes entries from before and after the node is approved by the master node, that's why you see errors here):
 
 ```bash
-[2018-11-16T15:01:04.019Z] ERROR (EEPPortal/5632 on d467a0e3104f): MultiChain connection/permissions not ready yet
-[2018-11-16T15:01:09.034Z] INFO (EEPPortal/5632 on d467a0e3104f): MultiChain connection established
-[2018-11-16T15:01:09.040Z] ERROR (EEPPortal/5632 on d467a0e3104f): failed to create organization stream
-[2018-11-16T15:01:14.046Z] ERROR (EEPPortal/5632 on d467a0e3104f): failed to create organization stream
-[2018-11-16T15:01:19.054Z] DEBUG (EEPPortal/5632 on d467a0e3104f): Created stream org:YourOrga with options {"kind":"organization","name":"org:YourOrga"}
-[2018-11-16T15:01:19.061Z] TRACE (EEPPortal/5632 on d467a0e3104f):
+[2018-11-16T15:01:04.019Z] ERROR (EEP-Portal/5632 on d467a0e3104f): MultiChain connection/permissions not ready yet
+[2018-11-16T15:01:09.034Z] INFO (EEP-Portal/5632 on d467a0e3104f): MultiChain connection established
+[2018-11-16T15:01:09.040Z] ERROR (EEP-Portal/5632 on d467a0e3104f): failed to create organization stream
+[2018-11-16T15:01:14.046Z] ERROR (EEP-Portal/5632 on d467a0e3104f): failed to create organization stream
+[2018-11-16T15:01:19.054Z] DEBUG (EEP-Portal/5632 on d467a0e3104f): Created stream org:YourOrga with options {"kind":"organization","name":"org:YourOrga"}
+[2018-11-16T15:01:19.061Z] TRACE (EEP-Portal/5632 on d467a0e3104f):
     addressFromWallet: "[redacted]"
     privkey: "[redacted]"
-[2018-11-16T15:01:19.066Z] TRACE (EEPPortal/5632 on d467a0e3104f): wrote hex string to chain: 282 bytes
-[2018-11-16T15:01:19.066Z] INFO (EEPPortal/5632 on d467a0e3104f): Initializing organization address to local wallet address: [redacted]
-[2018-11-16T15:01:19.067Z] DEBUG (EEPPortal/5632 on d467a0e3104f): Publishing wallet address to org:YourOrga/"address"
-[2018-11-16T15:01:19.069Z] INFO (EEPPortal/5632 on d467a0e3104f): organization address: [redacted]
-[2018-11-16T15:01:19.072Z] DEBUG (EEPPortal/5632 on d467a0e3104f): Created stream users:YourOrga with options {"kind":"users","name":"users:YourOrga"}
-[2018-11-16T15:01:19.073Z] INFO (EEPPortal/5632 on d467a0e3104f): organization stream present
-[2018-11-16T15:01:19.076Z] INFO (EEPPortal/5632 on d467a0e3104f): node registered in nodes stream
+[2018-11-16T15:01:19.066Z] TRACE (EEP-Portal/5632 on d467a0e3104f): wrote hex string to chain: 282 bytes
+[2018-11-16T15:01:19.066Z] INFO (EEP-Portal/5632 on d467a0e3104f): Initializing organization address to local wallet address: [redacted]
+[2018-11-16T15:01:19.067Z] DEBUG (EEP-Portal/5632 on d467a0e3104f): Publishing wallet address to org:YourOrga/"address"
+[2018-11-16T15:01:19.069Z] INFO (EEP-Portal/5632 on d467a0e3104f): organization address: [redacted]
+[2018-11-16T15:01:19.072Z] DEBUG (EEP-Portal/5632 on d467a0e3104f): Created stream users:YourOrga with options {"kind":"users","name":"users:YourOrga"}
+[2018-11-16T15:01:19.073Z] INFO (EEP-Portal/5632 on d467a0e3104f): organization stream present
+[2018-11-16T15:01:19.076Z] INFO (EEP-Portal/5632 on d467a0e3104f): node registered in nodes stream
 ```
 
 #### Log-Rotation
@@ -207,7 +207,7 @@ This is just an example. Please refer to the [official documentation](http://pm2
 
 ## Excel Export
 
-To enable the export of EEPPortal data into Excel files, a separate service needs to be started. To start that service, first change the directory to the `excel-export` folder:
+To enable the export of EEP-Portal data into Excel files, a separate service needs to be started. To start that service, first change the directory to the `excel-export` folder:
 
 ```bash
 cd ../excel-export

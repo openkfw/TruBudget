@@ -47,7 +47,7 @@ export interface PreconditionError {
 }
 
 // For documentation, all custom error types should go in here:
-export type EEPPortalError =
+export type EEP-PortalError =
   | AuthenticationError
   | IdentityAlreadyExistsError
   | ProjectIdAlreadyExistsError

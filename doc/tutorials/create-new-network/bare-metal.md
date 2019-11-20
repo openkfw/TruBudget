@@ -27,8 +27,8 @@ Clone the Github repository of the components onto the designated machines.
 Clone the repository:
 
 ```
-git clone https://github.com/realChainLife/EEPPortal.git
-cd EEPPortal
+git clone https://github.com/realChainLife/EEP-Portal.git
+cd EEP-Portal
 ```
 
 If you work with an existing checkout, make sure you have the latest changes:
@@ -60,7 +60,7 @@ npm start > startup.log 2>&1 &
 The information within `startup.log` should look similar to:
 
 ```bash
-> ACMECorp-chain-bc@0.1.0 start /[MULTICHAIN_DIR]/EEPPortal/blockchain
+> ACMECorp-chain-bc@0.1.0 start /[MULTICHAIN_DIR]/EEP-Portal/blockchain
 > node src/index.js
 
 Provisioning mc
@@ -118,7 +118,7 @@ cat api.log
 The `api.log` for a new Blockchain network should look similar to:
 
 ```bash
-[2018-10-03T09:36:08.872Z] INFO (EEPPortal/4858 on 0a18bc69cac8): Connecting to MultiChain node
+[2018-10-03T09:36:08.872Z] INFO (EEP-Portal/4858 on 0a18bc69cac8): Connecting to MultiChain node
     protocol: "http"
     host: "127.0.0.1"
     port: 8000
@@ -127,21 +127,21 @@ The `api.log` for a new Blockchain network should look similar to:
 Register fastify endpoint
 schema id ignored er58c69eg298c87e3899119e025eff1f
 schema id ignored fe9c2b24ade9a92360b3a898665678ac
-[2018-10-03T09:36:09.193Z] INFO (EEPPortal/4858 on 0a18bc69cac8): server is listening on 8080
-[2018-10-03T09:36:09.224Z] INFO (EEPPortal/4858 on 0a18bc69cac8): MultiChain connection established
-[2018-10-03T09:36:09.228Z] DEBUG (EEPPortal/4858 on 0a18bc69cac8): Created stream org:MyOrga with options {"kind":"organization","name":"org:MyOrga"}
-[2018-10-03T09:36:09.232Z] TRACE (EEPPortal/4858 on 0a18bc69cac8):
+[2018-10-03T09:36:09.193Z] INFO (EEP-Portal/4858 on 0a18bc69cac8): server is listening on 8080
+[2018-10-03T09:36:09.224Z] INFO (EEP-Portal/4858 on 0a18bc69cac8): MultiChain connection established
+[2018-10-03T09:36:09.228Z] DEBUG (EEP-Portal/4858 on 0a18bc69cac8): Created stream org:MyOrga with options {"kind":"organization","name":"org:MyOrga"}
+[2018-10-03T09:36:09.232Z] TRACE (EEP-Portal/4858 on 0a18bc69cac8):
     addressFromWallet: "[redacted]"
     privkey: "[redacted]"
-[2018-10-03T09:36:09.237Z] TRACE (EEPPortal/4858 on 0a18bc69cac8): wrote hex string to chain: 282 bytes
-[2018-10-03T09:36:09.237Z] INFO (EEPPortal/4858 on 0a18bc69cac8): Initializing organization address to local wallet address: [redacted]
-[2018-10-03T09:36:09.238Z] DEBUG (EEPPortal/4858 on 0a18bc69cac8): Publishing wallet address to org:MyOrga/"address"
-[2018-10-03T09:36:09.241Z] INFO (EEPPortal/4858 on 0a18bc69cac8): organization address: [redacted]
-[2018-10-03T09:36:09.244Z] DEBUG (EEPPortal/4858 on 0a18bc69cac8): Created stream users:MyOrga with options {"kind":"users","name":"users:MyOrga"}
-[2018-10-03T09:36:09.244Z] INFO (EEPPortal/4858 on 0a18bc69cac8): organization stream present
-[2018-10-03T09:36:09.247Z] INFO (EEPPortal/4858 on 0a18bc69cac8): node registered in nodes stream
+[2018-10-03T09:36:09.237Z] TRACE (EEP-Portal/4858 on 0a18bc69cac8): wrote hex string to chain: 282 bytes
+[2018-10-03T09:36:09.237Z] INFO (EEP-Portal/4858 on 0a18bc69cac8): Initializing organization address to local wallet address: [redacted]
+[2018-10-03T09:36:09.238Z] DEBUG (EEP-Portal/4858 on 0a18bc69cac8): Publishing wallet address to org:MyOrga/"address"
+[2018-10-03T09:36:09.241Z] INFO (EEP-Portal/4858 on 0a18bc69cac8): organization address: [redacted]
+[2018-10-03T09:36:09.244Z] DEBUG (EEP-Portal/4858 on 0a18bc69cac8): Created stream users:MyOrga with options {"kind":"users","name":"users:MyOrga"}
+[2018-10-03T09:36:09.244Z] INFO (EEP-Portal/4858 on 0a18bc69cac8): organization stream present
+[2018-10-03T09:36:09.247Z] INFO (EEP-Portal/4858 on 0a18bc69cac8): node registered in nodes stream
 Publishing network.registerNode to nodes/"[redacted]"
-[2018-10-03T09:36:09.257Z] DEBUG (EEPPortal/4858 on 0a18bc69cac8): Created stream nodes with options {"kind":"nodes","name":"nodes"}
+[2018-10-03T09:36:09.257Z] DEBUG (EEP-Portal/4858 on 0a18bc69cac8): Created stream nodes with options {"kind":"nodes","name":"nodes"}
 Publishing network.registerNode to nodes/"[redacted]"
 ```
 
@@ -184,7 +184,7 @@ This is just an example. Please refer to the [official documentation](http://pm2
 
 ## Excel Export
 
-To enable the export of EEPPortal data into Excel files, a separate service needs to be started. To start that service, first change the directory to the `excel-export` folder:
+To enable the export of EEP-Portal data into Excel files, a separate service needs to be started. To start that service, first change the directory to the `excel-export` folder:
 
 ```bash
 cd ../excel-export

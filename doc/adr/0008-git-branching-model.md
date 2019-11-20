@@ -11,7 +11,7 @@ Accepted
 Currently, branches are used to draft releases. Going forward, the branching model needs to satisfy the following criteria:
 
 - Releases need to be tagged to ensure that, given a release name, the commit sha can be inferred.
-- We need to support multiple networks (chains), but they are not necessarily running the same version of EEPPortal.
+- We need to support multiple networks (chains), but they are not necessarily running the same version of EEP-Portal.
 - Each network should have its own deployment URL that does not change on non-breaking version updates.
 - Conversely, in case of breaking changes, the deployment URL should be changed.
 
@@ -33,7 +33,7 @@ git tag -a "v2.0.0-beta.1" -m "version 2.0.0-beta.1"
 2.x.x_network-running-a-newer-version
 ```
 
-Note that a branch `1.x.x_ACMECorp-UmbrellaCorp` that is running tag `v1.0.0` may upgrade to a newer minor version like `v1.1.0`, but cannot upgrade to a `2.x` release. If the ACMECorp and the UmbrellaCorp decide to upgrade to the `2.x` series of EEPPortal, they need to migrate to a new branch called `2.x.x_ACMECorp-UmbrellaCorp`. The definition of the necessary processes is not in scope of this ADR.
+Note that a branch `1.x.x_ACMECorp-UmbrellaCorp` that is running tag `v1.0.0` may upgrade to a newer minor version like `v1.1.0`, but cannot upgrade to a `2.x` release. If the ACMECorp and the UmbrellaCorp decide to upgrade to the `2.x` series of EEP-Portal, they need to migrate to a new branch called `2.x.x_ACMECorp-UmbrellaCorp`. The definition of the necessary processes is not in scope of this ADR.
 
 Additionally, there is one release branch for each major version that tracks the most current release (tag) for that major version.
 
@@ -54,4 +54,4 @@ As soon as a network is ready to be upgraded to the new version, its branch may 
 - The Git history shows when a release happened and who released it. Also, there is no
   confusion between releases and branches.
 - The URL stays the same as long as all nodes in the network are compatible with each other. The URL does change, however, for changes that break compatability among nodes in the network, as this warrants a new major version number.
-- It is straightforward to roll out updates to different networks running the same major version of EEPPortal.
+- It is straightforward to roll out updates to different networks running the same major version of EEP-Portal.

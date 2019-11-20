@@ -55,7 +55,7 @@ const LoginPage = ({
           }}
         >
           <div style={{ width: "70%" }}>
-            <CardHeader title="EEPPortal" subheader={strings.login.tru_budget_description} />
+            <CardHeader title="EEP-Portal" subheader={strings.login.tru_budget_description} />
           </div>
           <div style={{ width: "30%", marginRight: "8px" }}>
             <Dropdown

@@ -1,4 +1,4 @@
-# EEPPortal Blockchain
+# EEP-Portal Blockchain
 
 This project encapsulates the Multichain implementation for Trubudget. It can be seen as the data tier in Trubudget
 
@@ -54,7 +54,7 @@ RPC connection settings for executing commands against the MultiChain node. The 
 
 ## Getting started
 
-The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole EEPPortal application (that means you need to install [Docker](https://www.docker.com/community-edition#/download)). It uses the local build of the blockchain and the master-deployments of the EEPPortal API and Frontend. The pre-set cluster contains:
+The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole EEP-Portal application (that means you need to install [Docker](https://www.docker.com/community-edition#/download)). It uses the local build of the blockchain and the master-deployments of the EEP-Portal API and Frontend. The pre-set cluster contains:
 
 - 1 Master-Node + 1 Slave-Node
 - 1 Master API connected to Master-Node
