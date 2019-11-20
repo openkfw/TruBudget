@@ -346,6 +346,13 @@ class Api {
   markMultipleNotificationsAsRead = notificationIds =>
     instance.post(`/notification.markRead`, { notifications: notificationIds });
 
+  createUserGroup = (projectId, subprojectId, workflowitemId) =>
+    instance.post('/workflowitem.close', {
+      projectId,
+      subprojectId,
+      workflowitemId
+    });
+
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
   restoreFromBackup = (envPrefix, token, data) => {
     let apiPrefix = "/api";
