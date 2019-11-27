@@ -1,16 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import {
   assignWorkflowItem,
   disableWorkflowEdit,
-  fetchWorkflowItemPermissions,
-  grantWorkflowItemPermission,
   hideWorkflowItemPreview,
   resetSucceededWorkflowitems,
-  revokeWorkflowItemPermission,
   showWorkflowItemPreview,
   storePermissions,
   storeWorkflowItemsAssignee,
@@ -38,7 +34,7 @@ const mapStateToProps = state => {
     tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
     tempDrawerAssignee: state.getIn(["workflow", "tempDrawerAssignee"]),
     currentWorkflowitemPermissions: state.getIn(["workflow", "permissions"]),
-    permissions: state.getIn(["workflow", "permissions"]),
+    permissions: state.getIn(["workflow", "permissions", "workflowitem"]),
     users: state.getIn(["login", "user"]),
     workflowActions: state.getIn(["workflow", "workflowActions"]),
     submittedWorkflowItems: state.getIn(["workflow", "submittedWorkflowItems"]),
@@ -51,15 +47,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     hideWorkflowItemPreview: () => dispatch(hideWorkflowItemPreview()),
-    grantWorkflowItemPermission: (pId, sId, wId, permission, user) =>
-      dispatch(grantWorkflowItemPermission(pId, sId, wId, permission, user, true)),
     assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
       dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
     resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems()),
-    revokeWorkflowItemPermission: (pId, sId, wId, permission, user) =>
-      dispatch(revokeWorkflowItemPermission(pId, sId, wId, permission, user, true)),
-    fetchWorkflowItemPermissions: (pId, wId, showLoading) =>
-      dispatch(fetchWorkflowItemPermissions(pId, wId, showLoading)),
     storeAssignee: assignee => dispatch(storeWorkflowItemsAssignee(assignee)),
     storePermissions: permissions => dispatch(storePermissions(permissions)),
     showWorkflowItemPreview: (pId, resources, assignee, permissions) =>

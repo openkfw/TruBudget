@@ -1,19 +1,19 @@
 describe("Workflowitem's history", function() {
   let projectId;
   let subprojectId;
+  let workflowitemId;
 
   before(() => {
     cy.login();
-
-    cy.createProject("workflowitem history test project", "workflowitem history test", [])
-      .then(({ id }) => {
-        projectId = id;
-        return cy.createSubproject(projectId, "workflowitem history test");
-      })
-      .then(({ id }) => {
+    cy.createProject("p-subp-assign", "workflowitem assign test").then(({ id }) => {
+      projectId = id;
+      cy.createSubproject(projectId, "workflowitem assign test").then(({ id }) => {
         subprojectId = id;
-        return cy.createWorkflowitem(projectId, subprojectId, "workflowitem history test", { amountType: "N/A" });
+        cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
+          workflowitemId = id;
+        });
       });
+    });
   });
 
   beforeEach(function() {
@@ -22,10 +22,8 @@ describe("Workflowitem's history", function() {
   });
 
   it("The history contains only the workflowitem creation event.", function() {
-    cy.get(".workflowitem-info-button").click();
-
+    cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
     // opens info dialog window..
-
     cy.get("[data-test=workflowitem-history-tab]").click();
 
     // Count history items => should be one
@@ -44,38 +42,32 @@ describe("Workflowitem's history", function() {
   });
 
   it("The history is sorted from new to old", function() {
-    // Change assignee to create new history event
-    cy.get("[data-test=workflowitem-assignee]").click();
-    cy.get("[role=listbox]")
-      .find("[value=jdoe]")
-      .click()
-      .type("{esc}");
+    // Update workflowitem to create new history event
+    cy.get(`[data-test=workflowitem-table]`)
+      .find("button[data-test^='edit-workflowitem']")
+      .click();
+    cy.get("[data-test=nameinput] input").type("-changed");
+    cy.get("[data-test=next]").click();
+    cy.get("[data-test=submit]").click();
 
-    cy.get(".workflowitem-info-button").click();
-
+    cy.get("[data-test=workflowitem-table]")
+      .find("button[data-test^='workflowitem-info-button-']")
+      .click();
     // opens info dialog window..
-
     cy.get("[data-test=workflowitem-history-tab]").click();
 
-    // Count history items => should be two
-    cy.get("[data-test=history-list] li.history-item")
-      .first()
-      .should("be.visible");
+    // The oldest entry is the create event
     cy.get("[data-test=history-list]")
       .find("li.history-item")
-      .should("have.length", 2);
-
-    // Make sure the oldest entry is the create event
-    cy.get("[data-test=history-list]")
-      .find("li.history-item")
+      .should("have.length", 2)
       .last()
       .should("contain", "created workflowitem");
 
-    // Make sure the newest entry is the assign event
+    // The newest entry is the update event
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .first()
-      .should("contain", "assigned workflowitem");
+      .should("contain", "changed workflowitem");
   });
 
   it("When changing the tab, the history is fetched correctly", function() {

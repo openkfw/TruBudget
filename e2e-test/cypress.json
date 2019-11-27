@@ -1,6 +1,7 @@
 {
   "video": false,
-  "baseUrl": "http://localhost:80",
+  "baseUrl": "http://localhost:3000",
   "defaultCommandTimeout": 10000,
-  "numTestsKeptInMemory": 0
+  "numTestsKeptInMemory": 0,
+  "projectId": "r4dcjk"
 }

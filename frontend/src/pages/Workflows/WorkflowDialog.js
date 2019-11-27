@@ -30,7 +30,7 @@ const handleCreate = props => {
     documents
   );
   storeSnackbarMessage(
-    strings.common.created + " " + strings.common.workflowItem + " " + shortenedDisplayName(displayName)
+    strings.common.created + " " + strings.common.workflowitem + " " + shortenedDisplayName(displayName)
   );
   onDialogCancel();
 };
@@ -60,7 +60,7 @@ const handleEdit = props => {
     editWorkflowItem(projectId, subprojectId, workflowToAdd.id, changes);
   }
   storeSnackbarMessage(
-    strings.common.edited + " " + strings.common.workflowItem + " " + shortenedDisplayName(workflowToAdd.displayName)
+    strings.common.edited + " " + strings.common.workflowitem + " " + shortenedDisplayName(workflowToAdd.displayName)
   );
   onDialogCancel();
 };

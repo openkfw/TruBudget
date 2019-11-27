@@ -8,6 +8,7 @@ import React from "react";
 
 import strings from "../../../localizeStrings";
 import PermissionSelection from "./PermissionSelection";
+import { makePermissionReadable } from "../../../helper";
 
 const renderPermission = (name, userList, permissions, myself, grant, revoke, disabled) => {
   return (
@@ -24,7 +25,7 @@ const renderPermission = (name, userList, permissions, myself, grant, revoke, di
             disabled={disabled}
           />
         }
-        secondary={strings.permissions[name.replace(/[.]/g, "_")] || name}
+        secondary={makePermissionReadable(name)}
       />
     </ListItem>
   );
@@ -32,8 +33,7 @@ const renderPermission = (name, userList, permissions, myself, grant, revoke, di
 
 const PermissionTable = ({
   permissions,
-  user,
-  id,
+  userList,
   intentOrder,
   myself,
   disabled,
@@ -48,13 +48,13 @@ const PermissionTable = ({
           <Card key={section.name + "section"} style={{ marginTop: "12px", marginBottom: "12px" }}>
             <CardHeader subheader={strings.permissions[section.name]} />
             <CardContent>
-              <List>
+              <List data-test={`${section.name}-list`}>
                 {section.intents
                   .filter(i => permissions[i] !== undefined)
                   .map(p =>
                     renderPermission(
                       p,
-                      user,
+                      userList,
                       temporaryPermissions,
                       myself,
                       addTemporaryPermission,

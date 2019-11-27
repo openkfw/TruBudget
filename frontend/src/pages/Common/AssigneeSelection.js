@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-
-import Checkbox from "@material-ui/core/Checkbox";
+import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import { withStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
-import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import React, { Component } from "react";
 
 import strings from "../../localizeStrings";
+import { Checkbox } from "@material-ui/core";
 
 const styles = {
   formControl: {
     width: "100%"
   },
-  checkbox: {
+  radioButton: {
     height: "10px"
   },
   selectValue: {
@@ -40,6 +40,7 @@ const styles = {
     overflow: "hidden",
     textOverflow: "ellipsis"
   },
+  listSubHeader: { top: "auto" },
   disabled: {}
 };
 
@@ -47,7 +48,8 @@ class AssigneeSelection extends Component {
   constructor() {
     super();
     this.state = {
-      searchTerm: ""
+      searchTerm: "",
+      selectIsOpen: false
     };
   }
 
@@ -55,9 +57,13 @@ class AssigneeSelection extends Component {
     return users.map(u => {
       const { id, displayName } = u;
       return (
-        <MenuItem key={id} value={id} onClick={() => (id !== assigneeId ? this.props.assign(id) : undefined)}>
-          <Checkbox style={styles.checkbox} disabled={disabled} checked={id === assigneeId} />
-          <ListItemText primary={displayName} />
+        <MenuItem
+          key={id}
+          value={id}
+          onClick={() => (id !== assigneeId ? this.props.assign(id, displayName) : undefined)}
+        >
+          <Radio style={styles.radioButton} disabled={disabled} checked={id === assigneeId} />
+          <ListItemText data-test="assignee-name" primary={displayName} />
         </MenuItem>
       );
     });
@@ -81,7 +87,7 @@ class AssigneeSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.users.users} </ListSubheader>
+          <ListSubheader style={styles.listSubHeader}> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -101,7 +107,7 @@ class AssigneeSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader> {strings.users.groups} </ListSubheader>
+          <ListSubheader style={styles.listSubHeader}> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );
@@ -128,6 +134,11 @@ class AssigneeSelection extends Component {
       return;
     };
 
+    const openSelect = () => {
+      if (this.props.onOpen !== undefined) this.props.onOpen();
+      this.setState({ selectIsOpen: true });
+    };
+
     return (
       <FormControl
         data-test={"assignee-container" + (disabled ? ".disabled" : "")}
@@ -142,19 +153,29 @@ class AssigneeSelection extends Component {
           value={this.renderTitle(assignee)}
           renderValue={s => (
             <div style={{ ...styles.selectValue }}>
-              <Checkbox style={{ ...styles.checkbox }} disabled={disabled} checked={true} />
+              <Checkbox style={{ ...styles.radioButton }} disabled={disabled} checked={true} />
               <Typography disabled={disabled} variant="body1" style={styles.assigneeTypography}>
                 {s}
               </Typography>
             </div>
           )}
           multiple
-          onClose={() => this.setState({ searchTerm: "" })}
+          open={this.state.selectIsOpen}
+          onOpen={openSelect}
+          onClose={() =>
+            this.setState(_state => {
+              return { searchTerm: "", selectIsOpen: false };
+            })
+          }
         >
           <div className="noFocus" style={styles.formControlContainer}>
             <FormControl>
               <InputLabel>{strings.common.search}</InputLabel>
-              <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
+              <Input
+                inputProps={{ "data-test": "search-assignee-field" }}
+                value={this.state.searchTerm}
+                onChange={e => this.setState({ searchTerm: e.target.value })}
+              />
             </FormControl>
           </div>
           <div data-test="assignee-list">

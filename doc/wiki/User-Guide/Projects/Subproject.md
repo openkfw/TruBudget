@@ -79,6 +79,7 @@ Create a new subproject defining title, comment, currency and budget.
 
 **Notes:**
 
+- The root user may not create subprojects.
 - Do not forget to permit other users to view/edit the newly created subproject.
 - You have to add at least one budget before you can submit the project.
 - To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the blockchain.
@@ -140,7 +141,9 @@ Assign a User or Group to a subproject to show which User or Group is responsibl
 
 **Notes:**
 
-- Only assigning a user to a subproject doesn't permit this user to view the subproject. These permissions have to be set separately.
+- Assigning a user/group needs project and subproject view permissions.
+- If the assignee has not all necessary view permissions yet a dialog opens which shows all required permissions.
+  On confirm they can be granted if the assigner has grant permissions. (see [confirmation](../Confirmation) for more Details)
 
 **Instructions:**
 
@@ -148,7 +151,11 @@ Assign a User or Group to a subproject to show which User or Group is responsibl
 2. Click the "Projects" menu point
 3. Click the blue magnifier icon in the bottom right corner of a project
 4. Click the grey magnifier icon on the most right of the subproject you want to view
-5. Click the assignee dropdown field to open a selection where the right user or group can be selected and assigned to the current subproject
+5. Click the assignee dropdown field to open a selection
+6. Select and click on an user or group to open a [confirmation dialog](../Confirmation)
+7. In case the assigner has no project view permissions the user or group cannot be assigned
+8. Confirming the dialog first executes all additional actions listed if there are any, then assigns the user
+9. If no addtional permissions have to be granted the user or group is assigned
 
 ![change subproject assignee](../../uploads/Screenshots/change_subproject_assignee.jpg)
 

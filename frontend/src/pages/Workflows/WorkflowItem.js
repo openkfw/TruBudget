@@ -242,6 +242,7 @@ const getInfoButton = ({ openWorkflowDetails }, status, workflowSortEnabled, wor
       disabled={workflowSortEnabled}
       style={{ ...getButtonStyle(workflowSortEnabled, status), ...styles.infoButton }}
       onClick={() => openWorkflowDetails(workflow.id)}
+      data-test={`workflowitem-info-button-${workflow.id}`}
     >
       <InfoIcon />
     </IconButton>
@@ -264,7 +265,7 @@ const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurren
   );
   const isAmountDisplayed = amount !== undefined && exchangeRate !== undefined;
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       {isAmountDisplayed ? (
         <div style={styles.chipDiv}>
           <div>{amountToShow}</div>
@@ -390,7 +391,6 @@ export const WorkflowItem = SortableElement(
     const allowedIntents = workflow.allowedIntents;
     const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
     const tableStyle = styles[status];
-    const subprojectId = props.id;
     const itemStyle = workflowSelectable
       ? {}
       : {
@@ -426,18 +426,22 @@ export const WorkflowItem = SortableElement(
                 {displayName}
               </Typography>
             </div>
-            <div style={{ ...itemStyle, ...styles.listText, ...styles.workflowCell }}>
+            <div
+              style={{
+                ...itemStyle,
+                ...styles.workflowCell
+              }}
+            >
               <Typography variant="body2" style={styles.typographs} component="div" data-test="workflowitem-amount">
                 {amountType === "N/A"
                   ? amountTypes(amountType)
                   : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
               </Typography>
             </div>
-            <div style={{ ...styles.listText, ...styles.workflowCell }} data-test="outside">
+            <div style={{ ...styles.workflowCell }} data-test="outside">
               <WorkflowAssigneeContainer
-                projectId={parentProject ? parentProject.id : ""}
-                subprojectId={subprojectId}
                 workflowitemId={id}
+                workflowitemDisplayName={displayName}
                 disabled={!canAssign}
                 users={users}
                 assignee={assignee}
@@ -448,7 +452,7 @@ export const WorkflowItem = SortableElement(
               showEdit,
               editWorkflow.bind(this, workflow.data, props),
               canViewWorkflowItemPermissions(allowedIntents),
-              () => props.showWorkflowItemPermissions(id),
+              () => props.showWorkflowItemPermissions(id, displayName),
               showClose,
               () => props.closeWorkflowItem(id),
               currentWorkflowSelectable,
@@ -487,8 +491,8 @@ export const RedactedWorkflowItem = SortableElement(
             <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
               <Typography variant="body2">{strings.workflow.workflow_redacted}</Typography>
             </div>
-            <div style={{ ...itemStyle, ...styles.listText, flex: 5 }}>{null}</div>
-            <div style={{ ...styles.listText, ...styles.chipRow, flex: 2 }}>{null}</div>
+            <div style={{ ...itemStyle, flex: 5 }}>{null}</div>
+            <div style={{ ...styles.chipRow, flex: 2 }}>{null}</div>
             {null}
           </div>
         </Card>

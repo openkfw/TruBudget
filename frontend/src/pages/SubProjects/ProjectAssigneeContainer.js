@@ -1,35 +1,39 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../helper";
 import AssigneeSelection from "../Common/AssigneeSelection";
 import { assignProject } from "./actions";
 
 class ProjectAssigneeContainer extends Component {
-  assignProject = identity => {
-    this.props.assignProject(this.props.projectId, identity);
-  };
-
   render() {
+    const { assignee, users, disabled, projectId, projectDisplayName, assignProject } = this.props;
+
     return (
-      <AssigneeSelection
-        assigneeId={this.props.assignee}
-        users={this.props.users}
-        disabled={this.props.disabled}
-        title={this.props.title}
-        assign={this.assignProject}
-      />
+      <React.Fragment>
+        <AssigneeSelection
+          assigneeId={assignee}
+          users={users}
+          disabled={disabled}
+          assign={(assigneeId, assigneeDisplayName) =>
+            assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName)
+          }
+        />
+      </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    projectId: state.getIn(["detailview", "id"]),
+    projectDisplayName: state.getIn(["detailview", "projectName"])
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    assignProject: (projectId, identity) => dispatch(assignProject(projectId, identity))
+    assignProject: (projectId, projectDisplayName, assigneeId, assigneeDisplayName) =>
+      dispatch(assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName))
   };
 };
 

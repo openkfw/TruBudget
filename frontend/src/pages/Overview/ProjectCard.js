@@ -87,7 +87,7 @@ const ProjectCard = ({
           data-test="project-header"
           className={classes.cardHeader}
           title={
-            <div className={classes.cardTitle}>
+            <div className={classes.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
               <span>{displayName}</span>
             </div>
           }
@@ -137,19 +137,20 @@ const ProjectCard = ({
             />
             <ActionButton
               notVisible={!canViewPermissions}
-              onClick={() => showProjectPermissions(id)}
+              onClick={() => showProjectPermissions(id, displayName)}
               title={strings.common.show_permissions}
               icon={<PermissionIcon />}
               data-test={`pp-button-${index}`}
               iconButtonStyle={styles.editIcon}
             />
             <ActionButton
-              notVisible={!isOpen && editDisabled}
+              notVisible={!isOpen || editDisabled}
               onClick={() => {
                 showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags);
               }}
               title={strings.common.edit}
               icon={<EditIcon />}
+              id={`pe-button-${index}`}
               data-test={`pe-button`}
               iconButtonStyle={styles.editIcon}
             />

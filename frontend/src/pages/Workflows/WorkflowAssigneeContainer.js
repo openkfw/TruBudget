@@ -1,7 +1,6 @@
 import { withStyles } from "@material-ui/core/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../helper";
 import AssigneeSelection from "../Common/AssigneeSelection";
 import { assignWorkflowItem } from "./actions";
@@ -14,11 +13,6 @@ const styles = {
 };
 
 class WorkflowAssigneeContainer extends Component {
-  assignWorkflow = identity => {
-    const { projectId, subprojectId, workflowitemId } = this.props;
-    this.props.assignWorkflow(projectId, subprojectId, workflowitemId, identity);
-  };
-
   getWorkflowAssignee = (workflowItems, selectedId) => {
     if (workflowItems.length === 0 || !selectedId) {
       return "";
@@ -28,16 +22,43 @@ class WorkflowAssigneeContainer extends Component {
   };
 
   render() {
-    const { workflowItems, workflowitemId, classes, users, title, disabled, workflowSortEnabled, status } = this.props;
+    const {
+      projectId,
+      projectDisplayName,
+      subprojectId,
+      subprojectDisplayName,
+      workflowitemId,
+      workflowitemDisplayName,
+      workflowItems,
+      classes,
+      users,
+      title,
+      disabled,
+      workflowSortEnabled,
+      status,
+      assignWorkflowitem
+    } = this.props;
     const assignee = this.getWorkflowAssignee(workflowItems, workflowitemId);
+
     return (
-      <div className={classes.assigneeContainer} data-test={"workflowitem-assignee"}>
+      <div className={classes.assigneeContainer} data-test={`workflowitem-assignee-${workflowitemId}`}>
         <AssigneeSelection
           assigneeId={assignee}
           disabled={disabled || workflowSortEnabled}
           users={users}
           title={title}
-          assign={this.assignWorkflow}
+          assign={(assigneeId, assigneeDisplayName) =>
+            assignWorkflowitem(
+              projectId,
+              projectDisplayName,
+              subprojectId,
+              subprojectDisplayName,
+              workflowitemId,
+              workflowitemDisplayName,
+              assigneeId,
+              assigneeDisplayName
+            )
+          }
           workflowSortEnabled={workflowSortEnabled}
           status={status}
         />
@@ -48,15 +69,40 @@ class WorkflowAssigneeContainer extends Component {
 
 const mapStateToProps = state => {
   return {
+    projectId: state.getIn(["workflow", "parentProject", "id"]),
+    subprojectId: state.getIn(["workflow", "id"]),
+    projectDisplayName: state.getIn(["workflow", "parentProject", "displayName"]),
+    subprojectDisplayName: state.getIn(["workflow", "displayName"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
-    workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"])
+    workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"]),
+    assigner: state.getIn(["login", "id"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
-      dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity))
+    assignWorkflowitem: (
+      projectId,
+      projectDisplayName,
+      subprojectId,
+      subprojectDisplayName,
+      workflowitemId,
+      workflowitemDisplayName,
+      assigneeId,
+      assigneeDisplayName
+    ) =>
+      dispatch(
+        assignWorkflowItem(
+          projectId,
+          projectDisplayName,
+          subprojectId,
+          subprojectDisplayName,
+          workflowitemId,
+          workflowitemDisplayName,
+          assigneeId,
+          assigneeDisplayName
+        )
+      )
   };
 };
 

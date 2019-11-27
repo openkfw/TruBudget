@@ -4,16 +4,12 @@ describe("Subproject's history", function() {
 
   before(() => {
     cy.login();
-
-    cy.createProject("subproject history test project", "subproject history test", [])
-      .then(({ id }) => {
-        projectId = id;
-        return cy.createSubproject(projectId, "subproject history test");
-      })
-      .then(({ id }) => {
+    cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
+      projectId = id;
+      cy.createSubproject(projectId, "subproject assign test").then(({ id }) => {
         subprojectId = id;
-        return cy.createWorkflowitem(projectId, subprojectId, "subproject history test", { amountType: "N/A" });
       });
+    });
   });
 
   beforeEach(function() {
@@ -21,7 +17,7 @@ describe("Subproject's history", function() {
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("The history contains only the subproject creation event.", function() {
+  it("The history contains the subproject creation event.", function() {
     cy.get("#subproject-history-button").click();
 
     // Count history items => should be one
@@ -40,35 +36,29 @@ describe("Subproject's history", function() {
   });
 
   it("The history is sorted from new to old", function() {
-    // Change assignee to create new history event
-    cy.get("[data-test=assignee-selection] [role=button]")
-      .first()
+    // Update subproject to create new history event
+    cy.visit(`/projects/${projectId}`);
+    cy.get(`[data-test=ssp-table]`)
+      // select all buttons which has an attribute data-test which value begins with pp-button
+      .find("button[data-test^='subproject-edit-button-']")
       .click();
-    cy.get("[role=listbox]")
-      .find("[value=jdoe]")
-      .click()
-      .type("{esc}");
+    cy.get("[data-test=nameinput] input").type("-changed");
+    cy.get("[data-test=submit]").click();
 
-    cy.get("#subproject-history-button").click();
+    cy.visit(`/projects/${projectId}/${subprojectId}`);
+    cy.get("[data-test=subproject-history-button]").click();
 
-    // Count history items => should be two
-    cy.get("[data-test=history-list] li.history-item")
-      .first()
-      .should("be.visible");
+    // The oldest entry is the create event
     cy.get("[data-test=history-list]")
       .find("li.history-item")
-      .should("have.length", 2);
-
-    // Make sure the oldest entry is the create event
-    cy.get("[data-test=history-list]")
-      .find("li.history-item")
+      .should("have.length", 2)
       .last()
       .should("contain", "created subproject");
 
-    // Make sure the newest entry is the assign event
+    // The newest entry is the update event
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .first()
-      .should("contain", "assigned subproject");
+      .should("contain", "changed subproject");
   });
 });

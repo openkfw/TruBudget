@@ -18,7 +18,7 @@ import React from "react";
 
 import { statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canEditSubProject, canViewSubProjectDetails, canViewSubProjectPermissions } from "../../permissions";
+import { canUpdateSubProject, canViewSubProjectDetails, canViewSubProjectPermissions } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
 
 const styles = {
@@ -113,7 +113,7 @@ const getTableEntries = (
   return subProjects.map(({ data, allowedIntents }, index) => {
     const { currency, status, description, displayName, id, projectedBudgets, additionalData } = data;
     const isOpen = status !== "closed";
-    const editDisabled = !(canEditSubProject(allowedIntents) && isOpen);
+    const editDisabled = !(canUpdateSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
     const redacted = displayName === null && _isEmpty(projectedBudgets);
     const additionalDataEmpty = _isEmpty(additionalData);
@@ -122,7 +122,9 @@ const getTableEntries = (
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
         <TableRow key={index}>
-          <TableCell className={classes.displayName}>{displayName}</TableCell>
+          <TableCell className={classes.displayName} data-test={`subproject-title-${index}`}>
+            {displayName}
+          </TableCell>
           <TableCell className={classes.projectdBudget}>{amountString}</TableCell>
           <TableCell className={classes.status}>{statusMapping(status)}</TableCell>
           <TableCell className={classes.actions}>
@@ -140,7 +142,7 @@ const getTableEntries = (
               </div>
               <div className={classes.button}>
                 <ActionButton
-                  notVisible={!isOpen && editDisabled}
+                  notVisible={!isOpen || editDisabled}
                   onClick={() => showEditDialog(id, displayName, description, currency, projectedBudgets)}
                   title={strings.common.edit}
                   icon={<EditIcon />}
@@ -150,7 +152,7 @@ const getTableEntries = (
               <div className={classes.button}>
                 <ActionButton
                   notVisible={!canViewPermissions}
-                  onClick={() => showSubProjectPermissions(id)}
+                  onClick={() => showSubProjectPermissions(id, displayName)}
                   title={strings.common.show_permissions}
                   icon={<PermissionIcon />}
                   data-test={"spp-button-" + index}

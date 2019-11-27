@@ -1,19 +1,24 @@
 import { fromJS } from "immutable";
-
+import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
+import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
 import { LOGOUT } from "../Login/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
+import { FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
 import {
+  ADD_TEMPORARY_SUBPROJECT_PERMISSION,
   CREATE_SUBPROJECT_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   FETCH_NEXT_PROJECT_HISTORY_PAGE,
   FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
-  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   HIDE_PROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_ADDITIONAL_DATA,
   HIDE_SUBPROJECT_DIALOG,
   HIDE_SUBPROJECT_PERMISSIONS,
+  OPEN_HISTORY,
+  REMOVE_TEMPORARY_SUBPROJECT_PERMISSION,
+  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
   SHOW_PROJECT_ASSIGNEES,
   SHOW_SUBPROJECT_ADDITIONAL_DATA,
   SHOW_SUBPROJECT_CREATE,
@@ -23,10 +28,7 @@ import {
   SUBPROJECT_CURRENCY,
   SUBPROJECT_DELETED_PROJECTED_BUDGET,
   SUBPROJECT_NAME,
-  SUBPROJECT_PROJECTED_BUDGETS,
-  OPEN_HISTORY,
-  ADD_TEMPORARY_SUBPROJECT_PERMISSION,
-  REMOVE_TEMPORARY_SUBPROJECT_PERMISSION
+  SUBPROJECT_PROJECTED_BUDGETS
 } from "./actions";
 
 const historyPageSize = 50;
@@ -64,9 +66,10 @@ const defaultState = fromJS({
   showSubProjectPermissions: false,
   isSubProjectAdditionalDataShown: false,
   idForInfo: "",
-  permissions: {},
+  permissions: { project: {}, subproject: {} },
   temporaryPermissions: {},
   idForPermissions: "",
+  displayNameForPermissions: "",
   showProjectAssignees: false,
   projectAssignee: "",
   dialogTitle: strings.subproject.subproject_add_title
@@ -95,6 +98,7 @@ export default function detailviewReducer(state = defaultState, action) {
         permissions: defaultState.get("permissions"),
         temporaryPermissions: defaultState.get("temporaryPermissions"),
         idForPermissions: action.id,
+        displayNameForPermissions: action.displayName,
         showSubProjectPermissions: true
       });
     case SHOW_SUBPROJECT_ADDITIONAL_DATA:
@@ -104,10 +108,18 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case FETCH_SUBPROJECT_PERMISSIONS_SUCCESS:
       return state
-        .set("permissions", fromJS(action.permissions))
+        .setIn(["permissions", "subproject"], fromJS(action.permissions))
         .set("temporaryPermissions", fromJS(action.permissions));
+    case FETCH_PROJECT_PERMISSIONS_SUCCESS:
+      return state.setIn(["permissions", "project"], fromJS(action.permissions));
     case HIDE_SUBPROJECT_PERMISSIONS:
-      return state.set("showSubProjectPermissions", false);
+    case CONFIRMATION_CONFIRMED:
+      return state.merge({
+        idForPermissions: defaultState.get("idForPermissions"),
+        displayNameForPermissions: defaultState.get("displayNameForPermissions"),
+        showSubProjectPermissions: defaultState.get("showSubProjectPermissions"),
+        permissions: defaultState.getIn(["permissions"])
+      });
     case SHOW_SUBPROJECT_CREATE:
       return state.merge({ creationDialogShown: true, dialogTitle: strings.subproject.subproject_add_title });
     case SUBPROJECT_NAME:
@@ -193,6 +205,13 @@ export default function detailviewReducer(state = defaultState, action) {
     case REMOVE_TEMPORARY_SUBPROJECT_PERMISSION:
       return state.updateIn(["temporaryPermissions", action.permission], users =>
         users.filter(user => user !== action.userId)
+      );
+    case CONFIRMATION_CANCELLED:
+      return state.set(
+        "temporaryPermissions",
+        !_isEmpty(action.permissions) && !_isEmpty(action.permissions.subproject)
+          ? fromJS(action.permissions.subproject)
+          : defaultState.get("temporaryPermissions")
       );
     case LOGOUT:
       return defaultState;

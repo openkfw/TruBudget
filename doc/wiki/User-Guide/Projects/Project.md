@@ -87,6 +87,7 @@ Create a new project defining title, comment and budgets.
 
 **Notes:**
 
+- The root user may not create projects.
 - Do not forget to permit other users to view/edit the newly created project.
 - You have to add at least one budget before you can submit the project.
 - To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the blockchain.
@@ -155,14 +156,20 @@ Assign a User or Group to a project to show which User or Group is responsible f
 
 **Notes:**
 
-- Only assigning a user to a project doesn't permit this user to view the project. These permissions have to be set separately.
+- Assigning a user/group needs project view permissions.
+- If the assignee has not all necessary view permissions yet a dialog opens which shows all required permissions.
+  On confirm they can be granted if the assigner has grant permissions. (see [confirmation](../Confirmation) for more Details)
 
 **Instructions:**
 
 1. Click the button in the upper left corner to open the side-navigation-bar
 2. Click the "Projects" menu point
 3. Click the blue magnifier icon in the bottom right corner of a project
-4. Click the assignee dropdown field to open a selection where the right user or group can be selected and assigned to the current project
+4. Click the assignee dropdown field to open a selection
+5. Select and click on an user or group to open a [confirmation dialog](../Confirmation)
+6. In case the assigner has no project view permissions the user or group cannot be assigned
+7. Confirming the dialog first executes all additional actions listed if there are any, then assigns the user
+8. If no addtional permissions have to be granted the user or group is assigned
 
 ![change project assignee](../../uploads/Screenshots/change_project_assignee.jpg)
 
@@ -205,14 +212,14 @@ The history contains all activities done directly refer to the current project.
 ## Project tags
 
 **Notes:**
-- Starting with v1.3.0, projects can have tags to add additional data to them, group them and make them searchable. 
-- Tags can be added when creating or editing the project, either via the UI or the API. 
-- Tags should not contain whitespaces or any special characters except "_", "." or "-". 
-- Tags can contain alphanumeric characters and can be up to 15 characters. 
+
+- Starting with v1.3.0, projects can have tags to add additional data to them, group them and make them searchable.
+- Tags can be added when creating or editing the project, either via the UI or the API.
+- Tags should not contain whitespaces or any special characters except "\_", "." or "-".
+- Tags can contain alphanumeric characters and can be up to 15 characters.
 - Tags cannot not start or end with the special characters listed above
 
 **Instructions:**
-
 
 1. Click the button to add a new or edit an existing project
 2. Type the tag name in the "Tag" field

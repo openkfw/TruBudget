@@ -140,3 +140,7 @@ export const shortenedDisplayName = displayName => {
   }
   return displayName;
 };
+
+export function makePermissionReadable(intent) {
+  return strings.permissions[intent.replace(/[.]/g, "_")] || intent;
+}

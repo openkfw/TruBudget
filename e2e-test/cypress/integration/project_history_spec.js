@@ -3,9 +3,8 @@ describe("Project's history", function() {
 
   before(() => {
     cy.login();
-    cy.createProject("project history test project", "project history test", []).then(({ id }) => {
+    cy.createProject("p-history", "project history test").then(({ id }) => {
       projectId = id;
-      return cy.createSubproject(projectId, "project history test");
     });
   });
 
@@ -33,33 +32,28 @@ describe("Project's history", function() {
   });
 
   it("The history is sorted from new to old", function() {
-    // Change assignee to create new history event
-    cy.get("[data-test=assignee-selection] [role=button]").click();
-    cy.get("[role=listbox]")
-      .find("[value=jdoe]")
-      .click()
-      .type("{esc}");
-
+    // Update project to create new history event
+    cy.visit(`/projects`);
+    cy.get(`[data-test=project-card-${projectId}]`)
+      // select all buttons which has an attribute data-test which value begins with pp-button
+      .find("button[data-test^='pe-button']")
+      .click();
+    cy.get("[data-test=nameinput] input").type("-changed");
+    cy.get("[data-test=submit]").click();
+    cy.visit(`/projects/${projectId}`);
     cy.get("[data-test=project-history-button]").click();
 
-    // Count history items => should be two
-    cy.get("[data-test=history-list] li.history-item")
-      .first()
-      .should("be.visible");
+    // The oldest entry is the create event
     cy.get("[data-test=history-list]")
       .find("li.history-item")
-      .should("have.length", 2);
-
-    // Make sure the oldest entry is the create event
-    cy.get("[data-test=history-list]")
-      .find("li.history-item")
+      .should("have.length", 2)
       .last()
       .should("contain", "created project");
 
-    // Make sure the newest entry is the assign event
+    // The newest entry is the update event
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .first()
-      .should("contain", "assigned project");
+      .should("contain", "changed project");
   });
 });

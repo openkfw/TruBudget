@@ -1,0 +1,61 @@
+version: "3.2"
+services:
+  api:
+    image: trubudget/api:${TAG}
+    environment:
+      RPC_HOST: master
+      RPC_PORT: ${RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      PORT: ${API_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
+      ROOT_SECRET: ${ROOT_SECRET}
+      LOG_LEVEL: ${LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+      SWAGGER_BASEPATH: /prod
+    links:
+      - master
+    ports:
+      - "8080:${API_PORT}"
+
+  master:
+    image: trubudget/blockchain:${TAG}
+    environment:
+      RPC_PORT: ${RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      ORGANIZATION: ${ORGANIZATION}
+      EXTERNAL_IP: ${EXTERNAL_IP}
+    ports:
+      - "7447:7447"
+
+  bc-slave:
+    image: trubudget/blockchain:${TAG}
+    environment:
+      RPC_PORT: ${RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      ORGANIZATION: "newOrgawithRPCPW"
+      P2P_HOST: master
+      P2P_PORT: P2P_PROD_PORT
+      API_PROTO: http
+      API_HOST: api
+      API_PORT: ${API_PORT}
+      EXTERNAL_IP: master
+    links:
+      - master
+      - api
+    ports:
+      - "7448:7447"
+
+  frontend:
+    image: trubudget/frontend:${TAG}
+    environment:
+      PROD_API_HOST: api
+      PROD_API_PORT: ${API_PORT}
+      TEST_API_HOST: api
+      TEST_API_PORT: ${API_PORT}
+      EXPORT_PORT: 8888
+      EXPORT_HOST: api
+    links:
+      - api
+    ports:
+      - "81:80"

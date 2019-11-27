@@ -1,174 +1,179 @@
-import { all, put, takeEvery, takeLatest, takeLeading, call, select, delay } from "redux-saga/effects";
 import { saveAs } from "file-saver/FileSaver";
-import Api from "./api.js";
 import _isEmpty from "lodash/isEmpty";
+import { all, call, cancel, delay, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
+import Api from "./api.js";
+import { getExchangeRates } from "./getExchangeRates";
+import { fromAmountString } from "./helper.js";
 import strings from "./localizeStrings";
 import {
-  CREATE_PROJECT,
-  CREATE_PROJECT_SUCCESS,
-  FETCH_ALL_PROJECTS_SUCCESS,
-  FETCH_ALL_PROJECTS,
-  EDIT_PROJECT,
-  EDIT_PROJECT_SUCCESS,
-  FETCH_PROJECT_PERMISSIONS,
-  FETCH_PROJECT_PERMISSIONS_SUCCESS,
-  GRANT_PERMISSION,
-  GRANT_PERMISSION_SUCCESS,
-  REVOKE_PERMISSION_SUCCESS,
-  REVOKE_PERMISSION
-} from "./pages/Overview/actions";
-
-import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, CLEAR_DOCUMENTS } from "./pages/Documents/actions";
+  GET_EXCHANGE_RATES,
+  GET_EXCHANGE_RATES_SUCCESS,
+  GET_PROJECT_KPIS,
+  GET_PROJECT_KPIS_FAIL,
+  GET_PROJECT_KPIS_SUCCESS,
+  GET_SUBPROJECT_KPIS,
+  GET_SUBPROJECT_KPIS_FAIL,
+  GET_SUBPROJECT_KPIS_SUCCESS
+} from "./pages/Analytics/actions.js";
 import {
-  CREATE_SUBPROJECT,
-  CREATE_SUBPROJECT_SUCCESS,
-  FETCH_ALL_PROJECT_DETAILS_SUCCESS,
-  FETCH_ALL_PROJECT_DETAILS,
-  ASSIGN_PROJECT_SUCCESS,
-  ASSIGN_PROJECT,
-  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
-  FETCH_NEXT_PROJECT_HISTORY_PAGE,
-  FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
-  EDIT_SUBPROJECT_SUCCESS,
-  EDIT_SUBPROJECT,
-  CLOSE_PROJECT,
-  CLOSE_PROJECT_SUCCESS,
-  REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
-  REVOKE_SUBPROJECT_PERMISSION,
-  GRANT_SUBPROJECT_PERMISSION,
-  GRANT_SUBPROJECT_PERMISSION_SUCCESS,
-  FETCH_SUBPROJECT_PERMISSIONS,
-  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
-  LIVE_UPDATE_PROJECT
-} from "./pages/SubProjects/actions";
+  CONFIRMATION_REQUIRED,
+  EXECUTE_CONFIRMED_ACTIONS,
+  EXECUTE_CONFIRMED_ACTIONS_FAILURE,
+  EXECUTE_CONFIRMED_ACTIONS_SUCCESS
+} from "./pages/Confirmation/actions.js";
+import { CLEAR_DOCUMENTS, VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS } from "./pages/Documents/actions";
+import { cancelDebounce, hideLoadingIndicator, showLoadingIndicator } from "./pages/Loading/actions.js";
 import {
-  SHOW_SNACKBAR,
-  SNACKBAR_MESSAGE,
-  MARK_NOTIFICATION_AS_READ_SUCCESS,
-  MARK_NOTIFICATION_AS_READ,
-  FETCH_ALL_NOTIFICATIONS,
-  FETCH_ALL_NOTIFICATIONS_SUCCESS,
-  MARK_MULTIPLE_NOTIFICATIONS_AS_READ_SUCCESS,
-  MARK_MULTIPLE_NOTIFICATIONS_AS_READ,
-  FETCH_NOTIFICATION_COUNT_SUCCESS,
-  FETCH_NOTIFICATION_COUNT,
-  LIVE_UPDATE_NOTIFICATIONS,
-  LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
-  TIME_OUT_FLY_IN
-} from "./pages/Notifications/actions";
-import {
-  CREATE_WORKFLOW,
-  CREATE_WORKFLOW_SUCCESS,
-  FETCH_ALL_SUBPROJECT_DETAILS,
-  FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
-  FETCH_WORKFLOWITEM_PERMISSIONS,
-  FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
-  GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
-  GRANT_WORKFLOWITEM_PERMISSION,
-  CLOSE_WORKFLOWITEM,
-  CLOSE_WORKFLOWITEM_SUCCESS,
-  ASSIGN_WORKFLOWITEM_SUCCESS,
-  ASSIGN_WORKFLOWITEM,
-  ASSIGN_SUBPROJECT_SUCCESS,
-  ASSIGN_SUBPROJECT,
-  SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
-  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
-  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
-  REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
-  REVOKE_WORKFLOWITEM_PERMISSION,
-  EDIT_WORKFLOW_ITEM_SUCCESS,
-  EDIT_WORKFLOW_ITEM,
-  REORDER_WORKFLOW_ITEMS,
-  REORDER_WORKFLOW_ITEMS_SUCCESS,
-  CLOSE_SUBPROJECT,
-  CLOSE_SUBPROJECT_SUCCESS,
-  HIDE_WORKFLOW_DETAILS,
-  LIVE_UPDATE_SUBPROJECT,
-  SHOW_WORKFLOW_PREVIEW,
-  STORE_WORKFLOWACTIONS,
-  SUBMIT_BATCH_FOR_WORKFLOW,
-  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
-  SUBMIT_BATCH_FOR_WORKFLOW_FAILURE
-} from "./pages/Workflows/actions";
-
-import {
-  SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT,
-  FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
-  FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS
-} from "./pages/Workflows/WorkflowitemHistoryTab/actions";
-
-import {
+  FETCH_ENVIRONMENT,
+  FETCH_ENVIRONMENT_SUCCESS,
+  FETCH_USER,
+  FETCH_USER_SUCCESS,
   LOGIN,
   LOGIN_SUCCESS,
+  LOGOUT,
+  LOGOUT_SUCCESS,
   SHOW_LOGIN_ERROR,
   STORE_ENVIRONMENT,
-  LOGOUT_SUCCESS,
-  LOGOUT,
-  FETCH_USER_SUCCESS,
-  FETCH_USER,
-  FETCH_ENVIRONMENT_SUCCESS,
-  FETCH_ENVIRONMENT,
   STORE_ENVIRONMENT_SUCCESS
 } from "./pages/Login/actions";
-
-import { showLoadingIndicator, hideLoadingIndicator, cancelDebounce } from "./pages/Loading/actions.js";
 import {
-  CREATE_USER_SUCCESS,
-  CREATE_USER,
-  FETCH_GROUPS_SUCCESS,
-  FETCH_GROUPS,
-  CREATE_GROUP_SUCCESS,
-  CREATE_GROUP,
-  ADD_USER,
-  ADD_USER_SUCCESS,
-  CHANGE_USER_PASSWORD_SUCCESS,
-  REMOVE_USER_SUCCESS,
-  REMOVE_USER,
-  GRANT_ALL_USER_PERMISSIONS_SUCCESS,
-  GRANT_ALL_USER_PERMISSIONS,
-  GRANT_GLOBAL_PERMISSION,
-  GRANT_GLOBAL_PERMISSION_SUCCESS,
-  REVOKE_GLOBAL_PERMISSION,
-  REVOKE_GLOBAL_PERMISSION_SUCCESS,
-  LIST_GLOBAL_PERMISSIONS_SUCCESS,
-  LIST_GLOBAL_PERMISSIONS,
-  CHECK_USER_PASSWORD_SUCCESS,
-  CHECK_USER_PASSWORD_ERROR,
-  CHECK_AND_CHANGE_USER_PASSWORD
-} from "./pages/Users/actions.js";
-import {
-  FETCH_NODES_SUCCESS,
-  FETCH_NODES,
-  APPROVE_ORGANIZATION,
-  APPROVE_ORGANIZATION_SUCCESS,
-  APPROVE_NEW_NODE_FOR_ORGANIZATION,
-  APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
-} from "./pages/Nodes/actions.js";
-import {
+  CREATE_BACKUP,
+  CREATE_BACKUP_SUCCESS,
+  EXPORT_DATA,
+  EXPORT_DATA_FAILED,
+  EXPORT_DATA_SUCCESS,
   FETCH_ACTIVE_PEERS,
   FETCH_ACTIVE_PEERS_SUCCESS,
   FETCH_VERSIONS,
   FETCH_VERSIONS_SUCCESS,
-  CREATE_BACKUP_SUCCESS,
-  CREATE_BACKUP,
-  RESTORE_BACKUP_SUCCESS,
   RESTORE_BACKUP,
-  EXPORT_DATA,
-  EXPORT_DATA_SUCCESS,
-  EXPORT_DATA_FAILED
+  RESTORE_BACKUP_SUCCESS
 } from "./pages/Navbar/actions.js";
 import {
-  GET_SUBPROJECT_KPIS,
-  GET_SUBPROJECT_KPIS_SUCCESS,
-  GET_PROJECT_KPIS,
-  GET_PROJECT_KPIS_SUCCESS,
-  GET_EXCHANGE_RATES,
-  GET_EXCHANGE_RATES_SUCCESS,
-  GET_SUBPROJECT_KPIS_FAIL,
-  GET_PROJECT_KPIS_FAIL
-} from "./pages/Analytics/actions.js";
-import { fromAmountString } from "./helper.js";
-import { getExchangeRates } from "./getExchangeRates";
+  APPROVE_NEW_NODE_FOR_ORGANIZATION,
+  APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS,
+  APPROVE_ORGANIZATION,
+  APPROVE_ORGANIZATION_SUCCESS,
+  FETCH_NODES,
+  FETCH_NODES_SUCCESS
+} from "./pages/Nodes/actions.js";
+import {
+  FETCH_ALL_NOTIFICATIONS,
+  FETCH_ALL_NOTIFICATIONS_SUCCESS,
+  FETCH_NOTIFICATION_COUNT,
+  FETCH_NOTIFICATION_COUNT_SUCCESS,
+  LIVE_UPDATE_NOTIFICATIONS,
+  LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
+  MARK_MULTIPLE_NOTIFICATIONS_AS_READ,
+  MARK_MULTIPLE_NOTIFICATIONS_AS_READ_SUCCESS,
+  MARK_NOTIFICATION_AS_READ,
+  MARK_NOTIFICATION_AS_READ_SUCCESS,
+  SHOW_SNACKBAR,
+  SNACKBAR_MESSAGE,
+  TIME_OUT_FLY_IN
+} from "./pages/Notifications/actions";
+import {
+  CREATE_PROJECT,
+  CREATE_PROJECT_SUCCESS,
+  EDIT_PROJECT,
+  EDIT_PROJECT_SUCCESS,
+  FETCH_ALL_PROJECTS,
+  FETCH_ALL_PROJECTS_SUCCESS,
+  FETCH_PROJECT_PERMISSIONS,
+  FETCH_PROJECT_PERMISSIONS_SUCCESS,
+  GRANT_PERMISSION,
+  GRANT_PERMISSION_SUCCESS,
+  REVOKE_PERMISSION,
+  REVOKE_PERMISSION_SUCCESS,
+  FETCH_PROJECT_PERMISSIONS_FAILURE
+} from "./pages/Overview/actions";
+import {
+  ASSIGN_PROJECT,
+  ASSIGN_PROJECT_SUCCESS,
+  CLOSE_PROJECT,
+  CLOSE_PROJECT_SUCCESS,
+  CREATE_SUBPROJECT,
+  CREATE_SUBPROJECT_SUCCESS,
+  EDIT_SUBPROJECT,
+  EDIT_SUBPROJECT_SUCCESS,
+  FETCH_ALL_PROJECT_DETAILS,
+  FETCH_ALL_PROJECT_DETAILS_SUCCESS,
+  FETCH_NEXT_PROJECT_HISTORY_PAGE,
+  FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
+  FETCH_SUBPROJECT_PERMISSIONS,
+  FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
+  GRANT_SUBPROJECT_PERMISSION,
+  GRANT_SUBPROJECT_PERMISSION_SUCCESS,
+  LIVE_UPDATE_PROJECT,
+  REVOKE_SUBPROJECT_PERMISSION,
+  REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
+  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
+  FETCH_SUBPROJECT_PERMISSIONS_FAILURE
+} from "./pages/SubProjects/actions";
+import {
+  ADD_USER,
+  ADD_USER_SUCCESS,
+  CHANGE_USER_PASSWORD_SUCCESS,
+  CHECK_AND_CHANGE_USER_PASSWORD,
+  CHECK_USER_PASSWORD_ERROR,
+  CHECK_USER_PASSWORD_SUCCESS,
+  CREATE_GROUP,
+  CREATE_GROUP_SUCCESS,
+  CREATE_USER,
+  CREATE_USER_SUCCESS,
+  FETCH_GROUPS,
+  FETCH_GROUPS_SUCCESS,
+  GRANT_ALL_USER_PERMISSIONS,
+  GRANT_ALL_USER_PERMISSIONS_SUCCESS,
+  GRANT_GLOBAL_PERMISSION,
+  GRANT_GLOBAL_PERMISSION_SUCCESS,
+  LIST_GLOBAL_PERMISSIONS,
+  LIST_GLOBAL_PERMISSIONS_SUCCESS,
+  REMOVE_USER,
+  REMOVE_USER_SUCCESS,
+  REVOKE_GLOBAL_PERMISSION,
+  REVOKE_GLOBAL_PERMISSION_SUCCESS
+} from "./pages/Users/actions.js";
+import {
+  ASSIGN_SUBPROJECT,
+  ASSIGN_SUBPROJECT_SUCCESS,
+  ASSIGN_WORKFLOWITEM,
+  ASSIGN_WORKFLOWITEM_SUCCESS,
+  CLOSE_SUBPROJECT,
+  CLOSE_SUBPROJECT_SUCCESS,
+  CLOSE_WORKFLOWITEM,
+  CLOSE_WORKFLOWITEM_SUCCESS,
+  CREATE_WORKFLOW,
+  CREATE_WORKFLOW_SUCCESS,
+  EDIT_WORKFLOW_ITEM,
+  EDIT_WORKFLOW_ITEM_SUCCESS,
+  FETCH_ALL_SUBPROJECT_DETAILS,
+  FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+  FETCH_WORKFLOWITEM_PERMISSIONS,
+  FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
+  GRANT_WORKFLOWITEM_PERMISSION,
+  GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+  HIDE_WORKFLOW_DETAILS,
+  LIVE_UPDATE_SUBPROJECT,
+  REORDER_WORKFLOW_ITEMS,
+  REORDER_WORKFLOW_ITEMS_SUCCESS,
+  REVOKE_WORKFLOWITEM_PERMISSION,
+  REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+  SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
+  SHOW_WORKFLOW_PREVIEW,
+  STORE_WORKFLOWACTIONS,
+  SUBMIT_BATCH_FOR_WORKFLOW,
+  SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
+  FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE
+} from "./pages/Workflows/actions";
+import {
+  FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
+  FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
+  SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT
+} from "./pages/Workflows/WorkflowitemHistoryTab/actions";
 
 const api = new Api();
 
@@ -204,6 +209,9 @@ const getWorkflowitemHistoryState = state => {
     historyPageSize: state.getIn(["workflowitemDetails", "historyPageSize"]),
     totalHistoryItemCount: state.getIn(["workflowitemDetails", "totalHistoryItemCount"])
   };
+};
+const getConfirmedState = state => {
+  return state.getIn(["confirmation", "confirmed"]);
 };
 
 function* execute(fn, showLoading = false, errorCallback = undefined) {
@@ -576,6 +584,94 @@ export function* getEnvironmentSaga() {
       productionActive: env === "Test" ? false : true
     });
   });
+}
+
+export function* executeConfirmedActionsSaga({ showLoading, projectId, subprojectId, actions }) {
+  yield execute(function*() {
+    const permissionsChange = {
+      projectId: "",
+      subprojectId: "",
+      workflowitemId: ""
+    };
+    for (const index in actions) {
+      const action = actions[index];
+      try {
+        switch (action.intent) {
+          case "project.intent.grantPermission":
+            yield callApi(api.grantProjectPermissions, action.id, action.permission, action.identity);
+            yield put({
+              type: GRANT_PERMISSION_SUCCESS,
+              id: action.id,
+              intent: action.intent,
+              permission: action.permission,
+              identity: action.identity
+            });
+            permissionsChange.projectId = action.id;
+            break;
+          case "subproject.intent.grantPermission":
+            yield callApi(api.grantSubProjectPermissions, projectId, action.id, action.permission, action.identity);
+            yield put({
+              type: GRANT_SUBPROJECT_PERMISSION_SUCCESS,
+              id: action.id,
+              intent: action.intent,
+              permission: action.permission,
+              identity: action.identity
+            });
+            permissionsChange.subprojectId = action.id;
+            break;
+          case "workflowitem.intent.grantPermission":
+            yield callApi(
+              api.grantWorkflowItemPermissions,
+              projectId,
+              subprojectId,
+              action.id,
+              action.permission,
+              action.identity
+            );
+            yield put({
+              type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+              id: action.id,
+              intent: action.intent,
+              permission: action.permission,
+              identity: action.identity
+            });
+            permissionsChange.workflowitemId = action.id;
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        yield put({
+          type: EXECUTE_CONFIRMED_ACTIONS_FAILURE,
+          id: action.id,
+          displayName: action.displayName,
+          identity: action.identity,
+          intent: action.intent,
+          permission: action.permission
+        });
+        throw error;
+      }
+    }
+    const { projectId: pId, subprojectId: subpId, workflowitemId: wId } = permissionsChange;
+    if (pId !== "") {
+      yield call(() => fetchProjectPermissionsSaga({ projectId: pId, showLoading: false }));
+    }
+    if (subpId !== "") {
+      yield call(() => fetchSubProjectPermissionsSaga({ projectId, subprojectId: subpId, showLoading: false }));
+    }
+    if (wId !== "")
+      yield call(() =>
+        fetchWorkflowItemPermissionsSaga({
+          projectId,
+          subprojectId,
+          workflowitemId: wId,
+          showLoading: false
+        })
+      );
+    yield put({
+      type: EXECUTE_CONFIRMED_ACTIONS_SUCCESS
+    });
+  }, showLoading);
 }
 
 export function* fetchNotificationsSaga({ showLoading, notificationPage }) {
@@ -1044,42 +1140,93 @@ export function* fetchAllSubprojectDetailsSaga({ projectId, subprojectId, showLo
 
 export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.listProjectIntents, projectId);
+    let response;
+    try {
+      response = yield callApi(api.listProjectIntents, projectId);
+    } catch (error) {
+      yield put({
+        type: FETCH_PROJECT_PERMISSIONS_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
 
     yield put({
       type: FETCH_PROJECT_PERMISSIONS_SUCCESS,
-      permissions: data || {}
+      permissions: response.data || {}
     });
   }, showLoading);
 }
 
 export function* fetchSubProjectPermissionsSaga({ projectId, subprojectId, showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.listSubProjectPermissions, projectId, subprojectId);
+    let response;
+    try {
+      response = yield callApi(api.listSubProjectPermissions, projectId, subprojectId);
+    } catch (error) {
+      yield put({
+        type: FETCH_SUBPROJECT_PERMISSIONS_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
 
     yield put({
       type: FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
-      permissions: data || {}
+      permissions: response.data || {}
     });
   }, showLoading);
 }
 
 export function* fetchWorkflowItemPermissionsSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.listWorkflowItemPermissions, projectId, subprojectId, workflowitemId);
+    let response;
+    try {
+      response = yield callApi(api.listWorkflowItemPermissions, projectId, subprojectId, workflowitemId);
+    } catch (error) {
+      yield put({
+        type: FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
     yield put({
       type: FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
-      permissions: data || {}
+      permissions: response.data || {}
     });
   }, showLoading);
 }
 
-export function* grantPermissionsSaga({ projectId, intent, identity, showLoading }) {
+export function* grantPermissionsSaga({
+  projectId,
+  projectDisplayName,
+  intent,
+  granteeId,
+  granteeDisplayName,
+  showLoading
+}) {
   yield execute(function*() {
-    yield callApi(api.grantProjectPermissions, projectId, intent, identity);
+    const confirmed = yield select(getConfirmedState);
+    if (!confirmed) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "project.intent.grantPermission",
+        payload: {
+          intent,
+          project: { id: projectId, displayName: projectDisplayName },
+          grantee: { id: granteeId, displayName: granteeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+    yield callApi(api.grantProjectPermissions, projectId, intent, granteeId);
 
     yield put({
-      type: GRANT_PERMISSION_SUCCESS
+      type: GRANT_PERMISSION_SUCCESS,
+      id: projectId,
+      intent: "project.intent.grantPermission",
+      permission: intent,
+      identity: granteeId
     });
 
     yield put({
@@ -1089,12 +1236,36 @@ export function* grantPermissionsSaga({ projectId, intent, identity, showLoading
   }, showLoading);
 }
 
-export function* revokePermissionsSaga({ projectId, intent, identity, showLoading }) {
+export function* revokePermissionsSaga({
+  projectId,
+  projectDisplayName,
+  intent,
+  revokeeId,
+  revokeeDisplayName,
+  showLoading
+}) {
   yield execute(function*() {
-    yield callApi(api.revokeProjectPermissions, projectId, intent, identity);
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "project.intent.revokePermission",
+        payload: {
+          intent,
+          project: { id: projectId, displayName: projectDisplayName },
+          revokee: { id: revokeeId, displayName: revokeeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+    yield callApi(api.revokeProjectPermissions, projectId, intent, revokeeId);
 
     yield put({
-      type: REVOKE_PERMISSION_SUCCESS
+      type: REVOKE_PERMISSION_SUCCESS,
+      id: projectId,
+      intent: "project.intent.revokePermission",
+      permission: intent,
+      identity: revokeeId
     });
 
     yield put({
@@ -1104,12 +1275,39 @@ export function* revokePermissionsSaga({ projectId, intent, identity, showLoadin
   }, showLoading);
 }
 
-export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, intent, identity, showLoading }) {
+export function* grantSubProjectPermissionsSaga({
+  projectId,
+  projectDisplayName,
+  subprojectId,
+  subprojectDisplayName,
+  intent,
+  granteeId,
+  granteeDisplayName,
+  showLoading
+}) {
   yield execute(function*() {
-    yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, identity);
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "subproject.intent.grantPermission",
+        payload: {
+          intent,
+          project: { id: projectId, displayName: projectDisplayName },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          grantee: { id: granteeId, displayName: granteeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+    yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, granteeId);
 
     yield put({
-      type: GRANT_SUBPROJECT_PERMISSION_SUCCESS
+      type: GRANT_SUBPROJECT_PERMISSION_SUCCESS,
+      id: subprojectId,
+      intent: "subproject.intent.grantPermission",
+      permission: intent,
+      identity: granteeId
     });
 
     yield put({
@@ -1121,12 +1319,39 @@ export function* grantSubProjectPermissionsSaga({ projectId, subprojectId, inten
   }, showLoading);
 }
 
-export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, intent, identity, showLoading }) {
+export function* revokeSubProjectPermissionsSaga({
+  projectId,
+  projectDisplayName,
+  subprojectId,
+  subprojectDisplayName,
+  intent,
+  revokeeId,
+  revokeeDisplayName,
+  showLoading
+}) {
   yield execute(function*() {
-    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, identity);
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "subproject.intent.revokePermission",
+        payload: {
+          intent,
+          project: { id: projectId, displayName: projectDisplayName },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          revokee: { id: revokeeId, displayName: revokeeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, revokeeId);
 
     yield put({
-      type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS
+      type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
+      id: subprojectId,
+      intent: "subproject.intent.revokePermission",
+      permission: intent,
+      identity: revokeeId
     });
 
     yield put({
@@ -1140,20 +1365,39 @@ export function* revokeSubProjectPermissionsSaga({ projectId, subprojectId, inte
 
 export function* grantWorkflowItemPermissionsSaga({
   projectId,
+  projectDisplayName,
   subprojectId,
+  subprojectDisplayName,
   workflowitemId,
+  workflowitemDisplayName,
   intent,
-  identity,
+  granteeId,
+  granteeDisplayName,
   showLoading
 }) {
   yield execute(function*() {
-    yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
-
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "workflowitem.intent.grantPermission",
+        payload: {
+          intent,
+          project: { id: projectId, displayName: projectDisplayName },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName },
+          grantee: { id: granteeId, displayName: granteeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+    yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, granteeId);
     yield put({
       type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
-      workflowitemId,
-      intent,
-      identity
+      id: workflowitemId,
+      intent: "workflowitem.intent.grantPermission",
+      permission: intent,
+      identity: granteeId
     });
 
     yield put({
@@ -1168,20 +1412,40 @@ export function* grantWorkflowItemPermissionsSaga({
 
 export function* revokeWorkflowItemPermissionsSaga({
   projectId,
+  projectDisplayName,
   subprojectId,
+  subprojectDisplayName,
   workflowitemId,
+  workflowitemDisplayName,
   intent,
-  identity,
+  revokeeId,
+  revokeeDisplayName,
   showLoading
 }) {
   yield execute(function*() {
-    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, identity);
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "workflowitem.intent.revokePermission",
+        payload: {
+          intent,
+          project: { id: projectId, displayName: projectDisplayName },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName },
+          revokee: { id: revokeeId, displayName: revokeeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, revokeeId);
 
     yield put({
       type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
-      workflowitemId,
-      intent,
-      identity
+      id: workflowitemId,
+      intent: "workflowitem.intent.revokePermission",
+      permission: intent,
+      identity: revokeeId
     });
 
     yield put({
@@ -1336,8 +1600,33 @@ export function* submitBatchForWorkflowSaga({ projectId, subprojectId, actions, 
   }, showLoading);
 }
 
-export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemId, assigneeId, showLoading }) {
+export function* assignWorkflowItemSaga({
+  projectId,
+  projectDisplayName,
+  subprojectId,
+  subprojectDisplayName,
+  workflowitemId,
+  workflowitemDisplayName,
+  assigneeId,
+  assigneeDisplayName,
+  showLoading
+}) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "workflowitem.assign",
+        payload: {
+          project: { id: projectId, displayName: projectDisplayName },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName },
+          assignee: { id: assigneeId, displayName: assigneeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
     yield put({
       type: ASSIGN_WORKFLOWITEM_SUCCESS,
@@ -1353,11 +1642,36 @@ export function* assignWorkflowItemSaga({ projectId, subprojectId, workflowitemI
   }, showLoading);
 }
 
-export function* assignSubprojectSaga({ projectId, subprojectId, assigneeId, showLoading }) {
+export function* assignSubprojectSaga({
+  projectId,
+  projectDisplayName,
+  subprojectId,
+  subprojectDisplayName,
+  assigneeId,
+  assigneeDisplayName,
+  showLoading
+}) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "subproject.assign",
+        payload: {
+          project: { id: projectId, displayName: projectDisplayName },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          assignee: { id: assigneeId, displayName: assigneeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.assignSubproject, projectId, subprojectId, assigneeId);
     yield put({
-      type: ASSIGN_SUBPROJECT_SUCCESS
+      type: ASSIGN_SUBPROJECT_SUCCESS,
+      intent: "subproject.assign",
+      id: subprojectId,
+      identity: assigneeId
     });
 
     yield put({
@@ -1369,11 +1683,27 @@ export function* assignSubprojectSaga({ projectId, subprojectId, assigneeId, sho
   }, showLoading);
 }
 
-export function* assignProjectSaga({ projectId, assigneeId, showLoading }) {
+export function* assignProjectSaga({ projectId, projectDisplayName, assigneeId, assigneeDisplayName, showLoading }) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "project.assign",
+        payload: {
+          project: { id: projectId, displayName: projectDisplayName },
+          assignee: { id: assigneeId, displayName: assigneeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.assignProject, projectId, assigneeId);
     yield put({
-      type: ASSIGN_PROJECT_SUCCESS
+      type: ASSIGN_PROJECT_SUCCESS,
+      intent: "project.assign",
+      id: projectId,
+      identity: assigneeId
     });
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS,
@@ -1727,6 +2057,9 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_NOTIFICATION_COUNT, fetchNotificationCountsSaga),
       yield takeEvery(MARK_NOTIFICATION_AS_READ, markNotificationAsReadSaga),
       yield takeEvery(MARK_MULTIPLE_NOTIFICATIONS_AS_READ, markMultipleNotificationsAsReadSaga),
+
+      // Confirmation
+      yield takeEvery(EXECUTE_CONFIRMED_ACTIONS, executeConfirmedActionsSaga),
 
       // Peers
       yield takeLatest(FETCH_ACTIVE_PEERS, fetchActivePeersSaga),

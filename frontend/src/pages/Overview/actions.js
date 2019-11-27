@@ -30,6 +30,7 @@ export const EDIT_PROJECT = "EDIT_PROJECT";
 export const EDIT_PROJECT_SUCCESS = "EDIT_PROJECT_SUCCESS";
 export const FETCH_PROJECT_PERMISSIONS = "FETCH_PROJECT_PERMISSIONS";
 export const FETCH_PROJECT_PERMISSIONS_SUCCESS = "FETCH_PROJECT_PERMISSIONS_SUCCESS";
+export const FETCH_PROJECT_PERMISSIONS_FAILURE = "FETCH_PROJECT_PERMISSIONS_FAILURE";
 
 export const GRANT_PERMISSION = "GRANT_PERMISSION";
 export const GRANT_PERMISSION_SUCCESS = "GRANT_PERMISSION_SUCCESS";
@@ -78,10 +79,11 @@ export function fetchProjectPermissions(projectId, showLoading = false) {
   };
 }
 
-export function showProjectPermissions(id) {
+export function showProjectPermissions(id, displayName) {
   return {
     type: SHOW_PROJECT_PERMISSIONS,
-    id
+    id,
+    displayName
   };
 }
 
@@ -169,22 +171,40 @@ export function setCurrentStep(step) {
   };
 }
 
-export function grantPermission(projectId, intent, identity, showLoading = false) {
+export function grantPermission(
+  projectId,
+  projectDisplayName,
+  intent,
+  granteeId,
+  granteeDisplayName,
+  showLoading = false
+) {
   return {
     type: GRANT_PERMISSION,
     projectId,
+    projectDisplayName,
     intent,
-    identity,
+    granteeId,
+    granteeDisplayName,
     showLoading
   };
 }
 
-export function revokePermission(projectId, intent, identity, showLoading = false) {
+export function revokePermission(
+  projectId,
+  projectDisplayName,
+  intent,
+  revokeeId,
+  revokeeDisplayName,
+  showLoading = false
+) {
   return {
     type: REVOKE_PERMISSION,
     projectId,
+    projectDisplayName,
     intent,
-    identity,
+    revokeeId,
+    revokeeDisplayName,
     showLoading
   };
 }

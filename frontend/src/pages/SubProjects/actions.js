@@ -51,6 +51,7 @@ export const REVOKE_SUBPROJECT_PERMISSION_SUCCESS = "REVOKE_SUBPROJECT_PERMISSIO
 
 export const FETCH_SUBPROJECT_PERMISSIONS = "FETCH_SUBPROJECT_PERMISSIONS";
 export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSIONS_SUCCESS";
+export const FETCH_SUBPROJECT_PERMISSIONS_FAILURE = "FETCH_SUBPROJECT_PERMISSIONS_FAILURE";
 
 export const LIVE_UPDATE_PROJECT = "LIVE_UPDATE_PROJECT";
 
@@ -68,24 +69,48 @@ export function fetchSubProjectPermissions(projectId, subprojectId, showLoading 
   };
 }
 
-export function grantSubProjectPermission(projectId, subprojectId, intent, identity, showLoading = false) {
+export function grantSubProjectPermission(
+  projectId,
+  projectDisplayName,
+  subprojectId,
+  subprojectDisplayName,
+  intent,
+  granteeId,
+  granteeDisplayName,
+  showLoading = false
+) {
   return {
     type: GRANT_SUBPROJECT_PERMISSION,
     projectId,
+    projectDisplayName,
     subprojectId,
+    subprojectDisplayName,
     intent,
-    identity,
+    granteeId,
+    granteeDisplayName,
     showLoading
   };
 }
 
-export function revokeSubProjectPermission(projectId, subprojectId, intent, identity, showLoading = false) {
+export function revokeSubProjectPermission(
+  projectId,
+  projectDisplayName,
+  subprojectId,
+  subprojectDisplayName,
+  intent,
+  revokeeId,
+  revokeeDisplayName,
+  showLoading = false
+) {
   return {
     type: REVOKE_SUBPROJECT_PERMISSION,
     projectId,
+    projectDisplayName,
     subprojectId,
+    subprojectDisplayName,
     intent,
-    identity,
+    revokeeId,
+    revokeeDisplayName,
     showLoading
   };
 }
@@ -132,11 +157,13 @@ export function showProjectAssignees() {
   };
 }
 
-export function assignProject(projectId, assigneeId) {
+export function assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName, showLoading = false) {
   return {
     type: ASSIGN_PROJECT,
     projectId,
-    assigneeId
+    projectDisplayName,
+    assigneeId,
+    assigneeDisplayName
   };
 }
 
@@ -218,10 +245,11 @@ export function showEditDialog(id, name, description, currency, projectedBudgets
     projectedBudgets
   };
 }
-export function showSubProjectPermissions(id) {
+export function showSubProjectPermissions(id, displayName) {
   return {
     type: SHOW_SUBPROJECT_PERMISSIONS,
-    id
+    id,
+    displayName
   };
 }
 
