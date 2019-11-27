@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../helper";
-import strings from "../../localizeStrings";
 import { canAssignSubProject, canCloseSubProject, canViewSubProjectPermissions } from "../../permissions";
 import globalStyles from "../../styles";
 import { openAnalyticsDialog } from "../Analytics/actions";
@@ -14,9 +12,9 @@ import { setSelectedView } from "../Navbar/actions";
 import { openHistory } from "../Notifications/actions";
 import SubprojectHistoryDrawer from "../SubProjects/SubprojectHistoryDrawer";
 import {
-  closeWorkflowitemDetailsDialog,
   closeSubproject,
   closeWorkflowItem,
+  closeWorkflowitemDetailsDialog,
   disableWorkflowEdit,
   enableSubProjectBudgetEdit,
   enableWorkflowEdit,
@@ -100,11 +98,9 @@ class WorkflowContainer extends Component {
             canCloseSubproject={canCloseSubproject}
           />
 
-          <WorkflowItemPermissionsContainer
-            projectId={this.projectId}
-            subProjectId={this.subProjectId}
-            title={strings.workflow.workflow_permissions_title}
-          />
+          {this.props.permissionDialogShown ? (
+            <WorkflowItemPermissionsContainer projectId={this.projectId} subProjectId={this.subProjectId} />
+          ) : null}
           <Workflow
             {...this.props}
             projectId={this.projectId}
@@ -143,7 +139,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
 
-    showWorkflowItemPermissions: wId => dispatch(showWorkflowItemPermissions(wId)),
+    showWorkflowItemPermissions: (wId, wDisplayName) => dispatch(showWorkflowItemPermissions(wId, wDisplayName)),
     updateWorkflowOrderOnState: items => dispatch(updateWorkflowOrderOnState(items)),
     enableWorkflowEdit: () => dispatch(enableWorkflowEdit()),
     disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),
@@ -196,7 +192,8 @@ const mapStateToProps = state => {
     idForInfo: state.getIn(["workflow", "idForInfo"]),
     isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"]),
     isLoading: state.getIn(["workflow", "isHistoryLoading"]),
-    isRoot: state.getIn(["navbar", "isRoot"])
+    isRoot: state.getIn(["navbar", "isRoot"]),
+    permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"])
   };
 };
 

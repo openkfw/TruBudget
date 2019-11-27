@@ -152,7 +152,7 @@ const getTableEntries = (
               <div className={classes.button}>
                 <ActionButton
                   notVisible={!canViewPermissions}
-                  onClick={() => showSubProjectPermissions(id)}
+                  onClick={() => showSubProjectPermissions(id, displayName)}
                   title={strings.common.show_permissions}
                   icon={<PermissionIcon />}
                   data-test={"spp-button-" + index}

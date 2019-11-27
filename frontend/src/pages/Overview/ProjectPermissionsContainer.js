@@ -1,58 +1,87 @@
+import _isEmpty from "lodash/isEmpty";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
+import { formatString, toJS } from "../../helper";
+import strings from "../../localizeStrings";
+import { projectIntentOrder } from "../../permissions";
 import PermissionDialog from "../Common/Permissions/PermissionDialog";
 import withInitialLoading from "../Loading/withInitialLoading";
-import { toJS } from "../../helper";
 import { fetchUser } from "../Login/actions";
-
-import _isEmpty from "lodash/isEmpty";
-import { projectIntentOrder } from "../../permissions";
-import strings from "../../localizeStrings";
 import {
-  hideProjectPermissions,
+  addTemporaryPermission,
   fetchProjectPermissions,
   grantPermission,
-  revokePermission,
-  addTemporaryPermission,
-  removeTemporaryPermission
+  hideProjectPermissions,
+  removeTemporaryPermission,
+  revokePermission
 } from "./actions";
 
 class ProjectPermissionsContainer extends Component {
-  componentWillMount() {
-    this.props.fetchUser(true);
+  componentDidMount() {
+    this.props.fetchUser();
+    this.props.fetchProjectPermissions(this.props.projectId);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.permissionDialogShown && nextProps.permissionDialogShown) {
-      const projectId = nextProps.id;
-      this.props.fetchProjectPermissions(projectId, true);
-    }
+  shouldComponentUpdate() {
+    return !this.props.isConfirmationDialogOpen;
   }
 
-  isEnabled(allowedIntents) {
+  grant = (permission, granteeId, granteeName) => {
+    this.props.grant(this.props.projectId, this.props.projectDisplayName, permission, granteeId, granteeName);
+  };
+
+  revoke = (permission, revokeeId, revokeeName) => {
+    this.props.revoke(this.props.projectId, this.props.projectDisplayName, permission, revokeeId, revokeeName);
+  };
+
+  hasOnlyViewPermissions(allowedIntents) {
     const necessaryIntents = ["project.intent.grantPermission", "project.intent.revokePermission"];
-    return necessaryIntents.some(i => allowedIntents.includes(i));
+    return necessaryIntents.every(i => !allowedIntents.includes(i));
+  }
+
+  /*
+   * Submit is disabled in the following cases
+   *  - Temporary permissions are added: Submit disabled if grant permissions are missing
+   *  - Temporary permissions are removed: Submit disabled if revoke permissions are missing
+   */
+  isSubmitDisabled(allowedIntents, projectPermissions, temporaryPermissions) {
+    if (_isEmpty(temporaryPermissions)) return true;
+
+    const hasGrantPermissions = allowedIntents.includes("project.intent.grantPermission");
+    const hasRevokePermissions = allowedIntents.includes("project.intent.revokePermission");
+    const temporaryPermissionsAdded = Object.keys(projectPermissions).some(intent => {
+      return temporaryPermissions[intent].some(id => !projectPermissions[intent].includes(id));
+    });
+    const temporaryPermissionsRemoved = Object.keys(projectPermissions).some(intent =>
+      projectPermissions[intent].some(id => !temporaryPermissions[intent].includes(id))
+    );
+
+    if ((!hasGrantPermissions && temporaryPermissionsAdded) || (!hasRevokePermissions && temporaryPermissionsRemoved)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   getAllowedIntents = () => {
-    const { projects, id } = this.props;
-    if (projects && !_isEmpty(id)) {
-      const { allowedIntents } = projects.find(project => project.data.id === id);
-      return allowedIntents;
-    }
-    return [];
+    const { permissions, myself } = this.props;
+    return Object.keys(permissions).filter(intent => permissions[intent].includes(myself));
   };
 
   render() {
     const allowedIntents = this.getAllowedIntents();
-
     return (
       <PermissionDialog
         {...this.props}
-        title={strings.project.project_permissions_title}
+        open={this.props.permissionDialogShown}
+        id={this.props.projectId}
+        title={formatString(strings.permissions.dialog_title, this.props.projectDisplayName)}
         intentOrder={projectIntentOrder}
-        disabled={!this.isEnabled(allowedIntents)}
+        disabledUserSelection={this.hasOnlyViewPermissions(allowedIntents)}
+        disabledSubmit={this.isSubmitDisabled(allowedIntents, this.props.permissions, this.props.temporaryPermissions)}
+        grant={this.grant}
+        revoke={this.revoke}
+        userList={this.props.userList}
       />
     );
   }
@@ -62,18 +91,22 @@ const mapStateToProps = state => {
   return {
     permissions: state.getIn(["overview", "permissions", "project"]),
     temporaryPermissions: state.getIn(["overview", "temporaryPermissions"]),
-    user: state.getIn(["login", "user"]),
     permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
     myself: state.getIn(["login", "id"]),
-    id: state.getIn(["overview", "idForPermissions"])
+    userList: state.getIn(["login", "user"]),
+    projectId: state.getIn(["overview", "idForPermissions"]),
+    projectDisplayName: state.getIn(["overview", "displayNameForPermissions"]),
+    isConfirmationDialogOpen: state.getIn(["confirmation", "open"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     hidePermissionDialog: () => dispatch(hideProjectPermissions()),
-    grant: (projectId, permission, identity) => dispatch(grantPermission(projectId, permission, identity, true)),
-    revoke: (projectId, permission, identity) => dispatch(revokePermission(projectId, permission, identity, true)),
+    grant: (pId, pName, permission, granteeId, granteeName) =>
+      dispatch(grantPermission(pId, pName, permission, granteeId, granteeName, true)),
+    revoke: (pId, pName, permission, revokeeId, revokeeName) =>
+      dispatch(revokePermission(pId, pName, permission, revokeeId, revokeeName, true)),
     fetchProjectPermissions: (projectId, showLoading) => dispatch(fetchProjectPermissions(projectId, showLoading)),
     fetchUser: showLoading => dispatch(fetchUser(showLoading)),
     addTemporaryPermission: (permission, userId) => dispatch(addTemporaryPermission(permission, userId)),

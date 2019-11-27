@@ -20,6 +20,7 @@ import loadingReducer from "./pages/Loading/reducer";
 import userDashboardReducer from "./pages/Users/reducer";
 import nodeDashboardReducer from "./pages/Nodes/reducer";
 import analyticsReducer from "./pages/Analytics/reducer";
+import confirmationReducer from "./pages/Confirmation/reducer";
 
 /*
  * routeReducer
@@ -83,6 +84,7 @@ export default function createReducer(asyncReducers) {
     users: userDashboardReducer,
     nodes: nodeDashboardReducer,
     analytics: analyticsReducer,
+    confirmation: confirmationReducer,
     ...asyncReducers
   });
 }

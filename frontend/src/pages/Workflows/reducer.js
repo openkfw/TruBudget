@@ -1,7 +1,8 @@
 // since Immutable can not be tree-shaked, we can simply import it in total to prevent nameclashes (e.g. map)
 import Immutable, { fromJS } from "immutable";
-
+import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
+import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
 import { LOGOUT } from "../Login/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
 import { FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
@@ -23,12 +24,12 @@ import {
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
   HIDE_SUBPROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_CONFIRMATION_DIALOG,
-  HIDE_WORKFLOW_DETAILS,
-  HIDE_WORKFLOW_DIALOG,
-  HIDE_WORKFLOW_PREVIEW,
   HIDE_WORKFLOWITEM_ADDITIONAL_DATA,
   HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG,
   HIDE_WORKFLOWITEM_PERMISSIONS,
+  HIDE_WORKFLOW_DETAILS,
+  HIDE_WORKFLOW_DIALOG,
+  HIDE_WORKFLOW_PREVIEW,
   OPEN_HISTORY,
   REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION,
   RESET_SUCCEEDED_WORKFLOWITEMS,
@@ -38,20 +39,21 @@ import {
   SET_WORKFLOW_DRAWER_PERMISSIONS,
   SHOW_SUBPROJECT_ASSIGNEES,
   SHOW_SUBPROJECT_CONFIRMATION_DIALOG,
+  SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
+  SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
+  SHOW_WORKFLOWITEM_PERMISSIONS,
   SHOW_WORKFLOW_CREATE,
   SHOW_WORKFLOW_DETAILS,
   SHOW_WORKFLOW_EDIT,
   SHOW_WORKFLOW_PREVIEW,
-  SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
-  SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
-  SHOW_WORKFLOWITEM_PERMISSIONS,
-  STORE_WORKFLOW_ASSIGNEE,
   STORE_WORKFLOWACTIONS,
+  STORE_WORKFLOW_ASSIGNEE,
   SUBMIT_BATCH_FOR_WORKFLOW,
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
   SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
   TRIGGER_SUBPROJECT_APPLY_ACTIONS,
   UPDATE_WORKFLOW_ORDER,
+  WORKFLOWITEMS_SELECTED,
   WORKFLOW_AMOUNT,
   WORKFLOW_AMOUNT_TYPE,
   WORKFLOW_CREATION_STEP,
@@ -60,8 +62,7 @@ import {
   WORKFLOW_EXCHANGERATE,
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
-  WORKFLOW_STATUS,
-  WORKFLOWITEMS_SELECTED
+  WORKFLOW_STATUS
 } from "./actions";
 
 const historyPageSize = 50;
@@ -92,6 +93,7 @@ const defaultState = fromJS({
   },
   showWorkflowPermissions: false,
   workflowItemReference: "",
+  workflowitemDisplayName: "",
   permissions: { project: {}, subproject: {}, workflowitem: {}, workflowitemId: "" },
   temporaryPermissions: {},
   creationDialogShown: false,
@@ -209,16 +211,20 @@ export default function detailviewReducer(state = defaultState, action) {
 
     case SHOW_WORKFLOWITEM_PERMISSIONS:
       return state.merge({
-        workflowItemReference: action.wId,
+        workflowItemReference: action.workflowitemId,
+        workflowitemDisplayName: action.workflowitemDisplayName,
         permissions: defaultState.get("permissions"),
         temporaryPermissions: defaultState.getIn("temporaryPermissions"),
         showWorkflowPermissions: true
       });
     case HIDE_WORKFLOWITEM_PERMISSIONS:
+    case CONFIRMATION_CONFIRMED:
       return state.merge({
         workflowItemReference: defaultState.getIn(["workflowItemReference"]),
+        workflowitemDisplayName: defaultState.getIn(["workflowitemDisplayName"]),
         showWorkflowPermissions: defaultState.getIn(["showWorkflowPermissions"]),
-        permissions: defaultState.getIn(["permissions"])
+        permissions: defaultState.getIn(["permissions"]),
+        temporaryPermissions: defaultState.getIn("temporaryPermissions")
       });
 
     case SHOW_WORKFLOWITEM_ADDITIONAL_DATA:
@@ -399,12 +405,22 @@ export default function detailviewReducer(state = defaultState, action) {
     case STORE_WORKFLOWACTIONS:
       return state.set("workflowActions", fromJS(action.actions));
     case SHOW_WORKFLOW_PREVIEW:
-      return state.set("previewDialogShown", true);
+      return state.merge({
+        previewDialogShown: true,
+        submittedWorkflowItems: defaultState.get("submittedWorkflowItems")
+      });
     case HIDE_WORKFLOW_PREVIEW:
       return state.merge({
         previewDialogShown: defaultState.get("previewDialogShown"),
         submittedWorkflowItems: defaultState.get("submittedWorkflowItems")
       });
+    case CONFIRMATION_CANCELLED:
+      return state.set(
+        "temporaryPermissions",
+        !_isEmpty(action.permissions) && !_isEmpty(action.permissions.workflowitem)
+          ? fromJS(action.permissions.workflowitem)
+          : defaultState.get("temporaryPermissions")
+      );
     case LOGOUT:
       return defaultState;
     case OPEN_HISTORY:

@@ -49,6 +49,7 @@ const Workflow = props => {
         </Fab>
         <Fab
           id="subproject-history-button"
+          data-test="subproject-history-button"
           size="small"
           disabled={props.workflowSortEnabled}
           onClick={props.openHistory}

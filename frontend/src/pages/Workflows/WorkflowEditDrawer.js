@@ -63,14 +63,14 @@ const WorkflowEditDrawer = props => {
     storeAssignee(assignee);
   };
 
-  const grantPermission = (_, intent, user) => {
+  const grantPermission = (intent, user) => {
     if (!permissions[intent].includes(user)) {
       permissions[intent].push(user);
     }
     storePermissions(permissions);
   };
 
-  const revokePermission = (_, intent, user) => {
+  const revokePermission = (intent, user) => {
     if (permissions[intent].includes(user)) {
       permissions[intent].splice(permissions[intent].indexOf(user), 1);
     }
@@ -118,9 +118,10 @@ const WorkflowEditDrawer = props => {
         <PermissionTable
           permissions={permissions}
           intentOrder={workflowItemIntentOrder}
-          user={users}
-          grant={grantPermission}
-          revoke={revokePermission}
+          userList={users}
+          addTemporaryPermission={grantPermission}
+          removeTemporaryPermission={revokePermission}
+          temporaryPermissions={permissions}
         />
       </div>
     </Drawer>
