@@ -177,12 +177,7 @@ const ProjectDetails = props => {
             </Avatar>
             <ListItemText
               primary={
-                <ProjectAssigneeContainer
-                  users={users}
-                  projectId={projectId}
-                  disabled={!canAssignProject}
-                  assignee={projectAssignee}
-                />
+                <ProjectAssigneeContainer users={users} disabled={!canAssignProject} assignee={projectAssignee} />
               }
               secondary={strings.common.assignee}
             />

@@ -1,11 +1,15 @@
 import { fromJS, Set } from "immutable";
-
+import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
+import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
 import { LOGOUT } from "../Login/actions";
 import {
+  ADD_PROJECT_TAG,
+  ADD_TEMPORARY_PROJECT_PERMISSION,
   CREATE_PROJECT_SUCCESS,
   FETCH_ALL_PROJECTS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
+  HIDE_PROJECT_ADDITIONAL_DATA,
   HIDE_PROJECT_DIALOG,
   HIDE_PROJECT_PERMISSIONS,
   PROJECT_COMMENT,
@@ -14,15 +18,12 @@ import {
   PROJECT_NAME,
   PROJECT_PROJECTED_BUDGET,
   PROJECT_THUMBNAIL,
+  REMOVE_PROJECT_TAG,
+  REMOVE_TEMPORARY_PROJECT_PERMISSION,
   SHOW_CREATION_DIALOG,
   SHOW_EDIT_DIALOG,
-  SHOW_PROJECT_PERMISSIONS,
-  HIDE_PROJECT_ADDITIONAL_DATA,
   SHOW_PROJECT_ADDITIONAL_DATA,
-  ADD_PROJECT_TAG,
-  REMOVE_PROJECT_TAG,
-  ADD_TEMPORARY_PROJECT_PERMISSION,
-  REMOVE_TEMPORARY_PROJECT_PERMISSION
+  SHOW_PROJECT_PERMISSIONS
 } from "./actions";
 
 const defaultState = fromJS({
@@ -40,6 +41,7 @@ const defaultState = fromJS({
     tags: []
   },
   idForPermissions: "",
+  displayNameForPermissions: "",
   permissions: { project: {} },
   temporaryPermissions: {},
   permissionDialogShown: false,
@@ -74,10 +76,18 @@ export default function overviewReducer(state = defaultState, action) {
         editDialogShown: true
       });
     case SHOW_PROJECT_PERMISSIONS:
-      return state.merge({ idForPermissions: action.id, permissionDialogShown: true });
-    case HIDE_PROJECT_PERMISSIONS:
       return state.merge({
-        idForPermissions: defaultState.get("id"),
+        idForPermissions: action.id,
+        displayNameForPermissions: action.displayName,
+        permissionDialogShown: true,
+        permissions: defaultState.get("permissions"),
+        temporaryPermissions: defaultState.get("temporaryPermissions")
+      });
+    case HIDE_PROJECT_PERMISSIONS:
+    case CONFIRMATION_CONFIRMED:
+      return state.merge({
+        idForPermissions: defaultState.get("idForPermissions"),
+        displayNameForPermissions: defaultState.get("displayNameForPermissions"),
         permissionDialogShown: defaultState.get("permissionDialogShown"),
         permissions: defaultState.get("permissions"),
         temporaryPermissions: defaultState.get("temporaryPermissions")
@@ -133,7 +143,10 @@ export default function overviewReducer(state = defaultState, action) {
     }
     case REMOVE_PROJECT_TAG: {
       const tags = state.getIn(["projectToAdd", "tags"]);
-      return state.setIn(["projectToAdd", "tags"], tags.filter(tag => tag !== action.tag));
+      return state.setIn(
+        ["projectToAdd", "tags"],
+        tags.filter(tag => tag !== action.tag)
+      );
     }
     case PROJECT_THUMBNAIL:
       return state.setIn(["projectToAdd", "thumbnail"], action.thumbnail);
@@ -150,6 +163,13 @@ export default function overviewReducer(state = defaultState, action) {
     case REMOVE_TEMPORARY_PROJECT_PERMISSION:
       return state.updateIn(["temporaryPermissions", action.permission], users =>
         users.filter(user => user !== action.userId)
+      );
+    case CONFIRMATION_CANCELLED:
+      return state.set(
+        "temporaryPermissions",
+        !_isEmpty(action.permissions) && !_isEmpty(action.permissions.project)
+          ? fromJS(action.permissions.project)
+          : defaultState.get("temporaryPermissions")
       );
     case LOGOUT:
       return defaultState;

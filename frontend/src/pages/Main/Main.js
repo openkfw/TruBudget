@@ -17,6 +17,7 @@ import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
 import LiveNotificationContainer from "../Notifications/LiveNotificationContainer";
 import NodesContainer from "../Nodes/NodesContainer";
+import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
 
 const Main = props => {
   return (
@@ -49,6 +50,7 @@ const Main = props => {
       </div>
       <div className="container" style={{ marginTop: "48px" }}>
         <Route component={LiveNotificationContainer} />
+        <Route component={ConfirmationContainer} />
         <Switch>
           <Route exact path="/" component={Placeholder} />
           <Route exact path="/projects/:project/:subproject" component={withInitialLoading(WorkflowContainer)} />

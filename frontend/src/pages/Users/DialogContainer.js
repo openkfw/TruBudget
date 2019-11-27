@@ -29,8 +29,8 @@ import Dialog from "./Dialog";
 import PasswordDialog from "./PasswordDialog";
 
 class DialogContainer extends Component {
-  componentDidUpdate(nextProps) {
-    if (!this.props.dashboardDialogShown && nextProps.dashboardDialogShown) {
+  componentDidUpdate(prevProps) {
+    if (!this.props.dashboardDialogShown && prevProps.dashboardDialogShown) {
       this.props.listGlobalPermissions();
     }
   }

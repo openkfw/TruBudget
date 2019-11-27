@@ -24,7 +24,7 @@ const renderSelection = (user, permissionedUser, permissionName, grant, revoke, 
         value={u.id}
         onClick={checked ? () => revoke(permissionName, u.id) : () => grant(permissionName, u.id)}
       >
-        <Checkbox checked={checked} />
+        <Checkbox checked={checked} disabled={(u.id === myself && checked) || disabled} />
         <ListItemText primary={u.displayName} />
       </MenuItem>
     );
@@ -95,7 +95,6 @@ class PermissionSelection extends Component {
     const selectedUsers = this.renderUserSelection();
 
     const selectedGroups = this.renderGroupSelection();
-
     return (
       <FormControl data-test={`permission-select-${this.props.name}`} key={this.props.name + "form"}>
         <Select
@@ -114,7 +113,9 @@ class PermissionSelection extends Component {
               component="div"
             >
               <Warning style={{ marginRight: "8px" }} />
-              <Typography variant="caption">{strings.permissions.read_only}</Typography>
+              <Typography data-test="read-only-permissions-text" variant="caption">
+                {strings.permissions.read_only}
+              </Typography>
             </ListSubheader>
           ) : null}
           <ListItem className="noFocus" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>

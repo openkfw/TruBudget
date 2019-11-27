@@ -51,14 +51,7 @@ export const REVOKE_SUBPROJECT_PERMISSION_SUCCESS = "REVOKE_SUBPROJECT_PERMISSIO
 
 export const FETCH_SUBPROJECT_PERMISSIONS = "FETCH_SUBPROJECT_PERMISSIONS";
 export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSIONS_SUCCESS";
-
-export const SHOW_PROJECT_CONFIRMATION_DIALOG = "SHOW_PROJECT_CONFIRMATION_DIALOG";
-export const HIDE_PROJECT_CONFIRMATION_DIALOG = "HIDE_PROJECT_CONFIRMATION_DIALOG";
-export const TRIGGER_APPLY_ACTIONS = "TRIGGER_APPLY_ACTIONS";
-
-export const EXECUTE_CONFIRMED_ACTIONS = "EXECUTE_CONFIRMED_ACTIONS";
-export const EXECUTE_CONFIRMED_ACTIONS_FAILURE = "EXECUTE_CONFIRMED_ACTIONS_FAILURE";
-export const EXECUTE_CONFIRMED_ACTIONS_SUCCESS = "EXECUTE_CONFIRMED_ACTIONS_SUCCESS";
+export const FETCH_SUBPROJECT_PERMISSIONS_FAILURE = "FETCH_SUBPROJECT_PERMISSIONS_FAILURE";
 
 export const LIVE_UPDATE_PROJECT = "LIVE_UPDATE_PROJECT";
 
@@ -76,24 +69,48 @@ export function fetchSubProjectPermissions(projectId, subprojectId, showLoading 
   };
 }
 
-export function grantSubProjectPermission(projectId, subprojectId, intent, identity, showLoading = false) {
+export function grantSubProjectPermission(
+  projectId,
+  projectDisplayName,
+  subprojectId,
+  subprojectDisplayName,
+  intent,
+  granteeId,
+  granteeDisplayName,
+  showLoading = false
+) {
   return {
     type: GRANT_SUBPROJECT_PERMISSION,
     projectId,
+    projectDisplayName,
     subprojectId,
+    subprojectDisplayName,
     intent,
-    identity,
+    granteeId,
+    granteeDisplayName,
     showLoading
   };
 }
 
-export function revokeSubProjectPermission(projectId, subprojectId, intent, identity, showLoading = false) {
+export function revokeSubProjectPermission(
+  projectId,
+  projectDisplayName,
+  subprojectId,
+  subprojectDisplayName,
+  intent,
+  revokeeId,
+  revokeeDisplayName,
+  showLoading = false
+) {
   return {
     type: REVOKE_SUBPROJECT_PERMISSION,
     projectId,
+    projectDisplayName,
     subprojectId,
+    subprojectDisplayName,
     intent,
-    identity,
+    revokeeId,
+    revokeeDisplayName,
     showLoading
   };
 }
@@ -140,11 +157,13 @@ export function showProjectAssignees() {
   };
 }
 
-export function assignProject(projectId, assigneeId) {
+export function assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName, showLoading = false) {
   return {
     type: ASSIGN_PROJECT,
     projectId,
-    assigneeId
+    projectDisplayName,
+    assigneeId,
+    assigneeDisplayName
   };
 }
 
@@ -226,10 +245,11 @@ export function showEditDialog(id, name, description, currency, projectedBudgets
     projectedBudgets
   };
 }
-export function showSubProjectPermissions(id) {
+export function showSubProjectPermissions(id, displayName) {
   return {
     type: SHOW_SUBPROJECT_PERMISSIONS,
-    id
+    id,
+    displayName
   };
 }
 
@@ -273,35 +293,6 @@ export function showHistory() {
   };
 }
 
-export function triggerApplyActions() {
-  return {
-    type: TRIGGER_APPLY_ACTIONS
-  };
-}
-
-export function showProjectConfirmationDialog(actions, assignee, permittedToGrant = false) {
-  return {
-    type: SHOW_PROJECT_CONFIRMATION_DIALOG,
-    actions,
-    assignee,
-    permittedToGrant
-  };
-}
-export function hideProjectConfirmationDialog() {
-  return {
-    type: HIDE_PROJECT_CONFIRMATION_DIALOG
-  };
-}
-
-export function executeConfirmedActions(actions, projectId = "", subprojectId = "", showLoading = false) {
-  return {
-    type: EXECUTE_CONFIRMED_ACTIONS,
-    actions,
-    projectId,
-    subprojectId,
-    showLoading
-  };
-}
 export function addTemporaryPermission(permission, userId) {
   return {
     type: ADD_TEMPORARY_SUBPROJECT_PERMISSION,

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
-import strings from "../../localizeStrings";
 import { canAssignProject, canCloseProject, canCreateSubProject } from "../../permissions";
 import globalStyles from "../../styles";
 import { openAnalyticsDialog } from "../Analytics/actions";
@@ -70,11 +69,9 @@ class SubProjectContainer extends Component {
           />
           <SubProjects {...this.props} projectId={projectId} canCreateSubProject={canCreateSubproject} />
           <ProjectHistoryDrawer projectId={projectId} />
-          <SubprojectPermissionsContainer
-            projectId={projectId}
-            subProjects={this.props.subProjects}
-            title={strings.subproject.subproject_permissions_title}
-          />
+          {this.props.permissionDialogShown ? (
+            <SubprojectPermissionsContainer projectId={projectId} subProjects={this.props.subProjects} />
+          ) : null}
           <AdditionalInfo
             resources={this.props.subProjects}
             isAdditionalDataShown={this.props.isSubProjectAdditionalDataShown}
@@ -88,7 +85,7 @@ class SubProjectContainer extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     liveUpdate: projectId => dispatch(liveUpdateProject(projectId)),
@@ -104,7 +101,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(showEditDialog(id, displayName, description, currency, projectedBudgets)),
     fetchUser: () => dispatch(fetchUser(true)),
     closeProject: pId => dispatch(closeProject(pId, true)),
-    showSubProjectPermissions: id => dispatch(showSubProjectPermissions(id)),
+    showSubProjectPermissions: (id, displayName) => dispatch(showSubProjectPermissions(id, displayName)),
     showSubProjectAdditionalData: id => dispatch(showSubProjectAdditionalData(id)),
     hideSubProjectAdditionalData: () => dispatch(hideSubProjectAdditionalData()),
     openAnalyticsDialog: () => dispatch(openAnalyticsDialog())
@@ -132,7 +129,8 @@ const mapStateToProps = state => {
     projectedBudgets: state.getIn(["detailview", "projectedBudgets"]),
     isSubProjectAdditionalDataShown: state.getIn(["detailview", "isSubProjectAdditionalDataShown"]),
     idForInfo: state.getIn(["detailview", "idForInfo"]),
-    isRoot: state.getIn(["navbar", "isRoot"])
+    isRoot: state.getIn(["navbar", "isRoot"]),
+    permissionDialogShown: state.getIn(["detailview", "showSubProjectPermissions"])
   };
 };
 

@@ -137,7 +137,7 @@ const ProjectCard = ({
             />
             <ActionButton
               notVisible={!canViewPermissions}
-              onClick={() => showProjectPermissions(id)}
+              onClick={() => showProjectPermissions(id, displayName)}
               title={strings.common.show_permissions}
               icon={<PermissionIcon />}
               data-test={`pp-button-${index}`}

@@ -37,7 +37,7 @@ class OverviewContainer extends Component {
             hideAdditionalData={this.props.hideProjectAdditionalData}
             {...this.props}
           />
-          <ProjectPermissionsContainer {...this.props} />
+          {this.props.permissionDialogShown ? <ProjectPermissionsContainer {...this.props} /> : null}
         </div>
       </div>
     );
@@ -51,7 +51,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags)),
 
     fetchAllProjects: showLoading => dispatch(fetchAllProjects(showLoading)),
-    showProjectPermissions: id => dispatch(showProjectPermissions(id)),
+    showProjectPermissions: (id, displayName) => dispatch(showProjectPermissions(id, displayName)),
     showProjectAdditionalData: id => dispatch(showProjectAdditionalData(id)),
     hideProjectAdditionalData: () => dispatch(hideProjectAdditionalData()),
     closeSearchBar: () => {
@@ -70,7 +70,8 @@ const mapStateToProps = state => {
     idForInfo: state.getIn(["overview", "idForInfo"]),
     isProjectAdditionalDataShown: state.getIn(["overview", "isProjectAdditionalDataShown"]),
     searchTerm: state.getIn(["navbar", "searchTerm"]),
-    isRoot: state.getIn(["navbar", "isRoot"])
+    isRoot: state.getIn(["navbar", "isRoot"]),
+    permissionDialogShown: state.getIn(["overview", "permissionDialogShown"])
   };
 };
 

@@ -63,7 +63,7 @@ class AssigneeSelection extends Component {
           onClick={() => (id !== assigneeId ? this.props.assign(id, displayName) : undefined)}
         >
           <Radio style={styles.radioButton} disabled={disabled} checked={id === assigneeId} />
-          <ListItemText primary={displayName} />
+          <ListItemText data-test="assignee-name" primary={displayName} />
         </MenuItem>
       );
     });
