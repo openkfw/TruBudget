@@ -1,24 +1,19 @@
 describe("Workflowitem's history", function() {
   let projectId;
   let subprojectId;
-  let baseUrl = undefined;
-  let apiRoute = undefined;
-  const timeoutOption = { timeout: 60000 };
+  let workflowitemId;
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-
     cy.login();
-    cy.createProject("workflowitem history test project", "workflowitem history test", [])
-      .then(({ id }) => {
-        projectId = id;
-        return cy.createSubproject(projectId, "workflowitem history test");
-      })
-      .then(({ id }) => {
+    cy.createProject("p-subp-assign", "workflowitem assign test").then(({ id }) => {
+      projectId = id;
+      cy.createSubproject(projectId, "workflowitem assign test").then(({ id }) => {
         subprojectId = id;
-        return cy.createWorkflowitem(projectId, subprojectId, "workflowitem history test", { amountType: "N/A" });
+        cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
+          workflowitemId = id;
+        });
       });
+    });
   });
 
   beforeEach(function() {
@@ -27,10 +22,8 @@ describe("Workflowitem's history", function() {
   });
 
   it("The history contains only the workflowitem creation event.", function() {
-    cy.get(".workflowitem-info-button").click();
-
+    cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
     // opens info dialog window..
-
     cy.get("[data-test=workflowitem-history-tab]").click();
 
     // Count history items => should be one
@@ -49,54 +42,32 @@ describe("Workflowitem's history", function() {
   });
 
   it("The history is sorted from new to old", function() {
-    cy.server();
-    cy.route("GET", apiRoute + `/project.intent.listPermissions**`).as("fetchProjectPermissions");
-    cy.route("GET", apiRoute + `/subproject.intent.listPermissions**`).as("fetchSubprojectPermissions");
-    cy.route("GET", apiRoute + `/workflowitem.intent.listPermissions**`).as("fetchWorkflowitemPermissions");
-    // Change assignee to create new history event
-    cy.get("[data-test=workflowitem-assignee]")
-      .first()
+    // Update workflowitem to create new history event
+    cy.get(`[data-test=workflowitem-table]`)
+      .find("button[data-test^='edit-workflowitem']")
       .click();
-    cy.wait(["@fetchProjectPermissions", "@fetchSubprojectPermissions", "@fetchWorkflowitemPermissions"]).then(() => {
-      cy.get("[role=listbox]")
-        .find("[value=jdoe]")
-        // Set short timeout to be sure the animation is done
-        .click(timeoutOption);
-      cy.get("[data-test=confirmation-dialog-confirm]").click();
-      cy.get("[role=listbox]")
-        .find("[data-test=search-assignee-field]")
-        .click()
-        .type("{esc}");
+    cy.get("[data-test=nameinput] input").type("-changed");
+    cy.get("[data-test=next]").click();
+    cy.get("[data-test=submit]").click();
 
-      cy.get(".workflowitem-info-button").click();
+    cy.get("[data-test=workflowitem-table]")
+      .find("button[data-test^='workflowitem-info-button-']")
+      .click();
+    // opens info dialog window..
+    cy.get("[data-test=workflowitem-history-tab]").click();
 
-      // opens info dialog window..
+    // The oldest entry is the create event
+    cy.get("[data-test=history-list]")
+      .find("li.history-item")
+      .should("have.length", 2)
+      .last()
+      .should("contain", "created workflowitem");
 
-      // TODO: when granting permission the dialog shouldn't be closed.
-      // wait for grantPermission
-      cy.wait(1500);
-      cy.get("[data-test=workflowitem-history-tab]").click();
-
-      // Count history items => should be three
-      cy.get("[data-test=history-list] li.history-item")
-        .first()
-        .should("be.visible");
-      cy.get("[data-test=history-list]")
-        .find("li.history-item")
-        .should("have.length", 3);
-
-      // Make sure the oldest entry is the create event
-      cy.get("[data-test=history-list]")
-        .find("li.history-item")
-        .last()
-        .should("contain", "created workflowitem");
-
-      // Make sure the newest entry is the grant event
-      cy.get("[data-test=history-list]")
-        .find("li.history-item")
-        .first()
-        .should("contain", "granted permission");
-    });
+    // The newest entry is the update event
+    cy.get("[data-test=history-list]")
+      .find("li.history-item")
+      .first()
+      .should("contain", "changed workflowitem");
   });
 
   it("When changing the tab, the history is fetched correctly", function() {

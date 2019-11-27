@@ -1,25 +1,15 @@
 describe("Subproject's history", function() {
   let projectId;
   let subprojectId;
-  let baseUrl = undefined;
-  let apiRoute = undefined;
-  const timeoutOption = { timeout: 60000 };
-  const forceOption = { force: true };
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-
     cy.login();
-    cy.createProject("subproject history test project", "subproject history test", [])
-      .then(({ id }) => {
-        projectId = id;
-        return cy.createSubproject(projectId, "subproject history test");
-      })
-      .then(({ id }) => {
+    cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
+      projectId = id;
+      cy.createSubproject(projectId, "subproject assign test").then(({ id }) => {
         subprojectId = id;
-        return cy.createWorkflowitem(projectId, subprojectId, "subproject history test", { amountType: "N/A" });
       });
+    });
   });
 
   beforeEach(function() {
@@ -46,48 +36,29 @@ describe("Subproject's history", function() {
   });
 
   it("The history is sorted from new to old", function() {
-    cy.server();
-    cy.route("GET", apiRoute + `/project.intent.listPermissions**`).as("fetchProjectPermissions");
-    cy.route("GET", apiRoute + `/subproject.intent.listPermissions**`).as("fetchSubprojectPermissions");
-    // Change assignee to create new history event
-    cy.get("[data-test=assignee-selection] [role=button]")
-      .first()
+    // Update subproject to create new history event
+    cy.visit(`/projects/${projectId}`);
+    cy.get(`[data-test=ssp-table]`)
+      // select all buttons which has an attribute data-test which value begins with pp-button
+      .find("button[data-test^='subproject-edit-button-']")
       .click();
-    cy.wait(["@fetchProjectPermissions", "@fetchSubprojectPermissions"]).then(() => {
-      cy.get("[role=listbox]")
-        .find("[value=jdoe]")
-        // Set short timeout to be sure the animation is done
-        .click(timeoutOption);
-      cy.get("[data-test=confirmation-dialog-confirm]").click();
-      cy.get("[role=listbox]")
-        .find("[data-test=search-assignee-field]")
-        .click()
-        .type("{esc}");
+    cy.get("[data-test=nameinput] input").type("-changed");
+    cy.get("[data-test=submit]").click();
 
-      // TODO: when granting permission the dialog shouldn't be closed.
-      // wait for grantPermission
-      cy.wait(1500);
-      cy.get("#subproject-history-button").click(forceOption);
+    cy.visit(`/projects/${projectId}/${subprojectId}`);
+    cy.get("[data-test=subproject-history-button]").click();
 
-      // Count history items => should be four
-      cy.get("[data-test=history-list] li.history-item")
-        .first()
-        .should("be.visible");
-      cy.get("[data-test=history-list]")
-        .find("li.history-item")
-        .should("have.length", 4);
+    // The oldest entry is the create event
+    cy.get("[data-test=history-list]")
+      .find("li.history-item")
+      .should("have.length", 2)
+      .last()
+      .should("contain", "created subproject");
 
-      // Make sure the oldest entry is the create event
-      cy.get("[data-test=history-list]")
-        .find("li.history-item")
-        .last()
-        .should("contain", "created subproject");
-
-      // Make sure the newest entry is the grant permission event
-      cy.get("[data-test=history-list]")
-        .find("li.history-item")
-        .first()
-        .should("contain", "granted permission");
-    });
+    // The newest entry is the update event
+    cy.get("[data-test=history-list]")
+      .find("li.history-item")
+      .first()
+      .should("contain", "changed subproject");
   });
 });
