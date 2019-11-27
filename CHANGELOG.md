@@ -9,10 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Added
-
-- Assigning a user opens a confirmation dialog if the assignee has no permission to view the project/subproject/workflowitem[#389](https://github.com/openkfw/TruBudget/pull/389)
-  <!-- Linked pull request on purpose since it sums up the issue at its best -->
+<!-- ### Added -->
 
 <!-- ### Changed -->
 
@@ -20,12 +17,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-### Fixed
-
-- The api endpoint "project.intent.listPermissions" checks for the right permission [#393](https://github.com/openkfw/TruBudget/issues/393)
-- The edit button of a project/subproject shouldn't be shown when the user has no permissions to update [#396](https://github.com/openkfw/TruBudget/issues/395)
+<!-- ### Fixed -->
 
 <!-- ### Security -->
+
+## [1.5.0] - 2019-11-27
+
+### Changed
+
+- Granting or revoking project/subproject/workflowitem permissions opens a confirmation dialog [#250](https://github.com/openkfw/TruBudget/pull/250)
+- Assigning a user opens a confirmation dialog[#251](https://github.com/openkfw/TruBudget/pull/251)
+
+### Fixed
+
+- Multiple workflowitems can be edited and reordered [#397](https://github.com/openkfw/TruBudget/issues/397)
+- The api endpoint "project.intent.listPermissions" checks for the right permission [#393](https://github.com/openkfw/TruBudget/issues/393)
+- The edit button of a project/subproject shouldn't be shown when the user has no permissions to update [#395](https://github.com/openkfw/TruBudget/issues/395)
+
+## [1.4.1] - 2019-10-11
+
+### Fixed
+
+- Root user cannot grant global permissions (admin permissions) to first user
+
+### Known Issues
+
+- Multiple workflowitems cannot be edited at once nor reordered #397
 
 ## [1.4.0] - 2019-09-04
 
@@ -359,7 +376,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.4.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.5.0...master
+[1.5.0]: https://github.com/openkfw/TruBudget/compare/v1.4.1...v1.5.0
+[1.4.1]: https://github.com/openkfw/TruBudget/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/openkfw/TruBudget/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/openkfw/TruBudget/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/openkfw/TruBudget/compare/v1.1.0...v1.2.0
