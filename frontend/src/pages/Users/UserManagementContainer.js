@@ -30,7 +30,7 @@ import {
 import Users from "./Users";
 
 class UserManagementContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchUser();
     this.props.fetchGroups();
     if (this.props.allowedIntents.includes("global.listPermissions")) {

@@ -21,7 +21,7 @@ import ProjectDialogContainer from "./ProjectDialogContainer";
 import AdditionalInfo from "../Common/AdditionalInfo";
 
 class OverviewContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchAllProjects(true);
   }
 

@@ -33,7 +33,7 @@ class SubProjectContainer extends Component {
     this.projectId = this.props.location.pathname.split("/")[2];
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.setSelectedView(this.projectId, "project");
     this.props.fetchAllProjectDetails(this.projectId, true);
     this.props.fetchUser();
@@ -42,19 +42,19 @@ class SubProjectContainer extends Component {
   closeProject = () => {
     const openSubprojects = this.props.subProjects.find(subproject => subproject.data.status === "open");
     if (!openSubprojects) {
-      this.props.closeProject(this.projectId);
+      this.props.closeProject(this.props.projectId);
     }
   };
 
   update = () => {
-    this.props.liveUpdate(this.projectId);
+    this.props.liveUpdate(this.props.projectId);
   };
 
   render() {
     const canCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = canCloseProject(this.props.allowedIntents);
-    const projectId = this.projectId;
+    const projectId = this.props.projectId;
 
     return (
       <div>

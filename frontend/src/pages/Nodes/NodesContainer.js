@@ -10,10 +10,10 @@ import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import Nodes from "./Nodes";
 
 class NodesContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchNodes();
   }
-  componentWillUnmount() {}
+
   render() {
     if (canViewNodesDashboard(this.props.allowedIntents)) {
       return <Nodes {...this.props} />;
