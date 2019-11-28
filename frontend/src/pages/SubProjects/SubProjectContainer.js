@@ -42,19 +42,19 @@ class SubProjectContainer extends Component {
   closeProject = () => {
     const openSubprojects = this.props.subProjects.find(subproject => subproject.data.status === "open");
     if (!openSubprojects) {
-      this.props.closeProject(this.props.projectId);
+      this.props.closeProject(this.projectId);
     }
   };
 
   update = () => {
-    this.props.liveUpdate(this.props.projectId);
+    this.props.liveUpdate(this.projectId);
   };
 
   render() {
     const canCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = canCloseProject(this.props.allowedIntents);
-    const projectId = this.props.projectId;
+    const projectId = this.projectId;
 
     return (
       <div>
