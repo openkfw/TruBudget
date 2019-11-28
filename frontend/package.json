@@ -23,7 +23,7 @@
     "accounting": "^0.4.1",
     "array-move": "^2.2.0",
     "axios": "^0.19.0",
-    "chart.js": "^2.8.0",
+    "chart.js": "^2.9.3",
     "connected-react-router": "^6.6.1",
     "dayjs": "^1.8.14",
     "downshift": "^2.0.16",
