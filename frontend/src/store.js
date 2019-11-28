@@ -4,7 +4,7 @@
 
 import { createStore, applyMiddleware, compose } from "redux";
 import { fromJS } from "immutable";
-import { routerMiddleware } from "react-router-redux";
+import { routerMiddleware } from "connected-react-router";
 import createSagaMiddleware from "redux-saga";
 import createDebounce from "redux-debounced";
 
@@ -14,7 +14,7 @@ import { loadState, persistState } from "./localStorage";
 
 const sagaMiddleware = createSagaMiddleware();
 
-export default function configureStore(initialState = {}, history) {
+export default function configureStore(history) {
   // Create the store with two middlewares
   // 1. sagaMiddleware: Makes redux-sagas work
   // 2. routerMiddleware: Syncs the location/URL path to the state
@@ -32,7 +32,7 @@ export default function configureStore(initialState = {}, history) {
 
   const persistedState = loadState();
 
-  const store = createStore(createReducer(), fromJS(persistedState), composeEnhancers(...enhancers));
+  const store = createStore(createReducer(history), fromJS(persistedState), composeEnhancers(...enhancers));
 
   store.subscribe(() => {
     persistState(store.getState());

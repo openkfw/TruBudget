@@ -23,6 +23,7 @@
     "accounting": "^0.4.1",
     "axios": "^0.19.0",
     "chart.js": "^2.8.0",
+    "connected-react-router": "^6.6.1",
     "dayjs": "^1.8.14",
     "downshift": "^2.0.16",
     "file-saver": "^1.3.8",
@@ -35,9 +36,8 @@
     "react-infinite-scroller": "^1.2.4",
     "react-localization": "^1.0.13",
     "react-number-format": "^4.0.7",
-    "react-redux": "^5.0.3",
-    "react-router": "^4.0.0",
-    "react-router-redux": "^5.0.0-alpha.4",
+    "react-redux": "^7.1.3",
+    "react-router": "^5.1.2",
     "react-sortable-hoc": "^0.6.3",
     "react-transition-group": "^2.9.0",
     "redux": "^3.6.0",
@@ -58,7 +58,8 @@
     "test": "npm run check-translations",
     "eject": "react-app-rewired eject",
     "check-translations": "node scripts/check-translations.js",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "eslint-check": "eslint --print-config ./src/index.js | eslint-config-prettier-check"
   },
   "proxy": "http://localhost:8080",
   "browserslist": [
