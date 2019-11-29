@@ -100,7 +100,7 @@ const SubProjectDetails = ({
   closeSubproject,
   canCloseSubproject,
   openAnalyticsDialog,
-  ...props
+  projectedBudgets
 }) => {
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
@@ -139,7 +139,7 @@ const SubProjectDetails = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.projectedBudgets.map(budget => (
+              {projectedBudgets.map(budget => (
                 <TableRow key={budget.organization + budget.currencyCode}>
                   <TableCell>{budget.organization}</TableCell>
                   <TableCell align="right">{toAmountString(budget.value)}</TableCell>
@@ -196,7 +196,7 @@ const SubProjectDetails = ({
           </ListItem>
         </List>
       </Card>
-      <SubProjectAnalyticsDialog projectId={parentProject.id} subProjectId={id} />
+      <SubProjectAnalyticsDialog projectId={parentProject.id} subProjectId={id} projectedBudgets={projectedBudgets} />
     </div>
   );
 };

@@ -274,6 +274,8 @@ const en = {
     available_unspent_budget: "Available Unspent Budget",
     converted_amount: "Converted Amount",
     disbursed_budget_ratio: "Disbursed Budget Ratio",
+    insufficient_permissions_text:
+      "One or more workflowitem are redacted. The analytics are hidden because they would be falsified.",
     project_analytics: "Project Analytics",
     projected_budget_ratio: "Projected Budget Ratio",
     projected_budgets_distribution: "Projected Budgets Distribution",

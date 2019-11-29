@@ -45,12 +45,22 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     marginBottom: "24px"
+  },
+  warning: {
+    backgroundColor: "rgb(255, 165, 0, 0.7)",
+    color: "black",
+    borderStyle: "solid",
+    borderRadius: "4px",
+    borderColor: "orange",
+    padding: "2px",
+    textAlign: "center"
   }
 };
 
 class SubprojectAnalytics extends React.Component {
   componentDidMount() {
     this.props.getSubProjectKPIs(this.props.projectId, this.props.subProjectId);
+    this.props.getExchangeRates(this.props.indicatedCurrency);
   }
   componentWillUnmount() {
     this.props.resetKPIs();
@@ -59,7 +69,9 @@ class SubprojectAnalytics extends React.Component {
   convertToSelectedCurrency(amount, sourceCurrency) {
     const sourceExchangeRate = this.props.exchangeRates[sourceCurrency];
     const targetExchangeRate = this.props.exchangeRates[this.props.indicatedCurrency];
-    return sourceExchangeRate && targetExchangeRate ? targetExchangeRate / sourceExchangeRate * parseFloat(amount) : 0;
+    return sourceExchangeRate && targetExchangeRate
+      ? (targetExchangeRate / sourceExchangeRate) * parseFloat(amount)
+      : 0;
   }
 
   convertProjectedBudget() {
@@ -79,8 +91,8 @@ class SubprojectAnalytics extends React.Component {
     }, 0);
     const convertedAssignedBudget = this.convertToSelectedCurrency(assignedBudget, subProjectCurrency);
     const convertedDisbursedBudget = this.convertToSelectedCurrency(disbursedBudget, subProjectCurrency);
-    return this.props.canShowAnalytics ? (
-      <div>
+    return !this.props.isFetchingKPIs ? (
+      <>
         <div style={styles.container}>
           <div style={styles.topContainer}>
             <div style={styles.table}>
@@ -117,18 +129,20 @@ class SubprojectAnalytics extends React.Component {
               </Table>
             </div>
           </div>
-          <Dashboard
-            indicatedCurrency={this.props.indicatedCurrency}
-            projectedBudget={projectedBudget}
-            projectedBudgets={projectedBudgets}
-            disbursedBudget={convertedDisbursedBudget}
-            assignedBudget={convertedAssignedBudget}
-          />
+          {this.props.canShowAnalytics ? (
+            <Dashboard
+              indicatedCurrency={this.props.indicatedCurrency}
+              projectedBudget={projectedBudget}
+              projectedBudgets={projectedBudgets}
+              disbursedBudget={convertedDisbursedBudget}
+              assignedBudget={convertedAssignedBudget}
+            />
+          ) : (
+            <Typography style={styles.warning}>{strings.analytics.insufficient_permissions_text}</Typography>
+          )}
         </div>
-      </div>
-    ) : this.props.canShowAnalytics === undefined ? null : (
-      <div>Insufficient permissions.</div>
-    );
+      </>
+    ) : null;
   }
 }
 
@@ -245,11 +259,11 @@ const mapStateToProps = state => {
   return {
     subProjectCurrency: state.getIn(["analytics", "subproject", "currency"]),
     indicatedCurrency: state.getIn(["analytics", "currency"]),
-    projectedBudgets: state.getIn(["analytics", "subproject", "projectedBudgets"]),
     assignedBudget: state.getIn(["analytics", "subproject", "assignedBudget"]),
     disbursedBudget: state.getIn(["analytics", "subproject", "disbursedBudget"]),
     exchangeRates: state.getIn(["analytics", "exchangeRates"]),
-    canShowAnalytics: state.getIn(["analytics", "canShowAnalytics"])
+    canShowAnalytics: state.getIn(["analytics", "canShowAnalytics"]),
+    isFetchingKPIs: state.getIn(["analytics", "isFetchingKPIs"])
   };
 };
 

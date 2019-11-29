@@ -276,6 +276,8 @@ const pt = {
     available_unspent_budget: "Orçamento Disponível",
     converted_amount: "Valor convertido",
     disbursed_budget_ratio: "% do Orçamento Desembolsado",
+    insufficient_permissions_text:
+      "Um ou mais itens do fluxo de trabalho são editados. As análises são ocultas porque seriam falsificadas.",
     project_analytics: "Dashboard do Projeto",
     projected_budget_ratio: "% do Orçamento Projetado",
     projected_budgets_distribution: "Distribuição dos orçamentos projetados",

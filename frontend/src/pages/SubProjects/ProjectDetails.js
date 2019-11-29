@@ -184,7 +184,7 @@ const ProjectDetails = props => {
           </ListItem>
         </List>
       </Card>
-      <ProjectAnalyticsDialog projectId={projectId} />
+      <ProjectAnalyticsDialog projectId={projectId} projectProjectedBudgets={projectProjectedBudgets} />
     </div>
   );
 };

@@ -51,7 +51,8 @@ const ProjectAnalyticsDialog = ({
   displayCurrency,
   closeAnalyticsDialog,
   storeDisplayCurrency,
-  getExchangeRates
+  getExchangeRates,
+  projectProjectedBudgets
 }) => (
   <Dialog
     fullScreen
@@ -91,7 +92,11 @@ const ProjectAnalyticsDialog = ({
     </AppBar>
     <div style={styles.container}>
       <Suspense fallback={<div>Loading...</div>}>
-        <ProjectAnalytics projectId={projectId} />
+        <ProjectAnalytics
+          projectId={projectId}
+          totalBudget={projectProjectedBudgets}
+          getExchangeRates={getExchangeRates}
+        />
       </Suspense>
     </div>
   </Dialog>

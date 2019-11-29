@@ -9,7 +9,6 @@ import Typography from "@material-ui/core/Typography";
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { connect } from "react-redux";
-
 import { toAmountString, toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { getProjectKPIs, resetKPIs } from "./actions";
@@ -38,12 +37,22 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     marginBottom: "24px"
+  },
+  warning: {
+    backgroundColor: "rgb(255, 165, 0, 0.7)",
+    color: "black",
+    borderStyle: "solid",
+    borderRadius: "4px",
+    borderColor: "orange",
+    padding: "2px",
+    textAlign: "center"
   }
 };
 
 class ProjectAnalytics extends React.Component {
   componentDidMount() {
     this.props.getProjectKPIs(this.props.projectId);
+    this.props.getExchangeRates(this.props.indicatedCurrency);
   }
   componentWillUnmount() {
     this.props.resetKPIs();
@@ -52,7 +61,9 @@ class ProjectAnalytics extends React.Component {
   convertToSelectedCurrency(amount, sourceCurrency) {
     const sourceExchangeRate = this.props.exchangeRates[sourceCurrency];
     const targetExchangeRate = this.props.exchangeRates[this.props.indicatedCurrency];
-    return sourceExchangeRate && targetExchangeRate ? targetExchangeRate / sourceExchangeRate * parseFloat(amount) : 0;
+    return sourceExchangeRate && targetExchangeRate
+      ? (targetExchangeRate / sourceExchangeRate) * parseFloat(amount)
+      : 0;
   }
 
   convertTotalBudget() {
@@ -95,8 +106,9 @@ class ProjectAnalytics extends React.Component {
     const disbursedBudget = this.props.disbursedBudget.reduce((acc, next) => {
       return acc + this.convertToSelectedCurrency(next.budget, next.currency);
     }, 0);
-    return this.props.canShowAnalytics ? (
-      <div>
+
+    return !this.props.isFetchingKPIs ? (
+      <>
         <div style={styles.container}>
           <div style={styles.topContainer}>
             <div style={styles.table}>
@@ -133,19 +145,21 @@ class ProjectAnalytics extends React.Component {
               </Table>
             </div>
           </div>
-          <Dashboard
-            indicatedCurrency={this.props.indicatedCurrency}
-            projectedBudget={projectedBudget}
-            totalBudgets={totalBudgets}
-            totalBudget={totalBudget}
-            disbursedBudget={disbursedBudget}
-            assignedBudget={assignedBudget}
-          />
+          {this.props.canShowAnalytics ? (
+            <Dashboard
+              indicatedCurrency={this.props.indicatedCurrency}
+              projectedBudget={projectedBudget}
+              totalBudgets={totalBudgets}
+              totalBudget={totalBudget}
+              disbursedBudget={disbursedBudget}
+              assignedBudget={assignedBudget}
+            />
+          ) : (
+            <Typography style={styles.warning}>{strings.analytics.insufficient_permissions_text}</Typography>
+          )}
         </div>
-      </div>
-    ) : this.props.canShowAnalytics === undefined ? null : (
-      <div>Insufficient permissions.</div>
-    );
+      </>
+    ) : null;
   }
 }
 
@@ -310,10 +324,10 @@ const mapStateToProps = state => {
     projectedBudget: state.getIn(["analytics", "project", "projectedBudget"]),
     assignedBudget: state.getIn(["analytics", "project", "assignedBudget"]),
     disbursedBudget: state.getIn(["analytics", "project", "disbursedBudget"]),
-    totalBudget: state.getIn(["analytics", "project", "totalBudget"]),
     indicatedCurrency: state.getIn(["analytics", "currency"]),
     exchangeRates: state.getIn(["analytics", "exchangeRates"]),
-    canShowAnalytics: state.getIn(["analytics", "canShowAnalytics"])
+    canShowAnalytics: state.getIn(["analytics", "canShowAnalytics"]),
+    isFetchingKPIs: state.getIn(["analytics", "isFetchingKPIs"])
   };
 };
 
