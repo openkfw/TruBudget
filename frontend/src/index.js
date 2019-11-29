@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { ConnectedRouter } from "react-router-redux";
-import { Route, Switch } from "react-router";
+import { ConnectedRouter } from "connected-react-router/immutable";
+import { Route, Switch, withRouter } from "react-router";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { createBrowserHistory } from "history";
 import dayjs from "dayjs";
@@ -26,8 +26,7 @@ dayjs.extend(relativeTime);
 
 const history = createBrowserHistory();
 
-const initialState = {};
-const store = configureStore(initialState, history);
+const store = configureStore(history);
 
 const muiTheme = createMuiTheme({
   palette: {
@@ -49,7 +48,7 @@ class Root extends Component {
         <ConnectedRouter history={history}>
           <MuiThemeProvider theme={muiTheme}>
             <Switch>
-              <Route key={1} exact path="/login" component={withInitialLoading(LoginPageContainer)} />
+              <Route key={1} exact path="/login" render={withRouter(withInitialLoading(LoginPageContainer))} />
               <PrivateRoute component={Main} />
             </Switch>
           </MuiThemeProvider>

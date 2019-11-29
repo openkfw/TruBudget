@@ -6,7 +6,7 @@ import Dashboard from "./Dashboard";
 import globalStyles from "../../styles.js";
 
 class DashboardContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchNodeInformation();
   }
   render() {

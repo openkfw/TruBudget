@@ -69,9 +69,10 @@ const Main = props => {
 };
 
 class MainContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.initLanguage();
   }
+
   render() {
     return <Main />;
   }

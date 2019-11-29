@@ -10,7 +10,7 @@ import LiveUpdates from "../LiveUpdates/LiveUpdates";
 // Once notifications are compacted/snapshoted we can refresh every time the fly in saga was called.
 
 class LiveNotificationContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchNotificationCounts();
   }
 

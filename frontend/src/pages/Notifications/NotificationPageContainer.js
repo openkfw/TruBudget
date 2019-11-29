@@ -16,9 +16,9 @@ import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 
 class NotificationPageContainer extends Component {
-  componentWillMount() {
-    this.props.fetchNotifications(this.props.currentPage);
+  componentDidMount() {
     this.props.disableLiveUpdates();
+    this.props.fetchNotifications(this.props.currentPage);
   }
 
   componentWillUnmount() {

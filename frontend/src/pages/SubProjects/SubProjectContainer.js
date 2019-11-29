@@ -33,7 +33,7 @@ class SubProjectContainer extends Component {
     this.projectId = this.props.location.pathname.split("/")[2];
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.setSelectedView(this.projectId, "project");
     this.props.fetchAllProjectDetails(this.projectId, true);
     this.props.fetchUser();
