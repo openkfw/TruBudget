@@ -247,7 +247,7 @@ describe("Subproject Permissions", function() {
       .should("have.length", 5);
     cy.get("[data-test=confirmation-dialog-confirm]")
       .click()
-      .should("be.not.disabled");
+      .should("not.be.disabled", { timeout: 30000 })
 
     checkPermissionsEquality(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId, subprojectId);
 
@@ -297,7 +297,8 @@ describe("Subproject Permissions", function() {
       .click();
     cy.get("[data-test=permission-submit]").should("not.be.visible");
     cy.get("[data-test=loading-indicator]")
-      .should("not.be.visible")
+      .// Wait until all permissions are granted
+      .should("not.be.visible", { timeout: 30000 })
       .then(() => {
         let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
         permissions.subproject["subproject.update"].push(testUser.id);
@@ -347,7 +348,8 @@ describe("Subproject Permissions", function() {
         cy.get("[data-test=confirmation-dialog-confirm]").click();
         cy.get("[data-test=permission-submit]").should("not.be.visible");
         cy.get("[data-test=loading-indicator]")
-          .should("not.be.visible")
+          // Wait until all permissions are granted
+          .should("not.be.visible", { timeout: 30000 })
           .then(() => {
             // Equal permissions
             permissionsCopy.subproject = removePermission(permissionsCopy.subproject, "subproject.update", testUser.id);
