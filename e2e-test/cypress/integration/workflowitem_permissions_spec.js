@@ -349,20 +349,24 @@ describe("Workflowitem Permissions", function() {
       .click()
       .should("be.not.disabled")
       .click();
+    cy.get("[data-test=permission-submit]").should("not.be.visible");
+    cy.get("[data-test=loading-indicator]")
+      .should("not.be.visible")
+      .then(() => {
+        let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
+        permissions.workflowitem["workflowitem.update"].push(testUser.id);
+        assertUnchangedPermissions(permissions, projectId, subprojectId, workflowitemId);
 
-    let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
-    permissions.workflowitem["workflowitem.update"].push(testUser.id);
-    assertUnchangedPermissions(permissions, projectId, subprojectId, workflowitemId);
-
-    // Reset permissions
-    Cypress.Promise.all([
-      cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id),
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id),
-      cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, listPermIntent, testUser.id),
-      cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.update", testUser.id)
-    ]);
+        // Reset permissions
+        Cypress.Promise.all([
+          cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
+          cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id),
+          cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, listPermIntent, testUser.id),
+          cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.update", testUser.id)
+        ]);
+      });
   });
 
   it("Confirmation of multiple revoke permission changes grants permissions correctly", function() {
@@ -397,23 +401,31 @@ describe("Workflowitem Permissions", function() {
         changePermissionInGui(listPermIntent, testUser.id);
         cy.get("[data-test=permission-submit]").click();
         cy.get("[data-test=confirmation-dialog-confirm]").click();
+        cy.get("[data-test=permission-submit]").should("not.be.visible");
+        cy.get("[data-test=loading-indicator]")
+          .should("not.be.visible")
+          .then(() => {
+            // Equal permissions
+            permissionsCopy.workflowitem = removePermission(
+              permissionsCopy.workflowitem,
+              "workflowitem.update",
+              testUser.id
+            );
+            permissionsCopy.workflowitem = removePermission(
+              permissionsCopy.workflowitem,
+              "workflowitem.view",
+              testUser.id
+            );
+            permissionsCopy.workflowitem = removePermission(permissionsCopy.workflowitem, listPermIntent, testUser.id);
 
-        // Equal permissions
-        permissionsCopy.workflowitem = removePermission(
-          permissionsCopy.workflowitem,
-          "workflowitem.update",
-          testUser.id
-        );
-        permissionsCopy.workflowitem = removePermission(permissionsCopy.workflowitem, "workflowitem.view", testUser.id);
-        permissionsCopy.workflowitem = removePermission(permissionsCopy.workflowitem, listPermIntent, testUser.id);
+            assertUnchangedPermissions(permissionsCopy, projectId, subprojectId, workflowitemId);
 
-        assertUnchangedPermissions(permissionsCopy, projectId, subprojectId, workflowitemId);
-
-        // Reset permissions
-        cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id);
-        cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id);
-        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id);
-        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id);
+            // Reset permissions
+            cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id);
+            cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id);
+            cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id);
+            cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id);
+          });
       });
     });
   });

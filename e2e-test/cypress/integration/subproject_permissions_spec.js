@@ -295,22 +295,26 @@ describe("Subproject Permissions", function() {
       .click()
       .should("be.not.disabled")
       .click();
+    cy.get("[data-test=permission-submit]").should("not.be.visible");
+    cy.get("[data-test=loading-indicator]")
+      .should("not.be.visible")
+      .then(() => {
+        let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
+        permissions.subproject["subproject.update"].push(testUser.id);
+        permissions.subproject["subproject.createWorkflowitem"].push(testUser.id);
+        checkPermissionsEquality(permissions, projectId, subprojectId);
 
-    let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
-    permissions.subproject["subproject.update"].push(testUser.id);
-    permissions.subproject["subproject.createWorkflowitem"].push(testUser.id);
-    checkPermissionsEquality(permissions, projectId, subprojectId);
-
-    // Reset permissions
-    Cypress.Promise.all([
-      cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id),
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id),
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testUser.id),
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.update", testUser.id),
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.createWorkflowitem", testUser.id)
-    ]);
+        // Reset permissions
+        Cypress.Promise.all([
+          cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
+          cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testUser.id),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.update", testUser.id),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.createWorkflowitem", testUser.id)
+        ]);
+      });
   });
 
   it("Confirmation of multiple revoke permission changes grants permissions correctly", function() {
@@ -341,35 +345,39 @@ describe("Subproject Permissions", function() {
         changePermissionInGui("subproject.intent.listPermissions", testUser.id);
         cy.get("[data-test=permission-submit]").click();
         cy.get("[data-test=confirmation-dialog-confirm]").click();
+        cy.get("[data-test=permission-submit]").should("not.be.visible");
+        cy.get("[data-test=loading-indicator]")
+          .should("not.be.visible")
+          .then(() => {
+            // Equal permissions
+            permissionsCopy.subproject = removePermission(permissionsCopy.subproject, "subproject.update", testUser.id);
+            permissionsCopy.subproject = removePermission(
+              permissionsCopy.subproject,
+              "subproject.createWorkflowitem",
+              testUser.id
+            );
+            permissionsCopy.subproject = removePermission(
+              permissionsCopy.subproject,
+              "subproject.viewSummary",
+              testUser.id
+            );
+            permissionsCopy.subproject = removePermission(
+              permissionsCopy.subproject,
+              "subproject.viewDetails",
+              testUser.id
+            );
+            permissionsCopy.subproject = removePermission(
+              permissionsCopy.subproject,
+              "subproject.intent.listPermissions",
+              testUser.id
+            );
 
-        // Equal permissions
-        permissionsCopy.subproject = removePermission(permissionsCopy.subproject, "subproject.update", testUser.id);
-        permissionsCopy.subproject = removePermission(
-          permissionsCopy.subproject,
-          "subproject.createWorkflowitem",
-          testUser.id
-        );
-        permissionsCopy.subproject = removePermission(
-          permissionsCopy.subproject,
-          "subproject.viewSummary",
-          testUser.id
-        );
-        permissionsCopy.subproject = removePermission(
-          permissionsCopy.subproject,
-          "subproject.viewDetails",
-          testUser.id
-        );
-        permissionsCopy.subproject = removePermission(
-          permissionsCopy.subproject,
-          "subproject.intent.listPermissions",
-          testUser.id
-        );
+            checkPermissionsEquality(permissionsCopy, projectId, subprojectId);
 
-        checkPermissionsEquality(permissionsCopy, projectId, subprojectId);
-
-        // Reset permissions
-        cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id);
-        cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id);
+            // Reset permissions
+            cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id);
+            cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id);
+          });
       });
     });
   });

@@ -308,20 +308,23 @@ describe("Project Permissions", function() {
     cy.get("[data-test=confirmation-dialog-confirm]")
       .click()
       .should("be.not.disabled")
-      .click()
+      .click();
+    cy.get("[data-test=permission-submit]").should("not.be.visible");
+    cy.get("[data-test=loading-indicator]")
+      .should("not.be.visible")
       .then(() => {
         let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
         permissions.project["project.update"].push(testUser.id);
         checkPermissionsEquality(permissions, projectId);
-      });
 
-    // Reset permissions
-    Cypress.Promise.all([
-      cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.update", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.intent.listPermissions", testUser.id)
-    ]);
+        // Reset permissions
+        Cypress.Promise.all([
+          cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
+          cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
+          cy.revokeProjectPermission(projectId, "project.update", testUser.id),
+          cy.revokeProjectPermission(projectId, "project.intent.listPermissions", testUser.id)
+        ]);
+      });
   });
 
   it("Confirmation of multiple revoke permission changes grants permissions correctly", function() {
@@ -348,18 +351,21 @@ describe("Project Permissions", function() {
         cy.get("[data-test=permission-submit]").click();
         cy.get("[data-test=confirmation-dialog-confirm]").click();
         cy.get("[data-test=permission-submit]").should("not.be.visible");
+        cy.get("[data-test=loading-indicator]")
+          .should("not.be.visible")
+          .then(() => {
+            // Equal permissions
+            permissionsCopy.project = removePermission(permissionsCopy.project, "project.update", testUser.id);
+            permissionsCopy.project = removePermission(permissionsCopy.project, "project.viewSummary", testUser.id);
+            permissionsCopy.project = removePermission(permissionsCopy.project, "project.viewDetails", testUser.id);
+            permissionsCopy.project = removePermission(
+              permissionsCopy.project,
+              "project.intent.listPermissions",
+              testUser.id
+            );
 
-        // Equal permissions
-        permissionsCopy.project = removePermission(permissionsCopy.project, "project.update", testUser.id);
-        permissionsCopy.project = removePermission(permissionsCopy.project, "project.viewSummary", testUser.id);
-        permissionsCopy.project = removePermission(permissionsCopy.project, "project.viewDetails", testUser.id);
-        permissionsCopy.project = removePermission(
-          permissionsCopy.project,
-          "project.intent.listPermissions",
-          testUser.id
-        );
-
-        checkPermissionsEquality(permissionsCopy, projectId);
+            checkPermissionsEquality(permissionsCopy, projectId);
+          });
       });
     });
   });
