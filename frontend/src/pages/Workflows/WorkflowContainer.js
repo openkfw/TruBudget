@@ -48,12 +48,12 @@ class WorkflowContainer extends Component {
     super(props);
     const path = props.location.pathname.split("/");
     this.projectId = path[2];
-    this.subProjectId = path[3];
+    this.subprojectId = path[3];
   }
 
   componentDidMount() {
-    this.props.setSelectedView(this.subProjectId, "subProject");
-    this.props.fetchAllSubprojectDetails(this.projectId, this.subProjectId, true);
+    this.props.setSelectedView(this.subprojectId, "subProject");
+    this.props.fetchAllSubprojectDetails(this.projectId, this.subprojectId, true);
     this.props.fetchUser();
   }
 
@@ -66,16 +66,16 @@ class WorkflowContainer extends Component {
   closeSubproject = () => {
     const openWorkflowItems = this.props.workflowItems.find(wItem => wItem.data.status === "open");
     if (!openWorkflowItems) {
-      this.props.closeSubproject(this.projectId, this.subProjectId);
+      this.props.closeSubproject(this.projectId, this.subprojectId);
     }
   };
 
-  closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subProjectId, wId);
+  closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subprojectId, wId);
 
-  closeSubproject = () => this.props.closeSubproject(this.projectId, this.subProjectId, true);
+  closeSubproject = () => this.props.closeSubproject(this.projectId, this.subprojectId, true);
 
   update = () => {
-    this.props.updateSubProject(this.projectId, this.subProjectId);
+    this.props.updateSubProject(this.projectId, this.subprojectId);
   };
 
   addLiveUpdates = () => {
@@ -92,6 +92,8 @@ class WorkflowContainer extends Component {
         <div style={globalStyles.innerContainer}>
           <SubProjectDetails
             {...this.props}
+            projectId={this.projectId}
+            subprojectId={this.subprojectId}
             canViewPermissions={canViewPermissions}
             canAssignSubproject={canAssignSubproject}
             closeSubproject={this.closeSubproject}
@@ -99,12 +101,12 @@ class WorkflowContainer extends Component {
           />
 
           {this.props.permissionDialogShown ? (
-            <WorkflowItemPermissionsContainer projectId={this.projectId} subProjectId={this.subProjectId} />
+            <WorkflowItemPermissionsContainer projectId={this.projectId} subProjectId={this.subprojectId} />
           ) : null}
           <Workflow
             {...this.props}
             projectId={this.projectId}
-            subProjectId={this.subProjectId}
+            subProjectId={this.subprojectId}
             closeWorkflowItem={this.closeWorkflowItem}
           />
           <WorkflowDialogContainer location={this.props.location} />
@@ -114,8 +116,8 @@ class WorkflowContainer extends Component {
             hideAdditionalData={this.props.hideWorkflowitemAdditionalData}
             {...this.props}
           />
-          <SubprojectHistoryDrawer projectId={this.projectId} subprojectId={this.subProjectId} />
-          <WorkflowBatchEditContainer projectId={this.projectId} subProjectId={this.subProjectId} />
+          <SubprojectHistoryDrawer projectId={this.projectId} subprojectId={this.subprojectId} />
+          <WorkflowBatchEditContainer projectId={this.projectId} subProjectId={this.subprojectId} />
         </div>
       </div>
     );

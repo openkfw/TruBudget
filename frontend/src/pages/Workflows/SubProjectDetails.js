@@ -85,18 +85,14 @@ const SubProjectDetails = ({
   displayName,
   description,
   currency,
-  id,
+  subprojectId,
   status,
-  roles,
   assignee,
   workflowItems,
   created,
-  budgetEditEnabled,
-  canViewPermissions,
   canAssignSubproject,
-  parentProject,
+  projectId,
   users,
-  showSubProjectAssignee,
   closeSubproject,
   canCloseSubproject,
   openAnalyticsDialog,
@@ -189,8 +185,8 @@ const SubProjectDetails = ({
             <ListItemText
               primary={
                 <SubProjectAssigneeContainer
-                  projectId={parentProject ? parentProject.id : ""}
-                  subprojectId={id}
+                  projectId={projectId}
+                  subprojectId={subprojectId}
                   users={users}
                   disabled={!canAssignSubproject}
                   assignee={assignee}
@@ -201,7 +197,11 @@ const SubProjectDetails = ({
           </ListItem>
         </List>
       </Card>
-      <SubProjectAnalyticsDialog projectId={parentProject.id} subProjectId={id} projectedBudgets={projectedBudgets} />
+      <SubProjectAnalyticsDialog
+        projectId={projectId}
+        subProjectId={subprojectId}
+        projectedBudgets={projectedBudgets}
+      />
     </div>
   );
 };
