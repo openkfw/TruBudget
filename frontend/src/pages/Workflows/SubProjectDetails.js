@@ -85,22 +85,18 @@ const SubProjectDetails = ({
   displayName,
   description,
   currency,
-  id,
+  subprojectId,
   status,
-  roles,
   assignee,
   workflowItems,
   created,
-  budgetEditEnabled,
-  canViewPermissions,
   canAssignSubproject,
-  parentProject,
+  projectId,
   users,
-  showSubProjectAssignee,
   closeSubproject,
   canCloseSubproject,
   openAnalyticsDialog,
-  ...props
+  projectedBudgets
 }) => {
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
@@ -139,7 +135,7 @@ const SubProjectDetails = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.projectedBudgets.map(budget => (
+              {projectedBudgets.map(budget => (
                 <TableRow key={budget.organization + budget.currencyCode}>
                   <TableCell>{budget.organization}</TableCell>
                   <TableCell align="right">{toAmountString(budget.value)}</TableCell>
@@ -149,7 +145,12 @@ const SubProjectDetails = ({
             </TableBody>
           </Table>
           <div style={styles.analytics}>
-            <Button variant="outlined" color="primary" onClick={openAnalyticsDialog}>
+            <Button
+              variant="outlined"
+              color="primary"
+              data-test="details-analytics-button"
+              onClick={openAnalyticsDialog}
+            >
               <BarChartIcon />
               {strings.project.project_details}
             </Button>
@@ -184,8 +185,8 @@ const SubProjectDetails = ({
             <ListItemText
               primary={
                 <SubProjectAssigneeContainer
-                  projectId={parentProject ? parentProject.id : ""}
-                  subprojectId={id}
+                  projectId={projectId}
+                  subprojectId={subprojectId}
                   users={users}
                   disabled={!canAssignSubproject}
                   assignee={assignee}
@@ -196,7 +197,11 @@ const SubProjectDetails = ({
           </ListItem>
         </List>
       </Card>
-      <SubProjectAnalyticsDialog projectId={parentProject.id} subProjectId={id} />
+      <SubProjectAnalyticsDialog
+        projectId={projectId}
+        subProjectId={subprojectId}
+        projectedBudgets={projectedBudgets}
+      />
     </div>
   );
 };

@@ -404,6 +404,25 @@ Cypress.Commands.add("closeProject", projectId => {
     .its("body")
     .then(body => Promise.resolve(body.data));
 });
+Cypress.Commands.add("closeWorkflowitem", (projectId, subprojectId, workflowitemId) => {
+  cy.request({
+    url: `${baseUrl}/api/workflowitem.close`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        workflowitemId
+      }
+    }
+  })
+    .its("body")
+    .then(body => Promise.resolve(body.data));
+});
 
 Cypress.Commands.add("getUserList", () => {
   cy.request({

@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
-<!-- ### Changed -->
+### Changed
+
+- The analytics total budget is shown whether the user has insufficient permissions or not [#410](https://github.com/openkfw/TruBudget/pull/410)
 
 <!-- ### Deprecated -->
 
