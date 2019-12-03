@@ -149,7 +149,12 @@ const SubProjectDetails = ({
             </TableBody>
           </Table>
           <div style={styles.analytics}>
-            <Button variant="outlined" color="primary" onClick={openAnalyticsDialog}>
+            <Button
+              variant="outlined"
+              color="primary"
+              data-test="details-analytics-button"
+              onClick={openAnalyticsDialog}
+            >
               <BarChartIcon />
               {strings.project.project_details}
             </Button>

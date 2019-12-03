@@ -112,7 +112,7 @@ class ProjectAnalytics extends React.Component {
         <div style={styles.container}>
           <div style={styles.topContainer}>
             <div style={styles.table}>
-              <Table>
+              <Table data-test="projected-budget-table">
                 <TableHead>
                   <TableRow>
                     <TableCell>{strings.common.organization}</TableCell>
@@ -139,7 +139,7 @@ class ProjectAnalytics extends React.Component {
                     <TableCell />
                     <TableCell />
                     <TableCell align="right">{strings.analytics.total}</TableCell>
-                    <TableCell align="right">{toAmountString(totalBudget, indicatedCurrency)}</TableCell>
+                    <TableCell data-test="table-total-budget" align="right">{toAmountString(totalBudget, indicatedCurrency)}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -155,7 +155,9 @@ class ProjectAnalytics extends React.Component {
               assignedBudget={assignedBudget}
             />
           ) : (
-            <Typography style={styles.warning}>{strings.analytics.insufficient_permissions_text}</Typography>
+            <Typography style={styles.warning} data-test="redacted-warning">
+              {strings.analytics.insufficient_permissions_text}
+            </Typography>
           )}
         </div>
       </>
@@ -196,25 +198,25 @@ const dashboardStyles = {
 
 const onlyPositive = number => (number < 0 ? 0 : number);
 
-const NumberChart = ({ title, budget, currency }) => (
+const NumberChart = ({ title, budget, currency, dataTest }) => (
   <Card style={dashboardStyles.card}>
     <CardContent style={dashboardStyles.numberContent}>
       <Typography style={{ flex: 1 }} variant="overline">
         {title}
       </Typography>
-      <Typography style={{ flex: 1 }} variant="h6">
+      <Typography style={{ flex: 1 }} variant="h6" data-test={dataTest}>
         {toAmountString(budget, currency)}
       </Typography>
     </CardContent>
   </Card>
 );
-const RatioChart = ({ title, budget }) => (
+const RatioChart = ({ title, budget, dataTest }) => (
   <Card style={dashboardStyles.card}>
     <CardContent style={dashboardStyles.ratioContent}>
       <Typography style={{ flex: 1 }} variant="overline">
         {title}
       </Typography>
-      <Typography style={{ flex: 1 }} variant="h6">
+      <Typography style={{ flex: 1 }} data-test={dataTest} variant="h6">
         {budget ? `${(budget * 100).toFixed(2)}%` : "-"}
       </Typography>
     </CardContent>
@@ -240,10 +242,30 @@ const Dashboard = ({
 }) => {
   return (
     <div style={dashboardStyles.container}>
-      <NumberChart title={strings.common.total_budget} budget={totalBudget} currency={indicatedCurrency} />
-      <NumberChart title={strings.common.projected_budget} budget={projectedBudget} currency={indicatedCurrency} />
-      <NumberChart title={strings.common.assigned_budget} budget={assignedBudget} currency={indicatedCurrency} />
-      <NumberChart title={strings.common.disbursed_budget} budget={disbursedBudget} currency={indicatedCurrency} />
+      <NumberChart
+        title={strings.common.total_budget}
+        budget={totalBudget}
+        dataTest="number-chart-total-budget"
+        currency={indicatedCurrency}
+      />
+      <NumberChart
+        title={strings.common.projected_budget}
+        budget={projectedBudget}
+        dataTest="number-chart-projected-budget"
+        currency={indicatedCurrency}
+      />
+      <NumberChart
+        title={strings.common.assigned_budget}
+        budget={assignedBudget}
+        dataTest="number-chart-assigned-budget"
+        currency={indicatedCurrency}
+      />
+      <NumberChart
+        title={strings.common.disbursed_budget}
+        budget={disbursedBudget}
+        dataTest="number-chart-disbursed-budget"
+        currency={indicatedCurrency}
+      />
       <Chart
         title={strings.analytics.total_budget_distribution}
         chart={
@@ -276,9 +298,21 @@ const Dashboard = ({
           />
         }
       />
-      <RatioChart title={strings.analytics.projected_budget_ratio} budget={projectedBudget / totalBudget} />
-      <RatioChart title={strings.analytics.assigned_budget_ratio} budget={assignedBudget / projectedBudget} />
-      <RatioChart title={strings.analytics.disbursed_budget_ratio} budget={disbursedBudget / assignedBudget} />
+      <RatioChart
+        title={strings.analytics.projected_budget_ratio}
+        dataTest="ratio-chart-projected-budget"
+        budget={projectedBudget / totalBudget}
+      />
+      <RatioChart
+        title={strings.analytics.assigned_budget_ratio}
+        dataTest="ratio-chart-assigned-budget"
+        budget={assignedBudget / projectedBudget}
+      />
+      <RatioChart
+        title={strings.analytics.disbursed_budget_ratio}
+        dataTest="ratio-chart-disbursed-budget"
+        budget={disbursedBudget / assignedBudget}
+      />
       <Chart
         title={strings.analytics.available_unspent_budget}
         chart={
