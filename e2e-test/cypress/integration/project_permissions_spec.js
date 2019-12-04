@@ -16,7 +16,7 @@ describe("Project Permissions", function() {
   beforeEach(function() {
     cy.login();
     cy.visit(`/projects`);
-    permissionsBeforeTesting = { project: {}, subproject: {} };
+    permissionsBeforeTesting = { project: {} };
     cy.listProjectPermissions(projectId).then(permissions => {
       permissionsBeforeTesting.project = permissions;
       resetUser(testUser.id, permissions);
@@ -283,16 +283,6 @@ describe("Project Permissions", function() {
     changePermissionInGui("project.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     actionTableIncludes("view permissions");
-
-    // Reset permissions
-    Cypress.Promise.all([
-      cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.intent.revokePermission", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.intent.grantPermission", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.intent.listPermissions", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.assign", testUser.id)
-    ]);
   });
 
   it("Confirmation of multiple grant permission changes grants permissions correctly", function() {
@@ -307,7 +297,7 @@ describe("Project Permissions", function() {
     cy.get("[data-test=actions-table-body]").should("be.visible");
     cy.get("[data-test=confirmation-dialog-confirm]")
       .click()
-      .should("be.not.disabled")
+      .should("be.not.disabled", { timeout: 30000 })
       .click();
     cy.get("[data-test=permission-submit]").should("not.be.visible");
     cy.get("[data-test=loading-indicator]")

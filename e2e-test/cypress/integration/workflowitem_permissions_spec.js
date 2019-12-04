@@ -291,14 +291,15 @@ describe("Workflowitem Permissions", function() {
       .should("have.length", 6);
     cy.get("[data-test=confirmation-dialog-confirm]")
       .click()
-      .should("not.be.disabled", { timeout: 30000 });
-
-    assertUnchangedPermissions(
-      addViewPermissions(permissionsBeforeTesting, testUser.id),
-      projectId,
-      subprojectId,
-      workflowitemId
-    );
+      .should("not.be.disabled", { timeout: 30000 })
+      .then(() => {
+        assertUnchangedPermissions(
+          addViewPermissions(permissionsBeforeTesting, testUser.id),
+          projectId,
+          subprojectId,
+          workflowitemId
+        );
+      });
 
     // Reset permissions
     Cypress.Promise.all([
@@ -347,7 +348,7 @@ describe("Workflowitem Permissions", function() {
     cy.get("[data-test=actions-table-body]").should("be.visible");
     cy.get("[data-test=confirmation-dialog-confirm]")
       .click()
-      .should("be.not.disabled")
+      .should("be.not.disabled", { timeout: 30000 })
       .click();
     cy.get("[data-test=permission-submit]").should("not.be.visible");
     cy.get("[data-test=loading-indicator]")

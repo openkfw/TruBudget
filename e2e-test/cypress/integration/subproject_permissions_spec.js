@@ -248,8 +248,9 @@ describe("Subproject Permissions", function() {
     cy.get("[data-test=confirmation-dialog-confirm]")
       .click()
       .should("not.be.disabled", { timeout: 30000 })
-
-    checkPermissionsEquality(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId, subprojectId);
+      .then(() => {
+        checkPermissionsEquality(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId, subprojectId);
+      });
 
     // Reset permissions
     Cypress.Promise.all([
@@ -293,11 +294,11 @@ describe("Subproject Permissions", function() {
     cy.get("[data-test=actions-table-body]").should("be.visible");
     cy.get("[data-test=confirmation-dialog-confirm]")
       .click()
-      .should("be.not.disabled")
+      .should("be.not.disabled", { timeout: 30000 })
       .click();
     cy.get("[data-test=permission-submit]").should("not.be.visible");
     cy.get("[data-test=loading-indicator]")
-      .// Wait until all permissions are granted
+      // Wait until all permissions are granted
       .should("not.be.visible", { timeout: 30000 })
       .then(() => {
         let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
