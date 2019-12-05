@@ -17,7 +17,6 @@ describe("Subproject Edit", function() {
   });
 
   it("Editing the title is possible", function() {
-    cy.server();
     cy.get("[data-test=subproject-edit-button-0]").click();
     cy.get("[data-test=nameinput] input")
       .invoke("val")
@@ -31,7 +30,6 @@ describe("Subproject Edit", function() {
   });
 
   it("Editing without a change isn't possible", function() {
-    cy.server();
     cy.get("[data-test=subproject-edit-button-0]").click();
     cy.get("[data-test=submit]").should("be.disabled");
     cy.get("[data-test=nameinput] input")
@@ -47,7 +45,6 @@ describe("Subproject Edit", function() {
   });
 
   it("The edit button isn't visible without edit permissions", function() {
-    cy.server();
     cy.get("[data-test=subproject-edit-button-0]").should("be.enabled");
     cy.login("root", "root-secret");
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.update", "mstein");
