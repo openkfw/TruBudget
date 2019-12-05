@@ -31,9 +31,11 @@ describe("Login", function() {
     routes.forEach(route => {
       cy.get("#loginpage").should("be.visible");
       cy.get("#username")
+        .should("be.visible")
         .type("mstein")
         .should("have.value", "mstein");
       cy.get("#password")
+        .should("be.visible")
         .type("test")
         .should("have.value", "test");
       cy.get("#loginbutton").click();
@@ -49,9 +51,11 @@ describe("Login", function() {
   it("Reject wrong inputs", function() {
     cy.get("#loginpage").should("be.visible");
     cy.get("#username")
+      .should("be.visible")
       .type("foo")
       .should("have.value", "foo");
     cy.get("#password")
+      .should("be.visible")
       .type("bar")
       .should("have.value", "bar");
     cy.get("#loginbutton").click();

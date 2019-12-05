@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Users are properly logged out when clicking the logout button[#402](https://github.com/openkfw/TruBudget/issues/402)
+- User are not created anymore if the passed organization does not exist[#358](https://github.com/openkfw/TruBudget/issues/358)
 
 <!-- ### Security -->
 
