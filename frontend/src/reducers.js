@@ -64,27 +64,56 @@ function routeReducer(state = routeInitialState, action) {
   }
 }
 
+const combinedReducer = (history, action) => {
+  if (action.type === "LOGOUT") {
+    return combineReducers({
+      router: connectRouter(history),
+      route: routeReducer,
+      actions: lastActionReducer,
+      login: loginReducer,
+      // Passing an undefined state returns the defaultState
+      navbar: (_state, action) => navbarReducer(undefined, action),
+      overview: (_state, action) => overviewReducer(undefined, action),
+      detailview: (_state, action) => subProjectReducer(undefined, action),
+      dashboard: (_state, action) => dashboardReducer(undefined, action),
+      workflow: (_state, action) => workflowReducer(undefined, action),
+      workflowitemDetails: (_state, action) => workflowitemDetailsReducer(undefined, action),
+      notifications: (_state, action) => notificationsReducer(undefined, action),
+      documents: (_state, action) => documentsReducer(undefined, action),
+      loading: (_state, action) => loadingReducer(undefined, action),
+      users: (_state, action) => userDashboardReducer(undefined, action),
+      nodes: (_state, action) => nodeDashboardReducer(undefined, action),
+      analytics: (_state, action) => analyticsReducer(undefined, action),
+      confirmation: (_state, action) => confirmationReducer(undefined, action)
+    });
+  } else {
+    return combineReducers({
+      router: connectRouter(history),
+      route: routeReducer,
+      actions: lastActionReducer,
+      navbar: navbarReducer,
+      overview: overviewReducer,
+      detailview: subProjectReducer,
+      dashboard: dashboardReducer,
+      workflow: workflowReducer,
+      workflowitemDetails: workflowitemDetailsReducer,
+      notifications: notificationsReducer,
+      login: loginReducer,
+      documents: documentsReducer,
+      loading: loadingReducer,
+      users: userDashboardReducer,
+      nodes: nodeDashboardReducer,
+      analytics: analyticsReducer,
+      confirmation: confirmationReducer
+    });
+  }
+};
+
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
-export default function createReducer(history) {
-  return combineReducers({
-    router: connectRouter(history),
-    route: routeReducer,
-    actions: lastActionReducer,
-    navbar: navbarReducer,
-    overview: overviewReducer,
-    detailview: subProjectReducer,
-    dashboard: dashboardReducer,
-    workflow: workflowReducer,
-    workflowitemDetails: workflowitemDetailsReducer,
-    notifications: notificationsReducer,
-    login: loginReducer,
-    documents: documentsReducer,
-    loading: loadingReducer,
-    users: userDashboardReducer,
-    nodes: nodeDashboardReducer,
-    analytics: analyticsReducer,
-    confirmation: confirmationReducer
-  });
-}
+const createReducer = history => (state, action) => {
+  return combinedReducer(history, action, state)(state, action);
+};
+
+export default createReducer;

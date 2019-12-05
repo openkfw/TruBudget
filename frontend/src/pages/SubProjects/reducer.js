@@ -2,7 +2,6 @@ import { fromJS } from "immutable";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
-import { LOGOUT } from "../Login/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
 import { FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
 import {
@@ -213,8 +212,6 @@ export default function detailviewReducer(state = defaultState, action) {
           ? fromJS(action.permissions.subproject)
           : defaultState.get("temporaryPermissions")
       );
-    case LOGOUT:
-      return defaultState;
     default:
       return state;
   }
