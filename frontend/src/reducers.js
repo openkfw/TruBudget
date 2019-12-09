@@ -3,24 +3,22 @@
  * If we were to do this in store.js, reducers wouldn't be hot reloadable.
  */
 
+import { connectRouter, LOCATION_CHANGE } from "connected-react-router";
 import { fromJS } from "immutable";
 import { combineReducers } from "redux-immutable";
-import { LOCATION_CHANGE, connectRouter } from "connected-react-router";
-
-import navbarReducer from "./pages/Navbar/reducer";
-import overviewReducer from "./pages/Overview/reducer";
-import subProjectReducer from "./pages/SubProjects/reducer";
-import dashboardReducer from "./pages/Dashboard/reducer";
-import notificationsReducer from "./pages/Notifications/reducer";
-import workflowReducer from "./pages/Workflows/reducer";
-import workflowitemDetailsReducer from "./pages/Workflows/WorkflowitemHistoryTab/reducer";
-import loginReducer from "./pages/Login/reducer";
-import documentsReducer from "./pages/Documents/reducer";
-import loadingReducer from "./pages/Loading/reducer";
-import userDashboardReducer from "./pages/Users/reducer";
-import nodeDashboardReducer from "./pages/Nodes/reducer";
 import analyticsReducer from "./pages/Analytics/reducer";
 import confirmationReducer from "./pages/Confirmation/reducer";
+import documentsReducer from "./pages/Documents/reducer";
+import loadingReducer from "./pages/Loading/reducer";
+import loginReducer from "./pages/Login/reducer";
+import navbarReducer from "./pages/Navbar/reducer";
+import nodeDashboardReducer from "./pages/Nodes/reducer";
+import notificationsReducer from "./pages/Notifications/reducer";
+import overviewReducer from "./pages/Overview/reducer";
+import subProjectReducer from "./pages/SubProjects/reducer";
+import userDashboardReducer from "./pages/Users/reducer";
+import workflowReducer from "./pages/Workflows/reducer";
+import workflowitemDetailsReducer from "./pages/Workflows/WorkflowitemHistoryTab/reducer";
 
 /*
  * routeReducer
@@ -75,7 +73,6 @@ const combinedReducer = (history, action) => {
       navbar: (_state, action) => navbarReducer(undefined, action),
       overview: (_state, action) => overviewReducer(undefined, action),
       detailview: (_state, action) => subProjectReducer(undefined, action),
-      dashboard: (_state, action) => dashboardReducer(undefined, action),
       workflow: (_state, action) => workflowReducer(undefined, action),
       workflowitemDetails: (_state, action) => workflowitemDetailsReducer(undefined, action),
       notifications: (_state, action) => notificationsReducer(undefined, action),
@@ -94,7 +91,6 @@ const combinedReducer = (history, action) => {
       navbar: navbarReducer,
       overview: overviewReducer,
       detailview: subProjectReducer,
-      dashboard: dashboardReducer,
       workflow: workflowReducer,
       workflowitemDetails: workflowitemDetailsReducer,
       notifications: notificationsReducer,
