@@ -22,11 +22,13 @@ import {
   SHOW_CREATION_DIALOG,
   SHOW_EDIT_DIALOG,
   SHOW_PROJECT_ADDITIONAL_DATA,
-  SHOW_PROJECT_PERMISSIONS
+  SHOW_PROJECT_PERMISSIONS,
+  STORE_FILTERED_PROJECTS
 } from "./actions";
 
 const defaultState = fromJS({
   projects: Set(),
+  filteredProjects: Set(),
   creationDialogShown: false,
   editDialogShown: false,
   projectToAdd: {
@@ -155,7 +157,8 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set("currentStep", action.step);
     case FETCH_ALL_PROJECTS_SUCCESS:
       return state.merge({
-        projects: fromJS(action.projects)
+        projects: fromJS(action.projects),
+        filteredProjects: fromJS(action.projects)
       });
     case ADD_TEMPORARY_PROJECT_PERMISSION:
       return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
@@ -170,6 +173,8 @@ export default function overviewReducer(state = defaultState, action) {
           ? fromJS(action.permissions.project)
           : defaultState.get("temporaryPermissions")
       );
+    case STORE_FILTERED_PROJECTS:
+      return state.set("filteredProjects", fromJS(action.filteredProjects));
     default:
       return state;
   }

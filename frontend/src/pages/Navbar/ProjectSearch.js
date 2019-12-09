@@ -7,6 +7,19 @@ import Tooltip from "@material-ui/core/Tooltip";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SearchIcon from "@material-ui/icons/Search";
 import React from "react";
+import { withStyles } from "@material-ui/core";
+
+const styles = {
+  searchField: {
+    padding: "2px",
+    margin: "5px",
+    width: "270px",
+    display: "flex",
+    flexDirection: "row",
+    opacity: "0.8",
+    boxShadow: "none"
+  }
+};
 
 const ProjectSearch = ({
   searchBarDisplayed,
@@ -17,37 +30,35 @@ const ProjectSearch = ({
 }) => {
   return (
     <div style={{ display: "flex" }}>
-      <div>
-        {searchBarDisplayed && !searchDisabled ? (
-          <Paper style={{ padding: "2px", margin: "5px", width: "270px", display: "flex", flexDirection: "row" }}>
-            <form onSubmit={e => e.preventDefault()} style={{ width: "90%" }}>
-              <FormControl style={{ width: "97%", paddingLeft: "5px" }} data-test="project-search-field">
-                <InputBase
-                  onChange={event => storeSearchTerm(event.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === "Escape" || e.key === "Esc") {
-                      storeSearchTerm("");
-                      storeSearchBarDisplayed(false);
-                    }
-                  }}
-                  style={{ width: "100%" }}
-                  value={searchTerm}
-                  autoFocus={true}
-                />
-              </FormControl>
-            </form>
-            <ButtonBase
-              data-test="clear-project-search"
-              onClick={() => {
-                storeSearchBarDisplayed(false);
-                storeSearchTerm("");
-              }}
-            >
-              <CancelIcon color="action" />
-            </ButtonBase>
-          </Paper>
-        ) : null}
-      </div>
+      {searchBarDisplayed && !searchDisabled ? (
+        <Paper style={styles.searchField}>
+          <form onSubmit={e => e.preventDefault()} style={{ width: "90%" }}>
+            <FormControl style={{ width: "97%", paddingLeft: "5px" }} data-test="project-search-field">
+              <InputBase
+                onChange={event => storeSearchTerm(event.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Escape" || e.key === "Esc") {
+                    storeSearchTerm("");
+                    storeSearchBarDisplayed(false);
+                  }
+                }}
+                style={{ width: "100%" }}
+                value={searchTerm}
+                autoFocus={true}
+              />
+            </FormControl>
+          </form>
+          <ButtonBase
+            data-test="clear-project-search"
+            onClick={() => {
+              storeSearchBarDisplayed(false);
+              storeSearchTerm("");
+            }}
+          >
+            <CancelIcon color="action" />
+          </ButtonBase>
+        </Paper>
+      ) : null}
       <div>
         <Tooltip
           title="Quick search"
@@ -74,4 +85,4 @@ const ProjectSearch = ({
   );
 };
 
-export default ProjectSearch;
+export default withStyles(styles)(ProjectSearch);

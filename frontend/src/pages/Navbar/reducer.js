@@ -36,7 +36,7 @@ export default function navbarReducer(state = defaultState, action) {
     case FETCH_STREAM_NAMES_SUCCESS:
       return state.set("streamNames", fromJS(action.streamNames));
     case SET_SELECTED_VIEW:
-      return state.merge({
+      return defaultState.merge({
         selectedId: action.id,
         selectedSection: action.section
       });

@@ -32,7 +32,6 @@ const ProjectCard = ({
   index,
   id,
   allowedIntents,
-  closeSearchBar,
   history,
   displayName,
   mappedStatus,
@@ -72,7 +71,6 @@ const ProjectCard = ({
               disabled={!canViewProjectDetails(allowedIntents)}
               color="primary"
               onClick={() => {
-                closeSearchBar();
                 history.push("/projects/" + id);
               }}
               data-test={`project-view-button-${index}`}

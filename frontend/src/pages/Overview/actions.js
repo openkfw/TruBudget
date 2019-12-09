@@ -44,6 +44,8 @@ export const REMOVE_PROJECT_TAG = "REMOVE_PROJECT_TAG";
 export const ADD_TEMPORARY_PROJECT_PERMISSION = "ADD_TEMPORARY_PROJECT_PERMISSION";
 export const REMOVE_TEMPORARY_PROJECT_PERMISSION = " REMOVE_TEMPORARY_PROJECT_PERMISSION";
 
+export const STORE_FILTERED_PROJECTS = "STORE_FILTERED_PROJECTS";
+
 export function fetchAllProjects(showLoading = false) {
   return {
     type: FETCH_ALL_PROJECTS,
@@ -236,5 +238,12 @@ export function removeTemporaryPermission(permission, userId) {
     type: REMOVE_TEMPORARY_PROJECT_PERMISSION,
     permission,
     userId
+  };
+}
+
+export function storeFilteredProjects(filteredProjects) {
+  return {
+    type: STORE_FILTERED_PROJECTS,
+    filteredProjects
   };
 }

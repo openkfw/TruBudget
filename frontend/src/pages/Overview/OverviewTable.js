@@ -9,7 +9,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import ContentAdd from "@material-ui/icons/Add";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
-
 import { formattedTag, statusMapping, toAmountString, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import { canCreateProject, canUpdateProject, canViewProjectPermissions } from "../../permissions";
@@ -98,12 +97,14 @@ const displayProjectBudget = budgets => {
   );
 };
 
-const displayTags = tags => {
+const displayTags = (tags, storeSearchTerm, showSearchBar) => {
   return tags.map((tag, i) => (
     <Button
       variant="outlined"
-      // TODO: This will be used to filter projects by tag
-      onClick={() => null}
+      onClick={() => {
+        showSearchBar();
+        storeSearchTerm(`tag:${tag}`);
+      }}
       key={`${tag}-${i}`}
       style={{ margin: "1px" }}
       component="span"
@@ -116,23 +117,15 @@ const displayTags = tags => {
 };
 
 const getTableEntries = ({
-  projects,
+  filteredProjects,
   history,
   classes,
   showEditDialog,
   showProjectPermissions,
   showProjectAdditionalData,
-  searchTerm,
-  closeSearchBar
+  storeSearchTerm,
+  showSearchBar
 }) => {
-  const filteredProjects = projects.filter(
-    project =>
-      project.data.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.data.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.data.description.toLowerCase().includes(searchTerm.toLowerCase())
-    // TODO: If tags are added, search them as well
-    // project.data.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
   return filteredProjects.map(({ data, allowedIntents }, index) => {
     const {
       displayName,
@@ -153,7 +146,7 @@ const getTableEntries = ({
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
-    const displayedTags = displayTags(tags || []);
+    const displayedTags = displayTags(tags || [], storeSearchTerm, showSearchBar);
 
     return (
       <ProjectCard
@@ -161,7 +154,6 @@ const getTableEntries = ({
         index={index}
         id={id}
         allowedIntents={allowedIntents}
-        closeSearchBar={closeSearchBar}
         history={history}
         displayName={displayName}
         mappedStatus={mappedStatus}
