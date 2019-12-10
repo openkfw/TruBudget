@@ -1,18 +1,16 @@
 import { fromJS } from "immutable";
-
-import {
-  TOGGLE_SIDEBAR,
-  FETCH_STREAM_NAMES_SUCCESS,
-  SET_SELECTED_VIEW,
-  FETCH_ACTIVE_PEERS_SUCCESS,
-  FETCH_VERSIONS_SUCCESS,
-  SEARCH_TERM,
-  SEARCH_BAR_DISPLAYED,
-  SET_IS_ROOT
-} from "./actions";
-import { LOGOUT } from "../Login/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
 import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from "../Workflows/actions";
+import {
+  FETCH_ACTIVE_PEERS_SUCCESS,
+  FETCH_STREAM_NAMES_SUCCESS,
+  FETCH_VERSIONS_SUCCESS,
+  SEARCH_BAR_DISPLAYED,
+  SEARCH_TERM,
+  SET_IS_ROOT,
+  SET_SELECTED_VIEW,
+  TOGGLE_SIDEBAR
+} from "./actions";
 
 const defaultState = fromJS({
   showSidebar: false,
@@ -55,8 +53,6 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set("searchTerm", action.searchTerm);
     case SEARCH_BAR_DISPLAYED:
       return state.set("searchBarDisplayed", action.searchBarDisplayed);
-    case LOGOUT:
-      return defaultState;
     case SET_IS_ROOT:
       return state.set("isRoot", action.isRoot);
     default:

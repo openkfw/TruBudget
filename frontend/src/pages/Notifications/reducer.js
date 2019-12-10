@@ -1,20 +1,19 @@
 import { fromJS } from "immutable";
 import {
+  DISABLE_LIVE_UPDATES,
+  ENABLE_LIVE_UPDATES,
+  FETCH_ALL_NOTIFICATIONS_SUCCESS,
+  FETCH_HISTORY_SUCCESS,
+  FETCH_NOTIFICATION_COUNT_SUCCESS,
+  HIDE_HISTORY,
+  HIDE_SNACKBAR,
+  LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
+  OPEN_HISTORY,
+  SET_NOTIFICATIONS_PER_PAGE,
   SHOW_SNACKBAR,
   SNACKBAR_MESSAGE,
-  FETCH_HISTORY_SUCCESS,
-  OPEN_HISTORY,
-  HIDE_HISTORY,
-  FETCH_ALL_NOTIFICATIONS_SUCCESS,
-  HIDE_SNACKBAR,
-  FETCH_NOTIFICATION_COUNT_SUCCESS,
-  SET_NOTIFICATIONS_PER_PAGE,
-  LIVE_UPDATE_NOTIFICATIONS_SUCCESS,
-  TIME_OUT_FLY_IN,
-  ENABLE_LIVE_UPDATES,
-  DISABLE_LIVE_UPDATES
+  TIME_OUT_FLY_IN
 } from "./actions";
-import { LOGOUT } from "../Login/actions";
 
 const defaultState = fromJS({
   notifications: [],
@@ -87,8 +86,6 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set("showHistory", false);
     case SET_NOTIFICATIONS_PER_PAGE:
       return state.set("notificationPageSize", action.notificationPageSize);
-    case LOGOUT:
-      return defaultState;
     default:
       return state;
   }

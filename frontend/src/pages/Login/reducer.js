@@ -114,10 +114,7 @@ export default function loginReducer(state = defaultState, action) {
       return newState;
     case ADMIN_LOGOUT_SUCCESS:
     case LOGOUT_SUCCESS:
-      return state.merge({
-        password: defaultState.get("password"),
-        jwt: defaultState.get("jwt")
-      });
+      return defaultState;
     default:
       return state;
   }

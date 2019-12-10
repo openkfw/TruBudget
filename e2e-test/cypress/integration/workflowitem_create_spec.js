@@ -72,47 +72,6 @@ describe("Workflowitem create", function() {
       .should("contain", "$");
   });
 
-  it(
-    "When editing a workflow item with a different currency than the subproject currency, " +
-      "the selected currency is displayed",
-    function() {
-      // Create a workflow item and select a different currency
-      cy.get("[data-test=createWorkflowitem]").click();
-      cy.get("[data-test=nameinput] input").type("Test");
-      cy.get("[data-test=commentinput] textarea")
-        .last()
-        .type("Test");
-      cy.get("[data-test=amount-type-allocated]").click();
-      cy.get("[data-test=dropdown-currencies-click]").click();
-      cy.get("[data-value=USD]").click();
-      cy.get("[data-test=amountinput] input").type("1234");
-      cy.get("[data-test=rateinput] input").should("be.enabled");
-      cy.get("[data-test=rateinput] input").type("1.5");
-      cy.get("[data-test=next]").click();
-      cy.get("[data-test=submit]").click();
-
-      // Verify the selected values
-      cy.get("[data-test=workflowitem-amount]")
-        .first()
-        .should("contain", "€");
-      cy.get("[data-test=amount-explanation]")
-        .first()
-        .should("have.attr", "title")
-        .should("contain", "$");
-
-      // Edit the workflow item and verify that the
-      // pre-selected currency is the one we selected
-      // when the workflow item was created
-      cy.get("[data-test=edit-workflowitem]")
-        .last()
-        .click();
-      cy.get("[data-test=dropdown-currencies-click]").should("contain", "USD");
-
-      // Close the dialog
-      cy.get("[data-test=cancel]").click();
-    }
-  );
-
   it("Root can not create a Workflowitem", function() {
     cy.login("root", "root-secret");
     cy.visit(`/projects/${projectId}/${subprojectId}`);

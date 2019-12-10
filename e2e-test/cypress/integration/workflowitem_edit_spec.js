@@ -1,8 +1,11 @@
 describe("Workflowitem edit", function() {
   let projectId;
   let subprojectId;
+  let baseUrl, apiRoute;
 
   before(() => {
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
 
     cy.createProject("workflowitem edit test project", "workflowitem edit test", [])
@@ -18,58 +21,6 @@ describe("Workflowitem edit", function() {
   beforeEach(function() {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
-  });
-
-  it("After creating an allocated workflowitem, the currency is equal to the subproject's currency", function() {
-    // Create a workflow item
-    cy.get("[data-test=createWorkflowitem]").click();
-    cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=commentinput] textarea")
-      .last()
-      .type("Test");
-    cy.get("[data-test=amount-type-allocated]").click();
-    cy.get("[data-test=dropdown-currencies-click]").should("contain", "EUR");
-
-    // When the currency is equal to the currency of the subproject
-    // the exchange rate field is disabled
-    cy.get("[data-test=rateinput] input").should("be.disabled");
-  });
-
-  it("After selecting another currency, the exchange rate can be entered and is saved correctly", function() {
-    // Create a workflow item
-    cy.get("[data-test=createWorkflowitem]").click();
-    cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=commentinput] textarea")
-      .last()
-      .type("Test");
-    cy.get("[data-test=amount-type-allocated]").click();
-
-    // Select a different currency than the subproject currency
-    cy.get("[data-test=dropdown-currencies-click]").click();
-    cy.get("[data-value=USD]").click();
-
-    // Enter amount
-    cy.get("[data-test=amountinput] input").type("1234");
-
-    // The exchange rate field should be enabled because
-    // we selected a different currency
-    cy.get("[data-test=rateinput] input").should("be.enabled");
-    cy.get("[data-test=rateinput] input").type("1.5");
-    cy.get("[data-test=next]").click();
-    cy.get("[data-test=submit]").click();
-
-    // The workflow item amount should be displayed in the
-    // subproject's currency
-    cy.get("[data-test=workflowitem-amount]")
-      .first()
-      .should("contain", "€");
-
-    // The information on the workflow item amount
-    // and exchange rate is displayed in a tooltip
-    cy.get("[data-test=amount-explanation]")
-      .first()
-      .should("have.attr", "title")
-      .should("contain", "$");
   });
 
   it(
@@ -89,14 +40,19 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=rateinput] input").should("be.enabled");
       cy.get("[data-test=rateinput] input").type("1.5");
       cy.get("[data-test=next]").click();
+      cy.server();
+      cy.route("POST", apiRoute + "/subproject.createWorkflowitem*").as("create");
+      cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
       cy.get("[data-test=submit]").click();
 
       // Verify the selected values
-      cy.get("[data-test=workflowitem-amount]")
-        .first()
+      cy.wait("@create")
+        .wait("@viewDetails")
+        .get("[data-test=workflowitem-amount]")
+        .last()
         .should("contain", "€");
       cy.get("[data-test=amount-explanation]")
-        .first()
+        .last()
         .should("have.attr", "title")
         .should("contain", "$");
 

@@ -19,7 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Users are properly logged out when clicking the logout button[#402](https://github.com/openkfw/TruBudget/issues/402)
 
 <!-- ### Security -->
 
