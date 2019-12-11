@@ -126,7 +126,7 @@ Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName
 
 Cypress.Commands.add(
   "createProject",
-  (displayName, description, projectedBudgets, thumbnail = "/Thumbnail_0001.jpg") => {
+  (displayName, description, projectedBudgets, thumbnail = "/Thumbnail_0001.jpg", opts = {}) => {
     cy.request({
       url: `${baseUrl}/api/global.createProject`,
       method: "POST",
@@ -140,7 +140,8 @@ Cypress.Commands.add(
             displayName,
             description,
             projectedBudgets,
-            thumbnail
+            thumbnail,
+            ...opts
           }
         }
       }
@@ -153,6 +154,25 @@ Cypress.Commands.add(
       );
   }
 );
+
+Cypress.Commands.add("updateProject", (projectId, opts = {}) => {
+  cy.request({
+    url: `${baseUrl}/api/project.update`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        ...opts
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
 
 Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
   cy.request({

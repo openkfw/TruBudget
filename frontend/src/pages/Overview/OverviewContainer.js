@@ -39,7 +39,6 @@ class OverviewContainer extends Component {
     if (this.props.searchTerm && (searchTermChanges || projectsChange)) {
       this.worker.postMessage({ projects: this.props.projects, searchTerm: this.props.searchTerm });
     }
-    // TODO: After project creation the filteredProjects in state should not update
     if (!this.props.searchTerm && prevProps.searchTerm) {
       this.props.storeFilteredProjects(this.props.projects);
     }
