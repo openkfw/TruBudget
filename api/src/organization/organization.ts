@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { Organization, WalletAddress } from "../network/model/Nodes";
@@ -100,6 +99,15 @@ async function ensureOrganizationAddress(
   return organizationAddress;
 }
 
+export async function organizationExists(
+  multichain: MultichainClient,
+  organization: Organization,
+): Promise<boolean> {
+  // Use getOrganizationAddressItem to check if stream exists
+  // getOrganizationAddressItem returns undefined if no streamItem is found
+  return (await getOrganizationAddressItem(multichain, organization)) ? true : false;
+}
+
 export async function getOrganizationAddress(
   multichain: MultichainClient,
   organization: Organization,
@@ -115,8 +123,12 @@ async function getOrganizationAddressItem(
 ): Promise<OrganizationAddressItem | undefined> {
   const streamName = organizationStreamName(organization);
   const streamItem = "address";
-  return multichain
+  const organizationAddressItem = multichain
     .v2_readStreamItems(streamName, streamItem, 1)
     .then(items => items.map(x => x.data.json))
-    .then(items => items.find(_ => true));
+    .then(items => items.find(_ => true))
+    .catch(error => {
+      if (error.kind !== "NotFound") throw error;
+    });
+  return organizationAddressItem;
 }

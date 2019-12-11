@@ -1,7 +1,7 @@
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { encrypt } from "../lib/symmetricCrypto";
-import { getOrganizationAddress } from "../organization/organization";
+import { getOrganizationAddress, organizationExists } from "../organization/organization";
 import * as Result from "../result";
 import { ConnToken } from "./conn";
 import { createkeypairs } from "./createkeypairs";
@@ -25,6 +25,8 @@ export async function createUser(
   const result = await UserCreate.createUser(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
     userExists: async userId => userExists(conn, ctx, serviceUser, userId),
+    organizationExists: async organization =>
+      organizationExists(conn.multichainClient, organization),
     createKeyPair: async () => createkeypairs(conn.multichainClient),
     hash: async plaintext => hashPassword(plaintext),
     encrypt: async plaintext => encrypt(organizationSecret, plaintext),
