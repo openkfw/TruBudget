@@ -29,21 +29,27 @@ describe("Login", function() {
 
   it(`Log in and out on every route`, function() {
     routes.forEach(route => {
-      cy.get("#loginpage").should("be.visible");
-      cy.get("#username")
+      // Login process
+      cy.get("#loginpage")
+        .should("be.visible")
+        .get("#username")
         .should("be.visible")
         .type("mstein")
-        .should("have.value", "mstein");
-      cy.get("#password")
+        .should("have.value", "mstein")
+        .get("#password")
         .should("be.visible")
         .type("test")
-        .should("have.value", "test");
-      cy.get("#loginbutton").click();
+        .should("have.value", "test")
+        .get("#loginbutton")
+        .click();
+      // Check if logged in correctly
       cy.get("#logoutbutton").should("be.visible");
+      // Logout on specific route
       cy.visit(`/${route}`);
       cy.get("#logoutbutton")
         .should("be.visible")
         .click();
+      // Check if logged out correctly
       cy.get("#loginpage").should("be.visible");
     });
   });
