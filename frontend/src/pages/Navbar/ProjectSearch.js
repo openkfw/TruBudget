@@ -8,6 +8,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import SearchIcon from "@material-ui/icons/Search";
 import React from "react";
 import { withStyles } from "@material-ui/core";
+import { DebounceInput } from "react-debounce-input";
 
 const styles = {
   searchField: {
@@ -18,7 +19,8 @@ const styles = {
     flexDirection: "row",
     opacity: "0.8",
     boxShadow: "none"
-  }
+  },
+  debounceInput: {}
 };
 
 const ProjectSearch = ({
@@ -34,7 +36,9 @@ const ProjectSearch = ({
         <Paper style={styles.searchField}>
           <form onSubmit={e => e.preventDefault()} style={{ width: "90%" }}>
             <FormControl style={{ width: "97%", paddingLeft: "5px" }} data-test="project-search-field">
-              <InputBase
+              <DebounceInput
+                element={InputBase}
+                debounceTimeout={300}
                 onChange={event => storeSearchTerm(event.target.value)}
                 onKeyDown={e => {
                   if (e.key === "Escape" || e.key === "Esc") {
@@ -42,7 +46,7 @@ const ProjectSearch = ({
                     storeSearchBarDisplayed(false);
                   }
                 }}
-                style={{ width: "100%" }}
+                style={styles.debounceInput}
                 value={searchTerm}
                 autoFocus={true}
               />
