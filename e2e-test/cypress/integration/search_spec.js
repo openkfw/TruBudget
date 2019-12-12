@@ -1,16 +1,24 @@
 describe("Navigation", function() {
-  let project = {
+  let projectWithTag = {
     id: "",
     displayName: "p-search",
+    description: "project search test"
+  };
+  let projectNoTag = {
+    id: "",
+    displayName: "p-search-no-tag",
     description: "project search test"
   };
   const testTag = "testTag";
 
   before(() => {
     cy.login();
-    cy.createProject(project.displayName, project.description).then(({ id }) => {
-      project.id = id;
+    cy.createProject(projectWithTag.displayName, projectWithTag.description).then(({ id }) => {
+      projectWithTag.id = id;
       cy.updateProject(id, { tags: [testTag] });
+      cy.createProject(projectNoTag.displayName, projectNoTag.description).then(({ id }) => {
+        projectNoTag.id = id;
+      });
     });
   });
 
@@ -37,18 +45,20 @@ describe("Navigation", function() {
     // Type into search bar
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field]").should("be.visible");
-    cy.get("[data-test=project-search-field] input").type(project.displayName);
-    // Show exactly one project
-    cy.get("[data-test*=project-card]").then(res => assert.equal(res.length, 1));
+    cy.get("[data-test=project-search-field] input").type(projectNoTag.displayName);
+    // Only show project without tag
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("be.visible");
   });
 
   it("Filter projects by display name prefix 'name'", function() {
     // Type into search bar
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field]").should("be.visible");
-    cy.get("[data-test=project-search-field] input").type("name:" + project.displayName);
-    // Check for 1 project match
-    cy.get("[data-test*=project-card]").then(res => assert.equal(res.length, 1));
+    cy.get("[data-test=project-search-field] input").type("name:" + projectNoTag.displayName);
+    // Only show project without tag
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("be.visible");
   });
 
   it("Filter projects by prefix 'name', 'tag' and 'status", function() {
@@ -56,16 +66,17 @@ describe("Navigation", function() {
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field]").should("be.visible");
     cy.get("[data-test=project-search-field] input").type(
-      "name:" + project.displayName + " " + "tag:" + testTag + " " + "status:open"
+      "name:" + projectWithTag.displayName + " " + "tag:" + testTag + " " + "status:open"
     );
-    // Check for 1 project match
-    cy.get("[data-test*=project-card]").then(res => assert.equal(res.length, 1));
+    // Only show project with tag
+    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("be.visible");
   });
 
   it("Filter projects by tag via tag button", function() {
     // Click tag
     cy.get("[data-test=project-search-field]").should("not.be.visible");
-    cy.get(`[data-test=project-card-${project.id}]`)
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`)
       .find("[data-test=overview-tag]")
       .should("have.length", 1)
       .contains(testTag.toLowerCase())
@@ -79,7 +90,7 @@ describe("Navigation", function() {
     // Type into search bar
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field]").should("be.visible");
-    cy.get("[data-test=project-search-field] input").type(project.displayName);
+    cy.get("[data-test=project-search-field] input").type(projectWithTag.displayName);
     // Go to project
     cy.get("[data-test*=project-view-button]")
       .first()
@@ -97,7 +108,7 @@ describe("Navigation", function() {
     // Type into search bar
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field]").should("be.visible");
-    cy.get("[data-test=project-search-field] input").type(project.displayName);
+    cy.get("[data-test=project-search-field] input").type(projectWithTag.displayName);
     // Navigate via Main breadcrumb
     cy.get("[data-test=breadcrumb-Main]").click();
     cy.get("[data-test=project-search-field]").should("not.be.visible");
@@ -111,7 +122,7 @@ describe("Navigation", function() {
     // Type into search bar
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field]").should("be.visible");
-    cy.get("[data-test=project-search-field] input").type(project.displayName);
+    cy.get("[data-test=project-search-field] input").type(projectWithTag.displayName);
     // Go to project
     cy.get("[data-test*=project-view-button]")
       .first()

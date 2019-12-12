@@ -6,7 +6,7 @@ import { toJS } from "../../helper";
 import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import AdditionalInfo from "../Common/AdditionalInfo";
-import { storeSearchBarDisplayed } from "../Navbar/actions";
+import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
 import {
   fetchAllProjects,
   hideProjectAdditionalData,
@@ -83,6 +83,7 @@ const mapDispatchToProps = dispatch => {
     storeFilteredProjects: filteredProjects => dispatch(storeFilteredProjects(filteredProjects)),
     storeHighlightingRegex: highlightingRegex => dispatch(storeHighlightingRegex(highlightingRegex)),
     storeSearchTermArray: searchTerms => dispatch(storeSearchTermArray(searchTerms)),
+    storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
     showSearchBar: () => dispatch(storeSearchBarDisplayed(true))
   };
 };

@@ -3,9 +3,9 @@ describe("Login", function() {
 
   before(function() {
     cy.login();
-    cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
+    cy.createProject("p-login", "login test").then(({ id }) => {
       const projectId = id;
-      cy.createSubproject(projectId, "subproject assign test").then(({ id }) => {
+      cy.createSubproject(projectId, "sp-login").then(({ id }) => {
         const subprojectId = id;
         // Logout
         localStorage.setItem("state", undefined);

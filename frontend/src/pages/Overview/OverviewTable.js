@@ -113,7 +113,9 @@ const displayTags = (tags, storeSearchTerm, showSearchBar, searchTermArray) => {
         storeSearchTerm(`tag:${tag}`);
       }}
       key={`${tag}-${i}`}
-      style={searchTermArray.includes(tag) ? styles.highlightedTagButton : styles.tagButton}
+      style={
+        searchTermArray.some(searchTerm => tag.includes(searchTerm)) ? styles.highlightedTagButton : styles.tagButton
+      }
       component="span"
       data-test="overview-tag"
       size="small"
