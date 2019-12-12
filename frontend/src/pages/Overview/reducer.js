@@ -156,7 +156,11 @@ export default function overviewReducer(state = defaultState, action) {
     case PROJECT_THUMBNAIL:
       return state.setIn(["projectToAdd", "thumbnail"], action.thumbnail);
     case CREATE_PROJECT_SUCCESS:
-      return state.set("projectToAdd", defaultState.getIn(["projectToAdd"]));
+      return state.merge({
+        projectToAdd: defaultState.getIn(["projectToAdd"]),
+        searchTerms: defaultState.get("searchTerms"),
+        highlightingRegex: defaultState.get("highlightingRegex")
+      });
     case PROJECT_CREATION_STEP:
       return state.set("currentStep", action.step);
     case FETCH_ALL_PROJECTS_SUCCESS:

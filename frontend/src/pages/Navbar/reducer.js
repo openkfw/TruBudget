@@ -11,6 +11,7 @@ import {
   SET_SELECTED_VIEW,
   TOGGLE_SIDEBAR
 } from "./actions";
+import { CREATE_PROJECT_SUCCESS } from "../Overview/actions";
 
 const defaultState = fromJS({
   showSidebar: false,
@@ -55,6 +56,11 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set("searchBarDisplayed", action.searchBarDisplayed);
     case SET_IS_ROOT:
       return state.set("isRoot", action.isRoot);
+    case CREATE_PROJECT_SUCCESS:
+      return state.merge({
+        searchTerm: defaultState.get("searchTerm"),
+        searchBarDisplayed: defaultState.get("searchBarDisplayed")
+      });
     default:
       return state;
   }
