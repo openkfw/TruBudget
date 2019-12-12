@@ -6,7 +6,7 @@ import { toJS } from "../../helper";
 import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import AdditionalInfo from "../Common/AdditionalInfo";
-import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
+import { storeSearchBarDisplayed } from "../Navbar/actions";
 import {
   fetchAllProjects,
   hideProjectAdditionalData,
@@ -14,7 +14,9 @@ import {
   showEditDialog,
   showProjectAdditionalData,
   showProjectPermissions,
-  storeFilteredProjects
+  storeFilteredProjects,
+  storeHighlightingRegex,
+  storeSearchTermArray
 } from "./actions";
 import Overview from "./Overview";
 import ProjectDialogContainer from "./ProjectDialogContainer";
@@ -26,21 +28,27 @@ class OverviewContainer extends Component {
 
     // Listen for postmessage from worker
     this.worker.addEventListener("message", event => {
-      const filteredProjects = event.data ? event.data : this.props.projects;
+      const filteredProjects = event.data ? event.data.filteredProjects : this.props.projects;
+      const highlightingRegex = event.data.highlightingRegex;
+      const searchTerms = event.data.searchTerms;
       this.props.storeFilteredProjects(filteredProjects);
+      this.props.storeHighlightingRegex(highlightingRegex);
+      this.props.storeSearchTermArray(searchTerms);
     });
 
     this.props.fetchAllProjects(true);
   }
 
   componentDidUpdate(prevProps) {
-    const searchTermChanges = this.props.searchTerm !== prevProps.searchTerm;
+    const searchTermChanges = this.props.searchTermString !== prevProps.searchTermString;
     const projectsChange = !_isEqual(this.props.projects, prevProps.projects);
-    if (this.props.searchTerm && (searchTermChanges || projectsChange)) {
-      this.worker.postMessage({ projects: this.props.projects, searchTerm: this.props.searchTerm });
+    if (this.props.searchTermString && (searchTermChanges || projectsChange)) {
+      this.worker.postMessage({ projects: this.props.projects, searchTerm: this.props.searchTermString });
     }
-    if (!this.props.searchTerm && prevProps.searchTerm) {
+    if (!this.props.searchTermString && prevProps.searchTermString) {
       this.props.storeFilteredProjects(this.props.projects);
+      this.props.storeHighlightingRegex("");
+      this.props.storeSearchTermArray([]);
     }
   }
 
@@ -73,7 +81,8 @@ const mapDispatchToProps = dispatch => {
     showProjectAdditionalData: id => dispatch(showProjectAdditionalData(id)),
     hideProjectAdditionalData: () => dispatch(hideProjectAdditionalData()),
     storeFilteredProjects: filteredProjects => dispatch(storeFilteredProjects(filteredProjects)),
-    storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
+    storeHighlightingRegex: highlightingRegex => dispatch(storeHighlightingRegex(highlightingRegex)),
+    storeSearchTermArray: searchTerms => dispatch(storeSearchTermArray(searchTerms)),
     showSearchBar: () => dispatch(storeSearchBarDisplayed(true))
   };
 };
@@ -87,9 +96,11 @@ const mapStateToProps = state => {
     roles: state.getIn(["login", "roles"]),
     idForInfo: state.getIn(["overview", "idForInfo"]),
     isProjectAdditionalDataShown: state.getIn(["overview", "isProjectAdditionalDataShown"]),
-    searchTerm: state.getIn(["navbar", "searchTerm"]),
+    searchTermString: state.getIn(["navbar", "searchTerm"]),
     isRoot: state.getIn(["navbar", "isRoot"]),
-    permissionDialogShown: state.getIn(["overview", "permissionDialogShown"])
+    permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
+    highlightingRegex: state.getIn(["overview", "highlightingRegex"]),
+    searchTermArray: state.getIn(["overview", "searchTerms"])
   };
 };
 

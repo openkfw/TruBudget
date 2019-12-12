@@ -23,7 +23,9 @@ import {
   SHOW_EDIT_DIALOG,
   SHOW_PROJECT_ADDITIONAL_DATA,
   SHOW_PROJECT_PERMISSIONS,
-  STORE_FILTERED_PROJECTS
+  STORE_FILTERED_PROJECTS,
+  STORE_HIGHLIGHTING_REGEX,
+  STORE_SEARCH_TERMS_AS_ARRAY
 } from "./actions";
 
 const defaultState = fromJS({
@@ -55,7 +57,9 @@ const defaultState = fromJS({
   allowedIntents: [],
   dialogTitle: strings.project.add_new_project,
   idForInfo: "",
-  isProjectAdditionalDataShown: false
+  isProjectAdditionalDataShown: false,
+  highlightingRegex: "",
+  searchTerms: []
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -175,6 +179,10 @@ export default function overviewReducer(state = defaultState, action) {
       );
     case STORE_FILTERED_PROJECTS:
       return state.set("filteredProjects", fromJS(action.filteredProjects));
+    case STORE_HIGHLIGHTING_REGEX:
+      return state.set("highlightingRegex", fromJS(action.highlightingRegex));
+    case STORE_SEARCH_TERMS_AS_ARRAY:
+      return state.set("searchTerms", fromJS(action.searchTerms));
     default:
       return state;
   }

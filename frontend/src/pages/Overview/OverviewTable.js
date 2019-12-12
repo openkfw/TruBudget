@@ -75,6 +75,13 @@ const styles = {
     flex: 1,
     alignItems: "center",
     justifyContent: "center"
+  },
+  tagButton: {
+    margin: "1px"
+  },
+  highlightedTagButton: {
+    margin: "1px",
+    backgroundColor: "#C2CCF8"
   }
 };
 
@@ -97,7 +104,7 @@ const displayProjectBudget = budgets => {
   );
 };
 
-const displayTags = (tags, storeSearchTerm, showSearchBar) => {
+const displayTags = (tags, storeSearchTerm, showSearchBar, searchTermArray) => {
   return tags.map((tag, i) => (
     <Button
       variant="outlined"
@@ -106,7 +113,7 @@ const displayTags = (tags, storeSearchTerm, showSearchBar) => {
         storeSearchTerm(`tag:${tag}`);
       }}
       key={`${tag}-${i}`}
-      style={{ margin: "1px" }}
+      style={searchTermArray.includes(tag) ? styles.highlightedTagButton : styles.tagButton}
       component="span"
       data-test="overview-tag"
       size="small"
@@ -124,7 +131,9 @@ const getTableEntries = ({
   showProjectPermissions,
   showProjectAdditionalData,
   storeSearchTerm,
-  showSearchBar
+  showSearchBar,
+  highlightingRegex,
+  searchTermArray
 }) => {
   return filteredProjects.map(({ data, allowedIntents }, index) => {
     const {
@@ -146,7 +155,7 @@ const getTableEntries = ({
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
-    const displayedTags = displayTags(tags || [], storeSearchTerm, showSearchBar);
+    const displayedTags = displayTags(tags || [], storeSearchTerm, showSearchBar, searchTermArray);
 
     return (
       <ProjectCard
@@ -173,6 +182,7 @@ const getTableEntries = ({
         tags={tags}
         classes={classes}
         imagePath={imagePath}
+        highlightingRegex={highlightingRegex}
       />
     );
   });

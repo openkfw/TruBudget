@@ -17,6 +17,7 @@ import PermissionIcon from "@material-ui/icons/LockOpen";
 import MoreIcon from "@material-ui/icons/MoreHoriz";
 import ViewIcon from "@material-ui/icons/ZoomIn";
 import React from "react";
+import Highlight from "react-highlighter";
 
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
@@ -25,6 +26,9 @@ import ActionButton from "../Common/ActionButton";
 const styles = {
   editIcon: {
     color: "black"
+  },
+  highlightedText: {
+    backgroundColor: "#C2CCF8"
   }
 };
 
@@ -50,7 +54,8 @@ const ProjectCard = ({
   thumbnail,
   tags,
   classes,
-  imagePath
+  imagePath,
+  highlightingRegex
 }) => {
   return (
     <Card aria-label="project" key={index} className={classes.card} data-test={`project-card-${id}`}>
@@ -86,10 +91,16 @@ const ProjectCard = ({
           className={classes.cardHeader}
           title={
             <div className={classes.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
-              <span>{displayName}</span>
+              <Highlight matchStyle={styles.highlightedText} search={highlightingRegex}>
+                {displayName}
+              </Highlight>
             </div>
           }
-          subheader={mappedStatus}
+          subheader={
+            <Highlight matchStyle={styles.highlightedText} search={highlightingRegex}>
+              {mappedStatus}
+            </Highlight>
+          }
         />
         <List>
           <div
