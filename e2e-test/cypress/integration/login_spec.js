@@ -33,11 +33,9 @@ describe("Login", function() {
       cy.get("#loginpage")
         .should("be.visible")
         .get("#username")
-        .should("be.visible")
         .type("mstein")
         .should("have.value", "mstein")
         .get("#password")
-        .should("be.visible")
         .type("test")
         .should("have.value", "test")
         .get("#loginbutton")
@@ -61,7 +59,6 @@ describe("Login", function() {
       .type("foo")
       .should("have.value", "foo");
     cy.get("#password")
-      .should("be.visible")
       .type("bar")
       .should("have.value", "bar");
     cy.get("#loginbutton").click();
