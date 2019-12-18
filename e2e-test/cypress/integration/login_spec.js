@@ -21,11 +21,14 @@ describe("Login", function() {
   });
 
   beforeEach(function() {
-    localStorage.setItem("state", undefined);
+    cy.login();
     cy.visit(`/`);
   });
 
   it(`Log in and out on every route`, function() {
+    cy.get("#logoutbutton")
+      .should("be.visible")
+      .click();
     routes.forEach(route => {
       // Login process
       cy.get("#loginpage")
@@ -51,6 +54,9 @@ describe("Login", function() {
   });
 
   it("Reject wrong inputs", function() {
+    cy.get("#logoutbutton")
+      .should("be.visible")
+      .click();
     cy.get("#loginpage").should("be.visible");
     cy.get("#username")
       .should("be.visible")
