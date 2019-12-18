@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import isEmpty from "lodash/isEmpty";
+import queryString from "query-string";
 
 import {
   toggleSidebar,
@@ -19,6 +20,7 @@ import FlyInNotifications from "../Notifications/FlyInNotifications";
 
 import Navbar from "./Navbar";
 import { toJS } from "../../helper";
+import { convertToSearchBarString } from "./convertSearchTerm";
 
 class NavbarContainer extends Component {
   componentDidMount() {
@@ -26,6 +28,12 @@ class NavbarContainer extends Component {
     this.props.fetchVersions();
     if (this.props.userId === "root") {
       this.props.setIsRoot(true);
+    }
+    if (this.props.location.search) {
+      const queryParameter = queryString.parse(this.props.location.search);
+      const searchTermString = convertToSearchBarString(queryString.stringify(queryParameter));
+      this.props.storeSearchTerm(searchTermString);
+      this.props.storeSearchBarDisplayed(true);
     }
   }
 

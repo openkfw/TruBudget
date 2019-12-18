@@ -1,4 +1,5 @@
 import { fromJS } from "immutable";
+import { CREATE_PROJECT_SUCCESS } from "../Overview/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
 import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from "../Workflows/actions";
 import {
@@ -11,7 +12,7 @@ import {
   SET_SELECTED_VIEW,
   TOGGLE_SIDEBAR
 } from "./actions";
-import { CREATE_PROJECT_SUCCESS } from "../Overview/actions";
+import { convertToURLQuery } from "./convertSearchTerm";
 
 const defaultState = fromJS({
   showSidebar: false,
@@ -52,6 +53,8 @@ export default function navbarReducer(state = defaultState, action) {
     case FETCH_VERSIONS_SUCCESS:
       return state.set("versions", action.versions);
     case SEARCH_TERM:
+      const querySearchTerm = convertToURLQuery(action.searchTerm);
+      window.history.pushState("", "Title", "?" + querySearchTerm);
       return state.set("searchTerm", action.searchTerm);
     case SEARCH_BAR_DISPLAYED:
       return state.set("searchBarDisplayed", action.searchBarDisplayed);
