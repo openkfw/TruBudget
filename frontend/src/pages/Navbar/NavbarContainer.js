@@ -25,7 +25,7 @@ class NavbarContainer extends Component {
     this.props.fetchActivePeers();
     this.props.fetchVersions();
     if (this.props.userId === "root") {
-      this.props.setIsRoot(this.props.userId === "root");
+      this.props.setIsRoot(true);
     }
   }
 

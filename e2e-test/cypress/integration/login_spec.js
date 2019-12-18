@@ -7,9 +7,6 @@ describe("Login", function() {
       const projectId = id;
       cy.createSubproject(projectId, "sp-login").then(({ id }) => {
         const subprojectId = id;
-        // Logout
-        localStorage.setItem("state", undefined);
-
         routes = [
           "projects",
           "users",
@@ -24,6 +21,7 @@ describe("Login", function() {
   });
 
   beforeEach(function() {
+    localStorage.setItem("state", undefined);
     cy.visit(`/`);
   });
 

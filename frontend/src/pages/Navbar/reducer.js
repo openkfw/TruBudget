@@ -39,7 +39,8 @@ export default function navbarReducer(state = defaultState, action) {
     case SET_SELECTED_VIEW:
       return defaultState.merge({
         selectedId: action.id,
-        selectedSection: action.section
+        selectedSection: action.section,
+        isRoot: state.get("isRoot")
       });
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
       return state.set("currentProject", action.project.data.displayName);
