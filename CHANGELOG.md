@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-<!-- ### Added -->
+### Added
+
+- Search via URL query [#353](https://github.com/openkfw/TruBudget/issues/353)
 
 ### Changed
 
 - The analytics total budget is shown whether the user has insufficient permissions or not [#410](https://github.com/openkfw/TruBudget/pull/410)
+- Highlight matches when searching [#356](https://github.com/openkfw/TruBudget/issues/356)
+- Projects can be searched via prefixes. Tag,display name and status are searched for matches. [#359](https://github.com/openkfw/TruBudget/issues/359)
 
 <!-- ### Deprecated -->
 
