@@ -54,7 +54,7 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set("versions", action.versions);
     case SEARCH_TERM:
       const querySearchTerm = convertToURLQuery(action.searchTerm);
-      window.history.pushState("", "Title", "?" + querySearchTerm);
+      window.history.replaceState("", "Title", "?" + querySearchTerm);
       return state.set("searchTerm", action.searchTerm);
     case SEARCH_BAR_DISPLAYED:
       return state.set("searchBarDisplayed", action.searchBarDisplayed);
