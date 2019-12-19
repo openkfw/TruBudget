@@ -51,7 +51,20 @@ View all projects where the current user has view-permissions on.
 
 **Description:**
 
-Filter projects based on name, description and tag in the overview page.
+There are 3 ways how projects can be filtered:
+
+1. Searchbar
+2. Tag-Button
+3. URL
+
+The Searchbar can be used to search all projects for a term included in name, tag or status. Prefixes can be used to specify the search context (e.g. tag:mycustomtag). If no prefix is used display name, tag and status is searched for a match. After typing the project list and the URL are instantly updated. The URL can then be shared to other users including the filter.
+The Tag-Button can be clicked to only show projects including the clicked tag.
+The URL supports query parameters which are instantly updated when typing search terms into the searchbar.
+
+**Notes:**
+
+- Use prefixes to search specific attributes. Available Prefixes: tag, name, status
+- The filter options can be easily shared by copying the link after typing in the search terms into the searchbar.
 
 **Instructions:**
 
@@ -218,6 +231,7 @@ The history contains all activities done directly refer to the current project.
 - Tags should not contain whitespaces or any special characters except "\_", "." or "-".
 - Tags can contain alphanumeric characters and can be up to 15 characters.
 - Tags cannot not start or end with the special characters listed above
+- Tag-Buttons in the project list of the overview page can filter projects by tag
 
 **Instructions:**
 
