@@ -135,4 +135,23 @@ describe("Navigation", function() {
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field] input").should("have.value", "");
   });
+
+  it("Filter projects by navigate to URL with query parameters", function() {
+    const queryParameter = {
+      name: projectWithTag.displayName,
+      status: "open",
+      tag: testTag
+    };
+    cy.visit("/projects", {
+      qs: queryParameter
+    });
+    cy.get("[data-test=project-search-field]").should("be.visible");
+    cy.get("[data-test=project-search-field] input").should(
+      "have.value",
+      "name:" + projectWithTag.displayName + " " + "status:open tag:" + testTag
+    );
+    // Only show project with tag
+    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("be.visible");
+  });
 });
