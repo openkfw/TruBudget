@@ -164,10 +164,11 @@ export default function overviewReducer(state = defaultState, action) {
     case PROJECT_CREATION_STEP:
       return state.set("currentStep", action.step);
     case FETCH_ALL_PROJECTS_SUCCESS:
-      return state.merge({
-        projects: fromJS(action.projects),
-        filteredProjects: fromJS(action.projects)
-      });
+      // While searching fetching projects may not update the project list
+      if (state.get("searchTerms").length === 0) {
+        state.set("filteredProjects", action.projects);
+      }
+      return state.set("projects", fromJS(action.projects));
     case ADD_TEMPORARY_PROJECT_PERMISSION:
       return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
     case REMOVE_TEMPORARY_PROJECT_PERMISSION:
