@@ -108,11 +108,15 @@ describe("Navigation", function() {
     // Type into search bar
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field]").should("be.visible");
-    cy.get("[data-test=project-search-field] input").type(projectWithTag.displayName);
+    cy.get("[data-test=project-search-field] input").type(projectNoTag.displayName);
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.be.visible");
     // Navigate via Main breadcrumb
     cy.get("[data-test=breadcrumb-Main]").click();
     cy.get("[data-test=project-search-field]").should("not.be.visible");
     cy.get("[data-test=toggle-project-search]").should("be.enabled");
+    // All projects are visible
+    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("be.visible");
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("be.visible");
     // Search field should be empty
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field] input").should("have.value", "");
@@ -122,7 +126,8 @@ describe("Navigation", function() {
     // Type into search bar
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field]").should("be.visible");
-    cy.get("[data-test=project-search-field] input").type(projectWithTag.displayName);
+    cy.get("[data-test=project-search-field] input").type(projectNoTag.displayName);
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.be.visible");
     // Go to project
     cy.get("[data-test*=project-view-button]")
       .first()
@@ -131,6 +136,9 @@ describe("Navigation", function() {
     cy.get("[data-test=breadcrumb-Projects]").click();
     cy.get("[data-test=project-search-field]").should("not.be.visible");
     cy.get("[data-test=toggle-project-search]").should("be.enabled");
+    // All projects are visible
+    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("be.visible");
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("be.visible");
     // Search field should be empty
     cy.get("[data-test=toggle-project-search]").click();
     cy.get("[data-test=project-search-field] input").should("have.value", "");

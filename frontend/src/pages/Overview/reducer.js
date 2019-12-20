@@ -2,6 +2,7 @@ import { fromJS, Set } from "immutable";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
+import { SEARCH_BAR_DISPLAYED } from "../Navbar/actions";
 import {
   ADD_PROJECT_TAG,
   ADD_TEMPORARY_PROJECT_PERMISSION,
@@ -188,6 +189,11 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set("highlightingRegex", fromJS(action.highlightingRegex));
     case STORE_SEARCH_TERMS_AS_ARRAY:
       return state.set("searchTerms", fromJS(action.searchTerms));
+    case SEARCH_BAR_DISPLAYED:
+      return state.merge({
+        searchTerms: defaultState.get("searchTerms"),
+        highlightingRegex: defaultState.get("highlightingRegex")
+      });
     default:
       return state;
   }
