@@ -14,7 +14,7 @@ import strings from "../../localizeStrings";
 import { canCreateProject, canUpdateProject, canViewProjectPermissions } from "../../permissions";
 import ProjectCard from "./ProjectCard";
 
-const styles = {
+const styles = theme => ({
   card: {
     maxWidth: "310px",
     margin: "35px",
@@ -81,16 +81,16 @@ const styles = {
   },
   highlightedTagButton: {
     margin: "1px",
-    backgroundColor: "#C2CCF8"
+    backgroundColor: theme.palette.primary.light
   }
-};
+});
 
-const displayProjectBudget = budgets => {
+const displayProjectBudget = ({ budgets, classes }) => {
   return (
     <div>
       {budgets.map((b, i) => {
         return (
-          <div key={`projectedBudget-${i}`} style={styles.budgets}>
+          <div key={`projectedBudget-${i}`} className={classes.budgets}>
             <Tooltip title={b.organization}>
               <Chip
                 avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
@@ -104,7 +104,7 @@ const displayProjectBudget = budgets => {
   );
 };
 
-const displayTags = (tags, storeSearchTerm, showSearchBar, searchTermArray) => {
+const displayTags = ({ classes, tags, storeSearchTerm, showSearchBar, searchTermArray }) => {
   return tags.map((tag, i) => (
     <Button
       variant="outlined"
@@ -113,8 +113,8 @@ const displayTags = (tags, storeSearchTerm, showSearchBar, searchTermArray) => {
         storeSearchTerm(`tag:${tag}`);
       }}
       key={`${tag}-${i}`}
-      style={
-        searchTermArray.some(searchTerm => tag.includes(searchTerm)) ? styles.highlightedTagButton : styles.tagButton
+      className={
+        searchTermArray.some(searchTerm => tag.includes(searchTerm)) ? classes.highlightedTagButton : classes.tagButton
       }
       component="span"
       data-test="overview-tag"
@@ -149,7 +149,7 @@ const getTableEntries = ({
       additionalData,
       tags
     } = data;
-    const budgets = displayProjectBudget(projectedBudgets);
+    const budgets = displayProjectBudget({ budgets: projectedBudgets, classes });
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = unixTsToString(creationUnixTs);
@@ -157,8 +157,7 @@ const getTableEntries = ({
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
-    const displayedTags = displayTags(tags || [], storeSearchTerm, showSearchBar, searchTermArray);
-
+    const displayedTags = displayTags({ classes, tags: tags || [], storeSearchTerm, showSearchBar, searchTermArray });
     return (
       <ProjectCard
         key={index}
@@ -182,7 +181,7 @@ const getTableEntries = ({
         description={description}
         thumbnail={thumbnail}
         tags={tags}
-        classes={classes}
+        parentClasses={classes}
         imagePath={imagePath}
         highlightingRegex={highlightingRegex}
       />
@@ -191,20 +190,21 @@ const getTableEntries = ({
 };
 
 const OverviewTable = props => {
+  const { classes, isRoot, allowedIntents, showCreationDialog } = props;
   const tableEntries = getTableEntries(props);
   return (
-    <div aria-label="projects" style={styles.tableEntries}>
+    <div aria-label="projects" className={classes.tableEntries}>
       {tableEntries}
-      <Card data-test="project-creation" style={styles.addProject}>
-        <div style={styles.addProjectContent}>
+      <Card data-test="project-creation" className={classes.addProject}>
+        <div className={classes.addProjectContent}>
           <CardActions>
             <Tooltip id="tooltip-pcreate" title={strings.common.create}>
               <div>
                 <Fab
-                  className={props.classes.button}
+                  className={classes.button}
                   aria-label="create"
-                  disabled={!canCreateProject(props.allowedIntents) || props.isRoot}
-                  onClick={() => props.showCreationDialog()}
+                  disabled={!canCreateProject(allowedIntents) || isRoot}
+                  onClick={() => showCreationDialog()}
                   color="primary"
                   data-test="create-project-button"
                 >

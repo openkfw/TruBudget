@@ -1,7 +1,7 @@
 import _isEqual from "lodash/isEqual";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import worker from "../../filterProjects.worker.js";
+import worker from "../Common/filterProjects.worker.js";
 import { toJS } from "../../helper";
 import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";

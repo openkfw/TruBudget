@@ -1,3 +1,4 @@
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -18,7 +19,6 @@ import MoreIcon from "@material-ui/icons/MoreHoriz";
 import ViewIcon from "@material-ui/icons/ZoomIn";
 import React from "react";
 import Highlight from "react-highlighter";
-
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
@@ -26,9 +26,6 @@ import ActionButton from "../Common/ActionButton";
 const styles = {
   editIcon: {
     color: "black"
-  },
-  highlightedText: {
-    backgroundColor: "#C2CCF8"
   }
 };
 
@@ -53,13 +50,14 @@ const ProjectCard = ({
   description,
   thumbnail,
   tags,
-  classes,
+  parentClasses,
   imagePath,
-  highlightingRegex
+  highlightingRegex,
+  theme
 }) => {
   return (
-    <Card aria-label="project" key={index} className={classes.card} data-test={`project-card-${id}`}>
-      <CardMedia className={classes.media} image={imagePath} />
+    <Card aria-label="project" key={index} className={parentClasses.card} data-test={`project-card-${id}`}>
+      <CardMedia className={parentClasses.media} image={imagePath} />
       <CardActions
         style={{
           display: "flex",
@@ -72,7 +70,7 @@ const ProjectCard = ({
         <Tooltip id="tooltip-pview" title={strings.common.view}>
           <div>
             <Fab
-              className={classes.button}
+              className={parentClasses.button}
               disabled={!canViewProjectDetails(allowedIntents)}
               color="primary"
               onClick={() => {
@@ -88,16 +86,16 @@ const ProjectCard = ({
       <CardContent>
         <CardHeader
           data-test="project-header"
-          className={classes.cardHeader}
+          className={parentClasses.cardHeader}
           title={
-            <div className={classes.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
-              <Highlight matchStyle={styles.highlightedText} search={highlightingRegex}>
+            <div className={parentClasses.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
+              <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
                 {displayName}
               </Highlight>
             </div>
           }
           subheader={
-            <Highlight matchStyle={styles.highlightedText} search={highlightingRegex}>
+            <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
               {mappedStatus}
             </Highlight>
           }
@@ -107,14 +105,14 @@ const ProjectCard = ({
             style={{ marginTop: "5px", height: "200px", overflow: "scroll", overflowY: "auto", overflowX: "hidden" }}
           >
             {projectedBudgets.length === 0 ? null : (
-              <ListItem className={classes.listItem} disabled={true}>
+              <ListItem className={parentClasses.listItem} disabled={true}>
                 <ListItemIcon>
                   <AmountIcon />
                 </ListItemIcon>
                 <ListItemText data-test="project-budget" primary={budgets} secondary={strings.common.budget} />
               </ListItem>
             )}
-            <ListItem className={classes.listItem} disabled={true}>
+            <ListItem className={parentClasses.listItem} disabled={true}>
               <ListItemIcon>
                 <DateIcon />
               </ListItemIcon>
@@ -123,7 +121,7 @@ const ProjectCard = ({
             {displayedTags.length > 0 ? (
               <ListItem
                 style={{ marginTop: "13px" }}
-                className={classes.listItem}
+                className={parentClasses.listItem}
                 data-test="overview-taglist"
                 disabled={true}
               >
@@ -134,7 +132,7 @@ const ProjectCard = ({
               </ListItem>
             ) : null}
           </div>
-          <div className={classes.editContainer}>
+          <div className={parentClasses.editContainer}>
             <ActionButton
               notVisible={additionalDataEmpty}
               onClick={() => {
@@ -170,4 +168,4 @@ const ProjectCard = ({
   );
 };
 
-export default ProjectCard;
+export default withTheme()(withStyles(styles)(ProjectCard));

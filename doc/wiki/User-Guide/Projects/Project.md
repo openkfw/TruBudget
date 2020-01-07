@@ -51,7 +51,7 @@ View all projects where the current user has view-permissions on.
 
 **Description:**
 
-There are 3 ways how projects can be filtered:
+There are 3 ways how projects can be filtered on the overview page:
 
 1. Searchbar
 2. Tag-Button

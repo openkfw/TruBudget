@@ -165,7 +165,7 @@ export default function overviewReducer(state = defaultState, action) {
     case PROJECT_CREATION_STEP:
       return state.set("currentStep", action.step);
     case FETCH_ALL_PROJECTS_SUCCESS:
-      // While searching fetching projects may not update the project list
+      // While searching, fetching projects may not update the project list
       if (state.get("searchTerms").size === 0) {
         state = state.set("filteredProjects", action.projects);
       }
