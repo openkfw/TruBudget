@@ -98,6 +98,14 @@ if (
     warn("There are new console logs in the API!");
   }
 
+  // Warn if there were only keyword added in the e2e-test
+  const e2etestChanges = await getChanges("e2e-test/cypress/integration/*.js");
+  const { additions: e2etestAdditions } = getContentByType(e2etestChanges);
+
+  if (e2etestAdditions.some(addition => addition.includes(".only"))) {
+    warn("The '.only' keyword was added to the e2e-tests");
+  }
+
   const allChanges = await getChanges("**/*");
   const { additions: allAdditions } = getContentByType(allChanges);
 

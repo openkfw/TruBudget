@@ -16,14 +16,17 @@ import globalStyles from "../../styles";
 import { toJS } from "../../helper";
 
 class NotificationPageContainer extends Component {
-  componentWillMount() {
-    this.props.fetchNotifications(this.props.currentPage);
+  componentDidMount() {
     this.props.disableLiveUpdates();
+    this.props.fetchNotifications(this.props.currentPage);
   }
 
   componentWillUnmount() {
-    this.props.enableLiveUpdates();
-    this.props.fetchNotificationCounts();
+    const loggingOut = this.props.jwt;
+    if (!loggingOut) {
+      this.props.enableLiveUpdates();
+      this.props.fetchNotificationCounts();
+    }
   }
 
   render() {
@@ -50,6 +53,7 @@ const mapDispatchToProps = (dispatch, props) => {
 
 const mapStateToProps = state => {
   return {
+    jwt: state.getIn(["login", "jwt"]),
     notifications: state.getIn(["notifications", "notifications"]),
     notificationsPerPage: state.getIn(["notifications", "notificationPageSize"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),

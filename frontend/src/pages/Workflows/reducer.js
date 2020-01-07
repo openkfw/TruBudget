@@ -3,7 +3,6 @@ import Immutable, { fromJS } from "immutable";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
-import { LOGOUT } from "../Login/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
 import { FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
 import { FETCH_SUBPROJECT_PERMISSIONS, FETCH_SUBPROJECT_PERMISSIONS_SUCCESS } from "../SubProjects/actions";
@@ -421,8 +420,6 @@ export default function detailviewReducer(state = defaultState, action) {
           ? fromJS(action.permissions.workflowitem)
           : defaultState.get("temporaryPermissions")
       );
-    case LOGOUT:
-      return defaultState;
     case OPEN_HISTORY:
       return state.set("showHistory", true).set("isHistoryLoading", true);
     case ADD_TEMPORARY_WORKFLOWITEM_PERMISSION:

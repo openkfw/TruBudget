@@ -14,7 +14,6 @@ describe("Project Edit", function() {
   });
 
   it("Editing the title is possible", function() {
-    cy.server();
     cy.get(`[data-test=project-card-${projectId}]`).within(() => {
       cy.get(`[data-test=pe-button]`).click();
     });
@@ -45,7 +44,6 @@ describe("Project Edit", function() {
   });
 
   it("Editing without a change isn't possible", function() {
-    cy.server();
     cy.get(`[data-test=project-card-${projectId}]`).within(() => {
       cy.get(`[data-test=pe-button]`).click();
     });
@@ -63,7 +61,6 @@ describe("Project Edit", function() {
   });
 
   it("The edit button isn't visible without edit permissions", function() {
-    cy.server();
     cy.get(`[data-test=project-card-${projectId}]`).within(() => {
       cy.get(`[data-test=pe-button]`).should("be.enabled");
     });

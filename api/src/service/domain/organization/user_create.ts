@@ -40,6 +40,7 @@ export function validate(input: any): Result.Type<RequestData> {
 interface Repository {
   getGlobalPermissions(): Promise<GlobalPermissions>;
   userExists(userId: string): Promise<boolean>;
+  organizationExists(organization: string): Promise<boolean>;
   createKeyPair(): Promise<KeyPair>;
   hash(plaintext: string): Promise<string>;
   encrypt(plaintext: string): Promise<string>;
@@ -74,6 +75,9 @@ export async function createUser(
 
   if (await repository.userExists(data.userId)) {
     return new PreconditionError(ctx, createEvent, "user already exists");
+  }
+  if (!(await repository.organizationExists(data.organization))) {
+    return new PreconditionError(ctx, createEvent, "organization does not exist");
   }
 
   // Check authorization (if not root):

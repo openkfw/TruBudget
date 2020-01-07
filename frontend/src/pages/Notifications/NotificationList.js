@@ -39,7 +39,7 @@ const onChangeRowsPerPage = (
   fetchNotifications(0);
 };
 
-const NotificationsList = props => {
+const NotificationList = props => {
   const {
     classes,
     markMultipleNotificationsAsRead,
@@ -103,4 +103,4 @@ const NotificationsList = props => {
   );
 };
 
-export default withStyles(styles)(NotificationsList);
+export default withStyles(styles)(NotificationList);

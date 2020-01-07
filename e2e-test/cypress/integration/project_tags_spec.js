@@ -1,6 +1,8 @@
 describe("Project Tags", function() {
-  let projectId;
+  let projectId, baseUrl, apiRoute;
   before(() => {
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
     cy.visit("/projects/");
   });
@@ -11,11 +13,6 @@ describe("Project Tags", function() {
   });
 
   it("Tags added upon project creation are displayed in the overview and project details", function() {
-    const baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    const apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createProject").as("create");
-
     // Click the "Create Project" button and enter some data
     cy.get("[data-test=create-project-button]").click();
     cy.get("[data-test=nameinput] input").type("Tag Test");
@@ -28,6 +25,8 @@ describe("Project Tags", function() {
       .should("contain", "test");
 
     // Submit the project
+    cy.server();
+    cy.route("POST", apiRoute + "/global.createProject").as("create");
     cy.get("[data-test=submit]").click();
     cy.wait("@create")
       .then(data => {
@@ -46,11 +45,6 @@ describe("Project Tags", function() {
       .then(() => cy.get("[data-test=project-details-tag]").should("have.length", 1));
   });
   it("When editing the project, the existing tags are displayed, can be deleted and new ones can be added", function() {
-    const baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    const apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createProject").as("create");
-
     // Create a project with tags
     cy.get("[data-test=create-project-button]").click();
     cy.get("[data-test=nameinput] input").type("Tag Test");
@@ -59,6 +53,8 @@ describe("Project Tags", function() {
     cy.get("[data-test=tageditor-tag]")
       .first()
       .should("contain", "test");
+    cy.server();
+    cy.route("POST", apiRoute + "/global.createProject").as("create");
     cy.get("[data-test=submit]").click();
     cy.wait("@create")
       .then(data => {
@@ -96,11 +92,6 @@ describe("Project Tags", function() {
       );
   });
   it("When editing the project, the tags are not changed when pressing the 'cancel' button", function() {
-    const baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    const apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createProject").as("create");
-
     // Create a project with tags
     cy.get("[data-test=create-project-button]").click();
     cy.get("[data-test=nameinput] input").type("Tag Test");
@@ -109,6 +100,8 @@ describe("Project Tags", function() {
     cy.get("[data-test=tageditor-tag]")
       .first()
       .should("contain", "test");
+    cy.server();
+    cy.route("POST", apiRoute + "/global.createProject").as("create");
     cy.get("[data-test=submit]").click();
     cy.wait("@create")
       .then(data => {

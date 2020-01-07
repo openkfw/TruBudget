@@ -33,7 +33,15 @@ const styles = {
 const Refresh = props => (
   <div style={styles.container}>
     <div style={styles.refreshContainer}>
-      <CircularProgress size={50} left={0} top={0} percentage={50} color="primary" style={styles.refresh} />
+      <CircularProgress
+        data-test="loading-indicator"
+        size={50}
+        left={0}
+        top={0}
+        percentage={50}
+        color="primary"
+        style={styles.refresh}
+      />
     </div>
   </div>
 );

@@ -14,11 +14,8 @@ import {
 import LoginPage from "./LoginPage";
 
 class LoginPageContainer extends Component {
-  componentWillMount() {
-    this.props.initLanguage();
-  }
-
   componentDidMount() {
+    this.props.initLanguage();
     this.props.getEnvironment();
     this.checkIfRedirect();
   }
@@ -33,6 +30,7 @@ class LoginPageContainer extends Component {
 
     if (this.props.jwt) this.props.history.push(path);
   }
+
   render() {
     return <LoginPage {...this.props} />;
   }

@@ -2,13 +2,14 @@ import _cloneDeep from "lodash/cloneDeep";
 
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
 const testUser = { id: "thouse", displayname: "Tom House" };
-let projectId;
-let subprojectId;
-let permissionsBeforeTesting;
+let projectId, subprojectId, permissionsBeforeTesting, baseUrl, apiRoute;
 const subprojectDisplayname = "subproject assign test";
 
 describe("Subproject Permissions", function() {
   before(() => {
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
+
     cy.login();
     cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
       projectId = id;
@@ -36,7 +37,7 @@ describe("Subproject Permissions", function() {
     intentsToRevoke.forEach(intent => cy.revokeProjectPermission(projectId, intent, userId));
   }
 
-  function checkPermissionsEquality(permissionsBeforeTesting, projectId, subprojectId) {
+  function assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId) {
     cy.listProjectPermissions(projectId).then(permissions => {
       expect(permissions).to.deep.equal(permissionsBeforeTesting.project);
     });
@@ -110,14 +111,15 @@ describe("Subproject Permissions", function() {
   it("Canceling the permission dialog doesn't revoke nor grant permissions ", function() {
     cy.get("[data-test=spp-button-0]").click();
     cy.get("[data-test=permission-close]").click();
-    checkPermissionsEquality(permissionsBeforeTesting, projectId, subprojectId);
+    assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId);
   });
 
   it("Submitting the permission dialog without any changes doesn't revoke nor grant permissions and close the dialog", function() {
     cy.get("[data-test=spp-button-0]").click();
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     cy.get("[data-test=permission-container]").should("not.be.visible");
-    checkPermissionsEquality(permissionsBeforeTesting, projectId, subprojectId);
+    assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId);
   });
 
   it("Submitting the permission dialog after adding a user opens a confirmation dialog", function() {
@@ -128,6 +130,7 @@ describe("Subproject Permissions", function() {
       .click()
       .type("{esc}");
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
 
@@ -140,6 +143,7 @@ describe("Subproject Permissions", function() {
       .click()
       .type("{esc}");
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id);
   });
@@ -154,6 +158,7 @@ describe("Subproject Permissions", function() {
     // Remove permission
     changePermissionInGui("subproject.intent.grantPermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     cy.get("[data-test=confirmation-dialog-cancel]").should("not.be.visible");
 
     // Reset permissions
@@ -172,6 +177,7 @@ describe("Subproject Permissions", function() {
     // Add permission
     changePermissionInGui("subproject.intent.grantPermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     cy.get("[data-test=confirmation-dialog-cancel]").should("not.be.visible");
 
     // Reset permissions
@@ -201,6 +207,7 @@ describe("Subproject Permissions", function() {
     // Add permission
     changePermissionInGui("subproject.update", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     cy.get("[data-test=actions-table-body]")
       .should("be.visible")
       .children()
@@ -212,6 +219,7 @@ describe("Subproject Permissions", function() {
     // Add permission
     changePermissionInGui("subproject.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     actionTableIncludes("view permissions");
   });
 
@@ -223,6 +231,7 @@ describe("Subproject Permissions", function() {
     // Add permission
     changePermissionInGui("subproject.viewDetails", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     cy.get("[data-test=actions-table-body]")
       .should("be.visible")
       .children()
@@ -241,15 +250,19 @@ describe("Subproject Permissions", function() {
     // Add permission
     changePermissionInGui("subproject.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
+    // listPermissions calls are done
     cy.get("[data-test=actions-table-body]")
       .should("be.visible")
       .children()
       .should("have.length", 5);
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .click()
-      .should("be.not.disabled");
-
-    checkPermissionsEquality(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId, subprojectId);
+    // Make sure cypress waits for future listPermissions calls
+    cy.server();
+    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
+    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubprojectPermissions");
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
+    assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId, subprojectId);
 
     // Reset permissions
     Cypress.Promise.all([
@@ -266,18 +279,21 @@ describe("Subproject Permissions", function() {
     cy.get("[data-test=spp-button-0]").click();
     changePermissionInGui("subproject.assign", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     actionTableIncludes("view permissions");
     cy.get("[data-test=confirmation-dialog-cancel]").click();
     changePermissionInGui("subproject.assign", testUser.id);
     // Check grant
     changePermissionInGui("subproject.intent.grantPermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     actionTableIncludes("view permissions");
     cy.get("[data-test=confirmation-dialog-cancel]").click();
     changePermissionInGui("subproject.intent.grantPermission", testUser.id);
     // Check revoke
     changePermissionInGui("subproject.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     actionTableIncludes("view permissions");
   });
 
@@ -290,16 +306,24 @@ describe("Subproject Permissions", function() {
     changePermissionInGui("subproject.viewDetails", testUser.id);
     changePermissionInGui("subproject.intent.listPermissions", testUser.id);
     cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
     cy.get("[data-test=actions-table-body]").should("be.visible");
+    cy.server();
+    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    // Additional actions are executed
+    cy.wait("@listProjectPermissions");
+    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubprojectPermissions");
     cy.get("[data-test=confirmation-dialog-confirm]")
-      .click()
       .should("be.not.disabled")
       .click();
-
+    // Original actions are executed
+    cy.get("[data-test=permission-submit]").should("not.be.visible");
+    cy.wait("@listSubprojectPermissions");
     let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
     permissions.subproject["subproject.update"].push(testUser.id);
     permissions.subproject["subproject.createWorkflowitem"].push(testUser.id);
-    checkPermissionsEquality(permissions, projectId, subprojectId);
+    assertUnchangedPermissions(permissions, projectId, subprojectId);
 
     // Reset permissions
     Cypress.Promise.all([
@@ -315,7 +339,6 @@ describe("Subproject Permissions", function() {
 
   it("Confirmation of multiple revoke permission changes grants permissions correctly", function() {
     let permissionsCopy;
-
     Cypress.Promise.all([
       cy.grantProjectPermission(projectId, "project.viewSummary", testUser.id),
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id),
@@ -330,8 +353,8 @@ describe("Subproject Permissions", function() {
       });
       cy.listSubprojectPermissions(projectId, subprojectId).then(permissions => {
         permissionsBeforeTesting.subproject = permissions;
-        permissionsCopy = _cloneDeep(permissionsBeforeTesting);
 
+        permissionsCopy = _cloneDeep(permissionsBeforeTesting);
         cy.get("[data-test=spp-button-0]").click();
         // Remove permissions
         changePermissionInGui("subproject.update", testUser.id);
@@ -340,8 +363,14 @@ describe("Subproject Permissions", function() {
         changePermissionInGui("subproject.viewDetails", testUser.id);
         changePermissionInGui("subproject.intent.listPermissions", testUser.id);
         cy.get("[data-test=permission-submit]").click();
+        // Confirmation opens
+        cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible");
+        cy.server();
+        cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubprojectPermissions");
         cy.get("[data-test=confirmation-dialog-confirm]").click();
-
+        // Original actions are executed
+        cy.get("[data-test=permission-submit]").should("not.be.visible");
+        cy.wait("@listSubprojectPermissions");
         // Equal permissions
         permissionsCopy.subproject = removePermission(permissionsCopy.subproject, "subproject.update", testUser.id);
         permissionsCopy.subproject = removePermission(
@@ -365,7 +394,7 @@ describe("Subproject Permissions", function() {
           testUser.id
         );
 
-        checkPermissionsEquality(permissionsCopy, projectId, subprojectId);
+        assertUnchangedPermissions(permissionsCopy, projectId, subprojectId);
 
         // Reset permissions
         cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id);

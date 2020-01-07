@@ -1,5 +1,4 @@
 import { fromJS } from "immutable";
-import { LOGOUT } from "../Login/actions";
 import {
   FETCH_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_FAILURE,
@@ -170,8 +169,6 @@ export default function confirmationReducer(state = defaultState, action) {
       return state;
     case STORE_REQUESTED_PERMISSIONS:
       return state.set("requestedPermissions", action.permissions);
-    case LOGOUT:
-      return defaultState;
     default:
       return state;
   }

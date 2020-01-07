@@ -1,17 +1,16 @@
 import { fromJS } from "immutable";
-
-import { LOGOUT } from "../Login/actions";
 import {
   CLOSE_ANALYTICS_DIALOG,
   GET_EXCHANGE_RATES_SUCCESS,
   GET_PROJECT_KPIS,
   GET_PROJECT_KPIS_FAIL,
   GET_PROJECT_KPIS_SUCCESS,
+  GET_SUBPROJECT_KPIS,
+  GET_SUBPROJECT_KPIS_FAIL,
   GET_SUBPROJECT_KPIS_SUCCESS,
   OPEN_ANALYTICS_DIALOG,
   RESET_KPIS,
-  STORE_DISPLAY_CURRENCY,
-  GET_SUBPROJECT_KPIS_FAIL
+  STORE_DISPLAY_CURRENCY
 } from "./actions";
 
 /**
@@ -45,16 +44,22 @@ const defaultState = fromJS({
   },
   dialogOpen: false,
   exchangeRates: {},
-  canShowAnalytics: false
+  canShowAnalytics: false,
+  isFetchingKPIs: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case GET_PROJECT_KPIS:
-      return state.set("canShowAnalytics", undefined);
+    case GET_SUBPROJECT_KPIS:
+      return state.set("isFetchingKPIs", true);
+    case GET_PROJECT_KPIS_FAIL:
+    case GET_SUBPROJECT_KPIS_FAIL:
+      return state.merge({ canShowAnalytics: false, isFetchingKPIs: false });
     case GET_PROJECT_KPIS_SUCCESS:
       return state.merge({
         canShowAnalytics: true,
+        isFetchingKPIs: false,
         project: {
           totalBudget: fromJS(action.totalBudget),
           projectedBudget: fromJS(action.projectedBudget),
@@ -62,12 +67,10 @@ export default function detailviewReducer(state = defaultState, action) {
           disbursedBudget: fromJS(action.disbursedBudget)
         }
       });
-    case GET_PROJECT_KPIS_FAIL:
-    case GET_SUBPROJECT_KPIS_FAIL:
-      return state.set("canShowAnalytics", false);
     case GET_SUBPROJECT_KPIS_SUCCESS:
       return state.merge({
         canShowAnalytics: true,
+        isFetchingKPIs: false,
         subproject: {
           currency: action.subProjectCurrency,
           projectedBudgets: fromJS(action.projectedBudgets),
@@ -83,7 +86,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("dialogOpen", true).set("canShowAnalytics", undefined);
     case CLOSE_ANALYTICS_DIALOG:
       return state.set("dialogOpen", false);
-    case LOGOUT:
     case RESET_KPIS:
       return defaultState;
     default:

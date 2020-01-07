@@ -34,11 +34,12 @@ const styles = {
 };
 
 class WorkflowDialogAmount extends Component {
-  componentWillMount() {
-    preselectCurrency(
-      this.props.workflowCurrency ? this.props.workflowCurrency : this.props.subProjectCurrency,
-      this.props.storeWorkflowCurrency
-    );
+  constructor(props) {
+    super(props);
+    this.currency = this.props.workflowCurrency ? this.props.workflowCurrency : this.props.subProjectCurrency;
+  }
+  componentDidMount() {
+    preselectCurrency(this.currency, this.props.storeWorkflowCurrency);
   }
 
   getMenuItems(currencies) {

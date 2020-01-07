@@ -1,5 +1,5 @@
 import React from "react";
-import { arrayMove } from "react-sortable-hoc";
+import arrayMove from "array-move";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";

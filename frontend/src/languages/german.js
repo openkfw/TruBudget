@@ -275,6 +275,8 @@ const de = {
     available_unspent_budget: "Verfügbares Budget",
     converted_amount: "Umgerechneter Betrag",
     disbursed_budget_ratio: "Ausgezahlte Budgetquote",
+    insufficient_permissions_text:
+      "Ein oder mehrere Workflowitems sind zensiert. Die Analysen werden ausgeblendet, weil sie verfälscht würden.",
     project_analytics: "Projekt Analyse",
     projected_budget_ratio: "Projezierte Budgetquote",
     projected_budgets_distribution: "Verteilung des geplanten Budgets",

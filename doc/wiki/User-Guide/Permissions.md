@@ -72,7 +72,7 @@ These section describes all permissions related to a project. Selecting a user o
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 
 ### Write permissions
 
@@ -85,7 +85,7 @@ These section describes all permissions related to a project. Selecting a user o
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 
 ### Admin permissions
 
@@ -98,7 +98,7 @@ These section describes all permissions related to a project. Selecting a user o
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 
 ## Subproject permissions
 
@@ -135,7 +135,7 @@ Following intents do exist related to view permissions of a subproject:
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 - "view project overview" and "view project details" are also required to view a subproject
 
 ### Write permissions
@@ -153,7 +153,7 @@ Following intents do exist related to write permissions of a project:
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 
 ### Admin permissions
 
@@ -166,7 +166,7 @@ Following intents do exist related to write permissions of a project:
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 
 ## Workflow permissions
 
@@ -204,7 +204,7 @@ Following intents do exist related to view permissions of a subproject:
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 - "view project overview", "view project details", "view subproject overview" and "view subproject details" are also required to view a workflowitem
 
 ### Write permissions
@@ -220,7 +220,7 @@ Following intents do exist related to write permissions of a project:
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 
 ### Admin permissions
 
@@ -235,7 +235,7 @@ Following permissions do exist related to a workflowitem:
 **Notes:**
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they are granted. (see [confirmation](../Confirmation) for more Details)
+  On confirm they are granted. (see [confirmation](./Confirmation.md) for more Details)
 
 ## Permission intents
 

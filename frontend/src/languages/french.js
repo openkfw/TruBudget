@@ -277,6 +277,8 @@ const fr = {
     available_unspent_budget: "Budget non dépensé disponible",
     converted_amount: "Montant converti",
     disbursed_budget_ratio: "Taux de décaissement(décaissé/alloué)",
+    insufficient_permissions_text:
+      "Un ou plusieurs flux de travaux sont rédigés. Les analyses sont masquées car elles seraient falsifiées.",
     project_analytics: "Analyse de projet",
     projected_budget_ratio: "Taux d’estimation du budget(estimé/total)",
     projected_budgets_distribution: "Répartition du budget total",

@@ -1,17 +1,15 @@
 import { fromJS } from "immutable";
-
+import { CLOSE_WORKFLOWITEM_DETAILS } from "../actions";
 import {
-  SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT,
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
-  RESET_WORKFLOWITEM_HISTORY
+  RESET_WORKFLOWITEM_HISTORY,
+  SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT
 } from "./actions";
-import { CLOSE_WORKFLOWITEM_DETAILS } from "../actions";
-import { LOGOUT } from "../../Login/actions";
 
 const historyPageSize = 30;
 
-const initialState = fromJS({
+const defaultState = fromJS({
   historyItems: [],
   totalHistoryItemCount: 0,
   historyPageSize: historyPageSize,
@@ -20,7 +18,7 @@ const initialState = fromJS({
   isHistoryLoading: false
 });
 
-export default function reducer(state = initialState, action) {
+export default function reducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE:
       return state.set("isHistoryLoading", true);
@@ -39,9 +37,7 @@ export default function reducer(state = initialState, action) {
       });
     case RESET_WORKFLOWITEM_HISTORY:
     case CLOSE_WORKFLOWITEM_DETAILS:
-    case LOGOUT:
-      return initialState;
-
+      return defaultState;
     default:
       return state;
   }

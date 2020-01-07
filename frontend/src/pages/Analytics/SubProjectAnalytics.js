@@ -45,12 +45,22 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     marginBottom: "24px"
+  },
+  warning: {
+    backgroundColor: "rgb(255, 165, 0, 0.7)",
+    color: "black",
+    borderStyle: "solid",
+    borderRadius: "4px",
+    borderColor: "orange",
+    padding: "2px",
+    textAlign: "center"
   }
 };
 
 class SubprojectAnalytics extends React.Component {
   componentDidMount() {
     this.props.getSubProjectKPIs(this.props.projectId, this.props.subProjectId);
+    this.props.getExchangeRates(this.props.indicatedCurrency);
   }
   componentWillUnmount() {
     this.props.resetKPIs();
@@ -59,7 +69,9 @@ class SubprojectAnalytics extends React.Component {
   convertToSelectedCurrency(amount, sourceCurrency) {
     const sourceExchangeRate = this.props.exchangeRates[sourceCurrency];
     const targetExchangeRate = this.props.exchangeRates[this.props.indicatedCurrency];
-    return sourceExchangeRate && targetExchangeRate ? targetExchangeRate / sourceExchangeRate * parseFloat(amount) : 0;
+    return sourceExchangeRate && targetExchangeRate
+      ? (targetExchangeRate / sourceExchangeRate) * parseFloat(amount)
+      : 0;
   }
 
   convertProjectedBudget() {
@@ -79,12 +91,12 @@ class SubprojectAnalytics extends React.Component {
     }, 0);
     const convertedAssignedBudget = this.convertToSelectedCurrency(assignedBudget, subProjectCurrency);
     const convertedDisbursedBudget = this.convertToSelectedCurrency(disbursedBudget, subProjectCurrency);
-    return this.props.canShowAnalytics ? (
-      <div>
+    return !this.props.isFetchingKPIs ? (
+      <>
         <div style={styles.container}>
           <div style={styles.topContainer}>
             <div style={styles.table}>
-              <Table>
+              <Table data-test="projected-budget-table">
                 <TableHead>
                   <TableRow>
                     <TableCell>{strings.common.organization}</TableCell>
@@ -110,25 +122,31 @@ class SubprojectAnalytics extends React.Component {
                     <TableCell />
                     <TableCell />
                     <TableCell />
-                    <TableCell />
-                    <TableCell align="right">{toAmountString(projectedBudget, indicatedCurrency)}</TableCell>
+                    <TableCell align="right">{strings.analytics.total}</TableCell>
+                    <TableCell data-test="table-total-budget" align="right">
+                      {toAmountString(projectedBudget, indicatedCurrency)}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             </div>
           </div>
-          <Dashboard
-            indicatedCurrency={this.props.indicatedCurrency}
-            projectedBudget={projectedBudget}
-            projectedBudgets={projectedBudgets}
-            disbursedBudget={convertedDisbursedBudget}
-            assignedBudget={convertedAssignedBudget}
-          />
+          {this.props.canShowAnalytics ? (
+            <Dashboard
+              indicatedCurrency={this.props.indicatedCurrency}
+              projectedBudget={projectedBudget}
+              projectedBudgets={projectedBudgets}
+              disbursedBudget={convertedDisbursedBudget}
+              assignedBudget={convertedAssignedBudget}
+            />
+          ) : (
+            <Typography style={styles.warning} data-test="redacted-warning">
+              {strings.analytics.insufficient_permissions_text}
+            </Typography>
+          )}
         </div>
-      </div>
-    ) : this.props.canShowAnalytics === undefined ? null : (
-      <div>Insufficient permissions.</div>
-    );
+      </>
+    ) : null;
   }
 }
 
@@ -163,35 +181,37 @@ const dashboardStyles = {
   }
 };
 
-const NumberChart = ({ title, budget, currency }) => (
+const NumberChart = ({ title, budget, currency, dataTest }) => (
   <Card style={dashboardStyles.card}>
     <CardContent style={dashboardStyles.numberContent}>
       <Typography style={{ flex: 1 }} variant="overline">
         {title}
       </Typography>
-      <Typography style={{ flex: 1 }} variant="h6">
+      <Typography style={{ flex: 1 }} data-test={dataTest} variant="h6">
         {toAmountString(budget, currency)}
       </Typography>
     </CardContent>
   </Card>
 );
-const RatioChart = ({ title, budget }) => (
+const RatioChart = ({ title, budget, dataTest }) => (
   <Card style={dashboardStyles.card}>
     <CardContent style={dashboardStyles.ratioContent}>
       <Typography style={{ flex: 1 }} variant="overline">
         {title}
       </Typography>
-      <Typography style={{ flex: 1 }} variant="h6">
+      <Typography style={{ flex: 1 }} data-test={dataTest} variant="h6">
         {budget ? `${(budget * 100).toFixed(2)}%` : "-"}
       </Typography>
     </CardContent>
   </Card>
 );
 
-const Chart = ({ title, chart }) => (
+const Chart = ({ title, chart, dataTest }) => (
   <Card style={dashboardStyles.card}>
     <CardContent style={dashboardStyles.chartContent}>
-      <Typography variant="overline">{title}</Typography>
+      <Typography data-test={dataTest} variant="overline">
+        {title}
+      </Typography>
       <div style={{ flex: 1 }}>{chart}</div>
     </CardContent>
   </Card>
@@ -232,11 +252,34 @@ const Dashboard = ({ indicatedCurrency, projectedBudgets, projectedBudget, assig
           />
         }
       />
-      <NumberChart title={strings.common.projected_budget} budget={projectedBudget} currency={indicatedCurrency} />
-      <NumberChart title={strings.common.assigned_budget} budget={assignedBudget} currency={indicatedCurrency} />
-      <NumberChart title={strings.common.disbursed_budget} budget={disbursedBudget} currency={indicatedCurrency} />
-      <RatioChart title={strings.analytics.assigned_budget_ratio} budget={assignedBudget / projectedBudget} />
-      <RatioChart title={strings.analytics.disbursed_budget_ratio} budget={disbursedBudget / assignedBudget} />
+      <NumberChart
+        title={strings.common.projected_budget}
+        budget={projectedBudget}
+        dataTest="number-chart-projected-budget"
+        currency={indicatedCurrency}
+      />
+      <NumberChart
+        title={strings.common.assigned_budget}
+        budget={assignedBudget}
+        dataTest="number-chart-assigned-budget"
+        currency={indicatedCurrency}
+      />
+      <NumberChart
+        title={strings.common.disbursed_budget}
+        budget={disbursedBudget}
+        dataTest="number-chart-disbursed-budget"
+        currency={indicatedCurrency}
+      />
+      <RatioChart
+        title={strings.analytics.assigned_budget_ratio}
+        dataTest="ratio-chart-assigned-budget"
+        budget={assignedBudget / projectedBudget}
+      />
+      <RatioChart
+        title={strings.analytics.disbursed_budget_ratio}
+        dataTest="ratio-chart-disbursed-budget"
+        budget={disbursedBudget / assignedBudget}
+      />
     </div>
   );
 };
@@ -245,11 +288,11 @@ const mapStateToProps = state => {
   return {
     subProjectCurrency: state.getIn(["analytics", "subproject", "currency"]),
     indicatedCurrency: state.getIn(["analytics", "currency"]),
-    projectedBudgets: state.getIn(["analytics", "subproject", "projectedBudgets"]),
     assignedBudget: state.getIn(["analytics", "subproject", "assignedBudget"]),
     disbursedBudget: state.getIn(["analytics", "subproject", "disbursedBudget"]),
     exchangeRates: state.getIn(["analytics", "exchangeRates"]),
-    canShowAnalytics: state.getIn(["analytics", "canShowAnalytics"])
+    canShowAnalytics: state.getIn(["analytics", "canShowAnalytics"]),
+    isFetchingKPIs: state.getIn(["analytics", "isFetchingKPIs"])
   };
 };
 

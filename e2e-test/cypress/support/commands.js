@@ -72,7 +72,7 @@ Cypress.Commands.add("addUser", (username, userId, password, organization = "KfW
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body));
+    .then(body => Cypress.Promise.resolve(body));
 });
 
 Cypress.Commands.add("fetchProjects", () => {
@@ -84,7 +84,7 @@ Cypress.Commands.add("fetchProjects", () => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data.items));
+    .then(body => Cypress.Promise.resolve(body.data.items));
 });
 
 Cypress.Commands.add("fetchSubprojects", projectId => {
@@ -96,7 +96,7 @@ Cypress.Commands.add("fetchSubprojects", projectId => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data.subprojects));
+    .then(body => Cypress.Promise.resolve(body.data.subprojects));
 });
 
 Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName, opts = { amountType: "N/A" }) => {
@@ -118,7 +118,7 @@ Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName
   })
     .its("body")
     .then(body =>
-      Promise.resolve({
+      Cypress.Promise.resolve({
         id: body.data.workflowitem.id
       })
     );
@@ -126,7 +126,7 @@ Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName
 
 Cypress.Commands.add(
   "createProject",
-  (displayName, description, projectedBudgets, thumbnail = "/Thumbnail_0001.jpg") => {
+  (displayName, description, projectedBudgets, thumbnail = "/Thumbnail_0001.jpg", opts = {}) => {
     cy.request({
       url: `${baseUrl}/api/global.createProject`,
       method: "POST",
@@ -140,19 +140,39 @@ Cypress.Commands.add(
             displayName,
             description,
             projectedBudgets,
-            thumbnail
+            thumbnail,
+            ...opts
           }
         }
       }
     })
       .its("body")
       .then(body =>
-        Promise.resolve({
+        Cypress.Promise.resolve({
           id: body.data.project.id
         })
       );
   }
 );
+
+Cypress.Commands.add("updateProject", (projectId, opts = {}) => {
+  cy.request({
+    url: `${baseUrl}/api/project.update`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        ...opts
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
 
 Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
   cy.request({
@@ -170,7 +190,7 @@ Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EUR", opts = {}) => {
@@ -194,7 +214,7 @@ Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EU
   })
     .its("body")
     .then(body =>
-      Promise.resolve({
+      Cypress.Promise.resolve({
         id: body.data.subproject.id
       })
     );
@@ -217,7 +237,7 @@ Cypress.Commands.add("grantProjectPermission", (projectId, intent, identity) => 
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("revokeProjectPermission", (projectId, intent, identity) => {
@@ -237,7 +257,7 @@ Cypress.Commands.add("revokeProjectPermission", (projectId, intent, identity) =>
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("grantSubprojectPermission", (projectId, subprojectId, intent, identity) => {
@@ -258,7 +278,7 @@ Cypress.Commands.add("grantSubprojectPermission", (projectId, subprojectId, inte
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("revokeSubprojectPermission", (projectId, subprojectId, intent, identity) => {
@@ -279,7 +299,7 @@ Cypress.Commands.add("revokeSubprojectPermission", (projectId, subprojectId, int
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("grantWorkflowitemPermission", (projectId, subprojectId, workflowitemId, intent, identity) => {
@@ -301,7 +321,7 @@ Cypress.Commands.add("grantWorkflowitemPermission", (projectId, subprojectId, wo
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("revokeWorkflowitemPermission", (projectId, subprojectId, workflowitemId, intent, identity) => {
@@ -323,7 +343,7 @@ Cypress.Commands.add("revokeWorkflowitemPermission", (projectId, subprojectId, w
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("updateSubprojectPermissions", (projectId, subprojectId, intent, identity) => {
@@ -344,7 +364,7 @@ Cypress.Commands.add("updateSubprojectPermissions", (projectId, subprojectId, in
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("grantUserPermissions", (userId, intent, identity) => {
@@ -364,7 +384,7 @@ Cypress.Commands.add("grantUserPermissions", (userId, intent, identity) => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("revokeUserPermissions", (userId, intent, identity) => {
@@ -384,7 +404,7 @@ Cypress.Commands.add("revokeUserPermissions", (userId, intent, identity) => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("closeProject", projectId => {
@@ -402,7 +422,26 @@ Cypress.Commands.add("closeProject", projectId => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+Cypress.Commands.add("closeWorkflowitem", (projectId, subprojectId, workflowitemId) => {
+  cy.request({
+    url: `${baseUrl}/api/workflowitem.close`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        workflowitemId
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("getUserList", () => {
@@ -414,7 +453,7 @@ Cypress.Commands.add("getUserList", () => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data.items));
+    .then(body => Cypress.Promise.resolve(body.data.items));
 });
 
 Cypress.Commands.add("listProjectPermissions", projectId => {
@@ -426,7 +465,7 @@ Cypress.Commands.add("listProjectPermissions", projectId => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 Cypress.Commands.add("listSubprojectPermissions", (projectId, subprojectId) => {
   cy.request({
@@ -437,7 +476,7 @@ Cypress.Commands.add("listSubprojectPermissions", (projectId, subprojectId) => {
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });
 Cypress.Commands.add("listWorkflowitemPermissions", (projectId, subprojectId, workflowitemId) => {
   cy.request({
@@ -448,5 +487,5 @@ Cypress.Commands.add("listWorkflowitemPermissions", (projectId, subprojectId, wo
     }
   })
     .its("body")
-    .then(body => Promise.resolve(body.data));
+    .then(body => Cypress.Promise.resolve(body.data));
 });

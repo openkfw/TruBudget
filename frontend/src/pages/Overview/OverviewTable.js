@@ -9,13 +9,12 @@ import Tooltip from "@material-ui/core/Tooltip";
 import ContentAdd from "@material-ui/icons/Add";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
-
 import { formattedTag, statusMapping, toAmountString, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import { canCreateProject, canUpdateProject, canViewProjectPermissions } from "../../permissions";
 import ProjectCard from "./ProjectCard";
 
-const styles = {
+const styles = theme => ({
   card: {
     maxWidth: "310px",
     margin: "35px",
@@ -76,15 +75,22 @@ const styles = {
     flex: 1,
     alignItems: "center",
     justifyContent: "center"
+  },
+  tagButton: {
+    margin: "1px"
+  },
+  highlightedTagButton: {
+    margin: "1px",
+    backgroundColor: theme.palette.primary.light
   }
-};
+});
 
-const displayProjectBudget = budgets => {
+const displayProjectBudget = ({ budgets, classes }) => {
   return (
     <div>
       {budgets.map((b, i) => {
         return (
-          <div key={`projectedBudget-${i}`} style={styles.budgets}>
+          <div key={`projectedBudget-${i}`} className={classes.budgets}>
             <Tooltip title={b.organization}>
               <Chip
                 avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
@@ -98,14 +104,18 @@ const displayProjectBudget = budgets => {
   );
 };
 
-const displayTags = tags => {
+const displayTags = ({ classes, tags, storeSearchTerm, showSearchBar, searchTermArray }) => {
   return tags.map((tag, i) => (
     <Button
       variant="outlined"
-      // TODO: This will be used to filter projects by tag
-      onClick={() => null}
+      onClick={() => {
+        showSearchBar();
+        storeSearchTerm(`tag:${tag}`);
+      }}
       key={`${tag}-${i}`}
-      style={{ margin: "1px" }}
+      className={
+        searchTermArray.some(searchTerm => tag.includes(searchTerm)) ? classes.highlightedTagButton : classes.tagButton
+      }
       component="span"
       data-test="overview-tag"
       size="small"
@@ -116,23 +126,17 @@ const displayTags = tags => {
 };
 
 const getTableEntries = ({
-  projects,
+  filteredProjects,
   history,
   classes,
   showEditDialog,
   showProjectPermissions,
   showProjectAdditionalData,
-  searchTerm,
-  closeSearchBar
+  storeSearchTerm,
+  showSearchBar,
+  highlightingRegex,
+  searchTermArray
 }) => {
-  const filteredProjects = projects.filter(
-    project =>
-      project.data.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.data.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.data.description.toLowerCase().includes(searchTerm.toLowerCase())
-    // TODO: If tags are added, search them as well
-    // project.data.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
   return filteredProjects.map(({ data, allowedIntents }, index) => {
     const {
       displayName,
@@ -145,7 +149,7 @@ const getTableEntries = ({
       additionalData,
       tags
     } = data;
-    const budgets = displayProjectBudget(projectedBudgets);
+    const budgets = displayProjectBudget({ budgets: projectedBudgets, classes });
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = unixTsToString(creationUnixTs);
@@ -153,15 +157,13 @@ const getTableEntries = ({
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
-    const displayedTags = displayTags(tags || []);
-
+    const displayedTags = displayTags({ classes, tags: tags || [], storeSearchTerm, showSearchBar, searchTermArray });
     return (
       <ProjectCard
         key={index}
         index={index}
         id={id}
         allowedIntents={allowedIntents}
-        closeSearchBar={closeSearchBar}
         history={history}
         displayName={displayName}
         mappedStatus={mappedStatus}
@@ -179,28 +181,30 @@ const getTableEntries = ({
         description={description}
         thumbnail={thumbnail}
         tags={tags}
-        classes={classes}
+        parentClasses={classes}
         imagePath={imagePath}
+        highlightingRegex={highlightingRegex}
       />
     );
   });
 };
 
 const OverviewTable = props => {
+  const { classes, isRoot, allowedIntents, showCreationDialog } = props;
   const tableEntries = getTableEntries(props);
   return (
-    <div aria-label="projects" style={styles.tableEntries}>
+    <div aria-label="projects" className={classes.tableEntries}>
       {tableEntries}
-      <Card data-test="project-creation" style={styles.addProject}>
-        <div style={styles.addProjectContent}>
+      <Card data-test="project-creation" className={classes.addProject}>
+        <div className={classes.addProjectContent}>
           <CardActions>
             <Tooltip id="tooltip-pcreate" title={strings.common.create}>
               <div>
                 <Fab
-                  className={props.classes.button}
+                  className={classes.button}
                   aria-label="create"
-                  disabled={!canCreateProject(props.allowedIntents) || props.isRoot}
-                  onClick={() => props.showCreationDialog()}
+                  disabled={!canCreateProject(allowedIntents) || isRoot}
+                  onClick={() => showCreationDialog()}
                   color="primary"
                   data-test="create-project-button"
                 >

@@ -1,23 +1,20 @@
 import React, { Component } from "react";
-import { Route, Switch } from "react-router";
 import { connect } from "react-redux";
-
-import NavbarContainer from "../Navbar/NavbarContainer";
-import UserManagementContainer from "../Users/UserManagementContainer";
-
-import OverviewContainer from "../Overview/OverviewContainer";
+import { Route, Switch } from "react-router";
+import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
 import NotFound from "../Error/NotFound";
-import SubProjectContainer from "../SubProjects/SubProjectContainer";
-import DashboardContainer from "../Dashboard/DashboardContainer";
-import WorkflowContainer from "../Workflows/WorkflowContainer";
-import NotificationPageContainer from "../Notifications/NotificationPageContainer";
-import Placeholder from "./Placeholder";
-import Footer from "./Footer";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
-import LiveNotificationContainer from "../Notifications/LiveNotificationContainer";
+import NavbarContainer from "../Navbar/NavbarContainer";
 import NodesContainer from "../Nodes/NodesContainer";
-import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
+import LiveNotificationContainer from "../Notifications/LiveNotificationContainer";
+import NotificationPageContainer from "../Notifications/NotificationPageContainer";
+import OverviewContainer from "../Overview/OverviewContainer";
+import SubProjectContainer from "../SubProjects/SubProjectContainer";
+import UserManagementContainer from "../Users/UserManagementContainer";
+import WorkflowContainer from "../Workflows/WorkflowContainer";
+import Footer from "./Footer";
+import Placeholder from "./Placeholder";
 
 const Main = props => {
   return (
@@ -56,7 +53,6 @@ const Main = props => {
           <Route exact path="/projects/:project/:subproject" component={withInitialLoading(WorkflowContainer)} />
           <Route exact path="/projects" component={withInitialLoading(OverviewContainer)} />
           <Route exact path="/projects/:project" component={withInitialLoading(SubProjectContainer)} />
-          <Route exact path="/network" component={DashboardContainer} />
           <Route exact path="/notifications" component={withInitialLoading(NotificationPageContainer)} />
           <Route exact path="/users" component={UserManagementContainer} />
           <Route exact path="/nodes" component={NodesContainer} />
@@ -69,9 +65,10 @@ const Main = props => {
 };
 
 class MainContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.initLanguage();
   }
+
   render() {
     return <Main />;
   }
