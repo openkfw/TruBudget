@@ -2,6 +2,7 @@ import { fromJS, Set } from "immutable";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
+import { SEARCH_BAR_DISPLAYED } from "../Navbar/actions";
 import {
   ADD_PROJECT_TAG,
   ADD_TEMPORARY_PROJECT_PERMISSION,
@@ -22,11 +23,15 @@ import {
   SHOW_CREATION_DIALOG,
   SHOW_EDIT_DIALOG,
   SHOW_PROJECT_ADDITIONAL_DATA,
-  SHOW_PROJECT_PERMISSIONS
+  SHOW_PROJECT_PERMISSIONS,
+  STORE_FILTERED_PROJECTS,
+  STORE_HIGHLIGHTING_REGEX,
+  STORE_SEARCH_TERMS_AS_ARRAY
 } from "./actions";
 
 const defaultState = fromJS({
   projects: Set(),
+  filteredProjects: Set(),
   creationDialogShown: false,
   editDialogShown: false,
   projectToAdd: {
@@ -53,7 +58,9 @@ const defaultState = fromJS({
   allowedIntents: [],
   dialogTitle: strings.project.add_new_project,
   idForInfo: "",
-  isProjectAdditionalDataShown: false
+  isProjectAdditionalDataShown: false,
+  highlightingRegex: "",
+  searchTerms: []
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -150,13 +157,19 @@ export default function overviewReducer(state = defaultState, action) {
     case PROJECT_THUMBNAIL:
       return state.setIn(["projectToAdd", "thumbnail"], action.thumbnail);
     case CREATE_PROJECT_SUCCESS:
-      return state.set("projectToAdd", defaultState.getIn(["projectToAdd"]));
+      return state.merge({
+        projectToAdd: defaultState.getIn(["projectToAdd"]),
+        searchTerms: defaultState.get("searchTerms"),
+        highlightingRegex: defaultState.get("highlightingRegex")
+      });
     case PROJECT_CREATION_STEP:
       return state.set("currentStep", action.step);
     case FETCH_ALL_PROJECTS_SUCCESS:
-      return state.merge({
-        projects: fromJS(action.projects)
-      });
+      // While searching, fetching projects may not update the project list
+      if (state.get("searchTerms").size === 0) {
+        state = state.set("filteredProjects", action.projects);
+      }
+      return state.set("projects", fromJS(action.projects));
     case ADD_TEMPORARY_PROJECT_PERMISSION:
       return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
     case REMOVE_TEMPORARY_PROJECT_PERMISSION:
@@ -170,6 +183,17 @@ export default function overviewReducer(state = defaultState, action) {
           ? fromJS(action.permissions.project)
           : defaultState.get("temporaryPermissions")
       );
+    case STORE_FILTERED_PROJECTS:
+      return state.set("filteredProjects", fromJS(action.filteredProjects));
+    case STORE_HIGHLIGHTING_REGEX:
+      return state.set("highlightingRegex", fromJS(action.highlightingRegex));
+    case STORE_SEARCH_TERMS_AS_ARRAY:
+      return state.set("searchTerms", fromJS(action.searchTerms));
+    case SEARCH_BAR_DISPLAYED:
+      return state.merge({
+        searchTerms: defaultState.get("searchTerms"),
+        highlightingRegex: defaultState.get("highlightingRegex")
+      });
     default:
       return state;
   }
