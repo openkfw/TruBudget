@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Security -->
+
+## [1.6.0] - 2019-01-07
+
 ### Added
 
 - Search via URL query [#353](https://github.com/openkfw/TruBudget/issues/353)
@@ -20,16 +34,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Projects can be searched via prefixes. Tag, display name and status are searched for matches. [#359](https://github.com/openkfw/TruBudget/issues/359)
 - Tags can be searched via click on tag [#367](https://github.com/openkfw/TruBudget/issues/367)
 
-<!-- ### Deprecated -->
-
-<!-- ### Removed -->
-
 ### Fixed
 
 - Users are properly logged out when clicking the logout button[#402](https://github.com/openkfw/TruBudget/issues/402)
 - User are not created anymore if the passed organization does not exist[#358](https://github.com/openkfw/TruBudget/issues/358)
-
-<!-- ### Security -->
 
 ## [1.5.0] - 2019-11-27
 
@@ -386,7 +394,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.5.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.6.0...master
+[1.6.0]: https://github.com/openkfw/TruBudget/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/openkfw/TruBudget/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/openkfw/TruBudget/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/openkfw/TruBudget/compare/v1.3.0...v1.4.0
