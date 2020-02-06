@@ -24,7 +24,7 @@ const baseUrl = Cypress.env("API_BASE_URL") || "/test";
 
 let token = undefined;
 
-Cypress.Commands.add("login", (username = "mstein", password = "test") => {
+Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { language: "en-gb" }) => {
   cy.request({
     url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
     method: "POST",
@@ -40,11 +40,11 @@ Cypress.Commands.add("login", (username = "mstein", password = "test") => {
           jwt: body.data.user.token,
           environment: "Test",
           productionActive: false,
-          language: "en-gb",
           id: body.data.user.id,
           displayName: body.data.user.displayName,
           organization: body.data.user.organization,
-          allowedIntents: body.data.user.allowedIntents
+          allowedIntents: body.data.user.allowedIntents,
+          ...opts
         }
       };
       localStorage.setItem("state", JSON.stringify(state));

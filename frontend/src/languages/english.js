@@ -1,4 +1,12 @@
 const en = {
+  format: {
+    currencyPositon: "%s %v",
+    numberFormat: {
+      decimal: ".",
+      thousand: ",",
+      precision: 2
+    }
+  },
   common: {
     action: "Action",
     actions: "Actions",

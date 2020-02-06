@@ -1,33 +1,37 @@
+import accounting from "accounting";
 import _isString from "lodash/isString";
 
-import accounting from "accounting";
-
-const numberFormat = {
-  decimal: ".",
-  thousand: ",",
-  precision: 2
+export const currencies = {
+  EUR: { symbol: "€" },
+  USD: { symbol: "$" },
+  BRL: { symbol: "R$" },
+  XOF: { symbol: "CFA" },
+  DKK: { symbol: "kr." }
 };
 
-const currencies = {
-  EUR: { symbol: "€", format: "%v %s" },
-  USD: { symbol: "$", format: "%s %v" },
-  BRL: { symbol: "R$", format: "%s %v" },
-  XOF: { symbol: "CFA", format: "%s %v" },
-  DKK: { symbol: "kr.", format: "%v %s" }
+export const languages = ["en-gb", "fr", "pt", "de"];
+
+const getFormat = (currency, language) => {
+  switch (language) {
+    case "en-gb":
+      return { format: "%s %v", ...currencies[currency], decimal: ".", thousand: ",", precision: 2 };
+    case "fr":
+    case "pt":
+    case "de":
+      return { format: "%v %s", ...currencies[currency], decimal: ".", thousand: ",", precision: 2 };
+    default:
+      return { format: "%s %v", ...currencies[currency], decimal: ".", thousand: ",", precision: 2 };
+  }
 };
 
-const getCurrencyFormat = currency => ({
-  ...numberFormat,
-  ...currencies[currency]
-});
-
-export function toAmountString(amount, currency) {
+export function toAmountString(amount, currency, language = "en") {
   if (_isString(amount) && amount.trim().length <= 0) {
     return "";
   }
+  const format = getFormat(currency, language);
   if (!currency) {
-    return accounting.formatNumber(amount, numberFormat.precision, numberFormat.thousand, numberFormat.decimal);
+    return accounting.formatNumber(amount, format);
+  } else {
+    return accounting.formatMoney(amount, format);
   }
-
-  return accounting.formatMoney(amount, getCurrencyFormat(currency));
 }

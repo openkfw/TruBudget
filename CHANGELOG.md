@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 # Changelog
 
-## [Unreleased]
+### Unreleased
 
 <!-- ### Added -->
 
@@ -17,7 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- UI: Remember language after logout [#420](https://github.com/openkfw/TruBudget/issues/420)
+
+### Changed
+
+- UI: Format currencies and numbers according to the selected language or locale [#135](https://github.com/openkfw/TruBudget/issues/135)
 
 <!-- ### Security -->
 

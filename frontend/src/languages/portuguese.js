@@ -1,4 +1,12 @@
 const pt = {
+  format: {
+    currencyPositon: "%v %s",
+    numberFormat: {
+      decimal: ",",
+      thousand: ".",
+      precision: 2
+    }
+  },
   common: {
     action: "Ação",
     actions: "Ações",
