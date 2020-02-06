@@ -478,7 +478,8 @@ const en = {
     english: "English",
     french: "French",
     german: "German",
-    portuguese: "Portuguese"
+    portuguese: "Portuguese",
+    georgian: "Gerogian"
   }
 };
 

@@ -4,12 +4,14 @@ import en from "./languages/english";
 import fr from "./languages/french";
 import de from "./languages/german";
 import pt from "./languages/portuguese";
+import ka from "./languages/georgian";
 
 const strings = new LocalizedStrings({
   en,
   fr,
   de,
-  pt
+  pt,
+  ka
 });
 
 export default strings;

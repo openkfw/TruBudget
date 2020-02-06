@@ -98,6 +98,7 @@ const LoginPage = ({
             <MenuItem value="fr">{strings.language.french}</MenuItem>
             <MenuItem value="pt">{strings.language.portuguese}</MenuItem>
             <MenuItem value="de">{strings.language.german}</MenuItem>
+            <MenuItem value="ka">{strings.language.georgian}</MenuItem>
           </Dropdown>
           <Button
             aria-label="loginbutton"

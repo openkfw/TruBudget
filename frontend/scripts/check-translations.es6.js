@@ -1,8 +1,14 @@
-function isObject(x) { return x !== null && typeof x === "object"; }
+function isObject(x) {
+  return x !== null && typeof x === "object";
+}
 
-function concat(x, y) { return x.concat(y); }
+function concat(x, y) {
+  return x.concat(y);
+}
 
-function flatMap(f, xs) { return xs.map(f).reduce(concat, []); }
+function flatMap(f, xs) {
+  return xs.map(f).reduce(concat, []);
+}
 
 function haltOnError(errors) {
   if (errors.length > 0) {
@@ -19,12 +25,14 @@ function fmtError(error) {
 // ---
 
 const translationsDir = "../src/languages";
-const languages = ["english", "french", "german", "portuguese"];
+const languages = ["english", "french", "german", "portuguese", "georgian"];
 
-const translations = new Map(languages.map(lang => {
-  const path = `${translationsDir}/${lang}.js`;
-  return [lang, require(path).default];
-}));
+const translations = new Map(
+  languages.map(lang => {
+    const path = `${translationsDir}/${lang}.js`;
+    return [lang, require(path).default];
+  })
+);
 
 const categories = new Set(flatMap(Object.keys, [...translations.values()]));
 
