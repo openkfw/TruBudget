@@ -30,6 +30,11 @@ class Dropdown extends React.Component {
               name: id,
               id
             }}
+            MenuProps={{
+              MenuListProps: {
+                "data-test": "dropdown_selectList"
+              }
+            }}
             SelectDisplayProps={{ "data-test": `dropdown-${id}-click`, "data-disabled": disabled }}
           >
             {children}
