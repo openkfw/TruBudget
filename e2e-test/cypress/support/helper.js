@@ -9,7 +9,7 @@ export const currencies = {
   DKK: { symbol: "kr." }
 };
 
-export const languages = ["en-gb", "fr", "pt", "de"];
+export const languages = ["en-gb", "fr", "pt", "de", "ka"];
 
 const getFormat = (currency, language) => {
   switch (language) {
@@ -24,7 +24,7 @@ const getFormat = (currency, language) => {
   }
 };
 
-export function toAmountString(amount, currency, language = "en") {
+export function toAmountString(amount, currency, language = "en-gb") {
   if (_isString(amount) && amount.trim().length <= 0) {
     return "";
   }
