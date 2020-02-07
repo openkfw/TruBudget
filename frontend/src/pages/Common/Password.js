@@ -42,7 +42,7 @@ const Password = ({
       <Tooltip title={tooltipTitle ? tooltipTitle : ""} placement="right">
         <TextField
           data-test={props["data-test"] || "password-textfield"}
-          style={{ width: "50%" }}
+          style={{ boder: "1px solid black", width: "50%" }}
           label={label}
           value={password}
           margin="normal"
