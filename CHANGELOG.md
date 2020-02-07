@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Unreleased
 
-<!-- ### Added -->
+### Added
+
+- Support georgian language [#427](https://github.com/openkfw/TruBudget/issues/427)
 
 <!-- ### Changed -->
 
@@ -19,11 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- UI: Remember language after logout [#420](https://github.com/openkfw/TruBudget/issues/420)
+- Remember language after logout [#420](https://github.com/openkfw/TruBudget/issues/420)
 
 ### Changed
 
-- UI: Format currencies and numbers according to the selected language or locale [#135](https://github.com/openkfw/TruBudget/issues/135)
+- Format currencies and numbers according to the selected language or locale [#135](https://github.com/openkfw/TruBudget/issues/135)
 
 <!-- ### Security -->
 

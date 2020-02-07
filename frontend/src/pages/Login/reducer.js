@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/fr";
 import "dayjs/locale/pt";
+import "dayjs/locale/ka";
 import strings from "../../localizeStrings";
 
 import {

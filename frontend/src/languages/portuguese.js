@@ -480,7 +480,8 @@ const pt = {
     english: "English",
     french: "Français",
     german: "Deutsch",
-    portuguese: "Português"
+    portuguese: "Português",
+    georgian: "Georgiano"
   }
 };
 

@@ -481,7 +481,8 @@ const fr = {
     english: "Anglais",
     french: "Français",
     german: "Allemand",
-    portuguese: "Portugues"
+    portuguese: "Portugues",
+    georgian: "Géorgien"
   }
 };
 
