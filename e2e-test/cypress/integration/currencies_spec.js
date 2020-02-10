@@ -1,9 +1,6 @@
-const currencies = {
-  EUR: { symbol: "€", format: "%v %s" },
-  USD: { symbol: "$", format: "%s %v" },
-  BRL: { symbol: "R$", format: "%s %v" },
-  XOF: { symbol: "CFA", format: "%s %v" }
-};
+import { languages } from "../support/helper";
+import { currencies } from "../support/helper";
+import { toAmountString } from "../support/helper";
 
 const currenciesArray = Object.keys(currencies);
 const standardBudget = [
@@ -14,7 +11,7 @@ const standardBudget = [
   }
 ];
 
-describe("Overview Page", function() {
+describe("Describe Currencies", function() {
   beforeEach(function() {
     cy.login();
     cy.visit(`/projects`);
@@ -55,14 +52,25 @@ describe("Overview Page", function() {
   });
 
   it("Sets the currency of a new project to EUR and checks if the Euro sign is displayed", function() {
-    cy.createProject("Test", "Test", standardBudget);
-
-    //Fetch projects to get newest one
-    cy.reload();
-
     cy.get("[data-test*=project-card]")
       .last()
       .find("[data-test=project-budget]")
       .should("contain", currencies.EUR.symbol);
+  });
+
+  it("Checking format for Value and currency Symbol of all languages", function() {
+    cy.visit(`/`);
+    languages.forEach(languageElement => {
+      cy.login("mstein", "test", { language: languageElement });
+      cy.visit(`/projects`);
+
+      //get last Project (standardBudget)
+      cy.get("[data-test*=project-card]")
+        .last()
+        .find("[data-test=project-budget]")
+        .get("span")
+        .should("be.visible")
+        .should("contain", toAmountString(standardBudget.currencyCode, standardBudget.value, languageElement));
+    });
   });
 });

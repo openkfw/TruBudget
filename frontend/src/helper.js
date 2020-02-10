@@ -9,15 +9,8 @@ import _isEqual from "lodash/isEqual";
 import _isString from "lodash/isString";
 import _isUndefined from "lodash/isUndefined";
 import React from "react";
-
 import currencies from "./currency";
 import strings from "./localizeStrings";
-
-const numberFormat = {
-  decimal: ".",
-  thousand: ",",
-  precision: 2
-};
 
 export const toJS = WrappedComponent => wrappedComponentProps => {
   const KEY = 0;
@@ -34,8 +27,9 @@ export const toJS = WrappedComponent => wrappedComponentProps => {
 };
 
 const getCurrencyFormat = currency => ({
-  ...numberFormat,
-  ...currencies[currency]
+  ...strings.format.numberFormat,
+  ...currencies[currency],
+  format: strings.format.currencyPositon
 });
 
 export const compareObjects = (items, itemToAdd) => {
@@ -80,7 +74,12 @@ export const toAmountString = (amount, currency) => {
     return "";
   }
   if (!currency) {
-    return accounting.formatNumber(amount, numberFormat.precision, numberFormat.thousand, numberFormat.decimal);
+    return accounting.formatNumber(
+      amount,
+      strings.format.numberFormat.precision,
+      strings.format.numberFormat.thousand,
+      strings.format.numberFormat.decimal
+    );
   }
 
   return accounting.formatMoney(amount, getCurrencyFormat(currency));

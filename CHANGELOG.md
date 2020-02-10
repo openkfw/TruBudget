@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 # Changelog
 
-## [Unreleased]
+## Unreleased
 
 <!-- ### Added -->
 
@@ -18,6 +18,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Removed -->
 
 <!-- ### Fixed -->
+
+<!-- ### Changed -->
+
+<!-- ### Security -->
+
+# [1.7.0] - 2019-02-10
+
+### Added
+
+- Support georgian language [#427](https://github.com/openkfw/TruBudget/issues/427)
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+### Fixed
+
+- Remember language after logout [#420](https://github.com/openkfw/TruBudget/issues/420)
+
+### Changed
+
+- Format currencies and numbers according to the selected language or locale [#135](https://github.com/openkfw/TruBudget/issues/135)
 
 <!-- ### Security -->
 
@@ -394,7 +418,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.6.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.7.0...master
+[1.7.0]: https://github.com/openkfw/TruBudget/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/openkfw/TruBudget/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/openkfw/TruBudget/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/openkfw/TruBudget/compare/v1.4.0...v1.4.1

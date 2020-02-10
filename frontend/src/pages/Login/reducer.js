@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/fr";
 import "dayjs/locale/pt";
+import "dayjs/locale/ka";
 import strings from "../../localizeStrings";
 
 import {
@@ -114,7 +115,7 @@ export default function loginReducer(state = defaultState, action) {
       return newState;
     case ADMIN_LOGOUT_SUCCESS:
     case LOGOUT_SUCCESS:
-      return defaultState;
+      return defaultState.set("language", state.get("language"));
     default:
       return state;
   }

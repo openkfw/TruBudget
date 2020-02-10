@@ -1,4 +1,12 @@
 const de = {
+  format: {
+    currencyPositon: "%v %s",
+    numberFormat: {
+      decimal: ",",
+      thousand: ".",
+      precision: 2
+    }
+  },
   common: {
     action: "German: Action",
     actions: "Actions",
@@ -471,7 +479,8 @@ const de = {
     english: "Englisch",
     french: "Französisch",
     german: "Deutsch",
-    portuguese: "Portugiesisch"
+    portuguese: "Portugiesisch",
+    georgian: "Georgisch"
   }
 };
 
