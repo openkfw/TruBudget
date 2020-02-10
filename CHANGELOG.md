@@ -7,7 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 # Changelog
 
-### Unreleased
+## Unreleased
+
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Changed -->
+
+<!-- ### Security -->
+
+# [1.7.0] - 2019-02-10
 
 ### Added
 
@@ -402,7 +418,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.6.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.7.0...master
+[1.7.0]: https://github.com/openkfw/TruBudget/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/openkfw/TruBudget/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/openkfw/TruBudget/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/openkfw/TruBudget/compare/v1.4.0...v1.4.1
