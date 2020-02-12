@@ -52,6 +52,10 @@ Uniquely identifies the chain. Note that a MultiChain network always relates to 
 
 RPC connection settings for executing commands against the MultiChain node. The `RPC_ALLOW_IP` settings refers to an allowed IP address range, given either by IP or CIDR notation; for example, 0.0.0.0/0 will allow access from anywhere.
 
+### `EMAIL_HOST`, `EMAIL_PORT`
+
+The hostname/port of the Trubudget email-service if configured. These variables is optional.
+
 ## Getting started
 
 The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole TruBudget application (that means you need to install [Docker](https://www.docker.com/community-edition#/download)). It uses the local build of the blockchain and the master-deployments of the TruBudget API and Frontend. The pre-set cluster contains:

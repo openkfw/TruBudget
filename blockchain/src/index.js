@@ -43,6 +43,9 @@ const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 
+const EMAIL_HOST = process.env.EMAIL_HOST;
+const EMAIL_PORT = process.env.EMAIL_PORT;
+
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
 const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
@@ -92,6 +95,8 @@ configureChain(
   RPC_USER,
   RPC_PASSWORD,
   RPC_ALLOW_IP,
+  EMAIL_HOST,
+  EMAIL_PORT,
 );
 
 function initMultichain() {

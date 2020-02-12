@@ -9,7 +9,11 @@ const configureChain = (
   RPC_USER,
   RPC_PASSWORD,
   RPC_ALLOW_IP,
+  EMAIL_HOST,
+  EMAIL_PORT,
 ) => {
+  console.log("createChain...");
+  console.log(__dirname);
   shell.mkdir("-p", multichainDir);
   if (isMaster) {
     console.log("Provisioning mc ");
@@ -22,6 +26,7 @@ rpcport=${RPC_PORT}
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
+walletnotifynew=${__dirname}/filterTransactions/filterScript %j ${EMAIL_HOST}:${EMAIL_PORT}
 EOF
 `);
 
@@ -46,7 +51,7 @@ const startMultichainDaemon = (
     `-port=${P2P_PORT}`,
     `-autosubscribe=streams`,
     `${connectArg}`,
-    `-datadir=${multichainDir}`
+    `-datadir=${multichainDir}`,
   ]);
   mcproc.stdout.on("data", data => {
     console.log(`stdout: ${data}`);
