@@ -43,7 +43,19 @@ const Navbar = ({
   storeSearchTerm,
   searchTerm,
   storeSearchBarDisplayed,
-  searchBarDisplayed
+  searchBarDisplayed,
+  userProfileOpen,
+  showUserProfile,
+  hideUserProfile,
+  email,
+  enableUserProfileEdit,
+  disableUserProfileEdit,
+  userProfileEdit,
+  storeTempEmail,
+  saveEmail,
+  tempEmail,
+  emailServiceAvailable,
+  fetchEmail
 }) => {
   return (
     <div>
@@ -90,6 +102,18 @@ const Navbar = ({
         restoreBackup={restoreBackup}
         versions={versions}
         exportData={exportData}
+        userProfileOpen={userProfileOpen}
+        showUserProfile={showUserProfile}
+        hideUserProfile={hideUserProfile}
+        email={email}
+        userProfileEdit={userProfileEdit}
+        enableUserProfileEdit={enableUserProfileEdit}
+        disableUserProfileEdit={disableUserProfileEdit}
+        storeTempEmail={storeTempEmail}
+        saveEmail={saveEmail}
+        tempEmail={tempEmail}
+        emailServiceAvailable={emailServiceAvailable}
+        fetchEmail={fetchEmail}
       />
     </div>
   );

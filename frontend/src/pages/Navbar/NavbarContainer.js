@@ -12,7 +12,15 @@ import {
   exportData,
   storeSearchTerm,
   storeSearchBarDisplayed,
-  setIsRoot
+  setIsRoot,
+  showUserProfile,
+  hideUserProfile,
+  enableUserProfileEdit,
+  disableUserProfileEdit,
+  storeTempEmail,
+  saveEmail,
+  checkEmailService,
+  fetchEmail
 } from "./actions";
 import { logout } from "../Login/actions";
 
@@ -26,6 +34,8 @@ class NavbarContainer extends Component {
   componentDidMount() {
     this.props.fetchActivePeers();
     this.props.fetchVersions();
+    this.props.checkEmailService();
+
     if (this.props.userId === "root") {
       this.props.setIsRoot(true);
     }
@@ -62,7 +72,15 @@ const mapDispatchToProps = {
   exportData,
   storeSearchTerm,
   storeSearchBarDisplayed,
-  setIsRoot
+  setIsRoot,
+  showUserProfile,
+  hideUserProfile,
+  enableUserProfileEdit,
+  disableUserProfileEdit,
+  storeTempEmail,
+  saveEmail,
+  checkEmailService,
+  fetchEmail
 };
 
 const mapStateToProps = state => {
@@ -89,7 +107,12 @@ const mapStateToProps = state => {
     latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
     searchTerm: state.getIn(["navbar", "searchTerm"]),
     searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
-    isRoot: state.getIn(["login", "isRoot"])
+    isRoot: state.getIn(["login", "isRoot"]),
+    userProfileOpen: state.getIn(["navbar", "userProfileOpen"]),
+    email: state.getIn(["login", "email"]),
+    userProfileEdit: state.getIn(["navbar", "userProfileEdit"]),
+    tempEmail: state.getIn(["navbar", "tempEmail"]),
+    emailServiceAvailable: state.getIn(["navbar", "emailServiceAvailable"])
   };
 };
 

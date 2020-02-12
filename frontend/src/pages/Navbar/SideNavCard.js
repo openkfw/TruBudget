@@ -16,6 +16,12 @@ import strings from "../../localizeStrings";
 import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
 import VersionsTable from "./VersionsTable";
+import { IconButton } from "@material-ui/core";
+
+const openUserProfile = (showUserProfile, fetchEmail) => {
+  showUserProfile();
+  fetchEmail();
+};
 
 const SideNavCard = ({
   avatarBackground,
@@ -30,7 +36,9 @@ const SideNavCard = ({
   createBackup,
   restoreBackup,
   versions,
-  exportData
+  exportData,
+  showUserProfile,
+  fetchEmail
 }) => (
   <div
     style={{
@@ -61,15 +69,16 @@ const SideNavCard = ({
       >
         <ListItem style={{ paddingTop: "16px" }}>
           <ListItemIcon>
-            <Avatar
-              size={60}
-              src={avatar}
-              style={{
-                marginLeft: "16px"
-              }}
+            <IconButton
+              onClick={() => openUserProfile(showUserProfile, fetchEmail)}
+              children={<Avatar size={60} src={avatar} />}
             />
           </ListItemIcon>
-          <ListItemText primary={<span>{displayName}</span>} secondary={<span>{organization}</span>} />
+          <ListItemText
+            style={{ padding: "0px" }}
+            primary={<span>{displayName}</span>}
+            secondary={<span>{organization}</span>}
+          />
         </ListItem>
       </div>
     </div>

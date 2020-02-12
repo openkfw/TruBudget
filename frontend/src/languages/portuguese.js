@@ -42,6 +42,7 @@ const pt = {
     done: "Finalizar",
     edit: "Editar",
     edited: "Editado",
+    email: "Email",
     finish: "Finalizar",
     grant: "Conceder",
     history_end: "Fim do histórico",

@@ -42,6 +42,7 @@ const ka = {
     done: "შესრულებულია",
     edit: "რედაქტირება",
     edited: "რედაქტირებულია",
+    email: "Email",
     finish: "დასრულება",
     grant: "მინიჭება",
     history_end: "Last event reached",

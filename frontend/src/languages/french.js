@@ -42,6 +42,7 @@ const fr = {
     done: "Terminé",
     edit: "Modifier",
     edited: "Modifié",
+    email: "Email",
     finish: "Terminer",
     grant: "Accorder",
     history_end: "Dernier évènement atteint",

@@ -42,6 +42,7 @@ const en = {
     done: "Done",
     edit: "Edit",
     edited: "Edited",
+    email: "Email",
     finish: "Finish",
     grant: "grant",
     history_end: "Last event reached",

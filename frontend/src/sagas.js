@@ -37,6 +37,9 @@ import {
   STORE_ENVIRONMENT_SUCCESS
 } from "./pages/Login/actions";
 import {
+  CHECK_EMAIL_SERVICE,
+  CHECK_EMAIL_SERVICE_FAILURE,
+  CHECK_EMAIL_SERVICE_SUCCESS,
   CREATE_BACKUP,
   CREATE_BACKUP_SUCCESS,
   EXPORT_DATA,
@@ -44,10 +47,16 @@ import {
   EXPORT_DATA_SUCCESS,
   FETCH_ACTIVE_PEERS,
   FETCH_ACTIVE_PEERS_SUCCESS,
+  FETCH_EMAIL,
+  FETCH_EMAIL_FAILURE,
+  FETCH_EMAIL_SUCCESS,
   FETCH_VERSIONS,
   FETCH_VERSIONS_SUCCESS,
   RESTORE_BACKUP,
-  RESTORE_BACKUP_SUCCESS
+  RESTORE_BACKUP_SUCCESS,
+  SAVE_EMAIL,
+  SAVE_EMAIL_FAILED,
+  SAVE_EMAIL_SUCCESS
 } from "./pages/Navbar/actions.js";
 import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
@@ -80,12 +89,12 @@ import {
   FETCH_ALL_PROJECTS,
   FETCH_ALL_PROJECTS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS,
+  FETCH_PROJECT_PERMISSIONS_FAILURE,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
   GRANT_PERMISSION,
   GRANT_PERMISSION_SUCCESS,
   REVOKE_PERMISSION,
-  REVOKE_PERMISSION_SUCCESS,
-  FETCH_PROJECT_PERMISSIONS_FAILURE
+  REVOKE_PERMISSION_SUCCESS
 } from "./pages/Overview/actions";
 import {
   ASSIGN_PROJECT,
@@ -101,14 +110,14 @@ import {
   FETCH_NEXT_PROJECT_HISTORY_PAGE,
   FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_SUBPROJECT_PERMISSIONS,
+  FETCH_SUBPROJECT_PERMISSIONS_FAILURE,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   GRANT_SUBPROJECT_PERMISSION,
   GRANT_SUBPROJECT_PERMISSION_SUCCESS,
   LIVE_UPDATE_PROJECT,
   REVOKE_SUBPROJECT_PERMISSION,
   REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
-  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
-  FETCH_SUBPROJECT_PERMISSIONS_FAILURE
+  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT
 } from "./pages/SubProjects/actions";
 import {
   ADD_USER,
@@ -152,6 +161,7 @@ import {
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_WORKFLOWITEM_PERMISSIONS,
+  FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
@@ -166,8 +176,7 @@ import {
   STORE_WORKFLOWACTIONS,
   SUBMIT_BATCH_FOR_WORKFLOW,
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
-  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
-  FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
 } from "./pages/Workflows/actions";
 import {
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
@@ -1983,6 +1992,63 @@ function* exportDataSaga() {
     }
   );
 }
+function* saveEmailSaga({ email }) {
+  yield execute(
+    function*() {
+      const id = yield select(getSelfId);
+      yield callApi(api.storeEmail, id, email);
+      yield put({
+        type: SAVE_EMAIL_SUCCESS
+      });
+      yield fetchEmailSaga();
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: SAVE_EMAIL_FAILED,
+        error
+      });
+    }
+  );
+}
+
+function* fetchEmailSaga() {
+  yield execute(
+    function*() {
+      const id = yield select(getSelfId);
+      const email = yield callApi(api.getEmail, id);
+      yield put({
+        type: FETCH_EMAIL_SUCCESS,
+        email
+      });
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: FETCH_EMAIL_FAILURE,
+        error
+      });
+    }
+  );
+}
+
+function* checkEmailServiceSaga() {
+  yield execute(
+    function*() {
+      yield callApi(api.checkEmailService);
+      yield put({
+        type: CHECK_EMAIL_SERVICE_SUCCESS
+      });
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: CHECK_EMAIL_SERVICE_FAILURE,
+        error
+      });
+    }
+  );
+}
 
 export default function* rootSaga() {
   try {
@@ -2073,7 +2139,12 @@ export default function* rootSaga() {
       yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),
       yield takeLeading(GET_PROJECT_KPIS, getProjectKPIsSaga),
       yield takeLeading(GET_EXCHANGE_RATES, getExchangeRatesSaga),
-      yield takeLeading(EXPORT_DATA, exportDataSaga)
+      yield takeLeading(EXPORT_DATA, exportDataSaga),
+
+      //Email
+      yield takeEvery(SAVE_EMAIL, saveEmailSaga),
+      yield takeEvery(FETCH_EMAIL, fetchEmailSaga),
+      yield takeEvery(CHECK_EMAIL_SERVICE, checkEmailServiceSaga)
     ]);
   } catch (error) {
     // eslint-disable-next-line no-console

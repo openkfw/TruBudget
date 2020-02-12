@@ -42,6 +42,7 @@ const de = {
     done: "Done",
     edit: "German: Edit",
     edited: "German: Edited",
+    email: "Email",
     finish: "Finish",
     grant: "German: grant",
     history: "History",

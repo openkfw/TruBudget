@@ -22,11 +22,13 @@ import {
   ADMIN_LOGOUT_SUCCESS,
   INIT_LANGUAGE
 } from "./actions";
+import { FETCH_EMAIL_SUCCESS } from "../Navbar/actions";
 
 export const defaultState = fromJS({
   username: "",
   password: "",
   id: "",
+  email: "",
   displayName: "",
   organization: "",
   allowedIntents: [],
@@ -66,6 +68,8 @@ export default function loginReducer(state = defaultState, action) {
   switch (action.type) {
     case STORE_USERNAME:
       return state.set("username", action.username);
+    case FETCH_EMAIL_SUCCESS:
+      return state.set("email", action.email);
     case STORE_PASSWORD:
       return state.set("password", action.password);
     case FETCH_USER_SUCCESS:

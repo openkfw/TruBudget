@@ -363,6 +363,24 @@ class Api {
     const path = devMode ? "http://localhost:8888/test" : "/export/xlsx/";
     return instance.get(path, { responseType: "blob" });
   };
+  checkEmailService = () => {
+    const path = devMode ? "http://localhost:8890/readiness" : "/email/readiness";
+    return instance.get(path);
+  };
+  storeEmail = (id, email) => {
+    const data = { user: { id, email } };
+    const path = devMode ? "http://localhost:8890/user.insert" : "/email/user.insert";
+    return instance.post(path, data);
+  };
+  deleteEmail = (id, email) => {
+    const data = { user: { id, email } };
+    const path = devMode ? "http://localhost:8890/user.delete" : "/email/user.delete";
+    return instance.post(path, data);
+  };
+  getEmail = id => {
+    const path = devMode ? `http://localhost:8890/user.getEmail?id=${id}` : `/email/user.getEmail?id=${id}`;
+    return instance.get(path);
+  };
 }
 
 export default Api;
