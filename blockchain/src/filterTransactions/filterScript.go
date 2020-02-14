@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net"
 	"os"
+	"strconv"
+	"time"
 )
 
 type request struct {
@@ -101,41 +102,54 @@ func main() {
 		os.Exit(1)
 	}
 	transactionJSONAsString := argsWithoutProg[0]
+
 	var rawMessage json.RawMessage
 
 	txType, err := parseTransactionType(&rawMessage, transactionJSONAsString)
 	if err != nil {
-		// fmt.Printf("Error: %v", err)
+		fmt.Printf("Error: %v", err)
 		os.Exit(1)
 	}
 
 	switch txType {
 	case "notification_created":
-		parsedTx := notificationTransaction{}
-		err = json.Unmarshal(rawMessage, &parsedTx)
-
+		path := "./notifications/"
+		unixTimestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
+		_ = os.Mkdir(path, 0600)
+		file, err := os.Create(path + unixTimestamp + ".json")
 		if err != nil {
-			fmt.Printf("Error parsing notification_created: %v\n", err)
-			os.Exit(1)
+			fmt.Println(err)
+		} else {
+			file.WriteString(argsWithoutProg[0])
 		}
+		file.Close()
 
-		if parsedTx.Recipient == "" {
-			fmt.Printf("Error: No recipient set in notification_created.\n")
-			os.Exit(1)
-		}
-		emailServiceSocketAddress := argsWithoutProg[1]
-		fmt.Printf("emailServiceSocketAddress : %s\n", emailServiceSocketAddress)
-		conn, err := net.Dial("tcp", emailServiceSocketAddress)
-		if err != nil {
-			fmt.Printf("Error: Failed building a TCP connection\n", err)
-			os.Exit(1)
-		}
-		// send id to email service
-		msg := message{Command: "sendNotification", ID: parsedTx.Recipient}
+	// parsedTx := notificationTransaction{}
+	// err = json.Unmarshal(rawMessage, &parsedTx)
 
-		res, _ := json.Marshal(msg)
-		fmt.Fprintf(conn, string(res))
+	// if err != nil {
+	// 	fmt.Printf("Error parsing notification_created: %v\n", err)
+	// 	os.Exit(1)
+	// }
+
+	// if parsedTx.Recipient == "" {
+	// 	fmt.Printf("Error: No recipient set in notification_created.\n")
+	// 	os.Exit(1)
+	// }
+	// emailServiceSocketAddress := argsWithoutProg[1]
+	// fmt.Printf("emailServiceSocketAddress : %s\n", emailServiceSocketAddress)
+	// conn, err := net.Dial("tcp", emailServiceSocketAddress)
+	// if err != nil {
+	// 	fmt.Printf("Error: Failed building a TCP connection\n", err)
+	// 	os.Exit(1)
+	// }
+	// send id to email service
+	// msg := message{Command: "sendNotification", ID: parsedTx.Recipient}
+
+	// res, _ := json.Marshal(msg)
+	// fmt.Fprintf(conn, string(res))
+
 	default:
-		fmt.Printf("Unknown transaction type: %s\n", txType)
+		fmt.Printf("Unknown transaction type new: %s\n", txType)
 	}
 }
