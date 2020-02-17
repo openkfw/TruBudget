@@ -9,8 +9,10 @@ const k8s = require("@kubernetes/client-node");
 const os = require("os");
 const KubernetesClient = require("./kubernetesClient");
 
+const {
+  startEmailNotificationWatcher,
+} = require("./filterTransactions/notificationWatcher");
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
-
 const { startMultichainDaemon, configureChain } = require("./createChain");
 
 const {
@@ -43,8 +45,10 @@ const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 
+// Email Service
 const EMAIL_HOST = process.env.EMAIL_HOST;
 const EMAIL_PORT = process.env.EMAIL_PORT;
+const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
@@ -95,8 +99,7 @@ configureChain(
   RPC_USER,
   RPC_PASSWORD,
   RPC_ALLOW_IP,
-  EMAIL_HOST,
-  EMAIL_PORT,
+  NOTIFICATION_PATH,
 );
 
 function initMultichain() {
@@ -155,9 +158,21 @@ if (EXPOSE_MC) {
     }
 
     initMultichain();
+    if (EMAIL_HOST && EMAIL_PORT) {
+      startEmailNotificationWatcher(
+        NOTIFICATION_PATH,
+        `${EMAIL_HOST}:${EMAIL_PORT}`,
+      );
+    }
   });
 } else {
   initMultichain();
+  if (EMAIL_HOST && EMAIL_PORT) {
+    startEmailNotificationWatcher(
+      NOTIFICATION_PATH,
+      `${EMAIL_HOST}:${EMAIL_PORT}`,
+    );
+  }
 }
 
 const stopMultichain = async mcproc => {

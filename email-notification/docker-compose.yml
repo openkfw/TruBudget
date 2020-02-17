@@ -1,19 +1,19 @@
 version: "3.1"
 services:
-  master-node:
-    build:
-      context: ../blockchain
-    environment:
-      RPC_PORT: 8000
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      ORGANIZATION: KfW
-      EMAIL_HOST: email
-      EMAIL_PORT: 8889
-    links:
-      - email
-    ports:
-      - "8000:8000"
-      - "8085:8085"
+  # master-node:
+  #   build:
+  #     context: ../blockchain
+  #   environment:
+  #     RPC_PORT: 8000
+  #     RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+  #     ORGANIZATION: KfW
+  #     EMAIL_HOST: email
+  #     EMAIL_PORT: 8889
+  #   links:
+  #     - email
+  #   ports:
+  #     - "8000:8000"
+  #     - "8085:8085"
 
   email:
     build: .
@@ -21,55 +21,52 @@ services:
     environment:
       SMTP_HOST: host.docker.internal
       SMTP_PORT: 2500
-      DB_HOST: emaildb
+      DB_HOST: localhost
       DB_PORT: 5432
       DB_NAME: trubudget_email_service
       TCP_PORT: 8889
       PORT: 8890
-    links:
-      - emaildb
+    # links:
+    #   - emaildb
     ports:
       - "8889:8889"
       - "8890:8890"
-
-  emaildb:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_HOST: localhost
-      POSTGRES_PASSWORD: test
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: trubudget_email_service
-    ports:
-      - 5432:5432
-
-  master-api:
-    build: ../api
-    environment:
-      ORGANIZATION: KfW
-      ORGANIZATION_VAULT_SECRET: asdf
-      RPC_HOST: master-node
-      RPC_PORT: 8000
-      ROOT_SECRET: asdf
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-    ports:
-      - 8080:8080
-    links:
-      - master-node
-
-  provisioning:
-    build:
-      context: ../provisioning
-    command: ["npm", "start"]
-    environment:
-      API_HOST: master-api
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: TEST
-      ROOT_SECRET: asdf
-      ORGANIZATION: KfW
-    links:
-      - master-api
+  # emaildb:
+  #   image: postgres
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_HOST: localhost
+  #     POSTGRES_PASSWORD: test
+  #     POSTGRES_PORT: 5432
+  #     POSTGRES_DB: trubudget_email_service
+  #   ports:
+  #     - 5432:5432
+  # master-api:
+  #   build: ../api
+  #   environment:
+  #     ORGANIZATION: KfW
+  #     ORGANIZATION_VAULT_SECRET: asdf
+  #     RPC_HOST: master-node
+  #     RPC_PORT: 8000
+  #     ROOT_SECRET: asdf
+  #     RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+  #   ports:
+  #     - 8080:8080
+  #   links:
+  #     - master-node
+  # provisioning:
+  #   build:
+  #     context: ../provisioning
+  #   command: ["npm", "start"]
+  #   environment:
+  #     API_HOST: master-api
+  #     API_PORT: 8080
+  #     ENVIRONMENT_TYPE: TEST
+  #     ROOT_SECRET: asdf
+  #     ORGANIZATION: KfW
+  #   links:
+  #     - master-api
 # frontend:
 #   build: ../frontend
 #   environment:

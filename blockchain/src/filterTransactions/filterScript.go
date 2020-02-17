@@ -102,6 +102,7 @@ func main() {
 		os.Exit(1)
 	}
 	transactionJSONAsString := argsWithoutProg[0]
+	notificationPath := argsWithoutProg[1]
 
 	var rawMessage json.RawMessage
 
@@ -113,41 +114,15 @@ func main() {
 
 	switch txType {
 	case "notification_created":
-		path := "./notifications/"
 		unixTimestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-		_ = os.Mkdir(path, 0600)
-		file, err := os.Create(path + unixTimestamp + ".json")
+		_ = os.Mkdir(notificationPath, 0600)
+		file, err := os.Create(notificationPath + unixTimestamp + ".json")
 		if err != nil {
 			fmt.Println(err)
 		} else {
 			file.WriteString(argsWithoutProg[0])
 		}
 		file.Close()
-
-	// parsedTx := notificationTransaction{}
-	// err = json.Unmarshal(rawMessage, &parsedTx)
-
-	// if err != nil {
-	// 	fmt.Printf("Error parsing notification_created: %v\n", err)
-	// 	os.Exit(1)
-	// }
-
-	// if parsedTx.Recipient == "" {
-	// 	fmt.Printf("Error: No recipient set in notification_created.\n")
-	// 	os.Exit(1)
-	// }
-	// emailServiceSocketAddress := argsWithoutProg[1]
-	// fmt.Printf("emailServiceSocketAddress : %s\n", emailServiceSocketAddress)
-	// conn, err := net.Dial("tcp", emailServiceSocketAddress)
-	// if err != nil {
-	// 	fmt.Printf("Error: Failed building a TCP connection\n", err)
-	// 	os.Exit(1)
-	// }
-	// send id to email service
-	// msg := message{Command: "sendNotification", ID: parsedTx.Recipient}
-
-	// res, _ := json.Marshal(msg)
-	// fmt.Fprintf(conn, string(res))
 
 	default:
 		fmt.Printf("Unknown transaction type new: %s\n", txType)

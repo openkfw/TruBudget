@@ -16,7 +16,9 @@ const server = createServer(socket => {
           if (email.length > 0) {
             await sendMail(email);
           }
-        })().catch(error => console.log("Error:", error));
+        })().catch(error => {
+          console.log("Error:", error);
+        });
         break;
       default:
         console.log("unknown action");
