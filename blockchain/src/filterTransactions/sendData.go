@@ -3,10 +3,11 @@ package main
 // TODO: Error handling
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net"
+	"net/http"
 	"os"
 	"time"
 )
@@ -153,18 +154,31 @@ func sendData(path string, emailServiceSocketAddress string) {
 		}
 		fmt.Println("DEBUG: Parsed Recipient is:", recipient)
 		fmt.Println("DEBUG: Email-Service-Address:", emailServiceSocketAddress)
-		// Start TCP connection
-		conn, err := net.Dial("tcp", emailServiceSocketAddress)
+
+		nData, err := json.Marshal(map[string]string{
+			"Command": "sendNotification",
+			"ID":      recipient,
+		})
 		if err != nil {
-			fmt.Printf("Error: Failed building a TCP connection\n", err)
+			fmt.Printf("Error: Failed creating JSON\n", err)
+			return
+		}
+		// Start HTTP connection
+		resp, err := http.Post(emailServiceSocketAddress+"/notification.send", "application/json", bytes.NewBuffer(nData))
+		if err != nil {
+			fmt.Printf("Error: Failed building a HTTP connection\n", err)
 			return
 		}
 
-		nData := notificationData{}
-		nData.Command = "sendNotification"
-		nData.ID = recipient
-		nDataJSON, _ := json.Marshal(nData)
-		fmt.Fprintf(conn, string(nDataJSON))
+		defer resp.Body.Close()
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Printf("Error: Failed reading response\n", err)
+			return
+		}
+
+		fmt.Println(string(body))
 
 		if os.Remove(path+"/"+file.Name()) != nil {
 			fmt.Printf("INFO: Couldn't delete File %s\n", file.Name())
@@ -177,6 +191,5 @@ func sendData(path string, emailServiceSocketAddress string) {
 		// if message == "Email sent" {
 		// 	fmt.Print("Delete File")
 		// }
-		conn.Close()
 	}
 }

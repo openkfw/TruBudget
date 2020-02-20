@@ -1,12 +1,16 @@
-const spawn = require("child_process").spawn;
+const execFile = require("child_process").execFile;
 
 const startEmailNotificationWatcher = (path, emailServiceSocketAddress) => {
-  console.log(path);
-  console.log(emailServiceSocketAddress);
-  const emailproc = spawn("./filterTransactions/sendData", [
-    path,
-    emailServiceSocketAddress,
-  ]);
+  const emailproc = execFile(
+    `${process.cwd()}/sendData`,
+    [path, emailServiceSocketAddress],
+    (error, stdout, stderr) => {
+      if (error) {
+        console.log(error);
+      }
+      console.log(stdout);
+    },
+  );
   emailproc.stdout.on("data", data => {
     console.log(`Notification-Watcher: ${data}`);
   });
@@ -17,8 +21,8 @@ const startEmailNotificationWatcher = (path, emailServiceSocketAddress) => {
   return emailproc;
 };
 
-// startEmailNotificationWatcher("./notifications/", "localhost:8889");
-// setTimeout(() => console.log("finish"), 30000);
+startEmailNotificationWatcher("./notifications/", "localhost:8889");
+setTimeout(() => console.log("finish"), 100000);
 
 module.exports = {
   startEmailNotificationWatcher,

@@ -21,27 +21,25 @@ services:
     environment:
       SMTP_HOST: host.docker.internal
       SMTP_PORT: 2500
-      DB_HOST: localhost
+      DB_HOST: emaildb
       DB_PORT: 5432
       DB_NAME: trubudget_email_service
-      TCP_PORT: 8889
       PORT: 8890
-    # links:
-    #   - emaildb
+    links:
+      - emaildb
     ports:
-      - "8889:8889"
       - "8890:8890"
-  # emaildb:
-  #   image: postgres
-  #   restart: always
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_HOST: localhost
-  #     POSTGRES_PASSWORD: test
-  #     POSTGRES_PORT: 5432
-  #     POSTGRES_DB: trubudget_email_service
-  #   ports:
-  #     - 5432:5432
+  emaildb:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_HOST: localhost
+      POSTGRES_PASSWORD: test
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: trubudget_email_service
+    ports:
+      - 5432:5432
   # master-api:
   #   build: ../api
   #   environment:

@@ -1,5 +1,6 @@
 import knex from "knex";
 import config from "./config";
+import logger from "./logger";
 
 class DbConnector {
   private pool: knex;
@@ -17,14 +18,15 @@ class DbConnector {
     }
   };
 
-  public getDb() {
-    console.log("getDb");
-    console.log(this.pool);
+  public getDb = async () => {
     if (!this.pool) {
-      return this.initializeConnection();
+      this.pool = this.initializeConnection();
+    }
+    if (!(await this.pool.schema.hasTable(config.userTable))) {
+      await this.createTable();
     }
     return this.pool;
-  }
+  };
 
   public disconnect = async () => {
     if (this.pool) {
@@ -33,7 +35,7 @@ class DbConnector {
   };
 
   public healthCheck = async () => {
-    const client = this.getDb();
+    const client = await this.getDb();
     const tablesToCheck = [config.userTable];
     const tablePromises = Promise.all(
       tablesToCheck.map(table => {
@@ -47,13 +49,9 @@ class DbConnector {
     await tablePromises;
   };
 
-  public cleanDb = async (client = this.getDb()) => {
-    await client(config.userTable).truncate();
-  };
-
   public insertUser = async (id, email) => {
-    const client = this.getDb();
     try {
+      const client = await this.getDb();
       if (!(await client.schema.hasTable(config.userTable))) {
         await client.schema.createTable(config.userTable, table => {
           table
@@ -62,72 +60,49 @@ class DbConnector {
             .unique();
           table.string(this.emailTableName).notNullable();
         });
-        console.log(`INFO: Table '${config.userTable}' created.`);
+        logger.info(`Table '${config.userTable}' created.`);
       }
-      console.log(`INFO: Insert User '${id}' with email '${email}'`);
+      logger.info(`Insert User '${id}' with email '${email}'`);
       await client(config.userTable).insert({
         [`${this.idTableName}`]: id,
         [`${this.emailTableName}`]: email,
       });
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
   public updateUser = async (id, email) => {
-    const client = this.getDb();
+    const client = await this.getDb();
     try {
-      if (!(await client.schema.hasTable(config.userTable))) {
-        await client.schema.createTable(config.userTable, table => {
-          table
-            .string(this.idTableName)
-            .notNullable()
-            .unique();
-          table.string(this.emailTableName).notNullable();
-        });
-        console.log(`INFO: Table '${config.userTable}' created.`);
-      }
-      console.log(`INFO: Update User '${id}' with email '${email}'`);
       await client(config.userTable).update({
         [`${this.idTableName}`]: id,
         [`${this.emailTableName}`]: email,
       });
+      logger.info(`Update User '${id}' with email '${email}'`);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
   public deleteUser = async (id, email) => {
-    const client = this.getDb();
+    const client = await this.getDb();
     try {
-      if (!(await client.schema.hasTable(config.userTable))) {
-        await client.schema.createTable(config.userTable, table => {
-          table
-            .string(this.idTableName)
-            .notNullable()
-            .unique();
-          table.string(this.emailTableName).notNullable();
-        });
-        console.log(`INFO: Table '${config.userTable}' created.`);
-      }
-      console.log(`INFO: Delete User '${id}' with email '${email}'`);
       await client(config.userTable)
         .where({
           [`${this.idTableName}`]: id,
           [`${this.emailTableName}`]: email,
         })
         .del();
+      logger.info(`Delete User '${id}' with email '${email}'`);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 
   public getAllEmails = async () => {
-    const client = this.getDb();
-    if (await !client.schema.hasTable(config.userTable)) {
-      throw new Error(`Table '${config.userTable}' does not exist.`);
-    }
-    return (await this.pool(config.userTable).select(this.emailTableName)).reduce(
+    const client = await this.getDb();
+    return (await client(config.userTable).select(this.emailTableName)).reduce(
       (emails, emailObject) => {
         emails.push(emailObject.email);
         return emails;
@@ -138,27 +113,23 @@ class DbConnector {
 
   public getEmail = async (id: string): Promise<string> => {
     try {
-      console.log("CONFIG: ", config);
-      const client = this.getDb();
-      if (await !client.schema.hasTable(config.userTable)) {
-        throw new Error(`Table '${config.userTable}' does not exist.`);
-      }
-      const emails = await this.pool(config.userTable)
+      const client = await this.getDb();
+      const emails = await client(config.userTable)
         .select(this.emailTableName)
         .where({ [`${this.idTableName}`]: `${id}` });
       if (emails.length > 0 && emails[0].email) {
         return emails[0].email;
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
-    console.log(`INFO: No email found for ${id}`);
+    logger.info(`No email found for ${id}`);
     return "";
   };
 
   private initializeConnection = () => {
-    console.log("INFO: Initialize database connection");
-    console.log(config);
+    logger.info("Initialize database connection");
+    logger.info(config);
     const knexConfig: knex.Config = {
       client: config.dbType,
       debug: config.sqlDebug,
@@ -170,13 +141,15 @@ class DbConnector {
     return this.pool;
   };
 
-  // export const deleteUser = async (id, email) => {
-  //   const client = getDb();
-  //   if (!client.hasTable(config.userTable)) {
-  //     throw new Error(`Table '${config.userTable}' does not exist.`);
-  //   }
-  //   client(config.userTable).insert({ id, email });
-  // };
+  private createTable = async () => {
+    await this.pool.schema.createTable(config.userTable, table => {
+      table
+        .string(this.idTableName)
+        .notNullable()
+        .unique();
+      table.string(this.emailTableName).notNullable();
+    });
+    logger.info(`Table '${config.userTable}' created.`);
+  };
 }
-
 export default DbConnector;

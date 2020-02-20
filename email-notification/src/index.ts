@@ -1,62 +1,75 @@
 import bodyParser from "body-parser";
-import * as child from "child_process";
 import cors from "cors";
 import express from "express";
 import config from "./config";
 import DbConnector from "./db";
+import logger from "./logger";
+import sendMail from "./sendMail";
 
 const db = new DbConnector();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Start TCP Server for notification hook of blockchain
-const tcpproc = child.spawn("node", ["./dist/tcpCommandListener.js"]);
-tcpproc.stdout.on("data", data => {
-  console.log(`TCP Command Listener: ${data}`);
-});
-tcpproc.stderr.on("data", data => {
-  console.log(`TCP Command Listener: Error: ${data}`);
-});
-tcpproc.on("close", () => console.log(`TCP Command Listener stopped`));
-
-// Start HTTP Server for insert/delete User in database
-app.get("/readiness", (req, res) => {
+app.get("/readiness", (_req, res) => {
   res.send(true);
 });
 
 app.post("/user.insert", (req, res) => {
   const user = req.body.data.user;
   (async () => {
-    console.log(req.body);
     const email = await db.getEmail(user.id);
     if (email.length > 0) {
       await db.updateUser(user.id, user.email);
+      res.status(200).send({ user: { id: user.id, status: "updated", email: user.email } });
     } else {
       await db.insertUser(user.id, user.email);
+      res.status(200).send({ user: { id: user.id, status: "inserted", email: user.email } });
     }
-  })().catch(error => console.log("Error:", error));
-  res.send(`User ${user.id} inserted`);
+  })().catch(error => {
+    logger.error(error);
+    res.status(500).send(error);
+  });
 });
 
 app.get("/user.getEmail", (req, res) => {
   const id = req.query.id;
   (async () => {
-    res.send(await db.getEmail(id));
-  })().catch(error => console.log("Error:", error));
+    res.send({ user: { id, email: await db.getEmail(id) } });
+  })().catch(error => {
+    logger.error(error);
+    res.status(500).send(error);
+  });
 });
 
 app.post("/user.delete", (req, res) => {
   const user = req.body.data.user;
   (async () => {
     await db.deleteUser(user.id, user.email);
+    res.status(200).send({ user: { id: user.id, status: "deleted", email: user.email } });
   })().catch(error => () => {
-    console.log("Error:", error);
-    res.send(error);
+    logger.error(error);
+    res.status(500).send(error);
   });
-  res.send(`User ${user.id} deleted`);
+});
+
+app.post("/notification.send", (req, res) => {
+  const id = req.body.data.id;
+  let email;
+  (async () => {
+    email = await db.getEmail(id);
+    if (email.length > 0) {
+      await sendMail(email);
+      res.status(200).send({ notification: { recipient: id, status: "sent", email } });
+    } else {
+      res.status(404).send({ notification: { recipient: id, email: "Not Found" } });
+    }
+  })().catch(error => () => {
+    logger.error(error);
+    res.status(500).send(error);
+  });
 });
 
 app.listen(config.http.port, () => {
-  console.log(`App listening on ${config.http.port}`);
+  logger.info(`App listening on ${config.http.port}`);
 });

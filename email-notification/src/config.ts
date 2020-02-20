@@ -2,7 +2,6 @@ import Joi from "joi";
 
 const envVarSchema = Joi.object({
   HTTP_PORT: Joi.number().default(8890),
-  TCP_PORT: Joi.number().default(8889),
   DB_TYPE: Joi.string()
     .allow(["pg", "sqlite3", "mysql", "mysql2", "oracledb", "mssql"])
     .default("pg"),
@@ -27,9 +26,6 @@ if (error) {
 }
 
 const config = {
-  tcp: {
-    port: envVars.TCP_PORT,
-  },
   http: {
     port: envVars.HTTP_PORT,
   },
