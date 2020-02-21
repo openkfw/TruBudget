@@ -84,9 +84,9 @@ func parseTransactionType(rawMessage *json.RawMessage, payload string) (string, 
 		return "", fmt.Errorf("Failed to validate transaction: %v", err)
 	}
 
+	// TODO: Check for e.g. stream create transaction - If error it can be a well known transaction which shouldn't be an error
 	txType, err := getTransactionType(rawMessage)
 	if err != nil {
-		fmt.Printf(payload)
 		return "", fmt.Errorf("Failed to retrieve transaction type: %v", err)
 	}
 
@@ -125,6 +125,6 @@ func main() {
 		file.Close()
 
 	default:
-		fmt.Printf("Unknown transaction type new: %s\n", txType)
+		// Unknown transaction types
 	}
 }

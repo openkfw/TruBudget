@@ -54,7 +54,7 @@ app.post("/user.delete", (req, res) => {
 });
 
 app.post("/notification.send", (req, res) => {
-  const id = req.body.data.id;
+  const id = req.body.id;
   let email;
   (async () => {
     email = await db.getEmail(id);

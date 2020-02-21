@@ -2016,10 +2016,10 @@ function* fetchEmailSaga() {
   yield execute(
     function*() {
       const id = yield select(getSelfId);
-      const email = yield callApi(api.getEmail, id);
+      const data = yield callApi(api.getEmail, id);
       yield put({
         type: FETCH_EMAIL_SUCCESS,
-        email
+        email: data.user.email
       });
     },
     true,

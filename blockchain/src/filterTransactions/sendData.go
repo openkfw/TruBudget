@@ -131,65 +131,52 @@ func main() {
 	emailServiceSocketAddress := argsWithoutProg[1]
 
 	for {
-		fmt.Println("Start sending notifciation process...")
 		sendData(path, emailServiceSocketAddress)
 		time.Sleep(5 * time.Second)
 	}
 }
 
 func sendData(path string, emailServiceSocketAddress string) {
-
-	files, err := ioutil.ReadDir(path)
+	var files []os.FileInfo
+	var err error
+	files, err = ioutil.ReadDir(path)
 	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
+		if os.IsNotExist(err) {
+			os.Mkdir(path, os.ModePerm)
+		}
+		files, err = ioutil.ReadDir(path)
+		if err != nil {
+			fmt.Printf("Error: %v", err)
+			return
+		}
 	}
 
 	for _, file := range files {
-		fmt.Println("DEBUG: Parsing File", file.Name(), "...")
 		recipient, err := getRecipientFromFile(path, file.Name())
 		if err != nil {
 			fmt.Printf("Error: %v", err)
 			break
 		}
-		fmt.Println("DEBUG: Parsed Recipient is:", recipient)
-		fmt.Println("DEBUG: Email-Service-Address:", emailServiceSocketAddress)
 
 		nData, err := json.Marshal(map[string]string{
-			"Command": "sendNotification",
-			"ID":      recipient,
+			"id": recipient,
 		})
 		if err != nil {
 			fmt.Printf("Error: Failed creating JSON\n", err)
 			return
 		}
 		// Start HTTP connection
-		resp, err := http.Post(emailServiceSocketAddress+"/notification.send", "application/json", bytes.NewBuffer(nData))
+		resp, err := http.Post("http://"+emailServiceSocketAddress+"/notification.send", "application/json", bytes.NewBuffer(nData))
 		if err != nil {
-			fmt.Printf("Error: Failed building a HTTP connection\n", err)
+			fmt.Printf("Error: Failed building a HTTP(S) connection\n", err)
 			return
 		}
-
 		defer resp.Body.Close()
-
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Printf("Error: Failed reading response\n", err)
-			return
+		// Delete file if message was sent
+		if resp.StatusCode >= 200 && resp.StatusCode <= 499 {
+			if os.Remove(path+"/"+file.Name()) != nil {
+				fmt.Printf("INFO: Couldn't delete File %s\n", file.Name())
+			}
 		}
-
-		fmt.Println(string(body))
-
-		if os.Remove(path+"/"+file.Name()) != nil {
-			fmt.Printf("INFO: Couldn't delete File %s\n", file.Name())
-		}
-
-		// TODO: Delete the file if mail WAS SENT by the email service
-		// // wait for reply
-		// message, _ := bufio.NewReader(conn).ReadString('\n')
-		// fmt.Print("Message from server: " + message)
-		// if message == "Email sent" {
-		// 	fmt.Print("Delete File")
-		// }
 	}
 }
