@@ -1,10 +1,14 @@
 const execFile = require("child_process").execFile;
 
-const startEmailNotificationWatcher = (path, emailServiceSocketAddress) => {
+const startEmailNotificationWatcher = (
+  path,
+  emailServiceSocketAddress,
+  maxPersistenceTime,
+) => {
   const emailproc = execFile(
     // TODO: Find better way to find path to sendData file
     `${process.cwd()}/src/filterTransactions/sendData`,
-    [path, emailServiceSocketAddress],
+    [path, emailServiceSocketAddress, maxPersistenceTime],
     (error, stdout, stderr) => {
       if (error) {
         console.log(error);
@@ -22,8 +26,8 @@ const startEmailNotificationWatcher = (path, emailServiceSocketAddress) => {
   return emailproc;
 };
 
-// startEmailNotificationWatcher("./notifications/", "localhost:8889");
-// setTimeout(() => console.log("finish"), 100000);
+// startEmailNotificationWatcher("./notifications/", "localhost:8889", 24);
+// setTimeout(() => console.log("finish"), 10000);
 
 module.exports = {
   startEmailNotificationWatcher,

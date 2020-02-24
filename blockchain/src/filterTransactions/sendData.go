@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -122,17 +123,23 @@ func getTransactionRecipient(rawTx *json.RawMessage) (string, error) {
 
 func main() {
 	argsWithoutProg := os.Args[1:]
-	if len(argsWithoutProg) != 2 {
+	if len(argsWithoutProg) != 3 {
 		fmt.Printf("Error: Not enough arguments")
 		fmt.Printf("Usage: %s pathToTransactionFiles", os.Args[0])
 		return
 	}
 	path := argsWithoutProg[0]
 	emailServiceSocketAddress := argsWithoutProg[1]
+	maxPersistenceTime, err := strconv.ParseInt(argsWithoutProg[2], 10, 64)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	for {
 		sendData(path, emailServiceSocketAddress)
-		time.Sleep(5 * time.Second)
+		// Delete all notifciation json files that exist for longer than given time
+		deleteFilesOlderThan(path, maxPersistenceTime)
+		time.Sleep(10 * time.Second)
 	}
 }
 
@@ -179,4 +186,26 @@ func sendData(path string, emailServiceSocketAddress string) {
 			}
 		}
 	}
+}
+
+func isOlderThan(t time.Time, hours int64) bool {
+	return time.Now().Sub(t) > time.Duration(hours)*time.Hour
+}
+
+func deleteFilesOlderThan(dir string, hours int64) (files []os.FileInfo, err error) {
+	tmpfiles, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return
+	}
+
+	for _, file := range tmpfiles {
+		if file.Mode().IsRegular() {
+			if isOlderThan(file.ModTime(), hours) {
+				if os.Remove(dir+"/"+file.Name()) != nil {
+					fmt.Printf("ERROR: Couldn't delete File %s\n", file.Name())
+				}
+			}
+		}
+	}
+	return
 }
