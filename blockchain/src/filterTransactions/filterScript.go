@@ -9,7 +9,8 @@ import (
 )
 
 type request struct {
-	Vout []vout `json:"vout"`
+	Vout   []vout      `json:"vout"`
+	Create interface{} `json:"create"`
 }
 type vout struct {
 	Items []item `json:"items"`
@@ -23,6 +24,11 @@ type data struct {
 
 type transaction struct {
 	Type string `json:"type"`
+}
+
+type orgPrivkeyTransaction struct {
+	Address string `json:"address"`
+	Privkey string `json:"privkey"`
 }
 
 type notificationTransaction struct {
@@ -58,6 +64,26 @@ func getTransactionType(rawTx *json.RawMessage) (string, error) {
 	return baseTx.Type, nil
 }
 
+func isCreateStreamTx(rawMessage *json.RawMessage, payload string) (string, error) {
+	transaction := request{
+		Create: rawMessage,
+	}
+
+	// parse JSON
+	err := json.Unmarshal([]byte(payload), &transaction)
+
+	if err != nil {
+		return "", fmt.Errorf("Failed to parse JSON: %v", err)
+	}
+
+	txType, err := getTransactionType(rawMessage)
+	if err != nil {
+		return "", fmt.Errorf("Failed to retrieve transaction type: %v", err)
+	}
+
+	return txType, nil
+}
+
 func parseTransactionType(rawMessage *json.RawMessage, payload string) (string, error) {
 	transaction := request{
 		Vout: []vout{
@@ -84,7 +110,6 @@ func parseTransactionType(rawMessage *json.RawMessage, payload string) (string, 
 		return "", fmt.Errorf("Failed to validate transaction: %v", err)
 	}
 
-	// TODO: Check for e.g. stream create transaction - If error it can be a well known transaction which shouldn't be an error
 	txType, err := getTransactionType(rawMessage)
 	if err != nil {
 		return "", fmt.Errorf("Failed to retrieve transaction type: %v", err)
@@ -108,8 +133,12 @@ func main() {
 
 	txType, err := parseTransactionType(&rawMessage, transactionJSONAsString)
 	if err != nil {
-		fmt.Printf("Error: %v", err)
-		os.Exit(1)
+		txType, err = isCreateStreamTx(&rawMessage, transactionJSONAsString)
+		if err != nil {
+			fmt.Println(transactionJSONAsString)
+			fmt.Printf("Error: %v", err)
+			os.Exit(1)
+		}
 	}
 
 	switch txType {
@@ -124,6 +153,7 @@ func main() {
 		}
 		file.Close()
 
+	case "stream":
 	default:
 		// Unknown transaction types
 	}

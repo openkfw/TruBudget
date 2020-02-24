@@ -10,7 +10,7 @@ services:
       EMAIL_HOST: email-service
       EMAIL_PORT: 8890
     links:
-      - email
+      - email-service
     ports:
       - "8000:8000"
       - "8085:8085"

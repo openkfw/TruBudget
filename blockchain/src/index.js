@@ -51,7 +51,7 @@ const EMAIL_PORT = process.env.EMAIL_PORT;
 const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
 // TODO: find better name
 const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
-const isEmailServiceEnabled = EMAIL_HOST && EMAIL_PORT;
+const isEmailServiceEnabled = (EMAIL_HOST && EMAIL_PORT) || false;
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 

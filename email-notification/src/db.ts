@@ -123,7 +123,7 @@ class DbConnector {
     } catch (error) {
       throw error;
     }
-    logger.info(`No email found for ${id}`);
+    logger.debug(`No email found for ${id}`);
     return "";
   };
 

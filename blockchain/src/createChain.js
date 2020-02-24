@@ -23,21 +23,21 @@ const configureChain = (
   }
   if (isEmailServiceEnabled) {
     shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-    rpcport=${RPC_PORT}
-    rpcuser=${RPC_USER}
-    rpcpassword=${RPC_PASSWORD}
-    rpcallowip=${RPC_ALLOW_IP}
-    walletnotifynew=${__dirname}/filterTransactions/filterScript %j ${NOTIFICATION_PATH}
-    EOF
-    `);
+rpcport=${RPC_PORT}
+rpcuser=${RPC_USER}
+rpcpassword=${RPC_PASSWORD}
+rpcallowip=${RPC_ALLOW_IP}
+walletnotifynew=${__dirname}/filterTransactions/filterScript %j ${NOTIFICATION_PATH}
+EOF
+`);
   } else {
     shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-    rpcport=${RPC_PORT}
-    rpcuser=${RPC_USER}
-    rpcpassword=${RPC_PASSWORD}
-    rpcallowip=${RPC_ALLOW_IP}
-    EOF
-    `);
+rpcport=${RPC_PORT}
+rpcuser=${RPC_USER}
+rpcpassword=${RPC_PASSWORD}
+rpcallowip=${RPC_ALLOW_IP}
+EOF
+`);
   }
   shell.mkdir("-p", `${multichainDir}/${chainName}`);
   shell.cp(`${multichainDir}/multichain.conf`, `${multichainDir}/${chainName}`);
