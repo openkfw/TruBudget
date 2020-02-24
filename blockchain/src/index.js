@@ -49,6 +49,7 @@ const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 const EMAIL_HOST = process.env.EMAIL_HOST;
 const EMAIL_PORT = process.env.EMAIL_PORT;
 const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
+const isEmailServiceEnabled = EMAIL_HOST && EMAIL_PORT;
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
@@ -99,6 +100,7 @@ configureChain(
   RPC_USER,
   RPC_PASSWORD,
   RPC_ALLOW_IP,
+  isEmailServiceEnabled,
   NOTIFICATION_PATH,
 );
 
@@ -158,7 +160,7 @@ if (EXPOSE_MC) {
     }
 
     initMultichain();
-    if (EMAIL_HOST && EMAIL_PORT) {
+    if (isEmailServiceEnabled) {
       startEmailNotificationWatcher(
         NOTIFICATION_PATH,
         `${EMAIL_HOST}:${EMAIL_PORT}`,
@@ -167,7 +169,7 @@ if (EXPOSE_MC) {
   });
 } else {
   initMultichain();
-  if (EMAIL_HOST && EMAIL_PORT) {
+  if (isEmailServiceEnabled) {
     startEmailNotificationWatcher(
       NOTIFICATION_PATH,
       `${EMAIL_HOST}:${EMAIL_PORT}`,

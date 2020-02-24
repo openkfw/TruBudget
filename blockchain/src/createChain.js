@@ -9,6 +9,7 @@ const configureChain = (
   RPC_USER,
   RPC_PASSWORD,
   RPC_ALLOW_IP,
+  isEmailServiceEnabled,
   NOTIFICATION_PATH,
 ) => {
   console.log("createChain...");
@@ -20,15 +21,24 @@ const configureChain = (
       `multichain-util create ${chainName} -datadir=${multichainDir} -anyone-can-connect=false -anyone-can-send=false -anyone-can-receive=true -anyone-can-receive-empty=true -anyone-can-create=false -anyone-can-issue=false -anyone-can-admin=false -anyone-can-mine=false -anyone-can-activate=false-mining-diversity=0.3 -mine-empty-rounds=1 -protocol-version=20005 -admin-consensus-upgrade=.51 -admin-consensus-admin=.51 -admin-consensus-activate=.51 -admin-consensus-mine=.51 -admin-consensus-create=0 -admin-consensus-issue=0 -root-stream-open=false`,
     );
   }
-  shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-rpcport=${RPC_PORT}
-rpcuser=${RPC_USER}
-rpcpassword=${RPC_PASSWORD}
-rpcallowip=${RPC_ALLOW_IP}
-walletnotifynew=${__dirname}/filterTransactions/filterScript %j ${NOTIFICATION_PATH}
-EOF
-`);
-
+  if (isEmailServiceEnabled) {
+    shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
+    rpcport=${RPC_PORT}
+    rpcuser=${RPC_USER}
+    rpcpassword=${RPC_PASSWORD}
+    rpcallowip=${RPC_ALLOW_IP}
+    walletnotifynew=${__dirname}/filterTransactions/filterScript %j ${NOTIFICATION_PATH}
+    EOF
+    `);
+  } else {
+    shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
+    rpcport=${RPC_PORT}
+    rpcuser=${RPC_USER}
+    rpcpassword=${RPC_PASSWORD}
+    rpcallowip=${RPC_ALLOW_IP}
+    EOF
+    `);
+  }
   shell.mkdir("-p", `${multichainDir}/${chainName}`);
   shell.cp(`${multichainDir}/multichain.conf`, `${multichainDir}/${chainName}`);
 };
