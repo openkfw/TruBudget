@@ -10,7 +10,6 @@ const configureChain = (
   RPC_PASSWORD,
   RPC_ALLOW_IP,
   isEmailServiceEnabled,
-  NOTIFICATION_PATH,
 ) => {
   console.log("createChain...");
   console.log(__dirname);
@@ -27,7 +26,7 @@ rpcport=${RPC_PORT}
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
-walletnotifynew=${__dirname}/filterTransactions/filterScript %j ${NOTIFICATION_PATH}
+walletnotifynew=${__dirname}/mutlichain-feed/multichainfeed %j
 EOF
 `);
   } else {

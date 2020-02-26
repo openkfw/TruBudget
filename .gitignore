@@ -9,3 +9,4 @@ Untitled*
 node_modules
 yarn-error.log
 .markdownlint.*
+*.code-workspace

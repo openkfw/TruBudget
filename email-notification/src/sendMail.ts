@@ -6,8 +6,13 @@ const sendMail = async (emails: string | string[]) => {
     host: config.smtpServer.host,
     port: config.smtpServer.port,
     secure: false,
+    // TODO:
+    // simple auth
+    // user:
+    // password:
   });
 
+  // TODO: should be configurable
   const info = await transporter.sendMail({
     from: '"Trubudget Notification Service👻" <trubudget@notification.com>',
     to: emails,
