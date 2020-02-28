@@ -29,8 +29,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Support georgian language [#427](https://github.com/openkfw/TruBudget/issues/427)
 
-<!-- ### Changed -->
-
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
@@ -42,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Format currencies and numbers according to the selected language or locale [#135](https://github.com/openkfw/TruBudget/issues/135)
+  - History and notification timestamps only display year/month/day [#426](https://github.com/openkfw/TruBudget/issues/426)
 
 <!-- ### Security -->
 

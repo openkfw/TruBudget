@@ -143,3 +143,7 @@ export const shortenedDisplayName = displayName => {
 export function makePermissionReadable(intent) {
   return strings.permissions[intent.replace(/[.]/g, "_")] || intent;
 }
+
+export const dateFormat = () => {
+  return "MM.DD.YYYY";
+};
