@@ -1,13 +1,11 @@
+import Fab from "@material-ui/core/Fab";
+import DoneIcon from "@material-ui/icons/Check";
+import EditIcon from "@material-ui/icons/Edit";
+import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableContainer } from "react-sortable-hoc";
 import { canReorderWorkflowItems } from "../../permissions.js";
-import DoneIcon from "@material-ui/icons/Check";
-import EditIcon from "@material-ui/icons/Edit";
-
-import { WorkflowItem, RedactedWorkflowItem } from "./WorkflowItem";
-
-import _isEmpty from "lodash/isEmpty";
-import Fab from "@material-ui/core/Fab";
+import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
 
 const styles = {
   editButtonContainer: {
@@ -18,6 +16,15 @@ const styles = {
   editButton: {
     position: "relative",
     zIndex: 2
+  },
+  workflowItemsContainer: {
+    width: "100%",
+    height: "20%",
+    margin: "0 auto",
+    overflow: "auto",
+    backgroundColor: "#f3f3f3",
+    border: "1px solid #EFEFEF",
+    borderRadius: 3
   }
 };
 
@@ -96,17 +103,7 @@ const getSortableItems = ({ workflowItems, ...props }) => {
 const WorkflowList = SortableContainer(props => {
   const sortableItems = getSortableItems(props);
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "20%",
-        margin: "0 auto",
-        overflow: "auto",
-        backgroundColor: "#f3f3f3",
-        border: "1px solid #EFEFEF",
-        borderRadius: 3
-      }}
-    >
+    <div style={styles.workflowItemsContainer}>
       <div style={styles.editButtonContainer}>
         {!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}
       </div>

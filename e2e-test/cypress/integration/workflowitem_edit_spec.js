@@ -61,7 +61,7 @@ describe("Workflowitem edit", function() {
       // when the workflow item was created
       cy.get("[data-test=edit-workflowitem]")
         .last()
-        .click();
+        .click({ force: true });
       cy.get("[data-test=dropdown-currencies-click]").should("contain", "USD");
 
       // Close the dialog

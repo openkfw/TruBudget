@@ -36,7 +36,7 @@ const styles = {
   }
 };
 const Users = props => {
-  const { tabIndex, setTabIndex, showDashboardDialog, allowedIntents } = props;
+  const { tabIndex, setTabIndex, showDashboardDialog, allowedIntents, isDataLoading } = props;
   const isCreateButtonDisabled =
     tabIndex === 0 ? !allowedIntents.includes("global.createUser") : !allowedIntents.includes("global.createGroup");
   const onClick = () => (tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup"));
@@ -70,7 +70,7 @@ const Users = props => {
           </div>
         ) : null}
         {tabIndex === 0 && <UsersTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
-        {tabIndex === 1 && <GroupTable {...props} />}
+        {isDataLoading ? <div /> : tabIndex === 1 && <GroupTable {...props} />}
       </div>
       <DialogContainer {...props} />
     </div>

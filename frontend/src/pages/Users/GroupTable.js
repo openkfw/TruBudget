@@ -11,6 +11,7 @@ import React from "react";
 
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
+import { UserGroupsEmptyState } from "./UsersGroupsEmptyStates";
 
 const styles = {
   icon: {
@@ -20,12 +21,13 @@ const styles = {
 const sortGroups = groups => {
   return _sortBy(groups, group => group.id && group.displayName);
 };
+
 const GroupsTable = ({ groups, showDashboardDialog, classes, allowedIntents }) => {
   const editGroupDisplayed = allowedIntents.includes("global.createGroup");
 
   const sortedGroups = sortGroups(groups);
 
-  return (
+  return sortedGroups.length > 0 ? (
     <Paper>
       <Table>
         <TableHead>
@@ -62,6 +64,8 @@ const GroupsTable = ({ groups, showDashboardDialog, classes, allowedIntents }) =
         </TableBody>
       </Table>
     </Paper>
+  ) : (
+    <UserGroupsEmptyState />
   );
 };
 export default withStyles(styles)(GroupsTable);

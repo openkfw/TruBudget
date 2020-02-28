@@ -24,6 +24,7 @@ import React from "react";
 import { formattedTag, statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import ProjectAnalyticsDialog from "../Analytics/ProjectAnalyticsDialog";
+import BudgetEmptyState from "../Common/BudgetEmptyState";
 import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
 
 const styles = {
@@ -95,6 +96,7 @@ const ProjectDetails = props => {
     canAssignProject,
     closeProject,
     canClose,
+    isDataLoading,
     projectProjectedBudgets,
     openAnalyticsDialog,
     projectTags
@@ -129,35 +131,43 @@ const ProjectDetails = props => {
         </List>
         <div style={styles.projectedBudget}>
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
-          <Table padding="none">
-            <TableHead>
-              <TableRow>
-                <TableCell>{strings.common.organization}</TableCell>
-                <TableCell align="right">{strings.common.amount}</TableCell>
-                <TableCell align="right">{strings.common.currency}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {projectProjectedBudgets.map(budget => (
-                <TableRow key={budget.organization + budget.currencyCode}>
-                  <TableCell>{budget.organization}</TableCell>
-                  <TableCell align="right">{toAmountString(budget.value)}</TableCell>
-                  <TableCell align="right">{budget.currencyCode}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <div style={styles.analytics}>
-            <Button
-              variant="outlined"
-              color="primary"
-              data-test="details-analytics-button"
-              onClick={openAnalyticsDialog}
-            >
-              <BarChartIcon />
-              {strings.project.project_details}
-            </Button>
-          </div>
+          {isDataLoading ? (
+            <div />
+          ) : projectProjectedBudgets.length > 0 ? (
+            <div>
+              <Table padding="none">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>{strings.common.organization}</TableCell>
+                    <TableCell align="right">{strings.common.amount}</TableCell>
+                    <TableCell align="right">{strings.common.currency}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {projectProjectedBudgets.map(budget => (
+                    <TableRow key={budget.organization + budget.currencyCode}>
+                      <TableCell>{budget.organization}</TableCell>
+                      <TableCell align="right">{toAmountString(budget.value)}</TableCell>
+                      <TableCell align="right">{budget.currencyCode}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div style={styles.analytics}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  data-test="details-analytics-button"
+                  onClick={openAnalyticsDialog}
+                >
+                  <BarChartIcon />
+                  {strings.project.project_details}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <BudgetEmptyState text={strings.common.no_budget_project} />
+          )}
         </div>
         <List style={styles.projectAssignee}>
           <ListItem>
