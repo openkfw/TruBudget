@@ -1,20 +1,15 @@
-const execFile = require("child_process").execFile;
+const fork = require("child_process").fork;
 
 const startEmailNotificationWatcher = (
   path,
   emailServiceSocketAddress,
-  maxPersistenceTime,
+  maxPersistenceHours,
+  loopIntervalSeconds,
 ) => {
-  const emailproc = execFile(
-    // TODO: Find better way to find path to sendData file
-    `${process.cwd()}/src/filterTransactions/sendData`,
-    [path, emailServiceSocketAddress, maxPersistenceTime],
-    (error, stdout, stderr) => {
-      if (error) {
-        console.log(error);
-      }
-      console.log(stdout);
-    },
+  const emailproc = fork(
+    "./sendData.js", // `${process.cwd()}/src/multichain-feed/sendData.js`,
+    [path, emailServiceSocketAddress, maxPersistenceHours, loopIntervalSeconds],
+    { silent: true },
   );
   emailproc.stdout.on("data", data => {
     console.log(`Notification-Watcher: ${data}`);
@@ -26,8 +21,8 @@ const startEmailNotificationWatcher = (
   return emailproc;
 };
 
-// startEmailNotificationWatcher("./notifications/", "localhost:8889", 24);
-// setTimeout(() => console.log("finish"), 10000);
+startEmailNotificationWatcher("./notifications/", "localhost:8890", 24, 10);
+setTimeout(() => console.log("finish"), 100000);
 
 module.exports = {
   startEmailNotificationWatcher,
