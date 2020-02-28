@@ -4,6 +4,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableContainer } from "react-sortable-hoc";
+
 import { canReorderWorkflowItems } from "../../permissions.js";
 import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
 

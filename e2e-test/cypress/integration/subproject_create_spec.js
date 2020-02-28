@@ -1,5 +1,11 @@
 describe("Subproject creation", function() {
   let projectId;
+  let baseUrl, apiRoute;
+
+  before(() => {
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
+  });
 
   it("Root cannot add a subproject", function() {
     const organization = "ACME Corp";
@@ -27,9 +33,13 @@ describe("Subproject creation", function() {
   it("Check warnings that permissions are not assigned", function() {
     cy.login();
     cy.visit(`/projects/${projectId}`);
+    cy.server();
+    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
 
     //Create a subproject
-    cy.get("[data-test=subproject-create-button]").click();
+    cy.wait("@loadPage")
+      .get("[data-test=subproject-create-button]")
+      .click();
     cy.get("[data-test=nameinput] input").type("Test");
     cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
       .click()
@@ -43,7 +53,7 @@ describe("Subproject creation", function() {
 
     //Check warning badge
     cy.get("[data-test=warning-badge]").should("be.visible");
-    cy.get("[data-test=spp-button-0]").click();
+    cy.get("[data-test=spp-button-0]").click({ force: true });
     cy.get("[data-test=warning-badge]").should("not.be.checked");
     cy.get("[data-test=permission-submit]").click();
     cy.get("[data-test=warning-badge]").should("not.be.checked");

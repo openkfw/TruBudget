@@ -1,29 +1,29 @@
 import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import AmountIcon from "@material-ui/icons/AccountBalance";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import BarChartIcon from "@material-ui/icons/BarChart";
 import DoneIcon from "@material-ui/icons/Check";
 import DateIcon from "@material-ui/icons/DateRange";
 import AssigneeIcon from "@material-ui/icons/Group";
-import BarChartIcon from "@material-ui/icons/BarChart";
 import _isUndefined from "lodash/isUndefined";
 import React from "react";
 
 import { statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
-import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
+import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
 
 const styles = {

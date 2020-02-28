@@ -1,16 +1,15 @@
-import React from "react";
-
+import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-
-import Typography from "@material-ui/core/Typography";
+import CardHeader from "@material-ui/core/CardHeader";
+import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import React from "react";
+
 import strings from "../../localizeStrings";
 import { canApproveNode } from "../../permissions";
 import { NewOrganizationsEmptyState, ExistingNodesEmptyState } from "./NodesEmptyStates";
@@ -124,7 +123,7 @@ const getListEntries = (nodes, canApprove, classes, cb) => {
 const NodeVoting = ({ nodes, approveNewNodeForExistingOrganization, allowedIntents, classes, isDataLoading }) => {
   const canApprove = canApproveNode(allowedIntents);
 
-  const [_self, newOrgaNodes, existingOrgaNodes] = splitNodes(nodes);
+  const [, newOrgaNodes, existingOrgaNodes] = splitNodes(nodes);
 
   const newOrgaNodesListEntries = getListEntries(newOrgaNodes, canApprove, classes, ({ address }) =>
     approveNewNodeForExistingOrganization(address)

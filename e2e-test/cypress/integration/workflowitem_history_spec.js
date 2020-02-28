@@ -71,7 +71,7 @@ describe("Workflowitem's history", function() {
   });
 
   it("When changing the tab, the history is fetched correctly", function() {
-    cy.get(".workflowitem-info-button").click();
+    cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
 
     // opens info dialog window..
 
