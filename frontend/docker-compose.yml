@@ -1,49 +1,38 @@
-version: "3.1"
+version: "3.2"
 services:
-  master-node:
-    build:
-      context: ../blockchain
+  master:
+    image: trubudget/blockchain:latest
     environment:
       RPC_PORT: 8000
+      ORGANIZATION: ACMECorp
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      ORGANIZATION: KfW
+    volumes:
+      - /tmp/bcMasterVolume:/root/.multichain
     ports:
+      - "7447:7447"
       - "8000:8000"
-      - "8085:8085"
-
-  master-api:
-    build: ../api
+  api:
+    image: trubudget/api:latest
     environment:
-      ORGANIZATION: KfW
-      ORGANIZATION_VAULT_SECRET: asdf
-      RPC_HOST: master-node
+      RPC_HOST: master
       RPC_PORT: 8000
       ROOT_SECRET: asdf
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-    ports:
-      - 8080:8080
+      PORT: 8080
+      ORGANIZATION: ACMECorp
+      ORGANIZATION_VAULT_SECRET: org$ecret
+      ROOT_SECRET: asdf
     links:
-      - master-node
+      - master
+    ports:
+      - "8080:8080"
   provisioning:
-    build:
-      context: ../provisioning
-    command: ["npm", "start"]
+    image: trubudget/provisioning:latest
     environment:
-      API_HOST: master-api
+      API_HOST: api
       API_PORT: 8080
       ENVIRONMENT_TYPE: TEST
       ROOT_SECRET: asdf
-      ORGANIZATION: KfW
+      ORGANIZATION: ACMECorp
     links:
-      - master-api
-# frontend:
-#   build: ../frontend
-#   environment:
-#     PROD_API_HOST: master-api
-#     PROD_API_PORT: 8080
-#     TEST_API_HOST: master-api
-#     TEST_API_PORT: 8080
-#   ports:
-#     - "80:80" # Mapping the nginx port
-#   links:
-#     - master-api
+      - api
