@@ -1,5 +1,6 @@
-import nodemailer from "nodemailer";
+import nodemailer, { SentMessageInfo } from "nodemailer";
 import config from "./config";
+import logger from "./logger";
 
 const sendMail = async (emails: string | string[]) => {
   const transporter = nodemailer.createTransport({
@@ -13,7 +14,7 @@ const sendMail = async (emails: string | string[]) => {
   });
 
   // TODO: should be configurable
-  const info = await transporter.sendMail({
+  const info: SentMessageInfo = await transporter.sendMail({
     from: '"Trubudget Notification Service👻" <trubudget@notification.com>',
     to: emails,
     subject: "Trubudget Notificaiton",
@@ -22,6 +23,6 @@ const sendMail = async (emails: string | string[]) => {
   });
 
   // messageId: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-  console.log(`Message sent to ${emails}: ${info.messageId}`);
+  logger.debug(`Message sent to ${emails}: ${info.messageId}`);
 };
 export default sendMail;

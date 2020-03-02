@@ -2,6 +2,10 @@ import knex from "knex";
 import config from "./config";
 import logger from "./logger";
 
+interface Email {
+  email: string;
+}
+
 class DbConnector {
   private pool: knex;
   private idTableName = "id";
@@ -18,7 +22,7 @@ class DbConnector {
     }
   };
 
-  public getDb = async () => {
+  public getDb = async (): Promise<knex> => {
     if (!this.pool) {
       this.pool = this.initializeConnection();
     }
@@ -34,12 +38,12 @@ class DbConnector {
     }
   };
 
-  public healthCheck = async () => {
+  public healthCheck = async (): Promise<void> => {
     const client = await this.getDb();
-    const tablesToCheck = [config.userTable];
-    const tablePromises = Promise.all(
+    const tablesToCheck: string[] = [config.userTable];
+    const tablePromises: Promise<string[]> = Promise.all(
       tablesToCheck.map(table => {
-        const query = client
+        const query: knex.QueryBuilder<any, any> = client
           .select()
           .from(table)
           .whereRaw("1=0");
@@ -49,7 +53,7 @@ class DbConnector {
     await tablePromises;
   };
 
-  public insertUser = async (id, email) => {
+  public insertUser = async (id: string, email: string): Promise<void> => {
     try {
       const client = await this.getDb();
       if (!(await client.schema.hasTable(config.userTable))) {
@@ -72,7 +76,7 @@ class DbConnector {
     }
   };
 
-  public updateUser = async (id, email) => {
+  public updateUser = async (id: string, email: string): Promise<void> => {
     const client = await this.getDb();
     try {
       await client(config.userTable).update({
@@ -85,7 +89,7 @@ class DbConnector {
     }
   };
 
-  public deleteUser = async (id, email) => {
+  public deleteUser = async (id: string, email: string): Promise<void> => {
     const client = await this.getDb();
     try {
       await client(config.userTable)
@@ -100,11 +104,11 @@ class DbConnector {
     }
   };
 
-  public getAllEmails = async () => {
+  public getAllEmails = async (): Promise<string[]> => {
     const client = await this.getDb();
     return (await client(config.userTable).select(this.emailTableName)).reduce(
-      (emails, emailObject) => {
-        emails.push(emailObject.email);
+      (emails: string[], email: Email) => {
+        emails.push(email.email);
         return emails;
       },
       [],
@@ -114,7 +118,7 @@ class DbConnector {
   public getEmail = async (id: string): Promise<string> => {
     try {
       const client = await this.getDb();
-      const emails = await client(config.userTable)
+      const emails: Email[] = await client(config.userTable)
         .select(this.emailTableName)
         .where({ [`${this.idTableName}`]: `${id}` });
       if (emails.length > 0 && emails[0].email) {
@@ -127,7 +131,7 @@ class DbConnector {
     return "";
   };
 
-  private initializeConnection = () => {
+  private initializeConnection = (): knex => {
     logger.info("Initialize database connection");
     logger.info(config);
     const knexConfig: knex.Config = {
@@ -141,7 +145,7 @@ class DbConnector {
     return this.pool;
   };
 
-  private createTable = async () => {
+  private createTable = async (): Promise<void> => {
     await this.pool.schema.createTable(config.userTable, table => {
       table
         .string(this.idTableName)

@@ -1,49 +1,45 @@
-import Joi from "joi";
+type DatabaseType = "pg" | "sqlite3" | "mysql" | "mysql2" | "oracledb" | "mssql";
 
-const envVarSchema = Joi.object({
-  HTTP_PORT: Joi.number().default(8890),
-  DB_TYPE: Joi.string()
-    .allow(["pg", "sqlite3", "mysql", "mysql2", "oracledb", "mssql"])
-    .default("pg"),
-  DB_USER: Joi.string().default("postgres"),
-  DB_PASSWORD: Joi.string().default("test"),
-  DB_HOST: Joi.string().default("localhost"),
-  DB_NAME: Joi.string().default("trubudget_email_service"),
-  DB_PORT: Joi.number().default(5432), // postgresql
-  DB_SSL: Joi.boolean().default(false),
-  DB_SCHEMA: Joi.string().default("public"),
-  SQL_DEBUG: Joi.bool().default(false),
-  USER_TABLE: Joi.string().default("users"),
-  SMTP_HOST: Joi.string().default("localhost"),
-  SMTP_PORT: Joi.number().default(2500),
-})
-  .unknown()
-  .required();
-
-const { error, value: envVars } = Joi.validate(process.env, envVarSchema);
-if (error) {
-  throw new Error(`Config validation error: ${error.message}`);
+interface DatabaseConfig {
+  user: string;
+  password: string;
+  host: string;
+  database: string;
+  port: number;
+  ssl: boolean;
+  schema: string;
+}
+interface Config {
+  http: { port: number };
+  dbType: DatabaseType;
+  db: DatabaseConfig;
+  sqlDebug: boolean;
+  userTable: string;
+  smtpServer: {
+    host: string;
+    port: number;
+  };
 }
 
-const config = {
+const config: Config = {
   http: {
-    port: envVars.HTTP_PORT,
+    port: Number(process.env.HTTP_PORT) || 8890,
   },
-  dbType: envVars.DB_TYPE,
+  dbType: process.env.DB_TYPE || "pg",
   db: {
-    user: envVars.DB_USER,
-    password: envVars.DB_PASSWORD,
-    host: envVars.DB_HOST,
-    database: envVars.DB_NAME,
-    port: Number(envVars.DB_PORT),
-    ssl: Boolean(envVars.DB_SSL),
-    schema: envVars.DB_SCHEMA,
+    user: process.env.DB_USER || "postgres",
+    password: process.env.DB_PASSWORD || "test",
+    host: process.env.DB_HOST || "localhost",
+    database: process.env.DB_NAME || "trubudget_email_service",
+    port: Number(process.env.DB_PORT) || 5432,
+    ssl: Boolean(process.env.DB_SSL) || false,
+    schema: process.env.DB_SCHEMA || "public",
   },
-  sqlDebug: Boolean(envVars.SQL_DEBUG),
-  userTable: envVars.USER_TABLE,
+  sqlDebug: Boolean(process.env.SQL_DEBUG) || false,
+  userTable: process.env.USER_TABLE || "users",
   smtpServer: {
-    host: envVars.SMTP_HOST,
-    port: envVars.SMTP_PORT,
+    host: process.env.SMTP_HOST || "localhost",
+    port: Number(process.env.SMTP_PORT) || 2500,
   },
 };
 
