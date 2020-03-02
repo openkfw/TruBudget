@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const getRecipientFromFile = async (path, file) => {
   try {
-    var obj = await require(process.cwd() + "/" + path + "/" + file);
+    var obj = await require(path + "/" + file);
     return obj.vout[0].items[0].data.json.recipient;
   } catch (error) {
     throw new Error(`Cannot parse json file '${path}+ "/" +${file}'\n` + error);
@@ -38,7 +38,7 @@ const sendNotifications = async (
         logger.debug(
           `Sending post request to ${proto}://${emailServiceSocketAddress}/notification.send with recipient ${recipient}`,
         );
-        await axios.post(
+        const response = await axios.post(
           `${proto}://${emailServiceSocketAddress}/notification.send`,
           {
             apiVersion: "1.0",
@@ -49,6 +49,13 @@ const sendNotifications = async (
             },
           },
         );
+        if (
+          response.data.notification &&
+          response.data.notification.status === "sent"
+        ) {
+          logger.debug("Delete file " + path + "/" + file);
+          await fs.unlinkSync(path + "/" + file);
+        }
       } catch (error) {
         // If no email is found in the database delete the notification file
         if (
@@ -89,6 +96,7 @@ const deleteFilesOlderThan = async (time, path) => {
         const fileAgeInHours = (Date.now() - stat.mtime) / 3.6e6;
         if (fileAgeInHours >= time) {
           try {
+            logger.debug("Delete file " + filePath);
             await fs.unlinkSync(filePath);
           } catch (err) {
             logger.error(err);
@@ -119,13 +127,14 @@ const [
   maxPersistenceHours,
   loopIntervalSeconds,
 ] = arguments;
+const absolutePath = process.cwd() + "/" + path;
 
 (async () => {
   while (true) {
     try {
       // Check/Send/Delete notification transaction files in notification directory
-      await sendNotifications(path, emailServiceSocketAddress);
-      await deleteFilesOlderThan(maxPersistenceHours, path);
+      await sendNotifications(absolutePath, emailServiceSocketAddress);
+      await deleteFilesOlderThan(maxPersistenceHours, absolutePath);
       await sleep(loopIntervalSeconds);
     } catch (error) {
       logger.error(error);

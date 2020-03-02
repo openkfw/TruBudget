@@ -25,7 +25,7 @@ services:
       DB_PORT: 5432
       DB_NAME: trubudget_email_service
       PORT: 8890
-      LOG_LEVEL: DEBUG
+      LOG_LEVEL: INFO
     links:
       - emaildb
     ports:

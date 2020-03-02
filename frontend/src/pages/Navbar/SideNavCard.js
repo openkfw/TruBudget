@@ -10,6 +10,7 @@ import NodesIcon from "@material-ui/icons/DesktopWindows";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import UsersIcon from "@material-ui/icons/PeopleOutline";
 import ExportIcon from "@material-ui/icons/ListAlt";
+import SettingsIcon from "@material-ui/icons/Settings";
 import React from "react";
 
 import strings from "../../localizeStrings";
@@ -69,16 +70,16 @@ const SideNavCard = ({
       >
         <ListItem style={{ paddingTop: "16px" }}>
           <ListItemIcon>
-            <IconButton
-              onClick={() => openUserProfile(showUserProfile, fetchEmail)}
-              children={<Avatar size={60} src={avatar} />}
-            />
+            <IconButton children={<Avatar size={60} src={avatar} />} />
           </ListItemIcon>
           <ListItemText
             style={{ padding: "0px" }}
             primary={<span>{displayName}</span>}
             secondary={<span>{organization}</span>}
           />
+          <IconButton onClick={() => openUserProfile(showUserProfile, fetchEmail)}>
+            <SettingsIcon />
+          </IconButton>
         </ListItem>
       </div>
     </div>
