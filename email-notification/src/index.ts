@@ -60,8 +60,10 @@ app.post("/notification.send", (req, res) => {
     email = await db.getEmail(id);
     if (email.length > 0) {
       await sendMail(email);
+      logger.debug("Notification sent to " + email);
       res.status(200).send({ notification: { recipient: id, status: "sent", email } });
     } else {
+      logger.debug("Email " + email + "not found");
       res.status(404).send({ notification: { recipient: id, email: "Not Found" } });
     }
   })().catch(error => () => {
