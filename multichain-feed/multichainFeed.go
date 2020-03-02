@@ -47,7 +47,7 @@ func main() {
 
 	txType, err := parseTransactionType(&rawMessage, transactionJSONAsString)
 	if err != nil {
-		log.Error("%v", err)
+		// log.Debug("Error parsing transaction",err)
 		os.Exit(1)
 	}
 
