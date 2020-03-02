@@ -11,7 +11,7 @@ const KubernetesClient = require("./kubernetesClient");
 
 const {
   startEmailNotificationWatcher,
-} = require("./filterTransactions/notificationWatcher");
+} = require("./multichain-feed/email-notifications/notificationWatcher");
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
 

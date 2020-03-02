@@ -26,7 +26,7 @@ rpcport=${RPC_PORT}
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
-walletnotifynew=${__dirname}/mutlichain-feed/multichainfeed %j
+walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j
 EOF
 `);
   } else {
@@ -65,7 +65,13 @@ const startMultichainDaemon = (
     console.log(`stdout: ${data}`);
   });
   mcproc.stderr.on("data", data => {
-    console.log(`Failed to start the master node: ${data}`);
+    const regex = new RegExp("[▶]");
+    const isMultichainFeedOutput = regex.test(data);
+    if (isMultichainFeedOutput) {
+      console.log(`multichain-feed | ${data}`);
+    } else {
+      console.log(`Failed to start the master node: ${data}`);
+    }
   });
 
   return mcproc;
