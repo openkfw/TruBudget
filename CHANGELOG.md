@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-<!-- ### Added -->
+### Added
+
+- Added search feature for subprojects [#422](https://github.com/openkfw/TruBudget/issues/422)
 
 <!-- ### Changed -->
 

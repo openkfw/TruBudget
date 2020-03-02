@@ -60,6 +60,12 @@ export const OPEN_HISTORY = "OPEN_HISTORY";
 export const ADD_TEMPORARY_SUBPROJECT_PERMISSION = "ADD_TEMPORARY_SUBPROJECT_PERMISSION";
 export const REMOVE_TEMPORARY_SUBPROJECT_PERMISSION = " REMOVE_TEMPORARY_SUBPROJECT_PERMISSION";
 
+export const SUB_SEARCH_TERM = "SUB_SEARCH_TERM";
+export const SUB_SEARCH_BAR_DISPLAYED = "SUB_SEARCH_BAR_DISPLAYED";
+export const SUB_STORE_FILTERED_PROJECTS = "SUB_STORE_FILTERED_PROJECTS";
+export const SUB_STORE_HIGHLIGHTING_REGEX = "SUB_STORE_HIGHLIGHTING_REGEX";
+export const SUB_STORE_SEARCH_TERMS_AS_ARRAY = "SUB_STORE_SEARCH_TERMS_AS_ARRAY";
+
 export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_SUBPROJECT_PERMISSIONS,
@@ -306,5 +312,39 @@ export function removeTemporaryPermission(permission, userId) {
     type: REMOVE_TEMPORARY_SUBPROJECT_PERMISSION,
     permission,
     userId
+  };
+}
+
+export function storeSubSearchTerm(searchTerm) {
+  return {
+    type: SUB_SEARCH_TERM,
+    searchTerm
+  };
+}
+
+export function storeSubSearchBarDisplayed(searchBarDisplayed) {
+  return {
+    type: SUB_SEARCH_BAR_DISPLAYED,
+    searchBarDisplayed
+  };
+}
+export function storeFilteredSubProjects(filteredSubProjects) {
+  return {
+    type: SUB_STORE_FILTERED_PROJECTS,
+    filteredSubProjects
+  };
+}
+
+export function storeSubHighlightingRegex(highlightingRegex) {
+  return {
+    type: SUB_STORE_HIGHLIGHTING_REGEX,
+    highlightingRegex
+  };
+}
+
+export function storeSubSearchTermArray(searchTerms) {
+  return {
+    type: SUB_STORE_SEARCH_TERMS_AS_ARRAY,
+    searchTerms
   };
 }

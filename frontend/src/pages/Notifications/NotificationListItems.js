@@ -8,13 +8,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Unread from "@material-ui/icons/Email";
 import Read from "@material-ui/icons/MailOutline";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
+import dayjs from "dayjs";
 import React from "react";
 import classNames from "classnames";
-
 import { intentMapping, parseURI, getParentData, isAllowedToSee } from "./helper";
-import strings from "../../localizeStrings";
 import { dateFormat } from "../../helper";
-import dayjs from "dayjs";
+import strings from "../../localizeStrings";
+
 const styles = theme => ({
   row: {
     display: "flex",

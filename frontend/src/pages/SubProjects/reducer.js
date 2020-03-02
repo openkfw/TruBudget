@@ -27,8 +27,14 @@ import {
   SUBPROJECT_CURRENCY,
   SUBPROJECT_DELETED_PROJECTED_BUDGET,
   SUBPROJECT_NAME,
-  SUBPROJECT_PROJECTED_BUDGETS
+  SUBPROJECT_PROJECTED_BUDGETS,
+  SUB_SEARCH_BAR_DISPLAYED,
+  SUB_SEARCH_TERM,
+  SUB_STORE_FILTERED_PROJECTS,
+  SUB_STORE_HIGHLIGHTING_REGEX,
+  SUB_STORE_SEARCH_TERMS_AS_ARRAY
 } from "./actions";
+import { convertToURLQuery } from "../../helper";
 
 const historyPageSize = 50;
 
@@ -42,6 +48,7 @@ const defaultState = fromJS({
   projectProjectedBudgets: [],
   projectTS: 0,
   subProjects: [],
+  filteredSubProjects: [],
   subprojectToAdd: {
     id: "",
     displayName: "",
@@ -71,12 +78,20 @@ const defaultState = fromJS({
   displayNameForPermissions: "",
   showProjectAssignees: false,
   projectAssignee: "",
-  dialogTitle: strings.subproject.subproject_add_title
+  dialogTitle: strings.subproject.subproject_add_title,
+  searchTerm: "",
+  searchTerms: [],
+  searchBarDisplayed: false,
+  highlightingRegex: ""
 });
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
+      // While searching, stop updating the subproject list from new fetched subprojects
+      if (state.get("searchTerms").size === 0) {
+        state = state.set("filteredSubProjects", action.subprojects);
+      }
       return state.merge({
         id: action.project.data.id,
         projectName: action.project.data.displayName,
@@ -145,7 +160,10 @@ export default function detailviewReducer(state = defaultState, action) {
       });
       return newState;
     case CREATE_SUBPROJECT_SUCCESS:
-      return state.set("subprojectToAdd", defaultState.getIn(["subprojectToAdd"]));
+      return state.merge({
+        highlightingRegex: defaultState.get("highlightingRegex"),
+        subprojectToAdd: defaultState.get("subprojectToAdd")
+      });
     case SHOW_PROJECT_ASSIGNEES:
       return state.set("showProjectAssignees", true);
     case HIDE_PROJECT_ASSIGNEES:
@@ -212,6 +230,23 @@ export default function detailviewReducer(state = defaultState, action) {
           ? fromJS(action.permissions.subproject)
           : defaultState.get("temporaryPermissions")
       );
+
+    case SUB_SEARCH_TERM:
+      const querySearchTerm = convertToURLQuery(action.searchTerm);
+      window.history.replaceState("", "Title", "?" + querySearchTerm);
+      return state.set("searchTerm", action.searchTerm);
+    case SUB_SEARCH_BAR_DISPLAYED:
+      return state.merge({
+        searchTerms: defaultState.get("searchTerms"),
+        highlightingRegex: defaultState.get("highlightingRegex"),
+        searchBarDisplayed: action.searchBarDisplayed
+      });
+    case SUB_STORE_FILTERED_PROJECTS:
+      return state.set("filteredSubProjects", fromJS(action.filteredSubProjects));
+    case SUB_STORE_HIGHLIGHTING_REGEX:
+      return state.set("highlightingRegex", fromJS(action.highlightingRegex));
+    case SUB_STORE_SEARCH_TERMS_AS_ARRAY:
+      return state.set("searchTerms", fromJS(action.searchTerms));
     default:
       return state;
   }

@@ -17,8 +17,9 @@ import {
   storeSearchTerm,
   toggleSidebar
 } from "./actions";
-import { convertToSearchBarString } from "./convertSearchTerm";
+import FlyInNotifications from "../Notifications/FlyInNotifications";
 import Navbar from "./Navbar";
+import { convertToSearchBarString } from "../../helper";
 
 class NavbarContainer extends Component {
   componentDidMount() {

@@ -78,6 +78,8 @@ const fr = {
     submit: "Soumettre",
     subproject: "Composante",
     subprojects: "Composantes",
+    subproject_searchtext: "Recherche de sous-projets ",
+    project_searchtext: "Recherche de projets",
     tag_already_exists: "Le tag existe déjà!",
     tag: "Tag",
     task_status: "Etat de la tâche",

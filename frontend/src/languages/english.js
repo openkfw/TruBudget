@@ -78,6 +78,8 @@ const en = {
     submit: "Submit",
     subproject: "Subproject",
     subprojects: "Subprojects",
+    subproject_searchtext: "Search subprojects",
+    project_searchtext: "Search projects",
     tag_already_exists: "Tag already exists!",
     tag: "Tag",
     task_status: "Task status",

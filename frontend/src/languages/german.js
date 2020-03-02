@@ -72,6 +72,8 @@ const de = {
     submit: "Submit",
     subproject: "Subproject",
     subprojects: "Subprojects",
+    subproject_searchtext: "Subprojekte durchsuchen",
+    project_searchtext: "Projekte durchsuchen",
     tag: "Tag",
     add_tag_text: "Tag zum Projekt hinzufügen",
     tag_already_exists: "Tag existiert bereits!",

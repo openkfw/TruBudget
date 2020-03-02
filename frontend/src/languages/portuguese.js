@@ -78,6 +78,8 @@ const pt = {
     submit: "Enviar",
     subproject: "Subprojeto",
     subprojects: "Subprojetos",
+    subproject_searchtext: "Subprojetos de pesquisa",
+    project_searchtext: "Pesquisar projectos",
     tag_already_exists: "Tag já existe!",
     tag: "Tag",
     task_status: "Status da tarefa",

@@ -78,6 +78,8 @@ const ka = {
     submit: "გაგზავნა",
     subproject: "ქვეპროექტი",
     subprojects: "ქვეპროექტები",
+    subproject_searchtext: "ქვეპროექტების ძებნა",
+    project_searchtext: "პროექტების ძებნა",
     tag_already_exists: "თაგი უკვე არსებობს!",
     tag: "თაგი",
     task_status: "დავალების სტატუსი",
