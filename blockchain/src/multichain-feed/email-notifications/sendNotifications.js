@@ -14,6 +14,7 @@ const getRecipientFromFile = async (path, file) => {
 const sendNotifications = async (
   path,
   emailServiceSocketAddress,
+  token,
   ssl = false,
 ) => {
   fs.readdir(path, async (err, files) => {
@@ -38,6 +39,9 @@ const sendNotifications = async (
         logger.debug(
           `Sending post request to ${proto}://${emailServiceSocketAddress}/notification.send with recipient ${recipient}`,
         );
+        const config = {
+          headers: { Authorization: `Bearer ${token}` },
+        };
         const response = await axios.post(
           `${proto}://${emailServiceSocketAddress}/notification.send`,
           {
@@ -48,6 +52,7 @@ const sendNotifications = async (
               },
             },
           },
+          config,
         );
         if (
           response.data.notification &&
@@ -117,7 +122,7 @@ const arguments = process.argv.slice(2);
 logger.debug(
   `${process.argv[0]} is executed with following arguments: ${arguments}`,
 );
-if (arguments.length !== 4) {
+if (arguments.length !== 5) {
   logger.error("Wrong amount of arguments");
   return;
 }
@@ -126,6 +131,7 @@ const [
   emailServiceSocketAddress,
   maxPersistenceHours,
   loopIntervalSeconds,
+  token,
 ] = arguments;
 const absolutePath = process.cwd() + "/" + path;
 
@@ -133,7 +139,7 @@ const absolutePath = process.cwd() + "/" + path;
   while (true) {
     try {
       // Check/Send/Delete notification transaction files in notification directory
-      await sendNotifications(absolutePath, emailServiceSocketAddress);
+      await sendNotifications(absolutePath, emailServiceSocketAddress, token); // TODO add secure parameter
       await deleteFilesOlderThan(maxPersistenceHours, absolutePath);
       await sleep(loopIntervalSeconds);
     } catch (error) {

@@ -6,19 +6,19 @@ const sendMail = async (emails: string | string[]) => {
   const transporter = nodemailer.createTransport({
     host: config.smtpServer.host,
     port: config.smtpServer.port,
-    secure: false,
-    // TODO:
-    // simple auth
-    // user:
-    // password:
+    secure: config.smtpServer.secure,
+    auth: {
+      user: config.smtpServer.user,
+      pass: config.smtpServer.password,
+    },
   });
 
   // TODO: should be configurable
   const info: SentMessageInfo = await transporter.sendMail({
-    from: '"Trubudget Notification Service👻" <trubudget@notification.com>',
+    from: config.email.from,
     to: emails,
-    subject: "Trubudget Notificaiton",
-    text: "You have received a notification.",
+    subject: config.email.subject,
+    text: config.email.text,
     // html: "<b>html example</b>"
   });
 

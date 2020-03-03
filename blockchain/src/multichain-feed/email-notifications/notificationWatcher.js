@@ -4,6 +4,7 @@ var fs = require("fs");
 const startEmailNotificationWatcher = (
   path,
   emailServiceSocketAddress,
+  token,
   maxPersistenceHours = 24,
   loopIntervalSeconds = 10,
 ) => {
@@ -14,7 +15,13 @@ const startEmailNotificationWatcher = (
   console.log("Starting email notification watcher process...");
   const emailproc = fork(
     `${__dirname}/sendNotifications.js`,
-    [path, emailServiceSocketAddress, maxPersistenceHours, loopIntervalSeconds],
+    [
+      path,
+      emailServiceSocketAddress,
+      maxPersistenceHours,
+      loopIntervalSeconds,
+      token,
+    ],
     {},
   );
 

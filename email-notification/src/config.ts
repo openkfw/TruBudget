@@ -1,3 +1,5 @@
+import Mail = require("nodemailer/lib/mailer");
+
 type DatabaseType = "pg" | "sqlite3" | "mysql" | "mysql2" | "oracledb" | "mssql";
 
 interface DatabaseConfig {
@@ -18,7 +20,11 @@ interface Config {
   smtpServer: {
     host: string;
     port: number;
+    secure: boolean;
+    user: string;
+    password: string;
   };
+  email: Mail.Options;
 }
 
 const config: Config = {
@@ -40,6 +46,15 @@ const config: Config = {
   smtpServer: {
     host: process.env.SMTP_HOST || "localhost",
     port: Number(process.env.SMTP_PORT) || 2500,
+    secure: Boolean(process.env.SMTP_SSL) || false,
+    user: process.env.SMTP_USER || "testuser",
+    password: process.env.SMTP_USER || "test",
+  },
+  email: {
+    from:
+      process.env.EMAIL_FROM || '"Trubudget Notification Service👻" <trubudget@notification.com>',
+    subject: process.env.EMAIL_SUBJECT || "Trubudget Notificaiton",
+    text: process.env.EMAIL_TEXT || "You have received a notification.",
   },
 };
 

@@ -9,7 +9,7 @@ services:
       ORGANIZATION: KfW
       EMAIL_HOST: email-service
       EMAIL_PORT: 8890
-      LOG_LEVEL: INFO
+      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
     links:
       - email-service
     ports:
@@ -19,6 +19,7 @@ services:
     build: .
     command: ["npm", "start"]
     environment:
+      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
       SMTP_HOST: host.docker.internal
       SMTP_PORT: 2500
       DB_HOST: emaildb
@@ -50,6 +51,7 @@ services:
       RPC_PORT: 8000
       ROOT_SECRET: asdf
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
     ports:
       - 8080:8080
     links:

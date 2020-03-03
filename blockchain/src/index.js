@@ -14,6 +14,7 @@ const {
 } = require("./multichain-feed/email-notifications/notificationWatcher");
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
+const { createJWT } = require("./createAuthToken");
 
 const {
   moveBackup,
@@ -49,9 +50,11 @@ const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 const EMAIL_HOST = process.env.EMAIL_HOST;
 const EMAIL_PORT = process.env.EMAIL_PORT;
 const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
-// TODO: find better name
 const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
 const isEmailServiceEnabled = (EMAIL_HOST && EMAIL_PORT) || false;
+const emailServiceAuthToken = isEmailServiceEnabled
+  ? createJWT(process.env.JWT_SECRET, "notification-watcher")
+  : "";
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
@@ -167,6 +170,7 @@ if (EXPOSE_MC) {
         NOTIFICATION_PATH,
         `${EMAIL_HOST}:${EMAIL_PORT}`,
         NOTIFICATION_MAX_LIFETIME,
+        emailServiceAuthToken,
       );
     }
   });
@@ -177,6 +181,7 @@ if (EXPOSE_MC) {
       NOTIFICATION_PATH,
       `${EMAIL_HOST}:${EMAIL_PORT}`,
       NOTIFICATION_MAX_LIFETIME,
+      emailServiceAuthToken,
     );
   }
 }

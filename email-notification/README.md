@@ -20,19 +20,24 @@ npm install <Driver> --save
 
 ## Environment Variables
 
-| Env Variable | Default Value           | Description                                                                                                      |
-| ------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| HTTP_PORT    | 8890                    | Port for HTTP Server                                                                                             |
-| DB_TYPE      | pg                      | Type of database. A supported list can be found in the [Database Configuration section](#database-configuration) |
-| DB_NAME      | trubudget_email_service | Name of the database                                                                                             |
-| DB_USER      | postgres                | User name for connected database                                                                                 |
-| DB_PASSWORD  | test                    | Password for connected database                                                                                  |
-| DB_HOST      | localhost               | IP of connected database                                                                                         |
-| DB_PORT      | 5432                    | Port of connected database                                                                                       |
-| DB_SCHEMA    | public                  | Schema of connected database                                                                                     |
-| USER_TABLE   | users                   | Name of the table which is created if the first email address is inserted                                        |
-| SMTP_HOST    | localhost               | IP of external SMTP-Server used to actually send notification emails                                             |
-| SMTP_PORT    | 2500                    | Port of external SMTP-Server                                                                                     |
+| Env Variable  | Default Value                     | Description                                                                                                      |
+| ------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| PORT          | 8890                              | Port for HTTP Server                                                                                             |
+| DB_TYPE       | pg                                | Type of database. A supported list can be found in the [Database Configuration section](#database-configuration) |
+| DB_NAME       | trubudget_email_service           | Name of the database                                                                                             |
+| DB_USER       | postgres                          | User name for connected database                                                                                 |
+| DB_PASSWORD   | test                              | Password for connected database                                                                                  |
+| DB_HOST       | localhost                         | IP of connected database                                                                                         |
+| DB_PORT       | 5432                              | Port of connected database                                                                                       |
+| DB_SCHEMA     | public                            | Schema of connected database                                                                                     |
+| DB_SSL        | false                             | If true the DB connection is using the SSL protocol                                                              |
+| USER_TABLE    | users                             | Name of the table which is created if the first email address is inserted                                        |
+| SMTP_HOST     | localhost                         | IP of external SMTP-Server used to actually send notification emails                                             |
+| SMTP_PORT     | 2500                              | Port of external SMTP-Server                                                                                     |
+| SMTP_SSL      | false                             | If true the external SMTP-Server connection is using the SSL protocol                                            |
+| EMAIL_FROM    | Trubudget Notification Service👻  | This is injected into the `from` field of the email notification                                                 |
+| EMAIL_SUBJECT | Trubudget Notificaiton            | This is injected into the `subject` field of the email notification                                              |
+| EMAIL_TEXT    | You have received a notification. | This is injected into the `body` of the email notification                                                       |
 
 ## Architecture
 
