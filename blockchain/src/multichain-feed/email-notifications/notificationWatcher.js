@@ -1,12 +1,13 @@
 const fork = require("child_process").fork;
-var fs = require("fs");
+const fs = require("fs");
 
 const startEmailNotificationWatcher = (
   path,
   emailServiceSocketAddress,
-  token,
+  secret,
   maxPersistenceHours = 24,
   loopIntervalSeconds = 10,
+  ssl = false,
 ) => {
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path);
@@ -18,15 +19,22 @@ const startEmailNotificationWatcher = (
     [
       path,
       emailServiceSocketAddress,
+      secret,
       maxPersistenceHours,
       loopIntervalSeconds,
-      token,
+      ssl,
     ],
     {},
   );
 
   return emailproc;
 };
+
+// startEmailNotificationWatcher(
+//   "./notifications",
+//   "localhost:4444",
+//   "asdsdfggfgr",
+// );
 
 module.exports = {
   startEmailNotificationWatcher,

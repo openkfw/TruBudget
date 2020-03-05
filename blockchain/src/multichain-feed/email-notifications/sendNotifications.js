@@ -1,6 +1,8 @@
 const logger = require("./logger");
 const axios = require("axios");
 const fs = require("fs");
+const util = require("util");
+const { createJWT } = require("./createAuthToken");
 
 const getRecipientFromFile = async (path, file) => {
   try {
@@ -11,79 +13,98 @@ const getRecipientFromFile = async (path, file) => {
   }
 };
 
+function ExpiredTokenException(message) {
+  this.message = message;
+  this.name = "ExpiredTokenException";
+}
+function ConnectionRefusedException(message) {
+  this.message = message;
+  this.name = "ECONNREFUSED";
+}
+
 const sendNotifications = async (
   path,
   emailServiceSocketAddress,
   token,
   ssl = false,
 ) => {
-  fs.readdir(path, async (err, files) => {
-    if (err) {
-      return logger.error("Unable to scan directory: " + err);
+  const readdir = util.promisify(fs.readdir);
+  let files;
+  try {
+    files = await readdir(path);
+  } catch (error) {
+    return logger.error("Unable to scan directory: " + err);
+  }
+  for (let i = 0; i < (await files.length); i++) {
+    const file = files[i];
+    let recipient;
+    const proto = "http";
+
+    try {
+      recipient = await getRecipientFromFile(path, file);
+      logger.debug(`Recipient of file ${path}/${file}: ${recipient}`);
+    } catch (error) {
+      logger.error(error);
+      continue;
     }
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      let recipient;
-      const proto = ssl ? "https" : "http";
-
-      try {
-        recipient = await getRecipientFromFile(path, file);
-        logger.debug(`Recipient of file ${path}/${file}: ${recipient}`);
-      } catch (error) {
-        logger.error(error);
-        continue;
-      }
-
-      try {
-        logger.debug(
-          `Sending post request to ${proto}://${emailServiceSocketAddress}/notification.send with recipient ${recipient}`,
-        );
-        const config = {
-          headers: { Authorization: `Bearer ${token}` },
-        };
-        const response = await axios.post(
-          `${proto}://${emailServiceSocketAddress}/notification.send`,
-          {
-            apiVersion: "1.0",
-            data: {
-              user: {
-                id: recipient,
-              },
+    try {
+      logger.debug(
+        `Sending post request to ${proto}://${emailServiceSocketAddress}/notification.send with recipient ${recipient}`,
+      );
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      const response = await axios.post(
+        `${proto}://${emailServiceSocketAddress}/notification.send`,
+        {
+          apiVersion: "1.0",
+          data: {
+            user: {
+              id: recipient,
             },
           },
-          config,
-        );
-        if (
-          response.data.notification &&
-          response.data.notification.status === "sent"
-        ) {
-          logger.debug("Delete file " + path + "/" + file);
-          await fs.unlinkSync(path + "/" + file);
+        },
+        config,
+      );
+      if (
+        response.data.notification &&
+        response.data.notification.status === "sent"
+      ) {
+        logger.debug("Delete file " + path + "/" + file);
+        await fs.unlinkSync(path + "/" + file);
+      }
+    } catch (error) {
+      if (!error.response) {
+        if (error.errno === "ECONNREFUSED") {
+          throw new ConnectionRefusedException(
+            `Cannot connect to ${emailServiceSocketAddress}`,
+          );
+        } else {
+          throw error;
         }
-      } catch (error) {
-        // If no email is found in the database delete the notification file
-        if (
-          error.response &&
-          error.response.status === 404 &&
-          error.response.data.notification.email === "Not Found"
-        ) {
-          try {
+      }
+      switch (error.response.status) {
+        case 400:
+          // If Bearer token has expired
+          throw new ExpiredTokenException("JWT-Token expired");
+
+        case 404:
+          // If no email is found in the database delete the notification file
+          if (error.response.data.notification.email === "Not Found") {
             logger.debug("Delete file " + path + "/" + file);
             await fs.unlinkSync(path + "/" + file);
-          } catch (err) {
-            logger.error(err);
-          }
-        } else {
-          if (error.errno === "ECONNREFUSED") {
-            logger.error(`Cannot connect to ${emailServiceSocketAddress} `);
           } else {
             logger.error(error);
           }
-        }
+          break;
+
+        default:
+          logger.error(error);
+          break;
       }
     }
-  });
+  }
 };
 
 // Checks all files in {path} and delete them if they are older than {time}
@@ -122,28 +143,41 @@ const arguments = process.argv.slice(2);
 logger.debug(
   `${process.argv[0]} is executed with following arguments: ${arguments}`,
 );
-if (arguments.length !== 5) {
+if (arguments.length !== 6) {
   logger.error("Wrong amount of arguments");
   return;
 }
 const [
   path,
   emailServiceSocketAddress,
+  secret,
   maxPersistenceHours,
   loopIntervalSeconds,
-  token,
+  ssl,
 ] = arguments;
 const absolutePath = process.cwd() + "/" + path;
 
+let token = "";
 (async () => {
   while (true) {
     try {
       // Check/Send/Delete notification transaction files in notification directory
-      await sendNotifications(absolutePath, emailServiceSocketAddress, token); // TODO add secure parameter
+      await sendNotifications(
+        absolutePath,
+        emailServiceSocketAddress,
+        token,
+        ssl,
+      );
       await deleteFilesOlderThan(maxPersistenceHours, absolutePath);
-      await sleep(loopIntervalSeconds);
     } catch (error) {
-      logger.error(error);
+      // If Bearer Token expired
+      if (error.name === "ExpiredTokenException") {
+        token = createJWT(secret, "notification-watcher");
+        logger.info("New JWT-Token created due to expiration.");
+      } else {
+        logger.error(error);
+      }
     }
+    await sleep(loopIntervalSeconds);
   }
 })();

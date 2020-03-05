@@ -66,7 +66,8 @@ const startMultichainDaemon = (
   });
   mcproc.stderr.on("data", data => {
     const regex = new RegExp("[▶]");
-    const isMultichainFeedOutput = regex.test(data);
+    const isMultichainFeedOutput =
+      regex.test(data) || data.includes("multichain-feed");
     if (isMultichainFeedOutput) {
       console.log(`multichain-feed | ${data}`);
     } else {

@@ -10,6 +10,7 @@ services:
       EMAIL_HOST: email-service
       EMAIL_PORT: 8890
       JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
+      LOG_LEVEL: INFO
     links:
       - email-service
     ports:

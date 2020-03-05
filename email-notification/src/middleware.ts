@@ -1,5 +1,6 @@
 import { Request } from "express";
 import jwt from "jsonwebtoken";
+import logger from "./logger";
 
 interface InvalidJWTResponseBody {
   message: string;
@@ -63,6 +64,7 @@ const verifyJWTToken = (
 };
 function getJWTToken(req: Request): string {
   let token: string = (req.headers["x-access-token"] as string) || req.headers.authorization || "";
+  logger.debug(`Provided JWT-TOKEN: ${token}`);
   if (token.startsWith("Bearer ")) {
     // Remove Bearer from string
     token = token.slice(7, token.length);

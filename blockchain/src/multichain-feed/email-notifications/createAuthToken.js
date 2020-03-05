@@ -6,6 +6,7 @@ function createJWT(secret, id) {
       id,
     },
     secret,
+    { expiresIn: "8h" },
   );
 }
 

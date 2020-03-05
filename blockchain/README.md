@@ -52,9 +52,9 @@ Uniquely identifies the chain. Note that a MultiChain network always relates to 
 
 RPC connection settings for executing commands against the MultiChain node. The `RPC_ALLOW_IP` settings refers to an allowed IP address range, given either by IP or CIDR notation; for example, 0.0.0.0/0 will allow access from anywhere.
 
-### `EMAIL_HOST`, `EMAIL_PORT`, `NOTIFICATION_PATH`
+### `EMAIL_HOST`, `EMAIL_PORT`,`EMAIL_SSL`, `NOTIFICATION_PATH`
 
-These environment variables configure the email service. `EMAIL_HOST`, `EMAIL_PORT` are describing the hostname/port of the Trubudget email-service. `NOTIFICATION_PATH` is the path where notification files shall be saved. These variables are only required if an email service shall be configured. More about how the email service is set up can be found in the [Enable email service section](#enable-email-notifications) .
+These environment variables configure the email service. `EMAIL_HOST`, `EMAIL_PORT` are describing the hostname/port of the Trubudget email-service.`EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false). `NOTIFICATION_PATH` is the path where notification files shall be saved. These variables are only required if an email service shall be configured. More about how the email service is set up can be found in the [Enable email service section](#enable-email-notifications) .
 
 ## Getting started
 
