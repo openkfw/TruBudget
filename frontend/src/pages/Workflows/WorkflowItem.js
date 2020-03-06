@@ -18,6 +18,7 @@ import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
 import ActionButton from "../Common/ActionButton";
+import Badge from "@material-ui/core/Badge";
 
 import { amountTypes, fromAmountString, toAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
@@ -28,6 +29,7 @@ import {
   canViewWorkflowItemPermissions
 } from "../../permissions.js";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
+import { withStyles } from "@material-ui/core";
 
 const styles = {
   text: {
@@ -79,7 +81,7 @@ const styles = {
     bottom: "34px"
   },
 
-  infoButton: {
+  buttonStyle: {
     minWidth: "30px",
     marginLeft: "5px"
   },
@@ -149,6 +151,16 @@ const styles = {
   }
 };
 
+const StyledBadge = withStyles(theme => ({
+  badge: {
+    right: 14,
+    top: 33,
+    padding: "3px",
+    background: theme.palette.warning,
+    border: `2px solid ${theme.palette.background.paper}`
+  }
+}))(Badge);
+
 const createLine = (isFirst, selectable) => {
   const lineStyle =
     isFirst && selectable
@@ -215,6 +227,7 @@ function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
   // a user must have assign permissions or all three permission handling permissions
   return allowedIntents.includes("workflowitem.assign") || intents.length === 3 ? true : false;
 }
+
 const editWorkflow = (
   { id, displayName, amount, exchangeRate, amountType, currency, description, status, documents },
   props
@@ -240,7 +253,7 @@ const getInfoButton = ({ openWorkflowDetails }, status, workflowSortEnabled, wor
     <IconButton
       className="workflowitem-info-button"
       disabled={workflowSortEnabled}
-      style={{ ...getButtonStyle(workflowSortEnabled, status), ...styles.infoButton }}
+      style={{ ...getButtonStyle(workflowSortEnabled, status), ...styles.buttonStyle }}
       onClick={() => openWorkflowDetails(workflow.id)}
       data-test={`workflowitem-info-button-${workflow.id}`}
     >
@@ -320,13 +333,17 @@ const renderActionButtons = (
   workflowSortEnabled,
   status,
   showAdditionalData,
-  additionalData
+  additionalData,
+  idsPermissionsUnassigned,
+  id
 ) => {
   const additionalDataDisabled = _isEmpty(additionalData) || workflowSortEnabled;
   const editDisabled = !canEditWorkflow || workflowSortEnabled;
   const permissionsDisabled = !canListWorkflowPermissions || workflowSortEnabled;
-
+  const workflowitemAssigneeChanged = idsPermissionsUnassigned.find(el => el === id) === undefined;
+  const isBadgeHidden = workflowitemAssigneeChanged || workflowSortEnabled || permissionsDisabled ? true : false;
   const closeDisabled = !canCloseWorkflow || workflowSortEnabled;
+  const permissionsTitle = isBadgeHidden ? strings.common.show_permissions : strings.confirmation.assign_permissions;
   return (
     <div style={styles.actionCell}>
       <div style={styles.actions}>
@@ -350,16 +367,24 @@ const renderActionButtons = (
           data-test="edit-workflowitem"
           iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
-        <ActionButton
-          notVisible={workflowSortEnabled || permissionsDisabled}
-          onClick={permissionsDisabled ? undefined : showPerm}
-          icon={<PermissionIcon />}
-          title={permissionsDisabled ? "" : strings.common.show_permissions}
-          workflowSortEnabled={workflowSortEnabled}
-          status={status}
-          data-test="show-workflowitem-permissions"
-          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
-        />
+        <StyledBadge
+          color="secondary"
+          variant="dot"
+          invisible={isBadgeHidden}
+          data-test={"warning-badge"}
+          style={{ ...styles.buttonStyle }}
+        >
+          <ActionButton
+            notVisible={workflowSortEnabled || permissionsDisabled}
+            onClick={permissionsDisabled ? undefined : showPerm}
+            icon={<PermissionIcon />}
+            title={permissionsDisabled ? "" : permissionsTitle}
+            workflowSortEnabled={workflowSortEnabled}
+            status={status}
+            data-test="show-workflowitem-permissions"
+            iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+          />
+        </StyledBadge>
         <ActionButton
           notVisible={workflowSortEnabled || status === "closed" || closeDisabled}
           onClick={closeDisabled ? undefined : close}
@@ -396,7 +421,6 @@ export const WorkflowItem = SortableElement(
       : {
           opacity: 0.3
         };
-
     const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
     const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
     const infoButton = getInfoButton(props, status, workflowSortEnabled, workflow.data);
@@ -459,7 +483,9 @@ export const WorkflowItem = SortableElement(
               workflowSortEnabled,
               status,
               () => props.showWorkflowitemAdditionalData(id),
-              additionalData
+              additionalData,
+              props.idsPermissionsUnassigned,
+              id
             )}
           </div>
         </Card>
@@ -484,7 +510,7 @@ export const RedactedWorkflowItem = SortableElement(
         <Card elevation={workflowSelectable ? 1 : 0} key={mapIndex} style={styles.card}>
           <div style={{ ...tableStyle, ...styles.workflowContent }}>
             <div style={{ flex: 1 }}>
-              <IconButton style={styles.infoButton}>
+              <IconButton style={styles.buttonStyle}>
                 <HiddenIcon />
               </IconButton>
             </div>

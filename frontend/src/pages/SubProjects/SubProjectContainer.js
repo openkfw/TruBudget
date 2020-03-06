@@ -193,7 +193,8 @@ const mapStateToProps = state => {
     searchTerm: state.getIn(["detailview", "searchTerm"]),
     searchBarDisplayed: state.getIn(["detailview", "searchBarDisplayed"]),
     highlightingRegex: state.getIn(["detailview", "highlightingRegex"]),
-    searchTerms: state.getIn(["detailview", "searchTerms"])
+    searchTerms: state.getIn(["detailview", "searchTerms"]),
+    idsPermissionsUnassigned: state.getIn(["detailview", "idsPermissionsUnassigned"])
   };
 };
 

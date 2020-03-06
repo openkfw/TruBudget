@@ -46,6 +46,7 @@ const mapStateToProps = state => {
     showSnackbar: state.getIn(["notifications", "showSnackbar"]),
     snackbarMessage: state.getIn(["notifications", "snackbarMessage"]),
     snackbarError: state.getIn(["notifications", "snackbarError"]),
+    snackbarWarning: state.getIn(["notifications", "snackbarWarning"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
     notificationCount: state.getIn(["notifications", "notificationCount"]),
     notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),

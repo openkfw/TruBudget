@@ -195,7 +195,8 @@ const mapStateToProps = state => {
     isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"]),
     isLoading: state.getIn(["workflow", "isHistoryLoading"]),
     isRoot: state.getIn(["navbar", "isRoot"]),
-    permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"])
+    permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"]),
+    idsPermissionsUnassigned: state.getIn(["workflow", "idsPermissionsUnassigned"])
   };
 };
 

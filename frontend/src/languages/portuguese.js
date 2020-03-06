@@ -183,6 +183,7 @@ const pt = {
     subproject_currency: "Moeda do subprojeto",
     subproject_edit_title: "Editar subprojeto",
     subproject_permissions_title: "Configurar permissões para subprojeto",
+    subproject_permissions_warning: "Sem permissões atribuídas para o subprojecto",
     subproject_preview: "Pré-visualização de subprojeto",
     subproject_select_button: "Selecionar",
     subproject_title_description: "Descrição do subprojeto",
@@ -225,6 +226,7 @@ const pt = {
     workflow_no_documents: "Não há documentos",
     workflow_none: "Nenhum",
     workflow_permissions_title: "Configurar permissões para item de workflow",
+    workflow_permissions_warning: "Sem permissões alocadas para o item de workflow",
     workflow_redacted: "Editado por privacidade",
     workflow_selection: "Você selecionaou {0} itens de workflows",
     workflow_submit_for_review: "Enviar para revisão",
@@ -252,6 +254,7 @@ const pt = {
   },
 
   confirmation: {
+    assign_permissions: "Atribuir permissões",
     additional_permissions_dialog_text:
       "Ações adicionais devem ser executadas para garantir que os usuários também possam visualizar todos os recursos necessários.",
     additional_permissions_required: "Permissões adicionais necessárias",

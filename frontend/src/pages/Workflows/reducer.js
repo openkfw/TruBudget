@@ -91,6 +91,7 @@ const defaultState = fromJS({
     documents: []
   },
   showWorkflowPermissions: false,
+  idsPermissionsUnassigned: [],
   workflowItemReference: "",
   workflowitemDisplayName: "",
   permissions: { project: {}, subproject: {}, workflowitem: {}, workflowitemId: "" },
@@ -207,14 +208,14 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowToAdd: defaultState.getIn(["workflowToAdd"]),
         currentStep: defaultState.get("currentStep")
       });
-
     case SHOW_WORKFLOWITEM_PERMISSIONS:
       return state.merge({
         workflowItemReference: action.workflowitemId,
         workflowitemDisplayName: action.workflowitemDisplayName,
         permissions: defaultState.get("permissions"),
         temporaryPermissions: defaultState.getIn("temporaryPermissions"),
-        showWorkflowPermissions: true
+        showWorkflowPermissions: true,
+        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter(id => id !== action.workflowitemId)
       });
     case HIDE_WORKFLOWITEM_PERMISSIONS:
     case CONFIRMATION_CONFIRMED:
@@ -281,6 +282,7 @@ export default function detailviewReducer(state = defaultState, action) {
         Immutable.List([...documents, Immutable.Map({ id: action.id, base64: action.base64 })])
       );
     case CREATE_WORKFLOW_SUCCESS:
+      return state.updateIn(["idsPermissionsUnassigned"], workflowitems => [...workflowitems, action.workflowitemId]);
     case EDIT_WORKFLOW_ITEM_SUCCESS:
       return state.merge({
         workflowToAdd: defaultState.getIn(["workflowToAdd"])
@@ -375,7 +377,11 @@ export default function detailviewReducer(state = defaultState, action) {
     case STORE_WORKFLOW_ASSIGNEE:
       return state.set("tempDrawerAssignee", action.assignee);
     case WORKFLOWITEMS_SELECTED:
-      return state.set("selectedWorkflowItems", fromJS(action.workflowItems));
+      const getSelectedIds = action.workflowItems.map(x => x.data.id);
+      return state.merge({
+        selectedWorkflowItems: fromJS(action.workflowItems),
+        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter(id => !getSelectedIds.includes(id))
+      });
     case SHOW_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:

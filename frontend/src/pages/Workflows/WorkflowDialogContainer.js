@@ -120,6 +120,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withInitialLoading(withStyles(styles)(toJS(WorkflowDialogContainer)))
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withInitialLoading(withStyles(styles)(toJS(WorkflowDialogContainer))));
