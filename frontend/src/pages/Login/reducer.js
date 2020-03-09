@@ -1,28 +1,30 @@
-import { fromJS } from "immutable";
 import dayjs from "dayjs";
 import "dayjs/locale/de";
 import "dayjs/locale/fr";
-import "dayjs/locale/pt";
 import "dayjs/locale/ka";
+import "dayjs/locale/pt";
+import { fromJS } from "immutable";
 import strings from "../../localizeStrings";
-
+import { SAVE_EMAIL_SUCCESS } from "../Navbar/actions";
 import {
+  ADMIN_LOGIN_SUCCESS,
+  ADMIN_LOGOUT_SUCCESS,
+  CHECK_EMAIL_SERVICE_FAILURE,
+  CHECK_EMAIL_SERVICE_SUCCESS,
+  FETCH_ADMIN_USER_SUCCESS,
+  FETCH_EMAIL_SUCCESS,
+  FETCH_ENVIRONMENT_SUCCESS,
+  FETCH_USER_SUCCESS,
+  INIT_LANGUAGE,
   LOGIN_SUCCESS,
-  STORE_USERNAME,
-  STORE_PASSWORD,
+  LOGOUT_SUCCESS,
+  SET_LANGUAGE,
+  SHOW_ADMIN_LOGIN_ERROR,
   SHOW_LOGIN_ERROR,
   STORE_ENVIRONMENT_SUCCESS,
-  SET_LANGUAGE,
-  LOGOUT_SUCCESS,
-  FETCH_USER_SUCCESS,
-  ADMIN_LOGIN_SUCCESS,
-  FETCH_ADMIN_USER_SUCCESS,
-  SHOW_ADMIN_LOGIN_ERROR,
-  FETCH_ENVIRONMENT_SUCCESS,
-  ADMIN_LOGOUT_SUCCESS,
-  INIT_LANGUAGE
+  STORE_PASSWORD,
+  STORE_USERNAME
 } from "./actions";
-import { FETCH_EMAIL_SUCCESS } from "../Navbar/actions";
 
 export const defaultState = fromJS({
   username: "",
@@ -42,7 +44,8 @@ export const defaultState = fromJS({
   adminLoginFailed: false,
   language: "en-gb",
   user: [],
-  userDisplayNameMap: {}
+  userDisplayNameMap: {},
+  emailServiceAvailable: false
 });
 
 const setTimeLocale = language => {
@@ -70,6 +73,12 @@ export default function loginReducer(state = defaultState, action) {
       return state.set("username", action.username);
     case FETCH_EMAIL_SUCCESS:
       return state.set("email", action.email);
+    case SAVE_EMAIL_SUCCESS:
+      return state.set("email", action.email);
+    case CHECK_EMAIL_SERVICE_SUCCESS:
+      return state.set("emailServiceAvailable", true);
+    case CHECK_EMAIL_SERVICE_FAILURE:
+      return state.set("emailServiceAvailable", false);
     case STORE_PASSWORD:
       return state.set("password", action.password);
     case FETCH_USER_SUCCESS:

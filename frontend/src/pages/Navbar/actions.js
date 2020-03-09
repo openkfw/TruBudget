@@ -30,16 +30,10 @@ export const ENABLE_USER_PROFILE_EDIT = "ENABLE_USER_PROFILE_EDIT";
 export const DISABLE_USER_PROFILE_EDIT = "DISABLE_USER_PROFILE_EDIT";
 
 export const STORE_TEMP_EMAIL = "STORE_TEMP_EMAIL";
-export const FETCH_EMAIL = "FETCH_EMAIL";
-export const FETCH_EMAIL_SUCCESS = "FETCH_EMAIL_SUCCESS";
-export const FETCH_EMAIL_FAILURE = "FETCH_EMAIL_FAILURE";
 export const SAVE_EMAIL = "SAVE_EMAIL";
 export const SAVE_EMAIL_SUCCESS = "SAVE_EMAIL_SUCCESS";
 export const SAVE_EMAIL_FAILED = "SAVE_EMAIL_FAILED";
-
-export const CHECK_EMAIL_SERVICE = "CHECK_EMAIL_SERVICE";
-export const CHECK_EMAIL_SERVICE_SUCCESS = "CHECK_EMAIL_SERVICE_SUCCESS";
-export const CHECK_EMAIL_SERVICE_FAILURE = "CHECK_EMAIL_SERVICE_FAILURE";
+export const SET_VALID_EMAIL_INPUT = "SET_VALID_EMAIL_INPUT";
 
 export function toggleSidebar() {
   return {
@@ -148,15 +142,9 @@ export function saveEmail(email) {
     email
   };
 }
-
-export function fetchEmail() {
+export function setValidEmailInput(valid) {
   return {
-    type: FETCH_EMAIL
-  };
-}
-
-export function checkEmailService() {
-  return {
-    type: CHECK_EMAIL_SERVICE
+    type: SET_VALID_EMAIL_INPUT,
+    valid
   };
 }

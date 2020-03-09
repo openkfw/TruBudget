@@ -118,6 +118,10 @@ const en = {
     users: "Users"
   },
 
+  userProfile: {
+    invalid_email: "Invalid Email"
+  },
+
   nodesDashboard: {
     access: "Access",
     additional_organization_node: "New nodes for existing organizations",
@@ -333,6 +337,7 @@ const en = {
     done_workflow: "Status of workflow {0} set to Done",
     edit_transaction: "Transaction {0} got adapted",
     edit_workflow: "Workflow item {0} got adapted",
+    email_saved: "Email {0} saved",
     no_permissions: "(No permissions to see further details)",
     notification_card_text:
       "Please find your current notifications below. These display action items or information items to be dealt with.",
@@ -360,6 +365,7 @@ const en = {
     read_all: "Read All",
     review_transaction: "You are assigned to review the transaction {0}",
     review_workflow: "You are assigned to review the workflow item {0}",
+    save_email_error: "Couldn't save email",
     subproject_archive: "Subproject {0} was archived",
     subproject_assign: "Subproject {0} was assigned to you",
     subproject_assigned: "Subproject {0} was assigned to you",

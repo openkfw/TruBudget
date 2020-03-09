@@ -1,34 +1,24 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
 import isEmpty from "lodash/isEmpty";
 import queryString from "query-string";
-
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { toJS } from "../../helper";
+import { checkEmailService, logout } from "../Login/actions";
+import FlyInNotifications from "../Notifications/FlyInNotifications";
 import {
-  toggleSidebar,
-  fetchActivePeers,
   createBackup,
-  restoreBackup,
-  fetchVersions,
   exportData,
-  storeSearchTerm,
-  storeSearchBarDisplayed,
+  fetchActivePeers,
+  fetchVersions,
+  restoreBackup,
   setIsRoot,
   showUserProfile,
-  hideUserProfile,
-  enableUserProfileEdit,
-  disableUserProfileEdit,
-  storeTempEmail,
-  saveEmail,
-  checkEmailService,
-  fetchEmail
+  storeSearchBarDisplayed,
+  storeSearchTerm,
+  toggleSidebar
 } from "./actions";
-import { logout } from "../Login/actions";
-
-import FlyInNotifications from "../Notifications/FlyInNotifications";
-
-import Navbar from "./Navbar";
-import { toJS } from "../../helper";
 import { convertToSearchBarString } from "./convertSearchTerm";
+import Navbar from "./Navbar";
 
 class NavbarContainer extends Component {
   componentDidMount() {
@@ -74,13 +64,7 @@ const mapDispatchToProps = {
   storeSearchBarDisplayed,
   setIsRoot,
   showUserProfile,
-  hideUserProfile,
-  enableUserProfileEdit,
-  disableUserProfileEdit,
-  storeTempEmail,
-  saveEmail,
-  checkEmailService,
-  fetchEmail
+  checkEmailService
 };
 
 const mapStateToProps = state => {
@@ -108,10 +92,6 @@ const mapStateToProps = state => {
     searchTerm: state.getIn(["navbar", "searchTerm"]),
     searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
     isRoot: state.getIn(["login", "isRoot"]),
-    userProfileOpen: state.getIn(["navbar", "userProfileOpen"]),
-    email: state.getIn(["login", "email"]),
-    userProfileEdit: state.getIn(["navbar", "userProfileEdit"]),
-    tempEmail: state.getIn(["navbar", "tempEmail"]),
     emailServiceAvailable: state.getIn(["navbar", "emailServiceAvailable"])
   };
 };

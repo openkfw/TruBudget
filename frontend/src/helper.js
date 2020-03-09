@@ -147,3 +147,8 @@ export function makePermissionReadable(intent) {
 export const dateFormat = () => {
   return "MM.DD.YYYY";
 };
+
+export const isEmailvalid = email => {
+  const validEmailRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+  return validEmailRegex.test(email);
+};

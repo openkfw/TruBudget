@@ -1,24 +1,23 @@
 import { fromJS } from "immutable";
+import { FETCH_EMAIL_SUCCESS } from "../Login/actions";
 import { CREATE_PROJECT_SUCCESS } from "../Overview/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
 import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from "../Workflows/actions";
 import {
+  DISABLE_USER_PROFILE_EDIT,
+  ENABLE_USER_PROFILE_EDIT,
   FETCH_ACTIVE_PEERS_SUCCESS,
   FETCH_STREAM_NAMES_SUCCESS,
   FETCH_VERSIONS_SUCCESS,
+  HIDE_USER_PROFILE,
   SEARCH_BAR_DISPLAYED,
   SEARCH_TERM,
   SET_IS_ROOT,
   SET_SELECTED_VIEW,
-  TOGGLE_SIDEBAR,
   SHOW_USER_PROFILE,
-  HIDE_USER_PROFILE,
-  ENABLE_USER_PROFILE_EDIT,
-  DISABLE_USER_PROFILE_EDIT,
   STORE_TEMP_EMAIL,
-  CHECK_EMAIL_SERVICE_SUCCESS,
-  CHECK_EMAIL_SERVICE_FAILURE,
-  FETCH_EMAIL_SUCCESS
+  TOGGLE_SIDEBAR,
+  SET_VALID_EMAIL_INPUT
 } from "./actions";
 import { convertToURLQuery } from "./convertSearchTerm";
 
@@ -38,7 +37,7 @@ const defaultState = fromJS({
   userProfileOpen: false,
   userProfileEdit: false,
   tempEmail: "",
-  emailServiceAvailable: false
+  isEmailInputValid: true
 });
 
 export default function navbarReducer(state = defaultState, action) {
@@ -84,10 +83,8 @@ export default function navbarReducer(state = defaultState, action) {
       return state.set("userProfileEdit", false);
     case STORE_TEMP_EMAIL:
       return state.set("tempEmail", action.email);
-    case CHECK_EMAIL_SERVICE_SUCCESS:
-      return state.set("emailServiceAvailable", true);
-    case CHECK_EMAIL_SERVICE_FAILURE:
-      return state.set("emailServiceAvailable", false);
+    case SET_VALID_EMAIL_INPUT:
+      return state.set("isEmailInputValid", action.valid);
     case CREATE_PROJECT_SUCCESS:
       return state.merge({
         searchTerm: defaultState.get("searchTerm"),

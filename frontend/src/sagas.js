@@ -3,7 +3,7 @@ import _isEmpty from "lodash/isEmpty";
 import { all, call, cancel, delay, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
 import Api from "./api.js";
 import { getExchangeRates } from "./getExchangeRates";
-import { fromAmountString } from "./helper.js";
+import { formatString, fromAmountString } from "./helper.js";
 import strings from "./localizeStrings";
 import {
   GET_EXCHANGE_RATES,
@@ -24,6 +24,12 @@ import {
 import { CLEAR_DOCUMENTS, VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS } from "./pages/Documents/actions";
 import { cancelDebounce, hideLoadingIndicator, showLoadingIndicator } from "./pages/Loading/actions.js";
 import {
+  CHECK_EMAIL_SERVICE,
+  CHECK_EMAIL_SERVICE_FAILURE,
+  CHECK_EMAIL_SERVICE_SUCCESS,
+  FETCH_EMAIL,
+  FETCH_EMAIL_FAILURE,
+  FETCH_EMAIL_SUCCESS,
   FETCH_ENVIRONMENT,
   FETCH_ENVIRONMENT_SUCCESS,
   FETCH_USER,
@@ -37,9 +43,6 @@ import {
   STORE_ENVIRONMENT_SUCCESS
 } from "./pages/Login/actions";
 import {
-  CHECK_EMAIL_SERVICE,
-  CHECK_EMAIL_SERVICE_FAILURE,
-  CHECK_EMAIL_SERVICE_SUCCESS,
   CREATE_BACKUP,
   CREATE_BACKUP_SUCCESS,
   EXPORT_DATA,
@@ -47,15 +50,11 @@ import {
   EXPORT_DATA_SUCCESS,
   FETCH_ACTIVE_PEERS,
   FETCH_ACTIVE_PEERS_SUCCESS,
-  FETCH_EMAIL,
-  FETCH_EMAIL_FAILURE,
-  FETCH_EMAIL_SUCCESS,
   FETCH_VERSIONS,
   FETCH_VERSIONS_SUCCESS,
   RESTORE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
   SAVE_EMAIL,
-  SAVE_EMAIL_FAILED,
   SAVE_EMAIL_SUCCESS
 } from "./pages/Navbar/actions.js";
 import {
@@ -2000,13 +1999,27 @@ function* saveEmailSaga({ email }) {
       yield put({
         type: SAVE_EMAIL_SUCCESS
       });
+      yield put({
+        type: SNACKBAR_MESSAGE,
+        message: formatString(strings.notification.email_saved, email)
+      });
+      yield put({
+        type: SHOW_SNACKBAR,
+        show: true,
+        isError: false
+      });
       yield fetchEmailSaga();
     },
     true,
     function*(error) {
       yield put({
-        type: SAVE_EMAIL_FAILED,
-        error
+        type: SNACKBAR_MESSAGE,
+        message: strings.notification.save_email_error
+      });
+      yield put({
+        type: SHOW_SNACKBAR,
+        show: true,
+        isError: true
       });
     }
   );

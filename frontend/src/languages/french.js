@@ -336,6 +336,7 @@ const fr = {
     done_workflow: "L'état du Workflow {0} est défini sur terminé",
     edit_transaction: "Transaction {0} actualisée",
     edit_workflow: "Workflow {0} actualisée",
+    email_saved: "Email {0} enregistré",
     no_permissions: "(Pas de permission pour voir plus de détails)",
     notification_card_text:
       "Veuillez trouver vos notifications actuelles ci-dessous_ Ces éléments d'action s'affichent ou des éléments d'information à traiter_",
@@ -363,6 +364,7 @@ const fr = {
     read_all: "Tout Lire",
     review_transaction: "Vous êtes chargé d'examiner la transaction {0}",
     review_workflow: "Vous êtes assigné à examiner l'élément de workflow {0}",
+    save_email_error: "Impossible d'enregistrer l'email",
     subproject_archive: "Composante {0} a été archivée",
     subproject_assign: "Composante {0} vous a été assignée",
     subproject_assigned: "Composante {0} vous a été assignée",
@@ -385,6 +387,10 @@ const fr = {
     workflowitem_intent_revokePermission: "Les autorisations de l'élément du Workflow {0} ont changés",
     workflowitem_update: "Élément du Workflow {0} a été actualisé",
     workflowitem_updated: "Élément du Workflow {0} a été actualisé"
+  },
+
+  userProfile: {
+    invalid_email: "Email invalide"
   },
 
   history: {

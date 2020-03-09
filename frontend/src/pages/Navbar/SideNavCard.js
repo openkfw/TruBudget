@@ -1,3 +1,4 @@
+import { IconButton } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
@@ -7,29 +8,21 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Subheader from "@material-ui/core/ListSubheader";
 import ProjectIcon from "@material-ui/icons/Business";
 import NodesIcon from "@material-ui/icons/DesktopWindows";
+import ExportIcon from "@material-ui/icons/ListAlt";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import UsersIcon from "@material-ui/icons/PeopleOutline";
-import ExportIcon from "@material-ui/icons/ListAlt";
 import SettingsIcon from "@material-ui/icons/Settings";
 import React from "react";
-
 import strings from "../../localizeStrings";
 import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
 import VersionsTable from "./VersionsTable";
-import { IconButton } from "@material-ui/core";
-
-const openUserProfile = (showUserProfile, fetchEmail) => {
-  showUserProfile();
-  fetchEmail();
-};
 
 const SideNavCard = ({
   avatarBackground,
   avatar,
   displayName,
   organization,
-  userDashboardEnabled,
   nodeDashboardEnabled,
   history,
   groups,
@@ -38,8 +31,7 @@ const SideNavCard = ({
   restoreBackup,
   versions,
   exportData,
-  showUserProfile,
-  fetchEmail
+  showUserProfile
 }) => (
   <div
     style={{
@@ -77,7 +69,7 @@ const SideNavCard = ({
             primary={<span>{displayName}</span>}
             secondary={<span>{organization}</span>}
           />
-          <IconButton onClick={() => openUserProfile(showUserProfile, fetchEmail)}>
+          <IconButton onClick={() => showUserProfile()}>
             <SettingsIcon />
           </IconButton>
         </ListItem>
