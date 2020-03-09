@@ -1,6 +1,5 @@
 DOCKER_REGISTRY_PASSWORD
 /dist/*
-/doc/
 ~$*
 *.xls
 *.xlsx

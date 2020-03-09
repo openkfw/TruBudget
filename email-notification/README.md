@@ -1,5 +1,7 @@
 # Email-Notification-Service
 
+The email notification service is responsible for saving/deleting email adresses per Trubudget user in a connected database. These email addresses are used to send configurable notifications to a connected SMTP server. If database and SMTP server are connected the notification.send endpoint can be used to send a user id. The database is checked if a email address is linked to the passed user id. If so a notificaiton is sent. It is recommended to start at the [Getting Started section](#getting-started)
+
 ## Database Configuration
 
 This project is using knex to connect to the database where user email addresses are stored. Knex makes it possible to use a database you like unless it is supported.
@@ -38,11 +40,13 @@ npm install <Driver> --save
 | EMAIL_FROM    | Trubudget Notification Service👻  | This is injected into the `from` field of the email notification                                                 |
 | EMAIL_SUBJECT | Trubudget Notificaiton            | This is injected into the `subject` field of the email notification                                              |
 | EMAIL_TEXT    | You have received a notification. | This is injected into the `body` of the email notification                                                       |
+| LOG_LEVEL     | INFO                              | Defines the log output. Supported levels are `ERROR`, `WARN`, `INFO`, `DEBUG`                                    |
+| JWT_SECRET    | - (required)                      | A secret of min length of 32 - It is used to verify the JWT_TOKEN sent by users of the email-service endpoints   |
 
 ## Architecture
 
-As shown in the architecture section below, a script shall filter every transaction. The script filter transactions after notifications and saves them locally named with a timestamp as json files in the notification folder.
-An external process watches the notification folder and sends the user's ids via http request to the email service using the `sendNotification` endpoint.
+As shown in the architecture section below, a script shall filter every transaction. This script is called `multichain-feed` and is part of the mono repository of Trubudget. The script filter transactions after notifications and saves them locally named with a timestamp as json files in the `/notifications` folder of the blockchain application.
+An external process called `notification-watcher` watches the notifications folder and sends the user's ids parsed from the saved transactions via http request to the email service using the `notification.send` endpoint.
 The email service checks if the connected database includes an email address for the passed user id. If an email address is found a notification is sent to the configured SMTP host.
 Subscribing/unsubscribing to the email notification service can be handled by the user profile of the Trubudget frontend or by using the user.insert/user.delete endpoint of the email service.
 
@@ -126,3 +130,4 @@ When started the Email-Service sends email notifications to the configured SMTP-
 
 To configure another database type for storing the user email addresses check out the [Database Configuration section](#database-configuration)
 To check what is configurable check out the [Environment Variables section](#environment-variables)
+If a local SMTP mail server for testing purposes is needed [mailslurper](https://github.com/mailslurper/mailslurper) can be used
