@@ -7,6 +7,8 @@ import logger from "./logger";
 import * as Middleware from "./middleware";
 import sendMail from "./sendMail";
 
+// TODO: Validate requests with joi
+
 interface User {
   id: string;
   email: string;
@@ -93,7 +95,7 @@ app.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
   const userToInsert: User = req.body.data.user;
   const requestor: string = res.locals.userId;
   if (requestor !== userToInsert.id && requestor !== "root") {
-    res.status(400).send({
+    res.status(401).send({
       message: `${res.locals.userId} is not allowed to insert an email of user ${req.body.data.user}`,
     });
   }
@@ -123,7 +125,7 @@ app.get("/user.getEmail", (req: UserGetEmailRequest, res: express.Response) => {
   const requestedUserId: string = req.query.id;
   const requestor: string = res.locals.userId;
   if (requestor !== requestedUserId && requestor !== "root") {
-    res.status(400).send({
+    res.status(401).send({
       message: `${res.locals.userId} is not allowed to insert an email of user ${req.query.id}`,
     });
   }
@@ -143,7 +145,7 @@ app.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
   const userToInsert: User = req.body.data.user;
   const requestor: string = res.locals.userId;
   if (requestor !== userToInsert.id && requestor !== "root") {
-    res.status(400).send({
+    res.status(401).send({
       message: `${res.locals.userId} is not allowed to insert an email of user ${req.body.data.user}`,
     });
   }
@@ -165,7 +167,7 @@ app.post("/notification.send", (req: NotificationRequest, res: express.Response)
   // Only the notification watcher of the Trubudget blockchain may send notifications
   const id: string = req.body.data.user.id;
   if (res.locals.id !== "notification-watcher") {
-    res.status(400).send({
+    res.status(401).send({
       message: `${res.locals.id} is not allowed to send a notification to ${id}`,
     });
   }
