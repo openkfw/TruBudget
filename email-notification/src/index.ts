@@ -20,7 +20,7 @@ interface Request {
   };
 }
 
-type Status = "updated" | "inserted" | "deleted" | "sent";
+type Status = "updated" | "inserted" | "deleted" | "sent" | "not found" | "already exists";
 
 interface UserEditResponseBody {
   user: {
@@ -33,14 +33,14 @@ interface UserGetEmailResponseBody {
   user: User;
 }
 
-interface UserEditRequest {
+interface UserEditRequest extends express.Request {
   body: {
     data: {
       user: User;
     };
   };
 }
-interface NotificationRequest {
+interface NotificationRequest extends express.Request {
   body: {
     data: {
       user: {
@@ -56,7 +56,7 @@ interface NotificationResponseBody {
     status: Status;
   };
 }
-interface UserGetEmailRequest {
+interface UserGetEmailRequest extends express.Request {
   query: {
     id: string;
   };
@@ -69,21 +69,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // JWT secret
-if (!process.env.JWT_SECRET) {
-  logger.error(
-    "The 'JWT_SECRET' env variable is not set. Without the JWT secret of the token providing Trubudget API the server cannot identify the user.",
-  );
-  process.exit();
+if (config.mode !== "DEBUG") {
+  logger.info(`${config.mode} mode active`);
+  configureJWT();
 }
-const jwtSecret: string = process.env.JWT_SECRET;
-if (jwtSecret.length < 32) {
-  logger.warn("The JWT secret key should be at least 32 characters long.");
-}
-// Add middlewares
-app.all("/user*", (req, res, next) => Middleware.verifyUserJWT(req, res, next, jwtSecret));
-app.all("/notification*", (req, res, next) =>
-  Middleware.verifyNotificationJWT(req, res, next, jwtSecret),
-);
 
 // Routes
 app.get("/readiness", (_req: express.Request, res: express.Response) => {
@@ -91,22 +80,19 @@ app.get("/readiness", (_req: express.Request, res: express.Response) => {
 });
 
 app.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
-  // Only email of requestor can be deleted
-  const userToInsert: User = req.body.data.user;
-  const requestor: string = res.locals.userId;
-  if (requestor !== userToInsert.id && requestor !== "root") {
+  const user: User = req.body.data.user;
+  if (isAllowed(user.id, res)) {
     res.status(401).send({
-      message: `${res.locals.userId} is not allowed to insert an email of user ${req.body.data.user}`,
+      message: `JWT-Token is not valid to insert an email of user ${user.id}`,
     });
+    return;
   }
 
-  const user: User = req.body.data.user;
   (async () => {
     const email: string = await db.getEmail(user.id);
     let body: UserEditResponseBody;
     if (email.length > 0) {
-      body = { user: { id: user.id, status: "updated", email: user.email } };
-      await db.updateUser(user.id, user.email);
+      body = { user: { id: user.id, status: "already exists", email: user.email } };
     } else {
       await db.insertUser(user.id, user.email);
       body = {
@@ -120,19 +106,28 @@ app.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
   });
 });
 
-app.get("/user.getEmail", (req: UserGetEmailRequest, res: express.Response) => {
-  // Only email of requestor can be checked
-  const requestedUserId: string = req.query.id;
-  const requestor: string = res.locals.userId;
-  if (requestor !== requestedUserId && requestor !== "root") {
+app.post("/user.update", (req: UserEditRequest, res: express.Response) => {
+  const user: User = req.body.data.user;
+  if (isAllowed(user.id, res)) {
     res.status(401).send({
-      message: `${res.locals.userId} is not allowed to insert an email of user ${req.query.id}`,
+      message: `JWT-Token is not valid to insert an email of user ${user.id}`,
     });
+    return;
   }
 
-  const id: string = req.query.id;
   (async () => {
-    const body: UserGetEmailResponseBody = { user: { id, email: await db.getEmail(id) } };
+    const email: string = await db.getEmail(user.id);
+    let body: UserEditResponseBody;
+    if (email.length > 0) {
+      body = { user: { id: user.id, status: "updated", email: user.email } };
+      await db.updateUser(user.id, user.email);
+      res.status(200);
+    } else {
+      body = {
+        user: { id: user.id, email: user.email, status: "not found" },
+      };
+      res.status(404);
+    }
     res.send(body);
   })().catch(error => {
     logger.error(error);
@@ -141,16 +136,14 @@ app.get("/user.getEmail", (req: UserGetEmailRequest, res: express.Response) => {
 });
 
 app.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
-  // Only email of requestor can be deleted
-  const userToInsert: User = req.body.data.user;
-  const requestor: string = res.locals.userId;
-  if (requestor !== userToInsert.id && requestor !== "root") {
+  const user: User = req.body.data.user;
+  if (isAllowed(user.id, res)) {
     res.status(401).send({
-      message: `${res.locals.userId} is not allowed to insert an email of user ${req.body.data.user}`,
+      message: `JWT-Token is not valid to insert an email of user ${user.id}`,
     });
+    return;
   }
 
-  const user: User = req.body.data.user;
   (async () => {
     await db.deleteUser(user.id, user.email);
     const body: UserEditResponseBody = {
@@ -163,14 +156,37 @@ app.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
   });
 });
 
-app.post("/notification.send", (req: NotificationRequest, res: express.Response) => {
-  // Only the notification watcher of the Trubudget blockchain may send notifications
-  const id: string = req.body.data.user.id;
-  if (res.locals.id !== "notification-watcher") {
+app.get("/user.getEmail", (req: UserGetEmailRequest, res: express.Response) => {
+  if (isAllowed(req.query.id, res)) {
     res.status(401).send({
-      message: `${res.locals.id} is not allowed to send a notification to ${id}`,
+      message: `JWT-Token is not valid to insert an email of user ${req.query.id}`,
     });
+    return;
   }
+
+  const id: string = req.query.id;
+  (async () => {
+    const body: UserGetEmailResponseBody = { user: { id, email: await db.getEmail(id) } };
+    res.send(body);
+  })().catch(error => {
+    logger.error(error);
+    res.status(500).send(error);
+  });
+});
+
+app.post("/notification.send", (req: NotificationRequest, res: express.Response) => {
+  const id: string = req.body.data.user.id;
+  // authenticate
+  if (config.mode !== "DEBUG") {
+    // Only the notification watcher of the Trubudget blockchain may send notifications
+    if (res.locals.id !== "notification-watcher") {
+      res.status(401).send({
+        message: `${res.locals.id} is not allowed to send a notification to ${id}`,
+      });
+      return;
+    }
+  }
+
   let email: string;
   (async () => {
     email = await db.getEmail(id);
@@ -196,3 +212,29 @@ app.post("/notification.send", (req: NotificationRequest, res: express.Response)
 app.listen(config.http.port, () => {
   logger.info(`App listening on ${config.http.port}`);
 });
+
+function isAllowed(requestedUserId: string, res: express.Response): boolean {
+  if (config.mode === "DEBUG") {
+    return true;
+  }
+  const requestor: string = res.locals.userId;
+  return requestor === "root" || requestor === requestedUserId;
+}
+
+function configureJWT() {
+  if (!process.env.JWT_SECRET) {
+    logger.error(
+      "The 'JWT_SECRET' env variable is not set. Without the JWT secret of the token providing Trubudget API the server cannot identify the user.",
+    );
+    process.exit();
+  }
+  const jwtSecret: string = process.env.JWT_SECRET;
+  if (jwtSecret.length < 32) {
+    logger.warn("The JWT secret key should be at least 32 characters long.");
+  }
+  // Add middlewares
+  app.all("/user*", (req, res, next) => Middleware.verifyUserJWT(req, res, next, jwtSecret));
+  app.all("/notification*", (req, res, next) =>
+    Middleware.verifyNotificationJWT(req, res, next, jwtSecret),
+  );
+}

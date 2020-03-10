@@ -1,21 +1,21 @@
 version: "3.2"
 services:
-  master-node:
-    build:
-      context: ../blockchain
-    environment:
-      RPC_PORT: 8000
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      ORGANIZATION: KfW
-      EMAIL_HOST: email-service
-      EMAIL_PORT: 8890
-      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
-      LOG_LEVEL: INFO
-    links:
-      - email-service
-    ports:
-      - "8000:8000"
-      - "8085:8085"
+  # master-node:
+  #   build:
+  #     context: ../blockchain
+  #   environment:
+  #     RPC_PORT: 8000
+  #     RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+  #     ORGANIZATION: KfW
+  #     EMAIL_HOST: email-service
+  #     EMAIL_PORT: 8890
+  #     JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
+  #     LOG_LEVEL: INFO
+  #   links:
+  #     - email-service
+  #   ports:
+  #     - "8000:8000"
+  #     - "8085:8085"
   email-service:
     build: .
     command: ["npm", "start"]
@@ -28,6 +28,7 @@ services:
       DB_NAME: trubudget_email_service
       PORT: 8890
       LOG_LEVEL: INFO
+      # MODE: DEBUG
     links:
       - emaildb
     ports:
@@ -43,31 +44,31 @@ services:
       POSTGRES_DB: trubudget_email_service
     ports:
       - 5432:5432
-  master-api:
-    image: trubudget/api:latest
-    environment:
-      ORGANIZATION: KfW
-      ORGANIZATION_VAULT_SECRET: asdf
-      RPC_HOST: master-node
-      RPC_PORT: 8000
-      ROOT_SECRET: asdf
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
-    ports:
-      - 8080:8080
-    links:
-      - master-node
-  provisioning:
-    image: trubudget/provisioning:latest
-    command: ["npm", "start"]
-    environment:
-      API_HOST: master-api
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: TEST
-      ROOT_SECRET: asdf
-      ORGANIZATION: KfW
-    links:
-      - master-api
+  # master-api:
+  #   image: trubudget/api:latest
+  #   environment:
+  #     ORGANIZATION: KfW
+  #     ORGANIZATION_VAULT_SECRET: asdf
+  #     RPC_HOST: master-node
+  #     RPC_PORT: 8000
+  #     ROOT_SECRET: asdf
+  #     RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+  #     JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
+  #   ports:
+  #     - 8080:8080
+  #   links:
+  #     - master-node
+  # provisioning:
+  #   image: trubudget/provisioning:latest
+  #   command: ["npm", "start"]
+  #   environment:
+  #     API_HOST: master-api
+  #     API_PORT: 8080
+  #     ENVIRONMENT_TYPE: TEST
+  #     ROOT_SECRET: asdf
+  #     ORGANIZATION: KfW
+  #   links:
+  #     - master-api
   # frontend:
   #   build: ../frontend
   #   environment:

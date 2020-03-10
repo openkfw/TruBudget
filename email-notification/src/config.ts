@@ -12,6 +12,7 @@ interface DatabaseConfig {
   schema: string;
 }
 interface Config {
+  mode: string;
   http: { port: number };
   dbType: DatabaseType;
   db: DatabaseConfig;
@@ -28,6 +29,7 @@ interface Config {
 }
 
 const config: Config = {
+  mode: process.env.MODE || "DEBUG",
   http: {
     port: Number(process.env.HTTP_PORT) || 8890,
   },

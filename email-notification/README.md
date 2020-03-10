@@ -42,8 +42,10 @@ npm install <Driver> --save
 | EMAIL_TEXT    | You have received a notification. | This is injected into the `body` of the email notification                                                       |
 | LOG_LEVEL     | INFO                              | Defines the log output. Supported levels are `ERROR`, `WARN`, `INFO`, `DEBUG`                                    |
 | JWT_SECRET    | - (required)                      | A secret of min length of 32 - It is used to verify the JWT_TOKEN sent by users of the email-service endpoints   |
+| MODE          | DEBUG                             | If set to DEBUG no JWT-Token is required for all endpoints                                                       |
 
 #### JWT_SECRET
+
 The JWT_SECRET is shared between Trubudget's blockchain api and email-service. The endpoints of the email-service can only be used by providing a valid JWT_TOKEN signed with this JWT_SECRET. Since the blockchain is using the notificaiton endpoints and the ui is using the user endpoints the secret has to be shared.
 
 ## Architecture
@@ -64,14 +66,21 @@ Subscribing/unsubscribing to the email notification service can be handled by th
 | GET    | /readiness         | Checks if email service is ready                               |
 | GET    | /user.getEmail     | Get email address of id if set in connected database           |
 | POST   | /user.insert       | Insert an email address linked to the passed id                |
+| POST   | /user.update       | Update an email address linked to the passed id                |
 | POST   | /user.delete       | Delete an email address linked to the passed id                |
 | POST   | /notification.send | Send a notification to passed id if email address is available |
+
+#### /readiness
+
+Neither parameter nor `JWT-TOKEN` required
 
 #### /user.getEmail
 
 | Query-Parameter | Description |
 | --------------- | ----------- |
 | id              | User id     |
+
+`JWT-TOKEN` required
 
 #### /user.insert
 
@@ -89,6 +98,26 @@ Following json structure is used:
 }
 ```
 
+`JWT-TOKEN` required
+
+#### /user.update
+
+Following json structure is used:
+
+```json
+{
+  "apiVersion": "1.0",
+  "data": {
+    "user": {
+      "id": "mstein",
+      "email": "mstein@kfw.de"
+    }
+  }
+}
+```
+
+`JWT-TOKEN` required
+
 #### /user.delete
 
 Following json structure is used:
@@ -105,6 +134,8 @@ Following json structure is used:
 }
 ```
 
+`JWT-TOKEN` required
+
 #### /notification.send
 
 Following json structure is used:
@@ -114,6 +145,8 @@ Following json structure is used:
   "id": "mstein"
 }
 ```
+
+`JWT-TOKEN` required
 
 ## Getting Started
 
