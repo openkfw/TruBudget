@@ -43,6 +43,9 @@ npm install <Driver> --save
 | LOG_LEVEL     | INFO                              | Defines the log output. Supported levels are `ERROR`, `WARN`, `INFO`, `DEBUG`                                    |
 | JWT_SECRET    | - (required)                      | A secret of min length of 32 - It is used to verify the JWT_TOKEN sent by users of the email-service endpoints   |
 
+#### JWT_SECRET
+The JWT_SECRET is shared between Trubudget's blockchain api and email-service. The endpoints of the email-service can only be used by providing a valid JWT_TOKEN signed with this JWT_SECRET. Since the blockchain is using the notificaiton endpoints and the ui is using the user endpoints the secret has to be shared.
+
 ## Architecture
 
 As shown in the architecture section below, a script shall filter every transaction. This script is called `multichain-feed` and is part of the mono repository of Trubudget. The script filter transactions after notifications and saves them locally named with a timestamp as json files in the `/notifications` folder of the blockchain application.
