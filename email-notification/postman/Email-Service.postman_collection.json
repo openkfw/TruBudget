@@ -8,6 +8,16 @@
 		{
 			"name": "user.insert",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJqeGF2aWVyIiwiYWRkcmVzcyI6IjFVVVpEY1hVWGl3ZHMxVU5wZk03ck5WTHRqanFYQ3VCSnNZZEVHIiwib3JnYW5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFCczlqaHhYZU5rN2NxNjR0U2h5QnlQV0Y3QnlCdHVQWGs0NFMyIiwiZ3JvdXBzIjpbInJldmlld2VycyJdLCJpYXQiOjE1ODMyNDEwNjAsImV4cCI6MTU4MzI2OTg2MH0.U9NzIoOX_Zr4cXYgUowHkXQ-YrsfAas-0NqYEoSs7rU",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -34,6 +44,40 @@
 					"port": "{{port}}",
 					"path": [
 						"user.insert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user.update",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"email\": \"{{email}}\"\n\t\t}\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/user.update",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"user.update"
 					]
 				}
 			},
@@ -87,7 +131,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"id\": \"{{id}}\"\n}",
+					"raw": "{\n\t\"data\":{\n\t\t\"user\":{ \n\t\t\t\"id\": \"{{id}}\"\n\t\t}\n\t}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
