@@ -53,7 +53,11 @@ const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
 const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
 const NOTIFICATION_SEND_INTERVAL = process.env.NOTIFICATION_SEND_INTERVAL || 10;
 const emailAuthSecret = process.env.JWT_SECRET;
-const isEmailServiceEnabled = (EMAIL_HOST && EMAIL_PORT) || false;
+const EMAIL_SERVICE_ENABLED =
+  (process.env.EMAIL_HOST &&
+    process.env.EMAIL_PORT &&
+    process.env.EMAIL_SERVICE === "ENABLED") ||
+  false;
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
@@ -67,7 +71,7 @@ const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
 const NAMESPACE = process.env.KUBE_NAMESPACE || "";
 const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
 
-if (isEmailServiceEnabled && !emailAuthSecret) {
+if (EMAIL_SERVICE_ENABLED && !emailAuthSecret) {
   console.log(
     "Error: Env variable 'JWT_SECRET' not set. Please set the same secret as in the trubudget email-service.",
   );
@@ -111,7 +115,7 @@ configureChain(
   RPC_USER,
   RPC_PASSWORD,
   RPC_ALLOW_IP,
-  isEmailServiceEnabled,
+  EMAIL_SERVICE_ENABLED,
   NOTIFICATION_PATH,
 );
 
@@ -171,7 +175,7 @@ if (EXPOSE_MC) {
     }
 
     initMultichain();
-    if (isEmailServiceEnabled) {
+    if (EMAIL_SERVICE_ENABLED) {
       startEmailNotificationWatcher(
         NOTIFICATION_PATH,
         `${EMAIL_HOST}:${EMAIL_PORT}`,
@@ -184,7 +188,7 @@ if (EXPOSE_MC) {
   });
 } else {
   initMultichain();
-  if (isEmailServiceEnabled) {
+  if (EMAIL_SERVICE_ENABLED) {
     startEmailNotificationWatcher(
       NOTIFICATION_PATH,
       `${EMAIL_HOST}:${EMAIL_PORT}`,
