@@ -72,7 +72,3 @@ typings/
 !.vscode/launch.json
 !.vscode/extensions.json
 .history
-
-
-# End of https://www.gitignore.io/api/node,visualstudiocode
->>>>>>> Iterate on the Authz PoC

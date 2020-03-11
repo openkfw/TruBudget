@@ -1,6 +1,6 @@
 {
   "name": "email-notification",
-  "description": "Sends notification-emails via provided SMTP server to identities saved in a database of choice. A ",
+  "description": "Sends notification-emails to provided SMTP server to identities saved in a database of choice.",
   "version": "1.6.0",
   "private": true,
   "repository": {
@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/openkfw/TruBudget/issues"
   },
-  "homepage": "https://github.com/openkfw/TruBudget#readme",
+  "homepage": "https://github.com/openkfw/TruBudget/email-notification/#readme",
   "dependencies": {
     "@types/jsonwebtoken": "^8.3.8",
     "axios": "^0.19.1",

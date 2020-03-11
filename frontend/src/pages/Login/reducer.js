@@ -5,14 +5,14 @@ import "dayjs/locale/ka";
 import "dayjs/locale/pt";
 import { fromJS } from "immutable";
 import strings from "../../localizeStrings";
-import { SAVE_EMAIL_SUCCESS } from "../Navbar/actions";
+import { SAVE_EMAIL_ADDRESS_SUCCESS } from "../Navbar/actions";
 import {
   ADMIN_LOGIN_SUCCESS,
   ADMIN_LOGOUT_SUCCESS,
   CHECK_EMAIL_SERVICE_FAILURE,
   CHECK_EMAIL_SERVICE_SUCCESS,
   FETCH_ADMIN_USER_SUCCESS,
-  FETCH_EMAIL_SUCCESS,
+  FETCH_EMAIL_ADDRESS_SUCCESS,
   FETCH_ENVIRONMENT_SUCCESS,
   FETCH_USER_SUCCESS,
   INIT_LANGUAGE,
@@ -30,7 +30,7 @@ export const defaultState = fromJS({
   username: "",
   password: "",
   id: "",
-  email: "",
+  emailAddress: "",
   displayName: "",
   organization: "",
   allowedIntents: [],
@@ -71,10 +71,10 @@ export default function loginReducer(state = defaultState, action) {
   switch (action.type) {
     case STORE_USERNAME:
       return state.set("username", action.username);
-    case FETCH_EMAIL_SUCCESS:
-      return state.set("email", action.email);
-    case SAVE_EMAIL_SUCCESS:
-      return state.set("email", action.email);
+    case FETCH_EMAIL_ADDRESS_SUCCESS:
+      return state.set("emailAddress", action.emailAddress);
+    case SAVE_EMAIL_ADDRESS_SUCCESS:
+      return state.set("emailAddress", action.emailAddress);
     case CHECK_EMAIL_SERVICE_SUCCESS:
       return state.set("emailServiceAvailable", true);
     case CHECK_EMAIL_SERVICE_FAILURE:

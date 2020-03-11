@@ -23,7 +23,7 @@ const levelInputLowerCase = levelInput.toLowerCase();
 const level = logLevels.includes(levelInputLowerCase) ? levelInputLowerCase : "info";
 
 const redact = {
-  paths: ["rpcSettings.password", "password", "*.passwordDigest", "passwordDigest"],
+  paths: ["*.password", "password.*"],
 };
 const messageKey = "message";
 const useLevelLabels = true;

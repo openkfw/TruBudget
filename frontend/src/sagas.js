@@ -27,9 +27,9 @@ import {
   CHECK_EMAIL_SERVICE,
   CHECK_EMAIL_SERVICE_FAILURE,
   CHECK_EMAIL_SERVICE_SUCCESS,
-  FETCH_EMAIL,
-  FETCH_EMAIL_FAILURE,
-  FETCH_EMAIL_SUCCESS,
+  FETCH_EMAIL_ADDRESS,
+  FETCH_EMAIL_ADDRESS_FAILURE,
+  FETCH_EMAIL_ADDRESS_SUCCESS,
   FETCH_ENVIRONMENT,
   FETCH_ENVIRONMENT_SUCCESS,
   FETCH_USER,
@@ -54,8 +54,8 @@ import {
   FETCH_VERSIONS_SUCCESS,
   RESTORE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
-  SAVE_EMAIL,
-  SAVE_EMAIL_SUCCESS
+  SAVE_EMAIL_ADDRESS,
+  SAVE_EMAIL_ADDRESS_SUCCESS
 } from "./pages/Navbar/actions.js";
 import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
@@ -188,6 +188,9 @@ const api = new Api();
 // SELECTORS
 const getSelfId = state => {
   return state.getIn(["login", "id"]);
+};
+const getEmailAddress = state => {
+  return state.getIn(["login", "emailAddress"]);
 };
 const getJwt = state => state.toJS().login.jwt;
 const getEnvironment = state => {
@@ -1991,24 +1994,29 @@ function* exportDataSaga() {
     }
   );
 }
-function* saveEmailSaga({ email }) {
+function* saveEmailAddressSaga({ emailAddress }) {
   yield execute(
     function*() {
       const id = yield select(getSelfId);
-      yield callApi(api.storeEmail, id, email);
+      const currentEmailAddress = yield select(getEmailAddress);
+      if (currentEmailAddress.length > 0) {
+        yield callApi(api.updateEmailAddress, id, emailAddress);
+      } else {
+        yield callApi(api.insertEmailAddress, id, emailAddress);
+      }
       yield put({
-        type: SAVE_EMAIL_SUCCESS
+        type: SAVE_EMAIL_ADDRESS_SUCCESS
       });
       yield put({
         type: SNACKBAR_MESSAGE,
-        message: formatString(strings.notification.email_saved, email)
+        message: formatString(strings.notification.email_saved, emailAddress)
       });
       yield put({
         type: SHOW_SNACKBAR,
         show: true,
         isError: false
       });
-      yield fetchEmailSaga();
+      yield fetchEmailAddressSaga();
     },
     true,
     function*(error) {
@@ -2025,20 +2033,20 @@ function* saveEmailSaga({ email }) {
   );
 }
 
-function* fetchEmailSaga() {
+function* fetchEmailAddressSaga() {
   yield execute(
     function*() {
       const id = yield select(getSelfId);
-      const data = yield callApi(api.getEmail, id);
+      const data = yield callApi(api.getEmailAddress, id);
       yield put({
-        type: FETCH_EMAIL_SUCCESS,
-        email: data.user.email
+        type: FETCH_EMAIL_ADDRESS_SUCCESS,
+        emailAddress: data.user.emailAddress
       });
     },
     true,
     function*(error) {
       yield put({
-        type: FETCH_EMAIL_FAILURE,
+        type: FETCH_EMAIL_ADDRESS_FAILURE,
         error
       });
     }
@@ -2155,8 +2163,8 @@ export default function* rootSaga() {
       yield takeLeading(EXPORT_DATA, exportDataSaga),
 
       //Email
-      yield takeEvery(SAVE_EMAIL, saveEmailSaga),
-      yield takeEvery(FETCH_EMAIL, fetchEmailSaga),
+      yield takeEvery(SAVE_EMAIL_ADDRESS, saveEmailAddressSaga),
+      yield takeEvery(FETCH_EMAIL_ADDRESS, fetchEmailAddressSaga),
       yield takeEvery(CHECK_EMAIL_SERVICE, checkEmailServiceSaga)
     ]);
   } catch (error) {

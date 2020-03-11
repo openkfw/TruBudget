@@ -7,8 +7,6 @@ import logger from "./logger";
 import * as Middleware from "./middleware";
 import sendMail from "./sendMail";
 
-// TODO: Validate requests with joi
-
 interface User {
   id: string;
   emailAddress: string;
@@ -64,9 +62,9 @@ interface UserGetEmailAddressRequest extends express.Request {
 
 // Setup
 const db = new DbConnector();
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+const emailService = express();
+emailService.use(cors());
+emailService.use(bodyParser.json());
 
 // JWT secret
 if (config.mode !== "DEBUG") {
@@ -76,11 +74,11 @@ if (config.mode !== "DEBUG") {
 }
 
 // Routes
-app.get("/readiness", (_req: express.Request, res: express.Response) => {
+emailService.get("/readiness", (_req: express.Request, res: express.Response) => {
   res.send(true);
 });
 
-app.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
+emailService.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
   const user: User = req.body.data.user;
   if (!isAllowed(user.id, res)) {
     res.status(401).send({
@@ -91,23 +89,23 @@ app.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
 
   (async () => {
     const emailAddress: string = await db.getEmailAddress(user.id);
-    let body: UserEditResponseBody;
     if (emailAddress.length > 0) {
-      body = { user: { id: user.id, status: "already exists", emailAddress: user.emailAddress } };
+      res
+        .status(400)
+        .send({ user: { id: user.id, status: "already exists", emailAddress: user.emailAddress } });
     } else {
       await db.insertUser(user.id, user.emailAddress);
-      body = {
+      res.status(200).send({
         user: { id: user.id, status: "inserted", emailAddress: user.emailAddress },
-      };
+      });
     }
-    res.status(200).send(body);
   })().catch(error => {
     logger.error(error);
     res.status(500).send(error);
   });
 });
 
-app.post("/user.update", (req: UserEditRequest, res: express.Response) => {
+emailService.post("/user.update", (req: UserEditRequest, res: express.Response) => {
   const user: User = req.body.data.user;
   if (!isAllowed(user.id, res)) {
     res.status(401).send({
@@ -136,7 +134,7 @@ app.post("/user.update", (req: UserEditRequest, res: express.Response) => {
   });
 });
 
-app.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
+emailService.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
   const user: User = req.body.data.user;
   if (!isAllowed(user.id, res)) {
     res.status(401).send({
@@ -157,35 +155,38 @@ app.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
   });
 });
 
-app.get("/user.getEmailAddress", (req: UserGetEmailAddressRequest, res: express.Response) => {
-  if (!isAllowed(req.query.id, res)) {
-    res.status(401).send({
-      message: `JWT-Token is not valid to insert an email address of user ${req.query.id}`,
-    });
-    return;
-  }
-
-  const id: string = req.query.id;
-  (async () => {
-    const emailAddress = await db.getEmailAddress(id);
-    if (emailAddress.length > 0) {
-      logger.debug("GET email address " + emailAddress + " for user " + id);
-      res.send({
-        user: { id, emailAddress },
+emailService.get(
+  "/user.getEmailAddress",
+  (req: UserGetEmailAddressRequest, res: express.Response) => {
+    if (!isAllowed(req.query.id, res)) {
+      res.status(401).send({
+        message: `JWT-Token is not valid to insert an email address of user ${req.query.id}`,
       });
-    } else {
-      logger.debug("Email address" + emailAddress + " not found");
-      res.status(404).send({
-        user: { id, emailAddress: "Not Found" },
-      });
+      return;
     }
-  })().catch(error => {
-    logger.error(error);
-    res.status(500).send(error);
-  });
-});
 
-app.post("/notification.send", (req: NotificationRequest, res: express.Response) => {
+    const id: string = req.query.id;
+    (async () => {
+      const emailAddress = await db.getEmailAddress(id);
+      if (emailAddress.length > 0) {
+        logger.debug("GET email address " + emailAddress + " for user " + id);
+        res.send({
+          user: { id, emailAddress },
+        });
+      } else {
+        logger.debug("Email address" + emailAddress + " not found");
+        res.status(404).send({
+          user: { id, emailAddress: "Not Found" },
+        });
+      }
+    })().catch(error => {
+      logger.error(error);
+      res.status(500).send(error);
+    });
+  },
+);
+
+emailService.post("/notification.send", (req: NotificationRequest, res: express.Response) => {
   const id: string = req.body.data.user.id;
   // authenticate
   if (config.mode !== "DEBUG") {
@@ -220,7 +221,7 @@ app.post("/notification.send", (req: NotificationRequest, res: express.Response)
   });
 });
 
-app.listen(config.http.port, () => {
+emailService.listen(config.http.port, () => {
   logger.info(`App listening on ${config.http.port}`);
 });
 
@@ -229,7 +230,13 @@ function isAllowed(requestedUserId: string, res: express.Response): boolean {
     return true;
   }
   const requestor: string = res.locals.userId;
-  return requestor === "root" || requestor === requestedUserId;
+  const allowed: boolean = requestor === "root" || requestor === requestedUserId;
+  if (!allowed) {
+    logger.debug(
+      "Requestor '" + requestor + "' and passed userId '" + requestedUserId + "' are not equal",
+    );
+  }
+  return allowed;
 }
 
 function configureJWT() {
@@ -244,8 +251,10 @@ function configureJWT() {
     logger.warn("The JWT secret key should be at least 32 characters long.");
   }
   // Add middlewares
-  app.all("/user*", (req, res, next) => Middleware.verifyUserJWT(req, res, next, jwtSecret));
-  app.all("/notification*", (req, res, next) =>
+  emailService.all("/user*", (req, res, next) =>
+    Middleware.verifyUserJWT(req, res, next, jwtSecret),
+  );
+  emailService.all("/notification*", (req, res, next) =>
     Middleware.verifyNotificationJWT(req, res, next, jwtSecret),
   );
 }

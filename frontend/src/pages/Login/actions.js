@@ -26,9 +26,9 @@ export const FETCH_ADMIN_USER = "FETCH_ADMIN_USER";
 export const FETCH_ADMIN_USER_SUCCESS = "FETCH_ADMIN_USER_SUCCESS";
 export const SHOW_ADMIN_LOGIN_ERROR = "SHOW_ADMIN_LOGIN_ERROR";
 
-export const FETCH_EMAIL = "FETCH_EMAIL";
-export const FETCH_EMAIL_SUCCESS = "FETCH_EMAIL_SUCCESS";
-export const FETCH_EMAIL_FAILURE = "FETCH_EMAIL_FAILURE";
+export const FETCH_EMAIL_ADDRESS = "FETCH_EMAIL_ADDRESS";
+export const FETCH_EMAIL_ADDRESS_SUCCESS = "FETCH_EMAIL_ADDRESS_SUCCESS";
+export const FETCH_EMAIL_ADDRESS_FAILURE = "FETCH_EMAIL_ADDRESS_FAILURE";
 export const CHECK_EMAIL_SERVICE = "CHECK_EMAIL_SERVICE";
 export const CHECK_EMAIL_SERVICE_SUCCESS = "CHECK_EMAIL_SERVICE_SUCCESS";
 export const CHECK_EMAIL_SERVICE_FAILURE = "CHECK_EMAIL_SERVICE_FAILURE";
@@ -135,9 +135,9 @@ export function setLanguage(language) {
   };
 }
 
-export function fetchEmail() {
+export function fetchEmailAddress() {
   return {
-    type: FETCH_EMAIL
+    type: FETCH_EMAIL_ADDRESS
   };
 }
 

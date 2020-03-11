@@ -390,7 +390,7 @@ const fr = {
   },
 
   userProfile: {
-    invalid_email: "Email invalide"
+    invalid_email_address: "Email invalide"
   },
 
   history: {

@@ -65,10 +65,7 @@ const startMultichainDaemon = (
     console.log(`stdout: ${data}`);
   });
   mcproc.stderr.on("data", data => {
-    const regex = new RegExp("[▶]");
-    const isMultichainFeedOutput =
-      regex.test(data) || data.includes("multichain-feed");
-    if (isMultichainFeedOutput) {
+    if (data.includes("multichain-feed")) {
       console.log(`multichain-feed | ${data}`);
     } else {
       console.log(`Failed to start the master node: ${data}`);

@@ -119,7 +119,7 @@ const pt = {
   },
 
   userProfile: {
-    invalid_email: "Email inválido"
+    invalid_email_address: "Email inválido"
   },
 
   nodesDashboard: {

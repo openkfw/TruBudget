@@ -19,9 +19,15 @@ import { connect } from "react-redux";
 import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
-import { enableUserProfileEdit, hideUserProfile, saveEmail, storeTempEmail, setValidEmailInput } from "./actions";
-import { fetchEmail } from "../Login/actions";
-import { isEmailvalid } from "../../helper";
+import {
+  enableUserProfileEdit,
+  hideUserProfile,
+  saveEmailAddress,
+  storeTempEmailAddress,
+  setValidEmailAddressInput
+} from "./actions";
+import { fetchEmailAddress } from "../Login/actions";
+import { isEmailAddressValid } from "../../helper";
 
 const styles = () => ({
   paperRoot: {
@@ -106,7 +112,7 @@ class UserProfileContainer extends Component {
             <CardHeader
               avatar={<EmailIcon aria-label="email"></EmailIcon>}
               title={strings.common.email}
-              subheader={!this.props.userProfileEdit ? this.props.email || "-" : undefined}
+              subheader={!this.props.userProfileEdit ? this.props.emailAddress || "-" : undefined}
               classes={{
                 avatar: this.props.classes.cardHeaderAvatar,
                 root: this.props.classes.cardHeader,
@@ -115,29 +121,29 @@ class UserProfileContainer extends Component {
               action={
                 this.props.userProfileEdit ? (
                   <>
-                    {this.props.isEmailInputValid ? (
+                    {this.props.isEmailAddressInputValid ? (
                       <TextField
                         className={this.props.classes.emailTextField}
                         label={strings.common.email}
-                        onChange={e => this.props.storeTempEmail(e.target.value)}
+                        onChange={e => this.props.storeTempEmailAddress(e.target.value)}
                       />
                     ) : (
                       <TextField
                         error
-                        helperText={strings.userProfile.invalid_email}
+                        helperText={strings.userProfile.invalid_email_address}
                         className={this.props.classes.emailTextField}
                         label={strings.common.email}
-                        onChange={e => this.props.storeTempEmail(e.target.value)}
+                        onChange={e => this.props.storeTempEmailAddress(e.target.value)}
                       />
                     )}
                     <ActionButton
                       className={this.props.classes.editButton}
                       onClick={() => {
-                        if (isEmailvalid(this.props.tempEmail)) {
-                          this.props.setValidEmailInput(true);
-                          this.props.saveEmail(this.props.tempEmail);
+                        if (isEmailAddressValid(this.props.tempEmailAddress)) {
+                          this.props.setValidEmailAddressInput(true);
+                          this.props.saveEmailAddress(this.props.tempEmailAddress);
                         } else {
-                          this.props.setValidEmailInput(false);
+                          this.props.setValidEmailAddressInput(false);
                         }
                       }}
                       title={strings.common.done}
@@ -163,23 +169,23 @@ class UserProfileContainer extends Component {
 const mapDispatchToProps = {
   enableUserProfileEdit,
   hideUserProfile,
-  storeTempEmail,
-  saveEmail,
-  fetchEmail,
-  setValidEmailInput
+  storeTempEmailAddress,
+  saveEmailAddress,
+  fetchEmailAddress,
+  setValidEmailAddressInput
 };
 
 const mapStateToProps = state => {
   return {
     open: state.getIn(["navbar", "userProfileOpen"]),
-    tempEmail: state.getIn(["navbar", "tempEmail"]),
+    tempEmailAddress: state.getIn(["navbar", "tempEmailAddress"]),
     userProfileEdit: state.getIn(["navbar", "userProfileEdit"]),
     avatar: state.getIn(["login", "avatar"]),
     displayName: state.getIn(["login", "displayName"]),
-    email: state.getIn(["login", "email"]),
+    emailAddress: state.getIn(["login", "emailAddress"]),
     organization: state.getIn(["login", "organization"]),
     emailServiceAvailable: state.getIn(["login", "emailServiceAvailable"]),
-    isEmailInputValid: state.getIn(["navbar", "isEmailInputValid"])
+    isEmailAddressInputValid: state.getIn(["navbar", "isEmailAddressInputValid"])
   };
 };
 

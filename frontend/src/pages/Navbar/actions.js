@@ -29,11 +29,11 @@ export const HIDE_USER_PROFILE = "HIDE_USER_PROFILE";
 export const ENABLE_USER_PROFILE_EDIT = "ENABLE_USER_PROFILE_EDIT";
 export const DISABLE_USER_PROFILE_EDIT = "DISABLE_USER_PROFILE_EDIT";
 
-export const STORE_TEMP_EMAIL = "STORE_TEMP_EMAIL";
-export const SAVE_EMAIL = "SAVE_EMAIL";
-export const SAVE_EMAIL_SUCCESS = "SAVE_EMAIL_SUCCESS";
-export const SAVE_EMAIL_FAILED = "SAVE_EMAIL_FAILED";
-export const SET_VALID_EMAIL_INPUT = "SET_VALID_EMAIL_INPUT";
+export const STORE_TEMP_EMAIL_ADDRESS = "STORE_TEMP_EMAIL_ADDRESS";
+export const SAVE_EMAIL_ADDRESS = "SAVE_EMAIL_ADDRESS";
+export const SAVE_EMAIL_ADDRESS_SUCCESS = "SAVE_EMAIL_ADDRESS_SUCCESS";
+export const SAVE_EMAIL_ADDRESS_FAILED = "SAVE_EMAIL_ADDRESS_FAILED";
+export const SET_VALID_EMAIL_ADDRESS_INPUT = "SET_VALID_EMAIL_ADDRESS_INPUT";
 
 export function toggleSidebar() {
   return {
@@ -129,22 +129,22 @@ export function disableUserProfileEdit() {
   };
 }
 
-export function storeTempEmail(email) {
+export function storeTempEmailAddress(emailAddress) {
   return {
-    type: STORE_TEMP_EMAIL,
-    email
+    type: STORE_TEMP_EMAIL_ADDRESS,
+    emailAddress
   };
 }
 
-export function saveEmail(email) {
+export function saveEmailAddress(emailAddress) {
   return {
-    type: SAVE_EMAIL,
-    email
+    type: SAVE_EMAIL_ADDRESS,
+    emailAddress
   };
 }
-export function setValidEmailInput(valid) {
+export function setValidEmailAddressInput(valid) {
   return {
-    type: SET_VALID_EMAIL_INPUT,
+    type: SET_VALID_EMAIL_ADDRESS_INPUT,
     valid
   };
 }

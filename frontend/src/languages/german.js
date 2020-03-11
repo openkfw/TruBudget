@@ -223,7 +223,7 @@ const de = {
     password_conditions_number: "Mindestens eine Zahl enthalten"
   },
   userProfile: {
-    invalid_email: "Ungültige Email"
+    invalid_email_address: "Ungültige Email"
   },
 
   nodesDashboard: {

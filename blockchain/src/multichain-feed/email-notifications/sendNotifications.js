@@ -17,6 +17,7 @@ function ExpiredTokenException(message) {
   this.message = message;
   this.name = "ExpiredTokenException";
 }
+
 function ConnectionRefusedException(message) {
   this.message = message;
   this.name = "ECONNREFUSED";
@@ -35,6 +36,7 @@ const sendNotifications = async (
   } catch (error) {
     return logger.error("Unable to scan directory: " + err);
   }
+
   for (let i = 0; i < (await files.length); i++) {
     const file = files[i];
     let recipient;
@@ -90,8 +92,8 @@ const sendNotifications = async (
           throw new ExpiredTokenException("JWT-Token expired");
 
         case 404:
-          // If no email is found in the database delete the notification file
-          if (error.response.data.notification.email === "Not Found") {
+          // If no email address is found in the database delete the notification file
+          if (error.response.data.notification.emailAddress === "Not Found") {
             logger.debug("Delete file " + path + "/" + file);
             await fs.unlinkSync(path + "/" + file);
           } else {

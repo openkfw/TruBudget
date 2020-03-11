@@ -30,12 +30,6 @@ const startEmailNotificationWatcher = (
   return emailproc;
 };
 
-// startEmailNotificationWatcher(
-//   "./notifications",
-//   "localhost:4444",
-//   "asdsdfggfgr",
-// );
-
 module.exports = {
   startEmailNotificationWatcher,
 };

@@ -118,12 +118,9 @@ class DbConnector {
   public getEmailAddress = async (id: string): Promise<string> => {
     try {
       const client = await this.getDb();
-      logger.info(this.emailAddressTableName);
-      logger.info(this.idTableName);
       const emailAddresses: EmailAddress[] = await client(config.userTable)
         .select(this.emailAddressTableName)
         .where({ [`${this.idTableName}`]: `${id}` });
-      logger.info(emailAddresses);
       if (emailAddresses.length > 0 && emailAddresses[0].email_address) {
         return emailAddresses[0].email_address;
       }
