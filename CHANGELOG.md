@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-<!-- ### Added -->
+### Added
+
+- Email notification service [#419](https://github.com/openkfw/TruBudget/issues/419)
 
 <!-- ### Changed -->
 
