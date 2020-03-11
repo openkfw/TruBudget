@@ -29,7 +29,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"email\": \"{{email}}\"\n\t\t}\n\t}\n}",
+					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"emailAddress\": \"{{emailAddress}}\"\n\t\t}\n\t}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -63,7 +63,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"email\": \"{{email}}\"\n\t\t}\n\t}\n}",
+					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"emailAddress\": \"{{emailAddress}}\"\n\t\t}\n\t}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -97,7 +97,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"email\": \"{{email}}\"\n\t\t}\n\t}\n}",
+					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"emailAddress\": \"{{emailAddress}}\"\n\t\t}\n\t}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -152,7 +152,7 @@
 			"response": []
 		},
 		{
-			"name": "user.getEmail",
+			"name": "user.getEmailAddress",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -176,13 +176,13 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8890/user.getEmail?id={{id}}",
+					"raw": "localhost:8890/user.getEmailAddress?id={{id}}",
 					"host": [
 						"localhost"
 					],
 					"port": "8890",
 					"path": [
-						"user.getEmail"
+						"user.getEmailAddress"
 					],
 					"query": [
 						{
