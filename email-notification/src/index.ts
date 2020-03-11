@@ -11,7 +11,7 @@ import sendMail from "./sendMail";
 
 interface User {
   id: string;
-  email: string;
+  emailAddress: string;
 }
 
 interface Request {
@@ -26,10 +26,10 @@ interface UserEditResponseBody {
   user: {
     id: string;
     status: Status;
-    email: string;
+    emailAddress: string;
   };
 }
-interface UserGetEmailResponseBody {
+interface UserGetEmailAddressResponseBody {
   user: User;
 }
 
@@ -52,11 +52,11 @@ interface NotificationRequest extends express.Request {
 interface NotificationResponseBody {
   notification: {
     recipient: string;
-    email: string;
+    emailAddress: string;
     status: Status;
   };
 }
-interface UserGetEmailRequest extends express.Request {
+interface UserGetEmailAddressRequest extends express.Request {
   query: {
     id: string;
   };
@@ -70,8 +70,9 @@ app.use(bodyParser.json());
 
 // JWT secret
 if (config.mode !== "DEBUG") {
-  logger.info(`${config.mode} mode active`);
   configureJWT();
+} else {
+  logger.info(`${config.mode} mode active`);
 }
 
 // Routes
@@ -81,22 +82,22 @@ app.get("/readiness", (_req: express.Request, res: express.Response) => {
 
 app.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
   const user: User = req.body.data.user;
-  if (isAllowed(user.id, res)) {
+  if (!isAllowed(user.id, res)) {
     res.status(401).send({
-      message: `JWT-Token is not valid to insert an email of user ${user.id}`,
+      message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
     });
     return;
   }
 
   (async () => {
-    const email: string = await db.getEmail(user.id);
+    const emailAddress: string = await db.getEmailAddress(user.id);
     let body: UserEditResponseBody;
-    if (email.length > 0) {
-      body = { user: { id: user.id, status: "already exists", email: user.email } };
+    if (emailAddress.length > 0) {
+      body = { user: { id: user.id, status: "already exists", emailAddress: user.emailAddress } };
     } else {
-      await db.insertUser(user.id, user.email);
+      await db.insertUser(user.id, user.emailAddress);
       body = {
-        user: { id: user.id, status: "inserted", email: user.email },
+        user: { id: user.id, status: "inserted", emailAddress: user.emailAddress },
       };
     }
     res.status(200).send(body);
@@ -108,23 +109,23 @@ app.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
 
 app.post("/user.update", (req: UserEditRequest, res: express.Response) => {
   const user: User = req.body.data.user;
-  if (isAllowed(user.id, res)) {
+  if (!isAllowed(user.id, res)) {
     res.status(401).send({
-      message: `JWT-Token is not valid to insert an email of user ${user.id}`,
+      message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
     });
     return;
   }
 
   (async () => {
-    const email: string = await db.getEmail(user.id);
+    const emailAddress: string = await db.getEmailAddress(user.id);
     let body: UserEditResponseBody;
-    if (email.length > 0) {
-      body = { user: { id: user.id, status: "updated", email: user.email } };
-      await db.updateUser(user.id, user.email);
+    if (emailAddress.length > 0) {
+      body = { user: { id: user.id, status: "updated", emailAddress: user.emailAddress } };
+      await db.updateUser(user.id, user.emailAddress);
       res.status(200);
     } else {
       body = {
-        user: { id: user.id, email: user.email, status: "not found" },
+        user: { id: user.id, emailAddress: user.emailAddress, status: "not found" },
       };
       res.status(404);
     }
@@ -137,17 +138,17 @@ app.post("/user.update", (req: UserEditRequest, res: express.Response) => {
 
 app.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
   const user: User = req.body.data.user;
-  if (isAllowed(user.id, res)) {
+  if (!isAllowed(user.id, res)) {
     res.status(401).send({
-      message: `JWT-Token is not valid to insert an email of user ${user.id}`,
+      message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
     });
     return;
   }
 
   (async () => {
-    await db.deleteUser(user.id, user.email);
+    await db.deleteUser(user.id, user.emailAddress);
     const body: UserEditResponseBody = {
-      user: { id: user.id, status: "deleted", email: user.email },
+      user: { id: user.id, status: "deleted", emailAddress: user.emailAddress },
     };
     res.status(200).send(body);
   })().catch(error => () => {
@@ -156,18 +157,28 @@ app.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
   });
 });
 
-app.get("/user.getEmail", (req: UserGetEmailRequest, res: express.Response) => {
-  if (isAllowed(req.query.id, res)) {
+app.get("/user.getEmailAddress", (req: UserGetEmailAddressRequest, res: express.Response) => {
+  if (!isAllowed(req.query.id, res)) {
     res.status(401).send({
-      message: `JWT-Token is not valid to insert an email of user ${req.query.id}`,
+      message: `JWT-Token is not valid to insert an email address of user ${req.query.id}`,
     });
     return;
   }
 
   const id: string = req.query.id;
   (async () => {
-    const body: UserGetEmailResponseBody = { user: { id, email: await db.getEmail(id) } };
-    res.send(body);
+    const emailAddress = await db.getEmailAddress(id);
+    if (emailAddress.length > 0) {
+      logger.debug("GET email address " + emailAddress + " for user " + id);
+      res.send({
+        user: { id, emailAddress },
+      });
+    } else {
+      logger.debug("Email address" + emailAddress + " not found");
+      res.status(404).send({
+        user: { id, emailAddress: "Not Found" },
+      });
+    }
   })().catch(error => {
     logger.error(error);
     res.status(500).send(error);
@@ -187,20 +198,20 @@ app.post("/notification.send", (req: NotificationRequest, res: express.Response)
     }
   }
 
-  let email: string;
+  let emailAddress: string;
   (async () => {
-    email = await db.getEmail(id);
+    emailAddress = await db.getEmailAddress(id);
     let body: NotificationResponseBody;
-    if (email.length > 0) {
-      await sendMail(email);
-      logger.debug("Notification sent to " + email);
+    if (emailAddress.length > 0) {
+      await sendMail(emailAddress);
+      logger.debug("Notification sent to " + emailAddress);
       body = {
-        notification: { recipient: id, status: "sent", email },
+        notification: { recipient: id, status: "sent", emailAddress },
       };
       res.status(200).send(body);
     } else {
-      logger.debug("Email " + email + "not found");
-      body = { notification: { recipient: id, status: "deleted", email: "Not Found" } };
+      logger.debug("Email address" + emailAddress + "not found");
+      body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
       res.status(404).send(body);
     }
   })().catch(error => () => {
