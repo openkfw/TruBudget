@@ -2,6 +2,7 @@ import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
+import { fetchGroups } from "../Users/actions";
 import { fetchProjectPermissions, grantPermission, revokePermission } from "../Overview/actions";
 import {
   assignProject,
@@ -36,6 +37,7 @@ class ConfirmationContainer extends React.Component {
       this.props.confirmationDialogOpen === true &&
       this.props.originalActions.some(action => !_isEmpty(action.payload))
     ) {
+      this.props.fetchGroups();
       this.fetchPermissions(this.props.project, this.props.subproject, this.props.workflowitem);
     }
 
@@ -123,6 +125,7 @@ class ConfirmationContainer extends React.Component {
       executeConfirmedActions,
       permissions,
       confirmingUser,
+      groups,
       executedAdditionalActions,
       additionalActions,
       additionalActionsExecuted,
@@ -146,6 +149,7 @@ class ConfirmationContainer extends React.Component {
           executeConfirmedActions={executeConfirmedActions}
           permissions={permissions}
           confirmingUser={confirmingUser}
+          groups={groups}
           isFetchingPermissions={this.isFetchingPermissions()}
           permissionsEmpty={this.permissionsEmpty()}
           executedAdditionalActions={executedAdditionalActions}
@@ -169,6 +173,7 @@ class ConfirmationContainer extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
+    fetchGroups: () => dispatch(fetchGroups(true)),
     fetchProjectPermissions: pId => dispatch(fetchProjectPermissions(pId, false)),
     fetchSubprojectPermissions: (pId, sId) => dispatch(fetchSubProjectPermissions(pId, sId, false)),
     fetchWorkflowitemPermissions: (pId, spId, wId) => dispatch(fetchWorkflowItemPermissions(pId, spId, wId, false)),
@@ -225,7 +230,8 @@ const mapStateToProps = state => {
     originalActionsIncreased: state.getIn(["confirmation", "originalActionsIncreased"]),
     listPermissionsRequired: state.getIn(["confirmation", "listPermissionsRequired"]),
     failedAction: state.getIn(["confirmation", "failedAction"]),
-    requestedPermissions: state.getIn(["confirmation", "requestedPermissions"])
+    requestedPermissions: state.getIn(["confirmation", "requestedPermissions"]),
+    groups: state.getIn(["users", "groups"])
   };
 };
 
