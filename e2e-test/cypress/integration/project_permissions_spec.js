@@ -3,6 +3,8 @@ import _cloneDeep from "lodash/cloneDeep";
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
 const testUser = { id: "thouse", displayname: "Tom House" };
 let projectId, permissionsBeforeTesting, baseUrl, apiRoute;
+const groupToGivePermissions = "reviewers";
+const testGroupId = "admins";
 
 describe("Project Permissions", function() {
   before(() => {
@@ -10,6 +12,7 @@ describe("Project Permissions", function() {
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
 
     cy.login();
+
     cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
       projectId = id;
     });
@@ -22,6 +25,8 @@ describe("Project Permissions", function() {
     cy.listProjectPermissions(projectId).then(permissions => {
       permissionsBeforeTesting.project = permissions;
       resetUser(testUser.id, permissions);
+      resetUser(groupToGivePermissions, permissions);
+      resetUser(testGroupId, permissions);
     });
   });
 
@@ -73,6 +78,10 @@ describe("Project Permissions", function() {
       .should("have.length", 1);
   }
 
+  function filterPermissionsById(permissions, id) {
+    return Object.keys(permissions).filter(intent => permissions[intent].includes(id));
+  }
+
   it("Show project permissions correctly", function() {
     cy.get(`[data-test=project-card-${projectId}]`)
       // select all buttons which has an attribute data-test which value begins with pp-button
@@ -116,6 +125,50 @@ describe("Project Permissions", function() {
     // Confirmation opens
     cy.get("[data-test=permission-container]").should("not.be.visible");
     assertUnchangedPermissions(permissionsBeforeTesting, projectId);
+  });
+
+  it("Executing additional actions as normal user extended through group permissions", function() {
+    Cypress.Promise.all([
+      // grant permissions
+      cy.grantProjectPermission(projectId, "project.viewSummary", testGroupId),
+      cy.grantProjectPermission(projectId, "project.viewDetails", testGroupId),
+      cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroupId),
+      cy.grantProjectPermission(projectId, "project.intent.grantPermission", testGroupId),
+      cy.grantProjectPermission(projectId, "project.update", testGroupId)
+    ]).then(() => {
+      cy.login("jdoe", "test");
+      cy.visit(`/projects`);
+      cy.get(`[data-test=project-card-${projectId}]`)
+        .find("button[data-test^='pp-button']")
+        .click();
+      // Add permission
+      changePermissionInGui("project.intent.revokePermission", groupToGivePermissions);
+      cy.get("[data-test=permission-submit]").click();
+      // Confirmation opens
+      // listPermissions calls are done
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 3);
+      // Make sure cypress waits for future listPermissions calls
+      cy.server();
+      cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listPermissions");
+      cy.get("[data-test=confirmation-dialog-confirm]").click();
+      // Additional actions are executed
+      cy.wait("@listPermissions");
+      cy.get("[data-test=confirmation-dialog-confirm]").should("not.be.disabled");
+      // Reset permissions
+      Cypress.Promise.all([
+        cy.login("mstein", "test"),
+        cy.revokeProjectPermission(projectId, "project.viewSummary", testGroupId),
+        cy.revokeProjectPermission(projectId, "project.viewDetails", testGroupId),
+        cy.revokeProjectPermission(projectId, "project.update", testGroupId),
+        cy.revokeProjectPermission(projectId, "project.intent.grantPermission", testGroupId),
+        cy.revokeProjectPermission(projectId, "project.intent.listPermissions", testGroupId)
+      ]).then(() => {
+        assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, groupToGivePermissions), projectId);
+      });
+    });
   });
 
   it("Submitting the permission dialog after adding a user opens a confirmation dialog", function() {
@@ -371,6 +424,33 @@ describe("Project Permissions", function() {
         permCopy.project = removePermission(permCopy.project, "project.viewDetails", testUser.id);
         permCopy.project = removePermission(permCopy.project, "project.intent.listPermissions", testUser.id);
         assertUnchangedPermissions(permCopy, projectId);
+      });
+    });
+  });
+
+  it("Grant group Permission and test if their users have them", function() {
+    let filteredPermissions;
+    Cypress.Promise.all([
+      // grant permissions
+      cy.grantProjectPermission(projectId, "project.viewSummary", testGroupId),
+      cy.grantProjectPermission(projectId, "project.viewDetails", testGroupId),
+      cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroupId),
+      cy.grantProjectPermission(projectId, "project.update", testGroupId)
+    ]).then(() => {
+      // login as group-user
+      cy.login("jdoe", "test");
+      cy.visit(`/projects`);
+      // load all permissions of this project
+      cy.listProjectPermissions(projectId).then(permissions => {
+        // filter for all permissions, that belongs to testgroup
+        filteredPermissions = filterPermissionsById(permissions, testGroupId);
+        // assert permissions
+        let isPermissionSet =
+          filteredPermissions.includes("project.viewSummary") &&
+          filteredPermissions.includes("project.viewDetails") &&
+          filteredPermissions.includes("project.intent.listPermissions") &&
+          filteredPermissions.includes("project.update");
+        cy.expect(isPermissionSet).to.equal(true);
       });
     });
   });
