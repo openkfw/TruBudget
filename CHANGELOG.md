@@ -17,7 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Implement group permissions correctly [#440](https://github.com/openkfw/TruBudget/issues/440)
+- Fix permissions for viewing summary [#440](https://github.com/openkfw/TruBudget/issues/440)
 
 <!-- ### Changed -->
 
