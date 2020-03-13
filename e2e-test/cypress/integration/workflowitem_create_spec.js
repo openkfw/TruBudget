@@ -35,7 +35,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=rateinput] input").should("be.disabled");
   });
 
-  it("After selecting another currency, the exchange rate can be entered and is saved correctly", function() {
+  it("Check warnings that permissions are not assigned", function() {
     // Create a workflow item
     cy.get("[data-test=createWorkflowitem]").click();
     cy.get("[data-test=nameinput] input").type("Test");
@@ -58,6 +58,29 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=next]").click();
     cy.get("[data-test=submit]").click();
 
+    //Check snackbar warning visible
+    cy.get("[data-test=client-snackbar]")
+      .should("be.visible")
+      .should("contain", "permissions");
+
+    //Check warning badge
+    cy.get("[data-test=warning-badge]")
+      .first()
+      .should("be.visible");
+    cy.get("[data-test=workflowitem-table]")
+      .find("[data-test=show-workflowitem-permissions]")
+      .first()
+      .click();
+    cy.get("[data-test=warning-badge]")
+      .first()
+      .should("not.be.checked");
+    cy.get("[data-test=permission-submit]").click();
+    cy.get("[data-test=warning-badge]")
+      .first()
+      .should("not.be.checked");
+  });
+
+  it("Check if after selecting another currency, the exchange rate was entered and saved correctly", function() {
     // The workflow item amount should be displayed in the
     // subproject's currency
     cy.get("[data-test=workflowitem-amount]")

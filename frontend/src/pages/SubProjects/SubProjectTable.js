@@ -183,7 +183,7 @@ const getTableEntries = ({
                 />
               </div>
               <div className={classes.button}>
-                <StyledBadge color="secondary" variant="dot" invisible={hideBadge}>
+                <StyledBadge color="secondary" variant="dot" invisible={hideBadge} data-test={"warning-badge"}>
                   <ActionButton
                     notVisible={!canViewPermissions}
                     onClick={() => showSubProjectPermissions(id, displayName)}

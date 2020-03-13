@@ -48,7 +48,7 @@ const ContentWrapper = props => {
       className={classNames(classes[variant], className)}
       aria-describedby="client-snackbar"
       message={
-        <span id="client-snackbar" className={classes.message}>
+        <span id="client-snackbar" data-test="client-snackbar" className={classes.message}>
           <Icon className={classNames(classes.icon, classes.iconVariant)} />
           {message}
         </span>
