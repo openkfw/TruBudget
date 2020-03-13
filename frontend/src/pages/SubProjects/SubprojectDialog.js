@@ -18,7 +18,10 @@ const handleCreate = props => {
     projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) }))
   );
   onDialogCancel();
-  storeSnackbarMessage(strings.subproject.subproject_permissions_warning + " " + shortenedDisplayName(displayName));
+
+  storeSnackbarMessage(
+    strings.formatString(strings.subproject.subproject_permissions_warning, shortenedDisplayName(displayName))
+  );
 };
 
 const handleEdit = props => {

@@ -29,7 +29,10 @@ const handleCreate = props => {
     status,
     documents
   );
-  storeSnackbarMessage(strings.workflow.workflow_permissions_warning + " " + shortenedDisplayName(displayName));
+  storeSnackbarMessage(
+    strings.formatString(strings.workflow.workflow_permissions_warning, shortenedDisplayName(displayName))
+  );
+
   onDialogCancel();
 };
 

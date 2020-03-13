@@ -16,7 +16,7 @@ import LaunchIcon from "@material-ui/icons/ZoomIn";
 import _isEmpty from "lodash/isEmpty";
 import Highlight from "react-highlighter";
 import React from "react";
-import Badge from "@material-ui/core/Badge";
+import StyledBadge from "../Common/StyledBadge";
 
 import { statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
@@ -69,16 +69,6 @@ const styles = {
     margin: "4px"
   }
 };
-
-const StyledBadge = withStyles(theme => ({
-  badge: {
-    right: 14,
-    top: 33,
-    padding: "3px",
-    background: theme.palette.warning,
-    border: `2px solid ${theme.palette.background.paper}`
-  }
-}))(Badge);
 
 const displaySubprojectBudget = budgets => {
   const consolidatedBudgets = budgets.reduce((acc, next) => {
@@ -141,6 +131,8 @@ const getTableEntries = ({
     const redacted = displayName === null && _isEmpty(projectedBudgets);
     const visibleSubproject = canViewSubProjectSummary(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
+    const isBadgeHidden = idsPermissionsUnassigned.find(el => el === id) === undefined ? true : false;
+
     if (!redacted && visibleSubproject) {
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
@@ -183,11 +175,11 @@ const getTableEntries = ({
                 />
               </div>
               <div className={classes.button}>
-                <StyledBadge color="secondary" variant="dot" invisible={hideBadge} data-test={"warning-badge"}>
+                <StyledBadge color="secondary" variant="dot" invisible={isBadgeHidden} data-test={"warning-badge"}>
                   <ActionButton
                     notVisible={!canViewPermissions}
                     onClick={() => showSubProjectPermissions(id, displayName)}
-                    title={hideBadge ? strings.common.show_permissions : strings.confirmation.assign_permissions}
+                    title={isBadgeHidden ? strings.common.show_permissions : strings.confirmation.assign_permissions}
                     icon={<PermissionIcon />}
                     data-test={"spp-button-" + index}
                   />

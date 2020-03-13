@@ -18,7 +18,7 @@ import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
 import ActionButton from "../Common/ActionButton";
-import Badge from "@material-ui/core/Badge";
+import StyledBadge from "../Common/StyledBadge";
 
 import { amountTypes, fromAmountString, toAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
@@ -29,7 +29,6 @@ import {
   canViewWorkflowItemPermissions
 } from "../../permissions.js";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
-import { withStyles } from "@material-ui/core";
 
 const styles = {
   text: {
@@ -150,16 +149,6 @@ const styles = {
     cursor: "-webkit-grab"
   }
 };
-
-const StyledBadge = withStyles(theme => ({
-  badge: {
-    right: 14,
-    top: 33,
-    padding: "3px",
-    background: theme.palette.warning,
-    border: `2px solid ${theme.palette.background.paper}`
-  }
-}))(Badge);
 
 const createLine = (isFirst, selectable) => {
   const lineStyle =
@@ -400,7 +389,17 @@ const renderActionButtons = (
 };
 
 export const WorkflowItem = SortableElement(
-  ({ workflow, mapIndex, index, currentWorkflowSelectable, workflowSortEnabled, parentProject, users, ...props }) => {
+  ({
+    workflow,
+    mapIndex,
+    index,
+    currentWorkflowSelectable,
+    workflowSortEnabled,
+    parentProject,
+    users,
+    idsPermissionsUnassigned,
+    ...props
+  }) => {
     const { storeWorkflowItemsSelected, selectedWorkflowItems, currency: targetCurrency } = props;
     const {
       id,
@@ -484,7 +483,7 @@ export const WorkflowItem = SortableElement(
               status,
               () => props.showWorkflowitemAdditionalData(id),
               additionalData,
-              props.idsPermissionsUnassigned,
+              idsPermissionsUnassigned,
               id
             )}
           </div>
