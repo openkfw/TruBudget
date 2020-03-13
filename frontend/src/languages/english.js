@@ -479,7 +479,7 @@ const en = {
     french: "French",
     german: "German",
     portuguese: "Portuguese",
-    georgian: "Gerogian"
+    georgian: "Georgian"
   }
 };
 
