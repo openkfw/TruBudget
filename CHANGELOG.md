@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Changed -->
+
+<!-- ### Security -->
+
+# [1.8.0] - 2019-03-16
+
 ### Added
 
 - Email notification service [#419](https://github.com/openkfw/TruBudget/issues/419)
@@ -422,7 +438,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.7.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.8.0...master
+[1.8.0]: https://github.com/openkfw/TruBudget/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/openkfw/TruBudget/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/openkfw/TruBudget/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/openkfw/TruBudget/compare/v1.4.1...v1.5.0
