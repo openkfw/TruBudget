@@ -23,6 +23,18 @@ export const SEARCH_BAR_DISPLAYED = "SEARCH_BAR_DISPLAYED";
 
 export const SET_IS_ROOT = "SET_IS_ROOT";
 
+export const SHOW_USER_PROFILE = "SHOW_USER_PROFILE";
+export const HIDE_USER_PROFILE = "HIDE_USER_PROFILE";
+
+export const ENABLE_USER_PROFILE_EDIT = "ENABLE_USER_PROFILE_EDIT";
+export const DISABLE_USER_PROFILE_EDIT = "DISABLE_USER_PROFILE_EDIT";
+
+export const STORE_TEMP_EMAIL_ADDRESS = "STORE_TEMP_EMAIL_ADDRESS";
+export const SAVE_EMAIL_ADDRESS = "SAVE_EMAIL_ADDRESS";
+export const SAVE_EMAIL_ADDRESS_SUCCESS = "SAVE_EMAIL_ADDRESS_SUCCESS";
+export const SAVE_EMAIL_ADDRESS_FAILED = "SAVE_EMAIL_ADDRESS_FAILED";
+export const SET_VALID_EMAIL_ADDRESS_INPUT = "SET_VALID_EMAIL_ADDRESS_INPUT";
+
 export function toggleSidebar() {
   return {
     type: TOGGLE_SIDEBAR
@@ -90,5 +102,49 @@ export function setIsRoot(isRoot) {
   return {
     type: SET_IS_ROOT,
     isRoot
+  };
+}
+
+export function showUserProfile() {
+  return {
+    type: SHOW_USER_PROFILE
+  };
+}
+
+export function hideUserProfile() {
+  return {
+    type: HIDE_USER_PROFILE
+  };
+}
+
+export function enableUserProfileEdit() {
+  return {
+    type: ENABLE_USER_PROFILE_EDIT
+  };
+}
+
+export function disableUserProfileEdit() {
+  return {
+    type: DISABLE_USER_PROFILE_EDIT
+  };
+}
+
+export function storeTempEmailAddress(emailAddress) {
+  return {
+    type: STORE_TEMP_EMAIL_ADDRESS,
+    emailAddress
+  };
+}
+
+export function saveEmailAddress(emailAddress) {
+  return {
+    type: SAVE_EMAIL_ADDRESS,
+    emailAddress
+  };
+}
+export function setValidEmailAddressInput(valid) {
+  return {
+    type: SET_VALID_EMAIL_ADDRESS_INPUT,
+    valid
   };
 }

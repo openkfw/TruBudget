@@ -43,7 +43,8 @@ const Navbar = ({
   storeSearchTerm,
   searchTerm,
   storeSearchBarDisplayed,
-  searchBarDisplayed
+  searchBarDisplayed,
+  showUserProfile
 }) => {
   return (
     <div>
@@ -90,6 +91,7 @@ const Navbar = ({
         restoreBackup={restoreBackup}
         versions={versions}
         exportData={exportData}
+        showUserProfile={showUserProfile}
       />
     </div>
   );

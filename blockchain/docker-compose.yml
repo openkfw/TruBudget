@@ -6,6 +6,8 @@ services:
       RPC_PORT: 8000
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
+      EMAIL_HOST: localhost
+      EMAIL_PORT: 8889
     ports:
       - "8000:8000"
       - "8085:8085"

@@ -42,6 +42,7 @@ const pt = {
     done: "Finalizar",
     edit: "Editar",
     edited: "Editado",
+    email: "Email",
     finish: "Finalizar",
     grant: "Conceder",
     history_end: "Fim do histórico",
@@ -115,6 +116,10 @@ const pt = {
     user_created: "Usuário criado com sucesso",
     username_invalid: "Nome de usuário Inválido",
     users: "Usuários"
+  },
+
+  userProfile: {
+    invalid_email_address: "Endereço de email inválido"
   },
 
   nodesDashboard: {
@@ -334,6 +339,7 @@ const pt = {
     done_workflow: "Status do item de workflow {0} alterado para Finalizado",
     edit_transaction: "Transação {0} foi adaptada ",
     edit_workflow: "Item de workflow {0} foi adaptado ",
+    email_saved: "Email {0} salvo",
     no_permissions: "(Sem permissão para visualizar mais detalhes)",
     notification_card_text:
       "Por favor, verifique suas notificações abaixo. Elas contêm informações ou ações a serem tratadas.",
@@ -361,6 +367,7 @@ const pt = {
     read_all: "Marcar todas como lidas",
     review_transaction: "Você foi solicitado a revisar a transação {0}",
     review_workflow: "Você foi solicitado a revisar o item de workflow {0}",
+    save_email_error: "Não foi possível salvar o email",
     subproject_archive: "Subprojeto {0} foi arquivado",
     subproject_assign: "Subprojeto {0} foi atribuído a você",
     subproject_assigned: "Subprojeto {0} foi atribuído a você",

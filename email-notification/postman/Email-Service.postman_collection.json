@@ -1,0 +1,236 @@
+{
+	"info": {
+		"_postman_id": "b8b94bac-e235-430c-b8fe-fd7abe6fcb73",
+		"name": "Email-Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user.insert",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJqeGF2aWVyIiwiYWRkcmVzcyI6IjFVVVpEY1hVWGl3ZHMxVU5wZk03ck5WTHRqanFYQ3VCSnNZZEVHIiwib3JnYW5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFCczlqaHhYZU5rN2NxNjR0U2h5QnlQV0Y3QnlCdHVQWGs0NFMyIiwiZ3JvdXBzIjpbInJldmlld2VycyJdLCJpYXQiOjE1ODMyNDEwNjAsImV4cCI6MTU4MzI2OTg2MH0.U9NzIoOX_Zr4cXYgUowHkXQ-YrsfAas-0NqYEoSs7rU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"emailAddress\": \"{{emailAddress}}\"\n\t\t}\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/user.insert",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"user.insert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user.update",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"emailAddress\": \"{{emailAddress}}\"\n\t\t}\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/user.update",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"user.update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user.delete",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\":{\n\t\t\t\"id\": \"{{id}}\",\n\t\t\t\"emailAddress\": \"{{emailAddress}}\"\n\t\t}\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8890/user.delete",
+					"host": [
+						"localhost"
+					],
+					"port": "8890",
+					"path": [
+						"user.delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "notification.send",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":{\n\t\t\"user\":{ \n\t\t\t\"id\": \"{{id}}\"\n\t\t}\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8890/notification.send",
+					"host": [
+						"localhost"
+					],
+					"port": "8890",
+					"path": [
+						"notification.send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user.getEmailAddress",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8890/user.getEmailAddress?id={{id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8890",
+					"path": [
+						"user.getEmailAddress"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "readiness",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8890/readiness",
+					"host": [
+						"localhost"
+					],
+					"port": "8890",
+					"path": [
+						"readiness"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

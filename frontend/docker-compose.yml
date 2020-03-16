@@ -1,67 +1,38 @@
-version: "3"
+version: "3.2"
 services:
-  blockchain-master:
-    image: trubudget/blockchain:master
+  master:
+    image: trubudget/blockchain:latest
     environment:
       RPC_PORT: 8000
       ORGANIZATION: ACMECorp
-    ports:
-      - "4000:8000"
-  blockchain-slave:
-    image: trubudget/blockchain:master
-    environment:
-      RPC_PORT: 8000
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      P2P_HOST: blockchain-master
-      API_PROTO: http
-      API_HOST: masterapi
-      ORGANIZATION: ACMECorp
+    volumes:
+      - /tmp/bcMasterVolume:/root/.multichain
     ports:
-      - "8001:8000"
-
-  provisioning:
-    image: trubudget/provisioning:master
-    command: ["npm", "start"]
+      - "7447:7447"
+      - "8000:8000"
+  api:
+    image: trubudget/api:latest
     environment:
-      API_HOST: masterapi
-      ENVIRONMENT_TYPE: PROD
-      API_PORT: 8080
+      RPC_HOST: master
+      RPC_PORT: 8000
       ROOT_SECRET: asdf
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      PORT: 8080
       ORGANIZATION: ACMECorp
+      ORGANIZATION_VAULT_SECRET: org$ecret
+      ROOT_SECRET: asdf
     links:
-      - masterapi
-
-  masterapi:
-    image: trubudget/api:master
+      - master
     ports:
       - "8080:8080"
+  provisioning:
+    image: trubudget/provisioning:latest
     environment:
-      APP_NAME: Trubudget
-      NODE_LOCATION_LAT: "30.11"
-      NODE_LOCATION_LNG: "4.68"
-      NODE_COUNTRY: Germany
-      NODE_DESCRIPTION: ACMECorp
-      ORGANIZATION: ACMECorp
-      ORGANIZATION_VAULT_SECRET: ker5Ecet
-      RPC_HOST: blockchain-master
-      RPC_PORT: 8000
-      IS_MASTER: 1
-      # for real deployment comment the BC_ADDRESS_VERIFACTION, otherwise everyone can create transaction from anywhere
-      BC_ADDRESS_VERIFICATION: "false"
-      PORT: 8080
+      API_HOST: api
+      API_PORT: 8080
+      ENVIRONMENT_TYPE: TEST
       ROOT_SECRET: asdf
+      ORGANIZATION: ACMECorp
     links:
-      - blockchain-master
-
-  excel-export:
-    image: trubudget/excel-export:master
-    ports:
-      - "8888:8888"
-    environment:
-      TEST_API_PORT: 8080
-      PROD_API_PORT: 8080
-      TEST_API_HOST: masterapi
-      PROD_API_HOST: masterapi
-      PORT: 8888
-    depends_on:
-      - masterapi
+      - api
