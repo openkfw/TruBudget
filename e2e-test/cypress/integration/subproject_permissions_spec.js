@@ -2,6 +2,8 @@ import _cloneDeep from "lodash/cloneDeep";
 
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
 const testUser = { id: "thouse", displayname: "Tom House" };
+const testGroupId = "admins";
+const groupToGivePermissions = "reviewers";
 let projectId, subprojectId, permissionsBeforeTesting, baseUrl, apiRoute;
 const subprojectDisplayname = "subproject assign test";
 
@@ -83,6 +85,10 @@ describe("Subproject Permissions", function() {
       .find("td")
       .contains(permissionText)
       .should("have.length", 1);
+  }
+
+  function filterPermissionsById(permissions, id) {
+    return Object.keys(permissions).filter(intent => permissions[intent].includes(id));
   }
 
   it("Show subproject permissions correctly", function() {
@@ -274,6 +280,52 @@ describe("Subproject Permissions", function() {
     ]);
   });
 
+  it("Executing additional actions as normal user extended through group permissions", function() {
+    Cypress.Promise.all([
+      // grant permissions to testgroup
+      cy.grantProjectPermission(projectId, "project.viewSummary", testGroupId),
+      cy.grantProjectPermission(projectId, "project.viewDetails", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testGroupId)
+    ]).then(() => {
+      // user from testgroup grant other group some permission
+      cy.login("jdoe", "test");
+      cy.get("[data-test=spp-button-0]").click();
+      // Add permission
+      changePermissionInGui("subproject.intent.revokePermission", groupToGivePermissions);
+      cy.get("[data-test=permission-submit]").click();
+      // Confirmation opens
+      // listPermissions calls are done
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 5);
+      // Make sure cypress waits for future listPermissions calls
+      cy.server();
+      cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
+      cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubprojectPermissions");
+      cy.get("[data-test=confirmation-dialog-confirm]").click();
+      cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
+
+      // Reset permissions of testgroup
+      Cypress.Promise.all([
+        cy.login("mstein", "test"),
+        cy.revokeProjectPermission(projectId, "project.viewSummary", testGroupId),
+        cy.revokeProjectPermission(projectId, "project.viewDetails", testGroupId),
+        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroupId),
+        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
+        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testGroupId)
+      ]).then(() => {
+        assertUnchangedPermissions(
+          addViewPermissions(permissionsBeforeTesting, groupToGivePermissions),
+          projectId,
+          subprojectId
+        );
+      });
+    });
+  });
+
   it("Granting assign/grant/revoke permissions additionally generates an action to grant 'list permissions'-permissions", function() {
     // Check assign
     cy.get("[data-test=spp-button-0]").click();
@@ -399,6 +451,35 @@ describe("Subproject Permissions", function() {
         // Reset permissions
         cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id);
         cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id);
+      });
+    });
+  });
+
+  it("Grant group Permission and test if their users have them", function() {
+    let filteredSubProjectPermissions, isSubProjectPermissionSet;
+    Cypress.Promise.all([
+      cy.grantProjectPermission(projectId, "project.viewSummary", testGroupId),
+      cy.grantProjectPermission(projectId, "project.viewDetails", testGroupId),
+      cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.update", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.createWorkflowitem", testGroupId)
+    ]).then(() => {
+      // login as group-user
+      cy.login("jdoe", "test");
+      cy.visit(`/projects`);
+
+      cy.listSubprojectPermissions(projectId, subprojectId).then(permissions => {
+        filteredSubProjectPermissions = filterPermissionsById(permissions, testGroupId);
+        isSubProjectPermissionSet =
+          filteredSubProjectPermissions.includes("subproject.viewSummary") &&
+          filteredSubProjectPermissions.includes("subproject.viewDetails") &&
+          filteredSubProjectPermissions.includes("subproject.intent.listPermissions") &&
+          filteredSubProjectPermissions.includes("subproject.update") &&
+          filteredSubProjectPermissions.includes("subproject.createWorkflowitem");
+        cy.expect(isSubProjectPermissionSet).to.equal(true);
       });
     });
   });

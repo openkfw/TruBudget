@@ -42,6 +42,7 @@ const ConfirmationDialog = props => {
     open = false,
     permissions,
     confirmingUser,
+    groups,
     executedAdditionalActions,
     additionalActions,
     additionalActionsExecuted,
@@ -74,7 +75,7 @@ const ConfirmationDialog = props => {
     // Payload is defined by the saga which triggers the CONFIRM_INTENT-action
     switch (intent) {
       case "project.assign":
-        permittedToGrant = isPermittedToGrant(confirmingUser, permissions, additionalActions);
+        permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
 
         // Build Dialog content
         if (additionalActionsExist(additionalActions)) {
@@ -114,7 +115,7 @@ const ConfirmationDialog = props => {
         }
         break;
       case "subproject.assign":
-        permittedToGrant = isPermittedToGrant(confirmingUser, permissions, additionalActions);
+        permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
 
         // Build Dialog content
         if (additionalActionsExist(additionalActions)) {
@@ -154,7 +155,7 @@ const ConfirmationDialog = props => {
         }
         break;
       case "workflowitem.assign":
-        permittedToGrant = isPermittedToGrant(confirmingUser, permissions, additionalActions);
+        permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
 
         // Build Dialog content
         if (additionalActionsExist(additionalActions)) {
@@ -195,7 +196,7 @@ const ConfirmationDialog = props => {
         break;
       case "project.intent.grantPermission":
       case "project.intent.revokePermission":
-        permittedToGrant = isPermittedToGrant(confirmingUser, permissions, additionalActions);
+        permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
 
         // Build Dialog content
         if (additionalActionsExist(additionalActions)) {
@@ -226,7 +227,7 @@ const ConfirmationDialog = props => {
         break;
       case "subproject.intent.grantPermission":
       case "subproject.intent.revokePermission":
-        permittedToGrant = isPermittedToGrant(confirmingUser, permissions, additionalActions);
+        permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
 
         // Build Dialog content
         if (additionalActionsExist(additionalActions)) {
@@ -255,10 +256,10 @@ const ConfirmationDialog = props => {
           confirmButtonText = strings.common.grant + "/" + strings.common.revoke;
         }
         break;
+
       case "workflowitem.intent.grantPermission":
       case "workflowitem.intent.revokePermission":
-        permittedToGrant = isPermittedToGrant(confirmingUser, permissions, additionalActions);
-
+        permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
         // Build Dialog content
         if (additionalActionsExist(additionalActions)) {
           const dialogText = strings.confirmation.additional_permissions_dialog_text;
@@ -372,7 +373,7 @@ function renderErrorInformation(permittedToGrant, additionalActions, failedActio
   return null;
 }
 
-function isPermittedToGrant(identity, permissions, actions) {
+function isPermittedToGrant(username, groups, permissions, actions) {
   const resourcesToCheck = actions.reduce((resourcesToCheck, action) => {
     const resource = action.intent.split(".")[0];
     if (!resourcesToCheck.includes(resource)) {
@@ -381,12 +382,24 @@ function isPermittedToGrant(identity, permissions, actions) {
     return resourcesToCheck;
   }, []);
 
-  return resourcesToCheck.every(resource => {
-    if (!permissions[resource][`${resource}.intent.grantPermission`].includes(identity)) {
-      return false;
-    }
-    return true;
+  //check permission by username
+  const isUserPermitted = resourcesToCheck.every(resource => {
+    return permissions[resource][`${resource}.intent.grantPermission`].includes(username);
   });
+
+  if (typeof groups === undefined || groups.length === 0 || groups == null) {
+    return isUserPermitted;
+  } else {
+    //check permission by group
+    const filteredGroups = groups.filter(item => item.users.includes(username));
+    const groupIds = filteredGroups.map(item => item.groupId);
+
+    const isGroupPermitted = resourcesToCheck.every(resource => {
+      return permissions[resource][`${resource}.intent.grantPermission`].some(member => groupIds.includes(member));
+    });
+
+    return isUserPermitted || isGroupPermitted;
+  }
 }
 
 export default withStyles(styles)(ConfirmationDialog);

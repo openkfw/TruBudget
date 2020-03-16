@@ -124,7 +124,6 @@ const mapStateToProps = state => {
     workflowitemDisplayName: state.getIn(["workflow", "workflowitemDisplayName"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"]),
-    myself: state.getIn(["login", "id"]),
     userList: state.getIn(["login", "user"]),
     isConfirmationDialogOpen: state.getIn(["confirmation", "open"])
   };
