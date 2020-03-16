@@ -119,7 +119,7 @@ const ka = {
   },
 
   userProfile: {
-    invalid_email_address: "არასწორი Email"
+    invalid_email_address: "ელექტრონული მისამართი"
   },
 
   nodesDashboard: {

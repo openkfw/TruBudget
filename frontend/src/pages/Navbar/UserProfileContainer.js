@@ -85,6 +85,7 @@ class UserProfileContainer extends Component {
         onClose={this.props.hideUserProfile}
         classes={{ paper: this.props.classes.paperRoot }}
         open={this.props.open}
+        data-test="user-profile-dialog"
       >
         <DialogTitle disableTypography={true} className={this.props.classes.flex}>
           <div className={this.props.classes.title}>
@@ -95,6 +96,7 @@ class UserProfileContainer extends Component {
             aria-label="close"
             className={this.props.classes.closeButton}
             onClick={this.props.hideUserProfile}
+            data-test="close-user-profile"
           >
             <CloseIcon />
           </IconButton>
@@ -108,7 +110,7 @@ class UserProfileContainer extends Component {
           />
         </Card>
         {this.props.emailServiceAvailable ? (
-          <Card className={this.props.classes.card}>
+          <Card data-test="email-address-input" className={this.props.classes.card}>
             <CardHeader
               avatar={<EmailIcon aria-label="email"></EmailIcon>}
               title={strings.common.email}

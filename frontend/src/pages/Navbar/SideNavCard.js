@@ -69,7 +69,7 @@ const SideNavCard = ({
             primary={<span>{displayName}</span>}
             secondary={<span>{organization}</span>}
           />
-          <IconButton onClick={() => showUserProfile()}>
+          <IconButton data-test="show-user-profile" onClick={() => showUserProfile()}>
             <SettingsIcon />
           </IconButton>
         </ListItem>
