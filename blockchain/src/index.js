@@ -9,8 +9,10 @@ const k8s = require("@kubernetes/client-node");
 const os = require("os");
 const KubernetesClient = require("./kubernetesClient");
 
+const {
+  startEmailNotificationWatcher,
+} = require("./multichain-feed/email-notifications/notificationWatcher");
 const { startSlave, registerNodeAtMaster } = require("./connectToChain");
-
 const { startMultichainDaemon, configureChain } = require("./createChain");
 
 const {
@@ -43,6 +45,20 @@ const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 
+// Email Service
+const EMAIL_HOST = process.env.EMAIL_HOST;
+const EMAIL_PORT = process.env.EMAIL_PORT;
+const EMAIL_SSL = process.env.EMAIL_SSL || false;
+const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
+const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
+const NOTIFICATION_SEND_INTERVAL = process.env.NOTIFICATION_SEND_INTERVAL || 10;
+const emailAuthSecret = process.env.JWT_SECRET;
+const EMAIL_SERVICE_ENABLED =
+  (process.env.EMAIL_HOST &&
+    process.env.EMAIL_PORT &&
+    process.env.EMAIL_SERVICE === "ENABLED") ||
+  false;
+
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
 const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
@@ -54,6 +70,13 @@ const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
 const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
 const NAMESPACE = process.env.KUBE_NAMESPACE || "";
 const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
+
+if (EMAIL_SERVICE_ENABLED && !emailAuthSecret) {
+  console.log(
+    "Error: Env variable 'JWT_SECRET' not set. Please set the same secret as in the trubudget email-service.",
+  );
+  os.exit(1);
+}
 
 app.use(
   bodyParser.raw({
@@ -92,6 +115,8 @@ configureChain(
   RPC_USER,
   RPC_PASSWORD,
   RPC_ALLOW_IP,
+  EMAIL_SERVICE_ENABLED,
+  NOTIFICATION_PATH,
 );
 
 function initMultichain() {
@@ -150,9 +175,29 @@ if (EXPOSE_MC) {
     }
 
     initMultichain();
+    if (EMAIL_SERVICE_ENABLED) {
+      startEmailNotificationWatcher(
+        NOTIFICATION_PATH,
+        `${EMAIL_HOST}:${EMAIL_PORT}`,
+        emailAuthSecret,
+        NOTIFICATION_MAX_LIFETIME,
+        NOTIFICATION_SEND_INTERVAL,
+        EMAIL_SSL,
+      );
+    }
   });
 } else {
   initMultichain();
+  if (EMAIL_SERVICE_ENABLED) {
+    startEmailNotificationWatcher(
+      NOTIFICATION_PATH,
+      `${EMAIL_HOST}:${EMAIL_PORT}`,
+      emailAuthSecret,
+      NOTIFICATION_MAX_LIFETIME,
+      NOTIFICATION_SEND_INTERVAL,
+      EMAIL_SSL,
+    );
+  }
 }
 
 const stopMultichain = async mcproc => {

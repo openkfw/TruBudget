@@ -1,3 +1,4 @@
+import { IconButton } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
@@ -7,11 +8,11 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Subheader from "@material-ui/core/ListSubheader";
 import ProjectIcon from "@material-ui/icons/Business";
 import NodesIcon from "@material-ui/icons/DesktopWindows";
+import ExportIcon from "@material-ui/icons/ListAlt";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import UsersIcon from "@material-ui/icons/PeopleOutline";
-import ExportIcon from "@material-ui/icons/ListAlt";
+import SettingsIcon from "@material-ui/icons/Settings";
 import React from "react";
-
 import strings from "../../localizeStrings";
 import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
@@ -22,7 +23,6 @@ const SideNavCard = ({
   avatar,
   displayName,
   organization,
-  userDashboardEnabled,
   nodeDashboardEnabled,
   history,
   groups,
@@ -30,7 +30,8 @@ const SideNavCard = ({
   createBackup,
   restoreBackup,
   versions,
-  exportData
+  exportData,
+  showUserProfile
 }) => (
   <div
     style={{
@@ -61,15 +62,16 @@ const SideNavCard = ({
       >
         <ListItem style={{ paddingTop: "16px" }}>
           <ListItemIcon>
-            <Avatar
-              size={60}
-              src={avatar}
-              style={{
-                marginLeft: "16px"
-              }}
-            />
+            <IconButton children={<Avatar size={60} src={avatar} />} />
           </ListItemIcon>
-          <ListItemText primary={<span>{displayName}</span>} secondary={<span>{organization}</span>} />
+          <ListItemText
+            style={{ padding: "0px" }}
+            primary={<span>{displayName}</span>}
+            secondary={<span>{organization}</span>}
+          />
+          <IconButton data-test="show-user-profile" onClick={() => showUserProfile()}>
+            <SettingsIcon />
+          </IconButton>
         </ListItem>
       </div>
     </div>

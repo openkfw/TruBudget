@@ -18,7 +18,12 @@ import React from "react";
 
 import { statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canUpdateSubProject, canViewSubProjectDetails, canViewSubProjectPermissions } from "../../permissions";
+import {
+  canUpdateSubProject,
+  canViewSubProjectDetails,
+  canViewSubProjectSummary,
+  canViewSubProjectPermissions
+} from "../../permissions";
 import ActionButton from "../Common/ActionButton";
 
 const styles = {
@@ -116,9 +121,9 @@ const getTableEntries = (
     const editDisabled = !(canUpdateSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
     const redacted = displayName === null && _isEmpty(projectedBudgets);
+    const visibleSubproject = canViewSubProjectSummary(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
-
-    if (!redacted) {
+    if (!redacted && visibleSubproject) {
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
         <TableRow key={index}>

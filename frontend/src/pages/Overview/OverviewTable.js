@@ -11,7 +11,12 @@ import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { formattedTag, statusMapping, toAmountString, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
-import { canCreateProject, canUpdateProject, canViewProjectPermissions } from "../../permissions";
+import {
+  canCreateProject,
+  canUpdateProject,
+  canViewProjectPermissions,
+  canViewProjectSummary
+} from "../../permissions";
 import ProjectCard from "./ProjectCard";
 
 const styles = theme => ({
@@ -158,34 +163,36 @@ const getTableEntries = ({
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
     const displayedTags = displayTags({ classes, tags: tags || [], storeSearchTerm, showSearchBar, searchTermArray });
-    return (
-      <ProjectCard
-        key={index}
-        index={index}
-        id={id}
-        allowedIntents={allowedIntents}
-        history={history}
-        displayName={displayName}
-        mappedStatus={mappedStatus}
-        projectedBudgets={projectedBudgets}
-        budgets={budgets}
-        displayedTags={displayedTags}
-        dateString={dateString}
-        showProjectAdditionalData={showProjectAdditionalData}
-        additionalDataEmpty={additionalDataEmpty}
-        canViewPermissions={canViewPermissions}
-        isOpen={isOpen}
-        showProjectPermissions={showProjectPermissions}
-        editDisabled={editDisabled}
-        showEditDialog={showEditDialog}
-        description={description}
-        thumbnail={thumbnail}
-        tags={tags}
-        parentClasses={classes}
-        imagePath={imagePath}
-        highlightingRegex={highlightingRegex}
-      />
-    );
+    if (canViewProjectSummary(allowedIntents)) {
+      return (
+        <ProjectCard
+          key={index}
+          index={index}
+          id={id}
+          allowedIntents={allowedIntents}
+          history={history}
+          displayName={displayName}
+          mappedStatus={mappedStatus}
+          projectedBudgets={projectedBudgets}
+          budgets={budgets}
+          displayedTags={displayedTags}
+          dateString={dateString}
+          showProjectAdditionalData={showProjectAdditionalData}
+          additionalDataEmpty={additionalDataEmpty}
+          canViewPermissions={canViewPermissions}
+          isOpen={isOpen}
+          showProjectPermissions={showProjectPermissions}
+          editDisabled={editDisabled}
+          showEditDialog={showEditDialog}
+          description={description}
+          thumbnail={thumbnail}
+          tags={tags}
+          parentClasses={classes}
+          imagePath={imagePath}
+          highlightingRegex={highlightingRegex}
+        />
+      );
+    } else return null;
   });
 };
 

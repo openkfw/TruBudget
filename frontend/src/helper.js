@@ -143,3 +143,12 @@ export const shortenedDisplayName = displayName => {
 export function makePermissionReadable(intent) {
   return strings.permissions[intent.replace(/[.]/g, "_")] || intent;
 }
+
+export const dateFormat = () => {
+  return "MM.DD.YYYY";
+};
+
+export const isEmailAddressValid = emailAddress => {
+  const validEmailAddressRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+  return validEmailAddressRegex.test(emailAddress);
+};

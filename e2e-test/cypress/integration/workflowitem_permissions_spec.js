@@ -2,6 +2,8 @@ import _cloneDeep from "lodash/cloneDeep";
 
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
 const testUser = { id: "thouse", displayname: "Tom House" };
+const testGroupId = "admins";
+const groupToGivePermissions = "reviewers";
 let projectId, subprojectId, workflowitemId, permissionsBeforeTesting, baseUrl, apiRoute;
 const projectDisplayname = "p-witem-assign";
 const subprojectDisplayname = "subp-witem-assign";
@@ -89,6 +91,10 @@ describe("Workflowitem Permissions", function() {
       .find("td")
       .contains(permissionText)
       .should("have.length", 1);
+  }
+
+  function filterPermissionsById(permissions, id) {
+    return Object.keys(permissions).filter(intent => permissions[intent].includes(id));
   }
 
   it("Show worklfowitem permissions correctly", function() {
@@ -323,6 +329,61 @@ describe("Workflowitem Permissions", function() {
     ]);
   });
 
+  it("Executing additional actions as normal user extended through group permissions", function() {
+    const listIntent = "workflowitem.intent.listPermissions";
+    Cypress.Promise.all([
+      // grant permissions
+      cy.grantProjectPermission(projectId, "project.viewSummary", testGroupId),
+      cy.grantProjectPermission(projectId, "project.viewDetails", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, listIntent, testGroupId),
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", testGroupId)
+    ]).then(() => {
+      // user from testgroup grant other group some permission
+      cy.login("jdoe", "test");
+
+      cy.get("[data-test=show-workflowitem-permissions]")
+        .first()
+        .click();
+      // Add permission
+      changePermissionInGui("workflowitem.intent.revokePermission", groupToGivePermissions);
+      cy.get("[data-test=permission-submit]").click();
+      // Confirmation opens
+      // listPermissions calls are done
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 6);
+      // Make sure cypress waits for future listPermissions calls
+      cy.server();
+      cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
+      cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubprojectPermissions");
+      cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+      cy.get("[data-test=confirmation-dialog-confirm]").click();
+      cy.wait(["@listProjectPermissions", "@listSubprojectPermissions", "@listWorkflowitemPermissions"]);
+      cy.get("[data-test=confirmation-dialog-confirm]").should("not.be.disabled");
+
+      // Reset permissions of testgroup
+      Cypress.Promise.all([
+        cy.login("mstein", "test"),
+        cy.revokeProjectPermission(projectId, "project.viewSummary", testGroupId),
+        cy.revokeProjectPermission(projectId, "project.viewDetails", testGroupId),
+        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroupId),
+        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
+        cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, listIntent, testGroupId),
+        cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", testGroupId)
+      ]).then(() => {
+        assertUnchangedPermissions(
+          addViewPermissions(permissionsBeforeTesting, groupToGivePermissions),
+          projectId,
+          subprojectId,
+          workflowitemId
+        );
+      });
+    });
+  });
+
   it("Granting assign/grant/revoke permissions additionally generates an action to grant 'list permissions'-permissions", function() {
     // Check assign
     cy.get("[data-test=show-workflowitem-permissions]")
@@ -441,6 +502,39 @@ describe("Workflowitem Permissions", function() {
         cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id);
         cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id);
         cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id);
+      });
+    });
+  });
+
+  it("Grant group Permission and test if their users have them", function() {
+    let filteredWorkflowPermissions;
+    Cypress.Promise.all([
+      cy.grantProjectPermission(projectId, "project.viewSummary", testGroupId),
+      cy.grantProjectPermission(projectId, "project.viewDetails", testGroupId),
+      cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroupId),
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", testGroupId),
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.update", testGroupId),
+      cy.grantWorkflowitemPermission(
+        projectId,
+        subprojectId,
+        workflowitemId,
+        "workflowitem.intent.listPermissions",
+        testGroupId
+      )
+    ]).then(() => {
+      // login as group-user
+      cy.login("jdoe", "test");
+      cy.visit(`/projects`);
+
+      cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then(permissions => {
+        filteredWorkflowPermissions = filterPermissionsById(permissions, testGroupId);
+        let isWorkflowtPermissionSet =
+          filteredWorkflowPermissions.includes("workflowitem.view") &&
+          filteredWorkflowPermissions.includes("workflowitem.update");
+        cy.expect(isWorkflowtPermissionSet).to.equal(true);
       });
     });
   });

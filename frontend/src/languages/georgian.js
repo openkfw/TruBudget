@@ -42,6 +42,7 @@ const ka = {
     done: "შესრულებულია",
     edit: "რედაქტირება",
     edited: "რედაქტირებულია",
+    email: "Email",
     finish: "დასრულება",
     grant: "მინიჭება",
     history_end: "Last event reached",
@@ -115,6 +116,10 @@ const ka = {
     user_created: "მომხმარებელი წარმატებით შეიქმნა",
     username_invalid: "არასწორი პაროლი",
     users: "მომხმარებლები"
+  },
+
+  userProfile: {
+    invalid_email_address: "ელექტრონული მისამართი"
   },
 
   nodesDashboard: {
@@ -333,6 +338,7 @@ const ka = {
     done_workflow: "Workflow item-ის {0} სტატუსი შეიცვალა და დასრულებულია",
     edit_transaction: "ტრანზაქცია {0} რედაქტირებულია",
     edit_workflow: "Workflow item-ი {0} რედაქტირებულია",
+    email_saved: "Email {0} შენახული",
     no_permissions: "(დამატებითი დეტალების სანახავად არ ფლობთ ნებართვას)",
     notification_card_text:
       "გთხოვთ ქვემოთ იხილოთ თქვენი შეტყობინებები. These display action items or information items to be dealt with.",
@@ -360,6 +366,7 @@ const ka = {
     read_all: "წაიკითხეთ ყველა",
     review_transaction: "ტრანზაქცია {0} გადმოგეგზავნათ განსახილველად",
     review_workflow: "Workflow item-ი {0} გადმოგეგზავნათ განსახილველად",
+    save_email_error: "Email შენახვა ვერ მოხერხდა",
     subproject_archive: "ქვეპროექტი {0} დაარქივებულია",
     subproject_assign: "ქვეპროექტი {0} გადმოგეგზავნათ განსახილველად",
     subproject_assigned: "ქვეპროექტი {0} გადმოგეგზავნათ განსახილველად",

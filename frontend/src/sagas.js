@@ -3,7 +3,7 @@ import _isEmpty from "lodash/isEmpty";
 import { all, call, cancel, delay, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
 import Api from "./api.js";
 import { getExchangeRates } from "./getExchangeRates";
-import { fromAmountString } from "./helper.js";
+import { formatString, fromAmountString } from "./helper.js";
 import strings from "./localizeStrings";
 import {
   GET_EXCHANGE_RATES,
@@ -24,6 +24,12 @@ import {
 import { CLEAR_DOCUMENTS, VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS } from "./pages/Documents/actions";
 import { cancelDebounce, hideLoadingIndicator, showLoadingIndicator } from "./pages/Loading/actions.js";
 import {
+  CHECK_EMAIL_SERVICE,
+  CHECK_EMAIL_SERVICE_FAILURE,
+  CHECK_EMAIL_SERVICE_SUCCESS,
+  FETCH_EMAIL_ADDRESS,
+  FETCH_EMAIL_ADDRESS_FAILURE,
+  FETCH_EMAIL_ADDRESS_SUCCESS,
   FETCH_ENVIRONMENT,
   FETCH_ENVIRONMENT_SUCCESS,
   FETCH_USER,
@@ -47,7 +53,9 @@ import {
   FETCH_VERSIONS,
   FETCH_VERSIONS_SUCCESS,
   RESTORE_BACKUP,
-  RESTORE_BACKUP_SUCCESS
+  RESTORE_BACKUP_SUCCESS,
+  SAVE_EMAIL_ADDRESS,
+  SAVE_EMAIL_ADDRESS_SUCCESS
 } from "./pages/Navbar/actions.js";
 import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
@@ -80,12 +88,12 @@ import {
   FETCH_ALL_PROJECTS,
   FETCH_ALL_PROJECTS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS,
+  FETCH_PROJECT_PERMISSIONS_FAILURE,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
   GRANT_PERMISSION,
   GRANT_PERMISSION_SUCCESS,
   REVOKE_PERMISSION,
-  REVOKE_PERMISSION_SUCCESS,
-  FETCH_PROJECT_PERMISSIONS_FAILURE
+  REVOKE_PERMISSION_SUCCESS
 } from "./pages/Overview/actions";
 import {
   ASSIGN_PROJECT,
@@ -101,14 +109,14 @@ import {
   FETCH_NEXT_PROJECT_HISTORY_PAGE,
   FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_SUBPROJECT_PERMISSIONS,
+  FETCH_SUBPROJECT_PERMISSIONS_FAILURE,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   GRANT_SUBPROJECT_PERMISSION,
   GRANT_SUBPROJECT_PERMISSION_SUCCESS,
   LIVE_UPDATE_PROJECT,
   REVOKE_SUBPROJECT_PERMISSION,
   REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
-  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
-  FETCH_SUBPROJECT_PERMISSIONS_FAILURE
+  SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT
 } from "./pages/SubProjects/actions";
 import {
   ADD_USER,
@@ -152,6 +160,7 @@ import {
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_WORKFLOWITEM_PERMISSIONS,
+  FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
@@ -166,8 +175,7 @@ import {
   STORE_WORKFLOWACTIONS,
   SUBMIT_BATCH_FOR_WORKFLOW,
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
-  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
-  FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS
 } from "./pages/Workflows/actions";
 import {
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
@@ -180,6 +188,9 @@ const api = new Api();
 // SELECTORS
 const getSelfId = state => {
   return state.getIn(["login", "id"]);
+};
+const getEmailAddress = state => {
+  return state.getIn(["login", "emailAddress"]);
 };
 const getJwt = state => state.toJS().login.jwt;
 const getEnvironment = state => {
@@ -1983,6 +1994,82 @@ function* exportDataSaga() {
     }
   );
 }
+function* saveEmailAddressSaga({ emailAddress }) {
+  yield execute(
+    function*() {
+      const id = yield select(getSelfId);
+      const currentEmailAddress = yield select(getEmailAddress);
+      if (currentEmailAddress.length > 0) {
+        yield callApi(api.updateEmailAddress, id, emailAddress);
+      } else {
+        yield callApi(api.insertEmailAddress, id, emailAddress);
+      }
+      yield put({
+        type: SAVE_EMAIL_ADDRESS_SUCCESS
+      });
+      yield put({
+        type: SNACKBAR_MESSAGE,
+        message: formatString(strings.notification.email_saved, emailAddress)
+      });
+      yield put({
+        type: SHOW_SNACKBAR,
+        show: true,
+        isError: false
+      });
+      yield fetchEmailAddressSaga();
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: SNACKBAR_MESSAGE,
+        message: strings.notification.save_email_error
+      });
+      yield put({
+        type: SHOW_SNACKBAR,
+        show: true,
+        isError: true
+      });
+    }
+  );
+}
+
+function* fetchEmailAddressSaga() {
+  yield execute(
+    function*() {
+      const id = yield select(getSelfId);
+      const data = yield callApi(api.getEmailAddress, id);
+      yield put({
+        type: FETCH_EMAIL_ADDRESS_SUCCESS,
+        emailAddress: data.user.emailAddress
+      });
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: FETCH_EMAIL_ADDRESS_FAILURE,
+        error
+      });
+    }
+  );
+}
+
+function* checkEmailServiceSaga() {
+  yield execute(
+    function*() {
+      yield callApi(api.checkEmailService);
+      yield put({
+        type: CHECK_EMAIL_SERVICE_SUCCESS
+      });
+    },
+    true,
+    function*(error) {
+      yield put({
+        type: CHECK_EMAIL_SERVICE_FAILURE,
+        error
+      });
+    }
+  );
+}
 
 export default function* rootSaga() {
   try {
@@ -2073,7 +2160,12 @@ export default function* rootSaga() {
       yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),
       yield takeLeading(GET_PROJECT_KPIS, getProjectKPIsSaga),
       yield takeLeading(GET_EXCHANGE_RATES, getExchangeRatesSaga),
-      yield takeLeading(EXPORT_DATA, exportDataSaga)
+      yield takeLeading(EXPORT_DATA, exportDataSaga),
+
+      //Email
+      yield takeEvery(SAVE_EMAIL_ADDRESS, saveEmailAddressSaga),
+      yield takeEvery(FETCH_EMAIL_ADDRESS, fetchEmailAddressSaga),
+      yield takeEvery(CHECK_EMAIL_SERVICE, checkEmailServiceSaga)
     ]);
   } catch (error) {
     // eslint-disable-next-line no-console
