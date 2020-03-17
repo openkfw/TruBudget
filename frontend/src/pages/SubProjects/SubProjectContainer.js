@@ -111,19 +111,17 @@ class SubProjectContainer extends Component {
             closeProject={this.closeProject}
             canClose={canClose}
           />
-          <div data-test="sub-projects">
-            <SubProjects
-              {...this.props}
-              projectId={projectId}
-              canCreateSubProject={canCreateSubproject}
-              storeSearchTerm={this.props.storeSubSearchTerm}
-              storeSearchBarDisplayed={this.props.storeSubSearchBarDisplayed}
-              searchTerm={this.props.searchTerm}
-              searchBarDisplayed={this.props.searchBarDisplayed}
-              subProjects={this.props.filteredSubProjects}
-              highlightingRegex={this.props.highlightingRegex}
-            />
-          </div>
+          <SubProjects
+            {...this.props}
+            projectId={projectId}
+            canCreateSubProject={canCreateSubproject}
+            storeSearchTerm={this.props.storeSubSearchTerm}
+            storeSearchBarDisplayed={this.props.storeSubSearchBarDisplayed}
+            searchTerm={this.props.searchTerm}
+            searchBarDisplayed={this.props.searchBarDisplayed}
+            subProjects={this.props.filteredSubProjects}
+            highlightingRegex={this.props.highlightingRegex}
+          />
           <ProjectHistoryDrawer projectId={projectId} />
           {this.props.permissionDialogShown ? (
             <SubprojectPermissionsContainer projectId={projectId} subProjects={this.props.filteredSubProjects} />

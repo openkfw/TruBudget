@@ -279,15 +279,17 @@ describe("Subproject Search", function() {
     cy.login();
     cy.visit(`/projects`);
   });
+
   it("Check regex highlighting", function() {
     cy.visit(`/projects/${projectWithTag.id}`);
-    cy.get("[data-test=toggle-searchbar]")
-      .should("be.visible")
-      .last()
+    // Type into search bar
+    cy.get("[data-test=sub-projects]")
+      .find("[data-test=search-bar]")
+      .find("[data-test=toggle-searchbar]")
       .click();
-    cy.get("[data-test=search-input]")
-      .should("be.visible")
-      .type("SearchTest");
+    cy.get("[data-test=search-input]").should("be.visible");
+    cy.get("[data-test=search-input] input").type("SearchTest");
+    // Check highlighting
     cy.get("[data-test=highlighted-displayname]")
       .find("mark")
       .contains("SearchTest");
