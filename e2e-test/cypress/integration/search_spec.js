@@ -279,17 +279,16 @@ describe("Subproject Search", function() {
     cy.login();
     cy.visit(`/projects`);
   });
-
   it("Check regex highlighting", function() {
     cy.visit(`/projects/${projectWithTag.id}`);
-    // Type into search bar
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=toggle-searchbar]")
+      .wait(15000)
       .click();
-    cy.get("[data-test=search-input]").should("be.visible");
-    cy.get("[data-test=search-input] input").type("SearchTest");
-    // Check highlighting
+    cy.get("[data-test=search-input]")
+      .should("be.visible")
+      .type("SearchTest");
     cy.get("[data-test=highlighted-displayname]")
       .find("mark")
       .contains("SearchTest");
@@ -304,7 +303,9 @@ describe("Subproject Search", function() {
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=toggle-searchbar]")
+      .wait(15000)
       .click();
+
     cy.get("[data-test=search-input]").should("be.visible");
     cy.get("[data-test=search-input] input").type("foo");
     // Close search bar
@@ -333,7 +334,7 @@ describe("Subproject Search", function() {
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=toggle-searchbar]")
-      .should("be.visible")
+      .wait(15000)
       .click();
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
@@ -352,6 +353,7 @@ describe("Subproject Search", function() {
       .find("[data-test=search-bar]")
       .find("[data-test=toggle-searchbar]")
       .should("be.visible")
+      .wait(15000)
       .click();
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
@@ -381,6 +383,7 @@ describe("Subproject Search", function() {
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=toggle-searchbar]")
+      .wait(15000)
       .click();
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
@@ -401,7 +404,7 @@ describe("Subproject Search", function() {
   });
 
   it("Search bar is closed and reset when clicking on 'Main' breadcrumb", function() {
-    cy.visit(`/projects/19246e5b0b1efd745586686a34f25b04`);
+    cy.visit(`/projects/${projectWithTag.id}`);
     // Type into search bar
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
@@ -418,15 +421,15 @@ describe("Subproject Search", function() {
     // Navigate via Main breadcrumb
     cy.get("[data-test=breadcrumb-Main]").click();
     // Go back to subproject view
-    cy.visit(`/projects/19246e5b0b1efd745586686a34f25b04`);
+    cy.visit(`/projects/${projectWithTag.id}`);
     cy.get("[data-test=sub-projects]")
-      .find("[data-test=search-bar]") // WTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
       .should("not.be.visible");
   });
 
   it("Search bar is closed and reset when clicking on 'Projects' breadcrumb", function() {
-    cy.visit(`/projects/19246e5b0b1efd745586686a34f25b04`);
+    cy.visit(`/projects/${projectWithTag.id}`);
     // Type into search bar
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
@@ -443,7 +446,7 @@ describe("Subproject Search", function() {
     // Navigate via Projects breadcrumb
     cy.get("[data-test=breadcrumb-Projects]").click();
     // Go back to subproject view
-    cy.visit(`/projects/19246e5b0b1efd745586686a34f25b04`);
+    cy.visit(`/projects/${projectWithTag.id}`);
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")

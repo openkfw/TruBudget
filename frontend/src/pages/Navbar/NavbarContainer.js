@@ -17,7 +17,6 @@ import {
   storeSearchTerm,
   toggleSidebar
 } from "./actions";
-import FlyInNotifications from "../Notifications/FlyInNotifications";
 import Navbar from "./Navbar";
 import { convertToSearchBarString } from "../../helper";
 
