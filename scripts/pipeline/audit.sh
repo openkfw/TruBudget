@@ -1,4 +1,5 @@
 #!/bin/bash
+# DEPRECATED - use npm audit --audit-level instead
 set -e
 
 if [[ "$TRAVIS_EVENT_TYPE" = "cron" ]] || (git diff --name-only "$TRAVIS_COMMIT_RANGE" | grep -q "$PROJECT_NAME/");
