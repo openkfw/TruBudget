@@ -24,9 +24,8 @@ stages:
   <<: *node-env
   before_script:
     - cd $PROJECT_NAME
-    - chmod +x ../scripts/pipeline/audit.sh
   script:
-    - ../scripts/pipeline/audit.sh
+    - npm audit --audit-level=high
 
 .node-unit-test: &node-unit-test
   stage: test
