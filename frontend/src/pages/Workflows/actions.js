@@ -575,6 +575,7 @@ export function closeSubproject(projectId, subprojectId, showLoading = false) {
     showLoading
   };
 }
+
 export function closeWorkflowItem(projectId, subprojectId, workflowitemId, showLoading = false) {
   return {
     type: CLOSE_WORKFLOWITEM,

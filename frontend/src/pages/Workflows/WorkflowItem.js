@@ -388,6 +388,7 @@ const renderActionButtons = (
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+          data-test="close-workflowitem"
         />
       </div>
     </div>

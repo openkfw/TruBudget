@@ -281,8 +281,14 @@ const en = {
     no_permission_warning: "Warning: You don't have permission to execute all listed actions!",
     permissions_required: "Permissions required",
     permissions_text: `{0} needs additional permissions to view {1} "{2}".`,
+    project_close: "Close project",
+    project_close_text: "Are you sure, you want to close this project?",
+    subproject_close: "Close subproject",
+    subproject_close_text: "Are you sure, you want to close this subproject?",
     update_permissions_dialog_text: "Do you really want to update permissions?",
-    user_group: "User/Group"
+    user_group: "User/Group",
+    workflowitem_close: "Close workflowitem",
+    workflowitem_close_text: "Are you sure, you want to close this workflowitem?"
   },
 
   intents: {

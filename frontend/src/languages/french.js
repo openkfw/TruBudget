@@ -281,8 +281,14 @@ const fr = {
     no_permission_warning: "Avertissement: Vous n'êtes pas autorisé à exécuter toutes les actions répertoriées!",
     permissions_required: "Autorisations requises",
     permissions_text: `{0} a besoin d'autorisations supplémentaires pour voir {1} "{2}".`,
+    project_close: "Fermer projet",
+    project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
+    subproject_close: "Fermer sous-projet",
+    subproject_close_text: "Vous êtes sûr de vouloir fermer ce sous-projet?",
     update_permissions_dialog_text: "Voulez-vous vraiment mettre à jour les autorisations?",
-    user_group: "Utilisateur/Groupe"
+    user_group: "Utilisateur/Groupe",
+    workflowitem_close: "Fermer workflow item",
+    workflowitem_close_text: "Vous êtes sûr de vouloir fermer ce poste de travail?"
   },
 
   intents: {

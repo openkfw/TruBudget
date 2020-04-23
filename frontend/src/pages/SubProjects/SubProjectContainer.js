@@ -1,11 +1,16 @@
+import _isEqual from "lodash/isEqual";
+import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
+import { convertToSearchBarString } from "../../helper";
 import { canAssignProject, canCloseProject, canCreateSubProject } from "../../permissions";
 import globalStyles from "../../styles";
+import WebWorker from "../../WebWorker.js";
 import { openAnalyticsDialog } from "../Analytics/actions";
 import AdditionalInfo from "../Common/AdditionalInfo";
+import worker from "../Common/filterProjects.worker.js";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
@@ -20,10 +25,10 @@ import {
   showSubProjectAdditionalData,
   showSubprojectDialog,
   showSubProjectPermissions,
-  storeSubSearchTerm,
-  storeSubSearchBarDisplayed,
   storeFilteredSubProjects,
   storeSubHighlightingRegex,
+  storeSubSearchBarDisplayed,
+  storeSubSearchTerm,
   storeSubSearchTermArray
 } from "./actions";
 import ProjectDetails from "./ProjectDetails";
@@ -31,11 +36,6 @@ import ProjectHistoryDrawer from "./ProjectHistoryDrawer";
 import SubprojectDialogContainer from "./SubprojectDialogContainer";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import SubProjects from "./SubProjects";
-import { convertToSearchBarString } from "../../helper";
-import queryString from "query-string";
-import WebWorker from "../../WebWorker.js";
-import worker from "../Common/filterProjects.worker.js";
-import _isEqual from "lodash/isEqual";
 
 class SubProjectContainer extends Component {
   constructor(props) {
