@@ -167,7 +167,8 @@ const ka = {
     project_roles: "ფუნქციები",
     project_thumbnail: "Thumbnail",
     project_title_description: "პროექტის სახელწოდება",
-    project_title: "პროექტის სათაური"
+    project_title: "პროექტის სათაური",
+    project_searchtext: "პროექტების ძებნა"
   },
 
   subproject: {
@@ -185,7 +186,8 @@ const ka = {
     subproject_preview: "Subproject preview",
     subproject_select_button: "არჩევა",
     subproject_title_description: "ქვეპროექტის სახელწოდება",
-    subproject_title: "ქვეპროექტის სათაური"
+    subproject_title: "ქვეპროექტის სათაური",
+    subproject_searchtext: "ქვეპროექტების ძებნა"
   },
 
   workflow: {

@@ -3,12 +3,11 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
+import dayjs from "dayjs";
 import React from "react";
 import _isEmpty from "lodash/isEmpty";
-
 import { formatString } from "../../helper";
 import { dateFormat } from "../../helper";
-import dayjs from "dayjs";
 import strings from "../../localizeStrings";
 
 const styles = {

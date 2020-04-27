@@ -19,7 +19,7 @@ import {
   TOGGLE_SIDEBAR,
   SET_VALID_EMAIL_ADDRESS_INPUT
 } from "./actions";
-import { convertToURLQuery } from "./convertSearchTerm";
+import { convertToURLQuery } from "../../helper";
 
 const defaultState = fromJS({
   showSidebar: false,

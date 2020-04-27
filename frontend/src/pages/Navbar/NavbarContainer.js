@@ -17,8 +17,8 @@ import {
   storeSearchTerm,
   toggleSidebar
 } from "./actions";
-import { convertToSearchBarString } from "./convertSearchTerm";
 import Navbar from "./Navbar";
+import { convertToSearchBarString } from "../../helper";
 
 class NavbarContainer extends Component {
   componentDidMount() {
@@ -39,7 +39,7 @@ class NavbarContainer extends Component {
 
   render() {
     return (
-      <div>
+      <div data-test="navigation-bar">
         <Navbar {...this.props} unreadNotifications={this.props.unreadNotificationCount} />
         <FlyInNotifications
           history={this.props.history}

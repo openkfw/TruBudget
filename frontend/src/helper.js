@@ -152,3 +152,14 @@ export const isEmailAddressValid = emailAddress => {
   const validEmailAddressRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
   return validEmailAddressRegex.test(emailAddress);
 };
+
+export const convertToURLQuery = searchBarString => {
+  return searchBarString
+    .replace(/[:]/g, "=")
+    .replace(/[ ]/g, "&")
+    .replace(/[&]{2,}/g, "&");
+};
+
+export const convertToSearchBarString = urlQueryString => {
+  return urlQueryString.replace(/[=]/g, ":").replace(/[&]/g, " ");
+};

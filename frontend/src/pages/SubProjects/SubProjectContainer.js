@@ -19,13 +19,23 @@ import {
   showProjectAssignees,
   showSubProjectAdditionalData,
   showSubprojectDialog,
-  showSubProjectPermissions
+  showSubProjectPermissions,
+  storeSubSearchTerm,
+  storeSubSearchBarDisplayed,
+  storeFilteredSubProjects,
+  storeSubHighlightingRegex,
+  storeSubSearchTermArray
 } from "./actions";
 import ProjectDetails from "./ProjectDetails";
 import ProjectHistoryDrawer from "./ProjectHistoryDrawer";
 import SubprojectDialogContainer from "./SubprojectDialogContainer";
 import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
 import SubProjects from "./SubProjects";
+import { convertToSearchBarString } from "../../helper";
+import queryString from "query-string";
+import WebWorker from "../../WebWorker.js";
+import worker from "../Common/filterProjects.worker.js";
+import _isEqual from "lodash/isEqual";
 
 class SubProjectContainer extends Component {
   constructor(props) {
@@ -37,6 +47,40 @@ class SubProjectContainer extends Component {
     this.props.setSelectedView(this.projectId, "project");
     this.props.fetchAllProjectDetails(this.projectId, true);
     this.props.fetchUser();
+    // Get Searchword from URL if available
+    if (this.props.location.search) {
+      const queryParameter = queryString.parse(this.props.location.search);
+      const searchTermString = convertToSearchBarString(queryString.stringify(queryParameter));
+      this.props.storeSubSearchTerm(searchTermString);
+      this.props.storeSubSearchBarDisplayed(true);
+    }
+    this.worker = new WebWorker(worker);
+
+    // Listen for postmessage from worker
+    this.worker.addEventListener("message", event => {
+      const filteredSubProjects = event.data ? event.data.filteredProjects : this.props.subProjects;
+      const highlightingRegex = event.data.highlightingRegex;
+      const searchTerms = event.data.searchTerms;
+      this.props.storeFilteredSubProjects(filteredSubProjects);
+      this.props.storeSubHighlightingRegex(highlightingRegex);
+      this.props.storeSubSearchTermArray(searchTerms);
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    const searchTermChanges = this.props.searchTerm !== prevProps.searchTerm;
+    const projectsChange = !_isEqual(this.props.subProjects, prevProps.subProjects);
+
+    // Start searching
+    if (this.props.searchTerm && (searchTermChanges || projectsChange)) {
+      this.worker.postMessage({ projects: this.props.subProjects, searchTerm: this.props.searchTerm });
+    }
+    // Reset searchbar
+    if (!this.props.searchTerm && prevProps.searchTerm) {
+      this.props.storeFilteredSubProjects(this.props.subProjects);
+      this.props.storeSubHighlightingRegex("");
+      this.props.storeSubSearchTermArray([]);
+    }
   }
 
   closeProject = () => {
@@ -67,13 +111,23 @@ class SubProjectContainer extends Component {
             closeProject={this.closeProject}
             canClose={canClose}
           />
-          <SubProjects {...this.props} projectId={projectId} canCreateSubProject={canCreateSubproject} />
+          <SubProjects
+            {...this.props}
+            projectId={projectId}
+            canCreateSubProject={canCreateSubproject}
+            storeSearchTerm={this.props.storeSubSearchTerm}
+            storeSearchBarDisplayed={this.props.storeSubSearchBarDisplayed}
+            searchTerm={this.props.searchTerm}
+            searchBarDisplayed={this.props.searchBarDisplayed}
+            subProjects={this.props.filteredSubProjects}
+            highlightingRegex={this.props.highlightingRegex}
+          />
           <ProjectHistoryDrawer projectId={projectId} />
           {this.props.permissionDialogShown ? (
-            <SubprojectPermissionsContainer projectId={projectId} subProjects={this.props.subProjects} />
+            <SubprojectPermissionsContainer projectId={projectId} subProjects={this.props.filteredSubProjects} />
           ) : null}
           <AdditionalInfo
-            resources={this.props.subProjects}
+            resources={this.props.filteredSubProjects}
             isAdditionalDataShown={this.props.isSubProjectAdditionalDataShown}
             hideAdditionalData={this.props.hideSubProjectAdditionalData}
             {...this.props}
@@ -90,7 +144,6 @@ const mapDispatchToProps = dispatch => {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
     liveUpdate: projectId => dispatch(liveUpdateProject(projectId)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
-
     openHistory: () => {
       dispatch(openHistory());
     },
@@ -104,7 +157,12 @@ const mapDispatchToProps = dispatch => {
     showSubProjectPermissions: (id, displayName) => dispatch(showSubProjectPermissions(id, displayName)),
     showSubProjectAdditionalData: id => dispatch(showSubProjectAdditionalData(id)),
     hideSubProjectAdditionalData: () => dispatch(hideSubProjectAdditionalData()),
-    openAnalyticsDialog: () => dispatch(openAnalyticsDialog())
+    openAnalyticsDialog: () => dispatch(openAnalyticsDialog()),
+    storeSubSearchTerm: subSearchTerm => dispatch(storeSubSearchTerm(subSearchTerm)),
+    storeSubSearchBarDisplayed: subSearchBarDisplayed => dispatch(storeSubSearchBarDisplayed(subSearchBarDisplayed)),
+    storeFilteredSubProjects: filteredSubProjects => dispatch(storeFilteredSubProjects(filteredSubProjects)),
+    storeSubHighlightingRegex: highlightingRegex => dispatch(storeSubHighlightingRegex(highlightingRegex)),
+    storeSubSearchTermArray: searchTerms => dispatch(storeSubSearchTermArray(searchTerms))
   };
 };
 
@@ -120,6 +178,7 @@ const mapStateToProps = state => {
     projectProjectedBudgets: state.getIn(["detailview", "projectProjectedBudgets"]),
     projectTags: state.getIn(["detailview", "projectTags"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
+    filteredSubProjects: state.getIn(["detailview", "filteredSubProjects"]),
     showProjectAssignees: state.getIn(["detailview", "showProjectAssignees"]),
     showHistory: state.getIn(["notifications", "showHistory"]),
     loggedInUser: state.getIn(["login", "loggedInUser"]),
@@ -130,7 +189,11 @@ const mapStateToProps = state => {
     isSubProjectAdditionalDataShown: state.getIn(["detailview", "isSubProjectAdditionalDataShown"]),
     idForInfo: state.getIn(["detailview", "idForInfo"]),
     isRoot: state.getIn(["navbar", "isRoot"]),
-    permissionDialogShown: state.getIn(["detailview", "showSubProjectPermissions"])
+    permissionDialogShown: state.getIn(["detailview", "showSubProjectPermissions"]),
+    searchTerm: state.getIn(["detailview", "searchTerm"]),
+    searchBarDisplayed: state.getIn(["detailview", "searchBarDisplayed"]),
+    highlightingRegex: state.getIn(["detailview", "highlightingRegex"]),
+    searchTerms: state.getIn(["detailview", "searchTerms"])
   };
 };
 
