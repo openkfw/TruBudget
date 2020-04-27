@@ -123,7 +123,8 @@ const de = {
     project_roles: "Roles",
     project_thumbnail: "German: Thumbnail",
     project_title: "Project title",
-    project_title_description: "Name of the project"
+    project_title_description: "Name of the project",
+    project_searchtext: "Projekte durchsuchen"
   },
 
   subproject: {
@@ -141,7 +142,8 @@ const de = {
     subproject_edit_title: "German: Edit Subproject",
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",
-    subproject_title_description: "Name of the sub-project"
+    subproject_title_description: "Name of the sub-project",
+    subproject_searchtext: "Subprojekte durchsuchen"
   },
 
   workflow: {

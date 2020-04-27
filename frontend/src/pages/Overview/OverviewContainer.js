@@ -35,7 +35,6 @@ class OverviewContainer extends Component {
       this.props.storeHighlightingRegex(highlightingRegex);
       this.props.storeSearchTermArray(searchTerms);
     });
-
     this.props.fetchAllProjects(true);
   }
 

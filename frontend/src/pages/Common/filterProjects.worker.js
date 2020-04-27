@@ -25,7 +25,7 @@ export default () => {
       // Only call functions when searching for it explicitly
       if (searchedDisplayNames.length !== 0) hasDisplayName = includesDisplayName(project, searchedDisplayNames);
       if (searchedStatus.length !== 0) hasStatus = includesStatus(project, searchedStatus);
-      if (searchedTags.length !== 0) hasTag = includesTag(project, searchedTags);
+      if (searchedTags && searchedTags.length !== 0) hasTag = includesTag(project, searchedTags);
       if (searchTermsWithoutPrefix.length !== 0) hasSearchTerm = includesSearchTerm(project, searchTermsWithoutPrefix);
       return hasDisplayName && hasStatus && hasTag && hasSearchTerm;
     });
@@ -51,7 +51,9 @@ export default () => {
       return (
         project.data.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.data.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.data.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        (project.data.tags !== undefined
+          ? project.data.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+          : false)
       );
     });
   }

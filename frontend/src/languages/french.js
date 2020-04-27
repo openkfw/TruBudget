@@ -125,7 +125,8 @@ const fr = {
     project_roles: "Rôles danse le projet",
     project_thumbnail: "Vignette",
     project_title_description: "Description du titre du projet",
-    project_title: "Titre de projet"
+    project_title: "Titre de projet",
+    project_searchtext: "Recherche de projets"
   },
 
   subproject: {
@@ -143,7 +144,8 @@ const fr = {
     subproject_preview: "Aperçu de la composante",
     subproject_select_button: "Sélectionnez",
     subproject_title_description: "Titre de la composante",
-    subproject_title: "Composante"
+    subproject_title: "Composante",
+    subproject_searchtext: "Recherche de sous-projets"
   },
 
   workflow: {

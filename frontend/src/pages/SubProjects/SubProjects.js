@@ -10,6 +10,7 @@ import SubProjectTable from "./SubProjectTable";
 const SubProjects = props => {
   return (
     <div
+      data-test="sub-projects"
       style={{
         position: "relative",
         width: "100%"
