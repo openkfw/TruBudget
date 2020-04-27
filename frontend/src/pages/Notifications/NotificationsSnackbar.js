@@ -4,13 +4,15 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 import IconButton from "@material-ui/core/IconButton";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ErrorIcon from "@material-ui/icons/Error";
+import WarningRoundedIcon from "@material-ui/icons/WarningRounded";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 
 const variantIcon = {
   success: CheckCircleIcon,
-  error: ErrorIcon
+  error: ErrorIcon,
+  warning: WarningRoundedIcon
 };
 
 const styles = theme => ({
@@ -19,6 +21,9 @@ const styles = theme => ({
   },
   error: {
     backgroundColor: theme.palette.error.main
+  },
+  warning: {
+    backgroundColor: theme.palette.warning
   },
 
   icon: {
@@ -43,7 +48,7 @@ const ContentWrapper = props => {
       className={classNames(classes[variant], className)}
       aria-describedby="client-snackbar"
       message={
-        <span id="client-snackbar" className={classes.message}>
+        <span id="client-snackbar" data-test="client-snackbar" className={classes.message}>
           <Icon className={classNames(classes.icon, classes.iconVariant)} />
           {message}
         </span>
@@ -65,13 +70,14 @@ const ContentWrapper = props => {
 const SnackbarContentWrapper = withStyles(styles)(ContentWrapper);
 
 const NotificationsSnackbar = props => {
+  var snackbarVariant = "error";
+  if (!props.snackbarError) {
+    snackbarVariant = props.snackbarWarning ? "warning" : "success";
+  }
+
   return (
     <Snackbar open={props.showSnackbar} autoHideDuration={4000} onClose={props.closeSnackbar}>
-      <SnackbarContentWrapper
-        variant={props.snackbarError ? "error" : "success"}
-        message={props.snackbarMessage}
-        onClose={props.closeSnackbar}
-      />
+      <SnackbarContentWrapper variant={snackbarVariant} message={props.snackbarMessage} onClose={props.closeSnackbar} />
     </Snackbar>
   );
 };

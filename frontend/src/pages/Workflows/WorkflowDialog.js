@@ -30,8 +30,9 @@ const handleCreate = props => {
     documents
   );
   storeSnackbarMessage(
-    strings.common.created + " " + strings.common.workflowitem + " " + shortenedDisplayName(displayName)
+    strings.formatString(strings.workflow.workflow_permissions_warning, shortenedDisplayName(displayName))
   );
+
   onDialogCancel();
 };
 

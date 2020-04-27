@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Added search feature for subprojects [#422](https://github.com/openkfw/TruBudget/issues/422)
+- Show no permissions assigned warning on subproject/workflowitem create [#441](https://github.com/openkfw/TruBudget/issues/441)
 
 <!-- ### Changed -->
 

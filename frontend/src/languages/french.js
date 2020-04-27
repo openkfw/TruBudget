@@ -141,6 +141,7 @@ const fr = {
     subproject_currency: "Devise la composante",
     subproject_edit_title: "Modifier la composante",
     subproject_permissions_title: "Définir les autorisations pour la composante",
+    subproject_permissions_warning: "Aucune autorisation n'a été accordée pour le sous-projet {0}",
     subproject_preview: "Aperçu de la composante",
     subproject_select_button: "Sélectionnez",
     subproject_title_description: "Titre de la composante",
@@ -183,6 +184,7 @@ const fr = {
     workflow_no_documents: "Pas de document",
     workflow_none: "blub",
     workflow_permissions_title: "Définir les autorisations pour l'élement du workflow",
+    workflow_permissions_warning: "Aucune autorisation n'a été attribuée pour l'élément du workflow {0}",
     workflow_redacted: "Expurgé",
     workflow_selection: "Vous avez sélectionné {0} éléments du workflow",
     workflow_submit_for_review: "Soumettre pour examen",
@@ -249,6 +251,7 @@ const fr = {
   },
 
   confirmation: {
+    assign_permissions: "Attribuer des autorisations",
     additional_permissions_dialog_text:
       "Des actions supplémentaires doivent être exécutées pour que les utilisateurs puissent également afficher toutes les ressources requises.",
     additional_permissions_required: "Autorisations supplémentaires requises",

@@ -183,6 +183,7 @@ const ka = {
     subproject_currency: "ქვეპროექტის ვალუტა",
     subproject_edit_title: "ქვეპროექტის რედაქტირება",
     subproject_permissions_title: "ქვეპროექტის უფლებამოსილებების განსაზღვრა",
+    subproject_permissions_warning: "ქვეპროექტისთვის არ არის გამოყოფილი ნებართვა {0}",
     subproject_preview: "Subproject preview",
     subproject_select_button: "არჩევა",
     subproject_title_description: "ქვეპროექტის სახელწოდება",
@@ -225,6 +226,7 @@ const ka = {
     workflow_no_documents: "არ შეიცავს დოკუმენტებს",
     workflow_none: "None",
     workflow_permissions_title: "Workflow item-თან დაკავშირებით უფლებამოსილების მინიჭება",
+    workflow_permissions_warning: "არ არის გამოყოფილი ნებართვა სამუშაო ნაკადის ნივთზე {0}",
     workflow_redacted: "Redacted",
     workflow_selection: "{0} Workflow item-ები არჩეულია",
     workflow_submit_for_review: "განსახილველად გადაგზავნა",
@@ -252,6 +254,7 @@ const ka = {
   },
 
   confirmation: {
+    assign_permissions: "მიანიჭეთ ნებართვები",
     additional_permissions_dialog_text:
       "Additional actions must be executed to ensure users are also able to view all required resources.",
     additional_permissions_required: "აუცილებელია დამატებითი ნებართვა",

@@ -16,6 +16,7 @@ import LaunchIcon from "@material-ui/icons/ZoomIn";
 import _isEmpty from "lodash/isEmpty";
 import Highlight from "react-highlighter";
 import React from "react";
+import StyledBadge from "../Common/StyledBadge";
 
 import { statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
@@ -119,7 +120,8 @@ const getTableEntries = ({
   highlightingRegex,
   theme,
   storeSubSearchTerm,
-  storeSubSearchBarDisplayed
+  storeSubSearchBarDisplayed,
+  idsPermissionsUnassigned
 }) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
     const { currency, status, description, displayName, id, projectedBudgets, additionalData } = data;
@@ -129,6 +131,8 @@ const getTableEntries = ({
     const redacted = displayName === null && _isEmpty(projectedBudgets);
     const visibleSubproject = canViewSubProjectSummary(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
+    const isBadgeHidden = idsPermissionsUnassigned.find(el => el === id) === undefined ? true : false;
+
     if (!redacted && visibleSubproject) {
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
@@ -171,13 +175,15 @@ const getTableEntries = ({
                 />
               </div>
               <div className={classes.button}>
-                <ActionButton
-                  notVisible={!canViewPermissions}
-                  onClick={() => showSubProjectPermissions(id, displayName)}
-                  title={strings.common.show_permissions}
-                  icon={<PermissionIcon />}
-                  data-test={"spp-button-" + index}
-                />
+                <StyledBadge color="secondary" variant="dot" invisible={isBadgeHidden} data-test={"warning-badge"}>
+                  <ActionButton
+                    notVisible={!canViewPermissions}
+                    onClick={() => showSubProjectPermissions(id, displayName)}
+                    title={isBadgeHidden ? strings.common.show_permissions : strings.confirmation.assign_permissions}
+                    icon={<PermissionIcon />}
+                    data-test={"spp-button-" + index}
+                  />
+                </StyledBadge>
               </div>
               <div className={classes.button}>
                 <ActionButton
@@ -202,6 +208,7 @@ const getTableEntries = ({
 };
 
 const SubProjectTable = ({
+  idsPermissionsUnassigned,
   classes,
   subProjects,
   history,
@@ -229,7 +236,8 @@ const SubProjectTable = ({
     highlightingRegex,
     theme,
     storeSubSearchTerm,
-    storeSubSearchBarDisplayed
+    storeSubSearchBarDisplayed,
+    idsPermissionsUnassigned
   });
   return (
     <Card>

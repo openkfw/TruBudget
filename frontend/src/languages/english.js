@@ -182,6 +182,7 @@ const en = {
     subproject_currency: "Subproject currency",
     subproject_edit_title: "Edit subproject",
     subproject_permissions_title: "Set permissions for subproject",
+    subproject_permissions_warning: "No permissions allocated for the subproject {0}",
     subproject_preview: "Subproject preview",
     subproject_select_button: "Select",
     subproject_title_description: "Name of the subproject",
@@ -224,6 +225,7 @@ const en = {
     workflow_no_documents: "No documents",
     workflow_none: "None",
     workflow_permissions_title: "Set permissions for workflow item",
+    workflow_permissions_warning: "No permissions allocated for the workflow item {0}",
     workflow_redacted: "Redacted",
     workflow_selection: "{0} workflow items are selected",
     workflow_submit_for_review: "Submit for Review",
@@ -251,6 +253,7 @@ const en = {
   },
 
   confirmation: {
+    assign_permissions: "Assign permissions",
     additional_permissions_dialog_text:
       "Additional actions must be executed to ensure users are also able to view all required resources.",
     additional_permissions_required: "Additional permissions required",
