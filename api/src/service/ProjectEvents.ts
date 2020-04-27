@@ -15,8 +15,6 @@ import { Item } from "./liststreamkeyitems";
 
 type ResourceType = "project" | "subproject" | "workflowitem";
 
-export type Permissions = { [key in Intent]?: string[] };
-
 const projectSelfKey = "self";
 
 interface NotificationResourceDescription {
@@ -263,19 +261,19 @@ async function fetchStreamItems(
     const streams = await multichainClient.streams();
     const streamItemLists = await Promise.all(
       streams
-        .filter(stream => stream.details.kind === "project")
-        .map(stream => stream.name)
-        .map(streamName =>
+        .filter((stream) => stream.details.kind === "project")
+        .map((stream) => stream.name)
+        .map((streamName) =>
           multichainClient
             .v2_readStreamItems(streamName, projectSelfKey)
-            .then(items =>
-              items.map(item => {
+            .then((items) =>
+              items.map((item) => {
                 // Make it possible to associate the "self" key to the actual project later on:
                 item.keys = [streamName, projectSelfKey];
                 return item;
               }),
             )
-            .catch(err => {
+            .catch((err) => {
               logger.error(
                 { error: err },
                 `Failed to fetch '${projectSelfKey}' stream item from project stream ${streamName}`,
@@ -283,7 +281,7 @@ async function fetchStreamItems(
               return null;
             }),
         ),
-    ).then(lists => lists.filter(isNotEmpty));
+    ).then((lists) => lists.filter(isNotEmpty));
     // Remove failed attempts and flatten into a single list of stream items:
     return streamItemLists.reduce((acc, x) => acc.concat(x), []);
   }

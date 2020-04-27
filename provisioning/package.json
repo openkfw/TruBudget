@@ -23,6 +23,6 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "nodemon": "^1.18.1"
+    "nodemon": "^2.0.3"
   }
 }
