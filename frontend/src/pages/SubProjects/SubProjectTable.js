@@ -190,7 +190,6 @@ const getTableEntries = ({
                   notVisible={!canViewSubProjectDetails(allowedIntents)}
                   onClick={() => {
                     storeSubSearchTerm("");
-                    storeSubSearchBarDisplayed(false);
                     history.push("/projects/" + location.pathname.split("/")[2] + "/" + id);
                   }}
                   title={strings.common.view}

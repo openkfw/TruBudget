@@ -91,14 +91,14 @@ describe("Subproject Search", function() {
     // Go into detail view
     cy.get("[data-test=subproject-view-details-0]").click();
     // Go back to subproject view
-    cy.visit(`/projects/${projectWithTag.id}`);
+    cy.get(`[data-test=breadcrumb-${projectWithTag.displayName}]`).click();
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
       .should("have.value", "");
   });
 
-  it("Search bar is empty when clicking on 'Main' breadcrumb", function() {
+  it("Search bar is empty and exists when clicking on 'Main' breadcrumb", function() {
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
@@ -118,7 +118,7 @@ describe("Subproject Search", function() {
       .should("have.value", "");
   });
 
-  it("Search bar is empty when clicking on 'Projects' breadcrumb", function() {
+  it("Search bar is empty and exists when clicking on 'Projects' breadcrumb", function() {
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
