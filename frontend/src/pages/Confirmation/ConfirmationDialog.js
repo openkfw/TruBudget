@@ -287,21 +287,30 @@ const ConfirmationDialog = props => {
           confirmButtonText = strings.common.grant + "/" + strings.common.revoke;
         }
         break;
-      case "project.close":
+      case "project.close": {
+        const dialogText = strings.confirmation.project_close_text;
+
         title = strings.confirmation.project_close;
-        content = <Typography>{strings.confirmation.project_close_text}</Typography>;
+        content = <Typography>{dialogText}</Typography>;
         confirmButtonText = strings.confirmation.project_close;
         break;
-      case "subproject.close":
+      }
+      case "subproject.close": {
+        const dialogText = strings.confirmation.subproject_close_text;
+
         title = strings.confirmation.subproject_close;
-        content = <Typography>{strings.confirmation.subproject_close_text}</Typography>;
+        content = <Typography>{dialogText}</Typography>;
         confirmButtonText = strings.confirmation.subproject_close;
         break;
-      case "workflowitem.close":
+      }
+      case "workflowitem.close": {
+        const dialogText = strings.confirmation.workflowitem_close_text;
+
         title = strings.confirmation.workflowitem_close;
-        content = <Typography>{strings.confirmation.workflowitem_close_text}</Typography>;
+        content = <Typography>{dialogText}</Typography>;
         confirmButtonText = strings.confirmation.workflowitem_close;
         break;
+      }
       default:
         title = "Not implemented confirmation";
         content = "Confirmation Dialog for " + intent + " is not implemented yet";

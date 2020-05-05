@@ -1,18 +1,22 @@
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { connect } from "react-redux";
+
 import { toJS } from "../../helper";
-import { fetchGroups } from "../Users/actions";
 import { fetchProjectPermissions, grantPermission, revokePermission } from "../Overview/actions";
 import {
   assignProject,
+  closeProject,
   fetchSubProjectPermissions,
   grantSubProjectPermission,
   revokeSubProjectPermission
 } from "../SubProjects/actions";
+import { fetchGroups } from "../Users/actions";
 import {
   assignSubproject,
   assignWorkflowItem,
+  closeSubproject,
+  closeWorkflowItem,
   fetchWorkflowItemPermissions,
   grantWorkflowItemPermission,
   revokeWorkflowItemPermission
@@ -104,7 +108,10 @@ class ConfirmationContainer extends React.Component {
       this.props.grantSubprojectPermission,
       this.props.revokeSubprojectPermission,
       this.props.grantWorkflowitemPermission,
-      this.props.revokeWorkflowitemPermission
+      this.props.revokeWorkflowitemPermission,
+      this.props.closeProject,
+      this.props.closeSubproject,
+      this.props.closeWorkflowItem
     );
   }
 
@@ -204,7 +211,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(
         revokeWorkflowItemPermission(pId, pName, sId, sName, wId, wName, permission, revokeeId, revokeeName, true)
       ),
-    additionalActionUpdateRequired: required => dispatch(additionalActionUpdateRequired(required))
+    additionalActionUpdateRequired: required => dispatch(additionalActionUpdateRequired(required)),
+    closeProject: pId => dispatch(closeProject(pId, true)),
+    closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
+    closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true))
   };
 };
 

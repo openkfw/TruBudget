@@ -8,7 +8,10 @@ export function executeOriginalActions(
   grantSubprojectPermission,
   revokeSubprojectPermission,
   grantWorkflowitemPermission,
-  revokeWorkflowitemPermission
+  revokeWorkflowitemPermission,
+  closeProject,
+  closeSubproject,
+  closeWorkflowItem
 ) {
   actions.forEach(action => {
     switch (action.intent) {
@@ -131,6 +134,24 @@ export function executeOriginalActions(
           assignee.id,
           assignee.displayName
         );
+        break;
+      }
+      case "project.close": {
+        const project = action.payload.project;
+        closeProject(project.id);
+        break;
+      }
+      case "subproject.close": {
+        const project = action.payload.project;
+        const subproject = action.payload.subproject;
+        closeSubproject(project.id, subproject.id);
+        break;
+      }
+      case "workflowitem.close": {
+        const project = action.payload.project;
+        const subproject = action.payload.subproject;
+        const workflowitem = action.payload.workflowitem;
+        closeWorkflowItem(project.id, subproject.id, workflowitem.id);
         break;
       }
       default:
