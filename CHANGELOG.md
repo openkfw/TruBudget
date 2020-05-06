@@ -9,11 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-### Added
-
-- Added search feature for subprojects [#422](https://github.com/openkfw/TruBudget/issues/422)
-- Show no permissions assigned warning on subproject/workflowitem create [#441](https://github.com/openkfw/TruBudget/issues/441)
-- Placeholders are being shown in case of an empty state [#31](https://github.com/openkfw/TruBudget/issues/31)
+<!-- ### Added -->
 
 <!-- ### Changed -->
 
@@ -26,6 +22,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Changed -->
 
 <!-- ### Security -->
+
+# [1.9.0] - 2020-05-06
+
+### Added
+
+- Added search feature for subprojects [#422](https://github.com/openkfw/TruBudget/issues/422)
+- Show no permissions assigned warning on subproject/workflowitem create [#441](https://github.com/openkfw/TruBudget/issues/441)
+- Placeholders are being shown in case of an empty state [#31](https://github.com/openkfw/TruBudget/issues/31)
 
 # [1.8.0] - 2019-03-16
 
@@ -442,7 +446,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.8.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.9.0...master
+[1.9.0]: https://github.com/openkfw/TruBudget/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/openkfw/TruBudget/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/openkfw/TruBudget/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/openkfw/TruBudget/compare/v1.5.0...v1.6.0
