@@ -12,8 +12,7 @@ const NotificationPage = ({
   fetchNotifications,
   notificationCount,
   notificationOffset,
-  currentPage,
-  isDataLoading
+  currentPage
 }) => {
   return (
     <div>
@@ -28,7 +27,6 @@ const NotificationPage = ({
         notificationCount={notificationCount}
         notificationOffset={notificationOffset}
         currentPage={currentPage}
-        isDataLoading={isDataLoading}
       />
     </div>
   );

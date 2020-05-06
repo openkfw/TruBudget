@@ -122,17 +122,15 @@ const SideNavCard = ({
       </List>
     ) : null}
     <List>
-      {groups.length ? <Subheader> {strings.users.groups} </Subheader> : null}
-      {groups.map(group => {
-        return (
-          <div key={group.groupId}>
-            <ListItem>
-              <ListItemText primary={group.displayName} secondary={strings.common.id + ": " + group.groupId} />
-            </ListItem>
-            <Divider />
-          </div>
-        );
-      })}
+      <Subheader> {strings.users.groups} </Subheader>
+      {groups.map(group => (
+        <div key={group.groupId}>
+          <ListItem>
+            <ListItemText primary={group.displayName} secondary={strings.common.id + ": " + group.groupId} />
+          </ListItem>
+          <Divider />
+        </div>
+      ))}
     </List>
     <div style={{ flexGrow: 1 }} />
     <VersionsTable versions={versions} />

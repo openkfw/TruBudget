@@ -147,12 +147,6 @@ const styles = {
   },
   setGrabCursor: {
     cursor: "-webkit-grab"
-  },
-  itemByDefault: {
-    marginLeft: "15vh",
-    marginRight: "10px",
-    marginTop: "15px",
-    marginBottom: "15px"
   }
 };
 

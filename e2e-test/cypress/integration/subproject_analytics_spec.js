@@ -145,7 +145,7 @@ describe("Subproject Analytics", function() {
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
-      .click({ force: true });
+      .click();
 
     cy.get("[data-test=number-chart-total-budget]").should("not.be.visible");
     cy.get("[data-test=projected-budget-table]").should("be.visible");

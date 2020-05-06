@@ -13,14 +13,12 @@ describe("Users/Groups Dashboard", function() {
     cy.login(testUserName, testUserNamePassword);
     cy.visit("/users");
   });
-
   beforeEach(function() {
     cy.login();
     cy.visit("/users");
   });
 
   it("Display the global permission dialog correctly", function() {
-    cy.reload();
     cy.get(`[data-test=edit-user-permissions-${testUserName}]`).click();
     cy.get("[data-test=global-permissions-dialog]").should("be.visible");
     cy.get("[data-test=cancel]").click();
@@ -49,10 +47,7 @@ describe("Users/Groups Dashboard", function() {
   });
 
   it("After clicking 'cancel', the selection is not adopted", function() {
-    cy.get(`[data-test=user-${testUserName}]`).should("be.visible");
-    cy.get(`[data-test=edit-user-permissions-${testUserName}]`)
-      .should("be.visible")
-      .click();
+    cy.get(`[data-test=edit-user-permissions-${testUserName}]`).click();
     cy.get("[data-test=global-permissions-dialog]").should("be.visible");
 
     cy.get("[data-test='permission-global.createUser'] input").should("not.be.checked");

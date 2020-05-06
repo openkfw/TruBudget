@@ -23,12 +23,11 @@ import strings from "../../localizeStrings";
 import {
   canUpdateSubProject,
   canViewSubProjectDetails,
-  canViewSubProjectPermissions,
-  canViewSubProjectSummary
+  canViewSubProjectSummary,
+  canViewSubProjectPermissions
 } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
 import SubProjectSearch from "./SubProjectSearch";
-import SubProjectEmptyState from "./SubprojectEmptyState";
 
 const styles = {
   subprojectTable: {
@@ -176,7 +175,7 @@ const getTableEntries = ({
                 />
               </div>
               <div className={classes.button}>
-                <StyledBadge color="secondary" variant="dot" invisible={isBadgeHidden} data-test="warning-badge">
+                <StyledBadge color="secondary" variant="dot" invisible={isBadgeHidden} data-test={"warning-badge"}>
                   <ActionButton
                     notVisible={!canViewPermissions}
                     onClick={() => showSubProjectPermissions(id, displayName)}
@@ -249,21 +248,17 @@ const SubProjectTable = ({
         storeSearchBarDisplayed={storeSubSearchBarDisplayed}
         storeSearchTerm={storeSubSearchTerm}
       />
-      {subProjects.length > 0 ? (
-        <Table data-test="ssp-table" className={classes.subprojectTable}>
-          <TableHead>
-            <TableRow data-test="subproject-row">
-              <TableCell className={classes.displayName}>{strings.common.subproject}</TableCell>
-              <TableCell className={classes.projectdBudget}>{strings.common.projected_budget}</TableCell>
-              <TableCell className={classes.status}>{strings.common.status}</TableCell>
-              <TableCell className={classes.actions}> </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{tableEntries}</TableBody>
-        </Table>
-      ) : (
-        <SubProjectEmptyState />
-      )}
+      <Table data-test="ssp-table" className={classes.subprojectTable}>
+        <TableHead>
+          <TableRow>
+            <TableCell className={classes.displayName}>{strings.common.subproject}</TableCell>
+            <TableCell className={classes.projectdBudget}>{strings.common.projected_budget}</TableCell>
+            <TableCell className={classes.status}>{strings.common.status}</TableCell>
+            <TableCell className={classes.actions}> </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{tableEntries}</TableBody>
+      </Table>
     </Card>
   );
 };
