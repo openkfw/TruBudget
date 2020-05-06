@@ -23,6 +23,7 @@ describe("Subproject Edit", function() {
       .then(title => {
         cy.get("[data-test=nameinput] input").type("-changed");
         cy.get("[data-test=submit]").click();
+        cy.get("[data-test=highlighted-displayname]").should("be.visible");
         cy.get("[data-test=subproject-title-0]")
           .invoke("text")
           .should("not.eq", title);

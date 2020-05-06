@@ -39,7 +39,9 @@ const muiTheme = createMuiTheme({
     warning: amber[800],
     info: blue,
     grey: {
-      main: grey[100]
+      light: grey[100],
+      main: grey[400],
+      dark: grey[600]
     },
     tonalOffset: 0.6
   },

@@ -1,14 +1,15 @@
-import React from "react";
-
-import List from "@material-ui/core/List";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
+import List from "@material-ui/core/List";
 import { withStyles } from "@material-ui/core/styles";
 import TablePagination from "@material-ui/core/TablePagination";
+import React from "react";
 
 import strings from "../../localizeStrings";
 import NotificationListItems from "./NotificationListItems";
+
+import NotificationEmptyState from "./NotificationEmptyState";
 
 const styles = {
   button: {
@@ -51,7 +52,8 @@ const NotificationList = props => {
     notificationOffset,
     history,
     markNotificationAsRead,
-    currentPage
+    currentPage,
+    isDataLoading
   } = props;
   const allNotificationsRead = notifications.some(notification => notification.isRead === false);
   const rowsPerPageOptions = [5, 10, 20, 50];
@@ -71,15 +73,23 @@ const NotificationList = props => {
         </Button>
       </div>
 
-      <List component="div" data-test="notification-list">
-        <NotificationListItems
-          notifications={notifications}
-          history={history}
-          markNotificationAsRead={notificationId => markNotificationAsRead(notificationId, currentPage)}
-          notificationsPerPage={notificationsPerPage}
-          notificationOffset={notificationOffset}
-        />
-      </List>
+      {isDataLoading ? (
+        <div />
+      ) : (
+        <List component="div" data-test="notification-list">
+          {notifications.length > 0 ? (
+            <NotificationListItems
+              notifications={notifications}
+              history={history}
+              markNotificationAsRead={notificationId => markNotificationAsRead(notificationId, currentPage)}
+              notificationsPerPage={notificationsPerPage}
+              notificationOffset={notificationOffset}
+            />
+          ) : (
+            <NotificationEmptyState />
+          )}
+        </List>
+      )}
       <div className={classes.paginationDiv}>
         <TablePagination
           component="div"

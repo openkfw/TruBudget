@@ -1,29 +1,30 @@
 import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import AmountIcon from "@material-ui/icons/AccountBalance";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Tooltip from "@material-ui/core/Tooltip";
+import Typography from "@material-ui/core/Typography";
+import AmountIcon from "@material-ui/icons/AccountBalance";
+import BarChartIcon from "@material-ui/icons/BarChart";
 import DoneIcon from "@material-ui/icons/Check";
 import DateIcon from "@material-ui/icons/DateRange";
 import AssigneeIcon from "@material-ui/icons/Group";
-import BarChartIcon from "@material-ui/icons/BarChart";
 import _isUndefined from "lodash/isUndefined";
 import React from "react";
 
 import { statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
-import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
+import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
+import BudgetEmptyState from "../Common/BudgetEmptyState";
 
 const styles = {
   container: {
@@ -95,6 +96,7 @@ const SubProjectDetails = ({
   users,
   closeSubproject,
   canCloseSubproject,
+  isDataLoading,
   openAnalyticsDialog,
   projectedBudgets
 }) => {
@@ -126,35 +128,43 @@ const SubProjectDetails = ({
         </List>
         <div style={styles.projectedBudget}>
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
-          <Table padding="none">
-            <TableHead>
-              <TableRow>
-                <TableCell>{strings.common.organization}</TableCell>
-                <TableCell align="right">{strings.common.amount}</TableCell>
-                <TableCell align="right">{strings.common.currency}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {projectedBudgets.map(budget => (
-                <TableRow key={budget.organization + budget.currencyCode}>
-                  <TableCell>{budget.organization}</TableCell>
-                  <TableCell align="right">{toAmountString(budget.value)}</TableCell>
-                  <TableCell align="right">{budget.currencyCode}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <div style={styles.analytics}>
-            <Button
-              variant="outlined"
-              color="primary"
-              data-test="details-analytics-button"
-              onClick={openAnalyticsDialog}
-            >
-              <BarChartIcon />
-              {strings.project.project_details}
-            </Button>
-          </div>
+          {isDataLoading ? (
+            <div />
+          ) : projectedBudgets.length > 0 ? (
+            <div>
+              <Table padding="none">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>{strings.common.organization}</TableCell>
+                    <TableCell align="right">{strings.common.amount}</TableCell>
+                    <TableCell align="right">{strings.common.currency}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {projectedBudgets.map(budget => (
+                    <TableRow key={budget.organization + budget.currencyCode}>
+                      <TableCell>{budget.organization}</TableCell>
+                      <TableCell align="right">{toAmountString(budget.value)}</TableCell>
+                      <TableCell align="right">{budget.currencyCode}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div style={styles.analytics}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  data-test="details-analytics-button"
+                  onClick={openAnalyticsDialog}
+                >
+                  <BarChartIcon />
+                  {strings.project.project_details}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <BudgetEmptyState text={strings.common.no_budget_subproject} />
+          )}
         </div>
         <List style={styles.subprojectAssignee}>
           <ListItem>

@@ -31,7 +31,9 @@ describe("Subproject Search", function() {
     cy.login();
     cy.visit(`/projects/${projectWithTag.id}`);
   });
+
   it("Check regex highlighting", function() {
+    cy.get("[data-test=subproject-row]").should("be.visible");
     cy.get("[data-test=search-input]")
       .should("be.visible")
       .type("SearchTest");
@@ -44,11 +46,13 @@ describe("Subproject Search", function() {
   });
 
   it("Filter subprojects by display name", function() {
+    cy.get("[data-test=subproject-row]").should("be.visible");
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
       .should("be.visible")
-      .type(projectWithTag.subprojectTitle);
+      .should("not.be.disabled");
+    cy.get("[data-test=search-input").type(projectWithTag.subprojectTitle);
     cy.get("[data-test=highlighted-displayname]").contains(projectWithTag.subprojectTitle);
     //Only one element should should be in the list
     cy.get("[data-test=subproject-title-0]").should("be.visible");
@@ -56,11 +60,12 @@ describe("Subproject Search", function() {
   });
 
   it("Filter subprojects by prefix 'name' and 'status'", function() {
+    cy.get("[data-test=subproject-row]").should("be.visible");
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
-      .should("be.visible")
-      .type("name:" + projectWithTag.subprojectTitle);
+      .should("be.visible");
+    cy.get("[data-test=search-input]").type("name:" + projectWithTag.subprojectTitle);
     cy.get("[data-test=highlighted-displayname]").contains(projectWithTag.subprojectTitle);
     //Only one element should should be in the list
     cy.get("[data-test=subproject-title-0]").should("be.visible");
@@ -69,7 +74,8 @@ describe("Subproject Search", function() {
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
-      .should("be.visible")
+      .should("be.visible");
+    cy.get("[data-test=search-input]")
       .type("{selectall}{backspace}")
       .type("status: open");
     cy.get("[data-test=ssp-table]").contains("Open");
@@ -79,6 +85,7 @@ describe("Subproject Search", function() {
   });
 
   it("Search bar is empty when viewing subproject details", function() {
+    cy.get("[data-test=subproject-row]").should("be.visible");
     // Type into search bar
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
@@ -86,7 +93,7 @@ describe("Subproject Search", function() {
       .should("be.visible");
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
-      .find("[data-test=search-input] input")
+      .find("[data-test=search-input]")
       .type("SearchTestExample");
     // Go into detail view
     cy.get("[data-test=subproject-view-details-0]").click();
@@ -99,15 +106,13 @@ describe("Subproject Search", function() {
   });
 
   it("Search bar is empty and exists when clicking on 'Main' breadcrumb", function() {
+    cy.get("[data-test=subproject-row]").should("be.visible");
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
       .should("be.visible");
     // Type into search bar
-    cy.get("[data-test=sub-projects]")
-      .find("[data-test=search-bar]")
-      .find("[data-test=search-input] input")
-      .type("SearchTestExample");
+    cy.get("[data-test=search-input]").type("SearchTestExample");
     // Navigate via Main breadcrumb
     cy.get("[data-test=breadcrumb-Main]").click();
     // Go back to subproject view
@@ -119,15 +124,14 @@ describe("Subproject Search", function() {
   });
 
   it("Search bar is empty and exists when clicking on 'Projects' breadcrumb", function() {
+    cy.get("[data-test=subproject-row]").should("be.visible");
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
-      .should("be.visible");
+      .should("be.visible")
+      .should("not.be.disabled");
     // Type into search bar
-    cy.get("[data-test=sub-projects]")
-      .find("[data-test=search-bar]")
-      .find("[data-test=search-input] input")
-      .type("SearchTestExample");
+    cy.get("[data-test=search-input]").type("SearchTestExample");
     // Navigate via Projects breadcrumb
     cy.get("[data-test=breadcrumb-Projects]").click();
     // Go back to subproject view

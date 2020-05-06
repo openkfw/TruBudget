@@ -1,9 +1,8 @@
-import React from "react";
-
-import Fab from "@material-ui/core/Fab";
 import Card from "@material-ui/core/Card";
+import Fab from "@material-ui/core/Fab";
 import ContentAdd from "@material-ui/icons/Add";
 import HistoryIcon from "@material-ui/icons/Reorder";
+import React from "react";
 
 import SubProjectTable from "./SubProjectTable";
 
@@ -16,9 +15,7 @@ const SubProjects = props => {
         width: "100%"
       }}
     >
-      <Card>
-        <SubProjectTable {...props} />
-      </Card>
+      <Card>{props.isDataLoading ? null : <SubProjectTable {...props} />}</Card>
       <div
         style={{
           display: "flex",

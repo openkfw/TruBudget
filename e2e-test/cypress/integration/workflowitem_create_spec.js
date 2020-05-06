@@ -70,7 +70,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=workflowitem-table]")
       .find("[data-test=show-workflowitem-permissions]")
       .first()
-      .click();
+      .click({ force: true });
     cy.get("[data-test=warning-badge]")
       .first()
       .should("not.be.checked");
