@@ -236,6 +236,8 @@ const fr = {
     password_conditions_letter: "Contenir au moins une lettre",
     password_conditions_number: "Contenir au moins un chiffre",
     password_conditions_preface: "Votre mot de passe doit:",
+    privacy_notice:
+      "Veuillez vous assurer de ne pas fournir d'informations personnelles. En cliquant sur SOUMETTRE, vos données sont sauvegardées de façon permanente et vous confirmez par la présente la réception de l'avis de confidentialité.",
     type_current_password: "Tapez le mot de passe actuel pour {0}",
     type_new_password: "Tapez le nouveau mot de passe pour {0}",
     user_created: "Utilisateur créé avec succès",
