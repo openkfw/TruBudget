@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-<!-- ### Added -->
+### Added
+
+- Show dialog before closing project, subproject or workflowitem [#430](https://github.com/openkfw/TruBudget/issues/430)
 
 <!-- ### Changed -->
 

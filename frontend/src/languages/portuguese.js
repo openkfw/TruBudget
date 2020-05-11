@@ -284,8 +284,14 @@ const pt = {
     no_permission_warning: "Aviso: você não tem permissão para executar todas as ações listadas!",
     permissions_required: "Permissões necessárias",
     permissions_text: `{0} precisa de permissões adicionais para visualizar {1} "{2}".`,
+    project_close: "Fechar projecto",
+    project_close_text: "Tem a certeza de que quer encerrar este projecto?",
+    subproject_close: "Fechar subprojecto",
+    subproject_close_text: "Tem a certeza de que quer encerrar este subprojecto?",
     update_permissions_dialog_text: "Deseja realmente atualizar as permissões?",
-    user_group: "Usuários/Grupo"
+    user_group: "Usuários/Grupo",
+    workflowitem_close: "Fechar item de workflow",
+    workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?"
   },
 
   intents: {

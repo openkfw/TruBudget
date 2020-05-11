@@ -122,13 +122,13 @@ const de = {
     project_budget_amount_description: "z_B_",
     project_budget_authority_role: "Select budget authority role",
     project_budget_authority_role_description: "The authority enabled to modify the budget line of the project",
+    project_close_info: "Mindestens ein Teilprojekt wurde noch nicht geschlossen.",
     project_comment: "Comment",
     project_currency: "Currency",
     project_details: "German: Details",
     project_disbursement_authority_role: "Select disbursement authority role",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_edit_title: "German: Edit Project",
-    project_close_info: "German: At least one subproject item has not been closed yet.",
     project_implementing_authority_role: "Select implementation authority role",
     project_implementing_authority_role_description:
       "The authorities enabled to create and modify subprojects, define and execute workflow activities",
@@ -282,8 +282,14 @@ const de = {
     no_permission_warning: "Warnung: Sie haben nicht die Berechtigung, alle aufgelisteten Aktionen auszuführen!",
     permissions_required: "Berechtigungen erforderlich",
     permissions_text: `{0} benötigt zusätzliche Berechtigungen um {1} "{2}" sehen zu können.`,
+    project_close: "Projekt schließen",
+    project_close_text: "Sind Sie sicher, dass Sie dieses Projekt schließen wollen?",
+    subproject_close: "Teilprojekt schliessen",
+    subproject_close_text: "Sind Sie sicher, dass Sie dieses Teilprojekt schließen wollen?",
     update_permissions_dialog_text: "Möchten Sie die Berechtigungen wirklich aktualisieren?",
-    user_group: "Benutzer/Gruppe"
+    user_group: "Benutzer/Gruppe",
+    workflowitem_close: "Workflowitem schliessen",
+    workflowitem_close_text: "Sind Sie sicher, dass Sie dieses Workflow-Item schließen wollen?"
   },
 
   intents: {

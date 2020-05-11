@@ -68,4 +68,40 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=cancel]").click();
     }
   );
+
+  it("When closing a workflow item, a dialog pops up", function() {
+    // Cancel closing the workflow item
+    cy.get("[data-test=close-workflowitem")
+      .first()
+      .click();
+    cy.get("[data-test=confirmation-dialog]").should("be.visible");
+    cy.get("[data-test=confirmation-dialog-cancel]").click();
+    cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
+
+    // Close the workflow item
+    cy.get("[data-test=close-workflowitem")
+      .first()
+      .click();
+    cy.get("[data-test=confirmation-dialog]").should("be.visible");
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
+    cy.get("[data-test=close-workflowitem")
+      .first()
+      .should("be.disabled");
+  });
+
+  it("When closing the subproject, a dialog pops up", function() {
+    // Cancel closing the subproject
+    cy.get("[data-test=spc-button]").click();
+    cy.get("[data-test=confirmation-dialog]").should("be.visible");
+    cy.get("[data-test=confirmation-dialog-cancel]").click();
+    cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
+
+    // Close the subproject
+    cy.get("[data-test=spc-button]").click();
+    cy.get("[data-test=confirmation-dialog]").should("be.visible");
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
+    cy.get("[data-test=spc-button]").should("not.be.visible");
+  });
 });

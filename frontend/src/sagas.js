@@ -1487,6 +1487,18 @@ export function* revokeWorkflowItemPermissionsSaga({
 
 export function* closeProjectSaga({ projectId, showLoading }) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "project.close",
+        payload: {
+          project: { id: projectId }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.closeProject, projectId);
     yield put({ type: CLOSE_PROJECT_SUCCESS });
 
@@ -1500,6 +1512,19 @@ export function* closeProjectSaga({ projectId, showLoading }) {
 
 export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "subproject.close",
+        payload: {
+          project: { id: projectId },
+          subproject: { id: subprojectId }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.closeSubproject, projectId, subprojectId);
     yield put({ type: CLOSE_SUBPROJECT_SUCCESS });
 
@@ -1514,6 +1539,20 @@ export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
 
 export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "workflowitem.close",
+        payload: {
+          project: { id: projectId },
+          subproject: { id: subprojectId },
+          workflowitem: { id: workflowitemId }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.closeWorkflowItem, projectId, subprojectId, workflowitemId);
 
     yield put({

@@ -282,8 +282,14 @@ const ka = {
     no_permission_warning: "გაფრთხილება: თქვენ არ შეგიძლიათ აღნიშნული ქმედების განხორციელება!",
     permissions_required: "აუცილებელია ნებართვა",
     permissions_text: `{0} ესაჭიროება დამატებითი ნებართვა რათა იხილოს {1} "{2}".`,
+    project_close: "პროექტის დახურვა",
+    project_close_text: "დარწმუნებული ხართ, გსურთ ამ პროექტის დახურვა?",
+    subproject_close: "ქვეპროექტის დახურვა",
+    subproject_close_text: "დარწმუნებული ხართ, გსურთ ამ ქვეპროექტის დახურვა?",
     update_permissions_dialog_text: "ნამდვილად გსურთ ნებართვების განახლება?",
-    user_group: "მომხმარებელი/ჯგუფი"
+    user_group: "მომხმარებელი/ჯგუფი",
+    workflowitem_close: "სამუშაო ნაკადის დახურვა",
+    workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?"
   },
 
   intents: {
