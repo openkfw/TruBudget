@@ -196,7 +196,7 @@ describe("Subproject Analytics", function() {
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
-      .click();
+      .click({ force: true });
     cy.get("[data-test=select-currencies]")
       .should("be.visible")
       .click();

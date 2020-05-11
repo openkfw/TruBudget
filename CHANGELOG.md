@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Show dialog before closing project, subproject or workflowitem [#430](https://github.com/openkfw/TruBudget/issues/430)
+- Show privacy notice when creating a user or user group [#466](https://github.com/openkfw/TruBudget/issues/466)
 
 <!-- ### Changed -->
 

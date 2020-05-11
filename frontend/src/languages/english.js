@@ -124,6 +124,8 @@ const en = {
     password_conditions_letter: "Contain at least one letter",
     password_conditions_number: "Contain at least one number",
     password_conditions_preface: "Your password must:",
+    privacy_notice:
+      "Please make sure to not provide any personal information. By clicking SUBMIT your data is permanently saved and you hereby confirm the receipt of the privacy notice.",
     type_current_password: "Type in current password for {0}",
     type_new_password: "Type in new password for {0}",
     user_created: "User successfully created",

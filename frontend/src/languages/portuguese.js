@@ -125,6 +125,8 @@ const pt = {
     password_conditions_letter: "Conter pelo menos uma letra",
     password_conditions_number: "Conter pelo menos um número",
     password_conditions_preface: "Sua senha deve:",
+    privacy_notice:
+      "Por favor, certifique-se de não fornecer qualquer informação pessoal. Ao clicar em ENVIAR, os seus dados são guardados permanentemente e confirma a recepção da declaração de privacidade.",
     type_current_password: "Digite a senha atual para o {0}",
     type_new_password: "Digite a nova senha para o {0}",
     user_created: "Usuário criado com sucesso",

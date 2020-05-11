@@ -238,7 +238,9 @@ const de = {
     password_conditions_preface: "Das Passwort muss:",
     password_conditions_length: "Mindestens 8 Zeichen lang sein",
     password_conditions_letter: "Mindestens einen Buchstaben enthalten",
-    password_conditions_number: "Mindestens eine Zahl enthalten"
+    password_conditions_number: "Mindestens eine Zahl enthalten",
+    privacy_notice:
+      "Bitte stellen Sie sicher, dass Sie keine persönlichen Informationen angeben. Durch Klicken auf SUBMIT werden Ihre Daten dauerhaft gespeichert und hiermit der Erhalt des Datenschutzhinweises bestätigt."
   },
   userProfile: {
     invalid_email_address: "Ungültige Emailadresse"
