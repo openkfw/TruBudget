@@ -40,7 +40,7 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     project: Joi.object({
       id: Project.idSchema,
-      status: Joi.valid("open", "closed"),
+      status: Joi.valid("open"),
       displayName: Joi.string().required(),
       description: Joi.string().allow(""),
       assignee: Joi.string(),
