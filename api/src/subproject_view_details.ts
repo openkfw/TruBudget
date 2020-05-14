@@ -14,6 +14,7 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import Type from "./service/domain/workflowitem_types/types";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -149,6 +150,7 @@ interface ExposedWorkflowitem {
     }> | null;
     amount?: string | null;
     additionalData: object | null;
+    workflowitemType?: Type;
   };
   allowedIntents: Intent[];
 }
@@ -276,6 +278,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             documents: workflowitem.documents,
             amount: workflowitem.amount,
             additionalData: workflowitem.additionalData,
+            workflowitemType: workflowitem.workflowitemType,
           },
         }));
 

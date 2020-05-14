@@ -95,8 +95,4 @@ More details about the email notification service can be found in the [email not
 To disable email notifications for blockchain simply set the `EMAIL_SERVICE` to "DISABLED" or unset it.
 If disabled the multichain-feed is not applied to the multichain-deamon and notifications are not created.
 
-<<<<<<< HEAD
 **Hint:** To prevent the frontend requesting an email-notifcations readiness call simply unset the email notification service environment variable in the frontend. More details can be found in the [frontend documentation](../frontend/README.md#email-notifications)
-=======
-**Hint:** To prevent the frontend requesting a email-notifcations readiness call simply unset the email notification service environment variable in the frontend. More details can be found in the [frontend documentation](../frontend/README.md#email-notifications)
->>>>>>> 8aa35bce... Extend email notification documentation

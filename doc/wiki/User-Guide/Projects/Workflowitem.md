@@ -96,6 +96,9 @@ Create a new workflowitem defining title, comment, currency and budget. It is al
 
 6. Fill in the required fields:
 
+   - Workflowitem type: Workflowitems behave differently according to their type
+      - general: A workflowitem of type general will be created
+      - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.
    - "Workflow Title": Title of the workflowitem
    - "Comment": A little description or comment refering to the workflowitem
    - Budget:

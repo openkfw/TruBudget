@@ -28,6 +28,10 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Subproject.Subproject>>;
+  applyWorkflowitemType(
+    event: BusinessEvent,
+    workflowitem: Workflowitem.Workflowitem,
+  ): Result.Type<BusinessEvent[]>;
 }
 
 export async function closeWorkflowitem(
@@ -125,5 +129,11 @@ export async function closeWorkflowitem(
       ),
     );
 
-  return { newEvents: [closeEvent, ...notifications] };
+  const workflowitemTypeEvents = repository.applyWorkflowitemType(closeEvent, workflowitemToClose);
+
+  if (Result.isErr(workflowitemTypeEvents)) {
+    return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
+  }
+
+  return { newEvents: [closeEvent, ...notifications, ...workflowitemTypeEvents] };
 }

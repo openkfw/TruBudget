@@ -19,6 +19,10 @@ import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 interface Repository {
   getWorkflowitem(workflowitemId: string): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  applyWorkflowitemType(
+    event: BusinessEvent,
+    workflowitem: Workflowitem.Workflowitem,
+  ): Result.Type<BusinessEvent[]>;
 }
 
 export async function assignWorkflowitem(
@@ -48,15 +52,16 @@ export async function assignWorkflowitem(
     workflowitemId,
     assignee,
   );
+
   if (Result.isErr(assignEvent)) {
     return new VError(assignEvent, "failed to create event");
   }
 
   // Check authorization:
   if (publisher.id !== "root") {
-    const intent = "workflowitem.assign";
-    if (!Workflowitem.permits(workflowitem, publisher, [intent])) {
-      return new NotAuthorized({ ctx, userId: publisher.id, intent, target: workflowitem });
+    const assignIntent = "workflowitem.assign";
+    if (!Workflowitem.permits(workflowitem, publisher, [assignIntent])) {
+      return new NotAuthorized({ ctx, userId: publisher.id, intent: assignIntent, target: workflowitem });
     }
   }
 
@@ -83,5 +88,11 @@ export async function assignWorkflowitem(
       ),
     );
 
-  return { newEvents: [assignEvent, ...notifications], workflowitem };
+  const workflowitemTypeEvents = repository.applyWorkflowitemType(assignEvent, workflowitem);
+
+  if (Result.isErr(workflowitemTypeEvents)) {
+    return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
+  }
+
+  return { newEvents: [assignEvent, ...notifications, ...workflowitemTypeEvents], workflowitem };
 }

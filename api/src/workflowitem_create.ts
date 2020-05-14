@@ -13,6 +13,7 @@ import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/workf
 import { conversionRateSchema, moneyAmountSchema } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
+import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_types/types";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 
 interface RequestBodyV1 {
@@ -32,6 +33,7 @@ interface RequestBodyV1 {
     exchangeRate?: string;
     documents?: UploadedDocument[];
     additionalData?: object;
+    workflowitemType?: Type;
   };
 }
 
@@ -52,6 +54,7 @@ const requestBodyV1Schema = Joi.object({
     exchangeRate: conversionRateSchema,
     documents: Joi.array().items(uploadedDocumentSchema),
     additionalData: Joi.object(),
+    workflowitemType: workflowitemTypeSchema,
   }).required(),
 });
 
@@ -111,6 +114,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                 },
               },
               additionalData: { type: "object", additionalProperties: true },
+              workflowitemType: { type: "string", example: "general" },
             },
           },
         },
@@ -195,6 +199,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         exchangeRate: bodyResult.data.exchangeRate,
         additionalData: bodyResult.data.additionalData,
         documents: bodyResult.data.documents,
+        workflowitemType: bodyResult.data.workflowitemType,
       };
 
       service

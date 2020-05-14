@@ -532,7 +532,7 @@ const pt = {
     subproject_projected_budget_updated: "Orçamento do subprojecto actualizado",
     subproject_projected_budget_deleted: "Orçamento do subprojecto encerrado",
 
-    workflowitem_created: "Workflow item criado",
+    workflowitem_created: "Workflowitem criado",
     workflowitem_updated: "Workflowitem actualizado",
     workflowitem_assigned: "Workflowitem assigned",
     workflowitem_closed: "Workflowitem encerrado",

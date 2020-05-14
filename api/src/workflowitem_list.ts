@@ -10,6 +10,7 @@ import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import Type from "./service/domain/workflowitem_types/types";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -67,6 +68,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           exchangeRate: { type: "string", example: "1.0" },
                           additionalData: { type: "object", additionalProperties: true },
+                          workflowitemType: { type: "string", example: "general" },
                           documents: {
                             type: "array",
                             items: {
@@ -119,6 +121,7 @@ interface ExposedWorkflowitem {
     exchangeRate: string;
     documents: [{ id: string; hash: string; documentId: string }];
     additionalData: object;
+    workflowitemType: Type;
   };
 }
 
@@ -183,6 +186,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
               exchangeRate: workflowitem.exchangeRate,
               documents: workflowitem.documents,
               additionalData: workflowitem.additionalData,
+              workflowitemType: workflowitem.workflowitemType,
             },
           };
         });

@@ -3,6 +3,7 @@ import { VError } from "verror";
 
 import Intent, { subprojectIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
@@ -12,13 +13,13 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { hashDocument, StoredDocument, UploadedDocument, uploadedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
 import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
-import logger from "../../../lib/logger";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -36,6 +37,7 @@ export interface RequestData {
   assignee?: string;
   documents?: UploadedDocument[];
   additionalData?: object;
+  workflowitemType?: Type;
 }
 
 const requestDataSchema = Joi.object({
@@ -54,6 +56,7 @@ const requestDataSchema = Joi.object({
   assignee: Joi.string(),
   documents: Joi.array().items(uploadedDocumentSchema),
   additionalData: AdditionalData.schema,
+  workflowitemType: workflowitemTypeSchema,
 });
 
 export function validate(input: any): Result.Type<RequestData> {
@@ -71,6 +74,10 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Subproject.Subproject>>;
+  applyWorkflowitemType(
+    event: BusinessEvent,
+    workflowitem: Workflowitem.Workflowitem,
+  ): Result.Type<BusinessEvent[]>;
 }
 
 export async function createWorkflowitem(
@@ -114,6 +121,7 @@ export async function createWorkflowitem(
       documents,
       permissions: newDefaultPermissionsFor(creatingUser.id),
       additionalData: reqData.additionalData || {},
+      workflowitemType: reqData.workflowitemType || "general",
     },
   );
 
@@ -128,7 +136,7 @@ export async function createWorkflowitem(
   if (creatingUser.id !== "root") {
     const authorizationResult = Result.map(
       await repository.getSubproject(reqData.projectId, reqData.subprojectId),
-      (subproject) => {
+      subproject => {
         const intent = "subproject.createWorkflowitem";
         if (!Subproject.permits(subproject, creatingUser, [intent])) {
           return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });
@@ -191,7 +199,13 @@ export async function createWorkflowitem(
     documentUploadedEvents.push(result);
   }
 
-  return [workflowitemCreated, ...documentUploadedEvents];
+  const workflowitemTypeEvents = repository.applyWorkflowitemType(workflowitemCreated, result);
+
+  if (Result.isErr(workflowitemTypeEvents)) {
+    return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
+  }
+
+  return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
 
   function newDefaultPermissionsFor(userId: string): Permissions {
     // The user can always do anything anyway:

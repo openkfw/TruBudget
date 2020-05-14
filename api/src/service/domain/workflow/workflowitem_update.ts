@@ -2,6 +2,7 @@ import isEqual = require("lodash.isequal");
 import { VError } from "verror";
 
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -10,15 +11,14 @@ import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
+import { hashDocument, hashDocuments, StoredDocument, UploadedDocument } from "./document";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
-import { UploadedDocument, hashDocument, StoredDocument, hashDocuments } from "./document";
-import logger from "../../../lib/logger";
 
 export interface RequestData {
   displayName?: string;
@@ -39,6 +39,10 @@ export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  applyWorkflowitemType(
+    event: BusinessEvent,
+    workflowitem: Workflowitem.Workflowitem,
+  ): Result.Type<BusinessEvent[]>;
 }
 
 export async function updateWorkflowitem(
@@ -105,8 +109,8 @@ export async function updateWorkflowitem(
     : [];
   const notifications = recipients
     // The issuer doesn't receive a notification:
-    .filter((userId) => userId !== issuer.id)
-    .map((recipient) =>
+    .filter(userId => userId !== issuer.id)
+    .map(recipient =>
       NotificationCreated.createEvent(
         ctx.source,
         issuer.id,
@@ -162,8 +166,14 @@ export async function updateWorkflowitem(
     newDocumentUploadedEvents.push(result);
   }
 
+  const workflowitemTypeEvents = repository.applyWorkflowitemType(newEvent, workflowitem);
+
+  if (Result.isErr(workflowitemTypeEvents)) {
+    return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
+  }
+
   return {
-    newEvents: [newEvent, ...newDocumentUploadedEvents, ...notifications],
+    newEvents: [newEvent, ...newDocumentUploadedEvents, ...notifications, ...workflowitemTypeEvents],
     workflowitem: result,
   };
 }

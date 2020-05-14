@@ -6,9 +6,9 @@ import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
+import { hashDocument, StoredDocument } from "./document";
 import { Workflowitem } from "./workflowitem";
 import { updateWorkflowitem } from "./workflowitem_update";
-import { hashDocument, StoredDocument } from "./document";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const root: ServiceUser = { id: "root", groups: [] };
@@ -32,6 +32,7 @@ const baseWorkflowitem: Workflowitem = {
   permissions: { "workflowitem.update": [alice, bob, charlie].map((x) => x.id) },
   log: [],
   additionalData: {},
+  workflowitemType: "general",
 };
 
 const stripOutDocumentId = (docs: StoredDocument[]) => {
@@ -39,6 +40,7 @@ const stripOutDocumentId = (docs: StoredDocument[]) => {
 };
 
 const baseRepository = {
+  applyWorkflowitemType: () => [],
   getUsersForIdentity: async (identity) => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];

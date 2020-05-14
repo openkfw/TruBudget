@@ -216,7 +216,11 @@ const fr = {
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "Historique",
     workflowitem_details_overview: "Sommaire",
-    workflowitem_details: "Détails du workflow item"
+    workflowitem_details: "Détails du workflowitem",
+    workflowitem_type: "Type du workflowitem",
+    workflowitem_type_general: "Créer un élément de workflow de type général.",
+    workflowitem_type_restricted:
+      "Lors de l'attribution d'un élément de workflow restreint, les autorisations sont automatiquement accordées et révoquées. L'assignateur ne conserve que les autorisations de visualisation."
   },
 
   users: {
@@ -293,7 +297,7 @@ const fr = {
     subproject_close_text: "Vous êtes sûr de vouloir fermer ce sous-projet?",
     update_permissions_dialog_text: "Voulez-vous vraiment mettre à jour les autorisations?",
     user_group: "Utilisateur/Groupe",
-    workflowitem_close: "Fermer workflow item",
+    workflowitem_close: "Fermer workflowitem",
     workflowitem_close_text: "Vous êtes sûr de vouloir fermer ce poste de travail?"
   },
 
@@ -533,7 +537,7 @@ const fr = {
     subproject_projected_budget_updated: "Budget du sous-projet mis à jour",
     subproject_projected_budget_deleted: "Budget du sous-projet clôturé",
 
-    workflowitem_created: "Workflow item created",
+    workflowitem_created: "Workflowitem created",
     workflowitem_updated: "Workflowitem updated",
     workflowitem_assigned: "Workflowitem assigné",
     workflowitem_closed: "Workflowitem closed",

@@ -8,6 +8,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { StoredDocument, storedDocumentSchema } from "./document";
 import { moneyAmountSchema } from "./money";
 import * as Subproject from "./subproject";
@@ -37,6 +38,7 @@ export interface Workflowitem {
   log: WorkflowitemTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
+  workflowitemType?: Type;
 }
 
 export interface RedactedWorkflowitem {
@@ -58,6 +60,7 @@ export interface RedactedWorkflowitem {
   permissions: {};
   log: WorkflowitemTraceEvent[];
   additionalData: {};
+  workflowitemType?: Type;
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -119,6 +122,7 @@ const schema = Joi.object().keys({
   permissions: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).required(),
   log: Joi.array().required().items(workflowitemTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
+  workflowitemType: workflowitemTypeSchema,
 });
 
 export function validate(input: any): Result.Type<Workflowitem> {
@@ -135,7 +139,7 @@ export function permits(
     const eligibles = workflowitem.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some((identity) =>
+  const hasPermission = eligibleIdentities.some(identity =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;
@@ -168,9 +172,9 @@ function redactLog(events: WorkflowitemTraceEvent[]): WorkflowitemTraceEvent[] {
   return (
     events
       // We only keep close events for now:
-      .filter((x) => x.businessEvent.type === "workflowitem_closed")
+      .filter(x => x.businessEvent.type === "workflowitem_closed")
       // We only keep the info needed to sort workflowitems:
-      .map((x) => ({
+      .map(x => ({
         entityId: x.entityId,
         entityType: x.entityType,
         businessEvent: {

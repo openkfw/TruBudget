@@ -32,11 +32,13 @@ describe("Create workflowitem", () => {
       subprojectId: "dummy-subproject",
       displayName: "test",
       amountType: "N/A",
+      workflowitemType: "general",
     };
 
     const result = await WorkflowitemCreate.createWorkflowitem(ctx, user, data, {
       workflowitemExists: async (_projectId, _subprojectId, _workflowitemId) => false,
       getSubproject: async () => baseSubproject,
+      applyWorkflowitemType: () => [],
     });
 
     assert.isTrue(Result.isErr(result));
