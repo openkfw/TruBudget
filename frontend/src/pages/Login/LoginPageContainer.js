@@ -9,7 +9,8 @@ import {
   storeEnvironment,
   setLanguage,
   getEnvironment,
-  initLanguage
+  initLanguage,
+  checkEmailService
 } from "./actions";
 import LoginPage from "./LoginPage";
 
@@ -18,6 +19,9 @@ class LoginPageContainer extends Component {
     this.props.initLanguage();
     this.props.getEnvironment();
     this.checkIfRedirect();
+    if (process.env.EMAIL_SERVICE_ENABLED) {
+      this.props.checkEmailService();
+    }
   }
 
   componentDidUpdate() {
@@ -47,7 +51,8 @@ const mapDispatchToProps = dispatch => {
     hideLoginError: () => dispatch(showLoginError(false)),
     storeEnvironment: environment => dispatch(storeEnvironment(environment)),
     getEnvironment: () => dispatch(getEnvironment()),
-    setLanguage: language => dispatch(setLanguage(language))
+    setLanguage: language => dispatch(setLanguage(language)),
+    checkEmailService: () => dispatch(checkEmailService())
   };
 };
 
