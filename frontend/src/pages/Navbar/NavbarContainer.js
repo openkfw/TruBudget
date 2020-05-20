@@ -3,7 +3,7 @@ import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
-import { checkEmailService, logout } from "../Login/actions";
+import { logout } from "../Login/actions";
 import FlyInNotifications from "../Notifications/FlyInNotifications";
 import {
   createBackup,
@@ -24,7 +24,6 @@ class NavbarContainer extends Component {
   componentDidMount() {
     this.props.fetchActivePeers();
     this.props.fetchVersions();
-    this.props.checkEmailService();
 
     if (this.props.userId === "root") {
       this.props.setIsRoot(true);
@@ -63,8 +62,7 @@ const mapDispatchToProps = {
   storeSearchTerm,
   storeSearchBarDisplayed,
   setIsRoot,
-  showUserProfile,
-  checkEmailService
+  showUserProfile
 };
 
 const mapStateToProps = state => {
@@ -91,8 +89,7 @@ const mapStateToProps = state => {
     latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
     searchTerm: state.getIn(["navbar", "searchTerm"]),
     searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
-    isRoot: state.getIn(["login", "isRoot"]),
-    emailServiceAvailable: state.getIn(["navbar", "emailServiceAvailable"])
+    isRoot: state.getIn(["login", "isRoot"])
   };
 };
 

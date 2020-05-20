@@ -61,7 +61,7 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "npm run check-translations",
-    "eject": "react-app-rewired eject",
+    "eject": "react-scripts eject",
     "check-translations": "node scripts/check-translations.js",
     "lint": "eslint src",
     "eslint-check": "eslint --print-config ./src/index.js | eslint-config-prettier-check"
