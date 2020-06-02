@@ -53,7 +53,7 @@ import * as ProjectPermissionRevokeService from "./service/project_permission_re
 import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
-import * as ProjectTraceEventsService from "./service/project_trace_events";
+import * as ProjectViewHistoryService from "./service/project_history_get";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
 import * as SubprojectAssignService from "./service/subproject_assign";
@@ -66,7 +66,7 @@ import * as SubprojectPermissionRevokeService from "./service/subproject_permiss
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
-import * as SubprojectTraceEventsService from "./service/subproject_trace_events";
+import * as SubprojectViewHistoryService from "./service/subproject_history_get";
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
@@ -83,7 +83,7 @@ import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
-import * as WorkflowitemTraceEventsService from "./service/workflowitem_trace_events";
+import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as SubprojectAssignAPI from "./subproject_assign";
@@ -180,7 +180,7 @@ const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH, env
  */
 
 // Enable useful traces of unhandled-promise warnings:
-process.on("unhandledRejection", err => {
+process.on("unhandledRejection", (err) => {
   logger.fatal({ err }, "UNHANDLED PROMISE REJECTION");
   process.exit(1);
 });
@@ -189,13 +189,13 @@ function registerSelf(): Promise<boolean> {
   return multichainClient
     .getRpcClient()
     .invoke("listaddresses", "*", false, 1, 0)
-    .then(addressInfos =>
+    .then((addressInfos) =>
       addressInfos
-        .filter(info => info.ismine)
-        .map(info => info.address)
-        .find(_ => true),
+        .filter((info) => info.ismine)
+        .map((info) => info.address)
+        .find((_) => true),
     )
-    .then(address => {
+    .then((address) => {
       const req = {
         body: {
           data: {
@@ -427,8 +427,8 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 ProjectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
-  getProjectTraceEvents: (ctx, user, projectId) =>
-    ProjectTraceEventsService.getTraceEvents(db, ctx, user, projectId),
+  getProjectHistory: (ctx, user, projectId, filter) =>
+    ProjectViewHistoryService.getProjectHistory(db, ctx, user, projectId, filter),
 });
 
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
@@ -496,8 +496,15 @@ SubprojectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 SubprojectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
-  getSubprojectTraceEvents: (ctx, user, projectId, subprojectId) =>
-    SubprojectTraceEventsService.getTraceEvents(db, ctx, user, projectId, subprojectId),
+  getSubprojectHistory: (ctx, user, projectId, subprojectId, filter) =>
+    SubprojectViewHistoryService.getSubprojectHistory(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      filter,
+    ),
 });
 
 SubprojectPermissionListAPI.addHttpHandler(server, URL_PREFIX, {
@@ -591,14 +598,15 @@ WorkflowitemListAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 WorkflowitemViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
-  getWorkflowitemTraceEvents: (ctx, user, projectId, subprojectId, workflowitemId) =>
-    WorkflowitemTraceEventsService.getTraceEvents(
+  getWorkflowitemHistory: (ctx, user, projectId, subprojectId, workflowitemId, filter) =>
+    WorkflowitemViewHistoryService.getWorkflowitemHistory(
       db,
       ctx,
       user,
       projectId,
       subprojectId,
       workflowitemId,
+      filter,
     ),
 });
 
@@ -710,7 +718,7 @@ WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
  * Run the server.
  */
 
-server.listen(port, "0.0.0.0", async err => {
+server.listen(port, "0.0.0.0", async (err) => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
     console.trace();

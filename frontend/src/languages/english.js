@@ -84,6 +84,7 @@ const en = {
     projected_budget_exists: "Projected budget already exists",
     projected_budget: "Projected Budget",
     redacted: "Redacted",
+    reset: "Reset",
     revoke: "revoke",
     search: "Search",
     show_permissions: "Show Permissions",
@@ -505,6 +506,34 @@ const en = {
     workflowitem_update: "Update workflowitem",
     workflowitem_view: "View workflowitem",
     write: "Write permissions"
+  },
+
+  eventTypes: {
+    project_created: "Project created",
+    project_updated: "Project updated",
+    project_assigned: "Project assigned",
+    project_closed: "Project closed",
+    project_permission_granted: "Project permission granted",
+    project_permission_revoked: "Project permission revoked",
+    project_projected_budget_updated: "Project budget updated",
+    project_projected_budget_deleted: "Project budget closed",
+
+    subproject_created: "Subproject created",
+    subproject_updated: "Subproject updated",
+    subproject_assigned: "Subproject assigned",
+    subproject_closed: "Subproject closed ",
+    subproject_permission_granted: "Subproject permission granted",
+    subproject_permission_revoked: "Subproject permission revoked",
+    subproject_projected_budget_updated: "Subproject budget updated",
+    subproject_projected_budget_deleted: "Subproject budget closed",
+
+    workflowitem_created: "Workflowitem created",
+    workflowitem_updated: "Workflowitem updated",
+    workflowitem_assigned: "Workflowitem assigned",
+    workflowitem_closed: "Workflowitem closed",
+    workflowitem_permission_granted: "Workflowitem permission granted",
+    workflowitem_permission_revoked: "Workflowitem permission revoked",
+    workflowitems_reordered: "Workflowitems reordered"
   },
 
   language: {

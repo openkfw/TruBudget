@@ -35,6 +35,8 @@ export const SET_HISTORY_OFFSET = "SET_HISTORY_OFFSET";
 export const SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT = "SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT";
 export const FETCH_NEXT_PROJECT_HISTORY_PAGE = "FETCH_NEXT_PROJECT_HISTORY_PAGE";
 export const FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS = "FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS";
+export const FETCH_FIRST_PROJECT_HISTORY_PAGE = "FETCH_FIRST_PROJECT_HISTORY_PAGE";
+export const FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS = "FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS";
 
 export const CLOSE_PROJECT = "CLOSE_PROJECT";
 export const CLOSE_PROJECT_SUCCESS = "CLOSE_PROJECT_SUCCESS";
@@ -136,10 +138,20 @@ export function setTotalHistoryItemCount(count) {
   };
 }
 
-export function fetchNextProjectHistoryPage(projectId, showLoading = false) {
+export function fetchNextProjectHistoryPage(projectId, filter = {}, showLoading = false) {
   return {
     type: FETCH_NEXT_PROJECT_HISTORY_PAGE,
     projectId,
+    filter,
+    showLoading
+  };
+}
+
+export function fetchFirstProjectHistoryPage(projectId, filter = {}, showLoading = false) {
+  return {
+    type: FETCH_FIRST_PROJECT_HISTORY_PAGE,
+    projectId,
+    filter,
     showLoading
   };
 }

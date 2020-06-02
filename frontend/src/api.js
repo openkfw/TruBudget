@@ -1,4 +1,5 @@
 import axios from "axios";
+import _isEmpty from "lodash/isEmpty";
 
 const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
@@ -124,8 +125,16 @@ class Api {
     });
 
   viewProjectDetails = projectId => instance.get(`/project.viewDetails?projectId=${projectId}`);
-  viewProjectHistory = (projectId, offset, limit) =>
-    instance.get(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
+  viewProjectHistory = (projectId, offset, limit, filter) => {
+    let url = `/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`;
+    // filter: startAt|endAt|publisher|eventType
+    for (const key in filter) {
+      if (!_isEmpty(filter[key])) {
+        url = url + `&${key}=${filter[key]}`;
+      }
+    }
+    return instance.get(url);
+  };
 
   listProjectIntents = projectId => instance.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
@@ -164,15 +173,27 @@ class Api {
   viewSubProjectDetails = (projectId, subprojectId) =>
     instance.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
 
-  viewSubProjectHistory = (projectId, subprojectId, offset, limit) =>
-    instance.get(
-      `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
-    );
+  viewSubProjectHistory = (projectId, subprojectId, offset, limit, filter) => {
+    let url = `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`;
+    // filter: startAt|endAt|publisher|eventType
+    for (const key in filter) {
+      if (!_isEmpty(filter[key])) {
+        url = url + `&${key}=${filter[key]}`;
+      }
+    }
+    return instance.get(url);
+  };
 
-  viewWorkflowitemHistory = (projectId, subprojectId, workflowitemId, offset, limit) =>
-    instance.get(
-      `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`
-    );
+  viewWorkflowitemHistory = (projectId, subprojectId, workflowitemId, offset, limit, filter) => {
+    let url = `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`;
+    // filter: startAt|endAt|publisher|eventType
+    for (const key in filter) {
+      if (!_isEmpty(filter[key])) {
+        url = url + `&${key}=${filter[key]}`;
+      }
+    }
+    return instance.get(url);
+  };
 
   updateProjectBudgetProjected = (projectId, organization, currencyCode, value) =>
     instance.post(`/project.budget.updateProjected`, {

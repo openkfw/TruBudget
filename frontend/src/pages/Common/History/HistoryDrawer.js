@@ -1,21 +1,33 @@
+import { withStyles } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
+import HistoryContainer from "./HistoryContainer";
 import React from "react";
+import useHistoryState from "./historyHook";
 
-import ScrollingHistory from "./ScrollingHistory";
+const styles = {};
 
-export default function HistoryDrawer({
+const HistoryDrawer = ({
+  classes,
   doShow,
   onClose,
   events,
   nEventsTotal,
-  fetchNext,
+  fetchNextHistoryEvents,
+  fetchFirstHistoryEvents,
   hasMore,
   isLoading,
-  getUserDisplayname
-}) {
+  getUserDisplayname,
+  users,
+  eventTypes
+}) => {
+  const [{ startAt, endAt, publisher, eventType }] = useHistoryState();
+  const fetchNext = () => fetchNextHistoryEvents({ startAt, endAt, publisher, eventType });
   return (
     <Drawer open={doShow} onClose={onClose} anchor="right">
-      <ScrollingHistory
+      <HistoryContainer
+        fetchFirstHistoryEvents={fetchFirstHistoryEvents}
+        users={users}
+        eventTypes={eventTypes}
         events={events}
         nEventsTotal={nEventsTotal}
         hasMore={hasMore}
@@ -25,4 +37,6 @@ export default function HistoryDrawer({
       />
     </Drawer>
   );
-}
+};
+
+export default withStyles(styles)(HistoryDrawer);

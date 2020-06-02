@@ -84,6 +84,7 @@ const ka = {
     projected_budget_exists: "დაგეგმილი ბიუჯეტი არსებობს",
     projected_budget: "დაგეგმიილ ბიუჯეტი",
     redacted: "Redacted",
+    reset: "გადატვირთვა",
     revoke: "გაუქმება",
     search: "ძიება",
     show_permissions: "მაჩვენე ნებართვები",
@@ -506,6 +507,34 @@ const ka = {
     workflowitem_update: "განაახლეთ workflow item-ები",
     workflowitem_view: "იხილეთ workflow item-ები",
     write: "გაეცით ნებართვები"
+  },
+
+  eventTypes: {
+    project_created: "პროექტი შეიქმნა",
+    project_updated: "პროექტი განახლებულია",
+    project_assigned: "პროექტი დაინიშნა",
+    project_closed: "პროექტი დახურულია",
+    project_permission_granted: "პროექტის ნებართვა გაიცემა",
+    project_permission_revoked: "გაუქმდა პროექტის ნებართვა",
+    project_projected_budget_updated: "განახლდა პროექტის ბიუჯეტი",
+    project_projected_budget_deleted: "პროექტის ბიუჯეტი დახურულია",
+
+    subproject_created: "შეიქმნა ქვეპროექტი",
+    subproject_updated: "განახლებულია ქვეპროექტი",
+    subproject_assigned: "ქვეპროექტი დაინიშნა",
+    subproject_closed: "ქვეპროექტი დახურულია",
+    subproject_permission_granted: "ნებადართულია ქვეპროექტის ნებართვა",
+    subproject_permission_revoked: "გაუქმდა დაპროექტების ნებართვა",
+    subproject_projected_budget_updated: "პროექტის ბიუჯეტი განახლებულია",
+    subproject_projected_budget_deleted: "დაიხურა პროექტის ბიუჯეტი",
+
+    workflowitem_created: "შეიქმნა სამუშაო ნაკადის ელემენტი",
+    workflowitem_updated: "Workflowitem განახლებულია",
+    workflowitem_assigned: "სამუშაო გრაფიკი დაევალა",
+    workflowitem_closed: "Workflowitem დახურულია",
+    workflowitem_permission_granted: "მიენიჭა workflowitem ნებართვა",
+    workflowitem_permission_revoked: "სამუშაო პროცესის ნებართვა გაუქმებულია",
+    workflowitems_reordered: "Workflowitems გადაკეთდა"
   },
 
   language: {

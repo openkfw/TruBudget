@@ -136,14 +136,11 @@ function WorkflowDetails({
   subProjectId: subprojectId
 }) {
   const [selectedTab, setSelectedTab] = useState(0);
-  useEffect(
-    () => {
-      if (!showWorkflowDetails) {
-        setSelectedTab(0);
-      }
-    },
-    [showWorkflowDetails]
-  );
+  useEffect(() => {
+    if (!showWorkflowDetails) {
+      setSelectedTab(0);
+    }
+  }, [showWorkflowDetails]);
 
   const workflowitem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
 
@@ -176,7 +173,9 @@ function WorkflowDetails({
         {content}
       </DialogContent>
       <DialogActions>
-        <Button onClick={hideWorkflowDetails}>{strings.common.close}</Button>
+        <Button data-test="workflowdetails-close" onClick={hideWorkflowDetails}>
+          {strings.common.close}
+        </Button>
       </DialogActions>
     </Dialog>
   );
