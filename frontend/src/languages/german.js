@@ -214,7 +214,11 @@ const de = {
     workflowitem_details: "Prozessschrittdetails",
     workflowitem_details_documents: "Dokumente",
     workflowitem_details_history: "Historie",
-    workflowitem_details_overview: "Übersicht"
+    workflowitem_details_overview: "Übersicht",
+    workflowitem_type: "Workflowitem Typ",
+    workflowitem_type_general: "Legen Sie ein Workflow-Item vom Typ 'general' an.",
+    workflowitem_type_restricted:
+      "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte."
   },
 
   users: {

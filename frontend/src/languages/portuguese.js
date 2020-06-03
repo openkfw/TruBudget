@@ -260,7 +260,11 @@ const pt = {
     workflowitem_details_documents: "Documentos",
     workflowitem_details_history: "Histórico",
     workflowitem_details_overview: "Visão geral",
-    workflowitem_details: "Detalhes do item de workflow"
+    workflowitem_details: "Detalhes do item de workflow",
+    workflowitem_type: "Categoria do item de workflow",
+    workflowitem_type_general: "Criar un item de workflow do tipo general.",
+    workflowitem_type_restricted:
+      "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização."
   },
 
   preview: {

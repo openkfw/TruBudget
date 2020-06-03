@@ -235,7 +235,19 @@ function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
 }
 
 const editWorkflow = (
-  { id, displayName, amount, exchangeRate, amountType, currency, description, status, documents, dueDate },
+  {
+    id,
+    displayName,
+    amount,
+    exchangeRate,
+    amountType,
+    currency,
+    description,
+    status,
+    documents,
+    dueDate,
+    workflowitemType
+  },
   props
 ) => {
   // Otherwise we need to deal with undefined which causes errors in the editDialog
@@ -251,7 +263,8 @@ const editWorkflow = (
     description,
     workflowitemCurrency,
     documents,
-    dueDate
+    dueDate,
+    workflowitemType
   );
 };
 
