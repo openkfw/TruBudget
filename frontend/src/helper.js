@@ -60,6 +60,12 @@ export const fromAmountString = (amount, currency) => {
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 };
 
+export const getDisplayNameFromUsers = (id, users) => {
+  if (!users) return "";
+  const user = users.find(user => user.id === id);
+  return user.displayName;
+};
+
 export const getCurrencies = () => {
   return Object.keys(currencies).map(currency => {
     return {
@@ -145,7 +151,7 @@ export function makePermissionReadable(intent) {
 }
 
 export const dateFormat = () => {
-  return "MM.DD.YYYY";
+  return "DD.MM.YYYY";
 };
 
 export const isEmailAddressValid = emailAddress => {

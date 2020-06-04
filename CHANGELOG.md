@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Show dialog before closing project, subproject or workflowitem [#430](https://github.com/openkfw/TruBudget/issues/430)
 - Show privacy notice when creating a user or user group [#466](https://github.com/openkfw/TruBudget/issues/466)
+- Added search feature for histories [#425](https://github.com/openkfw/TruBudget/issues/425)
+- Changed date format to DD.MM.YYYY [#480](https://github.com/openkfw/TruBudget/issues/480)
 
 <!-- ### Changed -->
 

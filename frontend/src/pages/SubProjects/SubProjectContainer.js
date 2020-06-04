@@ -131,6 +131,7 @@ class SubProjectContainer extends Component {
                 searchBarDisplayed={this.props.searchBarDisplayed}
                 subProjects={this.props.filteredSubProjects}
                 highlightingRegex={this.props.highlightingRegex}
+                idsPermissionsUnassigned={this.props.idsPermissionsUnassigned}
                 isDataLoading={this.props.isDataLoading}
               />
             </div>

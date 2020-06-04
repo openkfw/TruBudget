@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { toJS } from "../../helper";
 import HistoryDrawer from "../Common/History/HistoryDrawer";
 import { hideHistory } from "../Notifications/actions";
-import { fetchNextProjectHistoryPage } from "./actions";
-
+import { fetchNextProjectHistoryPage, fetchFirstProjectHistoryPage } from "./actions";
+import { projectEventTypes } from "../Common/History/eventTypes";
 function ProjectHistoryDrawer({
   projectId,
   doShow,
@@ -16,7 +16,9 @@ function ProjectHistoryDrawer({
   isLoading,
   getUserDisplayname,
   hideHistory,
-  fetchNextProjectHistoryPage
+  fetchNextProjectHistoryPage,
+  fetchFirstProjectHistoryPage,
+  users
 }) {
   return (
     <HistoryDrawer
@@ -24,16 +26,20 @@ function ProjectHistoryDrawer({
       onClose={hideHistory}
       events={events}
       nEventsTotal={nEventsTotal}
-      fetchNext={() => fetchNextProjectHistoryPage(projectId)}
+      fetchNextHistoryEvents={filter => fetchNextProjectHistoryPage(projectId, filter)}
+      fetchFirstHistoryEvents={filter => fetchFirstProjectHistoryPage(projectId, filter)}
       hasMore={currentHistoryPage < lastHistoryPage}
       isLoading={isLoading}
       getUserDisplayname={getUserDisplayname}
+      users={users}
+      eventTypes={projectEventTypes()}
     />
   );
 }
 
 function mapStateToProps(state) {
   return {
+    users: state.getIn(["login", "user"]),
     doShow: state.getIn(["detailview", "showHistory"]),
     events: state.getIn(["detailview", "historyItems"]),
     nEventsTotal: state.getIn(["detailview", "totalHistoryItemCount"]),
@@ -44,9 +50,12 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = {
-  hideHistory,
-  fetchNextProjectHistoryPage
-};
+function mapDispatchToProps(dispatch) {
+  return {
+    hideHistory: () => dispatch(hideHistory()),
+    fetchNextProjectHistoryPage: (projectId, filter) => dispatch(fetchNextProjectHistoryPage(projectId, filter)),
+    fetchFirstProjectHistoryPage: (projectId, filter) => dispatch(fetchFirstProjectHistoryPage(projectId, filter))
+  };
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(toJS(ProjectHistoryDrawer));

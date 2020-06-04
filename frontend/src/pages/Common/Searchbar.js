@@ -15,8 +15,7 @@ const styles = {
     display: "flex"
   },
   searchField: {
-    padding: "2px",
-    margin: "5px",
+    margin: "17px",
     width: "270px",
     display: "flex",
     flexDirection: "row",
@@ -33,7 +32,7 @@ const styles = {
 };
 const Searchbar = ({
   classes,
-  searchBarDisplayed,
+  searchBarDisplayed = true,
   searchDisabled,
   searchTerm,
   storeSearchBarDisplayed,

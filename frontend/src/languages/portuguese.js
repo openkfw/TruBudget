@@ -85,6 +85,7 @@ const pt = {
     projected_budget_exists: "O orçamento projetado já existe",
     projected_budget: "Orçamento projetado",
     redacted: "Redigido",
+    reset: "Redefinir",
     revoke: "Revogar",
     search: "Procurar",
     show_permissions: "Mostrar permissões",
@@ -508,6 +509,34 @@ const pt = {
     workflowitem_update: "Atualizar item de worflow",
     workflowitem_view: "Visualizar item de workflow",
     write: "Permissões de escrita"
+  },
+
+  eventTypes: {
+    project_created: "Projecto criado",
+    project_updated: "Projecto actualizado",
+    project_assigned: "Projecto atribuído",
+    project_closed: "Projecto encerrado",
+    project_permission_granted: "Permissao concedida ao projecto",
+    project_permission_revoked: "Autorização de projecto revogada",
+    project_projected_budget_updated: "Orçamento do projecto actualizado",
+    project_projected_budget_deleted: "Orçamento do projecto encerrado",
+
+    subproject_created: "Subprojecto criado",
+    subproject_updated: "Subprojecto actualizado",
+    subproject_assigned: "Subprojecto atribuído",
+    subproject_closed: "Subprojecto encerrado",
+    subproject_permission_granted: "Autorização concedida ao subprojecto",
+    subproject_permission_revoked: "Autorização de subprojecto revogada",
+    subproject_projected_budget_updated: "Orçamento do subprojecto actualizado",
+    subproject_projected_budget_deleted: "Orçamento do subprojecto encerrado",
+
+    workflowitem_created: "Workflow item criado",
+    workflowitem_updated: "Workflowitem actualizado",
+    workflowitem_assigned: "Workflowitem assigned",
+    workflowitem_closed: "Workflowitem encerrado",
+    workflowitem_permission_granted: "Workflowitem permisision granted",
+    workflowitem_permission_revoked: "Workflowitem permission revoked",
+    workflowitems_reordered: "Reordenação dos fluxos de trabalho"
   },
 
   language: {

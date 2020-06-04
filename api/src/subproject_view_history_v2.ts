@@ -1,14 +1,32 @@
 import { FastifyInstance } from "fastify";
-
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
+import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
+import * as SubprojectHistory from "./service/domain/workflow/subproject_history_get";
 import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
+import { businessEventSchema } from "./service/domain/business_event";
+import VError = require("verror");
+import Joi = require("joi");
+
+const requestBodySchema = Joi.array().items({
+  entityId: Joi.string().required(),
+  entityType: Joi.valid("subproject").required(),
+  businessEvent: businessEventSchema.required(),
+  snapshot: Joi.object({
+    displayName: Joi.string().required(),
+  }).required(),
+});
+
+function validateRequestBody(body: any): Result.Type<SubprojectTraceEvent[]> {
+  const { error, value } = Joi.validate(body, requestBodySchema);
+  return !error ? value : error;
+}
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -47,40 +65,46 @@ function mkSwaggerSchema(server: FastifyInstance) {
           description: "changes related to the given subproject in chronological order",
           type: "object",
           properties: {
-            historyItemsCount: {
-              type: "number",
-              description:
-                "Total number of history items (greater or equal to the number of returned items)",
-              example: 10,
-            },
-            events: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                  entityType: { type: "string", example: "subproject" },
-                  businessEvent: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                historyItemsCount: {
+                  type: "number",
+                  description:
+                    "Total number of history items (greater or equal to the number of returned items)",
+                  example: 10,
+                },
+                events: {
+                  type: "array",
+                  items: {
                     type: "object",
-                    additionalProperties: true,
                     properties: {
-                      type: { type: "string" },
-                      source: { type: "string" },
-                      time: { type: "string" },
-                      publisher: { type: "string" },
-                    },
-                    example: {
-                      type: "subproject_closed",
-                      source: "http",
-                      time: "2018-09-05T13:37:25.775Z",
-                      publisher: "jdoe",
-                    },
-                  },
-                  snapshot: {
-                    type: "object",
-                    additionalProperties: true,
-                    properties: {
-                      displayName: { type: "string", example: "Build a town" },
+                      entityId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+                      entityType: { type: "string", example: "subproject" },
+                      businessEvent: {
+                        type: "object",
+                        additionalProperties: true,
+                        properties: {
+                          type: { type: "string" },
+                          source: { type: "string" },
+                          time: { type: "string" },
+                          publisher: { type: "string" },
+                        },
+                        example: {
+                          type: "subproject_closed",
+                          source: "http",
+                          time: "2018-09-05T13:37:25.775Z",
+                          publisher: "jdoe",
+                        },
+                      },
+                      snapshot: {
+                        type: "object",
+                        additionalProperties: true,
+                        properties: {
+                          displayName: { type: "string", example: "Build a town" },
+                        },
+                      },
                     },
                   },
                 },
@@ -95,12 +119,13 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  getSubprojectTraceEvents(
+  getSubprojectHistory(
     ctx: Ctx,
     user: ServiceUser,
     projectId: Project.Id,
     subprojectId: Subproject.Id,
-  ): Promise<SubprojectTraceEvent[]>;
+    filter: SubprojectHistory.Filter,
+  ): Promise<Result.Type<SubprojectTraceEvent[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -166,8 +191,60 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
 
+      // ISO Timestamp example: 01.01.2020 or 2019-12-31T23:00:00.000Z
+      if (request.query.startAt !== undefined) {
+        let startAt: Date = new Date(request.query.startAt);
+        if (isNaN(startAt.getTime())) {
+          reply.status(400).send({
+            apiVersion: "1.0",
+            error: {
+              code: 400,
+              message: "if present, the query parameter `startAt` must be a valid ISO timestamp",
+            },
+          });
+          return;
+        }
+      }
+
+      if (request.query.endAt !== undefined) {
+        let endAt: Date = new Date(request.query.endAt);
+        if (isNaN(endAt.getTime())) {
+          reply.status(400).send({
+            apiVersion: "1.0",
+            error: {
+              code: 400,
+              message: "if present, the query parameter `endAt` must be a valid ISO timestamp",
+            },
+          });
+          return;
+        }
+      }
+
+      const filter: SubprojectHistory.Filter = {
+        publisher: request.query.publisher,
+        startAt: request.query.startAt,
+        endAt: request.query.endAt,
+        eventType: request.query.eventType,
+      };
+
       try {
-        const events = await service.getSubprojectTraceEvents(ctx, user, projectId, subprojectId);
+        // Get all Events in subproject stream
+        const eventsResult = await service.getSubprojectHistory(
+          ctx,
+          user,
+          projectId,
+          subprojectId,
+          filter,
+        );
+        if (Result.isErr(eventsResult)) {
+          throw new VError(eventsResult, "subproject.viewHistory failed");
+        }
+
+        const eventsResultVerified = validateRequestBody(eventsResult);
+        if (Result.isErr(eventsResultVerified)) {
+          throw new VError(eventsResultVerified, "subproject.viewHistory failed");
+        }
+        const events: SubprojectTraceEvent[] = eventsResultVerified;
 
         const offsetIndex = offset < 0 ? Math.max(0, events.length + offset) : offset;
         const slice = events.slice(
@@ -177,8 +254,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
         const code = 200;
         const body = {
-          historyItemsCount: events.length,
-          events: slice,
+          apiVersion: "1.0",
+          data: {
+            historyItemsCount: events.length,
+            events: slice,
+          },
         };
         reply.status(code).send(body);
       } catch (err) {

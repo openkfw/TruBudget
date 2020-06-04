@@ -79,6 +79,7 @@ const de = {
     projected_budget: "Planbudget",
     projected_budget_exists: "Planbudget existiert bereits",
     redacted: "Redigiert",
+    reset: "Zurücksetzen",
     revoke: "German: revoke",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
@@ -506,6 +507,34 @@ const de = {
     workflowitem_update: "German: Update workflowitem",
     workflowitem_view: "German: View workflowitem",
     write: "German: Write permissions"
+  },
+
+  eventTypes: {
+    project_created: "Projekt erstellt",
+    project_updated: "Projekt aktualisiert",
+    project_assigned: "Projekt zugewiesen",
+    project_closed: "Projekt abgeschlossen",
+    project_permission_granted: "Projektgenehmigung erteilt",
+    project_permission_revoked: "Projekterlaubnis widerrufen",
+    project_projected_budget_updated: "Projektbudget aktualisiert",
+    project_projected_budget_deleted: "Projekt-Budget abgeschlossen",
+
+    subproject_created: "Teilprojekt angelegt",
+    subproject_updated: "Teilprojekt aktualisiert",
+    subproject_assigned: "Teilprojekt zugeordnet",
+    subproject_closed: "Teilprojekt abgeschlossen",
+    subproject_permission_granted: "Teilprojektgenehmigung erteilt",
+    subproject_permission_revoked: "Subprojekt-Erlaubnis widerrufen",
+    subproject_projected_budget_updated: "Teilprojekt-Budget aktualisiert",
+    subproject_projected_budget_deleted: "Teilprojekt-Budget geschlossen",
+
+    workflowitem_created: "Workflowitem erzeugt",
+    workflowitem_updated: "Workflowitem aktualisiert",
+    workflowitem_assigned: "Workflowitem zugeordnet",
+    workflowitem_closed: "Workflowitem geschlossen",
+    workflowitem_permission_granted: "Workflowitem-Erlaubnis erteilt",
+    workflowitem_permission_revoked: "Workflowitem-Erlaubnis widerrufen",
+    workflowitems_reordered: "Workflow-Einträge neu angeordnet"
   },
 
   language: {
