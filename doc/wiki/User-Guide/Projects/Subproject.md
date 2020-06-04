@@ -2,12 +2,14 @@
 
 - [Subproject](#subproject)
   - [View subprojects](#view-subprojects)
+  - [Filter subprojects](#filter-subprojects)
   - [View subproject details](#view-subproject-details)
   - [Create a subproject](#create-a-subproject)
   - [Update a subproject](#update-a-subproject)
   - [Assign an User/Group to a subproject](#assign-an-usergroup-to-a-subproject)
   - [Close subproject](#close-subproject)
   - [View the history of a subproject](#view-the-history-of-a-subproject)
+  - [Filter the history of a subproject](#filter-the-history-of-a-subproject)
   - [View the additional data of a subproject](#view-the-additional-data-of-a-subproject)
   - [Permissions on subproject](#permissions-on-subproject)
   - [Create a workflowitem](#create-a-workflowitem)
@@ -51,6 +53,30 @@ View all subprojects where the current user has view-permissions on.
 ![show subprojects](../../uploads/Screenshots/view_projects.jpg)
 
 4. At the bottom half of the site all subprojects of the current project are viewed
+
+## Filter subprojects
+
+**Description:**
+
+There are 2 ways how subprojects can be filtered:
+
+1. Searchbar
+2. URL
+
+The Searchbar can be used to search all projects for a term included in name, tag or status. These can also be used as prefixes to specify the search context (e.g. tag:mycustomtag). If no prefix is used display name, tag and status are searched for a match. After typing the project list and the URL are updated instantly. The URL can then be shared to other users including the filter.
+The URL supports query parameters which are updated instantly when typing search terms into the searchbar.
+
+**Notes:**
+
+- Use prefixes to search specific attributes. Available Prefixes: tag, name, status
+- The filter options can be easily shared by copying the link after typing in the search terms into the searchbar.
+
+**Instructions:**
+
+1. Navigate to a project
+2. On the left side you can see the searchbar
+3. Type in the term by which you want to filter the projects
+4. The subprojects are now filtered by your search term
 
 ## View subproject details
 
@@ -181,7 +207,7 @@ Close a subproject when all workflowitems are closed.
 
 **Description:**
 
-The history contains all activities done directly refer to the current subproject.
+The history contains all activities done and directly refer to the current subproject.
 
 **Notes:**
 
@@ -196,6 +222,23 @@ The history contains all activities done directly refer to the current subprojec
 5. Click the grey button below the '+' button on te right to open the right sidebar viewing the history of the current subproject.
 
 ![show subproject history](../../uploads/Screenshots/view_subproject_history.jpg)
+
+## Filter the history of a subproject
+
+**Description:**
+
+The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and a end date, where a timeframe can be determined. By clicking the search button, all values that are specified are used in the filter request.
+
+**Instructions:**
+
+1. Click the button in the upper left corner to open the side-navigation-bar
+2. Click the "Projects" menu point
+3. Click the blue magnifier icon in the bottom right corner of a project
+4. Click the grey magnifier icon on the most right of the subproject you want to view
+5. Click the grey button below the '+' button on te right to open the right sidebar viewing the history of the current subproject
+6. Click on the top of the sidebar to open the expandable filter area
+
+![filter subproject history](../../uploads/Screenshots/filter_subproject_history.jpg)
 
 ## View the additional data of a subproject
 

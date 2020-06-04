@@ -8,7 +8,7 @@
   - [Update multiple workflowitems](#update-multiple-workflowitems)
   - [Assign an User/Group to a workflowitem](#assign-an-usergroup-to-a-workflowitem)
   - [Close workflowitem](#close-workflowitem)
-  - [View the history of a workflowitem](#view-the-history-of-a-workflowitem)
+  - [View and filter the history of a workflowitem](#view-and-filter-the-history-of-a-workflowitem)
   - [Reorder Workflowitems](#reorder-workflowitems)
   - [Documents in TruBudget](#documents-in-trubudget)
     - [Add document to workflowitem](#add-document-to-workflowitem)
@@ -239,11 +239,12 @@ Close a workflowitem when the work is done.
 
 ![close workflowitem](../../uploads/Screenshots/close_workflowitem.jpg)
 
-## View the history of a workflowitem
+## View and filter the history of a workflowitem
 
 **Description:**
 
 The history for each workflowitem can be found in its details dialog. The history contains a chronological list of changes of the selected workflowitem, starting with the newest.
+The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and a end date, where a timeframe can be determined. By clicking the search button, all values that are specified are used in the filter request.
 
 **Instructions:**
 
@@ -252,6 +253,8 @@ The history for each workflowitem can be found in its details dialog. The histor
 2. Navigate to the "History" tab
    ![view the history tab](../../uploads/Screenshots/history_tab.jpg)
 3. You can now view the history of the selected workflowitem
+4. To filter the history events, click on the expandable filter area and set the filter options
+   ![filter workflowitem history](../../uploads/Screenshots/filter_workflowitem_history.jpg)
 
 ## Reorder Workflowitems
 
