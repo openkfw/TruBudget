@@ -13,6 +13,7 @@ import { getGroupsForUser } from "./group_query";
 import { importprivkey } from "./importprivkey";
 import { hashPassword, isPasswordMatch } from "./password";
 import * as UserQuery from "./user_query";
+import * as UserRecord from "./domain/organization/user_record";
 
 // Use root as the service user to ensure we see all the data:
 const rootUser = { id: "root", groups: [] };
@@ -91,6 +92,11 @@ async function authenticateUser(
     throw new AuthenticationFailed({ ctx, organization, userId }, userRecord);
   }
 
+  // Check if user has user_authenticate intent
+  if (!UserRecord.permits(userRecord, rootUser, globalIntents)) {
+    throw new AuthenticationFailed({ ctx, organization, userId }, "User is deactivated");
+  }
+
   if (!(await isPasswordMatch(password, userRecord.passwordHash))) {
     throw new AuthenticationFailed({ ctx, organization, userId });
   }
@@ -111,9 +117,9 @@ async function authenticateUser(
 
   try {
     return AuthToken.fromUserRecord(userRecord, {
-      getGroupsForUser: async id =>
-        getGroupsForUser(conn, ctx, rootUser, id).then(groups => groups.map(x => x.id)),
-      getOrganizationAddress: async orga => getOrganizationAddressOrThrow(conn, ctx, orga),
+      getGroupsForUser: async (id) =>
+        getGroupsForUser(conn, ctx, rootUser, id).then((groups) => groups.map((x) => x.id)),
+      getOrganizationAddress: async (orga) => getOrganizationAddressOrThrow(conn, ctx, orga),
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, rootUser),
     });
   } catch (error) {
