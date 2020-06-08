@@ -16,7 +16,7 @@ export async function createWorkflowitem(
   serviceUser: ServiceUser,
   requestData: Workflowitem.RequestData,
 ): Promise<ResourceMap> {
-  const result = await Cache.withCache(conn, ctx, cache => {
+  const result = await Cache.withCache(conn, ctx, (cache) => {
     return Workflowitem.createWorkflowitem(ctx, serviceUser, requestData, {
       workflowitemExists: async (
         projectId: string,
@@ -32,13 +32,13 @@ export async function createWorkflowitem(
   });
 
   if (Result.isErr(result)) throw result;
-  const { newEvents } = result;
+  const newEvents = result;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 
-  const workflowitemEvent = newEvents.find(x => (x as any).workflowitem.id !== undefined);
+  const workflowitemEvent = newEvents.find((x) => (x as any).workflowitem.id !== undefined);
   if (workflowitemEvent === undefined) throw Error(`Assertion: This is a bug.`);
 
   const resourceIds: ResourceMap = {

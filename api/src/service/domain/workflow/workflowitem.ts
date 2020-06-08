@@ -8,7 +8,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
-import { StoredDocument } from "./document";
+import { StoredDocument, storedDocumentSchema } from "./document";
 import { moneyAmountSchema } from "./money";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
@@ -66,9 +66,7 @@ const schema = Joi.object().keys({
   isRedacted: Joi.boolean().required(),
   id: Joi.string().required(),
   subprojectId: Subproject.idSchema.required(),
-  createdAt: Joi.date()
-    .iso()
-    .required(),
+  createdAt: Joi.date().iso().required(),
   dueDate: Joi.date().iso(),
   displayName: Joi.string().required(),
   // This should use exchangeRateSchema but can't, because of backward compatibility:
@@ -113,28 +111,13 @@ const schema = Joi.object().keys({
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-  amountType: Joi.string()
-    .valid("N/A", "disbursed", "allocated")
-    .required(),
+  amountType: Joi.string().valid("N/A", "disbursed", "allocated").required(),
   description: Joi.string().allow(""),
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
+  status: Joi.string().valid("open", "closed").required(),
   assignee: Joi.string(),
-  documents: Joi.array()
-    .required()
-    .items(
-      Joi.object().keys({
-        id: Joi.string(),
-        hash: Joi.string(),
-      }),
-    ),
-  permissions: Joi.object()
-    .pattern(/.*/, Joi.array().items(Joi.string()))
-    .required(),
-  log: Joi.array()
-    .required()
-    .items(workflowitemTraceEventSchema),
+  documents: Joi.array().required().items(storedDocumentSchema),
+  permissions: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).required(),
+  log: Joi.array().required().items(workflowitemTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
 });
 
@@ -152,7 +135,7 @@ export function permits(
     const eligibles = workflowitem.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;
@@ -185,9 +168,9 @@ function redactLog(events: WorkflowitemTraceEvent[]): WorkflowitemTraceEvent[] {
   return (
     events
       // We only keep close events for now:
-      .filter(x => x.businessEvent.type === "workflowitem_closed")
+      .filter((x) => x.businessEvent.type === "workflowitem_closed")
       // We only keep the info needed to sort workflowitems:
-      .map(x => ({
+      .map((x) => ({
         entityId: x.entityId,
         entityType: x.entityType,
         businessEvent: {

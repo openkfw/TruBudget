@@ -96,6 +96,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   type: "object",
                   properties: {
                     id: { type: "string", example: "myId" },
+                    fileName: { type: "string", example: "printout.pdf" },
                     base64: {
                       type: "string",
                       example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
@@ -132,7 +133,7 @@ interface Service {
     projectId: Project.Id,
     subprojectId: Subproject.Id,
     workflowitemId: Workflowitem.Id,
-    data: WorkflowitemUpdate.ModificationWithDocumentBodies,
+    data: WorkflowitemUpdate.RequestData,
   ): Promise<void>;
 }
 
@@ -165,7 +166,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });

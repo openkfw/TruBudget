@@ -77,6 +77,11 @@ function mkSwaggerSchema(server: FastifyInstance) {
                                   example:
                                     "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
                                 },
+                                documentId: {
+                                  type: "string",
+                                  example: "abc-cde-adf",
+                                  additionalProperties: true,
+                                },
                               },
                             },
                           },
@@ -110,7 +115,7 @@ interface ExposedWorkflowitem {
     currency: string;
     billingDate: string;
     exchangeRate: string;
-    documents: [{ id: string; hash: string }];
+    documents: [{ id: string; hash: string; documentId: string }];
     additionalData: object;
   };
 }
@@ -156,7 +161,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     service
       .listWorkflowitems(ctx, user, projectId, subprojectId)
       .then((workflowitems: Workflowitem.ScrubbedWorkflowitem[]) => {
-        return workflowitems.map(workflowitem => {
+        return workflowitems.map((workflowitem) => {
           return {
             allowedIntents: workflowitem.isRedacted
               ? []
@@ -189,7 +194,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });

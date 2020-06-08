@@ -235,8 +235,8 @@ export const registerRoutes = (
 
   server.get(`${urlPrefix}/version`, getSchema(server, "version"), async (request, reply) => {
     getVersion(multichainHost, backupApiPort, multichainClient)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
+      .then((response) => send(reply, response))
+      .catch((err) => handleError(request, reply, err));
   });
 
   // ------------------------------------------------------------
@@ -248,8 +248,8 @@ export const registerRoutes = (
     getSchemaWithoutAuth("registerNode"),
     (request, reply) => {
       registerNode(multichainClient, request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(request, reply, err));
     },
   );
 
@@ -258,8 +258,8 @@ export const registerRoutes = (
     getSchema(server, "voteForPermission"),
     (request, reply) => {
       voteForNetworkPermission(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(request, reply, err));
     },
   );
 
@@ -268,8 +268,8 @@ export const registerRoutes = (
     getSchema(server, "approveNewOrganization"),
     (request, reply) => {
       approveNewOrganization(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(request, reply, err));
     },
   );
 
@@ -283,15 +283,15 @@ export const registerRoutes = (
         issuer(request),
         request as AuthenticatedRequest,
       )
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(request, reply, err));
     },
   );
 
   server.get(`${urlPrefix}/network.list`, getSchema(server, "networkList"), (request, reply) => {
     getNodeList(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-      .then(response => send(reply, response))
-      .catch(err => handleError(request, reply, err));
+      .then((response) => send(reply, response))
+      .catch((err) => handleError(request, reply, err));
   });
 
   server.get(
@@ -299,8 +299,8 @@ export const registerRoutes = (
     getSchema(server, "listActive"),
     (request, reply) => {
       getActiveNodes(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then(response => send(reply, response))
-        .catch(err => handleError(request, reply, err));
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(request, reply, err));
     },
   );
 
@@ -309,13 +309,12 @@ export const registerRoutes = (
     getSchema(server, "createBackup"),
     (req: AuthenticatedRequest, reply) => {
       createBackup(multichainHost, backupApiPort, req)
-        .then(data => {
-          logger.info(reply.res);
+        .then((data) => {
           reply.header("Content-Type", "application/gzip");
           reply.header("Content-Disposition", `attachment; filename="backup.gz"`);
           reply.send(data);
         })
-        .catch(err => handleError(req, reply, err));
+        .catch((err) => handleError(req, reply, err));
     },
   );
 
@@ -324,8 +323,8 @@ export const registerRoutes = (
     getSchema(server, "restoreBackup"),
     async (req: AuthenticatedRequest, reply) => {
       await restoreBackup(multichainHost, backupApiPort, req)
-        .then(response => send(reply, response))
-        .catch(err => handleError(req, reply, err));
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(req, reply, err));
       // Invalidate the cache, regardless of the outcome:
       await invalidateCache();
     },

@@ -17,6 +17,8 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
+import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
+import logger from "../../../lib/logger";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -76,10 +78,17 @@ export async function createWorkflowitem(
   creatingUser: ServiceUser,
   reqData: RequestData,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[]; errors: Error[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const documents: StoredDocument[] = [];
   for (const doc of reqData.documents || []) {
-    documents.push(await hashDocument(doc));
+    const hashedDocumentResult = await hashDocument(doc);
+    if (Result.isErr(hashedDocumentResult)) {
+      return new VError(
+        hashedDocumentResult,
+        "failed to create workflowitem, permission check failed",
+      );
+    }
+    documents.push(hashedDocumentResult);
   }
 
   const publisher = creatingUser.id;
@@ -119,7 +128,7 @@ export async function createWorkflowitem(
   if (creatingUser.id !== "root") {
     const authorizationResult = Result.map(
       await repository.getSubproject(reqData.projectId, reqData.subprojectId),
-      subproject => {
+      (subproject) => {
         const intent = "subproject.createWorkflowitem";
         if (!Subproject.permits(subproject, creatingUser, [intent])) {
           return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });
@@ -143,25 +152,61 @@ export async function createWorkflowitem(
   // Check that the event is valid:
   const result = WorkflowitemCreated.createFrom(ctx, workflowitemCreated);
   if (Result.isErr(result)) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, workflowitemCreated, [result])] };
+    return new InvalidCommand(ctx, workflowitemCreated, [result]);
   }
 
-  return { newEvents: [workflowitemCreated], errors: [] };
-}
+  // handle new documents
+  const documentUploadedEventsResults: Result.Type<BusinessEvent>[] = documents.map((d, i) => {
+    const docToUpload: UploadedDocument = {
+      base64: reqData.documents ? reqData.documents[i].base64 : "",
+      fileName:
+        reqData.documents && reqData.documents[i].fileName
+          ? reqData.documents[i].fileName
+          : "uploaded_file.pdf",
+      id: d.documentId,
+    };
 
-function newDefaultPermissionsFor(userId: string): Permissions {
-  // The user can always do anything anyway:
-  if (userId === "root") return {};
+    const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
+      ctx.source,
+      publisher,
+      reqData.projectId,
+      reqData.subprojectId,
+      workflowitemId,
+      docToUpload,
+    );
 
-  const intents: Intent[] = [
-    "workflowitem.intent.listPermissions",
-    "workflowitem.intent.grantPermission",
-    "workflowitem.intent.revokePermission",
-    "workflowitem.view",
-    "workflowitem.assign",
-    "workflowitem.update",
-    "workflowitem.close",
-    "workflowitem.archive",
-  ];
-  return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
+    // Check that the event is valid:
+    const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
+    if (Result.isErr(result)) {
+      return new InvalidCommand(ctx, workflowitemEvent, [result]);
+    }
+    return workflowitemEvent;
+  });
+
+  const documentUploadedEvents: BusinessEvent[] = [];
+  for (const result of documentUploadedEventsResults) {
+    if (Result.isErr(result)) {
+      return result;
+    }
+    documentUploadedEvents.push(result);
+  }
+
+  return [workflowitemCreated, ...documentUploadedEvents];
+
+  function newDefaultPermissionsFor(userId: string): Permissions {
+    // The user can always do anything anyway:
+    if (userId === "root") return {};
+
+    const intents: Intent[] = [
+      "workflowitem.intent.listPermissions",
+      "workflowitem.intent.grantPermission",
+      "workflowitem.intent.revokePermission",
+      "workflowitem.view",
+      "workflowitem.assign",
+      "workflowitem.update",
+      "workflowitem.close",
+      "workflowitem.archive",
+    ];
+    return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
+  }
 }

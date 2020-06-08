@@ -4,7 +4,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
-import { StoredDocument, storedDocumentSchema } from "./document";
+import { StoredDocument, storedDocumentSchema, UploadedDocument } from "./document";
 import { conversionRateSchema, moneyAmountSchema } from "./money";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -52,12 +52,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
@@ -140,7 +136,7 @@ function updateProps(workflowitem: Workflowitem.Workflowitem, update: Modificati
     "exchangeRate",
     "billingDate",
     "dueDate",
-  ].forEach(propname => {
+  ].forEach((propname) => {
     if (update[propname] !== undefined) {
       workflowitem[propname] = update[propname];
     }
@@ -165,8 +161,8 @@ function updateDocuments(workflowitem: Workflowitem.Workflowitem, documents?: St
   // Existing documents are never overwritten. They are only allowed in the update if
   // they are equal to their existing record.
 
-  documents.forEach(document => {
-    const existingDocument = workflowitem.documents.find(x => x.id === document.id);
+  documents.forEach((document) => {
+    const existingDocument = workflowitem.documents.find((x) => x.id === document.id);
     if (existingDocument === undefined) {
       // This is a new document.
       workflowitem.documents.push(document);

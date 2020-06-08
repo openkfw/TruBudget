@@ -86,6 +86,7 @@ import * as WorkflowitemPermissionsListService from "./service/workflowitem_perm
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
+import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
@@ -117,6 +118,7 @@ import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
+import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
 
 const URL_PREFIX = "/api";
 
@@ -712,6 +714,19 @@ WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
 WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
   matches: (documentBase64: string, expectedSHA256: string) =>
     DocumentValidationService.isSameDocument(documentBase64, expectedSHA256),
+});
+
+WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
+  getDocument: (ctx, user, projectId, subprojectId, workflowitemId, documentId) =>
+    WorkflowitemDocumentDownloadService.getDocument(
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      documentId,
+    ),
 });
 
 /*

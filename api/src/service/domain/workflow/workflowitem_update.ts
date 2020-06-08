@@ -16,8 +16,24 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
+import { UploadedDocument, hashDocument, StoredDocument, hashDocuments } from "./document";
+import logger from "../../../lib/logger";
 
-export type RequestData = WorkflowitemUpdated.Modification;
+export interface RequestData {
+  displayName?: string;
+  description?: string;
+  amount?: string;
+  currency?: string;
+  amountType?: "N/A" | "disbursed" | "allocated";
+  exchangeRate?: string;
+  billingDate?: string;
+  dueDate?: string;
+  documents?: UploadedDocument[];
+  additionalData?: object;
+}
+
+export type EventData = WorkflowitemUpdated.Modification;
 export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
 
 interface Repository {
@@ -39,13 +55,26 @@ export async function updateWorkflowitem(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
+  const documentHashes: StoredDocument[] = [];
+  if (modification.documents !== undefined) {
+    const documentHashesResult = await hashDocuments(modification.documents);
+    if (Result.isErr(documentHashesResult)) {
+      return new VError(documentHashesResult, "failed to hash documents");
+    }
+    documentHashes.push(...documentHashesResult);
+  }
+  const modificationWithDocumentHashes: EventData = {
+    ...modification,
+    documents: documentHashes.length <= 0 ? undefined : documentHashes,
+  };
+
   const newEvent = WorkflowitemUpdated.createEvent(
     ctx.source,
     issuer.id,
     projectId,
     subprojectId,
     workflowitemId,
-    modification,
+    modificationWithDocumentHashes,
   );
   if (Result.isErr(newEvent)) {
     return new VError(newEvent, "cannot update workflowitem");
@@ -76,8 +105,8 @@ export async function updateWorkflowitem(
     : [];
   const notifications = recipients
     // The issuer doesn't receive a notification:
-    .filter(userId => userId !== issuer.id)
-    .map(recipient =>
+    .filter((userId) => userId !== issuer.id)
+    .map((recipient) =>
       NotificationCreated.createEvent(
         ctx.source,
         issuer.id,
@@ -89,7 +118,54 @@ export async function updateWorkflowitem(
       ),
     );
 
-  return { newEvents: [newEvent, ...notifications], workflowitem: result };
+  // Handle new documents
+  let newDocumentUploadedEventsResult: Result.Type<BusinessEvent>[] = [];
+  if (newEvent.update.documents && newEvent.update.documents.length > 0) {
+    const { documents } = newEvent.update;
+    if (modification.documents === undefined) {
+      // Documents of newEvent are created from documents given by the requestData(modification).
+      // If documents exist in newEvent there has to be the same amount in modification
+      // The documents in modification have to be used to find out the base64 string since it may not be part of the update event itself
+      return new Error(`Assertion: This is a bug.`);
+    }
+    const modDocuments = modification.documents;
+    newDocumentUploadedEventsResult = documents.map((d, i) => {
+      const docToUpload: UploadedDocument = {
+        base64: modDocuments[i].base64,
+        fileName: modDocuments[i].fileName ? modDocuments[i].fileName : "unknown-file.pdf",
+        id: d.documentId,
+      };
+
+      const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
+        ctx.source,
+        issuer.id,
+        projectId,
+        subprojectId,
+        workflowitemId,
+        docToUpload,
+      );
+
+      // Check that the event is valid:
+      const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
+      if (Result.isErr(result)) {
+        return new InvalidCommand(ctx, workflowitemEvent, [result]);
+      }
+      return workflowitemEvent;
+    });
+  }
+
+  const newDocumentUploadedEvents: BusinessEvent[] = [];
+  for (const result of newDocumentUploadedEventsResult) {
+    if (Result.isErr(result)) {
+      return result;
+    }
+    newDocumentUploadedEvents.push(result);
+  }
+
+  return {
+    newEvents: [newEvent, ...newDocumentUploadedEvents, ...notifications],
+    workflowitem: result,
+  };
 }
 
 function isEqualIgnoringLog(

@@ -9,6 +9,7 @@ export class NotFound extends Error {
       | "workflowitem"
       | "group"
       | "user"
+      | "document"
       | "notification",
     private readonly entityId: string,
   ) {

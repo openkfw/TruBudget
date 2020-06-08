@@ -55,7 +55,7 @@ export class RpcMultichainClient implements MultichainClient {
     const txId: StreamTxId = await this.rpcClient
       .invoke("create", "stream", streamName, isPublic, customFields)
       .then(() => logger.debug({ options }, `Created stream ${streamName} with options`))
-      .catch(err => {
+      .catch((err) => {
         if (options.name && err && err.code === -705) {
           // Stream or asset with this name already exists
           logger.trace(
@@ -91,7 +91,7 @@ export class RpcMultichainClient implements MultichainClient {
       false,
       maxItemCount,
     );
-    return items.map(item => ({
+    return items.map((item) => ({
       key: item.keys[0],
       value: hexToObject(item.data),
     }));
@@ -105,7 +105,7 @@ export class RpcMultichainClient implements MultichainClient {
     const items: MultichainStreamItem[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamId, key, false, nValues)
       .then(this.retrieveItems);
-    return items.map(x => hexToObject(x.data));
+    return items.map((x) => hexToObject(x.data));
   }
 
   public async updateStreamItem(
@@ -134,14 +134,14 @@ export class RpcMultichainClient implements MultichainClient {
     const items: Liststreamkeyitems.Item[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .then(this.retrieveItems)
-      .catch(err => {
+      .catch((err) => {
         if (err && err.code === -708) {
           throw { kind: "NotFound", what: `stream ${streamName}` };
         } else {
           throw err;
         }
       });
-    return items.map(x => ({
+    return items.map((x) => ({
       key: x.keys,
       resource: hexToObject(x.data) as Resource,
     }));
@@ -155,7 +155,7 @@ export class RpcMultichainClient implements MultichainClient {
     const allItemsAllValues: Liststreamkeyitems.Item[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .then(this.retrieveItems)
-      .catch(err => {
+      .catch((err) => {
         if (err && err.code === -708) {
           throw { kind: "NotFound", what: `stream ${streamName}` };
         } else {
@@ -252,7 +252,7 @@ export class RpcMultichainClient implements MultichainClient {
     return this.rpcClient
       .invoke("liststreamblockitems", streamName, `${from}-${to}`, verbose)
       .then(this.retrieveItems)
-      .catch(err => {
+      .catch((err) => {
         if (err && err.code === -708) {
           throw { kind: "NotFound", what: `stream ${streamName}` };
         } else {
@@ -272,8 +272,8 @@ export class RpcMultichainClient implements MultichainClient {
     }
     return this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
-      .then(this.retrieveItems)
-      .catch(err => {
+      .then((items: Liststreamkeyitems.Item[]) => this.retrieveItems(items))
+      .catch((err) => {
         if (err && err.code === -708) {
           throw { kind: "NotFound", what: `stream ${streamName}` };
         } else {
@@ -304,4 +304,4 @@ export class RpcMultichainClient implements MultichainClient {
   }
 }
 
-const sleep = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout));
+const sleep = (timeout: number) => new Promise((resolve) => setTimeout(resolve, timeout));
