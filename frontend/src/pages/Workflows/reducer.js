@@ -281,7 +281,10 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "status"], action.status);
     case WORKFLOW_DOCUMENT:
       return state.updateIn(["workflowToAdd", "documents"], documents =>
-        Immutable.List([...documents, Immutable.Map({ id: action.id, base64: action.base64 })])
+        Immutable.List([
+          ...documents,
+          Immutable.Map({ id: action.id, base64: action.base64, fileName: action.fileName })
+        ])
       );
     case CREATE_WORKFLOW_SUCCESS:
       return state.updateIn(["idsPermissionsUnassigned"], workflowitems => [...workflowitems, action.workflowitemId]);

@@ -2,19 +2,21 @@ import "cypress-file-upload";
 
 let projectId;
 let subprojectId;
+// Actual file in fixture folder
+const fileName = "documents_test.json";
 
 describe("Attaching a document to a workflowitem.", function() {
   before(() => {
     cy.login();
 
-    cy.createProject("workflowitem history test project", "workflowitem history test", [])
+    cy.createProject("documents test project", "workflowitem documents test", [])
       .then(({ id }) => {
         projectId = id;
-        return cy.createSubproject(projectId, "workflowitem history test");
+        return cy.createSubproject(projectId, "workflowitem documents test");
       })
       .then(({ id }) => {
         subprojectId = id;
-        return cy.createWorkflowitem(projectId, subprojectId, "workflowitem history test", { amountType: "N/A" });
+        return cy.createWorkflowitem(projectId, subprojectId, "workflowitem documents test", { amountType: "N/A" });
       });
   });
 
@@ -23,7 +25,7 @@ describe("Attaching a document to a workflowitem.", function() {
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("After creating the attachment, the document can be verified.", function() {
+  const uploadDocument = (fileDisplayName, fileName) => {
     // open edit dialog:
     cy.get("div[title=Edit] > button").click();
 
@@ -31,19 +33,21 @@ describe("Attaching a document to a workflowitem.", function() {
     cy.get("[data-test=next]").click();
 
     // enter the file name:
-    const fileDisplayName = "my test file";
     cy.get("#documentnameinput").type(fileDisplayName);
 
     // "upload" the file:
-    const fileName = "example.json";
     cy.fixture(fileName).then(fileContent => {
       cy.get("#docupload").upload(
         { fileContent: JSON.stringify(fileContent), fileName, mimeType: "application/json" },
         { subjectType: "input" }
       );
     });
-    cy.get("[data-test=workflowitemDocumentId]").should("contain", fileDisplayName);
+    return cy.get("[data-test=workflowitemDocumentId]").should("contain", fileDisplayName);
+  };
 
+  it("A document can be validated.", function() {
+    const fileDisplayName = "Validation_Test";
+    uploadDocument(fileDisplayName, fileName);
     // submit and close the dialog:
     cy.get("[data-test=submit]").click();
 
@@ -63,6 +67,19 @@ describe("Attaching a document to a workflowitem.", function() {
 
     // make sure the validation was successful:
     cy.get(`button[label="Validated!"] > span`).should("contain", "OK");
+  });
+
+  it("Validation of wrong document fails.", function() {
+    const fileDisplayName = "Wrong_Document_Test";
+    uploadDocument(fileDisplayName, fileName);
+    // submit and close the dialog:
+    cy.get("[data-test=submit]").click();
+
+    // open the info dialog window:
+    cy.get(".workflowitem-info-button").click();
+
+    // go to the documents tab:
+    cy.get("[data-test=workflowitem-documents-tab]").click();
 
     // make sure the validation fails with the wrong document
     const wrongFileName = "testdata.json";

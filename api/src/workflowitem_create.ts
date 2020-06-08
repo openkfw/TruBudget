@@ -9,7 +9,7 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
-import { UploadedDocument } from "./service/domain/workflow/document";
+import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/workflow/document";
 import { conversionRateSchema, moneyAmountSchema } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
@@ -48,7 +48,7 @@ const requestBodyV1Schema = Joi.object({
     amountType: Joi.string().required(),
     billingDate: Joi.string(),
     exchangeRate: conversionRateSchema,
-    documents: Joi.array().items(Joi.object().keys({ id: Joi.string(), base64: Joi.string() })),
+    documents: Joi.array().items(uploadedDocumentSchema),
     additionalData: Joi.object(),
   }).required(),
 });
@@ -103,6 +103,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   properties: {
                     id: { type: "string", example: "classroom-contract" },
                     base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
+                    fileName: { type: "string", example: "test-document" },
                   },
                 },
               },
@@ -204,7 +205,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           };
           reply.status(code).send(body);
         })
-        .catch(err => {
+        .catch((err) => {
           const { code, body } = toHttpError(err);
           reply.status(code).send(body);
         });

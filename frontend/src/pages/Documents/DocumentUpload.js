@@ -67,7 +67,7 @@ export default class DocumentUpload extends Component {
                     reader.onloadend = e => {
                       if (e.target.result !== undefined) {
                         const dataUrl = e.target.result.split(";base64,")[1];
-                        storeWorkflowDocument(this.state.name, dataUrl);
+                        storeWorkflowDocument(this.state.name, dataUrl, file.name);
                       }
                       this.setState({ name: "" });
                     };
