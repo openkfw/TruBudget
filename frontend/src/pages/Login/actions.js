@@ -9,7 +9,8 @@ export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 export const STORE_USERNAME = "STORE_USERNAME";
 export const STORE_PASSWORD = "STORE_PASSWORD";
 export const LOGIN_ERROR_MESSAGE = "LOGIN_ERROR_MESSAGE";
-export const SHOW_LOGIN_ERROR = "SHOW_LOGIN_ERROR";
+export const SHOW_LOGIN_PASSWORD_ERROR = "SHOW_LOGIN_PASSWORD_ERROR";
+export const SHOW_LOGIN_ACTIVATION_ERROR = "SHOW_LOGIN_ACTIVATION_ERROR";
 export const STORE_ENVIRONMENT = "STORE_ENVIRONMENT";
 export const STORE_ENVIRONMENT_SUCCESS = "STORE_ENVIRONMENT_SUCCESS";
 export const FETCH_ENVIRONMENT = "FETCH_ENVIRONMENT";
@@ -24,7 +25,6 @@ export const ADMIN_LOGOUT = "ADMIN_LOGOUT";
 export const ADMIN_LOGOUT_SUCCESS = "ADMIN_LOGOUT_SUCCESS";
 export const FETCH_ADMIN_USER = "FETCH_ADMIN_USER";
 export const FETCH_ADMIN_USER_SUCCESS = "FETCH_ADMIN_USER_SUCCESS";
-export const SHOW_ADMIN_LOGIN_ERROR = "SHOW_ADMIN_LOGIN_ERROR";
 
 export const FETCH_EMAIL_ADDRESS = "FETCH_EMAIL_ADDRESS";
 export const FETCH_EMAIL_ADDRESS_SUCCESS = "FETCH_EMAIL_ADDRESS_SUCCESS";
@@ -86,12 +86,6 @@ export function logoutAdmin() {
     type: ADMIN_LOGOUT
   };
 }
-export function showAdminLoginError(show) {
-  return {
-    type: SHOW_ADMIN_LOGIN_ERROR,
-    show
-  };
-}
 
 export function storeLoginErrorMessage(message) {
   return {
@@ -102,7 +96,14 @@ export function storeLoginErrorMessage(message) {
 
 export function showLoginError(show) {
   return {
-    type: SHOW_LOGIN_ERROR,
+    type: SHOW_LOGIN_PASSWORD_ERROR,
+    show
+  };
+}
+
+export function showLoginActivationError(show) {
+  return {
+    type: SHOW_LOGIN_ACTIVATION_ERROR,
     show
   };
 }

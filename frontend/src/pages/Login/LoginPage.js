@@ -21,7 +21,8 @@ const LoginPage = ({
   username,
   password,
   loginWithCredentials,
-  loginUnsuccessful,
+  loginPasswordError,
+  loginActivationError,
   environment,
   storeEnvironment,
   language,
@@ -76,8 +77,8 @@ const LoginPage = ({
           iconDisplayed={true}
           storePassword={storePassword}
           setPassword={storePassword}
-          failed={loginUnsuccessful}
-          failedText={strings.common.incorrect_password}
+          failed={loginPasswordError || loginActivationError}
+          failedText={loginActivationError ? "USER NOT ACTIVATED 123" : strings.common.incorrect_password}
           label={strings.common.password}
           nextBestAction={() => loginWithCredentials(username, password)}
           id="password"

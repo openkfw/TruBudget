@@ -43,7 +43,8 @@ import {
   LOGIN_SUCCESS,
   LOGOUT,
   LOGOUT_SUCCESS,
-  SHOW_LOGIN_ERROR,
+  SHOW_LOGIN_PASSWORD_ERROR,
+  SHOW_LOGIN_ACTIVATION_ERROR,
   STORE_ENVIRONMENT,
   STORE_ENVIRONMENT_SUCCESS
 } from "./pages/Login/actions";
@@ -784,13 +785,12 @@ export function* markMultipleNotificationsAsReadSaga({ notificationIds, notifica
 export function* loginSaga({ user }) {
   function* login() {
     const { data } = yield callApi(api.login, user.username, user.password);
-
     yield put({
       type: LOGIN_SUCCESS,
       ...data
     });
     yield put({
-      type: SHOW_LOGIN_ERROR,
+      type: SHOW_LOGIN_PASSWORD_ERROR,
       show: false
     });
     yield put({
@@ -800,11 +800,28 @@ export function* loginSaga({ user }) {
       isWarning: false
     });
   }
+
   function* onLoginError(error) {
-    yield put({
-      type: SHOW_LOGIN_ERROR,
-      show: true
-    });
+    if (error.response.status === 403) {
+      yield put({
+        type: SHOW_LOGIN_ACTIVATION_ERROR,
+        show: true
+      });
+      yield put({
+        type: SHOW_LOGIN_PASSWORD_ERROR,
+        show: false
+      });
+    } else {
+      yield put({
+        type: SHOW_LOGIN_ACTIVATION_ERROR,
+        show: false
+      });
+      yield put({
+        type: SHOW_LOGIN_PASSWORD_ERROR,
+        show: true
+      });
+    }
+
     yield handleError(error);
   }
   yield execute(login, true, onLoginError);

@@ -19,8 +19,8 @@ import {
   LOGIN_SUCCESS,
   LOGOUT_SUCCESS,
   SET_LANGUAGE,
-  SHOW_ADMIN_LOGIN_ERROR,
-  SHOW_LOGIN_ERROR,
+  SHOW_LOGIN_PASSWORD_ERROR,
+  SHOW_LOGIN_ACTIVATION_ERROR,
   STORE_ENVIRONMENT_SUCCESS,
   STORE_PASSWORD,
   STORE_USERNAME
@@ -109,10 +109,10 @@ export default function loginReducer(state = defaultState, action) {
       return state.merge({
         adminLoggedIn: true
       });
-    case SHOW_LOGIN_ERROR:
-      return state.set("loginUnsuccessful", action.show);
-    case SHOW_ADMIN_LOGIN_ERROR:
-      return state.set("adminLoginFailed", action.show);
+    case SHOW_LOGIN_PASSWORD_ERROR:
+      return state.set("loginPasswordError", action.show);
+    case SHOW_LOGIN_ACTIVATION_ERROR:
+      return state.set("loginActivationError", action.show);
     case STORE_ENVIRONMENT_SUCCESS:
     case FETCH_ENVIRONMENT_SUCCESS:
       return state.merge({
