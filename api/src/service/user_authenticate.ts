@@ -8,6 +8,7 @@ import { getOrganizationAddress } from "../organization/organization";
 import * as Result from "../result";
 import * as AuthToken from "./domain/organization/auth_token";
 import { AuthenticationFailed } from "./errors/authentication_failed";
+import { NotAuthorized } from "./domain/errors/not_authorized";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { getGroupsForUser } from "./group_query";
 import { importprivkey } from "./importprivkey";
@@ -92,9 +93,9 @@ async function authenticateUser(
     throw new AuthenticationFailed({ ctx, organization, userId }, userRecord);
   }
 
-  // Check if user has user_authenticate intent
+  // Check if user has user.authenticate intent
   if (!UserRecord.permits(userRecord, rootUser, globalIntents)) {
-    throw new AuthenticationFailed({ ctx, organization, userId }, "User is deactivated");
+    throw new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
   }
 
   if (!(await isPasswordMatch(password, userRecord.passwordHash))) {

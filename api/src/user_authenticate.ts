@@ -142,6 +142,23 @@ const swaggerSchema = {
           },
         },
       },
+      403: {
+        description: "Not Authorized",
+        type: "object",
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          error: {
+            type: "object",
+            properties: {
+              code: { type: "number" },
+              message: {
+                type: "string",
+                example: "Not Authorized.",
+              },
+            },
+          },
+        },
+      },
     },
   },
 };
@@ -194,7 +211,7 @@ export function addHttpHandler(
         displayName: token.displayName,
         organization: token.organization,
         allowedIntents: token.allowedIntents,
-        groups: groups.map(x => ({ groupId: x.id, displayName: x.displayName })),
+        groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
         token: signedJwt,
       };
       const body = {
