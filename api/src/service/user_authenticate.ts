@@ -93,13 +93,13 @@ async function authenticateUser(
     throw new AuthenticationFailed({ ctx, organization, userId }, userRecord);
   }
 
+  if (!(await isPasswordMatch(password, userRecord.passwordHash))) {
+    throw new AuthenticationFailed({ ctx, organization, userId });
+  }
+
   // Check if user has user.authenticate intent
   if (!UserRecord.permits(userRecord, rootUser, globalIntents)) {
     throw new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
-  }
-
-  if (!(await isPasswordMatch(password, userRecord.passwordHash))) {
-    throw new AuthenticationFailed({ ctx, organization, userId });
   }
 
   // Every user has an address and an associated private key. Importing the private key
