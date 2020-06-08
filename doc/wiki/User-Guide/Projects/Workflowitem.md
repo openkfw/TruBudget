@@ -286,7 +286,7 @@ If workflowitems are not closed or redacted( user has no view permission) the us
 
 **Description:**
 
-TruBudget features validation of documents. If a file (like a contract, invoice, etc.) is part of the general workflow of a subproject, the document can be "added" to a workflowitem and later be validated by another user. The word "added" is written in quotes because the document itself is not uploaded in any way - instead, a fingerprint is computed and only that fingerprint is stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and compared to the original.
+TruBudget features upload/download and validation of documents. If a file (like a contract, invoice, etc.) is part of the general workflow of a subproject, the document can be added to a workflowitem and later be downloaded or validated by another user. Before `Trubudget-v1.10.0` a document is not uploaded itself - instead only a computed fingerprint is stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and compared to the original. Since `Trubdget-v1.10.0` a documents can be uploaded and downloaded.
 
 ### Add document to workflowitem
 
@@ -299,6 +299,15 @@ Adding a document to a workflowitem can be done either when adding or when creat
    ![upload document](../../uploads/Screenshots/upload_document.jpg)
 5. Click the "Submit" button to finish
 
+### Download document from workflowitem (Since Trubudget-v1.10.0)
+
+1. Click on the "i" (information) button of the workflowitem containing the document to [view the workflowitem details](#view-workflowitem-details)
+   ![view workflowitem details](../../uploads/Screenshots/view_details_workflowitem.jpg)
+2. Navigate to the "Documents" tab
+   ![view the documents tab](../../uploads/Screenshots/documents_tab.jpg)
+3. If you see the desired document, click the "Download" button
+   ![download the document](../../uploads/Screenshots/download_document.jpg)
+
 ### Validate a document
 
 1. Click on the "i" (information) button of the workflowitem containing the document to [view the workflowitem details](#view-workflowitem-details)
@@ -310,4 +319,4 @@ Adding a document to a workflowitem can be done either when adding or when creat
 4. Select the correct document from your drive
 5. If the documents match, the validation says "OK"
    ![document ok](../../uploads/Screenshots/document_ok.jpg)
-6. [Optional] If the documents do not match, the label changes to "NOT OK". Click on the "NOT OK" button and upload another document to try again.
+6. [Optional] If the documents do not match, the label changes to "NOT OK". Click on the "NOT OK" button and choose another document to try again.
