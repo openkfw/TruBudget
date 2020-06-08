@@ -5,17 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-# Changelog
-
 ## Unreleased
 
-### Added
-
-- Show dialog before closing project, subproject or workflowitem [#430](https://github.com/openkfw/TruBudget/issues/430)
-- Show privacy notice when creating a user or user group [#466](https://github.com/openkfw/TruBudget/issues/466)
-- Added search feature for histories [#425](https://github.com/openkfw/TruBudget/issues/425)
-- Changed date format to DD.MM.YYYY [#480](https://github.com/openkfw/TruBudget/issues/480)
-- Documents can be uploaded and are shared via offchain-storage [#481](https://github.com/openkfw/TruBudget/issues/481)
+<!-- ### Added -->
 
 <!-- ### Changed -->
 
@@ -28,6 +20,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Changed -->
 
 <!-- ### Security -->
+
+# [1.10.0] - 2020-06-08
+
+### Added
+
+- Show dialog before closing project, subproject or workflowitem [#430](https://github.com/openkfw/TruBudget/issues/430)
+- Show privacy notice when creating a user or user group [#466](https://github.com/openkfw/TruBudget/issues/466)
+- Added search feature for histories [#425](https://github.com/openkfw/TruBudget/issues/425)
+- Documents can be uploaded and are shared via offchain-storage [#481](https://github.com/openkfw/TruBudget/issues/481)
+
+### Changed
+
+- Changed date format to DD.MM.YYYY [#480](https://github.com/openkfw/TruBudget/issues/480)
 
 # [1.9.0] - 2020-05-06
 
@@ -452,7 +457,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.9.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.10.0...master
+[1.10.0]: https://github.com/openkfw/TruBudget/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/openkfw/TruBudget/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/openkfw/TruBudget/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/openkfw/TruBudget/compare/v1.6.0...v1.7.0
