@@ -21,7 +21,12 @@ import {
   EXECUTE_CONFIRMED_ACTIONS_FAILURE,
   EXECUTE_CONFIRMED_ACTIONS_SUCCESS
 } from "./pages/Confirmation/actions.js";
-import { CLEAR_DOCUMENTS, VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS } from "./pages/Documents/actions";
+import {
+  CLEAR_DOCUMENTS,
+  VALIDATE_DOCUMENT,
+  VALIDATE_DOCUMENT_SUCCESS,
+  DOWNLOAD_DOCUMENT
+} from "./pages/Documents/actions";
 import { cancelDebounce, hideLoadingIndicator, showLoadingIndicator } from "./pages/Loading/actions.js";
 import {
   CHECK_EMAIL_SERVICE,
@@ -324,7 +329,7 @@ function* callApi(func, ...args) {
   // TODO dont set the environment on each call
   const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
-  const { data } = yield call(func, ...args);
+  const { data = {} } = yield call(func, ...args);
   return data;
 }
 
@@ -1254,6 +1259,12 @@ export function* fetchNextWorkflowitemHistoryPageSaga({
       events,
       currentHistoryPage: currentHistoryPage + 1
     });
+  }, showLoading);
+}
+
+export function* downloadDocumentSaga({ projectId, subprojectId, workflowitemId, documentId, showLoading = true }) {
+  yield execute(function*() {
+    yield callApi(api.downloadDocument, projectId, subprojectId, workflowitemId, documentId);
   }, showLoading);
 }
 
@@ -2299,6 +2310,7 @@ export default function* rootSaga() {
       yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
       yield takeEvery(FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE, fetchNextWorkflowitemHistoryPageSaga),
       yield takeEvery(FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE, fetchFirstWorkflowitemHistoryPageSaga),
+      yield takeLeading(DOWNLOAD_DOCUMENT, downloadDocumentSaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),

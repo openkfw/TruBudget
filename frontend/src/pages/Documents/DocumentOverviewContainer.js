@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import DocumentOverview from "./DocumentOverview";
-import { validateDocument } from "./actions";
+import { validateDocument, downloadDocument } from "./actions";
 import { toJS } from "../../helper";
 
 class DocumentOverviewContainer extends Component {
@@ -13,7 +13,9 @@ class DocumentOverviewContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    validateDocument: (hash, base64String, id) => dispatch(validateDocument(hash, base64String, id))
+    validateDocument: (hash, base64String, id) => dispatch(validateDocument(hash, base64String, id)),
+    downloadDocument: (projectId, subprojectId, workflowitemId, documentId) =>
+      dispatch(downloadDocument(projectId, subprojectId, workflowitemId, documentId))
   };
 };
 

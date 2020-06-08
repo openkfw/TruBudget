@@ -8,12 +8,16 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
+import DownloadIcon from "@material-ui/icons/GetApp";
+import ValidationIcon from "@material-ui/icons/FindInPage";
 
 import _isUndefined from "lodash/isUndefined";
 import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import withInitialLoading from "../Loading/withInitialLoading";
+import { withStyles } from "@material-ui/core";
+
 const styles = {
   uploadButtonNotValidated: {
     whiteSpace: "nowrap"
@@ -29,6 +33,17 @@ const styles = {
   },
   hashButton: {
     display: "flex"
+  },
+  actionContainer: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "flex-start"
+  },
+  noHorizontalPadding: {
+    paddingRight: "0px",
+    paddingLeft: "0px"
   }
 };
 
@@ -67,8 +82,9 @@ class DocumentOverview extends Component {
     }
   };
 
-  generateUploadIcon = (hash, validated, id) => (
+  generateUploadButton = (hash, validated, id) => (
     <Button {...this.getPropsForUploadButton(validated)}>
+      <ValidationIcon />
       {this.getValidationText(validated)}
       <Input
         id="docvalidation"
@@ -97,7 +113,17 @@ class DocumentOverview extends Component {
     </div>
   );
 
-  generateDocumentList = (documents, validationActive = false, validatedDocuments = {}) => {
+  generateDocumentList = props => {
+    const {
+      classes,
+      workflowitemId,
+      projectId,
+      subprojectId,
+      documents,
+      validationActive,
+      validatedDocuments,
+      downloadDocument
+    } = this.props;
     const header = this.generateDocumentListHeader(validationActive);
     const rows = documents.map((document, index) => {
       let validated = undefined;
@@ -108,17 +134,22 @@ class DocumentOverview extends Component {
       return (
         <TableRow key={index + "document"}>
           {validationActive ? (
-            <TableCell style={{ paddingRight: "0px", paddingLeft: "0px" }}>
+            <TableCell className={classes.noHorizontalPadding}>
               <FingerPrint />
             </TableCell>
           ) : null}
-          <TableCell data-test="workflowitemDocumentId" style={{ paddingRight: "0px", paddingLeft: "0px" }}>
+          <TableCell data-test="workflowitemDocumentId" className={classes.noHorizontalPadding}>
             {id}
           </TableCell>
           {validationActive ? <TableCell>{this.generateHashIcon(hash)}</TableCell> : null}
           {validationActive ? (
-            <TableCell style={{ textAlign: "center", paddingLeft: "0px" }}>
-              {this.generateUploadIcon(hash, validated, id)}
+            <TableCell className={classes.noHorizontalPadding}>
+              <div className={classes.actionContainer}>
+                {this.generateUploadButton(hash, validated, id)}
+                {document.documentId
+                  ? this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)
+                  : null}
+              </div>
             </TableCell>
           ) : null}
         </TableRow>
@@ -139,11 +170,7 @@ class DocumentOverview extends Component {
         <TableCell>
           <Typography variant="body1">{strings.common.name}</Typography>
         </TableCell>
-        {validationActive ? (
-          <TableCell>
-            <Typography variant="body1">{strings.workflow.workflow_fingerprint}</Typography>
-          </TableCell>
-        ) : null}
+        {validationActive ? <TableCell></TableCell> : null}
         {validationActive ? (
           <TableCell>
             <Typography style={{ paddingLeft: "0px" }} variant="body2">
@@ -164,15 +191,46 @@ class DocumentOverview extends Component {
   );
 
   render = () => {
-    const { documents, validationActive, validatedDocuments, loadingVisible } = this.props;
+    const {
+      documents,
+      validationActive,
+      validatedDocuments,
+      workflowitemId,
+      projectId,
+      subprojectId,
+      downloadDocument
+    } = this.props;
     return (
       <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
         {_isEmpty(documents)
           ? this.generateEmptyList()
-          : this.generateDocumentList(documents, validationActive, validatedDocuments, loadingVisible)}
+          : this.generateDocumentList({
+              workflowitemId,
+              projectId,
+              subprojectId,
+              documents,
+              validationActive,
+              validatedDocuments,
+              downloadDocument
+            })}
       </Table>
     );
   };
+
+  generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document) {
+    return (
+      <Button
+        color="default"
+        aria-label="upload picture"
+        data-test="download-document"
+        component="span"
+        onClick={() => downloadDocument(projectId, subprojectId, workflowitemId, document.documentId)}
+      >
+        <DownloadIcon />
+        {strings.common.download}
+      </Button>
+    );
+  }
 }
 
-export default withInitialLoading(DocumentOverview);
+export default withInitialLoading(withStyles(styles)(DocumentOverview));

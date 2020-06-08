@@ -409,6 +409,43 @@ class Api {
       : `/email/user.getEmailAddress?id=${id}`;
     return instance.get(path);
   };
+
+  downloadDocument = (projectId, subprojectId, workflowitemId, documentId) =>
+    instance
+      .get(
+        `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`,
+        { responseType: "blob" }
+      )
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        const dispositionHeader = response.headers["content-disposition"];
+        let filename;
+
+        if (hasAttachment(response)) {
+          // Regex for extracting filename from content-disposition header
+          // Content-disposition header e.g.: `attachment; filename="test.pdf"`
+          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+          const matches = filenameRegex.exec(dispositionHeader);
+          if (matches != null && matches[1]) {
+            // Remove apostrophe
+            filename = matches[1].replace(/['"]/g, "");
+          }
+        }
+
+        link.download = filename;
+        document.body.appendChild(link);
+
+        link.click();
+        link.remove();
+        return Promise.resolve({ data: {} });
+      });
 }
+
+const hasAttachment = response => {
+  const dispositionHeader = response.headers["content-disposition"];
+  return dispositionHeader && dispositionHeader.indexOf("attachment") !== -1;
+};
 
 export default Api;
