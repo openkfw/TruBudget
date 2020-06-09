@@ -67,7 +67,6 @@ export const globalIntents: Intent[] = [
   "global.createProject",
   "global.createUser",
   "global.createGroup",
-  "user.authenticate",
   "network.registerNode",
   "network.list",
   "network.listActive",

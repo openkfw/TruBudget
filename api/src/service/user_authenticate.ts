@@ -98,7 +98,7 @@ async function authenticateUser(
   }
 
   // Check if user has user.authenticate intent
-  if (!UserRecord.permits(userRecord, rootUser, globalIntents)) {
+  if (!UserRecord.permits(userRecord, rootUser, ["user.authenticate"])) {
     throw new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
   }
 
