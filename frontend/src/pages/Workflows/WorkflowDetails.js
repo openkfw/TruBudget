@@ -143,7 +143,11 @@ function Overview({ classes, users, workflowitem }) {
       </ListItem>
       <ListItem>
         <Avatar>W</Avatar>
-        <ListItemText primary={workflowitemType} secondary={strings.workflow.workflowitem_type} />
+        <ListItemText
+          primary={workflowitemType}
+          secondary={strings.workflow.workflowitem_type}
+          data-test="workflowitemInfoType"
+        />
       </ListItem>
     </List>
   );
