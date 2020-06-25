@@ -220,13 +220,13 @@ const fr = {
   },
 
   users: {
+    account_name: "Nom du compte",
     add_group: "Ajouter un groupe",
     add_user: "Ajouter des utilisateurs",
     change_password_for: "Changer le mot de passe pour {0}",
     current_user_password: "Votre mot de passe",
     edit_group: "Éditer und groupe",
     edit_permissions_for: "Éditer les autorisations pour",
-    full_name: "Nom complet",
     group_created: "Groupe crée avec succès",
     groups: "Groupes",
     invalid_password: "Mot de passe invalide",

@@ -52,7 +52,7 @@ const en = {
     in_progress: "In Progress",
     in_review: "In Review",
     incorrect_password: "Incorrect password",
-    incorrect_username: "Incorrect username",
+    incorrect_username: "Incorrect login ID",
     invalid_tag: "Invalid tag",
     name: "Name",
     next: "Next",
@@ -100,7 +100,7 @@ const en = {
     total_budget: "Total Budget",
     type: "Type",
     update: "Update",
-    username: "Username",
+    username: "Login ID",
     view: "View",
     workflowitem: "Workflowitem",
     dueDate: "Due date",
@@ -108,13 +108,13 @@ const en = {
   },
 
   users: {
+    account_name: "Account Name",
     add_group: "Add Group",
     add_user: "Add User",
     change_password_for: "Change password for {0}",
     current_user_password: "Your password",
     edit_group: "Edit Group",
     edit_permissions_for: "Edit permissions for",
-    full_name: "Full Name",
     group_created: "Group successfully created",
     groups: "Groups",
     invalid_password: "Password invalid",
@@ -133,7 +133,7 @@ const en = {
     type_current_password: "Type in current password for {0}",
     type_new_password: "Type in new password for {0}",
     user_created: "User successfully created",
-    username_invalid: "Invalid username",
+    username_invalid: "Invalid login ID",
     users: "Users"
   },
 

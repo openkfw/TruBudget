@@ -54,7 +54,8 @@ describe("Workflowitem's history", function() {
   it("The history is sorted from new to old", function() {
     // Update workflowitem to create new history event
     cy.get(`[data-test=workflowitem-table]`)
-      .find("button[data-test^='edit-workflowitem']")
+      .find("[data-test=edit-workflowitem]")
+      .last()
       .click();
     cy.get("[data-test=nameinput] input").type("-changed");
     cy.get("[data-test=next]").click();
