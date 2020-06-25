@@ -103,7 +103,9 @@ const fr = {
     update: "Mettre à jour",
     username: "Nom d'utilisateur",
     view: "Vue",
-    workflowitem: "Élement de workflow"
+    workflowitem: "Élement de workflow",
+    dueDate: "Date d'échéance",
+    dueDate_exceeded: "Date d'échéance dépassée"
   },
 
   login: {

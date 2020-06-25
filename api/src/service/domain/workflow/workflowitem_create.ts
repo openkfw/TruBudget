@@ -50,7 +50,7 @@ const requestDataSchema = Joi.object({
   amountType: Joi.valid("N/A", "disbursed", "allocated").required(),
   exchangeRate: Joi.string(),
   billingDate: Joi.date().iso(),
-  dueDate: Joi.date().iso(),
+  dueDate: Joi.date().iso().allow(""),
   assignee: Joi.string(),
   documents: Joi.array().items(uploadedDocumentSchema),
   additionalData: AdditionalData.schema,

@@ -103,7 +103,9 @@ const de = {
     view: "German: View",
     workflowitem: "German: WorkflowItem",
     history_end: "Keine weiteren Ereignisse",
-    no_history: "Keine Ereignisse"
+    no_history: "Keine Ereignisse",
+    dueDate: "Fälligkeitsdatum",
+    dueDate_exceeded: "Fälligkeitsdatum überschritten"
   },
 
   login: {

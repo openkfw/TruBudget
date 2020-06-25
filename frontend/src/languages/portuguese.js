@@ -103,7 +103,9 @@ const pt = {
     update: "Atualizar",
     username: "Id do usuário",
     view: "Visualizar",
-    workflowitem: "Item de workflow"
+    workflowitem: "Item de workflow",
+    dueDate: "Data de vencimento",
+    dueDate_exceeded: "Data de vencimento excedida"
   },
 
   users: {

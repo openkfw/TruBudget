@@ -35,23 +35,17 @@ interface InitialData {
 
 const initialDataSchema = Joi.object({
   id: Workflowitem.idSchema.required(),
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
+  status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
+  description: Joi.string().allow("").required(),
   assignee: Joi.string(),
   amount: Joi.string(),
   currency: Joi.string(),
   amountType: Joi.valid("N/A", "disbursed", "allocated").required(),
   exchangeRate: Joi.string(),
   billingDate: Joi.date().iso(),
-  dueDate: Joi.date().iso(),
-  documents: Joi.array()
-    .items(storedDocumentSchema)
-    .required(),
+  dueDate: Joi.date().iso().allow(""),
+  documents: Joi.array().items(storedDocumentSchema).required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
 }).options({ stripUnknown: true });
@@ -68,12 +62,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
@@ -117,10 +107,10 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
     id: initialData.id,
     subprojectId: event.subprojectId,
     createdAt: event.time,
-    dueDate: initialData.dueDate,
     displayName: initialData.displayName,
     exchangeRate: initialData.exchangeRate,
     billingDate: initialData.billingDate,
+    dueDate: initialData.dueDate,
     amount: initialData.amount,
     currency: initialData.currency,
     amountType: initialData.amountType,
@@ -136,6 +126,6 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
 
   return Result.mapErr(
     Workflowitem.validate(workflowitem),
-    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
+    (error) => new EventSourcingError({ ctx, event, target: workflowitem }, error),
   );
 }

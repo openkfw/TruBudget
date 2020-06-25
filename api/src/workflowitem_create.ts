@@ -28,6 +28,7 @@ interface RequestBodyV1 {
     amount?: string;
     amountType: "N/A" | "disbursed" | "allocated";
     billingDate?: string;
+    dueDate?: string;
     exchangeRate?: string;
     documents?: UploadedDocument[];
     additionalData?: object;
@@ -47,6 +48,7 @@ const requestBodyV1Schema = Joi.object({
     amount: moneyAmountSchema,
     amountType: Joi.string().required(),
     billingDate: Joi.string(),
+    dueDate: Joi.string().allow(""),
     exchangeRate: conversionRateSchema,
     documents: Joi.array().items(uploadedDocumentSchema),
     additionalData: Joi.object(),
@@ -95,6 +97,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
               currency: { type: ["string", "null"], example: "EUR" },
               amountType: { type: "string", example: "disbursed" },
               billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+              dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
               exchangeRate: { type: "string", example: "1.0" },
               documents: {
                 type: "array",
@@ -188,6 +191,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         amount: bodyResult.data.amount,
         amountType: bodyResult.data.amountType,
         billingDate: bodyResult.data.billingDate,
+        dueDate: bodyResult.data.dueDate,
         exchangeRate: bodyResult.data.exchangeRate,
         additionalData: bodyResult.data.additionalData,
         documents: bodyResult.data.documents,

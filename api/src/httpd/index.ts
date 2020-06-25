@@ -136,6 +136,7 @@ export interface Workflowitem {
     displayName: string | null;
     exchangeRate?: string | null;
     billingDate?: string | null;
+    dueDate?: string | null;
     amount?: string | null;
     currency?: string | null;
     amountType: "N/A" | "disbursed" | "allocated" | null;

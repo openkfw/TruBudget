@@ -1,7 +1,6 @@
 import React from "react";
-
 import Divider from "@material-ui/core/Divider";
-
+import DatePicker from "../Common/DatePicker";
 import { compareWorkflowItems } from "./compareWorkflowItems";
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
@@ -18,7 +17,17 @@ const styles = {
 };
 const handleCreate = props => {
   const { createWorkflowItem, onDialogCancel, workflowToAdd, storeSnackbarMessage } = props;
-  const { displayName, amount, amountType, currency, description, status, documents, exchangeRate } = workflowToAdd;
+  const {
+    displayName,
+    amount,
+    amountType,
+    currency,
+    description,
+    status,
+    documents,
+    exchangeRate,
+    dueDate
+  } = workflowToAdd;
   createWorkflowItem(
     displayName,
     fromAmountString(amount).toString(),
@@ -27,7 +36,8 @@ const handleCreate = props => {
     currency,
     description,
     status,
-    documents
+    documents,
+    dueDate
   );
   storeSnackbarMessage(
     strings.formatString(strings.workflow.workflow_permissions_warning, shortenedDisplayName(displayName))
@@ -79,6 +89,18 @@ const Content = props => {
           commentHintText={strings.common.comment_description}
           comment={props.workflowToAdd.description}
           commentOnChange={props.storeWorkflowComment}
+        />
+        <DatePicker
+          id="due-date"
+          label={strings.common.dueDate}
+          datetime={props.workflowToAdd.dueDate}
+          onChange={e => {
+            // Since native datepicker has undefined as default value, it has to be set as empty string to reset due-date in API
+            e.target.value === undefined ? props.storeWorkflowDueDate("") : props.storeWorkflowDueDate(e.target.value);
+          }}
+          onDelete={() => {
+            props.storeWorkflowDueDate("");
+          }}
         />
       </div>
       <Divider />

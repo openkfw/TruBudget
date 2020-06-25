@@ -167,8 +167,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchUser: () => dispatch(fetchUser(true)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
-    showEditDialog: (id, displayName, amount, exchangeRate, amountType, description, currency, documents) =>
-      dispatch(showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents)),
+    showEditDialog: (id, displayName, amount, exchangeRate, amountType, description, currency, documents, dueDate) =>
+      dispatch(
+        showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents, dueDate)
+      ),
     saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
     addDocument: (payload, name) => dispatch(addDocument(payload, name)),
     storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
@@ -183,6 +185,7 @@ const mapStateToProps = state => {
     id: state.getIn(["workflow", "id"]),
     displayName: state.getIn(["workflow", "displayName"]),
     description: state.getIn(["workflow", "description"]),
+    dueDate: state.getIn(["workflow", "dueDate"]),
     status: state.getIn(["workflow", "status"]),
     amount: state.getIn(["workflow", "amount"]),
     currency: state.getIn(["workflow", "currency"]),

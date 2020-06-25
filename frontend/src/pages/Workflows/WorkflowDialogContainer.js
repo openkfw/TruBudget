@@ -17,6 +17,7 @@ import {
   storeWorkflowDocument,
   storeWorkflowName,
   storeWorkflowStatus,
+  storeWorkflowDueDate,
   storeWorkflowExchangeRate,
   defaultWorkflowExchangeRate
 } from "./actions";
@@ -33,7 +34,8 @@ class WorkflowDialogContainer extends Component {
     currency,
     description,
     status,
-    workflowDocuments
+    workflowDocuments,
+    dueDate
   ) => {
     const path = this.props.location.pathname.split("/");
     const projectId = path[2];
@@ -48,7 +50,8 @@ class WorkflowDialogContainer extends Component {
       currency,
       description,
       status,
-      workflowDocuments
+      workflowDocuments,
+      dueDate
     );
   };
 
@@ -88,7 +91,8 @@ const mapDispatchToProps = dispatch => {
       currency,
       description,
       status,
-      documents
+      documents,
+      dueDate
     ) =>
       dispatch(
         createWorkflowItem(
@@ -101,7 +105,8 @@ const mapDispatchToProps = dispatch => {
           currency,
           description,
           status,
-          documents
+          documents,
+          dueDate
         )
       ),
     editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),
@@ -112,6 +117,7 @@ const mapDispatchToProps = dispatch => {
     storeWorkflowAmountType: type => dispatch(storeWorkflowAmountType(type)),
     storeWorkflowName: name => dispatch(storeWorkflowName(name)),
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
+    storeWorkflowDueDate: dueDate => dispatch(storeWorkflowDueDate(dueDate)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
