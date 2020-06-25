@@ -3,6 +3,8 @@ describe("Workflowitem edit", function() {
   let subprojectId;
   let baseUrl, apiRoute;
 
+  const dueDateExceeded = "2000-01-01";
+
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
@@ -30,6 +32,7 @@ describe("Workflowitem edit", function() {
       // Create a workflow item and select a different currency
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=nameinput] input").type("Test");
+      cy.get("[data-test=datepicker-due-date]").type(dueDateExceeded);
       cy.get("[data-test=commentinput] textarea")
         .last()
         .type("Test");
@@ -68,10 +71,100 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=cancel]").click();
     }
   );
+  it("When the due-date is not exceeded, the info icon badge is not displayed ", function() {
+    // Edit a workflow item
+    cy.get("[data-test=edit-workflowitem]").click();
+    cy.get("[data-test=nameinput] input")
+      .clear()
+      .type("Test_changed");
+    cy.get("[data-test=datepicker-due-date]").type("2050-01-01");
+    cy.get("[data-test=commentinput] textarea")
+      .last()
+      .clear()
+      .type("Test_changed");
+    cy.get("[data-test=next]").click();
+    cy.server();
+    cy.route("POST", apiRoute + "/subproject.createWorkflowitem*").as("create");
+    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.get("[data-test=submit]").click();
+    // Check if info icon badge is not displayed
+    cy.get(`[data-test^='info-warning-badge-disabled-']`).should("be.visible");
+    cy.get(`[data-test^='info-warning-badge-enabled-']`).should("not.be.visible");
+  });
+
+  it("When the due-date is exceeded, the info icon badge is displayed ", function() {
+    // Edit a workflow item
+    cy.get("[data-test=edit-workflowitem]").click();
+    cy.get("[data-test=nameinput] input")
+      .clear()
+      .type("Test_changed");
+    cy.get("[data-test=datepicker-due-date]").type(dueDateExceeded);
+    cy.get("[data-test=commentinput] textarea")
+      .last()
+      .clear()
+      .type("Test_changed");
+    cy.get("[data-test=next]").click();
+    cy.server();
+    cy.route("POST", apiRoute + "/subproject.createWorkflowitem*").as("create");
+    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.get("[data-test=submit]").click();
+    // Check if info icon badge is displayed
+    cy.get(`[data-test^='info-warning-badge-enabled-']`).should("be.visible");
+    cy.get(`[data-test^='info-warning-badge-disabled-']`).should("not.be.visible");
+  });
+
+  it("When the due-date is set, the due-date field is pre-filled", function() {
+    // Edit last workflow item
+    cy.get("[data-test=edit-workflowitem]")
+      .last()
+      .click();
+    // Check if date is set by default
+    cy.get("[data-test=datepicker-due-date] input")
+      .invoke("val")
+      .then(date => {
+        expect(dueDateExceeded).to.equal(date);
+      });
+  });
+
+  it("When the due-date is set, the due-date can be deleted by pressing the clear-button", function() {
+    // Edit last workflow item
+    cy.get("[data-test=edit-workflowitem]")
+      .last()
+      .click();
+    // Check if date is set by default
+    cy.get("[data-test=datepicker-due-date] input")
+      .invoke("val")
+      .then(date => {
+        expect(dueDateExceeded).to.equal(date);
+      });
+    // Clear the date-picker
+    cy.get("[data-test=clear-datepicker-due-date]").click();
+    // Check if date-picker is cleared
+    cy.get("[data-test=datepicker-due-date] input")
+      .invoke("val")
+      .then(date => {
+        expect("").to.equal(date);
+      });
+    // Send to API to remove the due-date
+    cy.get("[data-test=next]").click();
+    cy.server();
+    cy.route("POST", apiRoute + "/subproject.createWorkflowitem*").as("create");
+    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.get("[data-test=submit]").click();
+    // Check if due-date is removed sucessfully
+    cy.get("[data-test=edit-workflowitem]")
+      .last()
+      .click();
+    cy.get("[data-test=datepicker-due-date] input")
+      .invoke("val")
+      .then(date => {
+        expect("").to.equal(date);
+      });
+  });
 
   it("When closing a workflow item, a dialog pops up", function() {
     // Cancel closing the workflow item
-    cy.get("[data-test=close-workflowitem")
+    cy.get("[data-test=close-workflowitem]")
       .first()
       .click();
     cy.get("[data-test=confirmation-dialog]").should("be.visible");
@@ -79,13 +172,13 @@ describe("Workflowitem edit", function() {
     cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
 
     // Close the workflow item
-    cy.get("[data-test=close-workflowitem")
+    cy.get("[data-test=close-workflowitem]")
       .first()
       .click();
     cy.get("[data-test=confirmation-dialog]").should("be.visible");
     cy.get("[data-test=confirmation-dialog-confirm]").click();
     cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
-    cy.get("[data-test=close-workflowitem")
+    cy.get("[data-test=close-workflowitem]")
       .first()
       .should("be.disabled");
   });
