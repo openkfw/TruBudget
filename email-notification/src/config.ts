@@ -50,7 +50,7 @@ const config: Config = {
     port: Number(process.env.SMTP_PORT) || 2500,
     secure: Boolean(process.env.SMTP_SSL) || false,
     user: process.env.SMTP_USER || "testuser",
-    password: process.env.SMTP_USER || "test",
+    password: process.env.SMTP_PASSWORD || "test",
   },
   email: {
     from:

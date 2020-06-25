@@ -17,6 +17,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY src/ src/
+RUN chmod +x src/multichain-feed/multichain-feed
 
 ARG BUILDTIMESTAMP=''
 ARG CI_COMMIT_SHA=''
