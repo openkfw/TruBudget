@@ -67,7 +67,7 @@ const schema = Joi.object().keys({
   id: Joi.string().required(),
   subprojectId: Subproject.idSchema.required(),
   createdAt: Joi.date().iso().required(),
-  dueDate: Joi.date().iso(),
+  dueDate: Joi.date().iso().allow(""),
   displayName: Joi.string().required(),
   // This should use exchangeRateSchema but can't, because of backward compatibility:
   exchangeRate: Joi.string()
@@ -147,10 +147,10 @@ export function redact(workflowitem: Workflowitem): RedactedWorkflowitem {
     id: workflowitem.id,
     subprojectId: workflowitem.subprojectId,
     createdAt: workflowitem.createdAt,
-    dueDate: null,
     displayName: null,
     exchangeRate: null,
     billingDate: null,
+    dueDate: null,
     amount: null,
     currency: null,
     amountType: null,

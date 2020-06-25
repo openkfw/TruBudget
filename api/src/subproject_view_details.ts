@@ -138,6 +138,7 @@ interface ExposedWorkflowitem {
     displayName: string | null;
     exchangeRate: string | undefined | null;
     billingDate: string | undefined | null;
+    dueDate: string | undefined | null;
     amountType: string | null;
     description: string | null;
     status: string;
@@ -235,7 +236,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
 
         const projectResult = await service.getProject(ctx, user, projectId);
-        const displayName = Result.unwrap_or(Result.map(projectResult, p => p.displayName), "");
+        const displayName = Result.unwrap_or(
+          Result.map(projectResult, (p) => p.displayName),
+          "",
+        );
 
         const parentProject: ExposedProject = {
           id: projectId,
@@ -249,13 +253,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           subprojectId,
         );
         if (Result.isErr(workflowitemsResult)) {
-          workflowitemsResult.message = `subproject.viewDetails failed: ${
-            workflowitemsResult.message
-          }`;
+          workflowitemsResult.message = `subproject.viewDetails failed: ${workflowitemsResult.message}`;
           throw workflowitemsResult;
         }
 
-        const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map(workflowitem => ({
+        const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map((workflowitem) => ({
           allowedIntents: workflowitem.isRedacted
             ? []
             : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
@@ -266,6 +268,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             exchangeRate: workflowitem.exchangeRate,
             currency: workflowitem.currency,
             billingDate: workflowitem.billingDate,
+            dueDate: workflowitem.dueDate,
             amountType: workflowitem.amountType,
             description: workflowitem.description,
             status: workflowitem.status,

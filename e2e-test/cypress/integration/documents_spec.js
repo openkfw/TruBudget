@@ -2,6 +2,7 @@ import "cypress-file-upload";
 
 let projectId;
 let subprojectId;
+let workflowitemId;
 // Actual file in fixture folder
 const fileName = "documents_test.json";
 
@@ -16,7 +17,11 @@ describe("Attaching a document to a workflowitem.", function() {
       })
       .then(({ id }) => {
         subprojectId = id;
-        return cy.createWorkflowitem(projectId, subprojectId, "workflowitem documents test", { amountType: "N/A" });
+        return cy
+          .createWorkflowitem(projectId, subprojectId, "workflowitem documents test", { amountType: "N/A" })
+          .then(({ id }) => {
+            workflowitemId = id;
+          });
       });
   });
 
@@ -52,7 +57,7 @@ describe("Attaching a document to a workflowitem.", function() {
     cy.get("[data-test=submit]").click();
 
     // open the info dialog window:
-    cy.get(".workflowitem-info-button").click();
+    cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
 
     // go to the documents tab:
     cy.get("[data-test=workflowitem-documents-tab]").click();
@@ -66,6 +71,7 @@ describe("Attaching a document to a workflowitem.", function() {
     });
 
     // make sure the validation was successful:
+    cy.get("[data-test=workflowitem-documents-tab]").click();
     cy.get(`button[label="Validated!"] > span`).should("contain", "OK");
   });
 
@@ -76,7 +82,7 @@ describe("Attaching a document to a workflowitem.", function() {
     cy.get("[data-test=submit]").click();
 
     // open the info dialog window:
-    cy.get(".workflowitem-info-button").click();
+    cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
 
     // go to the documents tab:
     cy.get("[data-test=workflowitem-documents-tab]").click();
@@ -90,6 +96,8 @@ describe("Attaching a document to a workflowitem.", function() {
       );
     });
 
+    // make sure the validation was not successful:
+    cy.get("[data-test=workflowitem-documents-tab]").click();
     cy.get(`button[label="Changed!"] > span`).should("contain", "Not OK");
   });
 });

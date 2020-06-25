@@ -59,6 +59,7 @@ import {
   WORKFLOW_AMOUNT_TYPE,
   WORKFLOW_CREATION_STEP,
   WORKFLOW_CURRENCY,
+  WORKFLOW_DUEDATE,
   WORKFLOW_DOCUMENT,
   WORKFLOW_EXCHANGERATE,
   WORKFLOW_NAME,
@@ -85,6 +86,7 @@ const defaultState = fromJS({
     id: "",
     displayName: "",
     amount: "",
+    dueDate: "",
     exchangeRate: 1,
     amountType: "N/A",
     currency: "",
@@ -177,7 +179,8 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("amountType", action.amountType)
           .set("description", action.description)
           .set("currency", action.currency)
-          .set("documents", fromJS(action.documents)),
+          .set("documents", fromJS(action.documents))
+          .set("dueDate", action.dueDate),
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
       });
@@ -269,6 +272,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "amountType"], action.amountType);
     case WORKFLOW_PURPOSE:
       return state.setIn(["workflowToAdd", "description"], action.description);
+    case WORKFLOW_DUEDATE:
+      return state.setIn(["workflowToAdd", "dueDate"], action.dueDate);
     case WORKFLOW_CURRENCY:
       return state.merge({
         workflowToAdd: state.getIn(["workflowToAdd"]).set("currency", action.currency)

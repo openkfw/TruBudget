@@ -35,6 +35,7 @@ export interface Update {
   documents?: Document[];
   exchangeRate?: string;
   billingDate?: string;
+  dueDate?: string;
 }
 
 export interface Workflowitem {
@@ -43,6 +44,7 @@ export interface Workflowitem {
   displayName: string;
   exchangeRate?: string;
   billingDate?: string;
+  dueDate?: string;
   amount?: string;
   currency?: string;
   amountType: "N/A" | "disbursed" | "allocated";
@@ -62,6 +64,7 @@ export interface RedactedWorkflowitem {
   displayName: null;
   exchangeRate: null;
   billingDate?: null;
+  dueDate?: null;
   amount?: null;
   currency?: null;
   amountType: null;
@@ -88,8 +91,8 @@ export function applyUpdate(event: Event, workflowitem: Workflowitem): true | un
     case 1: {
       if (event.data.documents) {
         const currentDocs = workflowitem.documents || [];
-        const currentIds = currentDocs.map(doc => doc.id);
-        const newDocs = event.data.documents.filter(doc => !currentIds.includes(doc.id));
+        const currentIds = currentDocs.map((doc) => doc.id);
+        const newDocs = event.data.documents.filter((doc) => !currentIds.includes(doc.id));
         if (workflowitem.documents) {
           workflowitem.documents.push(...newDocs);
         } else {

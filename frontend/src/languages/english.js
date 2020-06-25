@@ -102,7 +102,9 @@ const en = {
     update: "Update",
     username: "Username",
     view: "View",
-    workflowitem: "Workflowitem"
+    workflowitem: "Workflowitem",
+    dueDate: "Due date",
+    dueDate_exceeded: "Due date exceeded"
   },
 
   users: {

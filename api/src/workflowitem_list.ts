@@ -64,6 +64,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           assignee: { type: "string", example: "aSmith" },
                           currency: { type: "string", example: "EUR" },
                           billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+                          dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           exchangeRate: { type: "string", example: "1.0" },
                           additionalData: { type: "object", additionalProperties: true },
                           documents: {
@@ -114,6 +115,7 @@ interface ExposedWorkflowitem {
     assignee: string;
     currency: string;
     billingDate: string;
+    dueDate: string;
     exchangeRate: string;
     documents: [{ id: string; hash: string; documentId: string }];
     additionalData: object;
@@ -177,6 +179,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
               assignee: workflowitem.assignee,
               currency: workflowitem.currency,
               billingDate: workflowitem.billingDate,
+              dueDate: workflowitem.dueDate,
               exchangeRate: workflowitem.exchangeRate,
               documents: workflowitem.documents,
               additionalData: workflowitem.additionalData,

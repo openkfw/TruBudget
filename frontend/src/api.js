@@ -229,7 +229,6 @@ class Api {
 
   createWorkflowItem = payload => {
     const { currency, amount, exchangeRate, ...minimalPayload } = payload;
-
     const payloadToSend =
       payload.amountType === "N/A"
         ? minimalPayload
@@ -239,7 +238,6 @@ class Api {
             amount,
             exchangeRate: exchangeRate.toString()
           };
-
     return instance.post(`/subproject.createWorkflowitem`, {
       ...payloadToSend
     });
@@ -276,7 +274,6 @@ class Api {
             amount,
             exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
           };
-
     return instance.post(`/workflowitem.update`, {
       projectId,
       subprojectId,

@@ -102,7 +102,9 @@ const ka = {
     update: "განახლება",
     username: "მომხმარებლის სახელი",
     view: "ხილვა",
-    workflowitem: "Workflowitem"
+    workflowitem: "Workflowitem",
+    dueDate: "თარიღით",
+    dueDate_exceeded: "დასრულდა თარიღი"
   },
 
   users: {

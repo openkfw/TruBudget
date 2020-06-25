@@ -34,7 +34,7 @@ export const modificationSchema = Joi.object({
   amount: moneyAmountSchema,
   currency: Joi.string(),
   amountType: Joi.valid("N/A", "disbursed", "allocated"),
-  dueDate: Joi.date().iso(),
+  dueDate: Joi.date().iso().allow(""),
   documents: Joi.array().items(storedDocumentSchema),
   additionalData: AdditionalData.schema,
 });

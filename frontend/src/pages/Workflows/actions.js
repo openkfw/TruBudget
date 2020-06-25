@@ -30,6 +30,7 @@ export const WORKFLOW_PURPOSE = "WORKFLOW_PURPOSE";
 export const WORKFLOW_ADDITIONAL_DATA = "WORKFLOW_ADDITIONAL_DATA";
 export const WORKFLOW_CURRENCY = "WORKFLOW_CURRENCY";
 export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
+export const WORKFLOW_DUEDATE = "WORKFLOW_DUEDATE";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
@@ -427,7 +428,17 @@ export function hideWorkflowDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents) {
+export function showEditDialog(
+  id,
+  displayName,
+  amount,
+  exchangeRate,
+  amountType,
+  description,
+  currency,
+  documents,
+  dueDate
+) {
   return {
     type: SHOW_WORKFLOW_EDIT,
     id,
@@ -437,7 +448,8 @@ export function showEditDialog(id, displayName, amount, exchangeRate, amountType
     amountType,
     description,
     currency,
-    documents
+    documents,
+    dueDate
   };
 }
 
@@ -514,9 +526,17 @@ export function storeWorkflowComment(description) {
 export function storeWorkflowStatus(status) {
   return {
     type: WORKFLOW_STATUS,
-    status: status
+    status
   };
 }
+
+export function storeWorkflowDueDate(dueDate) {
+  return {
+    type: WORKFLOW_DUEDATE,
+    dueDate
+  };
+}
+
 export function storeWorkflowItemsSelected(workflowItems) {
   return {
     type: WORKFLOWITEMS_SELECTED,
@@ -534,7 +554,8 @@ export function createWorkflowItem(
   currency,
   description,
   status,
-  documents
+  documents,
+  dueDate
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -547,7 +568,8 @@ export function createWorkflowItem(
     currency,
     description,
     documents,
-    status
+    status,
+    dueDate
   };
 }
 

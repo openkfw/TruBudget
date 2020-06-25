@@ -34,6 +34,13 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
     mergeState({ [name]: value });
   };
 
+  const onDeleteStartAt = () => {
+    mergeState({ startAt: "" });
+  };
+  const onDeleteEndAt = () => {
+    mergeState({ endAt: "" });
+  };
+
   const onReset = () => {
     clearState();
     fetchFirstHistoryEvents({});
@@ -56,16 +63,18 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
         className={classes.datepicker}
         label={"start"}
         name="startAt"
-        value={startAt}
+        datetime={startAt}
         onChange={onChange}
+        onDelete={onDeleteStartAt}
       />
       <DatePicker
         id="filter-endat"
         className={classes.datepicker}
         label={"end"}
         name="endAt"
-        value={endAt}
+        datetime={endAt}
         onChange={onChange}
+        onDelete={onDeleteEndAt}
       />
 
       <Dropdown

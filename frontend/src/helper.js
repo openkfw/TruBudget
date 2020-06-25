@@ -154,6 +154,11 @@ export const dateFormat = () => {
   return "DD.MM.YYYY";
 };
 
+export const isDateReached = date => {
+  const today = dayjs(new Date());
+  return today.isAfter(date);
+};
+
 export const isEmailAddressValid = emailAddress => {
   const validEmailAddressRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
   return validEmailAddressRegex.test(emailAddress);

@@ -23,6 +23,7 @@ const baseWorkflowitem: Workflowitem = {
   id: workflowitemId,
   subprojectId,
   createdAt: new Date().toISOString(),
+  dueDate: new Date().toISOString(),
   status: "open",
   displayName: "dummy",
   description: "dummy",
@@ -121,6 +122,7 @@ describe("update workflowitem: how modifications are applied", () => {
     const modification = {
       displayName: "Foo",
       description: "A description.",
+      dueDate: baseWorkflowitem.dueDate,
     };
     const result = await updateWorkflowitem(
       ctx,
@@ -135,6 +137,7 @@ describe("update workflowitem: how modifications are applied", () => {
           ...baseWorkflowitem,
           displayName: "Foo",
           description: "A description.",
+          dueDate: baseWorkflowitem.dueDate,
         }),
       },
     );
@@ -200,6 +203,34 @@ describe("update workflowitem: how modifications are applied", () => {
     assert.isTrue(Result.isErr(result));
     const error = Result.unwrap_err(result);
     assert.match(error.message, /displayName.*\s+.*empty/);
+  });
+
+  it("The due date field can be deleted", async () => {
+    const modification = {
+      dueDate: undefined,
+    };
+    const result = await updateWorkflowitem(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      modification,
+      {
+        ...baseRepository,
+        getWorkflowitem: async (_workflowitemId) => ({
+          ...baseWorkflowitem,
+          dueDate: undefined,
+        }),
+      },
+    );
+
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    const { newEvents, workflowitem } = Result.unwrap(result);
+
+    // The workflowitem's dueDate has been set:
+    assert.equal(workflowitem.dueDate, undefined);
+    assert.lengthOf(newEvents, 1);
   });
 
   it("A closed workflowitem cannot be updated", async () => {
