@@ -44,7 +44,8 @@ const Navbar = ({
   searchTerm,
   storeSearchBarDisplayed,
   searchBarDisplayed,
-  showUserProfile
+  showUserProfile,
+  fetchEmailAddress
 }) => {
   return (
     <div>
@@ -92,6 +93,7 @@ const Navbar = ({
         versions={versions}
         exportData={exportData}
         showUserProfile={showUserProfile}
+        fetchEmailAddress={fetchEmailAddress}
       />
     </div>
   );

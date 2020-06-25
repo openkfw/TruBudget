@@ -17,6 +17,7 @@ import strings from "../../localizeStrings";
 import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
 import VersionsTable from "./VersionsTable";
+import { fetchEmailAddress } from "../Login/actions";
 
 const SideNavCard = ({
   avatarBackground,
@@ -31,112 +32,120 @@ const SideNavCard = ({
   restoreBackup,
   versions,
   exportData,
-  showUserProfile
-}) => (
-  <div
-    style={{
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      overflowY: "auto"
-    }}
-    data-test="side-navigation"
-  >
+  showUserProfile,
+  fetchEmailAddress
+}) => {
+  const openUserProfile = () => {
+    fetchEmailAddress();
+    showUserProfile();
+  };
+
+  return (
     <div
       style={{
-        background: `url('${avatarBackground}') no-repeat`,
-        backgroundSize: "cover",
-        height: "100px",
-        position: "relative",
-        width: "100%",
-        minWidth: "300px"
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflowY: "auto"
       }}
+      data-test="side-navigation"
     >
       <div
         style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center"
+          background: `url('${avatarBackground}') no-repeat`,
+          backgroundSize: "cover",
+          height: "100px",
+          position: "relative",
+          width: "100%",
+          minWidth: "300px"
         }}
       >
-        <ListItem style={{ paddingTop: "16px" }}>
-          <ListItemIcon>
-            <IconButton children={<Avatar size={60} src={avatar} />} />
-          </ListItemIcon>
-          <ListItemText
-            style={{ padding: "0px" }}
-            primary={<span>{displayName}</span>}
-            secondary={<span>{organization}</span>}
-          />
-          <IconButton data-test="show-user-profile" onClick={() => showUserProfile()}>
-            <SettingsIcon />
-          </IconButton>
-        </ListItem>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center"
+          }}
+        >
+          <ListItem style={{ paddingTop: "16px" }}>
+            <ListItemIcon>
+              <IconButton children={<Avatar size={60} src={avatar} />} />
+            </ListItemIcon>
+            <ListItemText
+              style={{ padding: "0px" }}
+              primary={<span>{displayName}</span>}
+              secondary={<span>{organization}</span>}
+            />
+            <IconButton data-test="show-user-profile" onClick={() => openUserProfile()}>
+              <SettingsIcon />
+            </IconButton>
+          </ListItem>
+        </div>
       </div>
-    </div>
-    <List>
-      <Subheader>{strings.navigation.selections}</Subheader>
-      <ListItem button onClick={() => history.push("/")} data-test="side-navigation-projects">
-        <ListItemIcon>
-          <ProjectIcon />
-        </ListItemIcon>
-        <ListItemText primary={strings.navigation.menu_item_projects} />
-      </ListItem>
-      <ListItem button onClick={() => history.push("/notifications")} data-test="side-navigation-notifications">
-        <ListItemIcon>
-          <SocialNotificationIcon />
-        </ListItemIcon>
-        <ListItemText primary={strings.navigation.menu_item_notifications} />
-      </ListItem>
-      <ListItem button onClick={() => history.push("/users")} data-test="side-navigation-users">
-        <ListItemIcon>
-          <UsersIcon />
-        </ListItemIcon>
-        <ListItemText primary={strings.navigation.menu_item_users} />
-      </ListItem>
-      {nodeDashboardEnabled ? (
-        <ListItem button onClick={() => history.push("/nodes")} data-test="side-navigation-nodes">
-          <ListItemIcon>
-            <NodesIcon />
-          </ListItemIcon>
-          <ListItemText primary={strings.nodesDashboard.nodes} />
-        </ListItem>
-      ) : null}
-      <ListItem button onClick={exportData} data-test="side-navigation-export">
-        <ListItemIcon>
-          <ExportIcon />
-        </ListItemIcon>
-        <ListItemText primary={strings.navigation.menu_item_export} />
-      </ListItem>
-    </List>
-    <Divider />
-    {userId === "root" ? (
       <List>
-        <Subheader> {strings.navigation.backup} </Subheader>
-        <ListItem>
-          <DownloadBackupButton createBackup={createBackup} />
-          <RestoreBackupButton restoreBackup={restoreBackup} />
+        <Subheader>{strings.navigation.selections}</Subheader>
+        <ListItem button onClick={() => history.push("/")} data-test="side-navigation-projects">
+          <ListItemIcon>
+            <ProjectIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.navigation.menu_item_projects} />
         </ListItem>
-        <Divider />
+        <ListItem button onClick={() => history.push("/notifications")} data-test="side-navigation-notifications">
+          <ListItemIcon>
+            <SocialNotificationIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.navigation.menu_item_notifications} />
+        </ListItem>
+        <ListItem button onClick={() => history.push("/users")} data-test="side-navigation-users">
+          <ListItemIcon>
+            <UsersIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.navigation.menu_item_users} />
+        </ListItem>
+        {nodeDashboardEnabled ? (
+          <ListItem button onClick={() => history.push("/nodes")} data-test="side-navigation-nodes">
+            <ListItemIcon>
+              <NodesIcon />
+            </ListItemIcon>
+            <ListItemText primary={strings.nodesDashboard.nodes} />
+          </ListItem>
+        ) : null}
+        <ListItem button onClick={exportData} data-test="side-navigation-export">
+          <ListItemIcon>
+            <ExportIcon />
+          </ListItemIcon>
+          <ListItemText primary={strings.navigation.menu_item_export} />
+        </ListItem>
       </List>
-    ) : null}
-    <List>
-      {groups.length ? <Subheader> {strings.users.groups} </Subheader> : null}
-      {groups.map(group => {
-        return (
-          <div key={group.groupId}>
-            <ListItem>
-              <ListItemText primary={group.displayName} secondary={strings.common.id + ": " + group.groupId} />
-            </ListItem>
-            <Divider />
-          </div>
-        );
-      })}
-    </List>
-    <div style={{ flexGrow: 1 }} />
-    <VersionsTable versions={versions} />
-  </div>
-);
+      <Divider />
+      {userId === "root" ? (
+        <List>
+          <Subheader> {strings.navigation.backup} </Subheader>
+          <ListItem>
+            <DownloadBackupButton createBackup={createBackup} />
+            <RestoreBackupButton restoreBackup={restoreBackup} />
+          </ListItem>
+          <Divider />
+        </List>
+      ) : null}
+      <List>
+        {groups.length ? <Subheader> {strings.users.groups} </Subheader> : null}
+        {groups.map(group => {
+          return (
+            <div key={group.groupId}>
+              <ListItem>
+                <ListItemText primary={group.displayName} secondary={strings.common.id + ": " + group.groupId} />
+              </ListItem>
+              <Divider />
+            </div>
+          );
+        })}
+      </List>
+      <div style={{ flexGrow: 1 }} />
+      <VersionsTable versions={versions} />
+    </div>
+  );
+};
 
 export default SideNavCard;

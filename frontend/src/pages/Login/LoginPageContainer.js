@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
-  storePassword,
-  storeUsername,
-  loginWithCredentials,
-  logout,
-  showLoginError,
-  storeEnvironment,
-  setLanguage,
+  checkEmailService,
   getEnvironment,
   initLanguage,
-  checkEmailService
+  loginWithCredentials,
+  logout,
+  setLanguage,
+  showLoginError,
+  storeEnvironment,
+  storePassword,
+  storeUsername
 } from "./actions";
 import LoginPage from "./LoginPage";
 
@@ -19,7 +19,12 @@ class LoginPageContainer extends Component {
     this.props.initLanguage();
     this.props.getEnvironment();
     this.checkIfRedirect();
-    if (process.env.EMAIL_SERVICE_ENABLED) {
+    // window.injectedEnv exists when deploying via docker and nginx
+    // process.env exists when using node.js
+    if (
+      window.injectedEnv.REACT_APP_EMAIL_SERVICE_ENABLED === "true" ||
+      process.env.REACT_APP_EMAIL_SERVICE_ENABLED === "true"
+    ) {
       this.props.checkEmailService();
     }
   }

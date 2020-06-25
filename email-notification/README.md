@@ -59,6 +59,61 @@ Subscribing/unsubscribing to the email notification service can be handled by th
 
 ## Email-Service
 
+## Getting Started
+
+The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole TruBudget application including all email components (that means you need to install [Docker](https://www.docker.com/community-edition#/download)).
+The pre-set cluster contains:
+
+- 1 Master-Node
+- 1 Master API connected to Master-Node
+- 1 Frontend connected to Master-API
+- 1 Email-Service
+- 1 Email-Database (Postgres)
+
+<<<<<<< HEAD
+When started, the Email-Service sends email notifications to the configured SMTP-host. The default configuration is:
+=======
+When started the Email-Service sends email notifications to the configured SMTP-host. The default configuration is:
+>>>>>>> 8aa35bce... Extend email notification documentation
+
+- SMTP_HOST: host.docker.internal(localhost)
+- SMTP_PORT: 2500
+
+To configure another database type for storing the user email addresses check out the [database configuration section](#database-configuration)
+To check what is configurable regarding email-notification service check out the [environment variables section](#environment-variables)
+If a local SMTP mail server for testing purposes is needed [mailslurper](https://github.com/mailslurper/mailslurper) can be used
+
+### Environment Variables
+
+To ensure all necessary environment variables are set correctly this section describes all environment variables across all services.
+
+#### Blockchain
+
+| Env Variable      | Default Value    | Description                                                                                        |
+| ----------------- | ---------------- | -------------------------------------------------------------------------------------------------- |
+| EMAIL_SERVICE     | -                | If set to `ENABLED` notifications are created                                                      |
+| EMAIL_HOST        | -                | IP address of the email database where all user email addresses should be saved                    |
+| EMAIL_PORT        | -                | Port of the email database                                                                         |
+| NOTIFICATION_PATH | ./notifications/ | Path where all notifications should be saved before sending them to the email notification service |
+
+#### Email-notification-service
+
+See [environment variables section](#environment-variables) above.
+
+#### Frontend
+
+<<<<<<< HEAD
+| Env Variable                    | Default Value | Description                                                                                                                                                      |
+| ------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled, the frontend requests a email-notifcations readiness call when entering the login screen. If true the email section in the user-profile is enabled |
+| EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                     |
+| EMAIL_PORT                      | -             | Port of the email notification service                                                                                                                           |
+=======
+| Env Variable                    | Default Value | Description                                                                                                                                                     |
+| ------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled the frontend requests a email-notifcations readiness call when entering the login screen. If true the email section in the user-profile is enabled |
+>>>>>>> 8aa35bce... Extend email notification documentation
+
 ### Endpoints
 
 | Method | Endpoint           | Description                                                    |
@@ -147,23 +202,3 @@ Following json structure is used:
 ```
 
 `JWT-TOKEN` required
-
-## Getting Started
-
-The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole TruBudget application including all email components (that means you need to install [Docker](https://www.docker.com/community-edition#/download)).
-The pre-set cluster contains:
-
-- 1 Master-Node
-- 1 Master API connected to Master-Node
-- 1 Frontend connected to Master-API
-- 1 Email-Service
-- 1 Email-Database (Postgres)
-
-When started the Email-Service sends email notifications to the configured SMTP-host. The default configuration is:
-
-- SMTP_HOST: host.docker.internal(localhost)
-- SMTP_PORT: 2500
-
-To configure another database type for storing the user email addresses check out the [Database Configuration section](#database-configuration)
-To check what is configurable check out the [Environment Variables section](#environment-variables)
-If a local SMTP mail server for testing purposes is needed [mailslurper](https://github.com/mailslurper/mailslurper) can be used

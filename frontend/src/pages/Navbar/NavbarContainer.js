@@ -3,7 +3,7 @@ import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
-import { logout } from "../Login/actions";
+import { logout, fetchEmailAddress } from "../Login/actions";
 import FlyInNotifications from "../Notifications/FlyInNotifications";
 import {
   createBackup,
@@ -62,7 +62,8 @@ const mapDispatchToProps = {
   storeSearchTerm,
   storeSearchBarDisplayed,
   setIsRoot,
-  showUserProfile
+  showUserProfile,
+  fetchEmailAddress
 };
 
 const mapStateToProps = state => {
