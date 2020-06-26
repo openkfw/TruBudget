@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../../helper";
 import HistoryContainer from "../../Common/History/HistoryContainer";
 import useHistoryState from "../../Common/History/historyHook";
-import { fetchNextWorkflowitemHistoryPage, fetchFirstWorkflowitemHistoryPage } from "./actions";
+import { fetchNextWorkflowitemHistoryPage, fetchFirstWorkflowitemHistoryPage, hideHistory } from "./actions";
 import { workflowitemEventTypes } from "../../Common/History/eventTypes";
 
 const WorkflowitemHistoryTab = ({
@@ -18,9 +18,18 @@ const WorkflowitemHistoryTab = ({
   subprojectId,
   workflowitemId,
   isLoading,
-  getUserDisplayname
+  getUserDisplayname,
+  hideHistory
 }) => {
   const [{ startAt, endAt, publisher, eventType }] = useHistoryState();
+
+  // clean-up when unmounting
+  useEffect(() => {
+    return () => {
+      hideHistory();
+    };
+  }, [hideHistory]);
+
   const fetchFirstHistoryEvents = filter =>
     fetchFirstWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, filter);
   const fetchNext = () =>
@@ -62,7 +71,8 @@ function mapDispatchToProps(dispatch) {
     fetchNextWorkflowitemHistoryPage: (projectId, subprojectId, workflowitemId, filter) =>
       dispatch(fetchNextWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, filter)),
     fetchFirstWorkflowitemHistoryPage: (projectId, subprojectId, workflowitemId, filter) =>
-      dispatch(fetchFirstWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, filter))
+      dispatch(fetchFirstWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, filter)),
+    hideHistory: () => dispatch(hideHistory())
   };
 }
 

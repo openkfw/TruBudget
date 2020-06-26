@@ -5,7 +5,8 @@ import {
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
   FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE,
   FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
-  SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT
+  SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT,
+  HIDE_HISTORY
 } from "./actions";
 
 const historyPageSize = 30;
@@ -46,6 +47,7 @@ export default function reducer(state = defaultState, action) {
       });
 
     case CLOSE_WORKFLOWITEM_DETAILS:
+    case HIDE_HISTORY:
       return defaultState;
     default:
       return state;
