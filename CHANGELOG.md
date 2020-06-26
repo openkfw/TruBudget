@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Change field names for user creation [#498](https://github.com/openkfw/TruBudget/issues/498)
 - Hide project search button instead of disabling it [#497](https://github.com/openkfw/TruBudget/issues/497)
+- Hide badge of due date when sorting workflowitems [#505](https://github.com/openkfw/TruBudget/issues/505)
 
 <!-- ### Deprecated -->
 
