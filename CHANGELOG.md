@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Changed -->
+
+<!-- ### Security -->
+
+# [1.11.0] - 2020-06-26
+
 ### Added
 
 - Add optional due-date for workflowitems [#71](https://github.com/openkfw/TruBudget/issues/71)
@@ -18,18 +34,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Hide project search button instead of disabling it [#497](https://github.com/openkfw/TruBudget/issues/497)
 - Hide badge of due date when sorting workflowitems [#505](https://github.com/openkfw/TruBudget/issues/505)
 
-<!-- ### Deprecated -->
-
-<!-- ### Removed -->
-
 ### Fixed
 
-- Fixed a bug where the configuration of the Email notification service was not applied correctly
+- Fixed a bug where the configuration of the Email notification service was not applied correctly [#496](https://github.com/openkfw/TruBudget/pull/496)
 - Fixed a bug where the history of a workflowitem was duplicated by switching tabs[#504](https://github.com/openkfw/TruBudget/issues/504)
-
-<!-- ### Changed -->
-
-<!-- ### Security -->
 
 # [1.10.0] - 2020-06-08
 
@@ -467,7 +475,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.10.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.11.0...master
+[1.11.0]: https://github.com/openkfw/TruBudget/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/openkfw/TruBudget/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/openkfw/TruBudget/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/openkfw/TruBudget/compare/v1.7.0...v1.8.0
