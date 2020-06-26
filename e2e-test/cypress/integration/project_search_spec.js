@@ -146,12 +146,7 @@ describe("Project Search", function() {
       .click();
     cy.get("[data-test=navigation-bar]")
       .find("[data-test=search-bar]")
-      .find("[data-test=search-input]")
       .should("not.be.visible");
-    cy.get("[data-test=navigation-bar]")
-      .find("[data-test=search-bar]")
-      .find("[data-test=toggle-searchbar]")
-      .should("be.disabled");
     // Navigate to overview page
     cy.visit("/projects");
     // Search field should be empty
