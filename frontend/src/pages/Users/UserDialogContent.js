@@ -66,11 +66,11 @@ const UserDialogContent = ({
       <div className={classes.textInputContainer}>
         <TextInputWithIcon
           className={classes.textInput}
-          label={strings.users.full_name}
+          label={strings.users.account_name}
           value={displayName}
           error={false}
           icon={<NameIcon />}
-          data-test="fullname"
+          data-test="accountname"
           onChange={event => setDisplayName(event.target.value)}
         />
         <TextInputWithIcon

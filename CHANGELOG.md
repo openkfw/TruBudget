@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Add optional due-date for workflowitems [#71](https://github.com/openkfw/TruBudget/issues/71)
 
-<!-- ### Changed -->
+### Changed
+
+- Change field names for user creation [#498](https://github.com/openkfw/TruBudget/issues/498)
 
 <!-- ### Deprecated -->
 

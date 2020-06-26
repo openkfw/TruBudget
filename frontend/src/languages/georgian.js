@@ -108,13 +108,13 @@ const ka = {
   },
 
   users: {
+    account_name: "ანგარიშის სახელი",
     add_group: "ჯგუფის დამატება",
     add_user: "მომხმარებლის დამატება",
     change_password_for: "პაროლის შეცვლა {0}",
     current_user_password: "შენი პაროლი",
     edit_group: "ჯგუფის რედაქტირება",
     edit_permissions_for: "ნებართვის რედაქტირება",
-    full_name: "სრული სახელი",
     group_created: "ჯგუფი წარმატებით შექმნილია",
     groups: "ჯგუფები",
     invalid_password: "პაროლი არასწორია",

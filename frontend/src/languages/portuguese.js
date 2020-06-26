@@ -109,13 +109,13 @@ const pt = {
   },
 
   users: {
+    account_name: "Nome ou descrição do usuário",
     add_group: "Criar novo grupo",
     add_user: "Criar novo usuário",
     change_password_for: "Mudar senha para {0}",
     current_user_password: "Sua Senha",
     edit_group: "Editar grupo",
     edit_permissions_for: "Editar permissões para",
-    full_name: "Nome ou descrição do usuário",
     group_created: "Grupo de usuários criado com sucesso",
     groups: "Grupos",
     invalid_password: "Sehna inválida",
