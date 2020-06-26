@@ -85,17 +85,10 @@ Similar to the development mode we need to proxy the API calls.
 #### Reverse proxying API in NGINX
 
 In production we use NGINX to act as reverse-proxy. That means, the browser will request `http://localhost/` for static resources (like the html, js, images) which will be served by NGINX. On top of that, the Application will try to connect to the API through `http://localhost/api` which obviously cant be served through NGINX (in fact the API might run _somewhere_).
-<<<<<<< HEAD
 
 The solution is to proxy the calls to the designated API's (e.g. API or Test-API). This can be done by configuring the `nginx.conf` file.
 
 If you take a look at the NGINX config `nginx.conf` you will see that the proxy is not configured. Thats because we run a script to configure the API locations dynamically when the Dockerfile is running (see `configureServer.sh`).
-=======
-
-The solution is to proxy the calls to the designated API's (e.g. API or Test-API). This can be done by configuring the `nginx.conf` file.
-
-If you take a look at the NGINX config `nginx.conf` you will see that the proxy is not configured. Thats because we run a script to configure the API locations dynamically when the Dockerfile is run (see `configureServer.sh`).
->>>>>>> 8aa35bce... Extend email notification documentation
 
 The Proxy Paths are defined through 4 environment variables of the container:
 
@@ -162,11 +155,8 @@ Linting is done through ESLint but the configuration is abstracted away through 
 
 The initial users are bootstraped via API when the applications are started and if you want to add additional users the frontend provides an admin dashboard. The admin dashboard is reachable via Login Page or directly on the `/admin` endpoint.
 Use the admin credentials to login onto the dashboard. If `BC_ADDRESS_VERIFICATION` is disabled each frontend with the corresponding blockchain node is able to add users and roles, otherwise if `BC_ADDRESS_VERIFICATION` is enabled only blockchain nodes with admin rights are allowed to add users and roles.
-<<<<<<< HEAD
-=======
 
 ## Email notifications
 
 To enable/disable email notifications for blockchain simply set the `REACT_APP_EMAIL_SERVICE_ENABLED` to "true" or unset it.
 When enabled the frontend requesting a email-notifcations readiness call when entering the login screen. If the email notification service is ready the email section in the user profile is activated and visible so the user can create/edit the email-address where he/she wants to get notifications to. More details about the email notification service can be found in the [email notification documentation](../email-notification/README.md#)
->>>>>>> 8aa35bce... Extend email notification documentation
