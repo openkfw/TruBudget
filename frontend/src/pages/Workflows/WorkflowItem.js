@@ -359,7 +359,7 @@ const renderActionButtons = (
   const editDisabled = !canEditWorkflow || workflowSortEnabled;
   const permissionsDisabled = !canListWorkflowPermissions || workflowSortEnabled;
   const workflowitemAssigneeChanged = idsPermissionsUnassigned.find(el => el === id) === undefined;
-  const isBadgeHidden = workflowitemAssigneeChanged || workflowSortEnabled || permissionsDisabled ? true : false;
+  const isBadgeHidden = workflowitemAssigneeChanged || workflowSortEnabled || permissionsDisabled;
   const closeDisabled = !canCloseWorkflow || workflowSortEnabled;
   const permissionsTitle = isBadgeHidden ? strings.common.show_permissions : strings.confirmation.assign_permissions;
   return (
@@ -388,7 +388,6 @@ const renderActionButtons = (
         <StyledBadge
           variant="dot"
           invisible={isBadgeHidden}
-          //data-test={"warning-badge"}
           data-test={isBadgeHidden ? "perm-warning-badge-disabled" : "perm-warning-badge-enabled"}
           className={classes.buttonStyle}
         >

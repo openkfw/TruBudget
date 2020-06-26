@@ -17,7 +17,6 @@ import strings from "../../localizeStrings";
 import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
 import VersionsTable from "./VersionsTable";
-import { fetchEmailAddress } from "../Login/actions";
 
 const SideNavCard = ({
   avatarBackground,
