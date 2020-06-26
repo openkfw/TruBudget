@@ -28,7 +28,6 @@ const ProjectSearch = ({
       data-test="project-search"
       searchBarDisplayed={searchBarDisplayed}
       searchTerm={searchTerm}
-      searchDisabled={searchDisabled}
       storeSearchBarDisplayed={storeSearchBarDisplayed}
       storeSearchTerm={storeSearchTerm}
       autoSearch={true}
