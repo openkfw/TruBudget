@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed a bug where the configuration of the Email notification service was not applied correctly
+- Fixed a bug where the history of a workflowitem was duplicated by switching tabs[#504](https://github.com/openkfw/TruBudget/issues/504)
 
 <!-- ### Changed -->
 
