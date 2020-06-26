@@ -269,7 +269,7 @@ const editWorkflow = (
 };
 
 const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
-  const showBadge = status === "open" && isDateReached(workflow.dueDate);
+  const showBadge = status === "open" && isDateReached(workflow.dueDate) && !workflowSortEnabled;
   return (
     <div>
       <StyledBadge
