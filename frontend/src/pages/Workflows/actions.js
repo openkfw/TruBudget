@@ -33,6 +33,7 @@ export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
 export const WORKFLOW_DUEDATE = "WORKFLOW_DUEDATE";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
+export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_SUCCESS = "CREATE_WORKFLOW_SUCCESS";
 export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
@@ -437,7 +438,8 @@ export function showEditDialog(
   description,
   currency,
   documents,
-  dueDate
+  dueDate,
+  workflowitemType
 ) {
   return {
     type: SHOW_WORKFLOW_EDIT,
@@ -449,7 +451,8 @@ export function showEditDialog(
     description,
     currency,
     documents,
-    dueDate
+    dueDate,
+    workflowitemType
   };
 }
 
@@ -473,6 +476,13 @@ export function storeWorkflowDocument(id, base64, fileName) {
     id: id,
     base64: base64,
     fileName: fileName
+  };
+}
+
+export function storeWorkflowitemType(workflowitemType) {
+  return {
+    type: WORKFLOWITEM_TYPE,
+    workflowitemType: workflowitemType
   };
 }
 
@@ -555,7 +565,8 @@ export function createWorkflowItem(
   description,
   status,
   documents,
-  dueDate
+  dueDate,
+  workflowitemType
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -569,7 +580,8 @@ export function createWorkflowItem(
     description,
     documents,
     status,
-    dueDate
+    dueDate,
+    workflowitemType
   };
 }
 

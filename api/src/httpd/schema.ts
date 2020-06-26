@@ -2290,6 +2290,7 @@ const schemas = {
                           billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           exchangeRate: { type: "string", example: "1.0" },
+                          workflowitemType: { type: "string", example: "general"},
                           documents: {
                             type: "array",
                             items: {

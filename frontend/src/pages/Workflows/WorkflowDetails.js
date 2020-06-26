@@ -84,7 +84,17 @@ const removeNewLines = text => {
 };
 
 function Overview({ classes, users, workflowitem }) {
-  const { displayName, description, amountType, status, assignee, amount, currency, dueDate } = workflowitem.data;
+  const {
+    displayName,
+    description,
+    amountType,
+    status,
+    assignee,
+    amount,
+    currency,
+    dueDate,
+    workflowitemType
+  } = workflowitem.data;
   const trimmedComment = removeNewLines(description);
   const assignedUser = users.find(user => user.id === assignee);
 
@@ -130,6 +140,14 @@ function Overview({ classes, users, workflowitem }) {
           <AssigneeIcon />
         </Avatar>
         <ListItemText primary={assignedUser ? assignedUser.displayName : ""} secondary={strings.common.assignee} />
+      </ListItem>
+      <ListItem>
+        <Avatar>W</Avatar>
+        <ListItemText
+          primary={workflowitemType}
+          secondary={strings.workflow.workflowitem_type}
+          data-test="workflowitemInfoType"
+        />
       </ListItem>
     </List>
   );

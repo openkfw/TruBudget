@@ -70,11 +70,7 @@ The pre-set cluster contains:
 - 1 Email-Service
 - 1 Email-Database (Postgres)
 
-<<<<<<< HEAD
 When started, the Email-Service sends email notifications to the configured SMTP-host. The default configuration is:
-=======
-When started the Email-Service sends email notifications to the configured SMTP-host. The default configuration is:
->>>>>>> 8aa35bce... Extend email notification documentation
 
 - SMTP_HOST: host.docker.internal(localhost)
 - SMTP_PORT: 2500
@@ -102,17 +98,11 @@ See [environment variables section](#environment-variables) above.
 
 #### Frontend
 
-<<<<<<< HEAD
 | Env Variable                    | Default Value | Description                                                                                                                                                      |
 | ------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled, the frontend requests a email-notifcations readiness call when entering the login screen. If true the email section in the user-profile is enabled |
 | EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                     |
 | EMAIL_PORT                      | -             | Port of the email notification service                                                                                                                           |
-=======
-| Env Variable                    | Default Value | Description                                                                                                                                                     |
-| ------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled the frontend requests a email-notifcations readiness call when entering the login screen. If true the email section in the user-profile is enabled |
->>>>>>> 8aa35bce... Extend email notification documentation
 
 ### Endpoints
 

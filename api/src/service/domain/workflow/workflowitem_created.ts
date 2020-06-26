@@ -7,6 +7,7 @@ import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
+import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { StoredDocument, storedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -31,6 +32,7 @@ interface InitialData {
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
+  workflowitemType?: Type;
 }
 
 const initialDataSchema = Joi.object({
@@ -48,6 +50,7 @@ const initialDataSchema = Joi.object({
   documents: Joi.array().items(storedDocumentSchema).required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
+  workflowitemType: workflowitemTypeSchema,
 }).options({ stripUnknown: true });
 
 export interface Event {
@@ -122,6 +125,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
     log: [],
     // Additional information (key-value store), e.g. external IDs:
     additionalData: initialData.additionalData,
+    workflowitemType: initialData.workflowitemType,
   };
 
   return Result.mapErr(

@@ -3,6 +3,7 @@ import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
+import Type from "./domain/workflowitem_types/types";
 
 const maxItemCount: number = 0x7fffffff;
 
@@ -54,6 +55,7 @@ export interface Workflowitem {
   documents?: Document[];
   permissions: Permissions;
   log: HistoryEvent[];
+  workflowitemType?: Type;
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -74,6 +76,7 @@ export interface RedactedWorkflowitem {
   documents?: null;
   permissions: null;
   log: null;
+  workflowitemType?: Type;
 }
 
 export interface User {

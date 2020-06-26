@@ -30,6 +30,7 @@ const baseWorkflowitem: Workflowitem.Workflowitem = {
   permissions: {},
   log: [],
   additionalData: {},
+  workflowitemType: "general",
 };
 const baseRedactedItem: Workflowitem.RedactedWorkflowitem = {
   isRedacted: true,
@@ -50,6 +51,7 @@ const baseRedactedItem: Workflowitem.RedactedWorkflowitem = {
   permissions: {},
   log: [],
   additionalData: {},
+  workflowitemType: "general",
 };
 
 describe("reorder workflowitem", () => {

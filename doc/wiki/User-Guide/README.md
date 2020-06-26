@@ -27,13 +27,13 @@ Learn how to create and work with projects and their components.
 
 ## Network
 
-Learn how to approve other organizations or nodes to expand your Trubudget network. 
+Learn how to approve other organizations or nodes to expand your Trubudget network.
 
 - [Nodes](./Network/Nodes.md)
 
 ## Backups
 
-Learn how to download or upload a backup of the current data (multichain instance) as a *root* user.
+Learn how to download or upload a backup of the current data (multichain instance) as a _root_ user.
 
 - [Backup](./Backup.md)
 
@@ -42,3 +42,15 @@ Learn how to download or upload a backup of the current data (multichain instanc
 Learn where to find the versions of all Trubudget components
 
 - [Versions](./Versions.md)
+
+## FAQ
+
+### How can I change the default project background images?
+
+Changing these images is only possible by replacing the Thumbnail\_\*.jpg files in the `frontend/public` folder.
+
+**Notes:**
+
+Changes are only applied after restarting the frontend.
+Filenames `Thumbnail_0001.jpg` - `Thumbnail_0024.jpg` have to stay the same.
+`Thumbnail_0025.jpg` and above are ignored.

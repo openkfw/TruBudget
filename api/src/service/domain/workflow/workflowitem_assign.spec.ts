@@ -30,6 +30,7 @@ const baseWorkflowitem: Workflowitem = {
   permissions: { "workflowitem.assign": [alice, bob, charlie].map(x => x.id) },
   log: [],
   additionalData: {},
+  workflowitemType: "general",
 };
 
 describe("assign workflowitem: authorization", () => {
@@ -50,6 +51,7 @@ describe("assign workflowitem: authorization", () => {
           if (identity === "bob") return ["bob"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -75,6 +77,7 @@ describe("assign workflowitem: authorization", () => {
           if (identity === "bob") return ["bob"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -100,6 +103,7 @@ describe("assign workflowitem: preconditions", () => {
           if (identity === "alice") return ["alice"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -123,6 +127,7 @@ describe("assign workflowitem: preconditions", () => {
           if (identity === "bob") return ["bob"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -146,6 +151,7 @@ describe("assign workflowitem: preconditions", () => {
           if (identity === "bob") return ["bob"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -170,6 +176,7 @@ describe("assign workflowitem: preconditions", () => {
           if (identity === "alice_and_bob") return ["alice", "bob"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -192,6 +199,7 @@ describe("assign workflowitem: preconditions", () => {
           if (identity === "alice") return ["alice"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -216,6 +224,7 @@ describe("assign workflowitem: preconditions", () => {
           if (identity === "alice") return ["alice"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -248,6 +257,7 @@ describe("assign workflowitem: notifications", () => {
           if (identity === "bob") return ["bob"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -282,6 +292,7 @@ describe("assign workflowitem: notifications", () => {
           if (identity === "alice") return ["alice"];
           throw Error(`unexpected identity: ${identity}`);
         },
+        applyWorkflowitemType: () => [],
       },
     );
 
@@ -320,6 +331,7 @@ describe("assign workflowitem: notifications", () => {
             if (identity === "alice_and_bob_and_charlie") return ["alice", "bob", "charlie"];
             throw Error(`unexpected identity: ${identity}`);
           },
+          applyWorkflowitemType: () => [],
         },
       );
       assert.isTrue(Result.isOk(result), (result as Error).message);

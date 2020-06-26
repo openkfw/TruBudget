@@ -55,6 +55,7 @@ import {
   TRIGGER_SUBPROJECT_APPLY_ACTIONS,
   UPDATE_WORKFLOW_ORDER,
   WORKFLOWITEMS_SELECTED,
+  WORKFLOWITEM_TYPE,
   WORKFLOW_AMOUNT,
   WORKFLOW_AMOUNT_TYPE,
   WORKFLOW_CREATION_STEP,
@@ -92,7 +93,8 @@ const defaultState = fromJS({
     currency: "",
     description: "",
     status: "open",
-    documents: []
+    documents: [],
+    workflowitemType: "general"
   },
   showWorkflowPermissions: false,
   idsPermissionsUnassigned: [],
@@ -180,7 +182,8 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("description", action.description)
           .set("currency", action.currency)
           .set("documents", fromJS(action.documents))
-          .set("dueDate", action.dueDate),
+          .set("dueDate", action.dueDate)
+          .set("workflowitemType", action.workflowitemType),
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
       });
@@ -291,6 +294,8 @@ export default function detailviewReducer(state = defaultState, action) {
           Immutable.Map({ id: action.id, base64: action.base64, fileName: action.fileName })
         ])
       );
+    case WORKFLOWITEM_TYPE:
+      return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
     case CREATE_WORKFLOW_SUCCESS:
       return state.updateIn(["idsPermissionsUnassigned"], workflowitems => [...workflowitems, action.workflowitemId]);
     case EDIT_WORKFLOW_ITEM_SUCCESS:

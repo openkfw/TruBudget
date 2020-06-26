@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Add optional due-date for workflowitems [#71](https://github.com/openkfw/TruBudget/issues/71)
+- Workflowitem are typed. New types: "general", "restricted" [#483](https://github.com/openkfw/TruBudget/issues/483)
 
 ### Changed
 
