@@ -19,7 +19,7 @@ export interface Project {
       organization: string;
       value: string;
       currencyCode: string;
-    }
+    },
   ];
 }
 
@@ -43,7 +43,7 @@ export interface Subproject {
       organization: string;
       value: string;
       currencyCode: string;
-    }
+    },
   ];
   additionData: any;
 }
@@ -63,14 +63,16 @@ export interface Workflowitem {
   displayName: string;
   description: string;
   assignee: string;
+  workflowitemType?: string;
   billingDate?: string;
   exchangeRate?: string;
+  dueDate?: string;
   amount?: string;
   documents: [
     {
       id: string;
       hash: string;
-    }
+    },
   ];
 }
 
@@ -91,7 +93,7 @@ export async function getProjects(
     `${base}/project.list`,
     getAuthHeader(token),
   );
-  const projectList: Project[] = response.data.data.items.map(i => i.data);
+  const projectList: Project[] = response.data.data.items.map((i) => i.data);
   return projectList;
 }
 
@@ -105,7 +107,7 @@ export async function getSubprojects(
     `${base}/subproject.list?projectId=${projectId}`,
     getAuthHeader(token),
   );
-  const subprojectList: Subproject[] = response.data.data.items.map(i => i.data);
+  const subprojectList: Subproject[] = response.data.data.items.map((i) => i.data);
   return subprojectList;
 }
 
@@ -120,6 +122,6 @@ export async function getWorkflowitems(
     `${base}/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`,
     getAuthHeader(token),
   );
-  const workflowitemList: Workflowitem[] = response.data.data.workflowitems.map(i => i.data);
+  const workflowitemList: Workflowitem[] = response.data.data.workflowitems.map((i) => i.data);
   return workflowitemList;
 }
