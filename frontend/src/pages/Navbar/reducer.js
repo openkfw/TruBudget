@@ -49,10 +49,16 @@ export default function navbarReducer(state = defaultState, action) {
     case FETCH_STREAM_NAMES_SUCCESS:
       return state.set("streamNames", fromJS(action.streamNames));
     case SET_SELECTED_VIEW:
-      return defaultState.merge({
+      return state.merge({
         selectedId: action.id,
         selectedSection: action.section,
-        isRoot: state.get("isRoot")
+        showSidebar: false,
+        searchTerm: defaultState.get("searchTerm"),
+        searchBarDisplayed: defaultState.get("searchBarDisplayed"),
+        userProfileOpen: defaultState.get("userProfileOpen"),
+        userProfileEdit: defaultState.get("userProfileEdit"),
+        tempEmailAddress: defaultState.get("tempEmailAddress"),
+        isEmailAddressInputValid: defaultState.get("isEmailAddressInputValid")
       });
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
       return state.set("currentProject", action.project.data.displayName);

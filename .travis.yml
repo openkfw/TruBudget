@@ -25,7 +25,7 @@ stages:
   before_script:
     - cd $PROJECT_NAME
   script:
-    - npm audit --audit-level=high
+    - npm audit --audit-level=high > /dev/null 2>&1
 
 .node-unit-test: &node-unit-test
   stage: test

@@ -10,6 +10,7 @@ const frontendLanguageSources = danger.git.fileMatch(
 );
 const provisioningSources = danger.git.fileMatch("provisioning/src/**/*");
 const e2eTestSources = danger.git.fileMatch("e2e-test/cypress/**/*");
+const excelExportSources = danger.git.fileMatch("excel-export/src/**/*");
 
 const title = danger.github.pr.title.toLowerCase();
 const trivialPR = title.includes("refactor");
@@ -18,6 +19,29 @@ const frontendChanges =
   frontendRootSources.edited ||
   frontendPageSources.edited ||
   frontendLanguageSources.edited;
+
+const apiResourceHasChanged = apiResourceChangesDetected();
+
+function apiResourceChangesDetected() {
+  const projectSource = danger.git.fileMatch(
+    "api/src/service/domain/workflow/project.ts"
+  );
+  const subprojectSource = danger.git.fileMatch(
+    "api/src/service/domain/workflow/subproject.ts"
+  );
+  const workflowitemSource = danger.git.fileMatch(
+    "api/src/service/domain/workflow/workflowitem.ts"
+  );
+  if (
+    projectSource.edited ||
+    subprojectSource.edited ||
+    workflowitemSource.edited
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 function deepFlat(inputArray) {
   return inputArray.reduce(
@@ -31,34 +55,34 @@ function deepFlat(inputArray) {
 
 async function getChanges(filepath) {
   const files = danger.git.fileMatch(filepath);
-  const { edited } = files.getKeyedPaths(paths => paths);
+  const { edited } = files.getKeyedPaths((paths) => paths);
   const chunksArray = await Promise.all(
-    edited.map(async path => {
+    edited.map(async (path) => {
       const changes = await Promise.resolve(
         danger.git.structuredDiffForFile(path)
       );
       return changes;
     })
   );
-  const chunks = deepFlat(chunksArray.map(chunk => chunk.chunks));
-  const changes = deepFlat(chunks.map(chunk => chunk.changes));
+  const chunks = deepFlat(chunksArray.map((chunk) => chunk.chunks));
+  const changes = deepFlat(chunks.map((chunk) => chunk.changes));
   return changes;
 }
 
 function getContentByType(changes) {
   const additions = changes
-    .filter(change => change.add)
-    .map(change => change.content);
+    .filter((change) => change.add)
+    .map((change) => change.content);
   const deletions = changes
-    .filter(change => change.del)
-    .map(change => change.content);
+    .filter((change) => change.del)
+    .map((change) => change.content);
   const normal = changes
-    .filter(change => change.normal)
-    .map(change => change.content);
+    .filter((change) => change.normal)
+    .map((change) => change.content);
   return {
     additions,
     deletions,
-    normal
+    normal,
   };
 }
 
@@ -89,12 +113,12 @@ if (
 }
 
 // Async part to check for changes in files
-(async function() {
+(async function () {
   // Warn if there were console logs added in the API
   const apiChanges = await getChanges("api/**/*.ts");
   const { additions: apiAdditions } = getContentByType(apiChanges);
 
-  if (apiAdditions.some(addition => addition.includes("console.log"))) {
+  if (apiAdditions.some((addition) => addition.includes("console.log"))) {
     warn("There are new console logs in the API!");
   }
 
@@ -102,21 +126,30 @@ if (
   const e2etestChanges = await getChanges("e2e-test/cypress/integration/*.js");
   const { additions: e2etestAdditions } = getContentByType(e2etestChanges);
 
-  if (e2etestAdditions.some(addition => addition.includes(".only"))) {
+  if (e2etestAdditions.some((addition) => addition.includes(".only"))) {
     warn("The '.only' keyword was added to the e2e-tests");
+  }
+
+  // Warn if there where properties added to a resource(project/subproject/workflowitem) and
+  // excel-export is not adapted
+  if (apiResourceHasChanged && !excelExportSources.edited) {
+    warn(
+      "One of the resource files in the api domain layer (project.ts/subproject.ts/workflowitem.ts) were edited. " +
+        "If a new property was added the excel-export project has to be adapted."
+    );
   }
 
   const allChanges = await getChanges("**/*");
   const { additions: allAdditions } = getContentByType(allChanges);
 
   // Warn if there was a TODO added in any file
-  if (allAdditions.some(addition => addition.includes("TODO"))) {
+  if (allAdditions.some((addition) => addition.includes("TODO"))) {
     warn("A new TODO was added.");
   }
 
   // Warn if there was an id added in any file
   const reg = /[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}/;
-  if (allAdditions.some(addition => reg.test(addition))) {
+  if (allAdditions.some((addition) => reg.test(addition))) {
     warn("It looks like an ID was added. Please make sure it is not a secret.");
   }
 })();

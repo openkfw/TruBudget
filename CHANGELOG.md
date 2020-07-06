@@ -15,7 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+Fixed a bug where it was impossible to edit an email address of a user [#510](https://github.com/openkfw/TruBudget/issues/510)
+The excel sheet is now exported including the fields `dueDate` and `workflowitemType` [#511](https://github.com/openkfw/TruBudget/issues/511)
+Fixed a bug where all displayed versions disappeared after switching page [#512](https://github.com/openkfw/TruBudget/issues/512)
 
 <!-- ### Changed -->
 

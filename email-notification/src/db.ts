@@ -42,11 +42,8 @@ class DbConnector {
     const client = await this.getDb();
     const tablesToCheck: string[] = [config.userTable];
     const tablePromises: Promise<string[]> = Promise.all(
-      tablesToCheck.map(table => {
-        const query: knex.QueryBuilder<any, any> = client
-          .select()
-          .from(table)
-          .whereRaw("1=0");
+      tablesToCheck.map((table) => {
+        const query: knex.QueryBuilder<any, any> = client.select().from(table).whereRaw("1=0");
         return this.executeQuery(query, `The table ${table} does not exist.`);
       }),
     );
@@ -57,11 +54,8 @@ class DbConnector {
     try {
       const client = await this.getDb();
       if (!(await client.schema.hasTable(config.userTable))) {
-        await client.schema.createTable(config.userTable, table => {
-          table
-            .string(this.idTableName)
-            .notNullable()
-            .unique();
+        await client.schema.createTable(config.userTable, (table) => {
+          table.string(this.idTableName).notNullable().unique();
           table.string(this.emailAddressTableName).notNullable();
         });
         logger.info(`Table '${config.userTable}' created.`);
@@ -79,10 +73,11 @@ class DbConnector {
   public updateUser = async (id: string, emailAddress: string): Promise<void> => {
     const client = await this.getDb();
     try {
-      await client(config.userTable).update({
-        [`${this.idTableName}`]: id,
-        [`${this.emailAddressTableName}`]: emailAddress,
-      });
+      await client(config.userTable)
+        .update({
+          [`${this.emailAddressTableName}`]: emailAddress,
+        })
+        .where({ [`${this.idTableName}`]: id });
       logger.info(`Update User '${id}' with email address '${emailAddress}'`);
     } catch (error) {
       throw error;
@@ -146,11 +141,8 @@ class DbConnector {
   };
 
   private createTable = async (): Promise<void> => {
-    await this.pool.schema.createTable(config.userTable, table => {
-      table
-        .string(this.idTableName)
-        .notNullable()
-        .unique();
+    await this.pool.schema.createTable(config.userTable, (table) => {
+      table.string(this.idTableName).notNullable().unique();
       table.string(this.emailAddressTableName).notNullable();
     });
     logger.info(`Table '${config.userTable}' created.`);
