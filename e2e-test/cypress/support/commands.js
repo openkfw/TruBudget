@@ -99,7 +99,7 @@ Cypress.Commands.add("fetchSubprojects", projectId => {
     .then(body => Cypress.Promise.resolve(body.data.subprojects));
 });
 
-Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName, opts = { amountType: "N/A" }) => {
+Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName, opts = {}) => {
   cy.request({
     url: `${baseUrl}/api/subproject.createWorkflowitem`,
     method: "POST",
@@ -112,6 +112,7 @@ Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName
         projectId: projectId,
         subprojectId: subprojectId,
         displayName: displayName,
+        amountType: "N/A",
         ...opts
       }
     }
