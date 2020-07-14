@@ -24,10 +24,17 @@ describe("Workflowitem create", function() {
   it("When creating an allocated workflowitem, the currency is equal to the subproject's currency", function() {
     // Open create-dialog of workflow item
     cy.get("[data-test=createWorkflowitem]").click();
-    cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=datepicker-due-date]").type("2050-02-02");
+    cy.get("[data-test=creation-dialog]").should("be.visible");
+
+    cy.get("[data-test=nameinput] input")
+      .click()
+      .type("Test");
+    cy.get("[data-test=datepicker-due-date]")
+      .click()
+      .type("2050-02-02");
     cy.get("[data-test=commentinput] textarea")
       .last()
+      .click()
       .type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
     cy.get("[data-test=dropdown-currencies-click]").should("contain", "EUR");
@@ -94,19 +101,28 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=perm-warning-badge-disabled]").should("be.visible");
   });
 
-  it("Check if after selecting another currency, the exchange rate was entered and saved correctly", function() {
-    // The workflow item amount should be displayed in the
-    // subproject's currency
-    cy.get("[data-test=workflowitem-amount]")
-      .first()
-      .should("contain", "€");
-
-    // The information on the workflow item amount
-    // and exchange rate is displayed in a tooltip
-    cy.get("[data-test=amount-explanation]")
-      .first()
-      .should("have.attr", "title")
-      .should("contain", "$");
+  it("Show exchange rate correctly when currency of workflowitem differs from the subproject currency", function() {
+    // Create a workflow item
+    cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test", {
+      amountType: "allocated",
+      amount: "1",
+      currency: "USD",
+      exchangeRate: "1.4"
+    }).then(({ id }) => {
+      let workflowitemId = id;
+      // The workflow item amount should be displayed in the
+      // subproject's currency
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
+      cy.get("[data-test=workflowitem-amount]")
+        .first()
+        .should("contain", "€");
+      // The information on the workflow item amount
+      // and exchange rate is displayed in a tooltip
+      cy.get("[data-test=amount-explanation]")
+        .first()
+        .should("have.attr", "title")
+        .should("contain", "$");
+    });
   });
 
   it("Root can not create a Workflowitem", function() {
