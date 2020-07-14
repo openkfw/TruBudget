@@ -48,8 +48,8 @@ class SubProjectContainer extends Component {
 
   componentDidMount() {
     this.props.setSelectedView(this.projectId, "project");
-    this.props.fetchAllProjectDetails(this.projectId, true);
     this.props.fetchUser();
+    this.props.fetchAllProjectDetails(this.projectId, true);
     this.setState({ isDataFetched: true });
 
     // Get Searchword from URL if available
