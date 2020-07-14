@@ -24,10 +24,17 @@ describe("Workflowitem create", function() {
   it("When creating an allocated workflowitem, the currency is equal to the subproject's currency", function() {
     // Open create-dialog of workflow item
     cy.get("[data-test=createWorkflowitem]").click();
-    cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=datepicker-due-date]").type("2050-02-02");
+    cy.get("[data-test=creation-dialog]").should("be.visible");
+
+    cy.get("[data-test=nameinput] input")
+      .click()
+      .type("Test");
+    cy.get("[data-test=datepicker-due-date]")
+      .click()
+      .type("2050-02-02");
     cy.get("[data-test=commentinput] textarea")
       .last()
+      .click()
       .type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
     cy.get("[data-test=dropdown-currencies-click]").should("contain", "EUR");
@@ -40,24 +47,36 @@ describe("Workflowitem create", function() {
   it("Check warnings that permissions are not assigned", function() {
     // Create a workflow item
     cy.get("[data-test=createWorkflowitem]").click();
-    cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=datepicker-due-date]").type("2050-02-02");
+    cy.get("[data-test=nameinput] input")
+      .should("be.visible")
+      .click()
+      .type("Test");
+    cy.get("[data-test=datepicker-due-date]")
+      .click()
+      .type("2050-02-02");
     cy.get("[data-test=commentinput] textarea")
       .last()
+      .click()
       .type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
 
     // Select a different currency than the subproject currency
     cy.get("[data-test=dropdown-currencies-click]").click();
-    cy.get("[data-value=USD]").click();
+    cy.get("[data-value=USD]")
+      .should("be.visible")
+      .click();
 
     // Enter amount
-    cy.get("[data-test=amountinput] input").type("1234");
+    cy.get("[data-test=amountinput] input")
+      .click()
+      .type("1234");
 
     // The exchange rate field should be enabled because
     // we selected a different currency
     cy.get("[data-test=rateinput] input").should("be.enabled");
-    cy.get("[data-test=rateinput] input").type("1.5");
+    cy.get("[data-test=rateinput] input")
+      .click()
+      .type("1.5");
     cy.get("[data-test=next]").click();
     cy.get("[data-test=submit]").click();
 
@@ -73,29 +92,37 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=workflowitem-table]")
       .find("[data-test=show-workflowitem-permissions]")
       .last()
-      .click({ force: true })
-      .then(() => {
-        cy.get("[data-test=permission-submit]")
-          .click()
-          .then(() => {
-            cy.get("[data-test=perm-warning-badge-disabled]").should("be.visible");
-          });
-      });
+      .click({ force: true });
+    cy.get("[data-test=permission-container]")
+      .should("be.visible")
+      .get("[data-test=permission-submit]")
+      .click();
+
+    cy.get("[data-test=perm-warning-badge-disabled]").should("be.visible");
   });
 
-  it("Check if after selecting another currency, the exchange rate was entered and saved correctly", function() {
-    // The workflow item amount should be displayed in the
-    // subproject's currency
-    cy.get("[data-test=workflowitem-amount]")
-      .first()
-      .should("contain", "€");
-
-    // The information on the workflow item amount
-    // and exchange rate is displayed in a tooltip
-    cy.get("[data-test=amount-explanation]")
-      .first()
-      .should("have.attr", "title")
-      .should("contain", "$");
+  it("Show exchange rate correctly when currency of workflowitem differs from the subproject currency", function() {
+    // Create a workflow item
+    cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test", {
+      amountType: "allocated",
+      amount: "1",
+      currency: "USD",
+      exchangeRate: "1.4"
+    }).then(({ id }) => {
+      let workflowitemId = id;
+      // The workflow item amount should be displayed in the
+      // subproject's currency
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
+      cy.get("[data-test=workflowitem-amount]")
+        .first()
+        .should("contain", "€");
+      // The information on the workflow item amount
+      // and exchange rate is displayed in a tooltip
+      cy.get("[data-test=amount-explanation]")
+        .first()
+        .should("have.attr", "title")
+        .should("contain", "$");
+    });
   });
 
   it("Root can not create a Workflowitem", function() {
@@ -115,6 +142,7 @@ describe("Workflowitem create", function() {
       dueDate: "2050-03-03"
     }).then(({ id }) => {
       let workflowitemId = id;
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
       cy.get("[data-test=due-date]").should("be.visible");
       // No orange alertborder
@@ -122,13 +150,14 @@ describe("Workflowitem create", function() {
     });
   });
 
-  it("If the due-date is set and  exceeded, it should be displayed in workflowitem details with alert-border", function() {
+  it("If the due-date is set and exceeded, it should be displayed in workflowitem details with alert-border", function() {
     // Create a workflow item
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test", {
       amountType: "N/A",
       dueDate: "2000-03-03"
     }).then(({ id }) => {
       let workflowitemId = id;
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
       cy.get("[data-test=due-date]").should("be.visible");
       // With orange alert-border
@@ -143,6 +172,7 @@ describe("Workflowitem create", function() {
       dueDate: ""
     }).then(({ id }) => {
       let workflowitemId = id;
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
       cy.get("[data-test=due-date]").should("not.be.visible");
     });
@@ -152,6 +182,7 @@ describe("Workflowitem create", function() {
     // Create a workflow item
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
       let workflowitemId = id;
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
       cy.get("[data-test=due-date]").should("not.be.visible");
     });
@@ -165,6 +196,7 @@ describe("Workflowitem create", function() {
     }).then(({ id }) => {
       let workflowitemId = id;
       // Check if info icon badge is displayed
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("be.visible");
     });
   });
@@ -177,6 +209,7 @@ describe("Workflowitem create", function() {
     }).then(({ id }) => {
       let workflowitemId = id;
       // Check if info icon badge is displayed
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("be.visible");
     });
   });
@@ -189,6 +222,7 @@ describe("Workflowitem create", function() {
     }).then(({ id }) => {
       let workflowitemId = id;
       // Check if info icon badge is NOT displayed
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.be.visible");
     });
   });
@@ -200,6 +234,7 @@ describe("Workflowitem create", function() {
     }).then(({ id }) => {
       let workflowitemId = id;
       // Check if info icon badge is NOT displayed
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.be.visible");
     });
   });

@@ -57,8 +57,8 @@ class WorkflowContainer extends Component {
 
   componentDidMount() {
     this.props.setSelectedView(this.subprojectId, "subProject");
-    this.props.fetchAllSubprojectDetails(this.projectId, this.subprojectId, true);
     this.props.fetchUser();
+    this.props.fetchAllSubprojectDetails(this.projectId, this.subprojectId, true);
     this.setState({ isDataFetched: true });
   }
 

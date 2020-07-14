@@ -105,6 +105,7 @@ class PermissionSelection extends Component {
           autoWidth
           value={selections}
           renderValue={s => s.join(", ")}
+          MenuProps={{ "data-test": "permission-selection-popup" }}
         >
           {this.props.disabled ? (
             <ListSubheader

@@ -484,7 +484,7 @@ export const WorkflowItem = withTheme()(
               className={`${getCardClass(classes, workflowSortEnabled, status)} ${classes.card}`}
               style={getCardStyle(classes, workflowSortEnabled, status)}
             >
-              <div className={classes.workflowContent}>
+              <div className={classes.workflowContent} data-test={`workflowitem-${id}`}>
                 <div className={classes.infoCell}>{infoButton}</div>
                 <div className={`${classes.text} ${classes.workflowCell}`} style={itemStyle}>
                   <Typography variant="body2" className={classes.typographs}>

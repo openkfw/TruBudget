@@ -36,6 +36,7 @@ describe("Subproject Search", function() {
     cy.get("[data-test=subproject-row]").should("be.visible");
     cy.get("[data-test=search-input]")
       .should("be.visible")
+      .click()
       .type("SearchTest");
     cy.get("[data-test=highlighted-displayname]")
       .find("mark")
@@ -52,7 +53,9 @@ describe("Subproject Search", function() {
       .find("[data-test=search-input]")
       .should("be.visible")
       .should("not.be.disabled");
-    cy.get("[data-test=search-input").type(projectWithTag.subprojectTitle);
+    cy.get("[data-test=search-input")
+      .click()
+      .type(projectWithTag.subprojectTitle);
     cy.get("[data-test=highlighted-displayname]").contains(projectWithTag.subprojectTitle);
     //Only one element should should be in the list
     cy.get("[data-test=subproject-title-0]").should("be.visible");
@@ -65,7 +68,9 @@ describe("Subproject Search", function() {
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
       .should("be.visible");
-    cy.get("[data-test=search-input]").type("name:" + projectWithTag.subprojectTitle);
+    cy.get("[data-test=search-input]")
+      .click()
+      .type("name:" + projectWithTag.subprojectTitle);
     cy.get("[data-test=highlighted-displayname]").contains(projectWithTag.subprojectTitle);
     //Only one element should should be in the list
     cy.get("[data-test=subproject-title-0]").should("be.visible");
@@ -76,6 +81,7 @@ describe("Subproject Search", function() {
       .find("[data-test=search-input]")
       .should("be.visible");
     cy.get("[data-test=search-input]")
+      .click()
       .type("{selectall}{backspace}")
       .type("status: open");
     cy.get("[data-test=ssp-table]").contains("Open");
@@ -94,6 +100,7 @@ describe("Subproject Search", function() {
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
       .find("[data-test=search-input]")
+      .click()
       .type("SearchTestExample");
     // Go into detail view
     cy.get("[data-test=subproject-view-details-0]").click();
@@ -112,7 +119,9 @@ describe("Subproject Search", function() {
       .find("[data-test=search-input]")
       .should("be.visible");
     // Type into search bar
-    cy.get("[data-test=search-input]").type("SearchTestExample");
+    cy.get("[data-test=search-input]")
+      .click()
+      .type("SearchTestExample");
     // Navigate via Main breadcrumb
     cy.get("[data-test=breadcrumb-Main]").click();
     // Go back to subproject view
@@ -131,7 +140,9 @@ describe("Subproject Search", function() {
       .should("be.visible")
       .should("not.be.disabled");
     // Type into search bar
-    cy.get("[data-test=search-input]").type("SearchTestExample");
+    cy.get("[data-test=search-input]")
+      .click()
+      .type("SearchTestExample");
     // Navigate via Projects breadcrumb
     cy.get("[data-test=breadcrumb-Projects]").click();
     // Go back to subproject view
