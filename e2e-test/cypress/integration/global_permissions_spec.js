@@ -10,7 +10,7 @@ describe("Users/Groups Dashboard", function() {
     cy.getUserList().then(userList => {
       const userIds = userList.map(user => user.id);
       if (!userIds.includes(testUserName)) {
-        cy.addUser(testUserName, testUserName, testUserNamePassword, "DevOrga");
+        cy.addUser(testUserName, testUserName, testUserNamePassword, "KfW");
       }
     });
   });

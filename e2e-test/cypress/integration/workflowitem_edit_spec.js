@@ -74,6 +74,7 @@ describe("Workflowitem edit", function() {
       cy.visit(`/projects/${projectId}/${subprojectId}`);
 
       // Check if info icon badge is displayed
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test^='info-warning-badge-disabled-']").should(
         "be.visible"
       );
@@ -93,6 +94,7 @@ describe("Workflowitem edit", function() {
       cy.visit(`/projects/${projectId}/${subprojectId}`);
 
       // Check if info icon badge is displayed
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test^='info-warning-badge-disabled-']").should(
         "not.be.visible"
       );
@@ -111,6 +113,7 @@ describe("Workflowitem edit", function() {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
       // Open edit workflow item dialog
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test=edit-workflowitem]").click();
       // Check if date is set by default
       cy.get("[data-test=datepicker-due-date] input")
@@ -130,6 +133,7 @@ describe("Workflowitem edit", function() {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
       // Edit workflow item
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test=edit-workflowitem]").click();
       // Clear the date-picker
       cy.get("[data-test=clear-datepicker-due-date]")
@@ -156,6 +160,7 @@ describe("Workflowitem edit", function() {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
       // Edit workflow item
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test=edit-workflowitem]").click();
       // Remove the due date
       cy.get("[data-test=clear-datepicker-due-date]")
@@ -168,8 +173,9 @@ describe("Workflowitem edit", function() {
       // Check if due-date is removed successfully
       cy.wait("@update")
         .wait("@viewDetails")
-        .get("[data-test=workflowitem-" + workflowitemId + "] [data-test*=workflowitem-info-button]")
-        .click();
+        .get("[data-test=workflowitem-" + workflowitemId + "]")
+        .should("be.visible");
+      cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test*=workflowitem-info-button]").click();
       cy.get("[data-test=due-date]").should("not.be.visible");
     });
   });
