@@ -59,7 +59,6 @@ class WorkflowContainer extends Component {
     this.props.setSelectedView(this.subprojectId, "subProject");
     this.props.fetchUser();
     this.props.fetchAllSubprojectDetails(this.projectId, this.subprojectId, true);
-    this.setState({ isDataFetched: true });
   }
 
   componentWillUnmount() {
@@ -95,33 +94,29 @@ class WorkflowContainer extends Component {
       <div>
         {!this.props.workflowSortEnabled ? this.addLiveUpdates() : null}
         <div style={globalStyles.innerContainer}>
-          {!this.state.isDataFetched ? (
-            <div />
-          ) : (
-            <div>
-              <SubProjectDetails
-                {...this.props}
-                projectId={this.projectId}
-                subprojectId={this.subprojectId}
-                canViewPermissions={canViewPermissions}
-                canAssignSubproject={canAssignSubproject}
-                closeSubproject={this.closeSubproject}
-                canCloseSubproject={canCloseSubproject}
-                isDataLoading={this.props.isDataLoading}
-              />
+          <div>
+            <SubProjectDetails
+              {...this.props}
+              projectId={this.projectId}
+              subprojectId={this.subprojectId}
+              canViewPermissions={canViewPermissions}
+              canAssignSubproject={canAssignSubproject}
+              closeSubproject={this.closeSubproject}
+              canCloseSubproject={canCloseSubproject}
+              isDataLoading={this.props.isDataLoading}
+            />
 
-              {this.props.permissionDialogShown ? (
-                <WorkflowItemPermissionsContainer projectId={this.projectId} subProjectId={this.subprojectId} />
-              ) : null}
-              <Workflow
-                {...this.props}
-                projectId={this.projectId}
-                subProjectId={this.subprojectId}
-                closeWorkflowItem={this.closeWorkflowItem}
-                isDataLoading={this.props.isDataLoading}
-              />
-            </div>
-          )}
+            {this.props.permissionDialogShown ? (
+              <WorkflowItemPermissionsContainer projectId={this.projectId} subProjectId={this.subprojectId} />
+            ) : null}
+            <Workflow
+              {...this.props}
+              projectId={this.projectId}
+              subProjectId={this.subprojectId}
+              closeWorkflowItem={this.closeWorkflowItem}
+              isDataLoading={this.props.isDataLoading}
+            />
+          </div>
           <WorkflowDialogContainer location={this.props.location} />
           <AdditionalInfo
             resources={this.props.workflowItems}
