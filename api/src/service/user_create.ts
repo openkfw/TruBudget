@@ -24,12 +24,12 @@ export async function createUser(
 ): Promise<AuthToken.AuthToken> {
   const result = await UserCreate.createUser(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-    userExists: async userId => userExists(conn, ctx, serviceUser, userId),
-    organizationExists: async organization =>
+    userExists: async (userId) => userExists(conn, ctx, serviceUser, userId),
+    organizationExists: async (organization) =>
       organizationExists(conn.multichainClient, organization),
     createKeyPair: async () => createkeypairs(conn.multichainClient),
-    hash: async plaintext => hashPassword(plaintext),
-    encrypt: async plaintext => encrypt(organizationSecret, plaintext),
+    hash: async (plaintext) => hashPassword(plaintext),
+    encrypt: async (plaintext) => encrypt(organizationSecret, plaintext),
   });
   if (Result.isErr(result)) return Promise.reject(result);
   if (!result.length) {
@@ -47,11 +47,11 @@ export async function createUser(
     throw new Error(`Expected new events to yield exactly one user, got: ${JSON.stringify(users)}`);
   }
   const token = await AuthToken.fromUserRecord(users[0], {
-    getGroupsForUser: async userId => {
+    getGroupsForUser: async (userId) => {
       const groups = await GroupQuery.getGroupsForUser(conn, ctx, serviceUser, userId);
-      return groups.map(group => group.id);
+      return groups.map((group) => group.id);
     },
-    getOrganizationAddress: async organization => {
+    getOrganizationAddress: async (organization) => {
       const address = await getOrganizationAddress(conn.multichainClient, organization);
       if (address === undefined) {
         throw new Error(`Could not find address for organization "${organization}"`);
