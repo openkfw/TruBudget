@@ -150,10 +150,7 @@ describe("Subproject Permissions", function() {
       .scrollIntoView()
       .click();
     // Close permission search popup
-    cy.get("[data-test=permission-search] input")
-      .scrollIntoView()
-      .should("be.visible")
-      .type("{esc}");
+    cy.get("[data-test=permission-search] input").type("{esc}");
     cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
     cy.get("[data-test=permission-submit]").click();
     // Open confirmation
@@ -175,10 +172,7 @@ describe("Subproject Permissions", function() {
         .find(`li[value*='${testUser.id}']`)
         .click();
       // Close permission search popup
-      cy.get("[data-test=permission-search] input")
-        .scrollIntoView()
-        .should("be.visible")
-        .type("{esc}");
+      cy.get("[data-test=permission-search] input").type("{esc}");
       cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
       cy.get("[data-test=permission-submit]").click();
       // Open confirmation
@@ -186,8 +180,25 @@ describe("Subproject Permissions", function() {
     });
   });
 
+  it("Revoke a permission from myself is not allowed", function() {
+    cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
+    cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
+      .should("be.visible")
+      .click();
+    // Open permission search popup
+    cy.get("[data-test='permission-select-subproject.viewSummary']").click();
+    // Select and add a User
+    cy.get("[data-test='permission-list']")
+      .scrollIntoView()
+      .should("be.visible")
+      .find(`li[value*='${executingUser.id}'] input`)
+      .should("be.disabled");
+  });
+
   it("Submitting the permission dialog without subproject.intent.grantPermission disables the submit button when adding user", function() {
     cy.login("root", rootSecret);
+    // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser2.id);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser.id).then(
       () => {
         // Mstein login
@@ -205,10 +216,7 @@ describe("Subproject Permissions", function() {
           .find(`li[value*='${testUser.id}']`)
           .click();
         // Close permission search popup
-        cy.get("[data-test=permission-search] input")
-          .scrollIntoView()
-          .should("be.visible")
-          .type("{esc}");
+        cy.get("[data-test=permission-search] input").type("{esc}");
         cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
         cy.get("[data-test=permission-submit]").should("be.disabled");
       }
@@ -241,10 +249,7 @@ describe("Subproject Permissions", function() {
           .find(`li[value*='${testUser.id}']`)
           .click();
         // Close permission search popup
-        cy.get("[data-test=permission-search] input")
-          .scrollIntoView()
-          .should("be.visible")
-          .type("{esc}");
+        cy.get("[data-test=permission-search] input").type("{esc}");
         cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
         cy.get("[data-test=permission-submit]").should("be.disabled");
       });
@@ -282,11 +287,8 @@ describe("Subproject Permissions", function() {
       .should("be.visible")
       .find(`li[value*='${testUser.id}']`)
       .click();
-    // Close permission search popup
-    cy.get("[data-test=permission-search] input")
-      .scrollIntoView()
-      .should("be.visible")
-      .type("{esc}");
+    // Close permission popup
+    cy.get("[data-test=permission-search] input").type("{esc}");
     cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
     cy.get("[data-test=permission-submit]").click();
     // Open confirmation
@@ -310,10 +312,7 @@ describe("Subproject Permissions", function() {
       .find(`li[value*='${testUser.id}']`)
       .click();
     // Close permission search popup
-    cy.get("[data-test=permission-search] input")
-      .scrollIntoView()
-      .should("be.visible")
-      .type("{esc}");
+    cy.get("[data-test=permission-search] input").type("{esc}");
     cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
     // Open confirmation
     cy.get("[data-test=permission-submit]").click();
@@ -342,10 +341,7 @@ describe("Subproject Permissions", function() {
           .find(`li[value*='${testUser.id}']`)
           .click();
         // Close permission search popup
-        cy.get("[data-test=permission-search] input")
-          .scrollIntoView()
-          .should("be.visible")
-          .type("{esc}");
+        cy.get("[data-test=permission-search] input").type("{esc}");
         cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
         cy.get("[data-test=permission-submit]").click();
         // Confirmation opens
@@ -380,10 +376,7 @@ describe("Subproject Permissions", function() {
       .find(`li[value*='${testUser.id}']`)
       .click();
     // Close permission search popup
-    cy.get("[data-test=permission-search] input")
-      .scrollIntoView()
-      .should("be.visible")
-      .type("{esc}");
+    cy.get("[data-test=permission-search] input").type("{esc}");
     cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
     // Open confirmation
     cy.get("[data-test=permission-submit]").click();
@@ -439,10 +432,7 @@ describe("Subproject Permissions", function() {
         .find(`li[value*='${testUser2.id}']`)
         .click();
       // Close permission search popup
-      cy.get("[data-test=permission-search] input")
-        .scrollIntoView()
-        .should("be.visible")
-        .type("{esc}");
+      cy.get("[data-test=permission-search] input").type("{esc}");
       cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
       cy.get("[data-test=permission-submit]")
         .should("be.visible")
@@ -477,10 +467,7 @@ describe("Subproject Permissions", function() {
       .find(`li[value*='${testUser.id}']`)
       .click();
     // Close permission search popup
-    cy.get("[data-test=permission-search] input")
-      .scrollIntoView()
-      .should("be.visible")
-      .type("{esc}");
+    cy.get("[data-test=permission-search] input").type("{esc}");
     cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
@@ -518,10 +505,7 @@ describe("Subproject Permissions", function() {
         .click();
     });
     // Close permission search popup
-    cy.get("[data-test=permission-search] input")
-      .scrollIntoView()
-      .should("be.visible")
-      .type("{esc}");
+    cy.get("[data-test=permission-search] input").type("{esc}");
     cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
@@ -578,10 +562,7 @@ describe("Subproject Permissions", function() {
         .click();
     });
     // Close permission search popup
-    cy.get("[data-test=permission-search] input")
-      .scrollIntoView()
-      .should("be.visible")
-      .type("{esc}");
+    cy.get("[data-test=permission-search] input").type("{esc}");
     cy.get("[data-test=permission-selection-popup]").should("not.be.visible");
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens

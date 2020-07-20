@@ -1,5 +1,6 @@
 describe("Subproject Assignee", function() {
   const executingUser = "mstein";
+  const testUser = "jdoe";
   let projectId;
   let subprojectId;
   let permissionsBeforeTesting;
@@ -152,6 +153,8 @@ describe("Subproject Assignee", function() {
     assertViewPermissions(permissionsBeforeTesting, projectId, subprojectId, false);
   });
   it("Assigning without project permission to grant view permissions is not possible", function() {
+    // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -172,6 +175,8 @@ describe("Subproject Assignee", function() {
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
   it("Assigning without subproject permission to grant view permissions is not possible", function() {
+    // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
 
     // Open dialog
@@ -193,6 +198,9 @@ describe("Subproject Assignee", function() {
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
   it("Assigning without project nor subproject permission to grant view permissions is not possible", function() {
+    // Grant project/subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
 

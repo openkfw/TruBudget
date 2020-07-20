@@ -1,12 +1,16 @@
 describe("Workflowitem Assignee", function() {
   const executingUser = "mstein";
+  const testUser = "jdoe";
   let projectId;
   let subprojectId;
   let workflowitemId;
   let permissionsBeforeTesting;
+  let baseUrl, apiRoute;
 
   before(() => {
     cy.login();
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.createProject("p-subp-assign", "workflowitem assign test").then(({ id }) => {
       projectId = id;
       cy.createSubproject(projectId, "workflowitem assign test").then(({ id }) => {
@@ -135,21 +139,32 @@ describe("Workflowitem Assignee", function() {
     });
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
+
   it("The confirmation dialog assigns the selected user and grants required view Permissions", function() {
+    cy.server();
+    cy.route("POST", apiRoute + "/workflowitem.assign*").as("assign");
+    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
-      cy.get(firstUncheckedRadioButton)
-        .should("not.be.checked")
-        .check();
-    });
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .should("be.visible")
-      .click();
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .should("be.visible")
-      .click();
-    cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
-      cy.get(firstUncheckedRadioButton).should("be.checked");
+      cy.get("@assigneeId").then(assigneeId => {
+        cy.get(firstUncheckedRadioButton)
+          .should("not.be.checked")
+          .check();
+        cy.get("[data-test=confirmation-dialog-confirm]")
+          .should("be.visible")
+          .click();
+        cy.get("[data-test=confirmation-dialog-confirm]")
+          .should("be.visible")
+          .click();
+
+        // Check if right assignee in assignee list is checked
+        cy.wait("@assign")
+          .wait("@viewDetails")
+          .get(`[data-test=workflowitem-assignee-${workflowitemId}]`)
+          .click()
+          .get(`[data-test=assignee-list] li[value=${assigneeId}] input`)
+          .should("be.checked");
+      });
     });
 
     assertViewPermissions(permissionsBeforeTesting, projectId, subprojectId, workflowitemId, true);
@@ -159,6 +174,7 @@ describe("Workflowitem Assignee", function() {
       revokeViewPermissions(permissionsBeforeTesting, projectId, subprojectId, workflowitemId, assigneeId);
     });
   });
+
   it("Canceling the confirmation dialog doesn't assign nor grant view permissions", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -175,7 +191,10 @@ describe("Workflowitem Assignee", function() {
 
     assertViewPermissions(permissionsBeforeTesting, projectId, subprojectId, workflowitemId, false);
   });
+
   it("Assigning without project permission to grant view permissions is not possible", function() {
+    // Grant project/subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -195,7 +214,10 @@ describe("Workflowitem Assignee", function() {
     cy.login("root", "root-secret");
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
+
   it("Assigning without subproject permission to grant view permissions is not possible", function() {
+    // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
 
     // Open dialog
@@ -216,7 +238,16 @@ describe("Workflowitem Assignee", function() {
     cy.login("root", "root-secret");
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
+
   it("Assigning without workflowitem permission to grant view permissions is not possible", function() {
+    // Grant workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantWorkflowitemPermission(
+      projectId,
+      subprojectId,
+      workflowitemId,
+      "workflowitem.intent.grantPermission",
+      testUser
+    );
     cy.revokeWorkflowitemPermission(
       projectId,
       subprojectId,
@@ -249,7 +280,18 @@ describe("Workflowitem Assignee", function() {
       executingUser
     );
   });
+
   it("Assigning without project nor subproject nor workflowitem permission to grant view permissions is not possible", function() {
+    // Grant project/subproject/workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
+    cy.grantWorkflowitemPermission(
+      projectId,
+      subprojectId,
+      workflowitemId,
+      "workflowitem.intent.grantPermission",
+      testUser
+    );
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
     cy.revokeWorkflowitemPermission(
@@ -286,6 +328,7 @@ describe("Workflowitem Assignee", function() {
       executingUser
     );
   });
+
   it("Assigning without project 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.revokeProjectPermission(projectId, "project.intent.listPermissions", executingUser);
 
@@ -308,6 +351,7 @@ describe("Workflowitem Assignee", function() {
     cy.login("root", "root-secret");
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
+
   it("Assigning without subproject 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
 
@@ -330,6 +374,7 @@ describe("Workflowitem Assignee", function() {
     cy.login("root", "root-secret");
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
   });
+
   it("Assigning without workflowitem 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.revokeWorkflowitemPermission(
       projectId,
@@ -364,6 +409,7 @@ describe("Workflowitem Assignee", function() {
       executingUser
     );
   });
+
   it("Assigning without project nor subproject nor workflowitem 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.revokeProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
@@ -401,6 +447,7 @@ describe("Workflowitem Assignee", function() {
       executingUser
     );
   });
+
   it("All missing project/subproject/workflowitem permissions are shown", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -413,6 +460,7 @@ describe("Workflowitem Assignee", function() {
       .children()
       .should("have.length", 5);
   });
+
   it("Only missing project permissions are shown", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assigneeId);
@@ -438,6 +486,7 @@ describe("Workflowitem Assignee", function() {
       cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", assigneeId);
     });
   });
+
   it("Only missing subproject permissions are shown", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.viewSummary", assigneeId);
@@ -462,6 +511,7 @@ describe("Workflowitem Assignee", function() {
       cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", assigneeId);
     });
   });
+
   it("No missing permissions are shown if there aren't any", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.viewSummary", assigneeId);
