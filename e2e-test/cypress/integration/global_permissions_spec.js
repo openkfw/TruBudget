@@ -29,12 +29,15 @@ describe("Users/Groups Dashboard", function() {
 
   it("Grant and revoke permission to user works", function() {
     cy.server();
+    cy.route("GET", apiRoute + "/user.list*").as("userlist");
+    cy.route("GET", apiRoute + "/group.list*").as("grouplist");
+    cy.route("GET", apiRoute + "/global.listPermissions*").as("listPermissions");
     cy.route("POST", apiRoute + "/global.grantPermission*").as("grantPermission");
     cy.route("POST", apiRoute + "/global.revokePermission*").as("revokePermission");
-    cy.route("GET", apiRoute + "/global.listPermissions*").as("listPermissions");
-    cy.route("GET", apiRoute + "/user.list*").as("userlist");
     cy.visit("/users");
     cy.wait("@userlist")
+      .wait("@grouplist")
+      .wait("@listPermissions")
       .get(`[data-test=edit-user-permissions-${testUserName}]`)
       .should("be.visible")
       .click();
@@ -68,8 +71,12 @@ describe("Users/Groups Dashboard", function() {
   it("After clicking 'cancel', the selection is not adopted", function() {
     cy.server();
     cy.route("GET", apiRoute + "/user.list*").as("userlist");
+    cy.route("GET", apiRoute + "/group.list*").as("grouplist");
+    cy.route("GET", apiRoute + "/global.listPermissions*").as("listPermissions");
     cy.visit("/users");
     cy.wait("@userlist")
+      .wait("@grouplist")
+      .wait("@listPermissions")
       .get(`[data-test=edit-user-permissions-${testUserName}]`)
       .should("be.visible")
       .click();
@@ -80,7 +87,8 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test='permission-global.createUser'] input").should("be.checked");
     cy.get("[data-test=cancel]").click();
 
-    cy.get(`[data-test=edit-user-permissions-${testUserName}]`)
+    cy.wait("@listPermissions")
+      .get(`[data-test=edit-user-permissions-${testUserName}]`)
       .should("be.visible")
       .click();
     cy.get("[data-test=global-permissions-dialog]").should("be.visible");
