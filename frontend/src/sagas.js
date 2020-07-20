@@ -596,7 +596,7 @@ export function* validateDocumentSaga({ base64String, hash }) {
       type: VALIDATE_DOCUMENT_SUCCESS,
       isIdentical: data.isIdentical
     });
-  }, true);
+  }, false);
 }
 
 export function* setEnvironmentSaga(action) {

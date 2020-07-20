@@ -6,6 +6,7 @@ import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
+import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
@@ -13,8 +14,8 @@ import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import * as GlobalPermissions from "./global_permissions";
 import * as Project from "./project";
-import * as ProjectCreated from "./project_created";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+import * as ProjectCreated from "./project_created";
 
 /**
  * Initial data for the new project as given in the request.
@@ -82,9 +83,7 @@ export async function createProject(
   const badEntry = findDuplicateBudgetEntry(createEvent.project.projectedBudgets);
   if (badEntry !== undefined) {
     const error = new Error(
-      `more than one projected budget for organization ${badEntry.organization} and currency ${
-        badEntry.currencyCode
-      }`,
+      `more than one projected budget for organization ${badEntry.organization} and currency ${badEntry.currencyCode}`,
     );
     return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, [error])] };
   }
@@ -92,7 +91,7 @@ export async function createProject(
   if (await repository.projectExists(createEvent.project.id)) {
     return {
       newEvents: [],
-      errors: [new PreconditionError(ctx, createEvent, "project already exists")],
+      errors: [new AlreadyExists(ctx, createEvent, createEvent.project.id)],
     };
   }
 

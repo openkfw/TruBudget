@@ -14,7 +14,7 @@ import React, { Component } from "react";
 
 import strings from "../../../localizeStrings";
 
-const renderSelection = (user, permissionedUser, permissionName, grant, revoke, myself, disabled) =>
+const renderSelection = (user, permissionedUser, intent, grant, revoke, myself, disabled) =>
   user.map(u => {
     const checked = permissionedUser.indexOf(u.id) > -1;
     return (
@@ -22,7 +22,7 @@ const renderSelection = (user, permissionedUser, permissionName, grant, revoke, 
         disabled={(u.id === myself && checked) || disabled}
         key={u.id + "selection"}
         value={u.id}
-        onClick={checked ? () => revoke(permissionName, u.id) : () => grant(permissionName, u.id)}
+        onClick={checked ? () => revoke(intent, u.id) : () => grant(intent, u.id)}
       >
         <Checkbox checked={checked} disabled={(u.id === myself && checked) || disabled} />
         <ListItemText primary={u.displayName} />

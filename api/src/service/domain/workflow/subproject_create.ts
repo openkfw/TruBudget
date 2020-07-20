@@ -6,6 +6,7 @@ import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
+import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -18,7 +19,6 @@ import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
 import * as SubprojectCreated from "./subproject_created";
-import { sourceSubprojects } from "./subproject_eventsourcing";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -88,7 +88,7 @@ export async function createSubproject(
   if (
     await repository.subprojectExists(subprojectCreated.projectId, subprojectCreated.subproject.id)
   ) {
-    return new PreconditionError(ctx, subprojectCreated, "subproject already exists");
+    return new AlreadyExists(ctx, subprojectCreated, subprojectCreated.subproject.id);
   }
 
   const projectPermissionsResult = await repository.projectPermissions(projectId);

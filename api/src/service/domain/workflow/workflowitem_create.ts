@@ -1,13 +1,12 @@
 import Joi = require("joi");
 import { VError } from "verror";
-
-import Intent, { subprojectIntents } from "../../../authz/intents";
+import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
-import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
+import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
@@ -127,16 +126,20 @@ export async function createWorkflowitem(
 
   // Check if workflowitemId already exists
   if (
-    await repository.workflowitemExists(reqData.projectId, reqData.subprojectId, workflowitemId)
+    await repository.workflowitemExists(
+      reqData.projectId,
+      reqData.subprojectId,
+      workflowitemCreated.workflowitem.id,
+    )
   ) {
-    return new PreconditionError(ctx, workflowitemCreated, "workflowitem already exists");
+    return new AlreadyExists(ctx, workflowitemCreated, workflowitemCreated.workflowitem.id);
   }
 
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
     const authorizationResult = Result.map(
       await repository.getSubproject(reqData.projectId, reqData.subprojectId),
-      subproject => {
+      (subproject) => {
         const intent = "subproject.createWorkflowitem";
         if (!Subproject.permits(subproject, creatingUser, [intent])) {
           return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });

@@ -5,9 +5,9 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
+import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
-import { PreconditionError } from "../errors/precondition_error";
 import { Permissions } from "../permissions";
 import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_permissions";
 import { canAssumeIdentity } from "./auth_token";
@@ -28,9 +28,7 @@ export interface RequestData {
 const requestDataSchema = Joi.object({
   id: Group.idSchema,
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
+  description: Joi.string().allow("").required(),
   members: Group.membersSchema.required(),
   additionalData: AdditionalData.schema,
 });
@@ -65,7 +63,7 @@ export async function createGroup(
   if (await repository.groupExists(createEvent.group.id)) {
     return {
       newEvents: [],
-      errors: [new PreconditionError(ctx, createEvent, "group already exists")],
+      errors: [new AlreadyExists(ctx, createEvent, createEvent.group.id)],
     };
   }
 
@@ -73,7 +71,7 @@ export async function createGroup(
   if (creatingUser.id !== "root") {
     const intent = "global.createGroup";
     const permissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(permissions, intent).some(identity =>
+    const isAuthorized = identitiesAuthorizedFor(permissions, intent).some((identity) =>
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {

@@ -10,6 +10,7 @@ export class PreconditionError extends Error {
     // TODO this shouldn't be failed to apply event but failed to execute intent
     super(`Failed to apply ${businessEvent.type}, a precondition is not fulfilled: ${message}`);
 
+    this.name = "PreconditionError";
     // Maintains proper stack trace for where our error was thrown (only available on V8):
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, PreconditionError);

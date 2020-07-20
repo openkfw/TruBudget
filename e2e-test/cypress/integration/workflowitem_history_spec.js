@@ -64,6 +64,7 @@ describe("Workflowitem's history", function() {
   it("The history is sorted from new to old", function() {
     cy.server();
     cy.route("GET", apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
+    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
 
     // Update workflowitem to create new history event
     cy.get(`[data-test=workflowitem-${workflowitemId}]`).should("be.visible");
@@ -76,7 +77,9 @@ describe("Workflowitem's history", function() {
       .click();
     // Open info dialog
     cy.get(`[data-test=workflowitem-${workflowitemId}]`).should("be.visible");
-    cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
+    cy.wait("@viewDetails")
+      .get(`[data-test*='workflowitem-info-button-${workflowitemId}']`)
+      .click();
     cy.get("[data-test=workflowitem-history-tab]").click();
     // The oldest entry is the create event
     cy.wait("@viewHistory")

@@ -40,7 +40,8 @@ const mapStateToProps = state => {
     submittedWorkflowItems: state.getIn(["workflow", "submittedWorkflowItems"]),
     failedWorkflowItem: state.getIn(["workflow", "failedWorkflowItem"]),
     submitDone: state.getIn(["workflow", "submitDone"]),
-    submitInProgress: state.getIn(["workflow", "submitInProgress"])
+    submitInProgress: state.getIn(["workflow", "submitInProgress"]),
+    myself: state.getIn(["login", "id"])
   };
 };
 

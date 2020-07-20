@@ -1,15 +1,16 @@
 import Joi = require("joi");
 
-import Intent, { userDefaultIntents, userIntents } from "../../../authz/intents";
+import { userDefaultIntents, userIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
+import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
-import * as GlobalPermissionGranted from "../workflow/global_permission_granted";
 import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_permissions";
+import * as GlobalPermissionGranted from "../workflow/global_permission_granted";
 import { canAssumeIdentity } from "./auth_token";
 import { KeyPair } from "./key_pair";
 import { ServiceUser } from "./service_user";
@@ -73,8 +74,8 @@ export async function createUser(
     return new PreconditionError(ctx, createEvent, "can not create user called 'root'");
   }
 
-  if (await repository.userExists(data.userId)) {
-    return new PreconditionError(ctx, createEvent, "user already exists");
+  if (await repository.userExists(createEvent.user.id)) {
+    return new AlreadyExists(ctx, createEvent, createEvent.user.id);
   }
   if (!(await repository.organizationExists(data.organization))) {
     return new PreconditionError(ctx, createEvent, "organization does not exist");
@@ -84,7 +85,7 @@ export async function createUser(
   if (creatingUser.id !== "root") {
     const intent = "global.createUser";
     const permissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(permissions, intent).some(identity =>
+    const isAuthorized = identitiesAuthorizedFor(permissions, intent).some((identity) =>
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {
@@ -106,7 +107,7 @@ export async function createUser(
   }
 
   // Create events that'll grant default permissions to the user:
-  const defaultPermissionGrantedEvents = userDefaultIntents.map(intent =>
+  const defaultPermissionGrantedEvents = userDefaultIntents.map((intent) =>
     GlobalPermissionGranted.createEvent(ctx.source, publisher, intent, createEvent.user.id),
   );
 

@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import logger from "./lib/logger";
 
 interface ErrorBody {
@@ -43,8 +42,14 @@ function handleError(error: Error): { code: number; message: string } {
     case "NotAuthorized":
       return { code: 403, message: error.message };
 
-    case "PreconditionError":
+    case "NotFound":
+      return { code: 404, message: error.message };
+
+    case "AlreadyExists":
       return { code: 409, message: error.message };
+
+    case "PreconditionError":
+      return { code: 412, message: error.message };
 
     default:
       return { code: 500, message: error.message };

@@ -2,15 +2,13 @@ import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import * as GlobalPermissionGranted from "./global_permission_granted";
 import * as GlobalPermissions from "./global_permissions";
-import { sourceProjects } from "./project_eventsourcing";
+import * as GlobalPermissionGranted from "./global_permission_granted";
 
 interface Repository {
   getGlobalPermissions(): Promise<GlobalPermissions.GlobalPermissions>;
