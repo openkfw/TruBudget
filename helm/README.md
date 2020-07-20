@@ -59,21 +59,24 @@ helm delete --purge trubudget
 
 The following table lists the most important configurable parameters of the TruBudget chart and their default values. For a full list check the [values.yaml](cluster/values.yaml) file.
 
-| Parameter                          | Description                                                                                                                  | Default                                |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `tags.minimal`                     | Includes blockchain-prod-1, blockchain-test1, api-prod-1, api-test1 and frontend-1 components in deployed chart              | `false`                                |
-| `tags.blockchain`                  | Includes blockchain-prod-1 and blockchain-test1 components in deployed chart                                                 | `false`                                |
-| `tags.api`                         | Includes api-prod-1 and api-test1 components in deployed chart                                                               | `false`                                |
-| `tags.frontend`                    | Includes frontend-1 components in deployed chart                                                                             | `false`                                |
-| `global.image.tag`                 | `trubudget` image tag                                                                                                        | `master`                               |
-| `global.fqdn`                      | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
-| `global.fqdn`                      | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
-| `global.env.ENVIRONMENT_TYPE=PROD` | if set to `PROD`, the blockchain resource will be set deployed as `statefulset`and persist its data on a PV                  | `DEV`                                  |
-| `global.env.ENVIRONMENT_TYPE=TEST` | if set to `TEST`, same as `DEV`, except that blockchai nservice account will be excluded from chart                          | `DEV`                                  |
-| `global.env.EXPOSE_MC`             | if set to `true`, the blockchain application will check for the external service IP before starting and use it as externalIp | `false`                                |
-| `frontend.initContainer`           | use like `frontend-1.initContainer` to enable/disable provisioning container as init containers                              | `false`                                |
-| `frontend.ingress.enabled`         | use like `frontend-1.ingress.enabled` to enable/disable ingress                                                              | `false`                                |
-| `frontend.ingress.fqdnPrefix`      | use like `frontend-1.ingress.fqdnPrefix` to add a prefix to the `global.fqdn`                                                | `a` for frontend-1, `b` for frontend-2 |
+| Parameter                            | Description                                                                                                                  | Default                                |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `tags.minimal`                       | Includes blockchain-prod-1, blockchain-test1, api-prod-1, api-test1 and frontend-1 components in deployed chart              | `false`                                |
+| `tags.blockchain`                    | Includes blockchain-prod-1 and blockchain-test1 components in deployed chart                                                 | `false`                                |
+| `tags.api`                           | Includes api-prod-1 and api-test1 components in deployed chart                                                               | `false`                                |
+| `tags.frontend`                      | Includes frontend-1 components in deployed chart                                                                             | `false`                                |
+| `global.image.tag`                   | `trubudget` image tag                                                                                                        | `master`                               |
+| `global.fqdn`                        | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
+| `global.fqdn`                        | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
+| `global.env.ENVIRONMENT_TYPE=PROD`   | if set to `PROD`, the blockchain resource will be set deployed as `statefulset`and persist its data on a PV                  | `DEV`                                  |
+| `global.env.ENVIRONMENT_TYPE=TEST`   | if set to `TEST`, same as `DEV`, except that blockchain service account will be excluded from chart                          | `DEV`                                  |
+| `global.env.STORAGE_TYPE=LOCAL`      | if set to `LOCAL`, data is stored in the pod itself                                                                          | `LOCAL`                                |
+| `global.env.STORAGE_TYPE=AZURE_DISK` | if set to `AZURE_DISK`, data is stored on a dynamically created azure disk                                                   | `LOCAL`                                |
+| `global.env.STORAGE_TYPE=AZURE_FILE` | if set to `AZURE_FILE`, data is stored on a dynamically created azure file                                                   | `LOCAL`                                |
+| `global.env.EXPOSE_MC`               | if set to `true`, the blockchain application will check for the external service IP before starting and use it as externalIp | `false`                                |
+| `frontend.initContainer`             | use like `frontend-1.initContainer` to enable/disable provisioning container as init containers                              | `false`                                |
+| `frontend.ingress.enabled`           | use like `frontend-1.ingress.enabled` to enable/disable ingress                                                              | `false`                                |
+| `frontend.ingress.fqdnPrefix`        | use like `frontend-1.ingress.fqdnPrefix` to add a prefix to the `global.fqdn`                                                | `a` for frontend-1, `b` for frontend-2 |
 
 _Tip_: Edit the default [values.yaml](cluster/values.yaml) file that specifies the values for the above parameters, before executing the helm command.
 

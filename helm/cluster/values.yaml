@@ -8,6 +8,7 @@ global:
   env:
     ENVIRONMENT_TYPE: DEV
     EXPOSE_MC: false
+    STORAGE_TYPE: LOCAL
 
 tags:
   blockchain: false
