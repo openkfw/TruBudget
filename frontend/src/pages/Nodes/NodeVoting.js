@@ -80,7 +80,7 @@ const splitNodes = nodes => {
             existingNode.address.address !== node.address.address
         );
 
-        if (organizationExists) {
+        if (!organizationExists) {
           return [self, [...newOrgaNodes, node], existingOrgaNodes];
         } else {
           return [self, newOrgaNodes, [...existingOrgaNodes, node]];

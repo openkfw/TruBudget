@@ -35,7 +35,7 @@ services:
       RPC_PASSWORD: ${RPC_PASSWORD}
       ORGANIZATION: "newOrgawithRPCPW"
       P2P_HOST: master
-      P2P_PORT: P2P_PROD_PORT
+      P2P_PORT: ${P2P_PROD_PORT}
       API_PROTO: http
       API_HOST: api
       API_PORT: ${API_PORT}
