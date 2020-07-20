@@ -1,6 +1,16 @@
 # Default values for blockchain.
 
 replicaCount: 1
+global:
+  image:
+    tag: master
+  branch: master
+  exposeType: NodePort
+  imageCredentials:
+    name: regsecret
+  env:
+    ENVIRONMENT_TYPE: TEST
+    STORAGE_TYPE: LOCAL
 
 image:
   repository: trubudget/blockchain

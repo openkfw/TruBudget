@@ -1,4 +1,4 @@
-{{- if eq .Values.global.env.ENVIRONMENT_TYPE "PROD" }}
+{{- if or (eq .Values.global.env.STORAGE_TYPE "AZURE_DISK") (eq .Values.global.env.STORAGE_TYPE "AZURE_FILE") }}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 {{- else }}
@@ -14,6 +14,7 @@ metadata:
     heritage: {{ .Release.Service }}
     app.kubernetes.io/name: blockchain
     app.kubernetes.io/instance: {{ .Values.global.branch }}
+    app.kubernetes.io/build: {{ .Values.global.build }}
     app.kubernetes.io/component: multichain
     app.kubernetes.io/managed-by: helm
 spec:
@@ -26,6 +27,8 @@ spec:
       release: {{ .Release.Name }}
       service: {{ .Chart.Name }}
   template:
+    updateStrategy:
+      type: RollingUpdate
     metadata:
       labels:
         app: {{ template "blockchain.name" . }}
@@ -33,6 +36,7 @@ spec:
         service: {{ .Chart.Name }}
         app.kubernetes.io/name: blockchain
         app.kubernetes.io/instance: {{ .Values.global.branch }}
+        app.kubernetes.io/build: {{ .Values.global.build }}
         app.kubernetes.io/component: multichain
         app.kubernetes.io/managed-by: helm
     spec:
@@ -43,7 +47,7 @@ spec:
       {{- end}}
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.global.image.tag }}"
+        image: "{{ .Values.global.registry }}{{ .Values.image.repository }}:{{ .Values.global.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         {{- range $key, $value := .Values.bc.env }}
@@ -85,7 +89,7 @@ spec:
           periodSeconds: 10
           failureThreshold: 5
           timeoutSeconds: 2
-  {{- if eq .Values.global.env.ENVIRONMENT_TYPE "PROD"}}
+  {{- if eq .Values.global.env.STORAGE_TYPE "AZURE_DISK"}}
         volumeMounts:
         - mountPath: /root/.multichain
           name: {{  .Values.persistentVolume.name  }}
@@ -98,4 +102,13 @@ spec:
       resources:
         requests:
           storage: {{ .Values.persistentVolume.storageSize}}
+  {{- end }}
+  {{- if eq .Values.global.env.STORAGE_TYPE "AZURE_FILE"}}
+        volumeMounts:
+        - mountPath: /root/.multichain
+          name: {{  .Values.persistentVolume.name  }}
+      volumes:
+        - name: {{  .Values.persistentVolume.name  }}
+          persistentVolumeClaim:
+            claimName: {{  .Values.persistentVolume.name  }}
   {{- end }}

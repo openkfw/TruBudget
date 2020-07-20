@@ -43,7 +43,7 @@ The side menu shows the current version of your TruBudget.
 
 ## Wallet backup
 
-It is possible to perform a backup only of the wallet.dat file. Thus it is not necessary to stop the node and the size of the backed-up data is considerably smaller. The wallet.dat is stored in a node's blockchain directory `[PathToMultichainData]/.multichain/TrubudgetChain/`.  
+It is possible to perform a backup only of the wallet.dat file. Thus it is not necessary to stop the node and the size of the backed-up data is considerably smaller. The wallet.dat is stored in a node's blockchain directory `[PathToMultichainData]/.multichain/TrubudgetChain/`.
 
 1. Copy the wallet.dat file located in a node's blockchain directory
 1. Obtain a another node's address
