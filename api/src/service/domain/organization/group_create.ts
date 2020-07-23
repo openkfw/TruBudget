@@ -49,7 +49,7 @@ export async function createGroup(
   creatingUser: ServiceUser,
   data: RequestData,
   repository: Repository,
-): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const source = ctx.source;
   const publisher = creatingUser.id;
   const createEvent = GroupCreated.createEvent(source, publisher, {
@@ -62,10 +62,7 @@ export async function createGroup(
   });
 
   if (await repository.groupExists(createEvent.group.id)) {
-    return {
-      newEvents: [],
-      errors: [new AlreadyExists(ctx, createEvent, createEvent.group.id)],
-    };
+    return new AlreadyExists(ctx, createEvent, createEvent.group.id);
   }
 
   // Check authorization (if not root):
@@ -73,27 +70,24 @@ export async function createGroup(
     const intent = "global.createGroup";
     const globalPermissionsResult = await repository.getGlobalPermissions();
     if (Result.isErr(globalPermissionsResult)) {
-      throw new VError(globalPermissionsResult, "get global permissions failed");
+      return new VError(globalPermissionsResult, "get global permissions failed");
     }
     const globalPermissions = globalPermissionsResult;
     const isAuthorized = identitiesAuthorizedFor(globalPermissions, intent).some((identity) =>
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {
-      return {
-        newEvents: [],
-        errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent })],
-      };
+      return new NotAuthorized({ ctx, userId: creatingUser.id, intent });
     }
   }
 
   // Check that the event is valid by trying to "apply" it:
   const { errors } = sourceGroups(ctx, [createEvent]);
   if (errors.length > 0) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, errors)] };
+    return new InvalidCommand(ctx, createEvent, errors);
   }
 
-  return { newEvents: [createEvent], errors: [] };
+  return [createEvent];
 }
 
 function newDefaultPermissionsFor(user: ServiceUser): Permissions {
