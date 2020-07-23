@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -7,11 +8,11 @@ import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import * as GlobalPermissionRevoked from "./global_permission_revoked";
 import * as GlobalPermissions from "./global_permissions";
+import * as GlobalPermissionRevoked from "./global_permission_revoked";
 
 interface Repository {
-  getGlobalPermissions(): Promise<GlobalPermissions.GlobalPermissions>;
+  getGlobalPermissions(): Promise<Result.Type<GlobalPermissions.GlobalPermissions>>;
   isGroup(revokeeId): Promise<boolean>;
   getUser(userId): Promise<Result.Type<UserRecord.UserRecord>>;
 }
@@ -33,7 +34,11 @@ export async function revokeGlobalPermission(
   );
 
   const revokeIntent = "global.revokePermission";
-  const currentGlobalPermissions = await repository.getGlobalPermissions();
+  const currentGlobalPermissionsResult = await repository.getGlobalPermissions();
+  if (Result.isErr(currentGlobalPermissionsResult)) {
+    throw new VError(currentGlobalPermissionsResult, "get global permissions failed");
+  }
+  const currentGlobalPermissions = currentGlobalPermissionsResult;
 
   // Check if revokee is group
   const isGroup = await repository.isGroup(revokee);

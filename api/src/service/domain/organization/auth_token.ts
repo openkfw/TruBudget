@@ -4,6 +4,8 @@ import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_p
 import { Identity } from "./identity";
 import { ServiceUser } from "./service_user";
 import * as UserRecord from "./user_record";
+import { VError } from "verror";
+import * as Result from "../../../result";
 
 export interface AuthToken {
   userId: UserRecord.Id;
@@ -26,7 +28,7 @@ export function canAssumeIdentity(
 interface Repository {
   getGroupsForUser(userId: UserRecord.Id): Promise<string[]>;
   getOrganizationAddress(organization: string): Promise<string>;
-  getGlobalPermissions(): Promise<GlobalPermissions>;
+  getGlobalPermissions(): Promise<Result.Type<GlobalPermissions>>;
 }
 
 export async function fromUserRecord(
@@ -35,10 +37,14 @@ export async function fromUserRecord(
 ): Promise<AuthToken> {
   const groups = await repository.getGroupsForUser(user.id);
   const organizationAddress = await repository.getOrganizationAddress(user.organization);
-  const globalPermissions = await repository.getGlobalPermissions();
-  const allowedIntents = globalIntents.filter(intent => {
+  const globalPermissionsResult = await repository.getGlobalPermissions();
+  if (Result.isErr(globalPermissionsResult)) {
+    throw new VError(globalPermissionsResult, "get global permissions failed");
+  }
+  const globalPermissions = globalPermissionsResult;
+  const allowedIntents = globalIntents.filter((intent) => {
     const eligibleIdentities = identitiesAuthorizedFor(globalPermissions, intent);
-    return eligibleIdentities.some(identity =>
+    return eligibleIdentities.some((identity) =>
       canAssumeIdentity({ id: user.id, groups }, identity),
     );
   });
@@ -62,7 +68,7 @@ export function permits(
     const eligibles = permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;

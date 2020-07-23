@@ -1,5 +1,6 @@
 import Joi = require("joi");
 
+import { VError } from "verror";
 import Intent, { projectIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -53,7 +54,7 @@ export function validate(input: any): Result.Type<RequestData> {
 }
 
 interface Repository {
-  getGlobalPermissions(): Promise<GlobalPermissions.GlobalPermissions>;
+  getGlobalPermissions(): Promise<Result.Type<GlobalPermissions.GlobalPermissions>>;
   projectExists(projectId: string): Promise<boolean>;
 }
 
@@ -98,11 +99,18 @@ export async function createProject(
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
     const intent = "global.createProject";
-    const permissions = await repository.getGlobalPermissions();
-    if (!GlobalPermissions.permits(permissions, creatingUser, [intent])) {
+    const globalPermissionsResult = await repository.getGlobalPermissions();
+    if (Result.isErr(globalPermissionsResult)) {
+      throw new VError(globalPermissionsResult, "get global permissions failed");
+    }
+
+    const globalPermissions = globalPermissionsResult;
+    if (!GlobalPermissions.permits(globalPermissions, creatingUser, [intent])) {
       return {
         newEvents: [],
-        errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: permissions })],
+        errors: [
+          new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: globalPermissions }),
+        ],
       };
     }
   } else {

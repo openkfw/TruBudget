@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -11,7 +12,7 @@ import * as GlobalPermissions from "./global_permissions";
 import * as GlobalPermissionGranted from "./global_permission_granted";
 
 interface Repository {
-  getGlobalPermissions(): Promise<GlobalPermissions.GlobalPermissions>;
+  getGlobalPermissions(): Promise<Result.Type<GlobalPermissions.GlobalPermissions>>;
   isGroup(granteeId): Promise<boolean>;
   getUser(userId): Promise<Result.Type<UserRecord.UserRecord>>;
 }
@@ -33,7 +34,11 @@ export async function grantGlobalPermission(
   );
 
   const grantIntent = "global.grantPermission";
-  const currentGlobalPermissions = await repository.getGlobalPermissions();
+  const globalPermissionsResult = await repository.getGlobalPermissions();
+  if (Result.isErr(globalPermissionsResult)) {
+    throw new VError(globalPermissionsResult, "get global permissions failed");
+  }
+  const currentGlobalPermissions = globalPermissionsResult;
 
   // Check if grantee is group
   const isGroup = await repository.isGroup(grantee);

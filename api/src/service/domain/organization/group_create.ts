@@ -1,5 +1,6 @@
 import Joi = require("joi");
 
+import { VError } from "verror";
 import Intent, { groupIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -39,7 +40,7 @@ export function validate(input: any): Result.Type<RequestData> {
 }
 
 interface Repository {
-  getGlobalPermissions(): Promise<GlobalPermissions>;
+  getGlobalPermissions(): Promise<Result.Type<GlobalPermissions>>;
   groupExists(groupId: string): Promise<boolean>;
 }
 
@@ -70,8 +71,12 @@ export async function createGroup(
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
     const intent = "global.createGroup";
-    const permissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(permissions, intent).some((identity) =>
+    const globalPermissionsResult = await repository.getGlobalPermissions();
+    if (Result.isErr(globalPermissionsResult)) {
+      throw new VError(globalPermissionsResult, "get global permissions failed");
+    }
+    const globalPermissions = globalPermissionsResult;
+    const isAuthorized = identitiesAuthorizedFor(globalPermissions, intent).some((identity) =>
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {
