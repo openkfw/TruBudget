@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -17,7 +18,7 @@ export async function grantGlobalPermission(
   serviceUserOrganization: string,
   grantee: Identity,
   permission: Intent,
-): Promise<void> {
+): Promise<Result.Type<void>> {
   const result = await GlobalPermissionsGrant.grantGlobalPermission(
     ctx,
     serviceUser,
@@ -26,16 +27,17 @@ export async function grantGlobalPermission(
     permission,
     {
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-      isGroup: async granteeId => await GroupQuery.groupExists(conn, ctx, serviceUser, granteeId),
-      getUser: async userId => await UserQuery.getUser(conn, ctx, serviceUser, userId),
+      isGroup: async (granteeId) => await GroupQuery.groupExists(conn, ctx, serviceUser, granteeId),
+      getUser: async (userId) => await UserQuery.getUser(conn, ctx, serviceUser, userId),
     },
   );
-  if (Result.isErr(result)) return Promise.reject(result);
-  if (result.length === 0) {
-    return Promise.reject(`Generating events failed: ${JSON.stringify(result)}`);
+  if (Result.isErr(result)) return new VError(result, "failed to grant global permission");
+  const newEvents = result;
+  if (newEvents.length === 0) {
+    return new Error(`Generating events failed: ${JSON.stringify(newEvents)}`);
   }
 
-  for (const event of result) {
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 }

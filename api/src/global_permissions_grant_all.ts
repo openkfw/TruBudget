@@ -1,11 +1,9 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
 import Intent, { globalIntents } from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import logger from "./lib/logger";
 import * as Result from "./result";
@@ -15,6 +13,7 @@ import {
   GlobalPermissions,
   identitiesAuthorizedFor,
 } from "./service/domain/workflow/global_permissions";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -88,7 +87,7 @@ interface Service {
     userOrganization: string,
     grantee: Identity,
     permission: Intent,
-  ): Promise<void>;
+  ): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -127,7 +126,14 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           if (identitiesAuthorizedFor(globalPermissions, intent).includes(user.id)) {
             continue;
           }
-          await service.grantGlobalPermissions(ctx, user, userOrganization, grantee, intent);
+          const result = await service.grantGlobalPermissions(
+            ctx,
+            user,
+            userOrganization,
+            grantee,
+            intent,
+          );
+          if (Result.isErr(result)) throw new VError(result, "global.grantAllPermissions failed");
           logger.debug({ grantee, intent }, "permission granted");
         }
 
