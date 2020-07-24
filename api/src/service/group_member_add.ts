@@ -1,4 +1,6 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import * as Group from "./domain/organization/group";
@@ -12,17 +14,16 @@ export async function addMember(
   serviceUser: ServiceUser,
   groupId: Group.Id,
   newMember: Group.Member,
-): Promise<void> {
-  const { newEvents, errors } = await Cache.withCache(conn, ctx, cache =>
+): Promise<Result.Type<void>> {
+  const memberAddResult = await Cache.withCache(conn, ctx, cache =>
     GroupMemberAdd.addMember(ctx, serviceUser, groupId, newMember, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
       },
     }),
   );
-  if (errors.length > 0) return Promise.reject(errors);
+  if (Result.isErr(memberAddResult)) return new VError(memberAddResult, "failed to add group member");
+  const memberAddEvent = memberAddResult;
 
-  for (const event of newEvents) {
-    await store(conn, ctx, event);
-  }
+  await store(conn, ctx, memberAddEvent);
 }

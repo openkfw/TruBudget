@@ -79,7 +79,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  addGroupMember(ctx: Ctx, user: ServiceUser, groupId: string, userId: string): Promise<void>;
+  addGroupMember(ctx: Ctx, user: ServiceUser, groupId: string, userId: string): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -111,7 +111,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     }
 
     invokeService
-      .then(() => {
+      .then((result) => {
+        if (Result.isErr(result)) throw new VError(result, "group.addUser failed");
         const code = 200;
         const body = {
           apiVersion: "1.0",
