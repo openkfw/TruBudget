@@ -79,7 +79,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  removeGroupMember(ctx: Ctx, user: ServiceUser, groupId: string, userId: string): Promise<void>;
+  removeGroupMember(ctx: Ctx, user: ServiceUser, groupId: string, userId: string): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -113,7 +113,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     }
 
     invokeService
-      .then(() => {
+      .then((result) => {
+        if (Result.isErr(result)) throw new VError(result, "group.removeUser failed");
         const code = 200;
         const body = {
           apiVersion: "1.0",
