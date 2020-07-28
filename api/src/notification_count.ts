@@ -1,9 +1,10 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
+import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Notification from "./service/domain/workflow/notification";
 
@@ -48,7 +49,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  getNotificationsForUser(ctx: Ctx, user: ServiceUser): Promise<Notification.Notification[]>;
+  getNotificationsForUser(
+    ctx: Ctx,
+    user: ServiceUser,
+  ): Promise<Result.Type<Notification.Notification[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -61,12 +65,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     };
 
     try {
-      const notifications: Notification.Notification[] = await service.getNotificationsForUser(
-        ctx,
-        user,
-      );
+      const notificationsResult = await service.getNotificationsForUser(ctx, user);
+      if (Result.isErr(notificationsResult)) {
+        throw new VError(notificationsResult, "notification.count failed");
+      }
+      const notifications = notificationsResult;
       const total = notifications.length;
-      const unread = notifications.filter(x => !x.isRead).length;
+      const unread = notifications.filter((x) => !x.isRead).length;
 
       const code = 200;
       const body = {
@@ -83,12 +88,4 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       reply.status(code).send(body);
     }
   });
-}
-
-function byEventTime(a: Notification.Notification, b: Notification.Notification): -1 | 0 | 1 {
-  const timeA = new Date(a.businessEvent.time);
-  const timeB = new Date(b.businessEvent.time);
-  if (timeA < timeB) return -1;
-  if (timeA > timeB) return 1;
-  return 0;
 }

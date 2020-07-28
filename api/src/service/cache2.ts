@@ -105,7 +105,7 @@ interface CacheInstance {
   getGlobalEvents(): BusinessEvent[];
   getUserEvents(userId?: string): BusinessEvent[];
   getGroupEvents(groupId?: string): BusinessEvent[];
-  getNotificationEvents(userId: string): BusinessEvent[];
+  getNotificationEvents(userId: string): Result.Type<BusinessEvent[]>;
 
   // Project:
   getProjects(): Promise<Project.Project[]>;
@@ -143,7 +143,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       return cache.eventsByStream.get("groups") || [];
     },
 
-    getNotificationEvents: (userId: string): BusinessEvent[] => {
+    getNotificationEvents: (userId: string): Result.Type<BusinessEvent[]> => {
       const userFilter = (event) => {
         if (!event.type.startsWith("notification_")) {
           logger.debug(`Unexpected event type in "notifications" stream: ${event.type}`);
@@ -156,7 +156,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
           case "notification_marked_read":
             return event.recipient === userId;
           default:
-            throw Error(`not implemented: notification event of type ${event.type}`);
+            return Error(`not implemented: notification event of type ${event.type}`);
         }
       };
 
