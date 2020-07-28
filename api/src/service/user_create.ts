@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { encrypt } from "../lib/symmetricCrypto";
@@ -48,8 +49,11 @@ export async function createUser(
   }
   const token = await AuthToken.fromUserRecord(users[0], {
     getGroupsForUser: async (userId) => {
-      const groups = await GroupQuery.getGroupsForUser(conn, ctx, serviceUser, userId);
-      return groups.map((group) => group.id);
+      const groupsResult = await GroupQuery.getGroupsForUser(conn, ctx, serviceUser, userId);
+      if (Result.isErr(groupsResult)) {
+        throw new VError(groupsResult, `fetch groups for user ${userId} failed`);
+      }
+      return groupsResult.map((group) => group.id);
     },
     getOrganizationAddress: async (organization) => {
       const address = await getOrganizationAddress(conn.multichainClient, organization);

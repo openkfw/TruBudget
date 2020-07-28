@@ -1,6 +1,6 @@
 import Joi = require("joi");
 import { isEqual } from "lodash";
-
+import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -25,7 +25,7 @@ export function validate(input: any): Result.Type<RequestData> {
 
 interface Repository {
   getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 export async function updateProject(
@@ -65,11 +65,26 @@ export async function updateProject(
 
   // Create notification events:
   let notifications: NotificationCreated.Event[] = [];
-  if (project.assignee !== undefined && project.assignee !== issuer.id) {
-    const recipients = await repository.getUsersForIdentity(project.assignee);
-    notifications = recipients.map(recipient =>
-      NotificationCreated.createEvent(ctx.source, issuer.id, recipient, projectUpdated, projectId),
-    );
+  if (project.assignee !== undefined) {
+    const recipientsResult = await repository.getUsersForIdentity(project.assignee);
+    if (Result.isErr(recipientsResult)) {
+      throw new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
+    }
+    notifications = recipientsResult.reduce((notifications, recipient) => {
+      // The issuer doesn't receive a notification:
+      if (recipient !== issuer.id) {
+        notifications.push(
+          NotificationCreated.createEvent(
+            ctx.source,
+            issuer.id,
+            recipient,
+            projectUpdated,
+            projectId,
+          ),
+        );
+      }
+      return notifications;
+    }, [] as NotificationCreated.Event[]);
   }
 
   return { newEvents: [projectUpdated, ...notifications] };

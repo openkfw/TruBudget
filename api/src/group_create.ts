@@ -1,15 +1,14 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as GroupCreate from "./service/domain/organization/group_create";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import Joi = require("joi");
 
 interface Group {
   id: string;

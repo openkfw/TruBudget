@@ -111,9 +111,14 @@ async function authenticateUser(
 
   try {
     return AuthToken.fromUserRecord(userRecord, {
-      getGroupsForUser: async id =>
-        getGroupsForUser(conn, ctx, rootUser, id).then(groups => groups.map(x => x.id)),
-      getOrganizationAddress: async orga => getOrganizationAddressOrThrow(conn, ctx, orga),
+      getGroupsForUser: async (id) => {
+        const groupsResult = await getGroupsForUser(conn, ctx, rootUser, userId);
+        if (Result.isErr(groupsResult)) {
+          throw new VError(groupsResult, `fetch groups for user ${userId} failed`);
+        }
+        return groupsResult.map((group) => group.id);
+      },
+      getOrganizationAddress: async (orga) => getOrganizationAddressOrThrow(conn, ctx, orga),
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, rootUser),
     });
   } catch (error) {

@@ -148,7 +148,11 @@ const swaggerSchema = {
 
 interface Service {
   authenticate(ctx: Ctx, userId: string, password: string): Promise<AuthToken>;
-  getGroupsForUser(ctx: Ctx, serviceUser: ServiceUser, userId: string): Promise<Group[]>;
+  getGroupsForUser(
+    ctx: Ctx,
+    serviceUser: ServiceUser,
+    userId: string,
+  ): Promise<Result.Type<Group[]>>;
 }
 
 export function addHttpHandler(
@@ -183,18 +187,20 @@ export function addHttpHandler(
       const token = await (invokeService as Promise<AuthToken>);
       const signedJwt = createJWT(token, jwtSecret);
 
-      const groups = await service.getGroupsForUser(
+      const groupsResult = await service.getGroupsForUser(
         ctx,
         { id: token.userId, groups: token.groups },
         token.userId,
       );
+      if (Result.isErr(groupsResult)) throw new VError(groupsResult, "authentication failed");
+      const groups = groupsResult;
 
       const loginResponse: LoginResponse = {
         id: token.userId,
         displayName: token.displayName,
         organization: token.organization,
         allowedIntents: token.allowedIntents,
-        groups: groups.map(x => ({ groupId: x.id, displayName: x.displayName })),
+        groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
         token: signedJwt,
       };
       const body = {

@@ -13,7 +13,7 @@ import * as GlobalPermissionGranted from "./global_permission_granted";
 
 interface Repository {
   getGlobalPermissions(): Promise<Result.Type<GlobalPermissions.GlobalPermissions>>;
-  isGroup(granteeId): Promise<boolean>;
+  isGroup(granteeId): Promise<Result.Type<boolean>>;
   getUser(userId): Promise<Result.Type<UserRecord.UserRecord>>;
 }
 
@@ -41,7 +41,11 @@ export async function grantGlobalPermission(
   const currentGlobalPermissions = globalPermissionsResult;
 
   // Check if grantee is group
-  const isGroup = await repository.isGroup(grantee);
+  const isGroupResult = await repository.isGroup(grantee);
+  if (Result.isErr(isGroupResult)) {
+    throw new VError(isGroupResult, "isGroup check failed");
+  }
+  const isGroup = isGroupResult;
 
   // If grantee is group, return an error because global permissions cannot be granted to groups
   if (isGroup) {

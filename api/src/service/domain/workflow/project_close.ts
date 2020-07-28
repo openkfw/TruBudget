@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -19,7 +18,7 @@ import * as Subproject from "./subproject";
 interface Repository {
   getProject(): Promise<Result.Type<Project.Project>>;
   getSubprojects(projectId: string): Promise<Result.Type<Subproject.Subproject[]>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 export async function closeProject(
@@ -54,7 +53,7 @@ export async function closeProject(
       `could not find subprojects for project ${projectId}`,
     );
   }
-  if (subprojects.some(x => x.status !== "closed")) {
+  if (subprojects.some((x) => x.status !== "closed")) {
     return new PreconditionError(ctx, projectClosed, "at least one subproject is not closed yet");
   }
 
@@ -72,13 +71,21 @@ export async function closeProject(
   project = validationResult;
 
   // Create notification events:
-  const recipients = project.assignee ? await repository.getUsersForIdentity(project.assignee) : [];
-  const notifications = recipients
+  const recipientsResult = project.assignee
+    ? await repository.getUsersForIdentity(project.assignee)
+    : [];
+  if (Result.isErr(recipientsResult)) {
+    throw new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
+  }
+  const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
-    .filter(userId => userId !== issuer.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(ctx.source, issuer.id, recipient, projectClosed, projectId),
-    );
+    if (recipient !== issuer.id) {
+      notifications.push(
+        NotificationCreated.createEvent(ctx.source, issuer.id, recipient, projectClosed, projectId),
+      );
+    }
+    return notifications;
+  }, [] as NotificationCreated.Event[]);
 
   return { newEvents: [projectClosed, ...notifications], project };
 }

@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-
+import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -21,7 +21,7 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Subproject.Subproject>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 export async function updateProjectedBudget(
@@ -68,22 +68,28 @@ export async function updateProjectedBudget(
     return { newEvents: [], projectedBudgets: result.projectedBudgets };
   } else {
     // Create notification events:
-    const recipients = subproject.assignee
+    const recipientsResult = subproject.assignee
       ? await repository.getUsersForIdentity(subproject.assignee)
       : [];
-    const notifications = recipients
+    if (Result.isErr(recipientsResult)) {
+      throw new VError(recipientsResult, `fetch users for ${subproject.assignee} failed`);
+    }
+    const notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
-      .filter(userId => userId !== issuer.id)
-      .map(recipient =>
-        NotificationCreated.createEvent(
-          ctx.source,
-          issuer.id,
-          recipient,
-          budgetUpdated,
-          projectId,
-          subprojectId,
-        ),
-      );
+      if (recipient !== issuer.id) {
+        notifications.push(
+          NotificationCreated.createEvent(
+            ctx.source,
+            issuer.id,
+            recipient,
+            budgetUpdated,
+            projectId,
+            subprojectId,
+          ),
+        );
+      }
+      return notifications;
+    }, [] as NotificationCreated.Event[]);
     return {
       newEvents: [budgetUpdated, ...notifications],
       projectedBudgets: result.projectedBudgets,

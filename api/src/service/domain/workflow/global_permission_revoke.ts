@@ -13,7 +13,7 @@ import * as GlobalPermissionRevoked from "./global_permission_revoked";
 
 interface Repository {
   getGlobalPermissions(): Promise<Result.Type<GlobalPermissions.GlobalPermissions>>;
-  isGroup(revokeeId): Promise<boolean>;
+  isGroup(revokeeId): Promise<Result.Type<boolean>>;
   getUser(userId): Promise<Result.Type<UserRecord.UserRecord>>;
 }
 
@@ -41,7 +41,11 @@ export async function revokeGlobalPermission(
   const currentGlobalPermissions = currentGlobalPermissionsResult;
 
   // Check if revokee is group
-  const isGroup = await repository.isGroup(revokee);
+  const isGroupResult = await repository.isGroup(revokee);
+  if (Result.isErr(isGroupResult)) {
+    throw new VError(isGroupResult, "isGroup check failed");
+  }
+  const isGroup = isGroupResult;
 
   // If revokee is group, return an error because global permissions cannot be granted to groups
   if (isGroup) {

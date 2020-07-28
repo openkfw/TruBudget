@@ -23,7 +23,7 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
   getSubproject(
     projectId: string,
     subprojectId: string,
@@ -55,7 +55,7 @@ export async function closeWorkflowitem(
   const { workflowitemOrdering } = subproject;
 
   const sortedWorkflowitems = sortWorkflowitems(workflowitems, workflowitemOrdering);
-  const workflowitemToClose = sortedWorkflowitems.find(item => item.id === workflowitemId);
+  const workflowitemToClose = sortedWorkflowitems.find((item) => item.id === workflowitemId);
 
   if (workflowitemToClose === undefined) {
     return new NotFound(ctx, "workflowitem", workflowitemId);
@@ -111,23 +111,30 @@ export async function closeWorkflowitem(
   }
 
   // Create notification events:
-  const recipients = workflowitemToClose.assignee
-    ? await repository.getUsersForIdentity(workflowitemToClose.assignee)
-    : [];
-  const notifications = recipients
-    // The issuer doesn't receive a notification:
-    .filter(userId => userId !== closingUser.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(
-        ctx.source,
-        closingUser.id,
-        recipient,
-        closeEvent,
-        projectId,
-        subprojectId,
-        workflowitemId,
-      ),
-    );
+  let notifications: NotificationCreated.Event[] = [];
+  if (workflowitemToClose.assignee !== undefined) {
+    const recipientsResult = await repository.getUsersForIdentity(workflowitemToClose.assignee);
+    if (Result.isErr(recipientsResult)) {
+      throw new VError(recipientsResult, `fetch users for ${workflowitemToClose.assignee} failed`);
+    }
+    notifications = recipientsResult.reduce((notifications, recipient) => {
+      // The issuer doesn't receive a notification:
+      if (recipient !== closingUser.id) {
+        notifications.push(
+          NotificationCreated.createEvent(
+            ctx.source,
+            closingUser.id,
+            recipient,
+            closeEvent,
+            projectId,
+            subprojectId,
+            workflowitemId,
+          ),
+        );
+      }
+      return notifications;
+    }, [] as NotificationCreated.Event[]);
+  }
 
   const workflowitemTypeEvents = repository.applyWorkflowitemType(closeEvent, workflowitemToClose);
 

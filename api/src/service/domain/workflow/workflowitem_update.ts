@@ -1,8 +1,6 @@
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
-import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -11,7 +9,7 @@ import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import { hashDocument, hashDocuments, StoredDocument, UploadedDocument } from "./document";
+import { hashDocuments, StoredDocument, UploadedDocument } from "./document";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -38,7 +36,7 @@ export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
 
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
   applyWorkflowitemType(
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
@@ -104,23 +102,30 @@ export async function updateWorkflowitem(
   }
 
   // Create notification events:
-  const recipients = workflowitem.assignee
-    ? await repository.getUsersForIdentity(workflowitem.assignee)
-    : [];
-  const notifications = recipients
-    // The issuer doesn't receive a notification:
-    .filter(userId => userId !== issuer.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(
-        ctx.source,
-        issuer.id,
-        recipient,
-        newEvent,
-        projectId,
-        subprojectId,
-        workflowitemId,
-      ),
-    );
+  let notifications: NotificationCreated.Event[] = [];
+  if (workflowitem.assignee !== undefined) {
+    const recipientsResult = await repository.getUsersForIdentity(workflowitem.assignee);
+    if (Result.isErr(recipientsResult)) {
+      throw new VError(recipientsResult, `fetch users for ${workflowitem.assignee} failed`);
+    }
+    notifications = recipientsResult.reduce((notifications, recipient) => {
+      // The issuer doesn't receive a notification:
+      if (recipient !== issuer.id) {
+        notifications.push(
+          NotificationCreated.createEvent(
+            ctx.source,
+            issuer.id,
+            recipient,
+            newEvent,
+            projectId,
+            subprojectId,
+            workflowitemId,
+          ),
+        );
+      }
+      return notifications;
+    }, [] as NotificationCreated.Event[]);
+  }
 
   // Handle new documents
   let newDocumentUploadedEventsResult: Result.Type<BusinessEvent>[] = [];
@@ -173,7 +178,12 @@ export async function updateWorkflowitem(
   }
 
   return {
-    newEvents: [newEvent, ...newDocumentUploadedEvents, ...notifications, ...workflowitemTypeEvents],
+    newEvents: [
+      newEvent,
+      ...newDocumentUploadedEvents,
+      ...notifications,
+      ...workflowitemTypeEvents,
+    ],
     workflowitem: result,
   };
 }
