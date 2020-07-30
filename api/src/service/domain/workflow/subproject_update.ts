@@ -39,7 +39,7 @@ export async function updateSubproject(
   subprojectId: Subproject.Id,
   data: RequestData,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const subproject = await repository.getSubproject(subprojectId, subprojectId);
 
   if (Result.isErr(subproject)) {
@@ -74,7 +74,7 @@ export async function updateSubproject(
 
   // Only emit the event if it causes any changes:
   if (isEqualIgnoringLog(subproject, result)) {
-    return { newEvents: [] };
+    return [];
   }
 
   // Create notification events:
@@ -102,7 +102,7 @@ export async function updateSubproject(
     }, [] as NotificationCreated.Event[]);
   }
 
-  return { newEvents: [subprojectUpdated, ...notifications] };
+  return [subprojectUpdated, ...notifications];
 }
 
 function isEqualIgnoringLog(
