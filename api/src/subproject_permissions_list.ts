@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -100,19 +100,17 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       try {
-        const subprojectPermissions = await service.listSubprojectPermissions(
+        const subprojectPermissionsResult = await service.listSubprojectPermissions(
           ctx,
           user,
           projectId,
           subprojectId,
         );
 
-        if (Result.isErr(subprojectPermissions)) {
-          subprojectPermissions.message = `could not list subproject permissions: ${
-            subprojectPermissions.message
-          }`;
-          throw subprojectPermissions;
+        if (Result.isErr(subprojectPermissionsResult)) {
+          throw new VError(subprojectPermissionsResult, "subproject.intent.listPermissions failed");
         }
+        const subprojectPermissions = subprojectPermissionsResult;
 
         const code = 200;
         const body = {
