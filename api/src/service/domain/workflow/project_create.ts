@@ -6,7 +6,6 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
-import { BusinessEvent } from "../business_event";
 import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -63,7 +62,7 @@ export async function createProject(
   creatingUser: ServiceUser,
   data: RequestData,
   repository: Repository,
-): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
+): Promise<Result.Type<ProjectCreated.Event>> {
   const source = ctx.source;
   const publisher = creatingUser.id;
 
@@ -83,52 +82,42 @@ export async function createProject(
   // Make sure for each organization and currency there is only one entry:
   const badEntry = findDuplicateBudgetEntry(createEvent.project.projectedBudgets);
   if (badEntry !== undefined) {
-    const error = new Error(
-      `more than one projected budget for organization ${badEntry.organization} and currency ${badEntry.currencyCode}`,
+    return new AlreadyExists(
+      ctx,
+      createEvent,
+      `${badEntry.organization}:${badEntry.currencyCode}`,
+      `There already is a projected budget for organization ${badEntry.organization} and currency ${badEntry.currencyCode}`,
     );
-    return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, [error])] };
   }
 
+  // Project already exists
   if (await repository.projectExists(createEvent.project.id)) {
-    return {
-      newEvents: [],
-      errors: [new AlreadyExists(ctx, createEvent, createEvent.project.id)],
-    };
+    return new AlreadyExists(ctx, createEvent, createEvent.project.id);
   }
 
-  // Check authorization (if not root):
-  if (creatingUser.id !== "root") {
-    const intent = "global.createProject";
-    const globalPermissionsResult = await repository.getGlobalPermissions();
-    if (Result.isErr(globalPermissionsResult)) {
-      throw new VError(globalPermissionsResult, "get global permissions failed");
-    }
-
-    const globalPermissions = globalPermissionsResult;
-    if (!GlobalPermissions.permits(globalPermissions, creatingUser, [intent])) {
-      return {
-        newEvents: [],
-        errors: [
-          new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: globalPermissions }),
-        ],
-      };
-    }
-  } else {
-    return {
-      newEvents: [],
-      errors: [
-        new PreconditionError(ctx, createEvent, "user 'root' is not allowed to create projects"),
-      ],
-    };
+  // Reject if root
+  if (creatingUser.id === "root") {
+    return new PreconditionError(ctx, createEvent, "user 'root' is not allowed to create projects");
   }
 
-  // Check that the event is valid:
+  // Check authorization
+  const intent = "global.createProject";
+  const globalPermissionsResult = await repository.getGlobalPermissions();
+  if (Result.isErr(globalPermissionsResult)) {
+    throw new VError(globalPermissionsResult, "get global permissions failed");
+  }
+  const globalPermissions = globalPermissionsResult;
+  if (!GlobalPermissions.permits(globalPermissions, creatingUser, [intent])) {
+    return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: globalPermissions });
+  }
+
+  // Check that the event is valid
   const result = ProjectCreated.createFrom(ctx, createEvent);
   if (Result.isErr(result)) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, [result])] };
+    return new InvalidCommand(ctx, createEvent, [result]);
   }
 
-  return { newEvents: [createEvent], errors: [] };
+  return createEvent;
 }
 
 function newDefaultPermissionsFor(user: ServiceUser): Permissions {

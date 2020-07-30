@@ -1,7 +1,7 @@
 import { assert } from "chai";
-
 import { Ctx } from "../../../lib/ctx";
-import { InvalidCommand } from "../errors/invalid_command";
+import * as Result from "../../../result";
+import { AlreadyExists } from "../errors/already_exists";
 import { ServiceUser } from "../organization/service_user";
 import * as ProjectCreate from "./project_create";
 
@@ -18,15 +18,15 @@ describe("create project & projected budgets", () => {
       ],
     };
 
-    const { errors } = await ProjectCreate.createProject(ctx, user, data, {
+    const createProjectResult = await ProjectCreate.createProject(ctx, user, data, {
       getGlobalPermissions: async () => ({
         permissions: { "global.createProject": [user.id] },
         log: [],
       }),
-      projectExists: async _id => false,
+      projectExists: async (_id) => false,
     });
 
-    assert.lengthOf(errors, 0);
+    assert.isTrue(Result.isOk(createProjectResult));
   });
 
   it("allows more than one projected budget for the same organization if the currencies are different.", async () => {
@@ -38,15 +38,15 @@ describe("create project & projected budgets", () => {
       ],
     };
 
-    const { errors } = await ProjectCreate.createProject(ctx, user, data, {
+    const createProjectResult = await ProjectCreate.createProject(ctx, user, data, {
       getGlobalPermissions: async () => ({
         permissions: { "global.createProject": [user.id] },
         log: [],
       }),
-      projectExists: async _id => false,
+      projectExists: async (_id) => false,
     });
 
-    assert.lengthOf(errors, 0);
+    assert.isTrue(Result.isOk(createProjectResult));
   });
 
   it("rejects more than one projected budgets for the same organization if the currencies are the same.", async () => {
@@ -58,17 +58,18 @@ describe("create project & projected budgets", () => {
       ],
     };
 
-    const { newEvents, errors } = await ProjectCreate.createProject(ctx, user, data, {
+    const createProjectResult = await ProjectCreate.createProject(ctx, user, data, {
       getGlobalPermissions: async () => ({ permissions: {}, log: [] }),
-      projectExists: async _id => false,
+      projectExists: async (_id) => false,
     });
 
-    // No new events:
-    assert.isEmpty(newEvents);
-
-    // And an InvalidCommand error that refers to "projected budget":
-    assert.lengthOf(errors, 1);
-    assert.instanceOf(errors[0], InvalidCommand);
-    assert.include(errors[0].message, "projected budget");
+    // InvalidCommand error that refers to "projected budget":
+    assert.isTrue(Result.isErr(createProjectResult));
+    // Make TypeScript happy:
+    if (Result.isOk(createProjectResult)) {
+      throw createProjectResult;
+    }
+    assert.instanceOf(createProjectResult, AlreadyExists);
+    assert.include(createProjectResult.message, "projected budget");
   });
 });

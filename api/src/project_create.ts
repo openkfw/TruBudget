@@ -1,10 +1,8 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
@@ -13,6 +11,7 @@ import { ResourceMap } from "./service/domain/ResourceMap";
 import * as Project from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as ProjectCreate from "./service/project_create";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -139,7 +138,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  createProject(ctx: Ctx, user: ServiceUser, createRequest: any): Promise<ResourceMap>;
+  createProject(ctx: Ctx, user: ServiceUser, createRequest: any): Promise<Result.Type<ResourceMap>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -163,7 +162,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .createProject(ctx, user, reqData)
-      .then((resourceIds: ResourceMap) => {
+      .then((result) => {
+        if (Result.isErr(result)) {
+          throw new VError(result, "global.createProject failed");
+        }
+        const resourceIds = result;
         const code = 200;
         const body = {
           apiVersion: "1.0",
@@ -173,7 +176,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });
