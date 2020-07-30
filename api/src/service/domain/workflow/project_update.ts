@@ -34,7 +34,7 @@ export async function updateProject(
   projectId: Project.Id,
   data: RequestData,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const project = await repository.getProject(projectId);
 
   if (Result.isErr(project)) {
@@ -60,7 +60,7 @@ export async function updateProject(
 
   // Only emit the event if it causes any changes:
   if (isEqualIgnoringLog(project, result)) {
-    return { newEvents: [] };
+    return [];
   }
 
   // Create notification events:
@@ -68,7 +68,7 @@ export async function updateProject(
   if (project.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(project.assignee);
     if (Result.isErr(recipientsResult)) {
-      throw new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
+      return new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
     }
     notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
@@ -87,7 +87,7 @@ export async function updateProject(
     }, [] as NotificationCreated.Event[]);
   }
 
-  return { newEvents: [projectUpdated, ...notifications] };
+  return [projectUpdated, ...notifications];
 }
 
 function isEqualIgnoringLog(projectA: Project.Project, projectB: Project.Project): boolean {
