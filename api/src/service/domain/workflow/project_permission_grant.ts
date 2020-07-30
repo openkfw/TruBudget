@@ -24,7 +24,7 @@ export async function grantProjectPermission(
   grantee: Identity,
   intent: Intent,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const project = await repository.getProject(projectId);
 
   if (Result.isErr(project)) {
@@ -56,8 +56,8 @@ export async function grantProjectPermission(
 
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(project.permissions, updatedProject.permissions)) {
-    return { newEvents: [] };
+    return [];
   } else {
-    return { newEvents: [permissionGranted] };
+    return [permissionGranted];
   }
 }
