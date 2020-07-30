@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -84,12 +84,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       try {
         const projectPermissions = await service.getProjectPermissions(ctx, user, projectId);
-
         if (Result.isErr(projectPermissions)) {
-          projectPermissions.message = `could not list project permissions: ${
-            projectPermissions.message
-            }`;
-          throw projectPermissions;
+          throw new VError(projectPermissions, "project.intent.listPermissions failed");
         }
 
         const code = 200;

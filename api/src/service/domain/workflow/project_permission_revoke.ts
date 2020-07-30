@@ -25,7 +25,7 @@ export async function revokeProjectPermission(
   revokee: Identity,
   intent: Intent,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const project = await repository.getProject(projectId);
 
   if (Result.isErr(project)) {
@@ -71,8 +71,8 @@ export async function revokeProjectPermission(
 
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(project.permissions, updatedProject.permissions)) {
-    return { newEvents: [] };
+    return [];
   } else {
-    return { newEvents: [permissionRevoked] };
+    return [permissionRevoked];
   }
 }

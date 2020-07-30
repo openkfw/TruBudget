@@ -49,8 +49,8 @@ describe("revoke project permissions", () => {
     if (Result.isErr(revokeResult)) {
       throw revokeResult;
     }
-    assert.lengthOf(revokeResult.newEvents, 1);
-    const revokeEvent = revokeResult.newEvents[0];
+    assert.lengthOf(revokeResult, 1);
+    const revokeEvent = revokeResult[0];
     const expectedEvent: BusinessEvent = {
       type: "project_permission_revoked",
       source: ctx.source,
