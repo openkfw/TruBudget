@@ -147,7 +147,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       return;
     }
 
-    let invokeService;
+    let invokeService: Promise<Result.Type<Group>>;
     switch (bodyResult.apiVersion) {
       case "1.0": {
         const { id, displayName, users } = bodyResult.data.group;
@@ -155,6 +155,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         break;
       }
       default:
+        // Joi validates only existing apiVersions
         assertUnreachable(bodyResult.apiVersion);
     }
 

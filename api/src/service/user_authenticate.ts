@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import { ConnToken } from ".";
 import { globalIntents } from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -34,17 +33,25 @@ export async function authenticate(
   ctx: Ctx,
   userId: string,
   password: string,
-): Promise<AuthToken.AuthToken> {
-  let token: AuthToken.AuthToken;
-
+): Promise<Result.Type<AuthToken.AuthToken>> {
   // The special "root" user is not on the chain:
   if (userId === "root") {
-    token = await authenticateRoot(conn, ctx, organization, rootSecret, password);
+    const tokenResult = await authenticateRoot(conn, ctx, organization, rootSecret, password);
+    return Result.mapErr(tokenResult, (err) => new VError(err, "root authentication failed"));
   } else {
-    token = await authenticateUser(conn, ctx, organization, organizationSecret, userId, password);
+    const tokenResult = await authenticateUser(
+      conn,
+      ctx,
+      organization,
+      organizationSecret,
+      userId,
+      password,
+    );
+    return Result.mapErr(
+      tokenResult,
+      (err) => new VError(err, `authentication failed for ${userId}`),
+    );
   }
-
-  return token;
 }
 
 async function authenticateRoot(
@@ -53,29 +60,29 @@ async function authenticateRoot(
   organization: string,
   rootSecret: string,
   password: string,
-): Promise<AuthToken.AuthToken> {
+): Promise<Result.Type<AuthToken.AuthToken>> {
   // Prevent timing attacks by using the constant-time compare function
   // instead of simple string comparison:
   const rootSecretHash = await hashPassword(rootSecret);
   if (!(await isPasswordMatch(password, rootSecretHash))) {
-    throw new AuthenticationFailed({ ctx, organization, userId: "root" });
+    return new AuthenticationFailed({ ctx, organization, userId: "root" });
   }
 
-  try {
-    const organizationAddress = await getOrganizationAddressOrThrow(conn, ctx, organization);
-
-    return {
-      userId: "root",
-      displayName: "root",
-      address: organizationAddress,
-      groups: [],
-      organization,
-      organizationAddress,
-      allowedIntents: globalIntents,
-    };
-  } catch (error) {
-    throw new AuthenticationFailed({ ctx, organization, userId: "root" }, error);
+  const organizationAddressResult = await getOrganizationAddressOrError(conn, ctx, organization);
+  if (Result.isErr(organizationAddressResult)) {
+    return new AuthenticationFailed({ ctx, organization, userId: "root" });
   }
+  const organizationAddress = organizationAddressResult;
+
+  return {
+    userId: "root",
+    displayName: "root",
+    address: organizationAddress,
+    groups: [],
+    organization,
+    organizationAddress,
+    allowedIntents: globalIntents,
+  };
 }
 
 async function authenticateUser(
@@ -85,14 +92,14 @@ async function authenticateUser(
   organizationSecret: string,
   userId: string,
   password: string,
-): Promise<AuthToken.AuthToken> {
+): Promise<Result.Type<AuthToken.AuthToken>> {
   const userRecord = await UserQuery.getUser(conn, ctx, rootUser, userId);
   if (Result.isErr(userRecord)) {
-    throw new AuthenticationFailed({ ctx, organization, userId }, userRecord);
+    return new AuthenticationFailed({ ctx, organization, userId }, userRecord);
   }
 
   if (!(await isPasswordMatch(password, userRecord.passwordHash))) {
-    throw new AuthenticationFailed({ ctx, organization, userId });
+    return new AuthenticationFailed({ ctx, organization, userId });
   }
 
   // Every user has an address and an associated private key. Importing the private key
@@ -105,20 +112,20 @@ async function authenticateUser(
       "failed to decrypt the user's private key with the given organization secret " +
         `(does "${userId}" belong to "${organization}"?)`,
     );
-    throw new AuthenticationFailed({ ctx, organization, userId }, cause);
+    return new AuthenticationFailed({ ctx, organization, userId }, cause);
   }
   await importprivkey(conn.multichainClient, privkey, userRecord.id);
 
   try {
     return AuthToken.fromUserRecord(userRecord, {
       getGroupsForUser: async (id) => {
-        const groupsResult = await getGroupsForUser(conn, ctx, rootUser, userId);
+        const groupsResult = await getGroupsForUser(conn, ctx, rootUser, id);
         if (Result.isErr(groupsResult)) {
-          throw new VError(groupsResult, `fetch groups for user ${userId} failed`);
+          return new VError(groupsResult, `fetch groups for user ${id} failed`);
         }
         return groupsResult.map((group) => group.id);
       },
-      getOrganizationAddress: async (orga) => getOrganizationAddressOrThrow(conn, ctx, orga),
+      getOrganizationAddress: async (orga) => getOrganizationAddressOrError(conn, ctx, orga),
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, rootUser),
     });
   } catch (error) {
@@ -126,14 +133,14 @@ async function authenticateUser(
   }
 }
 
-async function getOrganizationAddressOrThrow(
+async function getOrganizationAddressOrError(
   conn: ConnToken,
   ctx: Ctx,
   organization: string,
-): Promise<string> {
+): Promise<Result.Type<string>> {
   const organizationAddress = await getOrganizationAddress(conn.multichainClient, organization);
   if (!organizationAddress) {
-    throw new VError(
+    return new VError(
       { info: { ctx, organization } },
       `No organization address found for ${organization}`,
     );

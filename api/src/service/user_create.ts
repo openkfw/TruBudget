@@ -22,7 +22,7 @@ export async function createUser(
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: UserCreate.RequestData,
-): Promise<AuthToken.AuthToken> {
+): Promise<Result.Type<AuthToken.AuthToken>> {
   const result = await UserCreate.createUser(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
     userExists: async (userId) => userExists(conn, ctx, serviceUser, userId),
@@ -51,18 +51,28 @@ export async function createUser(
     getGroupsForUser: async (userId) => {
       const groupsResult = await GroupQuery.getGroupsForUser(conn, ctx, serviceUser, userId);
       if (Result.isErr(groupsResult)) {
-        throw new VError(groupsResult, `fetch groups for user ${userId} failed`);
+        return new VError(groupsResult, `fetch groups for user ${userId} failed`);
       }
       return groupsResult.map((group) => group.id);
     },
-    getOrganizationAddress: async (organization) => {
-      const address = await getOrganizationAddress(conn.multichainClient, organization);
-      if (address === undefined) {
-        throw new Error(`Could not find address for organization "${organization}"`);
-      }
-      return address;
-    },
+    getOrganizationAddress: async (organization) =>
+      getOrganizationAddressOrError(conn, ctx, organization),
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
   });
   return token;
+}
+
+async function getOrganizationAddressOrError(
+  conn: ConnToken,
+  ctx: Ctx,
+  organization: string,
+): Promise<Result.Type<string>> {
+  const organizationAddress = await getOrganizationAddress(conn.multichainClient, organization);
+  if (!organizationAddress) {
+    return new VError(
+      { info: { ctx, organization } },
+      `No organization address found for ${organization}`,
+    );
+  }
+  return organizationAddress;
 }

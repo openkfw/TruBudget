@@ -65,11 +65,11 @@ async function ensureOrganizationAddress(
       .getRpcClient()
       // Retrive the oldest address:
       .invoke("listaddresses", "*", false, 1, 0)
-      .then(addressInfos =>
+      .then((addressInfos) =>
         addressInfos
           .filter((info: GetaddressesItem) => info.ismine)
           .map((info: GetaddressesItem) => info.address)
-          .find(_ => true),
+          .find((_) => true),
       );
     if (!addressFromWallet) {
       throw new VError(
@@ -81,7 +81,7 @@ async function ensureOrganizationAddress(
     const privkeyCiphertext = await multichain
       .getRpcClient()
       .invoke("dumpprivkey", addressFromWallet)
-      .then(plaintext => SymmetricCrypto.encrypt(organizationVaultSecret, plaintext));
+      .then((plaintext) => SymmetricCrypto.encrypt(organizationVaultSecret, plaintext));
 
     logger.trace(`Initializing organization address to local wallet address: ${addressFromWallet}`);
     const streamName = organizationStreamName(organization);
@@ -103,8 +103,6 @@ export async function organizationExists(
   multichain: MultichainClient,
   organization: Organization,
 ): Promise<boolean> {
-  // Use getOrganizationAddressItem to check if stream exists
-  // getOrganizationAddressItem returns undefined if no streamItem is found
   return (await getOrganizationAddressItem(multichain, organization)) ? true : false;
 }
 
@@ -125,9 +123,9 @@ async function getOrganizationAddressItem(
   const streamItem = "address";
   const organizationAddressItem = multichain
     .v2_readStreamItems(streamName, streamItem, 1)
-    .then(items => items.map(x => x.data.json))
-    .then(items => items.find(_ => true))
-    .catch(error => {
+    .then((items) => items.map((x) => x.data.json))
+    .then((items) => items.find((_) => true))
+    .catch((error) => {
       if (error.kind !== "NotFound") throw error;
     });
   return organizationAddressItem;

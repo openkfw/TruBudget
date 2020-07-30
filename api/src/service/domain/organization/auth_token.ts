@@ -1,11 +1,11 @@
+import { VError } from "verror";
 import Intent, { globalIntents } from "../../../authz/intents";
+import * as Result from "../../../result";
 import { Permissions } from "../permissions";
 import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_permissions";
 import { Identity } from "./identity";
 import { ServiceUser } from "./service_user";
 import * as UserRecord from "./user_record";
-import { VError } from "verror";
-import * as Result from "../../../result";
 
 export interface AuthToken {
   userId: UserRecord.Id;
@@ -27,24 +27,28 @@ export function canAssumeIdentity(
 
 interface Repository {
   getGroupsForUser(userId: UserRecord.Id): Promise<Result.Type<string[]>>;
-  getOrganizationAddress(organization: string): Promise<string>;
+  getOrganizationAddress(organization: string): Promise<Result.Type<string>>;
   getGlobalPermissions(): Promise<Result.Type<GlobalPermissions>>;
 }
 
 export async function fromUserRecord(
   user: UserRecord.UserRecord,
   repository: Repository,
-): Promise<AuthToken> {
+): Promise<Result.Type<AuthToken>> {
   const groupsResult = await repository.getGroupsForUser(user.id);
   if (Result.isErr(groupsResult)) {
-    throw new VError(groupsResult, `fetch groups for user ${user.id} failed`);
+    return new VError(groupsResult, `fetch groups for user ${user.id} failed`);
   }
   const groups = groupsResult;
 
-  const organizationAddress = await repository.getOrganizationAddress(user.organization);
+  const organizationAddressResult = await repository.getOrganizationAddress(user.organization);
+  if (Result.isErr(organizationAddressResult)) {
+    return new VError(organizationAddressResult, "get organization address failed");
+  }
+  const organizationAddress = organizationAddressResult;
   const globalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(globalPermissionsResult)) {
-    throw new VError(globalPermissionsResult, "get global permissions failed");
+    return new VError(globalPermissionsResult, "get global permissions failed");
   }
   const globalPermissions = globalPermissionsResult;
   const allowedIntents = globalIntents.filter((intent) => {
