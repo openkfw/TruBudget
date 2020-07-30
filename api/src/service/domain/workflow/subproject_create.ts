@@ -5,7 +5,6 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
-import { BusinessEvent } from "../business_event";
 import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -59,12 +58,12 @@ export async function createSubproject(
   creatingUser: ServiceUser,
   reqData: RequestData,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<SubprojectCreated.Event>> {
   const publisher = creatingUser.id;
 
   const projectId = reqData.projectId;
   const subprojectId = reqData.subprojectId || randomString();
-  const subprojectCreated = SubprojectCreated.createEvent(ctx.source, publisher, projectId, {
+  const createEvent = SubprojectCreated.createEvent(ctx.source, publisher, projectId, {
     id: subprojectId,
     status: reqData.status || "open",
     displayName: reqData.displayName,
@@ -77,25 +76,26 @@ export async function createSubproject(
   });
 
   // Make sure for each organization and currency there is only one entry:
-  const badEntry = findDuplicateBudgetEntry(subprojectCreated.subproject.projectedBudgets);
+  const badEntry = findDuplicateBudgetEntry(createEvent.subproject.projectedBudgets);
   if (badEntry !== undefined) {
-    const error = new Error(
-      `more than one projected budget for organization ${badEntry.organization} and currency ${badEntry.currencyCode}`,
+    return new AlreadyExists(
+      ctx,
+      createEvent,
+      `${badEntry.organization}:${badEntry.currencyCode}`,
+      `There already is a projected budget for organization ${badEntry.organization} and currency ${badEntry.currencyCode}`,
     );
-    return new InvalidCommand(ctx, subprojectCreated, [error]);
   }
 
-  if (
-    await repository.subprojectExists(subprojectCreated.projectId, subprojectCreated.subproject.id)
-  ) {
-    return new AlreadyExists(ctx, subprojectCreated, subprojectCreated.subproject.id);
+  // Subproject already exists
+  if (await repository.subprojectExists(createEvent.projectId, createEvent.subproject.id)) {
+    return new AlreadyExists(ctx, createEvent, createEvent.subproject.id);
   }
 
   const projectPermissionsResult = await repository.projectPermissions(projectId);
   if (Result.isErr(projectPermissionsResult)) {
     const error = new PreconditionError(
       ctx,
-      subprojectCreated,
+      createEvent,
       `cannot get project permissions for project ${projectId}: ${projectPermissionsResult.message}`,
     );
     return error;
@@ -120,18 +120,18 @@ export async function createSubproject(
   } else {
     return new PreconditionError(
       ctx,
-      subprojectCreated,
+      createEvent,
       "user 'root' is not allowed to create subprojects",
     );
   }
 
   // Check that the event is valid:
-  const result = SubprojectCreated.createFrom(ctx, subprojectCreated);
+  const result = SubprojectCreated.createFrom(ctx, createEvent);
   if (Result.isErr(result)) {
-    return new InvalidCommand(ctx, subprojectCreated, [result]);
+    return new InvalidCommand(ctx, createEvent, [result]);
   }
 
-  return { newEvents: [subprojectCreated] };
+  return createEvent;
 }
 
 function newDefaultPermissionsFor(userId: string): Permissions {
