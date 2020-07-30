@@ -1,4 +1,6 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
@@ -11,13 +13,16 @@ export async function listSubprojects(
   ctx: Ctx,
   serviceUser: ServiceUser,
   projectId: Project.Id,
-): Promise<Subproject.Subproject[]> {
-  const visibleSubprojects = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<Subproject.Subproject[]>> {
+  const visibleSubprojectsResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectList.getAllVisible(ctx, serviceUser, {
       getAllSubprojects: async () => {
         return await cache.getSubprojects(projectId);
       },
     }),
   );
-  return visibleSubprojects;
+  return Result.mapErr(
+    visibleSubprojectsResult,
+    (err) => new VError(err, `list subprojects failed`),
+  );
 }

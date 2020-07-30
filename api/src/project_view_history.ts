@@ -1,9 +1,8 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -11,6 +10,7 @@ import { BusinessEvent } from "./service/domain/business_event";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
+import Joi = require("joi");
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -113,7 +113,11 @@ interface ExposedEvent {
 
 interface Service {
   getProject(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Result.Type<Project.Project>>;
-  getSubprojects(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Subproject.Subproject[]>;
+  getSubprojects(
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: string,
+  ): Promise<Result.Type<Subproject.Subproject[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -169,13 +173,16 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       try {
         const projectResult = await service.getProject(ctx, user, projectId);
         if (Result.isErr(projectResult)) {
-          projectResult.message = `project.viewHistory failed: ${projectResult.message}`;
-          throw projectResult;
+          throw new VError(projectResult, "project.viewHistory failed");
         }
         const project: Project.Project = projectResult;
 
         // Add subprojects' logs to the project log and sort by creation time:
-        const subprojects = await service.getSubprojects(ctx, user, projectId);
+        const subprojectsResult = await service.getSubprojects(ctx, user, projectId);
+        if (Result.isErr(subprojectsResult)) {
+          throw new VError(subprojectsResult, "project.viewHistory failed");
+        }
+        const subprojects: Subproject.Subproject[] = subprojectsResult;
         const events: ExposedEvent[] = project.log;
         for (const subproject of subprojects) {
           events.push(...subproject.log);

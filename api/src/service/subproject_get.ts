@@ -1,7 +1,5 @@
 import { VError } from "verror";
-
 import { Ctx } from "../lib/ctx";
-import logger from "../lib/logger";
 import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
@@ -17,7 +15,7 @@ export async function getSubproject(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
 ): Promise<Result.Type<Subproject.Subproject>> {
-  const subprojectResult = await Cache.withCache(conn, ctx, async cache =>
+  const subprojectResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectGet.getSubproject(ctx, serviceUser, subprojectId, {
       getSubproject: async () => {
         return cache.getSubproject(projectId, subprojectId);
@@ -26,6 +24,6 @@ export async function getSubproject(
   );
   return Result.mapErr(
     subprojectResult,
-    err => new VError(err, `could not read subproject ${subprojectId} from chain`),
+    (err) => new VError(err, `could not fetch subproject ${subprojectId}`),
   );
 }
