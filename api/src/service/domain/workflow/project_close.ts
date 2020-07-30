@@ -75,7 +75,7 @@ export async function closeProject(
     ? await repository.getUsersForIdentity(project.assignee)
     : [];
   if (Result.isErr(recipientsResult)) {
-    throw new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
+    return new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
   }
   const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
