@@ -1,8 +1,7 @@
 import { assert } from "chai";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { InvalidCommand } from "../errors/invalid_command";
+import { AlreadyExists } from "../errors/already_exists";
 import { ServiceUser } from "../organization/service_user";
 import * as SubprojectCreate from "./subproject_create";
 
@@ -23,7 +22,7 @@ describe("create subproject & projected budgets", () => {
 
     const result = await SubprojectCreate.createSubproject(ctx, user, data, {
       subprojectExists: async (_projectId, _subprojectId) => false,
-      projectPermissions: async _projectId => ({ "project.createSubproject": [user.id] }),
+      projectPermissions: async (_projectId) => ({ "project.createSubproject": [user.id] }),
     });
 
     assert.isOk(Result.isOk(result));
@@ -42,7 +41,7 @@ describe("create subproject & projected budgets", () => {
 
     const result = await SubprojectCreate.createSubproject(ctx, user, data, {
       subprojectExists: async (_projectId, _subprojectId) => false,
-      projectPermissions: async _projectId => ({ "project.createSubproject": [user.id] }),
+      projectPermissions: async (_projectId) => ({ "project.createSubproject": [user.id] }),
     });
 
     assert.isOk(Result.isOk(result));
@@ -61,14 +60,14 @@ describe("create subproject & projected budgets", () => {
 
     const result = await SubprojectCreate.createSubproject(ctx, user, data, {
       subprojectExists: async (_projectId, _subprojectId) => false,
-      projectPermissions: async _projectId => ({ "project.createSubproject": [user.id] }),
+      projectPermissions: async (_projectId) => ({ "project.createSubproject": [user.id] }),
     });
 
     // No new events:
     assert.isNotOk(Result.isOk(result));
 
     // And an InvalidCommand error that refers to "projected budget":
-    assert.instanceOf(result, InvalidCommand);
-    assert.include((result as InvalidCommand).message, "projected budget");
+    assert.instanceOf(result, AlreadyExists);
+    assert.include((result as AlreadyExists).message, "projected budget");
   });
 });
