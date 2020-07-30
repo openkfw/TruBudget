@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -16,12 +17,15 @@ export async function getWorkflowitem(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
 ): Promise<Result.Type<Workflowitem.Workflowitem>> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+  const result = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemGet.getWorkflowitem(ctx, serviceUser, workflowitemId, {
       getWorkflowitem: async () => {
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
       },
     }),
   );
-  return result;
+  return Result.mapErr(
+    result,
+    (err) => new VError(err, `could not fetch workflowitem ${workflowitemId}`),
+  );
 }
