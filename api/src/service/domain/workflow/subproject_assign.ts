@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -72,7 +71,7 @@ export async function assignSubproject(
   // Create notification events:
   const recipientsResult = await repository.getUsersForIdentity(assignee);
   if (Result.isErr(recipientsResult)) {
-    throw new VError(recipientsResult, `fetch users for ${assignee} failed`);
+    return new VError(recipientsResult, `fetch users for ${assignee} failed`);
   }
   const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
