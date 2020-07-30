@@ -1,12 +1,13 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
+import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import { ProjectTraceEvent } from "./service/domain/workflow/project_trace_event";
@@ -146,7 +147,7 @@ interface ExposedProject {
 }
 
 interface Service {
-  listProjects(ctx: Ctx, user: ServiceUser): Promise<Project.Project[]>;
+  listProjects(ctx: Ctx, user: ServiceUser): Promise<Result.Type<Project.Project[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -160,8 +161,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .listProjects(ctx, user)
-      .then((projects: Project.Project[]) => {
-        return projects.map(project => {
+      .then((result) => {
+        if (Result.isErr(result)) {
+          throw new VError(result, "project.list failed");
+        }
+        const projects = result;
+        return projects.map((project) => {
           return {
             log: project.log,
             allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
@@ -190,7 +195,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });
