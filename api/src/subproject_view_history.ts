@@ -1,9 +1,8 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -12,6 +11,7 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import Joi = require("joi");
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -127,7 +127,7 @@ interface Service {
     user: ServiceUser,
     projectId: Project.Id,
     subprojectId: Subproject.Id,
-  ): Promise<Workflowitem.ScrubbedWorkflowitem[]>;
+  ): Promise<Result.Type<Workflowitem.ScrubbedWorkflowitem[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -194,37 +194,35 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       try {
+        // Get subproject log
         const subprojectResult = await service.getSubproject(ctx, user, projectId, subprojectId);
         if (Result.isErr(subprojectResult)) {
-          subprojectResult.message = `subproject.viewHistory failed: ${subprojectResult.message}`;
-          throw subprojectResult;
+          throw new VError(subprojectResult, "subproject.viewHistory failed");
         }
         const subproject: Subproject.Subproject = subprojectResult;
-        // Add subprojects' logs to the project log and sort by creation time:
+
+        // Get log of workflowitems
         const workflowitemsResult = await service.getWorkflowitems(
           ctx,
           user,
           projectId,
           subprojectId,
         );
-        // TODO: Uncomment if Result.Type<Workflowitem.Workflowitem[]>> is used
-        // if (Result.isErr(workflowitemsResult)) {
-        //   workflowitemsResult.message = `subproject.viewHistory failed: ${
-        //     workflowitemsResult.message
-        //   }`;
-        //   throw workflowitemsResult;
-        // }
+        if (Result.isErr(workflowitemsResult)) {
+          throw new VError(workflowitemsResult, "subproject.viewHistory failed");
+        }
         const workflowitems: Workflowitem.ScrubbedWorkflowitem[] = workflowitemsResult;
 
+        // Concat logs of subproject and workflowitems and sort them
         const events: ExposedEvent[] = subproject.log;
         for (const workflowitem of workflowitems) {
           if (!workflowitem.isRedacted) {
             events.push(...workflowitem.log);
           }
         }
-
         events.sort(byEventTime);
 
+        // Handle offset and limit
         const offsetIndex = offset < 0 ? Math.max(0, events.length + offset) : offset;
         const slice = events.slice(
           offsetIndex,
