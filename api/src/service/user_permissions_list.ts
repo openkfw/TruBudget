@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -13,16 +14,13 @@ export async function getUserPermissions(
   serviceUser: ServiceUser,
   userId: UserRecord.Id,
 ): Promise<Result.Type<Permissions>> {
-  const userResult = await Cache.withCache(conn, ctx, async cache =>
+  const userResult = await Cache.withCache(conn, ctx, async (cache) =>
     UserGet.getOneUser(ctx, serviceUser, userId, {
       getUserEvents: async () => cache.getUserEvents(userId),
     }),
   );
-
   if (Result.isErr(userResult)) {
-    userResult.message = `could not fetch user permissions: ${userResult.message}`;
-    return userResult;
+    return new VError(userResult, `failed to get user ${userId}`);
   }
-
   return userResult.permissions;
 }
