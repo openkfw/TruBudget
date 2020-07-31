@@ -41,11 +41,12 @@ export async function closeWorkflowitem(
   subprojectId: Subproject.Id,
   workflowitemId: Id,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
-  const workflowitems = await repository.getWorkflowitems(projectId, subprojectId);
-  if (Result.isErr(workflowitems)) {
-    return new NotFound(ctx, "subproject", subprojectId);
+): Promise<Result.Type<BusinessEvent[]>> {
+  const workflowitemsResult = await repository.getWorkflowitems(projectId, subprojectId);
+  if (Result.isErr(workflowitemsResult)) {
+    return new VError(workflowitemsResult, "failed to get workflowitems");
   }
+  const workflowitems = workflowitemsResult;
 
   const subproject = await repository.getSubproject(projectId, subprojectId);
   if (Result.isErr(subproject)) {
@@ -63,7 +64,7 @@ export async function closeWorkflowitem(
 
   // Don't do anything in case the workflowitem is already closed:
   if (workflowitemToClose.status === "closed") {
-    return { newEvents: [] };
+    return [];
   }
 
   const publisher = closingUser.id;
@@ -115,7 +116,7 @@ export async function closeWorkflowitem(
   if (workflowitemToClose.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(workflowitemToClose.assignee);
     if (Result.isErr(recipientsResult)) {
-      throw new VError(recipientsResult, `fetch users for ${workflowitemToClose.assignee} failed`);
+      return new VError(recipientsResult, `fetch users for ${workflowitemToClose.assignee} failed`);
     }
     notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
@@ -142,5 +143,5 @@ export async function closeWorkflowitem(
     return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
   }
 
-  return { newEvents: [closeEvent, ...notifications, ...workflowitemTypeEvents] };
+  return [closeEvent, ...notifications, ...workflowitemTypeEvents];
 }
