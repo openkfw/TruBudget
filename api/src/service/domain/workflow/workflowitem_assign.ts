@@ -78,7 +78,7 @@ export async function assignWorkflowitem(
   // Create notification events:
   const recipientsResult = await repository.getUsersForIdentity(assignee);
   if (Result.isErr(recipientsResult)) {
-    throw new VError(recipientsResult, `fetch users for ${assignee} failed`);
+    return new VError(recipientsResult, `fetch users for ${assignee} failed`);
   }
   const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
