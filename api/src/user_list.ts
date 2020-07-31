@@ -69,7 +69,7 @@ interface ExposedIdentity {
 }
 
 interface Service {
-  listUsers(ctx: Ctx, user: ServiceUser): Promise<UserRecord.UserRecord[]>;
+  listUsers(ctx: Ctx, user: ServiceUser): Promise<Result.Type<UserRecord.UserRecord[]>>;
   listGroups(ctx: Ctx, user: ServiceUser): Promise<Result.Type<Group.Group[]>>;
 }
 
@@ -83,7 +83,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     };
 
     try {
-      const users: ExposedIdentity[] = (await service.listUsers(ctx, issuer)).map((user) => ({
+      const usersResult = await service.listUsers(ctx, issuer);
+      if (Result.isErr(usersResult)) {
+        throw new VError(usersResult, "user.list failed");
+      }
+      const users: ExposedIdentity[] = usersResult.map((user) => ({
         id: user.id,
         displayName: user.displayName,
         organization: user.organization,

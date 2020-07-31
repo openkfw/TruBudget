@@ -41,8 +41,8 @@ export function validate(input: any): Result.Type<RequestData> {
 
 interface Repository {
   getGlobalPermissions(): Promise<Result.Type<GlobalPermissions>>;
-  userExists(userId: string): Promise<boolean>;
-  organizationExists(organization: string): Promise<boolean>;
+  userExists(userId: string): Promise<Result.Type<boolean>>;
+  organizationExists(organization: string): Promise<Result.Type<boolean>>;
   createKeyPair(): Promise<KeyPair>;
   hash(plaintext: string): Promise<string>;
   encrypt(plaintext: string): Promise<string>;
@@ -75,10 +75,23 @@ export async function createUser(
     return new PreconditionError(ctx, createEvent, "can not create user called 'root'");
   }
 
-  if (await repository.userExists(createEvent.user.id)) {
+  // Check user already exists:
+  const userExistsResult = await repository.userExists(createEvent.user.id);
+  if (Result.isErr(userExistsResult)) {
+    return new VError(userExistsResult, "user exists check failed");
+  }
+  const userExists = userExistsResult;
+  if (userExists) {
     return new AlreadyExists(ctx, createEvent, createEvent.user.id);
   }
-  if (!(await repository.organizationExists(data.organization))) {
+
+  // Check organization exists:
+  const orgaExistsResult = await repository.organizationExists(data.organization);
+  if (Result.isErr(orgaExistsResult)) {
+    return new VError(orgaExistsResult, "organization exists check failed");
+  }
+  const orgaExists = orgaExistsResult;
+  if (!orgaExists) {
     return new PreconditionError(ctx, createEvent, "organization does not exist");
   }
 

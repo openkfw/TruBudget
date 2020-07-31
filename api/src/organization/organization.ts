@@ -102,8 +102,12 @@ async function ensureOrganizationAddress(
 export async function organizationExists(
   multichain: MultichainClient,
   organization: Organization,
-): Promise<boolean> {
-  return (await getOrganizationAddressItem(multichain, organization)) ? true : false;
+): Promise<Result.Type<boolean>> {
+  try {
+    return (await getOrganizationAddressItem(multichain, organization)) ? true : false;
+  } catch (err) {
+    return err;
+  }
 }
 
 export async function getOrganizationAddress(

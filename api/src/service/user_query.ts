@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -13,19 +12,15 @@ export async function getUsers(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
-): Promise<UserRecord.UserRecord[]> {
-  try {
-    const users = await Cache.withCache(conn, ctx, async cache =>
-      UserGet.getAllUsers(ctx, serviceUser, {
-        getUserEvents: async () => {
-          return cache.getUserEvents();
-        },
-      }),
-    );
-    return users;
-  } catch (err) {
-    throw new VError(err, "failed to fetch users");
-  }
+): Promise<Result.Type<UserRecord.UserRecord[]>> {
+  const usersResult = await Cache.withCache(conn, ctx, async (cache) =>
+    UserGet.getAllUsers(ctx, serviceUser, {
+      getUserEvents: async () => {
+        return cache.getUserEvents();
+      },
+    }),
+  );
+  return Result.mapErr(usersResult, (err) => new VError(err, `could not fetch users`));
 }
 
 export async function getUser(
@@ -34,8 +29,11 @@ export async function getUser(
   serviceUser: ServiceUser,
   userId: UserRecord.Id,
 ): Promise<Result.Type<UserRecord.UserRecord>> {
-  const users = await getUsers(conn, ctx, serviceUser);
-  const user = users.find(x => x.id === userId);
+  const usersResult = await getUsers(conn, ctx, serviceUser);
+  if (Result.isErr(usersResult)) {
+    return new VError(usersResult, `could not fetch users`);
+  }
+  const user = usersResult.find((x) => x.id === userId);
   if (user === undefined) {
     return new NotFound(ctx, "user", userId);
   }
@@ -47,7 +45,10 @@ export async function userExists(
   ctx: Ctx,
   serviceUser: ServiceUser,
   userId: UserRecord.Id,
-): Promise<boolean> {
-  const users = await getUsers(conn, ctx, serviceUser);
-  return users.find(x => x.id === userId) !== undefined;
+): Promise<Result.Type<boolean>> {
+  const usersResult = await getUsers(conn, ctx, serviceUser);
+  if (Result.isErr(usersResult)) {
+    return new VError(usersResult, `could not fetch users`);
+  }
+  return usersResult.find((x) => x.id === userId) !== undefined;
 }
