@@ -63,7 +63,7 @@ export async function createGroup(
 
   const groupExistsResult = await repository.groupExists(createEvent.group.id);
   if (Result.isErr(groupExistsResult)) {
-    throw new VError(groupExistsResult, "groupExists check failed");
+    return new VError(groupExistsResult, "groupExists check failed");
   }
   const groupExists = groupExistsResult;
   if (groupExists) {

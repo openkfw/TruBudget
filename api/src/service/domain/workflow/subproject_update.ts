@@ -82,7 +82,7 @@ export async function updateSubproject(
   if (subproject.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(subproject.assignee);
     if (Result.isErr(recipientsResult)) {
-      throw new VError(recipientsResult, `fetch users for ${subproject.assignee} failed`);
+      return new VError(recipientsResult, `fetch users for ${subproject.assignee} failed`);
     }
     notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:

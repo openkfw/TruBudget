@@ -97,7 +97,7 @@ export async function updateWorkflowitem(
     newEvent,
   );
   if (Result.isErr(updatedWorkflowitemResult)) {
-    return new InvalidCommand(ctx, newEvent, [updatedWorkflowitemResult]);
+    return new VError(updatedWorkflowitemResult, "new event valditation failed");
   }
   const updatedWorkflowitem = updatedWorkflowitemResult;
 
@@ -111,7 +111,7 @@ export async function updateWorkflowitem(
   if (workflowitem.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(workflowitem.assignee);
     if (Result.isErr(recipientsResult)) {
-      throw new VError(recipientsResult, `fetch users for ${workflowitem.assignee} failed`);
+      return new VError(recipientsResult, `fetch users for ${workflowitem.assignee} failed`);
     }
     notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:

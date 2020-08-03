@@ -1,5 +1,6 @@
 import * as crypto from "crypto";
 import * as Result from "../result";
+import VError = require("verror");
 
 /**
  * Returns true if the given hash matches the given document.
@@ -17,6 +18,6 @@ export async function isSameDocument(
     const computedHash = hash.digest("hex");
     return computedHash === expectedSHA256;
   } catch (error) {
-    return error;
+    return new VError(error, "compare documents failed");
   }
 }

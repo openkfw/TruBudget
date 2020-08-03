@@ -100,7 +100,7 @@ export async function createUser(
     const intent = "global.createUser";
     const globalPermissionsResult = await repository.getGlobalPermissions();
     if (Result.isErr(globalPermissionsResult)) {
-      throw new VError(globalPermissionsResult, "get global permissions failed");
+      return new VError(globalPermissionsResult, "get global permissions failed");
     }
     const globalPermissions = globalPermissionsResult;
     const isAuthorized = identitiesAuthorizedFor(globalPermissionsResult, intent).some((identity) =>

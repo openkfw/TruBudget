@@ -36,14 +36,14 @@ export async function revokeGlobalPermission(
   const revokeIntent = "global.revokePermission";
   const currentGlobalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(currentGlobalPermissionsResult)) {
-    throw new VError(currentGlobalPermissionsResult, "get global permissions failed");
+    return new VError(currentGlobalPermissionsResult, "get global permissions failed");
   }
   const currentGlobalPermissions = currentGlobalPermissionsResult;
 
   // Check if revokee is group
   const isGroupResult = await repository.isGroup(revokee);
   if (Result.isErr(isGroupResult)) {
-    throw new VError(isGroupResult, "isGroup check failed");
+    return new VError(isGroupResult, "isGroup check failed");
   }
   const isGroup = isGroupResult;
 

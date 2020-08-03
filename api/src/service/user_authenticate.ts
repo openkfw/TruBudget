@@ -116,21 +116,22 @@ async function authenticateUser(
   }
   await importprivkey(conn.multichainClient, privkey, userRecord.id);
 
-  try {
-    return AuthToken.fromUserRecord(userRecord, {
-      getGroupsForUser: async (id) => {
-        const groupsResult = await getGroupsForUser(conn, ctx, rootUser, id);
-        if (Result.isErr(groupsResult)) {
-          return new VError(groupsResult, `fetch groups for user ${id} failed`);
-        }
-        return groupsResult.map((group) => group.id);
-      },
-      getOrganizationAddress: async (orga) => getOrganizationAddressOrError(conn, ctx, orga),
-      getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, rootUser),
-    });
-  } catch (error) {
-    throw new AuthenticationFailed({ ctx, organization, userId }, error);
-  }
+  const authTokenResult = AuthToken.fromUserRecord(userRecord, {
+    getGroupsForUser: async (id) => {
+      const groupsResult = await getGroupsForUser(conn, ctx, rootUser, id);
+      if (Result.isErr(groupsResult)) {
+        return new VError(groupsResult, `fetch groups for user ${id} failed`);
+      }
+      return groupsResult.map((group) => group.id);
+    },
+    getOrganizationAddress: async (orga) => getOrganizationAddressOrError(conn, ctx, orga),
+    getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, rootUser),
+  });
+
+  return Result.mapErr(
+    authTokenResult,
+    (error) => new AuthenticationFailed({ ctx, organization, userId }, error),
+  );
 }
 
 async function getOrganizationAddressOrError(

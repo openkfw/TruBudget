@@ -104,7 +104,7 @@ export async function createProject(
   const intent = "global.createProject";
   const globalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(globalPermissionsResult)) {
-    throw new VError(globalPermissionsResult, "get global permissions failed");
+    return new VError(globalPermissionsResult, "get global permissions failed");
   }
   const globalPermissions = globalPermissionsResult;
   if (!GlobalPermissions.permits(globalPermissions, creatingUser, [intent])) {

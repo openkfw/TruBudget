@@ -21,12 +21,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   userId: UserRecord.idSchema.required(),
   permission: Joi.valid(userIntents).required(),
@@ -74,7 +70,7 @@ export function validate(input: any): Result.Type<Event> {
  */
 export function mutate(user: UserRecord.UserRecord, event: Event): Result.Type<void> {
   if (event.type !== "user_permission_granted") {
-    throw new VError(`illegal event type: ${event.type}`);
+    return new VError(`illegal event type: ${event.type}`);
   }
 
   const eligibleIdentities = user.permissions[event.permission] || [];

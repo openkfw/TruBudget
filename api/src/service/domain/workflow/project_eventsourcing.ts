@@ -80,7 +80,7 @@ function sourceEvent(
     if (event.type !== "project_created") {
       return new VError(
         `event ${event.type} is not of type "project_created" but also ` +
-        "does not include a project ID",
+          "does not include a project ID",
       );
     }
 
@@ -133,27 +133,23 @@ export function newProjectFromEvent(
   const eventCopy = deepcopy(event);
   const projectCopy = copyProjectExceptLog(project);
 
-  try {
-    // Apply the event to the copied project:
-    const mutation = eventModule.mutate(projectCopy, eventCopy);
-    if (Result.isErr(mutation)) {
-      throw mutation;
-    }
-
-    // Validate the modified project:
-    const validation = Project.validate(projectCopy);
-    if (Result.isErr(validation)) {
-      throw validation;
-    }
-
-    // Restore the event log:
-    projectCopy.log = project.log;
-
-    // Return the modified (and validated) project:
-    return projectCopy;
-  } catch (error) {
-    return new EventSourcingError({ ctx, event, target: project }, error);
+  // Apply the event to the copied project:
+  const mutationResult = eventModule.mutate(projectCopy, eventCopy);
+  if (Result.isErr(mutationResult)) {
+    return new EventSourcingError({ ctx, event, target: project }, mutationResult);
   }
+
+  // Validate the modified project:
+  const validationResult = Project.validate(projectCopy);
+  if (Result.isErr(validationResult)) {
+    return new EventSourcingError({ ctx, event, target: project }, validationResult);
+  }
+
+  // Restore the event log:
+  projectCopy.log = project.log;
+
+  // Return the modified (and validated) project:
+  return projectCopy;
 }
 
 type EventModule = {

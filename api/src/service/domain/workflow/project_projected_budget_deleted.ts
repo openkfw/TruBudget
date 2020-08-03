@@ -21,12 +21,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   organization: Joi.string().required(),
@@ -74,7 +70,7 @@ export function validate(input: any): Result.Type<Event> {
  */
 export function mutate(project: Project.Project, event: Event): Result.Type<void> {
   if (event.type !== "project_projected_budget_deleted") {
-    throw new VError(`illegal event type: ${event.type}`);
+    return new VError(`illegal event type: ${event.type}`);
   }
 
   // An organization may have multiple budgets, but any two budgets of the same
@@ -82,6 +78,6 @@ export function mutate(project: Project.Project, event: Event): Result.Type<void
   // makes two financial commitments in the same currency, they can represented by one
   // commitment with the same currency and the sum of both commitments as its value.
   project.projectedBudgets = project.projectedBudgets.filter(
-    x => !(x.organization === event.organization && x.currencyCode === event.currencyCode),
+    (x) => !(x.organization === event.organization && x.currencyCode === event.currencyCode),
   );
 }

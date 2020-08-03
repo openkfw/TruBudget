@@ -36,14 +36,14 @@ export async function grantGlobalPermission(
   const grantIntent = "global.grantPermission";
   const globalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(globalPermissionsResult)) {
-    throw new VError(globalPermissionsResult, "get global permissions failed");
+    return new VError(globalPermissionsResult, "get global permissions failed");
   }
   const currentGlobalPermissions = globalPermissionsResult;
 
   // Check if grantee is group
   const isGroupResult = await repository.isGroup(grantee);
   if (Result.isErr(isGroupResult)) {
-    throw new VError(isGroupResult, "isGroup check failed");
+    return new VError(isGroupResult, "isGroup check failed");
   }
   const isGroup = isGroupResult;
 

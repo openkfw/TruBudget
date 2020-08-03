@@ -27,7 +27,7 @@ export async function markRead(
         }),
       );
       if (Result.isErr(newEventResult)) {
-        throw new VError(newEventResult, `failed to mark notification ${id} as read`);
+        return new VError(newEventResult, `failed to mark notification ${id} as read`);
       }
       newEvents = newEvents.concat(newEventResult);
     }
