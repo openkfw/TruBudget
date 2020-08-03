@@ -1,10 +1,8 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -15,6 +13,7 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_types/types";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -161,7 +160,7 @@ interface Service {
     ctx: Ctx,
     user: ServiceUser,
     createRequest: WorkflowitemCreate.RequestData,
-  ): Promise<ResourceMap>;
+  ): Promise<Result.Type<ResourceMap>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -204,7 +203,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .createWorkflowitem(ctx, user, reqData)
-        .then((resourceIds: ResourceMap) => {
+        .then((resourceIdsResult) => {
+          if (Result.isErr(resourceIdsResult)) {
+            throw new VError(resourceIdsResult, "subproject.createWorkflowitem failed");
+          }
+          const resourceIds = resourceIdsResult;
           const code = 200;
           const body = {
             apiVersion: "1.0",
