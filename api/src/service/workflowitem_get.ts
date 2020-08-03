@@ -17,7 +17,7 @@ export async function getWorkflowitem(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
 ): Promise<Result.Type<Workflowitem.Workflowitem>> {
-  const result = await Cache.withCache(conn, ctx, async (cache) =>
+  const workflowitemResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemGet.getWorkflowitem(ctx, serviceUser, workflowitemId, {
       getWorkflowitem: async () => {
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
@@ -25,7 +25,7 @@ export async function getWorkflowitem(
     }),
   );
   return Result.mapErr(
-    result,
+    workflowitemResult,
     (err) => new VError(err, `could not fetch workflowitem ${workflowitemId}`),
   );
 }
