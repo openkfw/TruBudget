@@ -32,7 +32,7 @@ export async function grantWorkflowitemPermission(
   grantee: Identity,
   intent: Intent,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
   if (Result.isErr(workflowitem)) {
     return new NotFound(ctx, "workflowitem", workflowitemId);
@@ -73,8 +73,8 @@ export async function grantWorkflowitemPermission(
 
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(workflowitem.permissions, updatedWorkflowitem.permissions)) {
-    return { newEvents: [] };
+    return [];
   } else {
-    return { newEvents: [permissionGranted] };
+    return [permissionGranted];
   }
 }
