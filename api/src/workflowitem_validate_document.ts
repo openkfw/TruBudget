@@ -84,7 +84,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  matches(documentBase64: string, expectedSHA256: string): Promise<boolean>;
+  matches(documentBase64: string, expectedSHA256: string): Promise<Result.Type<boolean>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -103,7 +103,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .matches(documentBase64, expectedSHA256)
-        .then(isMatch => {
+        .then((validateWorkflowitemResult) => {
+          if (Result.isErr(validateWorkflowitemResult)) {
+            throw new VError(validateWorkflowitemResult, "workflowitem.validateDocument failed");
+          }
+          const isMatch = validateWorkflowitemResult;
           const code = 200;
           const body = {
             apiVersion: "1.0",
@@ -111,7 +115,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           };
           reply.status(code).send(body);
         })
-        .catch(err => {
+        .catch((err) => {
           const { code, body } = toHttpError(err);
           reply.status(code).send(body);
         });
