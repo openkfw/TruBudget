@@ -10,8 +10,8 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
-import * as WorkflowitemOrdering from "./workflowitem_ordering";
 import * as WorkflowitemsReordered from "./workflowitems_reordered";
+import * as WorkflowitemOrdering from "./workflowitem_ordering";
 
 interface Repository {
   getSubproject(
@@ -27,7 +27,7 @@ export async function setWorkflowitemOrdering(
   subprojectId: Subproject.Id,
   ordering: WorkflowitemOrdering.WorkflowitemOrdering,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const subproject = await repository.getSubproject(projectId, subprojectId);
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
@@ -36,7 +36,7 @@ export async function setWorkflowitemOrdering(
 
   if (isEqual(currentOrder, ordering)) {
     // Ordering hasn't changed, therefore do nothing
-    return { newEvents: [] };
+    return [];
   }
 
   const reorderEvent = WorkflowitemsReordered.createEvent(
@@ -63,8 +63,8 @@ export async function setWorkflowitemOrdering(
 
   // Only emit the event if it causes any changes:
   if (isEqual(subproject.workflowitemOrdering, result.workflowitemOrdering)) {
-    return { newEvents: [] };
+    return [];
   } else {
-    return { newEvents: [reorderEvent] };
+    return [reorderEvent];
   }
 }

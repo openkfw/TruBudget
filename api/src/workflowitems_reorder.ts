@@ -1,10 +1,8 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -12,6 +10,7 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import { WorkflowitemOrdering } from "./service/domain/workflow/workflowitem_ordering";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -27,9 +26,7 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     projectId: Project.idSchema.required(),
     subprojectId: Subproject.idSchema.required(),
-    ordering: Joi.array()
-      .items(Workflowitem.idSchema)
-      .required(),
+    ordering: Joi.array().items(Workflowitem.idSchema).required(),
   }).required(),
 });
 
@@ -100,7 +97,7 @@ interface Service {
     projectId: Project.Id,
     subprojectId: Subproject.Id,
     ordering: WorkflowitemOrdering,
-  ): Promise<void>;
+  ): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -129,7 +126,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .setWorkflowitemOrdering(ctx, user, projectId, subprojectId, ordering)
-        .then(() => {
+        .then((result) => {
+          if (Result.isErr(result)) {
+            throw new VError(result, "subproject.reorderWorkflowitems failed");
+          }
           const code = 200;
           const body = {
             apiVersion: "1.0",
@@ -137,7 +137,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           };
           reply.status(code).send(body);
         })
-        .catch(err => {
+        .catch((err) => {
           const { code, body } = toHttpError(err);
           reply.status(code).send(body);
         });
