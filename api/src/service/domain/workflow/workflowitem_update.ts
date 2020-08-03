@@ -91,13 +91,18 @@ export async function updateWorkflowitem(
   }
 
   // Check that the new event is indeed valid:
-  const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(ctx, workflowitem, newEvent);
-  if (Result.isErr(result)) {
-    return new InvalidCommand(ctx, newEvent, [result]);
+  const updatedWorkflowitemResult = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
+    ctx,
+    workflowitem,
+    newEvent,
+  );
+  if (Result.isErr(updatedWorkflowitemResult)) {
+    return new InvalidCommand(ctx, newEvent, [updatedWorkflowitemResult]);
   }
+  const updatedWorkflowitem = updatedWorkflowitemResult;
 
   // Only emit the event if it causes any changes:
-  if (isEqualIgnoringLog(workflowitem, result)) {
+  if (isEqualIgnoringLog(workflowitem, updatedWorkflowitemResult)) {
     return { newEvents: [], workflowitem };
   }
 
@@ -155,9 +160,12 @@ export async function updateWorkflowitem(
       );
 
       // Check that the event is valid:
-      const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
-      if (Result.isErr(result)) {
-        return new InvalidCommand(ctx, workflowitemEvent, [result]);
+      const uploadedDocumentResult = WorkflowitemDocumentUploaded.createFrom(
+        ctx,
+        workflowitemEvent,
+      );
+      if (Result.isErr(uploadedDocumentResult)) {
+        return new InvalidCommand(ctx, workflowitemEvent, [uploadedDocumentResult]);
       }
       return workflowitemEvent;
     });
@@ -171,11 +179,12 @@ export async function updateWorkflowitem(
     newDocumentUploadedEvents.push(result);
   }
 
-  const workflowitemTypeEvents = repository.applyWorkflowitemType(newEvent, workflowitem);
+  const workflowitemTypeEventsResult = repository.applyWorkflowitemType(newEvent, workflowitem);
 
-  if (Result.isErr(workflowitemTypeEvents)) {
-    return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
+  if (Result.isErr(workflowitemTypeEventsResult)) {
+    return new VError(workflowitemTypeEventsResult, "failed to apply workflowitem type");
   }
+  const workflowitemTypeEvents = workflowitemTypeEventsResult;
 
   return {
     newEvents: [
@@ -184,7 +193,7 @@ export async function updateWorkflowitem(
       ...notifications,
       ...workflowitemTypeEvents,
     ],
-    workflowitem: result,
+    workflowitem: updatedWorkflowitem,
   };
 }
 
