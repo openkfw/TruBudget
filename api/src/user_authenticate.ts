@@ -1,8 +1,6 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
-
 import { toHttpError } from "./http_errors";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
@@ -10,6 +8,7 @@ import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -147,8 +146,12 @@ const swaggerSchema = {
 };
 
 interface Service {
-  authenticate(ctx: Ctx, userId: string, password: string): Promise<AuthToken>;
-  getGroupsForUser(ctx: Ctx, serviceUser: ServiceUser, userId: string): Promise<Group[]>;
+  authenticate(ctx: Ctx, userId: string, password: string): Promise<Result.Type<AuthToken>>;
+  getGroupsForUser(
+    ctx: Ctx,
+    serviceUser: ServiceUser,
+    userId: string,
+  ): Promise<Result.Type<Group[]>>;
 }
 
 export function addHttpHandler(
@@ -168,7 +171,7 @@ export function addHttpHandler(
       return;
     }
 
-    let invokeService;
+    let invokeService: Promise<Result.Type<AuthToken>>;
     switch (bodyResult.apiVersion) {
       case "1.0": {
         const data = bodyResult.data;
@@ -176,25 +179,34 @@ export function addHttpHandler(
         break;
       }
       default:
+        // Joi validates only existing apiVersions
         assertUnreachable(bodyResult.apiVersion);
     }
 
     try {
-      const token = await (invokeService as Promise<AuthToken>);
+      const tokenResult = await invokeService;
+      if (Result.isErr(tokenResult)) {
+        throw new VError(tokenResult, "authentication failed");
+      }
+      const token = tokenResult;
       const signedJwt = createJWT(token, jwtSecret);
 
-      const groups = await service.getGroupsForUser(
+      const groupsResult = await service.getGroupsForUser(
         ctx,
         { id: token.userId, groups: token.groups },
         token.userId,
       );
+      if (Result.isErr(groupsResult)) {
+        throw new VError(groupsResult, "authentication failed");
+      }
+      const groups = groupsResult;
 
       const loginResponse: LoginResponse = {
         id: token.userId,
         displayName: token.displayName,
         organization: token.organization,
         allowedIntents: token.allowedIntents,
-        groups: groups.map(x => ({ groupId: x.id, displayName: x.displayName })),
+        groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
         token: signedJwt,
       };
       const body = {

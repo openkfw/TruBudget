@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -19,15 +20,18 @@ export async function revokeUserPermission(
   userId: UserRecord.Id,
   revokee: Identity,
   intent: Intent,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     UserPermissionRevoke.revokeUserPermission(ctx, serviceUser, userId, revokee, intent, {
-      getTargetUser: id => UserQuery.getUser(conn, ctx, serviceUser, id),
+      getTargetUser: (id) => UserQuery.getUser(conn, ctx, serviceUser, id),
     }),
   );
-  if (Result.isErr(result)) return Promise.reject(result);
+  if (Result.isErr(newEventsResult)) {
+    return new VError(newEventsResult, `failed to grant ${intent} to ${revokee}`);
+  }
+  const newEvents = newEventsResult;
 
-  for (const event of result) {
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 }

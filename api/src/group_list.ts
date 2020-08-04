@@ -1,9 +1,10 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
+import * as Result from "./result";
 import * as Group from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
@@ -60,7 +61,7 @@ interface ExposedGroup {
 }
 
 interface Service {
-  listGroups(ctx: Ctx, user: ServiceUser): Promise<Group.Group[]>;
+  listGroups(ctx: Ctx, user: ServiceUser): Promise<Result.Type<Group.Group[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -74,8 +75,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .listGroups(ctx, issuer)
-      .then((groups: Group.Group[]) => {
-        return groups.map(group => {
+      .then((groupResult: Result.Type<Group.Group[]>) => {
+        if (Result.isErr(groupResult)) throw new VError(groupResult, "group.list failed");
+        const groups = groupResult;
+        return groups.map((group) => {
           return {
             groupId: group.id,
             displayName: group.displayName,
@@ -93,7 +96,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });

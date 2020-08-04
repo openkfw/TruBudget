@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -16,7 +15,7 @@ import * as ProjectEventSourcing from "./project_eventsourcing";
 
 interface Repository {
   getProject(): Promise<Result.Type<Project.Project>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 export async function assignProject(
@@ -56,13 +55,25 @@ export async function assignProject(
   project = result;
 
   // Create notification events:
-  const recipients = await repository.getUsersForIdentity(assignee);
-  const notifications = recipients
+  const recipientsResult = await repository.getUsersForIdentity(assignee);
+  if (Result.isErr(recipientsResult)) {
+    return new VError(recipientsResult, `fetch users for ${assignee} failed`);
+  }
+  const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
-    .filter(userId => userId !== issuer.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(ctx.source, issuer.id, recipient, projectAssigned, projectId),
-    );
+    if (recipient !== issuer.id) {
+      notifications.push(
+        NotificationCreated.createEvent(
+          ctx.source,
+          issuer.id,
+          recipient,
+          projectAssigned,
+          projectId,
+        ),
+      );
+    }
+    return notifications;
+  }, [] as NotificationCreated.Event[]);
 
   return { newEvents: [projectAssigned, ...notifications], project };
 }

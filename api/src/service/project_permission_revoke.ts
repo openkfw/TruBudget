@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -18,17 +19,20 @@ export async function revokeProjectPermission(
   projectId: Project.Id,
   revokee: Identity,
   intent: Intent,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectPermissionRevoke.revokeProjectPermission(ctx, serviceUser, projectId, revokee, intent, {
-      getProject: async id => {
+      getProject: async (id) => {
         return cache.getProject(id);
       },
     }),
   );
-  if (Result.isErr(result)) return Promise.reject(result);
 
-  for (const event of result.newEvents) {
+  if (Result.isErr(newEventsResult)) {
+    return new VError(newEventsResult, `revoke project permission failed`);
+  }
+  const newEvents = newEventsResult;
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 }

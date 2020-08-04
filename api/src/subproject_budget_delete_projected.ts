@@ -1,10 +1,8 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -12,6 +10,7 @@ import { CurrencyCode, currencyCodeSchema } from "./service/domain/workflow/mone
 import * as Project from "./service/domain/workflow/project";
 import { ProjectedBudget } from "./service/domain/workflow/projected_budget";
 import * as Subproject from "./service/domain/workflow/subproject";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -107,7 +106,7 @@ interface Service {
     subprojectId: Subproject.Id,
     organization: string,
     currencyCode: CurrencyCode,
-  ): Promise<ProjectedBudget[]>;
+  ): Promise<Result.Type<ProjectedBudget[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -136,7 +135,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .deleteProjectedBudget(ctx, user, projectId, subprojectId, organization, currencyCode)
-        .then(projectedBudgets => {
+        .then((projectedBudgetsResult) => {
+          if (Result.isErr(projectedBudgetsResult)) {
+            throw new VError(projectedBudgetsResult, "subproject.budget.deleteProjected failed");
+          }
+          const projectedBudgets = projectedBudgetsResult;
           const code = 200;
           const body = {
             apiVersion: "1.0",
@@ -148,7 +151,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           };
           reply.status(code).send(body);
         })
-        .catch(err => {
+        .catch((err) => {
           const { code, body } = toHttpError(err);
           reply.status(code).send(body);
         });

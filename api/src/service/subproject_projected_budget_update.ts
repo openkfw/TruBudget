@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -20,8 +21,8 @@ export async function updateProjectedBudget(
   organization: string,
   value: MoneyAmount,
   currencyCode: CurrencyCode,
-): Promise<ProjectedBudget[]> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<ProjectedBudget[]>> {
+  const updateProjectedBudgetResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectProjectedBudgetUpdate.updateProjectedBudget(
       ctx,
       serviceUser,
@@ -34,17 +35,19 @@ export async function updateProjectedBudget(
         getSubproject: async (pId, spId) => {
           return cache.getSubproject(pId, spId);
         },
-        getUsersForIdentity: async identity => {
+        getUsersForIdentity: async (identity) => {
           return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
       },
     ),
   );
-  if (Result.isErr(result)) throw result;
-
-  for (const event of result.newEvents) {
+  if (Result.isErr(updateProjectedBudgetResult)) {
+    return new VError(updateProjectedBudgetResult, `delete projected budget of subproject failed`);
+  }
+  const { newEvents, projectedBudgets } = updateProjectedBudgetResult;
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 
-  return result.projectedBudgets;
+  return projectedBudgets;
 }

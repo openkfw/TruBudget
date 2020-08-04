@@ -143,27 +143,23 @@ export function newUserFromEvent(
   const eventCopy = deepcopy(event);
   const userCopy = copyUserExceptLog(user);
 
-  try {
-    // Apply the event to the copied user:
-    const mutation = eventModule.mutate(userCopy, eventCopy);
-    if (Result.isErr(mutation)) {
-      throw mutation;
-    }
-
-    // Validate the modified user:
-    const validation = UserRecord.validate(userCopy);
-    if (Result.isErr(validation)) {
-      throw validation;
-    }
-
-    // Restore the event log:
-    userCopy.log = user.log;
-
-    // Return the modified (and validated) user:
-    return userCopy;
-  } catch (error) {
-    return new EventSourcingError({ ctx, event, target: user }, error);
+  // Apply the event to the copied user:
+  const mutationResult = eventModule.mutate(userCopy, eventCopy);
+  if (Result.isErr(mutationResult)) {
+    return new EventSourcingError({ ctx, event, target: user }, mutationResult);
   }
+
+  // Validate the modified user:
+  const validationResult = UserRecord.validate(userCopy);
+  if (Result.isErr(validationResult)) {
+    return new EventSourcingError({ ctx, event, target: user }, validationResult);
+  }
+
+  // Restore the event log:
+  userCopy.log = user.log;
+
+  // Return the modified (and validated) user:
+  return userCopy;
 }
 
 function copyUserExceptLog(user: UserRecord.UserRecord): UserRecord.UserRecord {

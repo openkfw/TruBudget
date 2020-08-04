@@ -1,11 +1,9 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
 import Intent, { globalIntents } from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import logger from "./lib/logger";
 import * as Result from "./result";
@@ -15,6 +13,7 @@ import {
   GlobalPermissions,
   identitiesAuthorizedFor,
 } from "./service/domain/workflow/global_permissions";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -81,14 +80,14 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  getGlobalPermissions(ctx: Ctx, user: ServiceUser): Promise<GlobalPermissions>;
+  getGlobalPermissions(ctx: Ctx, user: ServiceUser): Promise<Result.Type<GlobalPermissions>>;
   grantGlobalPermissions(
     ctx: Ctx,
     user: ServiceUser,
     userOrganization: string,
     grantee: Identity,
     permission: Intent,
-  ): Promise<void>;
+  ): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -118,8 +117,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const { identity: grantee } = bodyResult.data;
 
       try {
-        const globalPermissions = await service.getGlobalPermissions(ctx, user);
-
+        const globalPermissionsResult = await service.getGlobalPermissions(ctx, user);
+        if (Result.isErr(globalPermissionsResult)) {
+          throw new VError(globalPermissionsResult, "get global permissions failed");
+        }
+        const globalPermissions = globalPermissionsResult;
         for (const intent of globalIntents) {
           // A quick check to see if the user is already listed explicitly. In case the
           // user is authorized through her membership in an authorized group, the user
@@ -127,7 +129,14 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           if (identitiesAuthorizedFor(globalPermissions, intent).includes(user.id)) {
             continue;
           }
-          await service.grantGlobalPermissions(ctx, user, userOrganization, grantee, intent);
+          const result = await service.grantGlobalPermissions(
+            ctx,
+            user,
+            userOrganization,
+            grantee,
+            intent,
+          );
+          if (Result.isErr(result)) throw new VError(result, "global.grantAllPermissions failed");
           logger.debug({ grantee, intent }, "permission granted");
         }
 

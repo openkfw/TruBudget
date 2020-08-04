@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-
+import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -11,13 +11,13 @@ import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
+import { ProjectedBudget } from "./projected_budget";
 import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectProjectedBudgetDeleted from "./project_projected_budget_deleted";
-import { ProjectedBudget } from "./projected_budget";
 
 interface Repository {
   getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 type State = ProjectedBudget[];
@@ -64,15 +64,27 @@ export async function deleteProjectedBudget(
     return { newEvents: [], projectedBudgets: result.projectedBudgets };
   } else {
     // Create notification events:
-    const recipients = project.assignee
+    const recipientsResult = project.assignee
       ? await repository.getUsersForIdentity(project.assignee)
       : [];
-    const notifications = recipients
+    if (Result.isErr(recipientsResult)) {
+      return new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
+    }
+    const notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
-      .filter(userId => userId !== issuer.id)
-      .map(recipient =>
-        NotificationCreated.createEvent(ctx.source, issuer.id, recipient, budgetDeleted, projectId),
-      );
+      if (recipient !== issuer.id) {
+        notifications.push(
+          NotificationCreated.createEvent(
+            ctx.source,
+            issuer.id,
+            recipient,
+            budgetDeleted,
+            projectId,
+          ),
+        );
+      }
+      return notifications;
+    }, [] as NotificationCreated.Event[]);
     return {
       newEvents: [budgetDeleted, ...notifications],
       projectedBudgets: result.projectedBudgets,

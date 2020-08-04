@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -22,8 +23,8 @@ export async function updateWorkflowitem(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
   modification: WorkflowitemUpdate.RequestData,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache => {
+): Promise<Result.Type<void>> {
+  const updateWorkflowitemResult = await Cache.withCache(conn, ctx, async (cache) => {
     return WorkflowitemUpdate.updateWorkflowitem(
       ctx,
       serviceUser,
@@ -32,10 +33,10 @@ export async function updateWorkflowitem(
       workflowitemId,
       modification,
       {
-        getWorkflowitem: async id => {
+        getWorkflowitem: async (id) => {
           return cache.getWorkflowitem(projectId, subprojectId, id);
         },
-        getUsersForIdentity: async identity => {
+        getUsersForIdentity: async (identity) => {
           return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
         applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
@@ -44,10 +45,10 @@ export async function updateWorkflowitem(
       },
     );
   });
-
-  if (Result.isErr(result)) throw result;
-
-  const { newEvents } = result;
+  if (Result.isErr(updateWorkflowitemResult)) {
+    return new VError(updateWorkflowitemResult, `update workflowitem failed`);
+  }
+  const { newEvents } = updateWorkflowitemResult;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);

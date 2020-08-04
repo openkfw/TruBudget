@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -17,7 +18,7 @@ export async function revokeGlobalPermission(
   serviceUserOrganization: string,
   revokee: Identity,
   permission: Intent,
-): Promise<void> {
+): Promise<Result.Type<void>> {
   const result = await GlobalPermissionsRevoke.revokeGlobalPermission(
     ctx,
     serviceUser,
@@ -26,14 +27,14 @@ export async function revokeGlobalPermission(
     permission,
     {
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-      isGroup: async revokeeId => await GroupQuery.groupExists(conn, ctx, serviceUser, revokeeId),
-      getUser: async userId => await UserQuery.getUser(conn, ctx, serviceUser, userId),
+      isGroup: async (revokeeId) => await GroupQuery.groupExists(conn, ctx, serviceUser, revokeeId),
+      getUser: async (userId) => await UserQuery.getUser(conn, ctx, serviceUser, userId),
     },
   );
-  if (Result.isErr(result)) return Promise.reject(result);
+  if (Result.isErr(result)) return new VError(result, "failed to revoke global permission");
   const newEvents = result;
-  if (!newEvents.length) {
-    return Promise.reject(`Generating events failed: ${JSON.stringify(newEvents)}`);
+  if (newEvents.length === 0) {
+    return new Error(`Generating events failed: ${JSON.stringify(newEvents)}`);
   }
 
   for (const event of newEvents) {

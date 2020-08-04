@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
@@ -102,7 +103,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       try {
-        const document = await service.getDocument(
+        const documentResult = await service.getDocument(
           ctx,
           user,
           projectId,
@@ -111,18 +112,17 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           documentId,
         );
 
-        if (Result.isErr(document)) {
-          document.message = `Could not download requested documents: ${document.message}`;
-          throw document;
+        if (Result.isErr(documentResult)) {
+          throw new VError(documentResult, `workflowitem.downloadDocument`);
         }
 
         const code = 200;
         reply.headers({
           "Content-Type": "application/octet-stream",
-          "Content-Disposition": `attachment; filename="${document.fileName}"`,
+          "Content-Disposition": `attachment; filename="${documentResult.fileName}"`,
         });
 
-        reply.status(code).send(new Buffer(document.base64, "base64"));
+        reply.status(code).send(new Buffer(documentResult.base64, "base64"));
       } catch (err) {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);

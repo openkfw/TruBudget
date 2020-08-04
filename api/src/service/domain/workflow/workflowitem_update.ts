@@ -1,8 +1,6 @@
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
-import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -11,7 +9,7 @@ import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import { hashDocument, hashDocuments, StoredDocument, UploadedDocument } from "./document";
+import { hashDocuments, StoredDocument, UploadedDocument } from "./document";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -38,7 +36,7 @@ export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
 
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
   applyWorkflowitemType(
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
@@ -93,34 +91,46 @@ export async function updateWorkflowitem(
   }
 
   // Check that the new event is indeed valid:
-  const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(ctx, workflowitem, newEvent);
-  if (Result.isErr(result)) {
-    return new InvalidCommand(ctx, newEvent, [result]);
+  const updatedWorkflowitemResult = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
+    ctx,
+    workflowitem,
+    newEvent,
+  );
+  if (Result.isErr(updatedWorkflowitemResult)) {
+    return new VError(updatedWorkflowitemResult, "new event valditation failed");
   }
+  const updatedWorkflowitem = updatedWorkflowitemResult;
 
   // Only emit the event if it causes any changes:
-  if (isEqualIgnoringLog(workflowitem, result)) {
+  if (isEqualIgnoringLog(workflowitem, updatedWorkflowitemResult)) {
     return { newEvents: [], workflowitem };
   }
 
   // Create notification events:
-  const recipients = workflowitem.assignee
-    ? await repository.getUsersForIdentity(workflowitem.assignee)
-    : [];
-  const notifications = recipients
-    // The issuer doesn't receive a notification:
-    .filter(userId => userId !== issuer.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(
-        ctx.source,
-        issuer.id,
-        recipient,
-        newEvent,
-        projectId,
-        subprojectId,
-        workflowitemId,
-      ),
-    );
+  let notifications: NotificationCreated.Event[] = [];
+  if (workflowitem.assignee !== undefined) {
+    const recipientsResult = await repository.getUsersForIdentity(workflowitem.assignee);
+    if (Result.isErr(recipientsResult)) {
+      return new VError(recipientsResult, `fetch users for ${workflowitem.assignee} failed`);
+    }
+    notifications = recipientsResult.reduce((notifications, recipient) => {
+      // The issuer doesn't receive a notification:
+      if (recipient !== issuer.id) {
+        notifications.push(
+          NotificationCreated.createEvent(
+            ctx.source,
+            issuer.id,
+            recipient,
+            newEvent,
+            projectId,
+            subprojectId,
+            workflowitemId,
+          ),
+        );
+      }
+      return notifications;
+    }, [] as NotificationCreated.Event[]);
+  }
 
   // Handle new documents
   let newDocumentUploadedEventsResult: Result.Type<BusinessEvent>[] = [];
@@ -150,9 +160,12 @@ export async function updateWorkflowitem(
       );
 
       // Check that the event is valid:
-      const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
-      if (Result.isErr(result)) {
-        return new InvalidCommand(ctx, workflowitemEvent, [result]);
+      const uploadedDocumentResult = WorkflowitemDocumentUploaded.createFrom(
+        ctx,
+        workflowitemEvent,
+      );
+      if (Result.isErr(uploadedDocumentResult)) {
+        return new InvalidCommand(ctx, workflowitemEvent, [uploadedDocumentResult]);
       }
       return workflowitemEvent;
     });
@@ -166,15 +179,21 @@ export async function updateWorkflowitem(
     newDocumentUploadedEvents.push(result);
   }
 
-  const workflowitemTypeEvents = repository.applyWorkflowitemType(newEvent, workflowitem);
+  const workflowitemTypeEventsResult = repository.applyWorkflowitemType(newEvent, workflowitem);
 
-  if (Result.isErr(workflowitemTypeEvents)) {
-    return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
+  if (Result.isErr(workflowitemTypeEventsResult)) {
+    return new VError(workflowitemTypeEventsResult, "failed to apply workflowitem type");
   }
+  const workflowitemTypeEvents = workflowitemTypeEventsResult;
 
   return {
-    newEvents: [newEvent, ...newDocumentUploadedEvents, ...notifications, ...workflowitemTypeEvents],
-    workflowitem: result,
+    newEvents: [
+      newEvent,
+      ...newDocumentUploadedEvents,
+      ...notifications,
+      ...workflowitemTypeEvents,
+    ],
+    workflowitem: updatedWorkflowitem,
   };
 }
 

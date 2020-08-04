@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -14,20 +15,23 @@ export async function updateProject(
   serviceUser: ServiceUser,
   projectId: Project.Id,
   requestData: ProjectUpdate.RequestData,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectUpdate.updateProject(ctx, serviceUser, projectId, requestData, {
-      getProject: async pId => {
+      getProject: async (pId) => {
         return cache.getProject(pId);
       },
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
     }),
   );
-  if (Result.isErr(result)) return Promise.reject(result);
+  if (Result.isErr(newEventsResult)) {
+    return new VError(newEventsResult, `grant project permission failed`);
+  }
+  const newEvents = newEventsResult;
 
-  for (const event of result.newEvents) {
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 }

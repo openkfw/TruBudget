@@ -21,12 +21,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
@@ -75,7 +71,7 @@ export function validate(input: any): Result.Type<Event> {
  */
 export function mutate(subproject: Subproject.Subproject, event: Event): Result.Type<void> {
   if (event.type !== "subproject_assigned") {
-    throw new VError(`illegal event type: ${event.type}`);
+    return new VError(`illegal event type: ${event.type}`);
   }
 
   // Since we cannot have any side effects here, the existance of a user is expected to

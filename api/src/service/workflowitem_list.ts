@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -12,20 +13,21 @@ export async function listWorkflowitems(
   serviceUser: ServiceUser,
   projectId: string,
   subprojectId: string,
-): Promise<Workflowitem.ScrubbedWorkflowitem[]> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<Workflowitem.ScrubbedWorkflowitem[]>> {
+  const workflowitemsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemList.getAllVisible(ctx, serviceUser, projectId, subprojectId, {
       getWorkflowitems: async (pId, spId) => {
         return cache.getWorkflowitems(pId, spId);
       },
       getWorkflowitemOrdering: async (pId, spId) => {
         const subproject = await cache.getSubproject(pId, spId);
-        return Result.map(subproject, x => x.workflowitemOrdering);
+        return Result.map(subproject, (x) => x.workflowitemOrdering);
       },
     }),
   );
 
-  if (Result.isErr(result)) throw result;
-
-  return result;
+  return Result.mapErr(
+    workflowitemsResult,
+    (err) => new VError(err, `could not fetch workflowitems `),
+  );
 }

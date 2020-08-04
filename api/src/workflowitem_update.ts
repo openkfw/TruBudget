@@ -134,7 +134,7 @@ interface Service {
     subprojectId: Subproject.Id,
     workflowitemId: Workflowitem.Id,
     data: WorkflowitemUpdate.RequestData,
-  ): Promise<void>;
+  ): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -158,7 +158,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .updateWorkflowitem(ctx, user, projectId, subprojectId, workflowitemId, data)
-      .then(() => {
+      .then((result) => {
+        if (Result.isErr(result)) {
+          throw new VError(result, "workflowitem.update failed");
+        }
         const code = 200;
         const body = {
           apiVersion: "1.0",

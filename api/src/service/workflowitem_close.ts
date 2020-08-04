@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -19,8 +20,8 @@ export async function closeWorkflowitem(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemClose.closeWorkflowitem(ctx, serviceUser, projectId, subprojectId, workflowitemId, {
       getWorkflowitems: async (pId, spId) => {
         return cache.getWorkflowitems(pId, spId);
@@ -28,7 +29,7 @@ export async function closeWorkflowitem(
       getSubproject: async (pId, spId) => {
         return cache.getSubproject(pId, spId);
       },
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
@@ -37,8 +38,10 @@ export async function closeWorkflowitem(
     }),
   );
 
-  if (Result.isErr(result)) throw result;
-  const { newEvents } = result;
+  if (Result.isErr(newEventsResult)) {
+    return new VError(newEventsResult, `close workflowitem failed`);
+  }
+  const newEvents = newEventsResult;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);

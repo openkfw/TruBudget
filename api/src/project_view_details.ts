@@ -1,11 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { VError } from "verror";
-
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
@@ -144,8 +143,11 @@ interface ExposedProjectDetails {
 
 interface Service {
   getProject(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Result.Type<Project.Project>>;
-  // TODO: add Result.Type for subprojects
-  getSubprojects(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Subproject.Subproject[]>;
+  getSubprojects(
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: string,
+  ): Promise<Result.Type<Subproject.Subproject[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -195,9 +197,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           },
         };
 
-        const subprojects = await service.getSubprojects(ctx, user, projectId);
+        const subprojectsResult = await service.getSubprojects(ctx, user, projectId);
+        if (Result.isErr(subprojectsResult)) {
+          throw new VError(subprojectsResult, "project.viewDetails failed");
+        }
+        const subprojects: Subproject.Subproject[] = subprojectsResult;
 
-        const exposedSubprojects: ExposedSubproject[] = subprojects.map(subproject => ({
+        const exposedSubprojects: ExposedSubproject[] = subprojects.map((subproject) => ({
           allowedIntents: getAllowedIntents([user.id].concat(user.groups), subproject.permissions),
           data: {
             id: subproject.id,

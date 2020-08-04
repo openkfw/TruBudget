@@ -1,13 +1,14 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
+import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
@@ -149,7 +150,7 @@ interface Service {
     ctx: Ctx,
     user: ServiceUser,
     projectId: Project.Id,
-  ): Promise<Subproject.Subproject[]>;
+  ): Promise<Result.Type<Subproject.Subproject[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -175,8 +176,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .listSubprojects(ctx, user, projectId)
-      .then((subprojects: Subproject.Subproject[]) => {
-        return subprojects.map(subproject => {
+      .then((subprojectsResult) => {
+        if (Result.isErr(subprojectsResult)) {
+          throw new VError(subprojectsResult, "subproject.list failed");
+        }
+        const subprojects = subprojectsResult.map((subproject) => {
           return {
             log: subproject.log,
             allowedIntents: getAllowedIntents(
@@ -196,8 +200,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             },
           };
         });
-      })
-      .then((subprojects: ExposedSubproject[]) => {
         const code = 200;
         const body = {
           apiVersion: "1.0",
@@ -207,7 +209,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });

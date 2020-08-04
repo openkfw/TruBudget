@@ -105,7 +105,7 @@ export function validate(input: any): Result.Type<Event> {
  */
 export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
   if (event.type !== "workflowitem_updated") {
-    throw new VError(`illegal event type: ${event.type}`);
+    return new VError(`illegal event type: ${event.type}`);
   }
 
   if (workflowitem.status !== "open") {
@@ -114,7 +114,10 @@ export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): R
 
   updateProps(workflowitem, event.update);
   updateAdditionalData(workflowitem, event.update.additionalData);
-  updateDocuments(workflowitem, event.update.documents);
+  const updatedDocumentResult = updateDocuments(workflowitem, event.update.documents);
+  if (Result.isErr(updatedDocumentResult)) {
+    return new VError(updatedDocumentResult, `update documents failed`);
+  }
 
   // Setting the amount type to "N/A" removes fields that
   // only make sense if amount type is _not_ "N/A":
@@ -153,15 +156,16 @@ function updateAdditionalData(workflowitem: Workflowitem.Workflowitem, additiona
   }
 }
 
-function updateDocuments(workflowitem: Workflowitem.Workflowitem, documents?: StoredDocument[]) {
+function updateDocuments(
+  workflowitem: Workflowitem.Workflowitem,
+  documents?: StoredDocument[],
+): Result.Type<void> {
   if (documents === undefined) {
     return;
   }
-
   // Existing documents are never overwritten. They are only allowed in the update if
   // they are equal to their existing record.
-
-  documents.forEach((document) => {
+  for (const document of documents) {
     const existingDocument = workflowitem.documents.find((x) => x.id === document.id);
     if (existingDocument === undefined) {
       // This is a new document.
@@ -169,11 +173,11 @@ function updateDocuments(workflowitem: Workflowitem.Workflowitem, documents?: St
     } else {
       // We already know a document with the same ID.
       if (existingDocument.hash !== document.hash) {
-        throw new VError(
+        return new VError(
           `cannot update document ${document.id}, ` +
             `as changing existing documents is not allowed`,
         );
       }
     }
-  });
+  }
 }

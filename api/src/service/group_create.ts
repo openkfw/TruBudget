@@ -1,5 +1,6 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
-import logger from "../lib/logger";
+import * as Result from "../result";
 import { ConnToken } from "./conn";
 import * as GroupCreate from "./domain/organization/group_create";
 import { sourceGroups } from "./domain/organization/group_eventsourcing";
@@ -19,17 +20,13 @@ export async function createGroup(
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: GroupCreate.RequestData,
-): Promise<Group> {
-  const { newEvents, errors } = await GroupCreate.createGroup(ctx, serviceUser, requestData, {
+): Promise<Result.Type<Group>> {
+  const groupCreateResult = await GroupCreate.createGroup(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-    groupExists: async groupId => groupExists(conn, ctx, serviceUser, groupId),
+    groupExists: async (groupId) => groupExists(conn, ctx, serviceUser, groupId),
   });
-  if (errors.length > 0) return Promise.reject(errors);
-  if (!newEvents.length) {
-    const msg = "failed to create group";
-    logger.error({ ctx, serviceUser, requestData }, msg);
-    throw new Error(msg);
-  }
+  if (Result.isErr(groupCreateResult)) return new VError(groupCreateResult, "create group failed");
+  const newEvents = groupCreateResult;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);
@@ -37,7 +34,7 @@ export async function createGroup(
 
   const { groups } = sourceGroups(ctx, newEvents);
   if (groups.length !== 1) {
-    throw new Error(
+    return new Error(
       `Expected new events to yield exactly one group, got: ${JSON.stringify(groups)}`,
     );
   }

@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -17,20 +18,22 @@ export async function assignSubproject(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   assignee: Identity,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const assignSubprojectResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectAssign.assignSubproject(ctx, serviceUser, projectId, subprojectId, assignee, {
       getSubproject: async () => {
         return cache.getSubproject(projectId, subprojectId);
       },
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
     }),
   );
 
-  if (Result.isErr(result)) throw result;
-  const { newEvents } = result;
+  if (Result.isErr(assignSubprojectResult)) {
+    return new VError(assignSubprojectResult, `assign ${assignee} to subproject failed`);
+  }
+  const { newEvents } = assignSubprojectResult;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);

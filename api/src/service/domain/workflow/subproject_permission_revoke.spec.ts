@@ -52,8 +52,9 @@ describe("revoke subproject permissions", () => {
     if (Result.isErr(revokeResult)) {
       throw revokeResult;
     }
-    assert.lengthOf(revokeResult.newEvents, 1);
-    const revokeEvent = revokeResult.newEvents[0];
+    const newEvents = revokeResult;
+    assert.lengthOf(newEvents, 1);
+    const revokeEvent = newEvents[0];
     const expectedEvent: BusinessEvent = {
       type: "subproject_permission_revoked",
       source: ctx.source,

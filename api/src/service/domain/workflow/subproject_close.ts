@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -26,7 +25,7 @@ interface Repository {
     projectId: Project.Id,
     subprojectId: Subproject.Id,
   ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 export async function closeSubproject(
@@ -66,7 +65,7 @@ export async function closeSubproject(
       `could not find workflowitems for subproject ${subprojectId} of project ${projectId}`,
     );
   }
-  if (workflowitems.some(x => x.status !== "closed")) {
+  if (workflowitems.some((x) => x.status !== "closed")) {
     return new PreconditionError(
       ctx,
       subprojectClosed,
@@ -90,22 +89,28 @@ export async function closeSubproject(
   subproject = result;
 
   // Create notification events:
-  const recipients = subproject.assignee
+  const recipientsResult = subproject.assignee
     ? await repository.getUsersForIdentity(subproject.assignee)
     : [];
-  const notifications = recipients
+  if (Result.isErr(recipientsResult)) {
+    return new VError(recipientsResult, `fetch users for ${subproject.assignee} failed`);
+  }
+  const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
-    .filter(userId => userId !== issuer.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(
-        ctx.source,
-        issuer.id,
-        recipient,
-        subprojectClosed,
-        projectId,
-        subprojectId,
-      ),
-    );
+    if (recipient !== issuer.id) {
+      notifications.push(
+        NotificationCreated.createEvent(
+          ctx.source,
+          issuer.id,
+          recipient,
+          subprojectClosed,
+          projectId,
+          subprojectId,
+        ),
+      );
+    }
+    return notifications;
+  }, [] as NotificationCreated.Event[]);
 
   return { newEvents: [subprojectClosed, ...notifications], subproject };
 }

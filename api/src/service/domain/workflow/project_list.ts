@@ -6,6 +6,8 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import { sourceProjects } from "./project_eventsourcing";
 import { ProjectTraceEvent } from "./project_trace_event";
+import { VError } from "verror";
+import * as Result from "../../../result";
 
 interface Repository {
   getAllProjects(): Promise<Project.Project[]>;
@@ -15,7 +17,7 @@ export async function getAllVisible(
   ctx: Ctx,
   user: ServiceUser,
   repository: Repository,
-): Promise<Project.Project[]> {
+): Promise<Result.Type<Project.Project[]>> {
   const allProjects = await repository.getAllProjects();
 
   const isVisible =

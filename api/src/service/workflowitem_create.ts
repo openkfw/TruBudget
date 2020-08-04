@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -18,8 +19,8 @@ export async function createWorkflowitem(
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: WorkflowitemCreate.RequestData,
-): Promise<ResourceMap> {
-  const result = await Cache.withCache(conn, ctx, cache => {
+): Promise<Result.Type<ResourceMap>> {
+  const newEventResult = await Cache.withCache(conn, ctx, (cache) => {
     return WorkflowitemCreate.createWorkflowitem(ctx, serviceUser, requestData, {
       workflowitemExists: async (
         projectId: string,
@@ -37,21 +38,28 @@ export async function createWorkflowitem(
     });
   });
 
-  if (Result.isErr(result)) throw result;
-  const newEvents = result;
+  if (Result.isErr(newEventResult)) {
+    return new VError(newEventResult, `create workflowitem failed`);
+  }
+  const newEvents = newEventResult;
 
+  let workflowitemEvent;
   for (const event of newEvents) {
     await store(conn, ctx, event);
+    if (isCreateEvent(event)) {
+      workflowitemEvent = event;
+    }
   }
 
-  const workflowitemEvent = newEvents.find(x => (x as any).workflowitem.id !== undefined);
-  if (workflowitemEvent === undefined) throw Error(`Assertion: This is a bug.`);
-
   const resourceIds: ResourceMap = {
-    project: { id: (workflowitemEvent as WorkflowitemCreated.Event).projectId },
-    subproject: { id: (workflowitemEvent as WorkflowitemCreated.Event).subprojectId },
-    workflowitem: { id: (workflowitemEvent as WorkflowitemCreated.Event).workflowitem.id },
+    project: { id: workflowitemEvent.projectId },
+    subproject: { id: workflowitemEvent.subprojectId },
+    workflowitem: { id: workflowitemEvent.workflowitem.id },
   };
 
   return resourceIds;
+}
+
+function isCreateEvent(businessEvent: BusinessEvent): businessEvent is WorkflowitemCreated.Event {
+  return businessEvent.type === "workflowitem_created";
 }

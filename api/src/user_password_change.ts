@@ -1,14 +1,13 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserChangePassword from "./service/domain/organization/user_password_change";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -83,7 +82,7 @@ interface Service {
     ctx: Ctx,
     serviceUser: ServiceUser,
     requestData: UserChangePassword.RequestData,
-  ): Promise<void>;
+  ): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -113,7 +112,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .changeUserPassword(ctx, serviceUser, reqData)
-      .then(() => {
+      .then((result) => {
+        if (Result.isErr(result)) {
+          throw new VError(result, "user.changePassword failed");
+        }
         const code = 200;
         const body = {
           apiVersion: "1.0",
@@ -121,7 +123,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });

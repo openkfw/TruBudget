@@ -1,5 +1,6 @@
 import Joi = require("joi");
 
+import { VError } from "verror";
 import Intent, { groupIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -39,8 +40,8 @@ export function validate(input: any): Result.Type<RequestData> {
 }
 
 interface Repository {
-  getGlobalPermissions(): Promise<GlobalPermissions>;
-  groupExists(groupId: string): Promise<boolean>;
+  getGlobalPermissions(): Promise<Result.Type<GlobalPermissions>>;
+  groupExists(groupId: string): Promise<Result.Type<boolean>>;
 }
 
 export async function createGroup(
@@ -48,7 +49,7 @@ export async function createGroup(
   creatingUser: ServiceUser,
   data: RequestData,
   repository: Repository,
-): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const source = ctx.source;
   const publisher = creatingUser.id;
   const createEvent = GroupCreated.createEvent(source, publisher, {
@@ -60,35 +61,38 @@ export async function createGroup(
     additionalData: data.additionalData || {},
   });
 
-  if (await repository.groupExists(createEvent.group.id)) {
-    return {
-      newEvents: [],
-      errors: [new AlreadyExists(ctx, createEvent, createEvent.group.id)],
-    };
+  const groupExistsResult = await repository.groupExists(createEvent.group.id);
+  if (Result.isErr(groupExistsResult)) {
+    return new VError(groupExistsResult, "groupExists check failed");
+  }
+  const groupExists = groupExistsResult;
+  if (groupExists) {
+    return new AlreadyExists(ctx, createEvent, createEvent.group.id);
   }
 
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
     const intent = "global.createGroup";
-    const permissions = await repository.getGlobalPermissions();
-    const isAuthorized = identitiesAuthorizedFor(permissions, intent).some((identity) =>
+    const globalPermissionsResult = await repository.getGlobalPermissions();
+    if (Result.isErr(globalPermissionsResult)) {
+      return new VError(globalPermissionsResult, "get global permissions failed");
+    }
+    const globalPermissions = globalPermissionsResult;
+    const isAuthorized = identitiesAuthorizedFor(globalPermissions, intent).some((identity) =>
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {
-      return {
-        newEvents: [],
-        errors: [new NotAuthorized({ ctx, userId: creatingUser.id, intent })],
-      };
+      return new NotAuthorized({ ctx, userId: creatingUser.id, intent });
     }
   }
 
   // Check that the event is valid by trying to "apply" it:
   const { errors } = sourceGroups(ctx, [createEvent]);
   if (errors.length > 0) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, createEvent, errors)] };
+    return new InvalidCommand(ctx, createEvent, errors);
   }
 
-  return { newEvents: [createEvent], errors: [] };
+  return [createEvent];
 }
 
 function newDefaultPermissionsFor(user: ServiceUser): Permissions {

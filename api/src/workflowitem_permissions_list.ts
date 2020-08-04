@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -102,25 +102,22 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
       try {
-        const workflowitemPermissions = await service.listWorkflowitemPermissions(
+        const permissionsResult = await service.listWorkflowitemPermissions(
           ctx,
           user,
           projectId,
           subprojectId,
           workflowitemId,
         );
-
-        if (Result.isErr(workflowitemPermissions)) {
-          workflowitemPermissions.message = `could not list project permissions: ${
-            workflowitemPermissions.message
-          }`;
-          throw workflowitemPermissions;
+        if (Result.isErr(permissionsResult)) {
+          throw new VError(permissionsResult, "workflowitem.intent.listPermissions failed");
         }
+        const permissions = permissionsResult;
 
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: workflowitemPermissions,
+          data: permissions,
         };
         reply.status(code).send(body);
       } catch (err) {

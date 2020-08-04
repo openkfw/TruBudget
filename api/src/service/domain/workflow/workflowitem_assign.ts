@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -18,7 +17,7 @@ import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 
 interface Repository {
   getWorkflowitem(workflowitemId: string): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
   applyWorkflowitemType(
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
@@ -61,7 +60,12 @@ export async function assignWorkflowitem(
   if (publisher.id !== "root") {
     const assignIntent = "workflowitem.assign";
     if (!Workflowitem.permits(workflowitem, publisher, [assignIntent])) {
-      return new NotAuthorized({ ctx, userId: publisher.id, intent: assignIntent, target: workflowitem });
+      return new NotAuthorized({
+        ctx,
+        userId: publisher.id,
+        intent: assignIntent,
+        target: workflowitem,
+      });
     }
   }
 
@@ -72,21 +76,27 @@ export async function assignWorkflowitem(
   }
 
   // Create notification events:
-  const recipients = assignee ? await repository.getUsersForIdentity(assignee) : [];
-  const notifications = recipients
-    // The publisher doesn't receive a notification:
-    .filter(userId => userId !== publisher.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(
-        ctx.source,
-        publisher.id,
-        recipient,
-        assignEvent,
-        projectId,
-        subprojectId,
-        workflowitemId,
-      ),
-    );
+  const recipientsResult = await repository.getUsersForIdentity(assignee);
+  if (Result.isErr(recipientsResult)) {
+    return new VError(recipientsResult, `fetch users for ${assignee} failed`);
+  }
+  const notifications = recipientsResult.reduce((notifications, recipient) => {
+    // The issuer doesn't receive a notification:
+    if (recipient !== publisher.id) {
+      notifications.push(
+        NotificationCreated.createEvent(
+          ctx.source,
+          publisher.id,
+          recipient,
+          assignEvent,
+          projectId,
+          subprojectId,
+          workflowitemId,
+        ),
+      );
+    }
+    return notifications;
+  }, [] as NotificationCreated.Event[]);
 
   const workflowitemTypeEvents = repository.applyWorkflowitemType(assignEvent, workflowitem);
 

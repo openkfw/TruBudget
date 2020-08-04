@@ -1,7 +1,7 @@
+import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
@@ -19,20 +19,23 @@ export async function grantUserPermission(
   userId: Project.Id,
   grantee: Identity,
   intent: Intent,
-): Promise<void> {
-  const result = await UserPermissionGrant.grantUserPermission(
+): Promise<Result.Type<void>> {
+  const newEventsResult = await UserPermissionGrant.grantUserPermission(
     ctx,
     serviceUser,
     userId,
     grantee,
     intent,
     {
-      getTargetUser: id => UserQuery.getUser(conn, ctx, serviceUser, id),
+      getTargetUser: (id) => UserQuery.getUser(conn, ctx, serviceUser, id),
     },
   );
-  if (Result.isErr(result)) return Promise.reject(result);
+  if (Result.isErr(newEventsResult)) {
+    return new VError(newEventsResult, `failed to grant ${intent} to ${grantee}`);
+  }
+  const newEvents = newEventsResult;
 
-  for (const event of result) {
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 }

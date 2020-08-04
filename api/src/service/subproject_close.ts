@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -15,8 +16,8 @@ export async function closeSubproject(
   serviceUser: ServiceUser,
   projectId: Project.Id,
   subprojectId: Subproject.Id,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const closeSubprojectResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectClose.closeSubproject(ctx, serviceUser, projectId, subprojectId, {
       getSubproject: async (pId, spId) => {
         return cache.getSubproject(pId, spId);
@@ -24,14 +25,16 @@ export async function closeSubproject(
       getWorkflowitems: async (pId, spId) => {
         return cache.getWorkflowitems(pId, spId);
       },
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
     }),
   );
 
-  if (Result.isErr(result)) throw result;
-  const { newEvents } = result;
+  if (Result.isErr(closeSubprojectResult)) {
+    return new VError(closeSubprojectResult, `close subproject failed`);
+  }
+  const { newEvents } = closeSubprojectResult;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);

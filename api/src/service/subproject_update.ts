@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -16,20 +17,23 @@ export async function updateSubproject(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   requestData: SubprojectUpdate.RequestData,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectUpdate.updateSubproject(ctx, serviceUser, projectId, subprojectId, requestData, {
       getSubproject: async (pId, spId) => {
         return cache.getSubproject(pId, spId);
       },
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
     }),
   );
-  if (Result.isErr(result)) return Promise.reject(result);
+  if (Result.isErr(newEventsResult)) {
+    return new VError(newEventsResult, `close project failed`);
+  }
+  const newEvents = newEventsResult;
 
-  for (const event of result.newEvents) {
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 }

@@ -1,16 +1,17 @@
 import { FastifyInstance } from "fastify";
-
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
+import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
+import { VError } from "verror";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -131,7 +132,7 @@ interface Service {
     user: ServiceUser,
     projectId: string,
     subprojectId: string,
-  ): Promise<Workflowitem.ScrubbedWorkflowitem[]>;
+  ): Promise<Result.Type<Workflowitem.ScrubbedWorkflowitem[]>>;
 }
 
 function sendErrorIfEmpty(reply, resourceId) {
@@ -165,7 +166,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .listWorkflowitems(ctx, user, projectId, subprojectId)
-      .then((workflowitems: Workflowitem.ScrubbedWorkflowitem[]) => {
+      .then((workflowitemsResult) => {
+        if (Result.isErr(workflowitemsResult)) {
+          throw new VError(workflowitemsResult, "workflowitem.list failed");
+        }
+        const workflowitems = workflowitemsResult;
+
         return workflowitems.map((workflowitem) => {
           return {
             allowedIntents: workflowitem.isRedacted

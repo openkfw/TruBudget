@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -18,15 +19,16 @@ export async function listWorkflowitemPermissions(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
-): Promise<Permissions> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<Permissions>> {
+  const permissionsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemPermissionsList.getAll(ctx, serviceUser, projectId, subprojectId, workflowitemId, {
       getWorkflowitem: async (pId, spId, wId) => {
         return await cache.getWorkflowitem(pId, spId, wId);
       },
     }),
   );
-  if (Result.isErr(result)) return Promise.reject(result);
-
-  return result;
+  return Result.mapErr(
+    permissionsResult,
+    (err) => new VError(err, `could not fetch permissions of ${workflowitemId} `),
+  );
 }

@@ -1,8 +1,10 @@
+import { VError } from "verror";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { HttpResponse } from "../../httpd/lib";
 import { Ctx } from "../../lib/ctx";
 import logger from "../../lib/logger";
+import * as Result from "../../result";
 import { ConnToken } from "../../service";
 import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as GlobalPermissionsGet from "../../service/global_permissions_get";
@@ -42,11 +44,16 @@ export async function getNodeList(
 
   // Permission check:
   const userIntent: Intent = "network.list";
-  await throwIfUnauthorized(
-    req.user,
-    userIntent,
-    (await GlobalPermissionsGet.getGlobalPermissions(conn, ctx, issuer)).permissions,
+  const globalPermissionsResult = await GlobalPermissionsGet.getGlobalPermissions(
+    conn,
+    ctx,
+    issuer,
   );
+  if (Result.isErr(globalPermissionsResult)) {
+    throw new VError(globalPermissionsResult, "global.grantPermission failed");
+  }
+  const globalPermissions = globalPermissionsResult.permissions;
+  await throwIfUnauthorized(req.user, userIntent, globalPermissions);
 
   // Get ALL the info:
   const nodes = await Nodes.get(multichain);
@@ -63,7 +70,7 @@ export async function getNodeList(
   // to do anything with the network (while respecting the settings for admin consensus).
 
   const myAddress = req.user.organizationAddress;
-  const list: NodeInfoDto[] = nodes.map(info => dtoFromNodeInfo(info, myAddress));
+  const list: NodeInfoDto[] = nodes.map((info) => dtoFromNodeInfo(info, myAddress));
   logger.debug({ nodes, myAddress, list }, "List of nodes received");
   return [
     200,
@@ -179,7 +186,7 @@ function getPermissionInfo(
   info: Nodes.NodeInfo,
   permission: Nodes.NetworkPermission,
 ): Nodes.PermissionInfo | undefined {
-  return info.networkPermissions.filter(x => x.permission === permission).find(_ => true);
+  return info.networkPermissions.filter((x) => x.permission === permission).find((_) => true);
 }
 
 function hasApprover(
@@ -187,5 +194,5 @@ function hasApprover(
   maybeApprover: WalletAddress,
 ): boolean {
   if (permissionInfo === undefined) return false;
-  return permissionInfo.approvedBy.map(x => x.address).includes(maybeApprover);
+  return permissionInfo.approvedBy.map((x) => x.address).includes(maybeApprover);
 }

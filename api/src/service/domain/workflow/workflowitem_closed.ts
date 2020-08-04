@@ -22,12 +22,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
@@ -75,15 +71,12 @@ export function validate(input: any): Result.Type<Event> {
  */
 export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
   if (event.type !== "workflowitem_closed") {
-    throw new VError(`illegal event type: ${event.type}`);
+    return new VError(`illegal event type: ${event.type}`);
   }
 
   // Set billing date to the event timestamp if it makes sense for the amount type and
   // isn't set already:
-  if (
-    workflowitem.billingDate === undefined &&
-    workflowitem.amountType !== "N/A"
-  ) {
+  if (workflowitem.billingDate === undefined && workflowitem.amountType !== "N/A") {
     workflowitem.billingDate = event.time;
   }
 
