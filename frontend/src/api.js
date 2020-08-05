@@ -48,7 +48,19 @@ class Api {
         password
       }
     });
+
+  disableUser = userId =>
+    instance.post(`/global.disableUser`, {
+      userId
+    });
+
+  enableUser = userId =>
+    instance.post(`/global.enableUser`, {
+      userId
+    });
+
   fetchVersions = () => instance.get(`/version`);
+
   createUser = (displayName, organization, username, password) =>
     instance.post(`/global.createUser`, {
       user: {
@@ -58,10 +70,12 @@ class Api {
         password
       }
     });
+
   grantAllUserPermissions = userId =>
     instance.post(`global.grantAllPermissions`, {
       identity: userId
     });
+
   grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, { identity, intent });
 
   revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity, intent });

@@ -53,6 +53,7 @@ const pt = {
     in_review: "Em revisão",
     incorrect_password: "Senha incorreta",
     incorrect_username: "Id do usuário incorreto",
+    incorrect_username_or_password: "ID ou palavra-passe de início de sessão incorrecta",
     invalid_tag: "Tag inválida",
     name: "Nome ou descrição do usuário",
     next: "Próximo",
@@ -61,6 +62,7 @@ const pt = {
     no_budget_subproject:
       "Para adicionar um orçamento para o seu subprojecto, volte à página de síntese do subprojecto.",
     no_budget_distribution: "Não é possível exibir a distribuição, se nem todos os itens estiverem visíveis",
+    no_disabled_users: "Nenhum usuário desativado encontrado",
     no_groups: "Nenhum grupo encontrado",
     no_groups_text: "Crie um novo grupo pressionando o botão mais.",
     no_history: "Sem histórico",
@@ -105,7 +107,9 @@ const pt = {
     view: "Visualizar",
     workflowitem: "Item de workflow",
     dueDate: "Data de vencimento",
-    dueDate_exceeded: "Data de vencimento excedida"
+    dueDate_exceeded: "Data de vencimento excedida",
+    login_disabled: "O ID de login está desativado",
+    login_data_error: "O campo de identidade ou senha de login não pode estar vazio"
   },
 
   users: {
@@ -135,7 +139,12 @@ const pt = {
     type_new_password: "Digite a nova senha para o {0}",
     user_created: "Usuário criado com sucesso",
     username_invalid: "Nome de usuário Inválido",
-    users: "Usuários"
+    users: "Usuários",
+    disabled_users: "Utilizadores desactivados",
+    disable_user: "Desactivar utilizador",
+    disable_user_successfull: "O seguinte utilizador foi desactivado: ",
+    enable_user: "Restaurar utilizador",
+    enable_user_successfull: "O seguinte utilizador foi activado: "
   },
 
   userProfile: {

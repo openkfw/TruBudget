@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import LiveNotification from "./LiveNotification";
-import { hideSnackbar, fetchNotificationCounts, updateNotification } from "./actions.js";
+import { hideSnackbar, updateNotification } from "./actions.js";
 import { toJS } from "../../helper";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 
@@ -10,16 +10,11 @@ import LiveUpdates from "../LiveUpdates/LiveUpdates";
 // Once notifications are compacted/snapshoted we can refresh every time the fly in saga was called.
 
 class LiveNotificationContainer extends Component {
-  componentDidMount() {
-    this.props.fetchNotificationCounts();
-  }
-
-  // If there are no notifications yet, set the latestFlyInId to "0"
-  // to tell the API to return all new notifications
-
   fetch() {
     const { fetchFlyInNotifications, notificationCount } = this.props;
-    fetchFlyInNotifications(notificationCount);
+    if (this.props.userId) {
+      fetchFlyInNotifications(notificationCount);
+    }
   }
 
   render() {
@@ -35,7 +30,6 @@ class LiveNotificationContainer extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     fetchFlyInNotifications: offset => dispatch(updateNotification(false, offset)),
-    fetchNotificationCounts: () => dispatch(fetchNotificationCounts()),
     closeSnackbar: () => dispatch(hideSnackbar())
   };
 };
@@ -51,7 +45,8 @@ const mapStateToProps = state => {
     notificationCount: state.getIn(["notifications", "notificationCount"]),
     notificationsPerPage: state.getIn(["notifications", "notificationsPerPage"]),
     latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
-    isLiveUpdatesEnabled: state.getIn(["notifications", "isLiveUpdatesEnabled"])
+    isLiveUpdatesEnabled: state.getIn(["notifications", "isLiveUpdatesEnabled"]),
+    userId: state.getIn(["login", "id"])
   };
 };
 

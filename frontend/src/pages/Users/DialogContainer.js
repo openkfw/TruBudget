@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
@@ -63,7 +62,7 @@ const mapStateToProps = state => {
     dialogType: state.getIn(["users", "dialogType"]),
     editId: state.getIn(["users", "editId"]),
     userToAdd: state.getIn(["users", "userToAdd"]),
-    users: state.getIn(["login", "user"]),
+    users: state.getIn(["login", "enabledUsers"]),
     loggedInUserId: state.getIn(["login", "id"]),
     groups: state.getIn(["users", "groups"]),
     groupToAdd: state.getIn(["users", "groupToAdd"]),

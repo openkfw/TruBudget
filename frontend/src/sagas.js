@@ -40,10 +40,10 @@ import {
   FETCH_USER,
   FETCH_USER_SUCCESS,
   LOGIN,
+  LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
   LOGOUT_SUCCESS,
-  SHOW_LOGIN_ERROR,
   STORE_ENVIRONMENT,
   STORE_ENVIRONMENT_SUCCESS
 } from "./pages/Login/actions";
@@ -147,7 +147,11 @@ import {
   REMOVE_USER,
   REMOVE_USER_SUCCESS,
   REVOKE_GLOBAL_PERMISSION,
-  REVOKE_GLOBAL_PERMISSION_SUCCESS
+  REVOKE_GLOBAL_PERMISSION_SUCCESS,
+  ENABLE_USER,
+  ENABLE_USER_SUCCESS,
+  DISABLE_USER,
+  DISABLE_USER_SUCCESS
 } from "./pages/Users/actions.js";
 import {
   ASSIGN_SUBPROJECT,
@@ -784,14 +788,14 @@ export function* markMultipleNotificationsAsReadSaga({ notificationIds, notifica
 export function* loginSaga({ user }) {
   function* login() {
     const { data } = yield callApi(api.login, user.username, user.password);
-
     yield put({
       type: LOGIN_SUCCESS,
       ...data
     });
+    yield call(() => fetchNotificationCountsSaga(false));
     yield put({
-      type: SHOW_LOGIN_ERROR,
-      show: false
+      type: SNACKBAR_MESSAGE,
+      message: ""
     });
     yield put({
       type: SHOW_SNACKBAR,
@@ -799,13 +803,52 @@ export function* loginSaga({ user }) {
       isError: false,
       isWarning: false
     });
-  }
-  function* onLoginError(error) {
     yield put({
-      type: SHOW_LOGIN_ERROR,
+      type: LOGIN_ERROR,
+      show: false
+    });
+  }
+
+  function* onLoginError(error) {
+    switch (error.response.status) {
+      case 400:
+        // User not found or password wrong
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.common.incorrect_username_or_password
+        });
+        break;
+      case 403:
+        // User is disabled
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.common.login_disabled
+        });
+        break;
+      case 500:
+        // ID or password field is empty
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.common.login_data_error
+        });
+        break;
+      default:
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.common.incorrect_username_or_password
+        });
+    }
+
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+    yield put({
+      type: LOGIN_ERROR,
       show: true
     });
-    yield handleError(error);
   }
   yield execute(login, true, onLoginError);
 }
@@ -947,6 +990,51 @@ export function* checkAndChangeUserPasswordSaga({ username, actingUser, currentP
   } catch (error) {
     yield handleError(error);
   }
+}
+
+export function* enableUserSaga({ userId }) {
+  yield execute(function*() {
+    yield callApi(api.enableUser, userId);
+    yield put({
+      type: ENABLE_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_USER,
+      show: true
+    });
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.users.enable_user_successfull + userId
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: false,
+      isWarning: false
+    });
+  }, true);
+}
+export function* disableUserSaga({ userId }) {
+  yield execute(function*() {
+    yield callApi(api.disableUser, userId);
+    yield put({
+      type: DISABLE_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_USER,
+      show: true
+    });
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.users.disable_user_successfull + userId
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: false,
+      isWarning: false
+    });
+  }, true);
 }
 
 export function* removeUserFromGroupSaga({ groupId, userId }) {
@@ -2264,6 +2352,8 @@ export default function* rootSaga() {
 
       // Users
       yield takeEvery(CHECK_AND_CHANGE_USER_PASSWORD, checkAndChangeUserPasswordSaga),
+      yield takeEvery(ENABLE_USER, enableUserSaga),
+      yield takeEvery(DISABLE_USER, disableUserSaga),
 
       // LiveUpdates
       yield takeLeading(LIVE_UPDATE_PROJECT, liveUpdateProjectSaga),

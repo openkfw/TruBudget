@@ -88,6 +88,7 @@ function generateActions(classes, actions, executedActions, failedAction, userLi
   const actionsTable = [];
   actions.forEach((action, index) => {
     const type = strings.common[action.intent.split(".")[0]];
+    const user = userList.find(user => user.id === action.identity);
     actionsTable.push(
       <TableRow className={classes.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
         <TableCell key={index + "-type"} className={classes.tableCell} style={{ flex: 3 }}>
@@ -100,7 +101,7 @@ function generateActions(classes, actions, executedActions, failedAction, userLi
           {makePermissionReadable(action.permission)}
         </TableCell>
         <TableCell key={index + "-userName"} className={classes.tableCell} style={{ flex: 3 }}>
-          {userList.find(user => user.id === action.identity).displayName || ""}
+          {user ? user.displayName : ""}
         </TableCell>
         <TableCell
           key={index + "-status"}
