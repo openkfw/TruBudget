@@ -81,6 +81,7 @@ interface Service {
   changeUserPassword(
     ctx: Ctx,
     serviceUser: ServiceUser,
+    issuerOrganization: string,
     requestData: UserChangePassword.RequestData,
   ): Promise<Result.Type<void>>;
 }
@@ -95,6 +96,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     };
 
     const bodyResult = validateRequestBody(request.body);
+    const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
 
     if (Result.isErr(bodyResult)) {
       const { code, body } = toHttpError(
@@ -111,7 +113,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     };
 
     service
-      .changeUserPassword(ctx, serviceUser, reqData)
+      .changeUserPassword(ctx, serviceUser, issuerOrganization, reqData)
       .then((result) => {
         if (Result.isErr(result)) {
           throw new VError(result, "user.changePassword failed");
