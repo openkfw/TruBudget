@@ -12,6 +12,8 @@ import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
 import * as UserCreated from "./domain/organization/user_created";
 import * as UserPasswordChanged from "./domain/organization/user_password_changed";
+import * as UserEnabled from "./domain/organization/user_enabled";
+import * as UserDisabled from "./domain/organization/user_disabled";
 import * as UserPermissionsGranted from "./domain/organization/user_permission_granted";
 import * as UserPermissionsRevoked from "./domain/organization/user_permission_revoked";
 import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
@@ -533,6 +535,8 @@ const EVENT_PARSER_MAP = {
   subproject_updated: SubprojectUpdated.validate,
   user_created: UserCreated.validate,
   user_password_changed: UserPasswordChanged.validate,
+  user_enabled: UserEnabled.validate,
+  user_disabled: UserDisabled.validate,
   user_permission_granted: UserPermissionsGranted.validate,
   user_permission_revoked: UserPermissionsRevoked.validate,
   workflowitem_assigned: WorkflowitemAssigned.validate,

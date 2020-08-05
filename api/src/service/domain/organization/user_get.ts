@@ -17,6 +17,7 @@ export async function getOneUser(
   repository: Repository,
 ): Promise<Result.Type<UserRecord.UserRecord>> {
   const allEvents = await repository.getUserEvents();
+
   // Errors are ignored here:
   const { users } = sourceUserRecords(ctx, allEvents);
 
