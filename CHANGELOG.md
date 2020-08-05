@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Documentation of how to update/backup a node correctly [#19](https://github.com/openkfw/TruBudget/issues/19)
+- Added feature to disable and enable users [#241](https://github.com/openkfw/TruBudget/issues/241)
 
 <!-- ### Changed -->
 
