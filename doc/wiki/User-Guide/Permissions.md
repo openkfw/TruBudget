@@ -250,6 +250,8 @@ Following list describes all existing permissions. If you need more information 
 | global.revokePermission                       | the intent has no influence on the trubudget website                                                                   |
 | global.createProject                          | create a project on the overview site                                                                                  |
 | global.createUser                             | create a user with or without admin permissions (requires global.grantPermission)                                      |
+| global.disableUser                            | disable a user (user is not able to login nor to be assigned, permissions persist)                                     |
+| global.enableUser                             | enable a user                                                                                                          |
 | global.createGroup                            | create a group with or without admin permissions                                                                       |
 | group.addUser                                 | add a user/group to a group                                                                                            |
 | group.removeUser                              | add a user/group to a group                                                                                            |
