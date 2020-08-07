@@ -225,7 +225,7 @@ const mapStateToProps = state => {
     confirmDisabled: state.getIn(["confirmation", "disabled"]),
     permissions: state.getIn(["confirmation", "permissions"]),
     confirmingUser: state.getIn(["login", "id"]),
-    userList: state.getIn(["login", "user"]),
+    userList: state.getIn(["login", "enabledUsers"]),
     isFetchingProjectPermissions: state.getIn(["confirmation", "isFetchingProjectPermissions"]),
     isFetchingSubprojectPermissions: state.getIn(["confirmation", "isFetchingSubprojectPermissions"]),
     isFetchingWorkflowitemPermissions: state.getIn(["confirmation", "isFetchingWorkflowitemPermissions"]),

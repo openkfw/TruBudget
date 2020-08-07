@@ -392,8 +392,13 @@ cd api
 npm run test:here <folderName> <describeString>
 ```
 
-<!--
 # FAQ
+
+### Where to find the used illustration images?
+
+The source of illustration images is [unDraw](https://undraw.co/illustrations) with color code #53BBFE selected
+
+<!--
 | Description           | Link                                                                                                              |
 | :-------------------- | :---------------------------------------------------------------------------------------------------------------- |
 | How to run e2e-tests? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#end-to-end-tests |

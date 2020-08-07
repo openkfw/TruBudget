@@ -194,6 +194,47 @@ Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
     .then(body => Cypress.Promise.resolve(body.data));
 });
 
+Cypress.Commands.add("updateSubprojectAssignee", (projectId, subprojectId, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/subproject.assign`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        identity
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("updateWorkflowitemAssignee", (projectId, subprojectId, workflowitemId, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/workflowitem.assign`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        workflowitemId,
+        identity
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+
 Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EUR", opts = {}) => {
   cy.request({
     url: `${baseUrl}/api/project.createSubproject`,

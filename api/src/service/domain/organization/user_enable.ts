@@ -1,5 +1,6 @@
 import Joi = require("joi");
-
+import { VError } from "verror";
+import isEqual = require("lodash.isequal");
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -9,21 +10,16 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "./service_user";
 import * as UserEventSourcing from "./user_eventsourcing";
-import * as UserPasswordChanged from "./user_password_changed";
+import * as UserEnabled from "./user_enabled";
 import * as UserRecord from "./user_record";
+import * as GlobalPermissions from "../workflow/global_permissions";
 
 export interface RequestData {
   userId: string;
-  newPassword: string;
 }
 
 const requestDataSchema = Joi.object({
   userId: UserRecord.idSchema.required(),
-  newPassword: Joi.string()
-    .min(8)
-    .regex(/[a-zA-z]/)
-    .regex(/[0-9]/)
-    .required(),
 });
 
 export function validate(input: any): Result.Type<RequestData> {
@@ -33,10 +29,10 @@ export function validate(input: any): Result.Type<RequestData> {
 
 interface Repository {
   getUser(userId: string): Promise<Result.Type<UserRecord.UserRecord>>;
-  hash(plaintext: string): Promise<string>;
+  getGlobalPermissions(): Promise<Result.Type<GlobalPermissions.GlobalPermissions>>;
 }
 
-export async function changeUserPassword(
+export async function enableUser(
   ctx: Ctx,
   issuer: ServiceUser,
   issuerOrganization: string,
@@ -46,38 +42,59 @@ export async function changeUserPassword(
   const source = ctx.source;
   const publisher = issuer.id;
   const validationResult = validate(data);
-  const intent: Intent = "user.changePassword";
-  const passwordChanged = UserPasswordChanged.createEvent(source, publisher, {
+  const intent: Intent = "global.enableUser";
+  const globalPermissionsResult = await repository.getGlobalPermissions();
+  if (Result.isErr(globalPermissionsResult)) {
+    return new VError(globalPermissionsResult, "get global permissions failed");
+  }
+  const globalPermissions = globalPermissionsResult;
+
+  // Create the new event:
+  const userEnabled = UserEnabled.createEvent(source, publisher, {
     id: data.userId,
-    passwordHash: await repository.hash(data.newPassword),
   });
+
   if (Result.isErr(validationResult)) {
-    return new PreconditionError(ctx, passwordChanged, validationResult.message);
+    return new PreconditionError(ctx, userEnabled, validationResult.message);
   }
 
   const userResult = await repository.getUser(data.userId);
   if (Result.isErr(userResult)) {
-    return new PreconditionError(ctx, passwordChanged, "Error getting user");
+    return new PreconditionError(ctx, userEnabled, "Error getting user");
   }
   const user = userResult;
 
   // Check if revokee and issuer belong to the same organization
   if (userResult.organization !== issuerOrganization) {
-    return new NotAuthorized({ ctx, userId: issuer.id, intent });
+    return new NotAuthorized({
+      ctx,
+      userId: issuer.id,
+      intent,
+      target: globalPermissions,
+    });
   }
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {
-    const isAuthorized = UserRecord.permits(user, issuer, [intent]);
+    const isAuthorized = GlobalPermissions.permits(globalPermissions, issuer, [intent]);
     if (!isAuthorized) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent });
+      return new NotAuthorized({
+        ctx,
+        userId: issuer.id,
+        intent,
+        target: globalPermissions,
+      });
     }
   }
 
-  const result = UserEventSourcing.newUserFromEvent(ctx, user, passwordChanged);
-  if (Result.isErr(result)) {
-    return new InvalidCommand(ctx, passwordChanged, [result]);
+  const updatedUser = UserEventSourcing.newUserFromEvent(ctx, user, userEnabled);
+  if (Result.isErr(updatedUser)) {
+    return new InvalidCommand(ctx, userEnabled, [updatedUser]);
   }
-
-  return [passwordChanged];
+  // Only emit the event if it causes any changes to the permissions:
+  if (isEqual(user.permissions, updatedUser.permissions)) {
+    return [];
+  } else {
+    return [userEnabled];
+  }
 }

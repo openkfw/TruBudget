@@ -101,7 +101,7 @@ class ProjectPermissionsContainer extends Component {
         disabledSubmit={this.isSubmitDisabled(allowedIntents, this.props.permissions, this.props.temporaryPermissions)}
         grant={this.grant}
         revoke={this.revoke}
-        userList={this.props.userList}
+        userList={[...this.props.userList, ...this.props.groupList]}
       />
     );
   }
@@ -113,7 +113,8 @@ const mapStateToProps = state => {
     temporaryPermissions: state.getIn(["overview", "temporaryPermissions"]),
     permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
     myself: state.getIn(["login", "id"]),
-    userList: state.getIn(["login", "user"]),
+    userList: state.getIn(["login", "enabledUsers"]),
+    groupList: state.getIn(["login", "groupList"]),
     projectId: state.getIn(["overview", "idForPermissions"]),
     projectDisplayName: state.getIn(["overview", "displayNameForPermissions"]),
     isConfirmationDialogOpen: state.getIn(["confirmation", "open"]),

@@ -96,7 +96,7 @@ class WorkflowItemPermissionsContainer extends Component {
         title={formatString(strings.permissions.dialog_title, this.props.workflowitemDisplayName)}
         open={this.props.permissionDialogShown}
         id={this.props.wId}
-        userList={this.props.userList}
+        userList={[...this.props.userList, ...this.props.groupList]}
         grant={this.grant}
         revoke={this.revoke}
         intentOrder={workflowItemIntentOrder}
@@ -124,9 +124,10 @@ const mapStateToProps = state => {
     workflowitemDisplayName: state.getIn(["workflow", "workflowitemDisplayName"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"]),
-    userList: state.getIn(["login", "user"]),
-    isConfirmationDialogOpen: state.getIn(["confirmation", "open"]),
-    myself: state.getIn(["login", "id"])
+    myself: state.getIn(["login", "id"]),
+    userList: state.getIn(["login", "enabledUsers"]),
+    groupList: state.getIn(["login", "groupList"]),
+    isConfirmationDialogOpen: state.getIn(["confirmation", "open"])
   };
 };
 

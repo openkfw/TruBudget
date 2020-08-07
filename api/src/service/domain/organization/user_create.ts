@@ -103,7 +103,7 @@ export async function createUser(
       return new VError(globalPermissionsResult, "get global permissions failed");
     }
     const globalPermissions = globalPermissionsResult;
-    const isAuthorized = identitiesAuthorizedFor(globalPermissionsResult, intent).some((identity) =>
+    const isAuthorized = identitiesAuthorizedFor(globalPermissions, intent).some((identity) =>
       canAssumeIdentity(creatingUser, identity),
     );
     if (!isAuthorized) {

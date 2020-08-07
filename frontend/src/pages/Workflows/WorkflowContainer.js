@@ -220,7 +220,7 @@ const mapStateToProps = state => {
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
-    users: state.getIn(["login", "user"]),
+    users: state.getIn(["login", "enabledUsers"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
     idForInfo: state.getIn(["workflow", "idForInfo"]),

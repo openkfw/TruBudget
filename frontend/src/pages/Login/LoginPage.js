@@ -1,5 +1,4 @@
 import React from "react";
-
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -21,13 +20,14 @@ const LoginPage = ({
   username,
   password,
   loginWithCredentials,
-  loginUnsuccessful,
+  loginError,
   environment,
   storeEnvironment,
   language,
   setLanguage
 }) => {
   const connectedToAdminNode = -1;
+
   return (
     <div
       data-test="loginpage"
@@ -70,17 +70,17 @@ const LoginPage = ({
           </div>
         </div>
         <Divider />
-        <Username username={username} storeUsername={storeUsername} id="username" />
+        <Username username={username} storeUsername={storeUsername} failed={loginError} id="username" />
         <Password
           password={password}
           iconDisplayed={true}
           storePassword={storePassword}
           setPassword={storePassword}
-          failed={loginUnsuccessful}
-          failedText={strings.common.incorrect_password}
           label={strings.common.password}
+          failed={loginError}
           nextBestAction={() => loginWithCredentials(username, password)}
           id="password"
+          data-test="password-field"
         />
         <div
           style={{

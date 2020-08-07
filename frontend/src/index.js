@@ -16,6 +16,7 @@ import amber from "@material-ui/core/colors/amber";
 import Main from "./pages/Main/Main";
 import LoginPageContainer from "./pages/Login/LoginPageContainer";
 import PrivateRoute from "./pages/Login/PrivateRoute";
+import LiveNotificationContainer from "./pages/Notifications/LiveNotificationContainer";
 
 import configureStore from "./store";
 import withInitialLoading from "./pages/Loading/withInitialLoading";
@@ -56,6 +57,7 @@ class Root extends Component {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <MuiThemeProvider theme={muiTheme}>
+            <Route component={LiveNotificationContainer} />
             <Switch>
               <Route key={1} exact path="/login" render={withRouter(withInitialLoading(LoginPageContainer))} />
               <PrivateRoute component={Main} />

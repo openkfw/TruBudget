@@ -12,11 +12,13 @@ export async function changeUserPassword(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
+  issuerOrganization: string,
   requestData: UserPasswordChange.RequestData,
 ): Promise<Result.Type<void>> {
   const newEventsResult = await UserPasswordChange.changeUserPassword(
     ctx,
     serviceUser,
+    issuerOrganization,
     requestData,
     {
       getUser: () => UserQuery.getUser(conn, ctx, serviceUser, requestData.userId),

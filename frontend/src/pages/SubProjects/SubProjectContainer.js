@@ -182,7 +182,7 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
   return {
-    users: state.getIn(["login", "user"]),
+    users: state.getIn(["login", "enabledUsers"]),
     projectId: state.getIn(["detailview", "id"]),
     projectName: state.getIn(["detailview", "projectName"]),
     projectComment: state.getIn(["detailview", "projectComment"]),

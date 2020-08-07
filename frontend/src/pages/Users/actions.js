@@ -65,6 +65,11 @@ export const SET_USERNAME_INVALID = "SET_USERNAME_INVALID";
 export const ADD_TEMPORARY_GLOBAL_PERMISSION = "ADD_TEMPORARY_GLOBAL_PERMISSION";
 export const REMOVE_TEMPORARY_GLOBAL_PERMISSION = " REMOVE_TEMPORARY_GLOBAL_PERMISSION";
 
+export const ENABLE_USER = "ENABLE_USER";
+export const ENABLE_USER_SUCCESS = "ENABLE_USER_SUCCESS";
+export const DISABLE_USER = " DISABLE_USER";
+export const DISABLE_USER_SUCCESS = " DISABLE_USER_SUCCESS";
+
 export function fetchGroups(showLoading = false) {
   return {
     type: FETCH_GROUPS,
@@ -295,6 +300,20 @@ export function removeTemporaryPermission(permission, userId) {
   return {
     type: REMOVE_TEMPORARY_GLOBAL_PERMISSION,
     permission,
+    userId
+  };
+}
+
+export function enableUser(userId) {
+  return {
+    type: ENABLE_USER,
+    userId
+  };
+}
+
+export function disableUser(userId) {
+  return {
+    type: DISABLE_USER,
     userId
   };
 }
