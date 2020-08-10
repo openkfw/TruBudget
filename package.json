@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "danger": "^9.2.2",
-    "lodash": "^4.17.14"
+    "lodash": "^4.17.19"
   },
   "dependencies": {
     "chart.js": "^2.9.3"
