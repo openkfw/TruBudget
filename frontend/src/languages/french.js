@@ -40,6 +40,7 @@ const fr = {
     disconnected: "Déconnecté",
     display_name: "Afficher un nom",
     done: "Terminé",
+    download: "Télécharger",
     edit: "Modifier",
     edited: "Modifié",
     email: "Email",
@@ -52,12 +53,28 @@ const fr = {
     in_review: "En cours d'examen",
     incorrect_password: "Mot de passe incorrect",
     incorrect_username: "Nom d'utilisateur incorrect",
+    incorrect_username_or_password: "ID de connexion ou mot de passe incorrect",
     invalid_tag: "Tag invalide",
     name: "Nom",
     next: "Suivant",
+    no_budget: "Aucun budget trouvé",
+    no_budget_project: "Pour ajouter un budget à votre projet, retournez à la page principale.",
+    no_budget_subproject:
+      "Pour ajouter un budget à votre composante, retournez à la page de présentation du composante.",
     no_budget_distribution: "Impossible d'afficher la distribution si tous les éléments ne sont pas visibles",
+    no_disabled_users: "Aucun utilisateur désactivé trouvé",
+    no_groups: "Aucun groupe trouvé",
+    no_groups_text: "Créez un nouveau groupe en appuyant sur la touche plus.",
     no_history: "Aucun évenement",
+    no_items_text: "Vous pouvez en créer un en appuyant sur la touche plus.",
+    no_nodes: "Aucune demande de nœuds supplémentaires n'a été trouvée",
+    no_notifications: "Aucune notification trouvée",
+    no_organizations: "Aucune demande de nouvelles organisations n'a été trouvée",
     no_resources: "Aucun champ n'a été ajouté à cette ressource",
+    no_subprojects: "Aucun composante trouvé",
+    no_users: "Aucun utilisateur trouvé",
+    no_users_text: "Ajoutez un nouvel utilisateur en appuyant sur le touche plus.",
+    no_workflow_items: "Aucun élément trouvé",
     not_assigned_budget: "Budget non-alloué",
     not_assigned: "Non alloué",
     not_disbursed: "Non décaissé",
@@ -71,6 +88,7 @@ const fr = {
     projected_budget_exists: "Le budget prévu existe déjà",
     projected_budget: "Budget prévu",
     redacted: "Expurgé",
+    reset: "Réinitialiser",
     revoke: "Revoquer",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",
@@ -87,7 +105,11 @@ const fr = {
     update: "Mettre à jour",
     username: "Nom d'utilisateur",
     view: "Vue",
-    workflowitem: "Élement de workflow"
+    workflowitem: "Élement de workflow",
+    dueDate: "Date d'échéance",
+    dueDate_exceeded: "Date d'échéance dépassée",
+    login_disabled: "L'identification de connexion est désactivée",
+    login_data_error: "Le champ ID de connexion ou mot de passe ne peut pas être vide"
   },
 
   login: {
@@ -125,7 +147,8 @@ const fr = {
     project_roles: "Rôles danse le projet",
     project_thumbnail: "Vignette",
     project_title_description: "Description du titre du projet",
-    project_title: "Titre de projet"
+    project_title: "Titre de projet",
+    project_searchtext: "Recherche de projets"
   },
 
   subproject: {
@@ -140,10 +163,12 @@ const fr = {
     subproject_currency: "Devise la composante",
     subproject_edit_title: "Modifier la composante",
     subproject_permissions_title: "Définir les autorisations pour la composante",
+    subproject_permissions_warning: "Aucune autorisation n'a été accordée pour le sous-projet {0}",
     subproject_preview: "Aperçu de la composante",
     subproject_select_button: "Sélectionnez",
     subproject_title_description: "Titre de la composante",
-    subproject_title: "Composante"
+    subproject_title: "Composante",
+    subproject_searchtext: "Recherche de sous-projets"
   },
 
   workflow: {
@@ -181,6 +206,7 @@ const fr = {
     workflow_no_documents: "Pas de document",
     workflow_none: "blub",
     workflow_permissions_title: "Définir les autorisations pour l'élement du workflow",
+    workflow_permissions_warning: "Aucune autorisation n'a été attribuée pour l'élément du workflow {0}",
     workflow_redacted: "Expurgé",
     workflow_selection: "Vous avez sélectionné {0} éléments du workflow",
     workflow_submit_for_review: "Soumettre pour examen",
@@ -194,17 +220,21 @@ const fr = {
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "Historique",
     workflowitem_details_overview: "Sommaire",
-    workflowitem_details: "Détails du workflow item"
+    workflowitem_details: "Détails du workflowitem",
+    workflowitem_type: "Type du workflowitem",
+    workflowitem_type_general: "Créer un élément de workflow de type général.",
+    workflowitem_type_restricted:
+      "Lors de l'attribution d'un élément de workflow restreint, les autorisations sont automatiquement accordées et révoquées. L'assignateur ne conserve que les autorisations de visualisation."
   },
 
   users: {
+    account_name: "Nom du compte",
     add_group: "Ajouter un groupe",
     add_user: "Ajouter des utilisateurs",
     change_password_for: "Changer le mot de passe pour {0}",
     current_user_password: "Votre mot de passe",
     edit_group: "Éditer und groupe",
     edit_permissions_for: "Éditer les autorisations pour",
-    full_name: "Nom complet",
     group_created: "Groupe crée avec succès",
     groups: "Groupes",
     invalid_password: "Mot de passe invalide",
@@ -218,20 +248,27 @@ const fr = {
     password_conditions_letter: "Contenir au moins une lettre",
     password_conditions_number: "Contenir au moins un chiffre",
     password_conditions_preface: "Votre mot de passe doit:",
+    privacy_notice:
+      "Veuillez vous assurer de ne pas fournir d'informations personnelles. En cliquant sur SOUMETTRE, vos données sont sauvegardées de façon permanente et vous confirmez par la présente la réception de l'avis de confidentialité.",
     type_current_password: "Tapez le mot de passe actuel pour {0}",
     type_new_password: "Tapez le nouveau mot de passe pour {0}",
     user_created: "Utilisateur créé avec succès",
     username_invalid: "Nom d'utilisateur invalide",
-    users: "Utilisateurs"
+    users: "Utilisateurs",
+    disabled_users: "Utilisateurs désactivés",
+    disable_user: "Désactiver l'utilisateur",
+    disable_user_successfull: "L'utilisateur suivant a été désactivé: ",
+    enable_user: "Restaurer l'utilisateur",
+    enable_user_successfull: "L'utilisateur suivant a été activé: "
   },
 
   nodesDashboard: {
     access: "Accès",
-    additional_organization_node: "Nouveaux nœuds pour les organisations existantes",
+    additional_organization_node: "Demandes de nœuds supplémentaires",
     address: "Adresse",
     approve: "Approuver",
     network: "Réseau",
-    new_organization: "Nouvelles organisations",
+    new_organization: "Demandes de nouvelles organisations",
     nodes: "Noeuds",
     permissions: "Autorisations"
   },
@@ -247,6 +284,7 @@ const fr = {
   },
 
   confirmation: {
+    assign_permissions: "Attribuer des autorisations",
     additional_permissions_dialog_text:
       "Des actions supplémentaires doivent être exécutées pour que les utilisateurs puissent également afficher toutes les ressources requises.",
     additional_permissions_required: "Autorisations supplémentaires requises",
@@ -262,8 +300,14 @@ const fr = {
     no_permission_warning: "Avertissement: Vous n'êtes pas autorisé à exécuter toutes les actions répertoriées!",
     permissions_required: "Autorisations requises",
     permissions_text: `{0} a besoin d'autorisations supplémentaires pour voir {1} "{2}".`,
+    project_close: "Fermer projet",
+    project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
+    subproject_close: "Fermer sous-projet",
+    subproject_close_text: "Vous êtes sûr de vouloir fermer ce sous-projet?",
     update_permissions_dialog_text: "Voulez-vous vraiment mettre à jour les autorisations?",
-    user_group: "Utilisateur/Groupe"
+    user_group: "Utilisateur/Groupe",
+    workflowitem_close: "Fermer workflowitem",
+    workflowitem_close_text: "Vous êtes sûr de vouloir fermer ce poste de travail?"
   },
 
   intents: {
@@ -301,7 +345,6 @@ const fr = {
     backup: "Sauvegarder",
     connected_peers: "Pairs Connectés",
     disconnected_peers: "Pas de Pairs connectés",
-    download: "Télécharger",
     logout: "Déconnexion",
     main_site: "Principal",
     menu_item_export: "Exporter",
@@ -482,6 +525,34 @@ const fr = {
     workflowitem_update: "Mettre à jour un élément de workflow",
     workflowitem_view: "Voir un élément de workflow",
     write: "Autorisations d'écriture"
+  },
+
+  eventTypes: {
+    project_created: "Projet créé",
+    project_updated: "Projet mis à jour",
+    project_assigned: "Projet assigné",
+    project_closed: "Projet clôturé",
+    project_permission_granted: "Permission de projet accordée",
+    project_permission_revoked: "Permission de projet révoquée",
+    project_projected_budget_updated: "Budget du projet mis à jour",
+    project_projected_budget_deleted: "Budget du projet clôturé",
+
+    subproject_created: "Sous-projet créé",
+    subproject_updated: "Sous-projet mis à jour",
+    subproject_assigned: "Sous-projet assigné",
+    subproject_closed: "Sous-projet clôturé",
+    subproject_permission_granted: "Permission de sous-projet accordée",
+    subproject_permission_revoked: "Permission de sous-projet révoquée",
+    subproject_projected_budget_updated: "Budget du sous-projet mis à jour",
+    subproject_projected_budget_deleted: "Budget du sous-projet clôturé",
+
+    workflowitem_created: "Workflowitem created",
+    workflowitem_updated: "Workflowitem updated",
+    workflowitem_assigned: "Workflowitem assigné",
+    workflowitem_closed: "Workflowitem closed",
+    workflowitem_permission_granted: "Permission de travail accordée",
+    workflowitem_permission_revoked: "Permission de travail révoquée",
+    workflowitems_reordered: "Workflowitems reordered"
   },
 
   language: {

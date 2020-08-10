@@ -10,3 +10,5 @@ node_modules
 yarn-error.log
 .markdownlint.*
 *.code-workspace
+.vs/
+e2e-test/debug.log

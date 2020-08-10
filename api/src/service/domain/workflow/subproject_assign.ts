@@ -1,5 +1,4 @@
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -17,7 +16,7 @@ import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 
 interface Repository {
   getSubproject(): Promise<Result.Type<Subproject.Subproject>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 export async function assignSubproject(
@@ -70,20 +69,26 @@ export async function assignSubproject(
   subproject = result;
 
   // Create notification events:
-  const recipients = await repository.getUsersForIdentity(assignee);
-  const notifications = recipients
+  const recipientsResult = await repository.getUsersForIdentity(assignee);
+  if (Result.isErr(recipientsResult)) {
+    return new VError(recipientsResult, `fetch users for ${assignee} failed`);
+  }
+  const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
-    .filter(userId => userId !== issuer.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(
-        ctx.source,
-        issuer.id,
-        recipient,
-        subprojectAssigned,
-        projectId,
-        subprojectId,
-      ),
-    );
+    if (recipient !== issuer.id) {
+      notifications.push(
+        NotificationCreated.createEvent(
+          ctx.source,
+          issuer.id,
+          recipient,
+          subprojectAssigned,
+          projectId,
+          subprojectId,
+        ),
+      );
+    }
+    return notifications;
+  }, [] as NotificationCreated.Event[]);
 
   return { newEvents: [subprojectAssigned, ...notifications], subproject };
 }

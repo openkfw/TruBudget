@@ -1,5 +1,4 @@
 import Paper from "@material-ui/core/Paper";
-import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -11,21 +10,18 @@ import React from "react";
 
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
+import { UserGroupsEmptyState } from "./UsersGroupsEmptyStates";
 
-const styles = {
-  icon: {
-    color: "black"
-  }
-};
 const sortGroups = groups => {
   return _sortBy(groups, group => group.id && group.displayName);
 };
-const GroupsTable = ({ groups, showDashboardDialog, classes, allowedIntents }) => {
+
+const GroupsTable = ({ groups, showDashboardDialog, allowedIntents }) => {
   const editGroupDisplayed = allowedIntents.includes("global.createGroup");
 
   const sortedGroups = sortGroups(groups);
 
-  return (
+  return sortedGroups.length > 0 ? (
     <Paper>
       <Table>
         <TableHead>
@@ -62,6 +58,8 @@ const GroupsTable = ({ groups, showDashboardDialog, classes, allowedIntents }) =
         </TableBody>
       </Table>
     </Paper>
+  ) : (
+    <UserGroupsEmptyState />
   );
 };
-export default withStyles(styles)(GroupsTable);
+export default GroupsTable;

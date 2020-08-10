@@ -35,6 +35,8 @@ export const SET_HISTORY_OFFSET = "SET_HISTORY_OFFSET";
 export const SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT = "SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT";
 export const FETCH_NEXT_PROJECT_HISTORY_PAGE = "FETCH_NEXT_PROJECT_HISTORY_PAGE";
 export const FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS = "FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS";
+export const FETCH_FIRST_PROJECT_HISTORY_PAGE = "FETCH_FIRST_PROJECT_HISTORY_PAGE";
+export const FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS = "FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS";
 
 export const CLOSE_PROJECT = "CLOSE_PROJECT";
 export const CLOSE_PROJECT_SUCCESS = "CLOSE_PROJECT_SUCCESS";
@@ -59,6 +61,12 @@ export const OPEN_HISTORY = "OPEN_HISTORY";
 
 export const ADD_TEMPORARY_SUBPROJECT_PERMISSION = "ADD_TEMPORARY_SUBPROJECT_PERMISSION";
 export const REMOVE_TEMPORARY_SUBPROJECT_PERMISSION = " REMOVE_TEMPORARY_SUBPROJECT_PERMISSION";
+
+export const SUBPROJECT_SEARCH_TERM = "SUBPROJECT_SEARCH_TERM";
+export const SUBPROJECT_SEARCH_BAR_DISPLAYED = "SUBPROJECT_SEARCH_BAR_DISPLAYED";
+export const SUBPROJECT_STORE_FILTERED_PROJECTS = "SUBPROJECT_STORE_FILTERED_PROJECTS";
+export const SUBPROJECT_STORE_HIGHLIGHTING_REGEX = "SUBPROJECT_STORE_HIGHLIGHTING_REGEX";
+export const SUBPROJECT_STORE_SEARCH_TERMS_AS_ARRAY = "SUBPROJECT_STORE_SEARCH_TERMS_AS_ARRAY";
 
 export function fetchSubProjectPermissions(projectId, subprojectId, showLoading = false) {
   return {
@@ -130,10 +138,20 @@ export function setTotalHistoryItemCount(count) {
   };
 }
 
-export function fetchNextProjectHistoryPage(projectId, showLoading = false) {
+export function fetchNextProjectHistoryPage(projectId, filter = {}, showLoading = false) {
   return {
     type: FETCH_NEXT_PROJECT_HISTORY_PAGE,
     projectId,
+    filter,
+    showLoading
+  };
+}
+
+export function fetchFirstProjectHistoryPage(projectId, filter = {}, showLoading = false) {
+  return {
+    type: FETCH_FIRST_PROJECT_HISTORY_PAGE,
+    projectId,
+    filter,
     showLoading
   };
 }
@@ -306,5 +324,39 @@ export function removeTemporaryPermission(permission, userId) {
     type: REMOVE_TEMPORARY_SUBPROJECT_PERMISSION,
     permission,
     userId
+  };
+}
+
+export function storeSubSearchTerm(searchTerm) {
+  return {
+    type: SUBPROJECT_SEARCH_TERM,
+    searchTerm
+  };
+}
+
+export function storeSubSearchBarDisplayed(searchBarDisplayed) {
+  return {
+    type: SUBPROJECT_SEARCH_BAR_DISPLAYED,
+    searchBarDisplayed
+  };
+}
+export function storeFilteredSubProjects(filteredSubProjects) {
+  return {
+    type: SUBPROJECT_STORE_FILTERED_PROJECTS,
+    filteredSubProjects
+  };
+}
+
+export function storeSubHighlightingRegex(highlightingRegex) {
+  return {
+    type: SUBPROJECT_STORE_HIGHLIGHTING_REGEX,
+    highlightingRegex
+  };
+}
+
+export function storeSubSearchTermArray(searchTerms) {
+  return {
+    type: SUBPROJECT_STORE_SEARCH_TERMS_AS_ARRAY,
+    searchTerms
   };
 }

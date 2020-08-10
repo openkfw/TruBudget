@@ -1,7 +1,6 @@
 import Joi = require("joi");
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -30,7 +29,7 @@ interface Repository {
     projectId: Project.Id,
     subprojectId: Subproject.Id,
   ): Promise<Result.Type<Subproject.Subproject>>;
-  getUsersForIdentity(identity: Identity): Promise<UserRecord.Id[]>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 export async function updateSubproject(
@@ -40,7 +39,7 @@ export async function updateSubproject(
   subprojectId: Subproject.Id,
   data: RequestData,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const subproject = await repository.getSubproject(subprojectId, subprojectId);
 
   if (Result.isErr(subproject)) {
@@ -75,28 +74,35 @@ export async function updateSubproject(
 
   // Only emit the event if it causes any changes:
   if (isEqualIgnoringLog(subproject, result)) {
-    return { newEvents: [] };
+    return [];
   }
 
   // Create notification events:
-  const recipients = subproject.assignee
-    ? await repository.getUsersForIdentity(subproject.assignee)
-    : [];
-  const notifications = recipients
-    // The issuer doesn't receive a notification:
-    .filter(userId => userId !== issuer.id)
-    .map(recipient =>
-      NotificationCreated.createEvent(
-        ctx.source,
-        issuer.id,
-        recipient,
-        subprojectUpdated,
-        projectId,
-        subprojectId,
-      ),
-    );
+  let notifications: NotificationCreated.Event[] = [];
+  if (subproject.assignee !== undefined) {
+    const recipientsResult = await repository.getUsersForIdentity(subproject.assignee);
+    if (Result.isErr(recipientsResult)) {
+      return new VError(recipientsResult, `fetch users for ${subproject.assignee} failed`);
+    }
+    notifications = recipientsResult.reduce((notifications, recipient) => {
+      // The issuer doesn't receive a notification:
+      if (recipient !== issuer.id) {
+        notifications.push(
+          NotificationCreated.createEvent(
+            ctx.source,
+            issuer.id,
+            recipient,
+            subprojectUpdated,
+            projectId,
+            subprojectId,
+          ),
+        );
+      }
+      return notifications;
+    }, [] as NotificationCreated.Event[]);
+  }
 
-  return { newEvents: [subprojectUpdated, ...notifications] };
+  return [subprojectUpdated, ...notifications];
 }
 
 function isEqualIgnoringLog(

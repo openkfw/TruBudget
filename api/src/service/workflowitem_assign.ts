@@ -1,13 +1,16 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
+import { BusinessEvent } from "./domain/business_event";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemAssign from "./domain/workflow/workflowitem_assign";
+import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
 import * as GroupQuery from "./group_query";
 import { store } from "./store";
 
@@ -19,8 +22,8 @@ export async function assignWorkflowitem(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
   assignee: Identity,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache => {
+): Promise<Result.Type<void>> {
+  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) => {
     return WorkflowitemAssign.assignWorkflowitem(
       ctx,
       serviceUser,
@@ -29,19 +32,22 @@ export async function assignWorkflowitem(
       subprojectId,
       workflowitemId,
       {
-        getWorkflowitem: async id => {
+        getWorkflowitem: async (id) => {
           return cache.getWorkflowitem(projectId, subprojectId, id);
         },
-        getUsersForIdentity: async identity => {
+        getUsersForIdentity: async (identity) => {
           return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
+        },
+        applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
+          return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
         },
       },
     );
   });
-
-  if (Result.isErr(result)) throw result;
-
-  const { newEvents } = result;
+  if (Result.isErr(newEventsResult)) {
+    return new VError(newEventsResult, `assign ${assignee} to workflowitem failed`);
+  }
+  const newEvents = newEventsResult.newEvents;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);

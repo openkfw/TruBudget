@@ -1,19 +1,19 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
-import { UploadedDocument } from "./service/domain/workflow/document";
+import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/workflow/document";
 import { conversionRateSchema, moneyAmountSchema } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
+import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_types/types";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -28,9 +28,11 @@ interface RequestBodyV1 {
     amount?: string;
     amountType: "N/A" | "disbursed" | "allocated";
     billingDate?: string;
+    dueDate?: string;
     exchangeRate?: string;
     documents?: UploadedDocument[];
     additionalData?: object;
+    workflowitemType?: Type;
   };
 }
 
@@ -39,7 +41,7 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     projectId: Project.idSchema,
     subprojectId: Subproject.idSchema,
-    status: Joi.valid("open", "closed"),
+    status: Joi.valid("open"),
     displayName: Joi.string().required(),
     description: Joi.string().allow(""),
     assignee: Joi.string(),
@@ -47,9 +49,11 @@ const requestBodyV1Schema = Joi.object({
     amount: moneyAmountSchema,
     amountType: Joi.string().required(),
     billingDate: Joi.string(),
+    dueDate: Joi.string().allow(""),
     exchangeRate: conversionRateSchema,
-    documents: Joi.array().items(Joi.object().keys({ id: Joi.string(), base64: Joi.string() })),
+    documents: Joi.array().items(uploadedDocumentSchema),
     additionalData: Joi.object(),
+    workflowitemType: workflowitemTypeSchema,
   }).required(),
 });
 
@@ -95,6 +99,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
               currency: { type: ["string", "null"], example: "EUR" },
               amountType: { type: "string", example: "disbursed" },
               billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+              dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
               exchangeRate: { type: "string", example: "1.0" },
               documents: {
                 type: "array",
@@ -103,10 +108,12 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   properties: {
                     id: { type: "string", example: "classroom-contract" },
                     base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
+                    fileName: { type: "string", example: "test-document" },
                   },
                 },
               },
               additionalData: { type: "object", additionalProperties: true },
+              workflowitemType: { type: "string", example: "general" },
             },
           },
         },
@@ -153,7 +160,7 @@ interface Service {
     ctx: Ctx,
     user: ServiceUser,
     createRequest: WorkflowitemCreate.RequestData,
-  ): Promise<ResourceMap>;
+  ): Promise<Result.Type<ResourceMap>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -187,14 +194,20 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         amount: bodyResult.data.amount,
         amountType: bodyResult.data.amountType,
         billingDate: bodyResult.data.billingDate,
+        dueDate: bodyResult.data.dueDate,
         exchangeRate: bodyResult.data.exchangeRate,
         additionalData: bodyResult.data.additionalData,
         documents: bodyResult.data.documents,
+        workflowitemType: bodyResult.data.workflowitemType,
       };
 
       service
         .createWorkflowitem(ctx, user, reqData)
-        .then((resourceIds: ResourceMap) => {
+        .then((resourceIdsResult) => {
+          if (Result.isErr(resourceIdsResult)) {
+            throw new VError(resourceIdsResult, "subproject.createWorkflowitem failed");
+          }
+          const resourceIds = resourceIdsResult;
           const code = 200;
           const body = {
             apiVersion: "1.0",
@@ -204,7 +217,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           };
           reply.status(code).send(body);
         })
-        .catch(err => {
+        .catch((err) => {
           const { code, body } = toHttpError(err);
           reply.status(code).send(body);
         });

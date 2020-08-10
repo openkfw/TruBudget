@@ -25,30 +25,41 @@ import {
   showDashboardDialog,
   showPasswordDialog,
   storeGroupId,
-  storeGroupName
+  storeGroupName,
+  enableUser,
+  disableUser
 } from "./actions";
 import Users from "./Users";
 
 class UserManagementContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isDataFetched: false
+    };
+  }
+
   componentDidMount() {
     this.props.fetchUser();
     this.props.fetchGroups();
     if (this.props.allowedIntents.includes("global.listPermissions")) {
       this.props.listGlobalPermissions();
     }
+    this.setState({ isDataFetched: true });
   }
   componentWillUnmount() {
     this.props.resetState();
   }
   render() {
-    return <Users {...this.props} />;
+    return !this.state.isDataFetched ? <div /> : <Users {...this.props} />;
   }
 }
 
 const mapStateToProps = state => {
   return {
     allowedIntents: state.getIn(["login", "allowedIntents"]),
-    users: state.getIn(["login", "user"]),
+    enabledUsers: state.getIn(["login", "enabledUsers"]),
+    disabledUsers: state.getIn(["login", "disabledUsers"]),
     userId: state.getIn(["login", "id"]),
     organization: state.getIn(["login", "organization"]),
     tabIndex: state.getIn(["users", "tabIndex"]),
@@ -57,7 +68,8 @@ const mapStateToProps = state => {
     editMode: state.getIn(["users", "editMode"]),
     editDialogShown: state.getIn(["users", "editDialogShown"]),
     editId: state.getIn(["users", "editId"]),
-    isRoot: state.getIn(["navbar", "isRoot"])
+    isRoot: state.getIn(["navbar", "isRoot"]),
+    isDataLoading: state.getIn(["loading", "loadingVisible"])
   };
 };
 
@@ -87,7 +99,9 @@ const mapDispatchToProps = dispatch => {
     showPasswordDialog: editId => dispatch(showPasswordDialog(editId)),
     listGlobalPermissions: () => dispatch(listPermissions()),
     checkAndChangeUserPassword: (actingUser, username, userPassword, newPassword) =>
-      dispatch(checkAndChangeUserPassword(actingUser, username, userPassword, newPassword))
+      dispatch(checkAndChangeUserPassword(actingUser, username, userPassword, newPassword)),
+    enableUser: userId => dispatch(enableUser(userId)),
+    disableUser: userId => dispatch(disableUser(userId))
   };
 };
 

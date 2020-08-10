@@ -21,7 +21,12 @@ import {
   EXECUTE_CONFIRMED_ACTIONS_FAILURE,
   EXECUTE_CONFIRMED_ACTIONS_SUCCESS
 } from "./pages/Confirmation/actions.js";
-import { CLEAR_DOCUMENTS, VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS } from "./pages/Documents/actions";
+import {
+  CLEAR_DOCUMENTS,
+  VALIDATE_DOCUMENT,
+  VALIDATE_DOCUMENT_SUCCESS,
+  DOWNLOAD_DOCUMENT
+} from "./pages/Documents/actions";
 import { cancelDebounce, hideLoadingIndicator, showLoadingIndicator } from "./pages/Loading/actions.js";
 import {
   CHECK_EMAIL_SERVICE,
@@ -35,10 +40,10 @@ import {
   FETCH_USER,
   FETCH_USER_SUCCESS,
   LOGIN,
+  LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
   LOGOUT_SUCCESS,
-  SHOW_LOGIN_ERROR,
   STORE_ENVIRONMENT,
   STORE_ENVIRONMENT_SUCCESS
 } from "./pages/Login/actions";
@@ -108,6 +113,8 @@ import {
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   FETCH_NEXT_PROJECT_HISTORY_PAGE,
   FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
+  FETCH_FIRST_PROJECT_HISTORY_PAGE,
+  FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_SUBPROJECT_PERMISSIONS,
   FETCH_SUBPROJECT_PERMISSIONS_FAILURE,
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
@@ -140,7 +147,11 @@ import {
   REMOVE_USER,
   REMOVE_USER_SUCCESS,
   REVOKE_GLOBAL_PERMISSION,
-  REVOKE_GLOBAL_PERMISSION_SUCCESS
+  REVOKE_GLOBAL_PERMISSION_SUCCESS,
+  ENABLE_USER,
+  ENABLE_USER_SUCCESS,
+  DISABLE_USER,
+  DISABLE_USER_SUCCESS
 } from "./pages/Users/actions.js";
 import {
   ASSIGN_SUBPROJECT,
@@ -159,6 +170,8 @@ import {
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+  FETCH_FIRST_SUBPROJECT_HISTORY_PAGE,
+  FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
@@ -180,6 +193,8 @@ import {
 import {
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE,
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
+  FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE,
+  FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
   SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT
 } from "./pages/Workflows/WorkflowitemHistoryTab/actions";
 
@@ -246,7 +261,17 @@ function* showSnackbarSuccess() {
   yield put({
     type: SHOW_SNACKBAR,
     show: true,
-    isError: false
+    isError: false,
+    isWarning: false
+  });
+}
+
+function* showSnackbarWarning() {
+  yield put({
+    type: SHOW_SNACKBAR,
+    show: true,
+    isError: false,
+    isWarning: true
   });
 }
 
@@ -265,7 +290,8 @@ function* handleError(error) {
     yield put({
       type: SHOW_SNACKBAR,
       show: true,
-      isError: true
+      isError: true,
+      isWarning: false
     });
   } else if (error.response && error.response.data && error.response.data.message) {
     yield put({
@@ -275,7 +301,8 @@ function* handleError(error) {
     yield put({
       type: SHOW_SNACKBAR,
       show: true,
-      isError: true
+      isError: true,
+      isWarning: false
     });
   } else {
     yield put({
@@ -285,7 +312,8 @@ function* handleError(error) {
     yield put({
       type: SHOW_SNACKBAR,
       show: true,
-      isError: true
+      isError: true,
+      isWarning: false
     });
   }
 }
@@ -305,7 +333,7 @@ function* callApi(func, ...args) {
   // TODO dont set the environment on each call
   const prefix = env === "Test" ? "/test" : "/prod";
   yield call(api.setBaseUrl, prefix);
-  const { data } = yield call(func, ...args);
+  const { data = {} } = yield call(func, ...args);
   return data;
 }
 
@@ -466,10 +494,11 @@ export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets =
 
 export function* createSubProjectSaga({ projectId, name, description, currency, projectedBudgets, showLoading }) {
   yield execute(function*() {
-    yield callApi(api.createSubProject, projectId, name, description, currency, projectedBudgets);
-    yield showSnackbarSuccess();
+    const { data } = yield callApi(api.createSubProject, projectId, name, description, currency, projectedBudgets);
+    yield showSnackbarWarning();
     yield put({
-      type: CREATE_SUBPROJECT_SUCCESS
+      type: CREATE_SUBPROJECT_SUCCESS,
+      subprojectId: data.subproject.id
     });
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS,
@@ -522,10 +551,11 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
 
 export function* createWorkflowItemSaga({ type, ...rest }) {
   yield execute(function*() {
-    yield callApi(api.createWorkflowItem, rest);
-    yield showSnackbarSuccess();
+    const { data } = yield callApi(api.createWorkflowItem, rest);
+    yield showSnackbarWarning();
     yield put({
-      type: CREATE_WORKFLOW_SUCCESS
+      type: CREATE_WORKFLOW_SUCCESS,
+      workflowitemId: data.workflowitem.id
     });
 
     yield put({
@@ -570,7 +600,7 @@ export function* validateDocumentSaga({ base64String, hash }) {
       type: VALIDATE_DOCUMENT_SUCCESS,
       isIdentical: data.isIdentical
     });
-  }, true);
+  }, false);
 }
 
 export function* setEnvironmentSaga(action) {
@@ -758,27 +788,67 @@ export function* markMultipleNotificationsAsReadSaga({ notificationIds, notifica
 export function* loginSaga({ user }) {
   function* login() {
     const { data } = yield callApi(api.login, user.username, user.password);
-
     yield put({
       type: LOGIN_SUCCESS,
       ...data
     });
+    yield call(() => fetchNotificationCountsSaga(false));
     yield put({
-      type: SHOW_LOGIN_ERROR,
-      show: false
+      type: SNACKBAR_MESSAGE,
+      message: ""
     });
     yield put({
       type: SHOW_SNACKBAR,
       show: false,
-      isError: false
+      isError: false,
+      isWarning: false
+    });
+    yield put({
+      type: LOGIN_ERROR,
+      show: false
     });
   }
+
   function* onLoginError(error) {
+    switch (error.response.status) {
+      case 400:
+        // User not found or password wrong
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.common.incorrect_username_or_password
+        });
+        break;
+      case 403:
+        // User is disabled
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.common.login_disabled
+        });
+        break;
+      case 500:
+        // ID or password field is empty
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.common.login_data_error
+        });
+        break;
+      default:
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.common.incorrect_username_or_password
+        });
+    }
+
     yield put({
-      type: SHOW_LOGIN_ERROR,
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+    yield put({
+      type: LOGIN_ERROR,
       show: true
     });
-    yield handleError(error);
   }
   yield execute(login, true, onLoginError);
 }
@@ -922,6 +992,51 @@ export function* checkAndChangeUserPasswordSaga({ username, actingUser, currentP
   }
 }
 
+export function* enableUserSaga({ userId }) {
+  yield execute(function*() {
+    yield callApi(api.enableUser, userId);
+    yield put({
+      type: ENABLE_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_USER,
+      show: true
+    });
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.users.enable_user_successfull + userId
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: false,
+      isWarning: false
+    });
+  }, true);
+}
+export function* disableUserSaga({ userId }) {
+  yield execute(function*() {
+    yield callApi(api.disableUser, userId);
+    yield put({
+      type: DISABLE_USER_SUCCESS
+    });
+    yield put({
+      type: FETCH_USER,
+      show: true
+    });
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.users.disable_user_successfull + userId
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: false,
+      isWarning: false
+    });
+  }, true);
+}
+
 export function* removeUserFromGroupSaga({ groupId, userId }) {
   yield execute(function*() {
     yield callApi(api.removeUserFromGroup, groupId, userId);
@@ -1000,11 +1115,38 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
   }, showLoading);
 }
 
-export function* fetchNextProjectHistoryPageSaga({ projectId, showLoading }) {
+export function* fetchFirstProjectHistoryPageSaga({ projectId, filter, showLoading }) {
   yield execute(function*() {
     const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getProjectHistoryState);
 
+    let offset = -historyPageSize;
+    const limit = historyPageSize;
+
+    const { data } = yield callApi(api.viewProjectHistory, projectId, offset, limit, filter);
+    const { historyItemsCount, events } = data;
+    const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
+    const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
+    if (isFirstPage) {
+      yield put({
+        type: SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT,
+        totalHistoryItemsCount: historyItemsCount,
+        lastHistoryPage
+      });
+    }
+
+    yield put({
+      type: FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS,
+      events,
+      currentHistoryPage: currentHistoryPage + 1
+    });
+  }, showLoading);
+}
+
+export function* fetchNextProjectHistoryPageSaga({ projectId, filter, showLoading }) {
+  yield execute(function*() {
+    const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getProjectHistoryState);
     let offset = 0;
+
     if (totalHistoryItemCount === 0) {
       // Before the first call, we don't know how many history items there are
       // so we fetch a fixed number of the latest items
@@ -1023,7 +1165,8 @@ export function* fetchNextProjectHistoryPageSaga({ projectId, showLoading }) {
     // is a multiple of the page size and we need to fetch a whole page
     const limit = isLastPage && remainingItems !== 0 ? remainingItems : historyPageSize;
 
-    const { historyItemsCount, events } = yield callApi(api.viewProjectHistory, projectId, offset, limit);
+    const { data } = yield callApi(api.viewProjectHistory, projectId, offset, limit, filter);
+    const { historyItemsCount, events } = data;
     const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
     const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
     if (isFirstPage) {
@@ -1042,7 +1185,32 @@ export function* fetchNextProjectHistoryPageSaga({ projectId, showLoading }) {
   }, showLoading);
 }
 
-export function* fetchNextSubprojectHistoryPageSaga({ projectId, subprojectId, showLoading }) {
+export function* fetchFirstSubprojectHistoryPageSaga({ projectId, subprojectId, filter, showLoading }) {
+  yield execute(function*() {
+    const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getSubprojectHistoryState);
+    const offset = -historyPageSize;
+    const limit = historyPageSize;
+
+    const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId, offset, limit, filter);
+    const { historyItemsCount, events } = data;
+    const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
+    const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
+    if (isFirstPage) {
+      yield put({
+        type: SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
+        totalHistoryItemsCount: historyItemsCount,
+        lastHistoryPage
+      });
+    }
+
+    yield put({
+      type: FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+      events,
+      currentHistoryPage: currentHistoryPage + 1
+    });
+  }, showLoading);
+}
+export function* fetchNextSubprojectHistoryPageSaga({ projectId, subprojectId, filter, showLoading }) {
   yield execute(function*() {
     const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getSubprojectHistoryState);
 
@@ -1065,13 +1233,8 @@ export function* fetchNextSubprojectHistoryPageSaga({ projectId, subprojectId, s
     // is a multiple of the page size and we need to fetch a whole page
     const limit = isLastPage && remainingItems !== 0 ? remainingItems : historyPageSize;
 
-    const { historyItemsCount, events } = yield callApi(
-      api.viewSubProjectHistory,
-      projectId,
-      subprojectId,
-      offset,
-      limit
-    );
+    const { data } = yield callApi(api.viewSubProjectHistory, projectId, subprojectId, offset, limit, filter);
+    const { historyItemsCount, events } = data;
     const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
     const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
     if (isFirstPage) {
@@ -1090,7 +1253,54 @@ export function* fetchNextSubprojectHistoryPageSaga({ projectId, subprojectId, s
   }, showLoading);
 }
 
-export function* fetchNextWorkflowitemHistoryPageSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
+export function* fetchFirstWorkflowitemHistoryPageSaga({
+  projectId,
+  subprojectId,
+  workflowitemId,
+  filter,
+  showLoading
+}) {
+  yield execute(function*() {
+    const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getWorkflowitemHistoryState);
+
+    const offset = -historyPageSize;
+    const limit = historyPageSize;
+
+    const { data } = yield callApi(
+      api.viewWorkflowitemHistory,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      offset,
+      limit,
+      filter
+    );
+    const { historyItemsCount, events } = data;
+    const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
+    const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
+    if (isFirstPage) {
+      yield put({
+        type: SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT,
+        totalHistoryItemsCount: historyItemsCount,
+        lastHistoryPage
+      });
+    }
+
+    yield put({
+      type: FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
+      events,
+      currentHistoryPage: currentHistoryPage + 1
+    });
+  }, showLoading);
+}
+
+export function* fetchNextWorkflowitemHistoryPageSaga({
+  projectId,
+  subprojectId,
+  workflowitemId,
+  filter,
+  showLoading
+}) {
   yield execute(function*() {
     const { currentHistoryPage, historyPageSize, totalHistoryItemCount } = yield select(getWorkflowitemHistoryState);
 
@@ -1112,15 +1322,16 @@ export function* fetchNextWorkflowitemHistoryPageSaga({ projectId, subprojectId,
     // If the remaining items are 0, it means that the total number of history items
     // is a multiple of the page size and we need to fetch a whole page
     const limit = isLastPage && remainingItems > 0 ? remainingItems : historyPageSize;
-
-    const { historyItemsCount, events } = yield callApi(
+    const { data } = yield callApi(
       api.viewWorkflowitemHistory,
       projectId,
       subprojectId,
       workflowitemId,
       offset,
-      limit
+      limit,
+      filter
     );
+    const { historyItemsCount, events } = data;
     const lastHistoryPage = historyPageSize !== 0 ? Math.ceil(historyItemsCount / historyPageSize) : 1;
     const isFirstPage = totalHistoryItemCount === 0 && historyItemsCount !== 0;
     if (isFirstPage) {
@@ -1136,6 +1347,12 @@ export function* fetchNextWorkflowitemHistoryPageSaga({ projectId, subprojectId,
       events,
       currentHistoryPage: currentHistoryPage + 1
     });
+  }, showLoading);
+}
+
+export function* downloadDocumentSaga({ projectId, subprojectId, workflowitemId, documentId, showLoading = true }) {
+  yield execute(function*() {
+    yield callApi(api.downloadDocument, projectId, subprojectId, workflowitemId, documentId);
   }, showLoading);
 }
 
@@ -1471,6 +1688,18 @@ export function* revokeWorkflowItemPermissionsSaga({
 
 export function* closeProjectSaga({ projectId, showLoading }) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "project.close",
+        payload: {
+          project: { id: projectId }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.closeProject, projectId);
     yield put({ type: CLOSE_PROJECT_SUCCESS });
 
@@ -1484,6 +1713,19 @@ export function* closeProjectSaga({ projectId, showLoading }) {
 
 export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "subproject.close",
+        payload: {
+          project: { id: projectId },
+          subproject: { id: subprojectId }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.closeSubproject, projectId, subprojectId);
     yield put({ type: CLOSE_SUBPROJECT_SUCCESS });
 
@@ -1498,6 +1740,20 @@ export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
 
 export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId, showLoading }) {
   yield execute(function*() {
+    const confirmed = yield select(getConfirmedState);
+    if (confirmed !== true) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "workflowitem.close",
+        payload: {
+          project: { id: projectId },
+          subproject: { id: subprojectId },
+          workflowitem: { id: workflowitemId }
+        }
+      });
+      yield cancel();
+    }
+
     yield callApi(api.closeWorkflowItem, projectId, subprojectId, workflowitemId);
 
     yield put({
@@ -1989,7 +2245,8 @@ function* exportDataSaga() {
       yield put({
         type: SHOW_SNACKBAR,
         show: true,
-        isError: true
+        isError: true,
+        isWarning: false
       });
     }
   );
@@ -2095,6 +2352,8 @@ export default function* rootSaga() {
 
       // Users
       yield takeEvery(CHECK_AND_CHANGE_USER_PASSWORD, checkAndChangeUserPasswordSaga),
+      yield takeEvery(ENABLE_USER, enableUserSaga),
+      yield takeEvery(DISABLE_USER, disableUserSaga),
 
       // LiveUpdates
       yield takeLeading(LIVE_UPDATE_PROJECT, liveUpdateProjectSaga),
@@ -2110,6 +2369,7 @@ export default function* rootSaga() {
       yield takeEvery(REVOKE_PERMISSION, revokePermissionsSaga),
       yield takeEvery(ASSIGN_PROJECT, assignProjectSaga),
       yield takeEvery(FETCH_NEXT_PROJECT_HISTORY_PAGE, fetchNextProjectHistoryPageSaga),
+      yield takeEvery(FETCH_FIRST_PROJECT_HISTORY_PAGE, fetchFirstProjectHistoryPageSaga),
       yield takeEvery(CLOSE_PROJECT, closeProjectSaga),
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga),
 
@@ -2120,6 +2380,7 @@ export default function* rootSaga() {
       yield takeLatest(FETCH_SUBPROJECT_PERMISSIONS, fetchSubProjectPermissionsSaga),
       yield takeEvery(GRANT_SUBPROJECT_PERMISSION, grantSubProjectPermissionsSaga),
       yield takeEvery(FETCH_NEXT_SUBPROJECT_HISTORY_PAGE, fetchNextSubprojectHistoryPageSaga),
+      yield takeEvery(FETCH_FIRST_SUBPROJECT_HISTORY_PAGE, fetchFirstSubprojectHistoryPageSaga),
       yield takeEvery(REVOKE_SUBPROJECT_PERMISSION, revokeSubProjectPermissionsSaga),
       yield takeEvery(CLOSE_SUBPROJECT, closeSubprojectSaga),
       yield takeEvery(ASSIGN_SUBPROJECT, assignSubprojectSaga),
@@ -2138,6 +2399,8 @@ export default function* rootSaga() {
       yield takeEvery(SHOW_WORKFLOW_PREVIEW, fetchWorkflowActionsSaga),
       yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
       yield takeEvery(FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE, fetchNextWorkflowitemHistoryPageSaga),
+      yield takeEvery(FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE, fetchFirstWorkflowitemHistoryPageSaga),
+      yield takeLeading(DOWNLOAD_DOCUMENT, downloadDocumentSaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),

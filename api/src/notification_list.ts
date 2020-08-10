@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -168,7 +168,10 @@ interface ExposedNotification {
 }
 
 interface Service {
-  getNotificationsForUser(ctx: Ctx, user: ServiceUser): Promise<Notification.Notification[]>;
+  getNotificationsForUser(
+    ctx: Ctx,
+    user: ServiceUser,
+  ): Promise<Result.Type<Notification.Notification[]>>;
   getProject(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Result.Type<Project.Project>>;
   getSubproject(
     ctx: Ctx,
@@ -197,7 +200,7 @@ async function getProjectMetadata(
 ): Promise<ProjectWithViewPermissions | ProjectWithoutViewPermissions> {
   const project = await service.getProject(ctx, user, projectId);
   return Result.unwrap_or(
-    Result.map(project, x => ({
+    Result.map(project, (x) => ({
       id: x.id,
       hasViewPermissions: TRUE,
       displayName: x.displayName,
@@ -215,7 +218,7 @@ async function getSubprojectMetadata(
 ): Promise<SubprojectWithViewPermissions | SubprojectWithoutViewPermissions> {
   const subproject = await service.getSubproject(ctx, user, projectId, subprojectId);
   return Result.unwrap_or(
-    Result.map(subproject, x => ({
+    Result.map(subproject, (x) => ({
       id: x.id,
       hasViewPermissions: TRUE,
       displayName: x.displayName,
@@ -240,7 +243,7 @@ async function getWorkflowitemMetadata(
     workflowitemId,
   );
   return Result.unwrap_or(
-    Result.map(workflowitem, x => ({
+    Result.map(workflowitem, (x) => ({
       id: x.id,
       hasViewPermissions: TRUE,
       displayName: x.displayName,
@@ -320,11 +323,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     }
 
     try {
-      const notifications: Notification.Notification[] = await service.getNotificationsForUser(
-        ctx,
-        user,
-      );
-
+      const notificationsResult = await service.getNotificationsForUser(ctx, user);
+      if (Result.isErr(notificationsResult)) {
+        throw new VError(notificationsResult, "notification.list failed");
+      }
+      const notifications = notificationsResult;
       notifications.sort(byEventTime);
 
       const offsetIndex = offset < 0 ? Math.max(0, notifications.length + offset) : offset;

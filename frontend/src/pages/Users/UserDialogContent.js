@@ -1,25 +1,28 @@
+import { Typography } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import NameIcon from "@material-ui/icons/AssignmentInd";
+import InfoIcon from "@material-ui/icons/Info";
+import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import React from "react";
 
-import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
-import NameIcon from "@material-ui/icons/AssignmentInd";
-import { withStyles } from "@material-ui/core/styles";
-
 import strings from "../../localizeStrings";
-import Username from "../Common/Username";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
+import Username from "../Common/Username";
 
 const styles = {
   textInputContainer: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
+    marginTop: "30px"
   },
   textInput: {
     width: "50%"
   },
   container: {
-    marginBottom: "20px"
+    marginBottom: "20px",
+    marginLeft: "10px"
   },
   checkboxContainer: {
     display: "flex",
@@ -31,6 +34,14 @@ const styles = {
   divider: {
     marginTop: 20,
     marginBottom: 20
+  },
+  infoIcon: {
+    fontSize: 20,
+    marginRight: "10px"
+  },
+  info: {
+    display: "flex",
+    paddingRight: 20
   }
 };
 
@@ -48,14 +59,18 @@ const UserDialogContent = ({
 
   return (
     <div className={classes.container}>
+      <span className={classes.info}>
+        <InfoIcon className={classes.infoIcon} />
+        <Typography variant="body2">{strings.users.privacy_notice}</Typography>
+      </span>
       <div className={classes.textInputContainer}>
         <TextInputWithIcon
           className={classes.textInput}
-          label={strings.users.full_name}
+          label={strings.users.account_name}
           value={displayName}
           error={false}
           icon={<NameIcon />}
-          data-test="fullname"
+          data-test="accountname"
           onChange={event => setDisplayName(event.target.value)}
         />
         <TextInputWithIcon

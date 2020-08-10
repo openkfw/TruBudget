@@ -1,6 +1,6 @@
 {
   "name": "trubudget-frontend",
-  "version": "1.8.0",
+  "version": "1.12.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
     "file-saver": "^1.3.8",
     "history": "^4.9.0",
     "immutable": "^3.8.1",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.19",
     "react": "^16.8.6",
     "react-chartjs-2": "^2.7.6",
     "react-debounce-input": "^3.2.2",
@@ -54,14 +54,14 @@
     "eslint-config-prettier": "^6.4.0",
     "prettier": "1.19.1",
     "react-app-rewired": "^2.1.3",
-    "react-scripts": "^3.3.0",
+    "react-scripts": "^3.4.1",
     "typescript": "^3.7.2"
   },
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "npm run check-translations",
-    "eject": "react-app-rewired eject",
+    "eject": "react-scripts eject",
     "check-translations": "node scripts/check-translations.js",
     "lint": "eslint src",
     "eslint-check": "eslint --print-config ./src/index.js | eslint-config-prettier-check"

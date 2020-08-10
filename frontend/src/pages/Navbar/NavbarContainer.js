@@ -3,7 +3,7 @@ import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
-import { checkEmailService, logout } from "../Login/actions";
+import { logout, fetchEmailAddress } from "../Login/actions";
 import FlyInNotifications from "../Notifications/FlyInNotifications";
 import {
   createBackup,
@@ -17,14 +17,13 @@ import {
   storeSearchTerm,
   toggleSidebar
 } from "./actions";
-import { convertToSearchBarString } from "./convertSearchTerm";
 import Navbar from "./Navbar";
+import { convertToSearchBarString } from "../../helper";
 
 class NavbarContainer extends Component {
   componentDidMount() {
     this.props.fetchActivePeers();
     this.props.fetchVersions();
-    this.props.checkEmailService();
 
     if (this.props.userId === "root") {
       this.props.setIsRoot(true);
@@ -39,7 +38,7 @@ class NavbarContainer extends Component {
 
   render() {
     return (
-      <div>
+      <div data-test="navigation-bar">
         <Navbar {...this.props} unreadNotifications={this.props.unreadNotificationCount} />
         <FlyInNotifications
           history={this.props.history}
@@ -64,7 +63,7 @@ const mapDispatchToProps = {
   storeSearchBarDisplayed,
   setIsRoot,
   showUserProfile,
-  checkEmailService
+  fetchEmailAddress
 };
 
 const mapStateToProps = state => {
@@ -91,8 +90,7 @@ const mapStateToProps = state => {
     latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
     searchTerm: state.getIn(["navbar", "searchTerm"]),
     searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
-    isRoot: state.getIn(["login", "isRoot"]),
-    emailServiceAvailable: state.getIn(["navbar", "emailServiceAvailable"])
+    isRoot: state.getIn(["login", "isRoot"])
   };
 };
 

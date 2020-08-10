@@ -24,9 +24,8 @@ stages:
   <<: *node-env
   before_script:
     - cd $PROJECT_NAME
-    - chmod +x ../scripts/pipeline/audit.sh
   script:
-    - ../scripts/pipeline/audit.sh
+    - npm audit --audit-level=high
 
 .node-unit-test: &node-unit-test
   stage: test
@@ -56,6 +55,8 @@ jobs:
       env: PROJECT_NAME=frontend
     - <<: *audit
       env: PROJECT_NAME=excel-export
+    - <<: *audit
+      env: PROJECT_NAME=email-notification
     - <<: *dangerjs
       if: type = pull_request
       env: NAME="Danger JS"
@@ -79,6 +80,8 @@ jobs:
       env: PROJECT_NAME=e2e-test
     - <<: *docker-build
       env: PROJECT_NAME=excel-export
+    - <<: *docker-build
+      env: PROJECT_NAME=email-notification
     - stage: notification
       git:
         depth: false

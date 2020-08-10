@@ -30,16 +30,17 @@ const baseWorkflowitem: Workflowitem.Workflowitem = {
   permissions: {},
   log: [],
   additionalData: {},
+  workflowitemType: "general",
 };
 const baseRedactedItem: Workflowitem.RedactedWorkflowitem = {
   isRedacted: true,
   id: workflowitemId,
   subprojectId,
   createdAt: new Date().toISOString(),
-  dueDate: null,
   displayName: null,
   exchangeRate: null,
   billingDate: null,
+  dueDate: null,
   amount: null,
   currency: null,
   amountType: null,
@@ -50,6 +51,7 @@ const baseRedactedItem: Workflowitem.RedactedWorkflowitem = {
   permissions: {},
   log: [],
   additionalData: {},
+  workflowitemType: "general",
 };
 
 describe("reorder workflowitem", () => {
@@ -63,7 +65,10 @@ describe("reorder workflowitem", () => {
 
     const sorted = sortWorkflowitems(items, ordering);
 
-    assert.deepEqual(sorted.map(x => x.id), ["a", "b", "c"]);
+    assert.deepEqual(
+      sorted.map((x) => x.id),
+      ["a", "b", "c"],
+    );
   });
 
   it(
@@ -96,11 +101,14 @@ describe("reorder workflowitem", () => {
       };
 
       const items = [d, c, b, a];
-      const ordering = [b, c].map(x => x.id);
+      const ordering = [b, c].map((x) => x.id);
 
       const sorted = sortWorkflowitems(items, ordering);
 
-      assert.deepEqual(sorted.map(x => x.id), ["b", "c", "a", "d"]);
+      assert.deepEqual(
+        sorted.map((x) => x.id),
+        ["b", "c", "a", "d"],
+      );
     },
   );
 
@@ -172,7 +180,7 @@ describe("reorder workflowitem", () => {
       };
 
       const items = [b, a, d, c, e];
-      const ordering = [c, a].map(x => x.id);
+      const ordering = [c, a].map((x) => x.id);
 
       const sorted = sortWorkflowitems(items, ordering);
 
@@ -181,7 +189,10 @@ describe("reorder workflowitem", () => {
       // 3. c, which is open and first in the ordering
       // 4. a, which is open and second in the ordering
       // 5. e, which is open and not mentioned in the ordering
-      assert.deepEqual(sorted.map(x => x.id), ["d", "b", "c", "a", "e"]);
+      assert.deepEqual(
+        sorted.map((x) => x.id),
+        ["d", "b", "c", "a", "e"],
+      );
     },
   );
 
@@ -221,14 +232,17 @@ describe("reorder workflowitem", () => {
     };
 
     const items = [a, b, c];
-    const ordering = [c].map(x => x.id);
+    const ordering = [c].map((x) => x.id);
 
     const sorted = sortWorkflowitems(items, ordering);
 
     // 1. b, which is the only closed item
     // 2. c, which is mentioned in the ordering
     // 3. a, which is the first item created, but not mentioned in the ordering
-    assert.deepEqual(sorted.map(x => x.id), ["b", "c", "a"]);
+    assert.deepEqual(
+      sorted.map((x) => x.id),
+      ["b", "c", "a"],
+    );
   });
 });
 

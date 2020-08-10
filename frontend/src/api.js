@@ -1,4 +1,5 @@
 import axios from "axios";
+import _isEmpty from "lodash/isEmpty";
 
 const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
@@ -47,7 +48,19 @@ class Api {
         password
       }
     });
+
+  disableUser = userId =>
+    instance.post(`/global.disableUser`, {
+      userId
+    });
+
+  enableUser = userId =>
+    instance.post(`/global.enableUser`, {
+      userId
+    });
+
   fetchVersions = () => instance.get(`/version`);
+
   createUser = (displayName, organization, username, password) =>
     instance.post(`/global.createUser`, {
       user: {
@@ -57,10 +70,12 @@ class Api {
         password
       }
     });
+
   grantAllUserPermissions = userId =>
     instance.post(`global.grantAllPermissions`, {
       identity: userId
     });
+
   grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, { identity, intent });
 
   revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity, intent });
@@ -124,8 +139,16 @@ class Api {
     });
 
   viewProjectDetails = projectId => instance.get(`/project.viewDetails?projectId=${projectId}`);
-  viewProjectHistory = (projectId, offset, limit) =>
-    instance.get(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
+  viewProjectHistory = (projectId, offset, limit, filter) => {
+    let url = `/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`;
+    // filter: startAt|endAt|publisher|eventType
+    for (const key in filter) {
+      if (!_isEmpty(filter[key])) {
+        url = url + `&${key}=${filter[key]}`;
+      }
+    }
+    return instance.get(url);
+  };
 
   listProjectIntents = projectId => instance.get(`/project.intent.listPermissions?projectId=${projectId}`);
 
@@ -164,15 +187,27 @@ class Api {
   viewSubProjectDetails = (projectId, subprojectId) =>
     instance.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
 
-  viewSubProjectHistory = (projectId, subprojectId, offset, limit) =>
-    instance.get(
-      `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
-    );
+  viewSubProjectHistory = (projectId, subprojectId, offset, limit, filter) => {
+    let url = `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`;
+    // filter: startAt|endAt|publisher|eventType
+    for (const key in filter) {
+      if (!_isEmpty(filter[key])) {
+        url = url + `&${key}=${filter[key]}`;
+      }
+    }
+    return instance.get(url);
+  };
 
-  viewWorkflowitemHistory = (projectId, subprojectId, workflowitemId, offset, limit) =>
-    instance.get(
-      `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`
-    );
+  viewWorkflowitemHistory = (projectId, subprojectId, workflowitemId, offset, limit, filter) => {
+    let url = `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`;
+    // filter: startAt|endAt|publisher|eventType
+    for (const key in filter) {
+      if (!_isEmpty(filter[key])) {
+        url = url + `&${key}=${filter[key]}`;
+      }
+    }
+    return instance.get(url);
+  };
 
   updateProjectBudgetProjected = (projectId, organization, currencyCode, value) =>
     instance.post(`/project.budget.updateProjected`, {
@@ -208,7 +243,6 @@ class Api {
 
   createWorkflowItem = payload => {
     const { currency, amount, exchangeRate, ...minimalPayload } = payload;
-
     const payloadToSend =
       payload.amountType === "N/A"
         ? minimalPayload
@@ -218,7 +252,6 @@ class Api {
             amount,
             exchangeRate: exchangeRate.toString()
           };
-
     return instance.post(`/subproject.createWorkflowitem`, {
       ...payloadToSend
     });
@@ -255,7 +288,6 @@ class Api {
             amount,
             exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
           };
-
     return instance.post(`/workflowitem.update`, {
       projectId,
       subprojectId,
@@ -388,6 +420,43 @@ class Api {
       : `/email/user.getEmailAddress?id=${id}`;
     return instance.get(path);
   };
+
+  downloadDocument = (projectId, subprojectId, workflowitemId, documentId) =>
+    instance
+      .get(
+        `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`,
+        { responseType: "blob" }
+      )
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        const dispositionHeader = response.headers["content-disposition"];
+        let filename;
+
+        if (hasAttachment(response)) {
+          // Regex for extracting filename from content-disposition header
+          // Content-disposition header e.g.: `attachment; filename="test.pdf"`
+          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+          const matches = filenameRegex.exec(dispositionHeader);
+          if (matches != null && matches[1]) {
+            // Remove apostrophe
+            filename = matches[1].replace(/['"]/g, "");
+          }
+        }
+
+        link.download = filename;
+        document.body.appendChild(link);
+
+        link.click();
+        link.remove();
+        return Promise.resolve({ data: {} });
+      });
 }
+
+const hasAttachment = response => {
+  const dispositionHeader = response.headers["content-disposition"];
+  return dispositionHeader && dispositionHeader.indexOf("attachment") !== -1;
+};
 
 export default Api;

@@ -17,7 +17,9 @@ import {
   storeWorkflowDocument,
   storeWorkflowName,
   storeWorkflowStatus,
+  storeWorkflowDueDate,
   storeWorkflowExchangeRate,
+  storeWorkflowitemType,
   defaultWorkflowExchangeRate
 } from "./actions";
 import WorkflowDialog from "./WorkflowDialog";
@@ -33,7 +35,9 @@ class WorkflowDialogContainer extends Component {
     currency,
     description,
     status,
-    workflowDocuments
+    workflowDocuments,
+    dueDate,
+    workflowitemType
   ) => {
     const path = this.props.location.pathname.split("/");
     const projectId = path[2];
@@ -48,7 +52,9 @@ class WorkflowDialogContainer extends Component {
       currency,
       description,
       status,
-      workflowDocuments
+      workflowDocuments,
+      dueDate,
+      workflowitemType
     );
   };
 
@@ -88,7 +94,9 @@ const mapDispatchToProps = dispatch => {
       currency,
       description,
       status,
-      documents
+      documents,
+      dueDate,
+      workflowitemType
     ) =>
       dispatch(
         createWorkflowItem(
@@ -101,7 +109,9 @@ const mapDispatchToProps = dispatch => {
           currency,
           description,
           status,
-          documents
+          documents,
+          dueDate,
+          workflowitemType
         )
       ),
     editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),
@@ -112,14 +122,17 @@ const mapDispatchToProps = dispatch => {
     storeWorkflowAmountType: type => dispatch(storeWorkflowAmountType(type)),
     storeWorkflowName: name => dispatch(storeWorkflowName(name)),
     storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
+    storeWorkflowDueDate: dueDate => dispatch(storeWorkflowDueDate(dueDate)),
+    storeWorkflowitemType: workflowitemType => dispatch(storeWorkflowitemType(workflowitemType)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    storeWorkflowDocument: (payload, name) => dispatch(storeWorkflowDocument(payload, name)),
+    storeWorkflowDocument: (payload, name, fileName) => dispatch(storeWorkflowDocument(payload, name, fileName)),
     defaultWorkflowExchangeRate: exchangeRate => dispatch(defaultWorkflowExchangeRate(exchangeRate))
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withInitialLoading(withStyles(styles)(toJS(WorkflowDialogContainer)))
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withInitialLoading(withStyles(styles)(toJS(WorkflowDialogContainer))));

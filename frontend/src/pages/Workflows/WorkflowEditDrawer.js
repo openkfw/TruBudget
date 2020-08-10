@@ -55,7 +55,8 @@ const WorkflowEditDrawer = props => {
     tempDrawerAssignee,
     tempDrawerPermissions,
     storeAssignee,
-    projectId
+    projectId,
+    myself
   } = props;
   const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
 
@@ -122,6 +123,7 @@ const WorkflowEditDrawer = props => {
           addTemporaryPermission={grantPermission}
           removeTemporaryPermission={revokePermission}
           temporaryPermissions={permissions}
+          myself={myself}
         />
       </div>
     </Drawer>

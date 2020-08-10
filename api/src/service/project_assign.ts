@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -15,20 +16,22 @@ export async function assignProject(
   serviceUser: ServiceUser,
   projectId: Project.Id,
   assignee: Identity,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const assignProjectresult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectAssign.assignProject(ctx, serviceUser, projectId, assignee, {
       getProject: async () => {
         return cache.getProject(projectId);
       },
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
     }),
   );
 
-  if (Result.isErr(result)) throw result;
-  const { newEvents } = result;
+  if (Result.isErr(assignProjectresult)) {
+    return new VError(assignProjectresult, `assign ${assignee} to project failed`);
+  }
+  const { newEvents } = assignProjectresult;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);

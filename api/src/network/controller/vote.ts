@@ -1,9 +1,11 @@
+import { VError } from "verror";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { HttpResponse } from "../../httpd/lib";
 import { Ctx } from "../../lib/ctx";
 import logger from "../../lib/logger";
 import { isNonemptyString, value } from "../../lib/validation";
+import * as Result from "../../result";
 import { ConnToken } from "../../service";
 import { MultichainClient } from "../../service/Client.h";
 import { ServiceUser } from "../../service/domain/organization/service_user";
@@ -21,14 +23,19 @@ export async function voteForNetworkPermission(
 
   // Permission check:
   const userIntent: Intent = "network.voteForPermission";
-  await throwIfUnauthorized(
-    req.user,
-    userIntent,
-    (await GlobalPermissionsGet.getGlobalPermissions(conn, ctx, issuer)).permissions,
+  const globalPermissionsResult = await GlobalPermissionsGet.getGlobalPermissions(
+    conn,
+    ctx,
+    issuer,
   );
+  if (Result.isErr(globalPermissionsResult)) {
+    throw new VError(globalPermissionsResult, "global.grantPermission failed");
+  }
+  const globalPermissions = globalPermissionsResult.permissions;
+  await throwIfUnauthorized(req.user, userIntent, globalPermissions);
 
   // Input validation:
-  const input = value("data", req.body.data, x => x !== undefined);
+  const input = value("data", req.body.data, (x) => x !== undefined);
   const targetAddress: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
   const vote: AccessVote.t = value("vote", input.vote, AccessVote.isValid);
 
@@ -63,11 +70,11 @@ export async function getCurrentVote(
   );
 
   const adminPermissionInfo = currentPermissions
-    .filter(x => x.permission === "admin")
-    .find(_ => true);
+    .filter((x) => x.permission === "admin")
+    .find((_) => true);
   const connectPermissionInfo = currentPermissions
-    .filter(x => x.permission === "connect")
-    .find(_ => true);
+    .filter((x) => x.permission === "connect")
+    .find((_) => true);
 
   const currentVote: AccessVote.t = hasApprover(adminPermissionInfo, callerAddress)
     ? "admin"
@@ -82,7 +89,7 @@ function hasApprover(
   maybeApprover: Nodes.WalletAddress,
 ): boolean {
   if (permissionInfo === undefined) return false;
-  return permissionInfo.approvedBy.map(x => x.address).includes(maybeApprover);
+  return permissionInfo.approvedBy.map((x) => x.address).includes(maybeApprover);
 }
 
 function computeWhatToDo(

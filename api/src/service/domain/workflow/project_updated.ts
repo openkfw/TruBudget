@@ -42,12 +42,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   update: modificationSchema.required(),
@@ -92,7 +88,7 @@ export function validate(input: any): Result.Type<Event> {
  */
 export function mutate(project: Project.Project, event: Event): Result.Type<void> {
   if (event.type !== "project_updated") {
-    throw new VError(`illegal event type: ${event.type}`);
+    return new VError(`illegal event type: ${event.type}`);
   }
 
   if (project.status !== "open") {
@@ -101,7 +97,7 @@ export function mutate(project: Project.Project, event: Event): Result.Type<void
 
   const update = event.update;
 
-  ["displayName", "description", "thumbnail", "tags"].forEach(propname => {
+  ["displayName", "description", "thumbnail", "tags"].forEach((propname) => {
     if (update[propname] !== undefined) {
       project[propname] = update[propname];
     }

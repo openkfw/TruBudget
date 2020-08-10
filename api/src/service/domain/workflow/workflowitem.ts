@@ -8,7 +8,8 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
-import { StoredDocument } from "./document";
+import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
+import { StoredDocument, storedDocumentSchema } from "./document";
 import { moneyAmountSchema } from "./money";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
@@ -37,6 +38,7 @@ export interface Workflowitem {
   log: WorkflowitemTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
+  workflowitemType?: Type;
 }
 
 export interface RedactedWorkflowitem {
@@ -58,6 +60,7 @@ export interface RedactedWorkflowitem {
   permissions: {};
   log: WorkflowitemTraceEvent[];
   additionalData: {};
+  workflowitemType?: Type;
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -66,10 +69,8 @@ const schema = Joi.object().keys({
   isRedacted: Joi.boolean().required(),
   id: Joi.string().required(),
   subprojectId: Subproject.idSchema.required(),
-  createdAt: Joi.date()
-    .iso()
-    .required(),
-  dueDate: Joi.date().iso(),
+  createdAt: Joi.date().iso().required(),
+  dueDate: Joi.date().iso().allow(""),
   displayName: Joi.string().required(),
   // This should use exchangeRateSchema but can't, because of backward compatibility:
   exchangeRate: Joi.string()
@@ -113,29 +114,15 @@ const schema = Joi.object().keys({
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-  amountType: Joi.string()
-    .valid("N/A", "disbursed", "allocated")
-    .required(),
+  amountType: Joi.string().valid("N/A", "disbursed", "allocated").required(),
   description: Joi.string().allow(""),
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
+  status: Joi.string().valid("open", "closed").required(),
   assignee: Joi.string(),
-  documents: Joi.array()
-    .required()
-    .items(
-      Joi.object().keys({
-        id: Joi.string(),
-        hash: Joi.string(),
-      }),
-    ),
-  permissions: Joi.object()
-    .pattern(/.*/, Joi.array().items(Joi.string()))
-    .required(),
-  log: Joi.array()
-    .required()
-    .items(workflowitemTraceEventSchema),
+  documents: Joi.array().required().items(storedDocumentSchema),
+  permissions: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).required(),
+  log: Joi.array().required().items(workflowitemTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
+  workflowitemType: workflowitemTypeSchema,
 });
 
 export function validate(input: any): Result.Type<Workflowitem> {
@@ -164,10 +151,10 @@ export function redact(workflowitem: Workflowitem): RedactedWorkflowitem {
     id: workflowitem.id,
     subprojectId: workflowitem.subprojectId,
     createdAt: workflowitem.createdAt,
-    dueDate: null,
     displayName: null,
     exchangeRate: null,
     billingDate: null,
+    dueDate: null,
     amount: null,
     currency: null,
     amountType: null,

@@ -86,7 +86,7 @@ function sourceEvent(
     if (event.type !== "workflowitem_created") {
       return new VError(
         `event ${event.type} is not of type "workflowitem_created" but also ` +
-        "does not include a workflowitem ID",
+          "does not include a workflowitem ID",
       );
     }
 
@@ -137,27 +137,23 @@ export function newWorkflowitemFromEvent(
   const eventCopy = deepcopy(event);
   const workflowitemCopy = copyWorkflowitemExceptLog(workflowitem);
 
-  try {
-    // Apply the event to the copied workflowitem:
-    const mutation = eventModule.mutate(workflowitemCopy, eventCopy);
-    if (Result.isErr(mutation)) {
-      throw mutation;
-    }
-
-    // Validate the modified workflowitem:
-    const validation = Workflowitem.validate(workflowitemCopy);
-    if (Result.isErr(validation)) {
-      throw validation;
-    }
-
-    // Restore the event log:
-    workflowitemCopy.log = workflowitem.log;
-
-    // Return the modified (and validated) workflowitem:
-    return workflowitemCopy;
-  } catch (error) {
-    return new EventSourcingError({ ctx, event, target: workflowitem }, error);
+  // Apply the event to the copied workflowitem:
+  const mutationResult = eventModule.mutate(workflowitemCopy, eventCopy);
+  if (Result.isErr(mutationResult)) {
+    return new EventSourcingError({ ctx, event, target: workflowitem }, mutationResult);
   }
+
+  // Validate the modified workflowitem:
+  const validationResult = Workflowitem.validate(workflowitemCopy);
+  if (Result.isErr(validationResult)) {
+    return new EventSourcingError({ ctx, event, target: workflowitem }, validationResult);
+  }
+
+  // Restore the event log:
+  workflowitemCopy.log = workflowitem.log;
+
+  // Return the modified (and validated) workflowitem:
+  return workflowitemCopy;
 }
 
 type EventModule = {

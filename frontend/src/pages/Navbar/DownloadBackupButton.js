@@ -31,7 +31,7 @@ const DownloadBackupButton = ({ createBackup, classes }) => {
       }}
     >
       <Backup className={classNames(classes.leftIcon, classes.iconSmall)} />
-      {strings.navigation.download}
+      {strings.common.download}
     </Button>
   );
 };

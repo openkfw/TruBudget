@@ -15,12 +15,13 @@ export async function getAllVisible(
   ctx: Ctx,
   user: ServiceUser,
   repository: Repository,
-): Promise<Subproject.Subproject[]> {
-  const allSubprojects = await repository.getAllSubprojects();
+): Promise<Result.Type<Subproject.Subproject[]>> {
+  const allSubprojectsResult = await repository.getAllSubprojects();
 
-  if (Result.isErr(allSubprojects)) {
-    throw new VError(allSubprojects, "couldn't get all subprojects");
+  if (Result.isErr(allSubprojectsResult)) {
+    return new VError(allSubprojectsResult, "couldn't get all subprojects");
   }
+  const allSubprojects = allSubprojectsResult;
 
   const isVisible =
     user.id === "root"

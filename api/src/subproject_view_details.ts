@@ -1,19 +1,19 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
-import logger from "./lib/logger";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import Type from "./service/domain/workflowitem_types/types";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -138,6 +138,7 @@ interface ExposedWorkflowitem {
     displayName: string | null;
     exchangeRate: string | undefined | null;
     billingDate: string | undefined | null;
+    dueDate: string | undefined | null;
     amountType: string | null;
     description: string | null;
     status: string;
@@ -148,6 +149,7 @@ interface ExposedWorkflowitem {
     }> | null;
     amount?: string | null;
     additionalData: object | null;
+    workflowitemType?: Type;
   };
   allowedIntents: Intent[];
 }
@@ -171,7 +173,7 @@ interface Service {
     user: ServiceUser,
     projectId: string,
     subprojectId: string,
-  ): Promise<Workflowitem.ScrubbedWorkflowitem[]>;
+  ): Promise<Result.Type<Workflowitem.ScrubbedWorkflowitem[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -212,13 +214,23 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       try {
+        // Get project info
+        const projectResult = await service.getProject(ctx, user, projectId);
+        if (Result.isErr(projectResult)) {
+          throw new VError(projectResult, "subproject.viewDetails failed");
+        }
+        const displayName = projectResult.displayName;
+        const exposedProject: ExposedProject = {
+          id: projectId,
+          displayName,
+        };
+
+        // Get subproject info
         const subprojectResult = await service.getSubproject(ctx, user, projectId, subprojectId);
         if (Result.isErr(subprojectResult)) {
-          subprojectResult.message = `subproject.viewDetails failed: ${subprojectResult.message}`;
-          throw subprojectResult;
+          throw new VError(subprojectResult, "subproject.viewDetails failed");
         }
         const subproject: Subproject.Subproject = subprojectResult;
-
         const exposedSubproject: ExposedSubproject = {
           allowedIntents: getAllowedIntents([user.id].concat(user.groups), subproject.permissions),
           data: {
@@ -234,14 +246,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           },
         };
 
-        const projectResult = await service.getProject(ctx, user, projectId);
-        const displayName = Result.unwrap_or(Result.map(projectResult, p => p.displayName), "");
-
-        const parentProject: ExposedProject = {
-          id: projectId,
-          displayName,
-        };
-
+        // Get info of workflowitems
         const workflowitemsResult = await service.getWorkflowitems(
           ctx,
           user,
@@ -249,13 +254,9 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           subprojectId,
         );
         if (Result.isErr(workflowitemsResult)) {
-          workflowitemsResult.message = `subproject.viewDetails failed: ${
-            workflowitemsResult.message
-          }`;
-          throw workflowitemsResult;
+          throw new VError(workflowitemsResult, "subproject.viewDetails failed");
         }
-
-        const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map(workflowitem => ({
+        const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map((workflowitem) => ({
           allowedIntents: workflowitem.isRedacted
             ? []
             : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
@@ -266,6 +267,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             exchangeRate: workflowitem.exchangeRate,
             currency: workflowitem.currency,
             billingDate: workflowitem.billingDate,
+            dueDate: workflowitem.dueDate,
             amountType: workflowitem.amountType,
             description: workflowitem.description,
             status: workflowitem.status,
@@ -273,11 +275,12 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             documents: workflowitem.documents,
             amount: workflowitem.amount,
             additionalData: workflowitem.additionalData,
+            workflowitemType: workflowitem.workflowitemType,
           },
         }));
 
         const data: ExposedSubprojectDetails = {
-          parentProject,
+          parentProject: exposedProject,
           subproject: exposedSubproject,
           workflowitems,
         };

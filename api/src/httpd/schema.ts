@@ -1966,6 +1966,7 @@ const schemas = {
               currency: { type: ["string", "null"], example: "EUR" },
               amountType: { type: "string", example: "disbursed" },
               billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+              dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
               exchangeRate: { type: "string", example: "1.0" },
               documents: {
                 type: "array",
@@ -2287,7 +2288,9 @@ const schemas = {
                           assignee: { type: "string", example: "aSmith" },
                           currency: { type: "string", example: "EUR" },
                           billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+                          dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           exchangeRate: { type: "string", example: "1.0" },
+                          workflowitemType: { type: "string", example: "general"},
                           documents: {
                             type: "array",
                             items: {

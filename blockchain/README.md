@@ -52,9 +52,9 @@ Uniquely identifies the chain. Note that a MultiChain network always relates to 
 
 RPC connection settings for executing commands against the MultiChain node. The `RPC_ALLOW_IP` settings refers to an allowed IP address range, given either by IP or CIDR notation; for example, 0.0.0.0/0 will allow access from anywhere.
 
-### `EMAIL_SERVICE_ENABLED`, `EMAIL_HOST`, `EMAIL_PORT`,`EMAIL_SSL`, `NOTIFICATION_PATH`
+### `EMAIL_SERVICE`, `EMAIL_HOST`, `EMAIL_PORT`,`EMAIL_SSL`, `NOTIFICATION_PATH`
 
-These environment variables configure the email service. `EMAIL_HOST`, `EMAIL_PORT` are describing the hostname/port of the Trubudget email-service. If `EMAIL_SERVICE_ENABLED` is set to true and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching for new incoming notification transaction - in short: The blockchain starts the background processes to send user ids to the notification.send endpoint. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false). `NOTIFICATION_PATH` is the path where notification files shall be saved. These variables are only required if an email service shall be configured. More about how the email service is set up can be found in the [Enable email service section](#enable-email-notifications) .
+These environment variables configure the email service. `EMAIL_HOST`, `EMAIL_PORT` are describing the hostname/port of the Trubudget email-service. If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching for new incoming notification transaction - in short: The blockchain starts the background processes to send user ids to the notification.send endpoint. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false). `NOTIFICATION_PATH` is the path where notification files shall be saved. These variables are only required if an email service shall be configured. More about how the email service is set up can be found in the [Enable email service section](#enable-email-notifications) .
 
 ## Getting started
 
@@ -88,8 +88,11 @@ When started the Email-Service sends email notifications to the configured SMTP-
 - SMTP_HOST: host.docker.internal(localhost)
 - SMTP_PORT: 2500
 
-More details about how to configure the `Email-Service` can found in the [email-notification project](../email-notification/README.md)
+More details about the email notification service can be found in the [email notification documentation](../email-notification/README.md#)
 
 ## Disable email notifications
 
-To disable email notifications simply set the EMAIL_SERVICE
+To disable email notifications for blockchain simply set the `EMAIL_SERVICE` to "DISABLED" or unset it.
+If disabled the multichain-feed is not applied to the multichain-deamon and notifications are not created.
+
+**Hint:** To prevent the frontend requesting an email-notifcations readiness call simply unset the email notification service environment variable in the frontend. More details can be found in the [frontend documentation](../frontend/README.md#email-notifications)

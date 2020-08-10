@@ -99,7 +99,7 @@ Cypress.Commands.add("fetchSubprojects", projectId => {
     .then(body => Cypress.Promise.resolve(body.data.subprojects));
 });
 
-Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName, opts = { amountType: "N/A" }) => {
+Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName, opts = {}) => {
   cy.request({
     url: `${baseUrl}/api/subproject.createWorkflowitem`,
     method: "POST",
@@ -112,6 +112,7 @@ Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName
         projectId: projectId,
         subprojectId: subprojectId,
         displayName: displayName,
+        amountType: "N/A",
         ...opts
       }
     }
@@ -185,6 +186,47 @@ Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
       apiVersion: "1.0",
       data: {
         projectId,
+        identity
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("updateSubprojectAssignee", (projectId, subprojectId, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/subproject.assign`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        identity
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("updateWorkflowitemAssignee", (projectId, subprojectId, workflowitemId, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/workflowitem.assign`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        workflowitemId,
         identity
       }
     }
@@ -424,6 +466,7 @@ Cypress.Commands.add("closeProject", projectId => {
     .its("body")
     .then(body => Cypress.Promise.resolve(body.data));
 });
+
 Cypress.Commands.add("closeWorkflowitem", (projectId, subprojectId, workflowitemId) => {
   cy.request({
     url: `${baseUrl}/api/workflowitem.close`,
@@ -437,6 +480,68 @@ Cypress.Commands.add("closeWorkflowitem", (projectId, subprojectId, workflowitem
         projectId,
         subprojectId,
         workflowitemId
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("updateWorkflowitem", (projectId, subprojectId, workflowitemId, opts = {}) => {
+  cy.request({
+    url: `${baseUrl}/api/workflowitem.update`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        workflowitemId,
+        ...opts
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("reorderWorkflowitems", (projectId, subprojectId, ordering) => {
+  cy.request({
+    url: `${baseUrl}/api/subproject.reorderWorkflowitems`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        ordering
+      }
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("assignWorkflowitem", (projectId, subprojectId, workflowitemId, identity) => {
+  cy.request({
+    url: `${baseUrl}/api/workflowitem.assign`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        workflowitemId,
+        identity
       }
     }
   })
@@ -481,6 +586,18 @@ Cypress.Commands.add("listSubprojectPermissions", (projectId, subprojectId) => {
 Cypress.Commands.add("listWorkflowitemPermissions", (projectId, subprojectId, workflowitemId) => {
   cy.request({
     url: `${baseUrl}/api/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
+});
+
+Cypress.Commands.add("listWorkflowitems", (projectId, subprojectId, workflowitemId) => {
+  cy.request({
+    url: `${baseUrl}/api/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`

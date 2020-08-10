@@ -60,6 +60,12 @@ export const fromAmountString = (amount, currency) => {
   return accounting.unformat(amount, getCurrencyFormat(currency).decimal);
 };
 
+export const getDisplayNameFromUsers = (id, users) => {
+  if (!users) return "";
+  const user = users.find(user => user.id === id);
+  return user.displayName;
+};
+
 export const getCurrencies = () => {
   return Object.keys(currencies).map(currency => {
     return {
@@ -145,10 +151,26 @@ export function makePermissionReadable(intent) {
 }
 
 export const dateFormat = () => {
-  return "MM.DD.YYYY";
+  return "DD.MM.YYYY";
+};
+
+export const isDateReached = date => {
+  const today = dayjs(new Date());
+  return today.isAfter(date);
 };
 
 export const isEmailAddressValid = emailAddress => {
   const validEmailAddressRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
   return validEmailAddressRegex.test(emailAddress);
+};
+
+export const convertToURLQuery = searchBarString => {
+  return searchBarString
+    .replace(/[:]/g, "=")
+    .replace(/[ ]/g, "&")
+    .replace(/[&]{2,}/g, "&");
+};
+
+export const convertToSearchBarString = urlQueryString => {
+  return urlQueryString.replace(/[=]/g, ":").replace(/[&]/g, " ");
 };

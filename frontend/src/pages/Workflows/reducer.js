@@ -18,6 +18,8 @@ import {
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+  FETCH_FIRST_SUBPROJECT_HISTORY_PAGE,
+  FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
@@ -53,10 +55,12 @@ import {
   TRIGGER_SUBPROJECT_APPLY_ACTIONS,
   UPDATE_WORKFLOW_ORDER,
   WORKFLOWITEMS_SELECTED,
+  WORKFLOWITEM_TYPE,
   WORKFLOW_AMOUNT,
   WORKFLOW_AMOUNT_TYPE,
   WORKFLOW_CREATION_STEP,
   WORKFLOW_CURRENCY,
+  WORKFLOW_DUEDATE,
   WORKFLOW_DOCUMENT,
   WORKFLOW_EXCHANGERATE,
   WORKFLOW_NAME,
@@ -83,14 +87,17 @@ const defaultState = fromJS({
     id: "",
     displayName: "",
     amount: "",
+    dueDate: "",
     exchangeRate: 1,
     amountType: "N/A",
     currency: "",
     description: "",
     status: "open",
-    documents: []
+    documents: [],
+    workflowitemType: "general"
   },
   showWorkflowPermissions: false,
+  idsPermissionsUnassigned: [],
   workflowItemReference: "",
   workflowitemDisplayName: "",
   permissions: { project: {}, subproject: {}, workflowitem: {}, workflowitemId: "" },
@@ -174,7 +181,9 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("amountType", action.amountType)
           .set("description", action.description)
           .set("currency", action.currency)
-          .set("documents", fromJS(action.documents)),
+          .set("documents", fromJS(action.documents))
+          .set("dueDate", action.dueDate)
+          .set("workflowitemType", action.workflowitemType),
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
       });
@@ -207,14 +216,14 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowToAdd: defaultState.getIn(["workflowToAdd"]),
         currentStep: defaultState.get("currentStep")
       });
-
     case SHOW_WORKFLOWITEM_PERMISSIONS:
       return state.merge({
         workflowItemReference: action.workflowitemId,
         workflowitemDisplayName: action.workflowitemDisplayName,
         permissions: defaultState.get("permissions"),
         temporaryPermissions: defaultState.getIn("temporaryPermissions"),
-        showWorkflowPermissions: true
+        showWorkflowPermissions: true,
+        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter(id => id !== action.workflowitemId)
       });
     case HIDE_WORKFLOWITEM_PERMISSIONS:
     case CONFIRMATION_CONFIRMED:
@@ -266,6 +275,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "amountType"], action.amountType);
     case WORKFLOW_PURPOSE:
       return state.setIn(["workflowToAdd", "description"], action.description);
+    case WORKFLOW_DUEDATE:
+      return state.setIn(["workflowToAdd", "dueDate"], action.dueDate);
     case WORKFLOW_CURRENCY:
       return state.merge({
         workflowToAdd: state.getIn(["workflowToAdd"]).set("currency", action.currency)
@@ -278,9 +289,15 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "status"], action.status);
     case WORKFLOW_DOCUMENT:
       return state.updateIn(["workflowToAdd", "documents"], documents =>
-        Immutable.List([...documents, Immutable.Map({ id: action.id, base64: action.base64 })])
+        Immutable.List([
+          ...documents,
+          Immutable.Map({ id: action.id, base64: action.base64, fileName: action.fileName })
+        ])
       );
+    case WORKFLOWITEM_TYPE:
+      return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
     case CREATE_WORKFLOW_SUCCESS:
+      return state.updateIn(["idsPermissionsUnassigned"], workflowitems => [...workflowitems, action.workflowitemId]);
     case EDIT_WORKFLOW_ITEM_SUCCESS:
       return state.merge({
         workflowToAdd: defaultState.getIn(["workflowToAdd"])
@@ -375,16 +392,27 @@ export default function detailviewReducer(state = defaultState, action) {
     case STORE_WORKFLOW_ASSIGNEE:
       return state.set("tempDrawerAssignee", action.assignee);
     case WORKFLOWITEMS_SELECTED:
-      return state.set("selectedWorkflowItems", fromJS(action.workflowItems));
+      const getSelectedIds = action.workflowItems.map(x => x.data.id);
+      return state.merge({
+        selectedWorkflowItems: fromJS(action.workflowItems),
+        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter(id => !getSelectedIds.includes(id))
+      });
     case SHOW_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", false);
+    case FETCH_FIRST_SUBPROJECT_HISTORY_PAGE:
     case FETCH_NEXT_SUBPROJECT_HISTORY_PAGE:
       return state.set("isHistoryLoading", true);
     case FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS:
       return state.merge({
         historyItems: state.get("historyItems").concat(fromJS(action.events).reverse()),
+        currentHistoryPage: action.currentHistoryPage,
+        isHistoryLoading: false
+      });
+    case FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS:
+      return state.merge({
+        historyItems: fromJS(action.events).reverse(),
         currentHistoryPage: action.currentHistoryPage,
         isHistoryLoading: false
       });

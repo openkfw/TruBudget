@@ -12,6 +12,8 @@ import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
 import * as UserCreated from "./domain/organization/user_created";
 import * as UserPasswordChanged from "./domain/organization/user_password_changed";
+import * as UserEnabled from "./domain/organization/user_enabled";
+import * as UserDisabled from "./domain/organization/user_disabled";
 import * as UserPermissionsGranted from "./domain/organization/user_permission_granted";
 import * as UserPermissionsRevoked from "./domain/organization/user_permission_revoked";
 import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
@@ -47,11 +49,14 @@ import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
+import * as WorkflowitemDocumentUploaded from "./domain/workflow/workflowitem_document_uploaded";
+
 import { Item } from "./liststreamitems";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
   "organization",
+  "offchain_documents",
 ];
 
 type StreamName = string;
@@ -102,7 +107,7 @@ interface CacheInstance {
   getGlobalEvents(): BusinessEvent[];
   getUserEvents(userId?: string): BusinessEvent[];
   getGroupEvents(groupId?: string): BusinessEvent[];
-  getNotificationEvents(userId: string): BusinessEvent[];
+  getNotificationEvents(userId: string): Result.Type<BusinessEvent[]>;
 
   // Project:
   getProjects(): Promise<Project.Project[]>;
@@ -140,8 +145,8 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       return cache.eventsByStream.get("groups") || [];
     },
 
-    getNotificationEvents: (userId: string): BusinessEvent[] => {
-      const userFilter = event => {
+    getNotificationEvents: (userId: string): Result.Type<BusinessEvent[]> => {
+      const userFilter = (event) => {
         if (!event.type.startsWith("notification_")) {
           logger.debug(`Unexpected event type in "notifications" stream: ${event.type}`);
           return false;
@@ -153,7 +158,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
           case "notification_marked_read":
             return event.recipient === userId;
           default:
-            throw Error(`not implemented: notification event of type ${event.type}`);
+            return Error(`not implemented: notification event of type ${event.type}`);
         }
       };
 
@@ -166,7 +171,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
 
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
       const projects = [...cache.cachedProjects.values()];
-      const project = projects.find(x => x.id === projectId);
+      const project = projects.find((x) => x.id === projectId);
       if (project === undefined) {
         return new NotFound(ctx, "project", projectId);
       }
@@ -283,7 +288,7 @@ export async function invalidateCache(conn: ConnToken): Promise<void> {
 
 async function grabWriteLock(cache: Cache2) {
   while (cache.isWriteLocked) {
-    await new Promise(res => setTimeout(res, 1));
+    await new Promise((res) => setTimeout(res, 1));
   }
   cache.isWriteLocked = true;
 }
@@ -349,14 +354,14 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
   // stream doesn't have this as it's created by MultiChain and not used by TruBudget)
   // and are not excluded by the STREAM_BLACKLIST:
   const streams = (await conn.multichainClient.streams(onlyStreamName)).filter(
-    stream =>
+    (stream) =>
       stream.details.kind !== undefined && !STREAM_BLACKLIST.includes(stream.details.kind as any),
   );
 
   for (const { name: streamName, items: nStreamItems } of streams) {
     if (nStreamItems === 0) {
       if (logger.levelVal >= logger.levels.values.debug) {
-        const stream = streams.find(x => x.name === streamName);
+        const stream = streams.find((x) => x.name === streamName);
         logger.debug({ stream }, `Found empty stream ${streamName}`);
       }
       continue;
@@ -429,7 +434,7 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
     updateAggregates(ctx, cache, businessEvents);
 
     if (logger.levelVal >= logger.levels.values.warn) {
-      parsedEvents.filter(Result.isErr).forEach(x => logger.warn(x));
+      parsedEvents.filter(Result.isErr).forEach((x) => logger.warn(x));
     }
   }
 
@@ -439,9 +444,7 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
     const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
     logger.debug(
       cache.streamState,
-      `Stream cache updated in ${elapsedMilliseconds} ms: ${
-        streams.length
-      } streams (${nUpdatedStreams} updated, ${nRebuiltStreams} rebuilt)`,
+      `Stream cache updated in ${elapsedMilliseconds} ms: ${streams.length} streams (${nUpdatedStreams} updated, ${nRebuiltStreams} rebuilt)`,
     );
   }
 }
@@ -532,6 +535,8 @@ const EVENT_PARSER_MAP = {
   subproject_updated: SubprojectUpdated.validate,
   user_created: UserCreated.validate,
   user_password_changed: UserPasswordChanged.validate,
+  user_enabled: UserEnabled.validate,
+  user_disabled: UserDisabled.validate,
   user_permission_granted: UserPermissionsGranted.validate,
   user_permission_revoked: UserPermissionsRevoked.validate,
   workflowitem_assigned: WorkflowitemAssigned.validate,
@@ -540,6 +545,7 @@ const EVENT_PARSER_MAP = {
   workflowitem_permission_granted: WorkflowitemPermissionsGranted.validate,
   workflowitem_permission_revoked: WorkflowitemPermissionsRevoked.validate,
   workflowitem_updated: WorkflowitemUpdated.validate,
+  workflowitem_document_uploaded: WorkflowitemDocumentUploaded.validate,
 };
 
 export function parseBusinessEvents(
@@ -547,7 +553,7 @@ export function parseBusinessEvents(
   streamName: string,
 ): Array<Result.Type<BusinessEvent>> {
   return items
-    .map(item => {
+    .map((item) => {
       const event = item.data.json;
       if (event.intent) {
         logger.debug(`cache2: ignoring event of intent ${event.intent}`);
@@ -564,5 +570,5 @@ export function parseBusinessEvents(
       }
       return parser(event);
     })
-    .filter(x => x !== undefined);
+    .filter((x) => x !== undefined);
 }

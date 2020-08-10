@@ -1,22 +1,24 @@
 import Joi = require("joi");
 import { VError } from "verror";
-
-import Intent, { subprojectIntents } from "../../../authz/intents";
+import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
+import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { hashDocument, StoredDocument, UploadedDocument, uploadedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
+import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -34,6 +36,7 @@ export interface RequestData {
   assignee?: string;
   documents?: UploadedDocument[];
   additionalData?: object;
+  workflowitemType?: Type;
 }
 
 const requestDataSchema = Joi.object({
@@ -48,10 +51,11 @@ const requestDataSchema = Joi.object({
   amountType: Joi.valid("N/A", "disbursed", "allocated").required(),
   exchangeRate: Joi.string(),
   billingDate: Joi.date().iso(),
-  dueDate: Joi.date().iso(),
+  dueDate: Joi.date().iso().allow(""),
   assignee: Joi.string(),
   documents: Joi.array().items(uploadedDocumentSchema),
   additionalData: AdditionalData.schema,
+  workflowitemType: workflowitemTypeSchema,
 });
 
 export function validate(input: any): Result.Type<RequestData> {
@@ -69,6 +73,10 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Subproject.Subproject>>;
+  applyWorkflowitemType(
+    event: BusinessEvent,
+    workflowitem: Workflowitem.Workflowitem,
+  ): Result.Type<BusinessEvent[]>;
 }
 
 export async function createWorkflowitem(
@@ -76,10 +84,17 @@ export async function createWorkflowitem(
   creatingUser: ServiceUser,
   reqData: RequestData,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[]; errors: Error[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const documents: StoredDocument[] = [];
   for (const doc of reqData.documents || []) {
-    documents.push(await hashDocument(doc));
+    const hashedDocumentResult = await hashDocument(doc);
+    if (Result.isErr(hashedDocumentResult)) {
+      return new VError(
+        hashedDocumentResult,
+        "failed to create workflowitem, permission check failed",
+      );
+    }
+    documents.push(hashedDocumentResult);
   }
 
   const publisher = creatingUser.id;
@@ -105,21 +120,26 @@ export async function createWorkflowitem(
       documents,
       permissions: newDefaultPermissionsFor(creatingUser.id),
       additionalData: reqData.additionalData || {},
+      workflowitemType: reqData.workflowitemType || "general",
     },
   );
 
   // Check if workflowitemId already exists
   if (
-    await repository.workflowitemExists(reqData.projectId, reqData.subprojectId, workflowitemId)
+    await repository.workflowitemExists(
+      reqData.projectId,
+      reqData.subprojectId,
+      workflowitemCreated.workflowitem.id,
+    )
   ) {
-    return new PreconditionError(ctx, workflowitemCreated, "workflowitem already exists");
+    return new AlreadyExists(ctx, workflowitemCreated, workflowitemCreated.workflowitem.id);
   }
 
   // Check authorization (if not root):
   if (creatingUser.id !== "root") {
     const authorizationResult = Result.map(
       await repository.getSubproject(reqData.projectId, reqData.subprojectId),
-      subproject => {
+      (subproject) => {
         const intent = "subproject.createWorkflowitem";
         if (!Subproject.permits(subproject, creatingUser, [intent])) {
           return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });
@@ -143,25 +163,67 @@ export async function createWorkflowitem(
   // Check that the event is valid:
   const result = WorkflowitemCreated.createFrom(ctx, workflowitemCreated);
   if (Result.isErr(result)) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, workflowitemCreated, [result])] };
+    return new InvalidCommand(ctx, workflowitemCreated, [result]);
   }
 
-  return { newEvents: [workflowitemCreated], errors: [] };
-}
+  // handle new documents
+  const documentUploadedEventsResults: Result.Type<BusinessEvent>[] = documents.map((d, i) => {
+    const docToUpload: UploadedDocument = {
+      base64: reqData.documents ? reqData.documents[i].base64 : "",
+      fileName:
+        reqData.documents && reqData.documents[i].fileName
+          ? reqData.documents[i].fileName
+          : "uploaded_file.pdf",
+      id: d.documentId,
+    };
 
-function newDefaultPermissionsFor(userId: string): Permissions {
-  // The user can always do anything anyway:
-  if (userId === "root") return {};
+    const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
+      ctx.source,
+      publisher,
+      reqData.projectId,
+      reqData.subprojectId,
+      workflowitemId,
+      docToUpload,
+    );
 
-  const intents: Intent[] = [
-    "workflowitem.intent.listPermissions",
-    "workflowitem.intent.grantPermission",
-    "workflowitem.intent.revokePermission",
-    "workflowitem.view",
-    "workflowitem.assign",
-    "workflowitem.update",
-    "workflowitem.close",
-    "workflowitem.archive",
-  ];
-  return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
+    // Check that the event is valid:
+    const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
+    if (Result.isErr(result)) {
+      return new InvalidCommand(ctx, workflowitemEvent, [result]);
+    }
+    return workflowitemEvent;
+  });
+
+  const documentUploadedEvents: BusinessEvent[] = [];
+  for (const result of documentUploadedEventsResults) {
+    if (Result.isErr(result)) {
+      return result;
+    }
+    documentUploadedEvents.push(result);
+  }
+
+  const workflowitemTypeEvents = repository.applyWorkflowitemType(workflowitemCreated, result);
+
+  if (Result.isErr(workflowitemTypeEvents)) {
+    return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
+  }
+
+  return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
+
+  function newDefaultPermissionsFor(userId: string): Permissions {
+    // The user can always do anything anyway:
+    if (userId === "root") return {};
+
+    const intents: Intent[] = [
+      "workflowitem.intent.listPermissions",
+      "workflowitem.intent.grantPermission",
+      "workflowitem.intent.revokePermission",
+      "workflowitem.view",
+      "workflowitem.assign",
+      "workflowitem.update",
+      "workflowitem.close",
+      "workflowitem.archive",
+    ];
+    return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
+  }
 }

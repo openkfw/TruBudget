@@ -1,45 +1,63 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../../helper";
-import ScrollingHistory from "../../Common/History/ScrollingHistory";
-import { fetchNextWorkflowitemHistoryPage, resetWorkflowitemHistory } from "./actions";
+import HistoryContainer from "../../Common/History/HistoryContainer";
+import useHistoryState from "../../Common/History/historyHook";
+import { fetchNextWorkflowitemHistoryPage, fetchFirstWorkflowitemHistoryPage, hideHistory } from "./actions";
+import { workflowitemEventTypes } from "../../Common/History/eventTypes";
 
-class WorkflowitemHistoryTab extends React.Component {
-  componentWillUnmount() {
-    this.props.resetWorkflowitemHistory();
-  }
+const WorkflowitemHistoryTab = ({
+  users,
+  nEventsTotal,
+  events,
+  fetchFirstWorkflowitemHistoryPage,
+  fetchNextWorkflowitemHistoryPage,
+  currentHistoryPage,
+  lastHistoryPage,
+  projectId,
+  subprojectId,
+  workflowitemId,
+  isLoading,
+  getUserDisplayname,
+  hideHistory
+}) => {
+  const [{ startAt, endAt, publisher, eventType }] = useHistoryState();
 
-  render() {
-    const {
-      nEventsTotal,
-      historyItems,
-      fetchNextWorkflowitemHistoryPage,
-      currentHistoryPage,
-      lastHistoryPage,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      isLoading,
-      getUserDisplayname
-    } = this.props;
-    return (
-      <ScrollingHistory
-        events={historyItems}
-        nEventsTotal={nEventsTotal}
-        hasMore={currentHistoryPage < lastHistoryPage}
-        isLoading={isLoading}
-        getUserDisplayname={getUserDisplayname}
-        fetchNext={() => fetchNextWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId)}
-        initialLoad={true}
-      />
-    );
-  }
-}
+  // clean-up when unmounting
+  useEffect(() => {
+    return () => {
+      hideHistory();
+    };
+  }, [hideHistory]);
+
+  const fetchFirstHistoryEvents = filter =>
+    fetchFirstWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, filter);
+  const fetchNext = () =>
+    fetchNextWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, {
+      startAt,
+      endAt,
+      publisher,
+      eventType
+    });
+  return (
+    <HistoryContainer
+      fetchFirstHistoryEvents={fetchFirstHistoryEvents}
+      users={users}
+      eventTypes={workflowitemEventTypes()}
+      events={events}
+      nEventsTotal={nEventsTotal}
+      hasMore={currentHistoryPage < lastHistoryPage}
+      isLoading={isLoading}
+      getUserDisplayname={getUserDisplayname}
+      fetchNext={fetchNext}
+    />
+  );
+};
 
 function mapStateToProps(state) {
   return {
-    historyItems: state.getIn(["workflowitemDetails", "historyItems"]),
+    users: state.getIn(["login", "user"]),
+    events: state.getIn(["workflowitemDetails", "historyItems"]),
     nEventsTotal: state.getIn(["workflowitemDetails", "totalHistoryItemCount"]),
     isLoading: state.getIn(["workflowitemDetails", "isHistoryLoading"]),
     currentHistoryPage: state.getIn(["workflowitemDetails", "currentHistoryPage"]),
@@ -48,9 +66,14 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = {
-  fetchNextWorkflowitemHistoryPage,
-  resetWorkflowitemHistory
-};
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchNextWorkflowitemHistoryPage: (projectId, subprojectId, workflowitemId, filter) =>
+      dispatch(fetchNextWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, filter)),
+    fetchFirstWorkflowitemHistoryPage: (projectId, subprojectId, workflowitemId, filter) =>
+      dispatch(fetchFirstWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, filter)),
+    hideHistory: () => dispatch(hideHistory())
+  };
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(toJS(WorkflowitemHistoryTab));

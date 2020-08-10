@@ -11,7 +11,6 @@ Welcome to the TruBudget documentation! This guide aims to provide you with info
 - [Environment Variables](./Introduction.md#environment-variables)
 - [Organizations and Nodes](./Introduction.md#organizations-and-nodes-in-trubudget)
 
-
 [Tutorials](./tutorials) - Guides to get started with running TruBudget
 
 - [Installation](./tutorials/installation/)
@@ -31,7 +30,9 @@ Welcome to the TruBudget documentation! This guide aims to provide you with info
 
 [Logging](./logging/README.md) - Informations on the API log and how to handle it
 
-[Troubleshooting](./troubleshooting/README.md) - How to solve known issues 
+[Troubleshooting](./troubleshooting/README.md) - How to solve known issues
+
+[FAQ](./wiki/User-Guide/README.md#faq) - Frequently asked questions
 
 ### Architecture Decision Records
 

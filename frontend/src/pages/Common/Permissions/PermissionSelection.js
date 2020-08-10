@@ -14,7 +14,7 @@ import React, { Component } from "react";
 
 import strings from "../../../localizeStrings";
 
-const renderSelection = (user, permissionedUser, permissionName, grant, revoke, myself, disabled) =>
+const renderSelection = (user, permissionedUser, intent, grant, revoke, myself, disabled) =>
   user.map(u => {
     const checked = permissionedUser.indexOf(u.id) > -1;
     return (
@@ -22,7 +22,7 @@ const renderSelection = (user, permissionedUser, permissionName, grant, revoke, 
         disabled={(u.id === myself && checked) || disabled}
         key={u.id + "selection"}
         value={u.id}
-        onClick={checked ? () => revoke(permissionName, u.id) : () => grant(permissionName, u.id)}
+        onClick={checked ? () => revoke(intent, u.id) : () => grant(intent, u.id)}
       >
         <Checkbox checked={checked} disabled={(u.id === myself && checked) || disabled} />
         <ListItemText primary={u.displayName} />
@@ -38,9 +38,16 @@ class PermissionSelection extends Component {
     };
   }
 
-  resolveSelections = (user, permissions) => {
-    if (_isEmpty(user) || _isEmpty(permissions)) return [];
-    return permissions.map(id => user.find(u => u.id === id)).map(u => u.displayName);
+  resolveSelections = (userList, permissions) => {
+    if (_isEmpty(userList) || _isEmpty(permissions)) return [];
+
+    return permissions.reduce((userdisplaynames, permission) => {
+      const user = userList.find(u => u.id === permission);
+      if (user) {
+        userdisplaynames.push(user.displayName);
+      }
+      return userdisplaynames;
+    }, []);
   };
 
   renderUserSelection = () => {
@@ -105,6 +112,7 @@ class PermissionSelection extends Component {
           autoWidth
           value={selections}
           renderValue={s => s.join(", ")}
+          MenuProps={{ "data-test": "permission-selection-popup" }}
         >
           {this.props.disabled ? (
             <ListSubheader

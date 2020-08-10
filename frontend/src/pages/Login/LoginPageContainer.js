@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
-  storePassword,
-  storeUsername,
+  checkEmailService,
+  getEnvironment,
+  initLanguage,
   loginWithCredentials,
   logout,
-  showLoginError,
-  storeEnvironment,
   setLanguage,
-  getEnvironment,
-  initLanguage
+  storeEnvironment,
+  storePassword,
+  storeUsername
 } from "./actions";
 import LoginPage from "./LoginPage";
 
@@ -18,6 +18,14 @@ class LoginPageContainer extends Component {
     this.props.initLanguage();
     this.props.getEnvironment();
     this.checkIfRedirect();
+    // window.injectedEnv exists when deploying via docker and nginx
+    // process.env exists when using node.js
+    if (
+      window.injectedEnv.REACT_APP_EMAIL_SERVICE_ENABLED === "true" ||
+      process.env.REACT_APP_EMAIL_SERVICE_ENABLED === "true"
+    ) {
+      this.props.checkEmailService();
+    }
   }
 
   componentDidUpdate() {
@@ -43,11 +51,10 @@ const mapDispatchToProps = dispatch => {
     storePassword: password => dispatch(storePassword(password)),
     logout: () => dispatch(logout()),
     loginWithCredentials: (username, password) => dispatch(loginWithCredentials(username, password)),
-    showLoginError: () => dispatch(showLoginError(true)),
-    hideLoginError: () => dispatch(showLoginError(false)),
     storeEnvironment: environment => dispatch(storeEnvironment(environment)),
     getEnvironment: () => dispatch(getEnvironment()),
-    setLanguage: language => dispatch(setLanguage(language))
+    setLanguage: language => dispatch(setLanguage(language)),
+    checkEmailService: () => dispatch(checkEmailService())
   };
 };
 
@@ -56,9 +63,9 @@ const mapStateToProps = state => {
     username: state.getIn(["login", "username"]),
     jwt: state.getIn(["login", "jwt"]),
     password: state.getIn(["login", "password"]),
-    loginUnsuccessful: state.getIn(["login", "loginUnsuccessful"]),
     environment: state.getIn(["login", "environment"]),
-    language: state.getIn(["login", "language"])
+    language: state.getIn(["login", "language"]),
+    loginError: state.getIn(["login", "loginError"])
   };
 };
 

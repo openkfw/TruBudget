@@ -29,7 +29,7 @@ export async function grantSubprojectPermission(
   grantee: Identity,
   intent: Intent,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const subproject = await repository.getSubproject(projectId, subprojectId);
 
   if (Result.isErr(subproject)) {
@@ -66,8 +66,8 @@ export async function grantSubprojectPermission(
 
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(subproject.permissions, updatedSubproject.permissions)) {
-    return { newEvents: [] };
+    return [];
   } else {
-    return { newEvents: [permissionGranted] };
+    return [permissionGranted];
   }
 }

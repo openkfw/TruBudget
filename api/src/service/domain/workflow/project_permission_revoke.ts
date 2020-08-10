@@ -7,6 +7,7 @@ import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
+import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
@@ -24,7 +25,7 @@ export async function revokeProjectPermission(
   revokee: Identity,
   intent: Intent,
   repository: Repository,
-): Promise<Result.Type<{ newEvents: BusinessEvent[] }>> {
+): Promise<Result.Type<BusinessEvent[]>> {
   const project = await repository.getProject(projectId);
 
   if (Result.isErr(project)) {
@@ -54,10 +55,24 @@ export async function revokeProjectPermission(
     return new InvalidCommand(ctx, permissionRevoked, [updatedProject]);
   }
 
+  // Prevent revoking grant permission of last user
+  const intents: Intent[] = ["project.intent.grantPermission"];
+  if (
+    intents.includes(intent) &&
+    project.permissions[`${intent}`] !== undefined &&
+    project.permissions[`${intent}`].length === 1
+  ) {
+    return new PreconditionError(
+      ctx,
+      permissionRevoked,
+      `Revoking ${intent} of last user is not allowed.`,
+    );
+  }
+
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(project.permissions, updatedProject.permissions)) {
-    return { newEvents: [] };
+    return [];
   } else {
-    return { newEvents: [permissionRevoked] };
+    return [permissionRevoked];
   }
 }

@@ -5,9 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-# Changelog
-
-## Unreleased
+<!-- ## Unreleased -->
 
 <!-- ### Added -->
 
@@ -19,9 +17,61 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
-<!-- ### Changed -->
-
 <!-- ### Security -->
+
+# [1.12.0] - 2020-08-10
+
+### Added
+
+- Documentation of how to update/backup a node correctly [#19](https://github.com/openkfw/TruBudget/issues/19)
+- Added feature to disable and enable users [#241](https://github.com/openkfw/TruBudget/issues/241)
+
+### Fixed
+
+- Fixed a bug where it was impossible to edit an email address of a user [#510](https://github.com/openkfw/TruBudget/issues/510)
+- The excel sheet is now exported including the fields `dueDate` and `workflowitemType` [#511](https://github.com/openkfw/TruBudget/issues/511)
+- Fixed a bug where all displayed versions disappeared after switching page [#512](https://github.com/openkfw/TruBudget/issues/512)
+- Prevent a user from revoking a permission from him-/herself at workflowitem level [#514](https://github.com/openkfw/TruBudget/issues/514)
+- Prevent creating a closed workflowitem, subproject or project [#411](https://github.com/openkfw/TruBudget/issues/411)
+
+# [1.11.0] - 2020-06-26
+
+### Added
+
+- Add optional due-date for workflowitems [#71](https://github.com/openkfw/TruBudget/issues/71)
+- Workflowitem are typed. New types: "general", "restricted" [#483](https://github.com/openkfw/TruBudget/issues/483)
+
+### Changed
+
+- Change field names for user creation [#498](https://github.com/openkfw/TruBudget/issues/498)
+- Hide project search button instead of disabling it [#497](https://github.com/openkfw/TruBudget/issues/497)
+- Hide badge of due date when sorting workflowitems [#505](https://github.com/openkfw/TruBudget/issues/505)
+
+### Fixed
+
+- Fixed a bug where the configuration of the Email notification service was not applied correctly [#496](https://github.com/openkfw/TruBudget/pull/496)
+- Fixed a bug where the history of a workflowitem was duplicated by switching tabs[#504](https://github.com/openkfw/TruBudget/issues/504)
+
+# [1.10.0] - 2020-06-08
+
+### Added
+
+- Show dialog before closing project, subproject or workflowitem [#430](https://github.com/openkfw/TruBudget/issues/430)
+- Show privacy notice when creating a user or user group [#466](https://github.com/openkfw/TruBudget/issues/466)
+- Added search feature for histories [#425](https://github.com/openkfw/TruBudget/issues/425)
+- Documents can be uploaded and are shared via offchain-storage [#481](https://github.com/openkfw/TruBudget/issues/481)
+
+### Changed
+
+- Changed date format to DD.MM.YYYY [#480](https://github.com/openkfw/TruBudget/issues/480)
+
+# [1.9.0] - 2020-05-06
+
+### Added
+
+- Added search feature for subprojects [#422](https://github.com/openkfw/TruBudget/issues/422)
+- Show no permissions assigned warning on subproject/workflowitem create [#441](https://github.com/openkfw/TruBudget/issues/441)
+- Placeholders are being shown in case of an empty state [#31](https://github.com/openkfw/TruBudget/issues/31)
 
 # [1.8.0] - 2019-03-16
 
@@ -438,7 +488,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.8.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.12.0...master
+[1.12.0]: https://github.com/openkfw/TruBudget/compare/v1.11.0...v1.12.0
+[1.11.0]: https://github.com/openkfw/TruBudget/compare/v1.10.0...v1.11.0
+[1.10.0]: https://github.com/openkfw/TruBudget/compare/v1.9.0...v1.10.0
+[1.9.0]: https://github.com/openkfw/TruBudget/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/openkfw/TruBudget/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/openkfw/TruBudget/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/openkfw/TruBudget/compare/v1.5.0...v1.6.0

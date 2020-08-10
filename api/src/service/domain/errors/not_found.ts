@@ -9,10 +9,12 @@ export class NotFound extends Error {
       | "workflowitem"
       | "group"
       | "user"
+      | "document"
       | "notification",
     private readonly entityId: string,
   ) {
     super(`Not found: ${entityType} ${entityId}`);
+    this.name = "NotFound";
 
     // Maintains proper stack trace for where our error was thrown (only available on V8):
     if (Error.captureStackTrace) {

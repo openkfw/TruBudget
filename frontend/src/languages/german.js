@@ -25,6 +25,7 @@ const de = {
     budget: "Budget",
     budget_distribution: "Budget distribution",
     no_budget_distribution: "Verteilung kann nicht angezeigt werden, da nicht alle Elemente sichtbar sind",
+    no_disabled_users: "Keine deaktivierten Benutzer gefunden",
     cancel: "Abbrechen",
     close: "Schließen",
     closed: "German: Closed",
@@ -40,6 +41,7 @@ const de = {
     disconnected: "Offline",
     display_name: "Anzeige-Name",
     done: "Done",
+    download: "Download",
     edit: "German: Edit",
     edited: "German: Edited",
     email: "Email",
@@ -49,9 +51,24 @@ const de = {
     in_progress: "In Progress",
     in_review: "In Review",
     incorrect_password: "Falsches Passwort",
-    incorrect_username: "Unbekannter Benutzername",
+    incorrect_username: "Unbekannte Login-ID",
+    incorrect_username_or_password: "Ungültige Login-ID oder falsches Passwort",
     next: "Next",
+    no_budget: "Kein Budget gefunden",
+    no_budget_project: "Um ein Budget für Ihr Projekt hinzuzufügen, gehen Sie zurück zur Hauptseite.",
+    no_budget_subproject:
+      "Um ein Budget für Ihr Teilprojekt hinzuzufügen, gehen Sie zurück zur Übersichtsseite Ihrer Teilprojekte.",
+    no_groups: "Keine Gruppen gefunden",
+    no_groups_text: "Erstellen Sie eine neue Gruppe, indem Sie auf das Plus drücken.",
+    no_items_text: "Sie können einen neuen Eintrag erstellen, indem Sie auf das Plus drücken.",
+    no_nodes: "Keine Anfragen für zusätzliche Nodes gefunden",
+    no_notifications: "Keine Benachrichtigungen gefunden",
+    no_organizations: "Keine Anfragen für neue Organisationen gefunden",
     no_resources: "Keine Daten zu ausgewählter Ressource hinzugefügt",
+    no_subprojects: "Keine Subprojects gefunden",
+    no_users: "Keine Users gefunden",
+    no_users_text: "Fügen Sie neue Users hinzu, indem Sie auf das Plus drücken.",
+    no_workflow_items: "Keine Workflow-Items gefunden",
     not_assigned: "Not assigned",
     not_assigned_budget: "Not Assigned Budget",
     not_projected: "Nicht projiziert",
@@ -65,6 +82,7 @@ const de = {
     projected_budget: "Planbudget",
     projected_budget_exists: "Planbudget existiert bereits",
     redacted: "Redigiert",
+    reset: "Zurücksetzen",
     revoke: "German: revoke",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
@@ -81,13 +99,17 @@ const de = {
     thumbnail: "German: Thumbnail",
     type: "Typ",
     update: "German: Update",
-    username: "Username",
+    username: "Login-ID",
     id: "German: Id",
     name: "German: Name",
     view: "German: View",
     workflowitem: "German: WorkflowItem",
     history_end: "Keine weiteren Ereignisse",
-    no_history: "Keine Ereignisse"
+    no_history: "Keine Ereignisse",
+    dueDate: "Fälligkeitsdatum",
+    dueDate_exceeded: "Fälligkeitsdatum überschritten",
+    login_disabled: "Login-ID ist deaktiviert",
+    login_data_error: "Login-ID oder Passwort kann nicht leer sein"
   },
 
   login: {
@@ -108,13 +130,13 @@ const de = {
     project_budget_amount_description: "z_B_",
     project_budget_authority_role: "Select budget authority role",
     project_budget_authority_role_description: "The authority enabled to modify the budget line of the project",
+    project_close_info: "Mindestens ein Teilprojekt wurde noch nicht geschlossen.",
     project_comment: "Comment",
     project_currency: "Currency",
     project_details: "German: Details",
     project_disbursement_authority_role: "Select disbursement authority role",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_edit_title: "German: Edit Project",
-    project_close_info: "German: At least one subproject item has not been closed yet.",
     project_implementing_authority_role: "Select implementation authority role",
     project_implementing_authority_role_description:
       "The authorities enabled to create and modify subprojects, define and execute workflow activities",
@@ -123,7 +145,8 @@ const de = {
     project_roles: "Roles",
     project_thumbnail: "German: Thumbnail",
     project_title: "Project title",
-    project_title_description: "Name of the project"
+    project_title_description: "Name of the project",
+    project_searchtext: "Projekte durchsuchen"
   },
 
   subproject: {
@@ -135,19 +158,21 @@ const de = {
     subproject_completion_string: "{0} von {1} erledigt",
     subproject_currency: "German: Sub-project Currency",
     subproject_permissions_title: "German: Set permissions for subproject",
+    subproject_permissions_warning: "Dem Teilprojekt {0} wurden noch keine Berechtigungen zugewiesen",
     subproject_preview: "German: Subproject Preview",
-    subproject_close_info: "German: At least one workflow item has not been closed yet.",
+    subproject_close_info: "German: At least one workflowitem has not been closed yet.",
     subproject_close_not_allowed: "Sie haben keine Berechtigung das Projekt zu schließen",
     subproject_edit_title: "German: Edit Subproject",
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",
-    subproject_title_description: "Name of the sub-project"
+    subproject_title_description: "Name of the sub-project",
+    subproject_searchtext: "Subprojekte durchsuchen"
   },
 
   workflow: {
-    add_item: "German: Create Workflow item",
+    add_item: "German: Create Workflowitem",
     approval_required: "German: Approval Required",
-    edit_item: "German: Edit Workflow item",
+    edit_item: "German: Edit Workflowitem",
     exchange_rate: "Wechselkurs",
     non_approval: "German: Non-Approval",
     workflow_action_in_review: "Pending for review of",
@@ -179,10 +204,11 @@ const de = {
     workflow_no_documents: "No documents",
     workflow_none: "None",
     workflow_permissions_title: "German: Set permissions for workflowitem",
+    workflow_permissions_warning: "Dem Workflow-Item {0} wurden noch keine Berechtigungen zugewiesen",
     workflow_redacted: "German: Redacted",
     workflow_selection: "German: You have selected {0} workflows",
     workflow_submit_for_review: "Submit for Review",
-    workflow_table_title: "Workflow items",
+    workflow_table_title: "Workflowitems",
     workflow_title: "Workflow title",
     workflow_title_description: "Name of the workflow",
     workflow_type: "Type",
@@ -192,11 +218,15 @@ const de = {
     workflowitem_details: "Prozessschrittdetails",
     workflowitem_details_documents: "Dokumente",
     workflowitem_details_history: "Historie",
-    workflowitem_details_overview: "Übersicht"
+    workflowitem_details_overview: "Übersicht",
+    workflowitem_type: "Workflowitem Typ",
+    workflowitem_type_general: "Legen Sie ein Workflow-Item vom Typ 'general' an.",
+    workflowitem_type_restricted:
+      "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte."
   },
 
   users: {
-    full_name: "German: Full Name",
+    account_name: "Accountname",
     new_user: "German: New User",
     user_created: "German: User successfully created",
     users: "German: Users",
@@ -216,11 +246,18 @@ const de = {
     password_change_success: "Passwort wurde erfolgreich geändert",
     type_current_password: "Geben Sie das Passwort für {0} ein",
     type_new_password: "Geben Sie das neue Passwort für {0} ein",
-    username_invalid: "Benutzername ungültig",
+    username_invalid: "Login-ID ungültig",
     password_conditions_preface: "Das Passwort muss:",
     password_conditions_length: "Mindestens 8 Zeichen lang sein",
     password_conditions_letter: "Mindestens einen Buchstaben enthalten",
-    password_conditions_number: "Mindestens eine Zahl enthalten"
+    password_conditions_number: "Mindestens eine Zahl enthalten",
+    privacy_notice:
+      "Bitte stellen Sie sicher, dass Sie keine persönlichen Informationen angeben. Durch Klicken auf SUBMIT werden Ihre Daten dauerhaft gespeichert und hiermit der Erhalt des Datenschutzhinweises bestätigt.",
+    disabled_users: "Deaktivierte Benutzer",
+    disable_user: "Benutzer deaktivieren",
+    disable_user_successfull: "Folgender Benutzer wurde deaktiviert: ",
+    enable_user: "Benutzer wiederherstellen",
+    enable_user_successfull: "Folgender Benutzer wurde wiederhergestellt: "
   },
   userProfile: {
     invalid_email_address: "Ungültige Emailadresse"
@@ -228,11 +265,11 @@ const de = {
 
   nodesDashboard: {
     access: "German: Access",
-    additional_organization_node: "German: New nodes for existing organizations",
+    additional_organization_node: "Anfragen für zusätzliche Nodes",
     address: "German: Access",
     approve: "German: Approve",
     network: "German: Network",
-    new_organization: "German: New Organizations",
+    new_organization: "Anfragen für neue Organisationen",
     nodes: "German: Nodes",
     permissions: "German: Permissions"
   },
@@ -248,6 +285,7 @@ const de = {
   },
 
   confirmation: {
+    assign_permissions: "Berechtigungen zuweisen",
     additional_permissions_dialog_text:
       "Zusätzliche Aktionen müssen ausgeführt werden, um sicherzustellen, dass Benutzer auch alle erforderlichen Ressourcen anzeigen können.",
     additional_permissions_required: "Zusätzliche Berechtigungen benötigt",
@@ -263,8 +301,14 @@ const de = {
     no_permission_warning: "Warnung: Sie haben nicht die Berechtigung, alle aufgelisteten Aktionen auszuführen!",
     permissions_required: "Berechtigungen erforderlich",
     permissions_text: `{0} benötigt zusätzliche Berechtigungen um {1} "{2}" sehen zu können.`,
+    project_close: "Projekt schließen",
+    project_close_text: "Sind Sie sicher, dass Sie dieses Projekt schließen wollen?",
+    subproject_close: "Teilprojekt schliessen",
+    subproject_close_text: "Sind Sie sicher, dass Sie dieses Teilprojekt schließen wollen?",
     update_permissions_dialog_text: "Möchten Sie die Berechtigungen wirklich aktualisieren?",
-    user_group: "Benutzer/Gruppe"
+    user_group: "Benutzer/Gruppe",
+    workflowitem_close: "Workflowitem schliessen",
+    workflowitem_close_text: "Sind Sie sicher, dass Sie dieses Workflow-Item schließen wollen?"
   },
 
   intents: {
@@ -302,7 +346,6 @@ const de = {
     backup: "German: Backup",
     connected_peers: "Peers Verbunden",
     disconnected_peers: "Keine Peers verbunden",
-    download: "German: Download",
     logout: "Logout",
     main_site: "Main",
     menu_item_export: "Exportieren",
@@ -336,7 +379,7 @@ const de = {
     done_transaction: "German: Status of transaction {0} set to Done",
     done_workflow: "German: Status of workflow {0} set to Done",
     edit_transaction: "German: Transaction {0} got adapted",
-    edit_workflow: "German: Workflow item {0} got adapted",
+    edit_workflow: "German: Workflowitem {0} got adapted",
     email_saved: "Email {0} gespeichert",
     no_permissions: "German: (No permissions to see further details)",
     notification_card_text:
@@ -364,7 +407,7 @@ const de = {
     project_updated: "German: Project {0} was updated",
     read_all: "German: Read All",
     review_transaction: "German: You are assigned to review the transaction {0}",
-    review_workflow: "German: You are assigned to review the workflow item {0}",
+    review_workflow: "German: You are assigned to review the workflowitem {0}",
     save_email_error: "Email konnte nicht gespeichert werden",
     subproject_archive: "German: Subproject {0} was archived",
     subproject_assign: "German: Subproject {0} was assigned to you",
@@ -394,15 +437,15 @@ const de = {
     created_project: "Project created ",
     created_subproject: "Subproject {0} created",
     created_workflow: "Workflow {0} created ",
-    edit_addData: "Additional data of workflow item {0} changed to {1} ",
-    edit_amount: "Amount of workflow item {0} changed from {1} to {2} ",
-    edit_amountType: "Budget status of workflow item {0} changed from {1} to {2}",
-    edit_comment: "Comment of workflow item {0} changed to {1} ",
-    edit_currency: "Currency of workflow item {0} changed to {1} ",
-    edit_documents: "Documents changed for workflow item {0}",
-    edit_status: "Status of workflow item {0} changed to {1}",
+    edit_addData: "Additional data of workflowitem {0} changed to {1} ",
+    edit_amount: "Amount of workflowitem {0} changed from {1} to {2} ",
+    edit_amountType: "Budget status of workflowitem {0} changed from {1} to {2}",
+    edit_comment: "Comment of workflowitem {0} changed to {1} ",
+    edit_currency: "Currency of workflowitem {0} changed to {1} ",
+    edit_documents: "Documents changed for workflowitem {0}",
+    edit_status: "Status of workflowitem {0} changed to {1}",
     edit_subproject: "Amount of {0} increased to {1}",
-    edit_workflowName: "Name of workflow item {0} changed to {1} ",
+    edit_workflowName: "Name of workflowitem {0} changed to {1} ",
     first_sort: "Moved {0} to first position",
     project_assign: "German: {0} assigned project {1} to {2}",
     project_close: "Schließe Project",
@@ -461,11 +504,11 @@ const de = {
     subproject_archive: "German: Archive subproject",
     subproject_assign: "German: Assign subproject",
     subproject_close: "German: Close subproject",
-    subproject_createWorkflowitem: "German: Create workflow items",
+    subproject_createWorkflowitem: "German: Create workflowitems",
     subproject_intent_grantPermission: "German: Grant subproject permissions",
     subproject_intent_listPermissions: "German: View subproject permissions",
     subproject_intent_revokePermission: "German: Revoke subproject permissions",
-    subproject_reorderWorkflowitems: "German: Reorder workflow items",
+    subproject_reorderWorkflowitems: "German: Reorder workflowitems",
     subproject_update: "German: Update subproject",
     subproject_viewDetails: "German: View subproject details",
     subproject_viewSummary: "German: View subproject overview",
@@ -479,6 +522,34 @@ const de = {
     workflowitem_update: "German: Update workflowitem",
     workflowitem_view: "German: View workflowitem",
     write: "German: Write permissions"
+  },
+
+  eventTypes: {
+    project_created: "Projekt erstellt",
+    project_updated: "Projekt aktualisiert",
+    project_assigned: "Projekt zugewiesen",
+    project_closed: "Projekt abgeschlossen",
+    project_permission_granted: "Projektgenehmigung erteilt",
+    project_permission_revoked: "Projekterlaubnis widerrufen",
+    project_projected_budget_updated: "Projektbudget aktualisiert",
+    project_projected_budget_deleted: "Projekt-Budget abgeschlossen",
+
+    subproject_created: "Teilprojekt angelegt",
+    subproject_updated: "Teilprojekt aktualisiert",
+    subproject_assigned: "Teilprojekt zugeordnet",
+    subproject_closed: "Teilprojekt abgeschlossen",
+    subproject_permission_granted: "Teilprojektgenehmigung erteilt",
+    subproject_permission_revoked: "Subprojekt-Erlaubnis widerrufen",
+    subproject_projected_budget_updated: "Teilprojekt-Budget aktualisiert",
+    subproject_projected_budget_deleted: "Teilprojekt-Budget geschlossen",
+
+    workflowitem_created: "Workflowitem erzeugt",
+    workflowitem_updated: "Workflowitem aktualisiert",
+    workflowitem_assigned: "Workflowitem zugeordnet",
+    workflowitem_closed: "Workflowitem geschlossen",
+    workflowitem_permission_granted: "Workflowitem-Erlaubnis erteilt",
+    workflowitem_permission_revoked: "Workflowitem-Erlaubnis widerrufen",
+    workflowitems_reordered: "Workflow-Einträge neu angeordnet"
   },
 
   language: {

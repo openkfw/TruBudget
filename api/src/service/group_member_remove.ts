@@ -1,4 +1,6 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import * as Group from "./domain/organization/group";
@@ -12,17 +14,17 @@ export async function removeMember(
   serviceUser: ServiceUser,
   groupId: Group.Id,
   newMember: Group.Member,
-): Promise<void> {
-  const { newEvents, errors } = await Cache.withCache(conn, ctx, cache =>
+): Promise<Result.Type<void>> {
+  const memberRemoveResult = await Cache.withCache(conn, ctx, cache =>
     GroupMemberRemove.removeMember(ctx, serviceUser, groupId, newMember, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
       },
     }),
   );
-  if (errors.length > 0) return Promise.reject(errors);
 
-  for (const event of newEvents) {
-    await store(conn, ctx, event);
-  }
+  if (Result.isErr(memberRemoveResult)) return new VError(memberRemoveResult, "failed to remove group member");
+  const memberAddEvent = memberRemoveResult;
+
+  await store(conn, ctx, memberAddEvent);
 }

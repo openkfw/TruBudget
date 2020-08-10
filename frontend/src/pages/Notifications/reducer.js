@@ -22,12 +22,14 @@ const defaultState = fromJS({
   showSnackbar: false,
   snackbarMessage: "New Project added",
   snackbarError: false,
+  snackbarWarning: false,
   historyItems: [],
   unreadNotificationCount: 0,
   notificationsPerPage: 20,
   notificationOffset: 0,
   isLiveUpdatesEnabled: true,
   totalNotificationCount: 0,
+  notificationCount: 0,
   currentNotificationPage: 1,
   notificationPageSize: 20
 });
@@ -72,7 +74,8 @@ export default function navbarReducer(state = defaultState, action) {
     case SHOW_SNACKBAR:
       return state.merge({
         showSnackbar: action.show,
-        snackbarError: action.isError
+        snackbarError: action.isError,
+        snackbarWarning: action.isWarning
       });
     case HIDE_SNACKBAR:
       return state.set("showSnackbar", action.show);

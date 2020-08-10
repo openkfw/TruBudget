@@ -8,7 +8,7 @@
   - [Update multiple workflowitems](#update-multiple-workflowitems)
   - [Assign an User/Group to a workflowitem](#assign-an-usergroup-to-a-workflowitem)
   - [Close workflowitem](#close-workflowitem)
-  - [View the history of a workflowitem](#view-the-history-of-a-workflowitem)
+  - [View and filter the history of a workflowitem](#view-and-filter-the-history-of-a-workflowitem)
   - [Reorder Workflowitems](#reorder-workflowitems)
   - [Documents in TruBudget](#documents-in-trubudget)
     - [Add document to workflowitem](#add-document-to-workflowitem)
@@ -96,6 +96,9 @@ Create a new workflowitem defining title, comment, currency and budget. It is al
 
 6. Fill in the required fields:
 
+   - Workflowitem type: Workflowitems behave differently according to their type
+      - general: A workflowitem of type general will be created
+      - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.
    - "Workflow Title": Title of the workflowitem
    - "Comment": A little description or comment refering to the workflowitem
    - Budget:
@@ -239,11 +242,12 @@ Close a workflowitem when the work is done.
 
 ![close workflowitem](../../uploads/Screenshots/close_workflowitem.jpg)
 
-## View the history of a workflowitem
+## View and filter the history of a workflowitem
 
 **Description:**
 
 The history for each workflowitem can be found in its details dialog. The history contains a chronological list of changes of the selected workflowitem, starting with the newest.
+The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and a end date, where a timeframe can be determined. By clicking the search button, all values that are specified are used in the filter request.
 
 **Instructions:**
 
@@ -252,6 +256,8 @@ The history for each workflowitem can be found in its details dialog. The histor
 2. Navigate to the "History" tab
    ![view the history tab](../../uploads/Screenshots/history_tab.jpg)
 3. You can now view the history of the selected workflowitem
+4. To filter the history events, click on the expandable filter area and set the filter options
+   ![filter workflowitem history](../../uploads/Screenshots/filter_workflowitem_history.jpg)
 
 ## Reorder Workflowitems
 
@@ -283,7 +289,7 @@ If workflowitems are not closed or redacted( user has no view permission) the us
 
 **Description:**
 
-TruBudget features validation of documents. If a file (like a contract, invoice, etc.) is part of the general workflow of a subproject, the document can be "added" to a workflowitem and later be validated by another user. The word "added" is written in quotes because the document itself is not uploaded in any way - instead, a fingerprint is computed and only that fingerprint is stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and compared to the original.
+TruBudget features upload/download and validation of documents. If a file (like a contract, invoice, etc.) is part of the general workflow of a subproject, the document can be added to a workflowitem and later be downloaded or validated by another user. Before `Trubudget-v1.10.0` a document is not uploaded itself - instead only a computed fingerprint is stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and compared to the original. Since `Trubdget-v1.10.0` a documents can be uploaded and downloaded.
 
 ### Add document to workflowitem
 
@@ -296,6 +302,15 @@ Adding a document to a workflowitem can be done either when adding or when creat
    ![upload document](../../uploads/Screenshots/upload_document.jpg)
 5. Click the "Submit" button to finish
 
+### Download document from workflowitem (Since Trubudget-v1.10.0)
+
+1. Click on the "i" (information) button of the workflowitem containing the document to [view the workflowitem details](#view-workflowitem-details)
+   ![view workflowitem details](../../uploads/Screenshots/view_details_workflowitem.jpg)
+2. Navigate to the "Documents" tab
+   ![view the documents tab](../../uploads/Screenshots/documents_tab.jpg)
+3. If you see the desired document, click the "Download" button
+   ![download the document](../../uploads/Screenshots/download_document.jpg)
+
 ### Validate a document
 
 1. Click on the "i" (information) button of the workflowitem containing the document to [view the workflowitem details](#view-workflowitem-details)
@@ -307,4 +322,4 @@ Adding a document to a workflowitem can be done either when adding or when creat
 4. Select the correct document from your drive
 5. If the documents match, the validation says "OK"
    ![document ok](../../uploads/Screenshots/document_ok.jpg)
-6. [Optional] If the documents do not match, the label changes to "NOT OK". Click on the "NOT OK" button and upload another document to try again.
+6. [Optional] If the documents do not match, the label changes to "NOT OK". Click on the "NOT OK" button and choose another document to try again.

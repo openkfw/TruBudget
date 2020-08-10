@@ -18,7 +18,8 @@ services:
       - "8000:8000"
       - "8085:8085"
   email-service:
-    build: .
+    build:
+      context: .
     command: ["npm", "start"]
     environment:
       JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
@@ -27,7 +28,7 @@ services:
       DB_HOST: emaildb
       DB_PORT: 5432
       DB_NAME: trubudget_email_service
-      PORT: 8890
+      HTTP_PORT: 8890
       LOG_LEVEL: INFO
       # MODE: DEBUG
     links:
@@ -46,7 +47,8 @@ services:
     ports:
       - 5432:5432
   master-api:
-    image: trubudget/api:latest
+    build:
+      context: ../api
     environment:
       ORGANIZATION: KfW
       ORGANIZATION_VAULT_SECRET: asdf
@@ -70,14 +72,18 @@ services:
       ORGANIZATION: KfW
     links:
       - master-api
-  # frontend:
-  #   build: ../frontend
-  #   environment:
-  #     PROD_API_HOST: master-api
-  #     PROD_API_PORT: 8080
-  #     TEST_API_HOST: master-api
-  #     TEST_API_PORT: 8080
-  #   ports:
-  #     - "81:80" # Mapping the nginx port
-  #   links:
-  #     - master-api
+  frontend:
+    build:
+      context: ../frontend
+    environment:
+      REACT_APP_EMAIL_SERVICE_ENABLED: "true"
+      EMAIL_HOST: email-service
+      EMAIL_PORT: 8890
+      PROD_API_HOST: master-api
+      PROD_API_PORT: 8080
+      TEST_API_HOST: master-api
+      TEST_API_PORT: 8080
+    ports:
+      - "81:80" # Mapping the nginx port
+    links:
+      - master-api

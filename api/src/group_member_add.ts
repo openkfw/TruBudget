@@ -1,14 +1,13 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -79,7 +78,12 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  addGroupMember(ctx: Ctx, user: ServiceUser, groupId: string, userId: string): Promise<void>;
+  addGroupMember(
+    ctx: Ctx,
+    user: ServiceUser,
+    groupId: string,
+    userId: string,
+  ): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -99,7 +103,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       return;
     }
 
-    let invokeService;
+    let invokeService: Promise<Result.Type<void>>;
     switch (bodyResult.apiVersion) {
       case "1.0": {
         const { groupId, userId } = bodyResult.data;
@@ -107,11 +111,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         break;
       }
       default:
+        // Joi validates only existing apiVersions
         assertUnreachable(bodyResult.apiVersion);
     }
 
     invokeService
-      .then(() => {
+      .then((result) => {
+        if (Result.isErr(result)) throw new VError(result, "group.addUser failed");
         const code = 200;
         const body = {
           apiVersion: "1.0",
@@ -119,7 +125,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });

@@ -19,7 +19,8 @@ const ActionButton = ({
   id,
   // eslint-disable-next-line no-useless-computed-key
   ["data-test"]: dataTest,
-  iconButtonStyle
+  iconButtonStyle,
+  iconButtonClassName
 }) => {
   const disabled = notVisible;
   return (
@@ -35,6 +36,7 @@ const ActionButton = ({
           <IconButton
             onClick={onClick}
             style={notVisible ? { ...styles.hide } : iconButtonStyle}
+            className={notVisible ? null : iconButtonClassName}
             disabled={disabled}
             data-test={dataTest}
             id={id}

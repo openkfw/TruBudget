@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -19,8 +20,8 @@ export async function deleteProjectedBudget(
   subprojectId: Subproject.Id,
   organization: string,
   currencyCode: CurrencyCode,
-): Promise<ProjectedBudget[]> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<ProjectedBudget[]>> {
+  const deleteProjectedBudgetResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectProjectedBudgetDelete.deleteProjectedBudget(
       ctx,
       serviceUser,
@@ -32,17 +33,19 @@ export async function deleteProjectedBudget(
         getSubproject: async (pId, spId) => {
           return cache.getSubproject(pId, spId);
         },
-        getUsersForIdentity: async identity => {
+        getUsersForIdentity: async (identity) => {
           return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
       },
     ),
   );
-  if (Result.isErr(result)) throw result;
-
-  for (const event of result.newEvents) {
+  if (Result.isErr(deleteProjectedBudgetResult)) {
+    return new VError(deleteProjectedBudgetResult, `delete projected budget of subproject failed`);
+  }
+  const { newEvents, projectedBudgets } = deleteProjectedBudgetResult;
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 
-  return result.projectedBudgets;
+  return projectedBudgets;
 }

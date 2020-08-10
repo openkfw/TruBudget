@@ -2,6 +2,7 @@ import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
 import { Ctx } from "../lib/ctx";
 import { ServiceUser } from "../service/domain/organization/service_user";
+import Type from "../service/domain/workflowitem_types/types";
 
 export interface Document {
   id: string;
@@ -136,6 +137,7 @@ export interface Workflowitem {
     displayName: string | null;
     exchangeRate?: string | null;
     billingDate?: string | null;
+    dueDate?: string | null;
     amount?: string | null;
     currency?: string | null;
     amountType: "N/A" | "disbursed" | "allocated" | null;
@@ -143,6 +145,7 @@ export interface Workflowitem {
     status: "open" | "closed";
     assignee?: string | null;
     documents?: Document[] | null;
+    workflowitemType?: Type;
   };
 }
 export interface ProjectAndSubprojects {

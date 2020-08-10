@@ -30,8 +30,10 @@ export const WORKFLOW_PURPOSE = "WORKFLOW_PURPOSE";
 export const WORKFLOW_ADDITIONAL_DATA = "WORKFLOW_ADDITIONAL_DATA";
 export const WORKFLOW_CURRENCY = "WORKFLOW_CURRENCY";
 export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
+export const WORKFLOW_DUEDATE = "WORKFLOW_DUEDATE";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
+export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_SUCCESS = "CREATE_WORKFLOW_SUCCESS";
 export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
@@ -59,6 +61,8 @@ export const OPEN_HISTORY_SUCCESS = "OPEN_HISTORY_SUCCESS";
 export const SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT = "SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT";
 export const FETCH_NEXT_SUBPROJECT_HISTORY_PAGE = "FETCH_NEXT_SUBPROJECT_HISTORY_PAGE";
 export const FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS = "FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS";
+export const FETCH_FIRST_SUBPROJECT_HISTORY_PAGE = "FETCH_FIRST_SUBPROJECT_HISTORY_PAGE";
+export const FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS = "FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS";
 
 export const ENABLE_BUDGET_EDIT = "ENABLE_BUDGET_EDIT";
 export const POST_SUBPROJECT_EDIT = "POST_SUBPROJECT_EDIT";
@@ -115,7 +119,7 @@ export const HIDE_SUBPROJECT_CONFIRMATION_DIALOG = "HIDE_SUBPROJECT_CONFIRMATION
 export const SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG = "SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG";
 export const HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG = "HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG";
 export const ADD_TEMPORARY_WORKFLOWITEM_PERMISSION = "ADD_TEMPORARY_WORKFLOWITEM_PERMISSION";
-export const REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION = " REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION";
+export const REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION = "REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION";
 
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
@@ -146,11 +150,22 @@ export function setTotalHistoryItemCount(count) {
   };
 }
 
-export function fetchNextSubprojectHistoryPage(projectId, subprojectId, showLoading = false) {
+export function fetchNextSubprojectHistoryPage(projectId, subprojectId, filter = {}, showLoading = false) {
   return {
     type: FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
     projectId,
     subprojectId,
+    filter,
+    showLoading
+  };
+}
+
+export function fetchFirstSubprojectHistoryPage(projectId, subprojectId, filter = {}, showLoading = false) {
+  return {
+    type: FETCH_FIRST_SUBPROJECT_HISTORY_PAGE,
+    projectId,
+    subprojectId,
+    filter,
     showLoading
   };
 }
@@ -414,7 +429,18 @@ export function hideWorkflowDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, amount, exchangeRate, amountType, description, currency, documents) {
+export function showEditDialog(
+  id,
+  displayName,
+  amount,
+  exchangeRate,
+  amountType,
+  description,
+  currency,
+  documents,
+  dueDate,
+  workflowitemType
+) {
   return {
     type: SHOW_WORKFLOW_EDIT,
     id,
@@ -424,7 +450,9 @@ export function showEditDialog(id, displayName, amount, exchangeRate, amountType
     amountType,
     description,
     currency,
-    documents
+    documents,
+    dueDate,
+    workflowitemType
   };
 }
 
@@ -442,11 +470,19 @@ export function storeWorkflowType(workflowType) {
   };
 }
 
-export function storeWorkflowDocument(id, base64) {
+export function storeWorkflowDocument(id, base64, fileName) {
   return {
     type: WORKFLOW_DOCUMENT,
     id: id,
-    base64: base64
+    base64: base64,
+    fileName: fileName
+  };
+}
+
+export function storeWorkflowitemType(workflowitemType) {
+  return {
+    type: WORKFLOWITEM_TYPE,
+    workflowitemType: workflowitemType
   };
 }
 
@@ -500,9 +536,17 @@ export function storeWorkflowComment(description) {
 export function storeWorkflowStatus(status) {
   return {
     type: WORKFLOW_STATUS,
-    status: status
+    status
   };
 }
+
+export function storeWorkflowDueDate(dueDate) {
+  return {
+    type: WORKFLOW_DUEDATE,
+    dueDate
+  };
+}
+
 export function storeWorkflowItemsSelected(workflowItems) {
   return {
     type: WORKFLOWITEMS_SELECTED,
@@ -520,7 +564,9 @@ export function createWorkflowItem(
   currency,
   description,
   status,
-  documents
+  documents,
+  dueDate,
+  workflowitemType
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -533,7 +579,9 @@ export function createWorkflowItem(
     currency,
     description,
     documents,
-    status
+    status,
+    dueDate,
+    workflowitemType
   };
 }
 
@@ -575,6 +623,7 @@ export function closeSubproject(projectId, subprojectId, showLoading = false) {
     showLoading
   };
 }
+
 export function closeWorkflowItem(projectId, subprojectId, workflowitemId, showLoading = false) {
   return {
     type: CLOSE_WORKFLOWITEM,

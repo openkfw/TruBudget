@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import { ConnToken } from "./conn";
@@ -11,15 +12,25 @@ export async function changeUserPassword(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
+  issuerOrganization: string,
   requestData: UserPasswordChange.RequestData,
-): Promise<void> {
-  const result = await UserPasswordChange.changeUserPassword(ctx, serviceUser, requestData, {
-    getUser: () => UserQuery.getUser(conn, ctx, serviceUser, requestData.userId),
-    hash: passwordPlainText => hashPassword(passwordPlainText),
-  });
-  if (Result.isErr(result)) return Promise.reject(result);
+): Promise<Result.Type<void>> {
+  const newEventsResult = await UserPasswordChange.changeUserPassword(
+    ctx,
+    serviceUser,
+    issuerOrganization,
+    requestData,
+    {
+      getUser: () => UserQuery.getUser(conn, ctx, serviceUser, requestData.userId),
+      hash: (passwordPlainText) => hashPassword(passwordPlainText),
+    },
+  );
+  if (Result.isErr(newEventsResult)) {
+    return new VError(newEventsResult, `failed to change password`);
+  }
+  const newEvents = newEventsResult;
 
-  for (const event of result) {
+  for (const event of newEvents) {
     await store(conn, ctx, event);
   }
 }

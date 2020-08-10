@@ -1,15 +1,14 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as GroupCreate from "./service/domain/organization/group_create";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import Joi = require("joi");
 
 interface Group {
   id: string;
@@ -30,9 +29,7 @@ const requestBodyV1Schema = Joi.object({
     group: Joi.object({
       id: Joi.string().required(),
       displayName: Joi.string().required(),
-      users: Joi.array()
-        .required()
-        .items(Joi.string()),
+      users: Joi.array().required().items(Joi.string()),
     }).required(),
   }).required(),
 });
@@ -126,7 +123,11 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  createGroup(ctx: Ctx, user: ServiceUser, group: GroupCreate.RequestData): Promise<Group>;
+  createGroup(
+    ctx: Ctx,
+    user: ServiceUser,
+    group: GroupCreate.RequestData,
+  ): Promise<Result.Type<Group>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -146,7 +147,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       return;
     }
 
-    let invokeService;
+    let invokeService: Promise<Result.Type<Group>>;
     switch (bodyResult.apiVersion) {
       case "1.0": {
         const { id, displayName, users } = bodyResult.data.group;
@@ -154,11 +155,14 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         break;
       }
       default:
+        // Joi validates only existing apiVersions
         assertUnreachable(bodyResult.apiVersion);
     }
 
     invokeService
-      .then(group => {
+      .then((groupResult) => {
+        if (Result.isErr(groupResult)) throw new VError(groupResult, "global.createGroup failed");
+        const group = groupResult;
         const code = 200;
         const body = {
           apiVersion: "1.0",
@@ -168,7 +172,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });

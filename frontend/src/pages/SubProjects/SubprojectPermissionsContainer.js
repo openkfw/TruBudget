@@ -115,7 +115,6 @@ class SubProjectPermissionsContainer extends Component {
       removeTemporaryPermission,
       addTemporaryPermission,
       subprojectId,
-      userList,
       subprojectDisplayName
     } = this.props;
 
@@ -135,7 +134,7 @@ class SubProjectPermissionsContainer extends Component {
         intentOrder={subProjectIntentOrder}
         disabledUserSelection={this.hasOnlyViewPermissions(allowedIntents)}
         disabledSubmit={this.isSubmitDisabled(allowedIntents, this.props.permissions, this.props.temporaryPermissions)}
-        userList={userList}
+        userList={[...this.props.userList, ...this.props.groupList]}
       />
     );
   }
@@ -150,7 +149,8 @@ const mapStateToProps = state => {
     subprojectId: state.getIn(["detailview", "idForPermissions"]),
     subprojectDisplayName: state.getIn(["detailview", "displayNameForPermissions"]),
     myself: state.getIn(["login", "id"]),
-    userList: state.getIn(["login", "user"]),
+    userList: state.getIn(["login", "enabledUsers"]),
+    groupList: state.getIn(["login", "groupList"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     permissionDialogShown: state.getIn(["detailview", "showSubProjectPermissions"]),
     isConfirmationDialogOpen: state.getIn(["confirmation", "open"]),

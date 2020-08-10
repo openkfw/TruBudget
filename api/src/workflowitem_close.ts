@@ -91,7 +91,7 @@ interface Service {
     projectId: Project.Id,
     subprojectId: Subproject.Id,
     workflowitemId: Workflowitem.Id,
-  ): Promise<void>;
+  ): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -115,7 +115,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     service
       .closeWorkflowitem(ctx, user, projectId, subprojectId, workflowitemId)
-      .then(() => {
+      .then((result) => {
+        if (Result.isErr(result)) {
+          throw new VError(result, "workflowitem.close failed");
+        }
         const code = 200;
         const body = {
           apiVersion: "1.0",
@@ -123,7 +126,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         };
         reply.status(code).send(body);
       })
-      .catch(err => {
+      .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
       });

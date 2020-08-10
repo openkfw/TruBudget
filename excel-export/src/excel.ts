@@ -72,11 +72,13 @@ export async function writeXLSX(
       { header: "Subproject Currency", key: "parentSubprojectCurrency", width: smallWidth },
       { header: "Workflowitem ID", key: "id", width: mediumWidth },
       { header: "Workflowitem Name", key: "displayName", width: mediumWidth },
+      { header: "Workflowitem Type", key: "workflowitemType", width: smallWidth },
       { header: "Created", key: "creationUnixTs", width: mediumWidth },
       { header: "Status", key: "status", width: smallWidth },
       { header: "Description", key: "description", width: mediumWidth },
       { header: "Assignee", key: "assignee", width: smallWidth },
       { header: "Billing Date", key: "billingDate", width: mediumWidth },
+      { header: "Due Date", key: "dueDate", width: mediumWidth },
       { header: "Amount Type", key: "amountType", width: smallWidth },
       { header: "Amount", key: "amount", width: smallWidth },
       { header: "Currency", key: "currency", width: smallWidth },
@@ -122,7 +124,7 @@ export async function writeXLSX(
         })
         .commit();
 
-      project.projectedBudgets.map(projectedBudget => {
+      project.projectedBudgets.map((projectedBudget) => {
         projectProjectedBudgetsSheet
           .addRow({
             ...projectedBudget,
@@ -144,7 +146,7 @@ export async function writeXLSX(
           })
           .commit();
 
-        subproject.projectedBudgets.map(async projectedBudget => {
+        subproject.projectedBudgets.map(async (projectedBudget) => {
           subprojectProjectedBudgetsSheet
             .addRow({
               ...projectedBudget,
@@ -180,7 +182,7 @@ export async function writeXLSX(
               creationUnixTs: new Date(parseInt(workflowitem.creationUnixTs) * 1000).toISOString(),
             })
             .commit();
-          workflowitem.documents.map(doc => {
+          workflowitem.documents.map((doc) => {
             documentSheet
               .addRow({
                 projectId: project.id,

@@ -40,6 +40,7 @@ const pt = {
     disconnected: "Desligada",
     display_name: "Mostrar nome",
     done: "Finalizar",
+    download: "Download",
     edit: "Editar",
     edited: "Editado",
     email: "Email",
@@ -52,12 +53,28 @@ const pt = {
     in_review: "Em revisão",
     incorrect_password: "Senha incorreta",
     incorrect_username: "Id do usuário incorreto",
+    incorrect_username_or_password: "ID ou palavra-passe de início de sessão incorrecta",
     invalid_tag: "Tag inválida",
     name: "Nome ou descrição do usuário",
     next: "Próximo",
+    no_budget: "Nenhum orçamento encontrado",
+    no_budget_project: "Para adicionar um orçamento para seu projeto, navegue de volta à página principal.",
+    no_budget_subproject:
+      "Para adicionar um orçamento para o seu subprojecto, volte à página de síntese do subprojecto.",
     no_budget_distribution: "Não é possível exibir a distribuição, se nem todos os itens estiverem visíveis",
+    no_disabled_users: "Nenhum usuário desativado encontrado",
+    no_groups: "Nenhum grupo encontrado",
+    no_groups_text: "Crie um novo grupo pressionando o botão mais.",
     no_history: "Sem histórico",
+    no_items_text: "Você pode criar um, pressionando o botão mais.",
+    no_nodes: "Nenhum pedido de nós aditonais encontrado",
+    no_notifications: "Nenhuma notificação encontrada",
+    no_organizations: "Nenhum pedido de novas organizações foi encontrado",
     no_resources: "Nenhum campo foi adicionado a este recurso",
+    no_subprojects: "Nenhum subprojetos encontrado",
+    no_users: "Nenhum usuário encontrado",
+    no_users_text: "Adicione um novo usuário pressionando o botão mais.",
+    no_workflow_items: "Nenhum itens de workflow encontrado",
     not_assigned_budget: "Orçamento não atribuído",
     not_assigned: "Não atribuído",
     not_disbursed: "Não desembolsado",
@@ -71,6 +88,7 @@ const pt = {
     projected_budget_exists: "O orçamento projetado já existe",
     projected_budget: "Orçamento projetado",
     redacted: "Redigido",
+    reset: "Redefinir",
     revoke: "Revogar",
     search: "Procurar",
     show_permissions: "Mostrar permissões",
@@ -87,17 +105,21 @@ const pt = {
     update: "Atualizar",
     username: "Id do usuário",
     view: "Visualizar",
-    workflowitem: "Item de workflow"
+    workflowitem: "Item de workflow",
+    dueDate: "Data de vencimento",
+    dueDate_exceeded: "Data de vencimento excedida",
+    login_disabled: "O ID de login está desativado",
+    login_data_error: "O campo de identidade ou senha de login não pode estar vazio"
   },
 
   users: {
+    account_name: "Nome ou descrição do usuário",
     add_group: "Criar novo grupo",
     add_user: "Criar novo usuário",
     change_password_for: "Mudar senha para {0}",
     current_user_password: "Sua Senha",
     edit_group: "Editar grupo",
     edit_permissions_for: "Editar permissões para",
-    full_name: "Nome ou descrição do usuário",
     group_created: "Grupo de usuários criado com sucesso",
     groups: "Grupos",
     invalid_password: "Sehna inválida",
@@ -111,11 +133,18 @@ const pt = {
     password_conditions_letter: "Conter pelo menos uma letra",
     password_conditions_number: "Conter pelo menos um número",
     password_conditions_preface: "Sua senha deve:",
+    privacy_notice:
+      "Por favor, certifique-se de não fornecer qualquer informação pessoal. Ao clicar em ENVIAR, os seus dados são guardados permanentemente e confirma a recepção da declaração de privacidade.",
     type_current_password: "Digite a senha atual para o {0}",
     type_new_password: "Digite a nova senha para o {0}",
     user_created: "Usuário criado com sucesso",
     username_invalid: "Nome de usuário Inválido",
-    users: "Usuários"
+    users: "Usuários",
+    disabled_users: "Utilizadores desactivados",
+    disable_user: "Desactivar utilizador",
+    disable_user_successfull: "O seguinte utilizador foi desactivado: ",
+    enable_user: "Restaurar utilizador",
+    enable_user_successfull: "O seguinte utilizador foi activado: "
   },
 
   userProfile: {
@@ -124,11 +153,11 @@ const pt = {
 
   nodesDashboard: {
     access: "Acesso",
-    additional_organization_node: "Novos nós para organizações existentes",
+    additional_organization_node: "Pedidos de nós adicionais",
     address: "Endereço",
     approve: "Aprovar",
     network: "Rede",
-    new_organization: "Novas organizações",
+    new_organization: "Pedidos de novas organizações",
     nodes: "Nós",
     permissions: "Permissões"
   },
@@ -167,7 +196,8 @@ const pt = {
     project_roles: "´Papéis",
     project_thumbnail: "Miniatura",
     project_title_description: "Descrição do projeto",
-    project_title: "Nome do projeto"
+    project_title: "Nome do projeto",
+    project_searchtext: "Pesquisar projectos"
   },
 
   subproject: {
@@ -182,10 +212,12 @@ const pt = {
     subproject_currency: "Moeda do subprojeto",
     subproject_edit_title: "Editar subprojeto",
     subproject_permissions_title: "Configurar permissões para subprojeto",
+    subproject_permissions_warning: "Sem permissões atribuídas para o subprojecto {0}",
     subproject_preview: "Pré-visualização de subprojeto",
     subproject_select_button: "Selecionar",
     subproject_title_description: "Descrição do subprojeto",
-    subproject_title: "Nome do subprojeto"
+    subproject_title: "Nome do subprojeto",
+    subproject_searchtext: "Subprojetos de pesquisa"
   },
 
   workflow: {
@@ -223,6 +255,7 @@ const pt = {
     workflow_no_documents: "Não há documentos",
     workflow_none: "Nenhum",
     workflow_permissions_title: "Configurar permissões para item de workflow",
+    workflow_permissions_warning: "Sem permissões alocadas para o item de workflow {0}",
     workflow_redacted: "Editado por privacidade",
     workflow_selection: "Você selecionaou {0} itens de workflows",
     workflow_submit_for_review: "Enviar para revisão",
@@ -236,7 +269,11 @@ const pt = {
     workflowitem_details_documents: "Documentos",
     workflowitem_details_history: "Histórico",
     workflowitem_details_overview: "Visão geral",
-    workflowitem_details: "Detalhes do item de workflow"
+    workflowitem_details: "Detalhes do item de workflow",
+    workflowitem_type: "Categoria do item de workflow",
+    workflowitem_type_general: "Criar un item de workflow do tipo general.",
+    workflowitem_type_restricted:
+      "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização."
   },
 
   preview: {
@@ -250,6 +287,7 @@ const pt = {
   },
 
   confirmation: {
+    assign_permissions: "Atribuir permissões",
     additional_permissions_dialog_text:
       "Ações adicionais devem ser executadas para garantir que os usuários também possam visualizar todos os recursos necessários.",
     additional_permissions_required: "Permissões adicionais necessárias",
@@ -265,8 +303,14 @@ const pt = {
     no_permission_warning: "Aviso: você não tem permissão para executar todas as ações listadas!",
     permissions_required: "Permissões necessárias",
     permissions_text: `{0} precisa de permissões adicionais para visualizar {1} "{2}".`,
+    project_close: "Fechar projecto",
+    project_close_text: "Tem a certeza de que quer encerrar este projecto?",
+    subproject_close: "Fechar subprojecto",
+    subproject_close_text: "Tem a certeza de que quer encerrar este subprojecto?",
     update_permissions_dialog_text: "Deseja realmente atualizar as permissões?",
-    user_group: "Usuários/Grupo"
+    user_group: "Usuários/Grupo",
+    workflowitem_close: "Fechar item de workflow",
+    workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?"
   },
 
   intents: {
@@ -304,7 +348,6 @@ const pt = {
     backup: "Backup",
     connected_peers: "Pares conectados",
     disconnected_peers: "Sem pares conectados",
-    download: "Download",
     logout: "Logout",
     main_site: "Principal",
     menu_item_export: "Exportar",
@@ -481,6 +524,34 @@ const pt = {
     workflowitem_update: "Atualizar item de worflow",
     workflowitem_view: "Visualizar item de workflow",
     write: "Permissões de escrita"
+  },
+
+  eventTypes: {
+    project_created: "Projecto criado",
+    project_updated: "Projecto actualizado",
+    project_assigned: "Projecto atribuído",
+    project_closed: "Projecto encerrado",
+    project_permission_granted: "Permissao concedida ao projecto",
+    project_permission_revoked: "Autorização de projecto revogada",
+    project_projected_budget_updated: "Orçamento do projecto actualizado",
+    project_projected_budget_deleted: "Orçamento do projecto encerrado",
+
+    subproject_created: "Subprojecto criado",
+    subproject_updated: "Subprojecto actualizado",
+    subproject_assigned: "Subprojecto atribuído",
+    subproject_closed: "Subprojecto encerrado",
+    subproject_permission_granted: "Autorização concedida ao subprojecto",
+    subproject_permission_revoked: "Autorização de subprojecto revogada",
+    subproject_projected_budget_updated: "Orçamento do subprojecto actualizado",
+    subproject_projected_budget_deleted: "Orçamento do subprojecto encerrado",
+
+    workflowitem_created: "Workflowitem criado",
+    workflowitem_updated: "Workflowitem actualizado",
+    workflowitem_assigned: "Workflowitem assigned",
+    workflowitem_closed: "Workflowitem encerrado",
+    workflowitem_permission_granted: "Workflowitem permisision granted",
+    workflowitem_permission_revoked: "Workflowitem permission revoked",
+    workflowitems_reordered: "Reordenação dos fluxos de trabalho"
   },
 
   language: {

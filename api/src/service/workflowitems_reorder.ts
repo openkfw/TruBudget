@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -16,8 +17,8 @@ export async function setWorkflowitemOrdering(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   ordering: WorkflowitemOrdering,
-): Promise<void> {
-  const result = await Cache.withCache(conn, ctx, async cache =>
+): Promise<Result.Type<void>> {
+  const reorderWorkflowitemsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemsReorder.setWorkflowitemOrdering(
       ctx,
       serviceUser,
@@ -30,8 +31,10 @@ export async function setWorkflowitemOrdering(
     ),
   );
 
-  if (Result.isErr(result)) throw result;
-  const { newEvents } = result;
+  if (Result.isErr(reorderWorkflowitemsResult)) {
+    return new VError(reorderWorkflowitemsResult, `reorder workflowitems failed`);
+  }
+  const newEvents = reorderWorkflowitemsResult;
 
   for (const event of newEvents) {
     await store(conn, ctx, event);

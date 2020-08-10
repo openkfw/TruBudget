@@ -1,5 +1,5 @@
 describe("Login", function() {
-  let projectId, subprojectId;
+  let projectId, subprojectId, apiRoute, baseUrl;
   const routes = {
     overview: "projects",
     users: "users",
@@ -11,6 +11,9 @@ describe("Login", function() {
   };
 
   before(function() {
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
+
     cy.login();
     cy.createProject("p-login", "login test").then(({ id }) => {
       projectId = id;
@@ -57,6 +60,8 @@ describe("Login", function() {
   });
 
   it("Reject wrong inputs", function() {
+    cy.server();
+    cy.route("POST", apiRoute + "/user.authenticate").as("login");
     cy.get("#loginpage").should("be.visible");
     cy.get("#username")
       .should("be.visible")
@@ -66,7 +71,25 @@ describe("Login", function() {
       .type("bar")
       .should("have.value", "bar");
     cy.get("#loginbutton").click();
-    cy.get("#password-helper-text").should("be.visible");
+    cy.wait("@login").then(xhr => {
+      expect(xhr.response.body.error.code).to.eql(400);
+    });
+    cy.get("[data-test=client-snackbar]")
+      .contains("Incorrect login ID or password")
+      .should("be.visible");
+  });
+
+  it("Reject empty inputs", function() {
+    cy.server();
+    cy.route("POST", apiRoute + "/user.authenticate").as("login");
+    cy.get("#loginpage").should("be.visible");
+    cy.get("#loginbutton").click();
+    cy.wait("@login").then(xhr => {
+      expect(xhr.response.body.error.code).to.eql(500);
+    });
+    cy.get("[data-test=client-snackbar]")
+      .contains("Login ID or password field cannot be empty")
+      .should("be.visible");
   });
 });
 

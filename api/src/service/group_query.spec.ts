@@ -1,13 +1,12 @@
 import { assert } from "chai";
-
 import { ConnToken } from ".";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import { NotFound } from "./domain/errors/not_found";
 import * as Group from "./domain/organization/group";
 import { ServiceUser } from "./domain/organization/service_user";
-import * as GroupQuery from "./group_query";
 import { UserRecord } from "./domain/organization/user_record";
+import * as GroupQuery from "./group_query";
 
 // Globals as test fixture (ignored by the mock'ed code):
 const conn = (null as any) as ConnToken;
@@ -47,7 +46,7 @@ describe("group_query.resolveUsers()", () => {
     it("returns the user", async () => {
       const identityToResolve = "Alice";
 
-      const resolvedUsers = await GroupQuery.resolveUsers(
+      const resolvedUsersResult = await GroupQuery.resolveUsers(
         conn,
         ctx,
         issuer,
@@ -56,8 +55,10 @@ describe("group_query.resolveUsers()", () => {
         async (_1, _2, _3, groupId) =>
           Promise.resolve(Result.unwrap({ ...dummyUserRecord, id: groupId })),
       );
-
-      assert.sameMembers(resolvedUsers, ["Alice"]);
+      if (Result.isErr(resolvedUsersResult)) {
+        throw resolvedUsersResult;
+      }
+      assert.sameMembers(resolvedUsersResult, ["Alice"]);
     });
   });
 
@@ -65,7 +66,7 @@ describe("group_query.resolveUsers()", () => {
     it("returns the one user", async () => {
       const identityToResolve = newGroup("identityToResolve", ["Alice"]);
 
-      const resolvedUsers = await GroupQuery.resolveUsers(
+      const resolvedUsersResult = await GroupQuery.resolveUsers(
         conn,
         ctx,
         issuer,
@@ -77,8 +78,10 @@ describe("group_query.resolveUsers()", () => {
         async (_1, _2, _3, groupId) =>
           Promise.resolve(Result.unwrap({ ...dummyUserRecord, id: groupId })),
       );
-
-      assert.sameMembers(resolvedUsers, ["Alice"]);
+      if (Result.isErr(resolvedUsersResult)) {
+        throw resolvedUsersResult;
+      }
+      assert.sameMembers(resolvedUsersResult, ["Alice"]);
     });
   });
 
@@ -87,7 +90,7 @@ describe("group_query.resolveUsers()", () => {
       const identityToResolve = newGroup("identityToResolve", ["groupSub"]);
       const groupSub = newGroup("groupSub", ["Alice", "Bob", "Carol"]);
 
-      const resolvedUsers = await GroupQuery.resolveUsers(
+      const resolvedUsersResult = await GroupQuery.resolveUsers(
         conn,
         ctx,
         issuer,
@@ -99,8 +102,10 @@ describe("group_query.resolveUsers()", () => {
         },
         async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
-
-      assert.sameMembers(resolvedUsers, ["Alice", "Bob", "Carol"]);
+      if (Result.isErr(resolvedUsersResult)) {
+        throw resolvedUsersResult;
+      }
+      assert.sameMembers(resolvedUsersResult, ["Alice", "Bob", "Carol"]);
     });
   });
 
@@ -109,7 +114,7 @@ describe("group_query.resolveUsers()", () => {
       const identityToResolve = newGroup("identityToResolve", ["Alice", "groupSub", "Bob"]);
       const groupSub = newGroup("groupSub", ["Carol"]);
 
-      const resolvedUsers = await GroupQuery.resolveUsers(
+      const resolvedUsersResult = await GroupQuery.resolveUsers(
         conn,
         ctx,
         issuer,
@@ -121,8 +126,10 @@ describe("group_query.resolveUsers()", () => {
         },
         async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
-
-      assert.sameMembers(resolvedUsers, ["Alice", "Bob", "Carol"]);
+      if (Result.isErr(resolvedUsersResult)) {
+        throw resolvedUsersResult;
+      }
+      assert.sameMembers(resolvedUsersResult, ["Alice", "Bob", "Carol"]);
     });
   });
 
@@ -132,7 +139,7 @@ describe("group_query.resolveUsers()", () => {
       const groupSubA = newGroup("groupSubA", ["Alice"]);
       const groupSubB = newGroup("groupSubB", ["Alice", "Bob"]);
 
-      const resolvedUsers = await GroupQuery.resolveUsers(
+      const resolvedUsersResult = await GroupQuery.resolveUsers(
         conn,
         ctx,
         issuer,
@@ -145,8 +152,10 @@ describe("group_query.resolveUsers()", () => {
         },
         async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
-
-      assert.sameMembers(resolvedUsers, ["Alice", "Bob"]);
+      if (Result.isErr(resolvedUsersResult)) {
+        throw resolvedUsersResult;
+      }
+      assert.sameMembers(resolvedUsersResult, ["Alice", "Bob"]);
     });
   });
 
@@ -154,7 +163,7 @@ describe("group_query.resolveUsers()", () => {
     it("returns the users only", async () => {
       const identityToResolve = newGroup("identityToResolve", ["Alice", "identityToResolve"]);
 
-      const resolvedUsers = await GroupQuery.resolveUsers(
+      const resolvedUsersResult = await GroupQuery.resolveUsers(
         conn,
         ctx,
         issuer,
@@ -165,8 +174,10 @@ describe("group_query.resolveUsers()", () => {
         },
         async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
-
-      assert.sameMembers(resolvedUsers, ["Alice"]);
+      if (Result.isErr(resolvedUsersResult)) {
+        throw resolvedUsersResult;
+      }
+      assert.sameMembers(resolvedUsersResult, ["Alice"]);
     });
   });
 
@@ -175,7 +186,7 @@ describe("group_query.resolveUsers()", () => {
       const identityToResolve = newGroup("identityToResolve", ["Alice", "groupLoopBack"]);
       const groupLoopBack = newGroup("groupLoopBack", ["Bob", "identityToResolve"]);
 
-      const users = await GroupQuery.resolveUsers(
+      const resolvedUsersResult = await GroupQuery.resolveUsers(
         conn,
         ctx,
         issuer,
@@ -187,8 +198,10 @@ describe("group_query.resolveUsers()", () => {
         },
         async (_1, _2, _3, _4) => Promise.resolve(Result.unwrap(dummyUserRecord)),
       );
-
-      assert.sameMembers(users, ["Alice", "Bob"]);
+      if (Result.isErr(resolvedUsersResult)) {
+        throw resolvedUsersResult;
+      }
+      assert.sameMembers(resolvedUsersResult, ["Alice", "Bob"]);
     });
   });
 });

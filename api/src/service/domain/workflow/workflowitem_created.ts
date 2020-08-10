@@ -7,6 +7,7 @@ import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
+import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { StoredDocument, storedDocumentSchema } from "./document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -31,29 +32,25 @@ interface InitialData {
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
+  workflowitemType?: Type;
 }
 
 const initialDataSchema = Joi.object({
   id: Workflowitem.idSchema.required(),
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
+  status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
+  description: Joi.string().allow("").required(),
   assignee: Joi.string(),
   amount: Joi.string(),
   currency: Joi.string(),
   amountType: Joi.valid("N/A", "disbursed", "allocated").required(),
   exchangeRate: Joi.string(),
   billingDate: Joi.date().iso(),
-  dueDate: Joi.date().iso(),
-  documents: Joi.array()
-    .items(storedDocumentSchema)
-    .required(),
+  dueDate: Joi.date().iso().allow(""),
+  documents: Joi.array().items(storedDocumentSchema).required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
+  workflowitemType: workflowitemTypeSchema,
 }).options({ stripUnknown: true });
 
 export interface Event {
@@ -68,12 +65,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
@@ -117,10 +110,10 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
     id: initialData.id,
     subprojectId: event.subprojectId,
     createdAt: event.time,
-    dueDate: initialData.dueDate,
     displayName: initialData.displayName,
     exchangeRate: initialData.exchangeRate,
     billingDate: initialData.billingDate,
+    dueDate: initialData.dueDate,
     amount: initialData.amount,
     currency: initialData.currency,
     amountType: initialData.amountType,
@@ -132,10 +125,11 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
     log: [],
     // Additional information (key-value store), e.g. external IDs:
     additionalData: initialData.additionalData,
+    workflowitemType: initialData.workflowitemType,
   };
 
   return Result.mapErr(
     Workflowitem.validate(workflowitem),
-    error => new EventSourcingError({ ctx, event, target: workflowitem }, error),
+    (error) => new EventSourcingError({ ctx, event, target: workflowitem }, error),
   );
 }

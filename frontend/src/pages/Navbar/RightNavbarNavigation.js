@@ -29,16 +29,17 @@ const RightNavbarNavigations = ({
   searchBarDisplayed,
   storeSearchBarDisplayed
 }) => {
-  const searchDisabled = history.location.pathname !== "/projects";
+  const searchVisible = history.location.pathname === "/projects";
   return (
     <div style={styles.container}>
-      <ProjectSearch
-        searchBarDisplayed={searchBarDisplayed}
-        searchTerm={searchTerm}
-        searchDisabled={searchDisabled}
-        storeSearchBarDisplayed={storeSearchBarDisplayed}
-        storeSearchTerm={storeSearchTerm}
-      />
+      {searchVisible ? (
+        <ProjectSearch
+          searchBarDisplayed={searchBarDisplayed}
+          searchTerm={searchTerm}
+          storeSearchBarDisplayed={storeSearchBarDisplayed}
+          storeSearchTerm={storeSearchTerm}
+        />
+      ) : null}
       <Typography variant="button" color="primary" style={styles.organization}>
         {organization}
       </Typography>

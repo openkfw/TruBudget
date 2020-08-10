@@ -7,7 +7,6 @@ import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
 import NavbarContainer from "../Navbar/NavbarContainer";
 import NodesContainer from "../Nodes/NodesContainer";
-import LiveNotificationContainer from "../Notifications/LiveNotificationContainer";
 import NotificationPageContainer from "../Notifications/NotificationPageContainer";
 import OverviewContainer from "../Overview/OverviewContainer";
 import SubProjectContainer from "../SubProjects/SubProjectContainer";
@@ -46,7 +45,6 @@ const Main = props => {
         <Route component={NavbarContainer} />
       </div>
       <div className="container" style={{ marginTop: "48px" }}>
-        <Route component={LiveNotificationContainer} />
         <Route component={ConfirmationContainer} />
         <Switch>
           <Route exact path="/" component={Placeholder} />

@@ -1,9 +1,10 @@
 import { FastifyInstance } from "fastify";
-
+import { VError } from "verror";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
+import * as Result from "./result";
 import * as Group from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
@@ -68,8 +69,8 @@ interface ExposedIdentity {
 }
 
 interface Service {
-  listUsers(ctx: Ctx, user: ServiceUser): Promise<UserRecord.UserRecord[]>;
-  listGroups(ctx: Ctx, user: ServiceUser): Promise<Group.Group[]>;
+  listUsers(ctx: Ctx, user: ServiceUser): Promise<Result.Type<UserRecord.UserRecord[]>>;
+  listGroups(ctx: Ctx, user: ServiceUser): Promise<Result.Type<Group.Group[]>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -82,7 +83,11 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     };
 
     try {
-      const users: ExposedIdentity[] = (await service.listUsers(ctx, issuer)).map(user => ({
+      const usersResult = await service.listUsers(ctx, issuer);
+      if (Result.isErr(usersResult)) {
+        throw new VError(usersResult, "user.list failed");
+      }
+      const users: ExposedIdentity[] = usersResult.map((user) => ({
         id: user.id,
         displayName: user.displayName,
         organization: user.organization,
@@ -90,7 +95,9 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         permissions: user.permissions,
       }));
 
-      const groups: ExposedIdentity[] = (await service.listGroups(ctx, issuer)).map(group => ({
+      const groupsResult = await service.listGroups(ctx, issuer);
+      if (Result.isErr(groupsResult)) throw new VError(groupsResult, "user.list failed");
+      const groups: ExposedIdentity[] = groupsResult.map((group) => ({
         id: group.id,
         displayName: group.displayName,
         isGroup: true,

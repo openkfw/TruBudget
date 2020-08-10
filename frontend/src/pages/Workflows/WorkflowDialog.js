@@ -1,24 +1,53 @@
-import React from "react";
-
 import Divider from "@material-ui/core/Divider";
-
-import { compareWorkflowItems } from "./compareWorkflowItems";
-import CreationDialog from "../Common/CreationDialog";
-import strings from "../../localizeStrings";
-import WorkflowDialogAmount from "./WorkflowDialogAmount";
-import DocumentUpload from "../Documents/DocumentUpload";
-import Identifier from "../Common/Identifier";
-import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
+import MenuItem from "@material-ui/core/MenuItem";
+import Tooltip from "@material-ui/core/Tooltip";
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import _isEmpty from "lodash/isEmpty";
+import { default as React } from "react";
+import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
+import strings from "../../localizeStrings";
+import CreationDialog from "../Common/CreationDialog";
+import DatePicker from "../Common/DatePicker";
+import Identifier from "../Common/Identifier";
+import Dropdown from "../Common/NewDropdown";
+import DocumentUpload from "../Documents/DocumentUpload";
+import { compareWorkflowItems } from "./compareWorkflowItems";
+import WorkflowDialogAmount from "./WorkflowDialogAmount";
+import { types, typesDescription } from "./workflowitemTypes";
 
 const styles = {
   container: {
     width: "100%"
+  },
+  dropdown: {
+    minWidth: 140,
+    height: 50,
+    marginTop: 20
+  },
+  info: {
+    display: "flex"
+  },
+  infoIcon: {
+    fontSize: 20,
+    marginTop: 35,
+    padding: 8
   }
 };
+
 const handleCreate = props => {
   const { createWorkflowItem, onDialogCancel, workflowToAdd, storeSnackbarMessage } = props;
-  const { displayName, amount, amountType, currency, description, status, documents, exchangeRate } = workflowToAdd;
+  const {
+    displayName,
+    amount,
+    amountType,
+    currency,
+    description,
+    status,
+    documents,
+    exchangeRate,
+    dueDate,
+    workflowitemType
+  } = workflowToAdd;
   createWorkflowItem(
     displayName,
     fromAmountString(amount).toString(),
@@ -27,10 +56,12 @@ const handleCreate = props => {
     currency,
     description,
     status,
-    documents
+    documents,
+    dueDate,
+    workflowitemType
   );
   storeSnackbarMessage(
-    strings.common.created + " " + strings.common.workflowitem + " " + shortenedDisplayName(displayName)
+    strings.formatString(strings.workflow.workflow_permissions_warning, shortenedDisplayName(displayName))
   );
   onDialogCancel();
 };
@@ -65,10 +96,51 @@ const handleEdit = props => {
   onDialogCancel();
 };
 
+const getDropdownMenuItems = types => {
+  return types.map((type, index) => {
+    return (
+      <MenuItem key={index} value={type}>
+        {type}
+      </MenuItem>
+    );
+  });
+};
+
+const getWorkflowitemTypeInfo = type => {
+  switch (type) {
+    case "general":
+      return typesDescription.general;
+    case "restricted":
+      return typesDescription.restricted;
+    default:
+      return typesDescription.general;
+  }
+};
+
 const Content = props => {
+  const { workflowitemType } = props.workflowToAdd;
   return (
     <div style={styles.container}>
       <div style={styles.container}>
+        {props.creationDialogShown ? (
+          <span style={styles.info}>
+            <Dropdown
+              style={styles.dropdown}
+              floatingLabel={strings.workflow.workflowitem_type}
+              value={workflowitemType}
+              onChange={value => props.storeWorkflowitemType(value)}
+              disabled={!props.creationDialogShown}
+              id="types"
+            >
+              {getDropdownMenuItems(types)}
+            </Dropdown>
+            <Tooltip title={getWorkflowitemTypeInfo(workflowitemType)} placement="right">
+              <InfoOutlinedIcon style={styles.infoIcon} />
+            </Tooltip>
+          </span>
+        ) : (
+          <div />
+        )}
         <Identifier
           nameLabel={strings.workflow.workflow_title}
           nameHintText={strings.workflow.workflow_title_description}
@@ -78,6 +150,18 @@ const Content = props => {
           commentHintText={strings.common.comment_description}
           comment={props.workflowToAdd.description}
           commentOnChange={props.storeWorkflowComment}
+        />
+        <DatePicker
+          id="due-date"
+          label={strings.common.dueDate}
+          datetime={props.workflowToAdd.dueDate}
+          onChange={e => {
+            // Since native datepicker has undefined as default value, it has to be set as empty string to reset due-date in API
+            e.target.value === undefined ? props.storeWorkflowDueDate("") : props.storeWorkflowDueDate(e.target.value);
+          }}
+          onDelete={() => {
+            props.storeWorkflowDueDate("");
+          }}
         />
       </div>
       <Divider />

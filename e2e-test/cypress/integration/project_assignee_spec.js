@@ -1,5 +1,6 @@
 describe("Project Assignee", function() {
   const executingUser = "mstein";
+  const testUser = "jdoe";
   let projectId;
   let permissionsBeforeTesting;
 
@@ -122,6 +123,8 @@ describe("Project Assignee", function() {
     assertViewPermissions(permissionsBeforeTesting, projectId, false);
   });
   it("Assigning without project permission to grant view permissions is not possible", function() {
+    // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {

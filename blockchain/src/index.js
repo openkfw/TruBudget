@@ -83,14 +83,18 @@ app.use(
     type: "application/gzip",
     limit: "1024mb",
   }),
+  bodyParser.json({
+    type: "application/json",
+    limit: "100mb",
+  }),
 );
 
 let mcproc;
 
-const spawnProcess = startProcess => {
+const spawnProcess = (startProcess) => {
   mcproc = startProcess();
   isRunning = true;
-  mcproc.on("close", async code => {
+  mcproc.on("close", async (code) => {
     isRunning = false;
     if (!autostart) {
       console.log(
@@ -101,7 +105,7 @@ const spawnProcess = startProcess => {
       console.log(
         `>>> Multichain stopped. Retry in ${retryIntervalMs / 1000} Seconds...`,
       );
-      await new Promise(resolve => setTimeout(resolve, retryIntervalMs));
+      await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));
       spawnProcess(startProcess);
     }
   });
@@ -168,7 +172,7 @@ if (EXPOSE_MC) {
   const k8sApi = kc.makeApiClient(k8s.Core_v1Api);
   const kubernetesClient = new KubernetesClient(k8sApi);
 
-  kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then(response => {
+  kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then((response) => {
     console.log(`externalIp: ${response}`);
     if (response) {
       externalIpArg = `-externalip=${response}`;
@@ -200,11 +204,11 @@ if (EXPOSE_MC) {
   }
 }
 
-const stopMultichain = async mcproc => {
+const stopMultichain = async (mcproc) => {
   while (isRunning) {
     mcproc.kill();
     const retryInMs = 3000;
-    await new Promise(resolve => setTimeout(resolve, retryInMs));
+    await new Promise((resolve) => setTimeout(resolve, retryInMs));
   }
   console.log("Multichain process killed...");
 };
@@ -252,7 +256,7 @@ app.get("/version", (req, res) => {
   res.send(content);
 });
 
-const loadConfig = path => {
+const loadConfig = (path) => {
   const config = yaml.safeLoad(fs.readFileSync(path, "utf8"));
   removeFile(path);
   return config;
@@ -263,7 +267,7 @@ app.post("/chain", async (req, res) => {
   const metadataPath = `${extractPath}/metadata.yml`;
   try {
     const unTARer = rawTar.extract();
-    unTARer.on("error", err => {
+    unTARer.on("error", (err) => {
       console.log(err.message);
       unTARer.destroy();
       res.status(400).send(err.message);
@@ -304,6 +308,6 @@ app.post("/chain", async (req, res) => {
   }
 });
 
-app.listen(port, function() {
+app.listen(port, function () {
   console.log(`App listening on ${port}`);
 });

@@ -1,13 +1,14 @@
 import AppBar from "@material-ui/core/AppBar";
-import Fab from "@material-ui/core/Fab";
+import { withStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
-import Add from "@material-ui/icons/Add";
 import React from "react";
-
 import strings from "../../localizeStrings";
+import CreateButton from "../Common/CreateButton";
+import LoadingIndicator from "../Loading/RefreshIndicator";
 import DialogContainer from "./DialogContainer";
 import GroupTable from "./GroupTable";
+import { DisabledUserEmptyState, EnabledUserEmptyState, UserGroupsEmptyState } from "./UsersGroupsEmptyStates";
 import UsersTable from "./UsersTable";
 
 const styles = {
@@ -35,15 +36,88 @@ const styles = {
     marginTop: -20
   }
 };
+
+const renderTab = props => {
+  const {
+    classes,
+    tabIndex,
+    allowedIntents,
+    isDataLoading,
+    enabledUsers,
+    groups,
+    disabledUsers,
+    showDashboardDialog
+  } = props;
+
+  if (isDataLoading) {
+    return <LoadingIndicator />;
+  }
+
+  switch (tabIndex) {
+    // Enabled Users
+    case 0:
+      const isAllowedToCreateUser = allowedIntents.includes("global.createUser");
+      return (
+        <>
+          {isAllowedToCreateUser ? (
+            <CreateButton
+              classes={{
+                createButtonContainer: classes.createButtonContainer,
+                createButton: classes.createButton
+              }}
+              onClick={() => showDashboardDialog("addUser")}
+            />
+          ) : null}
+          <UsersTable {...props} classes={{}} users={enabledUsers} CustomEmptyState={EnabledUserEmptyState} />
+        </>
+      );
+
+    // Groups
+    case 1:
+      const isAllowedToCreateGroup = allowedIntents.includes("global.createGroup");
+      return (
+        <>
+          {isAllowedToCreateGroup ? (
+            <CreateButton
+              classes={{
+                createButtonContainer: classes.createButtonContainer,
+                createButton: classes.createButton
+              }}
+              onClick={() => showDashboardDialog("addGroup")}
+            />
+          ) : null}
+          {groups.length > 0 ? <GroupTable {...props} /> : <UserGroupsEmptyState />}
+        </>
+      );
+
+    // Disabled Users
+    case 2:
+      return (
+        <>
+          {disabledUsers.length > 0 ? (
+            <UsersTable
+              {...props}
+              classes={{}}
+              permissionIconDisplayed={allowedIntents.includes("global.listPermissions")}
+              users={disabledUsers}
+            />
+          ) : (
+            <DisabledUserEmptyState />
+          )}
+        </>
+      );
+
+    default:
+      break;
+  }
+  return null;
+};
+
 const Users = props => {
-  const { tabIndex, setTabIndex, showDashboardDialog, allowedIntents } = props;
-  const isCreateButtonDisabled =
-    tabIndex === 0 ? !allowedIntents.includes("global.createUser") : !allowedIntents.includes("global.createGroup");
-  const onClick = () => (tabIndex === 0 ? showDashboardDialog("addUser") : showDashboardDialog("addGroup"));
-  const permissionIconDisplayed = allowedIntents.includes("global.listPermissions");
+  const { classes, tabIndex, setTabIndex } = props;
   return (
-    <div data-test="userdashboard" style={styles.container}>
-      <div style={styles.customWidth}>
+    <div data-test="userdashboard" className={classes.container}>
+      <div className={classes.customWidth}>
         <AppBar position="static" color="default">
           <Tabs
             value={tabIndex}
@@ -51,30 +125,16 @@ const Users = props => {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab label={strings.users.users} aria-label="usersTab" />
+            <Tab label={strings.users.users} aria-label="usersTab" data-test="usersTab" />
             <Tab label={strings.users.groups} aria-label="groupsTab" />
+            <Tab label={strings.users.disabled_users} aria-label="disabledUsersTab" data-test="disabledUsersTab" />
           </Tabs>
         </AppBar>
-        {!isCreateButtonDisabled ? (
-          <div style={styles.createButtonContainer}>
-            <Fab
-              disabled={isCreateButtonDisabled}
-              data-test="create"
-              onClick={onClick}
-              color="primary"
-              style={styles.createButton}
-              aria-label="Add"
-            >
-              <Add />
-            </Fab>
-          </div>
-        ) : null}
-        {tabIndex === 0 && <UsersTable permissionIconDisplayed={permissionIconDisplayed} {...props} />}
-        {tabIndex === 1 && <GroupTable {...props} />}
+        {renderTab(props)}
       </div>
       <DialogContainer {...props} />
     </div>
   );
 };
 
-export default Users;
+export default withStyles(styles)(Users);

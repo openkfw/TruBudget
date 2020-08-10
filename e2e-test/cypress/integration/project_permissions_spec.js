@@ -2,6 +2,7 @@ import _cloneDeep from "lodash/cloneDeep";
 
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
 const testUser = { id: "thouse", displayname: "Tom House" };
+const testUser2 = { id: "jdoe", displayname: "John Doe" };
 let projectId, permissionsBeforeTesting, baseUrl, apiRoute;
 const groupToGivePermissions = "reviewers";
 const testGroupId = "admins";
@@ -200,7 +201,19 @@ describe("Project Permissions", function() {
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
 
+  it("Revoke a permission from myself is not allowed", function() {
+    cy.get(`[data-test=project-card-${projectId}]`)
+      .find("button[data-test^='pp-button']")
+      .click();
+    cy.get("[data-test='permission-select-project.viewSummary']").click();
+    cy.get("[data-test='permission-list']")
+      .find(`li[value*='${executingUser.id}'] input`)
+      .should("be.disabled");
+  });
+
   it("Submitting the permission dialog without project.intent.grantPermission disables the submit button when adding user", function() {
+    // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser2.id);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser.id);
 
     cy.get(`[data-test=project-card-${projectId}]`)
@@ -241,6 +254,8 @@ describe("Project Permissions", function() {
   });
 
   it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function() {
+    // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser2.id);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser.id);
     cy.revokeProjectPermission(projectId, "project.intent.revokePermission", executingUser.id);
 

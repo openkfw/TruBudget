@@ -3,6 +3,7 @@ import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
+import Type from "./domain/workflowitem_types/types";
 
 const maxItemCount: number = 0x7fffffff;
 
@@ -35,6 +36,7 @@ export interface Update {
   documents?: Document[];
   exchangeRate?: string;
   billingDate?: string;
+  dueDate?: string;
 }
 
 export interface Workflowitem {
@@ -43,6 +45,7 @@ export interface Workflowitem {
   displayName: string;
   exchangeRate?: string;
   billingDate?: string;
+  dueDate?: string;
   amount?: string;
   currency?: string;
   amountType: "N/A" | "disbursed" | "allocated";
@@ -52,6 +55,7 @@ export interface Workflowitem {
   documents?: Document[];
   permissions: Permissions;
   log: HistoryEvent[];
+  workflowitemType?: Type;
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -62,6 +66,7 @@ export interface RedactedWorkflowitem {
   displayName: null;
   exchangeRate: null;
   billingDate?: null;
+  dueDate?: null;
   amount?: null;
   currency?: null;
   amountType: null;
@@ -71,6 +76,7 @@ export interface RedactedWorkflowitem {
   documents?: null;
   permissions: null;
   log: null;
+  workflowitemType?: Type;
 }
 
 export interface User {
@@ -88,8 +94,8 @@ export function applyUpdate(event: Event, workflowitem: Workflowitem): true | un
     case 1: {
       if (event.data.documents) {
         const currentDocs = workflowitem.documents || [];
-        const currentIds = currentDocs.map(doc => doc.id);
-        const newDocs = event.data.documents.filter(doc => !currentIds.includes(doc.id));
+        const currentIds = currentDocs.map((doc) => doc.id);
+        const newDocs = event.data.documents.filter((doc) => !currentIds.includes(doc.id));
         if (workflowitem.documents) {
           workflowitem.documents.push(...newDocs);
         } else {

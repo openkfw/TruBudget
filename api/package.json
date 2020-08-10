@@ -1,6 +1,6 @@
 {
   "name": "trubudget-api",
-  "version": "1.8.0",
+  "version": "1.12.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
   "scripts": {
     "start": "node dist/",
     "build": "rimraf dist && tsc",
-    "dev": "rimraf dist && tsc --watch & nodemon dist",
+    "dev": "rimraf dist && tsc --watch && nodemon dist",
     "test": "nyc mocha --require ts-node/register \"src/**/*.spec.ts\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "generate-report": "nyc report --reporter=html",
@@ -96,21 +96,21 @@
     "@types/pino": "^5.0.0",
     "@types/uuid": "^3.4.3",
     "@types/verror": "^1.10.3",
+    "@typescript-eslint/parser": "^3.7.1",
     "chai": "^4.1.2",
     "coveralls": "^3.0.3",
     "eslint": "^6.2.2",
     "eslint-plugin-import": "*",
     "eslint-plugin-promise": "^4.0.1",
     "lodash.isempty": "^4.4.0",
-    "mocha": "^6.1.4",
+    "mocha": "^7.1.2",
     "mocha-lcov-reporter": "^1.3.0",
-    "nodemon": "*",
+    "nodemon": "^2.0.3",
     "nyc": "^14.1.0",
     "rimraf": "*",
     "supertest": "^4.0.2",
     "ts-node": "^8.0.3",
     "tslint": "*",
-    "typescript": "^3.3.3333",
-    "typescript-eslint-parser": "^22.0.0"
+    "typescript": "^3.9.7"
   }
 }

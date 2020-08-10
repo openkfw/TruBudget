@@ -566,6 +566,7 @@ function addExampleWorkflowitem(
     permissions: {},
     documents: [],
     additionalData: {},
+    workflowitemType: "general",
   });
 
   updateAggregates(ctx, cache, [wfCreationEvent]);

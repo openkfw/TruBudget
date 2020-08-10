@@ -1,7 +1,9 @@
+import { VError } from "verror";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
 import { Ctx } from "../../lib/ctx";
+import * as Result from "../../result";
 import { ConnToken } from "../../service";
 import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as GlobalPermissionsGet from "../../service/global_permissions_get";
@@ -17,8 +19,15 @@ export async function getActiveNodes(
 
   // Permission check:
   const userIntent: Intent = "network.listActive";
-  const globalPermissions = (await GlobalPermissionsGet.getGlobalPermissions(conn, ctx, issuer))
-    .permissions;
+  const globalPermissionsResult = await GlobalPermissionsGet.getGlobalPermissions(
+    conn,
+    ctx,
+    issuer,
+  );
+  if (Result.isErr(globalPermissionsResult)) {
+    throw new VError(globalPermissionsResult, "global.grantPermission failed");
+  }
+  const globalPermissions = globalPermissionsResult.permissions;
   await throwIfUnauthorized(req.user, userIntent, globalPermissions);
 
   // Get ALL the info:

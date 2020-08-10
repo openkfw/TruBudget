@@ -96,7 +96,7 @@ interface Service {
     userId: UserRecord.Id,
     revokee: Identity,
     intent: Intent,
-  ): Promise<void>;
+  ): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -125,7 +125,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       service
         .revokeUserPermission(ctx, revoker, userId, revokee, intent)
-        .then(() => {
+        .then((result) => {
+          if (Result.isErr(result)) {
+            throw new VError(result, "user.intent.revokePermission failed");
+          }
           const code = 200;
           const body = {
             apiVersion: "1.0",
@@ -133,7 +136,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           };
           reply.status(code).send(body);
         })
-        .catch(err => {
+        .catch((err) => {
           const { code, body } = toHttpError(err);
           reply.status(code).send(body);
         });

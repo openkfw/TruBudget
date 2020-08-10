@@ -84,7 +84,7 @@ function sourceEvent(
     if (event.type !== "subproject_created") {
       return new VError(
         `event ${event.type} is not of type "subproject_created" but also ` +
-        "does not include a subproject ID",
+          "does not include a subproject ID",
       );
     }
 
@@ -138,27 +138,23 @@ export function newSubprojectFromEvent(
   const eventCopy = deepcopy(event);
   const subprojectCopy = copySubprojectExceptLog(subproject);
 
-  try {
-    // Apply the event to the copied subproject:
-    const mutation = eventModule.mutate(subprojectCopy, eventCopy);
-    if (Result.isErr(mutation)) {
-      throw mutation;
-    }
-
-    // Validate the modified subproject:
-    const validation = Subproject.validate(subprojectCopy);
-    if (Result.isErr(validation)) {
-      throw validation;
-    }
-
-    // Restore the event log:
-    subprojectCopy.log = subproject.log;
-
-    // Return the modified (and validated) subproject:
-    return subprojectCopy;
-  } catch (error) {
-    return new EventSourcingError({ ctx, event, target: subproject }, error);
+  // Apply the event to the copied subproject:
+  const mutationResult = eventModule.mutate(subprojectCopy, eventCopy);
+  if (Result.isErr(mutationResult)) {
+    return new EventSourcingError({ ctx, event, target: subproject }, mutationResult);
   }
+
+  // Validate the modified subproject:
+  const validationResult = Subproject.validate(subprojectCopy);
+  if (Result.isErr(validationResult)) {
+    return new EventSourcingError({ ctx, event, target: subproject }, validationResult);
+  }
+
+  // Restore the event log:
+  subprojectCopy.log = subproject.log;
+
+  // Return the modified (and validated) subproject:
+  return subprojectCopy;
 }
 
 type EventModule = {

@@ -2,6 +2,7 @@ import _cloneDeep from "lodash/cloneDeep";
 
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
 const testUser = { id: "thouse", displayname: "Tom House" };
+const testUser2 = { id: "jdoe", displayname: "John Doe" };
 const testGroupId = "admins";
 const groupToGivePermissions = "reviewers";
 let projectId, subprojectId, workflowitemId, permissionsBeforeTesting, baseUrl, apiRoute;
@@ -169,8 +170,20 @@ describe("Workflowitem Permissions", function() {
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", testUser.id);
   });
 
+  it("Revoke a permission from myself is not allowed", function() {
+    cy.get("[data-test=show-workflowitem-permissions]")
+      .first()
+      .click();
+    cy.get("[data-test='permission-select-workflowitem.intent.grantPermission']").click();
+    cy.get("[data-test='permission-list']")
+      .find(`li[value*='${executingUser.id}'] input`)
+      .should("be.disabled");
+  });
+
   it("Submitting the permission dialog without workflowitem.intent.grantPermission disables the submit button when adding user", function() {
     const intent = "workflowitem.intent.grantPermission";
+    // Grant workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, testUser2.id);
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, testUser.id);
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, executingUser.id);
 
@@ -220,6 +233,8 @@ describe("Workflowitem Permissions", function() {
     const grantIntent = "workflowitem.intent.grantPermission";
     const revokeIntent = "workflowitem.intent.revokePermission";
 
+    // Grant workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
+    cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, grantIntent, testUser2.id);
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, grantIntent, executingUser.id);
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, revokeIntent, executingUser.id);
 

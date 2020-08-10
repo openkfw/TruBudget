@@ -1,4 +1,5 @@
 import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -18,13 +19,14 @@ export async function addMember(
   groupId: Group.Id,
   newMember: Group.Member,
   repository: Repository,
-): Promise<{ newEvents: BusinessEvent[]; errors: Error[] }> {
+): Promise<Result.Type<BusinessEvent>> {
   const groupEvents = await repository.getGroupEvents();
   const { groups } = sourceGroups(ctx, groupEvents);
 
+  // Check if group exists
   const group = groups.find(x => x.id === groupId);
   if (group === undefined) {
-    return { newEvents: [], errors: [new NotFound(ctx, "group", groupId)] };
+    return new NotFound(ctx, "group", groupId);
   }
 
   // Create the new event:
@@ -34,18 +36,15 @@ export async function addMember(
   if (issuer.id !== "root") {
     const intent = "group.addUser";
     if (!Group.permits(group, issuer, [intent])) {
-      return {
-        newEvents: [],
-        errors: [new NotAuthorized({ ctx, userId: issuer.id, intent, target: group })],
-      };
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: group })
     }
   }
 
   // Check that the new event is indeed valid:
   const { errors } = sourceGroups(ctx, groupEvents.concat([memberAdded]));
   if (errors.length > 0) {
-    return { newEvents: [], errors: [new InvalidCommand(ctx, memberAdded, errors)] };
+    return new InvalidCommand(ctx, memberAdded, errors)
   }
 
-  return { newEvents: [memberAdded], errors: [] };
+  return memberAdded;
 }

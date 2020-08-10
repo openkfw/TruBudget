@@ -2,7 +2,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
 
-import HistoryList from "../HistoryList";
+import HistoryList from "./HistoryList";
 
 const styles = {
   loader: {
@@ -43,8 +43,8 @@ export default class ScrollingHistory extends React.Component {
           events={events}
           nEventsTotal={nEventsTotal}
           hasMore={hasMore}
-          isLoading={isLoading}
           getUserDisplayname={getUserDisplayname}
+          isLoading={isLoading}
         />
       </InfiniteScroll>
     );

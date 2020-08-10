@@ -31,11 +31,12 @@ export const SET_NOTIFICATION_OFFSET = "SET_NOTIFICATION_OFFSET";
 
 export const TIME_OUT_FLY_IN = "TIME_OUT_FLY_IN";
 
-export function showSnackbar(isError = false) {
+export function showSnackbar(isError = false, isWarning = false) {
   return {
     type: SHOW_SNACKBAR,
     show: true,
-    isError
+    isError,
+    isWarning
   };
 }
 

@@ -1,11 +1,12 @@
 import { FastifyInstance } from "fastify";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
+import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { GlobalPermissions } from "./service/domain/workflow/global_permissions";
+import { VError } from "verror";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -39,7 +40,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  getGlobalPermissions(ctx: Ctx, user: ServiceUser): Promise<GlobalPermissions>;
+  getGlobalPermissions(ctx: Ctx, user: ServiceUser): Promise<Result.Type<GlobalPermissions>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -55,12 +56,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       };
 
       try {
-        const globalPermissions = await service.getGlobalPermissions(ctx, user);
-
+        const globalPermissionsResult = await service.getGlobalPermissions(ctx, user);
+        if (Result.isErr(globalPermissionsResult))
+          throw new VError(globalPermissionsResult, "global.listPermissions failed");
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: globalPermissions.permissions,
+          data: globalPermissionsResult.permissions,
         };
         reply.status(code).send(body);
       } catch (err) {
