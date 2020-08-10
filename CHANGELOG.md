@@ -5,18 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+<!-- ## Unreleased -->
 
-### Added
-
-- Documentation of how to update/backup a node correctly [#19](https://github.com/openkfw/TruBudget/issues/19)
-- Added feature to disable and enable users [#241](https://github.com/openkfw/TruBudget/issues/241)
+<!-- ### Added -->
 
 <!-- ### Changed -->
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+<!-- ### Security -->
+
+# [1.12.0] - 2020-08-10
+
+### Added
+
+- Documentation of how to update/backup a node correctly [#19](https://github.com/openkfw/TruBudget/issues/19)
+- Added feature to disable and enable users [#241](https://github.com/openkfw/TruBudget/issues/241)
 
 ### Fixed
 
@@ -25,10 +33,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed a bug where all displayed versions disappeared after switching page [#512](https://github.com/openkfw/TruBudget/issues/512)
 - Prevent a user from revoking a permission from him-/herself at workflowitem level [#514](https://github.com/openkfw/TruBudget/issues/514)
 - Prevent creating a closed workflowitem, subproject or project [#411](https://github.com/openkfw/TruBudget/issues/411)
-
-<!-- ### Changed -->
-
-<!-- ### Security -->
 
 # [1.11.0] - 2020-06-26
 
@@ -484,7 +488,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.11.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.12.0...master
+[1.12.0]: https://github.com/openkfw/TruBudget/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/openkfw/TruBudget/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/openkfw/TruBudget/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/openkfw/TruBudget/compare/v1.8.0...v1.9.0
