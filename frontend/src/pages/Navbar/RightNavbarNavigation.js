@@ -10,7 +10,9 @@ const styles = {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    flexGrow: 1
+    flexGrow: 1,
+    whiteSpace: "nowrap",
+    overflow: "auto"
   },
   organization: {
     paddingRight: "10px"

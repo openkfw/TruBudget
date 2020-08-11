@@ -24,7 +24,8 @@ const Main = props => {
         flexDirection: "column",
         alignItems: "center",
         backgroundImage: "linear-gradient(135deg, #5a9bbe 0%,#1b618c 100%)",
-        minHeight: "100vh"
+        minHeight: "100vh",
+        overflow: "scroll"
       }}
     >
       <div
@@ -36,7 +37,6 @@ const Main = props => {
           width: "100%",
           top: 0,
           left: 0,
-          minWidth: "1024px",
           minHeight: "100%",
           clipPath: "polygon(0 0,100% 0,100% 100%,0 70%)"
         }}

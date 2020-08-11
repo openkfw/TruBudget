@@ -11,7 +11,8 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     paddingLeft: "12px",
-    paddingRight: "12px"
+    paddingRight: "12px",
+    whiteSpace: "nowrap"
   },
   breadcrumbs: {
     display: "flex",
