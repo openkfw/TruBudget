@@ -95,10 +95,10 @@ import {
   FETCH_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_FAILURE,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
-  GRANT_PERMISSION,
-  GRANT_PERMISSION_SUCCESS,
-  REVOKE_PERMISSION,
-  REVOKE_PERMISSION_SUCCESS
+  GRANT_PROJECT_PERMISSION,
+  GRANT_PROJECT_PERMISSION_SUCCESS,
+  REVOKE_PROJECT_PERMISSION,
+  REVOKE_PROJECT_PERMISSION_SUCCESS
 } from "./pages/Overview/actions";
 import {
   ASSIGN_PROJECT,
@@ -641,7 +641,7 @@ export function* executeConfirmedActionsSaga({ showLoading, projectId, subprojec
           case "project.intent.grantPermission":
             yield callApi(api.grantProjectPermissions, action.id, action.permission, action.identity);
             yield put({
-              type: GRANT_PERMISSION_SUCCESS,
+              type: GRANT_PROJECT_PERMISSION_SUCCESS,
               id: action.id,
               intent: action.intent,
               permission: action.permission,
@@ -1425,7 +1425,7 @@ export function* fetchWorkflowItemPermissionsSaga({ projectId, subprojectId, wor
   }, showLoading);
 }
 
-export function* grantPermissionsSaga({
+export function* grantProjectPermissionsSaga({
   projectId,
   projectDisplayName,
   intent,
@@ -1450,7 +1450,7 @@ export function* grantPermissionsSaga({
     yield callApi(api.grantProjectPermissions, projectId, intent, granteeId);
 
     yield put({
-      type: GRANT_PERMISSION_SUCCESS,
+      type: GRANT_PROJECT_PERMISSION_SUCCESS,
       id: projectId,
       intent: "project.intent.grantPermission",
       permission: intent,
@@ -1464,7 +1464,7 @@ export function* grantPermissionsSaga({
   }, showLoading);
 }
 
-export function* revokePermissionsSaga({
+export function* revokeProjectPermissionsSaga({
   projectId,
   projectDisplayName,
   intent,
@@ -1489,7 +1489,7 @@ export function* revokePermissionsSaga({
     yield callApi(api.revokeProjectPermissions, projectId, intent, revokeeId);
 
     yield put({
-      type: REVOKE_PERMISSION_SUCCESS,
+      type: REVOKE_PROJECT_PERMISSION_SUCCESS,
       id: projectId,
       intent: "project.intent.revokePermission",
       permission: intent,
@@ -2365,8 +2365,8 @@ export default function* rootSaga() {
       yield takeEvery(CREATE_PROJECT, createProjectSaga),
       yield takeEvery(EDIT_PROJECT, editProjectSaga),
       yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga),
-      yield takeEvery(GRANT_PERMISSION, grantPermissionsSaga),
-      yield takeEvery(REVOKE_PERMISSION, revokePermissionsSaga),
+      yield takeEvery(GRANT_PROJECT_PERMISSION, grantProjectPermissionsSaga),
+      yield takeEvery(REVOKE_PROJECT_PERMISSION, revokeProjectPermissionsSaga),
       yield takeEvery(ASSIGN_PROJECT, assignProjectSaga),
       yield takeEvery(FETCH_NEXT_PROJECT_HISTORY_PAGE, fetchNextProjectHistoryPageSaga),
       yield takeEvery(FETCH_FIRST_PROJECT_HISTORY_PAGE, fetchFirstProjectHistoryPageSaga),

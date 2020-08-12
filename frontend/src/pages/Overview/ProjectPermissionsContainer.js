@@ -12,10 +12,10 @@ import { fetchGroups } from "../Users/actions";
 import {
   addTemporaryPermission,
   fetchProjectPermissions,
-  grantPermission,
+  grantProjectPermission,
   hideProjectPermissions,
   removeTemporaryPermission,
-  revokePermission
+  revokeProjectPermission
 } from "./actions";
 
 class ProjectPermissionsContainer extends Component {
@@ -126,9 +126,9 @@ const mapDispatchToProps = dispatch => {
   return {
     hidePermissionDialog: () => dispatch(hideProjectPermissions()),
     grant: (pId, pName, permission, granteeId, granteeName) =>
-      dispatch(grantPermission(pId, pName, permission, granteeId, granteeName, true)),
+      dispatch(grantProjectPermission(pId, pName, permission, granteeId, granteeName, true)),
     revoke: (pId, pName, permission, revokeeId, revokeeName) =>
-      dispatch(revokePermission(pId, pName, permission, revokeeId, revokeeName, true)),
+      dispatch(revokeProjectPermission(pId, pName, permission, revokeeId, revokeeName, true)),
     fetchProjectPermissions: (projectId, showLoading) => dispatch(fetchProjectPermissions(projectId, showLoading)),
     fetchUser: showLoading => dispatch(fetchUser(showLoading)),
     addTemporaryPermission: (permission, userId) => dispatch(addTemporaryPermission(permission, userId)),
