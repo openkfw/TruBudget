@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
-import { fetchProjectPermissions, grantPermission, revokePermission } from "../Overview/actions";
+import { fetchProjectPermissions, grantProjectPermission, revokeProjectPermission } from "../Overview/actions";
 import {
   assignProject,
   closeProject,
@@ -196,9 +196,9 @@ const mapDispatchToProps = dispatch => {
     assignWorkflowitem: (pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName) =>
       dispatch(assignWorkflowItem(pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName)),
     grantProjectPermission: (pId, pName, permission, granteeId, granteeName) =>
-      dispatch(grantPermission(pId, pName, permission, granteeId, granteeName, true)),
+      dispatch(grantProjectPermission(pId, pName, permission, granteeId, granteeName, true)),
     revokeProjectPermission: (pId, pName, permission, revokeeId, revokeeName) =>
-      dispatch(revokePermission(pId, pName, permission, revokeeId, revokeeName, true)),
+      dispatch(revokeProjectPermission(pId, pName, permission, revokeeId, revokeeName, true)),
     grantSubprojectPermission: (pId, pName, sId, sName, permission, granteeId, granteeName) =>
       dispatch(grantSubProjectPermission(pId, pName, sId, sName, permission, granteeId, granteeName, true)),
     revokeSubprojectPermission: (pId, pName, sId, sName, permission, revokeeId, revokeeName) =>
