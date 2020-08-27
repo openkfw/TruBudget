@@ -173,12 +173,11 @@ describe("assign subproject: preconditions", () => {
         projectId,
         subprojectId,
         assignee,
-        {
-          ...baseRepository,
-          getSubproject: async () => ({ ...baseSubproject, asignee: "" }),
-        });
+        baseRepository,
+        );
 
     // InvalidCommand error as the user ID is not valid:
+    console.log(result);
     assert.isTrue(Result.isErr(result));
 
     // Make TypeScript happy:

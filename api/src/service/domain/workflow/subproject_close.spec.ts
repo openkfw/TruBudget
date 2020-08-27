@@ -66,7 +66,7 @@ const baseRepository = {
 
 describe("close subproject", () => {
   const workflowitem: Workflowitem = { ...baseWorkflowitem, status: "closed" };
-  it.only("Closing a subproject works if all workflowitems are closed.", async () => {
+  it("Closing a subproject works if all workflowitems are closed.", async () => {
     const result = await closeSubproject(ctx, root, projectId, subprojectId, {
       ...baseRepository,
       getWorkflowitems: async () => [workflowitem, workflowitem],
@@ -125,7 +125,7 @@ describe("close subproject: preconditions", () => {
 });
 
 describe("close subproject: notifications", () => {
-  it.only("When a user closes a subproject, a notification is issued to the assignee.", async () => {
+  it("When a user closes a subproject, a notification is issued to the assignee.", async () => {
     const permissions: Permissions = { "subproject.close": [bob.id] };
     const subproject: Subproject = { ...baseSubproject, permissions };
     const result = await closeSubproject(ctx, bob, projectId, subprojectId, {
