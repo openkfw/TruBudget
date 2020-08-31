@@ -4,7 +4,7 @@ import Drawer from "@material-ui/core/Drawer";
 
 import SideNavCard from "./SideNavCard";
 import { canViewNodesDashboard } from "../../permissions";
-import UserProfileContainer from "./UserProfileContainer";
+import UserProfile from "./UserProfile";
 
 const SideNav = props => {
   const { showSidebar, toggleSidebar, allowedIntents, ...rest } = props;
@@ -17,7 +17,7 @@ const SideNav = props => {
       onClose={toggleSidebar}
     >
       <SideNavCard nodeDashboardEnabled={nodeDashboardEnabled} {...rest} />
-      <UserProfileContainer />
+      <UserProfile {...props} />
     </Drawer>
   );
 };

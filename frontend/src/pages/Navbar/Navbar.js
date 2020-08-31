@@ -45,7 +45,8 @@ const Navbar = ({
   storeSearchBarDisplayed,
   searchBarDisplayed,
   showUserProfile,
-  fetchEmailAddress
+  fetchEmailAddress,
+  ...props
 }) => {
   return (
     <div>
@@ -94,6 +95,7 @@ const Navbar = ({
         exportData={exportData}
         showUserProfile={showUserProfile}
         fetchEmailAddress={fetchEmailAddress}
+        {...props}
       />
     </div>
   );
