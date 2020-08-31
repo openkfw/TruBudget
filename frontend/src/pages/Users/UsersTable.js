@@ -21,8 +21,9 @@ const styles = {
     display: "flex"
   },
   flexColumn: {
+    padding:"4px 10px 4px 2px",
     flexDirection: "column",
-    display: "flex"
+   
   }
 };
 

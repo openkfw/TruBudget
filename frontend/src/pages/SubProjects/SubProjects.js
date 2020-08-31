@@ -12,7 +12,8 @@ const SubProjects = props => {
       data-test="sub-projects"
       style={{
         position: "relative",
-        width: "100%"
+        width: "100%",
+        whiteSpace: "nowrap"
       }}
     >
       <Card>{props.isDataLoading ? null : <SubProjectTable {...props} />}</Card>

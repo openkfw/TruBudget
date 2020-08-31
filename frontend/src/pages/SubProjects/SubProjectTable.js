@@ -45,15 +45,15 @@ const styles = {
   },
   projectdBudget: {
     fontSize: "14px",
-    width: "20%"
+    width: "30%"
   },
   status: {
     fontSize: "14px",
-    width: "20%"
+    width: "15%"
   },
   actions: {
     fontSize: "14px",
-    width: "20%"
+    width: "25%"
   },
   buttonContainer: {
     display: "flex",
