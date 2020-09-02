@@ -64,7 +64,7 @@ describe("list workflowitems: authorization", () => {
     assert.equal(result[0].id, workflowitemId);
   });
 
-  it.only("If a user doesn't have permission to view a workflowitem, it is redacted when listed.", async () => {
+  it("If a user doesn't have permission to view a workflowitem, it is redacted when listed.", async () => {
     const notPermittedWorkflowitem: Workflowitem = {
       ...baseWorkflowitem,
       permissions: {},
