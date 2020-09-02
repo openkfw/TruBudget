@@ -42,7 +42,11 @@ export async function updateProject(
   }
 
   // Create the new event:
-  const projectUpdated = ProjectUpdated.createEvent(ctx.source, issuer.id, projectId, data);
+  const projectUpdatedResult = ProjectUpdated.createEvent(ctx.source, issuer.id, projectId, data);
+  if (Result.isErr(projectUpdatedResult)) {
+    return new VError(projectUpdatedResult, "create update-event failed");
+  }
+  const projectUpdated = projectUpdatedResult;
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {

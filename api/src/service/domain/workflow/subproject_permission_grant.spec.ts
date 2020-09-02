@@ -8,7 +8,7 @@ import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import * as Subproject from "./subproject";
-import * as SubprojectPermissionRevoke from "./subproject_permission_revoke";
+import * as SubprojectPermissionGrant from "./subproject_permission_grant";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const executingUser: ServiceUser = { id: "mstein", groups: [] };
@@ -16,9 +16,9 @@ const testUser: ServiceUser = { id: "testUser", groups: [] };
 
 const permissions: Permissions = {
   "subproject.viewSummary": ["testUser"],
-  "subproject.viewDetails": ["testUser"],
-  "subproject.intent.grantPermission": ["testUser"],
-  "subproject.intent.revokePermission": ["mstein"],
+  "subproject.viewDetails": [],
+  "subproject.intent.revokePermission": ["testUser"],
+  "subproject.intent.grantPermission": ["mstein"],
 };
 
 const testsubproject: Subproject.Subproject = {
@@ -36,9 +36,9 @@ const testsubproject: Subproject.Subproject = {
   additionalData: {},
 };
 
-describe("revoke subproject permissions", () => {
-  it("With the 'subproject.intent.revokePermission' permission, the user can revoke subproject permissions", async () => {
-    const revokeResult = await SubprojectPermissionRevoke.revokeSubprojectPermission(
+describe("grant subproject permissions", () => {
+  it("With the 'subproject.intent.grantPermission' permission, the user can grant subproject permissions", async () => {
+    const grantResult = await SubprojectPermissionGrant.grantSubprojectPermission(
       ctx,
       executingUser,
       testsubproject.projectId,
@@ -50,26 +50,26 @@ describe("revoke subproject permissions", () => {
       },
     );
 
-    if (Result.isErr(revokeResult)) {
-      throw revokeResult;
+    if (Result.isErr(grantResult)) {
+      throw grantResult;
     }
-    const newEvents = revokeResult;
+    const newEvents = grantResult;
     assert.lengthOf(newEvents, 1);
-    const revokeEvent = newEvents[0];
+    const grantEvent = newEvents[0];
     const expectedEvent: BusinessEvent = {
-      type: "subproject_permission_revoked",
+      type: "subproject_permission_granted",
       source: ctx.source,
       publisher: executingUser.id,
-      time: revokeEvent.time,
+      time: grantEvent.time,
       projectId: testsubproject.projectId,
       subprojectId: testsubproject.id,
       permission: "subproject.viewDetails",
-      revokee: testUser.id,
+      grantee: testUser.id,
     };
-    assert.deepEqual(expectedEvent, revokeEvent);
+    assert.deepEqual(expectedEvent, grantEvent);
   });
 
-  it("Without the 'subproject.intent.revokePermission' permission, the user cannot revoke subproject permissions", async () => {
+  it("Without the 'subproject.intent.grantPermission' permission, the user cannot grant subproject permissions", async () => {
     const subprojectWithoutPermission: Subproject.Subproject = {
       id: "testsubproject",
       projectId: "testProject",
@@ -80,11 +80,11 @@ describe("revoke subproject permissions", () => {
       currency: "EUR",
       workflowitemOrdering: [],
       projectedBudgets: [],
-      permissions: { "subproject.intent.revokePermission": [] },
+      permissions: { "subproject.intent.grantPermission": [] },
       log: [],
       additionalData: {},
     };
-    const revokeResult = await SubprojectPermissionRevoke.revokeSubprojectPermission(
+    const grantResult = await SubprojectPermissionGrant.grantSubprojectPermission(
       ctx,
       executingUser,
       testsubproject.projectId,
@@ -96,28 +96,13 @@ describe("revoke subproject permissions", () => {
       },
     );
 
-    assert.isTrue(Result.isErr(revokeResult));
-    assert.instanceOf(revokeResult, NotAuthorized);
+    assert.isTrue(Result.isErr(grantResult));
+    assert.instanceOf(grantResult, NotAuthorized);
   });
-
-  it("Revoking grantPermission permission of last user is not allowed and leads to a precondition error.", async () => {
-    const revokeResult = await SubprojectPermissionRevoke.revokeSubprojectPermission(
-      ctx,
-      executingUser,
-      testsubproject.projectId,
-      testsubproject.id,
-      testUser.id,
-      "subproject.intent.grantPermission",
-      {
-        getSubproject: async () => testsubproject,
-      },
-    );
-
-    assert.isTrue(Result.isErr(revokeResult));
-    assert.instanceOf(revokeResult, PreconditionError);
-  });
-  it("Revoking a subproject's permission fails if the subproject cannot be found", async () => {
-    const revokeResult = await SubprojectPermissionRevoke.revokeSubprojectPermission(
+});
+describe("grant subproject permission: preconditions", () => {
+  it("Granting a subproject's permission fails if the subproject cannot be found", async () => {
+    const grantResult = await SubprojectPermissionGrant.grantSubprojectPermission(
       ctx,
       executingUser,
       testsubproject.projectId,
@@ -128,21 +113,21 @@ describe("revoke subproject permissions", () => {
         getSubproject: async () => new Error("some error"),
       },
     );
-    assert.isTrue(Result.isErr(revokeResult));
-    assert.instanceOf(revokeResult, NotFound);
+    assert.isTrue(Result.isErr(grantResult));
+    assert.instanceOf(grantResult, NotFound);
   });
   it("No changes to existing permissions emit no new events", async () => {
     const existingPermissions: Permissions = {
       "subproject.viewSummary": ["testUser"],
-      "subproject.viewDetails": [],
-      "subproject.intent.grantPermission": ["testUser"],
-      "subproject.intent.revokePermission": ["mstein"],
+      "subproject.viewDetails": ["testUser"],
+      "subproject.intent.revokePermission": ["testUser"],
+      "subproject.intent.grantPermission": ["mstein"],
     };
     const baseSubproject: Subproject.Subproject = {
       ...testsubproject,
       permissions: existingPermissions,
     };
-    const revokeResult = await SubprojectPermissionRevoke.revokeSubprojectPermission(
+    const grantResult = await SubprojectPermissionGrant.grantSubprojectPermission(
       ctx,
       executingUser,
       testsubproject.projectId,
@@ -154,6 +139,6 @@ describe("revoke subproject permissions", () => {
       },
     );
 
-    assert.deepEqual([], revokeResult);
+    assert.deepEqual([], grantResult);
   });
 });
