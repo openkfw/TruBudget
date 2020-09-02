@@ -3,6 +3,7 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
@@ -114,5 +115,45 @@ describe("revoke subproject permissions", () => {
 
     assert.isTrue(Result.isErr(revokeResult));
     assert.instanceOf(revokeResult, PreconditionError);
+  });
+  it("Revoking a subproject's permission fails if the subproject cannot be found", async () => {
+    const revokeResult = await SubprojectPermissionRevoke.revokeSubprojectPermission(
+      ctx,
+      executingUser,
+      testsubproject.projectId,
+      testsubproject.id,
+      testUser.id,
+      "subproject.viewDetails",
+      {
+        getSubproject: async () => new Error("some error"),
+      },
+    );
+    assert.isTrue(Result.isErr(revokeResult));
+    assert.instanceOf(revokeResult, NotFound);
+  });
+  it("No changes to existing permissions emit no new events", async () => {
+    const existingPermissions: Permissions = {
+      "subproject.viewSummary": ["testUser"],
+      "subproject.viewDetails": [],
+      "subproject.intent.grantPermission": ["testUser"],
+      "subproject.intent.revokePermission": ["mstein"],
+    };
+    const baseSubproject: Subproject.Subproject = {
+      ...testsubproject,
+      permissions: existingPermissions,
+    };
+    const revokeResult = await SubprojectPermissionRevoke.revokeSubprojectPermission(
+      ctx,
+      executingUser,
+      testsubproject.projectId,
+      testsubproject.id,
+      testUser.id,
+      "subproject.viewDetails",
+      {
+        getSubproject: async () => baseSubproject,
+      },
+    );
+
+    assert.deepEqual([], revokeResult);
   });
 });

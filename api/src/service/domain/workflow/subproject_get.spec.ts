@@ -3,7 +3,9 @@ import { assert } from "chai";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
+import { Permissions } from "../permissions";
 import { Subproject } from "./subproject";
 import { getSubproject } from "./subproject_get";
 
@@ -13,7 +15,7 @@ const alice: ServiceUser = { id: "alice", groups: [] };
 const subprojectId = "dummy-subproject";
 const subprojectName = "dummy-Name";
 
-const permissions = {
+const permissions: Permissions = {
     "subproject.viewSummary": ["alice"],
     "subproject.viewDetails": ["alice"],
   };
@@ -40,7 +42,7 @@ const baseRepository = {
 
 describe("get subproject: authorization", () => {
   it("Without the required permissions, a user cannot get a subproject.", async () => {
-    const notPermittedSubroject = {
+    const notPermittedSubroject: Subproject = {
    ...baseSubproject,
     permissions: {},
       };
@@ -65,5 +67,16 @@ describe("get subproject: authorization", () => {
     // No errors, despite the missing permissions:
     assert.isTrue(Result.isOk(result), (result as Error).message);
     assert.equal(Result.unwrap(result).id, subprojectId);
+  });
+});
+describe("get subproject: preconditions", () => {
+  it("Getting a subproject fails if the subproject cannot be found", async () => {
+    const result = await getSubproject(ctx, alice, subprojectId,
+      {
+      ...baseRepository,
+      getSubproject: async () => new Error("some error"),
+  });
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotFound);
   });
 });

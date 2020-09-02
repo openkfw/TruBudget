@@ -8,6 +8,7 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { Project } from "./project";
 import { updateProject } from "./project_update";
+import { Modification } from "./project_updated";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const root: ServiceUser = { id: "root", groups: [] };
@@ -46,7 +47,7 @@ const baseRepository = {
 
 describe("update project: authorization", () => {
   it("Without the project.update permission, a user cannot update a project", async () => {
-    const modification = {
+    const modification: Modification = {
         displayName: projectName,
       };
 
@@ -67,7 +68,7 @@ describe("update project: authorization", () => {
   });
 
   it("The root user doesn't need permission to update a project", async () => {
-    const modification = {displayName: projectName};
+    const modification: Modification = {displayName: projectName};
     const result = await updateProject(
       ctx,
       root,
@@ -87,7 +88,7 @@ describe("update project: authorization", () => {
 
 describe("update project: how modifications are applied", () => {
   it("An update that contains current values only is ignored", async () => {
-    const modification = {
+    const modification: Modification = {
       displayName: projectName,
       description: projectName,
     };
@@ -107,7 +108,7 @@ describe("update project: how modifications are applied", () => {
   });
 
   it("The description field can be cleared as an empty string is allowed there", async () => {
-    const modification = {
+    const modification: Modification = {
       description: "",
     };
     const result = await updateProject(
@@ -127,7 +128,7 @@ describe("update project: how modifications are applied", () => {
   });
 
   it("The displayName field cannot be cleared as it is a required field", async () => {
-    const modification = {
+    const modification: Modification = {
       displayName: "",
     };
     const result = await updateProject(
@@ -145,7 +146,7 @@ describe("update project: how modifications are applied", () => {
 
   it("An empty update is not allowed, as it must contain at least one of " +
   "displayName, description, thumbnail, additionalData, tags", async () => {
-    const modification = {};
+    const modification: Modification = {};
     const result = await updateProject(
       ctx,
       alice,
@@ -159,7 +160,7 @@ describe("update project: how modifications are applied", () => {
   });
 
   it("A closed project cannot be updated", async () => {
-    const modification = {
+    const modification: Modification = {
       description: "Some update",
     };
     const result = await updateProject(
@@ -184,7 +185,7 @@ describe("update project: how modifications are applied", () => {
   });
 
   it("An update to additional data adds new items and replaces existing ones", async () => {
-    const modification = {
+    const modification: Modification = {
       additionalData: {
         a: "updated value",
         b: "new value",
@@ -215,7 +216,7 @@ describe("update project: how modifications are applied", () => {
   });
 
   it("Updating fails for an invalid project ID", async () => {
-    const modification = {
+    const modification: Modification = {
       description: "Some update",
     };
     const result = await updateProject(
@@ -237,7 +238,7 @@ describe("update project: how modifications are applied", () => {
 
 describe("update project: notifications", () => {
   it("When a user updates an assigned project, a notification is issued to the assignee", async () => {
-    const modification = {
+    const modification: Modification = {
       description: "New description.",
     };
     const result = await updateProject(
@@ -266,7 +267,7 @@ describe("update project: notifications", () => {
   });
 
   it("When a user updates an unassigned project, no notifications are issued", async () => {
-    const modification = {
+    const modification: Modification = {
       description: "New description.",
     };
     const result = await updateProject(
@@ -295,7 +296,7 @@ describe("update project: notifications", () => {
 
   it("When an update is ignored, no notifications are issued", async () => {
     // an update that contains current values only is ignored
-    const modification = {
+    const modification: Modification = {
         displayName: projectName,
     };
     const result = await updateProject(
@@ -317,7 +318,7 @@ describe("update project: notifications", () => {
     "When a user updates a project that is assigned to a group, " +
       "each member, except for the user that invoked the update, receives a notification",
     async () => {
-      const modification = {
+      const modification: Modification = {
         description: "New description.",
       };
       const result = await updateProject(

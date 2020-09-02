@@ -3,6 +3,7 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
@@ -105,5 +106,45 @@ describe("revoke project permissions", () => {
 
     assert.isTrue(Result.isErr(revokeResult));
     assert.instanceOf(revokeResult, PreconditionError);
+  });
+});
+describe("revoke project permission: preconditions", () => {
+  it("Revoking a project's permission fails if the project cannot be found", async () => {
+    const revokeResult = await ProjectPermissionRevoke.revokeProjectPermission(
+      ctx,
+      executingUser,
+      testProject.id,
+      testUser.id,
+      "project.viewDetails",
+      {
+        getProject: async () => new Error("some error"),
+      },
+    );
+    assert.isTrue(Result.isErr(revokeResult));
+    assert.instanceOf(revokeResult, NotFound);
+  });
+  it("No changes to existing permissions emit no new events", async () => {
+    const existingPermissions: Permissions = {
+      "project.viewSummary": ["testUser"],
+      "project.viewDetails": [],
+      "project.intent.grantPermission": ["testUser"],
+      "project.intent.revokePermission": ["mstein"],
+    };
+    const baseProject: Project.Project = {
+      ...testProject,
+      permissions: existingPermissions,
+    };
+    const revokeResult = await ProjectPermissionRevoke.revokeProjectPermission(
+      ctx,
+      executingUser,
+      testProject.id,
+      testUser.id,
+      "project.viewDetails",
+      {
+        getProject: async () => baseProject,
+      },
+    );
+
+    assert.deepEqual([], revokeResult);
   });
 });

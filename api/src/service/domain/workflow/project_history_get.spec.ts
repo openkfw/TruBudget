@@ -2,56 +2,82 @@ import { assert } from "chai";
 
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
+import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
+import { Permissions } from "../permissions";
 import { Project } from "./project";
 import { Filter, getHistory } from "./project_history_get";
+import { ProjectTraceEvent } from "./project_trace_event";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const root: ServiceUser = { id: "root", groups: [] };
 const alice: ServiceUser = { id: "alice", groups: [] };
 const projectId = "dummy-project";
 const projectName = "dummy-Name";
+const date = new Date().toISOString();
 
 const filter: Filter = {
-    publisher: alice.id,
-    startAt: new Date().toISOString(),
-    endAt: new Date().toISOString(),
-    eventType: "project_created",
+  publisher: alice.id,
+  startAt: date,
+  endAt: date,
+  eventType: "project_created",
 };
 
-const permissions = {
-    "project.viewDetails": ["alice"],
-  };
+const permissions: Permissions = {
+  "project.viewDetails": ["alice"],
+};
 
+const event: ProjectTraceEvent = {
+  entityId: alice.id,
+  entityType: "project",
+  businessEvent: {
+    type: "project_created",
+    source: "",
+    time: date,
+    publisher: alice.id,
+    project: {
+      id: projectId,
+      status: "open",
+      displayName: "project",
+      description: "some description",
+      projectedBudgets: [],
+      permissions: {},
+      additionalData: {},
+    },
+  },
+  snapshot: {
+    displayName: "",
+  },
+};
 const baseProject: Project = {
-    id: projectId,
-    createdAt: new Date().toISOString(),
-    status: "open",
-    displayName: projectName,
-    description: projectName,
-    assignee: alice.id,
-    projectedBudgets: [],
-    permissions,
-    log: [],
-    tags: [],
-    additionalData: {},
-  };
+  id: projectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  displayName: projectName,
+  description: projectName,
+  assignee: alice.id,
+  projectedBudgets: [],
+  permissions,
+  log: [event],
+  tags: [],
+  additionalData: {},
+};
 
 const baseRepository = {
-    getProject: async () => baseProject,
+  getProject: async () => baseProject,
 };
 
 describe("get project history: authorization", () => {
   it("Without the required permissions, a user cannot get a project's history.", async () => {
-    const notPermittedProject = {
-        ...baseProject,
-        permissions: {},
-      };
-    const result = await getHistory(ctx, alice, projectId, filter,
-        {
-        ...baseRepository,
-        getProject: async () => notPermittedProject,
+    const notPermittedProject: Project = {
+      ...baseProject,
+      permissions: {},
+    };
+    const result = await getHistory(ctx, alice, projectId, filter, {
+      ...baseRepository,
+      getProject: async () => notPermittedProject,
     });
     assert.instanceOf(result, NotAuthorized);
   });
@@ -64,5 +90,65 @@ describe("get project history: authorization", () => {
   it("The root user doesn't need permission to get a project's history.", async () => {
     const result = await getHistory(ctx, alice, projectId, filter, baseRepository);
     assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+});
+describe("get project history: preconditions", () => {
+  it("Getting a project's history fails if the project cannot be found", async () => {
+    const result = await getHistory(ctx, alice, projectId, filter, {
+      ...baseRepository,
+      getProject: async () => new Error("some error"),
+    });
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotFound);
+  });
+
+  it("the properties of the filter must match the resulted properties exactly", async () => {
+    const result = await getHistory(ctx, root, projectId, filter, baseRepository);
+    assert.equal(result[0].businessEvent.publisher, alice.id);
+    assert.isTrue(result[0].businessEvent.time >= filter.startAt);
+    assert.isTrue(result[0].businessEvent.time <= filter.endAt);
+    assert.equal(result[0].businessEvent.type, filter.eventType);
+  });
+
+  it("if one property of the result doesn't match the filter the event is not returned", async () => {
+    const editedFilter: Filter = {
+      ...filter,
+      publisher: root.id,
+    };
+    const result = await getHistory(
+      ctx,
+      root,
+      projectId,
+      editedFilter,
+      baseRepository,
+    );
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isEmpty(result);
+  });
+  it("if there are more events in a project's history only the one matching the filter is returned", async () => {
+    const anotherBusinessEvent: BusinessEvent = {
+      type: "project_closed",
+      source: "",
+      time: date,
+      publisher: alice.id,
+      projectId,
+    };
+    const newEvent: ProjectTraceEvent = {
+      ...event,
+      businessEvent: anotherBusinessEvent,
+    };
+    const updatedProject: Project = {
+      ...baseProject,
+      log: [event, newEvent],
+    };
+
+    const result = await getHistory(ctx, root, projectId, filter, {
+      getProject: async () => updatedProject,
+    });
+    assert.equal(Result.unwrap(result).length, 1);
+    assert.equal(result[0].businessEvent.publisher, alice.id);
+    assert.isTrue(result[0].businessEvent.time >= filter.startAt);
+    assert.isTrue(result[0].businessEvent.time <= filter.endAt);
+    assert.equal(result[0].businessEvent.type, filter.eventType);
   });
 });

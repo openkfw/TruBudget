@@ -3,7 +3,8 @@ import { assert } from "chai";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
-import { Subproject } from './subproject';
+import { Permissions } from "../permissions";
+import { Subproject } from "./subproject";
 import { getAllVisible } from "./subproject_list";
 
 const ctx: Ctx = { requestId: "", source: "test" };
@@ -12,7 +13,7 @@ const alice: ServiceUser = { id: "alice", groups: [] };
 const subprojectId = "dummy-subproject";
 const subprojectName = "dummy-Name";
 
-const permissions = {
+const permissions: Permissions = {
     "subproject.viewSummary": ["alice"],
     "subproject.viewDetails": ["alice"],
   };
@@ -45,7 +46,7 @@ const baseRepository = {
 
 describe("list subprojects: authorization", () => {
   it("Without the required permissions, a user cannot list all subprojects.", async () => {
-    const notPermittedSubroject = {
+    const notPermittedSubroject: Subproject = {
    ...baseSubproject,
     permissions: {},
       };
@@ -66,6 +67,19 @@ describe("list subprojects: authorization", () => {
     assert.isTrue(Result.isOk(result), (result as Error).message);
     assert.equal(result[0].id, subprojectId);
 
+  });
+  it("A user can only list the subprojects they have permission to view.", async () => {
+    const notPermittedSubproject: Subproject = {
+      ...baseSubproject,
+      permissions: {},
+    };
+    const result = await getAllVisible(ctx, alice,
+      {
+      ...baseRepository,
+      getAllSubprojects: async () => [baseSubproject, notPermittedSubproject],
+  });
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.equal(Result.unwrap(result).length, 1);
   });
 
   it("The root user doesn't need permission to list all subprojects.", async () => {

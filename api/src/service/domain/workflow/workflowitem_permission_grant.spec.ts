@@ -3,6 +3,7 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
@@ -103,5 +104,48 @@ describe("grant workflowitem permissions", () => {
 
     assert.isTrue(Result.isErr(grantResult));
     assert.instanceOf(grantResult, NotAuthorized);
+  });
+});
+describe("grant workflowitem permission: preconditions", () => {
+  it("Granting a workflowitem's permission fails if the workflowitem cannot be found", async () => {
+    const grantResult = await WorkflowitemPermissionGrant.grantWorkflowitemPermission(
+      ctx,
+      executingUser,
+      projectId,
+      testworkflowitem.subprojectId,
+      testworkflowitem.id,
+      testUser.id,
+      "workflowitem.view",
+      {
+        getWorkflowitem: async () => new Error("some error"),
+      },
+    );
+    assert.isTrue(Result.isErr(grantResult));
+    assert.instanceOf(grantResult, NotFound);
+  });
+  it("No changes to existing permissions emit no new events", async () => {
+   const existingPermissions: Permissions = {
+    "workflowitem.view": ["testUser"],
+    "workflowitem.assign": [],
+    "workflowitem.intent.grantPermission": ["mstein"],
+  };
+   const baseWorkflowitem: Workflowitem.Workflowitem = {
+      ...testworkflowitem,
+      permissions: existingPermissions,
+    };
+   const grantResult = await WorkflowitemPermissionGrant.grantWorkflowitemPermission(
+      ctx,
+      executingUser,
+      projectId,
+      testworkflowitem.subprojectId,
+      testworkflowitem.id,
+      testUser.id,
+      "workflowitem.view",
+      {
+        getWorkflowitem: async () => baseWorkflowitem,
+      },
+    );
+
+   assert.deepEqual([], grantResult);
   });
 });

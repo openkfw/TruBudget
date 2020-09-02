@@ -3,6 +3,7 @@ import { assert } from "chai";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { Workflowitem } from "./workflowitem";
@@ -75,5 +76,20 @@ describe("List workflowitem permissions: authorization", () => {
 
     assert.isTrue(Result.isOk(result));
     assert.equal(Result.unwrap(result), permissions);
+  });
+});
+describe("list workflowitem permissions: preconditions", () => {
+  it("Listing a workflowitem's permissions fails if the workflowitem cannot be found", async () => {
+    const result = await getAll(ctx,
+      bob,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      {
+          ...baseRepository,
+          getWorkflowitem: async _workflowitemId => new Error("some error"),
+        });
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotFound);
   });
 });

@@ -3,6 +3,7 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import * as Project from "./project";
@@ -88,5 +89,45 @@ describe("grant project permissions", () => {
 
     assert.isTrue(Result.isErr(grantResult));
     assert.instanceOf(grantResult, NotAuthorized);
+  });
+});
+describe("grant project permission: preconditions", () => {
+  it("Granting project's permission fails if the project cannot be found", async () => {
+    const grantResult = await ProjectPermissionGrant.grantProjectPermission(
+      ctx,
+      executingUser,
+      testProject.id,
+      testUser.id,
+      "project.viewDetails",
+      {
+        getProject: async () => new Error("some error"),
+      },
+    );
+    assert.isTrue(Result.isErr(grantResult));
+    assert.instanceOf(grantResult, NotFound);
+  });
+  it("No changes to existing permissions emit no new events", async () => {
+    const existingPermissions: Permissions = {
+      "project.viewSummary": ["testUser"],
+      "project.viewDetails": ["testUser"],
+      "project.intent.revokePermission": ["testUser"],
+      "project.intent.grantPermission": ["mstein"],
+    };
+    const baseProject: Project.Project = {
+      ...testProject,
+      permissions: existingPermissions,
+    };
+    const grantResult = await ProjectPermissionGrant.grantProjectPermission(
+      ctx,
+      executingUser,
+      testProject.id,
+      testUser.id,
+      "project.viewDetails",
+      {
+        getProject: async () => baseProject,
+      },
+    );
+
+    assert.deepEqual([], grantResult);
   });
 });

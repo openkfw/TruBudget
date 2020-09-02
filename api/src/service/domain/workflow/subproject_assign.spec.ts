@@ -177,7 +177,6 @@ describe("assign subproject: preconditions", () => {
         );
 
     // InvalidCommand error as the user ID is not valid:
-    console.log(result);
     assert.isTrue(Result.isErr(result));
 
     // Make TypeScript happy:
