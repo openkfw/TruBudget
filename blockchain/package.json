@@ -45,7 +45,7 @@
     "shelljs": "^0.8.2",
     "sinon": "^7.2.2",
     "streamifier": "^0.1.1",
-    "tar-fs": "^1.16.3"
+    "tar-fs": "^2.1.0"
   },
   "devDependencies": {
     "mocha": "^7.1.2",
