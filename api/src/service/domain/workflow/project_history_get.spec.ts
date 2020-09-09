@@ -105,8 +105,8 @@ describe("get project history: preconditions", () => {
   it("the properties of the filter must match the resulted properties exactly", async () => {
     const result = await getHistory(ctx, root, projectId, filter, baseRepository);
     assert.equal(result[0].businessEvent.publisher, alice.id);
-    assert.isTrue(result[0].businessEvent.time >= filter.startAt);
-    assert.isTrue(result[0].businessEvent.time <= filter.endAt);
+    assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);
+    assert.isTrue(filter.endAt && result[0].businessEvent.time <= filter.endAt);
     assert.equal(result[0].businessEvent.type, filter.eventType);
   });
 
@@ -115,13 +115,7 @@ describe("get project history: preconditions", () => {
       ...filter,
       publisher: root.id,
     };
-    const result = await getHistory(
-      ctx,
-      root,
-      projectId,
-      editedFilter,
-      baseRepository,
-    );
+    const result = await getHistory(ctx, root, projectId, editedFilter, baseRepository);
     assert.isTrue(Result.isOk(result), (result as Error).message);
     assert.isEmpty(result);
   });
@@ -147,8 +141,8 @@ describe("get project history: preconditions", () => {
     });
     assert.equal(Result.unwrap(result).length, 1);
     assert.equal(result[0].businessEvent.publisher, alice.id);
-    assert.isTrue(result[0].businessEvent.time >= filter.startAt);
-    assert.isTrue(result[0].businessEvent.time <= filter.endAt);
+    assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);
+    assert.isTrue(filter.endAt && result[0].businessEvent.time <= filter.endAt);
     assert.equal(result[0].businessEvent.type, filter.eventType);
   });
 });

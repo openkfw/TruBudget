@@ -1,19 +1,18 @@
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
-import logger from "../../../lib/logger";
 import * as Result from "../../../result";
+import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import { ProjectTraceEvent } from "./project_trace_event";
-import { NotAuthorized } from "../errors/not_authorized";
 
 export interface Filter {
-  publisher: Identity;
-  startAt: string; // ISO timestamp
-  endAt: string; // ISO timestamp
-  eventType: Identity;
+  publisher?: Identity;
+  startAt?: string; // ISO timestamp;
+  endAt?: string; // ISO timestamp;
+  eventType?: string;
 }
 
 interface Repository {
@@ -50,14 +49,16 @@ export const getHistory = async (
   }
 
   if (filter.startAt) {
+    const startAt = filter.startAt;
     projectTraceEvents = projectTraceEvents.filter(
-      (event) => new Date(event.businessEvent.time) >= new Date(filter.startAt),
+      (event) => new Date(event.businessEvent.time) >= new Date(startAt),
     );
   }
 
   if (filter.endAt) {
+    const endAt = filter.endAt;
     projectTraceEvents = projectTraceEvents.filter(
-      (event) => new Date(event.businessEvent.time) <= new Date(filter.endAt),
+      (event) => new Date(event.businessEvent.time) <= new Date(endAt),
     );
   }
 

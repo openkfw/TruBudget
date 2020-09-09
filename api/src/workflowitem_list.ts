@@ -1,9 +1,11 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, RequestGenericInterface } from "fastify";
+import { VError } from "verror";
+
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
@@ -11,11 +13,10 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
-import { VError } from "verror";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description:
         "Retrieve all workflowitems of a given subproject. Those items the " +
@@ -149,67 +150,78 @@ function sendErrorIfEmpty(reply, resourceId) {
   return false;
 }
 
+interface Request extends RequestGenericInterface {
+  Querystring: {
+    projectId: string;
+    subprojectId: string;
+  };
+}
+
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
-  server.get(`${urlPrefix}/workflowitem.list`, mkSwaggerSchema(server), (request, reply) => {
-    const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.get<Request>(
+    `${urlPrefix}/workflowitem.list`,
+    mkSwaggerSchema(server),
+    (request, reply) => {
+      const ctx: Ctx = { requestId: request.id, source: "http" };
 
-    const user: ServiceUser = {
-      id: (request as AuthenticatedRequest).user.userId,
-      groups: (request as AuthenticatedRequest).user.groups,
-    };
+      const user: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+      };
 
-    const projectId = request.query.projectId;
-    const subprojectId = request.query.subprojectId;
-    if (sendErrorIfEmpty(reply, projectId) || sendErrorIfEmpty(reply, subprojectId)) {
-      return;
-    }
+      const projectId = request.query.projectId;
+      const subprojectId = request.query.subprojectId;
+      if (sendErrorIfEmpty(reply, projectId) || sendErrorIfEmpty(reply, subprojectId)) {
+        return;
+      }
 
-    service
-      .listWorkflowitems(ctx, user, projectId, subprojectId)
-      .then((workflowitemsResult) => {
-        if (Result.isErr(workflowitemsResult)) {
-          throw new VError(workflowitemsResult, "workflowitem.list failed");
-        }
-        const workflowitems = workflowitemsResult;
+      service
+        .listWorkflowitems(ctx, user, projectId, subprojectId)
+        .then((workflowitemsResult) => {
+          if (Result.isErr(workflowitemsResult)) {
+            throw new VError(workflowitemsResult, "workflowitem.list failed");
+          }
+          const workflowitems = workflowitemsResult;
 
-        return workflowitems.map((workflowitem) => {
-          return {
-            allowedIntents: workflowitem.isRedacted
-              ? []
-              : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
+          return workflowitems.map((workflowitem) => {
+            return {
+              allowedIntents: workflowitem.isRedacted
+                ? []
+                : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
+              data: {
+                id: workflowitem.id,
+                creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),
+                status: workflowitem.status,
+                amountType: workflowitem.amountType,
+                displayName: workflowitem.displayName,
+                description: workflowitem.description,
+                amount: workflowitem.amount,
+                assignee: workflowitem.assignee,
+                currency: workflowitem.currency,
+                billingDate: workflowitem.billingDate,
+                dueDate: workflowitem.dueDate,
+                exchangeRate: workflowitem.exchangeRate,
+                documents: workflowitem.documents,
+                additionalData: workflowitem.additionalData,
+                workflowitemType: workflowitem.workflowitemType,
+              },
+            };
+          });
+        })
+        .then((workflowitems: ExposedWorkflowitem[]) => {
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
             data: {
-              id: workflowitem.id,
-              creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),
-              status: workflowitem.status,
-              amountType: workflowitem.amountType,
-              displayName: workflowitem.displayName,
-              description: workflowitem.description,
-              amount: workflowitem.amount,
-              assignee: workflowitem.assignee,
-              currency: workflowitem.currency,
-              billingDate: workflowitem.billingDate,
-              dueDate: workflowitem.dueDate,
-              exchangeRate: workflowitem.exchangeRate,
-              documents: workflowitem.documents,
-              additionalData: workflowitem.additionalData,
-              workflowitemType: workflowitem.workflowitemType,
+              workflowitems,
             },
           };
+          reply.status(code).send(body);
+        })
+        .catch((err) => {
+          const { code, body } = toHttpError(err);
+          reply.status(code).send(body);
         });
-      })
-      .then((workflowitems: ExposedWorkflowitem[]) => {
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: {
-            workflowitems,
-          },
-        };
-        reply.status(code).send(body);
-      })
-      .catch((err) => {
-        const { code, body } = toHttpError(err);
-        reply.status(code).send(body);
-      });
-  });
+    },
+  );
 }

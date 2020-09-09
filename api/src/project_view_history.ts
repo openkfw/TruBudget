@@ -1,8 +1,9 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -10,11 +11,10 @@ import { BusinessEvent } from "./service/domain/business_event";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import Joi = require("joi");
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       deprecated: true,
       description:
@@ -120,8 +120,20 @@ interface Service {
   ): Promise<Result.Type<Subproject.Subproject[]>>;
 }
 
+interface Request extends RequestGenericInterface {
+  Querystring: {
+    projectId: string;
+    offset?: string;
+    limit?: string;
+    startAt?: string;
+    endAt?: string;
+    publisher?: string;
+    eventType?: string;
+  };
+}
+
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
-  server.get(
+  server.get<Request>(
     `${urlPrefix}/project.viewHistory`,
     mkSwaggerSchema(server),
     async (request, reply) => {
@@ -144,30 +156,36 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
 
-      const offset = parseInt(request.query.offset || 0, 10);
-      if (isNaN(offset)) {
-        reply.status(400).send({
-          apiVersion: "1.0",
-          error: {
-            code: 400,
-            message: "if present, the query parameter `offset` must be an integer",
-          },
-        });
-        return;
+      // Default: last create history event
+      let offset: number = 0;
+      if (request.query.offset !== undefined) {
+        offset = parseInt(request.query.offset, 10);
+        if (isNaN(offset)) {
+          reply.status(400).send({
+            apiVersion: "1.0",
+            error: {
+              code: 400,
+              message: "if present, the query parameter `offset` must be an integer",
+            },
+          });
+          return;
+        }
       }
 
-      let limit: number | undefined = parseInt(request.query.limit, 10);
-      if (isNaN(limit)) {
-        limit = undefined;
-      } else if (limit <= 0) {
-        reply.status(400).send({
-          apiVersion: "1.0",
-          error: {
-            code: 400,
-            message: "if present, the query parameter `limit` must be a positive integer",
-          },
-        });
-        return;
+      // Default: no limit
+      let limit: number | undefined;
+      if (request.query.limit !== undefined) {
+        limit = parseInt(request.query.limit, 10);
+        if (isNaN(limit) || limit <= 0) {
+          reply.status(400).send({
+            apiVersion: "1.0",
+            error: {
+              code: 400,
+              message: "if present, the query parameter `limit` must be a positive integer",
+            },
+          });
+          return;
+        }
       }
 
       try {

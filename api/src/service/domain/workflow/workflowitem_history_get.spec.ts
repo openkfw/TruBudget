@@ -141,8 +141,8 @@ describe("get workflowitem history: preconditions", () => {
       baseRepository,
     );
     assert.equal(result[0].businessEvent.publisher, alice.id);
-    assert.isTrue(result[0].businessEvent.time >= filter.startAt);
-    assert.isTrue(result[0].businessEvent.time <= filter.endAt);
+    assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);
+    assert.isTrue(filter.endAt && result[0].businessEvent.time <= filter.endAt);
     assert.equal(result[0].businessEvent.type, filter.eventType);
   });
 
@@ -167,37 +167,28 @@ describe("get workflowitem history: preconditions", () => {
     const anotherBusinessEvent: BusinessEvent = {
       type: "workflowitem_closed",
       source: "",
-        time: date,
-        publisher: alice.id,
-        projectId,
-        subprojectId,
-        workflowitemId,
+      time: date,
+      publisher: alice.id,
+      projectId,
+      subprojectId,
+      workflowitemId,
     };
     const newEvent: WorkflowitemTraceEvent = {
       ...event,
       businessEvent: anotherBusinessEvent,
     };
     const updatedWorkflowitem: Workflowitem = {
-        ...baseWorkflowitem,
-        log: [event, newEvent],
+      ...baseWorkflowitem,
+      log: [event, newEvent],
     };
 
-    const result = await getHistory(
-      ctx,
-      root,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      filter,
-      {
-        getWorkflowitem: async () => updatedWorkflowitem,
-
-      },
-    );
+    const result = await getHistory(ctx, root, projectId, subprojectId, workflowitemId, filter, {
+      getWorkflowitem: async () => updatedWorkflowitem,
+    });
     assert.equal(Result.unwrap(result).length, 1);
     assert.equal(result[0].businessEvent.publisher, alice.id);
-    assert.isTrue(result[0].businessEvent.time >= filter.startAt);
-    assert.isTrue(result[0].businessEvent.time <= filter.endAt);
+    assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);
+    assert.isTrue(filter.endAt && result[0].businessEvent.time <= filter.endAt);
     assert.equal(result[0].businessEvent.type, filter.eventType);
   });
 });

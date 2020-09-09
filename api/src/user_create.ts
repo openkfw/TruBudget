@@ -52,7 +52,7 @@ interface ResponseUserRecord {
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description: "Create a new user.",
       tags: ["global"],
