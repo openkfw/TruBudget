@@ -1,5 +1,6 @@
 import isEqual = require("lodash.isequal");
 
+import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -10,8 +11,8 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
-import * as WorkflowitemsReordered from "./workflowitems_reordered";
 import * as WorkflowitemOrdering from "./workflowitem_ordering";
+import * as WorkflowitemsReordered from "./workflowitems_reordered";
 
 interface Repository {
   getSubproject(
@@ -46,6 +47,9 @@ export async function setWorkflowitemOrdering(
     subprojectId,
     ordering,
   );
+  if (Result.isErr(reorderEvent)) {
+    return new VError(reorderEvent, "failed to create reorder event");
+  }
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {

@@ -107,7 +107,7 @@ export async function updateWorkflowitem(
   }
 
   // Create notification events:
-  let notifications: NotificationCreated.Event[] = [];
+  let notifications: Result.Type<NotificationCreated.Event[]> = [];
   if (workflowitem.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(workflowitem.assignee);
     if (Result.isErr(recipientsResult)) {
@@ -116,20 +116,23 @@ export async function updateWorkflowitem(
     notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
       if (recipient !== issuer.id) {
-        notifications.push(
-          NotificationCreated.createEvent(
-            ctx.source,
-            issuer.id,
-            recipient,
-            newEvent,
-            projectId,
-            subprojectId,
-            workflowitemId,
-          ),
+        const notification = NotificationCreated.createEvent(
+          ctx.source,
+          issuer.id,
+          recipient,
+          newEvent,
+          projectId,
         );
+        if (Result.isErr(notification)) {
+          return new VError(notification, "failed to create notification event");
+        }
+        notifications.push(notification);
       }
       return notifications;
     }, [] as NotificationCreated.Event[]);
+  }
+  if (Result.isErr(notifications)) {
+    return new VError(notifications, "failed to create notification events");
   }
 
   // Handle new documents
@@ -158,6 +161,9 @@ export async function updateWorkflowitem(
         workflowitemId,
         docToUpload,
       );
+      if (Result.isErr(workflowitemEvent)) {
+        return new VError(workflowitemEvent, "failed to create event");
+      }
 
       // Check that the event is valid:
       const uploadedDocumentResult = WorkflowitemDocumentUploaded.createFrom(

@@ -70,7 +70,9 @@ export async function createUser(
   };
 
   const createEvent = UserCreated.createEvent(source, publisher, eventTemplate);
-
+  if (Result.isErr(createEvent)) {
+    return new VError(createEvent, "failed to create user created event");
+  }
   if (Result.isErr(validate(data))) {
     return new PreconditionError(ctx, createEvent, "can not create user called 'root'");
   }
@@ -125,9 +127,14 @@ export async function createUser(
   }
 
   // Create events that'll grant default permissions to the user:
-  const defaultPermissionGrantedEvents = userDefaultIntents.map((intent) =>
-    GlobalPermissionGranted.createEvent(ctx.source, publisher, intent, createEvent.user.id),
-  );
+  const defaultPermissionGrantedEvents: Result.Type<GlobalPermissionGranted.Event[]> = [];
+  for (const intent of userDefaultIntents) {
+    const createEventResult = GlobalPermissionGranted.createEvent(ctx.source, publisher, intent, createEvent.user.id);
+    if (Result.isErr(createEventResult)) {
+      return new VError(createEventResult, "failed to create permission grant event");
+    }
+    defaultPermissionGrantedEvents.push(createEventResult);
+  }
 
   return [createEvent, ...defaultPermissionGrantedEvents];
 }

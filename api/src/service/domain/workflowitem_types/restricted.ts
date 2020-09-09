@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { workflowitemIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -44,8 +45,9 @@ const createPermissionEvents = (
   const grantIntent = "workflowitem.intent.grantPermission";
 
   // Create events for all workflowitem intents
-  const permissionsGranted = workflowitemIntents.map(intent =>
-    WorkflowitemPermissionGranted.createEvent(
+  const permissionsGranted: Result.Type<WorkflowitemPermissionGranted.Event[]> = [];
+  for (const intent of workflowitemIntents) {
+    const createEventResult = WorkflowitemPermissionGranted.createEvent(
       ctx.source,
       publisher.id,
       projectId,
@@ -53,13 +55,17 @@ const createPermissionEvents = (
       workflowitemId,
       intent,
       assignee,
-    ),
-  );
+    );
+    if (Result.isErr(createEventResult)) {
+      return new VError(createEventResult, "failed to create permission grant event");
+    }
+    permissionsGranted.push(createEventResult);
+  }
 
-  let permissionsRevoked = workflowitemIntents
-    .filter(intent => intent !== "workflowitem.view")
-    .map(intent =>
-      WorkflowitemPermissionRevoked.createEvent(
+  let permissionsRevoked: Result.Type<WorkflowitemPermissionRevoked.Event[]> = [];
+  for (const intent of workflowitemIntents) {
+    if (intent !== "workflowitem.view") {
+      const createEventResult = WorkflowitemPermissionRevoked.createEvent(
         ctx.source,
         publisher.id,
         projectId,
@@ -67,13 +73,19 @@ const createPermissionEvents = (
         workflowitemId,
         intent,
         publisher.id,
-      ),
-    );
-
+      );
+      if (Result.isErr(createEventResult)) {
+        return new VError(createEventResult, "failed to create permission revoke event");
+      }
+      permissionsRevoked.push(createEventResult);
+    }
+  }
   // The permission for the revokeIntent should be revoked at last
-  const revokeIntentPermission = permissionsRevoked.filter(event => event.permission === revokeIntent);
-  permissionsRevoked = permissionsRevoked.filter(event => event.permission !== revokeIntent);
-
+  // tslint:disable-next-line:max-line-length
+  const revokeIntentPermission = permissionsRevoked.filter(
+    (event) => event.permission === revokeIntent,
+  );
+  permissionsRevoked = permissionsRevoked.filter((event) => event.permission !== revokeIntent);
   // Check authorization
   if (publisher.id !== "root") {
     if (!Workflowitem.permits(workflowitem, publisher, [grantIntent])) {
@@ -87,6 +99,11 @@ const createPermissionEvents = (
         intent: hasRevokePermissions ? grantIntent : revokeIntent,
         target: workflowitem,
       });
+    }
+  }
+  for (const element of revokeIntentPermission) {
+    if (Result.isErr(element)) {
+      return new VError(element, "failed to create event");
     }
   }
 

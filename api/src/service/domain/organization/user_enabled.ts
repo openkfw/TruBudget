@@ -37,7 +37,7 @@ export function createEvent(
   publisher: Identity,
   user: InitialData,
   time: string = new Date().toISOString(),
-): Event {
+): Result.Type<Event> {
   const event = {
     type: eventType,
     source,
@@ -47,7 +47,7 @@ export function createEvent(
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
-    throw new VError(validationResult, `not a valid ${eventType} event`);
+    return new VError(validationResult, `not a valid ${eventType} event`);
   }
   return event;
 }
@@ -69,7 +69,7 @@ export function validate(input: any): Result.Type<Event> {
  */
 export function mutate(user: UserRecord.UserRecord, event: Event): Result.Type<void> {
   if (event.type !== "user_enabled") {
-    throw new VError(`illegal event type: ${event.type}`);
+    return new VError(`illegal event type: ${event.type}`);
   }
 
   // Enabling user

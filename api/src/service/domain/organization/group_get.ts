@@ -1,4 +1,5 @@
 import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotFound } from "../errors/not_found";
 import * as Group from "./group";
@@ -14,7 +15,7 @@ export async function getOneGroup(
   user: ServiceUser,
   groupId: Group.Id,
   repository: Repository,
-): Promise<Group.Group> {
+): Promise<Result.Type<Group.Group>> {
   const allEvents = await repository.getGroupEvents();
   // Errors are ignored here:
   const { groups } = sourceGroups(ctx, allEvents);

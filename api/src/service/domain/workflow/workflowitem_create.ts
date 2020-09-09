@@ -123,6 +123,9 @@ export async function createWorkflowitem(
       workflowitemType: reqData.workflowitemType || "general",
     },
   );
+  if (Result.isErr(workflowitemCreated)) {
+    return new VError(workflowitemCreated, "failed to create workflowitem created event");
+  }
 
   // Check if workflowitemId already exists
   if (
@@ -185,6 +188,9 @@ export async function createWorkflowitem(
       workflowitemId,
       docToUpload,
     );
+    if (Result.isErr(workflowitemEvent)) {
+      return new VError(workflowitemEvent, "failed to create event");
+    }
 
     // Check that the event is valid:
     const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);

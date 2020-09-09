@@ -112,7 +112,7 @@ export async function closeWorkflowitem(
   }
 
   // Create notification events:
-  let notifications: NotificationCreated.Event[] = [];
+  let notifications: Result.Type<NotificationCreated.Event[]> = [];
   if (workflowitemToClose.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(workflowitemToClose.assignee);
     if (Result.isErr(recipientsResult)) {
@@ -121,20 +121,23 @@ export async function closeWorkflowitem(
     notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
       if (recipient !== closingUser.id) {
-        notifications.push(
-          NotificationCreated.createEvent(
-            ctx.source,
-            closingUser.id,
-            recipient,
-            closeEvent,
-            projectId,
-            subprojectId,
-            workflowitemId,
-          ),
+        const notification = NotificationCreated.createEvent(
+          ctx.source,
+          closingUser.id,
+          recipient,
+          closeEvent,
+          projectId,
         );
+        if (Result.isErr(notification)) {
+          return new VError(notification, "failed to create notification event");
+        }
+        notifications.push(notification);
       }
       return notifications;
     }, [] as NotificationCreated.Event[]);
+  }
+  if (Result.isErr(notifications)) {
+    return new VError(notifications, "failed to create notification events");
   }
 
   const workflowitemTypeEvents = repository.applyWorkflowitemType(closeEvent, workflowitemToClose);

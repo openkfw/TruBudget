@@ -43,7 +43,7 @@ export function createEvent(
   value: string,
   currencyCode: CurrencyCode,
   time: string = new Date().toISOString(),
-): Event {
+): Result.Type<Event> {
   const event = {
     type: eventType,
     source,
@@ -57,7 +57,7 @@ export function createEvent(
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
-    throw new VError(validationResult, `not a valid ${eventType} event`);
+    return new VError(validationResult, `not a valid ${eventType} event`);
   }
   return event;
 }

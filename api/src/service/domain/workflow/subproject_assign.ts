@@ -77,19 +77,22 @@ export async function assignSubproject(
   const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
     if (recipient !== issuer.id) {
-      notifications.push(
-        NotificationCreated.createEvent(
+      const notification = NotificationCreated.createEvent(
           ctx.source,
           issuer.id,
           recipient,
           subprojectAssigned,
           projectId,
-          subprojectId,
-        ),
-      );
+        );
+      if (Result.isErr(notification)) {
+          return new VError(notification, "failed to create notification event");
+        }
+      notifications.push(notification);
     }
     return notifications;
   }, [] as NotificationCreated.Event[]);
-
+  if (Result.isErr(notifications)) {
+    return new VError(notifications, "failed to create notification events");
+  }
   return { newEvents: [subprojectAssigned, ...notifications], subproject };
 }

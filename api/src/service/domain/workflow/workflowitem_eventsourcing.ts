@@ -131,6 +131,9 @@ export function newWorkflowitemFromEvent(
   event: BusinessEvent,
 ): Result.Type<Workflowitem.Workflowitem> {
   const eventModule = getEventModule(event);
+  if (Result.isErr(eventModule)) {
+    return eventModule;
+  }
 
   // Ensure that we never modify workflowitem or event in-place by passing copies. When
   // copying the workflowitem, its event log is omitted for performance reasons.
@@ -159,7 +162,7 @@ export function newWorkflowitemFromEvent(
 type EventModule = {
   mutate: (workflowitem: Workflowitem.Workflowitem, event: BusinessEvent) => Result.Type<void>;
 };
-function getEventModule(event: BusinessEvent): EventModule {
+function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
     case "workflowitem_updated":
       return WorkflowitemUpdated;
@@ -177,7 +180,7 @@ function getEventModule(event: BusinessEvent): EventModule {
       return WorkflowitemPermissionRevoked;
 
     default:
-      throw new VError(`unknown workflowitem event ${event.type}`);
+      return new VError(`unknown workflowitem event ${event.type}`);
   }
 }
 

@@ -1,5 +1,5 @@
 import isEqual = require("lodash.isequal");
-
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -40,6 +40,9 @@ export async function revokeProjectPermission(
     intent,
     revokee,
   );
+  if (Result.isErr(permissionRevoked)) {
+    return new VError(permissionRevoked, "failed to create permission revoked event");
+  }
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {

@@ -106,7 +106,7 @@ async function authenticateUser(
 
   // Check if user has user.authenticate intent
   if (!UserRecord.permits(userRecord, rootUser, ["user.authenticate"])) {
-    throw new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
+    return new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
   }
 
   // Every user has an address and an associated private key. Importing the private key

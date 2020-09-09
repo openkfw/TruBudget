@@ -32,7 +32,9 @@ export async function revokeGlobalPermission(
     intent,
     revokee,
   );
-
+  if (Result.isErr(globalPermissionRevoked)) {
+    return new VError(globalPermissionRevoked, "failed to create global permission revoked event");
+  }
   const revokeIntent = "global.revokePermission";
   const currentGlobalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(currentGlobalPermissionsResult)) {

@@ -1,5 +1,6 @@
 import isEqual = require("lodash.isequal");
 
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -48,6 +49,9 @@ export async function grantWorkflowitemPermission(
     intent,
     grantee,
   );
+  if (Result.isErr(permissionGranted)) {
+    return new VError(permissionGranted, "failed to create permission granted event");
+  }
 
   if (issuer.id !== "root") {
     const grantIntent = "workflowitem.intent.grantPermission";

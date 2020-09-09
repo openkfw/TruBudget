@@ -58,6 +58,9 @@ export async function disableUser(
   const userDisabled = UserDisabled.createEvent(source, publisher, {
     id: userToDisable,
   });
+  if (Result.isErr(userDisabled)) {
+    return new VError(userDisabled, "failed to create user disabled event");
+  }
 
   if (Result.isErr(validationResult)) {
     return new PreconditionError(ctx, userDisabled, validationResult.message);
