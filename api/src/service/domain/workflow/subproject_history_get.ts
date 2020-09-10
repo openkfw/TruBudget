@@ -3,17 +3,10 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
-import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
+import { Filter, filterTraceEvents } from "./historyFilter";
 import * as Subproject from "./subproject";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
-
-export interface Filter {
-  publisher?: Identity;
-  startAt?: string; // ISO timestamp
-  endAt?: string; // ISO timestamp
-  eventType?: string;
-}
 
 interface Repository {
   getSubproject(projectId, subprojectId): Promise<Result.Type<Subproject.Subproject>>;
@@ -24,8 +17,8 @@ export const getHistory = async (
   user: ServiceUser,
   projectId: string,
   subprojectId: string,
-  filter: Filter,
   repository: Repository,
+  filter?: Filter,
 ): Promise<Result.Type<SubprojectTraceEvent[]>> => {
   const subproject = await repository.getSubproject(projectId, subprojectId);
 
@@ -42,32 +35,8 @@ export const getHistory = async (
 
   let subprojectTraceEvents = subproject.log;
 
-  if (filter.publisher) {
-    // Publisher id must match exactly
-    subprojectTraceEvents = subprojectTraceEvents.filter(
-      (event) => event.businessEvent.publisher === filter.publisher,
-    );
-  }
-
-  if (filter.startAt !== undefined) {
-    const startAt = filter.startAt;
-    subprojectTraceEvents = subprojectTraceEvents.filter(
-      (event) => new Date(event.businessEvent.time) >= new Date(startAt),
-    );
-  }
-
-  if (filter.endAt) {
-    const endAt = filter.endAt;
-    subprojectTraceEvents = subprojectTraceEvents.filter(
-      (event) => new Date(event.businessEvent.time) <= new Date(endAt),
-    );
-  }
-
-  if (filter.eventType) {
-    // Event type must match exactly
-    subprojectTraceEvents = subprojectTraceEvents.filter(
-      (event) => event.businessEvent.type === filter.eventType,
-    );
+  if (filter) {
+    subprojectTraceEvents = filterTraceEvents(subprojectTraceEvents, filter);
   }
 
   return subprojectTraceEvents;

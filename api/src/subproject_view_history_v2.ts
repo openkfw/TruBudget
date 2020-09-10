@@ -1,4 +1,4 @@
-import { FastifyInstance, RequestGenericInterface } from "fastify";
+import { FastifyInstance, FastifyReply, RequestGenericInterface } from "fastify";
 import Joi = require("joi");
 import VError = require("verror");
 
@@ -11,9 +11,9 @@ import * as Result from "./result";
 import { businessEventSchema } from "./service/domain/business_event";
 import { Identity } from "./service/domain/organization/identity";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import * as History from "./service/domain/workflow/historyFilter";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import * as SubprojectHistory from "./service/domain/workflow/subproject_history_get";
 import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
 
 const requestBodySchema = Joi.array().items({
@@ -29,6 +29,78 @@ function validateRequestBody(body: any): Result.Type<SubprojectTraceEvent[]> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
 }
+
+/**
+ * If no filter option is provided the return value is undefined
+ */
+const createFilter = (
+  reply: FastifyReply,
+  publisher?: Identity,
+  startAt?: string,
+  endAt?: string,
+  eventType?: string,
+): History.Filter | undefined => {
+  const noFilterSet = !publisher && !startAt && !endAt && !eventType;
+  if (noFilterSet) return;
+
+  if (publisher !== undefined) {
+    if (!isNonemptyString(publisher)) {
+      reply.status(400).send({
+        apiVersion: "1.0",
+        error: {
+          code: 400,
+          message: "if present, the query parameter `publisher` must be non-empty string",
+        },
+      });
+    }
+  }
+
+  // ISO Timestamp example: 01.01.2020 or 2019-12-31T23:00:00.000Z
+  if (startAt !== undefined) {
+    const startAtDate = new Date(startAt);
+    if (isNaN(startAtDate.getTime())) {
+      reply.status(400).send({
+        apiVersion: "1.0",
+        error: {
+          code: 400,
+          message: "if present, the query parameter `startAt` must be a valid ISO timestamp",
+        },
+      });
+    }
+  }
+
+  if (endAt !== undefined) {
+    const endAtDate = new Date(endAt);
+    if (isNaN(endAtDate.getTime())) {
+      reply.status(400).send({
+        apiVersion: "1.0",
+        error: {
+          code: 400,
+          message: "if present, the query parameter `endAt` must be a valid ISO timestamp",
+        },
+      });
+    }
+  }
+
+  if (eventType !== undefined) {
+    if (!isNonemptyString(eventType)) {
+      reply.status(400).send({
+        apiVersion: "1.0",
+        error: {
+          code: 400,
+          message: "if present, the query parameter `eventType` must be non-empty string",
+        },
+      });
+    }
+  }
+  return {
+    publisher,
+    startAt,
+    endAt,
+    eventType,
+    // Make typescript happy - noFilterSet condition exists
+  } as History.Filter;
+};
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -126,7 +198,7 @@ interface Service {
     user: ServiceUser,
     projectId: Project.Id,
     subprojectId: Subproject.Id,
-    filter: SubprojectHistory.Filter,
+    filter?: History.Filter,
   ): Promise<Result.Type<SubprojectTraceEvent[]>>;
 }
 
@@ -180,7 +252,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
 
-      // Default: last create history event
+      // Default: last created history event
       let offset: number = 0;
       if (request.query.offset !== undefined) {
         offset = parseInt(request.query.offset, 10);
@@ -212,71 +284,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         }
       }
 
-      let publisher: Identity | undefined;
-      if (request.query.publisher !== undefined) {
-        publisher = request.query.publisher;
-        if (!isNonemptyString(publisher)) {
-          reply.status(400).send({
-            apiVersion: "1.0",
-            error: {
-              code: 400,
-              message: "if present, the query parameter `publisher` must be non-empty string",
-            },
-          });
-          return;
-        }
-      }
-
-      // ISO Timestamp example: 01.01.2020 or 2019-12-31T23:00:00.000Z
-      if (request.query.startAt !== undefined) {
-        const startAt = new Date(request.query.startAt);
-        if (isNaN(startAt.getTime())) {
-          reply.status(400).send({
-            apiVersion: "1.0",
-            error: {
-              code: 400,
-              message: "if present, the query parameter `startAt` must be a valid ISO timestamp",
-            },
-          });
-          return;
-        }
-      }
-
-      if (request.query.endAt !== undefined) {
-        const endAt = new Date(request.query.endAt);
-        if (isNaN(endAt.getTime())) {
-          reply.status(400).send({
-            apiVersion: "1.0",
-            error: {
-              code: 400,
-              message: "if present, the query parameter `endAt` must be a valid ISO timestamp",
-            },
-          });
-          return;
-        }
-      }
-
-      let eventType: string | undefined;
-      if (request.query.eventType !== undefined) {
-        eventType = request.query.eventType;
-        if (!isNonemptyString(eventType)) {
-          reply.status(400).send({
-            apiVersion: "1.0",
-            error: {
-              code: 400,
-              message: "if present, the query parameter `eventType` must be non-empty string",
-            },
-          });
-          return;
-        }
-      }
-
-      const filter: SubprojectHistory.Filter = {
-        publisher,
-        startAt: request.query.startAt,
-        endAt: request.query.endAt,
-        eventType,
-      };
+      const filter = createFilter(
+        reply,
+        request.query.publisher,
+        request.query.startAt,
+        request.query.endAt,
+        request.query.eventType,
+      );
 
       try {
         // Get all Events in subproject stream

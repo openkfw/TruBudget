@@ -3,17 +3,10 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
-import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
+import { Filter, filterTraceEvents } from "./historyFilter";
 import * as Workflowitem from "./workflowitem";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
-
-export interface Filter {
-  publisher?: Identity;
-  startAt?: string; // ISO timestamp
-  endAt?: string; // ISO timestamp
-  eventType?: string;
-}
 
 interface Repository {
   getWorkflowitem(
@@ -29,8 +22,8 @@ export const getHistory = async (
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
-  filter: Filter,
   repository: Repository,
+  filter?: Filter,
 ): Promise<Result.Type<WorkflowitemTraceEvent[]>> => {
   const workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
 
@@ -47,32 +40,8 @@ export const getHistory = async (
 
   let workflowitemTraceEvents = workflowitem.log;
 
-  if (filter.publisher) {
-    // Publisher id must match exactly
-    workflowitemTraceEvents = workflowitemTraceEvents.filter(
-      (event) => event.businessEvent.publisher === filter.publisher,
-    );
-  }
-
-  if (filter.startAt) {
-    const startAt = filter.startAt;
-    workflowitemTraceEvents = workflowitemTraceEvents.filter(
-      (event) => new Date(event.businessEvent.time) >= new Date(startAt),
-    );
-  }
-
-  if (filter.endAt) {
-    const endAt = filter.endAt;
-    workflowitemTraceEvents = workflowitemTraceEvents.filter(
-      (event) => new Date(event.businessEvent.time) <= new Date(endAt),
-    );
-  }
-
-  if (filter.eventType) {
-    // Event type must match exactly
-    workflowitemTraceEvents = workflowitemTraceEvents.filter(
-      (event) => event.businessEvent.type === filter.eventType,
-    );
+  if (filter) {
+    workflowitemTraceEvents = filterTraceEvents(workflowitemTraceEvents, filter);
   }
 
   return workflowitemTraceEvents;

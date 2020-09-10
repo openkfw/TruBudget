@@ -7,8 +7,9 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import { Filter } from "./historyFilter";
 import { Project } from "./project";
-import { Filter, getHistory } from "./project_history_get";
+import { getHistory } from "./project_history_get";
 import { ProjectTraceEvent } from "./project_trace_event";
 
 const ctx: Ctx = { requestId: "", source: "test" };
@@ -75,7 +76,7 @@ describe("get project history: authorization", () => {
       ...baseProject,
       permissions: {},
     };
-    const result = await getHistory(ctx, alice, projectId, filter, {
+    const result = await getHistory(ctx, alice, projectId, {
       ...baseRepository,
       getProject: async () => notPermittedProject,
     });
@@ -83,18 +84,18 @@ describe("get project history: authorization", () => {
   });
 
   it("With the required permissions, a user can get a project's history.", async () => {
-    const result = await getHistory(ctx, alice, projectId, filter, baseRepository);
+    const result = await getHistory(ctx, alice, projectId, baseRepository);
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
   it("The root user doesn't need permission to get a project's history.", async () => {
-    const result = await getHistory(ctx, alice, projectId, filter, baseRepository);
+    const result = await getHistory(ctx, alice, projectId, baseRepository);
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 });
 describe("get project history: preconditions", () => {
   it("Getting a project's history fails if the project cannot be found", async () => {
-    const result = await getHistory(ctx, alice, projectId, filter, {
+    const result = await getHistory(ctx, alice, projectId, {
       ...baseRepository,
       getProject: async () => new Error("some error"),
     });
@@ -103,7 +104,7 @@ describe("get project history: preconditions", () => {
   });
 
   it("the properties of the filter must match the resulted properties exactly", async () => {
-    const result = await getHistory(ctx, root, projectId, filter, baseRepository);
+    const result = await getHistory(ctx, root, projectId, baseRepository, filter);
     assert.equal(result[0].businessEvent.publisher, alice.id);
     assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);
     assert.isTrue(filter.endAt && result[0].businessEvent.time <= filter.endAt);
@@ -115,7 +116,7 @@ describe("get project history: preconditions", () => {
       ...filter,
       publisher: root.id,
     };
-    const result = await getHistory(ctx, root, projectId, editedFilter, baseRepository);
+    const result = await getHistory(ctx, root, projectId, baseRepository, editedFilter);
     assert.isTrue(Result.isOk(result), (result as Error).message);
     assert.isEmpty(result);
   });
@@ -136,9 +137,15 @@ describe("get project history: preconditions", () => {
       log: [event, newEvent],
     };
 
-    const result = await getHistory(ctx, root, projectId, filter, {
-      getProject: async () => updatedProject,
-    });
+    const result = await getHistory(
+      ctx,
+      root,
+      projectId,
+      {
+        getProject: async () => updatedProject,
+      },
+      filter,
+    );
     assert.equal(Result.unwrap(result).length, 1);
     assert.equal(result[0].businessEvent.publisher, alice.id);
     assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);

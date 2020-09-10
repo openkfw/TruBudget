@@ -7,8 +7,9 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import { Filter } from "./historyFilter";
 import { Workflowitem } from "./workflowitem";
-import { Filter, getHistory } from "./workflowitem_history_get";
+import { getHistory } from "./workflowitem_history_get";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 
 const ctx: Ctx = { requestId: "", source: "test" };
@@ -87,7 +88,7 @@ describe("get worklfowitem history: authorization", () => {
       ...baseWorkflowitem,
       permissions: {},
     };
-    const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, filter, {
+    const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, {
       ...baseRepository,
       getWorkflowitem: async () => notPermittedWorkflowitem,
     });
@@ -101,7 +102,6 @@ describe("get worklfowitem history: authorization", () => {
       projectId,
       subprojectId,
       workflowitemId,
-      filter,
       baseRepository,
     );
     assert.isTrue(Result.isOk(result), (result as Error).message);
@@ -114,7 +114,6 @@ describe("get worklfowitem history: authorization", () => {
       projectId,
       subprojectId,
       workflowitemId,
-      filter,
       baseRepository,
     );
     assert.isTrue(Result.isOk(result), (result as Error).message);
@@ -122,7 +121,7 @@ describe("get worklfowitem history: authorization", () => {
 });
 describe("get workflowitem history: preconditions", () => {
   it("Getting a workflowitem's history fails if the workflowitem cannot be found", async () => {
-    const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, filter, {
+    const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, {
       ...baseRepository,
       getWorkflowitem: async () => new Error("some error"),
     });
@@ -137,8 +136,8 @@ describe("get workflowitem history: preconditions", () => {
       projectId,
       subprojectId,
       workflowitemId,
-      filter,
       baseRepository,
+      filter,
     );
     assert.equal(result[0].businessEvent.publisher, alice.id);
     assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);
@@ -157,8 +156,8 @@ describe("get workflowitem history: preconditions", () => {
       projectId,
       subprojectId,
       workflowitemId,
-      editedFilter,
       baseRepository,
+      editedFilter,
     );
     assert.isTrue(Result.isOk(result), (result as Error).message);
     assert.isEmpty(result);
@@ -182,9 +181,17 @@ describe("get workflowitem history: preconditions", () => {
       log: [event, newEvent],
     };
 
-    const result = await getHistory(ctx, root, projectId, subprojectId, workflowitemId, filter, {
-      getWorkflowitem: async () => updatedWorkflowitem,
-    });
+    const result = await getHistory(
+      ctx,
+      root,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      {
+        getWorkflowitem: async () => updatedWorkflowitem,
+      },
+      filter,
+    );
     assert.equal(Result.unwrap(result).length, 1);
     assert.equal(result[0].businessEvent.publisher, alice.id);
     assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);

@@ -156,7 +156,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
 
-      // Default: last create history event
+      // Default: last created history event
       let offset: number = 0;
       if (request.query.offset !== undefined) {
         offset = parseInt(request.query.offset, 10);

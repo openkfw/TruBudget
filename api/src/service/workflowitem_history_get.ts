@@ -5,6 +5,7 @@ import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
+import * as History from "./domain/workflow/historyFilter";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
@@ -18,7 +19,7 @@ export async function getWorkflowitemHistory(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
-  filter: WorkflowitemHistory.Filter,
+  filter?: History.Filter,
 ): Promise<Result.Type<WorkflowitemTraceEvent[]>> {
   const workflowitemHistoryResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemHistory.getHistory(
@@ -27,12 +28,12 @@ export async function getWorkflowitemHistory(
       projectId,
       subprojectId,
       workflowitemId,
-      filter,
       {
         getWorkflowitem: async (projectId, subprojectId, workflowitemId) => {
           return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
         },
       },
+      filter,
     ),
   );
   return Result.mapErr(
