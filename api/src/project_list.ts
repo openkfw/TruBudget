@@ -1,10 +1,11 @@
 import { FastifyInstance } from "fastify";
 import { VError } from "verror";
+
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import * as Result from "./result";
@@ -14,7 +15,7 @@ import { ProjectTraceEvent } from "./service/domain/workflow/project_trace_event
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description: "Retrieve all projects the user is allowed to see.",
       tags: ["project"],
@@ -153,7 +154,6 @@ interface Service {
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
   server.get(`${urlPrefix}/project.list`, mkSwaggerSchema(server), (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
-
     const user: ServiceUser = {
       id: (request as AuthenticatedRequest).user.userId,
       groups: (request as AuthenticatedRequest).user.groups,

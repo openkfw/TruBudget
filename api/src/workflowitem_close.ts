@@ -40,7 +40,7 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description:
         "Set a workflowitem's status to 'closed' if, and only if, it is the next item to be closed ",

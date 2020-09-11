@@ -51,7 +51,7 @@ interface LoginResponse {
 }
 
 const swaggerSchema = {
-  beforeHandler: [],
+  preValidation: [],
   schema: {
     description:
       "Authenticate and retrieve a token in return. This token can then be supplied in the " +

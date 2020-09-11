@@ -35,7 +35,7 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description:
         "Assign a project to a given user. The assigned user will be notified about the change.",

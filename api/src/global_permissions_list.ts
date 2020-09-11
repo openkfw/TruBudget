@@ -10,7 +10,7 @@ import { VError } from "verror";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description: "See the current global permissions.",
       tags: ["global"],

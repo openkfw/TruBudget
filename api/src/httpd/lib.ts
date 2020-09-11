@@ -1,9 +1,9 @@
-import * as fastify from "fastify";
-import * as http from "http";
+import { FastifyRequest } from "fastify";
+
 import { AuthToken } from "../authz/token";
 import logger from "../lib/logger";
 
-export interface AuthenticatedRequest extends fastify.FastifyRequest<http.IncomingMessage> {
+export interface AuthenticatedRequest extends FastifyRequest {
   user: AuthToken;
 }
 export interface SuccessResponse {

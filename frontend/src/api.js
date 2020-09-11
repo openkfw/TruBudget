@@ -364,7 +364,11 @@ class Api {
     });
 
   fetchNotifications = (offset, limit) => {
-    return instance.get(`/notification.list?offset=${offset}&limit=${limit}`);
+    let url = `/notification.list?offset=${offset}`;
+    if (!_isEmpty(limit)) {
+      url = url + `limit=${limit}`;
+    }
+    return instance.get(url);
   };
 
   fetchNotificationCounts = () => {

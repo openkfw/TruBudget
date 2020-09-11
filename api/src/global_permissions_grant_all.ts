@@ -39,7 +39,7 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description:
         "Grant all available permissions to a user. Useful as a shorthand for creating admin users.",

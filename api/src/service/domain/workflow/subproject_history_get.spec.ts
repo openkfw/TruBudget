@@ -7,8 +7,9 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import { Filter } from "./historyFilter";
 import { Subproject } from "./subproject";
-import { Filter, getHistory } from "./subproject_history_get";
+import { getHistory } from "./subproject_history_get";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 
 const ctx: Ctx = { requestId: "", source: "test" };
@@ -81,7 +82,7 @@ describe("get subproject history: authorization", () => {
       ...baseSubproject,
       permissions: {},
     };
-    const result = await getHistory(ctx, alice, projectId, subprojectId, filter, {
+    const result = await getHistory(ctx, alice, projectId, subprojectId, {
       ...baseRepository,
       getSubproject: async () => notPermittedSubproject,
     });
@@ -89,19 +90,19 @@ describe("get subproject history: authorization", () => {
   });
 
   it("With the required permissions, a user can get a subproject's history.", async () => {
-    const result = await getHistory(ctx, alice, projectId, subprojectId, filter, baseRepository);
+    const result = await getHistory(ctx, alice, projectId, subprojectId, baseRepository);
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
   it("The root user doesn't need permission to get a subproject's history.", async () => {
-    const result = await getHistory(ctx, alice, projectId, subprojectId, filter, baseRepository);
+    const result = await getHistory(ctx, alice, projectId, subprojectId, baseRepository);
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 });
 
 describe("get subproject history: preconditions", () => {
   it("Getting a subproject's history fails if the subproject cannot be found", async () => {
-    const result = await getHistory(ctx, alice, projectId, subprojectId, filter, {
+    const result = await getHistory(ctx, alice, projectId, subprojectId, {
       ...baseRepository,
       getSubproject: async () => new Error("some error"),
     });
@@ -110,10 +111,10 @@ describe("get subproject history: preconditions", () => {
   });
 
   it("the properties of the filter must match the resulted properties exactly", async () => {
-    const result = await getHistory(ctx, root, projectId, subprojectId, filter, baseRepository);
+    const result = await getHistory(ctx, root, projectId, subprojectId, baseRepository, filter);
     assert.equal(result[0].businessEvent.publisher, alice.id);
-    assert.isTrue(result[0].businessEvent.time >= filter.startAt);
-    assert.isTrue(result[0].businessEvent.time <= filter.endAt);
+    assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);
+    assert.isTrue(filter.endAt && result[0].businessEvent.time <= filter.endAt);
     assert.equal(result[0].businessEvent.type, filter.eventType);
   });
 
@@ -127,8 +128,8 @@ describe("get subproject history: preconditions", () => {
       root,
       projectId,
       subprojectId,
-      editedFilter,
       baseRepository,
+      editedFilter,
     );
     assert.isTrue(Result.isOk(result), (result as Error).message);
     assert.isEmpty(result);
@@ -151,13 +152,20 @@ describe("get subproject history: preconditions", () => {
       log: [event, newEvent],
     };
 
-    const result = await getHistory(ctx, root, projectId, subprojectId, filter, {
-      getSubproject: async () => updatedSubproject,
-    });
+    const result = await getHistory(
+      ctx,
+      root,
+      projectId,
+      subprojectId,
+      {
+        getSubproject: async () => updatedSubproject,
+      },
+      filter,
+    );
     assert.equal(Result.unwrap(result).length, 1);
     assert.equal(result[0].businessEvent.publisher, alice.id);
-    assert.isTrue(result[0].businessEvent.time >= filter.startAt);
-    assert.isTrue(result[0].businessEvent.time <= filter.endAt);
+    assert.isTrue(filter.startAt && result[0].businessEvent.time >= filter.startAt);
+    assert.isTrue(filter.endAt && result[0].businessEvent.time <= filter.endAt);
     assert.equal(result[0].businessEvent.type, filter.eventType);
   });
 });

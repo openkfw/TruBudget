@@ -1,8 +1,8 @@
-import * as fastify from "fastify";
+import { FastifySchema } from "fastify";
 
 import { projectIntents } from "../authz/intents";
 
-export interface SwaggerSchema extends fastify.RouteSchema {
+export interface SwaggerSchema extends FastifySchema {
   description: string;
   tags: string[];
   summary: string;
@@ -2290,7 +2290,7 @@ const schemas = {
                           billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
                           exchangeRate: { type: "string", example: "1.0" },
-                          workflowitemType: { type: "string", example: "general"},
+                          workflowitemType: { type: "string", example: "general" },
                           documents: {
                             type: "array",
                             items: {
@@ -3292,7 +3292,7 @@ export function getSchema(server, id): Schema {
   const schema = schemas[id];
   return {
     // @ts-ignore: Unreachable code error
-    beforeHandler: [server.authenticate],
+    preValidation: [server.authenticate],
     ...schema,
   };
 }

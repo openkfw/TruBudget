@@ -12,7 +12,7 @@ import { Permissions } from "./service/domain/permissions";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description:
         "List all registered users and groups.\n" +
