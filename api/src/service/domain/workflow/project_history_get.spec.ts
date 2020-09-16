@@ -28,6 +28,7 @@ const filter: Filter = {
 
 const permissions: Permissions = {
   "project.viewDetails": ["alice"],
+  "project.viewHistory": ["alice"],
 };
 
 const event: ProjectTraceEvent = {

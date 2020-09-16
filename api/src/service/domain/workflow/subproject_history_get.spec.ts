@@ -29,6 +29,7 @@ const filter: Filter = {
 
 const permissions: Permissions = {
   "subproject.viewDetails": ["alice"],
+  "subproject.viewHistory": ["alice"],
 };
 
 const event: SubprojectTraceEvent = {

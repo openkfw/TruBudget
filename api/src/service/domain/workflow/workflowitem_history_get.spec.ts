@@ -29,6 +29,7 @@ const filter: Filter = {
 
 const permissions: Permissions = {
   "workflowitem.view": ["alice"],
+  "workflowitem.viewHistory": ["alice"],
 };
 
 const event: WorkflowitemTraceEvent = {
