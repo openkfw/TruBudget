@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ## Unreleased -->
 
-<!-- ### Added -->
+### Added
+
+- Added confirmation dialog for disabling and enabling users [#537](https://github.com/openkfw/TruBudget/pull/537)
+- Added table of user assignments for disable users dialog [#537](https://github.com/openkfw/TruBudget/pull/537)
 
 <!-- ### Changed -->
 
@@ -15,7 +18,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Fixed the global permission list to set permissions to disable or enable users [#537](https://github.com/openkfw/TruBudget/pull/537)
 
 <!-- ### Security -->
 

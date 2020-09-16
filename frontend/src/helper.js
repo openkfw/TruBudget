@@ -174,3 +174,18 @@ export const convertToURLQuery = searchBarString => {
 export const convertToSearchBarString = urlQueryString => {
   return urlQueryString.replace(/[=]/g, ":").replace(/[&]/g, " ");
 };
+
+export function hasUserAssignments(assignments) {
+  const hasHiddenAssignments =
+    assignments.hiddenAssignments !== undefined &&
+    (assignments.hiddenAssignments.hasHiddenProjects === true ||
+      assignments.hiddenAssignments.hasHiddenSubprojects === true ||
+      assignments.hiddenAssignments.hasHiddenWorkflowitems === true);
+
+  return (
+    !_isEmpty(assignments.projects) ||
+    !_isEmpty(assignments.subprojects) ||
+    !_isEmpty(assignments.workflowitems) ||
+    hasHiddenAssignments
+  );
+}

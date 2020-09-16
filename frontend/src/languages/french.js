@@ -109,7 +109,8 @@ const fr = {
     dueDate: "Date d'échéance",
     dueDate_exceeded: "Date d'échéance dépassée",
     login_disabled: "L'identification de connexion est désactivée",
-    login_data_error: "Le champ ID de connexion ou mot de passe ne peut pas être vide"
+    login_data_error: "Le champ ID de connexion ou mot de passe ne peut pas être vide",
+    refresh_assignments: "Actualiser les affectations"
   },
 
   login: {
@@ -257,9 +258,20 @@ const fr = {
     users: "Utilisateurs",
     disabled_users: "Utilisateurs désactivés",
     disable_user: "Désactiver l'utilisateur",
+    disable_userId: "Désactiver l'utilisateur {0}",
     disable_user_successfull: "L'utilisateur suivant a été désactivé: ",
     enable_user: "Restaurer l'utilisateur",
-    enable_user_successfull: "L'utilisateur suivant a été activé: "
+    enable_userId: "Restaurer l'utilisateur {0}",
+    enable_userId_confirm: "Voulez-vous vraiment activer l'utilisateur {0}?",
+    enable_user_successfull: "L'utilisateur suivant a été activé: ",
+    no_assignments: "Aucune affectation",
+    assigned_projects: "Projets affectés",
+    assigned_subprojects: "Sous-projets affectés",
+    assigned_workflowitems: "Éléments de flux de travail affectés",
+    assigned_message: "Avant de désactiver, cet utilisateur doit être désassigné sur les éléments suivants",
+    not_assigned_message:
+      "Cet utilisateur n'est affecté à aucun projet, sous-projet et élément de workflow et peut être désactivé",
+    hidden_assignments: "Encore expurgé {0}"
   },
 
   nodesDashboard: {
@@ -489,6 +501,8 @@ const fr = {
     global_createGroup: "Créer des groupes",
     global_createProject: "Créer des projets",
     global_createUser: "Créer des utilisateurs",
+    global_disableUser: "Désactiver les utilisateurs",
+    global_enableUser: "Activer les utilisateurs",
     global_grantPermission: "Attribuer des autorisations globales à autres",
     global_listPermissions: "Afficher toutes les autorisations globales",
     global_revokePermission: "Révoquer des autorisations globales à autres",

@@ -21,7 +21,8 @@ export async function disableUser(
     UserDisable.disableUser(ctx, issuer, issuerOrganization, revokee, {
       getUser: () => UserQuery.getUser(conn, ctx, issuer, revokee.userId),
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, issuer),
-      getUserAssignments: async () => getUserAssignments(conn, ctx, revokee),
+      getUserAssignments: async () =>
+        getUserAssignments(conn, ctx, issuer, issuerOrganization, revokee),
     }),
   );
   if (Result.isErr(newEventsResult)) return new VError(newEventsResult, "failed to disable user");

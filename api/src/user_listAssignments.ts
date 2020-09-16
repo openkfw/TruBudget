@@ -1,22 +1,22 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { Permissions } from "./service/domain/permissions";
+import { UserAssignments } from "./service/domain/workflow/user_assignments";
+import { RequestData } from "./service/domain/workflow/user_assignments_get";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
     preValidation: [(server as any).authenticate],
     schema: {
-      description: "See the permissions for a given user.",
+      description: "See the assignments for a given user.",
       tags: ["user"],
-      summary: "List all permissions",
+      summary: "List all assignments",
       querystring: {
         type: "object",
         properties: {
@@ -39,9 +39,9 @@ function mkSwaggerSchema(server: FastifyInstance) {
             data: {
               type: "object",
               additionalProperties: true,
-              example: {
-                "user.changePassword": ["aSmith", "jDoe"],
-              },
+              projects: [],
+              subprojects: [],
+              workflowitem: [],
             },
           },
         },
@@ -52,11 +52,12 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  getUserPermissions(
+  getUserAssignments(
     ctx: Ctx,
-    user: ServiceUser,
-    userId: string,
-  ): Promise<Result.Type<Permissions>>;
+    issuer: ServiceUser,
+    issuerOrganization: string,
+    requestData: RequestData,
+  ): Promise<Result.Type<UserAssignments>>;
 }
 
 interface Request extends RequestGenericInterface {
@@ -67,18 +68,19 @@ interface Request extends RequestGenericInterface {
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
   server.get<Request>(
-    `${urlPrefix}/user.intent.listPermissions`,
+    `${urlPrefix}/global.listAssignments`,
     mkSwaggerSchema(server),
     async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
-
-      const user: ServiceUser = {
+      const issuer: ServiceUser = {
         id: (request as AuthenticatedRequest).user.userId,
         groups: (request as AuthenticatedRequest).user.groups,
       };
 
-      const userId = request.query.userId;
-      if (!isNonemptyString(userId)) {
+      const requestData: RequestData = { userId: request.query.userId };
+      const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
+
+      if (!isNonemptyString(requestData.userId)) {
         reply.status(404).send({
           apiVersion: "1.0",
           error: {
@@ -90,16 +92,20 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
 
       try {
-        const userPermissionsResult = await service.getUserPermissions(ctx, user, userId);
-
-        if (Result.isErr(userPermissionsResult)) {
-          throw new VError(userPermissionsResult, "user.intent.listPermission failed");
+        const userAssignmentsResult = await service.getUserAssignments(
+          ctx,
+          issuer,
+          issuerOrganization,
+          requestData,
+        );
+        if (Result.isErr(userAssignmentsResult)) {
+          throw new VError(userAssignmentsResult, "global.listAssignments failed");
         }
-        const userPermissions = userPermissionsResult;
+        const userAssignments = userAssignmentsResult;
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: userPermissions,
+          data: userAssignments,
         };
         reply.status(code).send(body);
       } catch (err) {

@@ -21,7 +21,7 @@ class LiveNotificationContainer extends Component {
     return this.props.isLiveUpdatesEnabled ? (
       <div>
         <LiveUpdates update={() => this.fetch()} interval={15000} />
-        <LiveNotification {...this.props} />;
+        <LiveNotification {...this.props} />
       </div>
     ) : null;
   }

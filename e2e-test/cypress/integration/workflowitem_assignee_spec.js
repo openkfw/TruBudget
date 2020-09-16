@@ -112,7 +112,7 @@ describe("Workflowitem Assignee", function() {
   function setupConfirmationDialog() {
     cy.get(`[data-test=workflowitem-assignee-${workflowitemId}]`).click();
     cy.get("[data-test=assignee-list]")
-      .should("be.visible")
+      .should("exist")
       .then($list => {
         const firstUncheckedRadioButton = $list.find("input:not(:checked)").first();
         cy.wrap($list.find("input:not(:checked)").first()).as("firstUncheckedRadioButton");
@@ -256,7 +256,7 @@ describe("Workflowitem Assignee", function() {
       executingUser
     );
 
-    // Open dialog
+    // Open the dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
         .should("not.be.checked")

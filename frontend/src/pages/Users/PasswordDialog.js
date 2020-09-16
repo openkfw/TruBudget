@@ -18,7 +18,11 @@ const styles = {
   paperRoot: {
     width: "100%",
     overflow: "scrollable"
-  }
+  },
+  container: {},
+  customWidth: {},
+  createButtonContainer: {},
+  createButton: {}
 };
 
 const validate = newPassword => {
@@ -94,20 +98,17 @@ const PasswordDialog = props => {
     }
   };
 
-  useEffect(
-    () => {
-      return () => {
-        // Clean the state
-        setUserPassword("");
-        setNewPassword("");
-        setNewPasswordConfirmation("");
-        setNewPasswordsMatch(true);
-        setPasswordInvalid(false);
-        setFieldType("password");
-      };
-    },
-    [passwordDialogShown]
-  );
+  useEffect(() => {
+    return () => {
+      // Clean the state
+      setUserPassword("");
+      setNewPassword("");
+      setNewPasswordConfirmation("");
+      setNewPasswordsMatch(true);
+      setPasswordInvalid(false);
+      setFieldType("password");
+    };
+  }, [passwordDialogShown]);
 
   const failedText = getFailedText(newPasswordsMatch, passwordInvalid);
   const newPasswordFailed = !newPasswordsMatch || passwordInvalid;
