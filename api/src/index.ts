@@ -72,6 +72,7 @@ import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
 import * as UserEnableService from "./service/user_enable";
 import * as UserDisableService from "./service/user_disable";
+import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserPasswordChangeService from "./service/user_password_change";
 import * as UserPermissionGrantService from "./service/user_permission_grant";
 import * as UserPermissionRevokeService from "./service/user_permission_revoke";
@@ -106,6 +107,7 @@ import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserEnableAPI from "./user_enable";
 import * as UserDisableAPI from "./user_disable";
+import * as UserAssignmentsAPI from "./user_listAssignments";
 import * as UserListAPI from "./user_list";
 import * as UserPasswordChangeAPI from "./user_password_change";
 import * as UserPermissionGrantAPI from "./user_permission_grant";
@@ -308,6 +310,11 @@ UserEnableAPI.addHttpHandler(server, URL_PREFIX, {
 UserDisableAPI.addHttpHandler(server, URL_PREFIX, {
   disableUser: (ctx, issuer, orga, reqData) =>
     UserDisableService.disableUser(db, ctx, issuer, orga, reqData),
+});
+
+UserAssignmentsAPI.addHttpHandler(server, URL_PREFIX, {
+  getUserAssignments: (ctx, issuer, orga, reqData) =>
+    UserAssignmentsService.getUserAssignments(db, ctx, issuer, orga, reqData),
 });
 
 UserListAPI.addHttpHandler(server, URL_PREFIX, {
