@@ -109,7 +109,8 @@ const pt = {
     dueDate: "Data de vencimento",
     dueDate_exceeded: "Data de vencimento excedida",
     login_disabled: "O ID de login está desativado",
-    login_data_error: "O campo de identidade ou senha de login não pode estar vazio"
+    login_data_error: "O campo de identidade ou senha de login não pode estar vazio",
+    refresh_assignments: "Atualizar atribuições"
   },
 
   users: {
@@ -142,9 +143,20 @@ const pt = {
     users: "Usuários",
     disabled_users: "Utilizadores desactivados",
     disable_user: "Desactivar utilizador",
+    disable_userId: "Desativar usuário {0}",
     disable_user_successfull: "O seguinte utilizador foi desactivado: ",
     enable_user: "Restaurar utilizador",
-    enable_user_successfull: "O seguinte utilizador foi activado: "
+    enable_userId: "Restaurar usuário {0}",
+    enable_userId_confirm: "Você realmente deseja habilitar o usuário {0}?",
+    enable_user_successfull: "O seguinte utilizador foi activado: ",
+    no_assignments: "Sem atribuições",
+    assigned_projects: "Projetos atribuídos",
+    assigned_subprojects: "Assigned subprojects",
+    assigned_workflowitems: "Assigned workflowitems",
+    assigned_message: "Antes de desabilitar, este usuário deve ser desatribuído nos seguintes elementos",
+    not_assigned_message:
+      "Este usuário não está atribuído a nenhum projeto, subprojeto e item de fluxo de trabalho e pode ser desativado",
+    hidden_assignments: "Mais redigido {0}"
   },
 
   userProfile: {
@@ -488,6 +500,8 @@ const pt = {
     global_createGroup: "Criar grupos",
     global_createProject: "Criar projetos",
     global_createUser: "Criar usuários",
+    global_disableUser: "Desativar usuários",
+    global_enableUser: "Habilitar usuários",
     global_grantPermission: "Conceder permissões globais para outros",
     global_listPermissions: "Listar todas as permissões globais",
     global_revokePermission: "Revogar permissões globais para outros",

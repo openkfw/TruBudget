@@ -97,14 +97,18 @@ import {
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
   GRANT_PROJECT_PERMISSION,
   GRANT_PROJECT_PERMISSION_SUCCESS,
+  GRANT_PROJECT_PERMISSION_FAILURE,
   REVOKE_PROJECT_PERMISSION,
-  REVOKE_PROJECT_PERMISSION_SUCCESS
+  REVOKE_PROJECT_PERMISSION_SUCCESS,
+  REVOKE_PROJECT_PERMISSION_FAILURE
 } from "./pages/Overview/actions";
 import {
   ASSIGN_PROJECT,
   ASSIGN_PROJECT_SUCCESS,
+  ASSIGN_PROJECT_FAILURE,
   CLOSE_PROJECT,
   CLOSE_PROJECT_SUCCESS,
+  CLOSE_PROJECT_FAILURE,
   CREATE_SUBPROJECT,
   CREATE_SUBPROJECT_SUCCESS,
   EDIT_SUBPROJECT,
@@ -120,9 +124,11 @@ import {
   FETCH_SUBPROJECT_PERMISSIONS_SUCCESS,
   GRANT_SUBPROJECT_PERMISSION,
   GRANT_SUBPROJECT_PERMISSION_SUCCESS,
+  GRANT_SUBPROJECT_PERMISSION_FAILURE,
   LIVE_UPDATE_PROJECT,
   REVOKE_SUBPROJECT_PERMISSION,
   REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
+  REVOKE_SUBPROJECT_PERMISSION_FAILURE,
   SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT
 } from "./pages/SubProjects/actions";
 import {
@@ -150,18 +156,26 @@ import {
   REVOKE_GLOBAL_PERMISSION_SUCCESS,
   ENABLE_USER,
   ENABLE_USER_SUCCESS,
+  ENABLE_USER_FAILURE,
   DISABLE_USER,
-  DISABLE_USER_SUCCESS
+  DISABLE_USER_SUCCESS,
+  DISABLE_USER_FAILURE,
+  FETCH_USER_ASSIGNMENTS,
+  FETCH_USER_ASSIGNMENTS_SUCCESS
 } from "./pages/Users/actions.js";
 import {
   ASSIGN_SUBPROJECT,
   ASSIGN_SUBPROJECT_SUCCESS,
+  ASSIGN_SUBPROJECT_FAILURE,
   ASSIGN_WORKFLOWITEM,
   ASSIGN_WORKFLOWITEM_SUCCESS,
+  ASSIGN_WORKFLOWITEM_FAILURE,
   CLOSE_SUBPROJECT,
   CLOSE_SUBPROJECT_SUCCESS,
+  CLOSE_SUBPROJECT_FAILURE,
   CLOSE_WORKFLOWITEM,
   CLOSE_WORKFLOWITEM_SUCCESS,
+  CLOSE_WORKFLOWITEM_FAILURE,
   CREATE_WORKFLOW,
   CREATE_WORKFLOW_SUCCESS,
   EDIT_WORKFLOW_ITEM,
@@ -177,12 +191,14 @@ import {
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+  GRANT_WORKFLOWITEM_PERMISSION_FAILURE,
   HIDE_WORKFLOW_DETAILS,
   LIVE_UPDATE_SUBPROJECT,
   REORDER_WORKFLOW_ITEMS,
   REORDER_WORKFLOW_ITEMS_SUCCESS,
   REVOKE_WORKFLOWITEM_PERMISSION,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
+  REVOKE_WORKFLOWITEM_PERMISSION_FAILURE,
   SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
   SHOW_WORKFLOW_PREVIEW,
   STORE_WORKFLOWACTIONS,
@@ -919,6 +935,16 @@ export function* fetchUserSaga({ showLoading }) {
   }, showLoading);
 }
 
+export function* fetchUserAssignmentsSaga({ userId }) {
+  yield execute(function*() {
+    const { data } = yield callApi(api.listUserAssignments, userId);
+    yield put({
+      type: FETCH_USER_ASSIGNMENTS_SUCCESS,
+      userAssignments: data
+    });
+  }, true);
+}
+
 export function* fetchGroupSaga({ showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listGroup);
@@ -994,7 +1020,26 @@ export function* checkAndChangeUserPasswordSaga({ username, actingUser, currentP
 
 export function* enableUserSaga({ userId }) {
   yield execute(function*() {
-    yield callApi(api.enableUser, userId);
+    const confirmed = yield select(getConfirmedState);
+    if (!confirmed) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "global.enableUser",
+        payload: { userId }
+      });
+      yield cancel();
+    }
+
+    try {
+      yield callApi(api.enableUser, userId);
+    } catch (error) {
+      yield put({
+        type: ENABLE_USER_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+
     yield put({
       type: ENABLE_USER_SUCCESS
     });
@@ -1016,7 +1061,26 @@ export function* enableUserSaga({ userId }) {
 }
 export function* disableUserSaga({ userId }) {
   yield execute(function*() {
-    yield callApi(api.disableUser, userId);
+    const confirmed = yield select(getConfirmedState);
+    if (!confirmed) {
+      yield put({
+        type: CONFIRMATION_REQUIRED,
+        intent: "global.disableUser",
+        payload: { userId }
+      });
+      yield cancel();
+    }
+
+    try {
+      yield callApi(api.disableUser, userId);
+    } catch (error) {
+      yield put({
+        type: DISABLE_USER_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+
     yield put({
       type: DISABLE_USER_SUCCESS
     });
@@ -1447,7 +1511,16 @@ export function* grantProjectPermissionsSaga({
       });
       yield cancel();
     }
-    yield callApi(api.grantProjectPermissions, projectId, intent, granteeId);
+
+    try {
+      yield callApi(api.grantProjectPermissions, projectId, intent, granteeId);
+    } catch (error) {
+      yield put({
+        type: GRANT_PROJECT_PERMISSION_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
 
     yield put({
       type: GRANT_PROJECT_PERMISSION_SUCCESS,
@@ -1486,8 +1559,16 @@ export function* revokeProjectPermissionsSaga({
       });
       yield cancel();
     }
-    yield callApi(api.revokeProjectPermissions, projectId, intent, revokeeId);
 
+    try {
+      yield callApi(api.revokeProjectPermissions, projectId, intent, revokeeId);
+    } catch (error) {
+      yield put({
+        type: REVOKE_PROJECT_PERMISSION_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
     yield put({
       type: REVOKE_PROJECT_PERMISSION_SUCCESS,
       id: projectId,
@@ -1528,7 +1609,16 @@ export function* grantSubProjectPermissionsSaga({
       });
       yield cancel();
     }
-    yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, granteeId);
+
+    try {
+      yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, intent, granteeId);
+    } catch (error) {
+      yield put({
+        type: GRANT_SUBPROJECT_PERMISSION_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
 
     yield put({
       type: GRANT_SUBPROJECT_PERMISSION_SUCCESS,
@@ -1572,7 +1662,16 @@ export function* revokeSubProjectPermissionsSaga({
       });
       yield cancel();
     }
-    yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, revokeeId);
+
+    try {
+      yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, intent, revokeeId);
+    } catch (error) {
+      yield put({
+        type: REVOKE_SUBPROJECT_PERMISSION_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
 
     yield put({
       type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
@@ -1619,7 +1718,17 @@ export function* grantWorkflowItemPermissionsSaga({
       });
       yield cancel();
     }
-    yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, granteeId);
+
+    try {
+      yield callApi(api.grantWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, granteeId);
+    } catch (error) {
+      yield put({
+        type: GRANT_WORKFLOWITEM_PERMISSION_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+
     yield put({
       type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
       id: workflowitemId,
@@ -1666,7 +1775,16 @@ export function* revokeWorkflowItemPermissionsSaga({
       });
       yield cancel();
     }
-    yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, revokeeId);
+
+    try {
+      yield callApi(api.revokeWorkflowItemPermissions, projectId, subprojectId, workflowitemId, intent, revokeeId);
+    } catch (error) {
+      yield put({
+        type: REVOKE_WORKFLOWITEM_PERMISSION_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
 
     yield put({
       type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
@@ -1700,7 +1818,16 @@ export function* closeProjectSaga({ projectId, showLoading }) {
       yield cancel();
     }
 
-    yield callApi(api.closeProject, projectId);
+    try {
+      yield callApi(api.closeProject, projectId);
+    } catch (error) {
+      yield put({
+        type: CLOSE_PROJECT_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+
     yield put({ type: CLOSE_PROJECT_SUCCESS });
 
     yield put({
@@ -1726,7 +1853,16 @@ export function* closeSubprojectSaga({ projectId, subprojectId, showLoading }) {
       yield cancel();
     }
 
-    yield callApi(api.closeSubproject, projectId, subprojectId);
+    try {
+      yield callApi(api.closeSubproject, projectId, subprojectId);
+    } catch (error) {
+      yield put({
+        type: CLOSE_SUBPROJECT_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+
     yield put({ type: CLOSE_SUBPROJECT_SUCCESS });
 
     yield put({
@@ -1754,7 +1890,15 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
       yield cancel();
     }
 
-    yield callApi(api.closeWorkflowItem, projectId, subprojectId, workflowitemId);
+    try {
+      yield callApi(api.closeWorkflowItem, projectId, subprojectId, workflowitemId);
+    } catch (error) {
+      yield put({
+        type: CLOSE_WORKFLOWITEM_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
 
     yield put({
       type: CLOSE_WORKFLOWITEM_SUCCESS
@@ -1894,7 +2038,16 @@ export function* assignWorkflowItemSaga({
       yield cancel();
     }
 
-    yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
+    try {
+      yield callApi(api.assignWorkflowItem, projectId, subprojectId, workflowitemId, assigneeId);
+    } catch (error) {
+      yield put({
+        type: ASSIGN_WORKFLOWITEM_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+
     yield put({
       type: ASSIGN_WORKFLOWITEM_SUCCESS,
       workflowitemId,
@@ -1933,7 +2086,16 @@ export function* assignSubprojectSaga({
       yield cancel();
     }
 
-    yield callApi(api.assignSubproject, projectId, subprojectId, assigneeId);
+    try {
+      yield callApi(api.assignSubproject, projectId, subprojectId, assigneeId);
+    } catch (error) {
+      yield put({
+        type: ASSIGN_SUBPROJECT_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+
     yield put({
       type: ASSIGN_SUBPROJECT_SUCCESS,
       intent: "subproject.assign",
@@ -1965,7 +2127,16 @@ export function* assignProjectSaga({ projectId, projectDisplayName, assigneeId, 
       yield cancel();
     }
 
-    yield callApi(api.assignProject, projectId, assigneeId);
+    try {
+      yield callApi(api.assignProject, projectId, assigneeId);
+    } catch (error) {
+      yield put({
+        type: ASSIGN_PROJECT_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+
     yield put({
       type: ASSIGN_PROJECT_SUCCESS,
       intent: "project.assign",
@@ -2354,6 +2525,7 @@ export default function* rootSaga() {
       yield takeEvery(CHECK_AND_CHANGE_USER_PASSWORD, checkAndChangeUserPasswordSaga),
       yield takeEvery(ENABLE_USER, enableUserSaga),
       yield takeEvery(DISABLE_USER, disableUserSaga),
+      yield takeEvery(FETCH_USER_ASSIGNMENTS, fetchUserAssignmentsSaga),
 
       // LiveUpdates
       yield takeLeading(LIVE_UPDATE_PROJECT, liveUpdateProjectSaga),

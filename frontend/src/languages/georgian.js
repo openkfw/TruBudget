@@ -108,7 +108,8 @@ const ka = {
     dueDate: "თარიღით",
     dueDate_exceeded: "დასრულდა თარიღი",
     login_disabled: "შესვლის იდენტიფიკაცია გამორთულია",
-    login_data_error: "შესვლა პირადობის ან პაროლის ველი ვერ იქნება ცარიელი"
+    login_data_error: "შესვლა პირადობის ან პაროლის ველი ვერ იქნება ცარიელი",
+    refresh_assignments: "დავალებების განახლება"
   },
 
   users: {
@@ -141,9 +142,20 @@ const ka = {
     users: "მომხმარებლები",
     disabled_users: "დეაქტივირებული მომხმარებლები",
     disable_user: "მომხმარებლის გამორთვა",
+    disable_userId: "მომხმარებლის გამორთვა {0}",
     disable_user_successfull: "შემდეგი მომხმარებელი გამორთულია: ",
     enable_user: "მომხმარებლის აღდგენა",
-    enable_user_successfull: "შემდეგი მომხმარებელი ჩართულია: "
+    enable_userId: "მომხმარებლის აღდგენა {0}",
+    enable_userId_confirm: "ნამდვილად გსურთ ჩართოთ მომხმარებელი {0}?",
+    enable_user_successfull: "შემდეგი მომხმარებელი ჩართულია: ",
+    no_assignments: "დავალებები არ არის",
+    assigned_projects: "მიცემული პროექტები",
+    assigned_subprojects: "მინიჭებული ქვეპროექტები",
+    assigned_workflowitems: "დაენიშნა სამუშაოები",
+    assigned_message: "გამორთვამდე ეს მომხმარებელი უნდა დაეკისროს შემდეგ ელემენტებს",
+    not_assigned_message:
+      "ამ მომხმარებელს არ ენიჭება რაიმე პროექტი, ქვეპროექტი და სამუშაო წრე და შეიძლება გამორთული იყოს",
+    hidden_assignments: "შემდგომი რედაქტირება {0}"
   },
 
   userProfile: {
@@ -486,6 +498,8 @@ const ka = {
     global_createGroup: "შექმენით ჯგუფები",
     global_createProject: "შექმენით პროექტები",
     global_createUser: "შექმენით მომხმარებლები",
+    global_disableUser: "გამორთეთ მომხმარებლები",
+    global_enableUser: "ჩართეთ მომხმარებლები",
     global_grantPermission: "მიანიჭეთ გენერალური ნებართვა სხვებს",
     global_listPermissions: "გენერალური ნებართვების ჩამონათვალი",
     global_revokePermission: "გენერალური ნებართვების სხვებისთვის გაუქმება",

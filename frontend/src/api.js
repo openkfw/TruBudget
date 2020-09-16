@@ -89,6 +89,8 @@ class Api {
       newPassword
     });
 
+  listUserAssignments = userId => instance.get(`/global.listAssignments?userId=${userId}`);
+
   createGroup = (groupId, displayName, users) =>
     instance.post(`/global.createGroup`, {
       group: {

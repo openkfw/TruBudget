@@ -21,19 +21,10 @@ const styles = {
     width: "50%"
   },
   container: {
+    display: "flex",
+    flexDirection: "column",
     marginBottom: "20px",
     marginLeft: "10px"
-  },
-  checkboxContainer: {
-    display: "flex",
-    justifyContent: "center",
-    height: "30px",
-    marginTop: "25px",
-    alignItems: "center"
-  },
-  divider: {
-    marginTop: 20,
-    marginBottom: 20
   },
   infoIcon: {
     fontSize: 20,
@@ -42,7 +33,10 @@ const styles = {
   info: {
     display: "flex",
     paddingRight: 20
-  }
+  },
+  customWidth: {},
+  createButtonContainer: {},
+  createButton: {}
 };
 
 const UserDialogContent = ({
@@ -56,7 +50,6 @@ const UserDialogContent = ({
   usernameInvalid
 }) => {
   const { displayName, password, username } = user;
-
   return (
     <div className={classes.container}>
       <span className={classes.info}>

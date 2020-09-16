@@ -13,7 +13,11 @@ const styles = {
   paperRoot: {
     width: "100%",
     overflow: "scrollable"
-  }
+  },
+  container: {},
+  customWidth: {},
+  createButtonContainer: {},
+  createButton: {}
 };
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {

@@ -37,7 +37,8 @@ const Dialog = props => {
     storeSnackbarMessage,
     showSnackbar,
     grantAllUserPermissions,
-    users,
+    enabledUsers,
+    disabledUsers,
     loggedInUserId,
     globalPermissions,
     temporaryGlobalPermissions,
@@ -49,6 +50,7 @@ const Dialog = props => {
     revokeGlobalPermission,
     setUsernameInvalid
   } = props;
+  const users = [...enabledUsers, ...disabledUsers];
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
   let title = "";
 

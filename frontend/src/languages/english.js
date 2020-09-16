@@ -108,7 +108,8 @@ const en = {
     dueDate: "Due date",
     dueDate_exceeded: "Due date exceeded",
     login_disabled: "Login ID is disabled",
-    login_data_error: "Login ID or password field cannot be empty"
+    login_data_error: "Login ID or password field cannot be empty",
+    refresh_assignments: "Refresh assignments"
   },
 
   users: {
@@ -141,9 +142,19 @@ const en = {
     users: "Users",
     disabled_users: "Disabled users",
     disable_user: "Disable user",
+    disable_userId: "Disable user {0}",
     disable_user_successfull: "The following user has been disabled: ",
     enable_user: "Restore user",
-    enable_user_successfull: "The following user has been enabled: "
+    enable_userId: "Restore user {0}",
+    enable_userId_confirm: "Do you really want to enable user {0}?",
+    enable_user_successfull: "The following user has been enabled: ",
+    no_assignments: "No assignments",
+    assigned_projects: "Assigned projects",
+    assigned_subprojects: "Assigned subprojects",
+    assigned_workflowitems: "Assigned workflowitems",
+    assigned_message: "Before disabling, this user has to be unassigned from following elements",
+    not_assigned_message: "This user is not assigned to any project, subproject and workflowitem and can be disabled",
+    hidden_assignments: "Further redacted {0}"
   },
 
   userProfile: {
@@ -485,6 +496,8 @@ const en = {
     global_createGroup: "Create groups",
     global_createProject: "Create projects",
     global_createUser: "Create users",
+    global_disableUser: "Disable users",
+    global_enableUser: "Enable users",
     global_grantPermission: "Grant global permissions for others",
     global_listPermissions: "List all global permissions",
     global_revokePermission: "Revoke global permissions for others",
