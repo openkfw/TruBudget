@@ -1,8 +1,9 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -11,7 +12,7 @@ import { Permissions } from "./service/domain/permissions";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description: "See the permissions for a given workflowitem.",
       tags: ["workflowitem"],
@@ -80,8 +81,16 @@ function sendErrorIfEmpty(reply, resourceId) {
   return false;
 }
 
+interface Request extends RequestGenericInterface {
+  Querystring: {
+    projectId: string;
+    subprojectId: string;
+    workflowitemId: string;
+  };
+}
+
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
-  server.get(
+  server.get<Request>(
     `${urlPrefix}/workflowitem.intent.listPermissions`,
     mkSwaggerSchema(server),
     async (request, reply) => {

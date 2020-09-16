@@ -42,6 +42,8 @@ export const globalIntentOrder = [
       "global.createUser",
       "global.createGroup",
       "global.createProject",
+      "global.disableUser",
+      "global.enableUser",
       "global.listPermissions",
       "global.grantPermission",
       "global.revokePermission",

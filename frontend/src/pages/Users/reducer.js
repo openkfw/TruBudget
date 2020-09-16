@@ -11,6 +11,8 @@ import {
   SHOW_PASSWORD_DIALOG,
   HIDE_PASSWORD_DIALOG,
   FETCH_GROUPS_SUCCESS,
+  FETCH_USER_ASSIGNMENTS_SUCCESS,
+  CLEAN_USER_ASSIGNMENTS,
   GROUP_ID,
   GROUP_NAME,
   ADD_INITIAL_USER,
@@ -24,7 +26,9 @@ import {
   SET_PASSWORD,
   SET_USERNAME_INVALID,
   ADD_TEMPORARY_GLOBAL_PERMISSION,
-  REMOVE_TEMPORARY_GLOBAL_PERMISSION
+  REMOVE_TEMPORARY_GLOBAL_PERMISSION,
+  ENABLE_USER,
+  DISABLE_USER
 } from "./actions";
 
 const defaultState = fromJS({
@@ -42,6 +46,7 @@ const defaultState = fromJS({
   editId: "",
   dialogType: "",
   groups: [],
+  userAssignments: {},
   editDialogShown: false,
   groupToAdd: {
     groupId: "",
@@ -59,6 +64,10 @@ export default function userDashboardReducer(state = defaultState, action) {
   switch (action.type) {
     case FETCH_GROUPS_SUCCESS:
       return state.set("groups", fromJS(action.groups));
+    case FETCH_USER_ASSIGNMENTS_SUCCESS:
+      return state.set("userAssignments", fromJS(action.userAssignments));
+    case CLEAN_USER_ASSIGNMENTS:
+      return state.set("userAssignments", defaultState.get("userAssignments"));
     case GROUP_ID:
       return state.setIn(["groupToAdd", "groupId"], action.groupId);
     case GROUP_NAME:
@@ -110,6 +119,13 @@ export default function userDashboardReducer(state = defaultState, action) {
         authenticationFailed: false,
         editId: defaultState.get("editId")
       });
+
+    case ENABLE_USER:
+    case DISABLE_USER:
+      return state.merge({
+        editId: action.userId
+      });
+
     case LIST_GLOBAL_PERMISSIONS_SUCCESS:
       return state.set("globalPermissions", fromJS(action.data)).set("temporaryGlobalPermissions", fromJS(action.data));
     case CHECK_USER_PASSWORD_SUCCESS:

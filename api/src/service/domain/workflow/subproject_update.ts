@@ -47,16 +47,17 @@ export async function updateSubproject(
   }
 
   // Create the new event:
-  const subprojectUpdated = SubprojectUpdated.createEvent(
+  const subprojectUpdatedResult = SubprojectUpdated.createEvent(
     ctx.source,
     issuer.id,
     projectId,
     subprojectId,
     data,
   );
-  if (Result.isErr(subprojectUpdated)) {
-    return new VError(subprojectUpdated, "failed to create event");
+  if (Result.isErr(subprojectUpdatedResult)) {
+    return new VError(subprojectUpdatedResult, "failed to create event");
   }
+  const subprojectUpdated = subprojectUpdatedResult;
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {

@@ -18,14 +18,14 @@ const styles = {
     justifyContent: "center"
   },
   customWidth: {
-    width: "90%",
+    width: "100%",
     marginTop: "40px"
   },
   createButtonContainer: {
     display: "flex",
     flexDirection: "column",
     position: "absolute",
-    alignItems: "center",
+    alignItems: "flex-end",
     top: "80px",
     right: "-20px",
     width: "30%",

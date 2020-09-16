@@ -109,7 +109,8 @@ const de = {
     dueDate: "Fälligkeitsdatum",
     dueDate_exceeded: "Fälligkeitsdatum überschritten",
     login_disabled: "Login-ID ist deaktiviert",
-    login_data_error: "Login-ID oder Passwort kann nicht leer sein"
+    login_data_error: "Login-ID oder Passwort kann nicht leer sein",
+    refresh_assignments: "Zuordnungen aktualisieren"
   },
 
   login: {
@@ -255,9 +256,21 @@ const de = {
       "Bitte stellen Sie sicher, dass Sie keine persönlichen Informationen angeben. Durch Klicken auf SUBMIT werden Ihre Daten dauerhaft gespeichert und hiermit der Erhalt des Datenschutzhinweises bestätigt.",
     disabled_users: "Deaktivierte Benutzer",
     disable_user: "Benutzer deaktivieren",
+    disable_userId: "Benutzer {0} deaktivieren",
     disable_user_successfull: "Folgender Benutzer wurde deaktiviert: ",
     enable_user: "Benutzer wiederherstellen",
-    enable_user_successfull: "Folgender Benutzer wurde wiederhergestellt: "
+    enable_userId: "Benutzer {0} aktivieren",
+    enable_userId_confirm: "Möchten Sie den Benutzer {0} wirklich wiederherstellen?",
+    enable_user_successfull: "Folgender Benutzer wurde wiederhergestellt: ",
+    no_assignments: "Keine Zuweisungen",
+    assigned_projects: "Zugewiesene Projekte",
+    assigned_subprojects: "Zugewiesene Subrojekte",
+    assigned_workflowitems: "Zugewiesene Workflowitems",
+    assigned_message:
+      "Vor dem Deaktivieren muss für diesen Benutzer die Zuordnung zu folgenden Elementen aufgehoben werden",
+    not_assigned_message:
+      "Dieser Benutzer ist keinem Projekt, Teilprojekt und Workflowelement zugeordnet und kann deaktiviert werden.",
+    hidden_assignments: "Weitere ausgeblendete {0}"
   },
   userProfile: {
     invalid_email_address: "Ungültige Emailadresse"
@@ -486,6 +499,8 @@ const de = {
     global_createGroup: "German: Create groups",
     global_createProject: "German: Create projects",
     global_createUser: "German: Create users",
+    global_disableUser: "Benutzer deaktivieren",
+    global_enableUser: "Benutzer aktivieren",
     global_grantPermission: "German: Grant global permissions for others",
     global_listPermissions: "German: List all global permissions",
     global_revokePermission: "German: Revoke global permissions for others",

@@ -1,8 +1,9 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -11,7 +12,7 @@ import { Permissions } from "./service/domain/permissions";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description: "See the permissions for a given user.",
       tags: ["user"],
@@ -58,8 +59,14 @@ interface Service {
   ): Promise<Result.Type<Permissions>>;
 }
 
+interface Request extends RequestGenericInterface {
+  Querystring: {
+    userId: string;
+  };
+}
+
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
-  server.get(
+  server.get<Request>(
     `${urlPrefix}/user.intent.listPermissions`,
     mkSwaggerSchema(server),
     async (request, reply) => {
@@ -86,7 +93,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const userPermissionsResult = await service.getUserPermissions(ctx, user, userId);
 
         if (Result.isErr(userPermissionsResult)) {
-          throw new VError(userPermissionsResult, "user.intent.revokePermission failed");
+          throw new VError(userPermissionsResult, "user.intent.listPermission failed");
         }
         const userPermissions = userPermissionsResult;
         const code = 200;

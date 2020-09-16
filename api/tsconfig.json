@@ -8,11 +8,9 @@
     "strictNullChecks": true,
     "strict": false,
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": [
-    "node_modules",
-    "coverage"
-  ]
+  "exclude": ["node_modules", "coverage"]
 }

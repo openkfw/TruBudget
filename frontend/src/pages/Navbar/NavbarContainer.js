@@ -15,7 +15,12 @@ import {
   showUserProfile,
   storeSearchBarDisplayed,
   storeSearchTerm,
-  toggleSidebar
+  toggleSidebar,
+  saveEmailAddress,
+  storeTempEmailAddress,
+  setValidEmailAddressInput,
+  enableUserProfileEdit,
+  hideUserProfile
 } from "./actions";
 import Navbar from "./Navbar";
 import { convertToSearchBarString } from "../../helper";
@@ -63,7 +68,12 @@ const mapDispatchToProps = {
   storeSearchBarDisplayed,
   setIsRoot,
   showUserProfile,
-  fetchEmailAddress
+  fetchEmailAddress,
+  saveEmailAddress,
+  storeTempEmailAddress,
+  setValidEmailAddressInput,
+  enableUserProfileEdit,
+  hideUserProfile
 };
 
 const mapStateToProps = state => {
@@ -90,7 +100,13 @@ const mapStateToProps = state => {
     latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
     searchTerm: state.getIn(["navbar", "searchTerm"]),
     searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
-    isRoot: state.getIn(["login", "isRoot"])
+    isRoot: state.getIn(["login", "isRoot"]),
+    open: state.getIn(["navbar", "userProfileOpen"]),
+    tempEmailAddress: state.getIn(["navbar", "tempEmailAddress"]),
+    userProfileEdit: state.getIn(["navbar", "userProfileEdit"]),
+    emailAddress: state.getIn(["login", "emailAddress"]),
+    emailServiceAvailable: state.getIn(["login", "emailServiceAvailable"]),
+    isEmailAddressInputValid: state.getIn(["navbar", "isEmailAddressInputValid"])
   };
 };
 

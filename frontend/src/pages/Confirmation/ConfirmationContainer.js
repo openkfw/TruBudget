@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
-import { fetchProjectPermissions, grantPermission, revokePermission } from "../Overview/actions";
+import { fetchProjectPermissions, grantProjectPermission, revokeProjectPermission } from "../Overview/actions";
 import {
   assignProject,
   closeProject,
@@ -11,7 +11,7 @@ import {
   grantSubProjectPermission,
   revokeSubProjectPermission
 } from "../SubProjects/actions";
-import { fetchGroups } from "../Users/actions";
+import { fetchGroups, disableUser, enableUser, fetchUserAssignments, cleanUserAssignments } from "../Users/actions";
 import {
   assignSubproject,
   assignWorkflowItem,
@@ -91,7 +91,7 @@ class ConfirmationContainer extends React.Component {
   }
 
   fetchPermissions(project, subproject, workflowitem) {
-    this.props.fetchProjectPermissions(project.id);
+    if (!_isEmpty(project)) this.props.fetchProjectPermissions(project.id);
     if (!_isEmpty(subproject)) this.props.fetchSubprojectPermissions(project.id, subproject.id);
     if (!_isEmpty(workflowitem)) this.props.fetchWorkflowitemPermissions(project.id, subproject.id, workflowitem.id);
   }
@@ -111,7 +111,9 @@ class ConfirmationContainer extends React.Component {
       this.props.revokeWorkflowitemPermission,
       this.props.closeProject,
       this.props.closeSubproject,
-      this.props.closeWorkflowItem
+      this.props.closeWorkflowItem,
+      this.props.disableUser,
+      this.props.enableUser
     );
   }
 
@@ -143,9 +145,12 @@ class ConfirmationContainer extends React.Component {
       listPermissionsRequired,
       failedAction,
       requestedPermissions,
-      userList
+      userList,
+      fetchUserAssignments,
+      cleanUserAssignments,
+      userAssignments,
+      editId
     } = this.props;
-
     if (confirmationDialogOpen && !confirmed) {
       return (
         <ConfirmationDialog
@@ -170,6 +175,10 @@ class ConfirmationContainer extends React.Component {
           failedAction={failedAction}
           requestedPermissions={requestedPermissions}
           userList={userList}
+          fetchUserAssignments={fetchUserAssignments}
+          cleanUserAssignments={cleanUserAssignments}
+          userAssignments={userAssignments}
+          editId={editId}
         />
       );
     } else {
@@ -196,9 +205,9 @@ const mapDispatchToProps = dispatch => {
     assignWorkflowitem: (pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName) =>
       dispatch(assignWorkflowItem(pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName)),
     grantProjectPermission: (pId, pName, permission, granteeId, granteeName) =>
-      dispatch(grantPermission(pId, pName, permission, granteeId, granteeName, true)),
+      dispatch(grantProjectPermission(pId, pName, permission, granteeId, granteeName, true)),
     revokeProjectPermission: (pId, pName, permission, revokeeId, revokeeName) =>
-      dispatch(revokePermission(pId, pName, permission, revokeeId, revokeeName, true)),
+      dispatch(revokeProjectPermission(pId, pName, permission, revokeeId, revokeeName, true)),
     grantSubprojectPermission: (pId, pName, sId, sName, permission, granteeId, granteeName) =>
       dispatch(grantSubProjectPermission(pId, pName, sId, sName, permission, granteeId, granteeName, true)),
     revokeSubprojectPermission: (pId, pName, sId, sName, permission, revokeeId, revokeeName) =>
@@ -214,7 +223,11 @@ const mapDispatchToProps = dispatch => {
     additionalActionUpdateRequired: required => dispatch(additionalActionUpdateRequired(required)),
     closeProject: pId => dispatch(closeProject(pId, true)),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
-    closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true))
+    closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
+    disableUser: userId => dispatch(disableUser(userId)),
+    enableUser: userId => dispatch(enableUser(userId)),
+    fetchUserAssignments: userId => dispatch(fetchUserAssignments(userId)),
+    cleanUserAssignments: () => dispatch(cleanUserAssignments())
   };
 };
 
@@ -241,7 +254,9 @@ const mapStateToProps = state => {
     listPermissionsRequired: state.getIn(["confirmation", "listPermissionsRequired"]),
     failedAction: state.getIn(["confirmation", "failedAction"]),
     requestedPermissions: state.getIn(["confirmation", "requestedPermissions"]),
-    groups: state.getIn(["users", "groups"])
+    groups: state.getIn(["users", "groups"]),
+    userAssignments: state.getIn(["users", "userAssignments"]),
+    editId: state.getIn(["users", "editId"])
   };
 };
 

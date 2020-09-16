@@ -67,8 +67,14 @@ export const REMOVE_TEMPORARY_GLOBAL_PERMISSION = " REMOVE_TEMPORARY_GLOBAL_PERM
 
 export const ENABLE_USER = "ENABLE_USER";
 export const ENABLE_USER_SUCCESS = "ENABLE_USER_SUCCESS";
+export const ENABLE_USER_FAILURE = "ENABLE_USER_FAILURE";
 export const DISABLE_USER = " DISABLE_USER";
 export const DISABLE_USER_SUCCESS = " DISABLE_USER_SUCCESS";
+export const DISABLE_USER_FAILURE = " DISABLE_USER_FAILURE";
+
+export const FETCH_USER_ASSIGNMENTS = "FETCH_USER_ASSIGNMENTS";
+export const FETCH_USER_ASSIGNMENTS_SUCCESS = "FETCH_USER_ASSIGNMENTS_SUCCESS";
+export const CLEAN_USER_ASSIGNMENTS = "CLEAN_USER_ASSIGNMENTS";
 
 export function fetchGroups(showLoading = false) {
   return {
@@ -206,6 +212,18 @@ export function showPasswordDialog(editId) {
   return {
     type: SHOW_PASSWORD_DIALOG,
     editId
+  };
+}
+
+export function fetchUserAssignments(userId) {
+  return {
+    type: FETCH_USER_ASSIGNMENTS,
+    userId
+  };
+}
+export function cleanUserAssignments() {
+  return {
+    type: CLEAN_USER_ASSIGNMENTS
   };
 }
 

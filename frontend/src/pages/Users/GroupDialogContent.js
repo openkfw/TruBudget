@@ -10,6 +10,10 @@ import AutoComplete from "../Common/AutoComplete";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
 
 const styles = {
+  container: {},
+  customWidth: {},
+  createButton: {},
+  createButtonContainer: {},
   textInputContainer: {
     display: "flex",
     flexDirection: "row",
@@ -35,7 +39,7 @@ const styles = {
 };
 
 const GroupDialogContent = ({
-  users,
+  enabledUsers,
   groupToAdd,
   storeGroupId,
   storeGroupName,
@@ -47,7 +51,6 @@ const GroupDialogContent = ({
   classes
 }) => {
   const { groupId, displayName, groupUsers } = groupToAdd;
-
   const addUserToGroup = userId => {
     addUser(groupId, userId);
   };
@@ -82,7 +85,7 @@ const GroupDialogContent = ({
       </div>
       <div>
         <AutoComplete
-          users={users.filter(user => user.isGroup !== true)}
+          users={enabledUsers.filter(user => user.isGroup !== true)}
           addToSelection={editMode ? addUserToGroup : addInitialUserToGroup}
           selectedItems={groupUsers}
           handleDelete={editMode ? removeUser : removeInitialUserFromGroup}

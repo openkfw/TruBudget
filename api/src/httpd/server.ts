@@ -1,5 +1,5 @@
 import * as Ajv from "ajv";
-import * as fastify from "fastify";
+import { fastify, FastifyInstance } from "fastify";
 import * as metricsPlugin from "fastify-metrics";
 import { IncomingMessage, Server, ServerResponse } from "http";
 import rawBody = require("raw-body");
@@ -18,7 +18,7 @@ const ajv = new Ajv({
   // ...
 });
 
-const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) => {
+const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
   server.register(require("fastify-jwt"), {
     secret: jwtSecret,
   });
@@ -36,28 +36,20 @@ const addTokenHandling = (server: fastify.FastifyInstance, jwtSecret: string) =>
   });
 };
 
-const addLogging = (server: fastify.FastifyInstance) => {
+const addLogging = (server: FastifyInstance) => {
   server.addHook("preHandler", (req, _reply, done) => {
     logger.debug({
       id: req.id,
-      url: req.req.url,
+      url: req.raw.url,
       params: req.params,
     });
     done();
   });
   server.addHook("onSend", (req, reply, payload, done) => {
-    // let jsonPayload;
-    // try {
-    //   jsonPayload = JSON.parse(payload);
-    // } catch (e) {
-    //   logger.warn(e, "Error during parsing of payload");
-    //   jsonPayload = payload;
-    // }
-
     logger.debug({
       id: req.id,
-      status: reply.res.statusCode,
-      message: reply.res.statusMessage,
+      status: reply.raw.statusCode,
+      message: reply.raw.statusMessage,
       payload,
     });
     done();
@@ -65,7 +57,7 @@ const addLogging = (server: fastify.FastifyInstance) => {
 };
 
 const registerSwagger = (
-  server: fastify.FastifyInstance,
+  server: FastifyInstance,
   urlPrefix: string,
   apiPort: number,
   swaggerBasePath: string,
@@ -119,14 +111,12 @@ export const createBasicApp = (
   swaggerBasePath: string,
   env: string,
 ) => {
-  const server: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
+  const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger: false,
     bodyLimit: 104857600,
   });
 
-  server.setSchemaCompiler(schema => {
-    return ajv.compile(schema);
-  });
+  server.setValidatorCompiler(({ schema, method, url, httpPart }) => ajv.compile(schema));
 
   server.register(metricsPlugin, { endpoint: "/metrics" });
 
@@ -135,11 +125,11 @@ export const createBasicApp = (
   addTokenHandling(server, jwtSecret);
   addLogging(server);
 
-  server.addContentTypeParser("application/gzip", (req, done) => {
+  server.addContentTypeParser("application/gzip", (request, payload, done) => {
     rawBody(
-      req,
+      payload,
       {
-        length: req.headers["content-length"],
+        length: request.headers["content-length"],
         limit: "1024mb",
       },
       (err, body) => {

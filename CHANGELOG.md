@@ -19,6 +19,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Security -->
 
+# [1.13.0] - 2020-09-16
+
+### Added
+
+- Added confirmation dialog for disabling and enabling users [#537](https://github.com/openkfw/TruBudget/pull/537)
+- Added table of user assignments for disable users dialog [#537](https://github.com/openkfw/TruBudget/pull/537)
+
+### Fixed
+
+- Fixed the global permission list to set permissions to disable or enable users [#537](https://github.com/openkfw/TruBudget/pull/537)
+
 # [1.12.0] - 2020-08-10
 
 ### Added
@@ -488,7 +499,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.12.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.13.0...master
+[1.13.0]: https://github.com/openkfw/TruBudget/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/openkfw/TruBudget/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/openkfw/TruBudget/compare/v1.10.0...v1.11.0
 [1.10.0]: https://github.com/openkfw/TruBudget/compare/v1.9.0...v1.10.0

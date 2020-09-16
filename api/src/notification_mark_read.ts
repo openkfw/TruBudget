@@ -1,13 +1,14 @@
 import { FastifyInstance } from "fastify";
+import Joi = require("joi");
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Notification from "./service/domain/workflow/notification";
-import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -33,7 +34,7 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description: `Mark a set of notifications as "read".`,
       tags: ["notification"],

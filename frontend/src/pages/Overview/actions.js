@@ -32,11 +32,13 @@ export const FETCH_PROJECT_PERMISSIONS = "FETCH_PROJECT_PERMISSIONS";
 export const FETCH_PROJECT_PERMISSIONS_SUCCESS = "FETCH_PROJECT_PERMISSIONS_SUCCESS";
 export const FETCH_PROJECT_PERMISSIONS_FAILURE = "FETCH_PROJECT_PERMISSIONS_FAILURE";
 
-export const GRANT_PERMISSION = "GRANT_PERMISSION";
-export const GRANT_PERMISSION_SUCCESS = "GRANT_PERMISSION_SUCCESS";
+export const GRANT_PROJECT_PERMISSION = "GRANT_PROJECT_PERMISSION";
+export const GRANT_PROJECT_PERMISSION_SUCCESS = "GRANT_PROJECT_PERMISSION_SUCCESS";
+export const GRANT_PROJECT_PERMISSION_FAILURE = "GRANT_PROJECT_PERMISSION_FAILURE";
 
-export const REVOKE_PERMISSION = "REVOKE_PERMISSION";
-export const REVOKE_PERMISSION_SUCCESS = "REVOKE_PERMISSION_SUCCESS";
+export const REVOKE_PROJECT_PERMISSION = "REVOKE_PROJECT_PERMISSION";
+export const REVOKE_PROJECT_PERMISSION_SUCCESS = "REVOKE_PROJECT_PERMISSION_SUCCESS";
+export const REVOKE_PROJECT_PERMISSION_FAILURE = "REVOKE_PROJECT_PERMISSION_FAILURE";
 
 export const ADD_PROJECT_TAG = "ADD_PROJECT_TAG";
 export const REMOVE_PROJECT_TAG = "REMOVE_PROJECT_TAG";
@@ -175,7 +177,7 @@ export function setCurrentStep(step) {
   };
 }
 
-export function grantPermission(
+export function grantProjectPermission(
   projectId,
   projectDisplayName,
   intent,
@@ -184,7 +186,7 @@ export function grantPermission(
   showLoading = false
 ) {
   return {
-    type: GRANT_PERMISSION,
+    type: GRANT_PROJECT_PERMISSION,
     projectId,
     projectDisplayName,
     intent,
@@ -194,7 +196,7 @@ export function grantPermission(
   };
 }
 
-export function revokePermission(
+export function revokeProjectPermission(
   projectId,
   projectDisplayName,
   intent,
@@ -203,7 +205,7 @@ export function revokePermission(
   showLoading = false
 ) {
   return {
-    type: REVOKE_PERMISSION,
+    type: REVOKE_PROJECT_PERMISSION,
     projectId,
     projectDisplayName,
     intent,

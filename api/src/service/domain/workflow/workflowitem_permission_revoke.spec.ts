@@ -3,6 +3,7 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
@@ -119,5 +120,49 @@ describe("revoke workflowitem permissions", () => {
 
     assert.isTrue(Result.isErr(revokeResult));
     assert.instanceOf(revokeResult, PreconditionError);
+  });
+});
+
+describe("revoke workflowitem permission: preconditions", () => {
+  it("Revoking a workflowitem's permission fails if the workflowitem cannot be found", async () => {
+    const revokeResult = await WorkflowitemPermissionRevoke.revokeWorkflowitemPermission(
+      ctx,
+      executingUser,
+      projectId,
+      testworkflowitem.subprojectId,
+      testworkflowitem.id,
+      testUser.id,
+      "workflowitem.view",
+      {
+        getWorkflowitem: async () => new Error("some error"),
+      },
+    );
+    assert.isTrue(Result.isErr(revokeResult));
+    assert.instanceOf(revokeResult, NotFound);
+  });
+  it("No changes to existing permissions emit no new events", async () => {
+   const existingPermissions: Permissions = {
+    "workflowitem.view": [],
+    "workflowitem.assign": [],
+    "workflowitem.intent.revokePermission": ["mstein"],
+  };
+   const baseWorkflowitem: Workflowitem.Workflowitem = {
+      ...testworkflowitem,
+      permissions: existingPermissions,
+    };
+   const revokeResult = await WorkflowitemPermissionRevoke.revokeWorkflowitemPermission(
+      ctx,
+      executingUser,
+      projectId,
+      testworkflowitem.subprojectId,
+      testworkflowitem.id,
+      testUser.id,
+      "workflowitem.view",
+      {
+        getWorkflowitem: async () => baseWorkflowitem,
+      },
+    );
+
+   assert.deepEqual([], revokeResult);
   });
 });

@@ -4,12 +4,14 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
-import React from "react";
-import { formatString } from "../../helper";
+import React, { useState, useEffect } from "react";
+import { formatString, hasUserAssignments } from "../../helper";
 import strings from "../../localizeStrings";
 import ActionsTable from "./ActionsTable";
 import DialogButtons from "./DialogButtons";
 import ErrorTypography from "./ErrorTypography";
+import DisableUserDialogContent from "../Users/DisableUserDialogContent";
+import EnableUserDialogContent from "../Users/EnableUserDialogContent";
 
 const styles = {
   paperRoot: {
@@ -56,11 +58,27 @@ const ConfirmationDialog = props => {
     listPermissionsRequired,
     isFetchingPermissions,
     permissionsEmpty,
-    userList
+    userList,
+    fetchUserAssignments,
+    cleanUserAssignments,
+    userAssignments,
+    editId
   } = props;
 
+  const [hasAssignments, setHasAssignments] = useState(true);
+  useEffect(() => {
+    setHasAssignments(hasUserAssignments(userAssignments));
+  }, [userAssignments]);
+
+  const isPermissionNeeded = originalActions.some(
+    action =>
+      !_isEmpty(action.payload.project) ||
+      !_isEmpty(action.payload.subproject) ||
+      !_isEmpty(action.payload.workflowitem)
+  );
+
   // If permissions are not fetched yet show Loading indicator
-  if (isFetchingPermissions || permissionsEmpty || listPermissionsRequired) {
+  if ((isFetchingPermissions || permissionsEmpty || listPermissionsRequired) && isPermissionNeeded) {
     return buildDialogWithLoadingIndicator(classes, open, listPermissionsRequired, onCancel, requestedPermissions);
   }
 
@@ -311,6 +329,25 @@ const ConfirmationDialog = props => {
         confirmButtonText = strings.confirmation.workflowitem_close;
         break;
       }
+      case "global.disableUser": {
+        title = formatString(strings.users.disable_userId, editId);
+        content = (
+          <DisableUserDialogContent
+            fetchUserAssignments={fetchUserAssignments}
+            cleanUserAssignments={cleanUserAssignments}
+            userAssignments={userAssignments}
+            editId={editId}
+          />
+        );
+        confirmButtonText = strings.users.disable_user;
+        break;
+      }
+      case "global.enableUser": {
+        title = formatString(strings.users.enable_userId, editId);
+        content = <EnableUserDialogContent editId={editId} />;
+        confirmButtonText = strings.users.enable_user;
+        break;
+      }
       default:
         title = "Not implemented confirmation";
         content = "Confirmation Dialog for " + intent + " is not implemented yet";
@@ -333,7 +370,7 @@ const ConfirmationDialog = props => {
         doneButtonText={doneButtonText}
         onConfirm={_isEmpty(additionalActions) || additionalActionsExecuted ? props.onConfirm : executeActions}
         onCancel={requestedPermissions ? () => onCancel(requestedPermissions) : onCancel}
-        confirmDisabled={!permittedToGrant && additionalActionsExist(additionalActions)}
+        confirmDisabled={(!permittedToGrant && additionalActionsExist(additionalActions)) || hasAssignments}
         actions={additionalActions}
         executedActions={executedAdditionalActions}
         actionsAreExecuted={additionalActionsExecuted}

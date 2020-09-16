@@ -89,6 +89,8 @@ class Api {
       newPassword
     });
 
+  listUserAssignments = userId => instance.get(`/global.listAssignments?userId=${userId}`);
+
   createGroup = (groupId, displayName, users) =>
     instance.post(`/global.createGroup`, {
       group: {
@@ -364,7 +366,11 @@ class Api {
     });
 
   fetchNotifications = (offset, limit) => {
-    return instance.get(`/notification.list?offset=${offset}&limit=${limit}`);
+    let url = `/notification.list?offset=${offset}`;
+    if (!_isEmpty(limit)) {
+      url = url + `limit=${limit}`;
+    }
+    return instance.get(url);
   };
 
   fetchNotificationCounts = () => {

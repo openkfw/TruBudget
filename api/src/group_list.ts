@@ -11,7 +11,7 @@ import * as UserRecord from "./service/domain/organization/user_record";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
-    beforeHandler: [(server as any).authenticate],
+    preValidation: [(server as any).authenticate],
     schema: {
       description: "List all user groups.",
       tags: ["group"],

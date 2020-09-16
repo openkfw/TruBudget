@@ -11,7 +11,9 @@ export function executeOriginalActions(
   revokeWorkflowitemPermission,
   closeProject,
   closeSubproject,
-  closeWorkflowItem
+  closeWorkflowItem,
+  disableUser,
+  enableUser
 ) {
   actions.forEach(action => {
     switch (action.intent) {
@@ -152,6 +154,16 @@ export function executeOriginalActions(
         const subproject = action.payload.subproject;
         const workflowitem = action.payload.workflowitem;
         closeWorkflowItem(project.id, subproject.id, workflowitem.id);
+        break;
+      }
+      case "global.disableUser": {
+        const userId = action.payload.userId;
+        disableUser(userId);
+        break;
+      }
+      case "global.enableUser": {
+        const userId = action.payload.userId;
+        enableUser(userId);
         break;
       }
       default:

@@ -55,7 +55,7 @@ describe("Project Assignee", function() {
   function setupConfirmationDialog() {
     cy.get("[data-test=assignee-selection]").click();
     cy.get("[data-test=assignee-list]")
-      .should("be.visible")
+      .should("exist")
       .then($list => {
         const firstUncheckedRadioButton = $list.find("input:not(:checked)").first();
         cy.wrap($list.find("input:not(:checked)").first()).as("firstUncheckedRadioButton");

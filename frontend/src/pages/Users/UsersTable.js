@@ -21,8 +21,8 @@ const styles = {
     display: "flex"
   },
   flexColumn: {
-    flexDirection: "column",
-    display: "flex"
+    padding: "4px 10px 4px 2px",
+    flexDirection: "column"
   }
 };
 
@@ -83,9 +83,9 @@ const renderActionButtons = props => {
     allowedIntents,
     showDashboardDialog,
     showPasswordDialog,
-    isRoot,
     disableUser,
-    enableUser
+    enableUser,
+    isRoot
   } = props;
 
   const isEnabledUser = user.permissions["user.authenticate"].includes(user.id);
