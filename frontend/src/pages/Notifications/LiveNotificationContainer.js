@@ -18,12 +18,12 @@ class LiveNotificationContainer extends Component {
   }
 
   render() {
-    return this.props.isLiveUpdatesEnabled ? (
+    return (
       <div>
-        <LiveUpdates update={() => this.fetch()} interval={15000} />
-        <LiveNotification {...this.props} />
+        {this.props.isLiveUpdatesEnabled ? <LiveUpdates update={() => this.fetch()} interval={15000} /> : null}
+        <LiveNotification {...this.props} />;
       </div>
-    ) : null;
+    );
   }
 }
 

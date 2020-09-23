@@ -61,6 +61,8 @@ export const FETCH_SUBPROJECT_PERMISSIONS_SUCCESS = "FETCH_SUBPROJECT_PERMISSION
 export const FETCH_SUBPROJECT_PERMISSIONS_FAILURE = "FETCH_SUBPROJECT_PERMISSIONS_FAILURE";
 
 export const LIVE_UPDATE_PROJECT = "LIVE_UPDATE_PROJECT";
+export const DISABLE_LIVE_UPDATES_PROJECT = "DISABLE_LIVE_UPDATES_PROJECT";
+export const ENABLE_LIVE_UPDATES_PROJECT = "ENABLE_LIVE_UPDATES_PROJECT";
 
 export const OPEN_HISTORY = "OPEN_HISTORY";
 
@@ -314,6 +316,20 @@ export function closeProject(projectId, showLoading = false) {
 export function liveUpdateProject(projectId) {
   return {
     type: LIVE_UPDATE_PROJECT,
+    projectId
+  };
+}
+
+export function disableLiveUpdatesProject(projectId) {
+  return {
+    type: DISABLE_LIVE_UPDATES_PROJECT,
+    projectId
+  };
+}
+
+export function enableLiveUpdatesProject(projectId) {
+  return {
+    type: ENABLE_LIVE_UPDATES_PROJECT,
     projectId
   };
 }

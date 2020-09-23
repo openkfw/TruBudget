@@ -59,8 +59,10 @@ import {
   FETCH_VERSIONS_SUCCESS,
   RESTORE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
+  DISABLE_ALL_LIVE_UPDATES,
   SAVE_EMAIL_ADDRESS,
-  SAVE_EMAIL_ADDRESS_SUCCESS
+  SAVE_EMAIL_ADDRESS_SUCCESS,
+  ENABLE_ALL_LIVE_UPDATES
 } from "./pages/Navbar/actions.js";
 import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
@@ -83,7 +85,7 @@ import {
   MARK_NOTIFICATION_AS_READ_SUCCESS,
   SHOW_SNACKBAR,
   SNACKBAR_MESSAGE,
-  TIME_OUT_FLY_IN
+  TIME_OUT_FLY_IN,
 } from "./pages/Notifications/actions";
 import {
   CREATE_PROJECT,
@@ -2174,28 +2176,40 @@ export function* hideWorkflowDetailsSaga() {
 }
 
 export function* createBackupSaga({ showLoading = true }) {
+  yield put({
+    type: DISABLE_ALL_LIVE_UPDATES
+  });
   yield execute(function*() {
     const data = yield callApi(api.createBackup);
     saveAs(data, "backup.gz");
     yield put({
-      type: CREATE_BACKUP_SUCCESS
+      type: CREATE_BACKUP_SUCCESS,
     });
   }, showLoading);
+  yield put({
+    type: ENABLE_ALL_LIVE_UPDATES,
+  });
 }
 
 export function* restoreBackupSaga({ file, showLoading = true }) {
+  yield put({
+    type: DISABLE_ALL_LIVE_UPDATES
+  });
   yield execute(function*() {
     const env = yield select(getEnvironment);
     const token = yield select(getJwt);
     const prefix = env === "Test" ? "/test" : "/prod";
     yield call(api.restoreFromBackup, prefix, token, file);
     yield put({
-      type: RESTORE_BACKUP_SUCCESS
+      type: RESTORE_BACKUP_SUCCESS,
     });
     yield put({
       type: LOGOUT
     });
   }, showLoading);
+  yield put({
+    type: ENABLE_ALL_LIVE_UPDATES,
+  });
 }
 
 // LiveUpdate Sagas

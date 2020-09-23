@@ -83,7 +83,7 @@ class WorkflowContainer extends Component {
   };
 
   addLiveUpdates = () => {
-    return <LiveUpdates update={this.update} />;
+    return this.props.isLiveUpdatesSubprojectEnabled ? <LiveUpdates update={this.update} /> : null;
   };
 
   render() {
@@ -229,7 +229,9 @@ const mapStateToProps = state => {
     isRoot: state.getIn(["navbar", "isRoot"]),
     permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"]),
     idsPermissionsUnassigned: state.getIn(["workflow", "idsPermissionsUnassigned"]),
-    isDataLoading: state.getIn(["loading", "loadingVisible"])
+    isDataLoading: state.getIn(["loading", "loadingVisible"]),
+    isLiveUpdatesSubprojectEnabled: state.getIn(["workflow", "isLiveUpdatesSubprojectEnabled"]),
+
   };
 };
 
