@@ -89,6 +89,30 @@ describe("get project history: authorization", () => {
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
+  it("With only viewDetails permissions, a user can still get a project's history.", async () => {
+    const modifiedProject: Project = {
+      ...baseProject,
+      permissions: { "project.viewDetails": ["alice"] },
+    };
+    const result = await getHistory(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => modifiedProject,
+    });
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+
+  it("With only viewHistory permissions, a user can still get a project's history.", async () => {
+    const modifiedProject: Project = {
+      ...baseProject,
+      permissions: {"project.viewHistory": ["alice"] },
+    };
+    const result = await getHistory(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => modifiedProject,
+    });
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+
   it("The root user doesn't need permission to get a project's history.", async () => {
     const result = await getHistory(ctx, alice, projectId, baseRepository);
     assert.isTrue(Result.isOk(result), (result as Error).message);
