@@ -1,6 +1,6 @@
 import Joi = require("joi");
 import { VError } from "verror";
-import Intent from "../../../authz/intents";
+import Intent, { workflowitemIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
@@ -213,17 +213,7 @@ export async function createWorkflowitem(
   function newDefaultPermissionsFor(userId: string): Permissions {
     // The user can always do anything anyway:
     if (userId === "root") return {};
-
-    const intents: Intent[] = [
-      "workflowitem.intent.listPermissions",
-      "workflowitem.intent.grantPermission",
-      "workflowitem.intent.revokePermission",
-      "workflowitem.view",
-      "workflowitem.assign",
-      "workflowitem.update",
-      "workflowitem.close",
-      "workflowitem.archive",
-    ];
+    const intents: Intent[] = workflowitemIntents;
     return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
   }
 }

@@ -29,6 +29,7 @@ const filter: Filter = {
 
 const permissions: Permissions = {
   "workflowitem.view": ["alice"],
+  "workflowitem.viewHistory": ["alice"],
 };
 
 const event: WorkflowitemTraceEvent = {
@@ -103,6 +104,44 @@ describe("get worklfowitem history: authorization", () => {
       subprojectId,
       workflowitemId,
       baseRepository,
+    );
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+
+  it("With only view permissions, a user can still get a worklfowitem's history.", async () => {
+    const modifiedWorkflowitem: Workflowitem = {
+      ...baseWorkflowitem,
+      permissions: { "workflowitem.view": ["alice"]},
+    };
+    const result = await getHistory(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      {
+        ...baseRepository,
+        getWorkflowitem: async () => modifiedWorkflowitem,
+      },
+    );
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+
+  it("With only viewHistory permissions, a user can still get a worklfowitem's history.", async () => {
+    const modifiedWorkflowitem: Workflowitem = {
+      ...baseWorkflowitem,
+      permissions: { "workflowitem.viewHistory": ["alice"]},
+    };
+    const result = await getHistory(
+      ctx,
+      alice,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      {
+        ...baseRepository,
+        getWorkflowitem: async () => modifiedWorkflowitem,
+      },
     );
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
