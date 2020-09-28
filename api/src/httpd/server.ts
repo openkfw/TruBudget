@@ -109,7 +109,6 @@ export const createBasicApp = (
   urlPrefix: string,
   apiPort: number,
   swaggerBasePath: string,
-  env: string,
 ) => {
   const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger: false,

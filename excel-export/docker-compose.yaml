@@ -1,0 +1,58 @@
+version: "3.2"
+services:
+  blockchain:
+    image: trubudget/blockchain:latest
+    environment:
+      RPC_PORT: 8000
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      ORGANIZATION: KfW
+    ports:
+      - "8000:8000"
+      - "8085:8085"
+
+  api:
+    image: trubudget/api:latest
+    environment:
+      ORGANIZATION: KfW
+      ORGANIZATION_VAULT_SECRET: asdf
+      RPC_HOST: blockchain
+      RPC_PORT: 8000
+      ROOT_SECRET: asdf
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
+    ports:
+      - 8080:8080
+    links:
+      - blockchain
+
+  # Provision the node with some test data to check out the excel export feature
+  provisioning:
+    image: trubudget/provisioning:latest
+    command: ["npm", "start"]
+    environment:
+      API_HOST: api
+      API_PORT: 8080
+      ENVIRONMENT_TYPE: TEST
+      ROOT_SECRET: asdf
+      ORGANIZATION: KfW
+    links:
+      - api
+
+  frontend:
+    image: trubudget/frontend:latest
+    ports:
+      - "81:80" # Mapping the nginx port
+
+  export:
+    build:
+      context: .
+    environment:
+      PROD_API_HOST: api
+      PROD_API_PORT: 8080
+      TEST_API_HOST: api
+      TEST_API_PORT: 8080
+      PORT: 8888
+    depends_on:
+      - api
+    ports:
+      - "8888:8888"
