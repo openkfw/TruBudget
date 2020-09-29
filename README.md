@@ -19,7 +19,7 @@
 
 # Introduction
 
-TruBudget - a trusted public expenditure tool. A collaborative workflow tool and secured platform to track and coordinate the implementation of donor-funded investment projects. 
+TruBudget - a trusted public expenditure tool. A collaborative workflow tool and secured platform to track and coordinate the implementation of donor-funded investment projects.
 
 If you have questions or just want to talk to us, find us on [Gitter](https://gitter.im/Tru-Community/community)!
 
@@ -76,7 +76,7 @@ Once the application is started (and the provisioning is done), you can visit th
 http://localhost:80
 ```
 
-If you bootstraped an empty TruBudget instance, you need to provision some users first. In this case you have to log-in with the _root_, whose password is defined in the `.env` file with the environment variable `ROOT_SECRET`. The default value from the `.env_example` is: 
+If you bootstraped an empty TruBudget instance, you need to provision some users first. In this case you have to log-in with the _root_, whose password is defined in the `.env` file with the environment variable `ROOT_SECRET`. The default value from the `.env_example` is:
 
 ```
 User: root
@@ -178,15 +178,6 @@ Obviously this is just a short introduction on how to start and use the platform
 
 Checkout the [Contributor Guide](./doc/tutorials/contribute/Contributor-Guide.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
 
-<!-- # Troubleshooting
-TBD -->
-
 # More Information
 
 Check out our [**Trubudget-Wiki**](./doc/README.md) to find out how Trubudget works.
-
-<!--# FAQ
-
-| Description | Link |
-| :---------- | :--- |
--->

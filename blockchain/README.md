@@ -26,35 +26,51 @@ As described before: The Trubudget Blockchain is created one by a master, which 
 
 ## Configuration
 
-The Blockchain node is fully configurated through environment variables
+The Blockchain node is fully configurated through environment variables.
 
-### `ORGANIZATION` (required)
+### Environment Variables
 
-Identifer for Organization (needs to match Organization of User defined in the API's rights & role management, e.g. UmbrellaCorp)
+| Env Variable                | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                                        |
+| --------------------------- | -------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| API_HOST                    | no       |               | Used to build the URL to the master-node's API when requesting network access. (The IP addresses are usually the same as for the P2P host address).                                                                                                                                                                                                |
+| API_PORT                    | no       | 8080          | The port used to connect to the master-node's api.                                                                                                                                                                                                                                                                                                 |
+| API_PROTO                   | no       | http          | The Protocol which should be used to connect to the master-node's api. (http, https)                                                                                                                                                                                                                                                               |
+| EXTERNAL_IP                 | no       |               | The IP address with which the current node can be reached. The variable is forwarded to the mutlichain dameon as `externalip` argument. <br>Example: If you have a VM running on 52.52.52.52 and you want to start a slave node from this VM to connect to a master running on 53.53.53.53, you set the `EXTERNAL_IP` to 52.52.52.52 on this node. |
+| LOG_LEVEL                   | no       | INFO          | Sets the lowest level to the pino logger that is printed to `STDOUT` with varying levels ranging from `trace` to `fatal`.                                                                                                                                                                                                                          |
+| MULTICHAIN_DIR              | no       | /root         | The path to the multichain folder where the blockchain data is persisted. For installations via `docker-compose`, this refers to the path within the docker container of the blockchain. For bare metal installations, this refers to the path on the machine the blockchain is running on.                                                        |
+| ORGANIZATION                | yes      | -             | In the blockchain network, each node is represented by its organization name. This environment variable sets this organization name. It is used to create the organization stream on the blockchain.                                                                                                                                               |
+| P2P_HOST                    | no       |               | The IP address of the blockchain node you want to connect to. When given, the node joins the existing network rather than creating its own chain.                                                                                                                                                                                                  |
+| P2P_PORT                    | no       | 7447          | The port on which the node you want to connect to has exposed the blockchain.                                                                                                                                                                                                                                                                      |
+| PRETTY_PRINT                | no       | true          | Decides whether the logs printed by the API are pretty printed or not. Pretty printed logs are easier to read while non-pretty printed logs are easier to store and use e.g. in the ELK (Elasticsearch-Logstash-Kabana) stack.                                                                                                                     |
+| RPC_ALLOW_IP                | no       | 0.0.0.0/0     | It refers to an allowed IP address range, given either by IP or CIDR notation. 0.0.0.0/0 will allow access from anywhere.                                                                                                                                                                                                                          |
+| RPC_USER                    | no       | multichainrpc | The user used to connect to the multichain daemon.                                                                                                                                                                                                                                                                                                 |
+| RPC_PASSWORD                | no       | [hardcoded]   | Password used by the API to connect to the blockchain. The password is set by the origin node upon start. Every slave node needs to use the same RPC password in order to be able to connect to the blockchain. <br>**Hint:** Although the RPC_PASSWORD is not required it is highly recommended to set an own secure one                          |
+| RPC_PORT                    | no       | 8000          | The port used to expose the multichain daemon of your Trubudget blockchain installation(bc). The port used to connect to the multichain daemon(api). This will be used internally for the communication between the API and the multichain daemon.                                                                                                 |
+| ACCESS_CONTROL_ALLOW_ORIGIN | no       | "\*"          | This environment variable is needed for the feature "Export to Excel". Since the export service uses CORS, the domain by which it can be called needs to be set. Setting this value to `"*"` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).               |
+| CI_COMMIT_SHA               | no       |               | The /version endpoint returns this variable as `commit` property                                                                                                                                                                                                                                                                                   |
+| BUILDTIMESTAMP              | no       |               | The /version endpoint returns this variable as `buildTimeStamp` property                                                                                                                                                                                                                                                                           |
+| BLOCKNOTIFY_SCRIPT          | no       |               | Configure the blocknotifiy argument of the multichain configuration like -blocknotify=[BLOCKNOTIFY_SCRIPT]                                                                                                                                                                                                                                         |
 
-### `P2P_HOST`
+#### Email-Service
 
-The hostname of an existing MultiChain peer. When given, the node joins the existing network rather than creating its own chain.
+| Env Variable               | Required | Default Value    | Description                                                                                                                                                      |
+| -------------------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EMAIL_SERVICE              | no       | DISABLED         | If set to `ENABLED` the Email-Service feature is enabled and the EMAIL\_\* variables are required                                                                |
+| EMAIL_HOST                 | no       |                  | The IP address from the email-notification service.                                                                                                              |
+| EMAIL_PORT                 | no       |                  | The port address from the email-notification service.                                                                                                            |
+| EMAIL_SSL                  | no       | false            | If set to `true` the connection between blockchain and email-notification service is https instead of http                                                       |
+| NOTIFICATION_PATH          | no       | ./notifications/ | The path where notification files shall be saved on the blockchain environment                                                                                   |
+| NOTIFICATION_MAX_LIFETIME  | no       | 24               | This number configure how long notifications shall be saved in the NOTIFICATION_PATH in hours                                                                    |
+| NOTIFICATION_SEND_INTERVAL | no       | 10               | This number configure in which interval the notifications in the NOTIFICATION_PATH should be checked and send                                                    |
+| JWT_SECRET                 | no       |                  | The `JWT_SECRET` is only required if the Email feature is enabled. It is used to authenticate the blockchain at the email-service, so it can send notifications. |
 
-### `P2P_PORT`
+#### Kubernetes
 
-The port used by MultiChain for peer-to-peer communication among nodes (same for all nodes).
-
-### `API_PROTO`, `API_HOST`, `API_PORT`
-
-Used to build the URL to the master-node's API when requesting network access.
-
-### `deprecated: CHAINNAME`
-
-Uniquely identifies the chain. Note that a MultiChain network always relates to exactly one chain (name).
-
-### `RPC_PORT`, `RPC_USER`, `RPC_PASSWORD`, `RPC_ALLOW_IP`
-
-RPC connection settings for executing commands against the MultiChain node. The `RPC_ALLOW_IP` settings refers to an allowed IP address range, given either by IP or CIDR notation; for example, 0.0.0.0/0 will allow access from anywhere.
-
-### `EMAIL_SERVICE`, `EMAIL_HOST`, `EMAIL_PORT`,`EMAIL_SSL`, `NOTIFICATION_PATH`
-
-These environment variables configure the email service. `EMAIL_HOST`, `EMAIL_PORT` are describing the hostname/port of the Trubudget email-service. If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching for new incoming notification transaction - in short: The blockchain starts the background processes to send user ids to the notification.send endpoint. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false). `NOTIFICATION_PATH` is the path where notification files shall be saved. These variables are only required if an email service shall be configured. More about how the email service is set up can be found in the [Enable email service section](#enable-email-notifications) .
+| Env Variable | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------ | -------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EXPOSE_MC    | no       | false         | If set to true, Trubudget tries to expose it's multichain via kubernetes' ingress. First a kubernetes config file is searched in `/.kube/config`. If not found and the MC is deployed in a cluster, it is search for the service account to get the information. After configuration the `externalip` arg is set to the ip of the service' ingress of the configured cluster SERVICE_NAME and NAMESPACE are required to access the ingress of the service. |
+| SERVICE_NAME | no       |               | This variable is only required if EXPOSE_MC is set to true. It defines which service the kubernetes client should search for in the configured kubernetes cluster                                                                                                                                                                                                                                                                                          |
+| NAMESPACE    | no       |               | This variable is only required if EXPOSE_MC is set to true. It defines in which namespace the kubernetes client should search for the given service                                                                                                                                                                                                                                                                                                        |
 
 ## Getting started
 
@@ -73,6 +89,8 @@ If you have set your password token you can simply start the cluster `$ ./startD
 Enjoy!
 
 ## Enable email notifications
+
+If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification transactions. In other words The blockchain starts the background processes to send user ids to the email-notification service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false).
 
 The easiest way to get started is to use our pre-set `docker-compose` cluster available in the `email-notification` project which starts the whole TruBudget application including all email components(that means you need to install [Docker](https://www.docker.com/community-edition#/download)).
 The pre-set cluster contains:

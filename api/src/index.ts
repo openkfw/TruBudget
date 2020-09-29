@@ -47,32 +47,32 @@ import * as ProjectAssignService from "./service/project_assign";
 import * as ProjectCloseService from "./service/project_close";
 import * as ProjectCreateService from "./service/project_create";
 import * as ProjectGetService from "./service/project_get";
+import * as ProjectViewHistoryService from "./service/project_history_get";
 import * as ProjectListService from "./service/project_list";
 import * as ProjectPermissionGrantService from "./service/project_permission_grant";
 import * as ProjectPermissionRevokeService from "./service/project_permission_revoke";
 import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
-import * as ProjectViewHistoryService from "./service/project_history_get";
 import * as ProjectUpdateService from "./service/project_update";
 import { ConnectionSettings } from "./service/RpcClient.h";
 import * as SubprojectAssignService from "./service/subproject_assign";
 import * as SubprojectCloseService from "./service/subproject_close";
 import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
+import * as SubprojectViewHistoryService from "./service/subproject_history_get";
 import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
-import * as SubprojectViewHistoryService from "./service/subproject_history_get";
 import * as SubprojectUpdateService from "./service/subproject_update";
+import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserAuthenticateService from "./service/user_authenticate";
 import * as UserCreateService from "./service/user_create";
-import * as UserEnableService from "./service/user_enable";
 import * as UserDisableService from "./service/user_disable";
-import * as UserAssignmentsService from "./service/user_assignments_get";
+import * as UserEnableService from "./service/user_enable";
 import * as UserPasswordChangeService from "./service/user_password_change";
 import * as UserPermissionGrantService from "./service/user_permission_grant";
 import * as UserPermissionRevokeService from "./service/user_permission_revoke";
@@ -81,15 +81,15 @@ import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
+import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
 import * as WorkflowitemGetService from "./service/workflowitem_get";
+import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
-import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
-import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
@@ -105,10 +105,10 @@ import * as SubprojectViewHistoryAPI from "./subproject_view_history";
 import * as SubprojectViewHistoryAPIv2 from "./subproject_view_history_v2";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
-import * as UserEnableAPI from "./user_enable";
 import * as UserDisableAPI from "./user_disable";
-import * as UserAssignmentsAPI from "./user_listAssignments";
+import * as UserEnableAPI from "./user_enable";
 import * as UserListAPI from "./user_list";
+import * as UserAssignmentsAPI from "./user_listAssignments";
 import * as UserPasswordChangeAPI from "./user_password_change";
 import * as UserPermissionGrantAPI from "./user_permission_grant";
 import * as UserPermissionRevokeAPI from "./user_permission_revoke";
@@ -116,6 +116,7 @@ import * as UserPermissionsListAPI from "./user_permissions_list";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
+import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
@@ -124,7 +125,6 @@ import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
-import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
 
 const URL_PREFIX = "/api";
 
@@ -172,8 +172,6 @@ const rpcSettings: ConnectionSettings = {
   password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
 };
 
-const env = process.env.NODE_ENV || "";
-
 logger.info(
   { rpcSettings: rpcSettingsWithoutPassword(rpcSettings) },
   "Connecting to MultiChain node",
@@ -181,7 +179,7 @@ logger.info(
 const db = Multichain.init(rpcSettings);
 const { multichainClient } = db;
 
-const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH, env);
+const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH);
 
 /*
  * Run the app:

@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ## Unreleased -->
 
-<!-- ### Added -->
+### Added
+
+- Security FAQ [#542](https://github.com/openkfw/TruBudget/pull/542)
 
 <!-- ### Changed -->
 
