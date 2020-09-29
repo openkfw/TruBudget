@@ -3,7 +3,7 @@ const fs = require("fs");
 
 const { md5Dir } = require("./md5");
 
-const createMetadataFile = async (chainName, multichainDir) => {
+const createMetadataFile = async (chainName, multichainDir, organisation) => {
   const dirHash = await md5Dir(`${multichainDir}/${chainName}`);
   const filePath = `${multichainDir}/${chainName}/metadata.yml`;
   shell.touch(filePath);
@@ -11,7 +11,7 @@ const createMetadataFile = async (chainName, multichainDir) => {
   const ts = Date.now();
   shell
     .echo(
-      `ChainName: ${chainName}\nTimestamp: ${ts}\nDirectoryHash: ${dirHash}`,
+      `ChainName: ${chainName}\nOrganisation: ${organisation}\nTimestamp: ${ts}\nDirectoryHash: ${dirHash}`,
     )
     .to(filePath);
 };
