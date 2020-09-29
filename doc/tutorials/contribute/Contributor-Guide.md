@@ -23,7 +23,6 @@ This document describes how to set up your environment to start developing and d
   - [Tests](#tests)
     - [End-to-end Tests](#end-to-end-tests)
     - [Unit Tests](#unit-tests)
-- [FAQ](#faq)
 
 ## Software components
 
@@ -392,11 +391,6 @@ cd api
 npm run test:here <folderName> <describeString>
 ```
 
-# FAQ
-
-### Where to find the used illustration images?
-
-The source of illustration images is [unDraw](https://undraw.co/illustrations) with color code #53BBFE selected
 
 <!--
 | Description           | Link                                                                                                              |
