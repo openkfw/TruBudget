@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -30,12 +31,14 @@ export async function removeMember(
 
   // Create the new event:
   const memberRemoved = GroupMemberRemoved.createEvent(ctx.source, issuer.id, groupId, newMember);
-
+  if (Result.isErr(memberRemoved)) {
+    return new VError(memberRemoved, "failed to create group member removed event");
+  }
   // Check authorization (if not root):
   if (issuer.id !== "root") {
     const intent = "group.removeUser";
     if (!Group.permits(group, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: group })
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: group });
     }
   }
 

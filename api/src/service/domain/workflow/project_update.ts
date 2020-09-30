@@ -68,7 +68,7 @@ export async function updateProject(
   }
 
   // Create notification events:
-  let notifications: NotificationCreated.Event[] = [];
+  let notifications: Result.Type<NotificationCreated.Event[]> = [];
   if (project.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(project.assignee);
     if (Result.isErr(recipientsResult)) {
@@ -77,18 +77,23 @@ export async function updateProject(
     notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
       if (recipient !== issuer.id) {
-        notifications.push(
-          NotificationCreated.createEvent(
-            ctx.source,
-            issuer.id,
-            recipient,
-            projectUpdated,
-            projectId,
-          ),
+        const notification = NotificationCreated.createEvent(
+          ctx.source,
+          issuer.id,
+          recipient,
+          projectUpdated,
+          projectId,
         );
+        if (Result.isErr(notification)) {
+          return new VError(notification, "failed to create notification event");
+        }
+        notifications.push(notification);
       }
       return notifications;
     }, [] as NotificationCreated.Event[]);
+    if (Result.isErr(notifications)) {
+      return new VError(notifications, "failed to create notification created events");
+    }
   }
 
   return [projectUpdated, ...notifications];

@@ -32,7 +32,9 @@ export async function grantGlobalPermission(
     intent,
     grantee,
   );
-
+  if (Result.isErr(globalPermissionGranted)) {
+    return new VError(globalPermissionGranted, "failed to create global permission granted event");
+  }
   const grantIntent = "global.grantPermission";
   const globalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(globalPermissionsResult)) {

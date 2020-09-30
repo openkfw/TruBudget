@@ -47,7 +47,9 @@ export async function deleteProjectedBudget(
     organization,
     currencyCode,
   );
-
+  if (Result.isErr(budgetDeleted)) {
+    return new VError(budgetDeleted, "failed to create projected budget deleted event");
+  }
   // Check authorization (if not root):
   if (issuer.id !== "root") {
     const intent = "subproject.budget.deleteProjected";
@@ -76,19 +78,23 @@ export async function deleteProjectedBudget(
     const notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
       if (recipient !== issuer.id) {
-        notifications.push(
-          NotificationCreated.createEvent(
-            ctx.source,
-            issuer.id,
-            recipient,
-            budgetDeleted,
-            projectId,
-            subprojectId,
-          ),
+        const notification = NotificationCreated.createEvent(
+          ctx.source,
+          issuer.id,
+          recipient,
+          budgetDeleted,
+          projectId,
         );
+        if (Result.isErr(notification)) {
+          return new VError(notification, "failed to create  event");
+        }
+        notifications.push(notification);
       }
       return notifications;
     }, [] as NotificationCreated.Event[]);
+    if (Result.isErr(notifications)) {
+      return new VError(notifications, "failed to create notification events");
+    }
     return {
       newEvents: [budgetDeleted, ...notifications],
       projectedBudgets: result.projectedBudgets,

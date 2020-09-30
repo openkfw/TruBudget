@@ -39,7 +39,7 @@ export function createEvent(
   notificationId: Notification.Id,
   recipient: UserRecord.Id,
   time: string = new Date().toISOString(),
-): Event {
+): Result.Type<Event> {
   const event = {
     type: eventType,
     source,
@@ -51,7 +51,7 @@ export function createEvent(
 
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
-    throw new VError(validationResult, `not a valid ${eventType} event`);
+    return new VError(validationResult, `not a valid ${eventType} event`);
   }
   return event;
 }

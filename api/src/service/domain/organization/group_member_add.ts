@@ -1,3 +1,4 @@
+import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -31,7 +32,9 @@ export async function addMember(
 
   // Create the new event:
   const memberAdded = GroupMemberAdded.createEvent(ctx.source, issuer.id, groupId, newMember);
-
+  if (Result.isErr(memberAdded)) {
+    return new VError(memberAdded, "failed to create group added event");
+  }
   // Check authorization (if not root):
   if (issuer.id !== "root") {
     const intent = "group.addUser";
@@ -43,7 +46,7 @@ export async function addMember(
   // Check that the new event is indeed valid:
   const { errors } = sourceGroups(ctx, groupEvents.concat([memberAdded]));
   if (errors.length > 0) {
-    return new InvalidCommand(ctx, memberAdded, errors)
+    return new InvalidCommand(ctx, memberAdded, errors);
   }
 
   return memberAdded;

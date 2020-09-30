@@ -83,26 +83,27 @@ export async function assignWorkflowitem(
   const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
     if (recipient !== publisher.id) {
-      notifications.push(
-        NotificationCreated.createEvent(
-          ctx.source,
-          publisher.id,
-          recipient,
-          assignEvent,
-          projectId,
-          subprojectId,
-          workflowitemId,
-        ),
+      const notification = NotificationCreated.createEvent(
+        ctx.source,
+        publisher.id,
+        recipient,
+        assignEvent,
+        projectId,
       );
+      if (Result.isErr(notification)) {
+        return new VError(notification, "failed to create notification event");
+      }
+      notifications.push(notification);
     }
     return notifications;
   }, [] as NotificationCreated.Event[]);
-
+  if (Result.isErr(notifications)) {
+    return new VError(notifications, "failed to create notification events");
+  }
   const workflowitemTypeEvents = repository.applyWorkflowitemType(assignEvent, workflowitem);
 
   if (Result.isErr(workflowitemTypeEvents)) {
     return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
   }
-
   return { newEvents: [assignEvent, ...notifications, ...workflowitemTypeEvents], workflowitem };
 }

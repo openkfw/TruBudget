@@ -1,5 +1,6 @@
 import Joi = require("joi");
 
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -51,6 +52,9 @@ export async function changeUserPassword(
     id: data.userId,
     passwordHash: await repository.hash(data.newPassword),
   });
+  if (Result.isErr(passwordChanged)) {
+    return new VError(passwordChanged, "failed to create user password changed event");
+  }
   if (Result.isErr(validationResult)) {
     return new PreconditionError(ctx, passwordChanged, validationResult.message);
   }

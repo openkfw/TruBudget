@@ -70,11 +70,11 @@ function isClosed(item: Workflowitem.ScrubbedWorkflowitem): boolean {
   return item.status === "closed";
 }
 
-function closedAt(item: Workflowitem.ScrubbedWorkflowitem): string {
+function closedAt(item: Workflowitem.ScrubbedWorkflowitem): any {
   const traceEvent = item.log.find(e => e.businessEvent.type === "workflowitem_closed");
 
   if (traceEvent === undefined || traceEvent.businessEvent.type !== "workflowitem_closed") {
-    throw new AssertionError({ message: `Expected close event for workflowitem ${item.id}` });
+    return new AssertionError({ message: `Expected close event for workflowitem ${item.id}` });
   }
   const closeEvent = traceEvent.businessEvent;
 

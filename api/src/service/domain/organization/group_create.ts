@@ -60,6 +60,9 @@ export async function createGroup(
     permissions: newDefaultPermissionsFor(creatingUser),
     additionalData: data.additionalData || {},
   });
+  if (Result.isErr(createEvent)) {
+    return new VError(createEvent, "failed to create group created event");
+  }
 
   const groupExistsResult = await repository.groupExists(createEvent.group.id);
   if (Result.isErr(groupExistsResult)) {

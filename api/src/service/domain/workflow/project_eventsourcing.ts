@@ -127,7 +127,9 @@ export function newProjectFromEvent(
   event: BusinessEvent,
 ): Result.Type<Project.Project> {
   const eventModule = getEventModule(event);
-
+  if (Result.isErr(eventModule)) {
+    return eventModule;
+  }
   // Ensure that we never modify project or event in-place by passing copies. When
   // copying the project, its event log is omitted for performance reasons.
   const eventCopy = deepcopy(event);
@@ -155,7 +157,7 @@ export function newProjectFromEvent(
 type EventModule = {
   mutate: (project: Project.Project, event: BusinessEvent) => Result.Type<void>;
 };
-function getEventModule(event: BusinessEvent): EventModule {
+function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
     case "project_updated":
       return ProjectUpdated;
@@ -179,7 +181,7 @@ function getEventModule(event: BusinessEvent): EventModule {
       return ProjectProjectedBudgetDeleted;
 
     default:
-      throw new VError(`unknown project event ${event.type}`);
+      return new VError(`unknown project event ${event.type}`);
   }
 }
 

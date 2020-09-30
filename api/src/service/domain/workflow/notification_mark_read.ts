@@ -39,6 +39,9 @@ export async function markRead(
     notificationId,
     notification.recipient,
   );
+  if (Result.isErr(markedRead)) {
+    return new VError(markedRead, "failed to create notification marked read event");
+  }
 
   // Already read
   if (notification.isRead) {
