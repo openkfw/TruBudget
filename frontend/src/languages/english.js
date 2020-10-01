@@ -377,6 +377,7 @@ const en = {
     restore: "Restore",
     rtUpdates: "Real-Time Updates",
     selections: "Selections",
+    service_status: "Service Status",
     unread_notifications: "Unread Notifications",
     write_permission: "Write"
   },
@@ -567,6 +568,19 @@ const en = {
     workflowitem_permission_granted: "Workflowitem permission granted",
     workflowitem_permission_revoked: "Workflowitem permission revoked",
     workflowitems_reordered: "Workflowitems reordered"
+  },
+
+  status: {
+    average: "average",
+    connection: "Connection",
+    fast: "fast",
+    no_ping_available: "no ping available",
+    not_connected: "not connected",
+    ping: "Ping",
+    service: "Service",
+    slow: "slow",
+    version: "Version",
+    very_slow: "very slow"
   },
 
   language: {

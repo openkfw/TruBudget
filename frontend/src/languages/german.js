@@ -380,6 +380,7 @@ const de = {
     restore: "German: Restore",
     rtUpdates: "Real-Time Updates",
     selections: "Selections",
+    service_status: "Service Status",
     unread_notifications: "Unread Notifications",
     write_permission: "Write"
   },
@@ -570,6 +571,19 @@ const de = {
     workflowitem_permission_granted: "Workflowitem-Erlaubnis erteilt",
     workflowitem_permission_revoked: "Workflowitem-Erlaubnis widerrufen",
     workflowitems_reordered: "Workflow-Einträge neu angeordnet"
+  },
+
+  status: {
+    average: "normal",
+    connection: "Verbindung",
+    fast: "schnell",
+    no_ping_available: "kein ping möglich",
+    not_connected: "nicht verbunden",
+    ping: "Ping",
+    service: "Service",
+    slow: "langsam",
+    version: "Version",
+    very_slow: "sehr langsam"
   },
 
   language: {

@@ -27,6 +27,20 @@ class Api {
       },
       ...instance.defaults.transformRequest
     ];
+
+    instance.interceptors.request.use(request => {
+      if (request.url.includes("/version")) {
+        this.timeStamp = performance.now();
+      }
+      return request;
+    });
+
+    instance.interceptors.response.use(response => {
+      if (response.config.url.includes("/version")) {
+        response.data.ping = performance.now() - this.timeStamp;
+      }
+      return response;
+    });
   }
 
   setAuthorizationHeader = token => {
@@ -153,7 +167,8 @@ class Api {
     return instance.get(url);
   };
 
-  listProjectIntents = projectId => instance.get(removeEmptyQueryParams(`/project.intent.listPermissions?projectId=${projectId}`));
+  listProjectIntents = projectId =>
+    instance.get(removeEmptyQueryParams(`/project.intent.listPermissions?projectId=${projectId}`));
 
   grantProjectPermissions = (projectId, intent, identity) =>
     instance.post(`/project.intent.grantPermission`, {
@@ -265,7 +280,9 @@ class Api {
   };
 
   listSubProjectPermissions = (projectId, subprojectId) =>
-    instance.get(removeEmptyQueryParams(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`));
+    instance.get(
+      removeEmptyQueryParams(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`)
+    );
 
   grantSubProjectPermissions = (projectId, subprojectId, intent, identity) =>
     instance.post(`/subproject.intent.grantPermission`, {
@@ -309,9 +326,11 @@ class Api {
   validateDocument = (base64String, hash) => instance.post(`/workflowitem.validateDocument`, { base64String, hash });
 
   listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
-    instance.get(removeEmptyQueryParams(
-      `/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
-    ));
+    instance.get(
+      removeEmptyQueryParams(
+        `/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
+      )
+    );
 
   grantWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, identity) =>
     instance.post(`/workflowitem.intent.grantPermission`, {
@@ -403,8 +422,20 @@ class Api {
     const path = devMode ? "http://localhost:8888/test" : "/export/xlsx/";
     return instance.get(path, { responseType: "blob" });
   };
+  fetchExportServiceVersion = () => {
+    const path = devMode ? "http://localhost:8888/version" : "/export/xlsx/version";
+    return instance.get(path);
+  };
+  checkExportService = () => {
+    const path = devMode ? "http://localhost:8888/readiness" : "/export/xlsx/readiness";
+    return instance.get(path);
+  };
   checkEmailService = () => {
     const path = devMode ? "http://localhost:8890/readiness" : "/email/readiness";
+    return instance.get(path);
+  };
+  fetchEmailServiceVersion = () => {
+    const path = devMode ? "http://localhost:8890/version" : "/email/version";
     return instance.get(path);
   };
   insertEmailAddress = (id, emailAddress) => {
@@ -431,8 +462,10 @@ class Api {
 
   downloadDocument = (projectId, subprojectId, workflowitemId, documentId) =>
     instance
-      .get(removeEmptyQueryParams(
-        `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`),
+      .get(
+        removeEmptyQueryParams(
+          `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
+        ),
         { responseType: "blob" }
       )
       .then(response => {
@@ -475,9 +508,9 @@ const hasAttachment = response => {
  */
 const removeEmptyQueryParams = url => {
   return url
-    .replace(/[^=&]+=(&|$)/g, "") // removes a parameter if the '=' is followed by a '&' or if it's the end of the line 
-    .replace(/[^=&]+=(undefined|$)/g, "") // removes a parameter if the '=' is followed by 'undefined' 
-    .replace(/&$/, ""); // removes any leftover '$' 
+    .replace(/[^=&]+=(&|$)/g, "") // removes a parameter if the '=' is followed by a '&' or if it's the end of the line
+    .replace(/[^=&]+=(undefined|$)/g, "") // removes a parameter if the '=' is followed by 'undefined'
+    .replace(/&$/, ""); // removes any leftover '$'
 };
 
 export default Api;

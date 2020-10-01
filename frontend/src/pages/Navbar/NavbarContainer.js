@@ -2,33 +2,31 @@ import isEmpty from "lodash/isEmpty";
 import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { toJS } from "../../helper";
-import { logout, fetchEmailAddress } from "../Login/actions";
+
+import { convertToSearchBarString, toJS } from "../../helper";
+import { fetchEmailAddress, logout } from "../Login/actions";
 import FlyInNotifications from "../Notifications/FlyInNotifications";
 import {
   createBackup,
+  enableUserProfileEdit,
   exportData,
   fetchActivePeers,
-  fetchVersions,
+  hideUserProfile,
   restoreBackup,
+  saveEmailAddress,
   setIsRoot,
+  setValidEmailAddressInput,
   showUserProfile,
   storeSearchBarDisplayed,
   storeSearchTerm,
-  toggleSidebar,
-  saveEmailAddress,
   storeTempEmailAddress,
-  setValidEmailAddressInput,
-  enableUserProfileEdit,
-  hideUserProfile
+  toggleSidebar
 } from "./actions";
 import Navbar from "./Navbar";
-import { convertToSearchBarString } from "../../helper";
 
 class NavbarContainer extends Component {
   componentDidMount() {
     this.props.fetchActivePeers();
-    this.props.fetchVersions();
 
     if (this.props.userId === "root") {
       this.props.setIsRoot(true);
@@ -62,7 +60,6 @@ const mapDispatchToProps = {
   fetchActivePeers,
   createBackup,
   restoreBackup,
-  fetchVersions,
   exportData,
   storeSearchTerm,
   storeSearchBarDisplayed,
@@ -93,7 +90,6 @@ const mapStateToProps = state => {
     avatarBackground: state.getIn(["login", "avatarBackground"]),
     currentProject: state.getIn(["navbar", "currentProject"]),
     currentSubProject: state.getIn(["navbar", "currentSubProject"]),
-    versions: state.getIn(["navbar", "versions"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     groups: state.getIn(["login", "groups"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
@@ -106,6 +102,7 @@ const mapStateToProps = state => {
     userProfileEdit: state.getIn(["navbar", "userProfileEdit"]),
     emailAddress: state.getIn(["login", "emailAddress"]),
     emailServiceAvailable: state.getIn(["login", "emailServiceAvailable"]),
+    exportServiceAvailable: state.getIn(["login", "exportServiceAvailable"]),
     isEmailAddressInputValid: state.getIn(["navbar", "isEmailAddressInputValid"])
   };
 };

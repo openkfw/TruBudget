@@ -13,7 +13,7 @@ const accessControlAllowOrigin: string = process.env.ACCESS_CONTROL_ALLOW_ORIGIN
 
 const DEFAULT_API_VERSION = "1.0";
 
-const transformRequest: AxiosTransformer = data => {
+const transformRequest: AxiosTransformer = (data) => {
   if (typeof data === "object") {
     return {
       apiVersion: DEFAULT_API_VERSION,
@@ -40,6 +40,19 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
 
   if (req.url === "/readiness") {
     // TODO: check readiness of api
+    return res.end();
+  }
+
+  if (req.url === "/version") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.statusCode = 200;
+    res.write(
+      JSON.stringify({
+        release: process.env.npm_package_version,
+        commit: process.env.CI_COMMIT_SHA || "",
+        buildTimeStamp: process.env.BUILDTIMESTAMP || "",
+      }),
+    );
     return res.end();
   }
 

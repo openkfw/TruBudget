@@ -15,9 +15,6 @@ export const RESTORE_BACKUP_FAILURE = "RESTORE_BACKUP_FAILURE";
 export const DISABLE_ALL_LIVE_UPDATES = "DISABLE_ALL_LIVE_UPDATES";
 export const ENABLE_ALL_LIVE_UPDATES = "ENABLE_ALL_LIVE_UPDATES";
 
-export const FETCH_VERSIONS = "FETCH_VERSIONS";
-export const FETCH_VERSIONS_SUCCESS = "FETCH_VERSIONS_SUCCESS";
-
 export const EXPORT_DATA = "EXPORT_DATA";
 export const EXPORT_DATA_SUCCESS = "EXPORT_DATA_SUCCESS";
 export const EXPORT_DATA_FAILED = "EXPORT_DATA_FAILED";
@@ -76,12 +73,6 @@ export function createBackup() {
     type: CREATE_BACKUP
   };
 }
-export function fetchVersions() {
-  return {
-    type: FETCH_VERSIONS
-  };
-}
-
 export function exportData() {
   return {
     type: EXPORT_DATA

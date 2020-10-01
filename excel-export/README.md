@@ -37,5 +37,6 @@ To check what is configurable regarding excel-export service check out the [envi
 | ------ | ---------- | ------------------------------------------------------------------------ |
 | GET    | /health    | Checks if excel service is up                                            |
 | GET    | /readiness | Checks if excel service is ready                                         |
+| GET    | /version   | Get the current version of the service                                   |
 | POST   | /test      | Get excel file of api configured via `TEST_API_HOST` and `TEST_API_PORT` |
 | POST   | /prod      | Get excel file of api configured via `PROD_API_HOST` and `PROD_API_PORT` |

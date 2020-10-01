@@ -379,6 +379,7 @@ const ka = {
     restore: "აღდგენა",
     rtUpdates: "რეალურ დროში განახლებები",
     selections: "შერჩევა",
+    service_status: "მომსახურების სტატუსი",
     unread_notifications: "წაუკითხავი შეტყობინებები",
     write_permission: "Write"
   },
@@ -569,6 +570,19 @@ const ka = {
     workflowitem_permission_granted: "მიენიჭა workflowitem ნებართვა",
     workflowitem_permission_revoked: "სამუშაო პროცესის ნებართვა გაუქმებულია",
     workflowitems_reordered: "Workflowitems გადაკეთდა"
+  },
+
+  status: {
+    average: "საშუალო",
+    connection: "კავშირი",
+    fast: "სწრაფი",
+    no_ping_available: "პინგი არ არის ხელმისაწვდომი",
+    not_connected: "არ არის დაკავშირებული",
+    ping: "პინგ",
+    service: "მომსახურება",
+    slow: "ნელი",
+    version: "ვერსია",
+    very_slow: "ძალიან ნელი"
   },
 
   language: {

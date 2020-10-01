@@ -1,6 +1,7 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import * as http from "http";
 import * as https from "https";
+import { performance } from "perf_hooks";
 
 import logger from "../lib/logger";
 import { ConnectionSettings } from "./RpcClient.h";
@@ -58,6 +59,7 @@ if (logger.levelVal >= logger.levels.values.debug) {
 export class RpcClient {
   private call: (method: string, params: any) => any;
   private instance: AxiosInstance;
+  private timeStamp;
 
   constructor(settings: ConnectionSettings) {
     const protocol = `${settings.protocol || "http"}`;
@@ -74,6 +76,19 @@ export class RpcClient {
         username: settings.username || "multichainrpc",
         password: settings.password,
       },
+    });
+    this.instance.interceptors.request.use((request: AxiosRequestConfig) => {
+      if (JSON.parse(request.data).method?.includes("getinfo")) {
+        this.timeStamp = performance.now();
+      }
+      return request;
+    });
+
+    this.instance.interceptors.response.use((response: AxiosResponse<any>) => {
+      if (JSON.parse(response.config.data).method === "getinfo") {
+        response.data.result.ping = performance.now() - this.timeStamp;
+      }
+      return response;
     });
   }
 

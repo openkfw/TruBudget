@@ -37,11 +37,11 @@ Learn how to download or upload a backup of the current data (multichain instanc
 
 - [Backup](./Backup.md)
 
-## Versions
+## Versions and Service-Status
 
-Learn where to find the versions of all Trubudget components
+Learn where to find the versions and connection quality of all Trubudget components
 
-- [Versions](./Versions.md)
+- [Service-Status](./Status/Versions.md)
 
 ## FAQ
 
