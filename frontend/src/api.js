@@ -89,7 +89,7 @@ class Api {
       newPassword
     });
 
-  listUserAssignments = userId => instance.get(`/global.listAssignments?userId=${userId}`);
+  listUserAssignments = userId => instance.get(validateUrl(`/global.listAssignments?userId=${userId}`));
 
   createGroup = (groupId, displayName, users) =>
     instance.post(`/global.createGroup`, {
@@ -121,7 +121,7 @@ class Api {
       address
     });
   listProjects = () => instance.get(`/project.list`);
-  listSubprojects = projectId => instance.get(`/subproject.list?projectId=${projectId}`);
+  listSubprojects = projectId => instance.get(validateUrl(`/subproject.list?projectId=${projectId}`));
 
   createProject = (displayName, description, thumbnail, projectedBudgets, tags) =>
     instance.post(`/global.createProject`, {
@@ -140,9 +140,10 @@ class Api {
       ...changes
     });
 
-  viewProjectDetails = projectId => instance.get(`/project.viewDetails?projectId=${projectId}`);
+  viewProjectDetails = projectId => instance.get(validateUrl(`/project.viewDetails?projectId=${projectId}`));
   viewProjectHistory = (projectId, offset, limit, filter) => {
-    let url = `/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`;
+    let url = validateUrl(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
+
     // filter: startAt|endAt|publisher|eventType
     for (const key in filter) {
       if (!_isEmpty(filter[key])) {
@@ -152,7 +153,7 @@ class Api {
     return instance.get(url);
   };
 
-  listProjectIntents = projectId => instance.get(`/project.intent.listPermissions?projectId=${projectId}`);
+  listProjectIntents = projectId => instance.get(validateUrl(`/project.intent.listPermissions?projectId=${projectId}`));
 
   grantProjectPermissions = (projectId, intent, identity) =>
     instance.post(`/project.intent.grantPermission`, {
@@ -187,10 +188,12 @@ class Api {
     });
 
   viewSubProjectDetails = (projectId, subprojectId) =>
-    instance.get(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`);
+    instance.get(validateUrl(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`));
 
   viewSubProjectHistory = (projectId, subprojectId, offset, limit, filter) => {
-    let url = `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`;
+    let url = validateUrl(
+      `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
+    );
     // filter: startAt|endAt|publisher|eventType
     for (const key in filter) {
       if (!_isEmpty(filter[key])) {
@@ -201,7 +204,9 @@ class Api {
   };
 
   viewWorkflowitemHistory = (projectId, subprojectId, workflowitemId, offset, limit, filter) => {
-    let url = `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`;
+    let url = validateUrl(
+      `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`
+    );
     // filter: startAt|endAt|publisher|eventType
     for (const key in filter) {
       if (!_isEmpty(filter[key])) {
@@ -260,7 +265,7 @@ class Api {
   };
 
   listSubProjectPermissions = (projectId, subprojectId) =>
-    instance.get(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`);
+    instance.get(validateUrl(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`));
 
   grantSubProjectPermissions = (projectId, subprojectId, intent, identity) =>
     instance.post(`/subproject.intent.grantPermission`, {
@@ -304,9 +309,9 @@ class Api {
   validateDocument = (base64String, hash) => instance.post(`/workflowitem.validateDocument`, { base64String, hash });
 
   listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
-    instance.get(
+    instance.get(validateUrl(
       `/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
-    );
+    ));
 
   grantWorkflowItemPermissions = (projectId, subprojectId, workflowitemId, intent, identity) =>
     instance.post(`/workflowitem.intent.grantPermission`, {
@@ -366,10 +371,7 @@ class Api {
     });
 
   fetchNotifications = (offset, limit) => {
-    let url = `/notification.list?offset=${offset}`;
-    if (!_isEmpty(limit)) {
-      url = url + `limit=${limit}`;
-    }
+    let url = validateUrl(`/notification.list?offset=${offset}&limit=${limit}`);
     return instance.get(url);
   };
 
@@ -429,8 +431,8 @@ class Api {
 
   downloadDocument = (projectId, subprojectId, workflowitemId, documentId) =>
     instance
-      .get(
-        `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`,
+      .get(validateUrl(
+        `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`),
         { responseType: "blob" }
       )
       .then(response => {
@@ -463,6 +465,13 @@ class Api {
 const hasAttachment = response => {
   const dispositionHeader = response.headers["content-disposition"];
   return dispositionHeader && dispositionHeader.indexOf("attachment") !== -1;
+};
+
+const validateUrl = url => {
+  return url
+    .replace(/[^=&]+=(&|$)/g, "")
+    .replace(/[^=&]+=(undefined|$)/g, "")
+    .replace(/&$/, "");
 };
 
 export default Api;
