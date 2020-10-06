@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed a bug where the email field dissappears in the user profile [#551](https://github.com/openkfw/TruBudget/issues/551)
+- Fixed a bug where opening a history sometimes resulted in an error [#549](https://github.com/openkfw/TruBudget/issues/549)
 
 <!-- ### Security -->
 
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed the global permission list to set permissions to disable or enable users [#537](https://github.com/openkfw/TruBudget/pull/537)
+
 
 # [1.12.0] - 2020-08-10
 
