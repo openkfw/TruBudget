@@ -25,7 +25,8 @@ const parseFromState = state => ({
     displayName: state.getIn(["login", "displayName"]),
     organization: state.getIn(["login", "organization"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]).toJS(),
-    groups: state.getIn(["login", "groups"]).toJS()
+    groups: state.getIn(["login", "groups"]).toJS(),
+    emailServiceAvailable: state.getIn(["login", "emailServiceAvailable"])
   }
 });
 

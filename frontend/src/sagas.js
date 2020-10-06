@@ -255,6 +255,9 @@ const getWorkflowitemHistoryState = state => {
 const getConfirmedState = state => {
   return state.getIn(["confirmation", "confirmed"]);
 };
+const getEmailServiceAvailable = state => {
+  return state.getIn(["login", "emailServiceAvailable"]);
+};
 
 function* execute(fn, showLoading = false, errorCallback = undefined) {
   const done = yield handleLoading(showLoading);
@@ -2423,62 +2426,68 @@ function* exportDataSaga() {
   );
 }
 function* saveEmailAddressSaga({ emailAddress }) {
-  yield execute(
-    function*() {
-      const id = yield select(getSelfId);
-      const currentEmailAddress = yield select(getEmailAddress);
-      if (currentEmailAddress.length > 0) {
-        yield callApi(api.updateEmailAddress, id, emailAddress);
-      } else {
-        yield callApi(api.insertEmailAddress, id, emailAddress);
+  const isEmailServiceAvailable = yield select(getEmailServiceAvailable);
+  if (isEmailServiceAvailable) {
+    yield execute(
+      function*() {
+        const id = yield select(getSelfId);
+        const currentEmailAddress = yield select(getEmailAddress);
+        if (currentEmailAddress.length > 0) {
+          yield callApi(api.updateEmailAddress, id, emailAddress);
+        } else {
+          yield callApi(api.insertEmailAddress, id, emailAddress);
+        }
+        yield put({
+          type: SAVE_EMAIL_ADDRESS_SUCCESS
+        });
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: formatString(strings.notification.email_saved, emailAddress)
+        });
+        yield put({
+          type: SHOW_SNACKBAR,
+          show: true,
+          isError: false
+        });
+        yield fetchEmailAddressSaga();
+      },
+      true,
+      function*(error) {
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.notification.save_email_error
+        });
+        yield put({
+          type: SHOW_SNACKBAR,
+          show: true,
+          isError: true
+        });
       }
-      yield put({
-        type: SAVE_EMAIL_ADDRESS_SUCCESS
-      });
-      yield put({
-        type: SNACKBAR_MESSAGE,
-        message: formatString(strings.notification.email_saved, emailAddress)
-      });
-      yield put({
-        type: SHOW_SNACKBAR,
-        show: true,
-        isError: false
-      });
-      yield fetchEmailAddressSaga();
-    },
-    true,
-    function*(error) {
-      yield put({
-        type: SNACKBAR_MESSAGE,
-        message: strings.notification.save_email_error
-      });
-      yield put({
-        type: SHOW_SNACKBAR,
-        show: true,
-        isError: true
-      });
-    }
-  );
+    );
+  }
 }
 
 function* fetchEmailAddressSaga() {
-  yield execute(
-    function*() {
-      const id = yield select(getSelfId);
-      const data = yield callApi(api.getEmailAddress, id);
-      yield put({
-        type: FETCH_EMAIL_ADDRESS_SUCCESS,
-        emailAddress: data.user.emailAddress
-      });
-    },
-    true,
-    function*(error) {
-      yield put({
-        type: FETCH_EMAIL_ADDRESS_FAILURE,
-        error
-      });
-    }
-  );
+  const isEmailServiceAvailable = yield select(getEmailServiceAvailable);
+  if (isEmailServiceAvailable) {
+    yield execute(
+      function*() {
+        const id = yield select(getSelfId);
+        const data = yield callApi(api.getEmailAddress, id);
+        yield put({
+          type: FETCH_EMAIL_ADDRESS_SUCCESS,
+          emailAddress: data.user.emailAddress
+        });
+      },
+      true,
+      function*(error) {
+        yield put({
+          type: FETCH_EMAIL_ADDRESS_FAILURE,
+          error
+        });
+      }
+    );
+  }
 }
 
 function* checkEmailServiceSaga() {
