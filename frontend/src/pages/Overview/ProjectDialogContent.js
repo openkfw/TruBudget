@@ -1,7 +1,6 @@
 import Divider from "@material-ui/core/Divider";
 import React from "react";
 
-import { toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
@@ -29,18 +28,11 @@ const ProjectDialogContent = props => {
       <Divider />
       <div>
         <Budget
-          currencyTitle={strings.project.project_currency}
-          currency={props.projectToAdd.currency}
-          budgetLabel={strings.project.project_budget_amount}
-          budgetHintText={strings.project.project_budget_amount_description + " " + toAmountString(99999.99)}
-          budget={props.projectToAdd.amount}
-          storeProjectedBudget={props.storeProjectedBudget}
-          organization={props.projectToAdd.organization}
           projectedBudgets={props.projectToAdd.projectedBudgets}
           deletedProjectedBudgets={props.projectToAdd.deletedProjectedBudgets}
-          editDialogShown={props.editDialogShown}
+          addProjectedBudget={props.addProjectProjectedBudget}
+          editProjectedBudget={props.editProjectProjectedBudgetAmount}
           storeDeletedProjectedBudget={props.storeDeletedProjectedBudget}
-          disabled={props.editDialogShown}
         />
       </div>
       <div>

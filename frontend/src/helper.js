@@ -8,6 +8,9 @@ import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
 import _isString from "lodash/isString";
 import _isUndefined from "lodash/isUndefined";
+import _isObject from "lodash/isObject";
+import _every from "lodash/every";
+import _map from "lodash/map";
 import React from "react";
 import currencies from "./currency";
 import strings from "./localizeStrings";
@@ -188,4 +191,20 @@ export function hasUserAssignments(assignments) {
     !_isEmpty(assignments.workflowitems) ||
     hasHiddenAssignments
   );
+}
+
+/*
+ * isEmptyDeep(obj) checks all nested properties of the object.
+ * If every property is empty, it return true, otherwise false
+ * A property can be an object or array
+ * If property values are falsy (0, false), it is not considered as empty
+ */
+export function isEmptyDeep(obj) {
+  if (_isObject(obj)) {
+    if (Object.keys(obj).length === 0) return true;
+    return _every(_map(obj, v => isEmptyDeep(v)));
+  } else if (_isString(obj)) {
+    return !obj.length;
+  }
+  return false;
 }

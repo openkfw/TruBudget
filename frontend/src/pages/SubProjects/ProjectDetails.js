@@ -129,7 +129,7 @@ const ProjectDetails = props => {
             </ListItem>
           ) : null}
         </List>
-        <div style={styles.projectedBudget}>
+        <div style={styles.projectedBudget} data-test="project-projected-budget">
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
           {isDataLoading ? (
             <div />

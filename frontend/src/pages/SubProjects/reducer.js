@@ -27,7 +27,8 @@ import {
   SUBPROJECT_CURRENCY,
   SUBPROJECT_DELETED_PROJECTED_BUDGET,
   SUBPROJECT_NAME,
-  SUBPROJECT_PROJECTED_BUDGETS,
+  ADD_SUBPROJECT_PROJECTED_BUDGET,
+  EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT,
   SUBPROJECT_SEARCH_BAR_DISPLAYED,
   SUBPROJECT_SEARCH_TERM,
   SUBPROJECT_STORE_FILTERED_PROJECTS,
@@ -56,7 +57,8 @@ const defaultState = fromJS({
     displayName: "",
     description: "",
     currency: "",
-    projectedBudgets: []
+    projectedBudgets: [],
+    deletedProjectedBudgets: []
   },
   idsPermissionsUnassigned: [],
   creationDialogShown: false,
@@ -146,14 +148,38 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["subprojectToAdd", "description"], action.description);
     case SUBPROJECT_CURRENCY:
       return state.setIn(["subprojectToAdd", "currency"], action.currency);
-    case SUBPROJECT_PROJECTED_BUDGETS:
-      return state.setIn(["subprojectToAdd", "projectedBudgets"], fromJS(action.projectedBudgets));
+    case ADD_SUBPROJECT_PROJECTED_BUDGET:
+      return state.merge({
+        subprojectToAdd: state.get("subprojectToAdd").merge({
+          projectedBudgets: [...state.getIn(["subprojectToAdd", "projectedBudgets"]).toJS(), action.projectedBudget]
+        })
+      });
+    case EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT:
+      let newStateWithEditedBudget;
+      state
+        .getIn(["subprojectToAdd", "projectedBudgets"])
+        .toJS()
+        .forEach((b, index) => {
+          if (
+            b.organization === action.projectedBudget.organization &&
+            b.currencyCode === action.projectedBudget.currencyCode
+          ) {
+            newStateWithEditedBudget = state.setIn(
+              ["subprojectToAdd", "projectedBudgets", index, "value"],
+              action.budgetAmountEdit
+            );
+          }
+        });
+      return newStateWithEditedBudget;
     case SUBPROJECT_DELETED_PROJECTED_BUDGET:
       const projectedBudgets = state.getIn(["subprojectToAdd", "projectedBudgets"]).toJS();
       const projectedBudgetsToDelete = action.projectedBudgets;
       const newState = state.merge({
         subprojectToAdd: state.get("subprojectToAdd").merge({
-          deletedProjectedBudgets: projectedBudgetsToDelete,
+          deletedProjectedBudgets: [
+            ...state.getIn(["subprojectToAdd", "deletedProjectedBudgets"]),
+            ...projectedBudgetsToDelete
+          ],
           projectedBudgets: projectedBudgets.filter(
             b =>
               projectedBudgetsToDelete.find(
@@ -215,6 +241,7 @@ export default function detailviewReducer(state = defaultState, action) {
             .set("description", action.description)
             .set("currency", action.currency)
             .set("projectedBudgets", fromJS(action.projectedBudgets))
+            .set("deletedProjectedBudgets", fromJS([]))
         )
         .merge({
           editDialogShown: true,

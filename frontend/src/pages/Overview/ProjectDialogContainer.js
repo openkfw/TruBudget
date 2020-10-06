@@ -12,7 +12,8 @@ import {
   storeProjectComment,
   storeProjectName,
   storeProjectThumbnail,
-  storeProjectedBudget,
+  addProjectProjectedBudget,
+  editProjectProjectedBudgetAmount,
   storeDeletedProjectedBudget,
   addProjectTag,
   removeProjectTag
@@ -47,7 +48,9 @@ const mapDispatchToProps = dispatch => {
     storeProjectComment: comment => dispatch(storeProjectComment(comment)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
-    storeProjectedBudget: projectedBudgets => dispatch(storeProjectedBudget(projectedBudgets)),
+    addProjectProjectedBudget: projectedBudget => dispatch(addProjectProjectedBudget(projectedBudget)),
+    editProjectProjectedBudgetAmount: (projectedBudget, budgetAmountEdit) =>
+      dispatch(editProjectProjectedBudgetAmount(projectedBudget, budgetAmountEdit)),
     storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     addProjectTag: tag => dispatch(addProjectTag(tag)),

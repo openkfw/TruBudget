@@ -5,7 +5,7 @@ import _isEmpty from "lodash/isEmpty";
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
 import SubprojectDialogContent from "./SubprojectDialogContent";
-import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
+import { compareObjects, fromAmountString, shortenedDisplayName, isEmptyDeep } from "../../helper";
 
 const handleCreate = props => {
   const { createSubProject, onDialogCancel, subprojectToAdd, location, storeSnackbarMessage } = props;
@@ -27,8 +27,9 @@ const handleCreate = props => {
 const handleEdit = props => {
   const { editSubproject, onDialogCancel, subProjects, subprojectToAdd, location, storeSnackbarMessage } = props;
   const changes = compareObjects(subProjects, subprojectToAdd);
+  const hasChanges = !isEmptyDeep(changes);
   const projectId = location.pathname.split("/")[2];
-  if (!_isEmpty(changes)) {
+  if (hasChanges) {
     editSubproject(
       projectId,
       subprojectToAdd.id,
@@ -58,6 +59,8 @@ const SubprojectDialog = props => {
     subProjects
   } = props;
   const changes = compareObjects(subProjects, subprojectToAdd);
+  const hasChanges = !isEmptyDeep(changes);
+
   const specifcProps = props.editDialogShown
     ? {
         handleSubmit: handleEdit,
@@ -67,12 +70,11 @@ const SubprojectDialog = props => {
         handleSubmit: handleCreate,
         dialogShown: creationDialogShown
       };
-
   const steps = [
     {
       title: strings.project.project_details,
       content: <SubprojectDialogContent {...props} />,
-      nextDisabled: _isEmpty(subprojectToAdd.displayName) || _isEmpty(subprojectToAdd.currency) || _isEmpty(changes)
+      nextDisabled: _isEmpty(subprojectToAdd.displayName) || _isEmpty(subprojectToAdd.currency) || !hasChanges
     }
   ];
   return (

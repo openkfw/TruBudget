@@ -75,7 +75,7 @@ const de = {
     not_disbursed: "Nicht ausgezahlt",
     not_ok: "NOK",
     open: "Open",
-    organization: "German: Organization",
+    organization: "Organisation",
     password: "Passwort",
     permission: "Berechtigung",
     project: "German: Project",
