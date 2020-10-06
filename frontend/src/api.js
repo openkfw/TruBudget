@@ -89,7 +89,7 @@ class Api {
       newPassword
     });
 
-  listUserAssignments = userId => instance.get(validateUrl(`/global.listAssignments?userId=${userId}`));
+  listUserAssignments = userId => instance.get(removeEmptyQueryParams(`/global.listAssignments?userId=${userId}`));
 
   createGroup = (groupId, displayName, users) =>
     instance.post(`/global.createGroup`, {
@@ -121,7 +121,7 @@ class Api {
       address
     });
   listProjects = () => instance.get(`/project.list`);
-  listSubprojects = projectId => instance.get(validateUrl(`/subproject.list?projectId=${projectId}`));
+  listSubprojects = projectId => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
 
   createProject = (displayName, description, thumbnail, projectedBudgets, tags) =>
     instance.post(`/global.createProject`, {
@@ -140,9 +140,9 @@ class Api {
       ...changes
     });
 
-  viewProjectDetails = projectId => instance.get(validateUrl(`/project.viewDetails?projectId=${projectId}`));
+  viewProjectDetails = projectId => instance.get(removeEmptyQueryParams(`/project.viewDetails?projectId=${projectId}`));
   viewProjectHistory = (projectId, offset, limit, filter) => {
-    let url = validateUrl(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
+    let url = removeEmptyQueryParams(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
 
     // filter: startAt|endAt|publisher|eventType
     for (const key in filter) {
@@ -153,7 +153,7 @@ class Api {
     return instance.get(url);
   };
 
-  listProjectIntents = projectId => instance.get(validateUrl(`/project.intent.listPermissions?projectId=${projectId}`));
+  listProjectIntents = projectId => instance.get(removeEmptyQueryParams(`/project.intent.listPermissions?projectId=${projectId}`));
 
   grantProjectPermissions = (projectId, intent, identity) =>
     instance.post(`/project.intent.grantPermission`, {
@@ -188,10 +188,10 @@ class Api {
     });
 
   viewSubProjectDetails = (projectId, subprojectId) =>
-    instance.get(validateUrl(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`));
+    instance.get(removeEmptyQueryParams(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`));
 
   viewSubProjectHistory = (projectId, subprojectId, offset, limit, filter) => {
-    let url = validateUrl(
+    let url = removeEmptyQueryParams(
       `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
     );
     // filter: startAt|endAt|publisher|eventType
@@ -204,7 +204,7 @@ class Api {
   };
 
   viewWorkflowitemHistory = (projectId, subprojectId, workflowitemId, offset, limit, filter) => {
-    let url = validateUrl(
+    let url = removeEmptyQueryParams(
       `/workflowitem.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&offset=${offset}&limit=${limit}`
     );
     // filter: startAt|endAt|publisher|eventType
@@ -265,7 +265,7 @@ class Api {
   };
 
   listSubProjectPermissions = (projectId, subprojectId) =>
-    instance.get(validateUrl(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`));
+    instance.get(removeEmptyQueryParams(`/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`));
 
   grantSubProjectPermissions = (projectId, subprojectId, intent, identity) =>
     instance.post(`/subproject.intent.grantPermission`, {
@@ -309,7 +309,7 @@ class Api {
   validateDocument = (base64String, hash) => instance.post(`/workflowitem.validateDocument`, { base64String, hash });
 
   listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
-    instance.get(validateUrl(
+    instance.get(removeEmptyQueryParams(
       `/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
     ));
 
@@ -371,7 +371,7 @@ class Api {
     });
 
   fetchNotifications = (offset, limit) => {
-    let url = validateUrl(`/notification.list?offset=${offset}&limit=${limit}`);
+    let url = removeEmptyQueryParams(`/notification.list?offset=${offset}&limit=${limit}`);
     return instance.get(url);
   };
 
@@ -431,7 +431,7 @@ class Api {
 
   downloadDocument = (projectId, subprojectId, workflowitemId, documentId) =>
     instance
-      .get(validateUrl(
+      .get(removeEmptyQueryParams(
         `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`),
         { responseType: "blob" }
       )
@@ -467,11 +467,17 @@ const hasAttachment = response => {
   return dispositionHeader && dispositionHeader.indexOf("attachment") !== -1;
 };
 
-const validateUrl = url => {
+/**
+ *
+ * @param url url that needs to be checked for empty parameters
+ * @returns the url without empty or undefined parameters
+
+ */
+const removeEmptyQueryParams = url => {
   return url
-    .replace(/[^=&]+=(&|$)/g, "")
-    .replace(/[^=&]+=(undefined|$)/g, "")
-    .replace(/&$/, "");
+    .replace(/[^=&]+=(&|$)/g, "") // removes a parameter if the '=' is followed by a '&' or if it's the end of the line 
+    .replace(/[^=&]+=(undefined|$)/g, "") // removes a parameter if the '=' is followed by 'undefined' 
+    .replace(/&$/, ""); // removes any leftover '$' 
 };
 
 export default Api;
