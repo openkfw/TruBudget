@@ -21,7 +21,7 @@
     "start": "node src/index.js",
     "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "backup_fix": "node backup_fix.js"
+    "check-backup": "node check-backup.js"
   },
   "nyc": {
     "include": [
