@@ -28,6 +28,7 @@ const filter: Filter = {
 
 const permissions: Permissions = {
   "project.viewDetails": ["alice"],
+  "project.viewHistory": ["alice"],
 };
 
 const event: ProjectTraceEvent = {
@@ -85,6 +86,30 @@ describe("get project history: authorization", () => {
 
   it("With the required permissions, a user can get a project's history.", async () => {
     const result = await getHistory(ctx, alice, projectId, baseRepository);
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+
+  it("With only viewDetails permissions, a user can still get a project's history.", async () => {
+    const modifiedProject: Project = {
+      ...baseProject,
+      permissions: { "project.viewDetails": ["alice"] },
+    };
+    const result = await getHistory(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => modifiedProject,
+    });
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+
+  it("With only viewHistory permissions, a user can still get a project's history.", async () => {
+    const modifiedProject: Project = {
+      ...baseProject,
+      permissions: {"project.viewHistory": ["alice"] },
+    };
+    const result = await getHistory(ctx, alice, projectId, {
+      ...baseRepository,
+      getProject: async () => modifiedProject,
+    });
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 

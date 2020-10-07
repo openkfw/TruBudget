@@ -2,6 +2,34 @@
 
 This is the frontend, which consumes the exposed API fot the ACMECorp Blockchain API. By default it connects to the masternode of the cluster
 
+## Environment Variables
+
+### Frontend
+
+| Env Variable      | Default Value | Description                                                                                                                                                          |
+| ----------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NODE_ENV          | -             | If set to `development` search Trubudget's external services (Email-/Excel-Export-Service) on localhost. <br>If set to `production` disable Redux devtools extension |
+| REACT_APP_VERSION | -             | Injected version via `$npm_package_version` in`.env` file to ensure the version is shown in the frontend                                                             |
+| PROD_API_HOST     | -             | IP address of the api with production environment. This is only required if nginx proxy is used <br>**Hint:** When deployed locally the host is set to localhost     |
+| PROD_API_PORT     | 8080          | Port of the api with production environment. This is only required if nginx proxy is used                                                                            |
+| TEST_API_HOST     | -             | IP address of the api with test environment. This is only required if nginx proxy is used. <br>**Hint:** When deployed locally the host is set to localhost          |
+| TEST_API_PORT     | 8080          | Port of the api with test environment. This is only required if nginx proxy is used                                                                                  |
+
+### Email-Service
+
+| Env Variable                    | Default Value | Description                                                                                                                                                         |
+| ------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled, the frontend requests a email-notifcations readiness call when entering the login screen.<br>If true the email section in the user-profile is enabled |
+| EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                        |
+| EMAIL_PORT                      | -             | Port of the email notification service                                                                                                                              |
+
+### Excel-Export-Service
+
+| Env Variable | Default Value | Description                            |
+| ------------ | ------------- | -------------------------------------- |
+| EXPORT_HOST  | -             | IP address of the excel export service |
+| EXPORT_PORT  | -             | Port of the excel export service       |
+
 ## Peer dependencies
 
 This project is based on the `create-react-app` starter kit provided by the Facebook Incubator. The main part of the project configuration is encapsulated into the `create-react-app` and not accessible. If you need to access project configuration you can eject the project, which will then move the configuratin into the project. More informations here: https://github.com/facebookincubator/create-react-app

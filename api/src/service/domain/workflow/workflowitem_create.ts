@@ -1,6 +1,6 @@
 import Joi = require("joi");
 import { VError } from "verror";
-import Intent from "../../../authz/intents";
+import Intent, { workflowitemIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
@@ -123,6 +123,9 @@ export async function createWorkflowitem(
       workflowitemType: reqData.workflowitemType || "general",
     },
   );
+  if (Result.isErr(workflowitemCreated)) {
+    return new VError(workflowitemCreated, "failed to create workflowitem created event");
+  }
 
   // Check if workflowitemId already exists
   if (
@@ -185,6 +188,9 @@ export async function createWorkflowitem(
       workflowitemId,
       docToUpload,
     );
+    if (Result.isErr(workflowitemEvent)) {
+      return new VError(workflowitemEvent, "failed to create event");
+    }
 
     // Check that the event is valid:
     const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
@@ -213,17 +219,7 @@ export async function createWorkflowitem(
   function newDefaultPermissionsFor(userId: string): Permissions {
     // The user can always do anything anyway:
     if (userId === "root") return {};
-
-    const intents: Intent[] = [
-      "workflowitem.intent.listPermissions",
-      "workflowitem.intent.grantPermission",
-      "workflowitem.intent.revokePermission",
-      "workflowitem.view",
-      "workflowitem.assign",
-      "workflowitem.update",
-      "workflowitem.close",
-      "workflowitem.archive",
-    ];
+    const intents: Intent[] = workflowitemIntents;
     return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
   }
 }

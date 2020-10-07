@@ -22,27 +22,43 @@ npm install <Driver> --save
 
 ## Environment Variables
 
-| Env Variable  | Default Value                     | Description                                                                                                      |
-| ------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| PORT          | 8890                              | Port for HTTP Server                                                                                             |
-| DB_TYPE       | pg                                | Type of database. A supported list can be found in the [Database Configuration section](#database-configuration) |
-| DB_NAME       | trubudget_email_service           | Name of the database                                                                                             |
-| DB_USER       | postgres                          | User name for connected database                                                                                 |
-| DB_PASSWORD   | test                              | Password for connected database                                                                                  |
-| DB_HOST       | localhost                         | IP of connected database                                                                                         |
-| DB_PORT       | 5432                              | Port of connected database                                                                                       |
-| DB_SCHEMA     | public                            | Schema of connected database                                                                                     |
-| DB_SSL        | false                             | If true the DB connection is using the SSL protocol                                                              |
-| USER_TABLE    | users                             | Name of the table which is created if the first email address is inserted                                        |
-| SMTP_HOST     | localhost                         | IP of external SMTP-Server used to actually send notification emails                                             |
-| SMTP_PORT     | 2500                              | Port of external SMTP-Server                                                                                     |
-| SMTP_SSL      | false                             | If true the external SMTP-Server connection is using the SSL protocol                                            |
-| EMAIL_FROM    | Trubudget Notification Service👻  | This is injected into the `from` field of the email notification                                                 |
-| EMAIL_SUBJECT | Trubudget Notificaiton            | This is injected into the `subject` field of the email notification                                              |
-| EMAIL_TEXT    | You have received a notification. | This is injected into the `body` of the email notification                                                       |
-| LOG_LEVEL     | INFO                              | Defines the log output. Supported levels are `ERROR`, `WARN`, `INFO`, `DEBUG`                                    |
-| JWT_SECRET    | - (required)                      | A secret of min length of 32 - It is used to verify the JWT_TOKEN sent by users of the email-service endpoints   |
-| MODE          | DEBUG                             | If set to DEBUG no JWT-Token is required for all endpoints                                                       |
+To ensure all necessary environment variables are set correctly this section describes all environment variables across all services.
+
+### Email-notification
+
+| Env Variable  | Default Value                     | Description                                                                                                                                  |
+| ------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP_PORT     | 8890                              | Port for HTTP Server                                                                                                                         |
+| DB_TYPE       | pg                                | Type of database. A supported list can be found in the [Database Configuration section](#database-configuration)                             |
+| DB_NAME       | trubudget_email_service           | Name of the database                                                                                                                         |
+| DB_USER       | postgres                          | User name for connected database                                                                                                             |
+| DB_PASSWORD   | test                              | Password for connected database                                                                                                              |
+| DB_HOST       | localhost                         | IP of connected database                                                                                                                     |
+| DB_PORT       | 5432                              | Port of connected database                                                                                                                   |
+| DB_SCHEMA     | public                            | Schema of connected database                                                                                                                 |
+| DB_SSL        | false                             | If true the DB connection is using the SSL protocol                                                                                          |
+| USER_TABLE    | users                             | Name of the table which is created if the first email address is inserted                                                                    |
+| SMTP_USER     | testuser                          | This is forwarded to the auth prop of the nodemailer's transport-options, to authenticate with the credentials of the configured SMTP server |
+| SMTP_PASSWORD | test                              | IP of external SMTP-Server used to actually send notification emails                                                                         |
+| SMTP_HOST     | localhost                         | IP of external SMTP-Server used to actually send notification emails                                                                         |
+| SMTP_PORT     | 2500                              | Port of external SMTP-Server                                                                                                                 |
+| SMTP_SSL      | false                             | If true the external SMTP-Server connection is using the SSL protocol                                                                        |
+| SQL_DEBUG     | false                             | The SQL Debug option is forwarded to the knex configuration                                                                                  |
+| EMAIL_FROM    | Trubudget Notification Service👻  | This is injected into the `from` field of the email notification                                                                             |
+| EMAIL_SUBJECT | Trubudget Notificaiton            | This is injected into the `subject` field of the email notification                                                                          |
+| EMAIL_TEXT    | You have received a notification. | This is injected into the `body` of the email notification                                                                                   |
+| LOG_LEVEL     | INFO                              | Defines the log output. Supported levels are `ERROR`, `WARN`, `INFO`, `DEBUG`                                                                |
+| PRETTY_PRINT  | false                             | Decides whether the logs printed by the email service are pretty printed or not.                                                             |
+| JWT_SECRET    | - (required)                      | A secret of min length of 32 - It is used to verify the JWT_TOKEN sent by users of the email-service endpoints                               |
+| MODE          | DEBUG                             | If set to DEBUG no JWT-Token is required for all endpoints                                                                                   |
+
+### Blockchain
+
+For details see [Blockchain environment variables](../blockchain/README.md#email-service).
+
+### Frontend
+
+For details see [Blockchain environment variables](../frontend/README.md#email-service).
 
 #### JWT_SECRET
 
@@ -78,31 +94,6 @@ When started, the Email-Service sends email notifications to the configured SMTP
 To configure another database type for storing the user email addresses check out the [database configuration section](#database-configuration)
 To check what is configurable regarding email-notification service check out the [environment variables section](#environment-variables)
 If a local SMTP mail server for testing purposes is needed [mailslurper](https://github.com/mailslurper/mailslurper) can be used
-
-### Environment Variables
-
-To ensure all necessary environment variables are set correctly this section describes all environment variables across all services.
-
-#### Blockchain
-
-| Env Variable      | Default Value    | Description                                                                                        |
-| ----------------- | ---------------- | -------------------------------------------------------------------------------------------------- |
-| EMAIL_SERVICE     | -                | If set to `ENABLED` notifications are created                                                      |
-| EMAIL_HOST        | -                | IP address of the email database where all user email addresses should be saved                    |
-| EMAIL_PORT        | -                | Port of the email database                                                                         |
-| NOTIFICATION_PATH | ./notifications/ | Path where all notifications should be saved before sending them to the email notification service |
-
-#### Email-notification-service
-
-See [environment variables section](#environment-variables) above.
-
-#### Frontend
-
-| Env Variable                    | Default Value | Description                                                                                                                                                      |
-| ------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled, the frontend requests a email-notifcations readiness call when entering the login screen. If true the email section in the user-profile is enabled |
-| EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                     |
-| EMAIL_PORT                      | -             | Port of the email notification service                                                                                                                           |
 
 ### Endpoints
 

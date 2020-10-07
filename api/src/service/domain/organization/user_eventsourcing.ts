@@ -120,7 +120,7 @@ function getUserId(event: BusinessEvent): Result.Type<UserRecord.Id> {
 type EventModule = {
   mutate: (user: UserRecord.UserRecord, event: BusinessEvent) => Result.Type<void>;
 };
-function getEventModule(event: BusinessEvent): EventModule {
+function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
     case "user_password_changed":
       return UserPasswordChanged;
@@ -133,7 +133,7 @@ function getEventModule(event: BusinessEvent): EventModule {
     case "user_disabled":
       return UserDisabled;
     default:
-      throw new VError(`unknown user event ${event.type}`);
+      return new VError(`unknown user event ${event.type}`);
   }
 }
 
@@ -144,7 +144,9 @@ export function newUserFromEvent(
   event: BusinessEvent,
 ): Result.Type<UserRecord.UserRecord> {
   const eventModule = getEventModule(event);
-
+  if (Result.isErr(eventModule)) {
+    return eventModule;
+  }
   // Ensure that we never modify user or event in-place by passing copies. When
   // copying the user, its event log is omitted for performance reasons.
   const eventCopy = deepcopy(event);

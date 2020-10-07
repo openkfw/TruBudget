@@ -32,6 +32,8 @@ Welcome to the TruBudget documentation! This guide aims to provide you with info
 
 [Troubleshooting](./troubleshooting/README.md) - How to solve known issues
 
+[Security](./security/README.md) - Information on the security aspects of Trubudget
+
 [FAQ](./wiki/User-Guide/README.md#faq) - Frequently asked questions
 
 ### Architecture Decision Records

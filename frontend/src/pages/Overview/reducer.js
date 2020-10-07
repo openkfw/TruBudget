@@ -16,7 +16,8 @@ import {
   PROJECT_CREATION_STEP,
   PROJECT_DELETED_PROJECTED_BUDGET,
   PROJECT_NAME,
-  PROJECT_PROJECTED_BUDGET,
+  ADD_PROJECT_PROJECTED_BUDGET,
+  EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT,
   PROJECT_THUMBNAIL,
   REMOVE_PROJECT_TAG,
   REMOVE_TEMPORARY_PROJECT_PERMISSION,
@@ -119,10 +120,29 @@ export default function overviewReducer(state = defaultState, action) {
         .set("temporaryPermissions", fromJS(action.permissions));
     case PROJECT_NAME:
       return state.setIn(["projectToAdd", "displayName"], action.name);
-    case PROJECT_PROJECTED_BUDGET:
+    case ADD_PROJECT_PROJECTED_BUDGET:
       return state.merge({
-        projectToAdd: state.getIn(["projectToAdd"]).set("projectedBudgets", fromJS(action.projectedBudgets))
+        projectToAdd: state.get("projectToAdd").merge({
+          projectedBudgets: [...state.getIn(["projectToAdd", "projectedBudgets"]).toJS(), action.projectedBudget]
+        })
       });
+    case EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT:
+      let newStateWithEditedBudget;
+      state
+        .getIn(["projectToAdd", "projectedBudgets"])
+        .toJS()
+        .forEach((b, index) => {
+          if (
+            b.organization === action.projectedBudget.organization &&
+            b.currencyCode === action.projectedBudget.currencyCode
+          ) {
+            newStateWithEditedBudget = state.setIn(
+              ["projectToAdd", "projectedBudgets", index, "value"],
+              action.budgetAmountEdit
+            );
+          }
+        });
+      return newStateWithEditedBudget;
     case PROJECT_DELETED_PROJECTED_BUDGET:
       const projectedBudgets = state.getIn(["projectToAdd", "projectedBudgets"]).toJS();
       const projectedBudgetsToDelete = action.projectedBudgets;

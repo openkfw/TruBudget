@@ -53,6 +53,9 @@ export async function enableUser(
   const userEnabled = UserEnabled.createEvent(source, publisher, {
     id: data.userId,
   });
+  if (Result.isErr(userEnabled)) {
+    return new VError(userEnabled, "failed to create user enabled event");
+  }
 
   if (Result.isErr(validationResult)) {
     return new PreconditionError(ctx, userEnabled, validationResult.message);

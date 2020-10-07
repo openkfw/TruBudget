@@ -1,5 +1,5 @@
 import isEqual = require("lodash.isequal");
-
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -39,6 +39,9 @@ export async function grantProjectPermission(
     intent,
     grantee,
   );
+  if (Result.isErr(permissionGranted)) {
+    return new VError(permissionGranted, "failed to create permission granted event");
+  }
 
   // Check authorization (if not root):
   if (issuer.id !== "root") {

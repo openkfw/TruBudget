@@ -78,6 +78,9 @@ export async function createProject(
     additionalData: data.additionalData || {},
     tags: data.tags || [],
   });
+  if (Result.isErr(createEvent)) {
+    return new VError(createEvent, "failed to create project created event");
+  }
 
   // Make sure for each organization and currency there is only one entry:
   const badEntry = findDuplicateBudgetEntry(createEvent.project.projectedBudgets);

@@ -132,7 +132,9 @@ export function newSubprojectFromEvent(
   event: BusinessEvent,
 ): Result.Type<Subproject.Subproject> {
   const eventModule = getEventModule(event);
-
+  if (Result.isErr(eventModule)) {
+    return eventModule;
+  }
   // Ensure that we never modify subproject or event in-place by passing copies. When
   // copying the subproject, its event log is omitted for performance reasons.
   const eventCopy = deepcopy(event);
@@ -160,7 +162,7 @@ export function newSubprojectFromEvent(
 type EventModule = {
   mutate: (subproject: Subproject.Subproject, event: BusinessEvent) => Result.Type<void>;
 };
-function getEventModule(event: BusinessEvent): EventModule {
+function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
     case "subproject_updated":
       return SubprojectUpdated;
@@ -187,7 +189,7 @@ function getEventModule(event: BusinessEvent): EventModule {
       return WorkflowitemsReordered;
 
     default:
-      throw new VError(`unknown subproject event ${event.type}`);
+      return new VError(`unknown subproject event ${event.type}`);
   }
 }
 

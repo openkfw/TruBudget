@@ -255,6 +255,9 @@ const getWorkflowitemHistoryState = state => {
 const getConfirmedState = state => {
   return state.getIn(["confirmation", "confirmed"]);
 };
+const getEmailServiceAvailable = state => {
+  return state.getIn(["login", "emailServiceAvailable"]);
+};
 
 function* execute(fn, showLoading = false, errorCallback = undefined) {
   const done = yield handleLoading(showLoading);
@@ -481,8 +484,8 @@ export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets =
     // const { deletedProjectedBudgets = [], projectedBudgets = [], ...rest } = changes;
     const { projectedBudgets = [], ...rest } = changes;
 
-    if (Object.values(rest).some(value => value !== undefined)) {
-      yield callApi(api.editProject, projectId, rest);
+    for (const budget of deletedProjectedBudgets) {
+      yield callApi(api.deleteProjectBudgetProjected, projectId, budget.organization, budget.currencyCode);
     }
 
     for (const budget of projectedBudgets) {
@@ -494,9 +497,11 @@ export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets =
         budget.value
       );
     }
-    for (const budget of deletedProjectedBudgets) {
-      yield callApi(api.deleteProjectBudgetProjected, projectId, budget.organization, budget.currencyCode);
+
+    if (Object.values(rest).some(value => value !== undefined)) {
+      yield callApi(api.editProject, projectId, rest);
     }
+
     yield showSnackbarSuccess();
     yield put({
       type: EDIT_PROJECT_SUCCESS
@@ -528,8 +533,14 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
   yield execute(function*() {
     const { projectedBudgets = [], ...rest } = changes;
 
-    if (Object.values(rest).some(value => value !== undefined)) {
-      yield callApi(api.editSubProject, projectId, subprojectId, rest);
+    for (const budget of deletedProjectedBudgets) {
+      yield callApi(
+        api.deleteSubprojectBudgetProjected,
+        projectId,
+        subprojectId,
+        budget.organization,
+        budget.currencyCode
+      );
     }
 
     for (const budget of projectedBudgets) {
@@ -543,14 +554,8 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
       );
     }
 
-    for (const budget of deletedProjectedBudgets) {
-      yield callApi(
-        api.deleteSubprojectBudgetProjected,
-        projectId,
-        subprojectId,
-        budget.organization,
-        budget.currencyCode
-      );
+    if (Object.values(rest).some(value => value !== undefined)) {
+      yield callApi(api.editSubProject, projectId, subprojectId, rest);
     }
 
     yield showSnackbarSuccess();
@@ -2423,62 +2428,68 @@ function* exportDataSaga() {
   );
 }
 function* saveEmailAddressSaga({ emailAddress }) {
-  yield execute(
-    function*() {
-      const id = yield select(getSelfId);
-      const currentEmailAddress = yield select(getEmailAddress);
-      if (currentEmailAddress.length > 0) {
-        yield callApi(api.updateEmailAddress, id, emailAddress);
-      } else {
-        yield callApi(api.insertEmailAddress, id, emailAddress);
+  const isEmailServiceAvailable = yield select(getEmailServiceAvailable);
+  if (isEmailServiceAvailable) {
+    yield execute(
+      function*() {
+        const id = yield select(getSelfId);
+        const currentEmailAddress = yield select(getEmailAddress);
+        if (currentEmailAddress.length > 0) {
+          yield callApi(api.updateEmailAddress, id, emailAddress);
+        } else {
+          yield callApi(api.insertEmailAddress, id, emailAddress);
+        }
+        yield put({
+          type: SAVE_EMAIL_ADDRESS_SUCCESS
+        });
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: formatString(strings.notification.email_saved, emailAddress)
+        });
+        yield put({
+          type: SHOW_SNACKBAR,
+          show: true,
+          isError: false
+        });
+        yield fetchEmailAddressSaga();
+      },
+      true,
+      function*(error) {
+        yield put({
+          type: SNACKBAR_MESSAGE,
+          message: strings.notification.save_email_error
+        });
+        yield put({
+          type: SHOW_SNACKBAR,
+          show: true,
+          isError: true
+        });
       }
-      yield put({
-        type: SAVE_EMAIL_ADDRESS_SUCCESS
-      });
-      yield put({
-        type: SNACKBAR_MESSAGE,
-        message: formatString(strings.notification.email_saved, emailAddress)
-      });
-      yield put({
-        type: SHOW_SNACKBAR,
-        show: true,
-        isError: false
-      });
-      yield fetchEmailAddressSaga();
-    },
-    true,
-    function*(error) {
-      yield put({
-        type: SNACKBAR_MESSAGE,
-        message: strings.notification.save_email_error
-      });
-      yield put({
-        type: SHOW_SNACKBAR,
-        show: true,
-        isError: true
-      });
-    }
-  );
+    );
+  }
 }
 
 function* fetchEmailAddressSaga() {
-  yield execute(
-    function*() {
-      const id = yield select(getSelfId);
-      const data = yield callApi(api.getEmailAddress, id);
-      yield put({
-        type: FETCH_EMAIL_ADDRESS_SUCCESS,
-        emailAddress: data.user.emailAddress
-      });
-    },
-    true,
-    function*(error) {
-      yield put({
-        type: FETCH_EMAIL_ADDRESS_FAILURE,
-        error
-      });
-    }
-  );
+  const isEmailServiceAvailable = yield select(getEmailServiceAvailable);
+  if (isEmailServiceAvailable) {
+    yield execute(
+      function*() {
+        const id = yield select(getSelfId);
+        const data = yield callApi(api.getEmailAddress, id);
+        yield put({
+          type: FETCH_EMAIL_ADDRESS_SUCCESS,
+          emailAddress: data.user.emailAddress
+        });
+      },
+      true,
+      function*(error) {
+        yield put({
+          type: FETCH_EMAIL_ADDRESS_FAILURE,
+          error
+        });
+      }
+    );
+  }
 }
 
 function* checkEmailServiceSaga() {

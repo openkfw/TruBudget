@@ -145,7 +145,7 @@ async function ensureStreamExists(conn: ConnToken, ctx: Ctx, name: string, kind:
         // Code -705 means the stream already exists - that's fine.
         return;
       }
-      throw new VError(err, `could not create ${kind} stream "${name}"`);
+      return new VError(err, `could not create ${kind} stream "${name}"`);
     });
 }
 

@@ -98,19 +98,22 @@ export async function closeSubproject(
   const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
     if (recipient !== issuer.id) {
-      notifications.push(
-        NotificationCreated.createEvent(
-          ctx.source,
-          issuer.id,
-          recipient,
-          subprojectClosed,
-          projectId,
-          subprojectId,
-        ),
+      const notification = NotificationCreated.createEvent(
+        ctx.source,
+        issuer.id,
+        recipient,
+        subprojectClosed,
+        projectId,
       );
+      if (Result.isErr(notification)) {
+        return new VError(notification, "failed to create event");
+      }
+      notifications.push(notification);
     }
     return notifications;
   }, [] as NotificationCreated.Event[]);
-
+  if (Result.isErr(notifications)) {
+    return new VError(notifications, "failed to create notification events");
+  }
   return { newEvents: [subprojectClosed, ...notifications], subproject };
 }

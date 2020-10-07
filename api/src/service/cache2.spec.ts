@@ -1,6 +1,7 @@
 import { assert } from "chai";
 import * as isEmpty from "lodash.isempty";
 
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as ProjectAssigned from "../service/domain/workflow/project_assigned";
@@ -103,6 +104,9 @@ describe("The cache updates", () => {
       const spCloseEvent = SubprojectClosed.createEvent("http", "test", projectId, subprojectId);
       if (Result.isErr(spAssginedEvent)) {
         return assert.fail(undefined, undefined, "Subproject assigned event failed");
+      }
+      if (Result.isErr(spCloseEvent)) {
+        return assert.fail(undefined, undefined, "Subproject closed event failed");
       }
       updateAggregates(defaultCtx, cache, [spAssginedEvent, spCloseEvent]);
 
@@ -264,17 +268,21 @@ describe("The cache", () => {
     it("returns an existing project", async () => {
       // Setting up the test with an example project
       const cache = initCache();
-      const { project: exampleProject } = addExampleProject(defaultCtx, cache, "pid");
+      const exampleProject = addExampleProject(defaultCtx, cache, "pid");
+      if (Result.isErr(exampleProject)) {
+        return new VError(exampleProject, "failed to create example project");
+      }
+      const { project: example } = exampleProject;
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
       // Test if added project can be retrieved
-      const responseFromCache = await cacheInstance.getProject(exampleProject.id);
+      const responseFromCache = await cacheInstance.getProject(example.id);
       assert.isOk(Result.isOk(responseFromCache));
 
       const project = Result.unwrap(responseFromCache);
 
       const actual = { projectId: project.id, displayName: project.displayName };
-      const expected = { projectId: exampleProject.id, displayName: exampleProject.displayName };
+      const expected = { projectId: example.id, displayName: example.displayName };
       assert.deepEqual(
         actual,
         expected,
@@ -330,7 +338,11 @@ describe("The cache", () => {
       const projectId = "pid";
       addExampleProject(defaultCtx, cache, projectId);
       addExampleSubproject(defaultCtx, cache, projectId, "to_be_ignored");
-      const { subproject: example } = addExampleSubproject(defaultCtx, cache, projectId, "sid");
+      const exampleSubproject = addExampleSubproject(defaultCtx, cache, projectId, "sid");
+      if (Result.isErr(exampleSubproject)) {
+        return new VError(exampleSubproject, "failed to create example subproject");
+      }
+      const { subproject: example } = exampleSubproject;
 
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
@@ -412,13 +424,17 @@ describe("The cache", () => {
       const workflowitemId = "wid";
       addExampleProject(defaultCtx, cache, projectId);
       addExampleSubproject(defaultCtx, cache, projectId, subprojectId);
-      const { workflowitem: example } = addExampleWorkflowitem(
+      const exampleWorkflowitem = addExampleWorkflowitem(
         defaultCtx,
         cache,
         projectId,
         subprojectId,
         workflowitemId,
       );
+      if (Result.isErr(exampleWorkflowitem)) {
+        return new VError(exampleWorkflowitem, "failed to create example worfkflowitem");
+      }
+      const { workflowitem: example } = exampleWorkflowitem;
 
       const cacheInstance = getCacheInstance(defaultCtx, cache);
 
@@ -512,7 +528,7 @@ describe("The cache", () => {
 });
 
 // Helper functions
-function addExampleProject(ctx: Ctx, cache: Cache2, projectId: string): ProjectCreated.Event {
+function addExampleProject(ctx: Ctx, cache: Cache2, projectId: string): Result.Type<ProjectCreated.Event> {
   const projectCreationEvent = ProjectCreated.createEvent("http", "test", {
     id: projectId,
     status: "open",
@@ -522,6 +538,9 @@ function addExampleProject(ctx: Ctx, cache: Cache2, projectId: string): ProjectC
     permissions: {},
     additionalData: {},
   });
+  if (Result.isErr(projectCreationEvent)) {
+    return new VError(projectCreationEvent, "failed to create event");
+  }
 
   updateAggregates(ctx, cache, [projectCreationEvent]);
 
@@ -533,7 +552,7 @@ function addExampleSubproject(
   cache: Cache2,
   projectId: string,
   subprojectId: string,
-): SubprojectCreated.Event {
+): Result.Type<SubprojectCreated.Event> {
   const spCreationEvent = SubprojectCreated.createEvent("http", "test", projectId, {
     id: subprojectId,
     status: "open",
@@ -544,6 +563,9 @@ function addExampleSubproject(
     permissions: {},
     additionalData: {},
   });
+  if (Result.isErr(spCreationEvent)) {
+    return new VError(spCreationEvent, "failed to create event");
+  }
 
   updateAggregates(ctx, cache, [spCreationEvent]);
 
@@ -556,7 +578,7 @@ function addExampleWorkflowitem(
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
-): WorkflowitemCreated.Event {
+): Result.Type<WorkflowitemCreated.Event> {
   const wfCreationEvent = WorkflowitemCreated.createEvent("http", "test", projectId, subprojectId, {
     id: workflowitemId,
     status: "open",
@@ -568,6 +590,9 @@ function addExampleWorkflowitem(
     additionalData: {},
     workflowitemType: "general",
   });
+  if (Result.isErr(wfCreationEvent)) {
+    return new VError(wfCreationEvent, "failed to create event");
+  }
 
   updateAggregates(ctx, cache, [wfCreationEvent]);
 

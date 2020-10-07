@@ -1,5 +1,5 @@
 import Joi = require("joi");
-
+import { VError } from "verror";
 import Intent, { subprojectIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -74,6 +74,9 @@ export async function createSubproject(
     permissions: newDefaultPermissionsFor(creatingUser.id),
     additionalData: reqData.additionalData || {},
   });
+  if (Result.isErr(createEvent)) {
+    return new VError(createEvent, "failed to create subproject created event");
+  }
 
   // Make sure for each organization and currency there is only one entry:
   const badEntry = findDuplicateBudgetEntry(createEvent.subproject.projectedBudgets);
