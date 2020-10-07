@@ -49,12 +49,11 @@ const SubprojectDialogContent = props => {
       <Divider />
       <div>
         <Budget
-          currencyTitle={strings.subproject.subproject_currency}
-          budgetLabel={strings.subproject.subproject_budget_amount}
           projectedBudgets={props.subprojectToAdd.projectedBudgets}
-          storeProjectedBudget={props.storeSubProjectProjectedBudgets}
+          deletedProjectedBudgets={props.subprojectToAdd.deletedProjectedBudgets}
+          addProjectedBudget={props.addSubProjectProjectedBudget}
+          editProjectedBudget={props.editSubProjectProjectedBudgetAmount}
           storeDeletedProjectedBudget={props.storeDeletedProjectedBudget}
-          disabled={props.editDialogShown}
           projectProjectedBudgets={props.projectProjectedBudgets}
         />
       </div>

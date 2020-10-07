@@ -18,7 +18,8 @@ export const SUBPROJECT_COMMENT = "SUBPROJECT_COMMENT";
 export const SUBPROJECT_CURRENCY = "SUBPROJECT_CURRENCY";
 export const SUBPROJECT_ORGANIZATION = "SUBPROJECT_ORGANIZATION";
 
-export const SUBPROJECT_PROJECTED_BUDGETS = "SUBPROJECT_PROJECTED_BUDGETS";
+export const ADD_SUBPROJECT_PROJECTED_BUDGET = "ADD_SUBPROJECT_PROJECTED_BUDGET";
+export const EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT = "EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT";
 export const SUBPROJECT_DELETED_PROJECTED_BUDGET = "SUBPROJECT_DELETED_PROJECTED_BUDGET";
 
 export const FETCH_ALL_PROJECT_DETAILS = "FETCH_ALL_PROJECT_DETAILS";
@@ -236,10 +237,18 @@ export function storeSubProjectCurrency(currency) {
   };
 }
 
-export function storeSubProjectProjectedBudgets(projectedBudgets) {
+export function addSubProjectProjectedBudget(projectedBudget) {
   return {
-    type: SUBPROJECT_PROJECTED_BUDGETS,
-    projectedBudgets: projectedBudgets
+    type: ADD_SUBPROJECT_PROJECTED_BUDGET,
+    projectedBudget
+  };
+}
+
+export function editSubProjectProjectedBudgetAmount(projectedBudget, budgetAmountEdit) {
+  return {
+    type: EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT,
+    projectedBudget,
+    budgetAmountEdit
   };
 }
 

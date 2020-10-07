@@ -484,8 +484,8 @@ export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets =
     // const { deletedProjectedBudgets = [], projectedBudgets = [], ...rest } = changes;
     const { projectedBudgets = [], ...rest } = changes;
 
-    if (Object.values(rest).some(value => value !== undefined)) {
-      yield callApi(api.editProject, projectId, rest);
+    for (const budget of deletedProjectedBudgets) {
+      yield callApi(api.deleteProjectBudgetProjected, projectId, budget.organization, budget.currencyCode);
     }
 
     for (const budget of projectedBudgets) {
@@ -497,9 +497,11 @@ export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets =
         budget.value
       );
     }
-    for (const budget of deletedProjectedBudgets) {
-      yield callApi(api.deleteProjectBudgetProjected, projectId, budget.organization, budget.currencyCode);
+
+    if (Object.values(rest).some(value => value !== undefined)) {
+      yield callApi(api.editProject, projectId, rest);
     }
+
     yield showSnackbarSuccess();
     yield put({
       type: EDIT_PROJECT_SUCCESS
@@ -531,8 +533,14 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
   yield execute(function*() {
     const { projectedBudgets = [], ...rest } = changes;
 
-    if (Object.values(rest).some(value => value !== undefined)) {
-      yield callApi(api.editSubProject, projectId, subprojectId, rest);
+    for (const budget of deletedProjectedBudgets) {
+      yield callApi(
+        api.deleteSubprojectBudgetProjected,
+        projectId,
+        subprojectId,
+        budget.organization,
+        budget.currencyCode
+      );
     }
 
     for (const budget of projectedBudgets) {
@@ -546,14 +554,8 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
       );
     }
 
-    for (const budget of deletedProjectedBudgets) {
-      yield callApi(
-        api.deleteSubprojectBudgetProjected,
-        projectId,
-        subprojectId,
-        budget.organization,
-        budget.currencyCode
-      );
+    if (Object.values(rest).some(value => value !== undefined)) {
+      yield callApi(api.editSubProject, projectId, subprojectId, rest);
     }
 
     yield showSnackbarSuccess();

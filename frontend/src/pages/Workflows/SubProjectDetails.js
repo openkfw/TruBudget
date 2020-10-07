@@ -126,7 +126,7 @@ const SubProjectDetails = ({
             <ListItemText primary={currency} secondary="Subproject currency" />
           </ListItem>
         </List>
-        <div style={styles.projectedBudget}>
+        <div style={styles.projectedBudget} data-test="subproject-projected-budget">
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
           {isDataLoading ? (
             <div />
