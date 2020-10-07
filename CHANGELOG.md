@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ## Unreleased -->
 
-### Added
-
-- Security FAQ [#542](https://github.com/openkfw/TruBudget/pull/542)
+<!-- ### Added -->
 
 <!-- ### Changed -->
 
@@ -17,12 +15,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
+<!-- ### Fixed -->
+
+<!-- ### Security -->
+
+## [1.14.0] - 2020-10-07
+
+### Added
+
+- Security FAQ [#542](https://github.com/openkfw/TruBudget/pull/542)
+
 ### Fixed
 
 - Fixed a bug where the email field dissappears in the user profile [#551](https://github.com/openkfw/TruBudget/issues/551)
-- Fixed a bug where opening a history sometimes resulted in an error [#549](https://github.com/openkfw/TruBudget/issues/549)
-
-<!-- ### Security -->
+- Fixed a bug where opening the user profile resulted in an error [#549](https://github.com/openkfw/TruBudget/issues/549)
 
 # [1.13.0] - 2020-09-16
 
@@ -34,7 +40,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed the global permission list to set permissions to disable or enable users [#537](https://github.com/openkfw/TruBudget/pull/537)
-
 
 # [1.12.0] - 2020-08-10
 
@@ -96,30 +101,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Email notification service [#419](https://github.com/openkfw/TruBudget/issues/419)
 
-<!-- ### Changed -->
-
-<!-- ### Deprecated -->
-
-<!-- ### Removed -->
-
 ### Fixed
 
 - Implement group permissions correctly [#440](https://github.com/openkfw/TruBudget/issues/440)
 - Fix permissions for viewing summary [#440](https://github.com/openkfw/TruBudget/issues/440)
-
-<!-- ### Changed -->
-
-<!-- ### Security -->
 
 # [1.7.0] - 2019-02-10
 
 ### Added
 
 - Support georgian language [#427](https://github.com/openkfw/TruBudget/issues/427)
-
-<!-- ### Deprecated -->
-
-<!-- ### Removed -->
 
 ### Fixed
 
@@ -129,8 +120,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Format currencies and numbers according to the selected language or locale [#135](https://github.com/openkfw/TruBudget/issues/135)
   - History and notification timestamps only display year/month/day [#426](https://github.com/openkfw/TruBudget/issues/426)
-
-<!-- ### Security -->
 
 ## [1.6.0] - 2019-01-07
 
@@ -505,7 +494,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.13.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.14.0...master
+[1.14.0]: https://github.com/openkfw/TruBudget/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/openkfw/TruBudget/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/openkfw/TruBudget/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/openkfw/TruBudget/compare/v1.10.0...v1.11.0
