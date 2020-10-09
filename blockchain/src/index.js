@@ -169,7 +169,7 @@ if (EXPOSE_MC) {
     kc.loadFromCluster();
   }
 
-  const k8sApi = kc.makeApiClient(k8s.Core_v1Api);
+  const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
   const kubernetesClient = new KubernetesClient(k8sApi);
 
   kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then((response) => {
