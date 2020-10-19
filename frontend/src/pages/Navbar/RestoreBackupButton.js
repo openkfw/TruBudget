@@ -31,11 +31,11 @@ const styles = theme => ({
 
 const RestoreBackupButton = ({ restoreBackup, classes }) => {
   return (
-    <Button variant="contained" id="upload" color="primary" className={classes.button}>
+    <Button variant="contained" id="upload" color="primary" className={classes.button} data-test="restore-backup">
       <Upload className={classNames(classes.leftIcon, classes.iconSmall)} />
       {strings.navigation.restore}
       <input
-        id="docupload"
+        id="uploadBackup"
         type="file"
         className={classes.uploadInput}
         onChange={event => {

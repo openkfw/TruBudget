@@ -26,6 +26,7 @@ const DownloadBackupButton = ({ createBackup, classes }) => {
       id="upload"
       color="primary"
       className={classes.button}
+      data-test="download-backup"
       onClick={() => {
         createBackup();
       }}

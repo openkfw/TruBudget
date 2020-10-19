@@ -606,3 +606,15 @@ Cypress.Commands.add("listWorkflowitems", (projectId, subprojectId, workflowitem
     .its("body")
     .then(body => Cypress.Promise.resolve(body.data));
 });
+Cypress.Commands.add("createBackup", () => {
+  cy.request({
+    url: `${baseUrl}/api/system.createBackup`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .its("headers")
+  .then(headers => Cypress.Promise.resolve(headers))
+
+});
