@@ -114,7 +114,7 @@ const StatusTable = props => {
     return (
       <TableRow key={`status-${service}-row`}>
         <TableCell>{service}</TableCell>
-        <TableCell>{release}</TableCell>
+        <TableCell data-test={`release-version-${service}`}>{release}</TableCell>
         <TableCell />
         <TableCell />
         <TableCell />
@@ -131,7 +131,7 @@ const StatusTable = props => {
       return (
         <TableRow key={`status-${service}-row`}>
           <TableCell>{service}</TableCell>
-          <TableCell>{release}</TableCell>
+          <TableCell data-test={`release-version-${service}`}>{release}</TableCell>
           <TableCell>
             <Typography>{ping ? `${ping.toFixed(0)} ms` : strings.status.no_ping_available}</Typography>
           </TableCell>
@@ -172,7 +172,7 @@ const StatusTable = props => {
                 <TableCell />
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody data-test="status-table-body">
               {Object.keys(filteredVersions).map(service => {
                 if (service === "frontend") {
                   return renderEmptyStatusRow(service);
