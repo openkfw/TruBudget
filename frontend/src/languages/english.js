@@ -37,7 +37,7 @@ const en = {
     create: "Create",
     created: "Created",
     currency: "Currency",
-    disbursed_budget: "Disbursed Budget",
+    disbursed_budget: "Payed Budget",
     disbursement: "Projected",
     disconnected: "Offline",
     display_name: "Display Name",
@@ -79,7 +79,7 @@ const en = {
     no_workflow_items: "No workflowitems found",
     not_assigned_budget: "Not Assigned Budget",
     not_assigned: "Not assigned",
-    not_disbursed: "Not disbursed",
+    not_disbursed: "Not payed",
     not_ok: "Not OK",
     not_projected: "Not projected",
     open: "Open",
@@ -143,6 +143,7 @@ const en = {
     user_created: "User successfully created",
     username_invalid: "Invalid login ID",
     users: "Users",
+    selected_users: "selected users",
     disabled_users: "Disabled users",
     disable_user: "Disable user",
     disable_userId: "Disable user {0}",
@@ -181,7 +182,8 @@ const en = {
     login_button_title: "Login",
     production_env: "Prod",
     test_env: "Test",
-    tru_budget_description: "A blockchain-based solution for budget expenditure"
+    frontend_name: "TruBudget",
+    frontend_description: "A blockchain-based solution for budget expenditure"
   },
 
   project: {
@@ -198,7 +200,7 @@ const en = {
     project_currency: "Project currency",
     project_details: "Details",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
-    project_disbursement_authority_role: "Select disbursement authority role",
+    project_disbursement_authority_role: "Select payment authority role",
     project_edit_title: "Edit Project",
     project_implementing_authority_role_description:
       "The authorities enabled to create and modify subprojects, define and execute workflow activities",
@@ -245,10 +247,10 @@ const en = {
     workflow_budget_amount_description: "Budget for the workflowitem",
     workflow_budget_amount: "Workflowitem budget amount",
     workflow_budget_description: "e.g.",
-    workflow_budget_disbursed: "disbursed",
+    workflow_budget_disbursed: "payed",
     workflow_budget_na: "Not applicable",
     workflow_budget_status_allocated: "Assigned",
-    workflow_budget_status_disbursed: "Disbursed",
+    workflow_budget_status_disbursed: "Payed",
     workflow_budget_status_na: "N/A",
     workflow_budget: "Workflowitem budget amount",
     workflow_comment: "Workflowitem comment",
@@ -343,7 +345,7 @@ const en = {
     assigned_budget_ratio: "Assigned Budget Ratio",
     available_unspent_budget: "Available Unspent Budget",
     converted_amount: "Converted Amount",
-    disbursed_budget_ratio: "Disbursed Budget Ratio",
+    disbursed_budget_ratio: "Payed Budget Ratio",
     insufficient_permissions_text:
       "One or more workflowitem are redacted. The analytics are hidden because they would be falsified.",
     project_analytics: "Project Analytics",

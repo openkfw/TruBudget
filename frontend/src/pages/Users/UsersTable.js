@@ -50,8 +50,8 @@ const UsersTable = props => {
           </TableRow>
         </TableHead>
         <TableBody id="usertablebody">
-          {sortedUsers.map(user => {
-            return renderUser({ ...props, user });
+          {sortedUsers.map(displayUser => {
+            return renderUser({ ...props, displayUser });
           })}
         </TableBody>
       </Table>
@@ -60,15 +60,15 @@ const UsersTable = props => {
 };
 
 const renderUser = props => {
-  const { classes, user } = props;
+  const { classes, displayUser } = props;
 
   return (
-    <TableRow data-test={`user-${user.id}`} key={user.id}>
+    <TableRow data-test={`user-${displayUser.id}`} key={displayUser.id}>
       <TableCell component="th" scope="row">
-        {user.id}
+        {displayUser.id}
       </TableCell>
-      <TableCell>{user.displayName}</TableCell>
-      <TableCell>{user.organization}</TableCell>
+      <TableCell>{displayUser.displayName}</TableCell>
+      <TableCell>{displayUser.organization}</TableCell>
       <TableCell className={classes.flexColumn}>
         <div className={classes.flex}>{renderActionButtons(props)}</div>
       </TableCell>
@@ -78,7 +78,7 @@ const renderUser = props => {
 
 const renderActionButtons = props => {
   const {
-    user,
+    displayUser,
     userId,
     allowedIntents,
     showDashboardDialog,
@@ -88,13 +88,13 @@ const renderActionButtons = props => {
     isRoot
   } = props;
 
-  const isEnabledUser = user.permissions["user.authenticate"].includes(user.id);
+  const isEnabledUser = displayUser.permissions["user.authenticate"].includes(displayUser.id);
   const canEditPassword =
     // need to check if user permissions exist yet
     // to make sure this is compatible with older versions
-    (user.permissions &&
-      user.permissions.hasOwnProperty("user.changePassword") &&
-      user.permissions["user.changePassword"].some(x => x === userId)) ||
+    (displayUser.permissions &&
+      displayUser.permissions.hasOwnProperty("user.changePassword") &&
+      displayUser.permissions["user.changePassword"].some(x => x === userId)) ||
     isRoot;
   const canListUserPermissions = allowedIntents.includes("global.listPermissions") || isRoot;
   const canEnableUser = (allowedIntents.includes("global.enableUser") || isRoot) && !isEnabledUser;
@@ -104,38 +104,39 @@ const renderActionButtons = props => {
     <>
       {canEditPassword ? (
         <ActionButton
-          onClick={() => showPasswordDialog(user.id)}
+          onClick={() => showPasswordDialog(displayUser.id)}
           title={strings.common.edit}
           icon={<EditIcon />}
-          data-test={`edit-user-${user.id}`}
+          data-test={`edit-user-${displayUser.id}`}
         />
       ) : null}
       {canListUserPermissions ? (
         <ActionButton
-          onClick={() => showDashboardDialog("editUserPermissions", user.id)}
+          onClick={() => showDashboardDialog("editUserPermissions", displayUser.id)}
           title={strings.common.show_permissions}
           icon={<PermissionIcon />}
-          data-test={`edit-user-permissions-${user.id}`}
+          data-test={`edit-user-permissions-${displayUser.id}`}
         />
       ) : null}
       {canEnableUser ? (
         <ActionButton
           onClick={() => {
-            enableUser(user.id);
+            enableUser(displayUser.id);
           }}
           title={strings.users.enable_user}
           icon={<CheckCircleIcon />}
-          data-test={`enable-user-${user.id}`}
+          data-test={`enable-user-${displayUser.id}`}
         />
       ) : null}
       {canDisableUser ? (
         <ActionButton
           onClick={() => {
-            disableUser(user.id);
+            disableUser(displayUser.id);
           }}
           title={strings.users.disable_user}
           icon={<RemoveCircleIcon />}
-          data-test={`disable-user-${user.id}`}
+          data-test={`disable-user-${displayUser.id}`}
+          notVisible={userId === displayUser.id}
         />
       ) : null}
     </>

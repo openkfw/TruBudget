@@ -587,7 +587,7 @@ export function* createWorkflowItemSaga({ type, ...rest }) {
       subprojectId: rest.subprojectId,
       showLoading: true
     });
-  });
+  }, true);
 }
 
 export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId, changes }) {
@@ -604,7 +604,7 @@ export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId,
       subprojectId: subprojectId,
       showLoading: true
     });
-  });
+  }, true);
 }
 
 export function* reorderWorkflowitemsSaga({ projectId, subprojectId, ordering }) {
@@ -2417,7 +2417,7 @@ function* exportDataSaga() {
   yield execute(
     function*() {
       const data = yield callApi(api.export);
-      saveAs(data, "TruBudget_Export.xlsx");
+      saveAs(data, strings.login.frontend_name + "_Export.xlsx");
       yield put({
         type: EXPORT_DATA_SUCCESS
       });
