@@ -23,11 +23,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Script for fixing invalid backup files, as a workaround to issue [#513] [#548](https://github.com/openkfw/TruBudget/pull/548)
+- Script for fixing invalid backup files, as a workaround to issue [#513](https://github.com/openkfw/TruBudget/issues/513)
+
+### Changed
+
+- Changed some french translations [#566](https://github.com/openkfw/TruBudget/issues/566)
 
 ### Fixed
 
 - The edit button is now only visible to the user that created it [#556](https://github.com/openkfw/TruBudget/issues/556)
+- Fixed a bug where a user can disable himself [#554](https://github.com/openkfw/TruBudget/issues/554)
+- Fixed a bug where multiple loading indicators are shown in the confirmation dialog [#555](https://github.com/openkfw/TruBudget/issues/555)
+- Show the loading indicator while uploading a document [#558](https://github.com/openkfw/TruBudget/issues/558)
+- Fixed a style bug for adding users to a group [#557](https://github.com/openkfw/TruBudget/issues/557)
 
 ## [1.14.0] - 2020-10-07
 
