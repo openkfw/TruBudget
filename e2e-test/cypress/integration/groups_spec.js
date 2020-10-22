@@ -43,4 +43,26 @@ describe("User/Groups Dashboard", function() {
         expect($th.first()).to.have.text("TestGroup");
       });
   });
+
+  it("User that created the group should be able to edit it", function() {
+    cy.get("[data-test=edit-group-TestGroup]").should("be.visible");
+  });
+
+  it("Users that didn't create the group should not be able to edit it", function() {
+    cy.get("#logoutbutton")
+      .should("be.visible")
+      .click();
+    cy.login("thouse", "test");
+    cy.visit("/users");
+    cy.get("[aria-label=groupsTab]").click();
+    cy.get("[data-test=edit-group-TestGroup]").should("be.disabled");
+    
+    cy.get("#logoutbutton")
+      .should("be.visible")
+      .click();
+    cy.login("jdoe", "test");
+    cy.visit("/users");
+    cy.get("[aria-label=groupsTab]").click();
+    cy.get("[data-test=edit-group-TestGroup]").should("be.disabled");
+  });
 });
