@@ -41,6 +41,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         type: "array",
                         items: { type: "string", example: "aSmith" },
                       },
+                      permissions: { type: "object", additionalProperties: true },
                     },
                   },
                 },
@@ -83,6 +84,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             groupId: group.id,
             displayName: group.displayName,
             users: group.members,
+            permissions: group.permissions,
           };
         });
       })
