@@ -15,7 +15,7 @@ const styles = theme => {
   };
 };
 
-const NewOrganizationsEmptyState = withTheme()(
+const NewOrganizationsEmptyState = withTheme(
   withStyles(styles)(props => {
     const { classes } = props;
     return (
@@ -41,7 +41,7 @@ const NewOrganizationsEmptyState = withTheme()(
   })
 );
 
-const ExistingNodesEmptyState = withTheme()(
+const ExistingNodesEmptyState = withTheme(
   withStyles(styles)(props => {
     const { classes } = props;
     return (

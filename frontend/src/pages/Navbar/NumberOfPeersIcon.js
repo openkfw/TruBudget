@@ -17,7 +17,7 @@ const styles = theme => ({
     backgroundColor: red[500]
   },
   margin: {
-    margin: theme.spacing.unit * 2
+    margin: theme.spacing(2)
   }
 });
 

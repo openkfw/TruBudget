@@ -5,6 +5,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Subheader from "@material-ui/core/ListSubheader";
 import ProjectIcon from "@material-ui/icons/Business";
 import NodesIcon from "@material-ui/icons/DesktopWindows";
@@ -69,7 +70,13 @@ const SideNavCard = ({
         >
           <ListItem style={{ paddingTop: "16px" }}>
             <ListItemIcon>
-              <IconButton children={<Avatar size={60} src={avatar} />} />
+              <IconButton
+                children={
+                  <ListItemAvatar>
+                    <Avatar size={60} src={avatar} />
+                  </ListItemAvatar>
+                }
+              />
             </ListItemIcon>
             <ListItemText
               style={{ padding: "0px" }}

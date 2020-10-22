@@ -9,7 +9,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import CloseIcon from "@material-ui/icons/Close";
-import React from "react";
+import React, { forwardRef } from "react";
 import { connect } from "react-redux";
 
 import { getCurrencies } from "../../helper";
@@ -45,9 +45,7 @@ function getMenuItems(currencies) {
   });
 }
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+const Transition = forwardRef((props, ref) => <Slide direction="up" {...props} ref={ref} />);
 
 const ProjectAnalyticsDialog = ({
   projectId,

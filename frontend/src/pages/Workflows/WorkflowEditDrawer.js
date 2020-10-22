@@ -56,6 +56,7 @@ const WorkflowEditDrawer = props => {
     tempDrawerPermissions,
     storeAssignee,
     projectId,
+    subprojectId,
     myself
   } = props;
   const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
@@ -90,7 +91,13 @@ const WorkflowEditDrawer = props => {
           variant="contained"
           color="primary"
           onClick={() => {
-            return showWorkflowItemPreview(projectId, selectedWorkflowItems, tempDrawerAssignee, tempDrawerPermissions);
+            return showWorkflowItemPreview(
+              projectId,
+              subprojectId,
+              selectedWorkflowItems,
+              tempDrawerAssignee,
+              tempDrawerPermissions
+            );
           }}
           style={styles.drawerUpdateButton}
           disabled={_isEmpty(tempDrawerAssignee) && _isEmpty(tempDrawerPermissions)}

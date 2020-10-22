@@ -177,10 +177,11 @@ export function fetchFirstSubprojectHistoryPage(projectId, subprojectId, filter 
   };
 }
 
-export function showWorkflowItemPreview(projectId, resources, selectedAssignee, permissions) {
+export function showWorkflowItemPreview(projectId, subprojectId, resources, selectedAssignee, permissions) {
   return {
     type: SHOW_WORKFLOW_PREVIEW,
     projectId,
+    subprojectId,
     ressources: resources,
     selectedAssignee,
     permissions

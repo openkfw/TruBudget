@@ -31,7 +31,7 @@ const defaultState = fromJS({
   isLiveUpdatesEnabled: true,
   totalNotificationCount: 0,
   notificationCount: 0,
-  currentNotificationPage: 1,
+  currentNotificationPage: 0,
   notificationPageSize: 20
 });
 

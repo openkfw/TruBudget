@@ -72,12 +72,12 @@ const styles = theme => ({
     zIndex: 10,
     width: "100%",
     heigth: 500,
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     left: 0,
     right: 0
   },
   chip: {
-    margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`
+    margin: `${theme.spacing(0.5)}px ${theme.spacing(0.25)}px`
   },
   inputRoot: {
     flexWrap: "wrap"

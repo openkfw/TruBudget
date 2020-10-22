@@ -15,7 +15,7 @@ const styles = theme => {
   };
 };
 
-const BudgetEmptyState = withTheme()(
+const BudgetEmptyState = withTheme(
   withStyles(styles)(props => {
     const { text, classes } = props;
     return (
