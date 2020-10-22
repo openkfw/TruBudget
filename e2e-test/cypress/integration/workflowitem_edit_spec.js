@@ -32,10 +32,8 @@ describe("Workflowitem edit", function() {
 
       // Create a workflow item and select a different currency
       cy.get("[data-test=createWorkflowitem]").click();
-      cy.get("[data-test=nameinput] input").type("Test");
-      cy.get("[data-test=commentinput] textarea")
-        .last()
-        .type("Test");
+      cy.get("[data-test=nameinput]").type("Test");
+      cy.get("[data-test=commentinput]").type("Test");
       cy.get("[data-test=amount-type-allocated]").click();
       cy.get("[data-test=dropdown-currencies-click]").click();
       cy.get("[data-value=USD]").click();

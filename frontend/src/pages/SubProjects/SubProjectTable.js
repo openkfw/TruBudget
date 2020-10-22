@@ -268,4 +268,4 @@ const SubProjectTable = ({
   );
 };
 
-export default withTheme(styles)(withStyles(styles)(SubProjectTable));
+export default withTheme(withStyles(styles)(SubProjectTable));

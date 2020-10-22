@@ -30,7 +30,7 @@ const styles = theme => ({
     paddingLeft: 0
   },
   listItem: {
-    opacity: 1
+    opacity: "1"
   },
   media: {
     paddingTop: "70%"
@@ -42,7 +42,7 @@ const styles = theme => ({
     display: "flex",
     maxHeight: "10px",
     alignItems: "center",
-    marginTop: "20px",
+    marginTop: "10px",
     justifyContent: "flex-end"
   },
   cardTitle: {

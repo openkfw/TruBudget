@@ -26,16 +26,11 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=createWorkflowitem]").click();
     cy.get("[data-test=creation-dialog]").should("be.visible");
 
-    cy.get("[data-test=nameinput] input")
-      .click()
-      .type("Test");
+    cy.get("[data-test=nameinput]").type("Test");
     cy.get("[data-test=datepicker-due-date]")
       .click()
       .type("2050-02-02");
-    cy.get("[data-test=commentinput] textarea")
-      .last()
-      .click()
-      .type("Test");
+    cy.get("[data-test=commentinput]").type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
     cy.get("[data-test=dropdown-currencies-click]").should("contain", "EUR");
 
@@ -47,17 +42,11 @@ describe("Workflowitem create", function() {
   it("Check warnings that permissions are not assigned", function() {
     // Create a workflow item
     cy.get("[data-test=createWorkflowitem]").click();
-    cy.get("[data-test=nameinput] input")
-      .should("be.visible")
-      .click()
-      .type("Test");
+    cy.get("[data-test=nameinput]").type("Test");
     cy.get("[data-test=datepicker-due-date]")
       .click()
       .type("2050-02-02");
-    cy.get("[data-test=commentinput] textarea")
-      .last()
-      .click()
-      .type("Test");
+    cy.get("[data-test=commentinput]").type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
 
     // Select a different currency than the subproject currency

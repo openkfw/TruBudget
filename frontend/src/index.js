@@ -37,7 +37,9 @@ const muiTheme = createMuiTheme({
     },
     secondary: red,
     error: red,
-    warning: amber[800],
+    warning: {
+      main: amber[800]
+    },
     info: blue,
     grey: {
       light: grey[100],
@@ -46,9 +48,7 @@ const muiTheme = createMuiTheme({
     },
     tonalOffset: 0.6
   },
-  typography: {
-    useNextVariants: true
-  }
+  typography: {}
 });
 
 class Root extends Component {

@@ -7,6 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import AmountIcon from "@material-ui/icons/AccountBalance";
@@ -25,7 +26,7 @@ import WorkflowitemHistoryTab from "./WorkflowitemHistoryTab/WorkflowHistoryTab"
 const styles = theme => {
   return {
     alert: {
-      border: `3px solid ${theme.palette.warning}`,
+      border: `3px solid ${theme.palette.warning.main}`,
       width: 37,
       height: 37
     },
@@ -101,7 +102,9 @@ function Overview({ classes, users, workflowitem }) {
   return (
     <List>
       <ListItem>
-        <Avatar>{displayName ? displayName[0] : "?"}</Avatar>
+        <ListItemAvatar>
+          <Avatar>{displayName ? displayName[0] : "?"}</Avatar>
+        </ListItemAvatar>
         <ListItemText
           data-test="workflowitemInfoDisplayName"
           primary={displayName}
@@ -110,23 +113,29 @@ function Overview({ classes, users, workflowitem }) {
         />
       </ListItem>
       <ListItem>
-        <Avatar>
-          <AmountIcon />
-        </Avatar>
+        <ListItemAvatar>
+          <Avatar>
+            <AmountIcon />
+          </Avatar>
+        </ListItemAvatar>
         <ListItemText
           primary={amountType !== "N/A" ? toAmountString(amount, currency) : "N/A"}
           secondary={strings.common.budget}
         />
       </ListItem>
       <ListItem>
-        <Avatar>{statusIconMapping[status]}</Avatar>
+        <ListItemAvatar>
+          <Avatar>{statusIconMapping[status]}</Avatar>
+        </ListItemAvatar>
         <ListItemText primary={statusMapping(status)} secondary={strings.common.status} />
       </ListItem>
       {dueDate ? (
         <ListItem>
-          <Avatar className={isDateReached(dueDate) && status === "open" ? classes.alert : null} data-test="due-date">
-            <AccessAlarmIcon />
-          </Avatar>
+          <ListItemAvatar>
+            <Avatar className={isDateReached(dueDate) && status === "open" ? classes.alert : null} data-test="due-date">
+              <AccessAlarmIcon />
+            </Avatar>
+          </ListItemAvatar>
           <ListItemText
             primary={dayjs(dueDate).format(dateFormat())}
             secondary={
@@ -136,13 +145,17 @@ function Overview({ classes, users, workflowitem }) {
         </ListItem>
       ) : null}
       <ListItem>
-        <Avatar>
-          <AssigneeIcon />
-        </Avatar>
+        <ListItemAvatar>
+          <Avatar>
+            <AssigneeIcon />
+          </Avatar>
+        </ListItemAvatar>
         <ListItemText primary={assignedUser ? assignedUser.displayName : ""} secondary={strings.common.assignee} />
       </ListItem>
       <ListItem>
-        <Avatar>W</Avatar>
+        <ListItemAvatar>
+          <Avatar>W</Avatar>
+        </ListItemAvatar>
         <ListItemText
           primary={workflowitemType}
           secondary={strings.workflow.workflowitem_type}
@@ -243,4 +256,4 @@ function WorkflowDetails({
   );
 }
 
-export default withTheme()(withStyles(styles)(WorkflowDetails));
+export default withTheme(withStyles(styles)(WorkflowDetails));

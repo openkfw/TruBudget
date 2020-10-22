@@ -10,7 +10,6 @@ import Read from "@material-ui/icons/MailOutline";
 import LaunchIcon from "@material-ui/icons/ZoomIn";
 import dayjs from "dayjs";
 import React from "react";
-import classNames from "classnames";
 import { intentMapping, parseURI, getParentData, isAllowedToSee } from "./helper";
 import { dateFormat } from "../../helper";
 import strings from "../../localizeStrings";
@@ -73,7 +72,7 @@ const NotificationListItems = ({
         <Divider />
         <ListItem
           component="div"
-          className={classNames(classes.row, !isRead ? classes.unreadMessage : false)}
+          className={!isRead ? `${classes.row} ${classes.unreadMessage}` : `${classes.row}`}
           key={index}
           button={isRead ? false : true}
           data-test={testLabel}

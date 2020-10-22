@@ -53,9 +53,9 @@ class DocumentOverview extends Component {
     this.input = {};
   }
   getPropsForUploadButton = validated => {
-    let style = null;
-    let label = null;
-    let color = null;
+    let style = {};
+    let label = "";
+    let color = "default";
     if (_isUndefined(validated)) {
       label = strings.workflow.workflow_document_validate;
     } else if (validated === true) {

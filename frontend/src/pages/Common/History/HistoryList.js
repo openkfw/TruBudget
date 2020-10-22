@@ -2,6 +2,7 @@ import Avatar from "@material-ui/core/Avatar";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { withStyles } from "@material-ui/core/styles";
 import dayjs from "dayjs";
@@ -28,7 +29,9 @@ const getEvents = (events, getUserDisplayname) => {
     const eventTime = event.businessEvent.time;
     return (
       <ListItem key={`${index}-${eventTime}`} className="history-item">
-        <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
+        <ListItemAvatar>
+          <Avatar alt={"test"} src="/lego_avatar_female2.jpg" />
+        </ListItemAvatar>
         <ListItemText
           data-test={`history-item-${index}`}
           primary={stringifyHistoryEvent(event.businessEvent, event.snapshot, getUserDisplayname)}
@@ -62,7 +65,9 @@ const HistoryList = ({ classes, events, nEventsTotal, hasMore, getUserDisplaynam
           {eventItems}
           {hasMore || isLoading ? null : (
             <ListItem key="closing-element">
-              <Avatar alt={""} src="" />
+              <ListItemAvatar>
+                <Avatar alt={""} src="" />
+              </ListItemAvatar>
               <ListItemText primary="" secondary={strings.common.history_end} />
             </ListItem>
           )}

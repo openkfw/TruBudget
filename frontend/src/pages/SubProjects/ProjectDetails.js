@@ -6,6 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -65,7 +66,13 @@ const styles = {
     width: "31%"
   },
   analytics: {
-    padding: "12px 0 "
+    padding: "12px 0 ",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  tableCell: {
+    padding: "5px"
   }
 };
 
@@ -111,20 +118,28 @@ const ProjectDetails = props => {
       <Card style={styles.card}>
         <List style={styles.projectDetails}>
           <ListItem>
-            {projectName ? <Avatar>{projectName[0]}</Avatar> : null}
+            {projectName ? (
+              <ListItemAvatar>
+                <Avatar>{projectName[0]}</Avatar>
+              </ListItemAvatar>
+            ) : null}
             <ListItemText primary={projectName} secondary={projectComment} />
           </ListItem>
           <ListItem>
-            <Avatar>
-              <DateIcon />
-            </Avatar>
+            <ListItemAvatar>
+              <Avatar>
+                <DateIcon />
+              </Avatar>
+            </ListItemAvatar>
             <ListItemText primary={unixTsToString(projectTS)} secondary={strings.common.created} />
           </ListItem>
           {tags.length > 0 ? (
             <ListItem>
-              <Avatar>
-                <LabelIcon />
-              </Avatar>
+              <ListItemAvatar>
+                <Avatar>
+                  <LabelIcon />
+                </Avatar>
+              </ListItemAvatar>
               <ListItemText primary={tags} />
             </ListItem>
           ) : null}
@@ -138,17 +153,25 @@ const ProjectDetails = props => {
               <Table padding="none">
                 <TableHead>
                   <TableRow>
-                    <TableCell>{strings.common.organization}</TableCell>
-                    <TableCell align="right">{strings.common.amount}</TableCell>
-                    <TableCell align="right">{strings.common.currency}</TableCell>
+                    <TableCell style={styles.tableCell}>{strings.common.organization}</TableCell>
+                    <TableCell style={styles.tableCell} align="right">
+                      {strings.common.amount}
+                    </TableCell>
+                    <TableCell style={styles.tableCell} align="right">
+                      {strings.common.currency}
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {projectProjectedBudgets.map(budget => (
                     <TableRow key={budget.organization + budget.currencyCode}>
-                      <TableCell>{budget.organization}</TableCell>
-                      <TableCell align="right">{toAmountString(budget.value)}</TableCell>
-                      <TableCell align="right">{budget.currencyCode}</TableCell>
+                      <TableCell style={styles.tableCell}>{budget.organization}</TableCell>
+                      <TableCell style={styles.tableCell} align="right">
+                        {toAmountString(budget.value)}
+                      </TableCell>
+                      <TableCell style={styles.tableCell} align="right">
+                        {budget.currencyCode}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -171,7 +194,9 @@ const ProjectDetails = props => {
         </div>
         <List style={styles.projectAssignee}>
           <ListItem>
-            <Avatar>{statusIcon}</Avatar>
+            <ListItemAvatar>
+              <Avatar>{statusIcon}</Avatar>
+            </ListItemAvatar>
             <ListItemText primary={mappedStatus} secondary={strings.common.status} />
             {projectStatus !== "closed" ? (
               <Tooltip
@@ -187,9 +212,11 @@ const ProjectDetails = props => {
             ) : null}
           </ListItem>
           <ListItem>
-            <Avatar style={styles.assingeeIcon}>
-              <AssigneeIcon />
-            </Avatar>
+            <ListItemAvatar>
+              <Avatar style={styles.assingeeIcon}>
+                <AssigneeIcon />
+              </Avatar>
+            </ListItemAvatar>
             <ListItemText
               primary={
                 <ProjectAssigneeContainer users={users} disabled={!canAssignProject} assignee={projectAssignee} />
