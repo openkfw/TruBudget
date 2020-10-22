@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed a bug where the email field dissappears in the user profile [#551](https://github.com/openkfw/TruBudget/issues/551)
 - Fixed a bug where opening the user profile resulted in an error [#549](https://github.com/openkfw/TruBudget/issues/549)
+- Allow typing a comma separator when editing a projected budget [#517](https://github.com/openkfw/TruBudget/issues/517)
+- Projected budgets are shown in the language specific format [#559](https://github.com/openkfw/TruBudget/issues/559)
+- Fixed a bug where the workflowitem budget changes its value unexpectly [#563](https://github.com/openkfw/TruBudget/issues/563)
 
 # [1.13.0] - 2020-09-16
 
