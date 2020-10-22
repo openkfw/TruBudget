@@ -5,7 +5,9 @@ const de = {
       decimal: ",",
       thousand: ".",
       precision: 2
-    }
+    },
+    // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
+    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
   },
   common: {
     action: "German: Action",
@@ -94,6 +96,7 @@ const de = {
     add_tag_text: "Tag zum Projekt hinzufügen",
     tag_already_exists: "Tag existiert bereits!",
     invalid_tag: "Ungültiger Tag",
+    invalid_format: "Ungültiges Format",
     task_status: "Task status",
     total_budget: "Gesamt Budget",
     thumbnail: "German: Thumbnail",

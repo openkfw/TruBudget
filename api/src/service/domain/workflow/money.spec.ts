@@ -21,9 +21,9 @@ describe("An amount of money", () => {
     assert.isTrue(isAmountOfMoney("- 123.45"));
   });
 
-  it("must not contain a comma.", async () => {
+  it("match english notation.", async () => {
     assert.isFalse(isAmountOfMoney("123,45"));
-    assert.isFalse(isAmountOfMoney("1,234.56"));
+    assert.isTrue(isAmountOfMoney("1,234.56"));
     assert.isFalse(isAmountOfMoney("1.234,56"));
   });
 

@@ -5,7 +5,9 @@ const pt = {
       decimal: ",",
       thousand: ".",
       precision: 2
-    }
+    },
+    // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
+    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
   },
   common: {
     action: "Ação",
@@ -55,6 +57,7 @@ const pt = {
     incorrect_username: "Id do usuário incorreto",
     incorrect_username_or_password: "ID ou palavra-passe de início de sessão incorrecta",
     invalid_tag: "Tag inválida",
+    invalid_format: "Formato inválido",
     name: "Nome ou descrição do usuário",
     next: "Próximo",
     no_budget: "Nenhum orçamento encontrado",

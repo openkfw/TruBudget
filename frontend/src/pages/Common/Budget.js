@@ -11,7 +11,13 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import _isEmpty from "lodash/isEmpty";
 import React, { useState, useEffect, useCallback } from "react";
-import { fromAmountString, getCurrencies, toAmountString } from "../../helper";
+import {
+  fromAmountString,
+  getCurrencies,
+  toAmountString,
+  validateLanguagePattern,
+  numberSignsRegex
+} from "../../helper";
 import strings from "../../localizeStrings";
 import DropDown from "./NewDropdown";
 
@@ -20,25 +26,34 @@ const styles = {
   cell: { display: "flex", justifyContent: "space-between" }
 };
 
-const renderProjectedBudgetAmount = (
+const renderProjectedBudgetAmount = ({
   projectedBudget,
   currIndex,
   editIndex,
   isEditing,
   budgetAmountEdit,
-  setBudgetAmountEdit
-) => {
+  setBudgetAmountEdit,
+  isValidBudgetAmountEdit,
+  setIsValidBudgetAmountEdit
+}) => {
   return (
     <TableCell align="right" data-test="saved-projected-budget-amount">
       {isEditing && editIndex === currIndex ? (
         <TextField
           label={strings.common.projected_budget}
           value={budgetAmountEdit}
-          onChange={e => setBudgetAmountEdit(e.target.value)}
+          onChange={e => {
+            if (numberSignsRegex.test(e.target.value)) {
+              setBudgetAmountEdit(e.target.value);
+              setIsValidBudgetAmountEdit(validateLanguagePattern(e.target.value) || _isEmpty(e.target.value));
+            }
+          }}
           type="text"
           aria-label="projectedBudgetAmountEdit"
-          id="amountedit"
+          id={`amountedit-${editIndex}`}
           data-test="edit-projected-budget-amount"
+          error={!isValidBudgetAmountEdit}
+          helperText={!isValidBudgetAmountEdit ? strings.common.invalid_format : ""}
         />
       ) : (
         toAmountString(projectedBudget.value, projectedBudget.currencyCode)
@@ -46,7 +61,8 @@ const renderProjectedBudgetAmount = (
     </TableCell>
   );
 };
-const renderProjectedBudgetEditButtons = (
+
+const renderProjectedBudgetEditButtons = ({
   projectedBudget,
   currIndex,
   editIndex,
@@ -56,19 +72,21 @@ const renderProjectedBudgetEditButtons = (
   setEditIndex,
   setIsEditing,
   setBudgetAmountEdit,
+  isValidBudgetAmountEdit,
   editProjectedBudget,
   storeDeletedProjectedBudget
-) => {
+}) => {
   return (
     <TableCell align="right">
       {isEditing && editIndex === currIndex ? (
         <Button
           aria-label="Done"
           onClick={() => {
-            editProjectedBudget(projectedBudget, budgetAmountEdit);
+            editProjectedBudget(projectedBudget, fromAmountString(budgetAmountEdit).toString(10));
             setEditIndex(-1);
             setIsEditing(false);
           }}
+          disabled={!isValidBudgetAmountEdit}
           data-test="edit-projected-budget-amount-done"
         >
           <DoneIcon />
@@ -79,7 +97,7 @@ const renderProjectedBudgetEditButtons = (
           onClick={() => {
             setEditIndex(currIndex);
             setIsEditing(true);
-            setBudgetAmountEdit(projectedBudget.value);
+            setBudgetAmountEdit(toAmountString(projectedBudget.value).toString(10));
           }}
           disabled={isEditing}
           data-test="edit-projected-budget"
@@ -126,7 +144,7 @@ const getCurrencyMenuItems = currencies => {
   });
 };
 
-const renderAddProjectedBudget = (
+const renderAddProjectedBudget = ({
   projectProjectedBudgets,
   organization,
   setOrganization,
@@ -135,10 +153,12 @@ const renderAddProjectedBudget = (
   isEditing,
   isSaveable,
   currencies,
-  setBudgetAmount,
-  budgetAmount,
+  setBudgetAmountAdd,
+  budgetAmountAdd,
+  setIsValidBudgetAmountAdd,
+  isValidBudgetAmountAdd,
   styles
-) => {
+}) => {
   return (
     <div style={styles.cell}>
       {_isEmpty(projectProjectedBudgets) ? (
@@ -188,17 +208,20 @@ const renderAddProjectedBudget = (
         label={strings.common.projected_budget}
         data-test="projected-budget"
         disabled={isEditing}
-        value={budgetAmount}
+        value={budgetAmountAdd}
         onChange={v => {
-          if (/^[0-9,.-]*$/.test(v.target.value)) setBudgetAmount(v.target.value);
+          if (numberSignsRegex.test(v.target.value)) {
+            setBudgetAmountAdd(v.target.value);
+            setIsValidBudgetAmountAdd(validateLanguagePattern(v.target.value) || _isEmpty(v.target.value));
+          }
         }}
-        onBlur={e => setBudgetAmount(toAmountString(e.target.value))}
-        onFocus={() => setBudgetAmount(toAmountString(fromAmountString(budgetAmount)))}
         type="text"
         multiline={false}
         aria-label="projectedbudget"
         id="projectedbudgetinput"
         style={styles.inputfield}
+        error={!isValidBudgetAmountAdd}
+        helperText={!isValidBudgetAmountAdd ? strings.common.invalid_format : ""}
       />
     </div>
   );
@@ -206,9 +229,11 @@ const renderAddProjectedBudget = (
 
 const Budget = props => {
   const [isSaveable, setIsSaveable] = useState(true);
+  const [isValidBudgetAmountAdd, setIsValidBudgetAmountAdd] = useState(true);
+  const [isValidBudgetAmountEdit, setIsValidBudgetAmountEdit] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(-1);
-  const [budgetAmount, setBudgetAmount] = useState("");
+  const [budgetAmountAdd, setBudgetAmountAdd] = useState("");
   const [budgetAmountEdit, setBudgetAmountEdit] = useState("");
   const [organization, setOrganization] = useState("");
   const [currency, setCurrency] = useState("");
@@ -238,14 +263,14 @@ const Budget = props => {
   const saveProjectedBudget = useCallback(() => {
     const projectedBudgetToAdd = {
       organization: organization,
-      value: fromAmountString(budgetAmount).toString(10),
+      value: fromAmountString(budgetAmountAdd).toString(10),
       currencyCode: currency
     };
     addProjectedBudget(projectedBudgetToAdd);
-    setBudgetAmount("");
+    setBudgetAmountAdd("");
     setOrganization("");
     setCurrency("");
-  }, [budgetAmount, currency, organization, addProjectedBudget]);
+  }, [budgetAmountAdd, currency, organization, addProjectedBudget]);
 
   return (
     <div>
@@ -259,21 +284,23 @@ const Budget = props => {
         </TableHead>
 
         <TableBody data-test="projected-budget-list">
-          {projectedBudgets.map((projectedBudget, index) => {
+          {projectedBudgets.map((projectedBudget, currIndex) => {
             return (
-              <TableRow key={`pb-row-${projectedBudget.organization}-${projectedBudget.value}-${index}`}>
+              <TableRow key={`pb-row-${projectedBudget.organization}-${projectedBudget.value}-${currIndex}`}>
                 <TableCell>{projectedBudget.organization}</TableCell>
-                {renderProjectedBudgetAmount(
+                {renderProjectedBudgetAmount({
                   projectedBudget,
-                  index,
+                  currIndex,
                   editIndex,
                   isEditing,
                   budgetAmountEdit,
-                  setBudgetAmountEdit
-                )}
-                {renderProjectedBudgetEditButtons(
+                  setBudgetAmountEdit,
+                  isValidBudgetAmountEdit,
+                  setIsValidBudgetAmountEdit
+                })}
+                {renderProjectedBudgetEditButtons({
                   projectedBudget,
-                  index,
+                  currIndex,
                   editIndex,
                   isEditing,
                   budgetAmountEdit,
@@ -281,9 +308,10 @@ const Budget = props => {
                   setEditIndex,
                   setIsEditing,
                   setBudgetAmountEdit,
+                  isValidBudgetAmountEdit,
                   editProjectedBudget,
                   storeDeletedProjectedBudget
-                )}
+                })}
               </TableRow>
             );
           })}
@@ -294,7 +322,7 @@ const Budget = props => {
         <TableBody>
           <TableRow key={`pb-row-add`}>
             <TableCell>
-              {renderAddProjectedBudget(
+              {renderAddProjectedBudget({
                 projectProjectedBudgets,
                 organization,
                 setOrganization,
@@ -303,17 +331,19 @@ const Budget = props => {
                 isEditing,
                 isSaveable,
                 currencies,
-                setBudgetAmount,
-                budgetAmount,
+                setBudgetAmountAdd,
+                budgetAmountAdd,
+                setIsValidBudgetAmountAdd,
+                isValidBudgetAmountAdd,
                 styles
-              )}
+              })}
             </TableCell>
             <TableCell align="right">
               <Button
                 variant="contained"
                 color="secondary"
                 data-test="add-projected-budget"
-                disabled={!budgetAmount || !currency || !organization || !isSaveable}
+                disabled={!budgetAmountAdd || !currency || !organization || !isSaveable || !isValidBudgetAmountAdd}
                 onClick={saveProjectedBudget}
               >
                 {`${strings.common.add}`}

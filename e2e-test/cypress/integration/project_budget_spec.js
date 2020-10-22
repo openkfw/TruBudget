@@ -3,21 +3,27 @@ describe("Project budget test", function() {
   const organization1 = "Organization 1";
   const organization2 = "Organization 2";
   const amount = "1234";
+  const unformattedBudget = "1200";
+  const formattedBudgetEnglish = "1,200.00";
+  const wrongformattedBudgetEnglish = ["1.200,0", "1.", "1.1.1", "1,11.11"];
+  const formattedBudgetGerman = "1.200,00";
+  const wrongformattedBudgetGerman = ["1,200.0", "1,", "1.1.1", "1,11.11"];
+
   const projectedBudgets = [
     {
       organization: organization1,
       currencyCode: "EUR",
-      value: "111"
+      value: "1111"
     },
     {
       organization: organization1,
       currencyCode: "USD",
-      value: "222"
+      value: "2222"
     },
     {
       organization: organization2,
       currencyCode: "BRL",
-      value: "333"
+      value: "3333"
     }
   ];
   before(() => {
@@ -29,8 +35,8 @@ describe("Project budget test", function() {
     cy.login();
     cy.visit("/projects");
     cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("viewDetails");
     cy.route("GET", apiRoute + "/project.list*").as("listProjects");
+    cy.route("GET", apiRoute + "/project.viewDetails*").as("viewDetailsProject");
     cy.route("POST", apiRoute + "/global.createProject").as("createProject");
     cy.route("POST", apiRoute + "/project.createSubproject").as("createSubproject");
     cy.route("POST", apiRoute + "/project.budget.deleteProjected").as("deleteBudget");
@@ -244,6 +250,186 @@ describe("Project budget test", function() {
         .click();
       // Check if editing worked properly
       cy.get("[data-test=projected-budget-list] tr").should("have.length", 2);
+    });
+  });
+
+  it("Check language specific number format in projected budget table", function() {
+    cy.createProject("project budget test project", "project budget test", projectedBudgets).then(({ id }) => {
+      projectId = id;
+      cy.login("mstein", "test", { language: "de" });
+      cy.visit(`/projects/${projectId}`).wait("@viewDetailsProject");
+      cy.get("[data-test=project-projected-budget] tr").then(projectedBudgets => {
+        expect(projectedBudgets[1]).to.contain("1.111,00");
+      });
+      cy.login("mstein", "test", { language: "en" });
+      cy.visit(`/projects/${projectId}`).wait("@viewDetailsProject");
+      cy.get("[data-test=project-projected-budget] tr").then(projectedBudgets => {
+        expect(projectedBudgets[1]).to.contain("1,111.00");
+      });
+    });
+  });
+
+  it("The budget cannot be added if the input format is invalid [english format]", function() {
+    // Test with english format
+    cy.login("mstein", "test", { language: "en" });
+    cy.visit(`/projects`).wait("@listProjects");
+    cy.get("[data-test=create-project-button]").click();
+    cy.get("[data-test=organization-input]").type(organization1);
+    cy.get("[data-test=dropdown-currencies]").click();
+    cy.get("[data-value=EUR]").click();
+    // Type in a budgetamount
+    cy.get("[data-test=projected-budget] input")
+      .clear()
+      .type(unformattedBudget);
+    cy.get("[data-test=projected-budget]").should("not.contain", "Invalid format");
+    cy.get("[data-test=projected-budget] input")
+      .clear()
+      .type(formattedBudgetEnglish);
+    cy.get("[data-test=projected-budget]").should("not.contain", "Invalid format");
+    wrongformattedBudgetEnglish.forEach(b => {
+      cy.get("[data-test=projected-budget] input")
+        .clear()
+        .type(b);
+      cy.get("[data-test=projected-budget]").should("contain", "Invalid format");
+    });
+  });
+
+  it("The budget cannot be added if the input format is invalid [german format]", function() {
+    // Test with german format
+    cy.login("mstein", "test", { language: "de" });
+    cy.visit(`/projects`).wait("@listProjects");
+    cy.get("[data-test=create-project-button]").click();
+    cy.get("[data-test=organization-input]").type(organization1);
+    cy.get("[data-test=dropdown-currencies]").click();
+    cy.get("[data-value=EUR]").click();
+    // Type in a budgetamount
+    cy.get("[data-test=projected-budget] input")
+      .clear()
+      .type(unformattedBudget);
+    cy.get("[data-test=projected-budget]").should("not.contain", "Ungültiges Format");
+    cy.get("[data-test=projected-budget] input")
+      .clear()
+      .type(formattedBudgetGerman);
+    cy.get("[data-test=projected-budget]").should("not.contain", "Ungültiges Format");
+    wrongformattedBudgetGerman.forEach(b => {
+      cy.get("[data-test=projected-budget] input")
+        .clear()
+        .type(b);
+      cy.get("[data-test=projected-budget]").should("contain", "Ungültiges Format");
+    });
+  });
+
+  it("The inputfield to edit budgetamount shows an error if the input is invalid [english format]", function() {
+    cy.createProject("project budget test project", "project budget test", projectedBudgets).then(() => {
+      cy.login("mstein", "test", { language: "en" });
+      cy.visit(`/projects`).wait("@listProjects");
+      // Edit projected budgetamount
+      cy.get(`[data-test=pe-button]`)
+        .last()
+        .click();
+      cy.get("[data-test=edit-projected-budget]")
+        .first()
+        .click();
+      cy.get("[data-test=edit-projected-budget-amount] input")
+        .clear()
+        .type(unformattedBudget);
+      cy.get("[data-test=edit-projected-budget-amount]").should("not.contain", "Invalid format");
+      cy.get("[data-test=edit-projected-budget-amount] input")
+        .clear()
+        .type(formattedBudgetEnglish);
+      cy.get("[data-test=edit-projected-budget-amount]").should("not.contain", "Invalid format");
+      wrongformattedBudgetEnglish.forEach(b => {
+        cy.get("[data-test=edit-projected-budget-amount] input")
+          .clear()
+          .type(b);
+        cy.get("[data-test=edit-projected-budget-amount]").should("contain", "Invalid format");
+      });
+    });
+  });
+
+  it("The inputfield to edit budgetamount  shows an error if the input is invalid [german format]", function() {
+    cy.createProject("project budget test project", "project budget test", projectedBudgets).then(() => {
+      cy.login("mstein", "test", { language: "de" });
+      cy.visit(`/projects`).wait("@listProjects");
+      // Edit projected budgetamount
+      cy.get(`[data-test=pe-button]`)
+        .last()
+        .click();
+      cy.get("[data-test=edit-projected-budget]")
+        .first()
+        .click();
+      cy.get("[data-test=edit-projected-budget-amount] input")
+        .clear()
+        .type(unformattedBudget);
+      cy.get("[data-test=edit-projected-budget-amount]").should("not.contain", "Ungültiges Format");
+      cy.get("[data-test=edit-projected-budget-amount] input")
+        .clear()
+        .type(formattedBudgetGerman);
+      cy.get("[data-test=edit-projected-budget-amount]").should("not.contain", "Ungültiges Format");
+      wrongformattedBudgetGerman.forEach(b => {
+        cy.get("[data-test=edit-projected-budget-amount] input")
+          .clear()
+          .type(b);
+        cy.get("[data-test=edit-projected-budget-amount]").should("contain", "Ungültiges Format");
+      });
+    });
+  });
+
+  it("The budget cannot be edited if the input format is invalid [english format]", function() {
+    cy.createProject("project budget test project", "project budget test", projectedBudgets).then(() => {
+      cy.login("mstein", "test", { language: "en" });
+      cy.visit(`/projects`).wait("@listProjects");
+      // Edit projected budgetamount
+      cy.get(`[data-test=pe-button]`)
+        .last()
+        .click();
+      cy.get("[data-test=edit-projected-budget]")
+        .first()
+        .click();
+      wrongformattedBudgetEnglish.forEach(b => {
+        cy.get("[data-test=edit-projected-budget-amount] input")
+          .clear()
+          .type(b);
+        cy.get("[data-test=edit-projected-budget-amount-done]").should("be.disabled");
+      });
+      cy.get("[data-test=edit-projected-budget-amount] input")
+        .clear()
+        .type(unformattedBudget);
+      cy.get("[data-test=edit-projected-budget-amount-done]")
+        .should("be.enabled")
+        .click();
+      cy.get("[data-test=saved-projected-budget-amount]")
+        .first()
+        .should("contain", formattedBudgetEnglish);
+    });
+  });
+
+  it("The budget cannot be edited if the input format is invalid [german format]", function() {
+    cy.createProject("project budget test project", "project budget test", projectedBudgets).then(() => {
+      cy.login("mstein", "test", { language: "de" });
+      cy.visit(`/projects`).wait("@listProjects");
+      // Edit projected budgetamount
+      cy.get(`[data-test=pe-button]`)
+        .last()
+        .click();
+      cy.get("[data-test=edit-projected-budget]")
+        .first()
+        .click();
+      wrongformattedBudgetGerman.forEach(b => {
+        cy.get("[data-test=edit-projected-budget-amount] input")
+          .clear()
+          .type(b);
+        cy.get("[data-test=edit-projected-budget-amount-done]").should("be.disabled");
+      });
+      cy.get("[data-test=edit-projected-budget-amount] input")
+        .clear()
+        .type(unformattedBudget);
+      cy.get("[data-test=edit-projected-budget-amount-done]")
+        .should("be.enabled")
+        .click();
+      cy.get("[data-test=saved-projected-budget-amount]")
+        .first()
+        .should("contain", formattedBudgetGerman);
     });
   });
 

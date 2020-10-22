@@ -1,7 +1,7 @@
 import Joi = require("joi");
 
 export type MoneyAmount = string;
-export const moneyAmountSchema = Joi.string().regex(/^-?\s?[0-9]+(\.[0-9]+)?$/, "amount of money");
+export const moneyAmountSchema = Joi.string().regex(/^-?\s?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/, "amount of money");
 
 export function isAmountOfMoney(value: string): boolean {
   const { error } = Joi.validate(value, moneyAmountSchema);

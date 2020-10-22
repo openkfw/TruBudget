@@ -94,6 +94,12 @@ export const toAmountString = (amount, currency) => {
   return accounting.formatMoney(amount, getCurrencyFormat(currency));
 };
 
+export const validateLanguagePattern = amount => {
+  return strings.format.numberRegex.test(amount.toString(10));
+};
+
+export const numberSignsRegex = /^[0-9,.-]*$/;
+
 export const unixTsToString = ts => {
   let dateString = dayjs.unix(ts).format("MMM D, YYYY");
   return dateString;

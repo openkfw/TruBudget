@@ -51,7 +51,7 @@ const handleCreate = props => {
   createWorkflowItem(
     displayName,
     fromAmountString(amount).toString(),
-    exchangeRate,
+    fromAmountString(exchangeRate).toString(),
     amountType,
     currency,
     description,
@@ -87,6 +87,9 @@ const handleEdit = props => {
     const subprojectId = location.pathname.split("/")[3];
     if (changes.amount) {
       changes.amount = fromAmountString(changes.amount).toString();
+    }
+    if (changes.exchangeRate) {
+      changes.exchangeRate = fromAmountString(changes.exchangeRate).toString();
     }
     editWorkflowItem(projectId, subprojectId, workflowToAdd.id, changes);
   }
@@ -191,7 +194,8 @@ const WorkflowDialog = props => {
         handleSubmit: handleCreate,
         dialogShown: creationDialogShown
       };
-  const { displayName, amountType, amount, exchangeRate } = workflowToAdd;
+  const { displayName, amountType, amount } = workflowToAdd;
+  const exchangeRate = fromAmountString(workflowToAdd.exchangeRate);
   const changes = compareObjects(workflowItems, workflowToAdd);
   const steps = [
     {
