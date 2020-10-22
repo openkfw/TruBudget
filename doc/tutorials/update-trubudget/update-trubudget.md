@@ -75,3 +75,19 @@ A full list of the blockhain's parameters can be found on the MultiChain Website
 ### multichain.conf
 
 MultiChain creates two multichain.conf files. One is stored in the MultiChain's directory `[PathToMultichainData]/.multichain` and the other one inside of the TrubudgetChain's directory `[PathToMultichainData]/.multichain/TrubudgetChain`. Both contain basic configuration parameters like the RPC Port, the RPC User, the RPC Password and the RPC Allow IP. The first multichain.conf file is created when the blockchain is set up. The second one is created when the node is initialized.
+
+## Hints and Pitfalls
+
+A downloaded backup might sometimes be saved with an invalid hash. When trying to restore the backup using this corrupted .gz file, the error shown below might occur.
+
+![restore backup failed](../../wiki/uploads/Screenshots/failed_restore_error.jpeg)
+
+If this error occurs and you are certain that the `backup.gz` compressed folder you want to upload is indeed a valid TruBudget backup, you can run a script that will fix the invalid hash, in order to sucessfully restore the backup.
+
+1. Navigate to the `/blockchain` folder and open your favorite shell
+1. Type `npm run check_backup` and add the path to the backup.gz file you want to fix (e.g. `npm run check_backup -- "path/to/backup.gz"`)
+1. The script will print out the result of the check which tells you if the backup is valid or not.
+1. Optionally, type -f/--fix after the path. This option will also fix the hash if it is invalid. A new file `backup updated.gz` will be created in the same location as the one you provided. It is an exact copy of your backup, but with a corrected hash
+1. You can now use this file to restore your backup
+
+- Note that if your filename contains a blank space (e.g. `backup (1).gz`), you should use quotation marks when entering the path, so it will be recognized as one argument and not two separate ones.

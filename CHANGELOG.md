@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Security -->
 
+## [1.15.0] - 
+
+### Added
+
+- Script for fixing invalid backup files, as a workaround to issue [#513] [#548](https://github.com/openkfw/TruBudget/pull/548)
+
+
 ## [1.14.0] - 2020-10-07
 
 ### Added

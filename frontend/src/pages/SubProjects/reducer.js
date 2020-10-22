@@ -7,6 +7,8 @@ import { FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
 import {
   ADD_TEMPORARY_SUBPROJECT_PERMISSION,
   CREATE_SUBPROJECT_SUCCESS,
+  DISABLE_LIVE_UPDATES_PROJECT,
+  ENABLE_LIVE_UPDATES_PROJECT,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   FETCH_NEXT_PROJECT_HISTORY_PAGE,
   FETCH_NEXT_PROJECT_HISTORY_PAGE_SUCCESS,
@@ -38,6 +40,7 @@ import {
   FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS
 } from "./actions";
 import { convertToURLQuery } from "../../helper";
+import { ENABLE_ALL_LIVE_UPDATES, DISABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 
 const historyPageSize = 50;
 
@@ -87,7 +90,8 @@ const defaultState = fromJS({
   searchTerm: "",
   searchTerms: [],
   searchBarDisplayed: true,
-  highlightingRegex: ""
+  highlightingRegex: "",
+  isLiveUpdatesProjectEnabled: true
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -285,6 +289,12 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("highlightingRegex", fromJS(action.highlightingRegex));
     case SUBPROJECT_STORE_SEARCH_TERMS_AS_ARRAY:
       return state.set("searchTerms", fromJS(action.searchTerms));
+    case DISABLE_ALL_LIVE_UPDATES:
+    case DISABLE_LIVE_UPDATES_PROJECT:
+      return state.set("isLiveUpdatesProjectEnabled", false);
+    case ENABLE_ALL_LIVE_UPDATES:
+    case ENABLE_LIVE_UPDATES_PROJECT:
+      return state.set("isLiveUpdatesProjectEnabled", true);
     default:
       return state;
   }

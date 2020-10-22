@@ -124,18 +124,9 @@ export const createBasicApp = (
   addTokenHandling(server, jwtSecret);
   addLogging(server);
 
-  server.addContentTypeParser("application/gzip", (request, payload, done) => {
-    rawBody(
-      payload,
-      {
-        length: request.headers["content-length"],
-        limit: "1024mb",
-      },
-      (err, body) => {
-        if (err) return done(err);
-        done(null, body);
-      },
-    );
+  server.addContentTypeParser("application/gzip", async function (request, payload) {
+    request.headers["content-length"] = "1024mb";
+    return payload; 
   });
 
   // app.use(logging);
