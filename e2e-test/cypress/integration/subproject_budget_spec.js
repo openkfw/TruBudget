@@ -61,7 +61,7 @@ describe("Subproject budget test", function() {
         cy.get("[data-test=subproject-create-button]").should("be.visible");
 
         cy.get("[data-test=subproject-create-button]").click();
-        cy.get("[data-test=nameinput] input").type("Subproject budget test");
+        cy.get("[data-test=nameinput]").type("Subproject budget test");
         cy.get("[data-test=commentinput]").type("Subproject budget test");
         cy.get("[data-test=dropdown-sp-dialog-currencies-click]").click();
         cy.get("[data-value=EUR]").click();
@@ -100,10 +100,8 @@ describe("Subproject budget test", function() {
         cy.get("[data-test=subproject-create-button]").should("be.visible");
         cy.get("[data-test=subproject-create-button]").click();
         // Create subproject budget
-        cy.get("[data-test=nameinput] input").type("Subproject budget test");
-        cy.get("[data-test=commentinput] textarea")
-          .last()
-          .type("Subproject budget test");
+        cy.get("[data-test=nameinput]").type("Subproject budget test");
+        cy.get("[data-test=commentinput]").type("Subproject budget test");
         cy.get("[data-test=dropdown-sp-dialog-currencies-click]").click();
         cy.get("[data-value=EUR]").click();
         cy.get("[data-test=dropdown-organizations-click]").click();
@@ -492,7 +490,7 @@ describe("Subproject budget test", function() {
       cy.wait("@viewDetailsProject");
       cy.get("[data-test=subproject-create-button]").should("be.visible");
       cy.get("[data-test=subproject-create-button]").click();
-      cy.get("[data-test=nameinput] input").type("Subproject budget test");
+      cy.get("[data-test=nameinput]").type("Subproject budget test");
       cy.get("[data-test=commentinput]").type("Subproject budget test");
       cy.get("[data-test=dropdown-sp-dialog-currencies-click]").click();
       cy.get("[data-value=EUR]").click();
