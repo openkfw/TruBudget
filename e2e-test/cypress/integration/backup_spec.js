@@ -7,24 +7,23 @@ describe("Backup Feature", function() {
   beforeEach(() => {
     //the user must be logged out before each test
     cy.url().then(url => {
-      cy.log(url);
-      if (url === "http://localhost:3000/projects") {
+      if (url.includes("/projects")) {
         cy.get("[data-test=navbar-logout-button]").should("be.visible");
-        cy.get("[data-test=navbar-logout-button]").click();
+        cy.get("[data-test=navbar-logout-button]").click({ force: true });
         cy.location("pathname").should("eq", "/login");
       }
     });
   });
 
   after(() => {
-    //restore the backup to a clean state
-    const fileName = "clean_backup.gz";
+    //restore the backup to a provisioned state
+    const fileName = "provisioned_chain_backup.gz";
 
     cy.server();
     cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
 
     cy.login("root", "root-secret");
-    cy.visit("/projects/");
+    cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
     cy.fixture(fileName, "binary")
@@ -49,13 +48,13 @@ describe("Backup Feature", function() {
   });
 
   it("Tests the restore of an invalid backup", function() {
-    const fileName = "backup_invalid.gz";
+    const fileName = "invalid_backup.gz";
 
     cy.server();
     cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
 
     cy.login("root", "root-secret");
-    cy.visit("/projects/");
+    cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
 
@@ -73,7 +72,7 @@ describe("Backup Feature", function() {
           })
           .then(() => {
             cy.url()
-              .should("eq", "http://localhost:3000/projects/")
+              .should("include", "/projects")
               .then(() => {
                 cy.get("[data-test=project-title] span")
                   .invoke("text")
@@ -83,14 +82,14 @@ describe("Backup Feature", function() {
       });
   });
 
-  it("Tests the restore of a backup with the wrong configurations", function() {
-    const fileName = "backup_wrong_configurations.gz";
+  it("Tests the restore of a backup with the wrong organisation", function() {
+    const fileName = "backup_orga_test.gz";
 
     cy.server();
     cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
     //Open side navigation
     cy.login("root", "root-secret");
-    cy.visit("/projects/");
+    cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
 
@@ -108,7 +107,7 @@ describe("Backup Feature", function() {
           })
           .then(() => {
             cy.url()
-              .should("eq", "http://localhost:3000/projects/")
+              .should("include", "/projects")
               .then(() => {
                 cy.get("[data-test=project-title] span")
                   .invoke("text")
@@ -119,13 +118,13 @@ describe("Backup Feature", function() {
   });
 
   it("Tests the restore of a valid backup", function() {
-    const fileName = "backup_valid.gz";
+    const fileName = "valid_backup.gz";
 
     cy.server();
     cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
 
     cy.login("root", "root-secret");
-    cy.visit("/projects/");
+    cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
     //Upload file
@@ -142,15 +141,17 @@ describe("Backup Feature", function() {
         expect(xhr.status).to.eq(200);
       })
       .then(() => {
-        cy.url()
-          .should("eq", "http://localhost:3000/login")
-          .then(() => {
-            cy.login("root", "root-secret");
-            cy.visit("/projects/");
-            cy.get("[data-test=project-title] span")
-              .invoke("text")
-              .should("include", "Backup Successful");
-          });
+        cy.task("awaitApiReady", baseUrl).then(() => {
+          cy.url()
+            .should("include", "/login")
+            .then(() => {
+              cy.login("root", "root-secret");
+              cy.visit("/projects");
+              cy.get("[data-test=project-title] span")
+                .invoke("text")
+                .should("include", "Backup Successful");
+            });
+        });
       });
   });
 });
