@@ -189,7 +189,7 @@ class ConfirmationContainer extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchGroups: () => dispatch(fetchGroups(true)),
+    fetchGroups: () => dispatch(fetchGroups(false)),
     fetchProjectPermissions: pId => dispatch(fetchProjectPermissions(pId, false)),
     fetchSubprojectPermissions: (pId, sId) => dispatch(fetchSubProjectPermissions(pId, sId, false)),
     fetchWorkflowitemPermissions: (pId, spId, wId) => dispatch(fetchWorkflowItemPermissions(pId, spId, wId, false)),

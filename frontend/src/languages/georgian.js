@@ -37,8 +37,8 @@ const ka = {
     create: "შექმნა",
     created: "შექმნილია",
     currency: "ვალუტა",
-    disbursed_budget: "ჩარიცხული თანხა",
-    disbursement: "დაგეგმილი",
+    disbursed_budget: "გადახდილი ღირებულება",
+    disbursement: "დაგეგმილი გადახდები",
     disconnected: "offline",
     display_name: "სახელის ჩვენება",
     done: "შესრულებულია",
@@ -79,7 +79,7 @@ const ka = {
     no_workflow_items: "სამუშაო პროცესის ელემენტები ვერ მოიძებნა",
     not_assigned_budget: "ბიუჯეტი რომელიც განაწილებული არ არის",
     not_assigned: "არ არის გამოყოფილი",
-    not_disbursed: "არ არის გადმორიცხული",
+    not_disbursed: "გადაუხდელი",
     not_ok: "Not OK",
     not_projected: "არ არის დაგეგმილი",
     open: "Open",
@@ -143,6 +143,7 @@ const ka = {
     user_created: "მომხმარებელი წარმატებით შეიქმნა",
     username_invalid: "არასწორი პაროლი",
     users: "მომხმარებლები",
+    selected_users: "შერჩეული მომხმარებლები",
     disabled_users: "დეაქტივირებული მომხმარებლები",
     disable_user: "მომხმარებლის გამორთვა",
     disable_userId: "მომხმარებლის გამორთვა {0}",
@@ -182,7 +183,8 @@ const ka = {
     login_button_title: "შესვლა",
     production_env: "Prod",
     test_env: "ტესტი",
-    tru_budget_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა"
+    frontend_name: "TruBudget",
+    frontend_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა"
   },
 
   project: {
@@ -200,7 +202,7 @@ const ka = {
     project_details: "დეტალები",
     project_disbursement_authority_role_description:
       "უფლებამოსილმა პირმა ფინანსური ტრანზაქციის დადასტურების ნებართვა გასცა",
-    project_disbursement_authority_role: "შეარჩიეთ თანხის გადარიცხვის უფლებამოსილების როლი",
+    project_disbursement_authority_role: "შეარჩიეთ გადახდის ორგანოს როლი",
     project_edit_title: "პროექტის ცვლილება",
     project_implementing_authority_role_description:
       "The authorities enabled to create and modify subprojects, define and execute workflow activities",
@@ -247,10 +249,10 @@ const ka = {
     workflow_budget_amount_description: "Budget for the workflowitem",
     workflow_budget_amount: "Workflowitem budget amount",
     workflow_budget_description: "მაგალითად",
-    workflow_budget_disbursed: "ჩარიცხული",
+    workflow_budget_disbursed: "გადახდილი",
     workflow_budget_na: "Not applicable",
     workflow_budget_status_allocated: "Assigned",
-    workflow_budget_status_disbursed: "Disbursed",
+    workflow_budget_status_disbursed: "გადახდილი",
     workflow_budget_status_na: "N/A",
     workflow_budget: "Workflowitem-ის ბიუჯეტის ოდენობა",
     workflow_comment: "Workflowitem-ის კომენტარი",
@@ -345,7 +347,7 @@ const ka = {
     assigned_budget_ratio: "Assigned Budget Ratio",
     available_unspent_budget: "არსებული გაუხარჯავი ბიუჯეტი",
     converted_amount: "კონვერტირებული ოდენობა",
-    disbursed_budget_ratio: "Disbursed Budget Ratio",
+    disbursed_budget_ratio: "გადახდის პროცენტი (გადახდილი / გამოყოფილი)",
     insufficient_permissions_text:
       "One or more workflowitem are redacted. The analytics are hidden because they would be falsified.",
     project_analytics: "პროექტის ანალიტიკა",

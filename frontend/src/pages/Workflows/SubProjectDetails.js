@@ -138,7 +138,7 @@ const SubProjectDetails = ({
                 <AmountIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={currency} secondary="Subproject currency" />
+            <ListItemText primary={currency} secondary={strings.subproject.subproject_currency} />
           </ListItem>
         </List>
         <div style={styles.projectedBudget} data-test="subproject-projected-budget">
