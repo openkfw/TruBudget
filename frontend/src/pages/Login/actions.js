@@ -31,6 +31,10 @@ export const CHECK_EMAIL_SERVICE = "CHECK_EMAIL_SERVICE";
 export const CHECK_EMAIL_SERVICE_SUCCESS = "CHECK_EMAIL_SERVICE_SUCCESS";
 export const CHECK_EMAIL_SERVICE_FAILURE = "CHECK_EMAIL_SERVICE_FAILURE";
 
+export const CHECK_EXPORT_SERVICE = "CHECK_EXPORT_SERVICE";
+export const CHECK_EXPORT_SERVICE_SUCCESS = "CHECK_EXPORT_SERVICE_SUCCESS";
+export const CHECK_EXPORT_SERVICE_FAILURE = "CHECK_EXPORT_SERVICE_FAILURE";
+
 export function fetchUser(showLoading = false) {
   return {
     type: FETCH_USER,
@@ -119,8 +123,16 @@ export function fetchEmailAddress() {
   };
 }
 
-export function checkEmailService() {
+export function checkEmailService(showLoading) {
   return {
-    type: CHECK_EMAIL_SERVICE
+    type: CHECK_EMAIL_SERVICE,
+    showLoading
+  };
+}
+
+export function checkExportService(showLoading) {
+  return {
+    type: CHECK_EXPORT_SERVICE,
+    showLoading
   };
 }

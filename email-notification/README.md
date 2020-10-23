@@ -100,6 +100,7 @@ If a local SMTP mail server for testing purposes is needed [mailslurper](https:/
 | Method | Endpoint           | Description                                                    |
 | ------ | ------------------ | -------------------------------------------------------------- |
 | GET    | /readiness         | Checks if email service is ready                               |
+| GET    | /version           | Get the current version of the service                         |
 | GET    | /user.getEmail     | Get email address of id if set in connected database           |
 | POST   | /user.insert       | Insert an email address linked to the passed id                |
 | POST   | /user.update       | Update an email address linked to the passed id                |
@@ -107,6 +108,10 @@ If a local SMTP mail server for testing purposes is needed [mailslurper](https:/
 | POST   | /notification.send | Send a notification to passed id if email address is available |
 
 #### /readiness
+
+Neither parameter nor `JWT-TOKEN` required
+
+#### /version
 
 Neither parameter nor `JWT-TOKEN` required
 

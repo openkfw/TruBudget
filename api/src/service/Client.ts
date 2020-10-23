@@ -235,6 +235,10 @@ export class RpcMultichainClient implements MultichainClient {
     return this.rpcClient.invoke("getlastblockinfo", skip);
   }
 
+  public async ping(): Promise<any> {
+    return this.rpcClient.invoke("ping");
+  }
+
   public async listBlocksByHeight(
     to: number,
     from: number | string = 0,

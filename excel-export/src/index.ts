@@ -13,7 +13,7 @@ const accessControlAllowOrigin: string = process.env.ACCESS_CONTROL_ALLOW_ORIGIN
 
 const DEFAULT_API_VERSION = "1.0";
 
-const transformRequest: AxiosTransformer = data => {
+const transformRequest: AxiosTransformer = (data) => {
   if (typeof data === "object") {
     return {
       apiVersion: DEFAULT_API_VERSION,
@@ -33,13 +33,32 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
   if (req.method === "OPTIONS") {
     return res.end();
   }
+  if (!req.url) {
+    res.statusCode = 404;
+    return res.end();
+  }
+  const splittedUrl: string[] = req.url.split("/");
+  const endpoint = splittedUrl[splittedUrl.length - 1];
   // readiness and health endpoint
-  if (req.url === "/health") {
+  if (endpoint === "health") {
     return res.end();
   }
 
-  if (req.url === "/readiness") {
+  if (endpoint === "readiness") {
     // TODO: check readiness of api
+    return res.end();
+  }
+
+  if (endpoint === "version") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.statusCode = 200;
+    res.write(
+      JSON.stringify({
+        release: process.env.npm_package_version,
+        commit: process.env.CI_COMMIT_SHA || "",
+        buildTimeStamp: process.env.BUILDTIMESTAMP || "",
+      }),
+    );
     return res.end();
   }
 

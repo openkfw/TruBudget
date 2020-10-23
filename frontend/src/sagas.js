@@ -32,6 +32,9 @@ import {
   CHECK_EMAIL_SERVICE,
   CHECK_EMAIL_SERVICE_FAILURE,
   CHECK_EMAIL_SERVICE_SUCCESS,
+  CHECK_EXPORT_SERVICE,
+  CHECK_EXPORT_SERVICE_FAILURE,
+  CHECK_EXPORT_SERVICE_SUCCESS,
   FETCH_EMAIL_ADDRESS,
   FETCH_EMAIL_ADDRESS_FAILURE,
   FETCH_EMAIL_ADDRESS_SUCCESS,
@@ -55,8 +58,6 @@ import {
   EXPORT_DATA_SUCCESS,
   FETCH_ACTIVE_PEERS,
   FETCH_ACTIVE_PEERS_SUCCESS,
-  FETCH_VERSIONS,
-  FETCH_VERSIONS_SUCCESS,
   RESTORE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
   DISABLE_ALL_LIVE_UPDATES,
@@ -104,6 +105,17 @@ import {
   REVOKE_PROJECT_PERMISSION_SUCCESS,
   REVOKE_PROJECT_PERMISSION_FAILURE
 } from "./pages/Overview/actions";
+import {
+  FETCH_EMAIL_SERVICE_VERSION,
+  FETCH_EMAIL_SERVICE_VERSION_FAILURE,
+  FETCH_EMAIL_SERVICE_VERSION_SUCCESS,
+  FETCH_EXPORT_SERVICE_VERSION,
+  FETCH_EXPORT_SERVICE_VERSION_FAILURE,
+  FETCH_EXPORT_SERVICE_VERSION_SUCCESS,
+  FETCH_VERSIONS,
+  FETCH_VERSIONS_FAILURE,
+  FETCH_VERSIONS_SUCCESS
+} from "./pages/Status/actions.js";
 import {
   ASSIGN_PROJECT,
   ASSIGN_PROJECT_SUCCESS,
@@ -259,6 +271,10 @@ const getConfirmedState = state => {
 };
 const getEmailServiceAvailable = state => {
   return state.getIn(["login", "emailServiceAvailable"]);
+};
+
+const getExportServiceAvailable = state => {
+  return state.getIn(["login", "exportServiceAvailable"]);
 };
 
 function* execute(fn, showLoading = false, errorCallback = undefined) {
@@ -450,12 +466,62 @@ function* getBatchFromSubprojectTemplate(projectId, subprojectId, resources, sel
 
 export function* fetchVersionsSaga() {
   yield execute(function*() {
-    const { data } = yield callApi(api.fetchVersions);
-    data["frontend"] = { release: process.env.REACT_APP_VERSION };
-    yield put({
-      type: FETCH_VERSIONS_SUCCESS,
-      versions: data
-    });
+    try {
+      const response = yield callApi(api.fetchVersions);
+      response.data["frontend"] = { release: process.env.REACT_APP_VERSION, ping: 0 };
+      response.data["api"] = {
+        ...response.data.api,
+        ping: response.ping - response.data.blockchain.ping - response.data.multichain.ping
+      };
+      yield put({
+        type: FETCH_VERSIONS_SUCCESS,
+        versions: response.data
+      });
+    } catch (error) {
+      yield put({
+        type: FETCH_VERSIONS_FAILURE
+      });
+    }
+  });
+}
+
+export function* fetchExportVersionSaga() {
+  yield execute(function*() {
+    try {
+      const shouldExportServiceAvailable = yield select(getExportServiceAvailable);
+      if (shouldExportServiceAvailable) {
+        const exportVersionResponse = yield callApi(api.fetchExportServiceVersion);
+        yield put({
+          type: FETCH_EXPORT_SERVICE_VERSION_SUCCESS,
+          release: exportVersionResponse.release,
+          ping: exportVersionResponse.ping
+        });
+      }
+    } catch (error) {
+      yield put({
+        type: FETCH_EXPORT_SERVICE_VERSION_FAILURE
+      });
+    }
+  });
+}
+
+export function* fetchEmailVersionSaga() {
+  yield execute(function*() {
+    try {
+      const shouldEmailServiceAvailable = yield select(getEmailServiceAvailable);
+      if (shouldEmailServiceAvailable) {
+        const emailVersionResponse = yield callApi(api.fetchEmailServiceVersion);
+        yield put({
+          type: FETCH_EMAIL_SERVICE_VERSION_SUCCESS,
+          release: emailVersionResponse.release,
+          ping: emailVersionResponse.ping
+        });
+      }
+    } catch (error) {
+      yield put({
+        type: FETCH_EMAIL_SERVICE_VERSION_FAILURE
+      });
+    }
   });
 }
 
@@ -2506,7 +2572,7 @@ function* fetchEmailAddressSaga() {
   }
 }
 
-function* checkEmailServiceSaga() {
+function* checkEmailServiceSaga({ showLoading = true }) {
   yield execute(
     function*() {
       yield callApi(api.checkEmailService);
@@ -2514,10 +2580,28 @@ function* checkEmailServiceSaga() {
         type: CHECK_EMAIL_SERVICE_SUCCESS
       });
     },
-    true,
+    showLoading,
     function*(error) {
       yield put({
         type: CHECK_EMAIL_SERVICE_FAILURE,
+        error
+      });
+    }
+  );
+}
+
+function* checkExportServiceSaga({ showLoading = true }) {
+  yield execute(
+    function*() {
+      yield callApi(api.checkExportService);
+      yield put({
+        type: CHECK_EXPORT_SERVICE_SUCCESS
+      });
+    },
+    showLoading,
+    function*(error) {
+      yield put({
+        type: CHECK_EXPORT_SERVICE_FAILURE,
         error
       });
     }
@@ -2614,7 +2698,11 @@ export default function* rootSaga() {
       // System
       yield takeLatest(CREATE_BACKUP, createBackupSaga),
       yield takeLatest(RESTORE_BACKUP, restoreBackupSaga),
+
+      // Versions
       yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga),
+      yield takeLatest(FETCH_EMAIL_SERVICE_VERSION, fetchEmailVersionSaga),
+      yield takeLatest(FETCH_EXPORT_SERVICE_VERSION, fetchExportVersionSaga),
 
       // Analytics
       yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),
@@ -2625,7 +2713,10 @@ export default function* rootSaga() {
       //Email
       yield takeEvery(SAVE_EMAIL_ADDRESS, saveEmailAddressSaga),
       yield takeEvery(FETCH_EMAIL_ADDRESS, fetchEmailAddressSaga),
-      yield takeEvery(CHECK_EMAIL_SERVICE, checkEmailServiceSaga)
+      yield takeEvery(CHECK_EMAIL_SERVICE, checkEmailServiceSaga),
+
+      //Export
+      yield takeEvery(CHECK_EXPORT_SERVICE, checkExportServiceSaga)
     ]);
   } catch (error) {
     // eslint-disable-next-line no-console

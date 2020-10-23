@@ -381,6 +381,7 @@ const pt = {
     restore: "Restore",
     rtUpdates: "Atualizações em tempo real",
     selections: "Menu",
+    service_status: "Status do serviço",
     unread_notifications: "Notificações não lidas",
     write_permission: "Escrita"
   },
@@ -571,6 +572,19 @@ const pt = {
     workflowitem_permission_granted: "Workflowitem permisision granted",
     workflowitem_permission_revoked: "Workflowitem permission revoked",
     workflowitems_reordered: "Reordenação dos fluxos de trabalho"
+  },
+
+  status: {
+    average: "média",
+    connection: "conexão",
+    fast: "velozes",
+    no_ping_available: "nenhum ping disponível",
+    not_connected: "não conectado",
+    ping: "Ping",
+    service: "Service",
+    slow: "lento",
+    version: "versão",
+    very_slow: "muito lento"
   },
 
   language: {

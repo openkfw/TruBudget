@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   checkEmailService,
+  checkExportService,
   getEnvironment,
   initLanguage,
   loginWithCredentials,
@@ -25,6 +26,12 @@ class LoginPageContainer extends Component {
       process.env.REACT_APP_EMAIL_SERVICE_ENABLED === "true"
     ) {
       this.props.checkEmailService();
+    }
+    if (
+      window.injectedEnv.REACT_APP_EXPORT_SERVICE_ENABLED === "true" ||
+      process.env.REACT_APP_EXPORT_SERVICE_ENABLED === "true"
+    ) {
+      this.props.checkExportService();
     }
   }
 
@@ -54,7 +61,8 @@ const mapDispatchToProps = dispatch => {
     storeEnvironment: environment => dispatch(storeEnvironment(environment)),
     getEnvironment: () => dispatch(getEnvironment()),
     setLanguage: language => dispatch(setLanguage(language)),
-    checkEmailService: () => dispatch(checkEmailService())
+    checkEmailService: () => dispatch(checkEmailService(false)),
+    checkExportService: () => dispatch(checkExportService(false))
   };
 };
 

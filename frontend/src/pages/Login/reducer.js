@@ -22,7 +22,9 @@ import {
   SET_LANGUAGE,
   STORE_ENVIRONMENT_SUCCESS,
   STORE_PASSWORD,
-  STORE_USERNAME
+  STORE_USERNAME,
+  CHECK_EXPORT_SERVICE_SUCCESS,
+  CHECK_EXPORT_SERVICE_FAILURE
 } from "./actions";
 
 export const defaultState = fromJS({
@@ -46,6 +48,7 @@ export const defaultState = fromJS({
   disabledUsers: [],
   userDisplayNameMap: {},
   emailServiceAvailable: false,
+  exportServiceAvailable: false,
   loginError: false
 });
 
@@ -76,10 +79,14 @@ export default function loginReducer(state = defaultState, action) {
       return state.set("emailAddress", action.emailAddress);
     case SAVE_EMAIL_ADDRESS_SUCCESS:
       return state.set("emailAddress", action.emailAddress);
-    case CHECK_EMAIL_SERVICE_SUCCESS:
-      return state.set("emailServiceAvailable", true);
     case CHECK_EMAIL_SERVICE_FAILURE:
       return state.set("emailServiceAvailable", false);
+    case CHECK_EMAIL_SERVICE_SUCCESS:
+      return state.set("emailServiceAvailable", true);
+    case CHECK_EXPORT_SERVICE_FAILURE:
+      return state.set("exportServiceAvailable", false);
+    case CHECK_EXPORT_SERVICE_SUCCESS:
+      return state.set("exportServiceAvailable", true);
     case STORE_PASSWORD:
       return state.set("password", action.password);
     case FETCH_USER_SUCCESS:

@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Script for fixing invalid backup files, as a workaround to issue [#513](https://github.com/openkfw/TruBudget/issues/513)
+- Status page to show connection quality of all Trubudget services [#553](https://github.com/openkfw/TruBudget/issues/553)
 
 ### Changed
 

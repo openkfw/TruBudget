@@ -78,6 +78,14 @@ emailService.get("/readiness", (_req: express.Request, res: express.Response) =>
   res.send(true);
 });
 
+emailService.get("/version", (_req: express.Request, res: express.Response) => {
+  res.status(200).send({
+    release: process.env.npm_package_version,
+    commit: process.env.CI_COMMIT_SHA || "",
+    buildTimeStamp: process.env.BUILDTIMESTAMP || "",
+  });
+});
+
 emailService.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
   const user: User = req.body.data.user;
   if (!isAllowed(user.id, res)) {
@@ -99,7 +107,7 @@ emailService.post("/user.insert", (req: UserEditRequest, res: express.Response) 
         user: { id: user.id, status: "inserted", emailAddress: user.emailAddress },
       });
     }
-  })().catch(error => {
+  })().catch((error) => {
     logger.error(error);
     res.status(500).send(error);
   });
@@ -128,7 +136,7 @@ emailService.post("/user.update", (req: UserEditRequest, res: express.Response) 
       res.status(404);
     }
     res.send(body);
-  })().catch(error => {
+  })().catch((error) => {
     logger.error(error);
     res.status(500).send(error);
   });
@@ -149,7 +157,7 @@ emailService.post("/user.delete", (req: UserEditRequest, res: express.Response) 
       user: { id: user.id, status: "deleted", emailAddress: user.emailAddress },
     };
     res.status(200).send(body);
-  })().catch(error => () => {
+  })().catch((error) => () => {
     logger.error(error);
     res.status(500).send(error);
   });
@@ -179,7 +187,7 @@ emailService.get(
           user: { id, emailAddress: "Not Found" },
         });
       }
-    })().catch(error => {
+    })().catch((error) => {
       logger.error(error);
       res.status(500).send(error);
     });
@@ -215,7 +223,7 @@ emailService.post("/notification.send", (req: NotificationRequest, res: express.
       body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
       res.status(404).send(body);
     }
-  })().catch(error => () => {
+  })().catch((error) => () => {
     logger.error(error);
     res.status(500).send(error);
   });
