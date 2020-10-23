@@ -1,18 +1,14 @@
 describe("Component Versions", function() {
-  let exportBaseUrl, exportRoute, baseUrl, apiRoute;
+  let exportBaseUrl, exportUrl, apiBaseUrl, apiUrl;
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
+    apiBaseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiUrl = apiBaseUrl + "/api";
     if (Cypress.env("EXPORT_SERVICE_BASE_URL")) {
       exportBaseUrl = Cypress.env("EXPORT_SERVICE_BASE_URL");
-      exportRoute = "";
+      exportUrl = exportBaseUrl;
     } else {
       exportBaseUrl = `${Cypress.config("baseUrl")}/test`;
-      exportRoute = exportBaseUrl.toLowerCase().includes("test") ? "/test/api/export/xlsx" : "/api/export/xlsx";
-      cy.log("exportBaseUrl");
-      cy.log(exportBaseUrl);
-      cy.log("exportRoute");
-      cy.log(exportRoute);
+      exportUrl = exportBaseUrl + "/api/export/xlsx";
     }
   });
 
@@ -27,7 +23,7 @@ describe("Component Versions", function() {
 
   it("Shows connection of export-service", function() {
     cy.server();
-    cy.route("GET", exportBaseUrl + exportRoute + "/readiness*").as("isExportReady");
+    cy.route("GET", exportUrl + "/readiness*").as("isExportReady");
     cy.visit("/");
     loginUi();
     cy.wait("@isExportReady").visit(`/status`);
@@ -38,7 +34,7 @@ describe("Component Versions", function() {
 
   it("Shows versions of basic services (frontend,api,blockchain,multichain) correctly", function() {
     cy.server();
-    cy.route("GET", apiRoute + "/version").as("fetchVersions");
+    cy.route("GET", apiUrl + "/version").as("fetchVersions");
     cy.login();
     cy.visit(`/status`);
     cy.get("[data-test=status-table-body]")
