@@ -8,7 +8,11 @@ describe("Component Versions", function() {
       exportRoute = "";
     } else {
       exportBaseUrl = `${Cypress.config("baseUrl")}/test`;
-      exportRoute = exportBaseUrl.toLowerCase().includes("test") ? "/test/api/export" : "/api/export";
+      exportRoute = exportBaseUrl.toLowerCase().includes("test") ? "/test/api/export/xlsx" : "/api/export/xlsx";
+      cy.log("exportBaseUrl");
+      cy.log(exportBaseUrl);
+      cy.log("exportRoute");
+      cy.log(exportRoute);
     }
   });
 
