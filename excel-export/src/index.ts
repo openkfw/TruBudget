@@ -33,17 +33,23 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
   if (req.method === "OPTIONS") {
     return res.end();
   }
+  if (!req.url) {
+    res.statusCode = 404;
+    return res.end();
+  }
+  const splittedUrl: string[] = req.url.split("/");
+  const endpoint = splittedUrl[splittedUrl.length - 1];
   // readiness and health endpoint
-  if (req.url === "/health") {
+  if (endpoint === "health") {
     return res.end();
   }
 
-  if (req.url === "/readiness") {
+  if (endpoint === "readiness") {
     // TODO: check readiness of api
     return res.end();
   }
 
-  if (req.url === "/version") {
+  if (endpoint === "version") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.statusCode = 200;
     res.write(
