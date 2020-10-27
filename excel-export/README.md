@@ -17,7 +17,7 @@ The excel export service is responsible for exporting multichain's data to a hum
 
 ### Frontend
 
-For details see [Blockchain environment variables](../frontend/README.md#excel-export-service).
+For details see [Frontend environment variables](../frontend/README.md#excel-export-service).
 
 ## Getting Started
 
