@@ -17,7 +17,7 @@ const styles = theme => {
   };
 };
 
-const SubprojectEmptyState = withTheme()(
+const SubprojectEmptyState = withTheme(
   withStyles(styles)(props => {
     const { classes } = props;
     return (

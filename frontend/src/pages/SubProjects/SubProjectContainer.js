@@ -107,7 +107,7 @@ class SubProjectContainer extends Component {
 
     return (
       <div>
-        <LiveUpdates update={this.update} />
+        {this.props.isLiveUpdatesProjectEnabled ? <LiveUpdates update={this.update} /> : null}
         <div style={globalStyles.innerContainer}>
           {!this.state.isDataFetched ? (
             <div />
@@ -209,7 +209,9 @@ const mapStateToProps = state => {
     highlightingRegex: state.getIn(["detailview", "highlightingRegex"]),
     searchTerms: state.getIn(["detailview", "searchTerms"]),
     idsPermissionsUnassigned: state.getIn(["detailview", "idsPermissionsUnassigned"]),
-    isDataLoading: state.getIn(["loading", "loadingVisible"])
+    isDataLoading: state.getIn(["loading", "loadingVisible"]),
+    isLiveUpdatesProjectEnabled: state.getIn(["detailview", "isLiveUpdatesProjectEnabled"]),
+
   };
 };
 

@@ -5,12 +5,14 @@ const de = {
       decimal: ",",
       thousand: ".",
       precision: 2
-    }
+    },
+    // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
+    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
   },
   common: {
     action: "German: Action",
     actions: "Actions",
-    add: "hinzufügen",
+    add: "Hinzufügen",
     added: "German: Added",
     additional_data: "Zusätzliche Daten",
     amount: "Betrag",
@@ -36,8 +38,8 @@ const de = {
     create: "German: Create",
     created: "Created",
     currency: "Währung",
-    disbursed_budget: "Disbursed Budget",
-    disbursement: "Disbursement",
+    disbursed_budget: "Ausgezahltes Budget",
+    disbursement: "Auszahlung",
     disconnected: "Offline",
     display_name: "Anzeige-Name",
     done: "Done",
@@ -94,6 +96,7 @@ const de = {
     add_tag_text: "Tag zum Projekt hinzufügen",
     tag_already_exists: "Tag existiert bereits!",
     invalid_tag: "Ungültiger Tag",
+    invalid_format: "Ungültiges Format",
     task_status: "Task status",
     total_budget: "Gesamt Budget",
     thumbnail: "German: Thumbnail",
@@ -119,7 +122,8 @@ const de = {
     login_button_title: "Login",
     production_env: "Prod",
     test_env: "Test",
-    tru_budget_description: "A blockchain-based solution for budget expenditure"
+    frontend_name: "TruBudget",
+    frontend_description: "A blockchain-based solution for budget expenditure"
   },
 
   project: {
@@ -135,7 +139,7 @@ const de = {
     project_comment: "Comment",
     project_currency: "Currency",
     project_details: "German: Details",
-    project_disbursement_authority_role: "Select disbursement authority role",
+    project_disbursement_authority_role: "Wähle einen Auszahlungsbefugten",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",
     project_edit_title: "German: Edit Project",
     project_implementing_authority_role: "Select implementation authority role",
@@ -184,10 +188,10 @@ const de = {
     workflow_budget_amount: " Workflow budget amount",
     workflow_budget_amount_description: "Budget amount for the workflow",
     workflow_budget_description: "z_B_",
-    workflow_budget_disbursed: "disbursed",
+    workflow_budget_disbursed: "ausgezahlt",
     workflow_budget_na: "Not applicable",
     workflow_budget_status_allocated: "Allocated",
-    workflow_budget_status_disbursed: "Disbursed",
+    workflow_budget_status_disbursed: "Ausgezahlt",
     workflow_budget_status_na: "N/A",
     workflow_comment: "Workflow Comment",
     workflow_disable_sort: "Save",
@@ -254,6 +258,7 @@ const de = {
     password_conditions_number: "Mindestens eine Zahl enthalten",
     privacy_notice:
       "Bitte stellen Sie sicher, dass Sie keine persönlichen Informationen angeben. Durch Klicken auf SUBMIT werden Ihre Daten dauerhaft gespeichert und hiermit der Erhalt des Datenschutzhinweises bestätigt.",
+    selected_users: "ausgewählte Benutzer",
     disabled_users: "Deaktivierte Benutzer",
     disable_user: "Benutzer deaktivieren",
     disable_userId: "Benutzer {0} deaktivieren",
@@ -375,6 +380,7 @@ const de = {
     restore: "German: Restore",
     rtUpdates: "Real-Time Updates",
     selections: "Selections",
+    service_status: "Service Status",
     unread_notifications: "Unread Notifications",
     write_permission: "Write"
   },
@@ -565,6 +571,19 @@ const de = {
     workflowitem_permission_granted: "Workflowitem-Erlaubnis erteilt",
     workflowitem_permission_revoked: "Workflowitem-Erlaubnis widerrufen",
     workflowitems_reordered: "Workflow-Einträge neu angeordnet"
+  },
+
+  status: {
+    average: "normal",
+    connection: "Verbindung",
+    fast: "schnell",
+    no_ping_available: "kein ping möglich",
+    not_connected: "nicht verbunden",
+    ping: "Ping",
+    service: "Service",
+    slow: "langsam",
+    version: "Version",
+    very_slow: "sehr langsam"
   },
 
   language: {

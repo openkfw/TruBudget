@@ -15,9 +15,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-DOCKER_REGISTRY_PASSWORD
-
 # cypress
-
 cypress/screenshots
 cypress/videos
+
+# vscode
+.vscode

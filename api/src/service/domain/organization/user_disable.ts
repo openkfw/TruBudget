@@ -95,6 +95,10 @@ export async function disableUser(
     }
   }
 
+  if (issuer.id === userResult.id) {
+    return new PreconditionError(ctx, userDisabled, `Error - You cannot disable yourself`);
+  }
+
   const assignments: Result.Type<UserAssignments.UserAssignments> = await repository.getUserAssignments(
     userToDisable,
   );

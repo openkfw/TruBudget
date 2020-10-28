@@ -19,6 +19,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Security -->
 
+## [1.15.0] - 2020-10-27
+
+### Added
+
+- Script for fixing invalid backup files, as a workaround to issue [#513](https://github.com/openkfw/TruBudget/issues/513)
+- Status page to show connection quality of all Trubudget services [#553](https://github.com/openkfw/TruBudget/issues/553)
+
+### Changed
+
+- Changed some french translations [#566](https://github.com/openkfw/TruBudget/issues/566)
+
+### Fixed
+
+- The edit button is now only visible to the user that created it [#556](https://github.com/openkfw/TruBudget/issues/556)
+- Fixed a bug where a user can disable himself [#554](https://github.com/openkfw/TruBudget/issues/554)
+- Fixed a bug where multiple loading indicators are shown in the confirmation dialog [#555](https://github.com/openkfw/TruBudget/issues/555)
+- Show the loading indicator while uploading a document [#558](https://github.com/openkfw/TruBudget/issues/558)
+- Fixed a style bug for adding users to a group [#557](https://github.com/openkfw/TruBudget/issues/557)
+
 ## [1.14.0] - 2020-10-07
 
 ### Added
@@ -29,6 +48,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed a bug where the email field dissappears in the user profile [#551](https://github.com/openkfw/TruBudget/issues/551)
 - Fixed a bug where opening the user profile resulted in an error [#549](https://github.com/openkfw/TruBudget/issues/549)
+- Allow typing a comma separator when editing a projected budget [#517](https://github.com/openkfw/TruBudget/issues/517)
+- Projected budgets are shown in the language specific format [#559](https://github.com/openkfw/TruBudget/issues/559)
+- Fixed a bug where the workflowitem budget changes its value unexpectly [#563](https://github.com/openkfw/TruBudget/issues/563)
 
 # [1.13.0] - 2020-09-16
 
@@ -494,7 +516,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.14.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.15.0...master
+[1.15.0]: https://github.com/openkfw/TruBudget/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/openkfw/TruBudget/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/openkfw/TruBudget/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/openkfw/TruBudget/compare/v1.11.0...v1.12.0

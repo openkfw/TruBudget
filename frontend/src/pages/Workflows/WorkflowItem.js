@@ -430,7 +430,7 @@ const renderActionButtons = (
   );
 };
 
-export const WorkflowItem = withTheme()(
+export const WorkflowItem = withTheme(
   withStyles(styles)(
     SortableElement(
       ({
@@ -538,7 +538,7 @@ export const WorkflowItem = withTheme()(
   )
 );
 
-export const RedactedWorkflowItem = withTheme()(
+export const RedactedWorkflowItem = withTheme(
   withStyles(styles)(
     SortableElement(
       ({

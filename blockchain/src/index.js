@@ -169,7 +169,7 @@ if (EXPOSE_MC) {
     kc.loadFromCluster();
   }
 
-  const k8sApi = kc.makeApiClient(k8s.Core_v1Api);
+  const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
   const kubernetesClient = new KubernetesClient(k8sApi);
 
   kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then((response) => {
@@ -218,7 +218,7 @@ app.get("/chain", async (req, res) => {
     console.log("Start packaging");
     autostart = false;
     await stopMultichain(mcproc);
-    await createMetadataFile(CHAINNAME, multichainDir);
+    await createMetadataFile(CHAINNAME, multichainDir, ORGANIZATION);
     res.setHeader("Content-Type", "application/gzip");
     res.setHeader(
       "Content-Disposition",
@@ -265,6 +265,7 @@ const loadConfig = (path) => {
 app.post("/chain", async (req, res) => {
   const extractPath = `/tmp/backup${Date.now()}`;
   const metadataPath = `${extractPath}/metadata.yml`;
+  const chainConfigPath = `${extractPath}/multichain.conf`;
   try {
     const unTARer = rawTar.extract();
     unTARer.on("error", (err) => {
@@ -279,24 +280,40 @@ app.post("/chain", async (req, res) => {
       if (fs.existsSync(metadataPath)) {
         const config = loadConfig(metadataPath);
         const valid = await verifyHash(config.DirectoryHash, extractPath);
-        if (valid) {
-          autostart = false;
-          await stopMultichain(mcproc);
-          await moveBackup(multichainDir, extractPath, CHAINNAME);
-          spawnProcess(() =>
-            startMultichainDaemon(
-              CHAINNAME,
-              externalIpArg,
-              blockNotifyArg,
-              P2P_PORT,
-              multichainDir,
-            ),
-          );
-          autostart = true;
-          res.send("OK");
+        const chainConfig = yaml.safeLoad(fs.readFileSync(chainConfigPath, "utf8"));;
+        var correctConfig = chainConfig.includes(RPC_PASSWORD);
+        
+        if (config.hasOwnProperty("Organisation")) {
+          const correctOrg = config.Organisation === ORGANIZATION;
+          correctConfig = correctConfig && correctOrg;
+        }
+        if (correctConfig) {
+          if (valid) {
+            autostart = false;
+            await stopMultichain(mcproc);
+            await moveBackup(multichainDir, extractPath, CHAINNAME);
+            spawnProcess(() =>
+              startMultichainDaemon(
+                CHAINNAME,
+                externalIpArg,
+                blockNotifyArg,
+                P2P_PORT,
+                multichainDir,
+              ),
+            );
+            autostart = true;
+            res.send("OK");
+          } else {
+            console.log("Not a valid trubudget backup....");
+            res.status(400).send("Not a valid TruBudget backup");
+          }
         } else {
-          console.log("Not a valid trubudget backup....");
-          res.status(400).send("Not a valid TruBudget backup");
+          console.log(
+            "You can't restore a backup with these configurations....",
+          );
+          res
+            .status(400)
+            .send("Backup with these configurations is not permitted");
         }
       } else {
         res.status(400).send("Metadata not available");
@@ -311,3 +328,4 @@ app.post("/chain", async (req, res) => {
 app.listen(port, function () {
   console.log(`App listening on ${port}`);
 });
+

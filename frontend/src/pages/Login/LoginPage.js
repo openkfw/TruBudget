@@ -55,7 +55,7 @@ const LoginPage = ({
           }}
         >
           <div style={{ width: "70%" }}>
-            <CardHeader title="TruBudget" subheader={strings.login.tru_budget_description} />
+            <CardHeader title={strings.login.frontend_name} subheader={strings.login.frontend_description} />
           </div>
           <div style={{ width: "30%", marginRight: "8px" }}>
             <Dropdown

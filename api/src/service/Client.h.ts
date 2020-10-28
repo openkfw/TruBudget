@@ -110,6 +110,8 @@ export interface MultichainClient {
   // TODO add return types...although they seem rather flexible
   getInfo(): any;
 
+  ping(): any;
+
   isValidAddress(address: string): Promise<any>;
 
   // Return the most recent values for a specific key

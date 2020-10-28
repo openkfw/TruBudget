@@ -105,14 +105,14 @@ const ProjectCard = ({
             style={{ marginTop: "5px", height: "200px", overflow: "scroll", overflowY: "auto", overflowX: "hidden" }}
           >
             {projectedBudgets.length === 0 ? null : (
-              <ListItem className={parentClasses.listItem} disabled={true}>
+              <ListItem className={parentClasses.listItem} disabled={false}>
                 <ListItemIcon>
                   <AmountIcon />
                 </ListItemIcon>
                 <ListItemText data-test="project-budget" primary={budgets} secondary={strings.common.budget} />
               </ListItem>
             )}
-            <ListItem className={parentClasses.listItem} disabled={true}>
+            <ListItem className={parentClasses.listItem} disabled={false}>
               <ListItemIcon>
                 <DateIcon />
               </ListItemIcon>
@@ -123,7 +123,7 @@ const ProjectCard = ({
                 style={{ marginTop: "13px" }}
                 className={parentClasses.listItem}
                 data-test="overview-taglist"
-                disabled={true}
+                disabled={false}
               >
                 <ListItemIcon>
                   <LabelIcon />
@@ -168,4 +168,4 @@ const ProjectCard = ({
   );
 };
 
-export default withTheme()(withStyles(styles)(ProjectCard));
+export default withTheme(withStyles(styles)(ProjectCard));

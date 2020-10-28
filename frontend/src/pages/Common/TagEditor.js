@@ -102,7 +102,7 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag }) {
           }
           data-test="add-tag-button"
         >
-          Add
+          {strings.common.add}
         </Button>
       </div>
       <div style={styles.tags} data-test="taglist">

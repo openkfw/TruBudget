@@ -1,7 +1,7 @@
 import { withStyles } from "@material-ui/core";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import SearchIcon from "@material-ui/icons/Search";
@@ -26,15 +26,15 @@ const HistoryContainer = ({
 }) => {
   return (
     <div>
-      <ExpansionPanel data-test="search-history">
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+      <Accordion data-test="search-history">
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <SearchIcon />
           <Typography>{strings.common.search}</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </AccordionSummary>
+        <AccordionDetails>
           <HistorySearch fetchFirstHistoryEvents={fetchFirstHistoryEvents} users={users} eventTypes={eventTypes} />
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
       <ScrollingHistory
         events={events}
         nEventsTotal={nEventsTotal}

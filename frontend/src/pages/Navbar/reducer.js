@@ -1,4 +1,6 @@
 import { fromJS } from "immutable";
+
+import { convertToURLQuery } from "../../helper";
 import { FETCH_EMAIL_ADDRESS_SUCCESS } from "../Login/actions";
 import { CREATE_PROJECT_SUCCESS } from "../Overview/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
@@ -8,18 +10,16 @@ import {
   ENABLE_USER_PROFILE_EDIT,
   FETCH_ACTIVE_PEERS_SUCCESS,
   FETCH_STREAM_NAMES_SUCCESS,
-  FETCH_VERSIONS_SUCCESS,
   HIDE_USER_PROFILE,
   SEARCH_BAR_DISPLAYED,
   SEARCH_TERM,
   SET_IS_ROOT,
   SET_SELECTED_VIEW,
+  SET_VALID_EMAIL_ADDRESS_INPUT,
   SHOW_USER_PROFILE,
   STORE_TEMP_EMAIL_ADDRESS,
-  TOGGLE_SIDEBAR,
-  SET_VALID_EMAIL_ADDRESS_INPUT
+  TOGGLE_SIDEBAR
 } from "./actions";
-import { convertToURLQuery } from "../../helper";
 
 const defaultState = fromJS({
   showSidebar: false,
@@ -30,7 +30,6 @@ const defaultState = fromJS({
   selectedSection: "",
   currentProject: " ",
   currentSubProject: " ",
-  versions: null,
   searchTerm: "",
   searchBarDisplayed: false,
   isRoot: false,
@@ -67,8 +66,6 @@ export default function navbarReducer(state = defaultState, action) {
         currentSubProject: action.subproject.data.displayName,
         currentProject: action.parentProject.displayName
       });
-    case FETCH_VERSIONS_SUCCESS:
-      return state.set("versions", action.versions);
     case SEARCH_TERM:
       const querySearchTerm = convertToURLQuery(action.searchTerm);
       window.history.replaceState("", "Title", "?" + querySearchTerm);

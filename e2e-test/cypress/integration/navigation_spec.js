@@ -37,6 +37,13 @@ describe("Navigation", function() {
     cy.get("[data-test=side-navigation-nodes]").click();
     cy.location("pathname").should("eq", "/nodes");
   });
+  it("The 'Service-Status' button redirects to the service status overview", function() {
+    cy.get("[data-test=openSideNavbar]").click();
+    cy.get("[data-test=side-navigation]").should("be.visible");
+
+    cy.get("[data-test=side-navigation-service-status]").click();
+    cy.location("pathname").should("eq", "/status");
+  });
 
   it("Navigate via bredcrumbs", function() {
     let projectId;

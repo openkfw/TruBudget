@@ -1,18 +1,15 @@
 import React from "react";
-
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import Backup from "@material-ui/icons/CloudDownload";
-import classNames from "classnames";
-
 import strings from "../../localizeStrings";
 
 const styles = theme => ({
   button: {
-    margin: theme.spacing.unit
+    margin: theme.spacing(1)
   },
   leftIcon: {
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   },
   iconSmall: {
     fontSize: 20
@@ -26,11 +23,12 @@ const DownloadBackupButton = ({ createBackup, classes }) => {
       id="upload"
       color="primary"
       className={classes.button}
+      data-test="download-backup"
       onClick={() => {
         createBackup();
       }}
     >
-      <Backup className={classNames(classes.leftIcon, classes.iconSmall)} />
+      <Backup className={`${classes.leftIcon} ${classes.iconSmall}`} />
       {strings.common.download}
     </Button>
   );

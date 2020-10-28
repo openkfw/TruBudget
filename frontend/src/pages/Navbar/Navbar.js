@@ -91,7 +91,6 @@ const Navbar = ({
         userId={userId}
         createBackup={createBackup}
         restoreBackup={restoreBackup}
-        versions={versions}
         exportData={exportData}
         showUserProfile={showUserProfile}
         fetchEmailAddress={fetchEmailAddress}

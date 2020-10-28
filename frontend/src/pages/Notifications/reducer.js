@@ -14,6 +14,7 @@ import {
   SNACKBAR_MESSAGE,
   TIME_OUT_FLY_IN
 } from "./actions";
+import { ENABLE_ALL_LIVE_UPDATES, DISABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 
 const defaultState = fromJS({
   notifications: [],
@@ -30,7 +31,7 @@ const defaultState = fromJS({
   isLiveUpdatesEnabled: true,
   totalNotificationCount: 0,
   notificationCount: 0,
-  currentNotificationPage: 1,
+  currentNotificationPage: 0,
   notificationPageSize: 20
 });
 
@@ -43,10 +44,11 @@ export default function navbarReducer(state = defaultState, action) {
         totalNotificationCount: action.totalNotificationCount
       });
 
+    case ENABLE_ALL_LIVE_UPDATES:
     case ENABLE_LIVE_UPDATES: {
       return state.set("isLiveUpdatesEnabled", true);
     }
-
+    case DISABLE_ALL_LIVE_UPDATES:
     case DISABLE_LIVE_UPDATES: {
       return state.set("isLiveUpdatesEnabled", false);
     }

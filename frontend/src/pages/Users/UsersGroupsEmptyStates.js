@@ -18,7 +18,7 @@ const styles = theme => {
 // Source of images: https://undraw.co/illustrations
 // selected color code: #53BBFE
 
-const EnabledUserEmptyState = withTheme()(
+const EnabledUserEmptyState = withTheme(
   withStyles(styles)(props => {
     const { classes } = props;
     return (
@@ -40,7 +40,7 @@ const EnabledUserEmptyState = withTheme()(
   })
 );
 
-const DisabledUserEmptyState = withTheme()(
+const DisabledUserEmptyState = withTheme(
   withStyles(styles)(props => {
     const { classes } = props;
     return (
@@ -59,7 +59,7 @@ const DisabledUserEmptyState = withTheme()(
   })
 );
 
-const UserGroupsEmptyState = withTheme()(
+const UserGroupsEmptyState = withTheme(
   withStyles(styles)(props => {
     const { classes } = props;
     return (

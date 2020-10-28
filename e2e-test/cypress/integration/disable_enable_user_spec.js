@@ -50,6 +50,10 @@ describe("Disable and enable users", function() {
       .wait("@globalPermissionsList");
   });
 
+  it("The logged-in user cannot disable himself", function() {
+    cy.get(`[data-test=disable-user-mstein]`).should("be.disabled");
+  });
+
   it("When the user has been disabled successfully, he/she is moved to the disabled-user list", function() {
     cy.route("POST", apiRoute + "/global.disableUser").as("disableUser");
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");

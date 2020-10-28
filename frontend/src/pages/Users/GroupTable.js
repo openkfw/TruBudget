@@ -16,9 +16,7 @@ const sortGroups = groups => {
   return _sortBy(groups, group => group.id && group.displayName);
 };
 
-const GroupsTable = ({ groups, showDashboardDialog, allowedIntents }) => {
-  const editGroupDisplayed = allowedIntents.includes("global.createGroup");
-
+const GroupsTable = ({ groups, showDashboardDialog, allowedIntents, userId }) => {
   const sortedGroups = sortGroups(groups);
 
   return sortedGroups.length > 0 ? (
@@ -34,6 +32,9 @@ const GroupsTable = ({ groups, showDashboardDialog, allowedIntents }) => {
         </TableHead>
         <TableBody data-test="grouptablebody">
           {sortedGroups.map(group => {
+            const isAllowedToEditGroup =
+              group.permissions["group.addUser"]?.includes(userId) &&
+              group.permissions["group.removeUser"]?.includes(userId);
             return (
               <TableRow data-test={`group-${group.groupId}`} key={group.groupId}>
                 <TableCell component="th" scope="row">
@@ -44,7 +45,7 @@ const GroupsTable = ({ groups, showDashboardDialog, allowedIntents }) => {
                 <TableCell>
                   <div style={{ display: "flex" }}>
                     <ActionButton
-                      notVisible={!editGroupDisplayed}
+                      notVisible={!isAllowedToEditGroup}
                       onClick={() => showDashboardDialog("editGroup", group.groupId)}
                       title={strings.common.edit}
                       icon={<EditIcon />}

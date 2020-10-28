@@ -15,7 +15,7 @@ const styles = theme => {
   };
 };
 
-const NotificationEmptyState = withTheme()(
+const NotificationEmptyState = withTheme(
   withStyles(styles)(props => {
     const { classes } = props;
     return (

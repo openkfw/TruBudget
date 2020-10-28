@@ -5,6 +5,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Subheader from "@material-ui/core/ListSubheader";
 import ProjectIcon from "@material-ui/icons/Business";
 import NodesIcon from "@material-ui/icons/DesktopWindows";
@@ -12,11 +13,11 @@ import ExportIcon from "@material-ui/icons/ListAlt";
 import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
 import UsersIcon from "@material-ui/icons/PeopleOutline";
 import SettingsIcon from "@material-ui/icons/Settings";
+import StatusIcon from "@material-ui/icons/Build";
 import React from "react";
 import strings from "../../localizeStrings";
 import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
-import VersionsTable from "./VersionsTable";
 
 const SideNavCard = ({
   avatarBackground,
@@ -29,10 +30,10 @@ const SideNavCard = ({
   userId,
   createBackup,
   restoreBackup,
-  versions,
   exportData,
   showUserProfile,
-  fetchEmailAddress
+  fetchEmailAddress,
+  exportServiceAvailable
 }) => {
   const openUserProfile = () => {
     fetchEmailAddress();
@@ -69,7 +70,13 @@ const SideNavCard = ({
         >
           <ListItem style={{ paddingTop: "16px" }}>
             <ListItemIcon>
-              <IconButton children={<Avatar size={60} src={avatar} />} />
+              <IconButton
+                children={
+                  <ListItemAvatar>
+                    <Avatar size={60} src={avatar} />
+                  </ListItemAvatar>
+                }
+              />
             </ListItemIcon>
             <ListItemText
               style={{ padding: "0px" }}
@@ -110,11 +117,19 @@ const SideNavCard = ({
             <ListItemText primary={strings.nodesDashboard.nodes} />
           </ListItem>
         ) : null}
-        <ListItem button onClick={exportData} data-test="side-navigation-export">
+        {exportServiceAvailable ? (
+          <ListItem button onClick={exportData} data-test="side-navigation-export">
+            <ListItemIcon>
+              <ExportIcon />
+            </ListItemIcon>
+            <ListItemText primary={strings.navigation.menu_item_export} />
+          </ListItem>
+        ) : null}
+        <ListItem button onClick={() => history.push("/status")} data-test="side-navigation-service-status">
           <ListItemIcon>
-            <ExportIcon />
+            <StatusIcon />
           </ListItemIcon>
-          <ListItemText primary={strings.navigation.menu_item_export} />
+          <ListItemText primary={strings.navigation.service_status} />
         </ListItem>
       </List>
       <Divider />
@@ -142,7 +157,6 @@ const SideNavCard = ({
         })}
       </List>
       <div style={{ flexGrow: 1 }} />
-      <VersionsTable versions={versions} />
     </div>
   );
 };

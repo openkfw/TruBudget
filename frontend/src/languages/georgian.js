@@ -5,7 +5,9 @@ const ka = {
       decimal: ",",
       thousand: ".",
       precision: 2
-    }
+    },
+    // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)
+    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
   },
   common: {
     action: "ქმედება",
@@ -35,8 +37,8 @@ const ka = {
     create: "შექმნა",
     created: "შექმნილია",
     currency: "ვალუტა",
-    disbursed_budget: "ჩარიცხული თანხა",
-    disbursement: "დაგეგმილი",
+    disbursed_budget: "გადახდილი ღირებულება",
+    disbursement: "დაგეგმილი გადახდები",
     disconnected: "offline",
     display_name: "სახელის ჩვენება",
     done: "შესრულებულია",
@@ -55,6 +57,7 @@ const ka = {
     incorrect_username: "მომხმარებლის სახელი არასწორია",
     incorrect_username_or_password: "არასწორი შესვლის პირადობა ან პაროლი",
     invalid_tag: "თაგი არასწორია",
+    invalid_format: "არასწორი ფორმატი",
     name: "სახელი",
     next: "შემდეგ",
     no_budget: "ბიუჯეტი ვერ მოიძებნა",
@@ -76,7 +79,7 @@ const ka = {
     no_workflow_items: "სამუშაო პროცესის ელემენტები ვერ მოიძებნა",
     not_assigned_budget: "ბიუჯეტი რომელიც განაწილებული არ არის",
     not_assigned: "არ არის გამოყოფილი",
-    not_disbursed: "არ არის გადმორიცხული",
+    not_disbursed: "გადაუხდელი",
     not_ok: "Not OK",
     not_projected: "არ არის დაგეგმილი",
     open: "Open",
@@ -140,6 +143,7 @@ const ka = {
     user_created: "მომხმარებელი წარმატებით შეიქმნა",
     username_invalid: "არასწორი პაროლი",
     users: "მომხმარებლები",
+    selected_users: "შერჩეული მომხმარებლები",
     disabled_users: "დეაქტივირებული მომხმარებლები",
     disable_user: "მომხმარებლის გამორთვა",
     disable_userId: "მომხმარებლის გამორთვა {0}",
@@ -179,7 +183,8 @@ const ka = {
     login_button_title: "შესვლა",
     production_env: "Prod",
     test_env: "ტესტი",
-    tru_budget_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა"
+    frontend_name: "TruBudget",
+    frontend_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა"
   },
 
   project: {
@@ -197,7 +202,7 @@ const ka = {
     project_details: "დეტალები",
     project_disbursement_authority_role_description:
       "უფლებამოსილმა პირმა ფინანსური ტრანზაქციის დადასტურების ნებართვა გასცა",
-    project_disbursement_authority_role: "შეარჩიეთ თანხის გადარიცხვის უფლებამოსილების როლი",
+    project_disbursement_authority_role: "შეარჩიეთ გადახდის ორგანოს როლი",
     project_edit_title: "პროექტის ცვლილება",
     project_implementing_authority_role_description:
       "The authorities enabled to create and modify subprojects, define and execute workflow activities",
@@ -244,10 +249,10 @@ const ka = {
     workflow_budget_amount_description: "Budget for the workflowitem",
     workflow_budget_amount: "Workflowitem budget amount",
     workflow_budget_description: "მაგალითად",
-    workflow_budget_disbursed: "ჩარიცხული",
+    workflow_budget_disbursed: "გადახდილი",
     workflow_budget_na: "Not applicable",
     workflow_budget_status_allocated: "Assigned",
-    workflow_budget_status_disbursed: "Disbursed",
+    workflow_budget_status_disbursed: "გადახდილი",
     workflow_budget_status_na: "N/A",
     workflow_budget: "Workflowitem-ის ბიუჯეტის ოდენობა",
     workflow_comment: "Workflowitem-ის კომენტარი",
@@ -342,7 +347,7 @@ const ka = {
     assigned_budget_ratio: "Assigned Budget Ratio",
     available_unspent_budget: "არსებული გაუხარჯავი ბიუჯეტი",
     converted_amount: "კონვერტირებული ოდენობა",
-    disbursed_budget_ratio: "Disbursed Budget Ratio",
+    disbursed_budget_ratio: "გადახდის პროცენტი (გადახდილი / გამოყოფილი)",
     insufficient_permissions_text:
       "One or more workflowitem are redacted. The analytics are hidden because they would be falsified.",
     project_analytics: "პროექტის ანალიტიკა",
@@ -374,6 +379,7 @@ const ka = {
     restore: "აღდგენა",
     rtUpdates: "რეალურ დროში განახლებები",
     selections: "შერჩევა",
+    service_status: "მომსახურების სტატუსი",
     unread_notifications: "წაუკითხავი შეტყობინებები",
     write_permission: "Write"
   },
@@ -564,6 +570,19 @@ const ka = {
     workflowitem_permission_granted: "მიენიჭა workflowitem ნებართვა",
     workflowitem_permission_revoked: "სამუშაო პროცესის ნებართვა გაუქმებულია",
     workflowitems_reordered: "Workflowitems გადაკეთდა"
+  },
+
+  status: {
+    average: "საშუალო",
+    connection: "კავშირი",
+    fast: "სწრაფი",
+    no_ping_available: "პინგი არ არის ხელმისაწვდომი",
+    not_connected: "არ არის დაკავშირებული",
+    ping: "პინგ",
+    service: "მომსახურება",
+    slow: "ნელი",
+    version: "ვერსია",
+    very_slow: "ძალიან ნელი"
   },
 
   language: {

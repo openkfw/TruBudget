@@ -116,6 +116,8 @@ export const SAVE_WORKFLOW_ITEM_BEFORE_SORT = "SAVE_WORKFLOW_ITEM_BEFORE_SORT";
 export const HAVE_WORKFLOW_ITEM_CHANGED = "HAVE_WORKFLOW_ITEM_CHANGED";
 
 export const LIVE_UPDATE_SUBPROJECT = "LIVE_UPDATE_SUBPROJECT";
+export const DISABLE_LIVE_UPDATES_SUBPROJECT = "DISABLE_LIVE_UPDATES_SUBPROJECT";
+export const ENABLE_LIVE_UPDATES_SUBPROJECT = "ENABLE_LIVE_UPDATES_SUBPROJECT";
 
 export const TRIGGER_SUBPROJECT_APPLY_ACTIONS = "TRIGGER_SUBPROJECT_APPLY_ACTIONS";
 export const SHOW_SUBPROJECT_CONFIRMATION_DIALOG = "SHOW_SUBPROJECT_CONFIRMATION_DIALOG";
@@ -175,10 +177,11 @@ export function fetchFirstSubprojectHistoryPage(projectId, subprojectId, filter 
   };
 }
 
-export function showWorkflowItemPreview(projectId, resources, selectedAssignee, permissions) {
+export function showWorkflowItemPreview(projectId, subprojectId, resources, selectedAssignee, permissions) {
   return {
     type: SHOW_WORKFLOW_PREVIEW,
     projectId,
+    subprojectId,
     ressources: resources,
     selectedAssignee,
     permissions
@@ -644,6 +647,18 @@ export function liveUpdateSubproject(projectId, subprojectId) {
     type: LIVE_UPDATE_SUBPROJECT,
     projectId,
     subprojectId
+  };
+}
+
+export function disableLiveUpdatesSubproject() {
+  return {
+    type: DISABLE_LIVE_UPDATES_SUBPROJECT,
+  };
+}
+
+export function enableLiveUpdatesSubproject() {
+  return {
+    type: ENABLE_LIVE_UPDATES_SUBPROJECT,
   };
 }
 

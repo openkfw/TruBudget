@@ -8,6 +8,7 @@ import { initLanguage } from "../Login/actions";
 import NavbarContainer from "../Navbar/NavbarContainer";
 import NodesContainer from "../Nodes/NodesContainer";
 import NotificationPageContainer from "../Notifications/NotificationPageContainer";
+import StatusContainer from "../Status/StatusContainer";
 import OverviewContainer from "../Overview/OverviewContainer";
 import SubProjectContainer from "../SubProjects/SubProjectContainer";
 import UserManagementContainer from "../Users/UserManagementContainer";
@@ -54,6 +55,7 @@ const Main = props => {
           <Route exact path="/notifications" component={withInitialLoading(NotificationPageContainer)} />
           <Route exact path="/users" component={UserManagementContainer} />
           <Route exact path="/nodes" component={NodesContainer} />
+          <Route exact path="/status" component={StatusContainer} />
           <Route component={NotFound} />
         </Switch>
         <Route component={Footer} />

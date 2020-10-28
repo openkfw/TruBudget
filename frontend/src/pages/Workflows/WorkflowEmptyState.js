@@ -17,7 +17,7 @@ const styles = theme => {
   };
 };
 
-const WorkflowEmptyState = withTheme()(
+const WorkflowEmptyState = withTheme(
   withStyles(styles)(props => {
     const { classes } = props;
     return (

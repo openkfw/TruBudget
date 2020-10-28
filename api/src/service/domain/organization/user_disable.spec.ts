@@ -115,6 +115,16 @@ describe("Disable users: permissions", () => {
     assert.isTrue(Result.isOk(result));
   });
 
+  it("A user cannot disable himself", async () => {
+    const result = await disableUser(ctx, admin, orgaA, requestData, {
+      ...baseRepository,
+      getUser: async () => {
+        return { ...baseUser, userId: admin.id };
+      },
+    });
+    assert.isTrue(Result.isErr(result));
+  });
+
   it("A user can disable users if the correct permissions are given", async () => {
     const result = await disableUser(ctx, admin, orgaA, requestData, {
       ...baseRepository,

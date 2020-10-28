@@ -11,9 +11,11 @@ import {
   ASSIGN_WORKFLOWITEM_SUCCESS,
   CREATE_WORKFLOW_SUCCESS,
   DEFAULT_WORKFLOW_EXCHANGERATE,
+  DISABLE_LIVE_UPDATES_SUBPROJECT,
   DISABLE_WORKFLOW_EDIT,
   EDIT_WORKFLOW_ITEM_SUCCESS,
   ENABLE_BUDGET_EDIT,
+  ENABLE_LIVE_UPDATES_SUBPROJECT,
   ENABLE_WORKFLOW_EDIT,
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
@@ -67,6 +69,7 @@ import {
   WORKFLOW_PURPOSE,
   WORKFLOW_STATUS
 } from "./actions";
+import { ENABLE_ALL_LIVE_UPDATES, DISABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 
 const historyPageSize = 50;
 
@@ -150,7 +153,8 @@ const defaultState = fromJS({
   isFetchingSubProjectPermissions: false,
   isFetchingWorkflowitemPermissions: false,
   permittedToGrant: false,
-  applyActions: true
+  applyActions: true,
+  isLiveUpdatesSubprojectEnabled: true
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -456,6 +460,12 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.updateIn(["temporaryPermissions", action.permission], users =>
         users.filter(user => user !== action.userId)
       );
+    case DISABLE_ALL_LIVE_UPDATES:
+    case DISABLE_LIVE_UPDATES_SUBPROJECT:
+      return state.set("isLiveUpdatesSubprojectEnabled", false);
+    case ENABLE_ALL_LIVE_UPDATES:
+    case ENABLE_LIVE_UPDATES_SUBPROJECT:
+      return state.set("isLiveUpdatesSubprojectEnabled", true);
     default:
       return state;
   }

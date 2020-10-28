@@ -6,6 +6,7 @@ import * as GroupCreateAPI from "./group_create";
 import * as GroupListAPI from "./group_list";
 import * as GroupMemberAddAPI from "./group_member_add";
 import * as GroupMemberRemoveAPI from "./group_member_remove";
+import * as GroupPermissionsListAPI from "./group_permissions_list";
 import { registerRoutes } from "./httpd/router";
 import { createBasicApp } from "./httpd/server";
 import deepcopy from "./lib/deepcopy";
@@ -39,6 +40,7 @@ import * as GlobalPermissionsGetService from "./service/global_permissions_get";
 import * as GroupCreateService from "./service/group_create";
 import * as GroupMemberAddService from "./service/group_member_add";
 import * as GroupMemberRemoveService from "./service/group_member_remove";
+import * as GroupPermissionsListService from "./service/group_permissions_list";
 import * as GroupQueryService from "./service/group_query";
 import { randomString } from "./service/hash";
 import * as NotificationListService from "./service/notification_list";
@@ -360,6 +362,11 @@ GroupMemberAddAPI.addHttpHandler(server, URL_PREFIX, {
 GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
   removeGroupMember: (ctx, issuer, groupId, newMember) =>
     GroupMemberRemoveService.removeMember(db, ctx, issuer, groupId, newMember),
+});
+
+GroupPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
+  getGroupPermissions: (ctx, issuer, groupId) =>
+    GroupPermissionsListService.getGroupPermissions(db, ctx, issuer, groupId),
 });
 
 /*

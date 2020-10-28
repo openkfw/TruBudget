@@ -2,10 +2,10 @@
  * Combine all reducers in this file and export the combined reducers.
  * If we were doing this in store.js, reducers wouldn't be hot reloadable.
  */
-
 import { connectRouter, LOCATION_CHANGE } from "connected-react-router";
 import { fromJS } from "immutable";
 import { combineReducers } from "redux-immutable";
+
 import analyticsReducer from "./pages/Analytics/reducer";
 import confirmationReducer from "./pages/Confirmation/reducer";
 import documentsReducer from "./pages/Documents/reducer";
@@ -15,6 +15,7 @@ import navbarReducer from "./pages/Navbar/reducer";
 import nodeDashboardReducer from "./pages/Nodes/reducer";
 import notificationsReducer from "./pages/Notifications/reducer";
 import overviewReducer from "./pages/Overview/reducer";
+import statusReducer from "./pages/Status/reducer";
 import subProjectReducer from "./pages/SubProjects/reducer";
 import userDashboardReducer from "./pages/Users/reducer";
 import workflowReducer from "./pages/Workflows/reducer";
@@ -81,7 +82,8 @@ const combinedReducer = (history, action) => {
       users: (_state, action) => userDashboardReducer(undefined, action),
       nodes: (_state, action) => nodeDashboardReducer(undefined, action),
       analytics: (_state, action) => analyticsReducer(undefined, action),
-      confirmation: (_state, action) => confirmationReducer(undefined, action)
+      confirmation: (_state, action) => confirmationReducer(undefined, action),
+      status: (_state, action) => statusReducer(undefined, action)
     });
   } else {
     return combineReducers({
@@ -100,7 +102,8 @@ const combinedReducer = (history, action) => {
       users: userDashboardReducer,
       nodes: nodeDashboardReducer,
       analytics: analyticsReducer,
-      confirmation: confirmationReducer
+      confirmation: confirmationReducer,
+      status: statusReducer
     });
   }
 };

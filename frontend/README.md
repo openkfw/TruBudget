@@ -1,6 +1,6 @@
-# ACMECorp Blockchain Frontend
+# Frontend
 
-This is the frontend, which consumes the exposed API fot the ACMECorp Blockchain API. By default it connects to the masternode of the cluster
+This is the frontend, which consumes the exposed Trubudget API.
 
 ## Environment Variables
 
@@ -17,18 +17,19 @@ This is the frontend, which consumes the exposed API fot the ACMECorp Blockchain
 
 ### Email-Service
 
-| Env Variable                    | Default Value | Description                                                                                                                                                         |
-| ------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled, the frontend requests a email-notifcations readiness call when entering the login screen.<br>If true the email section in the user-profile is enabled |
-| EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                        |
-| EMAIL_PORT                      | -             | Port of the email notification service                                                                                                                              |
+| Env Variable                    | Default Value | Description                                                                                                                                                    |
+| ------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled, the frontend requests a email-service readiness call when entering the login screen.<br>If true the email section in the user-profile is enabled |
+| EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                   |
+| EMAIL_PORT                      | -             | Port of the email notification service                                                                                                                         |
 
 ### Excel-Export-Service
 
-| Env Variable | Default Value | Description                            |
-| ------------ | ------------- | -------------------------------------- |
-| EXPORT_HOST  | -             | IP address of the excel export service |
-| EXPORT_PORT  | -             | Port of the excel export service       |
+| Env Variable                     | Default Value | Description                                                                                                                                        |
+| -------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EXPORT_SERVICE_ENABLED | -             | If true the frontend requests a export-service readiness call when entering the login screen and <br>the export button is shown at the side navbar |
+| EXPORT_HOST                      | -             | IP address of the excel export service                                                                                                             |
+| EXPORT_PORT                      | -             | Port of the excel export service                                                                                                                   |
 
 ## Peer dependencies
 

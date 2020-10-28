@@ -1,6 +1,6 @@
 {
   "name": "trubudget-blockchain",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -20,7 +20,8 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\"",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "check-backup": "node check-backup.js"
   },
   "nyc": {
     "include": [
@@ -31,7 +32,7 @@
     ]
   },
   "dependencies": {
-    "@kubernetes/client-node": "^0.8.1",
+    "@kubernetes/client-node": "0.10.2",
     "async-each": "^1.0.1",
     "axios": "^0.19.0",
     "body-parser": "^1.18.3",

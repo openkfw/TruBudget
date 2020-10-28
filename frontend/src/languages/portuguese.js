@@ -5,7 +5,9 @@ const pt = {
       decimal: ",",
       thousand: ".",
       precision: 2
-    }
+    },
+    // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
+    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
   },
   common: {
     action: "Ação",
@@ -35,8 +37,8 @@ const pt = {
     create: "Criar",
     created: "Data de criação",
     currency: "Moeda",
-    disbursed_budget: "Desembolsado",
-    disbursement: "Projetado",
+    disbursed_budget: "Custo pago",
+    disbursement: "Pagamentos programados",
     disconnected: "Desligada",
     display_name: "Mostrar nome",
     done: "Finalizar",
@@ -55,6 +57,7 @@ const pt = {
     incorrect_username: "Id do usuário incorreto",
     incorrect_username_or_password: "ID ou palavra-passe de início de sessão incorrecta",
     invalid_tag: "Tag inválida",
+    invalid_format: "Formato inválido",
     name: "Nome ou descrição do usuário",
     next: "Próximo",
     no_budget: "Nenhum orçamento encontrado",
@@ -77,7 +80,7 @@ const pt = {
     no_workflow_items: "Nenhum itens de workflow encontrado",
     not_assigned_budget: "Orçamento não atribuído",
     not_assigned: "Não atribuído",
-    not_disbursed: "Não desembolsado",
+    not_disbursed: "Não pago",
     not_ok: "Não OK",
     not_projected: "Não projetado",
     open: "Aberto",
@@ -141,6 +144,7 @@ const pt = {
     user_created: "Usuário criado com sucesso",
     username_invalid: "Nome de usuário Inválido",
     users: "Usuários",
+    selected_users: "usuários selecionados",
     disabled_users: "Utilizadores desactivados",
     disable_user: "Desactivar utilizador",
     disable_userId: "Desativar usuário {0}",
@@ -180,7 +184,8 @@ const pt = {
     login_button_title: "Login",
     production_env: "Produção",
     test_env: "Teste",
-    tru_budget_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias"
+    frontend_name: "TruBudget",
+    frontend_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias"
   },
 
   project: {
@@ -198,7 +203,7 @@ const pt = {
     project_details: "Detalhes",
     project_disbursement_authority_role_description:
       "As autoridades competentes para aprovar as transações financeiras",
-    project_disbursement_authority_role: "Selecione o papel da autoridade de desembolso",
+    project_disbursement_authority_role: "Selecione a função da autoridade de pagamento",
     project_edit_title: "Editar projeto",
     project_implementing_authority_role_description:
       "As autoridades competentes para criar e modificar subprojetos e definir e executar os fluxos de trabalho",
@@ -245,10 +250,10 @@ const pt = {
     workflow_budget_amount_description: "Descrição do orçamento do item de workflow",
     workflow_budget_amount: "Valor do item de workflow",
     workflow_budget_description: "Orçamento para o item de workflow",
-    workflow_budget_disbursed: "Desembolsado",
+    workflow_budget_disbursed: "pago",
     workflow_budget_na: "Não se aplica",
     workflow_budget_status_allocated: "Atribuído",
-    workflow_budget_status_disbursed: "Desembolsado",
+    workflow_budget_status_disbursed: "Pago",
     workflow_budget_status_na: "N/A",
     workflow_budget: "Valor do item de workflow",
     workflow_comment: "Comentário do item de workflow",
@@ -344,7 +349,7 @@ const pt = {
     assigned_budget_ratio: "% do Orçamento Atribuído",
     available_unspent_budget: "Orçamento Disponível",
     converted_amount: "Valor convertido",
-    disbursed_budget_ratio: "% do Orçamento Desembolsado",
+    disbursed_budget_ratio: "Taxa de pagamento (pago / alocado)",
     insufficient_permissions_text:
       "Um ou mais itens do fluxo de trabalho são editados. As análises são ocultas porque seriam falsificadas.",
     project_analytics: "Dashboard do Projeto",
@@ -376,6 +381,7 @@ const pt = {
     restore: "Restore",
     rtUpdates: "Atualizações em tempo real",
     selections: "Menu",
+    service_status: "Status do serviço",
     unread_notifications: "Notificações não lidas",
     write_permission: "Escrita"
   },
@@ -566,6 +572,19 @@ const pt = {
     workflowitem_permission_granted: "Workflowitem permisision granted",
     workflowitem_permission_revoked: "Workflowitem permission revoked",
     workflowitems_reordered: "Reordenação dos fluxos de trabalho"
+  },
+
+  status: {
+    average: "média",
+    connection: "conexão",
+    fast: "velozes",
+    no_ping_available: "nenhum ping disponível",
+    not_connected: "não conectado",
+    ping: "Ping",
+    service: "Service",
+    slow: "lento",
+    version: "versão",
+    very_slow: "muito lento"
   },
 
   language: {

@@ -7,8 +7,14 @@ describe("Subproject budget test", function() {
     currencyCode: "EUR",
     value: "10000"
   };
-  const subprojectProjectedBudget = { projectedBudgets: [projectProjectedBudget] };
   const amount = "1234";
+  const unformattedBudget = "1200";
+  const formattedBudgetEnglish = "1,200.00";
+  const wrongformattedBudgetEnglish = ["1.200,0", "1.", "1.1.1", "1,11.11"];
+  const formattedBudgetGerman = "1.200,00";
+  const wrongformattedBudgetGerman = ["1,200.0", "1,", "1.1.1", "1,11.11"];
+
+  const subprojectProjectedBudget = { projectedBudgets: [projectProjectedBudget] };
   const multipleBudgets = {
     projectedBudgets: [
       {
@@ -28,6 +34,7 @@ describe("Subproject budget test", function() {
       }
     ]
   };
+
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
@@ -38,6 +45,7 @@ describe("Subproject budget test", function() {
     cy.server();
     cy.route("GET", apiRoute + "/project.viewDetails*").as("viewDetailsProject");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetailsSubproject");
+    cy.route("GET", apiRoute + "/project.list*").as("listProjects");
     cy.route("POST", apiRoute + "/global.createProject").as("createProject");
     cy.route("POST", apiRoute + "/project.createSubproject").as("createSubproject");
     cy.route("POST", apiRoute + "/subproject.budget.deleteProjected").as("deleteBudget");
@@ -53,7 +61,7 @@ describe("Subproject budget test", function() {
         cy.get("[data-test=subproject-create-button]").should("be.visible");
 
         cy.get("[data-test=subproject-create-button]").click();
-        cy.get("[data-test=nameinput] input").type("Subproject budget test");
+        cy.get("[data-test=nameinput]").type("Subproject budget test");
         cy.get("[data-test=commentinput]").type("Subproject budget test");
         cy.get("[data-test=dropdown-sp-dialog-currencies-click]").click();
         cy.get("[data-value=EUR]").click();
@@ -92,10 +100,8 @@ describe("Subproject budget test", function() {
         cy.get("[data-test=subproject-create-button]").should("be.visible");
         cy.get("[data-test=subproject-create-button]").click();
         // Create subproject budget
-        cy.get("[data-test=nameinput] input").type("Subproject budget test");
-        cy.get("[data-test=commentinput] textarea")
-          .last()
-          .type("Subproject budget test");
+        cy.get("[data-test=nameinput]").type("Subproject budget test");
+        cy.get("[data-test=commentinput]").type("Subproject budget test");
         cy.get("[data-test=dropdown-sp-dialog-currencies-click]").click();
         cy.get("[data-value=EUR]").click();
         cy.get("[data-test=dropdown-organizations-click]").click();
@@ -138,6 +144,7 @@ describe("Subproject budget test", function() {
           subprojectId = id;
           //Delete subproject budget
           cy.visit(`/projects/${projectId}`);
+          cy.wait("@viewDetailsProject");
           cy.get(`[data-test^=subproject-edit-button-]`)
             .should("be.visible")
             .click();
@@ -154,6 +161,7 @@ describe("Subproject budget test", function() {
   });
 
   it("The projected budget of the subproject can be edited", function() {
+    const editedAmount = "522";
     cy.createProject("subproject budget test project", "subproject budget test", [projectProjectedBudget]).then(
       ({ id }) => {
         projectId = id;
@@ -166,7 +174,9 @@ describe("Subproject budget test", function() {
             .should("be.visible")
             .click();
           cy.get("[data-test=edit-projected-budget]").click();
-          cy.get("[data-test=edit-projected-budget-amount]").type("22");
+          cy.get("[data-test=edit-projected-budget-amount] input")
+            .clear()
+            .type(editedAmount);
           cy.get("[data-test=edit-projected-budget-amount-done]").click();
           cy.get(`[data-test=submit]`)
             .should("be.visible")
@@ -255,6 +265,223 @@ describe("Subproject budget test", function() {
     );
   });
 
+  it("Check language specific number format in projected budget table", function() {
+    cy.createProject("subproject budget test project", "subproject budget test", [projectProjectedBudget]).then(
+      ({ id }) => {
+        projectId = id;
+        cy.createSubproject(projectId, "subproject budget test", "EUR", subprojectProjectedBudget).then(({ id }) => {
+          subprojectId = id;
+          cy.login("mstein", "test", { language: "de" });
+          cy.visit(`/projects/${projectId}/${subprojectId}`).wait("@viewDetailsSubproject");
+          cy.get("[data-test=subproject-projected-budget] tr").then(projectedBudgets => {
+            expect(projectedBudgets[1]).to.contain("10.000,00");
+          });
+          cy.login("mstein", "test", { language: "en" });
+          cy.visit(`/projects/${projectId}/${subprojectId}`).wait("@viewDetailsSubproject");
+          cy.get("[data-test=subproject-projected-budget] tr").then(projectedBudgets => {
+            expect(projectedBudgets[1]).to.contain("10,000.00");
+          });
+        });
+      }
+    );
+  });
+
+  it("The budget cannot be added if the input format is invalid [english format]", function() {
+    cy.createProject("subproject budget test project", "subproject budget test").then(({ id }) => {
+      projectId = id;
+      // Test with english format
+      cy.login("mstein", "test", { language: "en" });
+      cy.visit(`/projects/${projectId}`).wait("@viewDetailsProject");
+      cy.get("[data-test=subproject-create-button]").should("be.visible");
+      cy.get("[data-test=subproject-create-button]").click();
+      cy.get("[data-test=organization-input]").type(organization1);
+      cy.get("[data-test=dropdown-currencies]").click();
+      cy.get("[data-value=EUR]").click();
+      // Type in a budgetamount
+      cy.get("[data-test=projected-budget] input")
+        .clear()
+        .type(unformattedBudget);
+      cy.get("[data-test=projected-budget]").should("not.contain", "Invalid format");
+      cy.get("[data-test=projected-budget] input")
+        .clear()
+        .type(formattedBudgetEnglish);
+      cy.get("[data-test=projected-budget]").should("not.contain", "Invalid format");
+      wrongformattedBudgetEnglish.forEach(b => {
+        cy.get("[data-test=projected-budget] input")
+          .clear()
+          .type(b);
+        cy.get("[data-test=projected-budget]").should("contain", "Invalid format");
+      });
+    });
+  });
+
+  it("The budget cannot be added if the input format is invalid [german format]", function() {
+    cy.createProject("subproject budget test project", "subproject budget test").then(({ id }) => {
+      projectId = id;
+      // Test with german format
+      cy.login("mstein", "test", { language: "de" });
+      cy.visit(`/projects/${projectId}`).wait("@viewDetailsProject");
+      cy.get("[data-test=subproject-create-button]").should("be.visible");
+      cy.get("[data-test=subproject-create-button]").click();
+      cy.get("[data-test=organization-input]").type(organization1);
+      cy.get("[data-test=dropdown-currencies]").click();
+      cy.get("[data-value=EUR]").click();
+      // Type in a budgetamount
+      cy.get("[data-test=projected-budget] input")
+        .clear()
+        .type(unformattedBudget);
+      cy.get("[data-test=projected-budget]").should("not.contain", "Ungültiges Format");
+      cy.get("[data-test=projected-budget] input")
+        .clear()
+        .type(formattedBudgetGerman);
+      cy.get("[data-test=projected-budget]").should("not.contain", "Ungültiges Format");
+      wrongformattedBudgetGerman.forEach(b => {
+        cy.get("[data-test=projected-budget] input")
+          .clear()
+          .type(b);
+        cy.get("[data-test=projected-budget]").should("contain", "Ungültiges Format");
+      });
+    });
+  });
+
+  it("The inputfield to edit budgetamount shows an error if the input is invalid [english format]", function() {
+    cy.createProject("subproject budget test project", "subproject budget test", [projectProjectedBudget]).then(
+      ({ id }) => {
+        projectId = id;
+        cy.createSubproject(projectId, "subproject budget test", "EUR", subprojectProjectedBudget).then(({ id }) => {
+          subprojectId = id;
+          cy.login("mstein", "test", { language: "en" });
+          cy.visit(`/projects/${projectId}`).wait("@viewDetailsProject");
+          // Edit projected budgetamount
+          cy.get(`[data-test^=subproject-edit-button-]`)
+            .should("be.visible")
+            .click();
+          cy.get("[data-test=edit-projected-budget]")
+            .first()
+            .click();
+          cy.get("[data-test=edit-projected-budget-amount] input")
+            .clear()
+            .type(unformattedBudget);
+          cy.get("[data-test=edit-projected-budget-amount]").should("not.contain", "Invalid format");
+          cy.get("[data-test=edit-projected-budget-amount] input")
+            .clear()
+            .type(formattedBudgetEnglish);
+          cy.get("[data-test=edit-projected-budget-amount]").should("not.contain", "Invalid format");
+          wrongformattedBudgetEnglish.forEach(b => {
+            cy.get("[data-test=edit-projected-budget-amount] input")
+              .clear()
+              .type(b);
+            cy.get("[data-test=edit-projected-budget-amount]").should("contain", "Invalid format");
+          });
+        });
+      }
+    );
+  });
+
+  it("The inputfield to edit budgetamount shows an error if the input is invalid [german format]", function() {
+    cy.createProject("subproject budget test project", "subproject budget test", [projectProjectedBudget]).then(
+      ({ id }) => {
+        projectId = id;
+        cy.createSubproject(projectId, "subproject budget test", "EUR", subprojectProjectedBudget).then(({ id }) => {
+          subprojectId = id;
+          cy.login("mstein", "test", { language: "de" });
+          cy.visit(`/projects/${projectId}`).wait("@viewDetailsProject");
+          // Edit projected budgetamount
+          cy.get(`[data-test^=subproject-edit-button-]`)
+            .should("be.visible")
+            .click();
+          cy.get("[data-test=edit-projected-budget]")
+            .first()
+            .click();
+          cy.get("[data-test=edit-projected-budget-amount] input")
+            .clear()
+            .type(unformattedBudget);
+          cy.get("[data-test=edit-projected-budget-amount]").should("not.contain", "Ungültiges Format");
+          cy.get("[data-test=edit-projected-budget-amount] input")
+            .clear()
+            .type(formattedBudgetGerman);
+          cy.get("[data-test=edit-projected-budget-amount]").should("not.contain", "Ungültiges Format");
+          wrongformattedBudgetGerman.forEach(b => {
+            cy.get("[data-test=edit-projected-budget-amount] input")
+              .clear()
+              .type(b);
+            cy.get("[data-test=edit-projected-budget-amount]").should("contain", "Ungültiges Format");
+          });
+        });
+      }
+    );
+  });
+
+  it("The budget cannot be edited if the input format is invalid [english format]", function() {
+    cy.createProject("subproject budget test project", "subproject budget test", [projectProjectedBudget]).then(
+      ({ id }) => {
+        projectId = id;
+        cy.createSubproject(projectId, "subproject budget test", "EUR", subprojectProjectedBudget).then(({ id }) => {
+          subprojectId = id;
+          cy.login("mstein", "test", { language: "en" });
+          cy.visit(`/projects/${projectId}`).wait("@viewDetailsProject");
+          // Edit projected budgetamount
+          cy.get(`[data-test^=subproject-edit-button-]`)
+            .should("be.visible")
+            .click();
+          cy.get("[data-test=edit-projected-budget]")
+            .first()
+            .click();
+          wrongformattedBudgetEnglish.forEach(b => {
+            cy.get("[data-test=edit-projected-budget-amount] input")
+              .clear()
+              .type(b);
+            cy.get("[data-test=edit-projected-budget-amount-done]").should("be.disabled");
+          });
+          cy.get("[data-test=edit-projected-budget-amount] input")
+            .clear()
+            .type(unformattedBudget);
+          cy.get("[data-test=edit-projected-budget-amount-done]")
+            .should("be.enabled")
+            .click();
+          cy.get("[data-test=saved-projected-budget-amount]")
+            .first()
+            .should("contain", formattedBudgetEnglish);
+        });
+      }
+    );
+  });
+
+  it("The budget cannot be edited if the input format is invalid [german format]", function() {
+    cy.createProject("subproject budget test project", "subproject budget test", [projectProjectedBudget]).then(
+      ({ id }) => {
+        projectId = id;
+        cy.createSubproject(projectId, "subproject budget test", "EUR", subprojectProjectedBudget).then(({ id }) => {
+          subprojectId = id;
+          cy.login("mstein", "test", { language: "de" });
+          cy.visit(`/projects/${projectId}`).wait("@viewDetailsProject");
+          // Edit projected budgetamount
+          cy.get(`[data-test^=subproject-edit-button-]`)
+            .should("be.visible")
+            .click();
+          cy.get("[data-test=edit-projected-budget]")
+            .first()
+            .click();
+          wrongformattedBudgetGerman.forEach(b => {
+            cy.get("[data-test=edit-projected-budget-amount] input")
+              .clear()
+              .type(b);
+            cy.get("[data-test=edit-projected-budget-amount-done]").should("be.disabled");
+          });
+          cy.get("[data-test=edit-projected-budget-amount] input")
+            .clear()
+            .type(unformattedBudget);
+          cy.get("[data-test=edit-projected-budget-amount-done]")
+            .should("be.enabled")
+            .click();
+          cy.get("[data-test=saved-projected-budget-amount]")
+            .first()
+            .should("contain", formattedBudgetGerman);
+        });
+      }
+    );
+  });
+
   it("Check if adding, editing and deleting projected budgets works together", function() {
     const editedAmount = "522";
     cy.createProject("subproject budget test project", "subproject budget test", []).then(({ id }) => {
@@ -263,7 +490,7 @@ describe("Subproject budget test", function() {
       cy.wait("@viewDetailsProject");
       cy.get("[data-test=subproject-create-button]").should("be.visible");
       cy.get("[data-test=subproject-create-button]").click();
-      cy.get("[data-test=nameinput] input").type("Subproject budget test");
+      cy.get("[data-test=nameinput]").type("Subproject budget test");
       cy.get("[data-test=commentinput]").type("Subproject budget test");
       cy.get("[data-test=dropdown-sp-dialog-currencies-click]").click();
       cy.get("[data-value=EUR]").click();
