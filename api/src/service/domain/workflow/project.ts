@@ -14,8 +14,7 @@ export type Id = string;
 
 export const idSchema = Joi.string().max(32);
 export const tagsSchema = Joi.string()
-  .lowercase()
-  .regex(/^(\w+[_.-]*)+\w+$/)
+  .regex(/^([A-Za-zÀ-ÿ0-9])*[A-Za-zÀ-ÿ0-9-_]+$/)
   .max(15);
 
 export interface Project {
