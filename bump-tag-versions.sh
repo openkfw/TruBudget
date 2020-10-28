@@ -10,7 +10,7 @@ trubudget_projects=('frontend' 'api' 'blockchain' 'e2e-test' 'provisioning' 'exc
 for project in "${trubudget_projects[@]}"
 do
   eval "cd $project"
-  eval "sed -i '/\"version\": \"/c\"  version\": \"$trubudget_version\",' ./package.json"
+  eval "sed -i '/\"version\": \"/c\"version\": \"$trubudget_version\",' ./package.json"
   eval "npm install"
   eval "cd .."
 done

@@ -18,6 +18,7 @@ const bcVersionMetaData = async (multichainHost, backupApiPort): Promise<Version
 };
 
 const apiVersionMetaData = () => {
+  console.log(process.env.npm_package_version);
   const metaData: VersionMetadata = {
     release: process.env.npm_package_version,
     commit: process.env.CI_COMMIT_SHA || "",
