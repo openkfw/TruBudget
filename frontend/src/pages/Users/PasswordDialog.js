@@ -172,7 +172,7 @@ const PasswordDialog = props => {
             </CardContent>
           </Card>
           <Card style={styles.card}>
-            <CardHeader subheader={formatString(strings.users.type_new_password, props.userId)} />
+            <CardHeader subheader={formatString(strings.users.type_new_password, editId)} />
             <CardContent>
               <Password
                 iconDisplayed={false}
