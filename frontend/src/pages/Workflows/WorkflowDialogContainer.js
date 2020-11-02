@@ -20,7 +20,8 @@ import {
   storeWorkflowDueDate,
   storeWorkflowExchangeRate,
   storeWorkflowitemType,
-  defaultWorkflowExchangeRate
+  defaultWorkflowExchangeRate,
+  storeWorkflowItemsAssignee
 } from "./actions";
 import WorkflowDialog from "./WorkflowDialog";
 
@@ -78,7 +79,9 @@ const mapStateToProps = state => {
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     currentStep: state.getIn(["workflow", "currentStep"]),
     currency: state.getIn(["workflow", "currency"]),
-    subProjectCurrency: state.getIn(["workflow", "subProjectCurrency"])
+    subProjectCurrency: state.getIn(["workflow", "subProjectCurrency"]),
+    currentUser: state.getIn(["login", "id"]),
+    users: state.getIn(["login", "enabledUsers"])
   };
 };
 
@@ -128,7 +131,8 @@ const mapDispatchToProps = dispatch => {
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, name, fileName) => dispatch(storeWorkflowDocument(payload, name, fileName)),
-    defaultWorkflowExchangeRate: exchangeRate => dispatch(defaultWorkflowExchangeRate(exchangeRate))
+    defaultWorkflowExchangeRate: exchangeRate => dispatch(defaultWorkflowExchangeRate(exchangeRate)),
+    storeWorkflowItemsAssignee: assignee => dispatch(storeWorkflowItemsAssignee(assignee))
   };
 };
 
