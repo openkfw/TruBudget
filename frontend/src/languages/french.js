@@ -199,7 +199,7 @@ const fr = {
     workflow_disable_sort: "Enregistrer",
     workflow_document_changed: "Modifié",
     workflow_document_description: "Description du document",
-    workflow_document_name: "Nom du document de workflow",
+    workflow_document_name: "Nom du document",
     workflow_document_validate: "Valider",
     workflow_document_validated: "Validé",
     workflow_documents: "Documents de workflow",
