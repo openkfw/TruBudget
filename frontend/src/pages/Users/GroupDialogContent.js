@@ -6,7 +6,7 @@ import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
 import React from "react";
 
 import strings from "../../localizeStrings";
-import AutoComplete from "../Common/AutoComplete";
+import UserSelection from "../Common/UserSelection";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
 
 const styles = {
@@ -84,7 +84,7 @@ const GroupDialogContent = ({
         />
       </div>
       <div>
-        <AutoComplete
+        <UserSelection
           users={enabledUsers.filter(user => user.isGroup !== true)}
           addToSelection={editMode ? addUserToGroup : addInitialUserToGroup}
           selectedItems={groupUsers}
