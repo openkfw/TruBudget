@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
-<!-- ### Changed -->
+### Changed
+
+- Update french translations [#588](https://github.com/openkfw/TruBudget/pull/588)
 
 <!-- ### Deprecated -->
 
