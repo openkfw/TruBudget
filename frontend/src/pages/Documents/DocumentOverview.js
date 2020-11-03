@@ -76,9 +76,9 @@ class DocumentOverview extends Component {
     if (_isUndefined(validated)) {
       return strings.workflow.workflow_document_validate;
     } else if (validated === true) {
-      return "OK";
+      return strings.workflow.workflow_document_validation_ok;
     } else {
-      return "Not OK";
+      return strings.workflow.workflow_document_validation_not_ok;
     }
   };
 
