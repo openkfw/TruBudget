@@ -1,5 +1,7 @@
 ---
-extends: airbnb-base
+extends:
+  - airbnb-typescript/base
+  - prettier
 env:
   node: true
   mocha: true
@@ -7,7 +9,7 @@ env:
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 6
-  project: './tsconfig.json';
+  project: "./tsconfig.json"
   sourceType: module
 rules:
   generator-star-spacing:
@@ -38,9 +40,6 @@ rules:
     - 2
     - 120
     - 2
-  semi:
-    - 2
-    - never
   strict:
     - 2
     - global
