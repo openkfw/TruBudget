@@ -50,7 +50,7 @@ import {
   SHOW_WORKFLOW_EDIT,
   SHOW_WORKFLOW_PREVIEW,
   STORE_WORKFLOWACTIONS,
-  STORE_WORKFLOW_ASSIGNEE,
+  STORE_WORKFLOW_BATCH_ASSIGNEE,
   SUBMIT_BATCH_FOR_WORKFLOW,
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
   SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
@@ -67,7 +67,8 @@ import {
   WORKFLOW_EXCHANGERATE,
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
-  WORKFLOW_STATUS
+  WORKFLOW_STATUS,
+  WORKFLOW_ASSIGNEE
 } from "./actions";
 import { ENABLE_ALL_LIVE_UPDATES, DISABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 
@@ -97,7 +98,8 @@ const defaultState = fromJS({
     description: "",
     status: "open",
     documents: [],
-    workflowitemType: "general"
+    workflowitemType: "general",
+    assignee: ""
   },
   showWorkflowPermissions: false,
   idsPermissionsUnassigned: [],
@@ -271,6 +273,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("currentStep", action.step);
     case WORKFLOW_NAME:
       return state.setIn(["workflowToAdd", "displayName"], action.name);
+    case WORKFLOW_ASSIGNEE:
+      return state.setIn(["workflowToAdd", "assignee"], action.assignee);
     case WORKFLOW_AMOUNT:
       return state.setIn(["workflowToAdd", "amount"], action.amount);
     case WORKFLOW_EXCHANGERATE:
@@ -393,8 +397,8 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case ENABLE_BUDGET_EDIT:
       return state.set("subProjectBudgetEditEnabled", action.budgetEditEnabled);
-    case STORE_WORKFLOW_ASSIGNEE:
-      return state.set("tempDrawerAssignee", action.assignee);
+    case STORE_WORKFLOW_BATCH_ASSIGNEE:
+      return state.set("tempDrawerAssignee", action.tempDrawerAssignee);
     case WORKFLOWITEMS_SELECTED:
       const getSelectedIds = action.workflowItems.map(x => x.data.id);
       return state.merge({

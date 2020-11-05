@@ -107,7 +107,7 @@ export const CLOSE_SUBPROJECT = "CLOSE_SUBPROJECT";
 export const CLOSE_SUBPROJECT_SUCCESS = "CLOSE_SUBPROJECT_SUCCESS";
 export const CLOSE_SUBPROJECT_FAILURE = "CLOSE_SUBPROJECT_FAILURE";
 
-export const STORE_WORKFLOW_ASSIGNEE = "STORE_WORKFLOW_ASSIGNEE";
+export const STORE_WORKFLOW_BATCH_ASSIGNEE = "STORE_WORKFLOW_BATCH_ASSIGNEE";
 
 export const SHOW_SUBPROJECT_ASSIGNEES = "SHOW_SUBPROJECT_ASSIGNEES";
 export const HIDE_SUBPROJECT_ASSIGNEES = "HIDE_SUBPROJECT_ASSIGNEES";
@@ -194,10 +194,10 @@ export function hideWorkflowItemPreview() {
   };
 }
 
-export function storeWorkflowItemsAssignee(assignee) {
+export function storeWorkflowItemBatchAssignee(tempDrawerAssignee) {
   return {
-    type: STORE_WORKFLOW_ASSIGNEE,
-    assignee
+    type: STORE_WORKFLOW_BATCH_ASSIGNEE,
+    tempDrawerAssignee
   };
 }
 
@@ -467,7 +467,14 @@ export function showEditDialog(
 export function storeWorkflowName(name) {
   return {
     type: WORKFLOW_NAME,
-    name: name
+    name
+  };
+}
+
+export function storeWorkflowAssignee(assignee) {
+  return {
+    type: WORKFLOW_ASSIGNEE,
+    assignee
   };
 }
 
@@ -574,7 +581,11 @@ export function createWorkflowItem(
   status,
   documents,
   dueDate,
-  workflowitemType
+  workflowitemType,
+  projectDisplayName,
+  subprojectDisplayName,
+  assignee,
+  assigneeDisplayName
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -589,7 +600,11 @@ export function createWorkflowItem(
     documents,
     status,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    projectDisplayName,
+    subprojectDisplayName,
+    assignee,
+    assigneeDisplayName
   };
 }
 
@@ -652,13 +667,13 @@ export function liveUpdateSubproject(projectId, subprojectId) {
 
 export function disableLiveUpdatesSubproject() {
   return {
-    type: DISABLE_LIVE_UPDATES_SUBPROJECT,
+    type: DISABLE_LIVE_UPDATES_SUBPROJECT
   };
 }
 
 export function enableLiveUpdatesSubproject() {
   return {
-    type: ENABLE_LIVE_UPDATES_SUBPROJECT,
+    type: ENABLE_LIVE_UPDATES_SUBPROJECT
   };
 }
 

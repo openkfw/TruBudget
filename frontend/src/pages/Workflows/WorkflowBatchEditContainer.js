@@ -9,7 +9,7 @@ import {
   resetSucceededWorkflowitems,
   showWorkflowItemPreview,
   storePermissions,
-  storeWorkflowItemsAssignee,
+  storeWorkflowItemBatchAssignee,
   submitBatchForWorkflow
 } from "./actions";
 import WorkflowEditDrawer from "./WorkflowEditDrawer";
@@ -52,7 +52,7 @@ const mapDispatchToProps = dispatch => {
     assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
       dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
     resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems()),
-    storeAssignee: assignee => dispatch(storeWorkflowItemsAssignee(assignee)),
+    storeAssignee: assignee => dispatch(storeWorkflowItemBatchAssignee(assignee)),
     storePermissions: permissions => dispatch(storePermissions(permissions)),
     showWorkflowItemPreview: (pId, subprojectId, resources, assignee, permissions) =>
       dispatch(showWorkflowItemPreview(pId, subprojectId, resources, assignee, permissions)),

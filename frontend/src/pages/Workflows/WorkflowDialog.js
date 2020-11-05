@@ -48,7 +48,15 @@ const styles = {
 };
 
 const handleCreate = props => {
-  const { createWorkflowItem, onDialogCancel, workflowToAdd, storeSnackbarMessage } = props;
+  const {
+    createWorkflowItem,
+    onDialogCancel,
+    workflowToAdd,
+    storeSnackbarMessage,
+    projectDisplayName,
+    subprojectDisplayName
+  } = props;
+
   const {
     displayName,
     amount,
@@ -61,6 +69,7 @@ const handleCreate = props => {
     dueDate,
     workflowitemType
   } = workflowToAdd;
+
   createWorkflowItem(
     displayName,
     fromAmountString(amount).toString(),
@@ -71,9 +80,14 @@ const handleCreate = props => {
     status,
     documents,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    projectDisplayName,
+    subprojectDisplayName
   );
-  storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));
+
+  storeSnackbarMessage(
+    strings.formatString(strings.workflow.workflow_permissions_warning, shortenedDisplayName(displayName))
+  );
   onDialogCancel();
 };
 
@@ -136,19 +150,27 @@ const getWorkflowitemTypeInfo = type => {
 
 const Content = props => {
   const { workflowitemType } = props.workflowToAdd;
-  const { classes } = props;
+  const {
+    classes,
+    selectedAssignee,
+    currentUser,
+    users,
+    creationDialogShown,
+    storeWorkflowitemType,
+    storeWorkflowAssignee
+  } = props;
   return (
     <div className={classes.container}>
       <div className={classes.container}>
-        {props.creationDialogShown ? (
+        {creationDialogShown ? (
           <div className={classes.subContainer}>
             <div className={classes.inputContainer}>
               <Dropdown
                 style={styles.dropdown}
                 floatingLabel={strings.workflow.workflowitem_type}
                 value={workflowitemType}
-                onChange={value => props.storeWorkflowitemType(value)}
-                disabled={!props.creationDialogShown}
+                onChange={value => storeWorkflowitemType(value)}
+                disabled={!creationDialogShown}
                 id="types"
               >
                 {getDropdownMenuItems(types)}
@@ -160,10 +182,12 @@ const Content = props => {
             <div className={classes.inputContainer}>
               <div className={classes.assigneeContainer}>
                 <AssigneeSelection
-                  assigneeId={props.currentUser}
-                  users={props.users}
+                  assigneeId={_isEmpty(selectedAssignee) ? currentUser : selectedAssignee}
+                  users={users}
                   title={"title"}
-                  assign={(assigneeId, assigneeDisplayName) => props.storeWorkflowItemsAssignee(assigneeId)}
+                  assign={(assigneeId, assigneeDisplayName) => {
+                    storeWorkflowAssignee(assigneeId);
+                  }}
                 />
               </div>
             </div>

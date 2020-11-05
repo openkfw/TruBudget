@@ -21,7 +21,8 @@ import {
   storeWorkflowExchangeRate,
   storeWorkflowitemType,
   defaultWorkflowExchangeRate,
-  storeWorkflowItemsAssignee
+  storeWorkflowAssignee,
+  assignWorkflowItem
 } from "./actions";
 import WorkflowDialog from "./WorkflowDialog";
 
@@ -38,11 +39,16 @@ class WorkflowDialogContainer extends Component {
     status,
     workflowDocuments,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    projectDisplayName,
+    subprojectDisplayName
   ) => {
     const path = this.props.location.pathname.split("/");
     const projectId = path[2];
     const subProjectId = path[3];
+    const assignee = this.props.selectedAssignee;
+    const assigneeDisplayName = this.props.users.find(u => u.id === assignee).displayName;
+
     this.props.createItem(
       projectId,
       subProjectId,
@@ -55,7 +61,11 @@ class WorkflowDialogContainer extends Component {
       status,
       workflowDocuments,
       dueDate,
-      workflowitemType
+      workflowitemType,
+      projectDisplayName,
+      subprojectDisplayName,
+      assignee,
+      assigneeDisplayName
     );
   };
 
@@ -81,7 +91,12 @@ const mapStateToProps = state => {
     currency: state.getIn(["workflow", "currency"]),
     subProjectCurrency: state.getIn(["workflow", "subProjectCurrency"]),
     currentUser: state.getIn(["login", "id"]),
-    users: state.getIn(["login", "enabledUsers"])
+    selectedAssignee: state.getIn(["workflow", "workflowToAdd", "assignee"]),
+    users: state.getIn(["login", "enabledUsers"]),
+    // projectId: state.getIn(["workflow", "parentProject", "id"]),
+    // subprojectId: state.getIn(["workflow", "id"]),
+    projectDisplayName: state.getIn(["workflow", "parentProject", "displayName"]),
+    subprojectDisplayName: state.getIn(["workflow", "displayName"])
   };
 };
 
@@ -99,7 +114,11 @@ const mapDispatchToProps = dispatch => {
       status,
       documents,
       dueDate,
-      workflowitemType
+      workflowitemType,
+      projectDisplayName,
+      subprojectDisplayName,
+      assignee,
+      assigneeDisplayName
     ) =>
       dispatch(
         createWorkflowItem(
@@ -114,7 +133,11 @@ const mapDispatchToProps = dispatch => {
           status,
           documents,
           dueDate,
-          workflowitemType
+          workflowitemType,
+          projectDisplayName,
+          subprojectDisplayName,
+          assignee,
+          assigneeDisplayName
         )
       ),
     editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),
@@ -132,7 +155,30 @@ const mapDispatchToProps = dispatch => {
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, name, fileName) => dispatch(storeWorkflowDocument(payload, name, fileName)),
     defaultWorkflowExchangeRate: exchangeRate => dispatch(defaultWorkflowExchangeRate(exchangeRate)),
-    storeWorkflowItemsAssignee: assignee => dispatch(storeWorkflowItemsAssignee(assignee))
+    // delete storeWorkflowAssignee because it is in saga
+    storeWorkflowAssignee: assignee => dispatch(storeWorkflowAssignee(assignee)),
+    assignWorkflowItem: (
+      projectId,
+      projectDisplayName,
+      subprojectId,
+      subprojectDisplayName,
+      workflowitemId,
+      workflowitemDisplayName,
+      assigneeId,
+      assigneeDisplayName
+    ) =>
+      dispatch(
+        assignWorkflowItem(
+          projectId,
+          projectDisplayName,
+          subprojectId,
+          subprojectDisplayName,
+          workflowitemId,
+          workflowitemDisplayName,
+          assigneeId,
+          assigneeDisplayName
+        )
+      )
   };
 };
 
