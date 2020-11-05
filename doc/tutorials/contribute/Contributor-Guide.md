@@ -241,8 +241,8 @@ export ORGANIZATION=ACMECorp
 - Windows Command Prompt / PowerShell
 
 ```bash
-SET API_PORT = 8080
-SET ORGANIZATION = ACMECorp
+SET API_PORT=8080
+SET ORGANIZATION=ACMECorp
 ```
 
 2. Install node-modules
