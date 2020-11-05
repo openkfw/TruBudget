@@ -40,6 +40,7 @@ const baseWorkflowitem: Workflowitem = {
   subprojectId,
   createdAt: new Date().toISOString(),
   status: "open",
+  assignee: alice.id,
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
@@ -75,8 +76,31 @@ describe("Closing a workflowitem", () => {
     assert.instanceOf(newEventsResult, NotFound);
   });
 
-  it("requires the workflowitem.close permission.", async () => {
-    const workflowitem = { ...baseWorkflowitem, permissions: {} };
+  it("may be closed by the assignee", async () => {
+    const workflowitem = { ...baseWorkflowitem, assignee: alice.id, permissions: {} };
+
+    const newEventsResult = await closeWorkflowitem(
+      ctx,
+      alice,
+      baseSubproject.projectId,
+      baseSubproject.id,
+      workflowitemId,
+      {
+        getWorkflowitems: () => Promise.resolve([workflowitem]),
+        getUsersForIdentity: async (identity) => {
+          if (identity === "alice") return ["alice"];
+          if (identity === "bob") return ["bob"];
+          return Error(`unexpected identity: ${identity}`);
+        },
+        getSubproject: () => Promise.resolve(baseSubproject),
+        applyWorkflowitemType: () => [],
+      },
+    );
+    assert.isTrue(Result.isOk(newEventsResult));
+  });
+
+  it("may not be closed by someone else than the assignee", async () => {
+    const workflowitem = { ...baseWorkflowitem, assignee: bob.id, permissions: {} };
 
     const newEventsResult = await closeWorkflowitem(
       ctx,
@@ -134,31 +158,5 @@ describe("Closing a workflowitem", () => {
     }
     assert.instanceOf(newEventsResult, PreconditionError);
     assert.match(newEventsResult.message, /all previous workflowitems must be closed/);
-  });
-
-  it("triggers a notification towards the assignee if successful.", async () => {
-    const workflowitem = { ...baseWorkflowitem, assignee: bob.id };
-    const newEventsResult = await closeWorkflowitem(
-      ctx,
-      alice,
-      baseSubproject.projectId,
-      baseSubproject.id,
-      workflowitem.id,
-      {
-        getWorkflowitems: () => Promise.resolve([workflowitem]),
-        getUsersForIdentity: async (identity) => {
-          if (identity === "alice") return ["alice"];
-          if (identity === "bob") return ["bob"];
-          return Error(`unexpected identity: ${identity}`);
-        },
-        getSubproject: () => Promise.resolve(baseSubproject),
-        applyWorkflowitemType: () => [],
-      },
-    );
-    if (Result.isErr(newEventsResult)) {
-      throw newEventsResult;
-    }
-    const newEvents = newEventsResult;
-    assert.lengthOf(newEvents, 2);
   });
 });

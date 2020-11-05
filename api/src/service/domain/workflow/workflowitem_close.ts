@@ -79,16 +79,17 @@ export async function closeWorkflowitem(
     return new VError(closeEvent, "failed to create event");
   }
 
-  if (closingUser.id !== "root") {
+  if (closingUser.id !== "root" && closingUser.id !== workflowitemToClose.assignee) {
     const intent = "workflowitem.close";
-    if (!Workflowitem.permits(workflowitemToClose, closingUser, [intent])) {
-      return new NotAuthorized({
+    return new NotAuthorized(
+      {
         ctx,
         userId: closingUser.id,
         intent,
         target: workflowitemToClose,
-      });
-    }
+      },
+      new Error("Only the assignee is allowed to close the workflowitem."),
+    );
   }
 
   // Make sure all previous items (wrt. the ordering) are already closed:

@@ -43,6 +43,7 @@ const baseWorkflowitem: Workflowitem = {
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
+  assignee: "alice.id",
   documents: [],
   permissions: { "workflowitem.assign": [alice, bob, charlie].map((x) => x.id) },
   log: [],

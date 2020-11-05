@@ -528,7 +528,11 @@ describe("The cache", () => {
 });
 
 // Helper functions
-function addExampleProject(ctx: Ctx, cache: Cache2, projectId: string): Result.Type<ProjectCreated.Event> {
+function addExampleProject(
+  ctx: Ctx,
+  cache: Cache2,
+  projectId: string,
+): Result.Type<ProjectCreated.Event> {
   const projectCreationEvent = ProjectCreated.createEvent("http", "test", {
     id: projectId,
     status: "open",
@@ -582,6 +586,7 @@ function addExampleWorkflowitem(
   const wfCreationEvent = WorkflowitemCreated.createEvent("http", "test", projectId, subprojectId, {
     id: workflowitemId,
     status: "open",
+    assignee: "testAssignee",
     displayName: "name",
     description: "description",
     amountType: "N/A",
