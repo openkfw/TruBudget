@@ -95,9 +95,9 @@ describe("close subproject: preconditions", () => {
   it("The root user doesn't need to be assigned to close a subproject.", async () => {
     const result = await closeSubproject(ctx, root, projectId, subprojectId, baseRepository);
 
-    // No errors, despite the missing permissions:
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
+
   it("A subproject may not be closed if there is at least one non-closed workflowitem.", async () => {
     const result = await closeSubproject(ctx, root, projectId, subprojectId, {
       ...baseRepository,

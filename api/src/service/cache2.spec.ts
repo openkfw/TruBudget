@@ -536,6 +536,7 @@ function addExampleProject(
   const projectCreationEvent = ProjectCreated.createEvent("http", "test", {
     id: projectId,
     status: "open",
+    assignee: "testAssignee",
     displayName: "name",
     description: "description",
     projectedBudgets: [],

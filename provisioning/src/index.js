@@ -4,6 +4,7 @@ const { readDirectory, readJsonFile } = require("./files");
 const {
   authenticate,
   createProject,
+  assignProject,
   closeProject,
   createSubproject,
   assignSubproject,
@@ -145,6 +146,7 @@ const provisionFromData = async (projectTemplate) => {
     }
 
     if (isToBeClosed) {
+      await assignProject(axios, project.data.id, serviceUser.id);
       await closeProject(axios, project);
     }
 

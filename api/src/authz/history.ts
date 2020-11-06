@@ -11,7 +11,6 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["project.intent.revokePermission", ["project.intent.listPermissions"]],
   ["project.assign", ["project.viewDetails"]],
   ["project.update", ["project.viewDetails"]],
-  ["project.close", ["project.viewDetails"]],
   ["project.archive", ["project.viewDetails"]],
   ["project.createSubproject", ["project.viewDetails", "subproject.viewDetails"]],
   ["subproject.intent.grantPermission", ["subproject.intent.listPermissions"]],

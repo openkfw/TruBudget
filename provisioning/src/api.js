@@ -86,6 +86,15 @@ const createProject = async (axios, projectTemplate) => {
   );
 };
 
+const assignProject = async (axios, projectId, assignee) => {
+  await withRetry(() =>
+    axios.post("/project.assign", {
+      projectId: projectId,
+      identity: assignee,
+    })
+  );
+};
+
 const closeProject = async (axios, project) => {
   await withRetry(() =>
     axios.post("/project.close", {
@@ -323,6 +332,7 @@ module.exports = {
   grantGlobalPermissionToUser,
   grantAllPermissionsToUser,
   createProject,
+  assignProject,
   closeProject,
   createSubproject,
   updateProject,
