@@ -3,11 +3,11 @@ services:
   master-node:
     build: .
     environment:
-      RPC_PORT: 8000
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      ORGANIZATION: ACMECorp
-      EMAIL_HOST: localhost
-      EMAIL_PORT: 8889
+      RPC_PORT: ${RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      ORGANIZATION: ${ORGANIZATION}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
     ports:
       - "8000:8000"
       - "8085:8085"

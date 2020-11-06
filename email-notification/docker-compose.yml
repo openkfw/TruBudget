@@ -4,14 +4,14 @@ services:
     build:
       context: ../blockchain
     environment:
-      RPC_PORT: 8000
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      ORGANIZATION: KfW
-      EMAIL_SERVICE: "ENABLED"
-      EMAIL_HOST: email-service
-      EMAIL_PORT: 8890
-      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
-      LOG_LEVEL: INFO
+      RPC_PORT: ${RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      ORGANIZATION: ${ORGANIZATION}
+      EMAIL_SERVICE: ${EMAIL_SERVICE}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      LOG_LEVEL: ${LOG_LEVEL}
     links:
       - email-service
     ports:
@@ -22,14 +22,14 @@ services:
       context: .
     command: ["npm", "start"]
     environment:
-      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
-      SMTP_HOST: host.docker.internal
-      SMTP_PORT: 2500
-      DB_HOST: emaildb
-      DB_PORT: 5432
-      DB_NAME: trubudget_email_service
-      HTTP_PORT: 8890
-      LOG_LEVEL: INFO
+      JWT_SECRET: ${JWT_SECRET}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      HTTP_PORT: ${HTTP_PORT}
+      LOG_LEVEL: ${LOG_LEVEL}
       # MODE: DEBUG
     links:
       - emaildb
@@ -39,24 +39,24 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_HOST: localhost
-      POSTGRES_PASSWORD: test
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: trubudget_email_service
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - 5432:5432
   master-api:
     build:
       context: ../api
     environment:
-      ORGANIZATION: KfW
-      ORGANIZATION_VAULT_SECRET: asdf
-      RPC_HOST: master-node
-      RPC_PORT: 8000
-      ROOT_SECRET: asdf
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
+      ORGANIZATION: ${ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
+      RPC_HOST: ${RPC_HOST}
+      RPC_PORT: ${RPC_PORT}
+      ROOT_SECRET: ${ROOT_SECRET}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
     ports:
       - 8080:8080
     links:
@@ -65,24 +65,24 @@ services:
     image: trubudget/provisioning:latest
     command: ["npm", "start"]
     environment:
-      API_HOST: master-api
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: TEST
-      ROOT_SECRET: asdf
-      ORGANIZATION: KfW
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
+      ENVIRONMENT_TYPE: ${ENVIRONMENT_TYPE}
+      ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
     links:
       - master-api
   frontend:
     build:
       context: ../frontend
     environment:
-      REACT_APP_EMAIL_SERVICE_ENABLED: "true"
-      EMAIL_HOST: email-service
-      EMAIL_PORT: 8890
-      PROD_API_HOST: master-api
-      PROD_API_PORT: 8080
-      TEST_API_HOST: master-api
-      TEST_API_PORT: 8080
+      REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      PROD_API_HOST: ${PROD_API_HOST}
+      PROD_API_PORT: ${PROD_API_PORT}
+      TEST_API_HOST: ${TEST_API_HOST}
+      TEST_API_PORT: ${TEST_API_PORT}
     ports:
       - "81:80" # Mapping the nginx port
     links:

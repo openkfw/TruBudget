@@ -21,3 +21,6 @@ cypress/videos
 
 # vscode
 .vscode
+
+# dotenv environment variables file
+.env
