@@ -311,13 +311,27 @@ Navigate to the frontend folder:
 cd ../frontend
 ```
 
-1. Install node-modules
+1. Set environment variables
+
+- Terminal Mac/Git Bash
+
+```bash
+export PORT=3000
+```
+
+- Windows Command Prompt / PowerShell
+
+```bash
+SET PORT=3000
+```
+
+2. Install node-modules
 
 ```bash
 npm install
 ```
 
-2. Start the frontend
+3. Start the frontend
 
 ```bash
 npm start
