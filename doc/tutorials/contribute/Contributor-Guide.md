@@ -341,6 +341,11 @@ The frontend should then be availaible at http://localhost:3000
 
 **Caution**: If you change the port of the api you may have to consider to change the proxy port in the `package.json` accordingly.
 
+**Note**: You do not need to run every project separately if you are developing on a single one. Just do following:
+ 1. go to a desired folder (e.g. _/api_)
+ 2. copy `.env.example` file and rename it to `.env`
+ 3. execute ```docker-compose up``` for bring dependend project(s) to life
+
 ## Tests
 
 ### End-to-end Tests
