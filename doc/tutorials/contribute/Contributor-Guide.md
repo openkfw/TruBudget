@@ -120,6 +120,11 @@ sh setupGitSecrets.sh
 ## Developer Setup
 
 If you want to start developing on Trubudget, you need to setup the application locally. This guide tells you how to start the blockchain, start the API, load up some test data and start the frontend.
+On mac you might need to install `automake`.
+
+```bash
+brew install automake
+```
 
 ### TypeScript
 
@@ -356,9 +361,10 @@ The frontend should then be availaible at http://localhost:3000
 **Caution**: If you change the port of the api you may have to consider to change the proxy port in the `package.json` accordingly.
 
 **Note**: You do not need to run every project separately if you are developing on a single one. Just do following:
- 1. go to a desired folder (e.g. _/api_)
- 2. copy `.env.example` file and rename it to `.env`
- 3. run ```sh startDev.sh``` in the folder to start dependent project(s)
+
+1.  go to a desired folder (e.g. _/api_)
+2.  copy `.env.example` file and rename it to `.env`
+3.  run `sh startDev.sh` in the folder to start dependent project(s)
 
 ## Tests
 
@@ -423,7 +429,6 @@ Following command executes a specific test group (e.g. "Updating a project") def
 cd api
 npm run test:here <folderName> <describeString>
 ```
-
 
 <!--
 | Description           | Link                                                                                                              |
