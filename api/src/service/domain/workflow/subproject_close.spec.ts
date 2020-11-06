@@ -1,12 +1,11 @@
 import { assert } from "chai";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
-import { Permissions } from "../permissions";
 import { Subproject } from "./subproject";
 import { closeSubproject } from "./subproject_close";
 import { Workflowitem } from "./workflowitem";
@@ -84,24 +83,21 @@ describe("close subproject", () => {
   });
 });
 
-describe("close subproject: authorization", () => {
-  it("Without the subproject.close permission, a user cannot close a subproject.", async () => {
-    const result = await closeSubproject(ctx, alice, projectId, subprojectId, baseRepository);
+describe("close subproject: preconditions", () => {
+  it("A user may not close a subproject if he/she is not assigned", async () => {
+    const result = await closeSubproject(ctx, bob, projectId, subprojectId, baseRepository);
 
-    // NotAuthorized error due to the missing permissions:
+    // PreconditionError error due to no assignment:
     assert.isTrue(Result.isErr(result));
-    assert.instanceOf(result, NotAuthorized);
+    assert.instanceOf(result, PreconditionError);
   });
 
-  it("The root user doesn't need permission to close a subproject.", async () => {
+  it("The root user doesn't need to be assigned to close a subproject.", async () => {
     const result = await closeSubproject(ctx, root, projectId, subprojectId, baseRepository);
 
     // No errors, despite the missing permissions:
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
-});
-
-describe("close subproject: preconditions", () => {
   it("A subproject may not be closed if there is at least one non-closed workflowitem.", async () => {
     const result = await closeSubproject(ctx, root, projectId, subprojectId, {
       ...baseRepository,
@@ -126,29 +122,6 @@ describe("close subproject: preconditions", () => {
 });
 
 describe("close subproject: notifications", () => {
-  it("When a user closes a subproject, a notification is issued to the assignee.", async () => {
-    const permissions: Permissions = { "subproject.close": [bob.id] };
-    const subproject: Subproject = { ...baseSubproject, permissions };
-    const result = await closeSubproject(ctx, bob, projectId, subprojectId, {
-      ...baseRepository,
-      getSubproject: async () => subproject,
-    });
-
-    // A notification has been issued to the assignee:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-    // Make TypeScript happy:
-    if (Result.isErr(result)) {
-      throw result;
-    }
-    const { newEvents } = result;
-
-    assert.isTrue(
-      newEvents.some(
-        (event) => event.type === "notification_created" && event.recipient === alice.id,
-      ),
-    );
-  });
-
   it("Closing an already closed subproject works, but nothing happens and no notifications are issued.", async () => {
     const closedSubproject: Subproject = { ...baseSubproject, status: "closed" };
     const result = await closeSubproject(ctx, root, projectId, subprojectId, {
@@ -166,30 +139,10 @@ describe("close subproject: notifications", () => {
     assert.lengthOf(newEvents, 0);
   });
 
-  it("If there is no assignee when closing a subproject, no notifications are issued.", async () => {
-    const unassignedSubproject: Subproject = { ...baseSubproject, assignee: undefined };
-    const result = await closeSubproject(ctx, root, projectId, subprojectId, {
-      ...baseRepository,
-      getSubproject: async () => unassignedSubproject,
-    });
-
-    // There is an event representing the operation, but no notification:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-    // Make TypeScript happy:
-    if (Result.isErr(result)) {
-      throw result;
-    }
-    const { newEvents } = result;
-    assert.isTrue(newEvents.length > 0);
-    assert.isFalse(newEvents.some((event) => event.type === "notification_created"));
-  });
-
   it("If the user that closes a subproject is assigned to the subproject herself, no notifications are issued.", async () => {
-    const permissions: Permissions = { "subproject.close": [alice.id] };
-    const subproject: Subproject = { ...baseSubproject, permissions };
     const result = await closeSubproject(ctx, alice, projectId, subprojectId, {
       ...baseRepository,
-      getSubproject: async () => subproject,
+      getSubproject: async () => baseSubproject,
     });
 
     // There is an event representing the operation, but no notification:
@@ -207,9 +160,8 @@ describe("close subproject: notifications", () => {
     "If a subproject is assigned to a group when closing it, " +
       "each member, except for the user that closes it, receives a notificaton.",
     async () => {
-      const permissions: Permissions = { "subproject.close": [alice.id] };
       const assignee = "alice_and_bob_and_charlie";
-      const subproject: Subproject = { ...baseSubproject, permissions, assignee };
+      const subproject: Subproject = { ...baseSubproject, assignee };
       const result = await closeSubproject(ctx, alice, projectId, subprojectId, {
         ...baseRepository,
         getSubproject: async () => subproject,

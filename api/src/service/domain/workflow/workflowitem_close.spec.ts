@@ -1,7 +1,8 @@
 import { assert } from "chai";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { NotAuthorized } from "../errors/not_authorized";
+import { BusinessEvent } from "../business_event";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
@@ -25,6 +26,7 @@ const baseSubproject: Subproject = {
   projectId,
   createdAt: new Date().toISOString(),
   status: "open",
+  assignee: "alice",
   displayName: "dummy",
   description: "dummy",
   currency: "EUR",
@@ -45,7 +47,7 @@ const baseWorkflowitem: Workflowitem = {
   description: "dummy",
   amountType: "N/A",
   documents: [],
-  permissions: { "workflowitem.close": [alice, bob, charlie].map((x) => x.id) },
+  permissions: {},
   log: [],
   additionalData: {},
   workflowitemType: "general",
@@ -120,7 +122,7 @@ describe("Closing a workflowitem", () => {
       },
     );
     assert.isTrue(Result.isErr(newEventsResult));
-    assert.instanceOf(newEventsResult, NotAuthorized);
+    assert.instanceOf(newEventsResult, PreconditionError);
   });
 
   it("fails if any previous workflowitem is not closed.", async () => {
@@ -158,5 +160,37 @@ describe("Closing a workflowitem", () => {
     }
     assert.instanceOf(newEventsResult, PreconditionError);
     assert.match(newEventsResult.message, /all previous workflowitems must be closed/);
+  });
+
+  it("creates notifications for every assignee in a group if a group is assigned, expect the issuer.", async () => {
+    const assignee = "alice_and_bob_and_charlie";
+    const workflowitem: Workflowitem = { ...baseWorkflowitem, assignee };
+    const result = await closeWorkflowitem(ctx, alice, projectId, subprojectId, workflowitem.id, {
+      getWorkflowitems: () => Promise.resolve([workflowitem]),
+      getUsersForIdentity: async (identity) => {
+        if (identity === "alice") return ["alice"];
+        if (identity === "bob") return ["bob"];
+        if (identity === "alice_and_bob_and_charlie") return ["alice", "bob", "charlie"];
+        return Error(`unexpected identity: ${identity}`);
+      },
+      getSubproject: () => Promise.resolve(baseSubproject),
+      applyWorkflowitemType: () => [],
+    });
+
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+    // Make TypeScript happy:
+    if (Result.isErr(result)) {
+      throw result;
+    }
+    const newEvents = result;
+
+    // A notification has been issued to both Bob and Charlie, but not to Alice, as she
+    // is the user who closed the subproject:
+    function isNotificationFor(userId: string): (e: BusinessEvent) => boolean {
+      return (event) => event.type === "notification_created" && event.recipient === userId;
+    }
+
+    assert.isTrue(newEvents.some(isNotificationFor("bob")));
+    assert.isTrue(newEvents.some(isNotificationFor("charlie")));
   });
 });

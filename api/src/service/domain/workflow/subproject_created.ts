@@ -20,7 +20,7 @@ interface InitialData {
   status: "open" | "closed";
   displayName: string;
   description: string;
-  assignee?: Identity;
+  assignee: Identity;
   currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
@@ -30,13 +30,9 @@ interface InitialData {
 
 const initialDataSchema = Joi.object({
   id: Subproject.idSchema.required(),
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
+  status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
+  description: Joi.string().allow("").required(),
   assignee: Joi.string(),
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
@@ -55,12 +51,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subproject: initialDataSchema.required(),
@@ -72,7 +64,7 @@ export function createEvent(
   projectId: Project.Id,
   subproject: InitialData,
   time: string = new Date().toISOString(),
-): Result.Type<Event>  {
+): Result.Type<Event> {
   const event = {
     type: eventType,
     source,
@@ -114,6 +106,6 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Subproject.Subpr
 
   return Result.mapErr(
     Subproject.validate(subproject),
-    error => new EventSourcingError({ ctx, event, target: subproject }, error),
+    (error) => new EventSourcingError({ ctx, event, target: subproject }, error),
   );
 }

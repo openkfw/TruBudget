@@ -18,7 +18,6 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["subproject.intent.revokePermission", ["subproject.intent.listPermissions"]],
   ["subproject.assign", ["subproject.viewDetails"]],
   ["subproject.update", ["subproject.viewDetails"]],
-  ["subproject.close", ["subproject.viewDetails"]],
   ["subproject.archive", ["subproject.viewDetails"]],
   ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.view"]],
   ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.view"]],
@@ -26,7 +25,6 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["workflowitem.intent.revokePermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.assign", ["workflowitem.view"]],
   ["workflowitem.update", ["workflowitem.view"]],
-  ["workflowitem.close", ["workflowitem.view"]],
   ["workflowitem.archive", ["workflowitem.view"]],
 ]);
 

@@ -21,17 +21,18 @@ const baseSubproject: Subproject = {
   projectId,
   createdAt: new Date().toISOString(),
   status: "open",
+  assignee: "alice",
   displayName: "dummy",
   description: "dummy",
   currency: "EUR",
   projectedBudgets: [],
   workflowitemOrdering: [],
-  permissions: { "subproject.budget.deleteProjected": [alice, bob, charlie].map(x => x.id) },
+  permissions: { "subproject.budget.deleteProjected": [alice, bob, charlie].map((x) => x.id) },
   log: [],
   additionalData: {},
 };
 const baseRepository = {
-  getUsersForIdentity: async identity => {
+  getUsersForIdentity: async (identity) => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     if (identity === "charlie") return ["charlie"];
@@ -228,48 +229,10 @@ describe("Delete Projected Budgets: notifications", () => {
     const { newEvents } = result;
 
     assert.isTrue(
-      newEvents.some(event => event.type === "notification_created" && event.recipient === bob.id),
+      newEvents.some(
+        (event) => event.type === "notification_created" && event.recipient === bob.id,
+      ),
     );
-  });
-
-  it("If there is no assignee when deleting a projected budget, no notifications are issued.", async () => {
-    const projectedBudget = {
-      organization: "Testcorp",
-      currencyCode: "EUR",
-    };
-    const result = await deleteProjectedBudget(
-      ctx,
-      alice,
-      projectId,
-      subprojectId,
-      projectedBudget.organization,
-      projectedBudget.currencyCode,
-      {
-        ...baseRepository,
-        getSubproject: async () => ({
-          ...baseSubproject,
-          status: "open",
-          assignee: undefined,
-          projectedBudgets: [
-            {
-              organization: projectedBudget.organization,
-              value: projectedBudget.currencyCode,
-              currencyCode: "EUR",
-            },
-          ],
-        }),
-      },
-    );
-
-    // There is an event representing the operation, but no notification:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-    // Make TypeScript happy:
-    if (Result.isErr(result)) {
-      throw result;
-    }
-    const { newEvents } = result;
-    assert.isTrue(newEvents.length > 0);
-    assert.isFalse(newEvents.some(event => event.type === "notification_created"));
   });
 
   it(
@@ -308,7 +271,7 @@ describe("Delete Projected Budgets: notifications", () => {
       }
       const { newEvents } = result;
       assert.isTrue(newEvents.length > 0);
-      assert.isFalse(newEvents.some(event => event.type === "notification_created"));
+      assert.isFalse(newEvents.some((event) => event.type === "notification_created"));
     },
   );
 
@@ -350,7 +313,7 @@ describe("Delete Projected Budgets: notifications", () => {
       // A notification has been issued to both Bob and Charlie, but not to Alice, as she
       // is the user who updated the subproject:
       function isNotificationFor(userId: string): (e: BusinessEvent) => boolean {
-        return event => event.type === "notification_created" && event.recipient === userId;
+        return (event) => event.type === "notification_created" && event.recipient === userId;
       }
 
       assert.isFalse(newEvents.some(isNotificationFor("alice")));

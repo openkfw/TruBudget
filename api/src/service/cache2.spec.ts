@@ -560,6 +560,7 @@ function addExampleSubproject(
   const spCreationEvent = SubprojectCreated.createEvent("http", "test", projectId, {
     id: subprojectId,
     status: "open",
+    assignee: "testAssignee",
     displayName: "name",
     description: "description",
     projectedBudgets: [],

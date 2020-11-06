@@ -79,16 +79,22 @@ export async function closeWorkflowitem(
     return new VError(closeEvent, "failed to create event");
   }
 
-  if (closingUser.id !== "root" && closingUser.id !== workflowitemToClose.assignee) {
-    const intent = "workflowitem.close";
-    return new NotAuthorized(
-      {
-        ctx,
-        userId: closingUser.id,
-        intent,
-        target: workflowitemToClose,
-      },
-      new Error("Only the assignee is allowed to close the workflowitem."),
+  const assignedIdentitiesResult = await repository.getUsersForIdentity(
+    workflowitemToClose.assignee,
+  );
+  if (Result.isErr(assignedIdentitiesResult)) {
+    return new VError(
+      assignedIdentitiesResult,
+      `fetch users for ${workflowitemToClose.assignee} failed`,
+    );
+  }
+  const assignedIdentities = assignedIdentitiesResult;
+
+  if (closingUser.id !== "root" && !assignedIdentities.includes(closingUser.id)) {
+    return new PreconditionError(
+      ctx,
+      closeEvent,
+      "Only the assignee is allowed to close the workflowitem.",
     );
   }
 
@@ -113,13 +119,8 @@ export async function closeWorkflowitem(
   }
 
   // Create notification events:
-  let notifications: Result.Type<NotificationCreated.Event[]> = [];
-  if (workflowitemToClose.assignee !== undefined) {
-    const recipientsResult = await repository.getUsersForIdentity(workflowitemToClose.assignee);
-    if (Result.isErr(recipientsResult)) {
-      return new VError(recipientsResult, `fetch users for ${workflowitemToClose.assignee} failed`);
-    }
-    notifications = recipientsResult.reduce((notifications, recipient) => {
+  const notifications: Result.Type<NotificationCreated.Event[]> = assignedIdentities.reduce(
+    (notifications, recipient) => {
       // The issuer doesn't receive a notification:
       if (recipient !== closingUser.id) {
         const notification = NotificationCreated.createEvent(
@@ -135,8 +136,9 @@ export async function closeWorkflowitem(
         notifications.push(notification);
       }
       return notifications;
-    }, [] as NotificationCreated.Event[]);
-  }
+    },
+    [] as NotificationCreated.Event[],
+  );
   if (Result.isErr(notifications)) {
     return new VError(notifications, "failed to create notification events");
   }
