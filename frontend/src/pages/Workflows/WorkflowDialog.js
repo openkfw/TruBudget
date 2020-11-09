@@ -4,7 +4,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from "@material-ui/core/Tooltip";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import _isEmpty from "lodash/isEmpty";
-import { default as React } from "react";
+import React, { useEffect } from "react";
 import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
@@ -116,6 +116,8 @@ const handleEdit = props => {
     if (changes.exchangeRate) {
       changes.exchangeRate = fromAmountString(changes.exchangeRate).toString();
     }
+
+    delete changes.assignee;
     editWorkflowItem(projectId, subprojectId, workflowToAdd.id, changes);
   }
   storeSnackbarMessage(
@@ -150,15 +152,7 @@ const getWorkflowitemTypeInfo = type => {
 
 const Content = props => {
   const { workflowitemType } = props.workflowToAdd;
-  const {
-    classes,
-    selectedAssignee,
-    currentUser,
-    users,
-    creationDialogShown,
-    storeWorkflowitemType,
-    storeWorkflowAssignee
-  } = props;
+  const { classes, selectedAssignee, users, creationDialogShown, storeWorkflowitemType, storeWorkflowAssignee } = props;
   return (
     <div className={classes.container}>
       <div className={classes.container}>
@@ -181,7 +175,7 @@ const Content = props => {
             <div className={classes.inputContainer}>
               <div className={classes.assigneeContainer}>
                 <AssigneeSelection
-                  assigneeId={_isEmpty(selectedAssignee) ? currentUser : selectedAssignee}
+                  assigneeId={selectedAssignee}
                   users={users}
                   title={"title"}
                   assign={(assigneeId, assigneeDisplayName) => {
@@ -235,7 +229,24 @@ const Content = props => {
   );
 };
 const WorkflowDialog = props => {
-  const { workflowItems, workflowToAdd, editDialogShown, creationDialogShown, storeWorkflowDocument } = props;
+  const {
+    workflowItems,
+    workflowToAdd,
+    editDialogShown,
+    creationDialogShown,
+    storeWorkflowDocument,
+    currentUser,
+    storeWorkflowAssignee
+  } = props;
+
+  useEffect(() => {
+    if (editDialogShown) {
+      storeWorkflowAssignee(currentUser);
+    } else {
+      storeWorkflowAssignee(currentUser);
+    }
+  }, [storeWorkflowAssignee, currentUser, editDialogShown]);
+
   const specifcProps = editDialogShown
     ? {
         handleSubmit: handleEdit,
@@ -248,6 +259,7 @@ const WorkflowDialog = props => {
   const { displayName, amountType, amount } = workflowToAdd;
   const exchangeRate = fromAmountString(workflowToAdd.exchangeRate);
   const changes = compareObjects(workflowItems, workflowToAdd);
+  delete changes.assignee;
   const steps = [
     {
       title: strings.workflow.workflow_name,
