@@ -170,7 +170,6 @@ const Content = props => {
                 floatingLabel={strings.workflow.workflowitem_type}
                 value={workflowitemType}
                 onChange={value => storeWorkflowitemType(value)}
-                disabled={!creationDialogShown}
                 id="types"
               >
                 {getDropdownMenuItems(types)}
