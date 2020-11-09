@@ -24,6 +24,7 @@ export interface Subproject {
   displayName: string;
   description: string;
   assignee: string;
+  validator?: string;
   currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   // The ordering doesn't need to include all workflowitems; any items not included here
@@ -42,7 +43,8 @@ const schema = Joi.object({
   status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
   description: Joi.string().allow("").required(),
-  assignee: Joi.string(),
+  assignee: Joi.string().required(),
+  validator: Joi.string(),
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
   workflowitemOrdering: Joi.array().items(Joi.string()).required(),

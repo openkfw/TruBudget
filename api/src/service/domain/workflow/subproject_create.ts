@@ -26,6 +26,7 @@ export interface RequestData {
   displayName: string;
   description?: string;
   assignee?: string;
+  validator?: string;
   currency: CurrencyCode;
   projectedBudgets?: ProjectedBudget[];
   additionalData?: object;
@@ -38,6 +39,7 @@ const requestDataSchema = Joi.object({
   displayName: Joi.string().required(),
   description: Joi.string().allow(""),
   assignee: Joi.string(),
+  validator: Joi.string(),
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema,
   additionalData: AdditionalData.schema,
@@ -69,6 +71,7 @@ export async function createSubproject(
     displayName: reqData.displayName,
     description: reqData.description || "",
     assignee: reqData.assignee || creatingUser.id,
+    validator: reqData.validator,
     currency: reqData.currency,
     projectedBudgets: reqData.projectedBudgets || [],
     permissions: newDefaultPermissionsFor(creatingUser.id),

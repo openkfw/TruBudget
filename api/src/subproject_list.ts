@@ -60,6 +60,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           displayName: { type: "string", example: "school" },
                           description: { type: "string", example: "school should be built" },
                           assignee: { type: "string", example: "aSmith" },
+                          validator: { type: "string", example: "aSmith" },
                           currency: { type: "string", example: "EUR" },
                           projectedBudgets: {
                             type: "array",
@@ -136,6 +137,7 @@ interface ExposedSubproject {
     displayName: string;
     description: string;
     assignee?: string;
+    validator?: string;
     currency: string;
     projectedBudgets: Array<{
       organization: string;
@@ -188,7 +190,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         if (Result.isErr(subprojectsResult)) {
           throw new VError(subprojectsResult, "subproject.list failed");
         }
-        const subprojects = subprojectsResult.map((subproject) => {
+        const subprojects: ExposedSubproject[] = subprojectsResult.map((subproject) => {
           return {
             log: subproject.log,
             allowedIntents: getAllowedIntents(
@@ -202,6 +204,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
               displayName: subproject.displayName,
               description: subproject.description,
               assignee: subproject.assignee,
+              validator: subproject.validator,
               currency: subproject.currency,
               projectedBudgets: subproject.projectedBudgets,
               additionalData: subproject.additionalData,

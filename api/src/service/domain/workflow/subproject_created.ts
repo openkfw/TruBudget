@@ -21,6 +21,7 @@ interface InitialData {
   displayName: string;
   description: string;
   assignee: Identity;
+  validator?: Identity;
   currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
@@ -33,7 +34,8 @@ const initialDataSchema = Joi.object({
   status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
   description: Joi.string().allow("").required(),
-  assignee: Joi.string(),
+  assignee: Joi.string().required(),
+  validator: Joi.string(),
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
@@ -96,6 +98,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Subproject.Subpr
     displayName: initialData.displayName,
     description: initialData.description,
     assignee: initialData.assignee,
+    validator: initialData.validator,
     currency: initialData.currency,
     projectedBudgets: initialData.projectedBudgets,
     workflowitemOrdering: [],

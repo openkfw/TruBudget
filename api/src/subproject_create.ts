@@ -23,6 +23,7 @@ interface RequestBodyV1 {
       displayName: string;
       description?: string;
       assignee?: string;
+      validator?: string;
       currency: string;
       projectedBudgets?: Array<{
         organization: string;
@@ -44,6 +45,7 @@ const requestBodyV1Schema = Joi.object({
       displayName: Joi.string().required(),
       description: Joi.string().allow(""),
       assignee: Joi.string(),
+      validator: Joi.string(),
       currency: Joi.string().required(),
       projectedBudgets: projectedBudgetListSchema,
       additionalData: AdditionalData.schema,
@@ -92,6 +94,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   displayName: { type: "string", example: "townproject" },
                   description: { type: "string", example: "A town should be built" },
                   assignee: { type: "string", example: "aSmith" },
+                  validator: { type: "string", example: "aSmith" },
                   currency: { type: "string", example: "EUR" },
                   projectedBudgets: {
                     type: "array",
@@ -178,6 +181,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         displayName: bodyResult.data.subproject.displayName,
         description: bodyResult.data.subproject.description,
         assignee: bodyResult.data.subproject.assignee,
+        validator: bodyResult.data.subproject.validator,
         currency: bodyResult.data.subproject.currency,
         projectedBudgets: bodyResult.data.subproject.projectedBudgets,
         additionalData: bodyResult.data.subproject.additionalData,
