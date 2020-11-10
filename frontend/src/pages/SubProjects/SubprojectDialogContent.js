@@ -37,8 +37,8 @@ const styles = {
     marginBottom: 20,
     width: "100%",
     display: "flex",
-    // justifyContent: "space-evenly"
-    justifyContent: "space-between"
+    justifyContent: "space-evenly"
+    // justifyContent: "space-between"
   },
   validatorContainer: {
     marginTop: 8,
@@ -66,6 +66,17 @@ const getDropdownMenuItems = types => {
   });
 };
 
+const getDropdownValidator = users => {
+  console.log(users);
+  return users.map((user, index) => {
+    return (
+      <MenuItem key={index} value={user.id}>
+        {user.displayName}
+      </MenuItem>
+    );
+  });
+};
+
 const getWorkflowitemTypeInfo = type => {
   switch (type) {
     case "not selected":
@@ -80,13 +91,13 @@ const getWorkflowitemTypeInfo = type => {
 };
 
 const SubprojectDialogContent = props => {
-  const { storeSubProjectValidator, selectedValidator, currentUser } = props;
-  React.useEffect(() => {
-    console.log({ selectedValidator });
-    if (selectedValidator === "") {
-      storeSubProjectValidator(currentUser);
-    }
-  }, [currentUser, selectedValidator, storeSubProjectValidator]);
+  // const { storeSubProjectValidator, selectedValidator, currentUser } = props;
+  // React.useEffect(() => {
+  //   console.log({ selectedValidator });
+  //   if (selectedValidator === "") {
+  //     storeSubProjectValidator(currentUser);
+  //   }
+  // }, [currentUser, selectedValidator, storeSubProjectValidator]);
 
   const currencies = getCurrencies();
   return (
@@ -131,8 +142,21 @@ const SubprojectDialogContent = props => {
               </Tooltip>
             </div>
 
-            <div style={styles.validatorContainer}>
+            <div style={styles.inputContainer}>
+              <Dropdown
+                style={styles.dropdown}
+                floatingLabel={"title"}
+                value={props.selectedValidator}
+                onChange={value => props.storeSubProjectValidator(value)}
+                id="assignee"
+              >
+                {getDropdownValidator(props.users)}
+              </Dropdown>
+            </div>
+
+            {/* <div style={styles.validatorContainer}>
               <AssigneeSelection
+                allowNoSelection={true}
                 assigneeId={props.selectedValidator}
                 users={props.users}
                 title={"title"}
@@ -140,7 +164,7 @@ const SubprojectDialogContent = props => {
                   props.storeSubProjectValidator(id);
                 }}
               />
-            </div>
+            </div> */}
           </div>
         ) : null}
       </div>

@@ -194,13 +194,22 @@ export function assignProject(projectId, projectDisplayName, assigneeId, assigne
   };
 }
 
-export function createSubProject(projectId, name, description, currency, projectedBudgets, showLoading = false) {
+export function createSubProject(
+  projectId,
+  name,
+  description,
+  currency,
+  validator,
+  projectedBudgets,
+  showLoading = false
+) {
   return {
     type: CREATE_SUBPROJECT,
     projectId,
     name,
     description,
     currency,
+    validator,
     projectedBudgets,
     showLoading
   };

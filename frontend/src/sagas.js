@@ -581,9 +581,25 @@ export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets =
   }, true);
 }
 
-export function* createSubProjectSaga({ projectId, name, description, currency, projectedBudgets, showLoading }) {
+export function* createSubProjectSaga({
+  projectId,
+  name,
+  description,
+  currency,
+  validator,
+  projectedBudgets,
+  showLoading
+}) {
   yield execute(function*() {
-    const { data } = yield callApi(api.createSubProject, projectId, name, description, currency, projectedBudgets);
+    const { data } = yield callApi(
+      api.createSubProject,
+      projectId,
+      name,
+      description,
+      currency,
+      validator,
+      projectedBudgets
+    );
     yield showSnackbarWarning();
     yield put({
       type: CREATE_SUBPROJECT_SUCCESS,
