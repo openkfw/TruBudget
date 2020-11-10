@@ -6,6 +6,7 @@ services:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
       RPC_PASSWORD: ${RPC_PASSWORD}
+      EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
     ports:
@@ -18,7 +19,7 @@ services:
       RPC_PORT: ${RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: ${RPC_PASSWORD}
-      PORT: ${PORT}
+      PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
     links:
