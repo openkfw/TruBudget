@@ -67,7 +67,6 @@ const getDropdownMenuItems = types => {
 };
 
 const getDropdownValidator = users => {
-  console.log(users);
   return users.map((user, index) => {
     return (
       <MenuItem key={index} value={user.id}>
@@ -76,6 +75,14 @@ const getDropdownValidator = users => {
     );
   });
 };
+
+// const createNotSelectedItem = () => {
+//   return (
+//     <MenuItem key={"empty"} value={"not selected"}>
+//       {"not selected"}
+//     </MenuItem>
+//   );
+// };
 
 const getWorkflowitemTypeInfo = type => {
   switch (type) {
@@ -145,7 +152,7 @@ const SubprojectDialogContent = props => {
             <div style={styles.inputContainer}>
               <Dropdown
                 style={styles.dropdown}
-                floatingLabel={"title"}
+                floatingLabel={"VALIDATOR - title"}
                 value={props.selectedValidator}
                 onChange={value => props.storeSubProjectValidator(value)}
                 id="assignee"

@@ -152,7 +152,16 @@ const getWorkflowitemTypeInfo = type => {
 
 const Content = props => {
   const { workflowitemType } = props.workflowToAdd;
-  const { classes, selectedAssignee, users, creationDialogShown, storeWorkflowitemType, storeWorkflowAssignee } = props;
+  const {
+    classes,
+    selectedAssignee,
+    users,
+    creationDialogShown,
+    storeWorkflowitemType,
+    storeWorkflowAssignee,
+    hasSubprojectValidator,
+    subprojectValidator
+  } = props;
   return (
     <div className={classes.container}>
       <div className={classes.container}>
@@ -175,7 +184,8 @@ const Content = props => {
             <div className={classes.inputContainer}>
               <div className={classes.assigneeContainer}>
                 <AssigneeSelection
-                  assigneeId={selectedAssignee}
+                  disabled={hasSubprojectValidator}
+                  assigneeId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
                   users={users}
                   title={"title"}
                   assign={(assigneeId, assigneeDisplayName) => {

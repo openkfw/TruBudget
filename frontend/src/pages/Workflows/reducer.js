@@ -156,7 +156,9 @@ const defaultState = fromJS({
   isFetchingWorkflowitemPermissions: false,
   permittedToGrant: false,
   applyActions: true,
-  isLiveUpdatesSubprojectEnabled: true
+  isLiveUpdatesSubprojectEnabled: true,
+  subprojectValidator: "",
+  hasSubprojectValidator: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -168,6 +170,8 @@ export default function detailviewReducer(state = defaultState, action) {
         created: subproject.data.creationUnixTs,
         displayName: subproject.data.displayName,
         description: subproject.data.description,
+        subprojectValidator: subproject.data.validator,
+        hasSubprojectValidator: subproject.data.validator ? true : false,
         status: subproject.data.status,
         currency: subproject.data.currency,
         allowedIntents: fromJS(subproject.allowedIntents),

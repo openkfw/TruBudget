@@ -192,7 +192,7 @@ class Api {
         displayName: name,
         description,
         currency,
-        validator,
+        validator: _isEmpty(validator) ? undefined : validator,
         projectedBudgets
       }
     });
