@@ -10,7 +10,7 @@ services:
       - /tmp/bcMasterVolume:/root/.multichain
     ports:
       - "7447:7447"
-      - "8000:8000"
+      - "8000:${RPC_PORT}"
   api:
     image: trubudget/api:latest
     environment:
@@ -24,7 +24,7 @@ services:
     links:
       - master
     ports:
-      - "8080:8080"
+      - "8080:${API_PORT}"
   provisioning:
     image: trubudget/provisioning:latest
     environment:

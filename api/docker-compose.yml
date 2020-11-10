@@ -8,5 +8,5 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       RPC_PASSWORD: ${RPC_PASSWORD}
     ports:
-      - "8000:8000"
+      - "8000:${RPC_PORT}"
       - "8085:8085"

@@ -9,7 +9,7 @@ services:
       RPC_PASSWORD: ${RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
     ports:
-      - "8000:8000"
+      - "8000:${RPC_PORT}"
       - "8085:8085"
 
   api:
@@ -25,7 +25,7 @@ services:
       RPC_PASSWORD: ${RPC_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
     ports:
-      - 8080:8080
+        - "8080:${API_PORT}"
     links:
       - blockchain
 
@@ -68,9 +68,9 @@ services:
       PROD_API_PORT: ${PROD_API_PORT}
       TEST_API_HOST: ${TEST_API_HOST}
       TEST_API_PORT: ${TEST_API_PORT}
-      PORT: ${PORT}
+      PORT: ${EXPORT_PORT}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
     depends_on:
       - api
     ports:
-      - "8888:8888"
+      - "8888:${EXPORT_PORT}"

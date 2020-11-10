@@ -15,7 +15,7 @@ services:
     links:
       - email-service
     ports:
-      - "8000:8000"
+      - "8000:${RPC_PORT}"
       - "8085:8085"
   email-service:
     build:
