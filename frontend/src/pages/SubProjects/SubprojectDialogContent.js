@@ -6,8 +6,45 @@ import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
+import AssigneeSelection from "../Common/AssigneeSelection";
 import { getCurrencies } from "../../helper";
 import MenuItem from "@material-ui/core/MenuItem";
+import {
+  types as workflowitemTypes,
+  typesDescription as workflowitemTypesescription
+} from "../Workflows/workflowitemTypes";
+import Tooltip from "@material-ui/core/Tooltip";
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+
+const subprojectWorkflowItemTypes = ["not selected", ...workflowitemTypes];
+const subprojectWorkflowItemTypesDescription = { notSelected: "NOT SELECTED", ...workflowitemTypesescription };
+
+const styles = {
+  dropdown: {
+    minWidth: 200
+  },
+  inputContainer: {
+    width: "100%",
+    display: "flex"
+  },
+  infoIcon: {
+    fontSize: 20,
+    marginTop: 15,
+    padding: 8
+  },
+  container: {
+    marginTop: 20,
+    marginBottom: 20,
+    width: "100%",
+    display: "flex",
+    // justifyContent: "space-evenly"
+    justifyContent: "space-between"
+  },
+  validatorContainer: {
+    marginTop: 8,
+    minWidth: 200
+  }
+};
 
 function getMenuItems(currencies) {
   return currencies.map((currency, index) => {
@@ -19,7 +56,38 @@ function getMenuItems(currencies) {
   });
 }
 
+const getDropdownMenuItems = types => {
+  return types.map((type, index) => {
+    return (
+      <MenuItem key={index} value={type}>
+        {type}
+      </MenuItem>
+    );
+  });
+};
+
+const getWorkflowitemTypeInfo = type => {
+  switch (type) {
+    case "not selected":
+      return subprojectWorkflowItemTypesDescription.notSelected;
+    case "general":
+      return subprojectWorkflowItemTypesDescription.general;
+    case "restricted":
+      return subprojectWorkflowItemTypesDescription.restricted;
+    default:
+      return subprojectWorkflowItemTypesDescription.notSelected;
+  }
+};
+
 const SubprojectDialogContent = props => {
+  const { storeSubProjectValidator, selectedValidator, currentUser } = props;
+  React.useEffect(() => {
+    console.log({ selectedValidator });
+    if (selectedValidator === "") {
+      storeSubProjectValidator(currentUser);
+    }
+  }, [currentUser, selectedValidator, storeSubProjectValidator]);
+
   const currencies = getCurrencies();
   return (
     <div>
@@ -35,15 +103,45 @@ const SubprojectDialogContent = props => {
           commentOnChange={props.storeSubProjectComment}
         />
         {!props.editDialogShown ? (
-          <Dropdown
-            style={{ minWidth: 200, marginRight: "16px", marginBottom: "32px" }}
-            value={props.subprojectToAdd.currency}
-            floatingLabel={strings.subproject.subproject_currency}
-            onChange={v => props.storeSubProjectCurrency(v)}
-            id="sp-dialog-currencies"
-          >
-            {getMenuItems(currencies)}
-          </Dropdown>
+          <div style={styles.container}>
+            <div style={styles.inputContainer}>
+              <Dropdown
+                style={styles.dropdown}
+                value={props.subprojectToAdd.currency}
+                floatingLabel={strings.subproject.subproject_currency}
+                onChange={v => props.storeSubProjectCurrency(v)}
+                id="sp-dialog-currencies"
+              >
+                {getMenuItems(currencies)}
+              </Dropdown>
+            </div>
+
+            <div style={styles.inputContainer}>
+              <Dropdown
+                style={styles.dropdown}
+                floatingLabel={strings.workflow.workflowitem_type}
+                value={props.selectedWorkflowitemType}
+                onChange={value => props.storeFixedWorkflowitemType(value)}
+                id="types"
+              >
+                {getDropdownMenuItems(subprojectWorkflowItemTypes)}
+              </Dropdown>
+              <Tooltip title={getWorkflowitemTypeInfo(props.selectedWorkflowitemType)} placement="right">
+                <InfoOutlinedIcon style={styles.infoIcon} />
+              </Tooltip>
+            </div>
+
+            <div style={styles.validatorContainer}>
+              <AssigneeSelection
+                assigneeId={props.selectedValidator}
+                users={props.users}
+                title={"title"}
+                assign={(id, name) => {
+                  props.storeSubProjectValidator(id);
+                }}
+              />
+            </div>
+          </div>
         ) : null}
       </div>
       <Divider />

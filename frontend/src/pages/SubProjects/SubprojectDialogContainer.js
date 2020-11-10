@@ -10,9 +10,11 @@ import {
   editSubproject,
   storeSubProjectComment,
   storeSubProjectCurrency,
+  storeSubProjectValidator,
   addSubProjectProjectedBudget,
   editSubProjectProjectedBudgetAmount,
-  storeDeletedProjectedBudget
+  storeDeletedProjectedBudget,
+  storeFixedWorkflowitemType
 } from "./actions";
 import { storeSnackbarMessage } from "../Notifications/actions";
 
@@ -29,7 +31,11 @@ const mapStateToProps = state => {
     editDialogShown: state.getIn(["detailview", "editDialogShown"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
     dialogTitle: state.getIn(["detailview", "dialogTitle"]),
-    projectProjectedBudgets: state.getIn(["detailview", "projectProjectedBudgets"])
+    projectProjectedBudgets: state.getIn(["detailview", "projectProjectedBudgets"]),
+    users: state.getIn(["login", "enabledUsers"]),
+    selectedValidator: state.getIn(["detailview", "subprojectToAdd", "validator"]),
+    selectedWorkflowitemType: state.getIn(["detailview", "subprojectToAdd", "workflowitemType"]),
+    currentUser: state.getIn(["login", "id"])
   };
 };
 
@@ -42,11 +48,13 @@ const mapDispatchToProps = dispatch => {
     editSubproject: (pId, sId, changes, deletedBudgets) => dispatch(editSubproject(pId, sId, changes, deletedBudgets)),
     storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),
     storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
+    storeSubProjectValidator: validator => dispatch(storeSubProjectValidator(validator)),
     addSubProjectProjectedBudget: projectedBudget => dispatch(addSubProjectProjectedBudget(projectedBudget)),
     editSubProjectProjectedBudgetAmount: (projectedBudget, budgetAmountEdit) =>
       dispatch(editSubProjectProjectedBudgetAmount(projectedBudget, budgetAmountEdit)),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets))
+    storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
+    storeFixedWorkflowitemType: workflowitemType => dispatch(storeFixedWorkflowitemType(workflowitemType))
   };
 };
 
