@@ -89,12 +89,21 @@ export async function closeWorkflowitem(
   }
   const assignedIdentities = assignedIdentitiesResult;
 
-  if (closingUser.id !== "root" && !assignedIdentities.includes(closingUser.id)) {
-    return new PreconditionError(
-      ctx,
-      closeEvent,
-      "Only the assignee is allowed to close the workflowitem.",
-    );
+  // Check if user is allowed to close the workflowitem
+  if (closingUser.id !== "root") {
+    if (subproject.validator !== undefined && subproject.validator !== closingUser.id) {
+      return new PreconditionError(
+        ctx,
+        closeEvent,
+        "Only the validator of this subproject is allowed to close workflowitems",
+      );
+    } else if (!assignedIdentities.includes(closingUser.id)) {
+      return new PreconditionError(
+        ctx,
+        closeEvent,
+        "Only the assignee is allowed to close the workflowitem.",
+      );
+    }
   }
 
   // Make sure all previous items (wrt. the ordering) are already closed:

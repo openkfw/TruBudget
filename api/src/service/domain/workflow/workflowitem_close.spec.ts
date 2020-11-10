@@ -54,6 +54,53 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 describe("Closing a workflowitem", () => {
+  it("is not possible if the validator and closing user are not the same user.", async () => {
+    const workflowitem = { ...baseWorkflowitem, assignee: bob.id, permissions: {} };
+
+    const newEventsResult = await closeWorkflowitem(
+      ctx,
+      alice,
+      baseSubproject.projectId,
+      baseSubproject.id,
+      workflowitemId,
+      {
+        getWorkflowitems: () => Promise.resolve([workflowitem]),
+        getUsersForIdentity: async (identity) => {
+          if (identity === "alice") return ["alice"];
+          if (identity === "bob") return ["bob"];
+          return Error(`unexpected identity: ${identity}`);
+        },
+        getSubproject: () => Promise.resolve({ ...baseSubproject, validator: bob.id }),
+        applyWorkflowitemType: () => [],
+      },
+    );
+    assert.isTrue(Result.isErr(newEventsResult));
+    assert.instanceOf(newEventsResult, PreconditionError);
+  });
+
+  it("is possible if the validator and closing user are the same user.", async () => {
+    const workflowitem = { ...baseWorkflowitem, assignee: alice.id, permissions: {} };
+
+    const newEventsResult = await closeWorkflowitem(
+      ctx,
+      alice,
+      baseSubproject.projectId,
+      baseSubproject.id,
+      workflowitemId,
+      {
+        getWorkflowitems: () => Promise.resolve([workflowitem]),
+        getUsersForIdentity: async (identity) => {
+          if (identity === "alice") return ["alice"];
+          if (identity === "bob") return ["bob"];
+          return Error(`unexpected identity: ${identity}`);
+        },
+        getSubproject: () => Promise.resolve({ ...baseSubproject, validator: alice.id }),
+        applyWorkflowitemType: () => [],
+      },
+    );
+    assert.isTrue(Result.isOk(newEventsResult));
+  });
+
   it("returns NotFound error if workflowitem does not exist.", async () => {
     const workflowitemId = "does-not-exist";
 
