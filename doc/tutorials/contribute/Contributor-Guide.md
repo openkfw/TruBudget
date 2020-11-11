@@ -311,13 +311,27 @@ Navigate to the frontend folder:
 cd ../frontend
 ```
 
-1. Install node-modules
+1. Set environment variables
+
+- Terminal Mac/Git Bash
+
+```bash
+export PORT=3000
+```
+
+- Windows Command Prompt / PowerShell
+
+```bash
+SET PORT=3000
+```
+
+2. Install node-modules
 
 ```bash
 npm install
 ```
 
-2. Start the frontend
+3. Start the frontend
 
 ```bash
 npm start
@@ -326,6 +340,11 @@ npm start
 The frontend should then be availaible at http://localhost:3000
 
 **Caution**: If you change the port of the api you may have to consider to change the proxy port in the `package.json` accordingly.
+
+**Note**: You do not need to run every project separately if you are developing on a single one. Just do following:
+ 1. go to a desired folder (e.g. _/api_)
+ 2. copy `.env.example` file and rename it to `.env`
+ 3. run ```sh startDev.sh``` in the folder to start dependent project(s)
 
 ## Tests
 
