@@ -203,7 +203,10 @@ export async function createWorkflowitem(
   }
 
   // Check the workflowitem type
-  if (workflowitemCreated.workflowitem.workflowitemType !== subproject.workflowitemType) {
+  if (
+    subproject.workflowitemType !== undefined &&
+    workflowitemCreated.workflowitem.workflowitemType !== subproject.workflowitemType
+  ) {
     return new PreconditionError(
       ctx,
       workflowitemCreated,

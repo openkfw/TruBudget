@@ -46,6 +46,7 @@ class WorkflowDialogContainer extends Component {
     const path = this.props.location.pathname.split("/");
     const projectId = path[2];
     const subProjectId = path[3];
+    const workflowItemCreator = this.props.workflowItemCreator;
     const assignee = this.props.selectedAssignee;
     const assigneeDisplayName = this.props.users.find(u => u.id === assignee).displayName;
 
@@ -65,7 +66,8 @@ class WorkflowDialogContainer extends Component {
       projectDisplayName,
       subprojectDisplayName,
       assignee,
-      assigneeDisplayName
+      assigneeDisplayName,
+      workflowItemCreator
     );
   };
 
@@ -100,7 +102,8 @@ const mapStateToProps = state => {
     subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
     hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
     subprojectItemType: state.getIn(["workflow", "subprojectItemType"]),
-    hasSubprojectItemType: state.getIn(["workflow", "hasSubprojectItemType"])
+    hasSubprojectItemType: state.getIn(["workflow", "hasSubprojectItemType"]),
+    workflowItemCreator: state.getIn(["login", "id"])
   };
 };
 
@@ -122,7 +125,8 @@ const mapDispatchToProps = dispatch => {
       projectDisplayName,
       subprojectDisplayName,
       assignee,
-      assigneeDisplayName
+      assigneeDisplayName,
+      workflowItemCreator
     ) =>
       dispatch(
         createWorkflowItem(
@@ -141,7 +145,8 @@ const mapDispatchToProps = dispatch => {
           projectDisplayName,
           subprojectDisplayName,
           assignee,
-          assigneeDisplayName
+          assigneeDisplayName,
+          workflowItemCreator
         )
       ),
     editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),

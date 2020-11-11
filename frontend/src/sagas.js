@@ -660,25 +660,24 @@ export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
   yield execute(function*() {
     const { data } = yield callApi(api.createWorkflowItem, workflowitemData);
     yield showSnackbarWarning();
-
     yield put({
       type: CREATE_WORKFLOW_SUCCESS,
       workflowitemId: data.workflowitem.id
     });
-
-    yield put({
-      type: ASSIGN_WORKFLOWITEM,
-      projectId: workflowitemData.projectId,
-      projectDisplayName: workflowitemData.projectDisplayName,
-      subprojectId: workflowitemData.subprojectId,
-      subprojectDisplayName: workflowitemData.subprojectDisplayName,
-      workflowitemId: data.workflowitem.id,
-      workflowitemDisplayName: workflowitemData.displayName,
-      assigneeId: workflowitemData.assignee,
-      assigneeDisplayName: workflowitemData.assigneeDisplayName,
-      showLoading: true
-    });
-
+    if (workflowitemData.assignee !== workflowitemData.workflowItemCreator) {
+      yield put({
+        type: ASSIGN_WORKFLOWITEM,
+        projectId: workflowitemData.projectId,
+        projectDisplayName: workflowitemData.projectDisplayName,
+        subprojectId: workflowitemData.subprojectId,
+        subprojectDisplayName: workflowitemData.subprojectDisplayName,
+        workflowitemId: data.workflowitem.id,
+        workflowitemDisplayName: workflowitemData.displayName,
+        assigneeId: workflowitemData.assignee,
+        assigneeDisplayName: workflowitemData.assigneeDisplayName,
+        showLoading: true
+      });
+    }
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,
       projectId: workflowitemData.projectId,

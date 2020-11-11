@@ -585,7 +585,8 @@ export function createWorkflowItem(
   projectDisplayName,
   subprojectDisplayName,
   assignee,
-  assigneeDisplayName
+  assigneeDisplayName,
+  workflowItemCreator
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -604,7 +605,8 @@ export function createWorkflowItem(
     projectDisplayName,
     subprojectDisplayName,
     assignee,
-    assigneeDisplayName
+    assigneeDisplayName,
+    workflowItemCreator
   };
 }
 
