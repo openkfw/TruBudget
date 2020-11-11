@@ -71,4 +71,34 @@ Examples:
 6. Re-type the new password to confirm it
 7. Click "Submit" to save the new password
 
+## Enable User
 
+**Description:**
+
+Enable disabled User.
+
+**Notes:**
+- Only an administrator can enable users of his/her organization!
+
+**Instructions:**
+1. Click the button in the upper left corner (hamburger menu) to open the side-navigation-bar.
+2. Click "Users" Selection.
+2. Click "Disabled users" tab
+3. Click the "Restore user" button (looks like a white check mark symbol) next to the user you want to enable.
+4. A confirmation dialog will be show. Click "Disable user" to confirm to disable user.
+
+## Disable User
+
+**Description:**
+
+Disable an User.
+
+**Notes:**
+- Only an administrator can disable users of his/her organization!
+- When disabled user tried to log in a "Login ID is disabled" message will pop up.
+
+**Instructions:**
+1. Click the button in the upper left corner (hamburger menu) to open the side-navigation-bar.
+2. Click "Users" Selection.
+3. Click the "Disable user" button (looks like a white minus symbol) next to the user you want to disable.
+4. A confirmation dialog will be show. Click "Disable user" to confirm to disable user.
