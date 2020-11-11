@@ -15,8 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
 
+- Fixed a bug where the user needed list-permissions that are not necessary [#562](https://github.com/openkfw/TruBudget/issues/562)
+- Fixed a bug where the confirmation dialog persists after pressing the browser's back button [#544](https://github.com/openkfw/TruBudget/issues/544)
 <!-- ### Security -->
 
 ## [1.16.0] - 2020-11-12

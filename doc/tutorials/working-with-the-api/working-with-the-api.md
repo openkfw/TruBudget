@@ -16,11 +16,11 @@ curl -X GET http://localhost:8080/api/readiness
 
 which returns `OK`.
 
-The documentation for this endpoints is generated with each deployment of the API and can be accessed via the browser. It is usually deployed at `http://address.of.deployment/test/api/documentation/index.html`, here are some examples:
+The documentation for this endpoints is generated with each deployment of the API and can be accessed via the browser. It is usually deployed at `http://address.of.deployment/test/api/documentation/static/index.html`, here are some examples:
 
-- Developer setup: http://localhost:8080/api/documentation/index.html
-- Local deployment via Docker-Compose: http://localhost/test/api/documentation/index.html
-- Deployment on server: http://52.52.52.52/test/api/documentation/index.html
+- Developer setup: http://localhost:8080/api/documentation/static/index.html
+- Local deployment via Docker-Compose: http://localhost/test/api/documentation/static/index.html
+- Deployment on server: http://52.52.52.52/test/api/documentation/static/index.html
 
 ### Using Postman
 
