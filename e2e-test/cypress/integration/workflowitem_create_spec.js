@@ -215,6 +215,7 @@ describe("Workflowitem create", function() {
       cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.be.visible");
     });
   });
+
   it("If the due-date is not set, the info icon badge is not displayed", function() {
     // Create a workflow item
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test", {
@@ -226,5 +227,36 @@ describe("Workflowitem create", function() {
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.be.visible");
     });
+  });
+
+  it("When creating a workflowitem, an assignee can be set", function() {
+    // Open create-dialog of workflow item
+    cy.get("[data-test=createWorkflowitem]").click();
+    cy.get("[data-test=creation-dialog]").should("be.visible");
+    cy.get("[data-test=nameinput]").type("Test");
+    // Default assignee is current user
+    cy.get(`[data-test=assignee-selection]`).should("contain", "Mauro Stein");
+    cy.get("[data-test=workflow-dialog-content]")
+      .find("[data-test=assignee-selection]")
+      .click();
+    cy.get("[data-test=assignee-list]")
+      .find("[value=auditUser]")
+      .click();
+
+    cy.get("[data-test=next]").click({ force: true });
+    cy.get("[data-test=next]").click({ force: true });
+    cy.get("[data-test=submit]").click();
+    // Confirmation dialog opens to grant assignee required view permissions
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+    // Check if assignee has been set
+    cy.get("[data-test^=workflowitem-]")
+      .last()
+      .find(`[data-test=assignee-selection]`)
+      .should("contain", "Romina Checker");
   });
 });

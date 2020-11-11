@@ -165,7 +165,7 @@ const Content = props => {
     subprojectItemType
   } = props;
   return (
-    <div className={classes.container}>
+    <div className={classes.container} data-test={"workflow-dialog-content"}>
       <div className={classes.container}>
         {creationDialogShown ? (
           <div className={classes.subContainer}>
@@ -249,16 +249,16 @@ const WorkflowDialog = props => {
     creationDialogShown,
     storeWorkflowDocument,
     currentUser,
-    storeWorkflowAssignee
+    storeWorkflowAssignee,
+    hasSubprojectValidator,
+    subprojectValidator
   } = props;
 
   useEffect(() => {
-    if (editDialogShown) {
-      storeWorkflowAssignee(currentUser);
-    } else {
-      storeWorkflowAssignee(currentUser);
+    if (creationDialogShown) {
+      storeWorkflowAssignee(hasSubprojectValidator ? subprojectValidator : currentUser);
     }
-  }, [storeWorkflowAssignee, currentUser, editDialogShown]);
+  }, [storeWorkflowAssignee, currentUser, creationDialogShown, hasSubprojectValidator, subprojectValidator]);
 
   const specifcProps = editDialogShown
     ? {
