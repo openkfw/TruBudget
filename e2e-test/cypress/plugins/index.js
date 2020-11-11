@@ -12,6 +12,9 @@
 // the project's config changing)
 
 const axios = require("axios");
+const path = require("path");
+const Excel = require("exceljs");
+const fs = require("fs");
 
 function reportsReadiness(baseUrl) {
   return axios
@@ -67,8 +70,49 @@ async function awaitApiReady(baseUrl) {
   return null;
 }
 
+async function readExcelSheet({index, file}) {
+  if (fs.existsSync(file)) {
+    const workbook = new Excel.Workbook();
+    await workbook.xlsx.readFile(file);
+    return workbook.worksheets[index]["name"];
+  }
+
+  return null;
+}
+
+async function deleteFile(file) {
+  if (fs.existsSync(file)) {
+    fs.unlinkSync(file);
+    return true;
+  }
+  return false;
+}
+
+async function checkFileExists({file, timeout}) {
+  let nRetries = 20;
+  while (nRetries > 0 && !fs.existsSync(file)) {
+    --nRetries;
+    await sleep(timeout);
+  }
+  if (nRetries === 0) throw Error("file was not downloaded successfully");
+
+  return null;
+}
+
 module.exports = (on, _config) => {
   on("task", {
-    awaitApiReady: awaitApiReady
+    awaitApiReady: awaitApiReady,
+    readExcelSheet: readExcelSheet,
+    deleteFile: deleteFile,
+    checkFileExists: checkFileExists
+  });
+  on("before:browser:launch", (browser, options) => {
+    const downloadDirectory = path.join(__dirname, "..", "fixtures");
+
+    if (browser.family === "chromium" && browser.name !== "electron") {
+      options.preferences.default["download"] = { default_directory: downloadDirectory };
+
+      return options;
+    }
   });
 };
