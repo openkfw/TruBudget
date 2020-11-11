@@ -54,53 +54,6 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 describe("Closing a workflowitem", () => {
-  it("is not possible if the validator and closing user are not the same user.", async () => {
-    const workflowitem = { ...baseWorkflowitem, assignee: bob.id, permissions: {} };
-
-    const newEventsResult = await closeWorkflowitem(
-      ctx,
-      alice,
-      baseSubproject.projectId,
-      baseSubproject.id,
-      workflowitemId,
-      {
-        getWorkflowitems: () => Promise.resolve([workflowitem]),
-        getUsersForIdentity: async (identity) => {
-          if (identity === "alice") return ["alice"];
-          if (identity === "bob") return ["bob"];
-          return Error(`unexpected identity: ${identity}`);
-        },
-        getSubproject: () => Promise.resolve({ ...baseSubproject, validator: bob.id }),
-        applyWorkflowitemType: () => [],
-      },
-    );
-    assert.isTrue(Result.isErr(newEventsResult));
-    assert.instanceOf(newEventsResult, PreconditionError);
-  });
-
-  it("is possible if the validator and closing user are the same user.", async () => {
-    const workflowitem = { ...baseWorkflowitem, assignee: alice.id, permissions: {} };
-
-    const newEventsResult = await closeWorkflowitem(
-      ctx,
-      alice,
-      baseSubproject.projectId,
-      baseSubproject.id,
-      workflowitemId,
-      {
-        getWorkflowitems: () => Promise.resolve([workflowitem]),
-        getUsersForIdentity: async (identity) => {
-          if (identity === "alice") return ["alice"];
-          if (identity === "bob") return ["bob"];
-          return Error(`unexpected identity: ${identity}`);
-        },
-        getSubproject: () => Promise.resolve({ ...baseSubproject, validator: alice.id }),
-        applyWorkflowitemType: () => [],
-      },
-    );
-    assert.isTrue(Result.isOk(newEventsResult));
-  });
-
   it("returns NotFound error if workflowitem does not exist.", async () => {
     const workflowitemId = "does-not-exist";
 
@@ -207,6 +160,53 @@ describe("Closing a workflowitem", () => {
     }
     assert.instanceOf(newEventsResult, PreconditionError);
     assert.match(newEventsResult.message, /all previous workflowitems must be closed/);
+  });
+
+  it("if a validator is set on the parent subproject, the validator may close the workflowitem", async () => {
+    const workflowitem = { ...baseWorkflowitem, assignee: alice.id, permissions: {} };
+
+    const newEventsResult = await closeWorkflowitem(
+      ctx,
+      alice,
+      baseSubproject.projectId,
+      baseSubproject.id,
+      workflowitemId,
+      {
+        getWorkflowitems: () => Promise.resolve([workflowitem]),
+        getUsersForIdentity: async (identity) => {
+          if (identity === "alice") return ["alice"];
+          if (identity === "bob") return ["bob"];
+          return Error(`unexpected identity: ${identity}`);
+        },
+        getSubproject: () => Promise.resolve({ ...baseSubproject, validator: alice.id }),
+        applyWorkflowitemType: () => [],
+      },
+    );
+    assert.isTrue(Result.isOk(newEventsResult));
+  });
+
+  it("if a validator is set on the parent subproject, the assignee may not close the workflowitem", async () => {
+    const workflowitem = { ...baseWorkflowitem, assignee: alice.id, permissions: {} };
+
+    const newEventsResult = await closeWorkflowitem(
+      ctx,
+      alice,
+      baseSubproject.projectId,
+      baseSubproject.id,
+      workflowitemId,
+      {
+        getWorkflowitems: () => Promise.resolve([workflowitem]),
+        getUsersForIdentity: async (identity) => {
+          if (identity === "alice") return ["alice"];
+          if (identity === "bob") return ["bob"];
+          return Error(`unexpected identity: ${identity}`);
+        },
+        getSubproject: () => Promise.resolve({ ...baseSubproject, validator: bob.id }),
+        applyWorkflowitemType: () => [],
+      },
+    );
+    assert.isTrue(Result.isErr(newEventsResult));
+    assert.instanceOf(newEventsResult, PreconditionError);
   });
 
   it("creates notifications for every assignee in a group if a group is assigned, expect the issuer.", async () => {
