@@ -145,7 +145,7 @@ const ProjectDetails = props => {
           ) : null}
         </List>
         <div style={styles.projectedBudget} data-test="project-projected-budget">
-          <Typography variant="body1">{strings.common.projected_budget}</Typography>
+          <Typography variant="body1">{strings.common.total_budget}</Typography>
           {isDataLoading ? (
             <div />
           ) : projectProjectedBudgets.length > 0 ? (

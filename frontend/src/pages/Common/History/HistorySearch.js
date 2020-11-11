@@ -61,7 +61,7 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
       <DatePicker
         id="filter-startat"
         className={classes.datepicker}
-        label={strings.history.startDate}
+        label={strings.history.start_date}
         name="startAt"
         datetime={startAt}
         onChange={onChange}
@@ -70,7 +70,7 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
       <DatePicker
         id="filter-endat"
         className={classes.datepicker}
-        label={strings.history.endDate}
+        label={strings.history.end_date}
         name="endAt"
         datetime={endAt}
         onChange={onChange}
@@ -91,7 +91,7 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
       <Dropdown
         style={styles.dropdown}
         value={eventType}
-        floatingLabel={strings.history.eventType}
+        floatingLabel={strings.history.event_type}
         onChange={value => mergeState({ eventType: value })}
         id="filter-eventtype"
         disabled={false}

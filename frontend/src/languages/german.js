@@ -163,7 +163,6 @@ const de = {
     subproject_completion_string: "{0} von {1} erledigt",
     subproject_currency: "German: Sub-project Currency",
     subproject_permissions_title: "German: Set permissions for subproject",
-    subproject_permissions_warning: "Dem Teilprojekt {0} wurden noch keine Berechtigungen zugewiesen",
     subproject_preview: "German: Subproject Preview",
     subproject_close_info: "German: At least one workflowitem has not been closed yet.",
     subproject_close_not_allowed: "Sie haben keine Berechtigung das Projekt zu schließen",
@@ -211,7 +210,6 @@ const de = {
     workflow_no_documents: "No documents",
     workflow_none: "None",
     workflow_permissions_title: "German: Set permissions for workflowitem",
-    workflow_permissions_warning: "Dem Workflow-Item {0} wurden noch keine Berechtigungen zugewiesen",
     workflow_redacted: "German: Redacted",
     workflow_selection: "German: You have selected {0} workflows",
     workflow_submit_for_review: "Submit for Review",
@@ -230,6 +228,16 @@ const de = {
     workflowitem_type_general: "Legen Sie ein Workflow-Item vom Typ 'general' an.",
     workflowitem_type_restricted:
       "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte."
+  },
+
+  snackbar: {
+    update_succeed_message: "{0} erfolgreich geändert",
+    creation_succeed_message: "{0} erfolgreich erstellt",
+    permissions_warning: "Noch keine Berechtigungen für {0} gesetzt"
+  },
+
+  searchBar: {
+    quick_search: "Schnellsuche"
   },
 
   users: {
@@ -395,6 +403,9 @@ const de = {
   },
 
   notification: {
+    next_page: "Nächste Seite",
+    previous_page: "Vorherige Seite",
+    rows_per_page: "Einträge pro Seite",
     create_transaction: "German: Transaction {0} created ",
     create_workflow: "German: Workflow {0} created ",
     done_transaction: "German: Status of transaction {0} set to Done",

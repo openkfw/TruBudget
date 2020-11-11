@@ -228,7 +228,6 @@ const ka = {
     subproject_currency: "ქვეპროექტის ვალუტა",
     subproject_edit_title: "ქვეპროექტის რედაქტირება",
     subproject_permissions_title: "ქვეპროექტის უფლებამოსილებების განსაზღვრა",
-    subproject_permissions_warning: "ქვეპროექტისთვის არ არის გამოყოფილი ნებართვა {0}",
     subproject_preview: "Subproject preview",
     subproject_select_button: "არჩევა",
     subproject_title_description: "ქვეპროექტის სახელწოდება",
@@ -273,7 +272,6 @@ const ka = {
     workflow_no_documents: "არ შეიცავს დოკუმენტებს",
     workflow_none: "None",
     workflow_permissions_title: "Workflowitem-თან დაკავშირებით უფლებამოსილების მინიჭება",
-    workflow_permissions_warning: "არ არის გამოყოფილი ნებართვა სამუშაო ნაკადის ნივთზე {0}",
     workflow_redacted: "Redacted",
     workflow_selection: "{0} Workflowitem-ები არჩეულია",
     workflow_submit_for_review: "განსახილველად გადაგზავნა",
@@ -292,6 +290,16 @@ const ka = {
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
       "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას."
+  },
+
+  snackbar: {
+    update_succeed_message: "წარმატებით შეცვლილია {0}",
+    creation_succeed_message: "წარმატებით შეიქმნა {0}",
+    permissions_warning: "{0} - სთვის გამოყოფილი არ არის უფლებები"
+  },
+
+  searchBar: {
+    quick_search: "სწრაფი ძებნა"
   },
 
   preview: {
@@ -394,6 +402,9 @@ const ka = {
   },
 
   notification: {
+    next_page: "შემდეგი გვერდი",
+    previous_page: "წინა გვერდი",
+    rows_per_page: "სტრიქონები თითო გვერდზე",
     create_transaction: "ტრანზაქცია {0} შექმნილია ",
     create_workflow: "Workflowitem-ი {0} შექმნილია",
     done_transaction: " ტრანზაქციის {0} სტატუსი შეიცვალა და დასრულებულია",
