@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Security -->
 
+## [1.16.0] - 2020-11-12
+
+### Added
+
+- The export of the excel file is now available in all TruBudget languages [#567](https://github.com/openkfw/TruBudget/issues/567)
+
 ## [1.15.0] - 2020-10-27
 
 ### Added
