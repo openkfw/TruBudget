@@ -18,20 +18,18 @@ describe("User/Groups Dashboard", function() {
     cy.get("[data-test=groupname] input")
       .type("testgroup")
       .should("have.value", "testgroup");
-    cy.get("[data-test=autocomplete] input")
-      .type("mstein")
-      .should("have.value", "mstein");
-    cy.get("[data-test=autocomplete-item-0]")
-      .should("be.visible")
-      .should("have.text", "mstein")
-      .click();
-    cy.get("[data-test=autocomplete] input")
-      .type("thouse")
-      .should("have.value", "thouse");
-    cy.get("[data-test=autocomplete-item-0]")
-      .should("be.visible")
-      .should("have.text", "thouse")
-      .click();
+    cy.get("[data-test=add-user-selection]").click();
+    cy.get("[data-test=search-user-input]")
+      .click()
+      .type("Mauro Stein")
+      .should("have.value", "Mauro Stein");
+    cy.get("[data-test=user-name-mstein]").click();
+    cy.get("[data-test=add-user-selection]").click();
+    cy.get("[data-test=search-user-input]")
+      .click()
+      .type("Tom House")
+      .should("have.value", "Tom House");
+    cy.get("[data-test=user-name-thouse]").click();
     cy.get("[data-test=submit]").click();
   });
 
@@ -45,7 +43,21 @@ describe("User/Groups Dashboard", function() {
   });
 
   it("User that created the group should be able to edit it", function() {
-    cy.get("[data-test=edit-group-TestGroup]").should("be.visible");
+    cy.get("[data-test=edit-group-TestGroup]")
+      .should("be.visible")
+      .click();
+    cy.get("[data-test=user-chip-thouse] > .MuiSvgIcon-root").click();
+    cy.get("[data-test=user-chip-thouse]").should("not.be.visible");
+    cy.get("[data-test=add-user-selection]").click();
+    cy.get("[data-test=search-user-input]")
+      .click()
+      .type("John Doe")
+      .should("have.value", "John Doe");
+    cy.get("[data-test=user-name-jdoe]").click();
+    cy.get("[data-test=submit]").click();
+    cy.get("[data-test=edit-group-TestGroup]").click();
+    cy.get("[data-test=user-chip-jdoe]").should("be.visible");
+    cy.get("[data-test=submit]").click();
   });
 
   it("Users that didn't create the group should not be able to edit it", function() {
@@ -56,7 +68,7 @@ describe("User/Groups Dashboard", function() {
     cy.visit("/users");
     cy.get("[aria-label=groupsTab]").click();
     cy.get("[data-test=edit-group-TestGroup]").should("be.disabled");
-    
+
     cy.get("#logoutbutton")
       .should("be.visible")
       .click();

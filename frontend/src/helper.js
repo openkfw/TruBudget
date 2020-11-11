@@ -144,7 +144,7 @@ export const preselectCurrency = (parentCurrency, setCurrency) => {
 };
 
 export const formattedTag = tag => {
-  return tag.toLowerCase().replace(/[\s#]/g, "");
+  return tag.replace(/[\s#]/g, "");
 };
 
 export const shortenedDisplayName = displayName => {

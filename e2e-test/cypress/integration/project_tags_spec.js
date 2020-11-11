@@ -164,4 +164,70 @@ describe("Project Tags", function() {
     // Cancel to restore normal view
     cy.get("[data-test=cancel]").click();
   });
+
+  it("Tags with accents and umlauts are allowed", function() {
+    // Click the "Create Project" button and enter some data
+    cy.get("[data-test=create-project-button]").click();
+    cy.get("[data-test=nameinput] input").type("Tag Test");
+
+    // Add a tag with accents and umlauts
+    cy.get("[data-test=taginput] input").type("çéâêôûàèìòùäöãõ");
+    cy.get("[data-test=add-tag-button]").click();
+    cy.get("[data-test=tageditor-tag]")
+      .first()
+      .should("contain", "çéâêôûàèìòùäöãõ");
+
+    // Submit the project
+    cy.server();
+    cy.route("POST", apiRoute + "/global.createProject").as("create");
+    cy.get("[data-test=submit]").click();
+    cy.wait("@create")
+      .then(data => {
+        projectId = data.response.body.data.project.id;
+      })
+      .then(() => cy.visit("/projects/"))
+      .then(() =>
+        cy
+          .get(`[data-test=project-card-${projectId}]`)
+          .find("[data-test=overview-tags]")
+          .find("[data-test=overview-tag]")
+          .should("have.length", 1)
+          .contains("çéâêôûàèìòùäöãõ")
+      )
+      .then(() => cy.visit(`/projects/${projectId}`))
+      .then(() => cy.get("[data-test=project-details-tag]").should("have.length", 1));
+  });
+
+  it("Tags with upper and lowercase letters are allowed", function() {
+    // Click the "Create Project" button and enter some data
+    cy.get("[data-test=create-project-button]").click();
+    cy.get("[data-test=nameinput] input").type("Tag Test");
+
+    // Add a tag with upper and lowercase letters
+    cy.get("[data-test=taginput] input").type("TestTAG");
+    cy.get("[data-test=add-tag-button]").click();
+    cy.get("[data-test=tageditor-tag]")
+      .first()
+      .should("contain", "TestTAG");
+
+    // Submit the project
+    cy.server();
+    cy.route("POST", apiRoute + "/global.createProject").as("create");
+    cy.get("[data-test=submit]").click();
+    cy.wait("@create")
+      .then(data => {
+        projectId = data.response.body.data.project.id;
+      })
+      .then(() => cy.visit("/projects/"))
+      .then(() =>
+        cy
+          .get(`[data-test=project-card-${projectId}]`)
+          .find("[data-test=overview-tags]")
+          .find("[data-test=overview-tag]")
+          .should("have.length", 1)
+          .contains("TestTAG")
+      )
+      .then(() => cy.visit(`/projects/${projectId}`))
+      .then(() => cy.get("[data-test=project-details-tag]").should("have.length", 1));
+  });
 });

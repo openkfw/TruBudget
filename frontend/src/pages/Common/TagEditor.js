@@ -49,7 +49,7 @@ const handleEnter = (e, action = () => {}) => {
 };
 
 function addTagToList(currentTags, newTag, addProjectTag, setInvalidInput, setInvalidInputMessage, changeInput) {
-  const validTagRegex = /^(\w+[_.-]*)+\w+$/;
+  const validTagRegex = /^([A-Za-zÀ-ÿ0-9])*[A-Za-zÀ-ÿ0-9-_]+$/;
   if (currentTags !== undefined && currentTags.some(tag => formattedTag(tag) === formattedTag(newTag))) {
     setInvalidInputMessage(strings.common.tag_already_exists);
     setInvalidInput(true);
@@ -71,7 +71,7 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag }) {
   const [input, changeInput] = useState("");
   const [invalidInput, setInvalidInput] = useState(false);
   const [invalidInputMessage, setInvalidInputMessage] = useState(strings.common.tag_already_exists);
-  const validTagRegex = /^(\w+[_.-]*)*\w+$/;
+  const validTagRegex = /^([A-Za-zÀ-ÿ0-9])*[A-Za-zÀ-ÿ0-9-_]+$/;
 
   return (
     <div style={styles.container}>
