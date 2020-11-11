@@ -587,7 +587,7 @@ export function* createSubProjectSaga({
   description,
   currency,
   validator,
-  subprojectType,
+  workflowitemType,
   projectedBudgets,
   showLoading
 }) {
@@ -599,7 +599,7 @@ export function* createSubProjectSaga({
       description,
       currency,
       validator,
-      subprojectType,
+      workflowitemType,
       projectedBudgets
     );
     yield showSnackbarWarning();

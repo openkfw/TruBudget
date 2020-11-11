@@ -9,13 +9,13 @@ import { compareObjects, fromAmountString, shortenedDisplayName, isEmptyDeep } f
 
 const handleCreate = props => {
   const { createSubProject, onDialogCancel, subprojectToAdd, location, storeSnackbarMessage } = props;
-  const { displayName, description, currency, validator, subprojectType, projectedBudgets } = subprojectToAdd;
+  const { displayName, description, currency, validator, workflowitemType, projectedBudgets } = subprojectToAdd;
   createSubProject(
     displayName,
     description,
     currency,
     validator,
-    subprojectType,
+    workflowitemType,
     location.pathname.split("/")[2],
     projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) }))
   );
