@@ -121,6 +121,10 @@ sh setupGitSecrets.sh
 
 If you want to start developing on Trubudget, you need to setup the application locally. This guide tells you how to start the blockchain, start the API, load up some test data and start the frontend.
 
+### TypeScript
+
+If you are using global installation of TypeScript, please make sure you have at least 4.0.2 version.
+
 ### Blockchain
 
 The blockchain works as data layer for the Trubudget application. Therefore, we start by creating an instance of the blockchain.
@@ -189,6 +193,13 @@ SET ORGANIZATION_VAULT_SECRET="asdf"
 ```
 
 2. Install node-modules
+
+- (Linux/Mac) Depending on your machine configuration, it might be necessary to install `autoconf` and `automake`
+
+```bash
+brew install autoconf
+brew install automake
+```
 
 ```bash
 npm install
