@@ -22,6 +22,28 @@ describe("Workflowitem edit", function() {
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
+  it("The workflowitem can be closed with only the view and close permissions", function() {
+    const assignee = "auditUser";
+    cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test").then(({ id }) => {
+      workflowitemId = id;
+      cy.grantProjectPermission(projectId, "project.viewSummary", assignee);
+      cy.grantProjectPermission(projectId, "project.viewDetails", assignee);
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assignee);
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", assignee);
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", assignee);
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.close", assignee);
+      cy.login(assignee);
+      cy.visit(`/projects/${projectId}/${subprojectId}`);
+      // Close workflow item
+      cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test=close-workflowitem]")
+        .scrollIntoView()
+        .click();
+      cy.get("[data-test=confirmation-dialog-confirm]")
+        .should("be.visible")
+        .click();
+    });
+  });
+
   it(
     "When editing a workflow item with a different currency than the subproject currency, " +
       "the selected currency is displayed",
@@ -29,7 +51,6 @@ describe("Workflowitem edit", function() {
       cy.server();
       cy.route("POST", apiRoute + "/subproject.createWorkflowitem*").as("create");
       cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
-
       // Create a workflow item and select a different currency
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=nameinput]").type("Test");
@@ -42,7 +63,6 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=rateinput] input").type("1.5");
       cy.get("[data-test=next]").click();
       cy.get("[data-test=submit]").click();
-
       // Verify the selected values
       cy.wait("@create")
         .wait("@viewDetails")
@@ -53,7 +73,6 @@ describe("Workflowitem edit", function() {
         .last()
         .should("have.attr", "title")
         .should("contain", "$");
-
       // Open edit workflow item dialog
       cy.get("[data-test=edit-workflowitem]")
         .last()
@@ -62,6 +81,7 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=dropdown-currencies-click]").should("contain", "USD");
     }
   );
+
   it("When the due-date is not exceeded, the info icon badge is not displayed ", function() {
     // Create a workflowitem
     const tomorrow = getTomorrowsIsoDate();
@@ -70,7 +90,6 @@ describe("Workflowitem edit", function() {
     }).then(({ id }) => {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
-
       // Check if info icon badge is displayed
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test^='info-warning-badge-disabled-']").should(
@@ -90,7 +109,6 @@ describe("Workflowitem edit", function() {
     }).then(({ id }) => {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
-
       // Check if info icon badge is displayed
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test^='info-warning-badge-disabled-']").should(
