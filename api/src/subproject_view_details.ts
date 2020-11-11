@@ -14,7 +14,7 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
-import Type from "./service/domain/workflowitem_types/types";
+import WorkflowitemType from "./service/domain/workflowitem_types/types";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -68,6 +68,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         description: { type: "string", example: "school should be built" },
                         assignee: { type: "string", example: "aSmith" },
                         validator: { type: "string", example: "aSmith" },
+                        workflowitemType: { type: "string", example: "general" },
                         currency: {
                           type: "string",
                           description: "contract currency",
@@ -123,6 +124,7 @@ interface ExposedSubproject {
     description: string;
     assignee?: string;
     validator?: string;
+    workflowitemType?: WorkflowitemType;
     currency: string;
     projectedBudgets: Array<{
       organization: string;
@@ -152,7 +154,7 @@ interface ExposedWorkflowitem {
     }> | null;
     amount?: string | null;
     additionalData: object | null;
-    workflowitemType?: Type;
+    workflowitemType?: WorkflowitemType;
   };
   allowedIntents: Intent[];
 }
@@ -250,6 +252,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             displayName: subproject.displayName,
             assignee: subproject.assignee,
             validator: subproject.validator,
+            workflowitemType: subproject.workflowitemType,
             description: subproject.description,
             currency: subproject.currency,
             projectedBudgets: subproject.projectedBudgets,

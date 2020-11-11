@@ -7,6 +7,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
@@ -25,6 +26,7 @@ export interface Subproject {
   description: string;
   assignee: string;
   validator?: string;
+  workflowitemType?: WorkflowitemType;
   currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   // The ordering doesn't need to include all workflowitems; any items not included here
@@ -45,6 +47,7 @@ const schema = Joi.object({
   description: Joi.string().allow("").required(),
   assignee: Joi.string().required(),
   validator: Joi.string(),
+  workflowitemType: workflowitemTypeSchema,
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
   workflowitemOrdering: Joi.array().items(Joi.string()).required(),

@@ -7,6 +7,7 @@ import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
+import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
@@ -22,6 +23,7 @@ interface InitialData {
   description: string;
   assignee: Identity;
   validator?: Identity;
+  workflowitemType?: WorkflowitemType;
   currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
@@ -36,6 +38,7 @@ const initialDataSchema = Joi.object({
   description: Joi.string().allow("").required(),
   assignee: Joi.string().required(),
   validator: Joi.string(),
+  workflowitemType: workflowitemTypeSchema,
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
@@ -99,6 +102,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Subproject.Subpr
     description: initialData.description,
     assignee: initialData.assignee,
     validator: initialData.validator,
+    workflowitemType: initialData.workflowitemType,
     currency: initialData.currency,
     projectedBudgets: initialData.projectedBudgets,
     workflowitemOrdering: [],
