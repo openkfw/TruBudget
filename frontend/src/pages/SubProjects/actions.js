@@ -200,6 +200,7 @@ export function createSubProject(
   description,
   currency,
   validator,
+  subprojectType,
   projectedBudgets,
   showLoading = false
 ) {
@@ -210,6 +211,7 @@ export function createSubProject(
     description,
     currency,
     validator,
+    subprojectType,
     projectedBudgets,
     showLoading
   };

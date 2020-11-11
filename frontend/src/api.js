@@ -185,7 +185,7 @@ class Api {
       identity
     });
 
-  createSubProject = (projectId, name, description, currency, validator, projectedBudgets) =>
+  createSubProject = (projectId, name, description, currency, validator, subprojectType, projectedBudgets) =>
     instance.post(`/project.createSubproject`, {
       projectId,
       subproject: {
@@ -193,6 +193,7 @@ class Api {
         description,
         currency,
         validator: _isEmpty(validator) ? undefined : validator,
+        subprojectType: _isEmpty(subprojectType) ? undefined : subprojectType,
         projectedBudgets
       }
     });
