@@ -1,5 +1,6 @@
 import axios from "axios";
 import _isEmpty from "lodash/isEmpty";
+import strings from "./localizeStrings";
 
 const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
@@ -419,7 +420,10 @@ class Api {
     return response;
   };
   export = () => {
-    const path = devMode ? "http://localhost:8888/test" : "/export/xlsx/";
+    const path = devMode
+      ? `http://localhost:8888/test/api/export/xlsx/download?lang=${strings.getLanguage()}`
+      : `/export/xlsx/download?lang=${strings.getLanguage()}`;
+
     return instance.get(path, { responseType: "blob" });
   };
   fetchExportServiceVersion = () => {
