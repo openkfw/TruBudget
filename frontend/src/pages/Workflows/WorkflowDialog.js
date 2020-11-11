@@ -161,8 +161,8 @@ const Content = props => {
     storeWorkflowAssignee,
     hasSubprojectValidator,
     subprojectValidator,
-    hasSubprojectItemType,
-    subprojectItemType
+    hasFixedWorkflowitemType,
+    fixedWorkflowitemType
   } = props;
   return (
     <div className={classes.container} data-test={"workflow-dialog-content"}>
@@ -171,10 +171,10 @@ const Content = props => {
           <div className={classes.subContainer}>
             <div className={classes.inputContainer}>
               <Dropdown
-                disabled={hasSubprojectItemType}
+                disabled={hasFixedWorkflowitemType}
                 style={styles.dropdown}
                 floatingLabel={strings.workflow.workflowitem_type}
-                value={hasSubprojectItemType ? subprojectItemType : workflowitemType}
+                value={hasFixedWorkflowitemType ? fixedWorkflowitemType : workflowitemType}
                 onChange={value => storeWorkflowitemType(value)}
                 id="types"
               >

@@ -1,7 +1,5 @@
 import React from "react";
-
 import Divider from "@material-ui/core/Divider";
-
 import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
@@ -15,9 +13,11 @@ import {
 } from "../Workflows/workflowitemTypes";
 import Tooltip from "@material-ui/core/Tooltip";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import CancelIcon from "@material-ui/icons/Cancel";
+import IconButton from "@material-ui/core/IconButton";
 
-const subprojectWorkflowItemTypes = ["not selected", ...workflowitemTypes];
-const subprojectWorkflowItemTypesDescription = { notSelected: "NOT SELECTED", ...workflowitemTypesescription };
+const subprojectWorkflowItemTypes = ["any", ...workflowitemTypes];
+const subprojectWorkflowItemTypesDescription = { notSelected: "any - Description", ...workflowitemTypesescription };
 
 const styles = {
   dropdown: {
@@ -29,6 +29,12 @@ const styles = {
   },
   infoIcon: {
     fontSize: 20,
+    marginTop: 15,
+    padding: 8
+  },
+  deleteButton: {
+    width: "30px",
+    height: "30px",
     marginTop: 15,
     padding: 8
   },
@@ -76,17 +82,9 @@ const getDropdownValidator = users => {
   });
 };
 
-// const createNotSelectedItem = () => {
-//   return (
-//     <MenuItem key={"empty"} value={"not selected"}>
-//       {"not selected"}
-//     </MenuItem>
-//   );
-// };
-
 const getWorkflowitemTypeInfo = type => {
   switch (type) {
-    case "not selected":
+    case "any":
       return subprojectWorkflowItemTypesDescription.notSelected;
     case "general":
       return subprojectWorkflowItemTypesDescription.general;
@@ -98,14 +96,6 @@ const getWorkflowitemTypeInfo = type => {
 };
 
 const SubprojectDialogContent = props => {
-  // const { storeSubProjectValidator, selectedValidator, currentUser } = props;
-  // React.useEffect(() => {
-  //   console.log({ selectedValidator });
-  //   if (selectedValidator === "") {
-  //     storeSubProjectValidator(currentUser);
-  //   }
-  // }, [currentUser, selectedValidator, storeSubProjectValidator]);
-
   const currencies = getCurrencies();
   return (
     <div>
@@ -159,6 +149,13 @@ const SubprojectDialogContent = props => {
               >
                 {getDropdownValidator(props.users)}
               </Dropdown>
+              <IconButton
+                data-test={"clear-validator"}
+                onClick={() => props.storeSubProjectValidator("")}
+                style={styles.deleteButton}
+              >
+                <CancelIcon color="action" />
+              </IconButton>
             </div>
 
             {/* <div style={styles.validatorContainer}>

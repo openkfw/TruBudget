@@ -193,7 +193,7 @@ class Api {
         description,
         currency,
         validator: _isEmpty(validator) ? undefined : validator,
-        workflowitemType: _isEmpty(workflowitemType) ? undefined : workflowitemType,
+        workflowitemType: workflowitemType === "any" ? undefined : workflowitemType,
         projectedBudgets
       }
     });

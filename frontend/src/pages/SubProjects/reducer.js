@@ -65,7 +65,7 @@ const defaultState = fromJS({
     projectedBudgets: [],
     deletedProjectedBudgets: [],
     validator: "",
-    workflowitemType: "not selected"
+    workflowitemType: "any"
   },
   idsPermissionsUnassigned: [],
   creationDialogShown: false,

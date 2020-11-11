@@ -159,8 +159,8 @@ const defaultState = fromJS({
   isLiveUpdatesSubprojectEnabled: true,
   subprojectValidator: "",
   hasSubprojectValidator: false,
-  subprojectItemType: "",
-  hasSubprojectItemType: false
+  fixedWorkflowitemType: "",
+  hasFixedWorkflowitemType: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -174,8 +174,8 @@ export default function detailviewReducer(state = defaultState, action) {
         description: subproject.data.description,
         subprojectValidator: subproject.data.validator,
         hasSubprojectValidator: subproject.data.validator ? true : false,
-        subprojectItemType: subproject.data.subprojectItemType,
-        hasSubprojectItemType: subproject.data.subprojectItemType ? true : false,
+        fixedWorkflowitemType: subproject.data.workflowitemType,
+        hasFixedWorkflowitemType: subproject.data.workflowitemType ? true : false,
         status: subproject.data.status,
         currency: subproject.data.currency,
         allowedIntents: fromJS(subproject.allowedIntents),
