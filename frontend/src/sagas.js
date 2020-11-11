@@ -86,7 +86,7 @@ import {
   MARK_NOTIFICATION_AS_READ_SUCCESS,
   SHOW_SNACKBAR,
   SNACKBAR_MESSAGE,
-  TIME_OUT_FLY_IN,
+  TIME_OUT_FLY_IN
 } from "./pages/Notifications/actions";
 import {
   CREATE_PROJECT,
@@ -1578,7 +1578,7 @@ export function* grantProjectPermissionsSaga({
         intent: "project.intent.grantPermission",
         payload: {
           intent,
-          project: { id: projectId, displayName: projectDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
           grantee: { id: granteeId, displayName: granteeDisplayName }
         }
       });
@@ -1626,7 +1626,7 @@ export function* revokeProjectPermissionsSaga({
         intent: "project.intent.revokePermission",
         payload: {
           intent,
-          project: { id: projectId, displayName: projectDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
           revokee: { id: revokeeId, displayName: revokeeDisplayName }
         }
       });
@@ -1675,8 +1675,8 @@ export function* grantSubProjectPermissionsSaga({
         intent: "subproject.intent.grantPermission",
         payload: {
           intent,
-          project: { id: projectId, displayName: projectDisplayName },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
           grantee: { id: granteeId, displayName: granteeDisplayName }
         }
       });
@@ -1728,8 +1728,8 @@ export function* revokeSubProjectPermissionsSaga({
         intent: "subproject.intent.revokePermission",
         payload: {
           intent,
-          project: { id: projectId, displayName: projectDisplayName },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
           revokee: { id: revokeeId, displayName: revokeeDisplayName }
         }
       });
@@ -1783,9 +1783,9 @@ export function* grantWorkflowItemPermissionsSaga({
         intent: "workflowitem.intent.grantPermission",
         payload: {
           intent,
-          project: { id: projectId, displayName: projectDisplayName },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName },
-          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
+          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName, listPermissionsNeeded: true },
           grantee: { id: granteeId, displayName: granteeDisplayName }
         }
       });
@@ -1840,9 +1840,9 @@ export function* revokeWorkflowItemPermissionsSaga({
         intent: "workflowitem.intent.revokePermission",
         payload: {
           intent,
-          project: { id: projectId, displayName: projectDisplayName },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName },
-          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
+          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName, listPermissionsNeeded: true },
           revokee: { id: revokeeId, displayName: revokeeDisplayName }
         }
       });
@@ -2102,9 +2102,9 @@ export function* assignWorkflowItemSaga({
         type: CONFIRMATION_REQUIRED,
         intent: "workflowitem.assign",
         payload: {
-          project: { id: projectId, displayName: projectDisplayName },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName },
-          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
+          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName, listPermissionsNeeded: true },
           assignee: { id: assigneeId, displayName: assigneeDisplayName }
         }
       });
@@ -2151,8 +2151,8 @@ export function* assignSubprojectSaga({
         type: CONFIRMATION_REQUIRED,
         intent: "subproject.assign",
         payload: {
-          project: { id: projectId, displayName: projectDisplayName },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
+          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
           assignee: { id: assigneeId, displayName: assigneeDisplayName }
         }
       });
@@ -2193,7 +2193,7 @@ export function* assignProjectSaga({ projectId, projectDisplayName, assigneeId, 
         type: CONFIRMATION_REQUIRED,
         intent: "project.assign",
         payload: {
-          project: { id: projectId, displayName: projectDisplayName },
+          project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
           assignee: { id: assigneeId, displayName: assigneeDisplayName }
         }
       });
@@ -2249,11 +2249,11 @@ export function* createBackupSaga({ showLoading = true }) {
     const data = yield callApi(api.createBackup);
     saveAs(data, "backup.gz");
     yield put({
-      type: CREATE_BACKUP_SUCCESS,
+      type: CREATE_BACKUP_SUCCESS
     });
   }, showLoading);
   yield put({
-    type: ENABLE_ALL_LIVE_UPDATES,
+    type: ENABLE_ALL_LIVE_UPDATES
   });
 }
 
@@ -2267,14 +2267,14 @@ export function* restoreBackupSaga({ file, showLoading = true }) {
     const prefix = env === "Test" ? "/test" : "/prod";
     yield call(api.restoreFromBackup, prefix, token, file);
     yield put({
-      type: RESTORE_BACKUP_SUCCESS,
+      type: RESTORE_BACKUP_SUCCESS
     });
     yield put({
       type: LOGOUT
     });
   }, showLoading);
   yield put({
-    type: ENABLE_ALL_LIVE_UPDATES,
+    type: ENABLE_ALL_LIVE_UPDATES
   });
 }
 

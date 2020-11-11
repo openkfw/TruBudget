@@ -55,9 +55,8 @@ const ConfirmationDialog = props => {
     requestedPermissions,
     failedAction,
     onCancel,
-    listPermissionsRequired,
+    isListPermissionsRequiredFromApi,
     isFetchingPermissions,
-    permissionsEmpty,
     userList,
     fetchUserAssignments,
     cleanUserAssignments,
@@ -70,16 +69,15 @@ const ConfirmationDialog = props => {
     setHasAssignments(hasUserAssignments(userAssignments));
   }, [userAssignments]);
 
-  const isPermissionNeeded = originalActions.some(
-    action =>
-      !_isEmpty(action.payload.project) ||
-      !_isEmpty(action.payload.subproject) ||
-      !_isEmpty(action.payload.workflowitem)
-  );
-
   // If permissions are not fetched yet show Loading indicator
-  if ((isFetchingPermissions || permissionsEmpty || listPermissionsRequired) && isPermissionNeeded) {
-    return buildDialogWithLoadingIndicator(classes, open, listPermissionsRequired, onCancel, requestedPermissions);
+  if (isFetchingPermissions) {
+    return buildDialogWithLoadingIndicator(
+      classes,
+      open,
+      isListPermissionsRequiredFromApi,
+      onCancel,
+      requestedPermissions
+    );
   }
 
   let title, content;
@@ -381,10 +379,16 @@ const ConfirmationDialog = props => {
   );
 };
 
-function buildDialogWithLoadingIndicator(classes, open, listPermissionsRequired, onCancel, requestedPermissions) {
+function buildDialogWithLoadingIndicator(
+  classes,
+  open,
+  isListPermissionsRequiredFromApi,
+  onCancel,
+  requestedPermissions
+) {
   return (
     <Dialog classes={{ paper: classes.paperRoot }} open={open} data-test="confirmation-dialog">
-      {listPermissionsRequired ? (
+      {isListPermissionsRequiredFromApi ? (
         <React.Fragment>
           <DialogTitle data-test="confirmation-dialog-title">{strings.confirmation.permissions_required}</DialogTitle>
           <DialogContent className={classes.dialogContent}>
