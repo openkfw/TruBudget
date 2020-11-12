@@ -164,7 +164,6 @@ const mapDispatchToProps = dispatch => {
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, name, fileName) => dispatch(storeWorkflowDocument(payload, name, fileName)),
     defaultWorkflowExchangeRate: exchangeRate => dispatch(defaultWorkflowExchangeRate(exchangeRate)),
-    // delete storeWorkflowAssignee because it is in saga
     storeWorkflowAssignee: assignee => dispatch(storeWorkflowAssignee(assignee)),
     assignWorkflowItem: (
       projectId,

@@ -1,7 +1,5 @@
-import React from "react";
-
+import React, { useEffect } from "react";
 import _isEmpty from "lodash/isEmpty";
-
 import CreationDialog from "../Common/CreationDialog";
 import strings from "../../localizeStrings";
 import SubprojectDialogContent from "./SubprojectDialogContent";
@@ -56,8 +54,20 @@ const SubprojectDialog = props => {
     hideSubprojectDialog,
     editDialogShown,
     creationDialogShown,
-    subProjects
+    subProjects,
+    storeSubProjectValidator,
+    storeFixedWorkflowitemType
   } = props;
+
+  useEffect(() => {
+    if (editDialogShown) {
+      // Copy not changeable subproject data to subprojectToAdd to keep comparing consistent
+      const selectedSubproject = subProjects.find(s => s.data.id === subprojectToAdd.id).data;
+      storeSubProjectValidator(selectedSubproject.validator);
+      storeFixedWorkflowitemType(selectedSubproject.workflowitemType);
+    }
+  }, [editDialogShown, subProjects, subprojectToAdd, storeSubProjectValidator, storeFixedWorkflowitemType]);
+
   const changes = compareObjects(subProjects, subprojectToAdd);
   const hasChanges = !isEmptyDeep(changes);
 

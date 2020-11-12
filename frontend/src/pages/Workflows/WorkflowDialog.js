@@ -251,14 +251,30 @@ const WorkflowDialog = props => {
     currentUser,
     storeWorkflowAssignee,
     hasSubprojectValidator,
-    subprojectValidator
+    subprojectValidator,
+    storeWorkflowitemType,
+    hasFixedWorkflowitemType,
+    fixedWorkflowitemType,
+    workflowitemType
   } = props;
 
   useEffect(() => {
     if (creationDialogShown) {
       storeWorkflowAssignee(hasSubprojectValidator ? subprojectValidator : currentUser);
+      storeWorkflowitemType(hasFixedWorkflowitemType ? fixedWorkflowitemType : props.workflowToAdd.workflowitemType);
     }
-  }, [storeWorkflowAssignee, currentUser, creationDialogShown, hasSubprojectValidator, subprojectValidator]);
+  }, [
+    storeWorkflowAssignee,
+    currentUser,
+    creationDialogShown,
+    hasSubprojectValidator,
+    subprojectValidator,
+    storeWorkflowitemType,
+    hasFixedWorkflowitemType,
+    fixedWorkflowitemType,
+    workflowitemType,
+    props.workflowToAdd.workflowitemType
+  ]);
 
   const specifcProps = editDialogShown
     ? {
