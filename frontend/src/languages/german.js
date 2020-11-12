@@ -170,7 +170,12 @@ const de = {
     subproject_select_button: "Select",
     subproject_title: "Sub-Project title",
     subproject_title_description: "Name of the sub-project",
-    subproject_searchtext: "Subprojekte durchsuchen"
+    subproject_searchtext: "Subprojekte durchsuchen",
+    subproject_any_workflowitem_type: "Workflowitems erlauben, allgemeinen oder eingeschränkten Typ auszuwählen",
+    subproject_general_workflowitem_type: "Nur Workflow-Elemente vom Typ 'general' zulassen",
+    subproject_restricted_workflowitem_type:
+      "Nur Workflow-Elemente vom Typ 'eingeschränkt' zulassen. Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
+    subproject_validator: "Subproject validator"
   },
 
   workflow: {

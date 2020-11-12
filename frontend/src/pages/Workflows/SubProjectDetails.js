@@ -152,7 +152,7 @@ const SubProjectDetails = ({
                   <SettingsIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={fixedWorkflowitemType} secondary={"WORKFLOWITEMTYPE"} />
+              <ListItemText primary={fixedWorkflowitemType} secondary={strings.workflow.workflowitem_type} />
             </ListItem>
           ) : null}
         </List>
@@ -255,7 +255,7 @@ const SubProjectDetails = ({
                   <PersonIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={subprojectValidator} secondary={"VALIDATOR"} />
+              <ListItemText primary={subprojectValidator} secondary={strings.subproject.subproject_validator} />
             </ListItem>
           ) : null}
         </List>

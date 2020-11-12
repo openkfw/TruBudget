@@ -6,17 +6,17 @@ import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
 import { getCurrencies } from "../../helper";
 import MenuItem from "@material-ui/core/MenuItem";
-import {
-  types as workflowitemTypes,
-  typesDescription as workflowitemTypesescription
-} from "../Workflows/workflowitemTypes";
 import Tooltip from "@material-ui/core/Tooltip";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import CancelIcon from "@material-ui/icons/Cancel";
 import IconButton from "@material-ui/core/IconButton";
 
-const subprojectWorkflowItemTypes = ["any", ...workflowitemTypes];
-const subprojectWorkflowItemTypesDescription = { notSelected: "any - Description", ...workflowitemTypesescription };
+const subprojectWorkflowItemTypes = ["any", "general", "restricted"];
+const subprojectWorkflowItemTypesDescription = {
+  any: strings.subproject.subproject_any_workflowitem_type,
+  general: strings.subproject.subproject_general_workflowitem_type,
+  restricted: strings.subproject.subproject_restricted_workflowitem_type
+};
 
 const styles = {
   dropdown: {
@@ -79,13 +79,13 @@ const getDropdownValidator = users => {
 const getWorkflowitemTypeInfo = type => {
   switch (type) {
     case "any":
-      return subprojectWorkflowItemTypesDescription.notSelected;
+      return subprojectWorkflowItemTypesDescription.any;
     case "general":
       return subprojectWorkflowItemTypesDescription.general;
     case "restricted":
       return subprojectWorkflowItemTypesDescription.restricted;
     default:
-      return subprojectWorkflowItemTypesDescription.notSelected;
+      return subprojectWorkflowItemTypesDescription.any;
   }
 };
 
@@ -136,7 +136,7 @@ const SubprojectDialogContent = props => {
             <div style={styles.inputContainer}>
               <Dropdown
                 style={styles.dropdown}
-                floatingLabel={"VALIDATOR - title"}
+                floatingLabel={strings.subproject.subproject_validator}
                 value={props.selectedValidator}
                 onChange={value => props.storeSubProjectValidator(value)}
                 id="assignee"

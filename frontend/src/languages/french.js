@@ -172,7 +172,12 @@ const fr = {
     subproject_select_button: "Sélectionnez",
     subproject_title_description: "Titre de la composante",
     subproject_title: "Composante",
-    subproject_searchtext: "Recherche de composantes"
+    subproject_searchtext: "Recherche de composantes",
+    subproject_any_workflowitem_type: "Autoriser les éléments de workflow à sélectionner un type général ou restreint",
+    subproject_general_workflowitem_type: "Autoriser uniquement les éléments de workflow de type général",
+    subproject_restricted_workflowitem_type:
+      "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
+    subproject_validator: "Validateur de composante"
   },
 
   workflow: {
