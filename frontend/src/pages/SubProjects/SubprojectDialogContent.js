@@ -4,7 +4,6 @@ import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
-import AssigneeSelection from "../Common/AssigneeSelection";
 import { getCurrencies } from "../../helper";
 import MenuItem from "@material-ui/core/MenuItem";
 import {
@@ -44,11 +43,6 @@ const styles = {
     width: "100%",
     display: "flex",
     justifyContent: "space-evenly"
-    // justifyContent: "space-between"
-  },
-  validatorContainer: {
-    marginTop: 8,
-    minWidth: 200
   }
 };
 
@@ -157,18 +151,6 @@ const SubprojectDialogContent = props => {
                 <CancelIcon color="action" />
               </IconButton>
             </div>
-
-            {/* <div style={styles.validatorContainer}>
-              <AssigneeSelection
-                allowNoSelection={true}
-                assigneeId={props.selectedValidator}
-                users={props.users}
-                title={"title"}
-                assign={(id, name) => {
-                  props.storeSubProjectValidator(id);
-                }}
-              />
-            </div> */}
           </div>
         ) : null}
       </div>

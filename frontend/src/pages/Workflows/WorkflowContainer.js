@@ -206,6 +206,8 @@ const mapStateToProps = state => {
     status: state.getIn(["workflow", "status"]),
     amount: state.getIn(["workflow", "amount"]),
     currency: state.getIn(["workflow", "currency"]),
+    subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
+    fixedWorkflowitemType: state.getIn(["workflow", "fixedWorkflowitemType"]),
     assignee: state.getIn(["workflow", "assignee"]),
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),

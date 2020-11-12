@@ -18,7 +18,10 @@ import BarChartIcon from "@material-ui/icons/BarChart";
 import DoneIcon from "@material-ui/icons/Check";
 import DateIcon from "@material-ui/icons/DateRange";
 import AssigneeIcon from "@material-ui/icons/Group";
+import PersonIcon from "@material-ui/icons/Person";
+import SettingsIcon from "@material-ui/icons/Settings";
 import _isUndefined from "lodash/isUndefined";
+import _isEmpty from "lodash/isEmpty";
 import React from "react";
 
 import { statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
@@ -105,7 +108,9 @@ const SubProjectDetails = ({
   canCloseSubproject,
   isDataLoading,
   openAnalyticsDialog,
-  projectedBudgets
+  projectedBudgets,
+  subprojectValidator,
+  fixedWorkflowitemType
 }) => {
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
@@ -140,7 +145,18 @@ const SubProjectDetails = ({
             </ListItemAvatar>
             <ListItemText primary={currency} secondary={strings.subproject.subproject_currency} />
           </ListItem>
+          {!_isEmpty(fixedWorkflowitemType) ? (
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <SettingsIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={fixedWorkflowitemType} secondary={"WORKFLOWITEMTYPE"} />
+            </ListItem>
+          ) : null}
         </List>
+
         <div style={styles.projectedBudget} data-test="subproject-projected-budget">
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
           {isDataLoading ? (
@@ -232,6 +248,16 @@ const SubProjectDetails = ({
               secondary={strings.common.assignee}
             />
           </ListItem>
+          {!_isEmpty(subprojectValidator) ? (
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <PersonIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={subprojectValidator} secondary={"VALIDATOR"} />
+            </ListItem>
+          ) : null}
         </List>
       </Card>
       <SubProjectAnalyticsDialog
