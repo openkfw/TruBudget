@@ -51,7 +51,7 @@ const Navbar = ({
   return (
     <div>
       <AppBar classes={classes} position="absolute">
-        <Toolbar>
+        <Toolbar id="back-to-top-anchor">
           <LeftNavbarNavigation toggleSidebar={toggleSidebar} />
           <MainNavbarNavigation
             productionActive={productionActive}
