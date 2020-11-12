@@ -19,9 +19,7 @@ const handleCreate = props => {
   );
   onDialogCancel();
 
-  storeSnackbarMessage(
-    strings.formatString(strings.subproject.subproject_permissions_warning, shortenedDisplayName(displayName))
-  );
+  storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));
 };
 
 const handleEdit = props => {
@@ -41,7 +39,7 @@ const handleEdit = props => {
       changes.deletedProjectedBudgets
     );
     storeSnackbarMessage(
-      strings.common.edited + " " + strings.common.subproject + " " + shortenedDisplayName(subprojectToAdd.displayName)
+      strings.formatString(strings.snackbar.update_succeed_message, shortenedDisplayName(subprojectToAdd.displayName))
     );
   }
 

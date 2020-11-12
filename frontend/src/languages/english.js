@@ -226,7 +226,6 @@ const en = {
     subproject_currency: "Subproject currency",
     subproject_edit_title: "Edit subproject",
     subproject_permissions_title: "Set permissions for subproject",
-    subproject_permissions_warning: "No permissions allocated for the subproject {0}",
     subproject_preview: "Subproject preview",
     subproject_select_button: "Select",
     subproject_title_description: "Name of the subproject",
@@ -260,6 +259,8 @@ const en = {
     workflow_document_name: "Document Name",
     workflow_document_validate: "Validate",
     workflow_document_validated: "Validated",
+    workflow_document_validation_ok: "Identical document",
+    workflow_document_validation_not_ok: "Different document",
     workflow_documents: "Documents",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
@@ -269,7 +270,6 @@ const en = {
     workflow_no_documents: "No documents",
     workflow_none: "None",
     workflow_permissions_title: "Set permissions for workflowitem",
-    workflow_permissions_warning: "No permissions allocated for the workflowitem {0}",
     workflow_redacted: "Redacted",
     workflow_selection: "{0} workflowitems are selected",
     workflow_submit_for_review: "Submit for Review",
@@ -288,6 +288,16 @@ const en = {
     workflowitem_type_general: "Create a workflowitem of type general.",
     workflowitem_type_restricted:
       "When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions."
+  },
+
+  snackbar: {
+    update_succeed_message: "Successfully modified {0}",
+    creation_succeed_message: "Successfully created {0}",
+    permissions_warning: "No permissions allocated for {0}"
+  },
+
+  searchBar: {
+    quick_search: "Quick search"
   },
 
   preview: {
@@ -397,6 +407,7 @@ const en = {
     edit_transaction: "Transaction {0} got adapted",
     edit_workflow: "Workflowitem {0} got adapted",
     email_saved: "Email {0} saved",
+    next_page: "Next page",
     no_permissions: "(No permissions to see further details)",
     notification_card_text:
       "Please find your current notifications below. These display action items or information items to be dealt with.",
@@ -409,6 +420,7 @@ const en = {
     notification_table_subproject: "Subproject",
     notification_table_view: "View",
     notification_title: "Notifications",
+    previous_page: "Previous page",
     project_archive: "Project {0} was archived",
     project_assign: "Project {0} was assigned to you",
     project_assigned: "Project {0} was assigned to you",
@@ -424,6 +436,7 @@ const en = {
     read_all: "Read All",
     review_transaction: "You are assigned to review the transaction {0}",
     review_workflow: "You are assigned to review the workflowitem {0}",
+    rows_per_page: "Rows per page",
     save_email_error: "Couldn't save email",
     subproject_archive: "Subproject {0} was archived",
     subproject_assign: "Subproject {0} was assigned to you",
@@ -462,6 +475,8 @@ const en = {
     edit_status: "Status of workflowitem {0} changed to {1}",
     edit_subproject: "Amount of {0} increased to {1}",
     edit_workflowName: "Name of workflowitem {0} changed to {1} ",
+    end_date: "End date",
+    event_type: "Event type",
     first_sort: "Moved {0} to first position",
     project_assign: "{0} assigned project {1} to {2}",
     project_close: "{0} closed project {1}",
@@ -474,7 +489,9 @@ const en = {
     project_revokePermission_details: "{0} revoked permission {1} from {2} on {3}",
     project_revokePermission: "{0} revoked permission {1} from {2}",
     project_update: "{0} changed project {1} ",
+    publisher: "Publisher",
     sort: "Moved {0} after {1}",
+    start_date: "Start date",
     subproject_assign: "{0} assigned subproject {1} to {2}",
     subproject_close: "{0} closed subproject {1}",
     subproject_create: "{0} created subproject {1}",

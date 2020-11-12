@@ -107,6 +107,9 @@ const NotificationList = props => {
           count={notificationCount}
           page={currentPage}
           onChangePage={(_, nextPage) => fetchNotifications(nextPage)}
+          backIconButtonText={strings.notification.previous_page}
+          nextIconButtonText={strings.notification.next_page}
+          labelRowsPerPage={strings.notification.rows_per_page}
         />
       </div>
     </Card>

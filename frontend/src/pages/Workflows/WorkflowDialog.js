@@ -60,9 +60,7 @@ const handleCreate = props => {
     dueDate,
     workflowitemType
   );
-  storeSnackbarMessage(
-    strings.formatString(strings.workflow.workflow_permissions_warning, shortenedDisplayName(displayName))
-  );
+  storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));
   onDialogCancel();
 };
 
@@ -94,7 +92,10 @@ const handleEdit = props => {
     editWorkflowItem(projectId, subprojectId, workflowToAdd.id, changes);
   }
   storeSnackbarMessage(
-    strings.common.edited + " " + strings.common.workflowitem + " " + shortenedDisplayName(workflowToAdd.displayName)
+    strings.formatString(
+      strings.snackbar.update_succeed_message,
+      shortenedDisplayName(originalWorkflowItem.displayName)
+    )
   );
   onDialogCancel();
 };

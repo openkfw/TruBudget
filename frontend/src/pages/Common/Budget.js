@@ -40,7 +40,7 @@ const renderProjectedBudgetAmount = ({
     <TableCell align="right" data-test="saved-projected-budget-amount">
       {isEditing && editIndex === currIndex ? (
         <TextField
-          label={strings.common.projected_budget}
+          label={strings.common.total_budget}
           value={budgetAmountEdit}
           onChange={e => {
             if (numberSignsRegex.test(e.target.value)) {
@@ -205,7 +205,7 @@ const renderAddProjectedBudget = ({
         {getCurrencyMenuItems(currencies)}
       </DropDown>
       <TextField
-        label={strings.common.projected_budget}
+        label={strings.common.total_budget}
         data-test="projected-budget"
         disabled={isEditing}
         value={budgetAmountAdd}
@@ -278,7 +278,7 @@ const Budget = props => {
         <TableHead>
           <TableRow>
             <TableCell>{strings.common.organization}</TableCell>
-            <TableCell align="right">{strings.common.projected_budget}</TableCell>
+            <TableCell align="right">{strings.common.total_budget}</TableCell>
             <TableCell align="right">{strings.common.actions}</TableCell>
           </TableRow>
         </TableHead>

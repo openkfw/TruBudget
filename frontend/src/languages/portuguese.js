@@ -229,7 +229,6 @@ const pt = {
     subproject_currency: "Moeda do subprojeto",
     subproject_edit_title: "Editar subprojeto",
     subproject_permissions_title: "Configurar permissões para subprojeto",
-    subproject_permissions_warning: "Sem permissões atribuídas para o subprojecto {0}",
     subproject_preview: "Pré-visualização de subprojeto",
     subproject_select_button: "Selecionar",
     subproject_title_description: "Descrição do subprojeto",
@@ -263,6 +262,8 @@ const pt = {
     workflow_document_name: "Nome do documento",
     workflow_document_validate: "Validar",
     workflow_document_validated: "Validado",
+    workflow_document_validation_ok: "Documento idêntico",
+    workflow_document_validation_not_ok: "Documento diferente",
     workflow_documents: "Documentos",
     workflow_enable_sort: "Ordenar",
     workflow_fingerprint: "Miniatura",
@@ -272,7 +273,6 @@ const pt = {
     workflow_no_documents: "Não há documentos",
     workflow_none: "Nenhum",
     workflow_permissions_title: "Configurar permissões para item de workflow",
-    workflow_permissions_warning: "Sem permissões alocadas para o item de workflow {0}",
     workflow_redacted: "Editado por privacidade",
     workflow_selection: "Você selecionaou {0} itens de workflows",
     workflow_submit_for_review: "Enviar para revisão",
@@ -291,6 +291,16 @@ const pt = {
     workflowitem_type_general: "Criar un item de workflow do tipo general.",
     workflowitem_type_restricted:
       "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização."
+  },
+
+  snackbar: {
+    update_succeed_message: "Modificado com sucesso {0}",
+    creation_succeed_message: "{0} criado com sucesso",
+    permissions_warning: "Nenhuma permissão alocada para {0}"
+  },
+
+  searchBar: {
+    quick_search: "Pesquisa rápida"
   },
 
   preview: {
@@ -394,6 +404,9 @@ const pt = {
   },
 
   notification: {
+    next_page: "Próximo site",
+    previous_page: "Site anterior",
+    rows_per_page: "Linhas por página",
     create_transaction: "Transação {0} criada ",
     create_workflow: "Item de workflow {0} criado ",
     done_transaction: "Status da transação {0} alterado para Finalizado",
@@ -466,6 +479,8 @@ const pt = {
     edit_status: "Status do workflow {0} mudou para {1}",
     edit_subproject: "Valor de {0} subiu para {1}",
     edit_workflowName: "Nome do item de workflow {0} mudou para {1} ",
+    end_date: "data final",
+    event_type: "Event Typ",
     first_sort: "{0} foi movido para a primeira posição",
     project_assign: "{0} atribuiu projeto {1} para {2}",
     project_close: "Projeto fechado",
@@ -478,7 +493,9 @@ const pt = {
     project_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
     project_revokePermission: "{0} revogou permissão {1} de {2}",
     project_update: "{0} modificou o projeto {1} ",
+    publisher: "Editor",
     sort: "{0} foi movido após {1}",
+    start_date: "Data de início",
     subproject_assign: "{0} atribuiu subprojeto {1} para {2}",
     subproject_close: "{0} fechou subprojeto {1}",
     subproject_create: "{0} criou subprojeto {1}",

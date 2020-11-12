@@ -163,7 +163,6 @@ const de = {
     subproject_completion_string: "{0} von {1} erledigt",
     subproject_currency: "German: Sub-project Currency",
     subproject_permissions_title: "German: Set permissions for subproject",
-    subproject_permissions_warning: "Dem Teilprojekt {0} wurden noch keine Berechtigungen zugewiesen",
     subproject_preview: "German: Subproject Preview",
     subproject_close_info: "German: At least one workflowitem has not been closed yet.",
     subproject_close_not_allowed: "Sie haben keine Berechtigung das Projekt zu schließen",
@@ -200,6 +199,8 @@ const de = {
     workflow_document_name: "Document Name",
     workflow_document_validate: "Validate",
     workflow_document_validated: "Validated",
+    workflow_document_validation_ok: "Identisches Dokument",
+    workflow_document_validation_not_ok: "Unterschiedliches DoKument",
     workflow_documents: "Documents",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "German: Fingerprint",
@@ -209,7 +210,6 @@ const de = {
     workflow_no_documents: "No documents",
     workflow_none: "None",
     workflow_permissions_title: "German: Set permissions for workflowitem",
-    workflow_permissions_warning: "Dem Workflow-Item {0} wurden noch keine Berechtigungen zugewiesen",
     workflow_redacted: "German: Redacted",
     workflow_selection: "German: You have selected {0} workflows",
     workflow_submit_for_review: "Submit for Review",
@@ -228,6 +228,16 @@ const de = {
     workflowitem_type_general: "Legen Sie ein Workflow-Item vom Typ 'general' an.",
     workflowitem_type_restricted:
       "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte."
+  },
+
+  snackbar: {
+    update_succeed_message: "{0} erfolgreich geändert",
+    creation_succeed_message: "{0} erfolgreich erstellt",
+    permissions_warning: "Noch keine Berechtigungen für {0} gesetzt"
+  },
+
+  searchBar: {
+    quick_search: "Schnellsuche"
   },
 
   users: {
@@ -393,6 +403,9 @@ const de = {
   },
 
   notification: {
+    next_page: "Nächste Seite",
+    previous_page: "Vorherige Seite",
+    rows_per_page: "Einträge pro Seite",
     create_transaction: "German: Transaction {0} created ",
     create_workflow: "German: Workflow {0} created ",
     done_transaction: "German: Status of transaction {0} set to Done",
@@ -465,6 +478,8 @@ const de = {
     edit_status: "Status of workflowitem {0} changed to {1}",
     edit_subproject: "Amount of {0} increased to {1}",
     edit_workflowName: "Name of workflowitem {0} changed to {1} ",
+    end_date: "End-Datum",
+    event_type: "Event Typ",
     first_sort: "Moved {0} to first position",
     project_assign: "German: {0} assigned project {1} to {2}",
     project_close: "Schließe Project",
@@ -477,7 +492,9 @@ const de = {
     project_revokePermission_details: "{0} entzog Rechte {1} von {2} für {3}",
     project_revokePermission: "German: {0} revoked permission {1} from {2}",
     project_update: "{0} veränderte Projekt {1} ",
+    publisher: "Herausgeber",
     sort: "Moved {0} after {1}",
+    start_date: "Start-Datum",
     subproject_assign: "German: {0} assigned project {1} to {2}",
     subproject_close: "German: {0} closed subproject {1}",
     subproject_create: "{0} erstellte Subprojekt {1}",

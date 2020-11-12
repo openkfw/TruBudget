@@ -9,6 +9,7 @@ import React from "react";
 import { withStyles } from "@material-ui/core";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import strings from "../../localizeStrings";
 
 const styles = {
   searchBar: {
@@ -87,7 +88,7 @@ const Searchbar = ({
         {!isSearchBarDisplayedByDefault ? (
           // Lupe button to toggle searchbar
           <Tooltip
-            title="Quick search"
+            title={strings.searchBar.quick_search}
             disableHoverListener={searchDisabled}
             disableFocusListener={searchDisabled}
             disableTouchListener={searchDisabled}
