@@ -179,6 +179,7 @@ export RPC_PORT=8000
 export PORT=8080
 export ROOT_SECRET='asdf'
 export ORGANIZATION_VAULT_SECRET="asdf"
+export RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
 ```
 
 - Windows Command Prompt / PowerShell
@@ -190,6 +191,7 @@ SET RPC_PORT=8000
 SET PORT=8080
 SET ROOT_SECRET='asdf'
 SET ORGANIZATION_VAULT_SECRET="asdf"
+SET RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
 ```
 
 2. Install node-modules
@@ -214,7 +216,7 @@ npm run dev
 ```
 
 _On Windows_:
-Unfortunately hot reloading using nodemon is currently not working properly on Windows. It's therefore recommended to open two open 2 separate terminal windows. Navigate to the api folder and set the environment variables as described above.
+Unfortunately hot reloading using nodemon is currently not working properly on Windows. It's therefore recommended to open two open 2 separate terminal windows. Navigate to the api folder and set the environment variables as described above. Make sure that the above environment variables are set in both terminal windows.
 In the first terminal window run
 
 ```bash
@@ -252,8 +254,9 @@ export ORGANIZATION=ACMECorp
 - Windows Command Prompt / PowerShell
 
 ```bash
-SET API_PORT = 8080
-SET ORGANIZATION = ACMECorp
+SET API_PORT=8080
+SET ORGANIZATION=ACMECorp
+SET ROOT_SECRET='asdf'
 ```
 
 2. Install node-modules
