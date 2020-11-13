@@ -32,6 +32,22 @@
       "request": "attach",
       "name": "Attach by Process ID",
       "processId": "${command:PickProcess}"
+    },
+    {
+      "name": "Launch provisioning",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/provisioning",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "debug"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "API_PORT": "8080",
+        "ORGANIZATION": "ACMECoro"
+      }
     }
   ]
 }
