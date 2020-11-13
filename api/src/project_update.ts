@@ -61,7 +61,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: { type: "string", enum: ['1.0'], example: "1.0" },
           data: {
             type: "object",
             required: ["projectId"],
