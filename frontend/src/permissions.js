@@ -53,7 +53,7 @@ export const globalIntentOrder = [
 export const projectIntentOrder = [
   {
     name: "view",
-    intents: ["project.viewSummary", "project.viewDetails"]
+    intents: ["project.intent.listPermissions", "project.viewSummary", "project.viewDetails"]
   },
   {
     name: "write",
@@ -61,14 +61,18 @@ export const projectIntentOrder = [
   },
   {
     name: "admin",
-    intents: ["project.intent.listPermissions", "project.intent.grantPermission", "project.intent.revokePermission"]
+    intents: ["project.intent.grantPermission", "project.intent.revokePermission"]
   }
 ];
 
 export const subProjectIntentOrder = [
   {
     name: "view",
-    intents: ["subproject.viewSummary", "subproject.viewDetails"]
+    intents: [
+      "subproject.intent.listPermissions",
+      "subproject.viewSummary",
+      "subproject.viewDetails"
+    ]
   },
   {
     name: "write",
@@ -81,17 +85,13 @@ export const subProjectIntentOrder = [
   },
   {
     name: "admin",
-    intents: [
-      "subproject.intent.listPermissions",
-      "subproject.intent.grantPermission",
-      "subproject.intent.revokePermission"
-    ]
+    intents: ["subproject.intent.grantPermission", "subproject.intent.revokePermission"]
   }
 ];
 export const workflowItemIntentOrder = [
   {
     name: "view",
-    intents: ["workflowitem.view"]
+    intents: ["workflowitem.intent.listPermissions", "workflowitem.view"]
   },
   {
     name: "write",
@@ -99,10 +99,6 @@ export const workflowItemIntentOrder = [
   },
   {
     name: "admin",
-    intents: [
-      "workflowitem.intent.listPermissions",
-      "workflowitem.intent.grantPermission",
-      "workflowitem.intent.revokePermission"
-    ]
+    intents: ["workflowitem.intent.grantPermission", "workflowitem.intent.revokePermission"]
   }
 ];
