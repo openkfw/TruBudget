@@ -101,7 +101,7 @@ View details like budget distribution or task status of a subproject.
 
 **Description:**
 
-Create a new subproject defining title, comment, currency and budget.
+Create a new subproject defining title, comment, currency, budget, validator and workflowitem type.
 
 **Notes:**
 
@@ -109,6 +109,8 @@ Create a new subproject defining title, comment, currency and budget.
 - Do not forget to permit other users to view/edit the newly created subproject.
 - You have to add at least one budget before you can submit the project.
 - To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the blockchain.
+- The validator is an optional field
+- The workflowitem type is an optional field
 
 **Instructions:**
 
@@ -117,7 +119,7 @@ Create a new subproject defining title, comment, currency and budget.
 3. Click the blue magnifier icon in the bottom right corner of a project
 4. Click the '+' button on the right to open the creation dialog
 
-![create a  subproject](../../uploads/Screenshots/create_subproject.jpg)
+![create a  subproject](../../uploads/Screenshots/subproject_create.jpg)
 
 5. Fill in the required fields:
 
@@ -125,14 +127,17 @@ Create a new subproject defining title, comment, currency and budget.
    - "Comment": A little description or comment refering to the subproject
    - "Organization": Organization that the budget belongs to
    - "Currency": The currency of the organization's budget
+   - [Optional]"Validator": Select a user identity
+     1. Defines the default assignee of each workflowitem created in this subproject
+     1. Defines the only user who is allowed to close workflowitems in this subproject
+   - [Optional]"Workflowitem type": Select a type which should be applied to all workflowitems in thios subproject. Workflowitems behave differently according to their type.
+     - general: A workflowitem of type general will be created
+     - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.
 
 6. Add the projected budget of the organization by clicking the "+" symbol
-   ![create a  project](../../uploads/Screenshots/add_subproject_2.jpeg)
    After this, the entered budget will appear on the screen
-   ![create a  project](../../uploads/Screenshots/add_subproject_3.jpeg)
-
+   ![Add organization to subproject](../../uploads/Screenshots/subproject_add_orga.jpg)
 7. Click the "Submit"-button to create a new subproject.
-   ![create a  project](../../uploads/Screenshots/add_subproject_4.jpeg)
 
 ## Update a subproject
 
@@ -144,6 +149,8 @@ Update details like budget amount or title of a subproject.
 
 - The pen icon can only be viewed if the current user has update permissions.
 - The pen icon disappear if the subproject is closed
+- Updating the workflowitem type is not possible
+- Updating the validator is not possible
 
 **Instructions:**
 
