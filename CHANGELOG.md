@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed a bug where the confirmation dialog persists after pressing the browser's back button [#544](https://github.com/openkfw/TruBudget/issues/544)
 <!-- ### Security -->
 
+## [1.17.0] - 2020-11-13
+
+### Added
+
+- Added scroll back to top button [#609](https://github.com/openkfw/TruBudget/pull/609)
+
 ## [1.16.0] - 2020-11-12
 
 ### Added
