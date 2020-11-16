@@ -9,25 +9,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
-### Changed
-
-- Update french translations [#588](https://github.com/openkfw/TruBudget/pull/588)
+<!-- ### Changed -->
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
 
-### Fixed
+<!-- ### Fixed -->
 
-- Fixed a bug where the user needed list-permissions that are not necessary [#562](https://github.com/openkfw/TruBudget/issues/562)
-- Fixed a bug where the confirmation dialog persists after pressing the browser's back button [#544](https://github.com/openkfw/TruBudget/issues/544)
 <!-- ### Security -->
 
-## [1.16.0] - 2020-11-12
+## [1.16.0] - 2020-11-16
 
 ### Added
 
 - The export of the excel file is now available in all TruBudget languages [#567](https://github.com/openkfw/TruBudget/issues/567)
+- Added a validator for workflowitems which represents the assignee for all workflowitems within a subproject. The validator has to be set in the creation dialog of a subproject and cannot be edited afterwards [#572](https://github.com/openkfw/TruBudget/issues/572)
+- Added an option to permanently set the workflowitem type within a subproject. The workflowitem type has to be set in the creation dialog of a subproject and cannot be edited afterwards [#572](https://github.com/openkfw/TruBudget/issues/572)
+
+### Changed
+
+- Update french translations [#588](https://github.com/openkfw/TruBudget/pull/588)
+- Removed the close permissions for projects, subprojects and workflowitems. Now, only the specific assignee is permitted to close these. [#572](https://github.com/openkfw/TruBudget/issues/572)
+
+### Fixed
+
+- Fixed a bug where the user needed list-permissions that are not necessary [#562](https://github.com/openkfw/TruBudget/issues/562)
+- Fixed a bug where the confirmation dialog persists after pressing the browser's back button [#544](https://github.com/openkfw/TruBudget/issues/544)
 
 ## [1.15.0] - 2020-10-27
 
