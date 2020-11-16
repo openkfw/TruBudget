@@ -115,6 +115,7 @@ const SubProjectDetails = ({
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = unixTsToString(created);
+  const validator = users.find(user => user.id === subprojectValidator);
 
   const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
   return (
@@ -248,14 +249,14 @@ const SubProjectDetails = ({
               secondary={strings.common.assignee}
             />
           </ListItem>
-          {!_isEmpty(subprojectValidator) ? (
+          {!_isEmpty(validator) ? (
             <ListItem>
               <ListItemAvatar>
                 <Avatar>
                   <PersonIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={subprojectValidator} secondary={strings.subproject.subproject_validator} />
+              <ListItemText primary={validator.displayName} secondary={strings.subproject.subproject_validator} />
             </ListItem>
           ) : null}
         </List>
