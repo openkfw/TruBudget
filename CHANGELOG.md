@@ -24,13 +24,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - The export of the excel file is now available in all TruBudget languages [#567](https://github.com/openkfw/TruBudget/issues/567)
-- Added a validator for workflowitems which represents the assignee for all workflowitems within a subproject. The validator has to be set in the creation dialog of a subproject and cannot be edited afterwards [#572](https://github.com/openkfw/TruBudget/issues/572)
-- Added an option to permanently set the workflowitem type within a subproject. The workflowitem type has to be set in the creation dialog of a subproject and cannot be edited afterwards [#572](https://github.com/openkfw/TruBudget/issues/572)
+- Added a validator field on the subproject level [#572](https://github.com/openkfw/TruBudget/issues/572)
+- Added an option to set a fixed worklowitem type on subproject level [#572](https://github.com/openkfw/TruBudget/issues/572)
 
 ### Changed
 
 - Update french translations [#588](https://github.com/openkfw/TruBudget/pull/588)
-- Removed the close permissions for projects, subprojects and workflowitems. Now, only the specific assignee is permitted to close these. [#572](https://github.com/openkfw/TruBudget/issues/572)
+- Removed the close permissions on all levels. Now only the specific assignee is permitted to close these. [#572](https://github.com/openkfw/TruBudget/issues/572)
 
 ### Fixed
 
@@ -535,7 +535,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.15.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.16.0...master
+[1.16.0]: https://github.com/openkfw/TruBudget/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/openkfw/TruBudget/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/openkfw/TruBudget/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/openkfw/TruBudget/compare/v1.12.0...v1.13.0
