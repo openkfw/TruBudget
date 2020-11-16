@@ -24,6 +24,8 @@ const ka = {
     title: "ქვეპროექტები",
     id: "ქვეპროექტის ID",
     name: "ქვეპროექტის სახელი",
+    workflowitem_type: "Workflowitem ტიპი",
+    validator: "შემმოწმებელი",
   },
 
   workflowitem: {

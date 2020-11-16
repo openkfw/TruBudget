@@ -24,6 +24,8 @@ const fr = {
     title: "Composantes",
     id: "ID de la composante",
     name: "Nom de la composante",
+    workflowitem_type: "Type de l'étape de workflow",
+    validator: "Validateur",
   },
 
   workflowitem: {
