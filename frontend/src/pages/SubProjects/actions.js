@@ -17,6 +17,8 @@ export const SUBPROJECT_AMOUNT = "SUBPROJECT_AMOUNT";
 export const SUBPROJECT_COMMENT = "SUBPROJECT_COMMENT";
 export const SUBPROJECT_CURRENCY = "SUBPROJECT_CURRENCY";
 export const SUBPROJECT_ORGANIZATION = "SUBPROJECT_ORGANIZATION";
+export const SUBPROJECT_VALIDATOR = "SUBPROJECT_VALIDATOR";
+export const SUBPROJECT_WORKFLOWITEMTYPE = "SUBPROJECT_WORKFLOWITEMTYPE";
 
 export const ADD_SUBPROJECT_PROJECTED_BUDGET = "ADD_SUBPROJECT_PROJECTED_BUDGET";
 export const EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT = "EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT";
@@ -192,13 +194,24 @@ export function assignProject(projectId, projectDisplayName, assigneeId, assigne
   };
 }
 
-export function createSubProject(projectId, name, description, currency, projectedBudgets, showLoading = false) {
+export function createSubProject(
+  projectId,
+  name,
+  description,
+  currency,
+  validator,
+  workflowitemType,
+  projectedBudgets,
+  showLoading = false
+) {
   return {
     type: CREATE_SUBPROJECT,
     projectId,
     name,
     description,
     currency,
+    validator,
+    workflowitemType,
     projectedBudgets,
     showLoading
   };
@@ -236,6 +249,18 @@ export function storeSubProjectCurrency(currency) {
   return {
     type: SUBPROJECT_CURRENCY,
     currency: currency
+  };
+}
+export function storeSubProjectValidator(validator) {
+  return {
+    type: SUBPROJECT_VALIDATOR,
+    validator
+  };
+}
+export function storeFixedWorkflowitemType(workflowitemType) {
+  return {
+    type: SUBPROJECT_WORKFLOWITEMTYPE,
+    workflowitemType
   };
 }
 

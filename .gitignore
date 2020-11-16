@@ -4,7 +4,6 @@ DOCKER_REGISTRY_PASSWORD
 /.env
 *~
 *-audit.json
-.vscode/*
 Untitled*
 node_modules
 yarn-error.log

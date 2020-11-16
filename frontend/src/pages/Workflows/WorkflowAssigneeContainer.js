@@ -36,7 +36,8 @@ class WorkflowAssigneeContainer extends Component {
       disabled,
       workflowSortEnabled,
       status,
-      assignWorkflowitem
+      assignWorkflowitem,
+      hasSubprojectValidator
     } = this.props;
     const assignee = this.getWorkflowAssignee(workflowItems, workflowitemId);
 
@@ -44,7 +45,7 @@ class WorkflowAssigneeContainer extends Component {
       <div className={classes.assigneeContainer} data-test={`workflowitem-assignee-${workflowitemId}`}>
         <AssigneeSelection
           assigneeId={assignee}
-          disabled={disabled || workflowSortEnabled}
+          disabled={disabled || workflowSortEnabled || hasSubprojectValidator}
           users={users}
           title={title}
           assign={(assigneeId, assigneeDisplayName) =>
@@ -75,7 +76,8 @@ const mapStateToProps = state => {
     subprojectDisplayName: state.getIn(["workflow", "displayName"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"]),
-    assigner: state.getIn(["login", "id"])
+    assigner: state.getIn(["login", "id"]),
+    hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"])
   };
 };
 

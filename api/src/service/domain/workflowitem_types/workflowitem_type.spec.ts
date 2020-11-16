@@ -26,6 +26,7 @@ const workflowitemNoType: Workflowitem = {
   documents: [],
   permissions: {},
   log: [],
+  assignee: alice.id,
   additionalData: {},
 };
 const workflowitemRestricted: Workflowitem = {
@@ -37,6 +38,7 @@ const workflowitemRestricted: Workflowitem = {
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
+  assignee: alice.id,
   documents: [],
   permissions: {
     "workflowitem.intent.revokePermission": [alice.id],
@@ -48,7 +50,6 @@ const workflowitemRestricted: Workflowitem = {
 };
 
 describe("Check workflowitem's type behavior", () => {
-
   it("If workflowitem has no type, no error occurs", () => {
     const assigner = alice;
     const assignee = bob.id;
@@ -63,7 +64,12 @@ describe("Check workflowitem's type behavior", () => {
     if (Result.isErr(assignEvent)) {
       throw assignEvent;
     }
-    const workflowitemTypeEvents = applyWorkflowitemType(assignEvent, ctx, assigner, workflowitemNoType);
+    const workflowitemTypeEvents = applyWorkflowitemType(
+      assignEvent,
+      ctx,
+      assigner,
+      workflowitemNoType,
+    );
 
     assert.isTrue(Result.isOk(workflowitemTypeEvents), (workflowitemTypeEvents as Error).message);
   });
@@ -83,19 +89,28 @@ describe("Check workflowitem's type behavior", () => {
       if (Result.isErr(assignEvent)) {
         throw assignEvent;
       }
-      const workflowitemTypeEvents = applyWorkflowitemType(assignEvent, ctx, assigner, workflowitemRestricted);
+      const workflowitemTypeEvents = applyWorkflowitemType(
+        assignEvent,
+        ctx,
+        assigner,
+        workflowitemRestricted,
+      );
 
       assert.isTrue(Result.isOk(workflowitemTypeEvents), (workflowitemTypeEvents as Error).message);
       const newEvents = Result.unwrap(workflowitemTypeEvents);
 
       // Check if the permissions are granted
       assert.isTrue(
-        newEvents.some(event => event.type === "workflowitem_permission_granted" && event.grantee === bob.id),
+        newEvents.some(
+          (event) => event.type === "workflowitem_permission_granted" && event.grantee === bob.id,
+        ),
       );
 
       // Check if the permissions are revoked
       assert.isTrue(
-        newEvents.some(event => event.type === "workflowitem_permission_revoked" && event.revokee === alice.id),
+        newEvents.some(
+          (event) => event.type === "workflowitem_permission_revoked" && event.revokee === alice.id,
+        ),
       );
     });
 
@@ -113,12 +128,16 @@ describe("Check workflowitem's type behavior", () => {
       if (Result.isErr(assignEvent)) {
         throw assignEvent;
       }
-      const workflowitemTypeEvents = applyWorkflowitemType(assignEvent, ctx, assigner, workflowitemRestricted);
+      const workflowitemTypeEvents = applyWorkflowitemType(
+        assignEvent,
+        ctx,
+        assigner,
+        workflowitemRestricted,
+      );
 
       // NotAuthorized Error as the type can't be applied
       assert.isTrue(Result.isErr(workflowitemTypeEvents));
       assert.instanceOf(workflowitemTypeEvents, NotAuthorized);
     });
   });
-
 });

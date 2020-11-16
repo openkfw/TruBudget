@@ -19,7 +19,7 @@ import DoneIcon from "@material-ui/icons/Check";
 import DateIcon from "@material-ui/icons/DateRange";
 import AssigneeIcon from "@material-ui/icons/Group";
 import LabelIcon from "@material-ui/icons/Label";
-import _isUndefined from "lodash/isUndefined";
+import _isEmpty from "lodash/isEmpty";
 import React from "react";
 
 import { formattedTag, statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
@@ -110,8 +110,8 @@ const ProjectDetails = props => {
   } = props;
   const mappedStatus = statusMapping(projectStatus);
   const statusIcon = statusIconMapping[projectStatus];
-  const openSubprojects = subProjects.find(subproject => subproject.data.status === "open");
-  const closeDisabled = !(canClose && _isUndefined(openSubprojects)) || projectStatus === "closed";
+  const hasOpenSubprojects = !_isEmpty(subProjects.find(subproject => subproject.data.status === "open"));
+  const closeDisabled = !canClose || hasOpenSubprojects || projectStatus === "closed";
   const tags = displayTags(projectTags || []);
   return (
     <div style={styles.container}>
@@ -145,7 +145,7 @@ const ProjectDetails = props => {
           ) : null}
         </List>
         <div style={styles.projectedBudget} data-test="project-projected-budget">
-          <Typography variant="body1">{strings.common.projected_budget}</Typography>
+          <Typography variant="body1">{strings.common.total_budget}</Typography>
           {isDataLoading ? (
             <div />
           ) : projectProjectedBudgets.length > 0 ? (

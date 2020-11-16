@@ -32,6 +32,7 @@ const baseWorkflowitem: Workflowitem = {
   permissions: { "workflowitem.update": [alice, bob, charlie].map((x) => x.id) },
   log: [],
   additionalData: {},
+  assignee: alice.id,
   workflowitemType: "general",
 };
 
@@ -526,37 +527,6 @@ describe("update workflowitem: notifications", () => {
     const { newEvents } = Result.unwrap(result);
 
     assert.isTrue(
-      newEvents.some(
-        (event) => event.type === "notification_created" && event.recipient === bob.id,
-      ),
-    );
-  });
-
-  it("When a user updates an unassigned workflowitem, no notifications are issued", async () => {
-    const modification = {
-      description: "New description.",
-    };
-    const result = await updateWorkflowitem(
-      ctx,
-      alice,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      modification,
-      {
-        ...baseRepository,
-        getWorkflowitem: async (_workflowitemId) => ({
-          ...baseWorkflowitem,
-          description: "A description.",
-          assignee: undefined,
-        }),
-      },
-    );
-
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-    const { newEvents } = Result.unwrap(result);
-
-    assert.isFalse(
       newEvents.some(
         (event) => event.type === "notification_created" && event.recipient === bob.id,
       ),

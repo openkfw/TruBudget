@@ -18,7 +18,7 @@ interface InitialData {
   status: "open" | "closed";
   displayName: string;
   description: string;
-  assignee?: Identity;
+  assignee: Identity;
   thumbnail?: string;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
@@ -29,13 +29,9 @@ interface InitialData {
 
 const initialDataSchema = Joi.object({
   id: Project.idSchema.required(),
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
+  status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
+  description: Joi.string().allow("").required(),
   assignee: Joi.string(),
   thumbnail: Joi.string().allow(""),
   projectedBudgets: projectedBudgetListSchema.required(),
@@ -54,12 +50,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   project: initialDataSchema.required(),
 });
@@ -109,6 +101,6 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Project.Project>
 
   return Result.mapErr(
     Project.validate(project),
-    error => new EventSourcingError({ ctx, event, target: project }, error),
+    (error) => new EventSourcingError({ ctx, event, target: project }, error),
   );
 }

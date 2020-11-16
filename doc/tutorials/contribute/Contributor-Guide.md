@@ -121,6 +121,10 @@ sh setupGitSecrets.sh
 
 If you want to start developing on Trubudget, you need to setup the application locally. This guide tells you how to start the blockchain, start the API, load up some test data and start the frontend.
 
+### TypeScript
+
+If you are using global installation of TypeScript, please make sure you have at least 4.0.2 version.
+
 ### Blockchain
 
 The blockchain works as data layer for the Trubudget application. Therefore, we start by creating an instance of the blockchain.
@@ -175,6 +179,7 @@ export RPC_PORT=8000
 export PORT=8080
 export ROOT_SECRET='asdf'
 export ORGANIZATION_VAULT_SECRET="asdf"
+export RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
 ```
 
 - Windows Command Prompt / PowerShell
@@ -186,9 +191,17 @@ SET RPC_PORT=8000
 SET PORT=8080
 SET ROOT_SECRET='asdf'
 SET ORGANIZATION_VAULT_SECRET="asdf"
+SET RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
 ```
 
 2. Install node-modules
+
+- (Linux/Mac) Depending on your machine configuration, it might be necessary to install `autoconf` and `automake`
+
+```bash
+brew install autoconf
+brew install automake
+```
 
 ```bash
 npm install
@@ -203,7 +216,7 @@ npm run dev
 ```
 
 _On Windows_:
-Unfortunately hot reloading using nodemon is currently not working properly on Windows. It's therefore recommended to open two open 2 separate terminal windows. Navigate to the api folder and set the environment variables as described above.
+Unfortunately hot reloading using nodemon is currently not working properly on Windows. It's therefore recommended to open two open 2 separate terminal windows. Navigate to the api folder and set the environment variables as described above. Make sure that the above environment variables are set in both terminal windows.
 In the first terminal window run
 
 ```bash
@@ -241,8 +254,9 @@ export ORGANIZATION=ACMECorp
 - Windows Command Prompt / PowerShell
 
 ```bash
-SET API_PORT = 8080
-SET ORGANIZATION = ACMECorp
+SET API_PORT=8080
+SET ORGANIZATION=ACMECorp
+SET ROOT_SECRET='asdf'
 ```
 
 2. Install node-modules
@@ -311,13 +325,27 @@ Navigate to the frontend folder:
 cd ../frontend
 ```
 
-1. Install node-modules
+1. Set environment variables
+
+- Terminal Mac/Git Bash
+
+```bash
+export PORT=3000
+```
+
+- Windows Command Prompt / PowerShell
+
+```bash
+SET PORT=3000
+```
+
+2. Install node-modules
 
 ```bash
 npm install
 ```
 
-2. Start the frontend
+3. Start the frontend
 
 ```bash
 npm start
@@ -326,6 +354,11 @@ npm start
 The frontend should then be availaible at http://localhost:3000
 
 **Caution**: If you change the port of the api you may have to consider to change the proxy port in the `package.json` accordingly.
+
+**Note**: You do not need to run every project separately if you are developing on a single one. Just do following:
+ 1. go to a desired folder (e.g. _/api_)
+ 2. copy `.env.example` file and rename it to `.env`
+ 3. run ```sh startDev.sh``` in the folder to start dependent project(s)
 
 ## Tests
 

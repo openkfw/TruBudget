@@ -143,13 +143,19 @@ export function newWorkflowitemFromEvent(
   // Apply the event to the copied workflowitem:
   const mutationResult = eventModule.mutate(workflowitemCopy, eventCopy);
   if (Result.isErr(mutationResult)) {
-    return new EventSourcingError({ ctx, event, target: workflowitem }, mutationResult);
+    return new VError(
+      new EventSourcingError({ ctx, event, target: workflowitem }, mutationResult),
+      "mutation of workflowitem failed",
+    );
   }
 
   // Validate the modified workflowitem:
   const validationResult = Workflowitem.validate(workflowitemCopy);
   if (Result.isErr(validationResult)) {
-    return new EventSourcingError({ ctx, event, target: workflowitem }, validationResult);
+    return new VError(
+      new EventSourcingError({ ctx, event, target: workflowitem }, validationResult),
+      "validation of workflowitem failed",
+    );
   }
 
   // Restore the event log:

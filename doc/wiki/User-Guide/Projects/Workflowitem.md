@@ -24,8 +24,6 @@ There are some different permissions which affect workflowitems.
 - workflowitem.view
 - workflowitem.assign
 - workflowitem.update
-- workflowitem.close
-- workflowitem.archive
 
 More details about the permission model can be found in the [Permissions section](../Permissions.md).
 
@@ -97,8 +95,8 @@ Create a new workflowitem defining title, comment, currency and budget. It is al
 6. Fill in the required fields:
 
    - Workflowitem type: Workflowitems behave differently according to their type
-      - general: A workflowitem of type general will be created
-      - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.
+     - general: A workflowitem of type general will be created
+     - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.
    - "Workflow Title": Title of the workflowitem
    - "Comment": A little description or comment refering to the workflowitem
    - Budget:
@@ -230,7 +228,7 @@ Close a workflowitem when the work is done.
 **Notes:**
 
 - Workflowitems can only be closed one after eachother.
-- A workflowitem can only be closed if the user has the workflowitem.close permission.
+- A workflowitem can only be closed if the user is assigned.
 
 **Instructions:**
 

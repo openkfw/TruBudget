@@ -9,3 +9,12 @@ export const permissionsSchema = Joi.object().pattern(
   Joi.valid(allIntents),
   Joi.array().items(Joi.string()),
 );
+
+export const filterPermissions = (permissions: Permissions, filter: string[]): Permissions => {
+  return Object.keys(permissions).reduce((filteredPerm, intent) => {
+    if (!filter.includes(intent)) {
+      filteredPerm[intent] = permissions[intent];
+    }
+    return filteredPerm;
+  }, {});
+};

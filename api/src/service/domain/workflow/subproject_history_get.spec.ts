@@ -44,6 +44,7 @@ const event: SubprojectTraceEvent = {
     subproject: {
       id: subprojectId,
       status: "open",
+      assignee: alice.id,
       displayName: "subproject",
       description: "some description",
       currency: "",
@@ -98,7 +99,7 @@ describe("get subproject history: authorization", () => {
   it("With only viewDetials permissions, a user can still get a subproject's history.", async () => {
     const modifiedSubproject: Subproject = {
       ...baseSubproject,
-      permissions: { "subproject.viewDetails": ["alice"]},
+      permissions: { "subproject.viewDetails": ["alice"] },
     };
     const result = await getHistory(ctx, alice, projectId, subprojectId, {
       ...baseRepository,
@@ -110,7 +111,7 @@ describe("get subproject history: authorization", () => {
   it("With only viewHistory permissions, a user can still get a subproject's history.", async () => {
     const modifiedSubproject: Subproject = {
       ...baseSubproject,
-      permissions: {"subproject.viewHistory": ["alice"] },
+      permissions: { "subproject.viewHistory": ["alice"] },
     };
     const result = await getHistory(ctx, alice, projectId, subprojectId, {
       ...baseRepository,

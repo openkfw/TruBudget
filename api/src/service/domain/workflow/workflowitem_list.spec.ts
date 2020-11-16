@@ -26,6 +26,7 @@ const baseWorkflowitem: Workflowitem = {
   createdAt: new Date().toISOString(),
   dueDate: new Date().toISOString(),
   status: "open",
+  assignee: alice.id,
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
@@ -47,15 +48,14 @@ describe("list workflowitems: authorization", () => {
       ...baseWorkflowitem,
       permissions: {},
     };
-    const result = await getAllVisible(ctx, alice, projectId, subprojectId,
-      {
+    const result = await getAllVisible(ctx, alice, projectId, subprojectId, {
       ...baseRepository,
       getWorkflowitems: async () => [notPermittedWorkflowitem],
     });
 
     // No errors, but workflowitems should be redacted:
     assert.isTrue(Result.isOk(result), (result as Error).message);
-    Result.unwrap(result).forEach(r => assert.equal(r.isRedacted, true));
+    Result.unwrap(result).forEach((r) => assert.equal(r.isRedacted, true));
   });
   it("With the required permissions, a user can list all workflowitems.", async () => {
     const result = await getAllVisible(ctx, alice, projectId, subprojectId, baseRepository);

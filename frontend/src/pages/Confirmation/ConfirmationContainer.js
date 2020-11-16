@@ -35,12 +35,15 @@ import { executeOriginalActions } from "./executeOriginalActions";
 
 class ConfirmationContainer extends React.Component {
   componentDidUpdate(prevProps) {
-    // Fetch Permissions if grant/revoke permission confirmation required
-    if (
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.props.cancelConfirmation();
+    }
+
+    const isConfirmationDialogTriggered =
       this.props.confirmationDialogOpen !== prevProps.confirmationDialogOpen &&
-      this.props.confirmationDialogOpen === true &&
-      this.props.originalActions.some(action => !_isEmpty(action.payload))
-    ) {
+      this.props.confirmationDialogOpen === true;
+
+    if (isConfirmationDialogTriggered) {
       this.props.fetchGroups();
       this.fetchPermissions(this.props.project, this.props.subproject, this.props.workflowitem);
     }
@@ -49,7 +52,7 @@ class ConfirmationContainer extends React.Component {
       this.props.additionalActionUpdateRequired(true);
     }
 
-    if (this.props.originalActionsIncreased && !this.permissionsEmpty() && !this.isFetchingPermissions()) {
+    if (this.props.originalActionsIncreased && !this.isFetchingPermissions()) {
       const additionalActions = createAdditionalActions(
         this.props.originalActions,
         this.props.permissions,
@@ -74,14 +77,6 @@ class ConfirmationContainer extends React.Component {
     }
   }
 
-  permissionsEmpty() {
-    return (
-      _isEmpty(this.props.permissions.project) &&
-      _isEmpty(this.props.permissions.subproject) &&
-      _isEmpty(this.props.permissions.workflowitem)
-    );
-  }
-
   isFetchingPermissions() {
     return (
       this.props.isFetchingProjectPermissions ||
@@ -91,9 +86,10 @@ class ConfirmationContainer extends React.Component {
   }
 
   fetchPermissions(project, subproject, workflowitem) {
-    if (!_isEmpty(project)) this.props.fetchProjectPermissions(project.id);
-    if (!_isEmpty(subproject)) this.props.fetchSubprojectPermissions(project.id, subproject.id);
-    if (!_isEmpty(workflowitem)) this.props.fetchWorkflowitemPermissions(project.id, subproject.id, workflowitem.id);
+    if (project.listPermissionsNeeded) this.props.fetchProjectPermissions(project.id);
+    if (subproject.listPermissionsNeeded) this.props.fetchSubprojectPermissions(project.id, subproject.id);
+    if (workflowitem.listPermissionsNeeded)
+      this.props.fetchWorkflowitemPermissions(project.id, subproject.id, workflowitem.id);
   }
 
   onConfirm(confirm) {
@@ -142,7 +138,7 @@ class ConfirmationContainer extends React.Component {
       project,
       subproject,
       workflowitem,
-      listPermissionsRequired,
+      isListPermissionsRequiredFromApi,
       failedAction,
       requestedPermissions,
       userList,
@@ -163,7 +159,6 @@ class ConfirmationContainer extends React.Component {
           confirmingUser={confirmingUser}
           groups={groups}
           isFetchingPermissions={this.isFetchingPermissions()}
-          permissionsEmpty={this.permissionsEmpty()}
           executedAdditionalActions={executedAdditionalActions}
           additionalActions={additionalActions}
           additionalActionsExecuted={additionalActionsExecuted}
@@ -171,7 +166,7 @@ class ConfirmationContainer extends React.Component {
           project={project}
           subproject={subproject}
           workflowitem={workflowitem}
-          listPermissionsRequired={listPermissionsRequired}
+          isListPermissionsRequiredFromApi={isListPermissionsRequiredFromApi}
           failedAction={failedAction}
           requestedPermissions={requestedPermissions}
           userList={userList}
@@ -251,7 +246,7 @@ const mapStateToProps = state => {
     subproject: state.getIn(["confirmation", "subproject"]),
     workflowitem: state.getIn(["confirmation", "workflowitem"]),
     originalActionsIncreased: state.getIn(["confirmation", "originalActionsIncreased"]),
-    listPermissionsRequired: state.getIn(["confirmation", "listPermissionsRequired"]),
+    isListPermissionsRequiredFromApi: state.getIn(["confirmation", "isListPermissionsRequiredFromApi"]),
     failedAction: state.getIn(["confirmation", "failedAction"]),
     requestedPermissions: state.getIn(["confirmation", "requestedPermissions"]),
     groups: state.getIn(["users", "groups"]),

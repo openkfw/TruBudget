@@ -10,10 +10,7 @@ describe("open notifications", function() {
     cy.createProject("notification.test", "notifications test", []).then(({ id }) => {
       projectId = id;
       cy.updateProjectAssignee(projectId, assignee);
-      cy.grantProjectPermission(projectId, "project.viewSummary", assignee);
-      cy.grantProjectPermission(projectId, "project.viewDetails", assignee);
-      cy.grantProjectPermission(projectId, "project.close", assignee);
-      cy.closeProject(projectId, "project.close", assignee);
+      cy.updateProject(projectId, { description: "modified" });
     });
   });
 
@@ -27,12 +24,12 @@ describe("open notifications", function() {
       .wait("@listNotifications");
   });
 
-  it("First unread notification should contain close event", function() {
-    cy.get("[data-test=notification-unread-0]").should("contain", "was closed");
-  });
-
   it("The user is notified when he/she is assigned to a project", function() {
     cy.get("[data-test=notification-unread-1]").should("contain", "was assigned to you");
+  });
+
+  it("The assignee is notified when the project has been modified", function() {
+    cy.get("[data-test=notification-unread-0]").should("contain", "was updated");
   });
 
   it("When 'Read All' button is clicked, all notifications on the page are marked as read", function() {

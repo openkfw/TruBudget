@@ -3,7 +3,6 @@ import { assert } from "chai";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
@@ -21,10 +20,11 @@ const baseProject: Project = {
   id: projectId,
   createdAt: new Date().toISOString(),
   status: "open",
+  assignee: alice.id,
   displayName: "dummy",
   description: "dummy",
   projectedBudgets: [],
-  permissions: { "project.close": [alice, bob, charlie].map(x => x.id) },
+  permissions: {},
   log: [],
   additionalData: {},
   tags: [],
@@ -34,6 +34,7 @@ const baseSubproject: Subproject = {
   projectId,
   createdAt: new Date().toISOString(),
   status: "open",
+  assignee: alice.id,
   displayName: "dummy",
   description: "dummy",
   currency: "EUR",
@@ -44,8 +45,8 @@ const baseSubproject: Subproject = {
   additionalData: {},
 };
 const baseRepository = {
-  getSubprojects: async _projectId => [],
-  getUsersForIdentity: async identity => {
+  getSubprojects: async (_projectId) => [],
+  getUsersForIdentity: async (identity) => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     if (identity === "charlie") return ["charlie"];
@@ -56,35 +57,32 @@ const baseRepository = {
   },
 };
 
-describe("close project: authorization", () => {
-  it("Without the project.close permission, a user cannot close a project.", async () => {
+describe("close project: preconditions", () => {
+  it("A user may not close a project if he/she is not assigned", async () => {
     const result = await closeProject(ctx, alice, projectId, {
       ...baseRepository,
-      getProject: async () => ({ ...baseProject, permissions: {} }),
+      getProject: async () => ({ ...baseProject, assignee: bob.id }),
     });
 
-    // NotAuthorized error due to the missing permissions:
+    // PreconditionError error due to no assignment:
     assert.isTrue(Result.isErr(result));
-    assert.instanceOf(result, NotAuthorized);
+    assert.instanceOf(result, PreconditionError);
   });
 
-  it("The root user doesn't need permission to close a project.", async () => {
+  it("The root user doesn't need to be assigned to close a project.", async () => {
     const result = await closeProject(ctx, root, projectId, {
       ...baseRepository,
       getProject: async () => ({ ...baseProject, permissions: {} }),
     });
 
-    // No errors, despite the missing permissions:
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
-});
 
-describe("close project: preconditions", () => {
   it("A project may not be closed if there is at least one non-closed subproject.", async () => {
     const result = await closeProject(ctx, alice, projectId, {
       ...baseRepository,
       getProject: async () => ({ ...baseProject, status: "open" }),
-      getSubprojects: async _projectId => [{ ...baseSubproject, status: "open" }],
+      getSubprojects: async (_projectId) => [{ ...baseSubproject, status: "open" }],
     });
 
     // PreconditionError due to open subproject:
@@ -105,25 +103,6 @@ describe("close project: preconditions", () => {
 });
 
 describe("close project: notifications", () => {
-  it("When a user closes a project, a notification is issued to the assignee.", async () => {
-    const result = await closeProject(ctx, alice, projectId, {
-      ...baseRepository,
-      getProject: async () => ({ ...baseProject, status: "open", assignee: bob.id }),
-    });
-
-    // A notification has been issued to the assignee:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-    // Make TypeScript happy:
-    if (Result.isErr(result)) {
-      throw result;
-    }
-    const { newEvents } = result;
-
-    assert.isTrue(
-      newEvents.some(event => event.type === "notification_created" && event.recipient === bob.id),
-    );
-  });
-
   it("Closing an already closed project works, but nothing happens and no notifications are issued.", async () => {
     const result = await closeProject(ctx, alice, projectId, {
       ...baseRepository,
@@ -140,23 +119,6 @@ describe("close project: notifications", () => {
     assert.lengthOf(newEvents, 0);
   });
 
-  it("If there is no assignee when closing a project, no notifications are issued.", async () => {
-    const result = await closeProject(ctx, alice, projectId, {
-      ...baseRepository,
-      getProject: async () => ({ ...baseProject, status: "open", assignee: undefined }),
-    });
-
-    // There is an event representing the operation, but no notification:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-    // Make TypeScript happy:
-    if (Result.isErr(result)) {
-      throw result;
-    }
-    const { newEvents } = result;
-    assert.isTrue(newEvents.length > 0);
-    assert.isFalse(newEvents.some(event => event.type === "notification_created"));
-  });
-
   it("If the user that closes a project is assigned to the project herself, no notifications are issued.", async () => {
     const result = await closeProject(ctx, alice, projectId, {
       ...baseRepository,
@@ -171,7 +133,7 @@ describe("close project: notifications", () => {
     }
     const { newEvents } = result;
     assert.isTrue(newEvents.length > 0);
-    assert.isFalse(newEvents.some(event => event.type === "notification_created"));
+    assert.isFalse(newEvents.some((event) => event.type === "notification_created"));
   });
 
   it(
@@ -193,7 +155,7 @@ describe("close project: notifications", () => {
       // A notification has been issued to both Bob and Charlie, but not to Alice, as she
       // is the user who closed the project:
       function isNotificationFor(userId: string): (e: BusinessEvent) => boolean {
-        return event => event.type === "notification_created" && event.recipient === userId;
+        return (event) => event.type === "notification_created" && event.recipient === userId;
       }
 
       assert.isFalse(newEvents.some(isNotificationFor("alice")));

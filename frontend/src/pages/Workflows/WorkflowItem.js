@@ -23,12 +23,7 @@ import StyledBadge from "../Common/StyledBadge";
 
 import { amountTypes, fromAmountString, toAmountString, isDateReached } from "../../helper.js";
 import strings from "../../localizeStrings";
-import {
-  canAssignWorkflowItem,
-  canCloseWorkflowItem,
-  canUpdateWorkflowItem,
-  canViewWorkflowItemPermissions
-} from "../../permissions.js";
+import { canAssignWorkflowItem, canUpdateWorkflowItem, canViewWorkflowItemPermissions } from "../../permissions.js";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
 const styles = theme => {
@@ -443,6 +438,7 @@ export const WorkflowItem = withTheme(
         parentProject,
         users,
         idsPermissionsUnassigned,
+        currentUser,
         ...props
       }) => {
         const { storeWorkflowItemsSelected, selectedWorkflowItems, currency: targetCurrency } = props;
@@ -461,9 +457,10 @@ export const WorkflowItem = withTheme(
         const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
         const itemStyle = workflowSelectable ? {} : { opacity: 0.31 };
         const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
-        const showClose = canCloseWorkflowItem(allowedIntents) && workflowSelectable && status !== "closed";
         const infoButton = getInfoButton(classes, props, status, workflowSortEnabled, workflow.data);
         const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
+        const canCloseWorkflowitem = currentUser === assignee;
+        const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";
 
         return (
           <div className={classes.container}>

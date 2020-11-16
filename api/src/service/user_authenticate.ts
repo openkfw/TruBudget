@@ -12,8 +12,10 @@ import { getGlobalPermissions } from "./global_permissions_get";
 import { getGroupsForUser } from "./group_query";
 import { importprivkey } from "./importprivkey";
 import { hashPassword, isPasswordMatch } from "./password";
+import logger from "../lib/logger";
 import * as UserQuery from "./user_query";
 import * as UserRecord from "./domain/organization/user_record";
+
 
 // Use root as the service user to ensure we see all the data:
 const rootUser = { id: "root", groups: [] };
@@ -63,6 +65,10 @@ async function authenticateRoot(
   rootSecret: string,
   password: string,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
+  if (typeof conn.multichainClient === "undefined") {
+    logger.error("Received request, but MultiChain connection/permissions not ready yet.");
+    return new AuthenticationFailed({ ctx, organization, userId: "root" }, "Received request, but MultiChain connection/permissions not ready yet.");
+  }
   // Prevent timing attacks by using the constant-time compare function
   // instead of simple string comparison:
   const rootSecretHash = await hashPassword(rootSecret);
@@ -117,7 +123,7 @@ async function authenticateUser(
     const cause = new VError(
       privkey,
       "failed to decrypt the user's private key with the given organization secret " +
-        `(does "${userId}" belong to "${organization}"?)`,
+      `(does "${userId}" belong to "${organization}"?)`,
     );
     return new AuthenticationFailed({ ctx, organization, userId }, cause);
   }

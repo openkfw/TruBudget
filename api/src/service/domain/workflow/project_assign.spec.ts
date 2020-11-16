@@ -19,10 +19,11 @@ const baseProject: Project = {
   id: dummy,
   createdAt: new Date().toISOString(),
   status: "open",
+  assignee: alice.id,
   displayName: dummy,
   description: dummy,
   projectedBudgets: [],
-  permissions: { "project.assign": [alice, bob, charlie].map(x => x.id) },
+  permissions: { "project.assign": [alice, bob, charlie].map((x) => x.id) },
   log: [],
   additionalData: {},
   tags: [],
@@ -34,7 +35,7 @@ describe("assign project: authorization", () => {
     const assignee = bob;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
       getProject: async () => ({ ...baseProject, permissions: {} }),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         if (identity === "bob") return ["bob"];
         throw Error(`unexpected identity: ${identity}`);
@@ -51,7 +52,7 @@ describe("assign project: authorization", () => {
     const assignee = bob;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
       getProject: async () => ({ ...baseProject, permissions: {} }),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         if (identity === "bob") return ["bob"];
         throw Error(`unexpected identity: ${identity}`);
@@ -69,7 +70,7 @@ describe("assign project: preconditions", () => {
     const assignee = alice;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
       getProject: async () => ({ ...baseProject }),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         throw Error(`unexpected identity: ${identity}`);
       },
@@ -83,7 +84,7 @@ describe("assign project: preconditions", () => {
     const assignee = bob;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
       getProject: async () => ({ ...baseProject }),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         if (identity === "bob") return ["bob"];
         throw Error(`unexpected identity: ${identity}`);
@@ -98,7 +99,7 @@ describe("assign project: preconditions", () => {
     const assignee = alice;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
       getProject: async () => ({ ...baseProject, assignee: alice.id }),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         throw Error(`unexpected identity: ${identity}`);
       },
@@ -112,7 +113,7 @@ describe("assign project: preconditions", () => {
     const assignedGroup = "alice_and_bob";
     const result = await assignProject(ctx, assigner, dummy, assignedGroup, {
       getProject: async () => ({ ...baseProject }),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         if (identity === "bob") return ["bob"];
         if (identity === "alice_and_bob") return ["alice", "bob"];
@@ -128,7 +129,7 @@ describe("assign project: preconditions", () => {
     const assignee = alice;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
       getProject: async () => new Error("some error"),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         throw Error(`unexpected identity: ${identity}`);
       },
@@ -144,7 +145,7 @@ describe("assign project: preconditions", () => {
     const assignee = ""; // <- not a valid user ID
     const result = await assignProject(ctx, assigner, dummy, assignee, {
       getProject: async () => ({ ...baseProject }),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         throw Error(`unexpected identity: ${identity}`);
       },
@@ -167,7 +168,7 @@ describe("assign project: notifications", () => {
     const assignee = bob;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
       getProject: async () => ({ ...baseProject }),
-      getUsersForIdentity: async identity => {
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         if (identity === "bob") return ["bob"];
         throw Error(`unexpected identity: ${identity}`);
@@ -183,17 +184,17 @@ describe("assign project: notifications", () => {
     const { newEvents } = result;
     assert.isTrue(
       newEvents.some(
-        event => event.type === "notification_created" && event.recipient === assignee.id,
+        (event) => event.type === "notification_created" && event.recipient === assignee.id,
       ),
     );
   });
 
-  it("When a user assignee a project to herself, no notifications are issued.", async () => {
+  it("When a user assigns a project to herself, no notifications are issued.", async () => {
     const assigner = alice;
     const assignee = alice;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
-      getProject: async () => ({ ...baseProject }),
-      getUsersForIdentity: async identity => {
+      getProject: async () => ({ ...baseProject, assignee: bob.id }),
+      getUsersForIdentity: async (identity) => {
         if (identity === "alice") return ["alice"];
         throw Error(`unexpected identity: ${identity}`);
       },
@@ -207,7 +208,7 @@ describe("assign project: notifications", () => {
     }
     const { newEvents } = result;
     assert.isTrue(newEvents.length > 0);
-    assert.isFalse(newEvents.some(event => event.type === "notification_created"));
+    assert.isFalse(newEvents.some((event) => event.type === "notification_created"));
   });
 
   it(
@@ -218,7 +219,7 @@ describe("assign project: notifications", () => {
       const assignedGroup = "alice_and_bob_and_charlie";
       const result = await assignProject(ctx, assigner, dummy, assignedGroup, {
         getProject: async () => ({ ...baseProject }),
-        getUsersForIdentity: async identity => {
+        getUsersForIdentity: async (identity) => {
           if (identity === "alice") return ["alice"];
           if (identity === "bob") return ["bob"];
           if (identity === "alice_and_bob_and_charlie") return ["alice", "bob", "charlie"];
@@ -235,7 +236,7 @@ describe("assign project: notifications", () => {
       // A notification has been issued to both Bob and Charlie, but not to Alice, as she
       // is the user who has changed the project's assignee:
       function isNotificationFor(userId: string): (e: BusinessEvent) => boolean {
-        return event => event.type === "notification_created" && event.recipient === userId;
+        return (event) => event.type === "notification_created" && event.recipient === userId;
       }
 
       assert.isFalse(newEvents.some(isNotificationFor("alice")));

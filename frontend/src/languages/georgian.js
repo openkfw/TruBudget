@@ -228,12 +228,16 @@ const ka = {
     subproject_currency: "ქვეპროექტის ვალუტა",
     subproject_edit_title: "ქვეპროექტის რედაქტირება",
     subproject_permissions_title: "ქვეპროექტის უფლებამოსილებების განსაზღვრა",
-    subproject_permissions_warning: "ქვეპროექტისთვის არ არის გამოყოფილი ნებართვა {0}",
     subproject_preview: "Subproject preview",
     subproject_select_button: "არჩევა",
     subproject_title_description: "ქვეპროექტის სახელწოდება",
     subproject_title: "ქვეპროექტის სათაური",
-    subproject_searchtext: "ქვეპროექტების ძებნა"
+    subproject_searchtext: "ქვეპროექტების ძებნა",
+    subproject_any_workflowitem_type: "სამუშაო ფურცლების დაშვება ზოგადი ან შეზღუდული ტიპის არჩევისთვის",
+    subproject_general_workflowitem_type: "დაუშვით მხოლოდ workflowitem ტიპის ზოგადი",
+    subproject_restricted_workflowitem_type:
+      "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
+    subproject_validator: "შემმოწმებელი"
   },
 
   workflow: {
@@ -262,6 +266,8 @@ const ka = {
     workflow_document_name: "დოკუმენტის სახელწოდება",
     workflow_document_validate: "დამტკიცება",
     workflow_document_validated: "დამტკიცებულია",
+    workflow_document_validation_ok: "იდენტურია დოკუმენტი",
+    workflow_document_validation_not_ok: "განსხვავებული დოკუმენტი",
     workflow_documents: "დოკუმენტები",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
@@ -271,7 +277,6 @@ const ka = {
     workflow_no_documents: "არ შეიცავს დოკუმენტებს",
     workflow_none: "None",
     workflow_permissions_title: "Workflowitem-თან დაკავშირებით უფლებამოსილების მინიჭება",
-    workflow_permissions_warning: "არ არის გამოყოფილი ნებართვა სამუშაო ნაკადის ნივთზე {0}",
     workflow_redacted: "Redacted",
     workflow_selection: "{0} Workflowitem-ები არჩეულია",
     workflow_submit_for_review: "განსახილველად გადაგზავნა",
@@ -290,6 +295,16 @@ const ka = {
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
       "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას."
+  },
+
+  snackbar: {
+    update_succeed_message: "წარმატებით შეცვლილია {0}",
+    creation_succeed_message: "წარმატებით შეიქმნა {0}",
+    permissions_warning: "{0} - სთვის გამოყოფილი არ არის უფლებები"
+  },
+
+  searchBar: {
+    quick_search: "სწრაფი ძებნა"
   },
 
   preview: {
@@ -392,6 +407,9 @@ const ka = {
   },
 
   notification: {
+    next_page: "შემდეგი გვერდი",
+    previous_page: "წინა გვერდი",
+    rows_per_page: "სტრიქონები თითო გვერდზე",
     create_transaction: "ტრანზაქცია {0} შექმნილია ",
     create_workflow: "Workflowitem-ი {0} შექმნილია",
     done_transaction: " ტრანზაქციის {0} სტატუსი შეიცვალა და დასრულებულია",
@@ -464,7 +482,9 @@ const ka = {
     edit_status: "Workflowitem-ის {0} სტატუსი შეიცვალა და გახდა {1}",
     edit_subproject: "თანხა გაიზარდა {0}-დან {1}-მდე",
     edit_workflowName: "Workflowitem-ის {0} სახელწოდება შეიცვალა და გახდა {1} ",
-    first_sort: "Moved {0} to first position",
+    end_date: "დასრულების თარიღი",
+    event_type: "ღონისძიების ტიპი",
+    first_sort: "გადავიდა პირველ {0} პოზიციაზე",
     project_assign: "{0} განსახილველად გადაუგზავნა {2}-ს პროექტი {1}",
     project_close: "{0} დახურა პროექტი {1}",
     project_create: "{0} შექმნა პროექტი {1}",
@@ -476,7 +496,9 @@ const ka = {
     project_revokePermission_details: "{0} გაუუქმა {2}-სა და {3}-ს ნებართვა {1}",
     project_revokePermission: "{0} გააუქმა {2}-ზე გაცემული ნებართვა {1}",
     project_update: "{0} შეცვალა პროექტი {1} ",
+    publisher: "გამომცემელი",
     sort: "Moved {0} after {1}",
+    start_date: "დაწყების თარიღი",
     subproject_assign: "{0} ქვეპროექტი {1} {2}-ს განსახილველად გადაუგზავნა",
     subproject_close: "{0} დახურა ქვეპროექტი {1}",
     subproject_create: "{0} შექმნა ქვეპროექტი {1}",

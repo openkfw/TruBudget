@@ -14,8 +14,7 @@ export type Id = string;
 
 export const idSchema = Joi.string().max(32);
 export const tagsSchema = Joi.string()
-  .lowercase()
-  .regex(/^(\w+[_.-]*)+\w+$/)
+  .regex(/^([A-Za-zÀ-ÿ0-9])*[A-Za-zÀ-ÿ0-9-_]+$/)
   .max(15);
 
 export interface Project {
@@ -24,7 +23,7 @@ export interface Project {
   status: "open" | "closed";
   displayName: string;
   description: string;
-  assignee?: string;
+  assignee: string;
   thumbnail?: string;
   projectedBudgets: ProjectedBudget[];
   permissions: Permissions;
@@ -36,29 +35,17 @@ export interface Project {
 
 const schema = Joi.object({
   id: idSchema.required(),
-  createdAt: Joi.date()
-    .iso()
-    .required(),
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
+  createdAt: Joi.date().iso().required(),
+  status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
+  description: Joi.string().allow("").required(),
   assignee: Joi.string(),
   thumbnail: Joi.string().allow(""),
   projectedBudgets: projectedBudgetListSchema.required(),
   permissions: permissionsSchema.required(),
-  log: Joi.array()
-    .required()
-    .items(projectTraceEventSchema),
+  log: Joi.array().required().items(projectTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
-  tags: Joi.array()
-    .items(tagsSchema)
-    .required()
-    .unique()
-    .default([]),
+  tags: Joi.array().items(tagsSchema).required().unique().default([]),
 });
 
 export function validate(input: any): Result.Type<Project> {
@@ -71,7 +58,7 @@ export function permits(project: Project, actingUser: ServiceUser, intents: Inte
     const eligibles = project.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;
