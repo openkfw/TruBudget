@@ -95,8 +95,6 @@ const mapStateToProps = state => {
     currentUser: state.getIn(["login", "id"]),
     selectedAssignee: state.getIn(["workflow", "workflowToAdd", "assignee"]),
     users: state.getIn(["login", "enabledUsers"]),
-    // projectId: state.getIn(["workflow", "parentProject", "id"]),
-    // subprojectId: state.getIn(["workflow", "id"]),
     projectDisplayName: state.getIn(["workflow", "parentProject", "displayName"]),
     subprojectDisplayName: state.getIn(["workflow", "displayName"]),
     subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),

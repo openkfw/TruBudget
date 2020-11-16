@@ -57,7 +57,9 @@ const WorkflowEditDrawer = props => {
     storeAssignee,
     projectId,
     subprojectId,
-    myself
+    myself,
+    subprojectValidator,
+    hasSubprojectValidator
   } = props;
   const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
 
@@ -120,7 +122,12 @@ const WorkflowEditDrawer = props => {
         <Card style={styles.assigneeCard}>
           <CardHeader subheader="Assignee" />
           <CardContent>
-            <AssigneeSelection assigneeId={tempDrawerAssignee} users={users} assign={assign} />
+            <AssigneeSelection
+              disabled={hasSubprojectValidator}
+              assigneeId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
+              users={users}
+              assign={assign}
+            />
           </CardContent>
         </Card>
         <PermissionTable

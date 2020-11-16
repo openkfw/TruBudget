@@ -42,7 +42,9 @@ const mapStateToProps = state => {
     submitDone: state.getIn(["workflow", "submitDone"]),
     submitInProgress: state.getIn(["workflow", "submitInProgress"]),
     myself: state.getIn(["login", "id"]),
-    subprojectId: state.getIn(["workflow", "id"])
+    subprojectId: state.getIn(["workflow", "id"]),
+    hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
+    subprojectValidator: state.getIn(["workflow", "subprojectValidator"])
   };
 };
 

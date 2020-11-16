@@ -95,7 +95,7 @@ export const workflowItemIntentOrder = [
   },
   {
     name: "write",
-    intents: ["workflowitem.assign", "workflowitem.update", "workflowitem.close"]
+    intents: ["workflowitem.assign", "workflowitem.update"]
   },
   {
     name: "admin",
