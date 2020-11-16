@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
-import { canAssignSubProject, canCloseSubProject, canViewSubProjectPermissions } from "../../permissions";
+import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
 import globalStyles from "../../styles";
 import { openAnalyticsDialog } from "../Analytics/actions";
 import AdditionalInfo from "../Common/AdditionalInfo";
@@ -88,7 +88,7 @@ class WorkflowContainer extends Component {
 
   render() {
     const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
-    const canCloseSubproject = canCloseSubProject(this.props.allowedIntents);
+    const canCloseSubproject = this.props.currentUser === this.props.assignee;
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
     return (
       <div>
@@ -233,7 +233,7 @@ const mapStateToProps = state => {
     idsPermissionsUnassigned: state.getIn(["workflow", "idsPermissionsUnassigned"]),
     isDataLoading: state.getIn(["loading", "loadingVisible"]),
     isLiveUpdatesSubprojectEnabled: state.getIn(["workflow", "isLiveUpdatesSubprojectEnabled"]),
-
+    currentUser: state.getIn(["login", "id"])
   };
 };
 

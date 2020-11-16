@@ -20,7 +20,6 @@ import DateIcon from "@material-ui/icons/DateRange";
 import AssigneeIcon from "@material-ui/icons/Group";
 import PersonIcon from "@material-ui/icons/Person";
 import SettingsIcon from "@material-ui/icons/Settings";
-import _isUndefined from "lodash/isUndefined";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 
@@ -79,8 +78,10 @@ const styles = {
   }
 };
 
-const subProjectCanBeClosed = (subProjectIsClosed, userIsAllowedToClose, workflowItems) =>
-  !subProjectIsClosed && userIsAllowedToClose && _isUndefined(workflowItems.find(i => i.data.status !== "closed"));
+const subProjectCanBeClosed = (subProjectIsClosed, userIsAllowedToClose, workflowItems) => {
+  const hasOpenWorkflowitems = !_isEmpty(workflowItems.find(workflowItem => workflowItem.data.status === "open"));
+  return !subProjectIsClosed && userIsAllowedToClose && !hasOpenWorkflowitems;
+};
 
 const subProjectCloseButtonTooltip = (userIsAllowedToClose, subProjectCanBeClosed) => {
   if (subProjectCanBeClosed) {
