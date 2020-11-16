@@ -19,22 +19,22 @@ const projectId = "dummy-project";
 const projectName = "dummy";
 
 const baseProject: Project = {
-    id: projectId,
-    createdAt: new Date().toISOString(),
-    status: "open",
-    displayName: projectName,
-    description: projectName,
-    assignee: alice.id,
-    projectedBudgets: [],
-    permissions: { "project.update": [alice, bob, charlie].map(x => x.id) },
-    log: [],
-    tags: [],
-    additionalData: {},
-  };
+  id: projectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  displayName: projectName,
+  description: projectName,
+  assignee: alice.id,
+  projectedBudgets: [],
+  permissions: { "project.update": [alice, bob, charlie].map((x) => x.id) },
+  log: [],
+  tags: [],
+  additionalData: {},
+};
 
 const baseRepository = {
-    getProject: async () => baseProject,
-    getUsersForIdentity: async (identity: string) => {
+  getProject: async () => baseProject,
+  getUsersForIdentity: async (identity: string) => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     if (identity === "charlie") return ["charlie"];
@@ -48,40 +48,28 @@ const baseRepository = {
 describe("update project: authorization", () => {
   it("Without the project.update permission, a user cannot update a project", async () => {
     const modification: Modification = {
-        displayName: projectName,
-      };
+      displayName: projectName,
+    };
 
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      {
-        ...baseRepository,
-        getProject: async () => ({
-          ...baseProject,
-          permissions: {},
-        }),
-      },
-    );
+    const result = await updateProject(ctx, alice, projectId, modification, {
+      ...baseRepository,
+      getProject: async () => ({
+        ...baseProject,
+        permissions: {},
+      }),
+    });
     assert.instanceOf(result, NotAuthorized);
   });
 
   it("The root user doesn't need permission to update a project", async () => {
-    const modification: Modification = {displayName: projectName};
-    const result = await updateProject(
-      ctx,
-      root,
-      projectId,
-      modification,
-      {
-        ...baseRepository,
-        getProject: async () => ({
-          ...baseProject,
-          permissions: {},
-        }),
-      },
-    );
+    const modification: Modification = { displayName: projectName };
+    const result = await updateProject(ctx, root, projectId, modification, {
+      ...baseRepository,
+      getProject: async () => ({
+        ...baseProject,
+        permissions: {},
+      }),
+    });
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 });
@@ -92,13 +80,7 @@ describe("update project: how modifications are applied", () => {
       displayName: projectName,
       description: projectName,
     };
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      baseRepository,
-    );
+    const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
 
     // It works:
     assert.isTrue(Result.isOk(result), (result as Error).message);
@@ -111,19 +93,13 @@ describe("update project: how modifications are applied", () => {
     const modification: Modification = {
       description: "",
     };
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      baseRepository,
-    );
+    const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
 
     assert.isTrue(Result.isOk(result), (result as Error).message);
 
     // There are new events and the project's description has been cleared:
     assert.isAtLeast(Result.unwrap(result).length, 1);
-    const {update} = result[0];
+    const { update } = result[0];
     assert.equal(update.description, "");
   });
 
@@ -131,53 +107,38 @@ describe("update project: how modifications are applied", () => {
     const modification: Modification = {
       displayName: "",
     };
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      baseRepository,
-    );
+    const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
 
     assert.isTrue(Result.isErr(result));
     const error = Result.unwrap_err(result);
     assert.match(error.message, /displayName.*\s+.*empty/);
   });
 
-  it("An empty update is not allowed, as it must contain at least one of " +
-  "displayName, description, thumbnail, additionalData, tags", async () => {
-    const modification: Modification = {};
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      baseRepository,
-    );
+  it(
+    "An empty update is not allowed, as it must contain at least one of " +
+      "displayName, description, thumbnail, additionalData, tags",
+    async () => {
+      const modification: Modification = {};
+      const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
 
-    assert.isTrue(Result.isErr(result), (result as Error).message);
-    const error = Result.unwrap_err(result);
-  });
+      assert.isTrue(Result.isErr(result), (result as Error).message);
+      const error = Result.unwrap_err(result);
+    },
+  );
 
   it("A closed project cannot be updated", async () => {
     const modification: Modification = {
       description: "Some update",
     };
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      {
-        ...baseRepository,
-        getProject: async () => ({
-          ...baseProject,
-          status: "closed",
-          billingDate: "2019-03-20T10:33:18.856Z",
-          description: "A description.",
-        }),
-      },
-    );
+    const result = await updateProject(ctx, alice, projectId, modification, {
+      ...baseRepository,
+      getProject: async () => ({
+        ...baseProject,
+        status: "closed",
+        billingDate: "2019-03-20T10:33:18.856Z",
+        description: "A description.",
+      }),
+    });
 
     assert.isTrue(Result.isErr(result));
     const error = Result.unwrap_err(result);
@@ -191,21 +152,15 @@ describe("update project: how modifications are applied", () => {
         b: "new value",
       },
     };
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      {
-        ...baseRepository,
-        getProject: async () => ({
-          ...baseProject,
-          additionalData: {
-            a: "old value",
-          },
-        }),
-      },
-    );
+    const result = await updateProject(ctx, alice, projectId, modification, {
+      ...baseRepository,
+      getProject: async () => ({
+        ...baseProject,
+        additionalData: {
+          a: "old value",
+        },
+      }),
+    });
 
     assert.isTrue(Result.isOk(result), (result as Error).message);
     const { update } = result[0];
@@ -219,16 +174,10 @@ describe("update project: how modifications are applied", () => {
     const modification: Modification = {
       description: "Some update",
     };
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      {
-        ...baseRepository,
-        getProject: async () => new Error("some error"),
-      },
-    );
+    const result = await updateProject(ctx, alice, projectId, modification, {
+      ...baseRepository,
+      getProject: async () => new Error("some error"),
+    });
 
     // NotFound error as the project cannot be fetched:
     assert.isTrue(Result.isErr(result));
@@ -241,71 +190,30 @@ describe("update project: notifications", () => {
     const modification: Modification = {
       description: "New description.",
     };
-    const result = await updateProject(
-      ctx,
-      alice,
-      projectId,
-      modification,
-      {
-        ...baseRepository,
-        getProject: async () => ({
-          ...baseProject,
-          description: "A description.",
-          assignee: bob.id,
-        }),
-      },
-    );
+    const result = await updateProject(ctx, alice, projectId, modification, {
+      ...baseRepository,
+      getProject: async () => ({
+        ...baseProject,
+        description: "A description.",
+        assignee: bob.id,
+      }),
+    });
 
     assert.isTrue(Result.isOk(result), (result as Error).message);
 
     assert.isTrue(
       Result.unwrap(result).some(
-        event => event.type === "notification_created"
-        && event.recipient === bob.id,
+        (event) => event.type === "notification_created" && event.recipient === bob.id,
       ),
     );
-  });
-
-  it("When a user updates an unassigned project, no notifications are issued", async () => {
-    const modification: Modification = {
-      description: "New description.",
-    };
-    const result = await updateProject(
-        ctx,
-        alice,
-        projectId,
-        modification,
-        {
-          ...baseRepository,
-          getProject: async () => ({
-            ...baseProject,
-            description: "A description.",
-            assignee: undefined,
-          }),
-        },
-      );
-
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-
-    assert.isFalse(
-        Result.unwrap(result).some(
-          event => event.type === "notification_created",
-        ),
-      );
   });
 
   it("When an update is ignored, no notifications are issued", async () => {
     // an update that contains current values only is ignored
     const modification: Modification = {
-        displayName: projectName,
+      displayName: projectName,
     };
-    const result = await updateProject(
-          ctx,
-          alice,
-          projectId,
-          modification,
-          baseRepository,
-        );
+    const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
 
     // It works:
     assert.isTrue(Result.isOk(result), (result as Error).message);
@@ -321,20 +229,14 @@ describe("update project: notifications", () => {
       const modification: Modification = {
         description: "New description.",
       };
-      const result = await updateProject(
-        ctx,
-        alice,
-        projectId,
-        modification,
-        {
-          ...baseRepository,
-          getProject: async () => ({
-            ...baseProject,
-            description: "A description.",
-            assignee: "alice_and_bob_and_charlie",
-          }),
-        },
-      );
+      const result = await updateProject(ctx, alice, projectId, modification, {
+        ...baseRepository,
+        getProject: async () => ({
+          ...baseProject,
+          description: "A description.",
+          assignee: "alice_and_bob_and_charlie",
+        }),
+      });
 
       assert.isTrue(Result.isOk(result), (result as Error).message);
       const res = Result.unwrap(result);
@@ -342,7 +244,7 @@ describe("update project: notifications", () => {
       // A notification has been issued to both Bob and Charlie, but not to Alice, as she
       // is the user who has updated the project:
       function isNotificationFor(userId: string): (e: BusinessEvent) => boolean {
-        return event => event.type === "notification_created" && event.recipient === userId;
+        return (event) => event.type === "notification_created" && event.recipient === userId;
       }
 
       assert.isFalse(res.some(isNotificationFor("alice")));
@@ -350,4 +252,4 @@ describe("update project: notifications", () => {
       assert.isTrue(res.some(isNotificationFor("charlie")));
     },
   );
- });
+});

@@ -4,13 +4,16 @@ const { readDirectory, readJsonFile } = require("./files");
 const {
   authenticate,
   createProject,
+  assignProject,
   closeProject,
   createSubproject,
+  assignSubproject,
   updateProject,
   updateSubproject,
   closeSubproject,
   updateWorkflowitem,
   closeWorkflowitem,
+  assignWorkflowitem,
   findProject,
   findSubproject,
   findWorkflowitem,
@@ -24,6 +27,12 @@ const DEFAULT_API_VERSION = "1.0";
 
 // List all files here that do not contain project data
 const projectBlacklist = ["users.json", "close_test.json", "groups.json"];
+
+// Executing admin user
+const serviceUser = {
+  id: "mstein",
+  password: "test",
+};
 
 axios.defaults.transformRequest = [
   (data, headers) => {
@@ -76,7 +85,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     await provisionGroups(axios, folder);
 
     console.log("Starting to provision projects");
-    await impersonate("mstein", "test");
+    await impersonate(serviceUser.id, serviceUser.password);
     const files = readDirectory(folder);
     for (const fileName of files) {
       if (projectBlacklist.indexOf(fileName) === -1) {
@@ -137,6 +146,7 @@ const provisionFromData = async (projectTemplate) => {
     }
 
     if (isToBeClosed) {
+      await assignProject(axios, project.data.id, serviceUser.id);
       await closeProject(axios, project);
     }
 
@@ -192,6 +202,12 @@ const provisionSubproject = async (project, subprojectTemplate) => {
   }
 
   if (isToBeClosed) {
+    await assignSubproject(
+      axios,
+      project.data.id,
+      subproject.data.id,
+      serviceUser.id
+    );
     await closeSubproject(axios, project.data.id, subproject.data.id);
   }
 
@@ -262,6 +278,14 @@ const provisionWorkflowitem = async (
     );
     if (isToBeClosed) {
       console.log(`Closing workflowitem "${workflowitemTemplate.displayName}"`);
+      // Only assigned user are allowed to close the workflowitem
+      await assignWorkflowitem(
+        axios,
+        project.data.id,
+        subproject.data.id,
+        workflowitem.data.id,
+        serviceUser.id
+      );
       await closeWorkflowitem(
         axios,
         project.data.id,

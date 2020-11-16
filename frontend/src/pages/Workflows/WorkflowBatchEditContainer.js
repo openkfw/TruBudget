@@ -9,7 +9,7 @@ import {
   resetSucceededWorkflowitems,
   showWorkflowItemPreview,
   storePermissions,
-  storeWorkflowItemsAssignee,
+  storeWorkflowItemBatchAssignee,
   submitBatchForWorkflow
 } from "./actions";
 import WorkflowEditDrawer from "./WorkflowEditDrawer";
@@ -42,7 +42,9 @@ const mapStateToProps = state => {
     submitDone: state.getIn(["workflow", "submitDone"]),
     submitInProgress: state.getIn(["workflow", "submitInProgress"]),
     myself: state.getIn(["login", "id"]),
-    subprojectId: state.getIn(["workflow", "id"])
+    subprojectId: state.getIn(["workflow", "id"]),
+    hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
+    subprojectValidator: state.getIn(["workflow", "subprojectValidator"])
   };
 };
 
@@ -52,7 +54,7 @@ const mapDispatchToProps = dispatch => {
     assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
       dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
     resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems()),
-    storeAssignee: assignee => dispatch(storeWorkflowItemsAssignee(assignee)),
+    storeAssignee: assignee => dispatch(storeWorkflowItemBatchAssignee(assignee)),
     storePermissions: permissions => dispatch(storePermissions(permissions)),
     showWorkflowItemPreview: (pId, subprojectId, resources, assignee, permissions) =>
       dispatch(showWorkflowItemPreview(pId, subprojectId, resources, assignee, permissions)),

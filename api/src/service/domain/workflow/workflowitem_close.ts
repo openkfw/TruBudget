@@ -3,7 +3,6 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
-import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
@@ -79,15 +78,31 @@ export async function closeWorkflowitem(
     return new VError(closeEvent, "failed to create event");
   }
 
+  const assignedIdentitiesResult = await repository.getUsersForIdentity(
+    workflowitemToClose.assignee,
+  );
+  if (Result.isErr(assignedIdentitiesResult)) {
+    return new VError(
+      assignedIdentitiesResult,
+      `fetch users for ${workflowitemToClose.assignee} failed`,
+    );
+  }
+  const assignedIdentities = assignedIdentitiesResult;
+
+  // Check if user is allowed to close the workflowitem
   if (closingUser.id !== "root") {
-    const intent = "workflowitem.close";
-    if (!Workflowitem.permits(workflowitemToClose, closingUser, [intent])) {
-      return new NotAuthorized({
+    if (subproject.validator !== undefined && subproject.validator !== closingUser.id) {
+      return new PreconditionError(
         ctx,
-        userId: closingUser.id,
-        intent,
-        target: workflowitemToClose,
-      });
+        closeEvent,
+        "Only the validator of this subproject is allowed to close workflowitems",
+      );
+    } else if (!assignedIdentities.includes(closingUser.id)) {
+      return new PreconditionError(
+        ctx,
+        closeEvent,
+        "Only the assignee is allowed to close the workflowitem.",
+      );
     }
   }
 
@@ -112,13 +127,8 @@ export async function closeWorkflowitem(
   }
 
   // Create notification events:
-  let notifications: Result.Type<NotificationCreated.Event[]> = [];
-  if (workflowitemToClose.assignee !== undefined) {
-    const recipientsResult = await repository.getUsersForIdentity(workflowitemToClose.assignee);
-    if (Result.isErr(recipientsResult)) {
-      return new VError(recipientsResult, `fetch users for ${workflowitemToClose.assignee} failed`);
-    }
-    notifications = recipientsResult.reduce((notifications, recipient) => {
+  const notifications: Result.Type<NotificationCreated.Event[]> = assignedIdentities.reduce(
+    (notifications, recipient) => {
       // The issuer doesn't receive a notification:
       if (recipient !== closingUser.id) {
         const notification = NotificationCreated.createEvent(
@@ -134,8 +144,9 @@ export async function closeWorkflowitem(
         notifications.push(notification);
       }
       return notifications;
-    }, [] as NotificationCreated.Event[]);
-  }
+    },
+    [] as NotificationCreated.Event[],
+  );
   if (Result.isErr(notifications)) {
     return new VError(notifications, "failed to create notification events");
   }

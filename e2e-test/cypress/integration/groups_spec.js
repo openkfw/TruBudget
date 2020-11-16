@@ -1,23 +1,25 @@
 describe("User/Groups Dashboard", function() {
+  const testGroup = { id: "group1" };
+
   before(() => {
     cy.login();
     cy.visit("/users");
+    cy.get("[aria-label=groupsTab]").click();
   });
 
   it("Show group table", function() {
     cy.location("pathname").should("eq", "/users");
-    cy.get("[aria-label=groupsTab]").click();
     cy.get("[data-test=userdashboard]").should("be.visible");
   });
 
   it("Create new group", function() {
     cy.get("[data-test=create]").click();
     cy.get("[data-test=groupid] input")
-      .type("TestGroup")
-      .should("have.value", "TestGroup");
+      .type(testGroup.id)
+      .should("have.value", testGroup.id);
     cy.get("[data-test=groupname] input")
-      .type("testgroup")
-      .should("have.value", "testgroup");
+      .type(testGroup.id)
+      .should("have.value", testGroup.id);
     cy.get("[data-test=add-user-selection]").click();
     cy.get("[data-test=search-user-input]")
       .click()
@@ -34,16 +36,16 @@ describe("User/Groups Dashboard", function() {
   });
 
   it("Created group should be visible", function() {
-    cy.get("[data-test=group-TestGroup]")
+    cy.get(`[data-test=group-${testGroup.id}]`)
       .find("th")
       .then($th => {
         expect($th).to.have.length(1);
-        expect($th.first()).to.have.text("TestGroup");
+        expect($th.first()).to.have.text(testGroup.id);
       });
   });
 
   it("User that created the group should be able to edit it", function() {
-    cy.get("[data-test=edit-group-TestGroup]")
+    cy.get(`[data-test=edit-group-${testGroup.id}]`)
       .should("be.visible")
       .click();
     cy.get("[data-test=user-chip-thouse] > .MuiSvgIcon-root").click();
@@ -55,7 +57,7 @@ describe("User/Groups Dashboard", function() {
       .should("have.value", "John Doe");
     cy.get("[data-test=user-name-jdoe]").click();
     cy.get("[data-test=submit]").click();
-    cy.get("[data-test=edit-group-TestGroup]").click();
+    cy.get(`[data-test=edit-group-${testGroup.id}]`).click();
     cy.get("[data-test=user-chip-jdoe]").should("be.visible");
     cy.get("[data-test=submit]").click();
   });
@@ -67,7 +69,7 @@ describe("User/Groups Dashboard", function() {
     cy.login("thouse", "test");
     cy.visit("/users");
     cy.get("[aria-label=groupsTab]").click();
-    cy.get("[data-test=edit-group-TestGroup]").should("be.disabled");
+    cy.get(`[data-test=edit-group-${testGroup.id}]`).should("be.disabled");
 
     cy.get("#logoutbutton")
       .should("be.visible")
@@ -75,6 +77,6 @@ describe("User/Groups Dashboard", function() {
     cy.login("jdoe", "test");
     cy.visit("/users");
     cy.get("[aria-label=groupsTab]").click();
-    cy.get("[data-test=edit-group-TestGroup]").should("be.disabled");
+    cy.get(`[data-test=edit-group-${testGroup.id}]`).should("be.disabled");
   });
 });

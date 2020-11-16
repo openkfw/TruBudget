@@ -1,5 +1,4 @@
 const de = {
-  
   common: {
     created: "Erstellt",
     status: "Status",
@@ -15,16 +14,18 @@ const de = {
     organisation: "Organisation",
   },
 
-  project : {
+  project: {
     title: "Projekte",
     id: "Projekt ID",
     name: "Projekt Name",
   },
 
-  subproject : {
+  subproject: {
     title: "Subprojekte",
     id: "Subprojekt ID",
     name: "Subprojekt Name",
+    workflowitem_type: "Workflowitem Typ",
+    validator: "Validator",
   },
 
   workflowitem: {
@@ -47,8 +48,7 @@ const de = {
 
   subproject_projected_budget: {
     title: "Planbudget des Subprojektes",
-  }
-
+  },
 };
 
 export default de;

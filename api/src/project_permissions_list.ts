@@ -8,7 +8,7 @@ import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { Permissions } from "./service/domain/permissions";
+import { filterPermissions, Permissions } from "./service/domain/permissions";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -95,10 +95,16 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           throw new VError(projectPermissions, "project.intent.listPermissions failed");
         }
 
+        // TODO use an exposedPermissions interface instead of a filter function
+        const filteredProjectPermissions = filterPermissions(projectPermissions, [
+          "project.close",
+          "project.archive",
+        ]);
+
         const code = 200;
         const body = {
           apiVersion: "1.0",
-          data: projectPermissions,
+          data: filteredProjectPermissions,
         };
         reply.status(code).send(body);
       } catch (err) {

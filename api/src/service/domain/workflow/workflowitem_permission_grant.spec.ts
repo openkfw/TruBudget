@@ -28,6 +28,7 @@ const testworkflowitem: Workflowitem.Workflowitem = {
   subprojectId: "testSubproject",
   createdAt: new Date().toISOString(),
   status: "open",
+  assignee: executingUser.id,
   displayName: "unitTestName",
   description: "",
   amountType: "N/A",
@@ -38,8 +39,7 @@ const testworkflowitem: Workflowitem.Workflowitem = {
 };
 
 describe("grant workflowitem permissions", () => {
-  it("With the 'workflowitem.intent.grantPermission' permission, the user can grant workflowitem permissions",
-  async () => {
+  it("With the 'workflowitem.intent.grantPermission' permission, the user can grant workflowitem permissions", async () => {
     const grantResult = await WorkflowitemPermissionGrant.grantWorkflowitemPermission(
       ctx,
       executingUser,
@@ -73,14 +73,14 @@ describe("grant workflowitem permissions", () => {
     assert.deepEqual(expectedEvent, grantEvent);
   });
 
-  it("Without the 'workflowitem.intent.grantPermission' permission, the user cannot grant workflowitem permissions",
-  async () => {
+  it("Without the 'workflowitem.intent.grantPermission' permission, the user cannot grant workflowitem permissions", async () => {
     const workflowitemWithoutPermission: Workflowitem.Workflowitem = {
       isRedacted: false,
       id: "testworkflowitem",
       subprojectId: "testsubProject",
       createdAt: new Date().toISOString(),
       status: "open",
+      assignee: executingUser.id,
       displayName: "unitTestName",
       amountType: "N/A",
       description: "",
@@ -124,16 +124,16 @@ describe("grant workflowitem permission: preconditions", () => {
     assert.instanceOf(grantResult, NotFound);
   });
   it("No changes to existing permissions emit no new events", async () => {
-   const existingPermissions: Permissions = {
-    "workflowitem.view": ["testUser"],
-    "workflowitem.assign": [],
-    "workflowitem.intent.grantPermission": ["mstein"],
-  };
-   const baseWorkflowitem: Workflowitem.Workflowitem = {
+    const existingPermissions: Permissions = {
+      "workflowitem.view": ["testUser"],
+      "workflowitem.assign": [],
+      "workflowitem.intent.grantPermission": ["mstein"],
+    };
+    const baseWorkflowitem: Workflowitem.Workflowitem = {
       ...testworkflowitem,
       permissions: existingPermissions,
     };
-   const grantResult = await WorkflowitemPermissionGrant.grantWorkflowitemPermission(
+    const grantResult = await WorkflowitemPermissionGrant.grantWorkflowitemPermission(
       ctx,
       executingUser,
       projectId,
@@ -146,6 +146,6 @@ describe("grant workflowitem permission: preconditions", () => {
       },
     );
 
-   assert.deepEqual([], grantResult);
+    assert.deepEqual([], grantResult);
   });
 });

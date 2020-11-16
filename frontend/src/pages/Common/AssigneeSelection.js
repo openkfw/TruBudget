@@ -141,12 +141,12 @@ class AssigneeSelection extends Component {
 
     return (
       <FormControl
-        data-test={"assignee-container" + (disabled ? ".disabled" : "")}
+        data-test={"assignee-container" + (disabled ? "-disabled" : "")}
         disabled={disabled}
         className={classes.formControl}
       >
         <Select
-          data-test={"assignee-selection" + (disabled ? ".disabled" : "")}
+          data-test={"assignee-selection" + (disabled ? "-disabled" : "")}
           classes={{
             ...getSortClasses()
           }}

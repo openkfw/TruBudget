@@ -22,28 +22,6 @@ describe("Workflowitem edit", function() {
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("The workflowitem can be closed with only the view and close permissions", function() {
-    const assignee = "auditUser";
-    cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test").then(({ id }) => {
-      workflowitemId = id;
-      cy.grantProjectPermission(projectId, "project.viewSummary", assignee);
-      cy.grantProjectPermission(projectId, "project.viewDetails", assignee);
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assignee);
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", assignee);
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", assignee);
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.close", assignee);
-      cy.login(assignee);
-      cy.visit(`/projects/${projectId}/${subprojectId}`);
-      // Close workflow item
-      cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test=close-workflowitem]")
-        .scrollIntoView()
-        .click();
-      cy.get("[data-test=confirmation-dialog-confirm]")
-        .should("be.visible")
-        .click();
-    });
-  });
-
   it(
     "When editing a workflow item with a different currency than the subproject currency, " +
       "the selected currency is displayed",

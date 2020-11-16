@@ -230,7 +230,12 @@ const en = {
     subproject_select_button: "Select",
     subproject_title_description: "Name of the subproject",
     subproject_title: "Subproject title",
-    subproject_searchtext: "Search subprojects"
+    subproject_searchtext: "Search subprojects",
+    subproject_any_workflowitem_type: "Allow workflowitems to select general or restricted type",
+    subproject_general_workflowitem_type: "Only allow workflowitems of type general",
+    subproject_restricted_workflowitem_type:
+      "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
+    subproject_validator: "Validator"
   },
 
   workflow: {

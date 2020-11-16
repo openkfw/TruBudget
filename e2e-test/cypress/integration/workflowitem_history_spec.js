@@ -129,7 +129,7 @@ describe("Workflowitem's history", function() {
       workflowitemId = id;
       // Create 5 additional history events
       cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { displayName: "updated Name" });
-      cy.assignWorkflowitem(projectId, subprojectId, workflowitemId, "jxavier");
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { description: "updated Description" });
       cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
       cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
       // List all workflowitems to get all wfitem-ids
@@ -169,7 +169,7 @@ describe("Workflowitem's history", function() {
       workflowitemId = id;
       // Create 5 additional history events
       cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { displayName: "updated Name" });
-      cy.assignWorkflowitem(projectId, subprojectId, workflowitemId, "jxavier");
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { description: "updated Description" });
       cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
       cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
       // List all workflowitems to get all wfitem-ids
@@ -263,7 +263,7 @@ describe("Workflowitem's history", function() {
       workflowitemId = id;
       // Create 5 additional history events
       cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { displayName: "updated Name" });
-      cy.assignWorkflowitem(projectId, subprojectId, workflowitemId, "jxavier");
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { description: "updated Description" });
       cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
       cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
       // List all workflowitems to get all wfitem-ids

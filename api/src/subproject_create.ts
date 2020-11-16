@@ -1,8 +1,10 @@
 import { FastifyInstance } from "fastify";
+import Joi = require("joi");
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
@@ -10,8 +12,10 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as Subproject from "./service/domain/workflow/subproject";
+import WorkflowitemType, {
+  workflowitemTypeSchema,
+} from "./service/domain/workflowitem_types/types";
 import * as SubprojectCreate from "./service/subproject_create";
-import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -23,6 +27,8 @@ interface RequestBodyV1 {
       displayName: string;
       description?: string;
       assignee?: string;
+      validator?: string;
+      workflowitemType?: WorkflowitemType;
       currency: string;
       projectedBudgets?: Array<{
         organization: string;
@@ -44,6 +50,8 @@ const requestBodyV1Schema = Joi.object({
       displayName: Joi.string().required(),
       description: Joi.string().allow(""),
       assignee: Joi.string(),
+      validator: Joi.string(),
+      workflowitemType: workflowitemTypeSchema,
       currency: Joi.string().required(),
       projectedBudgets: projectedBudgetListSchema,
       additionalData: AdditionalData.schema,
@@ -92,6 +100,8 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   displayName: { type: "string", example: "townproject" },
                   description: { type: "string", example: "A town should be built" },
                   assignee: { type: "string", example: "aSmith" },
+                  validator: { type: "string", example: "aSmith" },
+                  workflowitemType: { type: "string", example: "general" },
                   currency: { type: "string", example: "EUR" },
                   projectedBudgets: {
                     type: "array",
@@ -178,6 +188,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         displayName: bodyResult.data.subproject.displayName,
         description: bodyResult.data.subproject.description,
         assignee: bodyResult.data.subproject.assignee,
+        validator: bodyResult.data.subproject.validator,
+        workflowitemType: bodyResult.data.subproject.workflowitemType,
         currency: bodyResult.data.subproject.currency,
         projectedBudgets: bodyResult.data.subproject.projectedBudgets,
         additionalData: bodyResult.data.subproject.additionalData,

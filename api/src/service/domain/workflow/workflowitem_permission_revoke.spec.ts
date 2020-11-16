@@ -28,6 +28,7 @@ const testworkflowitem: Workflowitem.Workflowitem = {
   subprojectId: "testSubproject",
   createdAt: new Date().toISOString(),
   status: "open",
+  assignee: executingUser.id,
   displayName: "unitTestName",
   description: "",
   amountType: "N/A",
@@ -79,6 +80,7 @@ describe("revoke workflowitem permissions", () => {
       subprojectId: "testsubProject",
       createdAt: new Date().toISOString(),
       status: "open",
+      assignee: executingUser.id,
       displayName: "unitTestName",
       amountType: "N/A",
       description: "",
@@ -141,16 +143,16 @@ describe("revoke workflowitem permission: preconditions", () => {
     assert.instanceOf(revokeResult, NotFound);
   });
   it("No changes to existing permissions emit no new events", async () => {
-   const existingPermissions: Permissions = {
-    "workflowitem.view": [],
-    "workflowitem.assign": [],
-    "workflowitem.intent.revokePermission": ["mstein"],
-  };
-   const baseWorkflowitem: Workflowitem.Workflowitem = {
+    const existingPermissions: Permissions = {
+      "workflowitem.view": [],
+      "workflowitem.assign": [],
+      "workflowitem.intent.revokePermission": ["mstein"],
+    };
+    const baseWorkflowitem: Workflowitem.Workflowitem = {
       ...testworkflowitem,
       permissions: existingPermissions,
     };
-   const revokeResult = await WorkflowitemPermissionRevoke.revokeWorkflowitemPermission(
+    const revokeResult = await WorkflowitemPermissionRevoke.revokeWorkflowitemPermission(
       ctx,
       executingUser,
       projectId,
@@ -163,6 +165,6 @@ describe("revoke workflowitem permission: preconditions", () => {
       },
     );
 
-   assert.deepEqual([], revokeResult);
+    assert.deepEqual([], revokeResult);
   });
 });

@@ -1,6 +1,7 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
 
+import WorkflowitemType from "./service/domain/workflowitem_types/types";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
 import { toHttpError } from "./http_errors";
@@ -55,6 +56,8 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         displayName: { type: "string", example: "Build a town-project" },
                         description: { type: "string", example: "A town should be built" },
                         assignee: { type: "string", example: "aSmith" },
+                        validator: { type: "string", example: "aSmith" },
+                        workflowitemType: { type: "string", example: "general" },
                         thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                         tags: {
                           type: "array",
@@ -127,6 +130,8 @@ interface ExposedSubproject {
     displayName: string;
     description: string;
     assignee?: string;
+    validator?: string;
+    WorkflowitemType?: WorkflowitemType;
     currency: string;
     projectedBudgets: Array<{
       organization: string;
@@ -219,6 +224,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             displayName: subproject.displayName,
             description: subproject.description,
             assignee: subproject.assignee,
+            validator: subproject.validator,
+            workflowitemType: subproject.workflowitemType,
             currency: subproject.currency,
             projectedBudgets: subproject.projectedBudgets,
             additionalData: subproject.additionalData,

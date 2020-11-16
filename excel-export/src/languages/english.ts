@@ -24,6 +24,8 @@ const en = {
     title: "Subprojects",
     id: "Subproject ID",
     name: "Subproject Name",
+    workflowitem_type: "Workflowitem Type",
+    validator: "Validator",
   },
 
   workflowitem: {
