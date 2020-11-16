@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed a bug where the user needed list-permissions that are not necessary [#562](https://github.com/openkfw/TruBudget/issues/562)
 - Fixed a bug where the confirmation dialog persists after pressing the browser's back button [#544](https://github.com/openkfw/TruBudget/issues/544)
+- Project tags now allow accents and upper and lowercase letters [#568](https://github.com/openkfw/TruBudget/issues/568)
 
 ## [1.15.0] - 2020-10-27
 
