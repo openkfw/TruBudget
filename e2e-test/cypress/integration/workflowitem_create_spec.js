@@ -44,7 +44,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=rateinput] input").should("be.disabled");
   });
 
-  it("Check warnings that permissions are not assigned", function() {
+  it.only("Check warnings that permissions are not assigned", function() {
     // Create a workflow item
     cy.get("[data-test=createWorkflowitem]").click();
     cy.get("[data-test=nameinput]").type("Test");
@@ -388,15 +388,15 @@ describe("Workflowitem create", function() {
       cy.get("[data-test=nameinput]").type("Test");
 
       cy.get("[data-test=assignee-container]")
-      .last()
-      .click();
-      cy.get("[value=jdoe]").click()
+        .last()
+        .click();
+      cy.get("[value=jdoe]").click();
       cy.get("[data-test=next]").click({ force: true });
       cy.get("[data-test=submit]").click();
       cy.wait("@workflowitemCreated").then(xhr => {
         expect(xhr.status).to.eq(200);
       });
-      cy.get("[data-test=confirmation-dialog-cancel]").click()
+      cy.get("[data-test=confirmation-dialog-cancel]").click();
     });
   });
 });
