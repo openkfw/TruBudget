@@ -44,7 +44,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=rateinput] input").should("be.disabled");
   });
 
-  it.only("Check warnings that permissions are not assigned", function() {
+  it("Check warnings that permissions are not assigned", function() {
     // Create a workflow item
     cy.get("[data-test=createWorkflowitem]").click();
     cy.get("[data-test=nameinput]").type("Test");
