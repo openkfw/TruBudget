@@ -83,9 +83,12 @@ Enable disabled User.
 **Instructions:**
 1. Click the button in the upper left corner (hamburger menu) to open the side-navigation-bar.
 2. Click "Users" Selection.
-2. Click "Disabled users" tab
-3. Click the "Restore user" button (looks like a white check mark symbol) next to the user you want to enable.
-4. A confirmation dialog will be show. Click "Disable user" to confirm to disable user.
+3. Click "Disabled users" tab
+4. Click the "Restore user" button (looks like a white check mark symbol) next to the user you want to enable.
+
+![Restore User](../../uploads/Screenshots/restore_user.png)
+
+5. A confirmation dialog will be show. Click "Disable user" to confirm to disable user.
 
 ## Disable User
 
@@ -101,4 +104,7 @@ Disable an User.
 1. Click the button in the upper left corner (hamburger menu) to open the side-navigation-bar.
 2. Click "Users" Selection.
 3. Click the "Disable user" button (looks like a white minus symbol) next to the user you want to disable.
+
+![Disable User](../../uploads/Screenshots/disable_user.png)
+
 4. A confirmation dialog will be show. Click "Disable user" to confirm to disable user.
