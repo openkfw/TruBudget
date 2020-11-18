@@ -215,7 +215,6 @@ Following intents do exist related to write permissions of a project:
 
 - "Assign workflowitem" : assign a user/group to the workflowitem
 - "Update workflowitem" : edit title, comment, budget or add documents to the workflowitem
-- "Close workflowitem" : close the workflowitem
 
 **Notes:**
 
@@ -286,4 +285,3 @@ Following list describes all existing permissions. If you need more information 
 | workflowitem.intent.listPermissions           | show which user/group has which permission on the workflowitem                                                         |
 | workflowitem.intent.grantPermission           | grant workflowitem permissions to a user/group                                                                         |
 | workflowitem.intent.revokePermission          | revoke workflowitem permissions from a user/group                                                                      |
-| workflowitem.close                            | close the workflowitem                                                                                                 |

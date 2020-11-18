@@ -254,24 +254,6 @@ describe("update subproject: notifications", () => {
     );
   });
 
-  it("When a user updates an unassigned subproject, no notifications are issued", async () => {
-    const modification: UpdatedData = {
-      description: "New description.",
-    };
-    const result = await updateSubproject(ctx, alice, projectId, subprojectId, modification, {
-      ...baseRepository,
-      getSubproject: async () => ({
-        ...baseSubproject,
-        description: "A description.",
-        assignee: undefined,
-      }),
-    });
-
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-
-    assert.isFalse(Result.unwrap(result).some((event) => event.type === "notification_created"));
-  });
-
   it("When an update is ignored, no notifications are issued", async () => {
     // An empty modification is always ignored:
     const modification: UpdatedData = {};

@@ -7,6 +7,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
@@ -23,7 +24,9 @@ export interface Subproject {
   status: "open" | "closed";
   displayName: string;
   description: string;
-  assignee?: string;
+  assignee: string;
+  validator?: string;
+  workflowitemType?: WorkflowitemType;
   currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   // The ordering doesn't need to include all workflowitems; any items not included here
@@ -38,28 +41,18 @@ export interface Subproject {
 const schema = Joi.object({
   id: idSchema.required(),
   projectId: Project.idSchema.required(),
-  createdAt: Joi.date()
-    .iso()
-    .required(),
-  status: Joi.string()
-    .valid("open", "closed")
-    .required(),
+  createdAt: Joi.date().iso().required(),
+  status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
-  assignee: Joi.string(),
+  description: Joi.string().allow("").required(),
+  assignee: Joi.string().required(),
+  validator: Joi.string(),
+  workflowitemType: workflowitemTypeSchema,
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema.required(),
-  workflowitemOrdering: Joi.array()
-    .items(Joi.string())
-    .required(),
-  permissions: Joi.object()
-    .pattern(/.*/, Joi.array().items(Joi.string()))
-    .required(),
-  log: Joi.array()
-    .required()
-    .items(subprojectTraceEventSchema),
+  workflowitemOrdering: Joi.array().items(Joi.string()).required(),
+  permissions: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).required(),
+  log: Joi.array().required().items(subprojectTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
 });
 
@@ -77,7 +70,7 @@ export function permits(
     const eligibles = subproject.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;

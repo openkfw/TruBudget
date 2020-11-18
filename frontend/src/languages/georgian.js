@@ -232,7 +232,12 @@ const ka = {
     subproject_select_button: "არჩევა",
     subproject_title_description: "ქვეპროექტის სახელწოდება",
     subproject_title: "ქვეპროექტის სათაური",
-    subproject_searchtext: "ქვეპროექტების ძებნა"
+    subproject_searchtext: "ქვეპროექტების ძებნა",
+    subproject_any_workflowitem_type: "სამუშაო ფურცლების დაშვება ზოგადი ან შეზღუდული ტიპის არჩევისთვის",
+    subproject_general_workflowitem_type: "დაუშვით მხოლოდ workflowitem ტიპის ზოგადი",
+    subproject_restricted_workflowitem_type:
+      "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
+    subproject_validator: "შემმოწმებელი"
   },
 
   workflow: {

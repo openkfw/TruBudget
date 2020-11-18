@@ -45,6 +45,7 @@ const event: WorkflowitemTraceEvent = {
     workflowitem: {
       id: subprojectId,
       status: "open",
+      assignee: alice.id,
       displayName: "subproject",
       description: "some description",
       currency: "",
@@ -69,6 +70,7 @@ const baseWorkflowitem: Workflowitem = {
   createdAt: new Date().toISOString(),
   dueDate: new Date().toISOString(),
   status: "open",
+  assignee: alice.id,
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
@@ -111,38 +113,24 @@ describe("get worklfowitem history: authorization", () => {
   it("With only view permissions, a user can still get a worklfowitem's history.", async () => {
     const modifiedWorkflowitem: Workflowitem = {
       ...baseWorkflowitem,
-      permissions: { "workflowitem.view": ["alice"]},
+      permissions: { "workflowitem.view": ["alice"] },
     };
-    const result = await getHistory(
-      ctx,
-      alice,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      {
-        ...baseRepository,
-        getWorkflowitem: async () => modifiedWorkflowitem,
-      },
-    );
+    const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, {
+      ...baseRepository,
+      getWorkflowitem: async () => modifiedWorkflowitem,
+    });
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
   it("With only viewHistory permissions, a user can still get a worklfowitem's history.", async () => {
     const modifiedWorkflowitem: Workflowitem = {
       ...baseWorkflowitem,
-      permissions: { "workflowitem.viewHistory": ["alice"]},
+      permissions: { "workflowitem.viewHistory": ["alice"] },
     };
-    const result = await getHistory(
-      ctx,
-      alice,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      {
-        ...baseRepository,
-        getWorkflowitem: async () => modifiedWorkflowitem,
-      },
-    );
+    const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, {
+      ...baseRepository,
+      getWorkflowitem: async () => modifiedWorkflowitem,
+    });
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 

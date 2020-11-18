@@ -1,5 +1,6 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import Intent, { subprojectIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -16,6 +17,7 @@ import { Permissions } from "../permissions";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import * as Subproject from "./subproject";
 import * as SubprojectCreated from "./subproject_created";
 
@@ -26,6 +28,8 @@ export interface RequestData {
   displayName: string;
   description?: string;
   assignee?: string;
+  validator?: string;
+  workflowitemType?: WorkflowitemType;
   currency: CurrencyCode;
   projectedBudgets?: ProjectedBudget[];
   additionalData?: object;
@@ -38,6 +42,8 @@ const requestDataSchema = Joi.object({
   displayName: Joi.string().required(),
   description: Joi.string().allow(""),
   assignee: Joi.string(),
+  validator: Joi.string(),
+  workflowitemType: workflowitemTypeSchema,
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema,
   additionalData: AdditionalData.schema,
@@ -69,6 +75,8 @@ export async function createSubproject(
     displayName: reqData.displayName,
     description: reqData.description || "",
     assignee: reqData.assignee || creatingUser.id,
+    validator: reqData.validator,
+    workflowitemType: reqData.workflowitemType,
     currency: reqData.currency,
     projectedBudgets: reqData.projectedBudgets || [],
     permissions: newDefaultPermissionsFor(creatingUser.id),

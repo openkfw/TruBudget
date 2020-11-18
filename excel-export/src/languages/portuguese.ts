@@ -24,6 +24,8 @@ const pt = {
     title: "Subprojetos",
     id: "ID de Subprojeto",
     name: "Nome de Subprojeto",
+    workflowitem_type: "Categoria do item de workflow",
+    validator: "Validador",
   },
 
   workflowitem: {

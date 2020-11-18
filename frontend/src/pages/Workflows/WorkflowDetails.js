@@ -127,7 +127,11 @@ function Overview({ classes, users, workflowitem }) {
         <ListItemAvatar>
           <Avatar>{statusIconMapping[status]}</Avatar>
         </ListItemAvatar>
-        <ListItemText primary={statusMapping(status)} secondary={strings.common.status} />
+        <ListItemText
+          data-test={"workflowitem-status"}
+          primary={statusMapping(status)}
+          secondary={strings.common.status}
+        />
       </ListItem>
       {dueDate ? (
         <ListItem>

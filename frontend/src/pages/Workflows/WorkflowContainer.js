@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
-import { canAssignSubProject, canCloseSubProject, canViewSubProjectPermissions } from "../../permissions";
+import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
 import globalStyles from "../../styles";
 import { openAnalyticsDialog } from "../Analytics/actions";
 import AdditionalInfo from "../Common/AdditionalInfo";
@@ -88,7 +88,7 @@ class WorkflowContainer extends Component {
 
   render() {
     const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
-    const canCloseSubproject = canCloseSubProject(this.props.allowedIntents);
+    const canCloseSubproject = this.props.currentUser === this.props.assignee;
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
     return (
       <div>
@@ -206,6 +206,8 @@ const mapStateToProps = state => {
     status: state.getIn(["workflow", "status"]),
     amount: state.getIn(["workflow", "amount"]),
     currency: state.getIn(["workflow", "currency"]),
+    subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
+    fixedWorkflowitemType: state.getIn(["workflow", "fixedWorkflowitemType"]),
     assignee: state.getIn(["workflow", "assignee"]),
     created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
@@ -231,7 +233,7 @@ const mapStateToProps = state => {
     idsPermissionsUnassigned: state.getIn(["workflow", "idsPermissionsUnassigned"]),
     isDataLoading: state.getIn(["loading", "loadingVisible"]),
     isLiveUpdatesSubprojectEnabled: state.getIn(["workflow", "isLiveUpdatesSubprojectEnabled"]),
-
+    currentUser: state.getIn(["login", "id"])
   };
 };
 

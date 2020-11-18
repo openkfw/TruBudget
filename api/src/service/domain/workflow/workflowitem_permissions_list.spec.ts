@@ -28,6 +28,7 @@ const baseWorkflowitem: Workflowitem = {
   createdAt: new Date().toISOString(),
   dueDate: new Date().toISOString(),
   status: "open",
+  assignee: alice.id,
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
@@ -39,38 +40,45 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const baseRepository = {
-    applyWorkflowitemType: () => [],
-    getWorkflowitem: async () => baseWorkflowitem,
-
-  };
+  applyWorkflowitemType: () => [],
+  getWorkflowitem: async () => baseWorkflowitem,
+};
 
 describe("List workflowitem permissions: authorization", () => {
-  it("With the 'workflowitem.intent.listPermissions' permission, " +
-  "the user can list workflowitem permissions", async () => {
-    const result = await getAll(ctx, bob, projectId, subprojectId, workflowitemId, baseRepository);
-
-    assert.isTrue(Result.isOk(result));
-    assert.equal(Result.unwrap(result), permissions);
-  });
-
-  it("Without the 'workflowitem.intent.listPermissions' permission," +
-  "the user cannot list workflowitem permissions", async () => {
-    const result = await getAll(ctx,
+  it(
+    "With the 'workflowitem.intent.listPermissions' permission, " +
+      "the user can list workflowitem permissions",
+    async () => {
+      const result = await getAll(
+        ctx,
         bob,
         projectId,
         subprojectId,
         workflowitemId,
-        {
-            ...baseRepository,
-            getWorkflowitem: async _workflowitemId => ({
-              ...baseWorkflowitem,
-              permissions: {},
-            }),
-          });
+        baseRepository,
+      );
 
-    assert.isTrue(Result.isErr(result));
-    assert.instanceOf(result, NotAuthorized);
-  });
+      assert.isTrue(Result.isOk(result));
+      assert.equal(Result.unwrap(result), permissions);
+    },
+  );
+
+  it(
+    "Without the 'workflowitem.intent.listPermissions' permission," +
+      "the user cannot list workflowitem permissions",
+    async () => {
+      const result = await getAll(ctx, bob, projectId, subprojectId, workflowitemId, {
+        ...baseRepository,
+        getWorkflowitem: async (_workflowitemId) => ({
+          ...baseWorkflowitem,
+          permissions: {},
+        }),
+      });
+
+      assert.isTrue(Result.isErr(result));
+      assert.instanceOf(result, NotAuthorized);
+    },
+  );
   it("The root user doesn't need permission to list workflowitem permissions", async () => {
     const result = await getAll(ctx, bob, projectId, subprojectId, workflowitemId, baseRepository);
 
@@ -80,15 +88,10 @@ describe("List workflowitem permissions: authorization", () => {
 });
 describe("list workflowitem permissions: preconditions", () => {
   it("Listing a workflowitem's permissions fails if the workflowitem cannot be found", async () => {
-    const result = await getAll(ctx,
-      bob,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      {
-          ...baseRepository,
-          getWorkflowitem: async _workflowitemId => new Error("some error"),
-        });
+    const result = await getAll(ctx, bob, projectId, subprojectId, workflowitemId, {
+      ...baseRepository,
+      getWorkflowitem: async (_workflowitemId) => new Error("some error"),
+    });
     assert.isTrue(Result.isErr(result));
     assert.instanceOf(result, NotFound);
   });

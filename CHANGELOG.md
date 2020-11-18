@@ -9,18 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
-### Changed
-
-- Update french translations [#588](https://github.com/openkfw/TruBudget/pull/588)
+<!-- ### Changed -->
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
 
-### Fixed
+<!-- ### Fixed -->
 
-- Fixed a bug where the user needed list-permissions that are not necessary [#562](https://github.com/openkfw/TruBudget/issues/562)
-- Fixed a bug where the confirmation dialog persists after pressing the browser's back button [#544](https://github.com/openkfw/TruBudget/issues/544)
 <!-- ### Security -->
 
 ## [1.17.0] - 2020-11-13
@@ -29,11 +25,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added scroll back to top button [#609](https://github.com/openkfw/TruBudget/pull/609)
 
-## [1.16.0] - 2020-11-12
+## [1.16.0] - 2020-11-16
 
 ### Added
 
 - The export of the excel file is now available in all TruBudget languages [#567](https://github.com/openkfw/TruBudget/issues/567)
+- Added a validator field on the subproject level [#572](https://github.com/openkfw/TruBudget/issues/572)
+- Added an option to set a fixed worklowitem type on subproject level [#572](https://github.com/openkfw/TruBudget/issues/572)
+
+### Changed
+
+- Update french translations [#588](https://github.com/openkfw/TruBudget/pull/588)
+- Removed the close permissions on all levels. Now only the specific assignee is permitted to close these. [#572](https://github.com/openkfw/TruBudget/issues/572)
+
+### Fixed
+
+- Fixed a bug where the user needed list-permissions that are not necessary [#562](https://github.com/openkfw/TruBudget/issues/562)
+- Fixed a bug where the confirmation dialog persists after pressing the browser's back button [#544](https://github.com/openkfw/TruBudget/issues/544)
+- Project tags now allow accents and upper and lowercase letters [#568](https://github.com/openkfw/TruBudget/issues/568)
 
 ## [1.15.0] - 2020-10-27
 
@@ -532,7 +541,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.15.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.16.0...master
+[1.16.0]: https://github.com/openkfw/TruBudget/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/openkfw/TruBudget/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/openkfw/TruBudget/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/openkfw/TruBudget/compare/v1.12.0...v1.13.0

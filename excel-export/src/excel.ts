@@ -64,6 +64,8 @@ export async function writeXLSX(
       { header: strings.common.created, key: "creationUnixTs", width: mediumWidth },
       { header: strings.common.status, key: "status", width: smallWidth },
       { header: strings.common.description, key: "description", width: mediumWidth },
+      { header: strings.subproject.workflowitem_type, key: "workflowitemType", width: mediumWidth },
+      { header: strings.subproject.validator, key: "validator", width: mediumWidth },
       { header: strings.common.assignee, key: "assignee", width: smallWidth },
       { header: strings.common.currency, key: "currency", width: smallWidth },
       { header: strings.common.additional_data, key: "additionalData", width: smallWidth },
