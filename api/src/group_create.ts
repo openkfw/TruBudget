@@ -42,7 +42,7 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
   return !error ? value : error;
 }
 
-function mkSwaggerSchema(server: FastifyInstance) {
+export function mkSwaggerSchema(server: FastifyInstance) {
   return {
     preValidation: [(server as any).authenticate],
     schema: {

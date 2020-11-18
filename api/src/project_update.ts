@@ -23,15 +23,17 @@ interface RequestBodyV1 {
   };
 }
 
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
+const requestBodyV1Schema = Joi.object().keys({
+  apiVersion: Joi.string().valid("1.0").required(),
+  data: Joi.object().keys({
     projectId: Project.idSchema.required(),
     displayName: Joi.string(),
     description: Joi.string().allow(""),
     thumbnail: Joi.string().allow(""),
     additionalData: AdditionalData.schema,
-    tags: Joi.array().items(Joi.string()),
+    tags: Joi.array().items(
+      Joi.string(),
+    ),
   }).required(),
 });
 
@@ -43,7 +45,7 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
   return !error ? value : error;
 }
 
-function mkSwaggerSchema(server: FastifyInstance) {
+export function mkSwaggerSchema(server: FastifyInstance) {
   return {
     preValidation: [(server as any).authenticate],
     schema: {
@@ -68,8 +70,8 @@ function mkSwaggerSchema(server: FastifyInstance) {
             properties: {
               projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
               displayName: { type: "string", example: "townproject" },
-              description: { type: "string", example: "A town should be built" },
-              thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+              description: { type: "string", example: "A town should be built", minLength: 0 },
+              thumbnail: { type: "string", example: "/Thumbnail_0001.jpg", minLength: 0 },
               additionalData: { type: "object" },
               tags: {
                 type: "array",

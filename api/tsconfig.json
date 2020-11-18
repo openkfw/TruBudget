@@ -11,6 +11,6 @@
     "noUnusedParameters": false,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*.ts", "src/joiGenerator.ts"],
+  "include": ["src/**/*.ts", "src/scripts/joiGenerator.ts"],
   "exclude": ["node_modules", "coverage"]
 }

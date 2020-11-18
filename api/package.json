@@ -43,7 +43,8 @@
     "lint": "eslint src --ext ts",
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
     "tsc": "tsc",
-    "test:here": "node ./runTest.js"
+    "test:here": "node ./runTest.js",
+    "generate-joi": "node dist/scripts/joiGenerator.js"
   },
   "nyc": {
     "include": [
@@ -99,7 +100,9 @@
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^3.7.1",
     "chai": "^4.1.2",
+    "colors": "^1.4.0",
     "coveralls": "^3.0.3",
+    "diff": "^5.0.0",
     "eslint": "^7.12.1",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^6.15.0",
@@ -113,8 +116,7 @@
     "openapi-typescript": "^2.4.0",
     "rimraf": "*",
     "supertest": "^4.0.2",
-    "sw2dts": "^2.6.3",
-    "swagger-to-joi": "^1.1.8",
+    "swagger-to-joi": "^1.2.3",
     "ts-node": "^8.0.3",
     "tslint": "*",
     "typescript": "^4.0.2"
