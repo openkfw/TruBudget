@@ -1,2 +1,8 @@
 blank_issues_enabled: false # force the usage of a template
 contact_links:
+  - name: Documentation ❔
+    url: https://github.com/openkfw/TruBudget/tree/master/doc
+    about: I need support with Trubudget.
+  - name: Trubudget Community Support 👪
+    url: https://github.community/
+    about: I need support with Trubudget.
