@@ -78,7 +78,7 @@ Examples:
 Enable disabled User.
 
 **Notes:**
-- Only an administrator can enable users of his/her organization!
+- Only a user with the `user.enable`-permission can enable users of his/her organization!
 
 **Instructions:**
 1. Click the button in the upper left corner (hamburger menu) to open the side-navigation-bar.
@@ -88,7 +88,7 @@ Enable disabled User.
 
 ![Restore User](../../uploads/Screenshots/restore_user.png)
 
-5. A confirmation dialog will be show. Click "Disable user" to confirm to disable user.
+5. A confirmation dialog will be show. Click "Disable user" to confirm the activation.
 
 ## Disable User
 
@@ -97,7 +97,7 @@ Enable disabled User.
 Disable an User.
 
 **Notes:**
-- Only an administrator can disable users of his/her organization!
+- Only a user with the `user.disable`-permission can disable users of his/her organization!
 - When disabled user tried to log in a "Login ID is disabled" message will pop up.
 
 **Instructions:**
@@ -107,4 +107,4 @@ Disable an User.
 
 ![Disable User](../../uploads/Screenshots/disable_user.png)
 
-4. A confirmation dialog will be show. Click "Disable user" to confirm to disable user.
+4. A confirmation dialog will be shown. Click "Disable user" to confirm the deactivation.
