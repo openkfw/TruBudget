@@ -1,8 +1,13 @@
 describe("Workflowitem create", function() {
   let projectId;
   let subprojectId;
+  let baseUrl, apiRoute;
   const today = Cypress.moment().format("YYYY-MM-DD");
 
+  before(() => {
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
+  });
   before(() => {
     cy.login();
 
@@ -215,6 +220,7 @@ describe("Workflowitem create", function() {
       cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.be.visible");
     });
   });
+
   it("If the due-date is not set, the info icon badge is not displayed", function() {
     // Create a workflow item
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test", {
@@ -225,6 +231,172 @@ describe("Workflowitem create", function() {
       // Check if info icon badge is NOT displayed
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.be.visible");
+    });
+  });
+
+  it("When creating a workflowitem, an assignee can be set", function() {
+    // Open create-dialog of workflow item
+    cy.get("[data-test=createWorkflowitem]").click();
+    cy.get("[data-test=creation-dialog]").should("be.visible");
+    cy.get("[data-test=nameinput]").type("Test");
+    // Default assignee is current user
+    cy.get(`[data-test=assignee-selection]`).should("contain", "Mauro Stein");
+    cy.get("[data-test=workflow-dialog-content]")
+      .find("[data-test=assignee-selection]")
+      .click();
+    cy.get("[data-test=assignee-list]")
+      .find("[value=auditUser]")
+      .click();
+
+    cy.get("[data-test=next]").click({ force: true });
+    cy.get("[data-test=next]").click({ force: true });
+    cy.get("[data-test=submit]").click();
+    // Confirmation dialog opens to grant assignee required view permissions
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+    // Check if assignee has been set
+    cy.get("[data-test^=workflowitem-]")
+      .last()
+      .find(`[data-test=assignee-selection]`)
+      .should("contain", "Romina Checker");
+  });
+
+  it("When the subproject type is general, the workflowitem type is also fixed to general", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.visit(`/projects/${projectId}`);
+
+    //Create a subproject
+    cy.wait("@loadPage")
+      .get("[data-test=subproject-create-button]")
+      .click();
+    cy.get("[data-test=nameinput] input").type("Test");
+    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
+      .click()
+      .then(() => cy.get("[data-value=EUR]").click());
+    cy.get("[data-test=dropdown-types-click]").click();
+    cy.get("[data-value=general]").click();
+    cy.get("[data-test=submit]").click();
+
+    cy.wait("@subprojectCreated").then(xhr => {
+      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+
+      //test type in workflowitem creation
+      cy.get("[data-test=createWorkflowitem]").click();
+      cy.get("[data-test=creation-dialog]").should("be.visible");
+      cy.get("[data-test=dropdown-types-click]")
+        .get("[data-disabled=true]")
+        .should("be.visible");
+    });
+  });
+
+  it("When the subproject type is any, the workflowitem type is not fixed", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.route("POST", apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+
+    //Create a subproject
+    cy.visit(`/projects/${projectId}`);
+    cy.wait("@loadPage")
+      .get("[data-test=subproject-create-button]")
+      .click();
+    cy.get("[data-test=nameinput] input").type("Test");
+    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
+      .click()
+      .then(() => cy.get("[data-value=EUR]").click());
+    cy.get("[data-test=submit]").click();
+
+    cy.wait("@subprojectCreated").then(xhr => {
+      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+
+      //test type in workflowitem creation
+      cy.get("[data-test=createWorkflowitem]").click();
+      cy.get("[data-test=creation-dialog]").should("be.visible");
+      cy.get("[data-disabled=false]").should("be.visible");
+      cy.get("[data-test=dropdown-types-click]")
+        .should("not.be.disabled")
+        .click();
+      cy.get("[data-test=dropdown_selectList] > [tabindex=-1]").click();
+      cy.get("[data-test=nameinput]").type("Test");
+
+      cy.get("[data-test=next]").click({ force: true });
+      cy.get("[data-test=submit]").click();
+      cy.wait("@workflowitemCreated").then(xhr => {
+        expect(xhr.status).to.eq(200);
+      });
+    });
+  });
+
+  // wenn ein validator bei suproject gewählt ist dann ist der asignne bei worklfowiitem gefixed und der field ist disabled.
+  it("When the subproject validator is set, the workflowitem assignee is fixed and the field is disabled", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
+
+    //Create a subproject
+    cy.visit(`/projects/${projectId}`);
+    cy.wait("@loadPage")
+      .get("[data-test=subproject-create-button]")
+      .click();
+    cy.get("[data-test=nameinput] input").type("Test");
+    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
+      .click()
+      .then(() => cy.get("[data-value=EUR]").click());
+    cy.get("[data-test=dropdown-assignee-click]").click();
+    cy.get("[data-value=jdoe]").click();
+
+    cy.get("[data-test=submit]").click();
+
+    cy.wait("@subprojectCreated").then(xhr => {
+      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+
+      // test assignee field in workflowitem creation
+      cy.get("[data-test=createWorkflowitem]").click();
+      cy.get("[data-test=creation-dialog]").should("be.visible");
+      cy.get("[data-test=assignee-selection-disabled]").should("be.visible");
+    });
+  });
+
+  it("When no validator is set in a subproject, the workflowitem assignee can be changed", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.route("POST", apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+
+    //Create a subproject
+    cy.visit(`/projects/${projectId}`);
+    cy.wait("@loadPage")
+      .get("[data-test=subproject-create-button]")
+      .click();
+    cy.get("[data-test=nameinput] input").type("Test");
+    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
+      .click()
+      .then(() => cy.get("[data-value=EUR]").click());
+    cy.get("[data-test=submit]").click();
+
+    cy.wait("@subprojectCreated").then(xhr => {
+      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+      // test assignee field in workflowitem creation
+      cy.get("[data-test=createWorkflowitem]").click();
+      cy.get("[data-test=creation-dialog]").should("be.visible");
+      cy.get("[data-test=nameinput]").type("Test");
+
+      cy.get("[data-test=assignee-container]")
+        .last()
+        .click();
+      cy.get("[value=jdoe]").click();
+      cy.get("[data-test=next]").click({ force: true });
+      cy.get("[data-test=submit]").click();
+      cy.wait("@workflowitemCreated").then(xhr => {
+        expect(xhr.status).to.eq(200);
+      });
+      cy.get("[data-test=confirmation-dialog-cancel]").click();
     });
   });
 });

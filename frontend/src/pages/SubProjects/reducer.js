@@ -27,6 +27,8 @@ import {
   SHOW_SUBPROJECT_PERMISSIONS,
   SUBPROJECT_COMMENT,
   SUBPROJECT_CURRENCY,
+  SUBPROJECT_VALIDATOR,
+  SUBPROJECT_WORKFLOWITEMTYPE,
   SUBPROJECT_DELETED_PROJECTED_BUDGET,
   SUBPROJECT_NAME,
   ADD_SUBPROJECT_PROJECTED_BUDGET,
@@ -61,7 +63,9 @@ const defaultState = fromJS({
     description: "",
     currency: "",
     projectedBudgets: [],
-    deletedProjectedBudgets: []
+    deletedProjectedBudgets: [],
+    validator: "",
+    workflowitemType: "any"
   },
   idsPermissionsUnassigned: [],
   creationDialogShown: false,
@@ -152,6 +156,10 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["subprojectToAdd", "description"], action.description);
     case SUBPROJECT_CURRENCY:
       return state.setIn(["subprojectToAdd", "currency"], action.currency);
+    case SUBPROJECT_VALIDATOR:
+      return state.setIn(["subprojectToAdd", "validator"], action.validator);
+    case SUBPROJECT_WORKFLOWITEMTYPE:
+      return state.setIn(["subprojectToAdd", "workflowitemType"], action.workflowitemType);
     case ADD_SUBPROJECT_PROJECTED_BUDGET:
       return state.merge({
         subprojectToAdd: state.get("subprojectToAdd").merge({

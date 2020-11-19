@@ -154,14 +154,14 @@ In the node section you should see that you need to approve a new node and organ
 
 ## Using TruBudget programatically through its API
 
-TruBudget comes with a frontend, but we greatly encourage to create own frontends or attach your existing systems to TruBudget. Therefore everything you can do in TruBudget can be done through a well documented HTTP/JSON interface. You can access and test-drive the API using the swagger documentation which is exposed by the TruBudget API under the route `/api/documentation/index.html`. Since we have already two nodes running, lets access the API documentation of the node we deployed in the first step.
+TruBudget comes with a frontend, but we greatly encourage to create own frontends or attach your existing systems to TruBudget. Therefore everything you can do in TruBudget can be done through a well documented HTTP/JSON interface. You can access and test-drive the API using the swagger documentation which is exposed by the TruBudget API under the route `/api/documentation/static/index.html`. Since we have already two nodes running, lets access the API documentation of the node we deployed in the first step.
 
 ```
 For the prod network:
-http://localhost:8080/api/documentation/index.html
+http://localhost:8080/api/documentation/static/index.html
 
 For the test network:
-http://localhost:8081/api/documentation/index.html
+http://localhost:8081/api/documentation/static/index.html
 ```
 
 ## Hints and Pitfalls

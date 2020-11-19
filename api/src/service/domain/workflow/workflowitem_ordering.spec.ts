@@ -28,6 +28,7 @@ const baseWorkflowitem: Workflowitem.Workflowitem = {
   amountType: "N/A",
   documents: [],
   permissions: {},
+  assignee: alice.id,
   log: [],
   additionalData: {},
   workflowitemType: "general",

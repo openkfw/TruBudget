@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import { convertToSearchBarString } from "../../helper";
-import { canAssignProject, canCloseProject, canCreateSubProject } from "../../permissions";
+import { canAssignProject, canCreateSubProject } from "../../permissions";
 import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import { openAnalyticsDialog } from "../Analytics/actions";
@@ -102,7 +102,7 @@ class SubProjectContainer extends Component {
   render() {
     const canCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
     const canAssign = canAssignProject(this.props.allowedIntents);
-    const canClose = canCloseProject(this.props.allowedIntents);
+    const canClose = this.props.currentUser === this.props.projectAssignee;
     const projectId = this.projectId;
 
     return (
@@ -195,7 +195,7 @@ const mapStateToProps = state => {
     filteredSubProjects: state.getIn(["detailview", "filteredSubProjects"]),
     showProjectAssignees: state.getIn(["detailview", "showProjectAssignees"]),
     showHistory: state.getIn(["notifications", "showHistory"]),
-    loggedInUser: state.getIn(["login", "loggedInUser"]),
+    currentUser: state.getIn(["login", "id"]),
     roles: state.getIn(["login", "roles"]),
     allowedIntents: state.getIn(["detailview", "allowedIntents"]),
     thumbnail: state.getIn(["detailview", "thumbnail"]),
@@ -210,8 +210,7 @@ const mapStateToProps = state => {
     searchTerms: state.getIn(["detailview", "searchTerms"]),
     idsPermissionsUnassigned: state.getIn(["detailview", "idsPermissionsUnassigned"]),
     isDataLoading: state.getIn(["loading", "loadingVisible"]),
-    isLiveUpdatesProjectEnabled: state.getIn(["detailview", "isLiveUpdatesProjectEnabled"]),
-
+    isLiveUpdatesProjectEnabled: state.getIn(["detailview", "isLiveUpdatesProjectEnabled"])
   };
 };
 

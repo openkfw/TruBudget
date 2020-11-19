@@ -82,11 +82,13 @@ const styles = theme => ({
     justifyContent: "center"
   },
   tagButton: {
-    margin: "1px"
+    margin: "1px",
+    textTransform: "none"
   },
   highlightedTagButton: {
     margin: "1px",
-    backgroundColor: theme.palette.primary.light
+    backgroundColor: theme.palette.primary.light,
+    textTransform: "none"
   }
 });
 

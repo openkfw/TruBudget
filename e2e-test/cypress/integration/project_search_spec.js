@@ -118,7 +118,7 @@ describe("Project Search", function() {
     cy.get(`[data-test=project-card-${projectWithTag.id}]`)
       .find("[data-test=overview-tag]")
       .should("have.length", 1)
-      .contains(testTag.toLowerCase())
+      .contains(testTag)
       .click();
     // Check search bar for tag search term
     cy.get("[data-test=search-bar]")
@@ -126,7 +126,7 @@ describe("Project Search", function() {
       .should("be.visible");
     cy.get("[data-test=search-bar]")
       .find("[data-test=search-input] input")
-      .should("have.value", "tag:" + testTag.toLowerCase());
+      .should("have.value", "tag:" + testTag);
   });
 
   it("Search bar is closed and reset when viewing project details", function() {

@@ -138,29 +138,23 @@ export async function createWorkflowitem(
     return new AlreadyExists(ctx, workflowitemCreated, workflowitemCreated.workflowitem.id);
   }
 
-  // Check authorization (if not root):
-  if (creatingUser.id !== "root") {
-    const authorizationResult = Result.map(
-      await repository.getSubproject(reqData.projectId, reqData.subprojectId),
-      (subproject) => {
-        const intent = "subproject.createWorkflowitem";
-        if (!Subproject.permits(subproject, creatingUser, [intent])) {
-          return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });
-        }
-      },
-    );
-    if (Result.isErr(authorizationResult)) {
-      return new VError(
-        authorizationResult,
-        "failed to create workflowitem, permission check failed",
-      );
-    }
-  } else {
+  const subprojectResult = await repository.getSubproject(reqData.projectId, reqData.subprojectId);
+  if (Result.isErr(subprojectResult)) {
+    return new VError(subprojectResult, "failed to get subproject");
+  }
+  const subproject = subprojectResult;
+
+  // Check authorization
+  if (creatingUser.id === "root") {
     return new PreconditionError(
       ctx,
       workflowitemCreated,
       "user 'root' is not allowed to create workflowitems",
     );
+  }
+  const intent = "subproject.createWorkflowitem";
+  if (!Subproject.permits(subproject, creatingUser, [intent])) {
+    return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });
   }
 
   // Check that the event is valid:
@@ -206,6 +200,18 @@ export async function createWorkflowitem(
       return result;
     }
     documentUploadedEvents.push(result);
+  }
+
+  // Check the workflowitem type
+  if (
+    subproject.workflowitemType !== undefined &&
+    workflowitemCreated.workflowitem.workflowitemType !== subproject.workflowitemType
+  ) {
+    return new PreconditionError(
+      ctx,
+      workflowitemCreated,
+      `only the subproject's workflowitem type may be used: ${subproject.workflowitemType}`,
+    );
   }
 
   const workflowitemTypeEvents = repository.applyWorkflowitemType(workflowitemCreated, result);

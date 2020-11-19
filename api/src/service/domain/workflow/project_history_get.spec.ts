@@ -42,6 +42,7 @@ const event: ProjectTraceEvent = {
     project: {
       id: projectId,
       status: "open",
+      assignee: alice.id,
       displayName: "project",
       description: "some description",
       projectedBudgets: [],
@@ -104,7 +105,7 @@ describe("get project history: authorization", () => {
   it("With only viewHistory permissions, a user can still get a project's history.", async () => {
     const modifiedProject: Project = {
       ...baseProject,
-      permissions: {"project.viewHistory": ["alice"] },
+      permissions: { "project.viewHistory": ["alice"] },
     };
     const result = await getHistory(ctx, alice, projectId, {
       ...baseRepository,

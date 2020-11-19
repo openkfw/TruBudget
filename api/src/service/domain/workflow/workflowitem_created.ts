@@ -21,7 +21,7 @@ interface InitialData {
   status: "open" | "closed";
   displayName: string;
   description: string;
-  assignee?: Identity;
+  assignee: Identity;
   amount?: string;
   currency?: string;
   amountType: "N/A" | "disbursed" | "allocated";
@@ -80,7 +80,7 @@ export function createEvent(
   subprojectId: Subproject.Id,
   workflowitem: InitialData,
   time: string = new Date().toISOString(),
-): Result.Type<Event>  {
+): Result.Type<Event> {
   const event = {
     type: eventType,
     source,

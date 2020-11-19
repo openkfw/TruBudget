@@ -32,7 +32,7 @@ export interface Workflowitem {
   amountType: "N/A" | "disbursed" | "allocated";
   description: string;
   status: "open" | "closed";
-  assignee?: string;
+  assignee: string;
   documents: StoredDocument[];
   permissions: Permissions;
   log: WorkflowitemTraceEvent[];
@@ -55,7 +55,7 @@ export interface RedactedWorkflowitem {
   amountType: null;
   description: null;
   status: "open" | "closed";
-  assignee?: null;
+  assignee: null;
   documents: [];
   permissions: {};
   log: WorkflowitemTraceEvent[];
@@ -139,7 +139,7 @@ export function permits(
     const eligibles = workflowitem.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;
@@ -172,9 +172,9 @@ function redactLog(events: WorkflowitemTraceEvent[]): WorkflowitemTraceEvent[] {
   return (
     events
       // We only keep close events for now:
-      .filter(x => x.businessEvent.type === "workflowitem_closed")
+      .filter((x) => x.businessEvent.type === "workflowitem_closed")
       // We only keep the info needed to sort workflowitems:
-      .map(x => ({
+      .map((x) => ({
         entityId: x.entityId,
         entityType: x.entityType,
         businessEvent: {

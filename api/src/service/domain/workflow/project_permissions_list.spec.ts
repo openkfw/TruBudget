@@ -19,6 +19,7 @@ const baseProject: Project.Project = {
   id: projectId,
   createdAt: new Date().toString(),
   status: "open",
+  assignee: bob.id,
   displayName: "unitTestName",
   description: "",
   projectedBudgets: [],

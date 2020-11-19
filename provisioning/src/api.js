@@ -86,6 +86,15 @@ const createProject = async (axios, projectTemplate) => {
   );
 };
 
+const assignProject = async (axios, projectId, assignee) => {
+  await withRetry(() =>
+    axios.post("/project.assign", {
+      projectId: projectId,
+      identity: assignee,
+    })
+  );
+};
+
 const closeProject = async (axios, project) => {
   await withRetry(() =>
     axios.post("/project.close", {
@@ -117,6 +126,16 @@ const updateProject = async (axios, projectId, description) => {
     axios.post("/project.update", {
       projectId: projectId,
       description: description || "",
+    })
+  );
+};
+
+const assignSubproject = async (axios, projectId, subprojectId, assignee) => {
+  await withRetry(() =>
+    axios.post("/subproject.assign", {
+      projectId: projectId,
+      subprojectId: subprojectId,
+      identity: assignee,
     })
   );
 };
@@ -164,6 +183,7 @@ const updateWorkflowitem = async (
     })
   );
 };
+
 const closeWorkflowitem = async (
   axios,
   projectId,
@@ -175,6 +195,23 @@ const closeWorkflowitem = async (
       projectId: projectId,
       subprojectId: subprojectId,
       workflowitemId: workflowitemId,
+    })
+  );
+};
+
+const assignWorkflowitem = async (
+  axios,
+  projectId,
+  subprojectId,
+  workflowitemId,
+  assignee
+) => {
+  await withRetry(() =>
+    axios.post("/workflowitem.assign", {
+      projectId: projectId,
+      subprojectId: subprojectId,
+      workflowitemId: workflowitemId,
+      identity: assignee,
     })
   );
 };
@@ -295,14 +332,17 @@ module.exports = {
   grantGlobalPermissionToUser,
   grantAllPermissionsToUser,
   createProject,
+  assignProject,
   closeProject,
   createSubproject,
   updateProject,
+  assignSubproject,
   updateSubproject,
   closeSubproject,
   createWorkflowitem,
   updateWorkflowitem,
   closeWorkflowitem,
+  assignWorkflowitem,
   findProject,
   findSubproject,
   findWorkflowitem,

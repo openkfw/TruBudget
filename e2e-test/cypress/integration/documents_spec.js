@@ -94,7 +94,7 @@ describe("Attaching a document to a workflowitem.", function() {
     // make sure the validation was successful:
     cy.wait("@validate")
       .get(`button[label="Validated!"] > span`)
-      .should("contain", "OK");
+      .should("contain", "Identical");
   });
 
   it("Validation of wrong document fails.", function() {
@@ -134,6 +134,6 @@ describe("Attaching a document to a workflowitem.", function() {
     // make sure the validation was not successful:
     cy.wait("@validate")
       .get(`button[label="Changed!"] > span`)
-      .should("contain", "Not OK");
+      .should("contain", "Different");
   });
 });

@@ -55,9 +55,9 @@ import {
 // additional Actions = view/list permission intents which are required to execute all original actions
 const defaultState = fromJS({
   open: false,
-  project: {},
-  subproject: {},
-  workflowitem: {},
+  project: { listPermissionsNeeded: false },
+  subproject: { listPermissionsNeeded: false },
+  workflowitem: { listPermissionsNeeded: false },
   permissions: { project: {}, subproject: {}, workflowitem: {} },
   isFetchingProjectPermissions: false,
   isFetchingSubprojectPermissions: false,
@@ -70,7 +70,7 @@ const defaultState = fromJS({
   executedAdditionalActions: [],
   additionalActionsExecuted: false,
   executingAdditionalActions: false,
-  listPermissionsRequired: false,
+  isListPermissionsRequiredFromApi: false,
   failedAction: {},
   requestedPermissions: {}
 });
@@ -184,7 +184,8 @@ export default function confirmationReducer(state = defaultState, action) {
     case FETCH_PROJECT_PERMISSIONS_FAILURE:
     case FETCH_SUBPROJECT_PERMISSIONS_FAILURE:
     case FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE:
-      if (action.message === "Request failed with status code 403") return state.set("listPermissionsRequired", true);
+      if (action.message === "Request failed with status code 403")
+        return state.set("isListPermissionsRequiredFromApi", true);
       return state;
     case STORE_REQUESTED_PERMISSIONS:
       return state.set("requestedPermissions", action.permissions);

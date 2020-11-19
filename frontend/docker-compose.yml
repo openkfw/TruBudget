@@ -3,36 +3,35 @@ services:
   master:
     image: trubudget/blockchain:latest
     environment:
-      RPC_PORT: 8000
-      ORGANIZATION: ACMECorp
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      RPC_PORT: ${RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+      RPC_PASSWORD: ${RPC_PASSWORD}
     volumes:
       - /tmp/bcMasterVolume:/root/.multichain
     ports:
       - "7447:7447"
-      - "8000:8000"
+      - "8000:${RPC_PORT}"
   api:
     image: trubudget/api:latest
     environment:
-      RPC_HOST: master
-      RPC_PORT: 8000
-      ROOT_SECRET: asdf
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      PORT: 8080
-      ORGANIZATION: ACMECorp
-      ORGANIZATION_VAULT_SECRET: org$ecret
-      ROOT_SECRET: asdf
+      RPC_HOST: ${RPC_HOST}
+      RPC_PORT: ${RPC_PORT}
+      ROOT_SECRET: ${ROOT_SECRET}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      PORT: ${API_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
     links:
       - master
     ports:
-      - "8080:8080"
+      - "8080:${API_PORT}"
   provisioning:
     image: trubudget/provisioning:latest
     environment:
-      API_HOST: api
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: TEST
-      ROOT_SECRET: asdf
-      ORGANIZATION: ACMECorp
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
+      ENVIRONMENT_TYPE: ${ENVIRONMENT_TYPE}
+      ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
     links:
       - api

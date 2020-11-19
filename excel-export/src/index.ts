@@ -1,6 +1,9 @@
 import axios, { AxiosTransformer } from "axios";
 import { createServer, IncomingMessage, ServerResponse } from "http";
+import * as URL from "url";
+
 import { writeXLSX } from "./excel";
+import strings, { languages } from "./localizeStrings";
 
 const apiHost: string = process.env.PROD_API_HOST || "localhost";
 const apiPort: number =
@@ -12,6 +15,18 @@ const serverPort: number = (process.env.PORT && parseInt(process.env.PORT, 10)) 
 const accessControlAllowOrigin: string = process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*";
 
 const DEFAULT_API_VERSION = "1.0";
+
+const setExcelLanguage = (url: string) => {
+  const queryData = URL.parse(url, true).query;
+
+  if (queryData.lang) {
+    languages.map((language) => {
+      if (queryData.lang === language) {
+        strings.setLanguage(queryData.lang);
+      }
+    });
+  } else strings.setLanguage("en");
+};
 
 const transformRequest: AxiosTransformer = (data) => {
   if (typeof data === "object") {
@@ -73,7 +88,9 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
   const isTest = /^\/test/.test(String(req.url));
   const isProd = /^\/prod/.test(String(req.url));
 
-  if (isTest || isProd) {
+  if ((isTest || isProd) && endpoint.includes("download")) {
+    setExcelLanguage(req.url);
+
     // create export
     try {
       const base = isTest

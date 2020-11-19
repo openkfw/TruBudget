@@ -9,6 +9,7 @@ import {
   getWorkflowitems,
 } from "./api";
 import * as jwtDecode from "jwt-decode";
+import strings from "./localizeStrings";
 
 var Excel = require("exceljs");
 
@@ -34,84 +35,94 @@ export async function writeXLSX(
     workbook.created = new Date();
 
     // Prepare sheets
-    const projectSheet = workbook.addWorksheet("Projects");
-    const subprojectSheet = workbook.addWorksheet("Subprojects");
-    const workflowitemSheet = workbook.addWorksheet("Workflowitems");
-    const projectProjectedBudgetsSheet = workbook.addWorksheet("Project Projected Budgets");
-    const subprojectProjectedBudgetsSheet = workbook.addWorksheet("Subproject Projected Budgets");
-    const documentSheet = workbook.addWorksheet("Documents");
+    const projectSheet = workbook.addWorksheet(strings.project.title);
+    const subprojectSheet = workbook.addWorksheet(strings.subproject.title);
+    const workflowitemSheet = workbook.addWorksheet(strings.workflowitem.title);
+    const projectProjectedBudgetsSheet = workbook.addWorksheet(
+      strings.project_projected_budget.title,
+    );
+    const subprojectProjectedBudgetsSheet = workbook.addWorksheet(
+      strings.subproject_projected_budget.title,
+    );
+    const documentSheet = workbook.addWorksheet(strings.document.title);
 
     projectSheet.columns = [
-      { header: "Project ID", key: "id", width: mediumWidth },
-      { header: "Project Name", key: "displayName", width: mediumWidth },
-      { header: "Created", key: "creationUnixTs", width: mediumWidth },
-      { header: "Status", key: "status", width: smallWidth },
-      { header: "Description", key: "description", width: mediumWidth },
-      { header: "Assignee", key: "assignee", width: smallWidth },
-      { header: "Additional Data", key: "additionalData", width: smallWidth },
+      { header: strings.project.id, key: "id", width: mediumWidth },
+      { header: strings.project.name, key: "displayName", width: mediumWidth },
+      { header: strings.common.created, key: "creationUnixTs", width: mediumWidth },
+      { header: strings.common.status, key: "status", width: smallWidth },
+      { header: strings.common.description, key: "description", width: mediumWidth },
+      { header: strings.common.assignee, key: "assignee", width: smallWidth },
+      { header: strings.common.additional_data, key: "additionalData", width: smallWidth },
     ];
 
     subprojectSheet.columns = [
-      { header: "Project ID", key: "parentId", width: mediumWidth },
-      { header: "Project Name", key: "parentDisplayName", width: mediumWidth },
-      { header: "Subproject ID", key: "id", width: mediumWidth },
-      { header: "Subproject Name", key: "displayName", width: mediumWidth },
-      { header: "Created", key: "creationUnixTs", width: mediumWidth },
-      { header: "Status", key: "status", width: smallWidth },
-      { header: "Description", key: "description", width: mediumWidth },
-      { header: "Assignee", key: "assignee", width: smallWidth },
-      { header: "Currency", key: "currency", width: smallWidth },
-      { header: "Additional Data", key: "additionalData", width: smallWidth },
+      { header: strings.project.id, key: "parentId", width: mediumWidth },
+      { header: strings.project.name, key: "parentDisplayName", width: mediumWidth },
+      { header: strings.subproject.id, key: "id", width: mediumWidth },
+      { header: strings.subproject.name, key: "displayName", width: mediumWidth },
+      { header: strings.common.created, key: "creationUnixTs", width: mediumWidth },
+      { header: strings.common.status, key: "status", width: smallWidth },
+      { header: strings.common.description, key: "description", width: mediumWidth },
+      { header: strings.subproject.workflowitem_type, key: "workflowitemType", width: mediumWidth },
+      { header: strings.subproject.validator, key: "validator", width: mediumWidth },
+      { header: strings.common.assignee, key: "assignee", width: smallWidth },
+      { header: strings.common.currency, key: "currency", width: smallWidth },
+      { header: strings.common.additional_data, key: "additionalData", width: smallWidth },
     ];
 
     workflowitemSheet.columns = [
-      { header: "Project ID", key: "parentProjectId", width: mediumWidth },
-      { header: "Project Name", key: "parentProjectDisplayName", width: mediumWidth },
-      { header: "Subproject ID", key: "parentSubprojectId", width: mediumWidth },
-      { header: "Subproject Name", key: "parentSubprojectDisplayName", width: mediumWidth },
-      { header: "Subproject Currency", key: "parentSubprojectCurrency", width: smallWidth },
-      { header: "Workflowitem ID", key: "id", width: mediumWidth },
-      { header: "Workflowitem Name", key: "displayName", width: mediumWidth },
-      { header: "Workflowitem Type", key: "workflowitemType", width: smallWidth },
-      { header: "Created", key: "creationUnixTs", width: mediumWidth },
-      { header: "Status", key: "status", width: smallWidth },
-      { header: "Description", key: "description", width: mediumWidth },
-      { header: "Assignee", key: "assignee", width: smallWidth },
-      { header: "Billing Date", key: "billingDate", width: mediumWidth },
-      { header: "Due Date", key: "dueDate", width: mediumWidth },
-      { header: "Amount Type", key: "amountType", width: smallWidth },
-      { header: "Amount", key: "amount", width: smallWidth },
-      { header: "Currency", key: "currency", width: smallWidth },
-      { header: "Exchange Rate", key: "exchangeRate", width: smallWidth },
+      { header: strings.project.id, key: "parentProjectId", width: mediumWidth },
+      { header: strings.project.name, key: "parentProjectDisplayName", width: mediumWidth },
+      { header: strings.subproject.id, key: "parentSubprojectId", width: mediumWidth },
+      { header: strings.subproject.name, key: "parentSubprojectDisplayName", width: mediumWidth },
+      {
+        header: strings.workflowitem.subproject_currency,
+        key: "parentSubprojectCurrency",
+        width: smallWidth,
+      },
+      { header: strings.workflowitem.id, key: "id", width: mediumWidth },
+      { header: strings.workflowitem.name, key: "displayName", width: mediumWidth },
+      { header: strings.workflowitem.type, key: "workflowitemType", width: smallWidth },
+      { header: strings.common.created, key: "creationUnixTs", width: mediumWidth },
+      { header: strings.common.status, key: "status", width: smallWidth },
+      { header: strings.common.description, key: "description", width: mediumWidth },
+      { header: strings.common.assignee, key: "assignee", width: smallWidth },
+      { header: strings.common.billing_date, key: "billingDate", width: mediumWidth },
+      { header: strings.common.due_date, key: "dueDate", width: mediumWidth },
+      { header: strings.common.amount_type, key: "amountType", width: smallWidth },
+      { header: strings.common.amount, key: "amount", width: smallWidth },
+      { header: strings.common.currency, key: "currency", width: smallWidth },
+      { header: strings.common.exchange_rate, key: "exchangeRate", width: smallWidth },
     ];
 
     documentSheet.columns = [
-      { header: "Project ID", key: "projectId", width: mediumWidth },
-      { header: "Project Name", key: "projectDisplayName", width: mediumWidth },
-      { header: "Subproject ID", key: "subprojectId", width: mediumWidth },
-      { header: "Subproject Name", key: "subprojectDisplayName", width: mediumWidth },
-      { header: "Workflowitem ID", key: "workflowitemId", width: mediumWidth },
-      { header: "Workflowitem Name", key: "workflowitemDisplayName", width: mediumWidth },
-      { header: "Name", key: "name", width: mediumWidth },
-      { header: "Hash", key: "hash", width: largeWidth },
+      { header: strings.project.id, key: "projectId", width: mediumWidth },
+      { header: strings.project.name, key: "projectDisplayName", width: mediumWidth },
+      { header: strings.subproject.id, key: "subprojectId", width: mediumWidth },
+      { header: strings.subproject.name, key: "subprojectDisplayName", width: mediumWidth },
+      { header: strings.workflowitem.id, key: "workflowitemId", width: mediumWidth },
+      { header: strings.workflowitem.name, key: "workflowitemDisplayName", width: mediumWidth },
+      { header: strings.document.name, key: "name", width: mediumWidth },
+      { header: strings.document.hash, key: "hash", width: largeWidth },
     ];
 
     projectProjectedBudgetsSheet.columns = [
-      { header: "Project ID", key: "parentId", width: mediumWidth },
-      { header: "Project Name", key: "parentDisplayName", width: mediumWidth },
-      { header: "Organization", key: "organization", width: mediumWidth },
-      { header: "Currency", key: "currencyCode", width: smallWidth },
-      { header: "Amount", key: "value", width: mediumWidth },
+      { header: strings.project.id, key: "parentId", width: mediumWidth },
+      { header: strings.project.name, key: "parentDisplayName", width: mediumWidth },
+      { header: strings.common.organisation, key: "organization", width: mediumWidth },
+      { header: strings.common.currency, key: "currencyCode", width: smallWidth },
+      { header: strings.common.amount, key: "value", width: mediumWidth },
     ];
 
     subprojectProjectedBudgetsSheet.columns = [
-      { header: "Project ID", key: "parentProjectId", width: mediumWidth },
-      { header: "Project Name", key: "parentProjectDisplayName", width: mediumWidth },
-      { header: "Subproject ID", key: "parentSubprojectId", width: mediumWidth },
-      { header: "Subproject Name", key: "parentSubprojectDisplayName", width: mediumWidth },
-      { header: "Organization", key: "organization", width: mediumWidth },
-      { header: "Currency", key: "currencyCode", width: smallWidth },
-      { header: "Amount", key: "value", width: mediumWidth },
+      { header: strings.project.id, key: "parentProjectId", width: mediumWidth },
+      { header: strings.project.name, key: "parentProjectDisplayName", width: mediumWidth },
+      { header: strings.subproject.id, key: "parentSubprojectId", width: mediumWidth },
+      { header: strings.subproject.name, key: "parentSubprojectDisplayName", width: mediumWidth },
+      { header: strings.common.organisation, key: "organization", width: mediumWidth },
+      { header: strings.common.currency, key: "currencyCode", width: smallWidth },
+      { header: strings.common.amount, key: "value", width: mediumWidth },
     ];
 
     const projects: Project[] = await getProjects(axios, token, base);

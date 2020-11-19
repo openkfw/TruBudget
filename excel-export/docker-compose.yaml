@@ -5,11 +5,11 @@ services:
     build:
       context: ../blockchain
     environment:
-      RPC_PORT: 8000
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      ORGANIZATION: KfW
+      RPC_PORT: ${RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      ORGANIZATION: ${ORGANIZATION}
     ports:
-      - "8000:8000"
+      - "8000:${RPC_PORT}"
       - "8085:8085"
 
   api:
@@ -17,15 +17,15 @@ services:
     build:
       context: ../api
     environment:
-      ORGANIZATION: KfW
-      ORGANIZATION_VAULT_SECRET: asdf
-      RPC_HOST: blockchain
-      RPC_PORT: 8000
-      ROOT_SECRET: asdf
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-      JWT_SECRET: uYbE6y1nrRkhN2EvderoxNpTS2JkaZbk
+      ORGANIZATION: ${ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
+      RPC_HOST: ${RPC_HOST}
+      RPC_PORT: ${RPC_PORT}
+      ROOT_SECRET: ${ROOT_SECRET}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
     ports:
-      - 8080:8080
+        - "8080:${API_PORT}"
     links:
       - blockchain
 
@@ -34,11 +34,11 @@ services:
     image: trubudget/provisioning:latest
     command: ["npm", "start"]
     environment:
-      API_HOST: api
-      API_PORT: 8080
-      ENVIRONMENT_TYPE: TEST
-      ROOT_SECRET: asdf
-      ORGANIZATION: KfW
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
+      ENVIRONMENT_TYPE: ${ENVIRONMENT_TYPE}
+      ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
     links:
       - api
 
@@ -47,13 +47,13 @@ services:
     build:
       context: ../frontend
     environment:
-      PROD_API_HOST: api
-      PROD_API_PORT: 8080
-      TEST_API_HOST: api
-      TEST_API_PORT: 8080
-      REACT_APP_EXPORT_SERVICE_ENABLED: "true"
-      EXPORT_HOST: export
-      EXPORT_PORT: 8888
+      PROD_API_HOST: ${PROD_API_HOST}
+      PROD_API_PORT: ${PROD_API_PORT}
+      TEST_API_HOST: ${TEST_API_HOST}
+      TEST_API_PORT: ${TEST_API_PORT}
+      REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
+      EXPORT_HOST: ${EXPORT_HOST}
+      EXPORT_PORT: ${EXPORT_PORT}
     links:
       - export
       - api
@@ -64,13 +64,13 @@ services:
     build:
       context: .
     environment:
-      PROD_API_HOST: api
-      PROD_API_PORT: 8080
-      TEST_API_HOST: api
-      TEST_API_PORT: 8080
-      PORT: 8888
-      ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+      PROD_API_HOST: ${PROD_API_HOST}
+      PROD_API_PORT: ${PROD_API_PORT}
+      TEST_API_HOST: ${TEST_API_HOST}
+      TEST_API_PORT: ${TEST_API_PORT}
+      PORT: ${EXPORT_PORT}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
     depends_on:
       - api
     ports:
-      - "8888:8888"
+      - "8888:${EXPORT_PORT}"

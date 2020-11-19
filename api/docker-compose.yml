@@ -4,9 +4,9 @@ services:
     build:
       context: ../blockchain
     environment:
-      RPC_PORT: 8000
-      ORGANIZATION: ACMECorp
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      RPC_PORT: ${RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+      RPC_PASSWORD: ${RPC_PASSWORD}
     ports:
-      - "8000:8000"
+      - "8000:${RPC_PORT}"
       - "8085:8085"

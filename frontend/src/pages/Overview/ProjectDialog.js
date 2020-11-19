@@ -17,7 +17,9 @@ const handleCreate = props => {
     tags
   );
   onDialogCancel();
-  storeSnackbarMessage(strings.common.added + " " + strings.common.project + " " + shortenedDisplayName(displayName));
+  storeSnackbarMessage(
+    strings.formatString(strings.snackbar.creation_succeed_message, shortenedDisplayName(displayName))
+  );
 };
 
 const handleEdit = props => {
@@ -39,8 +41,9 @@ const handleEdit = props => {
       },
       changes.deletedProjectedBudgets
     );
+    console.log();
     storeSnackbarMessage(
-      strings.common.edited + " " + strings.common.project + " " + shortenedDisplayName(projectToAdd.displayName)
+      strings.formatString(strings.snackbar.update_succeed_message, shortenedDisplayName(projectToAdd.displayName))
     );
   }
   onDialogCancel();

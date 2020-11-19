@@ -3,20 +3,20 @@ services:
   blockchain:
     image: trubudget/blockchain:master
     environment:
-      RPC_PORT: 8000
-      ORGANIZATION: UmbrellaCorp
+      RPC_PORT: ${RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION_BC}
     ports:
       - "8000:8000"
   api:
     image: trubudget/api:master
     ports:
-      - "8080:8080"
+      - "8080:${API_PORT}"
     environment:
-      ORGANIZATION: ACMECorp
-      ORGANIZATION_VAULT_SECRET: ker5Ecet
-      RPC_HOST: blockchain
-      RPC_PORT: 8000
-      PORT: 8080
-      ROOT_SECRET: "asdf"
+      ORGANIZATION: ${ORGANIZATION_API}
+      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
+      RPC_HOST: ${RPC_HOST}
+      RPC_PORT: ${RPC_PORT}
+      PORT: ${API_PORT}
+      ROOT_SECRET: ${ROOT_SECRET}
     links:
       - blockchain
