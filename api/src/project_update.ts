@@ -72,7 +72,7 @@ export function mkSwaggerSchema(server: FastifyInstance) {
               displayName: { type: "string", example: "townproject" },
               description: { type: "string", example: "A town should be built", minLength: 0 },
               thumbnail: { type: "string", example: "/Thumbnail_0001.jpg", minLength: 0 },
-              additionalData: { type: "object" },
+               additionalData: { type: "object" },
               tags: {
                 type: "array",
                 items: { type: "string", example: "project1" },
