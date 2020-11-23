@@ -366,6 +366,8 @@ The frontend should then be availaible at http://localhost:3000
 
 Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application.
 
+To run end-to-end tests you have to first run [provisioning](#provisioning-optional).
+
 ```bash
 cd frontend
 npm install
