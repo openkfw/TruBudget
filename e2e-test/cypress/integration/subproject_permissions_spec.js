@@ -516,6 +516,7 @@ describe("Subproject Permissions", function() {
     // Open permission search popup
     cy.wait("@listSubprojectPermissions")
       .get("[data-test='permission-select-subproject.createWorkflowitem']")
+      .scrollIntoView()
       .should("be.visible")
       .click();
     // Select and add all test Identities
