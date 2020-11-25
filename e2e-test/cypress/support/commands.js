@@ -612,9 +612,9 @@ Cypress.Commands.add("createBackup", () => {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    timeout: 60000
   })
-  .its("headers")
-  .then(headers => Cypress.Promise.resolve(headers))
-
+    .its("headers")
+    .then(headers => Cypress.Promise.resolve(headers));
 });
