@@ -15,7 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Fixed a Bug where labels e.g. on login ID field were too large and not readable anymore [#625](https://github.com/openkfw/TruBudget/issues/625)
 
 <!-- ### Security -->
 

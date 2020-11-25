@@ -23,12 +23,18 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    width: "200px"
+    width: "210px"
   },
   formControlContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
+  },
+  label: {
+    whiteSpace: "nowrap",
+    width: "-webkit-fill-available",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
   }
 });
 
@@ -94,7 +100,9 @@ class UserSelection extends React.Component {
           </div>
 
           <FormControl data-test="add-user-container" className={classes.formControl}>
-            <InputLabel shrink={false}>{selectedItems.length + " " + strings.users.selected_users}</InputLabel>
+            <InputLabel className={classes.label} shrink={false}>
+              {selectedItems.length + " " + strings.users.selected_users}
+            </InputLabel>
             <Select
               data-test="add-user-selection"
               value={[""]}
