@@ -15,6 +15,12 @@ const styles = {
   icon: {
     marginTop: "20px",
     marginRight: "20px"
+  },
+  label: {
+    whiteSpace: "nowrap",
+    width: "-webkit-fill-available",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
   }
 };
 
@@ -25,6 +31,9 @@ const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, id, .
       <TextField
         id={id}
         label={label}
+        InputLabelProps={{
+          style: styles.label
+        }}
         value={username}
         margin="normal"
         error={failed}
