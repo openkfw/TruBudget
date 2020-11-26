@@ -53,7 +53,7 @@ export const globalIntentOrder = [
 export const projectIntentOrder = [
   {
     name: "view",
-    intents: ["project.intent.listPermissions", "project.viewSummary", "project.viewDetails"]
+    intents: ["project.viewSummary", "project.viewDetails", "project.intent.listPermissions"]
   },
   {
     name: "write",
@@ -68,11 +68,7 @@ export const projectIntentOrder = [
 export const subProjectIntentOrder = [
   {
     name: "view",
-    intents: [
-      "subproject.intent.listPermissions",
-      "subproject.viewSummary",
-      "subproject.viewDetails"
-    ]
+    intents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.intent.listPermissions"]
   },
   {
     name: "write",
@@ -91,7 +87,7 @@ export const subProjectIntentOrder = [
 export const workflowItemIntentOrder = [
   {
     name: "view",
-    intents: ["workflowitem.intent.listPermissions", "workflowitem.view"]
+    intents: ["workflowitem.view", "workflowitem.intent.listPermissions"]
   },
   {
     name: "write",
