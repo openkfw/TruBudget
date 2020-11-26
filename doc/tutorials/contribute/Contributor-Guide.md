@@ -120,6 +120,7 @@ sh setupGitSecrets.sh
 ## Developer Setup
 
 If you want to start developing on Trubudget, you need to setup the application locally. This guide tells you how to start the blockchain, start the API, load up some test data and start the frontend.
+
 On mac you might need to install `automake`.
 
 ```bash
