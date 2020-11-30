@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
-import AssigneeSelection from "../Common/AssigneeSelection";
+import SingleSelection from "../Common/SingleSelection";
 import { assignProject } from "./actions";
 
 class ProjectAssigneeContainer extends Component {
@@ -10,11 +10,11 @@ class ProjectAssigneeContainer extends Component {
 
     return (
       <React.Fragment>
-        <AssigneeSelection
-          assigneeId={assignee}
-          users={users}
+        <SingleSelection
+          selectId={assignee}
+          selectableItems={users}
           disabled={disabled}
-          assign={(assigneeId, assigneeDisplayName) =>
+          onSelect={(assigneeId, assigneeDisplayName) =>
             assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName)
           }
         />

@@ -11,7 +11,7 @@ import CreationDialog from "../Common/CreationDialog";
 import DatePicker from "../Common/DatePicker";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
-import AssigneeSelection from "../Common/AssigneeSelection";
+import SingleSelection from "../Common/SingleSelection";
 import DocumentUpload from "../Documents/DocumentUpload";
 import { compareWorkflowItems } from "./compareWorkflowItems";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
@@ -191,12 +191,11 @@ const Content = props => {
             </div>
             <div className={classes.inputContainer}>
               <div className={classes.assigneeContainer}>
-                <AssigneeSelection
+                <SingleSelection
                   disabled={hasSubprojectValidator}
-                  assigneeId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
-                  users={users}
-                  title={"title"}
-                  assign={(assigneeId, assigneeDisplayName) => {
+                  selectId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
+                  selectableItems={users}
+                  onSelect={(assigneeId, assigneeDisplayName) => {
                     storeWorkflowAssignee(assigneeId);
                   }}
                 />

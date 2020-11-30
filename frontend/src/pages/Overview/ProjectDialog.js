@@ -41,7 +41,6 @@ const handleEdit = props => {
       },
       changes.deletedProjectedBudgets
     );
-    console.log();
     storeSnackbarMessage(
       strings.formatString(strings.snackbar.update_succeed_message, shortenedDisplayName(projectToAdd.displayName))
     );
