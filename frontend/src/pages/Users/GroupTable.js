@@ -37,11 +37,11 @@ const GroupsTable = ({ groups, showDashboardDialog, allowedIntents, userId }) =>
               group.permissions["group.removeUser"]?.includes(userId);
             return (
               <TableRow data-test={`group-${group.groupId}`} key={group.groupId}>
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" data-test="group-id">
                   {group.groupId}
                 </TableCell>
-                <TableCell>{group.displayName}</TableCell>
-                <TableCell>{group.users.length}</TableCell>
+                <TableCell data-test="group-name">{group.displayName}</TableCell>
+                <TableCell data-test="group-user-length">{group.users.length}</TableCell>
                 <TableCell>
                   <div style={{ display: "flex" }}>
                     <ActionButton
