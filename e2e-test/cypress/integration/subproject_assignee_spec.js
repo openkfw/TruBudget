@@ -83,8 +83,8 @@ describe("Subproject Assignee", function() {
   // Setup firstUncheckedRadioButton
   // Setup assigneeId
   function setupConfirmationDialog() {
-    cy.get("[data-test=assignee-selection]").click();
-    cy.get("[data-test=assignee-list]")
+    cy.get("[data-test=single-select]").click();
+    cy.get("[data-test=single-select-list]")
       .should("exist")
       .then($list => {
         const firstUncheckedRadioButton = $list.find("input:not(:checked)").first();
