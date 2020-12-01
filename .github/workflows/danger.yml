@@ -1,0 +1,23 @@
+name: Danger CI
+
+on: 
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  dangerjs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install danger
+        run: npm ci
+      - name: Run danger and create github comment if necessary
+        run: npm run danger ci
