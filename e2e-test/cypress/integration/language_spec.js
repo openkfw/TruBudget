@@ -93,7 +93,7 @@ describe("Language", function() {
     cy.get("[data-test=project-creation-date]")
       .last()
       .should("be.visible")
-      .should("contain", "Créé");
+      .should("contain", "Date de création");
   });
 
   it("Check some portugese words", function() {
