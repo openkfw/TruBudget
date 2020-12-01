@@ -12,6 +12,10 @@ const en = {
     due_date: "Due Date",
     exchange_rate: "Exchange Rate",
     organisation: "Organisation",
+    closed: "Closed",
+    open: "Open",
+    general: "General",
+    restricted: "Restricted",
   },
 
   project: {
@@ -34,6 +38,9 @@ const en = {
     name: "Workflowitem Name",
     type: "Workflowitem Type",
     subproject_currency: "Subproject Currency",
+    allocated: "Assigned",
+    disbursed: "Payed",
+    na: "N/A",
   },
 
   document: {

@@ -35,7 +35,7 @@ const fr = {
     completion: "Achèvement",
     confirm: "Confirmer",
     create: "Créer",
-    created: "Créé",
+    created: "Date de création",
     currency: "Devise",
     disbursed_budget: "Montants payés",
     disbursement: "Paiement prévus",

@@ -10,6 +10,7 @@ import {
 } from "./api";
 import * as jwtDecode from "jwt-decode";
 import strings from "./localizeStrings";
+import { statusMapping, workflowItemTypeMapping, amountTypesMapping } from "./helper";
 
 var Excel = require("exceljs");
 
@@ -131,6 +132,7 @@ export async function writeXLSX(
       projectSheet
         .addRow({
           ...project,
+          status: statusMapping(project.status),
           creationUnixTs: new Date(parseInt(project.creationUnixTs, 10) * 1000).toISOString(),
         })
         .commit();
@@ -152,7 +154,9 @@ export async function writeXLSX(
           .addRow({
             ...subproject,
             parentId: project.id,
+            status: statusMapping(subproject.status),
             parentDisplayName: project.displayName,
+            workflowitemType: workflowItemTypeMapping(subproject.workflowitemType),
             creationUnixTs: new Date(parseInt(subproject.creationUnixTs, 10) * 1000).toISOString(),
           })
           .commit();
@@ -187,6 +191,9 @@ export async function writeXLSX(
               parentSubprojectDisplayName: subproject.displayName,
               parentSubprojectCurrency: subproject.currency,
               amount: workflowitem.amount ? parseFloat(workflowitem.amount) : undefined,
+              workflowitemType: workflowItemTypeMapping(workflowitem.workflowitemType),
+              amountType: amountTypesMapping(workflowitem.amountType),
+              status: statusMapping(workflowitem.status),
               exchangeRate: workflowitem.exchangeRate
                 ? parseFloat(workflowitem.exchangeRate)
                 : undefined,

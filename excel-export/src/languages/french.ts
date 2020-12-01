@@ -1,6 +1,6 @@
 const fr = {
   common: {
-    created: "Créé",
+    created: "Date de création",
     status: "Statut",
     description: "Description",
     assignee: "Responsable",
@@ -12,12 +12,16 @@ const fr = {
     due_date: "Date d'échéance",
     exchange_rate: "Taux de change",
     organisation: "Organisation",
+    closed: "Validé",
+    open: "Ouvert",
+    general: "General",
+    restricted: "Restreint",
   },
 
   project: {
     title: "Projets",
-    id: "Projet ID",
-    name: "Projet Nom",
+    id: "ID du Projet",
+    name: "Nom du Projet",
   },
 
   subproject: {
@@ -34,11 +38,14 @@ const fr = {
     name: "Nom de l'étape de workflow",
     type: "Type de l'étape de workflow",
     subproject_currency: "Devise de la composante",
+    allocated: "Engagé",
+    disbursed: "Payé",
+    na: "N/A",
   },
 
   document: {
     title: "Documents",
-    name: "Nom",
+    name: "Nom du document",
     hash: "Hash",
   },
 
