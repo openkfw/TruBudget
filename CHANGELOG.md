@@ -18,12 +18,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
+<!-- ### Security -->
+
+## [1.17.0] - 2020-11-13
+
 ### Fixed
 
 - Fixed a Bug where labels e.g. on login ID field were too large and not readable anymore [#625](https://github.com/openkfw/TruBudget/issues/625)
 - Fixed some translations as specified in [#655](https://github.com/openkfw/TruBudget/issues/655)
 
-<!-- ### Security -->
+### Added
+
+- Added scroll back to top button [#579](https://github.com/openkfw/TruBudget/issues/579)
 
 ## [1.16.0] - 2020-11-16
 
