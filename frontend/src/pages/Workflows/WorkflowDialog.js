@@ -15,7 +15,8 @@ import AssigneeSelection from "../Common/AssigneeSelection";
 import DocumentUpload from "../Documents/DocumentUpload";
 import { compareWorkflowItems } from "./compareWorkflowItems";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
-import { types, typesDescription } from "./workflowitemTypes";
+
+const types = ["general", "restricted"];
 
 const styles = {
   container: {
@@ -137,17 +138,6 @@ const getDropdownMenuItems = types => {
   });
 };
 
-const getWorkflowitemTypeInfo = type => {
-  switch (type) {
-    case "general":
-      return typesDescription.general;
-    case "restricted":
-      return typesDescription.restricted;
-    default:
-      return typesDescription.general;
-  }
-};
-
 const Content = props => {
   const { workflowitemType } = props.workflowToAdd;
   const {
@@ -162,6 +152,23 @@ const Content = props => {
     hasFixedWorkflowitemType,
     fixedWorkflowitemType
   } = props;
+
+  const typesDescription = {
+    general: strings.workflow.workflowitem_type_general,
+    restricted: strings.workflow.workflowitem_type_restricted
+  };
+
+  const getWorkflowitemTypeInfo = type => {
+    switch (type) {
+      case "general":
+        return typesDescription.general;
+      case "restricted":
+        return typesDescription.restricted;
+      default:
+        return typesDescription.general;
+    }
+  };
+
   return (
     <div className={classes.container} data-test={"workflow-dialog-content"}>
       <div className={classes.container}>
