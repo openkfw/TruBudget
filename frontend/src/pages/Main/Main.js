@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router";
+
+import ScrollTop from "../Common/ScrollTop";
 import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
 import NotFound from "../Error/NotFound";
 import withInitialLoading from "../Loading/withInitialLoading";
@@ -24,9 +26,7 @@ const Main = props => {
         flex: "1",
         flexDirection: "column",
         alignItems: "center",
-        backgroundImage: "linear-gradient(135deg, #5a9bbe 0%,#1b618c 100%)",
-        minHeight: "100vh",
-        overflow: "scroll"
+        backgroundImage: "linear-gradient(135deg, #5a9bbe 0%,#1b618c 100%)"
       }}
     >
       <div
@@ -58,6 +58,7 @@ const Main = props => {
           <Route exact path="/status" component={StatusContainer} />
           <Route component={NotFound} />
         </Switch>
+        <ScrollTop window={props.window} />
         <Route component={Footer} />
       </div>
     </div>
