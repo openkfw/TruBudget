@@ -1,4 +1,4 @@
-describe("Workflowitem edit", function() {
+describe("Workflowitem close", function() {
   let projectId;
   let subprojectId;
   let workflowitemId;
@@ -11,10 +11,10 @@ describe("Workflowitem edit", function() {
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
 
-    cy.createProject("workflowitem edit test project", "workflowitem edit test").then(({ id }) => {
+    cy.createProject("workflowitem close test project", "workflowitem close test").then(({ id }) => {
       projectId = id;
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id);
-      cy.createSubproject(projectId, "workflowitem edit test", "EUR").then(({ id }) => {
+      cy.createSubproject(projectId, "workflowitem close test", "EUR").then(({ id }) => {
         subprojectId = id;
         cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id);
       });
