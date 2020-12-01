@@ -3,13 +3,24 @@ import { withStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import Chip from "@material-ui/core/Chip";
 import UserIcon from "@material-ui/icons/Person";
+import CloseIcon from "@material-ui/icons/Close";
 import strings from "../../localizeStrings";
 import FormControl from "@material-ui/core/FormControl";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
+import ActionButton from "./ActionButton";
 import Select from "@material-ui/core/Select";
 
 const styles = theme => ({
+  container: { marginTop: "30px" },
+  closeButtonContainer: { float: "right", marginTop: -8 },
+  closeButtonSize: { fontSize: 15 },
+  search: { display: "flex", justifyContent: "center", placeItems: "flex-end" },
+  userIcon: {
+    marginTop: "5px",
+    marginRight: "20px",
+    marginBottom: "5px"
+  },
   chip: {
     margin: `${theme.spacing(0.5)}px ${theme.spacing(0.25)}px`
   },
@@ -86,19 +97,17 @@ class UserSelection extends React.Component {
       if (this.props.onOpen !== undefined) this.props.onOpen();
       this.setState({ selectIsOpen: true });
     };
+
+    const closeSelect = () => {
+      this.setState({ searchTerm: "", selectIsOpen: false });
+    };
+
     return (
-      <div style={{ marginTop: "30px" }}>
-        <div style={{ display: "flex", justifyContent: "center", placeItems: "flex-end" }}>
-          <div
-            style={{
-              marginTop: "5px",
-              marginRight: "20px",
-              marginBottom: "5px"
-            }}
-          >
+      <div className={classes.container}>
+        <div className={classes.search}>
+          <div className={classes.userIcon}>
             <UserIcon />
           </div>
-
           <FormControl data-test="add-user-container" className={classes.formControl}>
             <InputLabel className={classes.label} shrink={false}>
               {selectedItems.length + " " + strings.users.selected_users}
@@ -109,12 +118,17 @@ class UserSelection extends React.Component {
               multiple
               open={this.state.selectIsOpen}
               onOpen={openSelect}
-              onClose={() =>
-                this.setState(_state => {
-                  return { searchTerm: "", selectIsOpen: false };
-                })
-              }
+              onClose={closeSelect}
             >
+              <div className={classes.closeButtonContainer}>
+                <ActionButton
+                  data-test={"close-select"}
+                  onClick={closeSelect}
+                  title={strings.common.close}
+                  iconButtonStyle={{ width: 15, height: 15 }}
+                  icon={<CloseIcon className={classes.closeButtonSize} />}
+                />
+              </div>
               <div className={classes.formControlContainer}>
                 <FormControl>
                   <InputLabel>{strings.common.search}</InputLabel>

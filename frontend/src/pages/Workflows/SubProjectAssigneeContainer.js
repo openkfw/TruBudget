@@ -2,7 +2,7 @@ import { withStyles } from "@material-ui/core/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
-import AssigneeSelection from "../Common/AssigneeSelection";
+import SingleSelection from "../Common/SingleSelection";
 import { assignSubproject } from "./actions";
 
 const styles = {};
@@ -21,11 +21,11 @@ class SubProjectAssigneeContainer extends Component {
     } = this.props;
 
     return (
-      <AssigneeSelection
-        assigneeId={assignee}
-        users={users}
+      <SingleSelection
+        selectId={assignee}
+        selectableItems={users}
         disabled={disabled}
-        assign={(assigneeId, assigneeDisplayName) =>
+        onSelect={(assigneeId, assigneeDisplayName) =>
           assignSubproject(
             projectId,
             projectDisplayName,

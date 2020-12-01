@@ -9,7 +9,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 
 import { workflowItemIntentOrder } from "../../permissions";
 import PermissionTable from "../Common/Permissions/PermissionsTable";
-import AssigneeSelection from "../Common/AssigneeSelection";
+import SingleSelection from "../Common/SingleSelection";
 
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
@@ -122,11 +122,11 @@ const WorkflowEditDrawer = props => {
         <Card style={styles.assigneeCard}>
           <CardHeader subheader="Assignee" />
           <CardContent>
-            <AssigneeSelection
+            <SingleSelection
               disabled={hasSubprojectValidator}
-              assigneeId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
-              users={users}
-              assign={assign}
+              selectId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
+              selectableItems={users}
+              onSelect={assign}
             />
           </CardContent>
         </Card>

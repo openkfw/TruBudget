@@ -4,6 +4,7 @@ import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
+import SingleSelection from "../Common/SingleSelection";
 import { getCurrencies } from "../../helper";
 import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -19,7 +20,9 @@ const styles = {
   },
   inputContainer: {
     width: "100%",
-    display: "flex"
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   },
   infoIcon: {
     fontSize: 20,
@@ -27,10 +30,9 @@ const styles = {
     padding: 8
   },
   deleteButton: {
-    width: "30px",
-    height: "30px",
-    marginTop: 15,
-    padding: 8
+    width: 15,
+    height: 15,
+    marginTop: 10
   },
   container: {
     marginTop: 20,
@@ -38,7 +40,8 @@ const styles = {
     width: "100%",
     display: "flex",
     justifyContent: "space-evenly"
-  }
+  },
+  validatorContainer: { marginTop: 30, marginRight: 10, width: 200 }
 };
 
 function getMenuItems(currencies) {
@@ -56,16 +59,6 @@ const getDropdownMenuItems = types => {
     return (
       <MenuItem key={index} value={type}>
         {type}
-      </MenuItem>
-    );
-  });
-};
-
-const getDropdownValidator = users => {
-  return users.map((user, index) => {
-    return (
-      <MenuItem key={index} value={user.id}>
-        {user.displayName}
       </MenuItem>
     );
   });
@@ -94,7 +87,7 @@ const SubprojectDialogContent = props => {
   };
 
   return (
-    <div>
+    <div data-test="subproject-dialog-content">
       <div>
         <Identifier
           nameLabel={strings.subproject.subproject_title}
@@ -136,19 +129,19 @@ const SubprojectDialogContent = props => {
             </div>
 
             <div style={styles.inputContainer}>
-              <Dropdown
-                style={styles.dropdown}
-                floatingLabel={strings.subproject.subproject_validator}
-                value={props.selectedValidator}
-                onChange={value => props.storeSubProjectValidator(value)}
-                id="assignee"
-              >
-                {getDropdownValidator(props.users)}
-              </Dropdown>
+              <div style={styles.validatorContainer}>
+                <SingleSelection
+                  selectId={props.selectedValidator}
+                  selectableItems={props.users}
+                  disabled={false}
+                  floatingLabel={strings.subproject.subproject_validator}
+                  onSelect={(selectId, displayName) => props.storeSubProjectValidator(selectId)}
+                />
+              </div>
               <IconButton
                 data-test={"clear-validator"}
-                onClick={() => props.storeSubProjectValidator("")}
                 style={styles.deleteButton}
+                onClick={() => props.storeSubProjectValidator("")}
               >
                 <CancelIcon color="action" />
               </IconButton>

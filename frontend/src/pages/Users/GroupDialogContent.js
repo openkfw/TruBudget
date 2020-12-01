@@ -85,7 +85,9 @@ const GroupDialogContent = ({
       </div>
       <div>
         <UserSelection
-          users={enabledUsers.filter(user => user.isGroup !== true)}
+          users={enabledUsers
+            .filter(user => user.isGroup !== true)
+            .filter(user => !groupUsers.some(groupUser => groupUser === user.id))}
           addToSelection={editMode ? addUserToGroup : addInitialUserToGroup}
           selectedItems={groupUsers}
           handleDelete={editMode ? removeUser : removeInitialUserFromGroup}

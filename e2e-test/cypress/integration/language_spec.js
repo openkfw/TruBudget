@@ -36,9 +36,7 @@ describe("Language", function() {
         .click();
       cy.get("[data-test=dropdown_selectList]").should("be.visible");
       // Old language should have been preselected already ([tabindex=0] means preselected)
-      cy.get("[data-test=dropdown_selectList]")
-        .find("[tabindex*=0]")
-        .first()
+      cy.get("[data-test=dropdown_selectList] > [tabindex='0']")
         .invoke("attr", "data-value")
         .should("eq", languageElement);
     });

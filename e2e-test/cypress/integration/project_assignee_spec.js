@@ -53,8 +53,8 @@ describe("Project Assignee", function() {
   // Setup firstUncheckedRadioButton
   // Setup assigneeId
   function setupConfirmationDialog() {
-    cy.get("[data-test=assignee-selection]").click();
-    cy.get("[data-test=assignee-list]")
+    cy.get("[data-test=single-select]").click();
+    cy.get("[data-test=single-select-list]")
       .should("exist")
       .then($list => {
         const firstUncheckedRadioButton = $list.find("input:not(:checked)").first();
@@ -82,6 +82,7 @@ describe("Project Assignee", function() {
     });
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
+
   it("The confirmation dialog assigns the selected user and grants required view Permissions", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -98,14 +99,13 @@ describe("Project Assignee", function() {
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("be.checked");
     });
-
     assertViewPermissions(permissionsBeforeTesting, projectId, true);
-
     // Reset permissions
     cy.get("@assigneeId").then(assigneeId => {
       revokeViewPermissions(permissionsBeforeTesting, projectId, assigneeId);
     });
   });
+
   it("Canceling the confirmation dialog doesn't assign nor grant view permissions", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -119,9 +119,9 @@ describe("Project Assignee", function() {
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
-
     assertViewPermissions(permissionsBeforeTesting, projectId, false);
   });
+
   it("Assigning without project permission to grant view permissions is not possible", function() {
     // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
@@ -144,9 +144,9 @@ describe("Project Assignee", function() {
     cy.login("root", "root-secret");
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
+
   it("Assigning without project 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.revokeProjectPermission(projectId, "project.intent.listPermissions", executingUser);
-
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
@@ -162,10 +162,10 @@ describe("Project Assignee", function() {
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
-
     cy.login("root", "root-secret");
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
+
   it("All missing project permissions are shown", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -178,12 +178,12 @@ describe("Project Assignee", function() {
       .children()
       .should("have.length", 2);
   });
+
   it("No missing permissions are shown if there aren't any", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.viewSummary", assigneeId);
       cy.grantProjectPermission(projectId, "project.viewDetails", assigneeId);
     });
-
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
@@ -191,11 +191,18 @@ describe("Project Assignee", function() {
         .check();
     });
     cy.get("[data-test=actions-table-body]").should("not.be.visible");
-
     // reset Permissions
     cy.get("@assigneeId").then(assigneeId => {
       cy.revokeProjectPermission(projectId, "project.viewSummary", assigneeId);
       cy.revokeProjectPermission(projectId, "project.viewDetails", assigneeId);
     });
+  });
+
+  it("The dropdown can be closed by pressing the close-button", function() {
+    cy.get("[data-test=single-select-list]").should("be.visible");
+    cy.get("[data-test=close-select]")
+      .should("be.visible")
+      .click();
+    cy.get("[data-test=single-select-list]").should("not.be.visible");
   });
 });

@@ -41,10 +41,10 @@ describe("Workflowitem types", function() {
   it("A workflowitem of type restricted grants and revokes permissions when it's assigned", function() {
     // Assign another user
     cy.get("[data-test=workflowitem-table]")
-      .get("[data-test=assignee-container]")
+      .get("[data-test=single-select-container]")
       .last()
       .click();
-    cy.get("[data-test=assignee-name]")
+    cy.get("[data-test=single-select-name]")
       .first()
       .click();
     cy.get("[data-test=confirmation-dialog-confirm]")

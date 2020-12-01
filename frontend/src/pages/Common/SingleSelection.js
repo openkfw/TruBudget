@@ -1,0 +1,217 @@
+import Radio from "@material-ui/core/Radio";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import Paper from "@material-ui/core/Paper";
+import List from "@material-ui/core/List";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import React, { Component } from "react";
+import strings from "../../localizeStrings";
+import { Checkbox } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+import ActionButton from "./ActionButton";
+
+const styles = {
+  formControl: {
+    width: "100%"
+  },
+  radioButton: {
+    height: "10px"
+  },
+  selectValue: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
+  formControlContainer: {
+    display: "flex",
+    margin: 16,
+    justifyContent: "flex-start"
+  },
+  select: {
+    "&$disabled": {
+      cursor: "-webkit-grab"
+    }
+  },
+  assigneeTypography: {
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  },
+  listSubHeader: { top: "auto" },
+  disabled: {},
+  closeButtonContainer: { float: "right", marginTop: -8 },
+  closeButtonSize: { fontSize: 15 },
+  itemContainer: { maxHeight: "70vh", overflow: "auto" }
+};
+
+class SingleSelection extends Component {
+  constructor() {
+    super();
+    this.state = {
+      searchTerm: "",
+      selectIsOpen: false
+    };
+  }
+
+  renderSelection(selectableItems, selectId, disabled) {
+    const { classes } = this.props;
+    return selectableItems.map(u => {
+      const { id, displayName } = u;
+      return (
+        <MenuItem
+          key={id}
+          value={id}
+          onClick={() => (id !== selectId ? this.props.onSelect(id, displayName) : undefined)}
+        >
+          <Radio className={classes.radioButton} disabled={disabled} checked={id === selectId} />
+          <ListItemText data-test="single-select-name" primary={displayName} />
+        </MenuItem>
+      );
+    });
+  }
+
+  renderTitle(selectedItem) {
+    if (!selectedItem) {
+      return ["..."];
+    }
+    return [selectedItem.displayName];
+  }
+
+  renderUserSelection = (selectableItems, selectId, disabled) => {
+    const { classes } = this.props;
+    const selection = this.renderSelection(
+      selectableItems.filter(
+        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
+      ),
+      selectId,
+      disabled
+    );
+    if (selection.length > 0) {
+      return (
+        <div>
+          <ListSubheader className={classes.listSubHeader}> {strings.users.users} </ListSubheader>
+          {selection}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  renderGroupSelection = (selectableItems, selectId, disabled) => {
+    const { classes } = this.props;
+    const selection = this.renderSelection(
+      selectableItems.filter(
+        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
+      ),
+      selectId,
+      disabled
+    );
+    if (selection.length > 0) {
+      return (
+        <div>
+          <ListSubheader className={classes.listSubHeader}> {strings.users.groups} </ListSubheader>
+          {selection}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  render() {
+    const { selectId, selectableItems, disabled, classes, workflowSortEnabled, status, floatingLabel } = this.props;
+    const suggestedUsers = this.renderUserSelection(selectableItems, selectId, disabled);
+    const suggestedGroups = this.renderGroupSelection(selectableItems, selectId, disabled);
+    const selectedItem = selectableItems.find(s => s.id === selectId);
+
+    const getSortClasses = () => {
+      if (workflowSortEnabled) {
+        if (status !== "closed") {
+          return {
+            select: classes.select,
+            disabled: classes.disabled
+          };
+        }
+      }
+      return;
+    };
+
+    const openSelect = () => {
+      if (this.props.onOpen !== undefined) this.props.onOpen();
+      this.setState({ selectIsOpen: true });
+    };
+
+    const closeSelect = () => {
+      this.setState({ searchTerm: "", selectIsOpen: false });
+    };
+
+    return (
+      <FormControl
+        data-test={"single-select-container" + (disabled ? "-disabled" : "")}
+        disabled={disabled}
+        className={classes.formControl}
+      >
+        <Select
+          data-test={"single-select" + (disabled ? "-disabled" : "")}
+          classes={{
+            ...getSortClasses()
+          }}
+          value={this.renderTitle(selectedItem)}
+          renderValue={name => {
+            return selectedItem ? (
+              <div className={classes.selectValue}>
+                <Checkbox className={classes.radioButton} disabled={disabled} checked={true} />
+                <Typography disabled={disabled} variant="body1" className={classes.assigneeTypography}>
+                  {name}
+                </Typography>
+              </div>
+            ) : null;
+          }}
+          multiple
+          open={this.state.selectIsOpen}
+          onOpen={openSelect}
+          onClose={closeSelect}
+        >
+          <div className={classes.closeButtonContainer}>
+            <ActionButton
+              data-test={"close-select"}
+              onClick={closeSelect}
+              title={strings.common.close}
+              iconButtonStyle={{ width: 15, height: 15 }}
+              icon={<CloseIcon className={classes.closeButtonSize} />}
+            />
+          </div>
+          <div className={classes.formControlContainer}>
+            <FormControl>
+              <InputLabel>{strings.common.search}</InputLabel>
+              <Input
+                inputProps={{ "data-test": "search-single-select-field" }}
+                value={this.state.searchTerm}
+                onChange={e => this.setState({ searchTerm: e.target.value })}
+              />
+            </FormControl>
+          </div>
+          <div data-test="single-select-list">
+            <Paper className={classes.itemContainer}>
+              <List>
+                {suggestedUsers}
+                {suggestedGroups}
+              </List>
+            </Paper>
+          </div>
+        </Select>
+        <FormHelperText>{floatingLabel}</FormHelperText>
+      </FormControl>
+    );
+  }
+}
+
+export default withStyles(styles)(SingleSelection);

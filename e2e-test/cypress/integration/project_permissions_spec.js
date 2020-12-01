@@ -469,4 +469,16 @@ describe("Project Permissions", function() {
       });
     });
   });
+
+  it("The user selection dropdown can be closed by pressing the close-button", function() {
+    cy.get(`[data-test=project-card-${projectId}]`)
+      .find("button[data-test^='pp-button']")
+      .click();
+    cy.get("[data-test='permission-select-project.viewSummary']").click();
+    cy.get("[data-test='permission-list']").should("be.visible");
+    cy.get("[data-test=close-select]")
+      .should("be.visible")
+      .click();
+    cy.get("[data-test='permission-list']").should("not.be.visible");
+  });
 });
