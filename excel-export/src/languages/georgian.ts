@@ -12,6 +12,10 @@ const ka = {
     due_date: "თარიღით",
     exchange_rate: "გაცვლითი კურსი",
     organisation: "ორგანიზაცია",
+    closed: "დახურულია",
+    open: "ღია",
+    general: "ზოგადი",
+    restricted: "შეზღუდულია",
   },
 
   project: {
@@ -34,6 +38,9 @@ const ka = {
     name: "Workflowitem სახელი",
     type: "Workflowitem ტიპი",
     subproject_currency: "ქვეპროექტები ვალუტა",
+    allocated: "დანიშნული",
+    disbursed: "გადახდილი",
+    na: "N/A",
   },
 
   document: {

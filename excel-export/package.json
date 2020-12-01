@@ -6,7 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon dist)"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,8 @@
   },
   "devDependencies": {
     "@types/node": "^14.14.2",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "nodemon": "^2.0.3",
+    "rimraf": "*"
   }
 }

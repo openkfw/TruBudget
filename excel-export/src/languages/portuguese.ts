@@ -12,6 +12,10 @@ const pt = {
     due_date: "Data de vencimento",
     exchange_rate: "Taxa de câmbio",
     organisation: "Organização",
+    closed: "Fechado",
+    open: "Aberto",
+    general: "General",
+    restricted: "Restrito",
   },
 
   project: {
@@ -34,6 +38,9 @@ const pt = {
     name: "Nome de item de workflow",
     type: "Categoria do item de workflow",
     subproject_currency: "Moeda de Subprojeto",
+    allocated: "Atribuído",
+    disbursed: "Pago",
+    na: "N/A",
   },
 
   document: {
