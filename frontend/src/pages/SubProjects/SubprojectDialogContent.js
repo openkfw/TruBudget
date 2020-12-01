@@ -12,11 +12,6 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import IconButton from "@material-ui/core/IconButton";
 
 const subprojectWorkflowItemTypes = ["any", "general", "restricted"];
-const subprojectWorkflowItemTypesDescription = {
-  any: strings.subproject.subproject_any_workflowitem_type,
-  general: strings.subproject.subproject_general_workflowitem_type,
-  restricted: strings.subproject.subproject_restricted_workflowitem_type
-};
 
 const styles = {
   dropdown: {
@@ -76,21 +71,28 @@ const getDropdownValidator = users => {
   });
 };
 
-const getWorkflowitemTypeInfo = type => {
-  switch (type) {
-    case "any":
-      return subprojectWorkflowItemTypesDescription.any;
-    case "general":
-      return subprojectWorkflowItemTypesDescription.general;
-    case "restricted":
-      return subprojectWorkflowItemTypesDescription.restricted;
-    default:
-      return subprojectWorkflowItemTypesDescription.any;
-  }
-};
-
 const SubprojectDialogContent = props => {
   const currencies = getCurrencies();
+
+  const subprojectWorkflowItemTypesDescription = {
+    any: strings.subproject.subproject_any_workflowitem_type,
+    general: strings.subproject.subproject_general_workflowitem_type,
+    restricted: strings.subproject.subproject_restricted_workflowitem_type
+  };
+
+  const getWorkflowitemTypeInfo = type => {
+    switch (type) {
+      case "any":
+        return subprojectWorkflowItemTypesDescription.any;
+      case "general":
+        return subprojectWorkflowItemTypesDescription.general;
+      case "restricted":
+        return subprojectWorkflowItemTypesDescription.restricted;
+      default:
+        return subprojectWorkflowItemTypesDescription.any;
+    }
+  };
+
   return (
     <div>
       <div>

@@ -234,7 +234,7 @@ const fr = {
     workflowitem_type: "Type de l’étape de workflow",
     workflowitem_type_general: "Créer une étape de workflow de type général.",
     workflowitem_type_restricted:
-      "Assurez-vous de ne pas fournir d'informations personnelles (nom, prénom(s), matricule, adresse email) en remplissant ce formulaire.\nEn cliquant sur \"SOUMETTRE\", vous nous autorisez à sauvegarder vos données de façon permanente et vous confirmez la réception de l'avis de confidentialité."
+      "Lors de l'attribution d'un workflow restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation"
   },
 
   snackbar: {
@@ -269,7 +269,7 @@ const fr = {
     password_conditions_number: "Contenir au moins un chiffre",
     password_conditions_preface: "Votre mot de passe doit:",
     privacy_notice:
-      'Assurez-vous de ne pas fournir d\'informations personnelles (nom, prénom(s), matricule, adresse mail) en remplissant ce formulaire. En cliquant sur "SOUMETTRE" vous nous autorisez à sauvegarder vos données de façon permanente et vous confirmez avoir lu le présent avis de confidentialité.',
+      "Assurez-vous de ne pas fournir d'informations personnelles (nom, prénom(s), matricule, adresse email) en remplissant ce formulaire.\nEn cliquant sur \"SOUMETTRE\", vous nous autorisez à sauvegarder vos données de façon permanente et vous confirmez la réception de l'avis de confidentialité.",
     type_current_password: "Tapez le mot de passe actuel pour {0}",
     type_new_password: "Tapez le nouveau mot de passe pour {0}",
     user_created: "Utilisateur créé avec succès",
