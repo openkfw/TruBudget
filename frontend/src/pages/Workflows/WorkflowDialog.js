@@ -193,6 +193,7 @@ const Content = props => {
               <div className={classes.assigneeContainer}>
                 <SingleSelection
                   disabled={hasSubprojectValidator}
+                  floatingLabel={strings.subproject.subproject_validator}
                   selectId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
                   selectableItems={users}
                   onSelect={(assigneeId, assigneeDisplayName) => {
