@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added a close button in user selections [#614](https://github.com/openkfw/TruBudget/issues/614)
 - Added a search field in the validator selection [#639](https://github.com/openkfw/TruBudget/issues/639)
-
+- Added groups to batch permission assignment [#612](https://github.com/openkfw/TruBudget/issues/612)
 <!-- ### Changed -->
 
 <!-- ### Deprecated -->
