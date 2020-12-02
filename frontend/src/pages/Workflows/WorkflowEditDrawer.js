@@ -51,6 +51,7 @@ const WorkflowEditDrawer = props => {
     showWorkflowItemPreview,
     storePermissions,
     users,
+    groups,
     disableWorkflowEdit,
     tempDrawerAssignee,
     tempDrawerPermissions,
@@ -82,6 +83,11 @@ const WorkflowEditDrawer = props => {
   };
 
   const isOpen = !_isEmpty(selectedWorkflowItems);
+
+  const usersAndGroups = [
+    ...users,
+    ...groups.map(group => ({ ...group, id: group.groupId, isGroup: true, permissions: {} }))
+  ];
 
   // Only render the drawer if there are elements selected
   if (!isOpen) return null;
@@ -133,7 +139,7 @@ const WorkflowEditDrawer = props => {
         <PermissionTable
           permissions={permissions}
           intentOrder={workflowItemIntentOrder}
-          userList={users}
+          userList={usersAndGroups}
           addTemporaryPermission={grantPermission}
           removeTemporaryPermission={revokePermission}
           temporaryPermissions={permissions}
