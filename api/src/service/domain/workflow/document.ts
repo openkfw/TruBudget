@@ -26,7 +26,9 @@ export interface UploadedDocument {
 
 export const uploadedDocumentSchema = Joi.object({
   id: Joi.string().required(),
-  base64: Joi.string().required(),
+  base64: Joi.string()
+    .required()
+    .error(() => new Error("Document can't be an empty file")),
   fileName: Joi.string(),
 });
 
