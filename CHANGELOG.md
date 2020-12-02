@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Update french translations [#588](https://github.com/openkfw/TruBudget/pull/588)
 - Removed the close permissions on all levels. Now only the specific assignee is permitted to close these. [#572](https://github.com/openkfw/TruBudget/issues/572)
+- Moved View permissions component from Admin section to View Permissions section in Permission dialog at project level, subproject level and workflow item level [#613](https://github.com/openkfw/TruBudget/issues/613)
 
 ### Fixed
 

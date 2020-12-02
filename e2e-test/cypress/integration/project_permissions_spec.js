@@ -94,18 +94,36 @@ describe("Project Permissions", function() {
       .children()
       .find("input")
       .should("have.value", executingUser.displayname);
+    cy.get("[data-test=view-list]")
+      .should("be.visible")
+      .children()
+      .find("span")
+      .should("have.length", 3)
+      .contains(executingUser.displayname);
     cy.get("[data-test=write-list]")
       .scrollIntoView()
       .should("be.visible")
       .children()
       .find("input")
       .should("have.value", executingUser.displayname);
+    cy.get("[data-test=write-list]")
+      .should("be.visible")
+      .children()
+      .find("span")
+      .should("have.length", 3)
+      .contains(executingUser.displayname);
     cy.get("[data-test=admin-list]")
       .scrollIntoView()
       .should("be.visible")
       .children()
       .find("input")
       .should("have.value", executingUser.displayname);
+    cy.get("[data-test=admin-list]")
+      .should("be.visible")
+      .children()
+      .find("span")
+      .should("have.length", 2)
+      .contains(executingUser.displayname);
     cy.get("[data-test=permission-close]").click();
     cy.get("[data-test=permission-container]").should("not.be.visible");
   });
