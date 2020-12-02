@@ -27,9 +27,8 @@ export const getHistory = async (
   }
 
   if (user.id !== "root") {
-    const intents: Intent[] = ["subproject.viewDetails", "subproject.viewHistory"];
-    if (!(Subproject.permits(subproject, user, [intents[0]]) ||
-    Subproject.permits(subproject, user, [intents[1]]))) {
+    const intents: Intent[] = ["subproject.viewHistory"];
+    if (!Subproject.permits(subproject, user, [intents[0]])) {
       return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: subproject });
     }
   }
