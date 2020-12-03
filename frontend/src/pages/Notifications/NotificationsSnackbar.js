@@ -64,7 +64,7 @@ const ContentWrapper = props => {
 const SnackbarContentWrapper = withStyles(styles)(ContentWrapper);
 
 const NotificationsSnackbar = props => {
-  var snackbarVariant = "error";
+  let snackbarVariant = "error";
   if (!props.snackbarError) {
     snackbarVariant = props.snackbarWarning ? "warning" : "success";
   }

@@ -1,4 +1,4 @@
-export default () => {
+const filterProjectsWorker = () => {
   let highlightingRegex;
   onmessage = ({ data: { projects, searchTerm } }) => {
     const filteredProjects = filterProjects(projects, searchTerm);
@@ -83,3 +83,5 @@ export default () => {
     return new RegExp("(" + regexString + ")", "i");
   }
 };
+
+export default filterProjectsWorker;

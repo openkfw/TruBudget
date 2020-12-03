@@ -32,4 +32,5 @@ export const workflowitemEventTypes = () => [
   { id: "workflowitems_reordered", displayName: strings.eventTypes.workflowitems_reordered }
 ];
 
-export default { projectEventTypes, subprojectEventTypes, workflowitemEventTypes };
+const eventTypes = { projectEventTypes, subprojectEventTypes, workflowitemEventTypes };
+export default eventTypes;

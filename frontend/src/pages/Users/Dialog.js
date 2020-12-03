@@ -126,6 +126,7 @@ const Dialog = props => {
             action.userIds.forEach(user => {
               revokeGlobalPermission(userToEditPermissions.id, action.permission);
             });
+            // eslint-disable-next-line no-console
           } else console.error("Not a recognized action", action.type);
         });
         hideDashboardDialog();
