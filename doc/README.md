@@ -11,12 +11,16 @@ Welcome to the TruBudget documentation! This guide aims to provide you with info
 - [Environment Variables](./Introduction.md#environment-variables)
 - [Organizations and Nodes](./Introduction.md#organizations-and-nodes-in-trubudget)
 
-[Tutorials](./tutorials) - Guides to get started with running TruBudget
+[Installation](./installation/README.md) - How to install TruBudget
 
-- [Installation](./tutorials/installation/)
+- [Developer Setup](./installation/Developer-Setup.md) - installation using Docker
+- [Bare Metal Installation](./installation/bare-metal-installation.md) - installation without Docker
+
+[Tutorials](./tutorials/README.md) - Guides to get started with running TruBudget
+
 - [Starting a new network](./tutorials/create-new-network)
 - [Connecting to existing network](./tutorials/connect-to-network)
-- [Developer setup](./tutorials/contribute/Contributor-Guide.md)
+- [Update TruBudget](./tutorials/update-trubudget)
 
 [User Guide](./wiki/User-Guide/README.md) - How to interact with TruBudget via the frontend
 
