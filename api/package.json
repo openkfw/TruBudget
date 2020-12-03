@@ -32,11 +32,11 @@
       "Network"
     ]
   },
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "node dist/",
     "build": "rimraf dist && tsc",
-    "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon dist)",
+    "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)",
     "test": "nyc mocha --require ts-node/register \"src/**/*.spec.ts\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "generate-report": "nyc report --reporter=html",

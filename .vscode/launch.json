@@ -39,15 +39,21 @@
       "request": "launch",
       "cwd": "${workspaceFolder}/provisioning",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "debug"
-      ],
+      "runtimeArgs": ["run", "debug"],
       "env": {
         "NODE_ENV": "development",
         "API_PORT": "8080",
         "ORGANIZATION": "ACMECoro"
       }
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Debug API Container",
+      "port": 9230,
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}/api",
+      "remoteRoot": "/home/node/"
     }
   ]
 }
