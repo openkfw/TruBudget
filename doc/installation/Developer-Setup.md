@@ -412,6 +412,28 @@ The email notification service is responsible for saving/deleting email adresses
 
 If you want to start this service or simply see more details regarding this feature you can check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/email-notification/README.md) file.
 
+## Dockerized application
+
+Alernatively you can run all services needed for development in one command:
+ 1. in root directory execute: `sh scripts/development/start-dev.sh`
+
+ The script cares for `.env` file. No further step needed. 
+ 
+ Following services are dockerized:
+  - Blockchain (master node)
+  - API (master API)
+  - Provisioning (feeds application with dummy data)
+  - Excel export
+  - Frontend
+
+  It takes some time to build and run at the first launch. After that, source codes of API and frontend are live reloaded. That means any change in `./src` folder is reflected in respective containter automatically. 
+
+  The frontend should be availaible as usual at http://localhost:3000
+  
+  Docker Compose ensures that services are communicating and have correct environment variables set. Docker Compose puts all services in the same network and exposes needed ports.
+
+  You can inspect each container individually:  `docker logs --follow CONTAINER`. Where CONTAINER represents selected value of NAMES column container in output of `docker ps` command.
+
 ## Tests
 
 ### End-to-end Tests
