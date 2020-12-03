@@ -19,7 +19,9 @@ import {
   CONFIRMATION_REQUIRED,
   EXECUTE_CONFIRMED_ACTIONS,
   EXECUTE_CONFIRMED_ACTIONS_FAILURE,
-  EXECUTE_CONFIRMED_ACTIONS_SUCCESS
+  EXECUTE_CONFIRMED_ACTIONS_SUCCESS,
+  VALIDATION_ERROR_MESSAGE,
+  VALIDATION_ERROR_MESSAGE_RESET
 } from "./pages/Confirmation/actions.js";
 import {
   CLEAR_DOCUMENTS,
@@ -2216,6 +2218,22 @@ export function* assignSubprojectSaga({
   }, showLoading);
 }
 
+export function* validationErrorSaga() {
+  yield execute(function*() {
+    yield put({ type: VALIDATION_ERROR_MESSAGE_RESET });
+	  yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.notification.payload_error_message
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+  });
+}
+
 export function* assignProjectSaga({ projectId, projectDisplayName, assigneeId, assigneeDisplayName, showLoading }) {
   yield execute(function*() {
     const confirmed = yield select(getConfirmedState);
@@ -2722,6 +2740,7 @@ export default function* rootSaga() {
 
       // Confirmation
       yield takeEvery(EXECUTE_CONFIRMED_ACTIONS, executeConfirmedActionsSaga),
+      yield takeEvery(VALIDATION_ERROR_MESSAGE, validationErrorSaga),
 
       // Peers
       yield takeLatest(FETCH_ACTIVE_PEERS, fetchActivePeersSaga),

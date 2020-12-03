@@ -48,8 +48,11 @@ import {
   EXECUTE_CONFIRMED_ACTIONS_FAILURE,
   EXECUTE_CONFIRMED_ACTIONS_SUCCESS,
   STORE_ACTIONS,
-  STORE_REQUESTED_PERMISSIONS
+  STORE_REQUESTED_PERMISSIONS,
+  VALIDATION_ERROR_MESSAGE_RESET
 } from "./actions";
+
+import {validate} from "./validation"
 
 // original Actions = intents the user has actually requested
 // additional Actions = view/list permission intents which are required to execute all original actions
@@ -72,13 +75,18 @@ const defaultState = fromJS({
   executingAdditionalActions: false,
   isListPermissionsRequiredFromApi: false,
   failedAction: {},
-  requestedPermissions: {}
+  requestedPermissions: {},
+  isPayloadValidationFailed : false
 });
 
 export default function confirmationReducer(state = defaultState, action) {
   switch (action.type) {
     case CONFIRMATION_REQUIRED:
       const { project, subproject, workflowitem } = action.payload;
+      const isPayloadValidationFailed = validate(action.intent, action.payload);
+      if(isPayloadValidationFailed) {
+        return state.merge({ isPayloadValidationFailed });
+      }
       return state.merge({
         open: true,
         confirmed: false,
@@ -92,6 +100,9 @@ export default function confirmationReducer(state = defaultState, action) {
       });
     case CONFIRMATION_CONFIRMED:
       return defaultState.set("confirmed", true);
+    case VALIDATION_ERROR_MESSAGE_RESET: {
+      return defaultState.set("isPayloadValidationFailed", false);
+    }
     case FETCH_PROJECT_PERMISSIONS:
       return state.set("isFetchingProjectPermissions", true);
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:

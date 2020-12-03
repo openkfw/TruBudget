@@ -467,7 +467,8 @@ const de = {
     workflowitem_intent_grantPermission: "German: The permissions for workflowitem {0} changed",
     workflowitem_intent_revokePermission: "German: The permissions for workflowitem {0} changed",
     workflowitem_update: "German: Workflowitem {0} was updated",
-    workflowitem_updated: "German: Workflowitem {0} was updated"
+    workflowitem_updated: "German: Workflowitem {0} was updated",
+    payload_error_message: "Ups! ... Es ist nicht deine Schuld - Ein clientseitiger Validierungsfehler ist aufgetreten. Bitte informieren Sie den Administrator."
   },
 
   history: {
