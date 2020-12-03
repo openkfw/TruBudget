@@ -33,10 +33,10 @@ To check what is configurable regarding excel-export service check out the [envi
 
 ### Endpoints
 
-| Method | Endpoint   | Description                                                              |
-| ------ | ---------- | ------------------------------------------------------------------------ |
-| GET    | /health    | Checks if excel service is up                                            |
-| GET    | /readiness | Checks if excel service is ready                                         |
-| GET    | /version   | Get the current version of the service                                   |
-| POST   | /test      | Get excel file of api configured via `TEST_API_HOST` and `TEST_API_PORT` |
-| POST   | /prod      | Get excel file of api configured via `PROD_API_HOST` and `PROD_API_PORT` |
+| Method | Endpoint       | Query Parameters | Description                                                                                                                                                        |
+| ------ | -------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GET    | /health        |                  | Checks if excel service is up                                                                                                                                      |
+| GET    | /readiness     |                  | Checks if excel service is ready                                                                                                                                   |
+| GET    | /version       |                  | Get the current version of the service                                                                                                                             |
+| GET    | /test/download | lang             | Get excel file of api configured via `TEST_API_HOST` and `TEST_API_PORT` in the language specified in the query parameter (must be an existing TruBudget language) |
+| GET    | /prod/download | lang             | Get excel file of api configured via `PROD_API_HOST` and `PROD_API_PORT` in the language specified in the query parameter (must be an existing TruBudget language) |

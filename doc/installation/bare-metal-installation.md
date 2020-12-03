@@ -52,7 +52,3 @@ yum install -y wget git nginx curl && curl --silent --location https://rpm.nodes
     && rm -Rf multichain* \
     && cd
 ```
-
-## Known Issues
-
-For the solution to known issues, please see the [Known Issues page](Known-Issues.md).
