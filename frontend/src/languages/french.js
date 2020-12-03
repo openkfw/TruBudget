@@ -465,7 +465,8 @@ const fr = {
     workflowitem_intent_grantPermission: "Les autorisations sur l’étape de workflow {0} ont changées",
     workflowitem_intent_revokePermission: "Les autorisations sur l’étape de workflow {0} ont changées",
     workflowitem_update: " L’étape de workflow {0} a été actualisée",
-    workflowitem_updated: " L’étape de workflow {0} a été actualisé"
+    workflowitem_updated: " L’étape de workflow {0} a été actualisé",
+    payload_error_message: "Oups! ... Ce n'est pas de votre faute - Une erreur de validation côté client s'est produite. Veuillez informer l'administrateur."
   },
 
   userProfile: {

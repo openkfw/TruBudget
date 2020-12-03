@@ -7,6 +7,8 @@ export const EXECUTE_CONFIRMED_ACTIONS = "EXECUTE_CONFIRMED_ACTIONS";
 export const EXECUTE_CONFIRMED_ACTIONS_FAILURE = "EXECUTE_CONFIRMED_ACTIONS_FAILURE";
 export const EXECUTE_CONFIRMED_ACTIONS_SUCCESS = "EXECUTE_CONFIRMED_ACTIONS_SUCCESS";
 export const ACTION_UPDATE_REQUIRED = "ACTION_UPDATE_REQUIRED";
+export const VALIDATION_ERROR_MESSAGE = "VALIDATION_ERROR_MESSAGE";
+export const VALIDATION_ERROR_MESSAGE_RESET = "VALIDATION_ERROR_MESSAGE_RESET";
 
 // permissions = tempPermissions in Permissionsdialog before confirmation
 // permissiondialogs can rebuild temporary permission state
@@ -42,6 +44,10 @@ export function storeRequestedPermissions(permissions) {
     type: STORE_REQUESTED_PERMISSIONS,
     permissions
   };
+}
+
+export function showValidationErrorMessage() {
+  return { type: VALIDATION_ERROR_MESSAGE };
 }
 
 export function executeAdditionalActions(actions, projectId = "", subprojectId = "", showLoading = false) {

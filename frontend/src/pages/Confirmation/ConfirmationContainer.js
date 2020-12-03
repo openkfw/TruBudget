@@ -27,7 +27,8 @@ import {
   confirmConfirmation,
   executeAdditionalActions,
   storeAdditionalActions,
-  storeRequestedPermissions
+  storeRequestedPermissions,
+  showValidationErrorMessage
 } from "./actions";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { applyOriginalActions, createAdditionalActions } from "./createAdditionalActions";
@@ -37,6 +38,10 @@ class ConfirmationContainer extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.props.cancelConfirmation();
+    }
+
+    if (this.props.isPayloadValidationFailed) {
+      this.props.showValidationErrorMessage();
     }
 
     const isConfirmationDialogTriggered =
@@ -188,6 +193,7 @@ const mapDispatchToProps = dispatch => {
     fetchProjectPermissions: pId => dispatch(fetchProjectPermissions(pId, false)),
     fetchSubprojectPermissions: (pId, sId) => dispatch(fetchSubProjectPermissions(pId, sId, false)),
     fetchWorkflowitemPermissions: (pId, spId, wId) => dispatch(fetchWorkflowItemPermissions(pId, spId, wId, false)),
+    showValidationErrorMessage: () => dispatch(showValidationErrorMessage()),
     confirmConfirmation: () => dispatch(confirmConfirmation()),
     cancelConfirmation: permissions => dispatch(cancelConfirmation(permissions)),
     executeConfirmedActions: (actions, pId, subId) => dispatch(executeAdditionalActions(actions, pId, subId, false)),
@@ -249,6 +255,7 @@ const mapStateToProps = state => {
     isListPermissionsRequiredFromApi: state.getIn(["confirmation", "isListPermissionsRequiredFromApi"]),
     failedAction: state.getIn(["confirmation", "failedAction"]),
     requestedPermissions: state.getIn(["confirmation", "requestedPermissions"]),
+    isPayloadValidationFailed: state.getIn(["confirmation", "isPayloadValidationFailed"]),
     groups: state.getIn(["users", "groups"]),
     userAssignments: state.getIn(["users", "userAssignments"]),
     editId: state.getIn(["users", "editId"])

@@ -468,7 +468,8 @@ const pt = {
     workflowitem_intent_grantPermission: "As permissões para o item de workflow {0} foram alteradas",
     workflowitem_intent_revokePermission: "As permissões para o item de workflow {0} foram alteradas",
     workflowitem_update: "Item de Workflow {0} foi atualizado",
-    workflowitem_updated: "Item de Workflow {0} foi atualizado"
+    workflowitem_updated: "Item de Workflow {0} foi atualizado",
+    payload_error_message: "Ops! ... Não é sua culpa - Ocorreu um erro de validação do lado do cliente. Informe o administrador."
   },
 
   history: {
