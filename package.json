@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "danger": "^9.2.2",
+    "husky": "^5.0.4",
     "lodash": "^4.17.19"
   },
   "dependencies": {
