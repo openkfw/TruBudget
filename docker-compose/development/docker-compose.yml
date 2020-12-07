@@ -56,15 +56,16 @@ services:
   excel-export:
     build: ../../excel-export
     environment:
-      PROD_API_HOST: localhost
+      PROD_API_HOST: master-api
       PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: localhost
+      TEST_API_HOST: master-api
       TEST_API_PORT: ${API_PORT}
       PORT: 8888
     depends_on:
       - master-api
     ports:
       - "8888:8888"
+      - "9231:9229"
 
   frontend:
     build:
@@ -79,8 +80,6 @@ services:
       CHOKIDAR_USEPOLLING: "true"
       REACT_APP_VERSION: ${REACT_APP_VERSION}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
-      EXPORT_HOST: ${EXPORT_HOST}
-      EXPORT_PORT: ${EXPORT_PORT}
     volumes:
       - '../../frontend/src:/app/src'
       - '/app/node_modules'
@@ -89,5 +88,4 @@ services:
       - excel-export
     ports:
       - "3000:3000"
-      - "9231:9229"
     stdin_open: true
