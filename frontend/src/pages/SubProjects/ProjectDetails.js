@@ -221,7 +221,7 @@ const ProjectDetails = props => {
               primary={
                 <ProjectAssigneeContainer users={users} disabled={!canAssignProject} assignee={projectAssignee} />
               }
-              secondary={strings.common.assignee}
+              secondary={strings.project.assignee}
             />
           </ListItem>
         </List>

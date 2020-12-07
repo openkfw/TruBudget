@@ -247,7 +247,7 @@ const SubProjectDetails = ({
                   assignee={assignee}
                 />
               }
-              secondary={strings.common.assignee}
+              secondary={strings.subproject.assignee}
             />
           </ListItem>
           {!_isEmpty(validator) ? (

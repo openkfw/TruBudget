@@ -23,7 +23,6 @@ const en = {
     assign: "assign",
     assigned_budget: "Assigned Budget",
     assigned: "Assigned",
-    assignee: "Assignee",
     assignees: "Assignee(s)",
     back: "Back",
     bank: "Bank",
@@ -190,6 +189,7 @@ const en = {
 
   project: {
     add_new_project: "Add new project",
+    assignee: "Owner",
     project_authority_organization_search: "Search organizations",
     project_authority_role_search: "Search role",
     project_budget_amount_description: "e.g.",
@@ -217,6 +217,8 @@ const en = {
   },
 
   subproject: {
+    assignee: "Owner",
+    fixed_workflowitem_type: "Fixed workflowitem type",
     subproject_add_title: "Add new subproject",
     subproject_assigned_organization: "Assigned organization",
     subproject_budget_amount_description: "e.g.",
@@ -237,12 +239,13 @@ const en = {
     subproject_general_workflowitem_type: "Only allow workflowitems of type general",
     subproject_restricted_workflowitem_type:
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
-    subproject_validator: "Validator"
+    workflowitem_assignee: "Default assignee"
   },
 
   workflow: {
     add_item: "Create workflowitem",
     approval_required: "Approval required",
+    assignee: "Assignee",
     edit_item: "Edit workflowitem",
     exchange_rate: "Exchange rate",
     non_approval: "Non-approval",
@@ -333,6 +336,7 @@ const en = {
     no_permission_warning: "Warning: You don't have permission to execute all listed actions!",
     permissions_required: "Permissions required",
     permissions_text: `{0} needs additional permissions to view {1} "{2}".`,
+    post_actions_dialog_text: "After creation following actions are executed",
     project_close: "Close project",
     project_close_text: "Are you sure, you want to close this project?",
     subproject_close: "Close subproject",
@@ -340,7 +344,9 @@ const en = {
     update_permissions_dialog_text: "Do you really want to update permissions?",
     user_group: "User/Group",
     workflowitem_close: "Close workflowitem",
-    workflowitem_close_text: "Are you sure, you want to close this workflowitem?"
+    workflowitem_close_text: "Are you sure, you want to close this workflowitem?",
+    workflowitem_create: "Create workflowitem",
+    workflowitem_create_text: "Are you sure, you want to create the workflowitem?"
   },
 
   intents: {
@@ -467,7 +473,8 @@ const en = {
     workflowitem_intent_revokePermission: "The permissions for workflowitem {0} changed",
     workflowitem_update: "Workflowitem {0} was updated",
     workflowitem_updated: "Workflowitem {0} was updated",
-    payload_error_message: "Oops!...Its not your fault - A client side validation error occured. Please inform the administrator."
+    payload_error_message:
+      "Oops!...Its not your fault - A client side validation error occured. Please inform the administrator."
   },
 
   history: {

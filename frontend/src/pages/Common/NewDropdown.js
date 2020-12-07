@@ -14,7 +14,12 @@ const styles = {
     justifyContent: "flex-end"
   },
   closeButton: { marginLeft: 10 },
-  closeButtonSize: { fontSize: 15 }
+  closeButtonSize: { fontSize: 15 },
+  flexContainer: {
+    display: "flex",
+    height: "100%",
+    alignItems: "flex-end"
+  }
 };
 
 const Dropdown = props => {
@@ -35,44 +40,46 @@ const Dropdown = props => {
 
   return (
     <form autoComplete="off" style={formStyle}>
-      <FormControl disabled={disabled} style={style} data-test={`dropdown-${id}`} error={error || false}>
-        <InputLabel htmlFor={id}>{floatingLabel}</InputLabel>
-        <Select
-          value={value}
-          onChange={v => {
-            if (v.target.value) {
-              onChange(v.target.value);
-            }
-          }}
-          open={isOpen}
-          onOpen={() => setIsOpen(true)}
-          onClick={() => setIsOpen(false)}
-          inputProps={{
-            name: id,
-            id
-          }}
-          MenuProps={{
-            MenuListProps: {
-              "data-test": "dropdown_selectList"
-            }
-          }}
-          SelectDisplayProps={{ "data-test": `dropdown-${id}-click`, "data-disabled": disabled }}
-        >
-          <div style={styles.closeButtonContainer}>
-            <div style={styles.closeButton}>
-              <ActionButton
-                data-test={"close-select"}
-                onClick={() => setIsOpen(false)}
-                title={strings.common.close}
-                iconButtonStyle={{ width: 15, height: 15 }}
-                icon={<CloseIcon style={styles.closeButtonSize} />}
-              />
+      <div style={styles.flexContainer}>
+        <FormControl disabled={disabled} style={style} data-test={`dropdown-${id}`} error={error || false}>
+          <InputLabel htmlFor={id}>{floatingLabel}</InputLabel>
+          <Select
+            value={value}
+            onChange={v => {
+              if (v.target.value) {
+                onChange(v.target.value);
+              }
+            }}
+            open={isOpen}
+            onOpen={() => setIsOpen(true)}
+            onClick={() => setIsOpen(false)}
+            inputProps={{
+              name: id,
+              id
+            }}
+            MenuProps={{
+              MenuListProps: {
+                "data-test": "dropdown_selectList"
+              }
+            }}
+            SelectDisplayProps={{ "data-test": `dropdown-${id}-click`, "data-disabled": disabled }}
+          >
+            <div style={styles.closeButtonContainer}>
+              <div style={styles.closeButton}>
+                <ActionButton
+                  data-test={"close-select"}
+                  onClick={() => setIsOpen(false)}
+                  title={strings.common.close}
+                  iconButtonStyle={{ width: 15, height: 15 }}
+                  icon={<CloseIcon style={styles.closeButtonSize} />}
+                />
+              </div>
             </div>
-          </div>
-          {children}
-        </Select>
-        <FormHelperText>{error ? errorText : ""}</FormHelperText>
-      </FormControl>
+            {children}
+          </Select>
+          <FormHelperText>{error ? errorText : ""}</FormHelperText>
+        </FormControl>
+      </div>
     </form>
   );
 };

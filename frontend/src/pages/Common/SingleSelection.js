@@ -1,20 +1,21 @@
-import Radio from "@material-ui/core/Radio";
+import { Checkbox, IconButton } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
+import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import Paper from "@material-ui/core/Paper";
-import List from "@material-ui/core/List";
 import MenuItem from "@material-ui/core/MenuItem";
+import Paper from "@material-ui/core/Paper";
+import Radio from "@material-ui/core/Radio";
 import Select from "@material-ui/core/Select";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import React, { Component } from "react";
-import strings from "../../localizeStrings";
-import { Checkbox } from "@material-ui/core";
+import CancelIcon from "@material-ui/icons/Cancel";
 import CloseIcon from "@material-ui/icons/Close";
+import React, { Component } from "react";
+
+import strings from "../../localizeStrings";
 import ActionButton from "./ActionButton";
 
 const styles = {
@@ -48,7 +49,13 @@ const styles = {
   disabled: {},
   closeButtonContainer: { float: "right", marginTop: -8 },
   closeButtonSize: { fontSize: 15 },
-  itemContainer: { maxHeight: "70vh", overflow: "auto" }
+  itemContainer: { maxHeight: "70vh", overflow: "auto" },
+  clearButton: {
+    width: 45,
+    height: 45,
+    alignSelf: "flex-end",
+    marginLeft: "5px"
+  }
 };
 
 class SingleSelection extends Component {
@@ -127,11 +134,19 @@ class SingleSelection extends Component {
   };
 
   render() {
-    const { selectId, selectableItems, disabled, classes, workflowSortEnabled, status, floatingLabel } = this.props;
+    const {
+      selectId,
+      selectableItems,
+      disabled,
+      classes,
+      workflowSortEnabled,
+      status,
+      floatingLabel,
+      onClearItem
+    } = this.props;
     const suggestedUsers = this.renderUserSelection(selectableItems, selectId, disabled);
     const suggestedGroups = this.renderGroupSelection(selectableItems, selectId, disabled);
     const selectedItem = selectableItems.find(s => s.id === selectId);
-
     const getSortClasses = () => {
       if (workflowSortEnabled) {
         if (status !== "closed") {
@@ -154,62 +169,69 @@ class SingleSelection extends Component {
     };
 
     return (
-      <FormControl
-        data-test={"single-select-container" + (disabled ? "-disabled" : "")}
-        disabled={disabled}
-        className={classes.formControl}
-      >
-        <Select
-          data-test={"single-select" + (disabled ? "-disabled" : "")}
-          classes={{
-            ...getSortClasses()
-          }}
-          value={this.renderTitle(selectedItem)}
-          renderValue={name => {
-            return selectedItem ? (
-              <div className={classes.selectValue}>
-                <Checkbox className={classes.radioButton} disabled={disabled} checked={true} />
-                <Typography disabled={disabled} variant="body1" className={classes.assigneeTypography}>
-                  {name}
-                </Typography>
-              </div>
-            ) : null;
-          }}
-          multiple
-          open={this.state.selectIsOpen}
-          onOpen={openSelect}
-          onClose={closeSelect}
+      <>
+        <FormControl
+          data-test={"single-select-container" + (disabled ? "-disabled" : "")}
+          disabled={disabled}
+          className={classes.formControl}
         >
-          <div className={classes.closeButtonContainer}>
-            <ActionButton
-              data-test={"close-select"}
-              onClick={closeSelect}
-              title={strings.common.close}
-              iconButtonStyle={{ width: 15, height: 15 }}
-              icon={<CloseIcon className={classes.closeButtonSize} />}
-            />
-          </div>
-          <div className={classes.formControlContainer}>
-            <FormControl>
-              <InputLabel>{strings.common.search}</InputLabel>
-              <Input
-                inputProps={{ "data-test": "search-single-select-field" }}
-                value={this.state.searchTerm}
-                onChange={e => this.setState({ searchTerm: e.target.value })}
+          <InputLabel htmlFor={selectId}>{floatingLabel}</InputLabel>
+          <Select
+            data-test={"single-select" + (disabled ? "-disabled" : "")}
+            classes={{
+              ...getSortClasses()
+            }}
+            value={selectedItem ? this.renderTitle(selectedItem) : []}
+            renderValue={name => {
+              return selectedItem ? (
+                <div className={classes.selectValue}>
+                  <Checkbox className={classes.radioButton} disabled={disabled} checked={true} />
+                  <Typography disabled={disabled} variant="body1" className={classes.assigneeTypography}>
+                    {name}
+                  </Typography>
+                </div>
+              ) : null;
+            }}
+            multiple
+            open={this.state.selectIsOpen}
+            onOpen={openSelect}
+            onClose={closeSelect}
+          >
+            <div className={classes.closeButtonContainer}>
+              <ActionButton
+                data-test={"close-select"}
+                onClick={closeSelect}
+                title={strings.common.close}
+                iconButtonStyle={{ width: 15, height: 15 }}
+                icon={<CloseIcon className={classes.closeButtonSize} />}
               />
-            </FormControl>
-          </div>
-          <div data-test="single-select-list">
-            <Paper className={classes.itemContainer}>
-              <List>
-                {suggestedUsers}
-                {suggestedGroups}
-              </List>
-            </Paper>
-          </div>
-        </Select>
-        <FormHelperText>{floatingLabel}</FormHelperText>
-      </FormControl>
+            </div>
+            <div className={classes.formControlContainer}>
+              <FormControl>
+                <InputLabel>{strings.common.search}</InputLabel>
+                <Input
+                  inputProps={{ "data-test": "search-single-select-field" }}
+                  value={this.state.searchTerm}
+                  onChange={e => this.setState({ searchTerm: e.target.value })}
+                />
+              </FormControl>
+            </div>
+            <div data-test="single-select-list">
+              <Paper className={classes.itemContainer}>
+                <List>
+                  {suggestedUsers}
+                  {suggestedGroups}
+                </List>
+              </Paper>
+            </div>
+          </Select>
+        </FormControl>
+        {onClearItem && selectedItem ? (
+          <IconButton data-test={"clear-validator"} style={styles.clearButton} onClick={onClearItem}>
+            <CancelIcon color="action" style={{ fontSize: "x-large" }} />
+          </IconButton>
+        ) : null}
+      </>
     );
   }
 }

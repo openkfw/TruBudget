@@ -22,7 +22,6 @@ const de = {
     assign: "German: assign",
     assigned: "Assigned",
     assigned_budget: "Assigned Budget",
-    assignee: "Assignee",
     assignees: "Assignee(s)",
     back: "Back",
     bank: "Bank",
@@ -130,6 +129,7 @@ const de = {
 
   project: {
     add_new_project: "Add new project",
+    assignee: "Verantwortlicher",
     project_authority_organization_search: "Search organizations",
     project_authority_role_search: "Search role",
     project_budget: "Budget",
@@ -157,6 +157,8 @@ const de = {
   },
 
   subproject: {
+    assignee: "Verantwortlicher",
+    fixed_workflowitem_type: "Fester Workflowitem Typ",
     subproject_add_title: "Add new Subproject",
     subproject_assigned_organization: "Assigned Organization",
     subproject_budget_amount: "Sub-project  budget amount",
@@ -177,10 +179,11 @@ const de = {
     subproject_general_workflowitem_type: "Nur Workflow-Elemente vom Typ 'general' zulassen",
     subproject_restricted_workflowitem_type:
       "Nur Workflow-Elemente vom Typ 'eingeschränkt' zulassen. Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
-    subproject_validator: "Validator"
+    workflowitem_assignee: "Vorausgewählter Verantwortlicher"
   },
 
   workflow: {
+    assignee: "Assignee",
     add_item: "German: Create Workflowitem",
     approval_required: "German: Approval Required",
     edit_item: "German: Edit Workflowitem",
@@ -336,6 +339,7 @@ const de = {
     no_permission_warning: "Warnung: Sie haben nicht die Berechtigung, alle aufgelisteten Aktionen auszuführen!",
     permissions_required: "Berechtigungen erforderlich",
     permissions_text: `{0} benötigt zusätzliche Berechtigungen um {1} "{2}" sehen zu können.`,
+    post_actions_dialog_text: "Nach Erstellung des Workflowitems werden folgende Aktionen ausgeführt",
     project_close: "Projekt schließen",
     project_close_text: "Sind Sie sicher, dass Sie dieses Projekt schließen wollen?",
     subproject_close: "Teilprojekt schliessen",
@@ -343,7 +347,9 @@ const de = {
     update_permissions_dialog_text: "Möchten Sie die Berechtigungen wirklich aktualisieren?",
     user_group: "Benutzer/Gruppe",
     workflowitem_close: "Workflowitem schliessen",
-    workflowitem_close_text: "Sind Sie sicher, dass Sie dieses Workflow-Item schließen wollen?"
+    workflowitem_close_text: "Sind Sie sicher, dass Sie dieses Workflow-Item schließen wollen?",
+    workflowitem_create: "Erstelle Workflowitem",
+    workflowitem_create_text: "Sind Sie sicher, dass Sie das Workflowitem erstellen wollen?"
   },
 
   intents: {
@@ -470,7 +476,8 @@ const de = {
     workflowitem_intent_revokePermission: "German: The permissions for workflowitem {0} changed",
     workflowitem_update: "German: Workflowitem {0} was updated",
     workflowitem_updated: "German: Workflowitem {0} was updated",
-    payload_error_message: "Ups! ... Es ist nicht deine Schuld - Ein clientseitiger Validierungsfehler ist aufgetreten. Bitte informieren Sie den Administrator."
+    payload_error_message:
+      "Ups! ... Es ist nicht deine Schuld - Ein clientseitiger Validierungsfehler ist aufgetreten. Bitte informieren Sie den Administrator."
   },
 
   history: {

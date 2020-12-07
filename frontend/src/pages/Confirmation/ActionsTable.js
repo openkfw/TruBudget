@@ -58,11 +58,13 @@ const styles = {
     fontSize: "14px",
     borderBottom: "unset",
     padding: "0px 0px 0px 8px",
-    flex: 1
+    flex: 1,
+    overflow: "hidden",
+    textOverflow: "ellipsis"
   }
 };
 
-function generateHeader(classes) {
+function generateHeader(classes, status) {
   return (
     <TableRow className={classes.headerRow} key={"header"}>
       <TableCell key={"header-type"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
@@ -77,14 +79,16 @@ function generateHeader(classes) {
       <TableCell key={"header-identity"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
         {strings.confirmation.user_group}
       </TableCell>
-      <TableCell key={"header-status"} className={classes.columnHeaderCell} style={{ textAlign: "right" }}>
-        {strings.common.status}
-      </TableCell>
+      {status ? (
+        <TableCell key={"header-status"} className={classes.columnHeaderCell} style={{ textAlign: "right", flex: 3 }}>
+          {strings.common.status}
+        </TableCell>
+      ) : null}
     </TableRow>
   );
 }
 
-function generateActions(classes, actions, executedActions, failedAction, userList) {
+function generateActions(classes, actions, executedActions, failedAction, userList, status) {
   const actionsTable = [];
   actions.forEach((action, index) => {
     const type = strings.common[action.intent.split(".")[0]];
@@ -103,13 +107,15 @@ function generateActions(classes, actions, executedActions, failedAction, userLi
         <TableCell key={index + "-userName"} className={classes.tableCell} style={{ flex: 3 }}>
           {user ? user.displayName : ""}
         </TableCell>
-        <TableCell
-          key={index + "-status"}
-          className={classes.tableCell}
-          style={{ textAlign: "right", position: "relative", bottom: "4px" }}
-        >
-          {getStatusIcon(executedActions, failedAction, action)}
-        </TableCell>
+        {status ? (
+          <TableCell
+            key={index + "-status"}
+            className={classes.tableCell}
+            style={{ textAlign: "right", position: "relative", bottom: "4px", flex: 3 }}
+          >
+            {getStatusIcon(executedActions, failedAction, action)}
+          </TableCell>
+        ) : null}
       </TableRow>
     );
   });
@@ -144,21 +150,21 @@ function makePermissionReadable(intent) {
 }
 
 const ActionsTable = props => {
-  const { classes, actions, executedActions, executingActions, failedAction, userList } = props;
+  const { classes, actions, executedActions, executingActions, failedAction, userList, status = true } = props;
   return actions ? (
-    <React.Fragment>
+    <>
       <Card className={classes.card}>
         <Table data-test="actions-table">
           <TableHead data-test="actions-table-head" key={"wrapper"}>
-            {generateHeader(classes)}
+            {generateHeader(classes, status)}
           </TableHead>
           <TableBody data-test="actions-table-body" className={classes.tableBody}>
-            {generateActions(classes, actions, executedActions, failedAction, userList)}
+            {generateActions(classes, actions, executedActions, failedAction, userList, status)}
           </TableBody>
         </Table>
       </Card>
       {executingActions ? <LinearProgress color="primary" /> : null}
-    </React.Fragment>
+    </>
   ) : null;
 };
 

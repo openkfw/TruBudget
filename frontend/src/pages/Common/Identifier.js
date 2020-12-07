@@ -18,7 +18,6 @@ class Identifier extends Component {
       <div style={styles.inputDiv}>
         <TextInput
           label={this.props.nameLabel}
-          helperText={this.props.nameHintText}
           value={this.props.name}
           onChange={this.props.nameOnChange}
           data-test={this.props.commentId || "nameinput"}
@@ -26,7 +25,6 @@ class Identifier extends Component {
 
         <TextInput
           label={this.props.commentLabel}
-          helperText={this.props.commentHintText}
           value={this.props.comment}
           onChange={this.props.commentOnChange}
           multiline={true}
