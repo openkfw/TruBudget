@@ -6,13 +6,13 @@ describe("Workflowitem's history", function() {
 
   const yesterday = Cypress.moment()
     .add(-1, "days")
-    .format("YYYY-MM-DD");
+    .format("DD/MM/YYYY");;
   const tomorrow = Cypress.moment()
     .add(1, "days")
-    .format("YYYY-MM-DD");
+    .format("DD/MM/YYYY");;
   const afterTomorrow = Cypress.moment()
     .add(2, "days")
-    .format("YYYY-MM-DD");
+    .format("DD/MM/YYYY");;
 
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;

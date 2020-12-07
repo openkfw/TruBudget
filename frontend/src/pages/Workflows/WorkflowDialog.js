@@ -221,12 +221,9 @@ const Content = props => {
           id="due-date"
           label={strings.common.dueDate}
           datetime={props.workflowToAdd.dueDate}
-          onChange={e => {
-            // Since native datepicker has undefined as default value, it has to be set as empty string to reset due-date in API
-            e.target.value === undefined ? props.storeWorkflowDueDate("") : props.storeWorkflowDueDate(e.target.value);
-          }}
+          onChange={(date, name) => { props.storeWorkflowDueDate(date) }}
           onDelete={() => {
-            props.storeWorkflowDueDate("");
+            props.storeWorkflowDueDate(null);
           }}
         />
       </div>

@@ -2,7 +2,7 @@ describe("Workflowitem create", function() {
   let projectId;
   let subprojectId;
   let baseUrl, apiRoute;
-  const today = Cypress.moment().format("YYYY-MM-DD");
+  const today = new Date().toISOString();;
 
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
@@ -34,7 +34,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=nameinput]").type("Test");
     cy.get("[data-test=datepicker-due-date]")
       .click()
-      .type("2050-02-02");
+      .type("02-02-2050");
     cy.get("[data-test=commentinput]").type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
     cy.get("[data-test=dropdown-currencies-click]").should("contain", "EUR");
@@ -50,7 +50,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=nameinput]").type("Test");
     cy.get("[data-test=datepicker-due-date]")
       .click()
-      .type("2050-02-02");
+      .type("02-02-2050");
     cy.get("[data-test=commentinput]").type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
 

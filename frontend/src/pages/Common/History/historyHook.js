@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 
 let listeners = [];
 const defaultState = {
-  startAt: "",
-  endAt: "",
+  startAt: null,
+  endAt: null,
   publisher: "",
   eventType: ""
 };
