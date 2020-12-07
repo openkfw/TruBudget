@@ -113,7 +113,8 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=datepicker-due-date] input")
         .invoke("val")
         .then(date => {
-          expect(dueDate.slice(0, 10)).to.equal(date);
+          const modifiedDate = updateIsodate(date);
+          expect(dueDate.slice(0, 10)).to.equal(modifiedDate);
         });
     });
   });
@@ -187,4 +188,19 @@ function getYesterdaysIsoDate() {
   const yesterday = new Date();
   yesterday.setDate(today.getDate() - 1);
   return yesterday.toISOString();
+}
+
+function updateIsodate(enteredDate) {
+  const date = new Date(enteredDate);
+  const year = date.getFullYear();
+  let month = date.getMonth()+1;
+  let dt = date.getDate();
+
+  if (dt < 10) {
+    dt = '0' + dt;
+  }
+  if (month < 10) {
+  month = '0' + month;
+  }
+  return year+'-' + dt + '-'+ month;
 }
