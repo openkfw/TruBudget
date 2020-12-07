@@ -26,7 +26,8 @@ const Main = props => {
         flex: "1",
         flexDirection: "column",
         alignItems: "center",
-        backgroundImage: "linear-gradient(135deg, #5a9bbe 0%,#1b618c 100%)"
+        backgroundImage: "linear-gradient(135deg, #5a9bbe 0%,#1b618c 100%)",
+        minHeight: "100vh"
       }}
     >
       <div
