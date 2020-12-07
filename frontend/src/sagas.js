@@ -193,6 +193,7 @@ import {
   CLOSE_WORKFLOWITEM_SUCCESS,
   CLOSE_WORKFLOWITEM_FAILURE,
   CREATE_WORKFLOW,
+  CREATE_WORKFLOW_FAILURE,
   CREATE_WORKFLOW_SUCCESS,
   EDIT_WORKFLOW_ITEM,
   EDIT_WORKFLOW_ITEM_SUCCESS,
@@ -658,34 +659,76 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
   }, true);
 }
 
-export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
+export function* createWorkflowItemSaga({ type, postActions = [], ...workflowitemData }) {
+  const {
+    projectId,
+    subprojectId,
+    workflowitemType,
+    projectDisplayName,
+    subprojectDisplayName,
+    assignee,
+    assigneeDisplayName
+  } = workflowitemData;
   yield execute(function*() {
-    const { data } = yield callApi(api.createWorkflowItem, workflowitemData);
-    yield showSnackbarWarning();
-    yield put({
-      type: CREATE_WORKFLOW_SUCCESS,
-      workflowitemId: data.workflowitem.id
-    });
-    if (workflowitemData.assignee !== workflowitemData.workflowItemCreator) {
+    const confirmed = yield select(getConfirmedState);
+    if (!confirmed) {
       yield put({
-        type: ASSIGN_WORKFLOWITEM,
+        type: CONFIRMATION_REQUIRED,
+        intent: "subproject.createWorkflowitem",
+        payload: {
+          project: {
+            id: projectId,
+            displayName: projectDisplayName,
+            listPermissionsNeeded: true
+          },
+          subproject: {
+            id: subprojectId,
+            displayName: subprojectDisplayName,
+            listPermissionsNeeded: true
+          },
+          workflowitem: {
+            ...workflowitemData,
+            listPermissionsNeeded: false
+          },
+          assignee: { id: assignee, displayName: assigneeDisplayName }
+        }
+      });
+      yield cancel();
+    }
+
+    try {
+      const { data } = yield callApi(api.createWorkflowItem, workflowitemData);
+
+      yield put({
+        type: CREATE_WORKFLOW_SUCCESS,
+        workflowitemId: data.workflowitem.id
+      });
+      // Permissions of restricted workflowitems are handled on api level
+      if (workflowitemType !== "restricted" && postActions.length !== 0) {
+        postActions.map(action => {
+          action.id = data.workflowitem.id;
+          return action;
+        });
+        yield executeConfirmedActionsSaga({
+          projectId: data.project.id,
+          subprojectId: data.subproject.id,
+          actions: postActions
+        });
+      }
+      yield showSnackbarWarning();
+      yield put({
+        type: FETCH_ALL_SUBPROJECT_DETAILS,
         projectId: workflowitemData.projectId,
-        projectDisplayName: workflowitemData.projectDisplayName,
         subprojectId: workflowitemData.subprojectId,
-        subprojectDisplayName: workflowitemData.subprojectDisplayName,
-        workflowitemId: data.workflowitem.id,
-        workflowitemDisplayName: workflowitemData.displayName,
-        assigneeId: workflowitemData.assignee,
-        assigneeDisplayName: workflowitemData.assigneeDisplayName,
         showLoading: true
       });
+    } catch (error) {
+      yield put({
+        type: CREATE_WORKFLOW_FAILURE,
+        message: error.message
+      });
+      throw error;
     }
-    yield put({
-      type: FETCH_ALL_SUBPROJECT_DETAILS,
-      projectId: workflowitemData.projectId,
-      subprojectId: workflowitemData.subprojectId,
-      showLoading: true
-    });
   }, true);
 }
 
@@ -2221,7 +2264,7 @@ export function* assignSubprojectSaga({
 export function* validationErrorSaga() {
   yield execute(function*() {
     yield put({ type: VALIDATION_ERROR_MESSAGE_RESET });
-	  yield put({
+    yield put({
       type: SNACKBAR_MESSAGE,
       message: strings.notification.payload_error_message
     });

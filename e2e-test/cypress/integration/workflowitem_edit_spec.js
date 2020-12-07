@@ -41,6 +41,10 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=rateinput] input").type("1.5");
       cy.get("[data-test=next]").click();
       cy.get("[data-test=submit]").click();
+      // Confirm Creation
+      cy.get("[data-test=confirmation-dialog-confirm]")
+        .should("be.visible")
+        .click();
       // Verify the selected values
       cy.wait("@create")
         .wait("@viewDetails")

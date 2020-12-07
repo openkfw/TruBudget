@@ -185,16 +185,26 @@ class Api {
       identity
     });
 
-  createSubProject = (projectId, name, description, currency, validator, workflowitemType, projectedBudgets) => {
+  createSubProject = (
+    projectId,
+    displayName,
+    description,
+    currency,
+    projectedBudgets,
+    validator = undefined,
+    workflowitemType = undefined
+  ) => {
+    if (_isEmpty(validator)) validator = undefined;
+    if (_isEmpty(workflowitemType)) workflowitemType = undefined;
     return instance.post(`/project.createSubproject`, {
       projectId,
       subproject: {
-        displayName: name,
+        displayName,
         description,
         currency,
-        validator: _isEmpty(validator) ? undefined : validator,
-        workflowitemType: workflowitemType === "any" ? undefined : workflowitemType,
-        projectedBudgets
+        projectedBudgets,
+        validator,
+        workflowitemType
       }
     });
   };

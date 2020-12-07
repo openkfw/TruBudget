@@ -30,7 +30,7 @@ const createTableHeader = props => (
             <Typography variant="body1">{strings.common.budget}</Typography>
           </div>
           <div style={{ width: "25%" }}>
-            <Typography variant="body1">{strings.common.assignee}</Typography>
+            <Typography variant="body1">{strings.workflow.assignee}</Typography>
           </div>
           <div style={{ width: "15%", textAlign: "center" }}>
             <Typography variant="body1">{strings.common.actions}</Typography>

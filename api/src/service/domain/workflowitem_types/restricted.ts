@@ -28,6 +28,16 @@ export const createEvents = (
         publisher,
         workflowitem,
       );
+    case "workflowitem_created":
+      return createPermissionEvents(
+        originEvent.projectId,
+        originEvent.subprojectId,
+        originEvent.workflowitem.id,
+        originEvent.workflowitem.assignee,
+        ctx,
+        publisher,
+        workflowitem,
+      );
     default:
       return [];
   }

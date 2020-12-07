@@ -4,14 +4,13 @@ describe("Workflowitem types", function() {
 
   before(() => {
     cy.login();
-    cy.createProject("workflowitem type test project", "workflowitem type test", [])
-      .then(({ id }) => {
-        projectId = id;
-        return cy.createSubproject(projectId, "workflowitem type test", "EUR");
-      })
-      .then(({ id }) => {
+    cy.createProject("workflowitemTypeTest", "workflowitem type test").then(({ id }) => {
+      projectId = id;
+      cy.createSubproject(projectId, "workflowitemTypeTest").then(({ id }) => {
         subprojectId = id;
+        cy.createWorkflowitem(projectId, subprojectId, "workflowitemTypeTest");
       });
+    });
   });
 
   beforeEach(function() {
@@ -31,9 +30,13 @@ describe("Workflowitem types", function() {
     cy.get("[data-test=next]").click();
     cy.get("[data-test=submit]").click();
 
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+
     // Check workflowitem details
-    cy.get("[data-test*=workflowitem-info]")
-      .first()
+    cy.get(`[data-test*=workflowitem-info-button]`)
+      .last()
       .click();
     cy.get("[data-test=workflowitemInfoType]").should("contain", "restricted");
   });
@@ -53,6 +56,10 @@ describe("Workflowitem types", function() {
     cy.get("[data-test=confirmation-dialog-confirm]")
       .should("be.visible")
       .click();
+
+    cy.get("[data-test=edit-workflowitem]")
+      .last()
+      .should("be.visible");
 
     // The assignee received all permissions
     cy.login("thouse", "test");

@@ -35,6 +35,7 @@ export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
 export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
+export const CREATE_WORKFLOW_FAILURE = "CREATE_WORKFLOW_FAILURE";
 export const CREATE_WORKFLOW_SUCCESS = "CREATE_WORKFLOW_SUCCESS";
 export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
 export const EDIT_WORKFLOW_ITEM_SUCCESS = "EDIT_WORKFLOW_ITEM_SUCCESS";
@@ -586,7 +587,7 @@ export function createWorkflowItem(
   subprojectDisplayName,
   assignee,
   assigneeDisplayName,
-  workflowItemCreator
+  postActions
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -606,7 +607,7 @@ export function createWorkflowItem(
     subprojectDisplayName,
     assignee,
     assigneeDisplayName,
-    workflowItemCreator
+    postActions
   };
 }
 

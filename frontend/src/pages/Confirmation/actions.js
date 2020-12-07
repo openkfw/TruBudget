@@ -2,6 +2,7 @@ export const CONFIRMATION_REQUIRED = "CONFIRMATION_REQUIRED";
 export const CONFIRMATION_CONFIRMED = "CONFIRMATION_CONFIRMED";
 export const CONFIRMATION_CANCELLED = "CONFIRMATION_CANCELLED";
 export const STORE_ACTIONS = "STORE_ACTIONS";
+export const STORE_POST_ACTIONS = "STORE_POST_ACTIONS";
 export const STORE_REQUESTED_PERMISSIONS = "STORE_REQUESTED_PERMISSIONS";
 export const EXECUTE_CONFIRMED_ACTIONS = "EXECUTE_CONFIRMED_ACTIONS";
 export const EXECUTE_CONFIRMED_ACTIONS_FAILURE = "EXECUTE_CONFIRMED_ACTIONS_FAILURE";
@@ -35,6 +36,13 @@ export function additionalActionUpdateRequired(required) {
 export function storeAdditionalActions(actions) {
   return {
     type: STORE_ACTIONS,
+    actions
+  };
+}
+
+export function storePostActions(actions) {
+  return {
+    type: STORE_POST_ACTIONS,
     actions
   };
 }

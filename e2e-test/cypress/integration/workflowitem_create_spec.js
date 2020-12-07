@@ -74,6 +74,10 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=next]").click();
     cy.get("[data-test=submit]").click();
 
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+
     //Check snackbar warning visible
     cy.get("[data-test=client-snackbar]")
       .should("be.visible")
@@ -327,6 +331,12 @@ describe("Workflowitem create", function() {
 
       cy.get("[data-test=next]").click({ force: true });
       cy.get("[data-test=submit]").click();
+
+      // Confirm creation
+      cy.get("[data-test=confirmation-dialog-confirm]")
+        .should("be.visible")
+        .click();
+
       cy.wait("@workflowitemCreated").then(xhr => {
         expect(xhr.status).to.eq(200);
       });
@@ -400,10 +410,18 @@ describe("Workflowitem create", function() {
       cy.get("[value=jdoe]").click();
       cy.get("[data-test=next]").click({ force: true });
       cy.get("[data-test=submit]").click();
+
+      // Confirm creation
+      cy.get("[data-test=confirmation-dialog-confirm]")
+        .should("be.visible")
+        .click();
+      cy.get("[data-test=confirmation-dialog-confirm]")
+        .should("be.visible")
+        .click();
+
       cy.wait("@workflowitemCreated").then(xhr => {
         expect(xhr.status).to.eq(200);
       });
-      cy.get("[data-test=confirmation-dialog-cancel]").click();
     });
   });
 });

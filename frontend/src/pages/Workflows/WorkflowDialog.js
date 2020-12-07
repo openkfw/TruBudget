@@ -20,31 +20,25 @@ const types = ["general", "restricted"];
 
 const styles = {
   container: {
-    width: "100%"
+    marginTop: 20,
+    marginBottom: 20,
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between"
   },
   dropdown: {
-    minWidth: 140,
-    height: 50,
-    marginTop: 20
+    minWidth: 200
   },
   inputContainer: {
-    width: "100%",
-    display: "flex"
+    display: "flex",
+    width: "45%",
+    paddingRight: 20,
+    alignItems: "flex-end"
   },
   infoIcon: {
-    fontSize: 20,
-    marginTop: 35,
-    padding: 8
-  },
-  subContainer: {
-    display: "flex",
-    justifyContent: "space-around"
-  },
-  assigneeContainer: {
-    margin: "25,30,0,0",
-    marginTop: 35,
-    marginLeft: 25,
-    justifyContent: "flex-start"
+    marginLeft: "5px",
+    marginBottom: "7px",
+    fontSize: "x-large"
   }
 };
 
@@ -170,10 +164,33 @@ const Content = props => {
   };
 
   return (
-    <div className={classes.container} data-test={"workflow-dialog-content"}>
-      <div className={classes.container}>
+    <div data-test={"workflow-dialog-content"}>
+      <Identifier
+        nameLabel={strings.workflow.workflow_title}
+        nameHintText={strings.workflow.workflow_title_description}
+        name={props.workflowToAdd.displayName}
+        nameOnChange={props.storeWorkflowName}
+        commentLabel={strings.workflow.workflow_comment}
+        commentHintText={strings.common.comment_description}
+        comment={props.workflowToAdd.description}
+        commentOnChange={props.storeWorkflowComment}
+      />
+      <div style={styles.container}>
+        <div className={classes.inputContainer}>
+          <DatePicker
+            id="due-date"
+            label={strings.common.dueDate}
+            datetime={props.workflowToAdd.dueDate}
+            onChange={date => {
+              props.storeWorkflowDueDate(date);
+            }}
+            onDelete={() => {
+              props.storeWorkflowDueDate(null);
+            }}
+          />
+        </div>
         {creationDialogShown ? (
-          <div className={classes.subContainer}>
+          <>
             <div className={classes.inputContainer}>
               <Dropdown
                 disabled={hasFixedWorkflowitemType}
@@ -190,42 +207,18 @@ const Content = props => {
               </Tooltip>
             </div>
             <div className={classes.inputContainer}>
-              <div className={classes.assigneeContainer}>
-                <SingleSelection
-                  disabled={hasSubprojectValidator}
-                  floatingLabel={strings.subproject.subproject_validator}
-                  selectId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
-                  selectableItems={users}
-                  onSelect={(assigneeId, assigneeDisplayName) => {
-                    storeWorkflowAssignee(assigneeId);
-                  }}
-                />
-              </div>
+              <SingleSelection
+                disabled={hasSubprojectValidator}
+                floatingLabel={strings.subproject.workflowitem_assignee}
+                selectId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
+                selectableItems={users}
+                onSelect={(assigneeId, assigneeDisplayName) => {
+                  storeWorkflowAssignee(assigneeId);
+                }}
+              />
             </div>
-          </div>
-        ) : (
-          <div />
-        )}
-
-        <Identifier
-          nameLabel={strings.workflow.workflow_title}
-          nameHintText={strings.workflow.workflow_title_description}
-          name={props.workflowToAdd.displayName}
-          nameOnChange={props.storeWorkflowName}
-          commentLabel={strings.workflow.workflow_comment}
-          commentHintText={strings.common.comment_description}
-          comment={props.workflowToAdd.description}
-          commentOnChange={props.storeWorkflowComment}
-        />
-        <DatePicker
-          id="due-date"
-          label={strings.common.dueDate}
-          datetime={props.workflowToAdd.dueDate}
-          onChange={(date, name) => { props.storeWorkflowDueDate(date) }}
-          onDelete={() => {
-            props.storeWorkflowDueDate(null);
-          }}
-        />
+          </>
+        ) : null}
       </div>
       <Divider />
       <WorkflowDialogAmount

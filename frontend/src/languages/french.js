@@ -23,7 +23,6 @@ const fr = {
     assign: "Allouer",
     assigned_budget: "Budget engagé",
     assigned: "Engagé",
-    assignee: "Responsable",
     assignees: "Responsable(s)",
     back: "Retour",
     bank: "Banque",
@@ -131,6 +130,7 @@ const fr = {
 
   project: {
     add_new_project: "Ajouter un nouveau projet",
+    assignee: "propriétaire",
     project_authority_organization_search: "Rechercher une organisation",
     project_authority_role_search: "Rechercher un rôle",
     project_budget_amount_description: "Description du montant du budget du projet",
@@ -159,6 +159,8 @@ const fr = {
   },
 
   subproject: {
+    assignee: "Responsable par défaut",
+    fixed_workflowitem_type: "Type de workflow fixe",
     subproject_add_title: "Ajouter une nouvelle composante",
     subproject_assigned_organization: "Organisation assignée",
     subproject_budget_amount_description: "description du montant de la composante",
@@ -179,10 +181,11 @@ const fr = {
     subproject_general_workflowitem_type: "Autoriser uniquement les éléments de workflow de type général",
     subproject_restricted_workflowitem_type:
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
-    subproject_validator: "Validateur"
+    workflowitem_assignee: "Default assignee"
   },
 
   workflow: {
+    assignee: "Responsable",
     add_item: "Creer une étape de workflow",
     approval_required: "Approbation exigée",
     edit_item: "Modifier l'étape de workflow",
@@ -334,6 +337,7 @@ const fr = {
     no_permission_warning: "Avertissement: Vous n'êtes pas autorisé à exécuter toutes les actions répertoriées!",
     permissions_required: "Autorisations requises",
     permissions_text: `{0} a besoin d'autorisations supplémentaires pour voir {1} "{2}".`,
+    post_actions_dialog_text: "Après la création, les actions suivantes sont exécutées",
     project_close: "Fermer projet",
     project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
     subproject_close: "Fermer la composante",
@@ -341,7 +345,9 @@ const fr = {
     update_permissions_dialog_text: "Voulez-vous vraiment mettre à jour les autorisations?",
     user_group: "Utilisateur/Groupe",
     workflowitem_close: "Fermer l’étape de workflow ",
-    workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?"
+    workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",
+    workflowitem_create: "créer des étapes de workflow",
+    workflowitem_create_text: "Êtes-vous sûr de vouloir créer l’étape de workflow?"
   },
 
   intents: {
@@ -468,7 +474,8 @@ const fr = {
     workflowitem_intent_revokePermission: "Les autorisations sur l’étape de workflow {0} ont changées",
     workflowitem_update: " L’étape de workflow {0} a été actualisée",
     workflowitem_updated: " L’étape de workflow {0} a été actualisé",
-    payload_error_message: "Oups! ... Ce n'est pas de votre faute - Une erreur de validation côté client s'est produite. Veuillez informer l'administrateur."
+    payload_error_message:
+      "Oups! ... Ce n'est pas de votre faute - Une erreur de validation côté client s'est produite. Veuillez informer l'administrateur."
   },
 
   userProfile: {
