@@ -12,6 +12,16 @@
       "webRoot": "${workspaceFolder}"
     },
     {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome: Docker Container",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceRoot}/frontend/src",
+      "sourceMapPathOverrides": {
+        "/app/src/*": "${webRoot}/*"
+      }
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Mocha Tests",
@@ -53,6 +63,15 @@
       "port": 9230,
       "address": "localhost",
       "localRoot": "${workspaceFolder}/api",
+      "remoteRoot": "/home/node/"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Debug Excel Export Container",
+      "port": 9231,
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}/excel-export",
       "remoteRoot": "/home/node/"
     }
   ]
