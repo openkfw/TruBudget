@@ -83,10 +83,9 @@ const WorkflowEditDrawer = props => {
   };
 
   const isOpen = !_isEmpty(selectedWorkflowItems);
-
   const usersAndGroups = [
     ...users,
-    ...groups.map(group => ({ ...group, id: group.groupId, isGroup: true, permissions: {} }))
+    ...groups
   ];
 
   // Only render the drawer if there are elements selected
