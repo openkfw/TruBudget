@@ -57,11 +57,13 @@ schemes
         description: Joi.string().allow(""),
         documents: Joi.array().items({
           id: Joi.string().required(),
-          base64: Joi.string().required(),
+          base64: Joi.string()
+            .required()
+            .allow(""),
           fileName: Joi.string().allow("")
         }),
         status: Joi.string().valid("open"),
-        dueDate: Joi.string().allow(""),
+        dueDate: Joi.date().allow(null),
         workflowitemType: Joi.string().valid("restricted", "general"),
         projectDisplayName: Joi.string().required(),
         subprojectDisplayName: Joi.string().required(),
