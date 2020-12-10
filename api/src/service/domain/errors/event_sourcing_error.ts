@@ -22,6 +22,7 @@ function mkInfo(info: Info): Info {
   if (info.target === undefined || info.target.log === undefined) {
     return info;
   }
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { target, log: _log } = info.target;
   return target;
 }

@@ -110,7 +110,7 @@ describe("update project: how modifications are applied", () => {
     const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
 
     assert.isTrue(Result.isErr(result));
-    const error = Result.unwrap_err(result);
+    const error = Result.unwrapErr(result);
     assert.match(error.message, /displayName.*\s+.*empty/);
   });
 
@@ -122,7 +122,7 @@ describe("update project: how modifications are applied", () => {
       const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
 
       assert.isTrue(Result.isErr(result), (result as Error).message);
-      const error = Result.unwrap_err(result);
+      const error = Result.unwrapErr(result);
     },
   );
 
@@ -141,7 +141,7 @@ describe("update project: how modifications are applied", () => {
     });
 
     assert.isTrue(Result.isErr(result));
-    const error = Result.unwrap_err(result);
+    const error = Result.unwrapErr(result);
     assert.match(error.message, /status/);
   });
 

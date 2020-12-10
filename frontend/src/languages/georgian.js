@@ -6,6 +6,8 @@ const ka = {
       thousand: ".",
       precision: 2
     },
+    dateFormat: "dd/MM/yyyy",
+    datePlaceholder: "dd/mm/yyyy",
     // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)
     numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
   },
@@ -21,7 +23,6 @@ const ka = {
     assign: "assign",
     assigned_budget: "გამოყოფილი ბიუჯეტი",
     assigned: "Assigned",
-    assignee: "Assignee",
     assignees: "Assignee(s)",
     back: "უკან დაბრუნება",
     bank: "ბანკი",
@@ -189,6 +190,7 @@ const ka = {
 
   project: {
     add_new_project: "ახალი პროექტის დამატება",
+    assignee: "მფლობელი",
     project_authority_organization_search: "ორგანიზაციის ძიება",
     project_authority_role_search: "როლის ძიება",
     project_budget_amount_description: "მაგალითად",
@@ -217,6 +219,8 @@ const ka = {
   },
 
   subproject: {
+    assignee: "მფლობელი",
+    fixed_workflowitem_type: "ფიქსირებული სამუშაო ნაკადის ტიპი",
     subproject_add_title: "ახალი ქვეპროექტის დამატება",
     subproject_assigned_organization: "Assigned organization",
     subproject_budget_amount_description: "მაგალითად",
@@ -237,10 +241,11 @@ const ka = {
     subproject_general_workflowitem_type: "დაუშვით მხოლოდ workflowitem ტიპის ზოგადი",
     subproject_restricted_workflowitem_type:
       "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
-    subproject_validator: "შემმოწმებელი"
+    workflowitem_assignee: "ნაგულისხმევი მიმღები"
   },
 
   workflow: {
+    assignee: "პასუხისმგებელი",
     add_item: "Workflowitem-ის შექმნა",
     approval_required: "აუცილებელია დადასტურება",
     edit_item: "Workflowitem-ის რედაქტირება",
@@ -333,6 +338,7 @@ const ka = {
     no_permission_warning: "გაფრთხილება: თქვენ არ შეგიძლიათ აღნიშნული ქმედების განხორციელება!",
     permissions_required: "აუცილებელია ნებართვა",
     permissions_text: `{0} ესაჭიროება დამატებითი ნებართვა რათა იხილოს {1} "{2}".`,
+    post_actions_dialog_text: "შექმნის შემდეგ შესრულებულია შემდეგი მოქმედებები",
     project_close: "პროექტის დახურვა",
     project_close_text: "დარწმუნებული ხართ, გსურთ ამ პროექტის დახურვა?",
     subproject_close: "ქვეპროექტის დახურვა",
@@ -340,7 +346,9 @@ const ka = {
     update_permissions_dialog_text: "ნამდვილად გსურთ ნებართვების განახლება?",
     user_group: "მომხმარებელი/ჯგუფი",
     workflowitem_close: "სამუშაო ნაკადის დახურვა",
-    workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?"
+    workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?",
+    workflowitem_create: "სამუშაო პროცესის შექმნა",
+    workflowitem_create_text: "დარწმუნებული ხართ, რომ გსურთ შექმნათ workflowitem?"
   },
 
   intents: {
@@ -466,7 +474,9 @@ const ka = {
     workflowitem_intent_grantPermission: "Workflowitem-ის {0} ნებართები შეცვლილია",
     workflowitem_intent_revokePermission: "Workflowitem-ის {0} ნებართები შეცვლილია",
     workflowitem_update: "Workflowitem-ი {0} განახლებულია",
-    workflowitem_updated: "Workflowitem-ი {0} განახლებულია"
+    workflowitem_updated: "Workflowitem-ი {0} განახლებულია",
+    payload_error_message:
+      "უი! ... ეს არ არის თქვენი ბრალი - მოხდა კლიენტის მხრიდან ვალიდაციის შეცდომა. გთხოვთ, აცნობოთ ადმინისტრატორს."
   },
 
   history: {

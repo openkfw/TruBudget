@@ -1,4 +1,5 @@
-import { Button, Typography } from "@material-ui/core";
+import { Button } from "@material-ui/core";
+//import { Typography } from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
 import { withStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
@@ -23,8 +24,8 @@ class DialogButtons extends React.Component {
       onConfirm,
       onCancel,
       confirmDisabled,
-      actions,
-      executedActions,
+      // actions,
+      //  executedActions,
       actionsAreExecuted,
       executingActions,
       failedAction
@@ -32,11 +33,14 @@ class DialogButtons extends React.Component {
 
     return (
       <DialogActions className={classes.dialogActions}>
-        {actions.length ? (
+        {
+          // ToDo: action is not correct: use postActions! Issue https://github.com/openkfw/TruBudget/issues/697
+          /* {actions.length ? (
           <Typography key="progressInfo" className={classes.progressInfo}>
             {strings.formatString(strings.preview.actions_done, executedActions.length, actions.length)}
           </Typography>
-        ) : null}
+        ) : null} */
+        }
         <Button
           disabled={executingActions || actionsAreExecuted}
           aria-label="cancel"

@@ -1,9 +1,12 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import CancelIcon from "@material-ui/icons/Cancel";
 import IconButton from "@material-ui/core/IconButton";
 import dayjs from "dayjs";
+import DateFnsUtils from "@date-io/date-fns";
 import { withStyles } from "@material-ui/core";
+
+import strings from "../../localizeStrings";
 
 const styles = {
   searchField: {
@@ -12,33 +15,37 @@ const styles = {
     opacity: "0.8",
     boxShadow: "none"
   },
-  button: {
-    maxWidth: "30px",
-    maxHeight: "30px",
-    minWidth: "30px",
-    minHeight: "30px",
-    margin: "15px"
+  clearButton: {
+    width: 35,
+    height: 35,
+    alignSelf: "flex-end",
+    marginLeft: "5px"
   }
 };
 
-function DatePicker({ classes, name, label, onChange, onDelete, datetime = "", id = "default" }) {
-  dayjs(datetime).isValid() ? (datetime = dayjs(datetime).format("YYYY-MM-DD")) : (datetime = "");
+function DatePicker({ classes, name, label, onChange, onDelete, datetime, id = "default" }) {
+  const dateFormat = strings.format.dateFormat;
+  const datePlaceholder = strings.format.datePlaceholder;
   return (
     <div className={classes.searchField}>
       <form className={classes.form} noValidate>
-        <TextField
-          name={name}
-          label={label}
-          type="date"
-          value={datetime}
-          InputLabelProps={{
-            shrink: true
-          }}
-          onChange={onChange}
-          data-test={`datepicker-${id}`}
-        />
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            autoOk
+            variant="inline"
+            id={id}
+            label={label}
+            placeholder={datePlaceholder}
+            format={dateFormat}
+            value={datetime}
+            onChange={date => {
+              onChange(dayjs(date).format("YYYY-MM-DD"), name);
+            }}
+            data-test={`datepicker-${id}`}
+          />
+        </MuiPickersUtilsProvider>
       </form>
-      <IconButton data-test={`clear-datepicker-${id}`} onClick={onDelete} className={classes.button}>
+      <IconButton data-test={`clear-datepicker-${id}`} onClick={onDelete} className={classes.clearButton}>
         <CancelIcon color="action" />
       </IconButton>
     </div>

@@ -21,10 +21,10 @@ describe("Timestamps", function() {
     cy.get("[data-test*=project-view-button]")
       .last()
       .click();
-    cy.get("[data-test=assignee-selection]").click();
-    cy.get("[data-test=assignee-selection]")
+    cy.get("[data-test=single-select]").click();
+    cy.get("[data-test=single-select]")
       .should("be.visible")
-      .get("[data-test=assignee-list]")
+      .get("[data-test=single-select-list]")
       .find("[value=thouse]")
       .click()
       .get("[data-test=confirmation-dialog-confirm]")

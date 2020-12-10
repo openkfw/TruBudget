@@ -4,14 +4,15 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import { formatString, hasUserAssignments } from "../../helper";
 import strings from "../../localizeStrings";
+import DisableUserDialogContent from "../Users/DisableUserDialogContent";
+import EnableUserDialogContent from "../Users/EnableUserDialogContent";
 import ActionsTable from "./ActionsTable";
 import DialogButtons from "./DialogButtons";
 import ErrorTypography from "./ErrorTypography";
-import DisableUserDialogContent from "../Users/DisableUserDialogContent";
-import EnableUserDialogContent from "../Users/EnableUserDialogContent";
 
 const styles = {
   paperRoot: {
@@ -61,7 +62,8 @@ const ConfirmationDialog = props => {
     fetchUserAssignments,
     cleanUserAssignments,
     userAssignments,
-    editId
+    editId,
+    postActions
   } = props;
 
   const [hasAssignments, setHasAssignments] = useState(true);
@@ -208,6 +210,58 @@ const ConfirmationDialog = props => {
           title = strings.confirmation.confirm_assign;
           content = <Typography>{dialogText}</Typography>;
           confirmButtonText = strings.common.assign;
+        }
+        break;
+      case "subproject.createWorkflowitem":
+        permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
+        confirmButtonText = strings.common.create;
+        doneButtonText = strings.common.create;
+
+        // Build Dialog content
+        if (additionalActionsExist(additionalActions)) {
+          const additionalActionsDialogText = strings.confirmation.additional_permissions_dialog_text;
+
+          title = strings.confirmation.additional_permissions_required;
+          content = (
+            <>
+              <Typography>{additionalActionsDialogText}</Typography>
+              <ActionsTable
+                actions={additionalActions}
+                executedActions={executedAdditionalActions}
+                executingActions={executingAdditionalActions}
+                failedAction={failedAction}
+                userList={userList}
+              />
+            </>
+          );
+          confirmButtonText = strings.confirmation.execute_actions;
+        }
+        if (!_isEmpty(postActions)) {
+          const postActionsDialogText = strings.confirmation.post_actions_dialog_text;
+          const marginTop = additionalActionsExist(additionalActions) ? { marginTop: "28px" } : {};
+          title = strings.confirmation.additional_permissions_required;
+          content = (
+            <>
+              {content}
+              <div style={marginTop}>
+                <Typography>{postActionsDialogText}</Typography>
+                <ActionsTable
+                  actions={postActions}
+                  executedActions={executedAdditionalActions}
+                  executingActions={executingAdditionalActions}
+                  failedAction={failedAction}
+                  userList={userList}
+                  status={false}
+                />
+              </div>
+            </>
+          );
+        }
+        if (!additionalActionsExist(additionalActions) && _isEmpty(postActions)) {
+          const dialogText = "Please confirm Workflow creation";
+
+          title = strings.confirmation.workflowitem_create;
+          content = <Typography>{dialogText}</Typography>;
         }
         break;
       case "project.intent.grantPermission":

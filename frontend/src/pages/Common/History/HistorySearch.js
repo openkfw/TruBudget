@@ -29,16 +29,15 @@ const styles = {
 const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) => {
   const [{ startAt, endAt, publisher, eventType }, mergeState, clearState] = useHistoryState();
 
-  const onChange = e => {
-    const { name, value } = e.target;
-    mergeState({ [name]: value });
+  const onChange = (selectedDate, name) => {
+    mergeState({ [name]: selectedDate });
   };
 
   const onDeleteStartAt = () => {
-    mergeState({ startAt: "" });
+    mergeState({ startAt: null });
   };
   const onDeleteEndAt = () => {
-    mergeState({ endAt: "" });
+    mergeState({ endAt: null });
   };
 
   const onReset = () => {

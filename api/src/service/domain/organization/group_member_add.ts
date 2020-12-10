@@ -39,7 +39,7 @@ export async function addMember(
   if (issuer.id !== "root") {
     const intent = "group.addUser";
     if (!Group.permits(group, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: group })
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: group });
     }
   }
 

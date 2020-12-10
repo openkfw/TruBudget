@@ -17,6 +17,7 @@ import {
   assignWorkflowItem,
   closeSubproject,
   closeWorkflowItem,
+  createWorkflowItem,
   fetchWorkflowItemPermissions,
   grantWorkflowItemPermission,
   revokeWorkflowItemPermission
@@ -27,7 +28,9 @@ import {
   confirmConfirmation,
   executeAdditionalActions,
   storeAdditionalActions,
-  storeRequestedPermissions
+  storePostActions,
+  storeRequestedPermissions,
+  showValidationErrorMessage
 } from "./actions";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { applyOriginalActions, createAdditionalActions } from "./createAdditionalActions";
@@ -37,6 +40,10 @@ class ConfirmationContainer extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.props.cancelConfirmation();
+    }
+
+    if (this.props.isPayloadValidationFailed) {
+      this.props.showValidationErrorMessage();
     }
 
     const isConfirmationDialogTriggered =
@@ -53,14 +60,16 @@ class ConfirmationContainer extends React.Component {
     }
 
     if (this.props.originalActionsIncreased && !this.isFetchingPermissions()) {
-      const additionalActions = createAdditionalActions(
+      const [additionalActions, postActions] = createAdditionalActions(
         this.props.originalActions,
         this.props.permissions,
         this.props.project,
-        this.props.subproject
+        this.props.subproject,
+        this.props.confirmingUser
       );
 
       this.props.storeAdditionalActions(additionalActions);
+      this.props.storePostActions(postActions);
       this.props.additionalActionUpdateRequired(false);
     }
     // Store requested permissions for permission dialog state in case of cancel
@@ -99,6 +108,7 @@ class ConfirmationContainer extends React.Component {
       this.props.assignProject,
       this.props.assignSubproject,
       this.props.assignWorkflowitem,
+      this.props.createWorkflowitem,
       this.props.grantProjectPermission,
       this.props.revokeProjectPermission,
       this.props.grantSubprojectPermission,
@@ -109,7 +119,8 @@ class ConfirmationContainer extends React.Component {
       this.props.closeSubproject,
       this.props.closeWorkflowItem,
       this.props.disableUser,
-      this.props.enableUser
+      this.props.enableUser,
+      this.props.postActions
     );
   }
 
@@ -145,7 +156,8 @@ class ConfirmationContainer extends React.Component {
       fetchUserAssignments,
       cleanUserAssignments,
       userAssignments,
-      editId
+      editId,
+      postActions
     } = this.props;
     if (confirmationDialogOpen && !confirmed) {
       return (
@@ -174,6 +186,7 @@ class ConfirmationContainer extends React.Component {
           cleanUserAssignments={cleanUserAssignments}
           userAssignments={userAssignments}
           editId={editId}
+          postActions={postActions}
         />
       );
     } else {
@@ -188,10 +201,12 @@ const mapDispatchToProps = dispatch => {
     fetchProjectPermissions: pId => dispatch(fetchProjectPermissions(pId, false)),
     fetchSubprojectPermissions: (pId, sId) => dispatch(fetchSubProjectPermissions(pId, sId, false)),
     fetchWorkflowitemPermissions: (pId, spId, wId) => dispatch(fetchWorkflowItemPermissions(pId, spId, wId, false)),
+    showValidationErrorMessage: () => dispatch(showValidationErrorMessage()),
     confirmConfirmation: () => dispatch(confirmConfirmation()),
     cancelConfirmation: permissions => dispatch(cancelConfirmation(permissions)),
     executeConfirmedActions: (actions, pId, subId) => dispatch(executeAdditionalActions(actions, pId, subId, false)),
     storeAdditionalActions: actions => dispatch(storeAdditionalActions(actions)),
+    storePostActions: actions => dispatch(storePostActions(actions)),
     storeRequestedPermissions: permissions => dispatch(storeRequestedPermissions(permissions)),
     assignProject: (projectId, projectDisplayName, assigneeId, assigneeDisplayName) =>
       dispatch(assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName)),
@@ -199,6 +214,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(assignSubproject(pId, pDisplayName, subpId, subpName, assigneeId, assigneeName)),
     assignWorkflowitem: (pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName) =>
       dispatch(assignWorkflowItem(pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName)),
+    createWorkflowitem: (...workflowitemData) => dispatch(createWorkflowItem(...workflowitemData)),
     grantProjectPermission: (pId, pName, permission, granteeId, granteeName) =>
       dispatch(grantProjectPermission(pId, pName, permission, granteeId, granteeName, true)),
     revokeProjectPermission: (pId, pName, permission, revokeeId, revokeeName) =>
@@ -239,6 +255,7 @@ const mapStateToProps = state => {
     isFetchingWorkflowitemPermissions: state.getIn(["confirmation", "isFetchingWorkflowitemPermissions"]),
     executedAdditionalActions: state.getIn(["confirmation", "executedAdditionalActions"]),
     additionalActions: state.getIn(["confirmation", "additionalActions"]),
+    postActions: state.getIn(["confirmation", "postActions"]),
     additionalActionsExecuted: state.getIn(["confirmation", "additionalActionsExecuted"]),
     executingAdditionalActions: state.getIn(["confirmation", "executingAdditionalActions"]),
     confirmed: state.getIn(["confirmation", "confirmed"]),
@@ -249,6 +266,7 @@ const mapStateToProps = state => {
     isListPermissionsRequiredFromApi: state.getIn(["confirmation", "isListPermissionsRequiredFromApi"]),
     failedAction: state.getIn(["confirmation", "failedAction"]),
     requestedPermissions: state.getIn(["confirmation", "requestedPermissions"]),
+    isPayloadValidationFailed: state.getIn(["confirmation", "isPayloadValidationFailed"]),
     groups: state.getIn(["users", "groups"]),
     userAssignments: state.getIn(["users", "userAssignments"]),
     editId: state.getIn(["users", "editId"])

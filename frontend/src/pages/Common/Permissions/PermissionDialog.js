@@ -52,6 +52,7 @@ const PermissionDialog = props => {
                       action.userIds.forEach(user => {
                         props.revoke(action.permission, user);
                       });
+                      // eslint-disable-next-line no-console
                     } else console.error("Not a recognized action", action.type);
                   });
                 }

@@ -3,6 +3,7 @@ export function executeOriginalActions(
   assignProject,
   assignSubproject,
   assignWorkflowitem,
+  createWorkflowitem,
   grantProjectPermission,
   revokeProjectPermission,
   grantSubprojectPermission,
@@ -13,7 +14,8 @@ export function executeOriginalActions(
   closeSubproject,
   closeWorkflowItem,
   disableUser,
-  enableUser
+  enableUser,
+  postActions
 ) {
   actions.forEach(action => {
     switch (action.intent) {
@@ -80,6 +82,46 @@ export function executeOriginalActions(
           subproject.displayName,
           assignee.id,
           assignee.displayName
+        );
+        break;
+      }
+      case "subproject.createWorkflowitem": {
+        const {
+          projectId,
+          subprojectId,
+          displayName,
+          amount,
+          exchangeRate,
+          amountType,
+          currency,
+          description,
+          status,
+          documents,
+          dueDate,
+          workflowitemType,
+          projectDisplayName,
+          subprojectDisplayName,
+          assignee,
+          assigneeDisplayName
+        } = action.payload.workflowitem;
+        createWorkflowitem(
+          projectId,
+          subprojectId,
+          displayName,
+          amount,
+          exchangeRate,
+          amountType,
+          currency,
+          description,
+          status,
+          documents,
+          dueDate,
+          workflowitemType,
+          projectDisplayName,
+          subprojectDisplayName,
+          assignee,
+          assigneeDisplayName,
+          postActions
         );
         break;
       }

@@ -1,0 +1,20 @@
+# Configuration for support-requests - https://github.com/dessant/support-requests
+# Fyi: Not yet configured
+
+# Label used to mark issues as support requests
+supportLabel: support
+
+# Comment to post on issues marked as support requests. Add a link
+# to a support page, or set to `false` to disable
+supportComment: |
+  👋 Thanks for using Trubudget!
+  We use GitHub issues exclusively as a bug and feature requests tracker, however,
+  this issue appears to be a support request.
+  For support, please check out our [documentation](https://github.com/openkfw/TruBudget/tree/master/doc) first. Thanks!
+  If you have a question you can reach out to the Tru-Community by joining our [Gitter](https://gitter.im/Tru-Community/community)
+  If your issue is subsequently confirmed as a bug,  and the report follows the issue template, it can be reopened.
+# Whether to close issues marked as support requests
+close: true
+
+# Whether to lock issues marked as support requests
+lock: false

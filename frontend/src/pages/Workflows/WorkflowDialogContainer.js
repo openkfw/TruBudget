@@ -46,11 +46,10 @@ class WorkflowDialogContainer extends Component {
     const path = this.props.location.pathname.split("/");
     const projectId = path[2];
     const subProjectId = path[3];
-    const workflowItemCreator = this.props.workflowItemCreator;
     const assignee = this.props.selectedAssignee;
     const assigneeDisplayName = this.props.users.find(u => u.id === assignee).displayName;
 
-    this.props.createItem(
+    this.props.createWorkflowitem(
       projectId,
       subProjectId,
       displayName,
@@ -66,8 +65,7 @@ class WorkflowDialogContainer extends Component {
       projectDisplayName,
       subprojectDisplayName,
       assignee,
-      assigneeDisplayName,
-      workflowItemCreator
+      assigneeDisplayName
     );
   };
 
@@ -100,53 +98,13 @@ const mapStateToProps = state => {
     subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
     hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
     fixedWorkflowitemType: state.getIn(["workflow", "fixedWorkflowitemType"]),
-    hasFixedWorkflowitemType: state.getIn(["workflow", "hasFixedWorkflowitemType"]),
-    workflowItemCreator: state.getIn(["login", "id"])
+    hasFixedWorkflowitemType: state.getIn(["workflow", "hasFixedWorkflowitemType"])
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    createItem: (
-      projectId,
-      subprojectId,
-      displayName,
-      amount,
-      exchangeRate,
-      amountType,
-      currency,
-      description,
-      status,
-      documents,
-      dueDate,
-      workflowitemType,
-      projectDisplayName,
-      subprojectDisplayName,
-      assignee,
-      assigneeDisplayName,
-      workflowItemCreator
-    ) =>
-      dispatch(
-        createWorkflowItem(
-          projectId,
-          subprojectId,
-          displayName,
-          amount,
-          exchangeRate,
-          amountType,
-          currency,
-          description,
-          status,
-          documents,
-          dueDate,
-          workflowitemType,
-          projectDisplayName,
-          subprojectDisplayName,
-          assignee,
-          assigneeDisplayName,
-          workflowItemCreator
-        )
-      ),
+    createWorkflowitem: (...workflowitemData) => dispatch(createWorkflowItem(...workflowitemData)),
     editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),
     storeWorkflowComment: comment => dispatch(storeWorkflowComment(comment)),
     storeWorkflowCurrency: currency => dispatch(storeWorkflowCurrency(currency)),

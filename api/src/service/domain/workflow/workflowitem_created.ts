@@ -13,8 +13,8 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-type eventTypeType = "workflowitem_created";
-const eventType: eventTypeType = "workflowitem_created";
+type EventTypeType = "workflowitem_created";
+const eventType: EventTypeType = "workflowitem_created";
 
 interface InitialData {
   id: Workflowitem.Id;
@@ -54,7 +54,7 @@ const initialDataSchema = Joi.object({
 }).options({ stripUnknown: true });
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

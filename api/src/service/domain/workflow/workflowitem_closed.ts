@@ -7,11 +7,11 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-type eventTypeType = "workflowitem_closed";
-const eventType: eventTypeType = "workflowitem_closed";
+type EventTypeType = "workflowitem_closed";
+const eventType: EventTypeType = "workflowitem_closed";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

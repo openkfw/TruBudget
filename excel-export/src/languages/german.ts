@@ -12,6 +12,10 @@ const de = {
     due_date: "Fälligkeitsdatum",
     exchange_rate: "Wechselkurs",
     organisation: "Organisation",
+    closed: "Geschlossen",
+    open: "Offen",
+    general: "General",
+    restricted: "Eingeschränkt",
   },
 
   project: {
@@ -34,6 +38,9 @@ const de = {
     name: "Workflowitem Name",
     type: "Workflowitem Typ",
     subproject_currency: "Währung des Subprojektes",
+    allocated: "Zugewiesen",
+    disbursed: "Ausgezahlt",
+    na: "N/A",
   },
 
   document: {

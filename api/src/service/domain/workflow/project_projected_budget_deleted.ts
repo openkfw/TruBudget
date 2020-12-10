@@ -6,11 +6,11 @@ import { Identity } from "../organization/identity";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 
-type eventTypeType = "project_projected_budget_deleted";
-const eventType: eventTypeType = "project_projected_budget_deleted";
+type EventTypeType = "project_projected_budget_deleted";
+const eventType: EventTypeType = "project_projected_budget_deleted";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

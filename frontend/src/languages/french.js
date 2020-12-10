@@ -6,6 +6,8 @@ const fr = {
       thousand: ".",
       precision: 2
     },
+    dateFormat: "dd/MM/yyyy",
+    datePlaceholder: "dd/mm/yyyy",
     // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)
     numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
   },
@@ -21,7 +23,6 @@ const fr = {
     assign: "Allouer",
     assigned_budget: "Budget engagé",
     assigned: "Engagé",
-    assignee: "Responsable",
     assignees: "Responsable(s)",
     back: "Retour",
     bank: "Banque",
@@ -35,7 +36,7 @@ const fr = {
     completion: "Achèvement",
     confirm: "Confirmer",
     create: "Créer",
-    created: "Créé",
+    created: "Date de création",
     currency: "Devise",
     disbursed_budget: "Montants payés",
     disbursement: "Paiement prévus",
@@ -129,6 +130,7 @@ const fr = {
 
   project: {
     add_new_project: "Ajouter un nouveau projet",
+    assignee: "propriétaire",
     project_authority_organization_search: "Rechercher une organisation",
     project_authority_role_search: "Rechercher un rôle",
     project_budget_amount_description: "Description du montant du budget du projet",
@@ -157,6 +159,8 @@ const fr = {
   },
 
   subproject: {
+    assignee: "Responsable par défaut",
+    fixed_workflowitem_type: "Type de workflow fixe",
     subproject_add_title: "Ajouter une nouvelle composante",
     subproject_assigned_organization: "Organisation assignée",
     subproject_budget_amount_description: "description du montant de la composante",
@@ -177,10 +181,11 @@ const fr = {
     subproject_general_workflowitem_type: "Autoriser uniquement les éléments de workflow de type général",
     subproject_restricted_workflowitem_type:
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
-    subproject_validator: "Validateur"
+    workflowitem_assignee: "Default assignee"
   },
 
   workflow: {
+    assignee: "Responsable",
     add_item: "Creer une étape de workflow",
     approval_required: "Approbation exigée",
     edit_item: "Modifier l'étape de workflow",
@@ -234,7 +239,7 @@ const fr = {
     workflowitem_type: "Type de l’étape de workflow",
     workflowitem_type_general: "Créer une étape de workflow de type général.",
     workflowitem_type_restricted:
-      "Assurez-vous de ne pas fournir d'informations personnelles (nom, prénom(s), matricule, adresse email) en remplissant ce formulaire.\nEn cliquant sur \"SOUMETTRE\", vous nous autorisez à sauvegarder vos données de façon permanente et vous confirmez la réception de l'avis de confidentialité."
+      "Lors de l'attribution d'un workflow restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation"
   },
 
   snackbar: {
@@ -269,7 +274,7 @@ const fr = {
     password_conditions_number: "Contenir au moins un chiffre",
     password_conditions_preface: "Votre mot de passe doit:",
     privacy_notice:
-      'Assurez-vous de ne pas fournir d\'informations personnelles (nom, prénom(s), matricule, adresse mail) en remplissant ce formulaire. En cliquant sur "SOUMETTRE" vous nous autorisez à sauvegarder vos données de façon permanente et vous confirmez avoir lu le présent avis de confidentialité.',
+      "Assurez-vous de ne pas fournir d'informations personnelles (nom, prénom(s), matricule, adresse email) en remplissant ce formulaire.\nEn cliquant sur \"SOUMETTRE\", vous nous autorisez à sauvegarder vos données de façon permanente et vous confirmez la réception de l'avis de confidentialité.",
     type_current_password: "Tapez le mot de passe actuel pour {0}",
     type_new_password: "Tapez le nouveau mot de passe pour {0}",
     user_created: "Utilisateur créé avec succès",
@@ -332,6 +337,7 @@ const fr = {
     no_permission_warning: "Avertissement: Vous n'êtes pas autorisé à exécuter toutes les actions répertoriées!",
     permissions_required: "Autorisations requises",
     permissions_text: `{0} a besoin d'autorisations supplémentaires pour voir {1} "{2}".`,
+    post_actions_dialog_text: "Après la création, les actions suivantes sont exécutées",
     project_close: "Fermer projet",
     project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
     subproject_close: "Fermer la composante",
@@ -339,7 +345,9 @@ const fr = {
     update_permissions_dialog_text: "Voulez-vous vraiment mettre à jour les autorisations?",
     user_group: "Utilisateur/Groupe",
     workflowitem_close: "Fermer l’étape de workflow ",
-    workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?"
+    workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",
+    workflowitem_create: "créer des étapes de workflow",
+    workflowitem_create_text: "Êtes-vous sûr de vouloir créer l’étape de workflow?"
   },
 
   intents: {
@@ -465,7 +473,9 @@ const fr = {
     workflowitem_intent_grantPermission: "Les autorisations sur l’étape de workflow {0} ont changées",
     workflowitem_intent_revokePermission: "Les autorisations sur l’étape de workflow {0} ont changées",
     workflowitem_update: " L’étape de workflow {0} a été actualisée",
-    workflowitem_updated: " L’étape de workflow {0} a été actualisé"
+    workflowitem_updated: " L’étape de workflow {0} a été actualisé",
+    payload_error_message:
+      "Oups! ... Ce n'est pas de votre faute - Une erreur de validation côté client s'est produite. Veuillez informer l'administrateur."
   },
 
   userProfile: {

@@ -6,11 +6,11 @@ import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
 
-type eventTypeType = "project_permission_granted";
-const eventType: eventTypeType = "project_permission_granted";
+type EventTypeType = "project_permission_granted";
+const eventType: EventTypeType = "project_permission_granted";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

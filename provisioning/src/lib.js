@@ -7,7 +7,7 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
   } catch (err) {
     if (maxTimes === 0) {
       const error = new Error(
-        "Failed: exceeded max retries for an operation , ${err.message}"
+        `Failed: exceeded max retries for an operation , ${err.message}`
       );
       error.code = "MAX_RETRIES";
       throw error;
@@ -16,12 +16,12 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       // Only print error but don't stop provisioning
       // 409 - Already exists
       // 412 - Precondition error
-      console.log(`The request had no effect: `, err.data.error.message);
+      console.log("The request had no effect: ", err.data.error.message);
     } else if (
       // Stop provisioning but retry same request
-      (err.status >= 400 && err.status < 500) ||
-      (!err.response && err.code === "ECONNREFUSED") ||
-      (!err.response && err.code === "ECONNABORTED")
+      (err.status >= 400 && err.status < 500)
+      || (!err.response && err.code === "ECONNREFUSED")
+      || (!err.response && err.code === "ECONNABORTED")
     ) {
       console.log(
         `Server Error with status code ${err.status} (${

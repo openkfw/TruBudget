@@ -36,7 +36,8 @@ import {
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION_FAILURE,
-  REVOKE_WORKFLOWITEM_PERMISSION_FAILURE
+  REVOKE_WORKFLOWITEM_PERMISSION_FAILURE,
+  CREATE_WORKFLOW_SUCCESS
 } from "../Workflows/actions";
 import { DISABLE_USER_SUCCESS, ENABLE_USER_SUCCESS, ENABLE_USER_FAILURE, DISABLE_USER_FAILURE } from "../Users/actions";
 import {
@@ -48,8 +49,12 @@ import {
   EXECUTE_CONFIRMED_ACTIONS_FAILURE,
   EXECUTE_CONFIRMED_ACTIONS_SUCCESS,
   STORE_ACTIONS,
-  STORE_REQUESTED_PERMISSIONS
+  STORE_POST_ACTIONS,
+  STORE_REQUESTED_PERMISSIONS,
+  VALIDATION_ERROR_MESSAGE_RESET
 } from "./actions";
+
+import { validate } from "./validation";
 
 // original Actions = intents the user has actually requested
 // additional Actions = view/list permission intents which are required to execute all original actions
@@ -67,18 +72,24 @@ const defaultState = fromJS({
   executedOriginalActions: [],
   originalActionsIncreased: false,
   additionalActions: [],
+  postActions: [],
   executedAdditionalActions: [],
   additionalActionsExecuted: false,
   executingAdditionalActions: false,
   isListPermissionsRequiredFromApi: false,
   failedAction: {},
-  requestedPermissions: {}
+  requestedPermissions: {},
+  isPayloadValidationFailed: false
 });
 
 export default function confirmationReducer(state = defaultState, action) {
   switch (action.type) {
     case CONFIRMATION_REQUIRED:
       const { project, subproject, workflowitem } = action.payload;
+      const isPayloadValidationFailed = validate(action.intent, action.payload);
+      if (isPayloadValidationFailed) {
+        return state.merge({ isPayloadValidationFailed });
+      }
       return state.merge({
         open: true,
         confirmed: false,
@@ -92,6 +103,9 @@ export default function confirmationReducer(state = defaultState, action) {
       });
     case CONFIRMATION_CONFIRMED:
       return defaultState.set("confirmed", true);
+    case VALIDATION_ERROR_MESSAGE_RESET: {
+      return defaultState.set("isPayloadValidationFailed", false);
+    }
     case FETCH_PROJECT_PERMISSIONS:
       return state.set("isFetchingProjectPermissions", true);
     case FETCH_PROJECT_PERMISSIONS_SUCCESS:
@@ -131,6 +145,8 @@ export default function confirmationReducer(state = defaultState, action) {
         });
     case STORE_ACTIONS:
       return state.set("additionalActions", fromJS(action.actions));
+    case STORE_POST_ACTIONS:
+      return state.set("postActions", fromJS(action.actions));
     case ASSIGN_PROJECT_SUCCESS:
     case ASSIGN_SUBPROJECT_SUCCESS:
     case ASSIGN_WORKFLOWITEM_SUCCESS:
@@ -145,6 +161,7 @@ export default function confirmationReducer(state = defaultState, action) {
     case REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS:
     case ENABLE_USER_SUCCESS:
     case DISABLE_USER_SUCCESS:
+    case CREATE_WORKFLOW_SUCCESS:
       let updatedExecutedActions, actions, executedActionsType;
       // If action is an additional view permission action add it to "executingAdditionalActions" state
       if (state.get("executingAdditionalActions") === true) {

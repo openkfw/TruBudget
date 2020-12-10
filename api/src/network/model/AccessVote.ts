@@ -1,6 +1,6 @@
 import { NetworkPermission } from "./Nodes";
 
-export type t = "none" | "basic" | "admin";
+export type T = "none" | "basic" | "admin";
 const values = ["none", "basic", "admin"];
 
 export const basicPermissions: NetworkPermission[] = [

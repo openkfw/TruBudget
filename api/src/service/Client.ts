@@ -37,7 +37,9 @@ export const asMapKey = (item: Liststreamkeyitems.Item): string => item.keys.joi
 
 export class RpcMultichainClient implements MultichainClient {
   private rpcClient: RpcClient;
+  
   private hasWriteLock: boolean;
+
   constructor(settings: ConnectionSettings) {
     this.rpcClient = new RpcClient(settings);
     this.hasWriteLock = false;

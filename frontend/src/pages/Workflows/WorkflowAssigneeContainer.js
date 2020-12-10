@@ -2,7 +2,7 @@ import { withStyles } from "@material-ui/core/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
-import AssigneeSelection from "../Common/AssigneeSelection";
+import SingleSelection from "../Common/SingleSelection";
 import { assignWorkflowItem } from "./actions";
 
 const styles = {
@@ -43,12 +43,12 @@ class WorkflowAssigneeContainer extends Component {
 
     return (
       <div className={classes.assigneeContainer} data-test={`workflowitem-assignee-${workflowitemId}`}>
-        <AssigneeSelection
-          assigneeId={assignee}
+        <SingleSelection
+          selectId={assignee}
           disabled={disabled || workflowSortEnabled || hasSubprojectValidator}
-          users={users}
+          selectableItems={users}
           title={title}
-          assign={(assigneeId, assigneeDisplayName) =>
+          onSelect={(assigneeId, assigneeDisplayName) =>
             assignWorkflowitem(
               projectId,
               projectDisplayName,

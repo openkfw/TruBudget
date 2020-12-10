@@ -200,7 +200,7 @@ async function getProjectMetadata(
   projectId: string,
 ): Promise<ProjectWithViewPermissions | ProjectWithoutViewPermissions> {
   const project = await service.getProject(ctx, user, projectId);
-  return Result.unwrap_or(
+  return Result.unwrapOr(
     Result.map(project, (x) => ({
       id: x.id,
       hasViewPermissions: TRUE,
@@ -218,7 +218,7 @@ async function getSubprojectMetadata(
   subprojectId: string,
 ): Promise<SubprojectWithViewPermissions | SubprojectWithoutViewPermissions> {
   const subproject = await service.getSubproject(ctx, user, projectId, subprojectId);
-  return Result.unwrap_or(
+  return Result.unwrapOr(
     Result.map(subproject, (x) => ({
       id: x.id,
       hasViewPermissions: TRUE,
@@ -243,7 +243,7 @@ async function getWorkflowitemMetadata(
     subprojectId,
     workflowitemId,
   );
-  return Result.unwrap_or(
+  return Result.unwrapOr(
     Result.map(workflowitem, (x) => ({
       id: x.id,
       hasViewPermissions: TRUE,

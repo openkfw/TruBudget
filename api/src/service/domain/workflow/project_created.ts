@@ -10,8 +10,8 @@ import { Permissions, permissionsSchema } from "../permissions";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 
-type eventTypeType = "project_created";
-const eventType: eventTypeType = "project_created";
+type EventTypeType = "project_created";
+const eventType: EventTypeType = "project_created";
 
 interface InitialData {
   id: Project.Id;
@@ -41,7 +41,7 @@ const initialDataSchema = Joi.object({
 }).options({ stripUnknown: true });
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

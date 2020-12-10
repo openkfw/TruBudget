@@ -9,8 +9,8 @@ import * as Workflowitem from "./workflowitem";
 import { Ctx } from "../../../lib/ctx";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 
-type eventTypeType = "workflowitem_document_uploaded";
-const eventType: eventTypeType = "workflowitem_document_uploaded";
+type EventTypeType = "workflowitem_document_uploaded";
+const eventType: EventTypeType = "workflowitem_document_uploaded";
 
 type InitialData = WorkflowitemDocument.UploadedDocument;
 
@@ -19,7 +19,7 @@ const initialDataSchema = WorkflowitemDocument.uploadedDocumentSchema.options({
 });
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

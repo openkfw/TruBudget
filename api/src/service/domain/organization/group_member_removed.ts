@@ -5,11 +5,11 @@ import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Group from "./group";
 
-type eventTypeType = "group_member_removed";
-const eventType: eventTypeType = "group_member_removed";
+type EventTypeType = "group_member_removed";
+const eventType: EventTypeType = "group_member_removed";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

@@ -154,7 +154,7 @@ function Overview({ classes, users, workflowitem }) {
             <AssigneeIcon />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={assignedUser ? assignedUser.displayName : ""} secondary={strings.common.assignee} />
+        <ListItemText primary={assignedUser ? assignedUser.displayName : ""} secondary={strings.workflow.assignee} />
       </ListItem>
       <ListItem>
         <ListItemAvatar>

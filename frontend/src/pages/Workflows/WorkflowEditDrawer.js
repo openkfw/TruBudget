@@ -9,7 +9,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 
 import { workflowItemIntentOrder } from "../../permissions";
 import PermissionTable from "../Common/Permissions/PermissionsTable";
-import AssigneeSelection from "../Common/AssigneeSelection";
+import SingleSelection from "../Common/SingleSelection";
 
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
@@ -51,6 +51,7 @@ const WorkflowEditDrawer = props => {
     showWorkflowItemPreview,
     storePermissions,
     users,
+    groups,
     disableWorkflowEdit,
     tempDrawerAssignee,
     tempDrawerPermissions,
@@ -82,6 +83,10 @@ const WorkflowEditDrawer = props => {
   };
 
   const isOpen = !_isEmpty(selectedWorkflowItems);
+  const usersAndGroups = [
+    ...users,
+    ...groups
+  ];
 
   // Only render the drawer if there are elements selected
   if (!isOpen) return null;
@@ -122,18 +127,18 @@ const WorkflowEditDrawer = props => {
         <Card style={styles.assigneeCard}>
           <CardHeader subheader="Assignee" />
           <CardContent>
-            <AssigneeSelection
+            <SingleSelection
               disabled={hasSubprojectValidator}
-              assigneeId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
-              users={users}
-              assign={assign}
+              selectId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
+              selectableItems={users}
+              onSelect={assign}
             />
           </CardContent>
         </Card>
         <PermissionTable
           permissions={permissions}
           intentOrder={workflowItemIntentOrder}
-          userList={users}
+          userList={usersAndGroups}
           addTemporaryPermission={grantPermission}
           removeTemporaryPermission={revokePermission}
           temporaryPermissions={permissions}

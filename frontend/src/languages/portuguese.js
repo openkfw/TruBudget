@@ -6,6 +6,8 @@ const pt = {
       thousand: ".",
       precision: 2
     },
+    dateFormat: "dd/MM/yyyy",
+    datePlaceholder: "dd/mm/yyyy",
     // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
     numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
   },
@@ -21,8 +23,7 @@ const pt = {
     assign: "Atribuir",
     assigned_budget: "Orçamento atribuído",
     assigned: "Atribuído",
-    assignee: "Responsável",
-    assignees: "Responsável(is)",
+    assignees: "Responsável",
     back: "Voltar",
     bank: "Banco",
     budget_distribution: "Distribuição do orçamento",
@@ -190,6 +191,7 @@ const pt = {
 
   project: {
     add_new_project: "Criar novo projeto",
+    assignee: "Proprietário",
     project_authority_organization_search: "Pesquisar organizações",
     project_authority_role_search: "Pesquisar papéis",
     project_budget_amount_description: "Descrição do orçamento do projeto",
@@ -218,6 +220,8 @@ const pt = {
   },
 
   subproject: {
+    assignee: "Proprietário",
+    fixed_workflowitem_type: "Tipo de item de fluxo de trabalho fixo",
     subproject_add_title: "Criar novo subprojeto",
     subproject_assigned_organization: "Organização responsável",
     subproject_budget_amount_description: "Descrição do orçamento para o subprojeto",
@@ -238,10 +242,11 @@ const pt = {
     subproject_general_workflowitem_type: "Permitir apenas itens de fluxo de trabalho do tipo geral",
     subproject_restricted_workflowitem_type:
       "Permitir apenas item de fluxo de trabalho do tipo restrito. Ao atribuir um item de fluxo de trabalho restrito, as permissões são concedidas e revogadas automaticamente. O atribuidor manterá apenas as permissões de visualização.",
-    subproject_validator: "Validador"
+    workflowitem_assignee: "Cessionário padrão"
   },
 
   workflow: {
+    assignee: "Responsável",
     add_item: "Criar item de workflow",
     approval_required: "Aprovação necessária",
     edit_item: "Editar item de workflow",
@@ -335,6 +340,7 @@ const pt = {
     no_permission_warning: "Aviso: você não tem permissão para executar todas as ações listadas!",
     permissions_required: "Permissões necessárias",
     permissions_text: `{0} precisa de permissões adicionais para visualizar {1} "{2}".`,
+    post_actions_dialog_text: "Tem certeza de que deseja criar o workflowitem",
     project_close: "Fechar projecto",
     project_close_text: "Tem a certeza de que quer encerrar este projecto?",
     subproject_close: "Fechar subprojecto",
@@ -342,7 +348,9 @@ const pt = {
     update_permissions_dialog_text: "Deseja realmente atualizar as permissões?",
     user_group: "Usuários/Grupo",
     workflowitem_close: "Fechar item de workflow",
-    workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?"
+    workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?",
+    workflowitem_create: "Criar item de fluxo de trabalho",
+    workflowitem_create_text: "Tem certeza de que deseja criar o item de fluxo de trabalho?"
   },
 
   intents: {
@@ -468,7 +476,9 @@ const pt = {
     workflowitem_intent_grantPermission: "As permissões para o item de workflow {0} foram alteradas",
     workflowitem_intent_revokePermission: "As permissões para o item de workflow {0} foram alteradas",
     workflowitem_update: "Item de Workflow {0} foi atualizado",
-    workflowitem_updated: "Item de Workflow {0} foi atualizado"
+    workflowitem_updated: "Item de Workflow {0} foi atualizado",
+    payload_error_message:
+      "Ops! ... Não é sua culpa - Ocorreu um erro de validação do lado do cliente. Informe o administrador."
   },
 
   history: {

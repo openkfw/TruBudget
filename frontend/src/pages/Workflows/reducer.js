@@ -91,7 +91,7 @@ const defaultState = fromJS({
     id: "",
     displayName: "",
     amount: "",
-    dueDate: "",
+    dueDate: null,
     exchangeRate: 1,
     amountType: "N/A",
     currency: "",

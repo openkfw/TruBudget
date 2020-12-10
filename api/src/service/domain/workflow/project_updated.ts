@@ -6,8 +6,8 @@ import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
 
-type eventTypeType = "project_updated";
-const eventType: eventTypeType = "project_updated";
+type EventTypeType = "project_updated";
+const eventType: EventTypeType = "project_updated";
 
 /**
  * We only support updating very few fields with this command. For example,
@@ -32,7 +32,7 @@ export const modificationSchema = Joi.object({
 }).or("displayName", "description", "thumbnail", "additionalData", "tags");
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

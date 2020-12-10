@@ -6,11 +6,11 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 
-type eventTypeType = "subproject_closed";
-const eventType: eventTypeType = "subproject_closed";
+type EventTypeType = "subproject_closed";
+const eventType: EventTypeType = "subproject_closed";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

@@ -2,7 +2,7 @@ describe("Workflowitem create", function() {
   let projectId;
   let subprojectId;
   let baseUrl, apiRoute;
-  const today = Cypress.moment().format("YYYY-MM-DD");
+  const today = new Date().toISOString();;
 
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
@@ -34,7 +34,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=nameinput]").type("Test");
     cy.get("[data-test=datepicker-due-date]")
       .click()
-      .type("2050-02-02");
+      .type("02-02-2050");
     cy.get("[data-test=commentinput]").type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
     cy.get("[data-test=dropdown-currencies-click]").should("contain", "EUR");
@@ -50,7 +50,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=nameinput]").type("Test");
     cy.get("[data-test=datepicker-due-date]")
       .click()
-      .type("2050-02-02");
+      .type("02-02-2050");
     cy.get("[data-test=commentinput]").type("Test");
     cy.get("[data-test=amount-type-allocated]").click();
 
@@ -73,6 +73,10 @@ describe("Workflowitem create", function() {
       .type("1.5");
     cy.get("[data-test=next]").click();
     cy.get("[data-test=submit]").click();
+
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
 
     //Check snackbar warning visible
     cy.get("[data-test=client-snackbar]")
@@ -240,11 +244,11 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=creation-dialog]").should("be.visible");
     cy.get("[data-test=nameinput]").type("Test");
     // Default assignee is current user
-    cy.get(`[data-test=assignee-selection]`).should("contain", "Mauro Stein");
+    cy.get(`[data-test=single-select]`).should("contain", "Mauro Stein");
     cy.get("[data-test=workflow-dialog-content]")
-      .find("[data-test=assignee-selection]")
+      .find("[data-test=single-select]")
       .click();
-    cy.get("[data-test=assignee-list]")
+    cy.get("[data-test=single-select-list]")
       .find("[value=auditUser]")
       .click();
 
@@ -261,7 +265,7 @@ describe("Workflowitem create", function() {
     // Check if assignee has been set
     cy.get("[data-test^=workflowitem-]")
       .last()
-      .find(`[data-test=assignee-selection]`)
+      .find(`[data-test=single-select]`)
       .should("contain", "Romina Checker");
   });
 
@@ -327,19 +331,25 @@ describe("Workflowitem create", function() {
 
       cy.get("[data-test=next]").click({ force: true });
       cy.get("[data-test=submit]").click();
+
+      // Confirm creation
+      cy.get("[data-test=confirmation-dialog-confirm]")
+        .should("be.visible")
+        .click();
+
       cy.wait("@workflowitemCreated").then(xhr => {
         expect(xhr.status).to.eq(200);
       });
     });
   });
 
-  // wenn ein validator bei suproject gewählt ist dann ist der asignne bei worklfowiitem gefixed und der field ist disabled.
   it("When the subproject validator is set, the workflowitem assignee is fixed and the field is disabled", function() {
+    const assignee = { id: "jdoe", name: "John Doe" };
     cy.server();
     cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
     cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
 
-    //Create a subproject
+    // create a subproject
     cy.visit(`/projects/${projectId}`);
     cy.wait("@loadPage")
       .get("[data-test=subproject-create-button]")
@@ -348,8 +358,14 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
       .click()
       .then(() => cy.get("[data-value=EUR]").click());
-    cy.get("[data-test=dropdown-assignee-click]").click();
-    cy.get("[data-value=jdoe]").click();
+    // set validator
+    cy.get("[data-test=subproject-dialog-content]")
+      .find("[data-test=single-select]")
+      .click();
+    cy.get("[data-test=single-select-list]")
+      .find(`[value=${assignee.id}]`)
+      .click();
+    cy.get("[data-test=close-select]").click();
 
     cy.get("[data-test=submit]").click();
 
@@ -359,7 +375,8 @@ describe("Workflowitem create", function() {
       // test assignee field in workflowitem creation
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=creation-dialog]").should("be.visible");
-      cy.get("[data-test=assignee-selection-disabled]").should("be.visible");
+      cy.get("[data-test=single-select-disabled]").should("be.visible");
+      cy.get(`[data-test=single-select-container-disabled]`).should("contain", assignee.name);
     });
   });
 
@@ -387,16 +404,24 @@ describe("Workflowitem create", function() {
       cy.get("[data-test=creation-dialog]").should("be.visible");
       cy.get("[data-test=nameinput]").type("Test");
 
-      cy.get("[data-test=assignee-container]")
+      cy.get("[data-test=single-select-container]")
         .last()
         .click();
       cy.get("[value=jdoe]").click();
       cy.get("[data-test=next]").click({ force: true });
       cy.get("[data-test=submit]").click();
+
+      // Confirm creation
+      cy.get("[data-test=confirmation-dialog-confirm]")
+        .should("be.visible")
+        .click();
+      cy.get("[data-test=confirmation-dialog-confirm]")
+        .should("be.visible")
+        .click();
+
       cy.wait("@workflowitemCreated").then(xhr => {
         expect(xhr.status).to.eq(200);
       });
-      cy.get("[data-test=confirmation-dialog-cancel]").click();
     });
   });
 });

@@ -3,7 +3,7 @@ describe("Disable and enable users", function() {
   let testUserId;
 
   // Generate random IDs since every ID can only exists once in the multichain
-  const generateUserId = () => `test_user_${Math.floor(Math.random() * 100000)}`;
+  const generateUserId = () => `test_user_${Math.floor(Math.random() * 1000000)}`;
 
   const baseUser = {
     id: "baseUser",
@@ -295,7 +295,7 @@ describe("Disable and enable users", function() {
         .and("include", projectId)
         .then(href => {
           cy.visit(href);
-          cy.get(`[data-test=assignee-selection]`)
+          cy.get(`[data-test=single-select]`)
             .find("[tabindex*=0]")
             .should("contain", testUserId);
           cy.wait("@userList");
@@ -323,7 +323,7 @@ describe("Disable and enable users", function() {
           .and("include", subprojectId)
           .then(href => {
             cy.visit(href);
-            cy.get(`[data-test=assignee-selection]`)
+            cy.get(`[data-test=single-select]`)
               .find("[tabindex*=0]")
               .should("contain", testUserId);
             cy.wait("@userList");
@@ -383,7 +383,7 @@ describe("Disable and enable users", function() {
         .click();
       cy.wait("@fetchAssignments");
       cy.get(`[data-test=confirmation-dialog-confirm]`).should("be.disabled");
-      // Check for hidden worklfowitem assignment message
+      // Check for hidden worklfowitem-assignment message
       cy.get(`[data-test=info-hidden-assignment]`).should("be.visible");
     });
   });

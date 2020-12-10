@@ -111,7 +111,7 @@ describe("Workflowitem Assignee", function() {
   // Setup assigneeId
   function setupConfirmationDialog() {
     cy.get(`[data-test=workflowitem-assignee-${workflowitemId}]`).click();
-    cy.get("[data-test=assignee-list]")
+    cy.get("[data-test=single-select-list]")
       .should("exist")
       .then($list => {
         const firstUncheckedRadioButton = $list.find("input:not(:checked)").first();
@@ -162,7 +162,7 @@ describe("Workflowitem Assignee", function() {
           .wait("@viewDetails")
           .get(`[data-test=workflowitem-assignee-${workflowitemId}]`)
           .click()
-          .get(`[data-test=assignee-list] li[value=${assigneeId}] input`)
+          .get(`[data-test=single-select-list] li[value=${assigneeId}] input`)
           .should("be.checked");
       });
     });

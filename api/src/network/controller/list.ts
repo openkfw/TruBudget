@@ -16,12 +16,12 @@ const basicPermission: Nodes.NetworkPermission = "connect";
 const adminPermission: Nodes.NetworkPermission = "admin";
 
 interface CurrentAccess {
-  accessType: AccessVote.t;
+  accessType: AccessVote.T;
   approvers: AugmentedWalletAddress[];
 }
 
 interface PendingAccess {
-  accessType: AccessVote.t;
+  accessType: AccessVote.T;
   approvers: AugmentedWalletAddress[];
   // Number of votes remaining for pending access to become effective:
   nWantingApprovers: number;
@@ -29,7 +29,7 @@ interface PendingAccess {
 
 interface NodeInfoDto {
   address: AugmentedWalletAddress;
-  myVote: AccessVote.t;
+  myVote: AccessVote.T;
   currentAccess: CurrentAccess;
   pendingAccess?: PendingAccess;
 }
@@ -97,9 +97,9 @@ function dtoFromNodeInfo(info: Nodes.NodeInfo, callerAddress: WalletAddress): No
   const hasBasicChangePending =
     basicPermissionInfo === undefined ? false : basicPermissionInfo.changeRequestedBy.length > 0;
 
-  let currentAccessType: AccessVote.t;
+  let currentAccessType: AccessVote.T;
   let currentAccessApprovers: AugmentedWalletAddress[];
-  let pendingAccessType: AccessVote.t | undefined;
+  let pendingAccessType: AccessVote.T | undefined;
   let pendingAccessApprovers: AugmentedWalletAddress[] | undefined;
   let pendingApproversRemaining: number | undefined;
 
@@ -150,7 +150,7 @@ function dtoFromNodeInfo(info: Nodes.NodeInfo, callerAddress: WalletAddress): No
     currentAccessApprovers = [];
   }
 
-  const myVote: AccessVote.t = hasApprover(adminPermissionInfo, callerAddress)
+  const myVote: AccessVote.T = hasApprover(adminPermissionInfo, callerAddress)
     ? "admin"
     : hasApprover(basicPermissionInfo, callerAddress)
     ? "basic"

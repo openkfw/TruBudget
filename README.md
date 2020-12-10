@@ -176,7 +176,7 @@ Obviously this is just a short introduction on how to start and use the platform
 
 # Build and Develop from Local Sources
 
-Checkout the [Contributor Guide](./doc/tutorials/contribute/Contributor-Guide.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
+Checkout the [Developer Setup](./doc/installation/Developer-Setup.md) to learn how to set up your environment to start developing and debugging the TruBudget application.
 
 # More Information
 

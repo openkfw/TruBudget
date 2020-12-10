@@ -19,6 +19,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Security -->
 
+## [1.17.0] - 2020-12-10
+
+### Added
+
+- Added a close button in user selections [#614](https://github.com/openkfw/TruBudget/issues/614)
+- Added a search field in the validator selection [#639](https://github.com/openkfw/TruBudget/issues/639)
+- Added groups to batch permission assignment [#612](https://github.com/openkfw/TruBudget/issues/612)
+- Added scroll back to top button [#579](https://github.com/openkfw/TruBudget/issues/579)
+
+### Changed
+
+- The assignee on project/subproject was renamed into owner [#643](https://github.com/openkfw/TruBudget/issues/643)
+
+### Fixed
+
+- Restricted workflowitems are now working as expected [#643](https://github.com/openkfw/TruBudget/issues/643)
+- Fixed a Bug where labels e.g. on login ID field were too large and not readable anymore [#625](https://github.com/openkfw/TruBudget/issues/625)
+- Fixed some translations as specified in [#655](https://github.com/openkfw/TruBudget/issues/655)
+
 ## [1.16.0] - 2020-11-16
 
 ### Added
@@ -31,6 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Update french translations [#588](https://github.com/openkfw/TruBudget/pull/588)
 - Removed the close permissions on all levels. Now only the specific assignee is permitted to close these. [#572](https://github.com/openkfw/TruBudget/issues/572)
+- Moved View permissions component from Admin section to View Permissions section in Permission dialog at project level, subproject level and workflow item level [#613](https://github.com/openkfw/TruBudget/issues/613)
 
 ### Fixed
 
@@ -535,7 +555,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.16.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.17.0...master
+[1.17.0]: https://github.com/openkfw/TruBudget/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/openkfw/TruBudget/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/openkfw/TruBudget/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/openkfw/TruBudget/compare/v1.13.0...v1.14.0

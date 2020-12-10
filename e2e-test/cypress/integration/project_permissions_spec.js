@@ -94,18 +94,36 @@ describe("Project Permissions", function() {
       .children()
       .find("input")
       .should("have.value", executingUser.displayname);
+    cy.get("[data-test=view-list]")
+      .should("be.visible")
+      .children()
+      .find("span")
+      .should("have.length", 3)
+      .contains(executingUser.displayname);
     cy.get("[data-test=write-list]")
       .scrollIntoView()
       .should("be.visible")
       .children()
       .find("input")
       .should("have.value", executingUser.displayname);
+    cy.get("[data-test=write-list]")
+      .should("be.visible")
+      .children()
+      .find("span")
+      .should("have.length", 3)
+      .contains(executingUser.displayname);
     cy.get("[data-test=admin-list]")
       .scrollIntoView()
       .should("be.visible")
       .children()
       .find("input")
       .should("have.value", executingUser.displayname);
+    cy.get("[data-test=admin-list]")
+      .should("be.visible")
+      .children()
+      .find("span")
+      .should("have.length", 2)
+      .contains(executingUser.displayname);
     cy.get("[data-test=permission-close]").click();
     cy.get("[data-test=permission-container]").should("not.be.visible");
   });
@@ -468,5 +486,17 @@ describe("Project Permissions", function() {
         cy.expect(isPermissionSet).to.equal(true);
       });
     });
+  });
+
+  it("The user selection dropdown can be closed by pressing the close-button", function() {
+    cy.get(`[data-test=project-card-${projectId}]`)
+      .find("button[data-test^='pp-button']")
+      .click();
+    cy.get("[data-test='permission-select-project.viewSummary']").click();
+    cy.get("[data-test='permission-list']").should("be.visible");
+    cy.get("[data-test=close-select]")
+      .should("be.visible")
+      .click();
+    cy.get("[data-test='permission-list']").should("not.be.visible");
   });
 });

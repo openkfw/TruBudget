@@ -116,11 +116,35 @@ function createAdditionalActionsforIntent(
   return additionalActions;
 }
 
-export function createAdditionalActions(originalActions, permissions, project, subproject) {
+function createWorkflowitemPostActions(workflowitemDisplayname, assignee) {
+  const workflowitemPermissions = [
+    "workflowitem.view",
+    "workflowitem.intent.listPermissions",
+    "workflowitem.assign",
+    "workflowitem.update",
+    "workflowitem.intent.grantPermission",
+    "workflowitem.intent.revokePermission"
+  ];
+  let actions = [];
+  workflowitemPermissions.forEach(permission => {
+    const action = {
+      intent: "workflowitem.intent.grantPermission",
+      displayName: workflowitemDisplayname,
+      permission,
+      identity: assignee
+    };
+    actions.push(action);
+  });
+  return actions;
+}
+
+export function createAdditionalActions(originalActions, permissions, project, subproject, confirmingUser) {
   let allAdditionalActions = [];
+  let allPostActions = [];
   originalActions.forEach((originalAction, index) => {
     const { intent, payload } = originalAction;
     let additionalActions;
+    let postActions;
     switch (intent) {
       case "project.assign": {
         const projectPermissions = { project: permissions.project };
@@ -156,6 +180,21 @@ export function createAdditionalActions(originalActions, permissions, project, s
           subproject,
           workflowitem
         );
+        break;
+      }
+      case "subproject.createWorkflowitem": {
+        const subprojectPermissions = { project: permissions.project, subproject: permissions.subproject };
+        // Check view permissions on project/subproject for assignee
+        additionalActions = createAdditionalActionsforIntent(
+          subprojectPermissions,
+          payload.assignee.id,
+          project,
+          subproject
+        );
+        // Grant assignee all permissions after workflowitem creation
+        if (payload.assignee.id !== confirmingUser) {
+          postActions = createWorkflowitemPostActions(payload.workflowitem.displayName, payload.assignee.id);
+        }
         break;
       }
       case "project.intent.grantPermission": {
@@ -208,6 +247,7 @@ export function createAdditionalActions(originalActions, permissions, project, s
       }
     }
     allAdditionalActions = addAdditionalActions(additionalActions, allAdditionalActions);
+    allPostActions = addAdditionalActions(postActions, allPostActions);
   });
-  return allAdditionalActions;
+  return [allAdditionalActions, allPostActions];
 }

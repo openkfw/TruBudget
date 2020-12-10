@@ -11,39 +11,34 @@ import CreationDialog from "../Common/CreationDialog";
 import DatePicker from "../Common/DatePicker";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
-import AssigneeSelection from "../Common/AssigneeSelection";
+import SingleSelection from "../Common/SingleSelection";
 import DocumentUpload from "../Documents/DocumentUpload";
 import { compareWorkflowItems } from "./compareWorkflowItems";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
-import { types, typesDescription } from "./workflowitemTypes";
+
+const types = ["general", "restricted"];
 
 const styles = {
   container: {
-    width: "100%"
+    marginTop: 20,
+    marginBottom: 20,
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between"
   },
   dropdown: {
-    minWidth: 140,
-    height: 50,
-    marginTop: 20
+    minWidth: 200
   },
   inputContainer: {
-    width: "100%",
-    display: "flex"
+    display: "flex",
+    width: "45%",
+    paddingRight: 20,
+    alignItems: "flex-end"
   },
   infoIcon: {
-    fontSize: 20,
-    marginTop: 35,
-    padding: 8
-  },
-  subContainer: {
-    display: "flex",
-    justifyContent: "space-around"
-  },
-  assigneeContainer: {
-    margin: "25,30,0,0",
-    marginTop: 35,
-    marginLeft: 25,
-    justifyContent: "flex-start"
+    marginLeft: "5px",
+    marginBottom: "7px",
+    fontSize: "x-large"
   }
 };
 
@@ -137,17 +132,6 @@ const getDropdownMenuItems = types => {
   });
 };
 
-const getWorkflowitemTypeInfo = type => {
-  switch (type) {
-    case "general":
-      return typesDescription.general;
-    case "restricted":
-      return typesDescription.restricted;
-    default:
-      return typesDescription.general;
-  }
-};
-
 const Content = props => {
   const { workflowitemType } = props.workflowToAdd;
   const {
@@ -162,11 +146,51 @@ const Content = props => {
     hasFixedWorkflowitemType,
     fixedWorkflowitemType
   } = props;
+
+  const typesDescription = {
+    general: strings.workflow.workflowitem_type_general,
+    restricted: strings.workflow.workflowitem_type_restricted
+  };
+
+  const getWorkflowitemTypeInfo = type => {
+    switch (type) {
+      case "general":
+        return typesDescription.general;
+      case "restricted":
+        return typesDescription.restricted;
+      default:
+        return typesDescription.general;
+    }
+  };
+
   return (
-    <div className={classes.container} data-test={"workflow-dialog-content"}>
-      <div className={classes.container}>
+    <div data-test={"workflow-dialog-content"}>
+      <Identifier
+        nameLabel={strings.workflow.workflow_title}
+        nameHintText={strings.workflow.workflow_title_description}
+        name={props.workflowToAdd.displayName}
+        nameOnChange={props.storeWorkflowName}
+        commentLabel={strings.workflow.workflow_comment}
+        commentHintText={strings.common.comment_description}
+        comment={props.workflowToAdd.description}
+        commentOnChange={props.storeWorkflowComment}
+      />
+      <div style={styles.container}>
+        <div className={classes.inputContainer}>
+          <DatePicker
+            id="due-date"
+            label={strings.common.dueDate}
+            datetime={props.workflowToAdd.dueDate}
+            onChange={date => {
+              props.storeWorkflowDueDate(date);
+            }}
+            onDelete={() => {
+              props.storeWorkflowDueDate(null);
+            }}
+          />
+        </div>
         {creationDialogShown ? (
-          <div className={classes.subContainer}>
+          <>
             <div className={classes.inputContainer}>
               <Dropdown
                 disabled={hasFixedWorkflowitemType}
@@ -183,45 +207,18 @@ const Content = props => {
               </Tooltip>
             </div>
             <div className={classes.inputContainer}>
-              <div className={classes.assigneeContainer}>
-                <AssigneeSelection
-                  disabled={hasSubprojectValidator}
-                  assigneeId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
-                  users={users}
-                  title={"title"}
-                  assign={(assigneeId, assigneeDisplayName) => {
-                    storeWorkflowAssignee(assigneeId);
-                  }}
-                />
-              </div>
+              <SingleSelection
+                disabled={hasSubprojectValidator}
+                floatingLabel={strings.subproject.workflowitem_assignee}
+                selectId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
+                selectableItems={users}
+                onSelect={(assigneeId, assigneeDisplayName) => {
+                  storeWorkflowAssignee(assigneeId);
+                }}
+              />
             </div>
-          </div>
-        ) : (
-          <div />
-        )}
-
-        <Identifier
-          nameLabel={strings.workflow.workflow_title}
-          nameHintText={strings.workflow.workflow_title_description}
-          name={props.workflowToAdd.displayName}
-          nameOnChange={props.storeWorkflowName}
-          commentLabel={strings.workflow.workflow_comment}
-          commentHintText={strings.common.comment_description}
-          comment={props.workflowToAdd.description}
-          commentOnChange={props.storeWorkflowComment}
-        />
-        <DatePicker
-          id="due-date"
-          label={strings.common.dueDate}
-          datetime={props.workflowToAdd.dueDate}
-          onChange={e => {
-            // Since native datepicker has undefined as default value, it has to be set as empty string to reset due-date in API
-            e.target.value === undefined ? props.storeWorkflowDueDate("") : props.storeWorkflowDueDate(e.target.value);
-          }}
-          onDelete={() => {
-            props.storeWorkflowDueDate("");
-          }}
-        />
+          </>
+        ) : null}
       </div>
       <Divider />
       <WorkflowDialogAmount

@@ -4,11 +4,11 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 
-type eventTypeType = "node_registered";
-const eventType: eventTypeType = "node_registered";
+type EventTypeType = "node_registered";
+const eventType: EventTypeType = "node_registered";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;
