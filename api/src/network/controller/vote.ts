@@ -37,7 +37,7 @@ export async function voteForNetworkPermission(
   // Input validation:
   const input = value("data", req.body.data, (x) => x !== undefined);
   const targetAddress: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
-  const vote: AccessVote.t = value("vote", input.vote, AccessVote.isValid);
+  const vote: AccessVote.T = value("vote", input.vote, AccessVote.isValid);
 
   // Grant or revoke? We need to find out our current vote to know..
   const callerAddress = req.user.organizationAddress;
@@ -76,7 +76,7 @@ export async function getCurrentVote(
     .filter((x) => x.permission === "connect")
     .find((_) => true);
 
-  const currentVote: AccessVote.t = hasApprover(adminPermissionInfo, callerAddress)
+  const currentVote: AccessVote.T = hasApprover(adminPermissionInfo, callerAddress)
     ? "admin"
     : hasApprover(connectPermissionInfo, callerAddress)
     ? "basic"
@@ -93,8 +93,8 @@ function hasApprover(
 }
 
 function computeWhatToDo(
-  current: AccessVote.t,
-  next: AccessVote.t,
+  current: AccessVote.T,
+  next: AccessVote.T,
 ): ["grant" | "revoke" | "no action", Nodes.NetworkPermission[]] {
   // Makes it easier to read:
   const allPermissions = AccessVote.adminPermissions;

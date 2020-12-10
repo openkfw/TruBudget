@@ -302,7 +302,7 @@ describe("The cache", () => {
       // Checking that getting a non-existant project return a "NotFound"-Error
       const responseFromCache = await cacheInstance.getProject("otherid");
       assert.isNotOk(Result.isOk(responseFromCache));
-      assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
+      assert.instanceOf(Result.unwrapErr(responseFromCache), NotFound);
     });
 
     it("returns a list of existing projects", async () => {
@@ -377,7 +377,7 @@ describe("The cache", () => {
       // Get a non-existing subproject and check if it fails
       const responseFromCache = await cacheInstance.getSubproject(projectId, "otherid");
       assert.isNotOk(Result.isOk(responseFromCache));
-      assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
+      assert.instanceOf(Result.unwrapErr(responseFromCache), NotFound);
     });
     it("returns a list of subprojects", async () => {
       // Setup test with a project containing 4 subprojects
@@ -412,7 +412,7 @@ describe("The cache", () => {
       // Check that trying to list subprojects from an non-existing project fails
       const responseFromCache = await cacheInstance.getSubprojects("non_existing_project");
       assert.isNotOk(Result.isOk(responseFromCache));
-      assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
+      assert.instanceOf(Result.unwrapErr(responseFromCache), NotFound);
     });
   });
   context("workflowitem aggregates", async () => {
@@ -480,7 +480,7 @@ describe("The cache", () => {
         "otherid",
       );
       assert.isNotOk(Result.isOk(responseFromCache));
-      assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
+      assert.instanceOf(Result.unwrapErr(responseFromCache), NotFound);
     });
     it("returns a list of workflowitems", async () => {
       // Setup test with a project containing a subproject containing 4 workflowitems
@@ -522,7 +522,7 @@ describe("The cache", () => {
         "non_existing_subproject",
       );
       assert.isNotOk(Result.isOk(responseFromCache));
-      assert.instanceOf(Result.unwrap_err(responseFromCache), NotFound);
+      assert.instanceOf(Result.unwrapErr(responseFromCache), NotFound);
     });
   });
 });

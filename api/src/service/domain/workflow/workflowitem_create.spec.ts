@@ -45,7 +45,7 @@ describe("Create workflowitem", () => {
     });
 
     assert.isTrue(Result.isErr(result));
-    assert.instanceOf(Result.unwrap_err(result), PreconditionError);
+    assert.instanceOf(Result.unwrapErr(result), PreconditionError);
   });
 
   it("The workflowitem type must be the one set on the parent subproject", async () => {
@@ -64,6 +64,6 @@ describe("Create workflowitem", () => {
     });
 
     assert.isTrue(Result.isErr(result));
-    assert.instanceOf(Result.unwrap_err(result), PreconditionError);
+    assert.instanceOf(Result.unwrapErr(result), PreconditionError);
   });
 });

@@ -9,8 +9,8 @@ import * as UserRecord from "../organization/user_record";
 import { Permissions, permissionsSchema } from "../permissions";
 import { Identity } from "./identity";
 
-type eventTypeType = "user_created";
-const eventType: eventTypeType = "user_created";
+type EventTypeType = "user_created";
+const eventType: EventTypeType = "user_created";
 
 interface InitialData {
   id: UserRecord.Id;
@@ -36,7 +36,7 @@ const initialDataSchema = Joi.object({
 }).options({ stripUnknown: true });
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

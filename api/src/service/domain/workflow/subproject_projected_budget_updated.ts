@@ -7,11 +7,11 @@ import { CurrencyCode, currencyCodeSchema, MoneyAmount, moneyAmountSchema } from
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 
-type eventTypeType = "subproject_projected_budget_updated";
-const eventType: eventTypeType = "subproject_projected_budget_updated";
+type EventTypeType = "subproject_projected_budget_updated";
+const eventType: EventTypeType = "subproject_projected_budget_updated";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

@@ -8,11 +8,11 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-type eventTypeType = "workflowitem_permission_revoked";
-const eventType: eventTypeType = "workflowitem_permission_revoked";
+type EventTypeType = "workflowitem_permission_revoked";
+const eventType: EventTypeType = "workflowitem_permission_revoked";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

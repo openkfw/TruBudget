@@ -11,8 +11,8 @@ export function isOk<T>(result: Result<T>): result is T {
   return !isErr(result);
 }
 
-type mapFn<T, U> = (t: T) => U;
-export function map<T, U>(result: Result<T>, fn: mapFn<T, U>): Result<U> {
+type MapFn<T, U> = (t: T) => U;
+export function map<T, U>(result: Result<T>, fn: MapFn<T, U>): Result<U> {
   if (result instanceof Error) {
     return result;
   } else {
@@ -20,7 +20,7 @@ export function map<T, U>(result: Result<T>, fn: mapFn<T, U>): Result<U> {
   }
 }
 
-export function mapErr<T>(result: Result<T>, fn: mapFn<Error, Error>): Result<T> {
+export function mapErr<T>(result: Result<T>, fn: MapFn<Error, Error>): Result<T> {
   if (result instanceof Error) {
     return fn(result);
   } else {
@@ -40,7 +40,7 @@ export function unwrap<T>(result: Result<T>, message?: string): T | never {
   }
 }
 
-export function unwrap_err<T>(result: Result<T>, message?: string): Error | never {
+export function unwrapErr<T>(result: Result<T>, message?: string): Error | never {
   if (result instanceof Error) {
     return result as Error;
   } else {
@@ -48,7 +48,7 @@ export function unwrap_err<T>(result: Result<T>, message?: string): Error | neve
   }
 }
 
-export function unwrap_or<T, U>(result: Result<T>, defaultValue: U): T | U {
+export function unwrapOr<T, U>(result: Result<T>, defaultValue: U): T | U {
   if (result instanceof Error) {
     return defaultValue;
   } else {

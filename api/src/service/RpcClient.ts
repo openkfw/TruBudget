@@ -58,7 +58,9 @@ if (logger.levelVal >= logger.levels.values.debug) {
 
 export class RpcClient {
   private call: (method: string, params: any) => any;
+
   private instance: AxiosInstance;
+
   private timeStamp;
 
   constructor(settings: ConnectionSettings) {

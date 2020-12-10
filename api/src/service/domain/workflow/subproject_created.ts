@@ -13,8 +13,8 @@ import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
 
-type eventTypeType = "subproject_created";
-const eventType: eventTypeType = "subproject_created";
+type EventTypeType = "subproject_created";
+const eventType: EventTypeType = "subproject_created";
 
 interface InitialData {
   id: Subproject.Id;
@@ -46,7 +46,7 @@ const initialDataSchema = Joi.object({
 }).options({ stripUnknown: true });
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

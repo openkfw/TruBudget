@@ -6,11 +6,11 @@ import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as UserRecord from "./user_record";
 
-type eventTypeType = "user_permission_revoked";
-const eventType: eventTypeType = "user_permission_revoked";
+type EventTypeType = "user_permission_revoked";
+const eventType: EventTypeType = "user_permission_revoked";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

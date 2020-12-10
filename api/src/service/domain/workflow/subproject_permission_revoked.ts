@@ -7,11 +7,11 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 
-type eventTypeType = "subproject_permission_revoked";
-const eventType: eventTypeType = "subproject_permission_revoked";
+type EventTypeType = "subproject_permission_revoked";
+const eventType: EventTypeType = "subproject_permission_revoked";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

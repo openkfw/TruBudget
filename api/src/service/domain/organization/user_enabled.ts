@@ -5,8 +5,8 @@ import * as Result from "../../../result";
 import * as UserRecord from "../organization/user_record";
 import { Identity } from "./identity";
 
-type eventTypeType = "user_enabled";
-const eventType: eventTypeType = "user_enabled";
+type EventTypeType = "user_enabled";
+const eventType: EventTypeType = "user_enabled";
 
 interface InitialData {
   id: UserRecord.Id;
@@ -17,7 +17,7 @@ const initialDataSchema = Joi.object({
 });
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;
