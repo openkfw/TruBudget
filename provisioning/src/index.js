@@ -49,11 +49,10 @@ axios.defaults.transformRequest = [
 ];
 
 axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   function (error) {
     if (!error.response) {
+      // eslint-disable-next-line prefer-promise-reject-errors
       return Promise.reject({
         code: error.code,
         data: { error: { message: error.message } },
@@ -69,150 +68,10 @@ async function impersonate(userId, password) {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
 
-const provisionBlockchain = async (host, port, rootSecret, organization) => {
-  try {
-    const folder =
-      process.env.ENVIRONMENT_TYPE === "PROD"
-        ? "./src/data/prod/"
-        : "./src/data/test/";
-
-    axios.defaults.baseURL = `http://${host}:${port}/api`;
-    axios.defaults.timeout = 10000;
-
-    await impersonate("root", rootSecret);
-    console.log("Start to provision users");
-    await provisionUsers(axios, folder, organization);
-    await provisionGroups(axios, folder);
-
-    console.log("Starting to provision projects");
-    await impersonate(serviceUser.id, serviceUser.password);
-    const files = readDirectory(folder);
-    for (const fileName of files) {
-      if (projectBlacklist.indexOf(fileName) === -1) {
-        const project = readJsonFile(folder + fileName);
-        await provisionFromData(project);
-      }
-    }
-    if (process.env.ENVIRONMENT_TYPE !== "PROD") {
-      await runIntegrationTests(rootSecret, folder);
-    }
-  } catch (err) {
-    console.log(err);
-    if (err.code && err.code === "MAX_RETRIES") {
-      console.log(err.message);
-      console.log(`Provisioning failed....`);
-      process.exit(1);
-    }
-  }
-};
-
-const provisionFromData = async (projectTemplate) => {
-  console.log(`Start provisioning project ${projectTemplate.displayName}....`);
-  try {
-    const projectExists = await findProject(axios, projectTemplate).then(
-      (existingProject) => existingProject !== undefined
-    );
-    if (projectExists) {
-      console.log(`${projectTemplate.displayName} project already exists.`);
-    } else {
-      await createProject(axios, projectTemplate);
-    }
-
-    console.log(`Create subprojects....`);
-    const isToBeClosed = projectTemplate.status === "closed";
-
-    const project = await findProject(axios, projectTemplate);
-
-    if (projectTemplate.permissions !== undefined) {
-      console.log("Granting permissions..");
-      await grantPermissions(
-        axios,
-        projectTemplate.permissions,
-        project.data.id
-      );
-    }
-
-    if (
-      projectTemplate.description !== undefined &&
-      project.status === "open"
-    ) {
-      console.log("Testing project update..");
-      await updateProject(axios, project.data.id, projectTemplate.description);
-    }
-
-    for (const subprojectTemplate of projectTemplate.subprojects) {
-      console.log(`Provision Subproject ${subprojectTemplate.displayName}`);
-      await provisionSubproject(project, subprojectTemplate);
-    }
-
-    if (isToBeClosed) {
-      await assignProject(axios, project.data.id, serviceUser.id);
-      await closeProject(axios, project);
-    }
-
-    console.log(`Project ${fmtList([project])} created.`);
-  } catch (err) {
-    if (err.code && err.code === "MAX_RETRIES") {
-      console.log(
-        `Failed to provision project ${projectTemplate.displayName} , max retries exceeded`
-      );
-    }
-  }
-};
-
-const provisionSubproject = async (project, subprojectTemplate) => {
-  const isToBeClosed = subprojectTemplate.status === "closed";
-  let subproject = await findSubproject(axios, project, subprojectTemplate);
-  try {
-    if (subproject) {
-      console.log(
-        `Subproject already exists ${subprojectTemplate.displayName}`
-      );
-    } else {
-      await createSubproject(axios, project, subprojectTemplate);
-
-      subproject = await findSubproject(axios, project, subprojectTemplate);
-    }
-  } catch (err) {
-    console.log(err);
-  }
-  await grantPermissions(
-    axios,
-    subprojectTemplate.permissions,
-    project.data.id,
-    subproject.data.id
-  );
-  if (
-    subprojectTemplate.description !== undefined &&
-    subproject.status === "open"
-  ) {
-    await updateSubproject(
-      axios,
-      project.data.id,
-      subproject.data.id,
-      subprojectTemplate.description
-    );
-  }
-
-  for (const workflowitemTemplate of subprojectTemplate.workflows) {
-    console.log(
-      `Provisioning workflowitem "${workflowitemTemplate.displayName}" ....`
-    );
-    await provisionWorkflowitem(project, subproject, workflowitemTemplate);
-  }
-
-  if (isToBeClosed) {
-    await assignSubproject(
-      axios,
-      project.data.id,
-      subproject.data.id,
-      serviceUser.id
-    );
-    await closeSubproject(axios, project.data.id, subproject.data.id);
-  }
-
-  console.log(`Subproject ${fmtList([project, subproject])} created.`);
-};
+const fmtList = (l) => l
+  .map((x) => (x.data.displayName === undefined ? x : x.data.displayName))
+  .map((x) => `"${x}"`)
+  .join(" > ");
 
 const provisionWorkflowitem = async (
   project,
@@ -245,8 +104,7 @@ const provisionWorkflowitem = async (
       ? workflowitemTemplate.amount.toString()
       : undefined;
     const currency = workflowitemTemplate.currency;
-    const body =
-      data.amountType === "N/A" ? data : { ...data, amount, currency };
+    const body = data.amountType === "N/A" ? data : { ...data, amount, currency };
     await createWorkflowitem(axios, body);
     workflowitem = await findWorkflowitem(
       axios,
@@ -296,19 +154,113 @@ const provisionWorkflowitem = async (
   }
 };
 
-const fmtList = (l) =>
-  l
-    .map((x) => (x.data.displayName === undefined ? x : x.data.displayName))
-    .map((x) => `"${x}"`)
-    .join(" > ");
+const provisionSubproject = async (project, subprojectTemplate) => {
+  const isToBeClosed = subprojectTemplate.status === "closed";
+  let subproject = await findSubproject(axios, project, subprojectTemplate);
+  try {
+    if (subproject) {
+      console.log(
+        `Subproject already exists ${subprojectTemplate.displayName}`
+      );
+    } else {
+      await createSubproject(axios, project, subprojectTemplate);
 
-async function runIntegrationTests(rootSecret, folder) {
-  await testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret, folder);
-  await testWorkflowitemUpdate(folder);
-  await testWorkflowitemReordering(folder);
-  await testApiDocIsAvailable();
-  console.log(`Integration tests complete.`);
-}
+      subproject = await findSubproject(axios, project, subprojectTemplate);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  await grantPermissions(
+    axios,
+    subprojectTemplate.permissions,
+    project.data.id,
+    subproject.data.id
+  );
+  if (
+    subprojectTemplate.description !== undefined
+    && subproject.status === "open"
+  ) {
+    await updateSubproject(
+      axios,
+      project.data.id,
+      subproject.data.id,
+      subprojectTemplate.description
+    );
+  }
+
+  for (const workflowitemTemplate of subprojectTemplate.workflows) {
+    console.log(
+      `Provisioning workflowitem "${workflowitemTemplate.displayName}" ....`
+    );
+    await provisionWorkflowitem(project, subproject, workflowitemTemplate);
+  }
+
+  if (isToBeClosed) {
+    await assignSubproject(
+      axios,
+      project.data.id,
+      subproject.data.id,
+      serviceUser.id
+    );
+    await closeSubproject(axios, project.data.id, subproject.data.id);
+  }
+
+  console.log(`Subproject ${fmtList([project, subproject])} created.`);
+};
+
+const provisionFromData = async (projectTemplate) => {
+  console.log(`Start provisioning project ${projectTemplate.displayName}....`);
+  try {
+    const projectExists = await findProject(axios, projectTemplate).then(
+      (existingProject) => existingProject !== undefined
+    );
+    if (projectExists) {
+      console.log(`${projectTemplate.displayName} project already exists.`);
+    } else {
+      await createProject(axios, projectTemplate);
+    }
+
+    console.log("Create subprojects....");
+    const isToBeClosed = projectTemplate.status === "closed";
+
+    const project = await findProject(axios, projectTemplate);
+
+    if (projectTemplate.permissions !== undefined) {
+      console.log("Granting permissions..");
+      await grantPermissions(
+        axios,
+        projectTemplate.permissions,
+        project.data.id
+      );
+    }
+
+    if (
+      projectTemplate.description !== undefined
+      && project.status === "open"
+    ) {
+      console.log("Testing project update..");
+      await updateProject(axios, project.data.id, projectTemplate.description);
+    }
+
+    for (const subprojectTemplate of projectTemplate.subprojects) {
+      console.log(`Provision Subproject ${subprojectTemplate.displayName}`);
+      await provisionSubproject(project, subprojectTemplate);
+    }
+
+    if (isToBeClosed) {
+      await assignProject(axios, project.data.id, serviceUser.id);
+      await closeProject(axios, project);
+    }
+
+    console.log(`Project ${fmtList([project])} created.`);
+  } catch (err) {
+    if (err.code && err.code === "MAX_RETRIES") {
+      console.log(
+        `Failed to provision project ${projectTemplate.displayName} , max retries exceeded`
+      );
+    }
+  }
+};
 
 async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
   rootSecret,
@@ -337,8 +289,7 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
   // Let's close the subproject (as root, because not visible to mstein):
   await impersonate("root", rootSecret);
   const subprojectTemplate = closeProjectTest.subprojects[1];
-  if (subprojectTemplate.status !== "open")
-    throw Error("Unexpected test data.");
+  if (subprojectTemplate.status !== "open") throw Error("Unexpected test data.");
   const subproject = await findSubproject(axios, project, subprojectTemplate);
   await closeSubproject(axios, project.data.id, subproject.data.id);
 
@@ -439,10 +390,10 @@ async function testWorkflowitemUpdate(folder) {
 
   // make sure the workflow item has been reset and is still open
   if (
-    updatedWorkflowitem.data.amountType !== amountType ||
-    updatedWorkflowitem.data.amount !== amount ||
-    updatedWorkflowitem.data.currency !== currency ||
-    updatedWorkflowitem.data.status !== "open"
+    updatedWorkflowitem.data.amountType !== amountType
+    || updatedWorkflowitem.data.amount !== amount
+    || updatedWorkflowitem.data.currency !== currency
+    || updatedWorkflowitem.data.status !== "open"
   ) {
     throw Error(
       "The update should not have had any effect on the workflowitem"
@@ -476,10 +427,10 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
   if (
-    !Array.isArray(itemWithDocuments.data.documents) ||
-    itemWithDocuments.data.documents.length !== 2
+    !Array.isArray(itemWithDocuments.data.documents)
+    || itemWithDocuments.data.documents.length !== 2
   ) {
-    throw Error(`Adding documents to a workflowitem failed :(`);
+    throw Error("Adding documents to a workflowitem failed :(");
   }
 
   // Updating an existing document shouldn't be allowed:
@@ -497,9 +448,12 @@ async function testWorkflowitemUpdate(folder) {
       ],
     });
     throw Error(
-      `Updated an existing document, but that isn't supposed to work :(`
+      "Updated an existing document, but that isn't supposed to work :("
     );
-  } catch (_err) {}
+  } catch (_err) {
+    // ignore error
+  }
+
   const stillTheItemWithDocuments = await findWorkflowitem(
     axios,
     project,
@@ -507,11 +461,11 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
   if (
-    stillTheItemWithDocuments.data.documents[0].hash !==
-    "657fa2f1a088db531144752b5b3a6c1de5edd5aa823cab99884143361f5d0470"
+    stillTheItemWithDocuments.data.documents[0].hash
+    !== "657fa2f1a088db531144752b5b3a6c1de5edd5aa823cab99884143361f5d0470"
   ) {
     throw Error(
-      `The document has changed but shouldn't (or the ordering was not preserved) :(`
+      "The document has changed but shouldn't (or the ordering was not preserved) :("
     );
   }
 
@@ -565,20 +519,17 @@ async function testWorkflowitemReordering(folder) {
   );
 
   // We check that the ordering is as expected:
-  const getOrderingAsMap = () =>
-    axios
-      .get(
-        `/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`
-      )
-      .then((res) => res.data.data.workflowitems)
-      .then((items) =>
-        items
-          .map((x) => x.data)
-          .reduce((acc, x, index) => {
-            acc[x.displayName] = index;
-            return acc;
-          }, {})
-      );
+  const getOrderingAsMap = () => axios
+    .get(
+      `/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`
+    )
+    .then((res) => res.data.data.workflowitems)
+    .then((items) => items
+      .map((x) => x.data)
+      .reduce((acc, x, index) => {
+        acc[x.displayName] = index;
+        return acc;
+      }, {}));
 
   const originalOrdering = await getOrderingAsMap();
   if (originalOrdering[interimInstName] >= originalOrdering[finalInstName]) {
@@ -595,7 +546,7 @@ async function testWorkflowitemReordering(folder) {
   }
 
   // If we explicitly order them differently, they should show up reversed right after the last closed workflowitem:
-  await axios.post(`/subproject.reorderWorkflowitems`, {
+  await axios.post("/subproject.reorderWorkflowitems", {
     projectId,
     subprojectId,
     ordering: [finalInstallment.data.id, interimInstallment.data.id],
@@ -608,8 +559,8 @@ async function testWorkflowitemReordering(folder) {
   }
   if (changedOrdering[finalInstName] >= originalOrdering[finalInstName]) {
     throw Error(
-      "The final installment workflowitem should have moved to an earlier position." +
-        ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${
+      "The final installment workflowitem should have moved to an earlier position."
+        + ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${
           changedOrdering[finalInstName]
         }. original ordering = ${JSON.stringify(
           originalOrdering
@@ -618,14 +569,14 @@ async function testWorkflowitemReordering(folder) {
   }
   if (changedOrdering[finalInstName] >= changedOrdering[interimInstName]) {
     throw Error(
-      "The final installment workflowitem should have move before the interim installment workflowitem." +
-        ` Instead, final installment has moved from ${originalOrdering[finalInstName]} to ${changedOrdering[finalInstName]},` +
-        ` while interim installment has moved from ${originalOrdering[interimInstName]} to ${changedOrdering[interimInstName]}`
+      "The final installment workflowitem should have move before the interim installment workflowitem."
+        + ` Instead, final installment has moved from ${originalOrdering[finalInstName]} to ${changedOrdering[finalInstName]},`
+        + ` while interim installment has moved from ${originalOrdering[interimInstName]} to ${changedOrdering[interimInstName]}`
     );
   }
 
   // Let's clear the ordering:
-  await axios.post(`/subproject.reorderWorkflowitems`, {
+  await axios.post("/subproject.reorderWorkflowitems", {
     projectId,
     subprojectId,
     ordering: [],
@@ -634,13 +585,57 @@ async function testWorkflowitemReordering(folder) {
   // Now the ordering should be restored:
   const restoredOrdering = await getOrderingAsMap();
   if (restoredOrdering[interimInstName] >= restoredOrdering[finalInstName]) {
-    throw Error(`Failed to restore original ordering`);
+    throw Error("Failed to restore original ordering");
   }
 }
 
 async function testApiDocIsAvailable() {
   queryApiDoc(axios).then(() => console.log("api/documentation OK"));
 }
+
+async function runIntegrationTests(rootSecret, folder) {
+  await testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(rootSecret, folder);
+  await testWorkflowitemUpdate(folder);
+  await testWorkflowitemReordering(folder);
+  await testApiDocIsAvailable();
+  console.log("Integration tests complete.");
+}
+
+const provisionBlockchain = async (host, port, rootSecret, organization) => {
+  try {
+    const folder = process.env.ENVIRONMENT_TYPE === "PROD"
+      ? "./src/data/prod/"
+      : "./src/data/test/";
+
+    axios.defaults.baseURL = `http://${host}:${port}/api`;
+    axios.defaults.timeout = 10000;
+
+    await impersonate("root", rootSecret);
+    console.log("Start to provision users");
+    await provisionUsers(axios, folder, organization);
+    await provisionGroups(axios, folder);
+
+    console.log("Starting to provision projects");
+    await impersonate(serviceUser.id, serviceUser.password);
+    const files = readDirectory(folder);
+    for (const fileName of files) {
+      if (projectBlacklist.indexOf(fileName) === -1) {
+        const project = readJsonFile(folder + fileName);
+        await provisionFromData(project);
+      }
+    }
+    if (process.env.ENVIRONMENT_TYPE !== "PROD") {
+      await runIntegrationTests(rootSecret, folder);
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.code && err.code === "MAX_RETRIES") {
+      console.log(err.message);
+      console.log("Provisioning failed....");
+      process.exit(1);
+    }
+  }
+};
 
 const port = process.env.API_PORT || 8080;
 const host = process.env.API_HOST || "localhost";
