@@ -257,7 +257,7 @@ const SubProjectDetails = ({
                   <PersonIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={validator.displayName} secondary={strings.subproject.subproject_validator} />
+              <ListItemText primary={validator.displayName} secondary={strings.subproject.workflowitem_assignee} />
             </ListItem>
           ) : null}
         </List>
