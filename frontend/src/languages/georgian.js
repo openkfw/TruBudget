@@ -263,7 +263,7 @@ const ka = {
     workflow_budget_status_allocated: "Assigned",
     workflow_budget_status_disbursed: "გადახდილი",
     workflow_budget_status_na: "N/A",
-    workflow_budget: "Workflowitem-ის ბიუჯეტის ოდენობა",
+    workflow_budget: "ბიუჯეტის თანხა",
     workflow_comment: "Workflowitem-ის კომენტარი",
     workflow_disable_sort: "დამახსოვრება",
     workflow_document_changed: "შეცვლილია",
