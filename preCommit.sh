@@ -1,4 +1,4 @@
-pat='^(api|bc|doc|ui|e2e|excel|email|all)([,](api|bc|doc|ui|e2e|excel|email))*([,](api|bc|doc|ui|e2e|excel|email))*([,](api|bc|doc|ui|e2e|excel|email))*([,](api|bc|doc|ui|e2e|excel|email))*([,](api|bc|doc|ui|e2e|excel|email))*\:.+'
+pat='^(api|bc|doc|ui|e2e|excel|email|provisioning|all)([,](api|bc|doc|ui|e2e|excel|email|provisioning))*([,](api|bc|doc|ui|e2e|excel|email|provisioning))*([,](api|bc|doc|ui|e2e|excel|email|provisioning))*([,](api|bc|doc|ui|e2e|excel|email|provisioning))*([,](api|bc|doc|ui|e2e|excel|email|provisioning))*\:.+'
 message=`cat $1`
 if [[ "$message" =~ $pat ]]; then 
   echo ""
