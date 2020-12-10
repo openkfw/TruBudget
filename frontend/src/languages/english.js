@@ -261,7 +261,7 @@ const en = {
     workflow_budget_status_allocated: "Assigned",
     workflow_budget_status_disbursed: "Payed",
     workflow_budget_status_na: "N/A",
-    workflow_budget: "Workflowitem budget amount",
+    workflow_budget: "Budget amount",
     workflow_comment: "Workflowitem comment",
     workflow_disable_sort: "Save",
     workflow_document_changed: "Changed",

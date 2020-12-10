@@ -192,7 +192,7 @@ const de = {
     workflow_action_in_review: "Pending for review of",
     workflow_action_open_in_progress: "Pending on ",
     workflow_action_pending_approval: "Pending for approval of ",
-    workflow_budget: "Workflow budget amount",
+    workflow_budget: "Budgetbetrag",
     workflow_budget_allocated: "allocated",
     workflow_budget_amount: " Workflow budget amount",
     workflow_budget_amount_description: "Budget amount for the workflow",
