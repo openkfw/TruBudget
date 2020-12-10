@@ -6,7 +6,7 @@ const { createJWT } = require("./createAuthToken");
 
 const getRecipientFromFile = async (path, file) => {
   try {
-    var obj = await require(path + "/" + file);
+    let obj = await require(path + "/" + file);
     return obj.vout[0].items[0].data.json.recipient;
   } catch (error) {
     throw new Error(`Cannot parse json file '${path}+ "/" +${file}'\n` + error);
@@ -34,7 +34,7 @@ const sendNotifications = async (
   try {
     files = await readdir(path);
   } catch (error) {
-    return logger.error("Unable to scan directory: " + err);
+    return logger.error("Unable to scan directory: " + error);
   }
 
   for (let i = 0; i < (await files.length); i++) {
@@ -70,8 +70,8 @@ const sendNotifications = async (
         config,
       );
       if (
-        response.data.notification &&
-        response.data.notification.status === "sent"
+        response.data.notification
+        && response.data.notification.status === "sent"
       ) {
         logger.debug("Delete file " + path + "/" + file);
         await fs.unlinkSync(path + "/" + file);
@@ -141,11 +141,11 @@ function sleep(s) {
   });
 }
 
-const arguments = process.argv.slice(2);
+const args = process.argv.slice(2);
 logger.debug(
-  `${process.argv[0]} is executed with following arguments: ${arguments}`,
+  `${process.argv[0]} is executed with following arguments: ${args}`,
 );
-if (arguments.length !== 6) {
+if (args.length !== 6) {
   logger.error("Wrong amount of arguments");
   return;
 }
@@ -156,7 +156,7 @@ const [
   maxPersistenceHours,
   loopIntervalSeconds,
   ssl,
-] = arguments;
+] = args;
 const absolutePath = process.cwd() + "/" + path;
 
 let token = "";

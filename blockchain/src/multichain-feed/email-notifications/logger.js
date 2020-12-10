@@ -11,12 +11,12 @@ const prettyPrintInput = process.env.PRETTY_PRINT || "";
 const prettyPrint = prettyPrintOptions.includes(prettyPrintInput.toLowerCase())
   ? false
   : {
-      colorize: true,
-      levelFirst: false,
-      messageKey: "message",
-      translateTime: true,
-      crlf: false,
-    };
+    colorize: true,
+    levelFirst: false,
+    messageKey: "message",
+    translateTime: true,
+    crlf: false,
+  };
 
 const levelInput = process.env.LOG_LEVEL || "info";
 const levelInputLowerCase = levelInput.toLowerCase();

@@ -1,9 +1,7 @@
-
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 class KubernetesClient {
-
   constructor(k8sApi) {
     this.k8sApi = k8sApi;
   }
@@ -40,12 +38,11 @@ class KubernetesClient {
         ); // outputs red underlined text
         console.log("Blockchain will start without an external IP...."); // outputs red underlined text
       } else {
-        console.log(`Failed to fetch the external IP of the service.`);
+        console.log("Failed to fetch the external IP of the service.");
       }
       return externalIp;
     }
   }
-
 }
 
 module.exports = KubernetesClient;
