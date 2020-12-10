@@ -7,33 +7,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ## Unreleased -->
 
-### Added
+<!-- ### Added -->
 
-- Added a close button in user selections [#614](https://github.com/openkfw/TruBudget/issues/614)
-- Added a search field in the validator selection [#639](https://github.com/openkfw/TruBudget/issues/639)
-- Added groups to batch permission assignment [#612](https://github.com/openkfw/TruBudget/issues/612)
-
-### Changed
-
-- The assignee on project/subproject was renamed into owner [#643](https://github.com/openkfw/TruBudget/issues/643)
+<!-- ### Changed -->
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
 
+<!-- ### Fixed -->
+
 <!-- ### Security -->
 
-## [1.17.0] - 2020-11-13
+## [1.17.0] - 2020-12-10
+
+### Added
+
+- Added a close button in user selections [#614](https://github.com/openkfw/TruBudget/issues/614)
+- Added a search field in the validator selection [#639](https://github.com/openkfw/TruBudget/issues/639)
+- Added groups to batch permission assignment [#612](https://github.com/openkfw/TruBudget/issues/612)
+- Added scroll back to top button [#579](https://github.com/openkfw/TruBudget/issues/579)
+
+### Changed
+
+- The assignee on project/subproject was renamed into owner [#643](https://github.com/openkfw/TruBudget/issues/643)
 
 ### Fixed
 
 - Restricted workflowitems are now working as expected [#643](https://github.com/openkfw/TruBudget/issues/643)
 - Fixed a Bug where labels e.g. on login ID field were too large and not readable anymore [#625](https://github.com/openkfw/TruBudget/issues/625)
 - Fixed some translations as specified in [#655](https://github.com/openkfw/TruBudget/issues/655)
-
-### Added
-
-- Added scroll back to top button [#579](https://github.com/openkfw/TruBudget/issues/579)
 
 ## [1.16.0] - 2020-11-16
 
@@ -552,7 +555,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.16.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.17.0...master
+[1.17.0]: https://github.com/openkfw/TruBudget/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/openkfw/TruBudget/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/openkfw/TruBudget/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/openkfw/TruBudget/compare/v1.13.0...v1.14.0
