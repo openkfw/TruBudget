@@ -18,8 +18,8 @@ interface Repository {
   getTargetUser(userId: UserRecord.Id): Promise<Result.Type<UserRecord.UserRecord>>;
 }
 
-type eventTypeType = "user_permission_granted";
-const eventType: eventTypeType = "user_permission_granted";
+type EventTypeType = "user_permission_granted";
+const eventType: EventTypeType = "user_permission_granted";
 
 export async function grantUserPermission(
   ctx: Ctx,

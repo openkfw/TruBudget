@@ -10,8 +10,8 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-type eventTypeType = "workflowitem_updated";
-const eventType: eventTypeType = "workflowitem_updated";
+type EventTypeType = "workflowitem_updated";
+const eventType: EventTypeType = "workflowitem_updated";
 
 export interface Modification {
   displayName?: string;
@@ -40,7 +40,7 @@ export const modificationSchema = Joi.object({
 });
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

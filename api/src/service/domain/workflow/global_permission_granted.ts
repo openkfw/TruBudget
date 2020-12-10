@@ -5,11 +5,11 @@ import Intent, { globalIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 
-type eventTypeType = "global_permission_granted";
-const eventType: eventTypeType = "global_permission_granted";
+type EventTypeType = "global_permission_granted";
+const eventType: EventTypeType = "global_permission_granted";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

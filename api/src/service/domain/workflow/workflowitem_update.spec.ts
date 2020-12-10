@@ -204,7 +204,7 @@ describe("update workflowitem: how modifications are applied", () => {
     );
 
     assert.isTrue(Result.isErr(result));
-    const error = Result.unwrap_err(result);
+    const error = Result.unwrapErr(result);
     assert.match(error.message, /displayName.*\s+.*empty/);
   });
 
@@ -259,7 +259,7 @@ describe("update workflowitem: how modifications are applied", () => {
     );
 
     assert.isTrue(Result.isErr(result));
-    const error = Result.unwrap_err(result);
+    const error = Result.unwrapErr(result);
     assert.match(error.message, /status/);
   });
 

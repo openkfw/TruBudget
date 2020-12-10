@@ -16,7 +16,7 @@ export async function voteHelper(
   issuer: ServiceUser,
   user: AuthToken,
   targetAddress: WalletAddress,
-  vote: AccessVote.t,
+  vote: AccessVote.T,
 ): Promise<HttpResponse> {
   const multichain = conn.multichainClient;
 
@@ -55,7 +55,7 @@ export async function voteHelper(
 async function getCurrentAccess(
   multichain: MultichainClient,
   address: WalletAddress,
-): Promise<AccessVote.t> {
+): Promise<AccessVote.T> {
   const permissions = await Nodes.getNetworkPermissions(multichain, address);
 
   const hasAdminPermissions = permissions

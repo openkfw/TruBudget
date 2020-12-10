@@ -11,11 +11,11 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-type eventTypeType = "notification_created";
-const eventType: eventTypeType = "notification_created";
+type EventTypeType = "notification_created";
+const eventType: EventTypeType = "notification_created";
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

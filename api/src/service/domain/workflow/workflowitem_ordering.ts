@@ -10,7 +10,7 @@ interface ItemAndIndex {
 }
 
 export function sortWorkflowitems<
-  T extends Workflowitem.ScrubbedWorkflowitem | Workflowitem.Workflowitem
+  T extends Workflowitem.ScrubbedWorkflowitem | Workflowitem.Workflowitem,
 >(workflowitems: T[], ordering: string[]): T[] {
   // The index is needed to enable stable sorting:
   const items = workflowitems.map((workflowitem, index) => ({ index, workflowitem }));

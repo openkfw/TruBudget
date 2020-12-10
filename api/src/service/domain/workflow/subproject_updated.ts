@@ -8,8 +8,8 @@ import * as Project from "./project";
 import { projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
 
-type eventTypeType = "subproject_updated";
-const eventType: eventTypeType = "subproject_updated";
+type EventTypeType = "subproject_updated";
+const eventType: EventTypeType = "subproject_updated";
 
 export interface UpdatedData {
   displayName?: string;
@@ -18,7 +18,7 @@ export interface UpdatedData {
 }
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

@@ -57,6 +57,10 @@ rules:
   #   - 2
   #   - always
 
+  "@typescript-eslint/no-unused-expressions":
+  - 2
+  - allowTernary: true
+
   ## TEMPORARY OVERRIDES
   ## most of these are turned on by default and overrides can be deleted
 
@@ -192,7 +196,7 @@ rules:
   no-async-promise-executor: 0
 
   ## max-classes-per-file: 2
-  max-classes-per-file: 2 # only one file - RpcClient.ts
+  max-classes-per-file: 2
 
   ## autofixable
   ## a ? true : false    ->      !!a
@@ -229,21 +233,21 @@ rules:
   "@typescript-eslint/no-shadow": 0
 
   ## TODO discussion
-  ## There are 200+ places in code that seem to need any
+  ## There are 200+ places in code that seem to need any.
   ## strictly enforcing no-explicit-any is beneficial, perhaps override per-file or inline?
   "@typescript-eslint/no-explicit-any": 0
 
   ## autofixable
-  ## "@typescript-eslint/quotes":
-  ##   - 2
-  ##   - "double"
-  ##  - "avoidEscape": true
+  # "@typescript-eslint/quotes":
+  # - 2
+  # - "double"
+  # - "avoidEscape": true
   "@typescript-eslint/quotes": 0
 
   ## TODO discussion
   ## no-throw-literal: 0
   ## "@typescript-eslint/no-throw-literal": 2
-  ## using this rule would require rework if error handling in API (using extended Error and not interfaces)
+  ## using this rule would require rework of error handling in API (using extended Error and not interfaces)
   "@typescript-eslint/no-throw-literal": 0
 
   ## "@typescript-eslint/no-unused-vars-experimental":
@@ -264,25 +268,6 @@ rules:
 
   ## @typescript-eslint/indent should stay disabled because it messes with formatting
   "@typescript-eslint/indent": 0
-
-  ## "@typescript-eslint/naming-convention": 2
-  ## TS types should use PascalCase, make separate PR (eventTypeType -> EventTypeType)
-  ## other cases inline override as warranted
-  "@typescript-eslint/naming-convention": 0
-
-  ## "@typescript-eslint/comma-dangle": 2 since trailing comma is already used, autofixable
-  "@typescript-eslint/comma-dangle": 0
-
-  ## "@typescript-eslint/semi": 2
-  "@typescript-eslint/semi": 0
-
-  ## "@typescript-eslint/no-unused-expressions":
-  ##  - 2
-  ##  - allowTernary: true
-  "@typescript-eslint/no-unused-expressions": 0
-
-  ## "@typescript-eslint/lines-between-class-members": 2 autofixable
-  "@typescript-eslint/lines-between-class-members": 0
 
   ## this rule is on by default
   ## and changes among others "const TRUE = true as true;"" to "const TRUE = true as const;"

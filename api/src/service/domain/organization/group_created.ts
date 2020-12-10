@@ -7,8 +7,8 @@ import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import * as Group from "./group";
 
-type eventTypeType = "group_created";
-const eventType: eventTypeType = "group_created";
+type EventTypeType = "group_created";
+const eventType: EventTypeType = "group_created";
 
 interface InitialData {
   id: Group.Id;
@@ -32,7 +32,7 @@ const initialDataSchema = Joi.object({
 }).options({ stripUnknown: true });
 
 export interface Event {
-  type: eventTypeType;
+  type: EventTypeType;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;

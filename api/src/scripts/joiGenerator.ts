@@ -1,3 +1,4 @@
+/* eslint-disable import/no-dynamic-require */
 import * as fs from "fs";
 import * as parseSwagger from "swagger-to-joi";
 import * as colors from "colors";
