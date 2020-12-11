@@ -6,7 +6,7 @@ const testUser2 = { id: "jxavier", displayname: "Jane Xavier", password: "test" 
 const testGroup = { id: "admins", displayname: "Admins" };
 let projectId, subprojectId, permissionsBeforeTesting, baseUrl, apiRoute;
 const subprojectDisplayname = "subproject assign test";
-const rootSecret = "root-secret";
+const rootSecret = Cypress.env("ROOT_SECRET");
 
 describe("Subproject Permissions", function() {
   before(() => {

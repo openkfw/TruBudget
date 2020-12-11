@@ -3,7 +3,7 @@ const testUserNamePassword = "test1234";
 
 describe("Users/Groups Dashboard", function() {
   before(() => {
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.getUserList().then(userList => {
       const userIds = userList.map(user => user.id);
       if (!userIds.includes(testUserName)) {
@@ -16,7 +16,7 @@ describe("Users/Groups Dashboard", function() {
 
   it("If a user is granted permission to edit another user's password, the edit button appears next to the user", function() {
     // Log in as root and grant the permission
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantUserPermissions("dviolin", "user.changePassword", testUserName);
 
     // Log in as test user again and refresh the page
@@ -27,7 +27,7 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test=edit-user-dviolin]").should("be.visible");
 
     // Revoke the permission agian to make the test re-runnable
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.revokeUserPermissions("dviolin", "user.changePassword", testUserName);
     cy.login();
   });
@@ -130,7 +130,7 @@ describe("Users/Groups Dashboard", function() {
 
   it("Root can edit all user passwords", function() {
     // Log in as root
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/users");
 
     // Check if the button is indeed visible

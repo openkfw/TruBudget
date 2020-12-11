@@ -144,7 +144,7 @@ describe("Project Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
     // Reset permissions
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
 
@@ -165,7 +165,8 @@ describe("Project Assignee", function() {
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
-    cy.login("root", "root-secret");
+
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
 

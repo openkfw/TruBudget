@@ -19,6 +19,7 @@ const tar = require("tar-fs");
 const rawTar = require("tar-stream");
 const yaml = require("js-yaml");
 const shell = require("shelljs");
+const dotenvPlugin = require("cypress-dotenv");
 
 function reportsReadiness(baseUrl) {
   return axios
@@ -143,7 +144,7 @@ const updateMetadataFile = async (config, newHash, metadataPath) => {
   return config;
 };
 
-module.exports = (on, _config) => {
+module.exports = (on, config) => {
   on("task", {
     awaitApiReady: awaitApiReady,
     readExcelSheet: readExcelSheet,
@@ -160,4 +161,6 @@ module.exports = (on, _config) => {
       return options;
     }
   });
+  config = dotenvPlugin(config);
+  return config;
 };

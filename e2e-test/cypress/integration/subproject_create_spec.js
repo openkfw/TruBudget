@@ -24,7 +24,7 @@ describe("Subproject creation", function() {
         projectId = id;
       })
       //Log in as root since root can not create projects
-      .then(() => cy.login("root", "root-secret"))
+      .then(() => cy.login("root", Cypress.env("ROOT_SECRET")))
       .then(() => cy.visit(`/projects/${projectId}`))
       .then(() => cy.get("[data-test=subproject-create-button]").should("be.visible"))
       .then(() => cy.get("[data-test=subproject-create-button]").should("be.disabled"));

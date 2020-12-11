@@ -211,7 +211,7 @@ describe("Workflowitem Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
     // Reset permissions
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
 
@@ -235,7 +235,7 @@ describe("Workflowitem Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
 
@@ -271,7 +271,7 @@ describe("Workflowitem Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantWorkflowitemPermission(
       projectId,
       subprojectId,
@@ -317,7 +317,7 @@ describe("Workflowitem Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
     cy.grantWorkflowitemPermission(
@@ -348,7 +348,7 @@ describe("Workflowitem Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
 
@@ -371,7 +371,7 @@ describe("Workflowitem Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
   });
 
@@ -400,7 +400,7 @@ describe("Workflowitem Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantWorkflowitemPermission(
       projectId,
       subprojectId,
@@ -436,7 +436,7 @@ describe("Workflowitem Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
     cy.grantWorkflowitemPermission(

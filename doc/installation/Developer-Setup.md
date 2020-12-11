@@ -155,24 +155,26 @@ If you want to start developing on Trubudget, you need to setup the application 
 ### Dockerized Application
 
 This is the fastes way you can run all services needed for development. Everything is run in one command:
- 1. in root directory execute: `sh scripts/development/start-dev.sh`
 
- The script cares for `.env` file. No further step needed. 
- 
- Following services are dockerized:
-  - Blockchain (master node)
-  - API (master API)
-  - Provisioning (feeds application with dummy data)
-  - Excel export
-  - Frontend
+1.  in root directory execute: `sh scripts/development/start-dev.sh`
 
-  It takes some time to build and run at the first launch. After that, source codes of API and frontend are live reloaded. That means any change in `./src` folder is reflected in respective containter automatically. 
+The script cares for `.env` file. No further step needed.
 
-  The frontend should be availaible as usual at http://localhost:3000
-  
-  Docker Compose ensures that services are communicating and have correct environment variables set. Docker Compose puts all services in the same network and exposes needed ports.
+Following services are dockerized:
 
-  You can inspect each container individually:  `docker logs --follow CONTAINER`. Where CONTAINER represents selected value of NAMES column container in output of `docker ps` command.
+- Blockchain (master node)
+- API (master API)
+- Provisioning (feeds application with dummy data)
+- Excel export
+- Frontend
+
+It takes some time to build and run at the first launch. After that, source codes of API and frontend are live reloaded. That means any change in `./src` folder is reflected in respective containter automatically.
+
+The frontend should be availaible as usual at http://localhost:3000
+
+Docker Compose ensures that services are communicating and have correct environment variables set. Docker Compose puts all services in the same network and exposes needed ports.
+
+You can inspect each container individually: `docker logs --follow CONTAINER`. Where CONTAINER represents selected value of NAMES column container in output of `docker ps` command.
 
 ### Blockchain
 
@@ -463,11 +465,11 @@ In the `e2e-test` folder you can run the following commands:
 You need to run cypress while also specifying the urls of the frontend, api and excel export service you are using
 
 ```bash
-npm run cypress -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888
+npm run cypress -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888,ROOT_SECRET=root-secret
 
 or
 
-npm run e2etest -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888
+npm run e2etest -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888,ROOT_SECRET=root-secret
 
 ```
 

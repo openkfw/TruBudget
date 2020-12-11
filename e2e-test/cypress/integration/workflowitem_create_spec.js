@@ -124,7 +124,7 @@ describe("Workflowitem create", function() {
   });
 
   it("Root can not create a Workflowitem", function() {
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit(`/projects/${projectId}/${subprojectId}`);
 
     // When root is logged in the create workflow item button

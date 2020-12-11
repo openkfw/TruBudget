@@ -64,7 +64,7 @@ describe("Project Edit", function() {
     cy.get(`[data-test=project-card-${projectId}]`).within(() => {
       cy.get(`[data-test=pe-button]`).should("be.enabled");
     });
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.revokeProjectPermission(projectId, "project.update", "mstein");
     cy.login();
     cy.visit(`/projects`);

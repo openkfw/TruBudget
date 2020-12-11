@@ -6,7 +6,7 @@ let fileName = "backup.gz";
 
 let pathToFile = `cypress/fixtures/${fileName}`;
 
-describe("Backup Feature", function() {
+describe("Backup Feature", function () {
   before(() => {
     //download directly to fixture folder, without pop-ups
     if (Cypress.browser.name !== "firefox") {
@@ -47,7 +47,7 @@ describe("Backup Feature", function() {
     cy.server();
     cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
@@ -72,7 +72,8 @@ describe("Backup Feature", function() {
   });
 
   it("Tests the download of a backup.gz file", function() {
-    cy.login("root", "root-secret");
+    cy.log("dss");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.createBackup().then(headers => {
       expect(headers).to.include({
         "content-type": "application/gzip",
@@ -81,7 +82,7 @@ describe("Backup Feature", function() {
     });
   });
 
-  it("Tests the restore of an invalid backup", function() {
+  it("Tests the restore of an invalid backup", function () {
     const invalidBackupFile = "backup_invalidHash.gz";
 
     cy.task("modifyHash", { pathToFile, newHash: "wrongHash", newBackup: invalidBackupFile }).then(success => {
@@ -91,7 +92,7 @@ describe("Backup Feature", function() {
     cy.server();
     cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
@@ -126,13 +127,13 @@ describe("Backup Feature", function() {
       });
   });
 
-  it("Tests the restore of a backup with the wrong organisation", function() {
+  it("Tests the restore of a backup with the wrong organisation", function () {
     const wrongOrgaFile = "backup_orga_test.gz";
 
     cy.server();
     cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
     //Open side navigation
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
@@ -161,6 +162,44 @@ describe("Backup Feature", function() {
                   .should("not.include", "Backup Successful");
               });
           });
+      });
+  });
+
+  it("Tests the restore of a valid backup", function() {
+    const fileName = "valid_backup.gz";
+
+    cy.server();
+    cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
+
+    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.visit("/projects");
+    cy.get("[data-test=openSideNavbar]").click();
+    cy.get("[data-test=side-navigation]");
+    //Upload file
+    cy.fixture(fileName, "binary")
+      .then(fileContent => Cypress.Blob.binaryStringToBlob(fileContent))
+      .then(fileContent => {
+        cy.get("#uploadBackup").upload(
+          { fileContent: fileContent, fileName, mimeType: "application/gzip", encoding: "utf-8" },
+          { subjectType: "input" }
+        );
+      });
+    cy.wait("@restore")
+      .should(xhr => {
+        expect(xhr.status).to.eq(200);
+      })
+      .then(() => {
+        cy.task("awaitApiReady", baseUrl).then(() => {
+          cy.url()
+            .should("include", "/login")
+            .then(() => {
+              cy.login("root", Cypress.env("ROOT_SECRET"));
+              cy.visit("/projects");
+              cy.get("[data-test=project-title] span")
+                .invoke("text")
+                .should("include", "Backup Successful");
+            });
+        });
       });
   });
 });
