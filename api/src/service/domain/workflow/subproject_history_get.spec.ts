@@ -96,6 +96,18 @@ describe("get subproject history: authorization", () => {
     assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
+  it("With only viewDetials permissions, a user can still get a subproject's history.", async () => {
+    const modifiedSubproject: Subproject = {
+      ...baseSubproject,
+      permissions: { "subproject.viewDetails": ["alice"] },
+    };
+    const result = await getHistory(ctx, alice, projectId, subprojectId, {
+      ...baseRepository,
+      getSubproject: async () => modifiedSubproject,
+    });
+    assert.isTrue(Result.isOk(result), (result as Error).message);
+  });
+
   it("With only viewHistory permissions, a user can still get a subproject's history.", async () => {
     const modifiedSubproject: Subproject = {
       ...baseSubproject,

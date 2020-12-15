@@ -32,9 +32,10 @@ export const getHistory = async (
   }
 
   if (user.id !== "root") {
-    const intents: Intent[] = ["workflowitem.viewHistory"];
-    if (!Workflowitem.permits(workflowitem, user, [intents[0]])) {
-      return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: workflowitem });
+    const intents: Intent[] = ["workflowitem.view", "workflowitem.viewHistory" ];
+    if (!(Workflowitem.permits(workflowitem, user, [intents[0]]) ||
+     Workflowitem.permits(workflowitem, user, [intents[1] ])) ) {
+       return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: workflowitem });
     }
   }
 
