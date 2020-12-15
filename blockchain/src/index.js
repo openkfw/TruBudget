@@ -18,8 +18,9 @@ const { startMultichainDaemon, configureChain } = require("./createChain");
 const {
   moveBackup,
   verifyHash,
-  createMetadataFile,
+  verifyHashSha256,
   removeFile,
+  createMetadataFileSha256,
 } = require("./shell");
 
 const app = express();
@@ -206,12 +207,12 @@ const stopMultichain = async (mcproc) => {
   console.log("Multichain process killed...");
 };
 
-app.get("/chain", async (req, res) => {
+app.get("/chain-sha256", async (req, res) => {
   try {
     console.log("Start packaging");
     autostart = false;
     await stopMultichain(mcproc);
-    await createMetadataFile(CHAINNAME, multichainDir, ORGANIZATION);
+    await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
     res.setHeader("Content-Type", "application/gzip");
     res.setHeader(
       "Content-Disposition",
@@ -270,16 +271,21 @@ app.post("/chain", async (req, res) => {
     stream.on("finish", async () => {
       if (fs.existsSync(metadataPath)) {
         const config = loadConfig(metadataPath);
-        const valid = await verifyHash(config.DirectoryHash, extractPath);
-        const chainConfig = yaml.safeLoad(fs.readFileSync(chainConfigPath, "utf8"));
-        let correctConfig = chainConfig.includes(RPC_PASSWORD);
+        const validSha256 = await verifyHashSha256(config.DirectoryHash, extractPath);
+        // TODO MD5 hashing is deprecated. Remove it in the future and keep only SHA256
+        let validMD5 = false;
+        if (!validSha256) {
+          validMD5 = await verifyHash(config.DirectoryHash, extractPath);
+        }
+        const chainConfig = yaml.safeLoad(fs.readFileSync(chainConfigPath, "utf8"));;
+        var correctConfig = chainConfig.includes(RPC_PASSWORD);
 
         if (config.hasOwnProperty("Organisation")) {
           const correctOrg = config.Organisation === ORGANIZATION;
           correctConfig = correctConfig && correctOrg;
         }
         if (correctConfig) {
-          if (valid) {
+          if (validSha256 || validMD5) {
             autostart = false;
             await stopMultichain(mcproc);
             await moveBackup(multichainDir, extractPath, CHAINNAME);

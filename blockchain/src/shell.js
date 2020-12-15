@@ -2,12 +2,23 @@ const shell = require("shelljs");
 const fs = require("fs");
 
 const { md5Dir } = require("./md5");
+const { sha256Dir } = require("./sha256");
 
-const createMetadataFile = async (chainName, multichainDir, organisation) => {
-  const dirHash = await md5Dir(`${multichainDir}/${chainName}`);
+const verifyHash = async (backupDirectoryHash, extractPath) => {
+  return (await md5Dir(extractPath)) === backupDirectoryHash;
+};
+
+const createMetadataFileSha256 = async (chainName, multichainDir, organisation) => {
+  let dirHash;
+  try {
+    dirHash = await sha256Dir(`${multichainDir}/${chainName}`);
+  } catch (e) {
+    console.log('sha256 error', e);
+  }
+
   const filePath = `${multichainDir}/${chainName}/metadata.yml`;
   shell.touch(filePath);
-  console.log("----- Backup Metadata -----");
+  console.log("----- Backup Metadata SHA256 -----");
   const ts = Date.now();
   shell
     .echo(
@@ -16,7 +27,11 @@ const createMetadataFile = async (chainName, multichainDir, organisation) => {
     .to(filePath);
 };
 
-const verifyHash = async (backupDirectoryHash, extractPath) => (await md5Dir(extractPath)) === backupDirectoryHash;
+const verifyHashSha256 = async (backupDirectoryHash, extractPath) => {
+  const dirHash = await sha256Dir(extractPath);
+
+  return dirHash === backupDirectoryHash;
+};
 
 const createCurrentChainBackupDir = currentChainBackupDir => {
   if (fs.existsSync(currentChainBackupDir)) {
@@ -44,8 +59,9 @@ const moveBackup = async (multichainDir, extractPath, chainName) => {
 };
 
 module.exports = {
-  createMetadataFile,
   verifyHash,
+  createMetadataFileSha256,
+  verifyHashSha256,
   moveBackup,
   removeFile,
 };
