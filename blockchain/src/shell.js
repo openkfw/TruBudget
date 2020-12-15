@@ -16,9 +16,7 @@ const createMetadataFile = async (chainName, multichainDir, organisation) => {
     .to(filePath);
 };
 
-const verifyHash = async (backupDirectoryHash, extractPath) => {
-  return (await md5Dir(extractPath)) === backupDirectoryHash;
-};
+const verifyHash = async (backupDirectoryHash, extractPath) => (await md5Dir(extractPath)) === backupDirectoryHash;
 
 const createCurrentChainBackupDir = currentChainBackupDir => {
   if (fs.existsSync(currentChainBackupDir)) {
@@ -38,8 +36,8 @@ const moveBackup = async (multichainDir, extractPath, chainName) => {
   if (fs.existsSync(targetDir)) {
     // just mv is not workin on kube
     shell.cp("-R", `${targetDir}/*`, currentChainBackupDir);
-    shell.rm('-rf', `${targetDir}`);
-    shell.mkdir(targetDir)
+    shell.rm("-rf", `${targetDir}`);
+    shell.mkdir(targetDir);
     shell.cp("-R", `${extractPath}/*`, `${targetDir}/`);
   }
   shell.rm("-rf", `${extractPath}`);

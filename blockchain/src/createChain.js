@@ -51,13 +51,13 @@ const startMultichainDaemon = (
   connectArg = "",
 ) => {
   const mcproc = spawn("multichaind", [
-    `-txindex`,
+    "-txindex",
     `${chainName}`,
     `${externalIpArg}`,
     `${blockNotifyArg}`,
-    `-maxshowndata=100000`,
+    "-maxshowndata=100000",
     `-port=${P2P_PORT}`,
-    `-autosubscribe=streams`,
+    "-autosubscribe=streams",
     `${connectArg}`,
     `-datadir=${multichainDir}`,
   ]);

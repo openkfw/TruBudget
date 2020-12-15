@@ -1,4 +1,4 @@
-var jwt = require("jsonwebtoken");
+let jwt = require("jsonwebtoken");
 
 function createJWT(secret, id) {
   return jwt.sign(

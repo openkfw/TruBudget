@@ -21,7 +21,9 @@
     "start": "node src/index.js",
     "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "check-backup": "node check-backup.js"
+    "check-backup": "node check-backup.js",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "nyc": {
     "include": [
@@ -49,10 +51,13 @@
     "tar-fs": "^2.1.0"
   },
   "devDependencies": {
-    "mocha": "^7.1.2",
+    "babel-eslint": "^10.1.0",
     "coveralls": "^3.0.3",
-    "eslint": "^6.2.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
     "jshint": "^2.9.7",
+    "mocha": "^7.1.2",
     "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^14.1.0"
   }

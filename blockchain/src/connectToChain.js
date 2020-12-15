@@ -47,7 +47,7 @@ function startSlave(
   const args = [
     "-txindex",
     `-port=${p2pPort}`,
-    `-autosubscribe=streams`,
+    "-autosubscribe=streams",
     connectArgs,
     blockNotifyArg,
     externalIpArg,
@@ -93,16 +93,16 @@ function askMasterForPermissions(address, organization, proto, host, port) {
 async function registerNodeAtMaster(organization, proto, host, port) {
   const retryIntervalMs = 10000;
   try {
-    while (!address){
-     await relax(5000);
+    while (!address) {
+      await relax(5000);
     }
     console.log(`>>> Registering ${organization} node address ${address}`);
     await askMasterForPermissions(address, organization, proto, host, port);
     console.log(">>> Node address registered successfully (approval pending).");
   } catch (error) {
     console.log(
-      `>>> Could not register (${error}). Retry in ${retryIntervalMs /
-        1000} seconds ...`,
+      `>>> Could not register (${error}). Retry in ${retryIntervalMs
+        / 1000} seconds ...`,
     );
     await relax(retryIntervalMs);
     await registerNodeAtMaster(organization, proto, host, port);
