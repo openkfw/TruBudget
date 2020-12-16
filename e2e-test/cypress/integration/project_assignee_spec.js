@@ -3,12 +3,15 @@ describe("Project Assignee", function() {
   const testUser = "jdoe";
   let projectId;
   let permissionsBeforeTesting;
+  const longUserId = `long_test_user_${Math.floor(Math.random() * 1000000)}`;
+  const longUserName = "Z22-Testuser-with-a-very-very-very-very-very-very-long-name";
 
   before(() => {
     cy.login();
     cy.createProject("p-assign", "project assign test").then(({ id }) => {
       projectId = id;
     });
+    cy.addUser(longUserName, longUserId, "test");
   });
 
   beforeEach(function() {
@@ -204,5 +207,16 @@ describe("Project Assignee", function() {
       .should("be.visible")
       .click();
     cy.get("[data-test=single-select-list]").should("not.be.visible");
+  });
+
+  it("If the assignee name is too long, an ellipses with tooltip is shown", function() {
+    cy.get("[data-test=single-select-list]").should("be.visible");
+    cy.get(`[data-test=single-select-name-${longUserName}]`)
+      .contains(longUserName)
+      .trigger("mouseover");
+    // show tooltip
+    cy.get("[data-test=overflow-tooltip]")
+      .should("be.visible")
+      .contains(longUserName);
   });
 });

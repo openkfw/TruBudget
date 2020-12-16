@@ -34,6 +34,9 @@ const styles = {
     paddingTop: "36px",
     align: "center",
     textAlign: "center"
+  },
+  assigneeContainer: {
+    padding: "32px"
   }
 };
 
@@ -83,10 +86,7 @@ const WorkflowEditDrawer = props => {
   };
 
   const isOpen = !_isEmpty(selectedWorkflowItems);
-  const usersAndGroups = [
-    ...users,
-    ...groups
-  ];
+  const usersAndGroups = [...users, ...groups];
 
   // Only render the drawer if there are elements selected
   if (!isOpen) return null;
@@ -126,7 +126,7 @@ const WorkflowEditDrawer = props => {
       <div>
         <Card style={styles.assigneeCard}>
           <CardHeader subheader="Assignee" />
-          <CardContent>
+          <CardContent style={styles.assigneeContainer}>
             <SingleSelection
               disabled={hasSubprojectValidator}
               selectId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
