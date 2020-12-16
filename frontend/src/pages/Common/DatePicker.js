@@ -2,9 +2,10 @@ import React from "react";
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import CancelIcon from "@material-ui/icons/Cancel";
 import IconButton from "@material-ui/core/IconButton";
+import { withStyles } from "@material-ui/core";
+import _isEmpty from "lodash/isEmpty";
 import dayjs from "dayjs";
 import DateFnsUtils from "@date-io/date-fns";
-import { withStyles } from "@material-ui/core";
 
 import strings from "../../localizeStrings";
 
@@ -26,6 +27,13 @@ const styles = {
 function DatePicker({ classes, name, label, onChange, onDelete, datetime, id = "default" }) {
   const dateFormat = strings.format.dateFormat;
   const datePlaceholder = strings.format.datePlaceholder;
+  const dateValue = _isEmpty(datetime) ? null : datetime;
+
+  const handleOnBlur = (date, name) => {
+    const modifiedDate = dayjs(date).isValid() ? dayjs(date).format("YYYY-MM-DD") : null;
+    onChange(modifiedDate, name)
+  }
+
   return (
     <div className={classes.searchField}>
       <form className={classes.form} noValidate>
@@ -37,10 +45,11 @@ function DatePicker({ classes, name, label, onChange, onDelete, datetime, id = "
             label={label}
             placeholder={datePlaceholder}
             format={dateFormat}
-            value={datetime}
+            value={dateValue}
             onChange={date => {
               onChange(dayjs(date).format("YYYY-MM-DD"), name);
             }}
+            onBlur={ date => handleOnBlur(date)}
             data-test={`datepicker-${id}`}
           />
         </MuiPickersUtilsProvider>
