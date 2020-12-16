@@ -17,10 +17,12 @@ import React, { Component } from "react";
 
 import strings from "../../localizeStrings";
 import ActionButton from "./ActionButton";
+import OverflowTooltip from "./OverflowTooltip";
 
 const styles = {
   formControl: {
-    width: "100%"
+    minWidth: "200px",
+    maxWidth: "200px"
   },
   radioButton: {
     height: "10px"
@@ -37,6 +39,7 @@ const styles = {
     justifyContent: "flex-start"
   },
   select: {
+    maxWidth: "200px",
     "&$disabled": {
       cursor: "-webkit-grab"
     }
@@ -44,6 +47,9 @@ const styles = {
   assigneeTypography: {
     overflow: "hidden",
     textOverflow: "ellipsis"
+  },
+  nameContainer: {
+    maxWidth: "200px"
   },
   listSubHeader: { top: "auto" },
   disabled: {},
@@ -78,7 +84,9 @@ class SingleSelection extends Component {
           onClick={() => (id !== selectId ? this.props.onSelect(id, displayName) : undefined)}
         >
           <Radio className={classes.radioButton} disabled={disabled} checked={id === selectId} />
-          <ListItemText data-test="single-select-name" primary={displayName} />
+          <ListItemText data-test={`single-select-name-${displayName}`} className={classes.nameContainer}>
+            <OverflowTooltip text={displayName} />
+          </ListItemText>
         </MenuItem>
       );
     });
