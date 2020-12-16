@@ -47,7 +47,7 @@ describe("Workflowitem types", function() {
       .get("[data-test=single-select-container]")
       .last()
       .click();
-    cy.get("[data-test=single-select-name]")
+    cy.get("[data-test^=single-select-name]")
       .first()
       .click();
     cy.get("[data-test=confirmation-dialog-confirm]")
