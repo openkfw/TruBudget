@@ -17,6 +17,8 @@ import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import { uploadAsPromised } from '../../../lib/minio';
+
 
 export interface RequestData {
   displayName?: string;
@@ -59,6 +61,7 @@ export async function updateWorkflowitem(
 
   const documentHashes: StoredDocument[] = [];
   if (modification.documents !== undefined) {
+    await uploadAsPromised('test.jpeg');
     const documentHashesResult = await hashDocuments(modification.documents);
     if (Result.isErr(documentHashesResult)) {
       return new VError(documentHashesResult, "failed to hash documents");

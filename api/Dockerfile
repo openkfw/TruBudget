@@ -3,7 +3,7 @@ FROM node:12-slim
 WORKDIR /home/node
 
 COPY package*.json ./
-RUN apt-get -y update && apt-get -y install libtool autoconf automake
+# RUN apt-get -y update && apt-get -y install libtool autoconf automake
 RUN npm ci
 
 COPY src src/
