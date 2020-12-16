@@ -23,7 +23,7 @@ export const restoreBackup = async (
     maxContentLength: 1074790400,
   };
   try {
-    await axios.post(`http://${multichainHost}:${backupApiPort}/chain/`, data, config);
+    await axios.post(`http://${multichainHost}:${backupApiPort}/chain`, data, config);
     logger.info("backup restored successfully");
   } catch (error) {
     const cause = error.response.status === 400 ? new Error(error.response.data) : error;
