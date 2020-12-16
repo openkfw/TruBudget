@@ -27,12 +27,12 @@ describe("User/Groups Dashboard", function() {
       .type("Mauro Stein")
       .should("have.value", "Mauro Stein");
     cy.get("[data-test=user-name-mstein]").click();
-    cy.get("[data-test=add-user-selection]").click();
     cy.get("[data-test=search-user-input]")
-      .click()
+      .clear()
       .type("Tom House")
       .should("have.value", "Tom House");
     cy.get("[data-test=user-name-thouse]").click();
+    cy.get("[data-test=close-select]").click();
     cy.get("[data-test=submit]").click();
     cy.wait("@createGroup");
   }
@@ -73,6 +73,7 @@ describe("User/Groups Dashboard", function() {
       .type("Dana Violin")
       .should("have.value", "Dana Violin");
     cy.get("[data-test=user-name-dviolin]").click();
+    cy.get("[data-test=close-select]").click();
     cy.get("[data-test=submit]").click();
     cy.get(`[data-test=edit-group-${testGroup.id}]`).click();
     cy.get("[data-test=user-chip-dviolin]").should("be.visible");
