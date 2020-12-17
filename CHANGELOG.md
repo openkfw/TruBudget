@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed the width of dropdowns in workflowitem batch edit [#678](https://github.com/openkfw/TruBudget/issues/678)
 - Fixed Actions table of confirmation dialog alignment [#677](https://github.com/openkfw/TruBudget/issues/677)
 
+- Added multiple selection to user selection for groups [#679](https://github.com/openkfw/TruBudget/issues/679)
+
 <!-- ### Security -->
 
 ## [1.17.0] - 2020-12-10
