@@ -65,7 +65,7 @@ const styles = theme => {
       borderLeftStyle: "solid",
       borderLeftColor: "black",
       height: "100%",
-      left: "25px",
+      left: "22px",
       bottom: "34px"
     },
     firstLine: {
@@ -73,7 +73,7 @@ const styles = theme => {
       borderLeft: "2px solid",
       borderLeftColor: "black",
       height: "38px",
-      left: "25px",
+      left: "22px",
       bottom: "34px"
     },
     buttonStyle: {
