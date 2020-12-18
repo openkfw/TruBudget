@@ -37,7 +37,8 @@ const styles = theme => {
       textAlign: "center",
       display: "inline-block",
       position: "absolute",
-      top: "17px",
+      zIndex: "20",
+      top: "21px",
       left: "16px",
       borderRadius: "10px"
     },
@@ -47,8 +48,8 @@ const styles = theme => {
       textAlign: "center",
       display: "inline-block",
       position: "absolute",
-      top: "6px",
-      left: "2px",
+      top: "8px",
+      left: "5px",
       borderRadius: "10px"
     },
     actions: {
@@ -65,16 +66,16 @@ const styles = theme => {
       borderLeftStyle: "solid",
       borderLeftColor: "black",
       height: "100%",
-      left: "22px",
-      bottom: "34px"
+      left: "25px",
+      bottom: "43px"
     },
     firstLine: {
       position: "absolute",
       borderLeft: "2px solid",
       borderLeftColor: "black",
       height: "38px",
-      left: "22px",
-      bottom: "34px"
+      left: "25px",
+      bottom: "42px"
     },
     buttonStyle: {
       minWidth: "30px",
