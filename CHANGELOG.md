@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixed a bug in checkbox and baseline aligment in workflowitem [#707](https://github.com/openkfw/TruBudget/issues/707)
 - Fixed a bug in no due date set in workflowedit [#708](https://github.com/openkfw/TruBudget/issues/708)
 - Restricted workflowitems are now working as expected [#643](https://github.com/openkfw/TruBudget/issues/643)
 - Fixed a Bug where labels e.g. on login ID field were too large and not readable anymore [#625](https://github.com/openkfw/TruBudget/issues/625)
