@@ -37,7 +37,8 @@ const renderSortButton = props => (
     }
     onClick={() => handleEnableWorkflowEdit(props)}
     style={styles.editButton}
-  >
+    data-test="SvgEditIcon"
+>
     <EditIcon />
   </Fab>
 );

@@ -207,7 +207,7 @@ const StepDot = props => {
   };
   return isWorkflowItemSelectable(redacted, sortEnabled, allowedIntents) ? (
     <div className={classes.checkbox}>
-      <Checkbox onChange={updateSelectedList} />
+      <Checkbox onChange={updateSelectedList} data-test="Checkbox" />
     </div>
   ) : (
     <Paper className={classes.dots} elevation={2} disabled={selectable}>
