@@ -1,4 +1,4 @@
-describe("Workflowitem edit", function () {
+describe("Workflowitem edit", function() {
   let projectId;
   let subprojectId;
   let workflowitemId;
@@ -17,15 +17,15 @@ describe("Workflowitem edit", function () {
     });
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
   it(
     "When editing a workflow item with a different currency than the subproject currency, " +
-    "the selected currency is displayed",
-    function () {
+      "the selected currency is displayed",
+    function() {
       cy.server();
       cy.route("POST", apiRoute + "/subproject.createWorkflowitem*").as("create");
       cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
@@ -64,7 +64,7 @@ describe("Workflowitem edit", function () {
     }
   );
 
-  it("If no due date is set, the due date field in edit dialog is empty", function () {
+  it("If no due date is set, the due date field in edit dialog is empty", function() {
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
@@ -82,7 +82,7 @@ describe("Workflowitem edit", function () {
     });
   });
 
-  it("When the due-date is not exceeded, the info icon badge is not displayed ", function () {
+  it("When the due-date is not exceeded, the info icon badge is not displayed ", function() {
     // Create a workflowitem
     const tomorrow = getTomorrowsIsoDate();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
@@ -101,7 +101,7 @@ describe("Workflowitem edit", function () {
     });
   });
 
-  it("When the due-date is exceeded, the info icon badge is displayed ", function () {
+  it("When the due-date is exceeded, the info icon badge is displayed ", function() {
     // Create a workflowitem
     const yesterday = getYesterdaysIsoDate();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
@@ -120,7 +120,7 @@ describe("Workflowitem edit", function () {
     });
   });
 
-  it("When the due-date is set, the due-date field is pre-filled", function () {
+  it("When the due-date is set, the due-date field is pre-filled", function() {
     // Create a workflowitem
     const dueDate = new Date().toISOString();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
@@ -142,7 +142,7 @@ describe("Workflowitem edit", function () {
     });
   });
 
-  it("When the due-date is set, the due-date can be deleted by pressing the clear-button", function () {
+  it("When the due-date is set, the due-date can be deleted by pressing the clear-button", function() {
     // Create a workflowitem
     const dueDate = new Date().toISOString();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
@@ -166,7 +166,7 @@ describe("Workflowitem edit", function () {
     });
   });
 
-  it("The due-date can be removed from a workflowitem", function () {
+  it("The due-date can be removed from a workflowitem", function() {
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
@@ -198,7 +198,7 @@ describe("Workflowitem edit", function () {
     });
   });
 
-  it("Change assign Reordering of open workflowitems is done on submit", function () {
+  it("Change assign Reordering of open workflowitems is done on submit", function() {
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
@@ -211,17 +211,19 @@ describe("Workflowitem edit", function () {
       cy.visit(`/projects/${projectId}/${subprojectId}`);
       cy.get("[data-test=SvgEditIcon]").click();
       cy.get(`[data-test=Checkbox] >  span > input[type=checkbox]`).check();
-      cy.get("[data-test=\"permission-select-workflowitem.intent.grantPermission\"]").click();
-      cy.get("[data-test=overflow-tooltip]").first().click({ force: true });
-      cy.contains('Update').click({ force: true });
-      cy.contains('Submit').click({ force: true });
+      cy.get('[data-test="permission-select-workflowitem.intent.grantPermission"]').click();
+      cy.get("[data-test=overflow-tooltip]")
+        .first()
+        .click({ force: true });
+      cy.contains("Update").click({ force: true });
+      cy.contains("Submit").click({ force: true });
       cy.get("[data-test=preview-dialog-done]").click({ force: true });
 
       //cy.get('input[class="PrivateSwitchBase-input-91"]:checked').not('[disabled]')
       // cy.get("[data-test=backToTop-button]").click({force: true});
     });
   });
-  it("Changes will be applied correctly workflowitems is done on submit", function () {
+  it("Changes will be applied correctly workflowitems is done on submit", function() {
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
@@ -234,35 +236,15 @@ describe("Workflowitem edit", function () {
       cy.visit(`/projects/${projectId}/${subprojectId}`);
       cy.get("[data-test=SvgEditIcon]").click();
       cy.get(`[data-test=Checkbox] >  span > input[type=checkbox]`).check();
-      cy.get("[data-test=\"permission-select-workflowitem.view\"]").click();
-      cy.get("[data-test=overflow-tooltip]").first().click({ force: true });
-      cy.contains('Update').click({ force: true });
-      cy.contains('Submit').click({ force: true });
+      cy.get('[data-test="permission-select-workflowitem.view"]').click();
+      cy.get("[data-test=overflow-tooltip]")
+        .first()
+        .click({ force: true });
+      cy.contains("Update").click({ force: true });
+      cy.contains("Submit").click({ force: true });
       cy.get("[data-test=preview-dialog-done]").click({ force: true });
     });
   });
-
-  it("Changes will be applied correctly workflowitems is done on submit", function () {
-    cy.server();
-    cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
-    // Create a workflowitem
-    const dueDate = new Date().toISOString();
-    cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
-      dueDate: dueDate
-    }).then(({ id }) => {
-      workflowitemId = id;
-      cy.visit(`/projects/${projectId}/${subprojectId}`);
-      cy.get("[data-test=SvgEditIcon]").click();
-      cy.get(`[data-test=Checkbox] >  span > input[type=checkbox]`).check();
-      cy.get("[data-test=\"permission-select-workflowitem.view\"]").click();
-      cy.get("[data-test=overflow-tooltip]").first().click({ force: true });
-      cy.contains('Update').click({ force: true });
-      cy.contains('Submit').click({ force: true });
-      cy.get("[data-test=preview-dialog-done]").click({ force: true });
-    });
-  });
-
 });
 
 function getTomorrowsIsoDate() {
