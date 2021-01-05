@@ -535,6 +535,7 @@ describe("Subproject Permissions", function() {
     // Confirmation opens
     cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"])
       .get("[data-test=actions-table-body]")
+      .scrollIntoView({ offset: { top: 150, left: 0 } })
       .should("be.visible")
       .children()
       // 4 permissions per user/group granted
