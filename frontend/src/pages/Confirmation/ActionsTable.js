@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
+import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { withStyles } from "@material-ui/core/styles";
@@ -8,6 +8,7 @@ import TBDIcon from "@material-ui/icons/Remove";
 import _isEqual from "lodash/isEqual";
 import React from "react";
 import strings from "../../localizeStrings";
+import OverflowTooltip from "../Common/OverflowTooltip";
 
 /**
  ** @actions Displayed by the table in following format
@@ -22,6 +23,9 @@ import strings from "../../localizeStrings";
 const styles = {
   card: {
     marginTop: "24px"
+  },
+  container: {
+    height: "180px"
   },
   tableBody: {
     display: "flex",
@@ -47,40 +51,44 @@ const styles = {
     fontWeight: "bold",
     alignSelf: "center",
     flex: "1",
-    padding: "0px 0px 4px 8px"
+    padding: "0px 3px 4px 8px",
+    backgroundColor: "transparent"
   },
   tableRow: {
     display: "flex",
-    height: "30px",
+    minHeight: "30px",
     borderBottom: "unset"
   },
   tableCell: {
     fontSize: "14px",
     borderBottom: "unset",
-    padding: "0px 0px 0px 8px",
+    padding: "0px 3px 4px 8px",
     flex: 1,
     overflow: "hidden",
-    textOverflow: "ellipsis"
+    textOverflow: "ellipsis",
+    '& div': {
+      width: '150px'
+    }
   }
 };
 
 function generateHeader(classes, status) {
   return (
     <TableRow className={classes.headerRow} key={"header"}>
-      <TableCell key={"header-type"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
+      <TableCell key={"header-type"} className={classes.columnHeaderCell} style={{ flex: 2 }}>
         {strings.common.type}
       </TableCell>
-      <TableCell key={"header-displayName"} className={classes.columnHeaderCell} style={{ flex: 8 }}>
+      <TableCell key={"header-displayName"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
         {strings.common.name}
       </TableCell>
-      <TableCell key={"header-permission"} className={classes.columnHeaderCell} style={{ flex: 5 }}>
+      <TableCell key={"header-permission"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
         {strings.common.permission}
       </TableCell>
       <TableCell key={"header-identity"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
         {strings.confirmation.user_group}
       </TableCell>
       {status ? (
-        <TableCell key={"header-status"} className={classes.columnHeaderCell} style={{ textAlign: "right", flex: 3 }}>
+        <TableCell key={"header-status"} className={classes.columnHeaderCell} style={{ textAlign: "right", flex: 2 }}>
           {strings.common.status}
         </TableCell>
       ) : null}
@@ -95,23 +103,23 @@ function generateActions(classes, actions, executedActions, failedAction, userLi
     const user = userList.find(user => user.id === action.identity);
     actionsTable.push(
       <TableRow className={classes.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
-        <TableCell key={index + "-type"} className={classes.tableCell} style={{ flex: 3 }}>
+        <TableCell key={index + "-type"} className={classes.tableCell} style={{ flex: 2 }}>
           {type}
         </TableCell>
-        <TableCell key={index + "-displayName"} className={classes.tableCell} style={{ flex: 8 }}>
-          {action.displayName}
+        <TableCell key={index + "-displayName"} className={classes.tableCell} style={{ flex: 3 }}>
+          <OverflowTooltip text={action.displayName} />
         </TableCell>
-        <TableCell key={index + "-permission"} className={classes.tableCell} style={{ flex: 5 }}>
-          {makePermissionReadable(action.permission)}
+        <TableCell key={index + "-permission"} className={classes.tableCell} style={{ flex: 3 }}>
+          <OverflowTooltip text={makePermissionReadable(action.permission)} />
         </TableCell>
         <TableCell key={index + "-userName"} className={classes.tableCell} style={{ flex: 3 }}>
-          {user ? user.displayName : ""}
+          <OverflowTooltip text={user ? user.displayName : ""} />
         </TableCell>
         {status ? (
           <TableCell
             key={index + "-status"}
             className={classes.tableCell}
-            style={{ textAlign: "right", position: "relative", bottom: "4px", flex: 3 }}
+            style={{ textAlign: "right", position: "relative", bottom: "4px", flex: 2 }}
           >
             {getStatusIcon(executedActions, failedAction, action)}
           </TableCell>
@@ -154,14 +162,16 @@ const ActionsTable = props => {
   return actions ? (
     <>
       <Card className={classes.card}>
-        <Table data-test="actions-table">
-          <TableHead data-test="actions-table-head" key={"wrapper"}>
-            {generateHeader(classes, status)}
-          </TableHead>
-          <TableBody data-test="actions-table-body" className={classes.tableBody}>
-            {generateActions(classes, actions, executedActions, failedAction, userList, status)}
-          </TableBody>
-        </Table>
+        <TableContainer className={classes.container}>
+          <Table aria-label="sticky table" data-test="actions-table">
+            <TableHead data-test="actions-table-head" key={"wrapper"}>
+              {generateHeader(classes, status)}
+            </TableHead>
+            <TableBody data-test="actions-table-body" className={classes.tableBody}>
+              {generateActions(classes, actions, executedActions, failedAction, userList, status)}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Card>
       {executingActions ? <LinearProgress color="primary" /> : null}
     </>
