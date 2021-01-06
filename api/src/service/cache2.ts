@@ -50,6 +50,7 @@ import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import * as WorkflowitemDocumentUploaded from "./domain/workflow/workflowitem_document_uploaded";
+import * as DocumentValidated from "./domain/workflow/document_validated";
 
 import { Item } from "./liststreamitems";
 
@@ -548,6 +549,7 @@ const EVENT_PARSER_MAP = {
   workflowitem_permission_revoked: WorkflowitemPermissionsRevoked.validate,
   workflowitem_updated: WorkflowitemUpdated.validate,
   workflowitem_document_uploaded: WorkflowitemDocumentUploaded.validate,
+  document_validated: DocumentValidated.validate,
 };
 
 export function parseBusinessEvents(

@@ -8,6 +8,9 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import * as Project from "./service/domain/workflow/project";
+import * as Subproject from "./service/domain/workflow/subproject";
+import * as Workflowitem from "./service/domain/workflow/workflowitem";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -84,7 +87,15 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  matches(documentBase64: string, expectedSHA256: string): Promise<Result.Type<boolean>>;
+  matches(
+    documentBase64: string,
+    expectedSHA256: string,
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: Project.Id,
+    subprojectId: Subproject.Id,
+    workflowitemId: Workflowitem.Id
+  ): Promise<Result.Type<boolean>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -99,10 +110,22 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
 
+      const ctx: Ctx = { requestId: request.id, source: "http" };
+
+      const user: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+      };
+
       const { base64String: documentBase64, hash: expectedSHA256 } = bodyResult.data;
 
       service
-        .matches(documentBase64, expectedSHA256)
+        .matches(
+          documentBase64,
+          expectedSHA256,
+          ctx,
+          user
+        )
         .then((validateWorkflowitemResult) => {
           if (Result.isErr(validateWorkflowitemResult)) {
             throw new VError(validateWorkflowitemResult, "workflowitem.validateDocument failed");
