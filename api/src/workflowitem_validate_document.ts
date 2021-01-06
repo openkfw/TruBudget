@@ -17,6 +17,9 @@ interface RequestBodyV1 {
   data: {
     base64String: string;
     hash: string;
+    projectId: Project.Id;
+    subprojectId: Subproject.Id;
+    workflowitemId: Workflowitem.Id;
   };
 }
 
@@ -25,6 +28,9 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     base64String: Joi.string().required(),
     hash: Joi.string().required(),
+    projectId: Project.idSchema.required(),
+    subprojectId: Subproject.idSchema.required(),
+    workflowitemId: Workflowitem.idSchema.required(),
   }).required(),
 });
 
@@ -117,14 +123,17 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         groups: (request as AuthenticatedRequest).user.groups,
       };
 
-      const { base64String: documentBase64, hash: expectedSHA256 } = bodyResult.data;
+      const { base64String: documentBase64, hash: expectedSHA256, projectId, subprojectId, workflowitemId } = bodyResult.data;
 
       service
         .matches(
           documentBase64,
           expectedSHA256,
           ctx,
-          user
+          user,
+          projectId,
+          subprojectId,
+          workflowitemId
         )
         .then((validateWorkflowitemResult) => {
           if (Result.isErr(validateWorkflowitemResult)) {

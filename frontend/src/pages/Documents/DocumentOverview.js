@@ -82,7 +82,7 @@ class DocumentOverview extends Component {
     }
   };
 
-  generateUploadButton = (hash, validated, id) => (
+  generateUploadButton = (hash, validated, id, projectId, subprojectId, workflowitemId) => (
     <Button {...this.getPropsForUploadButton(validated)}>
       <ValidationIcon />
       {this.getValidationText(validated)}
@@ -97,7 +97,7 @@ class DocumentOverview extends Component {
             reader.onloadend = e => {
               if (e.target.result !== undefined) {
                 const dataUrl = e.target.result.split(";base64,")[1];
-                this.props.validateDocument(hash, dataUrl, id);
+                this.props.validateDocument(hash, dataUrl, id, projectId, subprojectId, workflowitemId);
               }
             };
             reader.readAsDataURL(file);
@@ -145,7 +145,7 @@ class DocumentOverview extends Component {
           {validationActive ? (
             <TableCell className={classes.noHorizontalPadding}>
               <div className={classes.actionContainer}>
-                {this.generateUploadButton(hash, validated, id)}
+                {this.generateUploadButton(hash, validated, id, projectId, subprojectId, workflowitemId)}
                 {document.documentId
                   ? this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)
                   : null}
