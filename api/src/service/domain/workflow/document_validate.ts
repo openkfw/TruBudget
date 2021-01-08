@@ -26,6 +26,7 @@ export async function documentValidate(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
+  documentBase64: string,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; workflowitem: Workflowitem.Workflowitem }>> {
   const workflowitem = await repository.getWorkflowitem(workflowitemId);
@@ -39,7 +40,8 @@ export async function documentValidate(
     issuer.id,
     projectId,
     subprojectId,
-    workflowitemId
+    workflowitemId,
+    documentBase64
   );
   if (Result.isErr(documentValidatedEvent)) {
     return new VError(documentValidatedEvent, "failed to create event");

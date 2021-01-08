@@ -68,6 +68,18 @@ function mkSwaggerSchema(server: FastifyInstance) {
                 type: "string",
                 example: "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
               },
+              projectId: {
+                type: "string",
+                example: "3r28c69eg298c87e3899119e025eff1f"
+              },
+              subprojectId: {
+                type: "string",
+                example: "5t28c69eg298c87e3899119e025eff1f"
+              },
+              workflowitemId: {
+                type: "string",
+                example: "4j28c69eg298c87e3899119e025eff1f"
+              },
             },
           },
         },

@@ -37,6 +37,7 @@ export async function isSameDocument(
       projectId,
       subprojectId,
       workflowitemId,
+      documentBase64,
       {
         getWorkflowitem: async (id) => {
           return cache.getWorkflowitem(projectId, subprojectId, id);
@@ -48,7 +49,7 @@ export async function isSameDocument(
     );
   });
   if (Result.isErr(documentValidationResult)) {
-    return new VError(documentValidationResult, "failed to create event");
+    return new VError(documentValidationResult, "failed to create event in service");
   }
 
   const { newEvents } = documentValidationResult;
