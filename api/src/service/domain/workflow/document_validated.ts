@@ -18,7 +18,7 @@ export interface Event {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   workflowitemId: Workflowitem.Id;
-  documentBase64: string;
+  // documentBase64: string;
 }
 
 export const schema = Joi.object({
@@ -29,7 +29,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
-  documentBase64: Joi.string().required(),
+  // documentBase64: Joi.string().required(),
 });
 
 export function createEvent(
@@ -38,7 +38,7 @@ export function createEvent(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
-  documentBase64: string,
+  // documentBase64: string,
   time: string = new Date().toISOString()
 ): Result.Type<Event> {
   const event = {
@@ -48,7 +48,7 @@ export function createEvent(
     projectId,
     subprojectId,
     workflowitemId,
-    documentBase64,
+    // documentBase64,
     time
   };
   const validationResult = validate(event);

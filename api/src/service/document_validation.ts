@@ -37,7 +37,7 @@ export async function isSameDocument(
       projectId,
       subprojectId,
       workflowitemId,
-      documentBase64,
+      // documentBase64,
       {
         getWorkflowitem: async (id) => {
           return cache.getWorkflowitem(projectId, subprojectId, id);

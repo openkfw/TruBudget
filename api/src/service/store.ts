@@ -124,7 +124,7 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
     case "document_validated":
       return writeTo(conn, ctx, {
         stream: event.projectId,
-        keys: [event.subprojectId, event.workflowitemId, event.documentBase64],
+        keys: [event.subprojectId, event.workflowitemId],
         event,
       });
 
