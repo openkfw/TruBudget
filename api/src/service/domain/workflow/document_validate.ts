@@ -14,6 +14,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as DocumentValidated from "./document_validated";
 import * as Workflowitem from "./workflowitem";
+import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
@@ -57,6 +58,14 @@ export async function documentValidate(
   } */
 
   // Check that the new event is indeed valid:
+  const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
+    ctx,
+    workflowitem,
+    documentValidatedEvent,
+  );
+  if (Result.isErr(result)) {
+    return new InvalidCommand(ctx, documentValidatedEvent, [result]);
+  }
 
   // Create notification events:
   let notifications: Result.Type<NotificationCreated.Event[]> = [];

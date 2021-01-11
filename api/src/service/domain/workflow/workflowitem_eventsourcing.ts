@@ -13,6 +13,7 @@ import * as WorkflowitemPermissionGranted from "./workflowitem_permission_grante
 import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoked";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import * as DocumentValidated from "./document_validated";
 
 export function sourceWorkflowitems(
   ctx: Ctx,
@@ -112,6 +113,7 @@ function get(
 
 function getWorkflowitemId(event: BusinessEvent): Result.Type<Workflowitem.Id> {
   switch (event.type) {
+    case "document_validated":
     case "workflowitem_updated":
     case "workflowitem_assigned":
     case "workflowitem_closed":
@@ -170,6 +172,9 @@ type EventModule = {
 };
 function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
+    case "document_validated":
+      return DocumentValidated;
+
     case "workflowitem_updated":
       return WorkflowitemUpdated;
 

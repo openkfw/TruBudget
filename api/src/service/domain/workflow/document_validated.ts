@@ -63,3 +63,19 @@ export function validate(input: any): Result.Type<Event> {
   return !error ? value : error;
 }
 
+
+/**
+ * Applies the event to the given workflowitem, or returns an error.
+ *
+ * When an error is returned (or thrown), any already applied modifications are
+ * discarded.
+ *
+ * This function is not expected to validate its changes; instead, the modified
+ * workflowitem is automatically validated when obtained using
+ * `workflowitem_eventsourcing.ts`:`newWorkflowitemFromEvent`.
+ */
+export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
+  if (event.type !== "document_validated") {
+    return new VError(`illegal event type: ${event.type}`);
+  }
+}
