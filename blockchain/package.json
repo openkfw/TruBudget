@@ -36,7 +36,7 @@
   "dependencies": {
     "@kubernetes/client-node": "0.10.2",
     "async-each": "^1.0.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "express": "^4.16.3",
