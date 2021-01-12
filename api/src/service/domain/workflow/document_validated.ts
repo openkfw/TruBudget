@@ -7,8 +7,8 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 
-type EventTypeType = "workflow_document_validated";
-const eventType: EventTypeType = "workflow_document_validated";
+type EventTypeType = "document_validated";
+const eventType: EventTypeType = "document_validated";
 
 export interface Event {
   type: EventTypeType;
@@ -75,7 +75,7 @@ export function validate(input: any): Result.Type<Event> {
  * `workflowitem_eventsourcing.ts`:`newWorkflowitemFromEvent`.
  */
 export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
-  if (event.type !== "workflow_document_validated") {
+  if (event.type !== "document_validated") {
     return new VError(`illegal event type: ${event.type}`);
   }
 }

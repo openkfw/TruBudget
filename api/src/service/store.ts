@@ -121,7 +121,7 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
       );
       break;
 
-    case "workflow_document_validated":
+    case "document_validated":
       return writeTo(conn, ctx, {
         stream: event.projectId,
         keys: [`${event.subprojectId}_workflows`, event.workflowitemId],
