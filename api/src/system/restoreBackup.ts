@@ -21,6 +21,7 @@ export const restoreBackup = async (
   const config = {
     headers: { "content-type": "application/gzip" },
     maxContentLength: 1074790400,
+    maxBodyLength: 1074790400,
   };
   try {
     await axios.post(`http://${multichainHost}:${backupApiPort}/chain`, data, config);
