@@ -549,7 +549,7 @@ const EVENT_PARSER_MAP = {
   workflowitem_permission_revoked: WorkflowitemPermissionsRevoked.validate,
   workflowitem_updated: WorkflowitemUpdated.validate,
   workflowitem_document_uploaded: WorkflowitemDocumentUploaded.validate,
-  document_validated: DocumentValidated.validate,
+  workflowitem_document_validated: DocumentValidated.validate,
 };
 
 export function parseBusinessEvents(
