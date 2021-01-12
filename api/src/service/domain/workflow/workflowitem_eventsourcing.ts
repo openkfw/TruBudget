@@ -113,7 +113,7 @@ function get(
 
 function getWorkflowitemId(event: BusinessEvent): Result.Type<Workflowitem.Id> {
   switch (event.type) {
-    case "document_validated":
+    case "workflow_document_validated":
     case "workflowitem_updated":
     case "workflowitem_assigned":
     case "workflowitem_closed":
@@ -172,7 +172,7 @@ type EventModule = {
 };
 function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
-    case "document_validated":
+    case "workflow_document_validated":
       return DocumentValidated;
 
     case "workflowitem_updated":
