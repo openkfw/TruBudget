@@ -23,6 +23,7 @@ import { store } from "./store";
 export async function isSameDocument(
   documentBase64: string,
   expectedSHA256: string,
+  documentId: string,
   conn: ConnToken,
   ctx: Ctx,
   issuer: ServiceUser,
@@ -30,14 +31,26 @@ export async function isSameDocument(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
 ): Promise<Result.Type<boolean>> {
+
+  let isDocumentValid: boolean = false;
+  try {
+    const hash = crypto.createHash("sha256");
+    hash.update(Buffer.from(documentBase64, "base64"));
+    const computedHash = hash.digest("hex");
+    isDocumentValid = computedHash === expectedSHA256;
+  } catch (error) {
+    return new VError(error, "compare documents failed");
+  }
+
   const documentValidationResult = await Cache.withCache(conn, ctx, async (cache) => {
     return DocumentValidate.documentValidate(
+      isDocumentValid,
+      documentId,
       ctx,
       issuer,
       projectId,
       subprojectId,
       workflowitemId,
-      // documentBase64,
       {
         getWorkflowitem: async (id) => {
           return cache.getWorkflowitem(projectId, subprojectId, id);
@@ -58,12 +71,5 @@ export async function isSameDocument(
     await store(conn, ctx, event);
   }
 
-  try {
-    const hash = crypto.createHash("sha256");
-    hash.update(Buffer.from(documentBase64, "base64"));
-    const computedHash = hash.digest("hex");
-    return computedHash === expectedSHA256;
-  } catch (error) {
-    return new VError(error, "compare documents failed");
-  }
+  return isDocumentValid;
 }

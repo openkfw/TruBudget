@@ -17,6 +17,7 @@ interface RequestBodyV1 {
   data: {
     base64String: string;
     hash: string;
+    id: string;
     projectId: Project.Id;
     subprojectId: Subproject.Id;
     workflowitemId: Workflowitem.Id;
@@ -28,6 +29,7 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     base64String: Joi.string().required(),
     hash: Joi.string().required(),
+    id: Joi.string().required(),
     projectId: Project.idSchema.required(),
     subprojectId: Subproject.idSchema.required(),
     workflowitemId: Workflowitem.idSchema.required(),
@@ -67,6 +69,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
               hash: {
                 type: "string",
                 example: "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
+              },
+              id: {
+                type: "string",
+                example: "test"
               },
               projectId: {
                 type: "string",
@@ -108,6 +114,7 @@ interface Service {
   matches(
     documentBase64: string,
     expectedSHA256: string,
+    id: string,
     ctx: Ctx,
     user: ServiceUser,
     projectId: Project.Id,
@@ -135,12 +142,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         groups: (request as AuthenticatedRequest).user.groups,
       };
 
-      const { base64String: documentBase64, hash: expectedSHA256, projectId, subprojectId, workflowitemId } = bodyResult.data;
+      const { base64String: documentBase64, hash: expectedSHA256, id, projectId, subprojectId, workflowitemId } = bodyResult.data;
 
       service
         .matches(
           documentBase64,
           expectedSHA256,
+          id,
           ctx,
           user,
           projectId,

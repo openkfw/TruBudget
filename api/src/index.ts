@@ -741,6 +741,7 @@ WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
   matches: (
     documentBase64: string,
     expectedSHA256: string,
+    id: string,
     ctx,
     user,
     projectId,
@@ -750,6 +751,7 @@ WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
     DocumentValidationService.isSameDocument(
       documentBase64,
       expectedSHA256,
+      id,
       db,
       ctx,
       user,

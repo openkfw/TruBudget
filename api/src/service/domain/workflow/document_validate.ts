@@ -22,12 +22,13 @@ interface Repository {
 }
 
 export async function documentValidate(
+  isDocumentValid: boolean,
+  documentId: string,
   ctx: Ctx,
   issuer: ServiceUser,
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
-  // documentBase64: string,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; workflowitem: Workflowitem.Workflowitem }>> {
   const workflowitem = await repository.getWorkflowitem(workflowitemId);
@@ -37,25 +38,17 @@ export async function documentValidate(
 
   // Create the new event:
   const documentValidatedEvent = DocumentValidated.createEvent(
+    isDocumentValid,
+    documentId,
     ctx.source,
     issuer.id,
     projectId,
     subprojectId,
     workflowitemId
-    // documentBase64
   );
   if (Result.isErr(documentValidatedEvent)) {
     return new VError(documentValidatedEvent, "failed to create event in domain");
   }
-
-  // Check authorization (if not root):
-  /* if (issuer.id !== "root" ) {
-    return new PreconditionError(
-      ctx,
-      documentValidatedEvent,
-      "Only the assignee is allowed to validate the document.",
-    );
-  } */
 
   // Check that the new event is indeed valid:
   const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(

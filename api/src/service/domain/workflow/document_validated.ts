@@ -12,16 +12,19 @@ const eventType: EventTypeType = "workflowitem_document_validated";
 
 export interface Event {
   type: EventTypeType;
+  isDocumentValid: boolean;
+  documentId: string;
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   workflowitemId: Workflowitem.Id;
-  // documentBase64: string;
 }
 
 export const schema = Joi.object({
+  isDocumentValid: Joi.boolean().required(),
+  documentId: Joi.string().required(),
   type: Joi.valid(eventType).required(),
   source: Joi.string().allow("").required(),
   time: Joi.date().iso().required(),
@@ -29,26 +32,27 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
-  // documentBase64: Joi.string().required(),
 });
 
 export function createEvent(
+  isDocumentValid: boolean,
+  documentId: string,
   source: string,
   publisher: Identity,
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
-  // documentBase64: string,
   time: string = new Date().toISOString()
 ): Result.Type<Event> {
   const event = {
     type: eventType,
+    isDocumentValid,
+    documentId,
     source,
     publisher,
     projectId,
     subprojectId,
     workflowitemId,
-    // documentBase64,
     time
   };
   const validationResult = validate(event);
