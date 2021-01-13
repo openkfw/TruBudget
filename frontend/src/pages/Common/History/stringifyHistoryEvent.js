@@ -7,6 +7,8 @@ const formatPermission = data => `"${strings.permissions[data.replace(/[.]/g, "_
 const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
   const createdBy = getUserDisplayname(businessEvent.publisher);
   const eventType = businessEvent.type;
+  const documentId = businessEvent.documentId || "";
+  const isDocumentValid = businessEvent.isDocumentValid;
   const displayName = snapshot.displayName || "";
 
   switch (eventType) {
@@ -89,6 +91,10 @@ const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
         displayName,
         getUserDisplayname(businessEvent.assignee)
       );
+    case "workflowitem_document_validated":
+      return isDocumentValid
+        ? formatString(strings.history.workflowitem_document_validated, createdBy, documentId, displayName)
+        :  formatString(strings.history.workflowitem_document_invalidated, createdBy, documentId, displayName);
     case "workflowitem_closed":
       return formatString(strings.history.workflowitem_close, createdBy, displayName);
     case "workflowitem_permission_granted":

@@ -337,7 +337,7 @@ class Api {
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
     instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
 
-  validateDocument = (base64String, hash, projectId, subprojectId, workflowitemId) => instance.post(`/workflowitem.validateDocument`, { base64String, hash, projectId, subprojectId, workflowitemId });
+  validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) => instance.post(`/workflowitem.validateDocument`, { base64String, hash, id, projectId, subprojectId, workflowitemId });
 
   listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
     instance.get(

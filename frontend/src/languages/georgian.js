@@ -527,7 +527,9 @@ const ka = {
     workflowitem_revokePermission_details: "{0} გაუუქმა {2}-სა და {3}-ს ნებართვა {1}",
     workflowitem_revokePermission: "{0} გაუუქმა {2}-ს ნებართვა {1}",
     workflowitem_update_docs: "{0} დაამატა დოკუმენტები workflowitem-ს {1} ",
-    workflowitem_update: "{0} შეცვალა workflowitem-ი {1} "
+    workflowitem_update: "{0} შეცვალა workflowitem-ი {1} ",
+    workflowitem_document_validated: "{0} დადასტურებულია workflowitem სისტემაში მითითებული დოკუმენტ {1} ი {2} ",
+    workflowitem_document_invalidated: "{0} გამოყენებული სამუშაო ნაკადის ერთეული დოკუმენტი, რომელსაც სხვადასხვა დოკუმენტი აქვს დასახელებული {1} ი {2} "
   },
 
   permissions: {

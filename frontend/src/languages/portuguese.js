@@ -529,7 +529,8 @@ const pt = {
     workflowitem_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_revokePermission: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_update_docs: "{0} adicionou documentos ao item de workflow {1} ",
-    workflowitem_update: "{0} modificou o item de workflow {1} "
+    workflowitem_update: "{0} modificou o item de workflow {1} ",
+    workflowitem_document_invalidated: "{0} usado documento diferente no item de fluxo de trabalho para validar o documento nomeado com {1} em {2} "
   },
 
   permissions: {

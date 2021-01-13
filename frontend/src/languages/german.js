@@ -528,7 +528,8 @@ const de = {
     workflowitem_revokePermission_details: "German: {0} revoked permission {1} to {2} on {3}",
     workflowitem_revokePermission: "German: {0} revoked permission {1} of {3} from {2}",
     workflowitem_update_docs: "{0} fügte Dokumente zu Workflowitem {1} hinzu ",
-    workflowitem_update: "{0} veränderte Workflowitem {1} "
+    workflowitem_update: "{0} veränderte Workflowitem {1} ",
+    workflowitem_document_invalidated: "{0}hat ein anderes Dokument in Workflowitem verwendet, um das mit benannte Dokument zu validieren {1} in {2} "
   },
 
   permissions: {
