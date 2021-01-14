@@ -264,8 +264,3 @@ rules:
 
   ## @typescript-eslint/indent should stay disabled because it messes with formatting
   "@typescript-eslint/indent": 0
-
-  ## this rule is on by default
-  ## and changes among others "const TRUE = true as true;"" to "const TRUE = true as const;"
-  ## which probably is not desired
-  "@typescript-eslint/prefer-as-const": 0
