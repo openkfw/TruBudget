@@ -32,7 +32,7 @@ export async function closeSubproject(
   );
 
   if (Result.isErr(closeSubprojectResult)) {
-    return new VError(closeSubprojectResult, `close subproject failed`);
+    return new VError(closeSubprojectResult, "close subproject failed");
   }
   const { newEvents } = closeSubprojectResult;
 

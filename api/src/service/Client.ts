@@ -302,7 +302,7 @@ export class RpcMultichainClient implements MultichainClient {
               "with command: 'setruntimeparam maxshowndata <value>'.",
           );
           item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
-          logger.debug({ item: item.data }, `Received items.`);
+          logger.debug({ item: item.data }, "Received items.");
         }
         return item;
       }),

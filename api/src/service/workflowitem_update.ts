@@ -46,7 +46,7 @@ export async function updateWorkflowitem(
     );
   });
   if (Result.isErr(updateWorkflowitemResult)) {
-    return new VError(updateWorkflowitemResult, `update workflowitem failed`);
+    return new VError(updateWorkflowitemResult, "update workflowitem failed");
   }
   const { newEvents } = updateWorkflowitemResult;
 

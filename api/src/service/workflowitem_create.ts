@@ -39,7 +39,7 @@ export async function createWorkflowitem(
   });
 
   if (Result.isErr(newEventResult)) {
-    return new VError(newEventResult, `create workflowitem failed`);
+    return new VError(newEventResult, "create workflowitem failed");
   }
   const newEvents = newEventResult;
 

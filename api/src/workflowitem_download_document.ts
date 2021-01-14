@@ -123,7 +123,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         );
 
         if (Result.isErr(documentResult)) {
-          throw new VError(documentResult, `workflowitem.downloadDocument`);
+          throw new VError(documentResult, "workflowitem.downloadDocument");
         }
 
         const code = 200;

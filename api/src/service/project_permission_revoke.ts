@@ -29,7 +29,7 @@ export async function revokeProjectPermission(
   );
 
   if (Result.isErr(newEventsResult)) {
-    return new VError(newEventsResult, `revoke project permission failed`);
+    return new VError(newEventsResult, "revoke project permission failed");
   }
   const newEvents = newEventsResult;
   for (const event of newEvents) {

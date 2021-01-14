@@ -28,6 +28,6 @@ export async function listWorkflowitems(
 
   return Result.mapErr(
     workflowitemsResult,
-    (err) => new VError(err, `could not fetch workflowitems `),
+    (err) => new VError(err, "could not fetch workflowitems "),
   );
 }

@@ -28,7 +28,7 @@ export async function grantProjectPermission(
     }),
   );
   if (Result.isErr(newEventsResult)) {
-    return new VError(newEventsResult, `grant project permission failed`);
+    return new VError(newEventsResult, "grant project permission failed");
   }
   const newEvents = newEventsResult;
 

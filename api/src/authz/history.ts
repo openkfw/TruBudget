@@ -97,7 +97,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
     }
   } else {
     // No special handling needed
-    logger.debug({ event }, `No special handling for event needed`);
+    logger.debug({ event }, "No special handling for event needed");
   }
   return event;
 }

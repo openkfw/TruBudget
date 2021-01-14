@@ -32,7 +32,7 @@ export async function createUser(
     encrypt: async (plaintext) => encrypt(organizationSecret, plaintext),
   });
   if (Result.isErr(newEventsResult)) {
-    return new VError(newEventsResult, `failed to create user`);
+    return new VError(newEventsResult, "failed to create user");
   }
   const newEvents = newEventsResult;
 

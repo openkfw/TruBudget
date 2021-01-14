@@ -42,7 +42,7 @@ export async function updateProjectedBudget(
     ),
   );
   if (Result.isErr(updateProjectedBudgetResult)) {
-    return new VError(updateProjectedBudgetResult, `delete projected budget of subproject failed`);
+    return new VError(updateProjectedBudgetResult, "delete projected budget of subproject failed");
   }
   const { newEvents, projectedBudgets } = updateProjectedBudgetResult;
   for (const event of newEvents) {
