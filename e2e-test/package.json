@@ -1,6 +1,6 @@
 {
   "name": "trubudget-e2e-test",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "async-each": "^1.0.3",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "exceljs": "^4.2.0",
     "fs": "0.0.1-security",
     "md5-file": "^5.0.0",

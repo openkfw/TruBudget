@@ -5,6 +5,9 @@ export BUILDTIMESTAMP=$(date -Iseconds)
 if [ -n "$GITHUB_HEAD_REF" ]; then
   export GITHUB_BRANCH="$GITHUB_HEAD_REF"
 fi
+if [[ "$GITHUB_EVENT_NAME" = "release" ]]; then
+  export GITHUB_BRANCH="release"
+fi
 export TAG=trubudget/"$PROJECT_NAME":"$GITHUB_BRANCH"
 
 echo "/trubudget/$PROJECT_NAME:t_$GITHUB_RUN_ID"

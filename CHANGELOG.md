@@ -19,6 +19,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Security -->
 
+## [1.18.0] - 2021-01-14
+
+### Fixed
+
+- Fixed the width of dropdowns in workflowitem batch edit [#678](https://github.com/openkfw/TruBudget/issues/678)
+- Fixed Actions table of confirmation dialog alignment [#677](https://github.com/openkfw/TruBudget/issues/677)
+
+### Added
+
+- Added multiple selection to user selection for groups [#679](https://github.com/openkfw/TruBudget/issues/679)
+
 ## [1.17.0] - 2020-12-10
 
 ### Added
@@ -34,6 +45,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixed a bug in checkbox and baseline aligment in workflowitem [#707](https://github.com/openkfw/TruBudget/issues/707)
+- Fixed a bug in no due date set in workflowedit [#708](https://github.com/openkfw/TruBudget/issues/708)
 - Restricted workflowitems are now working as expected [#643](https://github.com/openkfw/TruBudget/issues/643)
 - Fixed a Bug where labels e.g. on login ID field were too large and not readable anymore [#625](https://github.com/openkfw/TruBudget/issues/625)
 - Fixed some translations as specified in [#655](https://github.com/openkfw/TruBudget/issues/655)
@@ -556,6 +569,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
 [unreleased]: https://github.com/openkfw/TruBudget/compare/v1.17.0...master
+[1.18.0]: https://github.com/openkfw/TruBudget/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/openkfw/TruBudget/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/openkfw/TruBudget/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/openkfw/TruBudget/compare/v1.14.0...v1.15.0

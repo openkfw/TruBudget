@@ -16,6 +16,7 @@ import React, { Component } from "react";
 import strings from "../../../localizeStrings";
 import CloseIcon from "@material-ui/icons/Close";
 import ActionButton from "../ActionButton";
+import OverflowTooltip from "../OverflowTooltip";
 
 const styles = {
   closeButtonContainer: { float: "right", marginTop: -8 },
@@ -31,6 +32,9 @@ const styles = {
     display: "flex",
     margin: 16,
     justifyContent: "flex-start"
+  },
+  nameContainer: {
+    maxWidth: "200px"
   }
 };
 
@@ -45,7 +49,9 @@ const renderSelection = (user, permissionedUser, intent, grant, revoke, myself, 
         onClick={checked ? () => revoke(intent, u.id) : () => grant(intent, u.id)}
       >
         <Checkbox checked={checked} disabled={(u.id === myself && checked) || disabled} />
-        <ListItemText primary={u.displayName} />
+        <ListItemText style={styles.nameContainer}>
+          <OverflowTooltip text={u.displayName} />
+        </ListItemText>
       </MenuItem>
     );
   });

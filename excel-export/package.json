@@ -1,13 +1,13 @@
 {
   "name": "excel-export",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "private": true,
   "description": "Export TruBudget data to Excel",
   "main": "src/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon dist)"
+    "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/openkfw/TruBudget#readme",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "exceljs": "^4.0.3",
     "jwt-decode": "^2.2.0",
     "localized-strings": "^0.2.4",

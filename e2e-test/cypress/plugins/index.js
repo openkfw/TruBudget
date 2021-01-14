@@ -15,6 +15,10 @@ const axios = require("axios");
 const path = require("path");
 const Excel = require("exceljs");
 const fs = require("fs");
+const tar = require("tar-fs");
+const rawTar = require("tar-stream");
+const yaml = require("js-yaml");
+const shell = require("shelljs");
 
 function reportsReadiness(baseUrl) {
   return axios
@@ -70,7 +74,7 @@ async function awaitApiReady(baseUrl) {
   return null;
 }
 
-async function readExcelSheet({index, file}) {
+async function readExcelSheet({ index, file }) {
   if (fs.existsSync(file)) {
     const workbook = new Excel.Workbook();
     await workbook.xlsx.readFile(file);
@@ -88,7 +92,7 @@ async function deleteFile(file) {
   return false;
 }
 
-async function checkFileExists({file, timeout}) {
+async function checkFileExists({ file, timeout }) {
   let nRetries = 20;
   while (nRetries > 0 && !fs.existsSync(file)) {
     --nRetries;
@@ -96,15 +100,56 @@ async function checkFileExists({file, timeout}) {
   }
   if (nRetries === 0) throw Error("file was not downloaded successfully");
 
-  return null;
+  return true;
 }
+async function modifyHash({ pathToFile, newHash, newBackup }) {
+  let success = false;
+  await checkFileExists({ file: pathToFile, timeout: 500 });
+  const extractPath = `/tmp/backup${Date.now()}`;
+  const metadataPath = `${extractPath}/metadata.yml`;
+  const unTARer = rawTar.extract();
+  const filePath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
+
+  unTARer.on("error", err => {
+    console.log(err.message);
+    unTARer.destroy();
+    return success;
+  });
+  const extract = tar.extract(extractPath, { extract: unTARer });
+  const file = fs.createReadStream(pathToFile);
+  const stream = file.pipe(extract);
+
+  stream.on("finish", async () => {
+    const config = loadConfig(metadataPath);
+    await updateMetadataFile(config, newHash, metadataPath);
+    tar.pack(extractPath).pipe(fs.createWriteStream(`${filePath}/${newBackup}`));
+    return success;
+  });
+  return checkFileExists({ file: `${filePath}/${newBackup}`, timeout: 500 });
+}
+const loadConfig = path => {
+  const config = yaml.safeLoad(fs.readFileSync(path, "utf8"));
+  shell.rm(path);
+  return config;
+};
+
+const updateMetadataFile = async (config, newHash, metadataPath) => {
+  shell.touch(metadataPath);
+  const ts = Date.now();
+  const organisation = config.hasOwnProperty("Organisation") ? `\nOrganisation: ${config.Organisation}` : "";
+  shell
+    .echo(`ChainName: ${config.ChainName}${organisation}\nTimestamp: ${ts}\nDirectoryHash: ${newHash}\n`)
+    .to(metadataPath);
+  return config;
+};
 
 module.exports = (on, _config) => {
   on("task", {
     awaitApiReady: awaitApiReady,
     readExcelSheet: readExcelSheet,
     deleteFile: deleteFile,
-    checkFileExists: checkFileExists
+    checkFileExists: checkFileExists,
+    modifyHash: modifyHash
   });
   on("before:browser:launch", (browser, options) => {
     const downloadDirectory = path.join(__dirname, "..", "fixtures");

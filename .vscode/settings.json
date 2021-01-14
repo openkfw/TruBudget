@@ -1,4 +1,4 @@
 {
-  "eslint.workingDirectories": ["./api", "./frontend"],
+  "eslint.workingDirectories": ["./api", "./frontend", "./provisioning", "./blockchain"],
   "editor.formatOnSave": true
 }

@@ -264,7 +264,7 @@ const pt = {
     workflow_budget_status_allocated: "Atribuído",
     workflow_budget_status_disbursed: "Pago",
     workflow_budget_status_na: "N/A",
-    workflow_budget: "Valor do item de workflow",
+    workflow_budget: "Montante do orçamento",
     workflow_comment: "Comentário do item de workflow",
     workflow_disable_sort: "Salvar",
     workflow_document_changed: "Alterado",

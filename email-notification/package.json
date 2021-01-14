@@ -1,7 +1,7 @@
 {
   "name": "email-notification",
   "description": "Sends notification-emails to provided SMTP server to identities saved in a database of choice.",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
   "homepage": "https://github.com/openkfw/TruBudget/email-notification/#readme",
   "dependencies": {
     "@types/jsonwebtoken": "^8.3.8",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",

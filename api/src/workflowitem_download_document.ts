@@ -132,7 +132,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           "Content-Disposition": `attachment; filename="${documentResult.fileName}"`,
         });
 
-        reply.status(code).send(new Buffer(documentResult.base64, "base64"));
+        reply.status(code).send(Buffer.from(documentResult.base64, "base64"));
       } catch (err) {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);

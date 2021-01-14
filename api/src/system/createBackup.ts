@@ -9,11 +9,17 @@ export const createBackup = async (
 ) => {
   const { userId } = req.user;
   if (userId === "root") {
-    const response = await axios({
-      url: `http://${multichainHost}:${backupApiPort}/chain`,
-      responseType: "stream",
-    });
-    return response.data;
+    try {
+      const response = await axios({
+        url: `http://${multichainHost}:${backupApiPort}/chain-sha256`,
+        responseType: "stream",
+      });
+      return response.data;
+    } catch (e) {
+      console.log("bc response error", e);
+      throw e;
+    }
+
   } else {
     throw { kind: "AuthenticationError", userId };
   }

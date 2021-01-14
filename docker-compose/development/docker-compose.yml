@@ -50,21 +50,27 @@ services:
       ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+    volumes:
+      - "../../provisioning/src:/usr/src/app/src:delegated"
     depends_on:
       - master-api
 
   excel-export:
     build: ../../excel-export
     environment:
-      PROD_API_HOST: localhost
+      PROD_API_HOST: master-api
       PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: localhost
+      TEST_API_HOST: master-api
       TEST_API_PORT: ${API_PORT}
       PORT: 8888
-    depends_on:
-      - master-api
+    command: ["npm", "run", "dev"]
+    volumes:
+      - "../../excel-export/src:/home/node/src:delegated"
     ports:
       - "8888:8888"
+      - "9231:9229"
+    depends_on:
+      - master-api
 
   frontend:
     build:
@@ -76,18 +82,15 @@ services:
     environment:
       PORT: 3000
       NODE_ENV: ${NODE_ENV}
-      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_USEPOLLING: "true" # for hot reloading of source files
       REACT_APP_VERSION: ${REACT_APP_VERSION}
-      REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
-      EXPORT_HOST: ${EXPORT_HOST}
-      EXPORT_PORT: ${EXPORT_PORT}
+      REACT_APP_EXPORT_SERVICE_ENABLED: "true"
     volumes:
-      - '../../frontend/src:/app/src'
-      - '/app/node_modules'
+      - "../../frontend/src:/app/src"
+      - "/app/node_modules"
+    ports:
+      - "3000:3000"
     depends_on:
       - master-api
       - excel-export
-    ports:
-      - "3000:3000"
-      - "9231:9229"
     stdin_open: true

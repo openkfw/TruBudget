@@ -64,6 +64,24 @@ describe("Workflowitem edit", function() {
     }
   );
 
+  it("If no due date is set, the due date field in edit dialog is empty", function() {
+    cy.server();
+    cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
+    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    // Create a workflowitem
+    cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
+      dueDate: ""
+    }).then(({ id }) => {
+      workflowitemId = id;
+      cy.visit(`/projects/${projectId}/${subprojectId}`);
+      // Edit workflow item
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
+      cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test=edit-workflowitem]").click();
+      cy.get("[data-test=datepicker-due-date] input").should("have.text", "");
+      cy.get("#due-date-helper-text").should("not.be.visible");
+    });
+  });
+
   it("When the due-date is not exceeded, the info icon badge is not displayed ", function() {
     // Create a workflowitem
     const tomorrow = getTomorrowsIsoDate();
@@ -117,8 +135,9 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=datepicker-due-date] input")
         .invoke("val")
         .then(date => {
-          const modifiedDate = updateIsodate(date);
-          expect(dueDate.slice(0, 10)).to.equal(modifiedDate);
+          //Convert Datepicker value to ISO-date
+          const modifiedDate = convertToIsoDate(date);
+          expect(dueDate).to.contain(modifiedDate);
         });
     });
   });
@@ -194,17 +213,10 @@ function getYesterdaysIsoDate() {
   return yesterday.toISOString();
 }
 
-function updateIsodate(enteredDate) {
-  const date = new Date(enteredDate);
-  const year = date.getFullYear();
-  let month = date.getMonth()+1;
-  let dt = date.getDate();
-
-  if (dt < 10) {
-    dt = '0' + dt;
-  }
-  if (month < 10) {
-  month = '0' + month;
-  }
-  return year+'-' + dt + '-'+ month;
+function convertToIsoDate(enteredDate) {
+  const dateSplit = enteredDate.split("/");
+  const day = dateSplit[0];
+  const month = dateSplit[1];
+  const year = dateSplit[2];
+  return year + "-" + month + "-" + day;
 }

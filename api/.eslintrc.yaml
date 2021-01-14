@@ -116,10 +116,6 @@ rules:
   ## turn the rule on and add inline overrides
   no-continue: 0
 
-  ## no-buffer-constructor: 2
-  ## TODO api/src/workflowitem_download_document.ts
-  no-buffer-constructor: 0
-
   ## consistent-return can stay turned off, little value in TS
   consistent-return: 0
 

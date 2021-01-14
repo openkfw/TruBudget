@@ -18,8 +18,9 @@ const { startMultichainDaemon, configureChain } = require("./createChain");
 const {
   moveBackup,
   verifyHash,
-  createMetadataFile,
+  verifyHashSha256,
   removeFile,
+  createMetadataFileSha256,
 } = require("./shell");
 
 const app = express();
@@ -29,8 +30,7 @@ const ORGANIZATION = process.env.ORGANIZATION || "MyOrga";
 const CHAINNAME = "TrubudgetChain";
 const RPC_PORT = process.env.RPC_PORT || 8000;
 const RPC_USER = process.env.RPC_USER || "multichainrpc";
-const RPC_PASSWORD =
-  process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
+const RPC_PASSWORD = process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
 const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 
 let autostart = true;
@@ -53,18 +53,17 @@ const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
 const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
 const NOTIFICATION_SEND_INTERVAL = process.env.NOTIFICATION_SEND_INTERVAL || 10;
 const emailAuthSecret = process.env.JWT_SECRET;
-const EMAIL_SERVICE_ENABLED =
-  (process.env.EMAIL_HOST &&
-    process.env.EMAIL_PORT &&
-    process.env.EMAIL_SERVICE === "ENABLED") ||
-  false;
+const EMAIL_SERVICE_ENABLED = (process.env.EMAIL_HOST
+    && process.env.EMAIL_PORT
+    && process.env.EMAIL_SERVICE === "ENABLED")
+  || false;
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
 const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
 const isMaster = !P2P_HOST ? true : false;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
-  ? `-blocknotify=${BLOCKNOTIFY_SCRIPT}`
+  ? `-blocknotify=${blockNotifyArg}`
   : "";
 
 const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
@@ -125,29 +124,25 @@ configureChain(
 
 function initMultichain() {
   if (isMaster) {
-    spawnProcess(() =>
-      startMultichainDaemon(
-        CHAINNAME,
-        externalIpArg,
-        blockNotifyArg,
-        P2P_PORT,
-        multichainDir,
-      ),
-    );
+    spawnProcess(() => startMultichainDaemon(
+      CHAINNAME,
+      externalIpArg,
+      blockNotifyArg,
+      P2P_PORT,
+      multichainDir,
+    ),);
   } else {
-    spawnProcess(() =>
-      startSlave(
-        CHAINNAME,
-        API_PROTO,
-        API_HOST,
-        API_PORT,
-        P2P_PORT,
-        connectArg,
-        blockNotifyArg,
-        externalIpArg,
-        multichainDir,
-      ),
-    );
+    spawnProcess(() => startSlave(
+      CHAINNAME,
+      API_PROTO,
+      API_HOST,
+      API_PORT,
+      P2P_PORT,
+      connectArg,
+      blockNotifyArg,
+      externalIpArg,
+      multichainDir,
+    ),);
     setTimeout(
       () => registerNodeAtMaster(ORGANIZATION, API_PROTO, API_HOST, API_PORT),
       5000,
@@ -155,10 +150,9 @@ function initMultichain() {
   }
 }
 
-let externalIpArg =
-  process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== ""
-    ? `-externalip=${EXTERNAL_IP}`
-    : "";
+let externalIpArg = process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== ""
+  ? `-externalip=${EXTERNAL_IP}`
+  : "";
 
 if (EXPOSE_MC) {
   const kc = new k8s.KubeConfig();
@@ -213,12 +207,12 @@ const stopMultichain = async (mcproc) => {
   console.log("Multichain process killed...");
 };
 
-app.get("/chain", async (req, res) => {
+app.get("/chain-sha256", async (req, res) => {
   try {
     console.log("Start packaging");
     autostart = false;
     await stopMultichain(mcproc);
-    await createMetadataFile(CHAINNAME, multichainDir, ORGANIZATION);
+    await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
     res.setHeader("Content-Type", "application/gzip");
     res.setHeader(
       "Content-Disposition",
@@ -228,15 +222,13 @@ app.get("/chain", async (req, res) => {
       .pack(`${multichainDir}/${CHAINNAME}`, {
         finish: () => {
           console.log("Restarting multichain...");
-          spawnProcess(() =>
-            startMultichainDaemon(
-              CHAINNAME,
-              externalIpArg,
-              blockNotifyArg,
-              P2P_PORT,
-              multichainDir,
-            ),
-          );
+          spawnProcess(() => startMultichainDaemon(
+            CHAINNAME,
+            externalIpArg,
+            blockNotifyArg,
+            P2P_PORT,
+            multichainDir,
+          ),);
           autostart = true;
         },
       })
@@ -279,28 +271,31 @@ app.post("/chain", async (req, res) => {
     stream.on("finish", async () => {
       if (fs.existsSync(metadataPath)) {
         const config = loadConfig(metadataPath);
-        const valid = await verifyHash(config.DirectoryHash, extractPath);
+        const validSha256 = await verifyHashSha256(config.DirectoryHash, extractPath);
+        // TODO MD5 hashing is deprecated. Remove it in the future and keep only SHA256
+        let validMD5 = false;
+        if (!validSha256) {
+          validMD5 = await verifyHash(config.DirectoryHash, extractPath);
+        }
         const chainConfig = yaml.safeLoad(fs.readFileSync(chainConfigPath, "utf8"));;
         var correctConfig = chainConfig.includes(RPC_PASSWORD);
-        
+
         if (config.hasOwnProperty("Organisation")) {
           const correctOrg = config.Organisation === ORGANIZATION;
           correctConfig = correctConfig && correctOrg;
         }
         if (correctConfig) {
-          if (valid) {
+          if (validSha256 || validMD5) {
             autostart = false;
             await stopMultichain(mcproc);
             await moveBackup(multichainDir, extractPath, CHAINNAME);
-            spawnProcess(() =>
-              startMultichainDaemon(
-                CHAINNAME,
-                externalIpArg,
-                blockNotifyArg,
-                P2P_PORT,
-                multichainDir,
-              ),
-            );
+            spawnProcess(() => startMultichainDaemon(
+              CHAINNAME,
+              externalIpArg,
+              blockNotifyArg,
+              P2P_PORT,
+              multichainDir,
+            ),);
             autostart = true;
             res.send("OK");
           } else {
@@ -328,4 +323,3 @@ app.post("/chain", async (req, res) => {
 app.listen(port, function () {
   console.log(`App listening on ${port}`);
 });
-
