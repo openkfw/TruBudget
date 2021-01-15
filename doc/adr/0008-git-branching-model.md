@@ -1,6 +1,7 @@
 # 8. Git Branching Model
 
 Date: 29/08/2018
+Updated: 15/01/20201
 
 ## Status
 
@@ -47,8 +48,22 @@ The steps required for making a new release are:
 As soon as a network is ready to be upgraded to the new version, its branch may be updated:
 
 1. Checkout the network branch, e.g. `1.x.x_my-example-network`.
-1. Merge-in the release branch (or a specific tag), e.g. `git merge release_1.x.x`.
+2. Merge-in the release branch (or a specific tag), e.g. `git merge release_1.x.x`.
 
+## How to prepare a release - manual for dummies
+
+1. Pull the latest master
+2. Create from the latest master a new branch, which will contain metadata changes described below. E.g. `git checkout -b 'bump_to_v1.X.X'`
+3. On this new branch, in every module, increment value of `version` in `package.json` and install npm modules
+   OR
+   run `bump-tag-versions.sh` with appropriate argument (version number)
+4. Update `changelog.md`. N.B. at the bottom of changelog, there are links to code comparison. URL for a new release will be known, after `tags` are added. See below.
+5. Push and create a PR of the "bump" branch into master.
+6. After the PR is reviewed, approved, and merged, `Draft new release` in GitHub
+7. Create tag with version number. Binaries should be added automatically.
+8. Merge updated master into release branch (`1.x.x-release` at the moment)
+9. When this is done, image on docker hub should be updated. Check it! (https://hub.docker.com/r/trubudget)
+10. Well done!
 ## Consequences
 
 - The Git history shows when a release happened and who released it. Also, there is no
