@@ -76,7 +76,6 @@ each intent the groups allowed to execute that intent:
 {
   "acl": {
     "view project": ["all users"],
-    "archive project": ["admins"]
   },
   ...
 }
