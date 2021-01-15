@@ -26,7 +26,6 @@ type Intent =
   | "project.assign"
   | "project.update"
   | "project.close"
-  | "project.archive"
   | "project.createSubproject"
   | "project.budget.updateProjected"
   | "project.budget.deleteProjected"
@@ -40,7 +39,6 @@ type Intent =
   | "subproject.assign"
   | "subproject.update"
   | "subproject.close"
-  | "subproject.archive"
   | "subproject.createWorkflowitem"
   | "subproject.reorderWorkflowitems"
   | "subproject.budget.updateProjected"
@@ -53,7 +51,6 @@ type Intent =
   | "workflowitem.assign"
   | "workflowitem.update"
   | "workflowitem.close"
-  | "workflowitem.archive"
   | "notification.create"
   | "network.registerNode"
   | "network.list"
@@ -125,7 +122,7 @@ export const projectIntents: Intent[] = [
   "project.assign",
   "project.update",
   "project.close",
-  "project.archive",
+
   "project.createSubproject",
   "project.budget.updateProjected",
   "project.budget.deleteProjected",
@@ -141,7 +138,7 @@ export const subprojectIntents: Intent[] = [
   "subproject.assign",
   "subproject.update",
   "subproject.close",
-  "subproject.archive",
+
   "subproject.createWorkflowitem",
   "subproject.reorderWorkflowitems",
   "subproject.budget.updateProjected",
@@ -157,7 +154,6 @@ export const workflowitemIntents: Intent[] = [
   "workflowitem.assign",
   "workflowitem.update",
   "workflowitem.close",
-  "workflowitem.archive",
 ];
 
 export const allIntents: Intent[] = [
@@ -188,7 +184,7 @@ export const allIntents: Intent[] = [
   "project.assign",
   "project.update",
   "project.close",
-  "project.archive",
+
   "project.createSubproject",
   "project.budget.updateProjected",
   "project.budget.deleteProjected",
@@ -201,7 +197,7 @@ export const allIntents: Intent[] = [
   "subproject.assign",
   "subproject.update",
   "subproject.close",
-  "subproject.archive",
+
   "subproject.createWorkflowitem",
   "subproject.reorderWorkflowitems",
   "subproject.budget.updateProjected",
@@ -214,7 +210,6 @@ export const allIntents: Intent[] = [
   "workflowitem.assign",
   "workflowitem.update",
   "workflowitem.close",
-  "workflowitem.archive",
   "notification.create",
   "network.registerNode",
   "network.list",
