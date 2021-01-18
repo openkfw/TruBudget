@@ -21,7 +21,7 @@ import OverflowTooltip from "../OverflowTooltip";
 const styles = {
   closeButtonContainer: { float: "right", marginTop: -8 },
   closeButtonSize: { fontSize: 15 },
-  itemContainer: { maxHeight: "70vh", overflow: "auto" },
+  itemContainer: { maxHeight: "65vh", overflow: "auto", boxShadow: 'none' },
   fixLabel: { top: "auto" },
   warning: { marginRight: "8px" },
   warningContainer: { display: "flex", alignItems: "center", justifyContent: "center" },
