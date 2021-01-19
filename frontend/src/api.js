@@ -5,8 +5,8 @@ import strings from "./localizeStrings";
 const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
-const PORT_EXPORT_SVC = "8888";
-const PORT_EMAIL_SVC = "8890";
+const PORT_EXPORT_SVC = process.env.EXPORT_PORT || "8888";
+const PORT_EMAIL_SVC = process.env.EMAIL_PORT || "8890";
 
 // eslint-disable-next-line no-console
 console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`);
