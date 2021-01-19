@@ -126,10 +126,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const permissions = permissionsResult;
 
         // TODO use an exposedPermissions interface instead of a filter function
-        const filteredPermissions = filterPermissions(permissions, [
-          "workflowitem.close",
-          "workflowitem.archive",
-        ]);
+        const filteredPermissions = filterPermissions(permissions, ["workflowitem.close"]);
 
         const code = 200;
         const body = {

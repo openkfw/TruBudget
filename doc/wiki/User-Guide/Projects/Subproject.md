@@ -27,7 +27,6 @@ There are some different permissions which affect subprojects.
 - subproject.assign
 - subproject.update
 - subproject.close
-- subproject.archive
 - subproject.createWorkflowitem
 - subproject.reorderWorkflowitems
 - subproject.viewHistory

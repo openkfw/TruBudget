@@ -96,10 +96,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         }
 
         // TODO use an exposedPermissions interface instead of a filter function
-        const filteredProjectPermissions = filterPermissions(projectPermissions, [
-          "project.close",
-          "project.archive",
-        ]);
+        const filteredProjectPermissions = filterPermissions(projectPermissions, ["project.close"]);
 
         const code = 200;
         const body = {
