@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   Route, Redirect,
-} from 'react-router'
+} from 'react-router';
 
 
 class PrivateRoute extends Component {
@@ -18,19 +18,19 @@ class PrivateRoute extends Component {
             <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
           )
       )} />
-    )
+    );
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     jwt: state.getIn(['login', 'jwt']),
-  }
-}
+  };
+};
 const mapDispatchToProps = (dispatch) => {
   return {
-  }
-}
+  };
+};
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);
