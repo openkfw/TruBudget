@@ -5,6 +5,8 @@ import strings from "./localizeStrings";
 const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
+const PORT_EXPORT_SVC = process.env.EXPORT_PORT || "8888";
+const PORT_EMAIL_SVC = process.env.EMAIL_PORT || "8890";
 
 // eslint-disable-next-line no-console
 console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`);
@@ -55,6 +57,23 @@ class Api {
       instance.defaults.baseURL = `/api`;
     }
   };
+
+  /**
+   * Returns URL for calling Excel export service
+   * @param {*} urlSlug tail segment of the URL
+   * @param {*} devModePrefix prefixes urlSlug with additional string, if needed
+   */
+  getExportServiceUrl = (urlSlug, devModePrefix = '') => {
+    const baseURL = devMode ? `http://localhost:${PORT_EXPORT_SVC}${!devModePrefix.length ? '' : `/${devModePrefix}`}` : '/export/xlsx';
+    return `${baseURL}/${urlSlug}`;
+  };
+
+  /**
+   * Returns URL for calling Email service
+   * @param {*} urlSlug tail segment of the URL
+   */
+  getEmailServiceUrl = (urlSlug) =>
+     `${devMode ? `http://localhost:${PORT_EMAIL_SVC}` : '/email'}/${urlSlug}`;
 
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
@@ -433,47 +452,42 @@ class Api {
     return response;
   };
   export = () => {
-    const path = devMode
-      ? `http://localhost:8888/test/api/export/xlsx/download?lang=${strings.getLanguage()}`
-      : `/export/xlsx/download?lang=${strings.getLanguage()}`;
-
+    const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, 'test/api/export/xlsx');
     return instance.get(path, { responseType: "blob" });
   };
   fetchExportServiceVersion = () => {
-    const path = devMode ? "http://localhost:8888/version" : "/export/xlsx/version";
+    const path = this.getExportServiceUrl('version');
     return instance.get(path);
   };
   checkExportService = () => {
-    const path = devMode ? "http://localhost:8888/readiness" : "/export/xlsx/readiness";
+    const path = this.getExportServiceUrl('readiness');
     return instance.get(path);
   };
   checkEmailService = () => {
-    const path = devMode ? "http://localhost:8890/readiness" : "/email/readiness";
+    const path = this.getEmailServiceUrl('readiness');
     return instance.get(path);
   };
   fetchEmailServiceVersion = () => {
-    const path = devMode ? "http://localhost:8890/version" : "/email/version";
+    const path = this.getEmailServiceUrl('version');
     return instance.get(path);
   };
   insertEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
-    const path = devMode ? "http://localhost:8890/user.insert" : "/email/user.insert";
+    const path = this.getEmailServiceUrl('user.insert');
     return instance.post(path, data);
   };
   updateEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
-    const path = devMode ? "http://localhost:8890/user.update" : "/email/user.update";
+    const path = this.getEmailServiceUrl('user.update');
     return instance.post(path, data);
   };
   deleteEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
-    const path = devMode ? "http://localhost:8890/user.delete" : "/email/user.delete";
+    const path = this.getEmailServiceUrl('user.delete');
     return instance.post(path, data);
   };
   getEmailAddress = id => {
-    const path = devMode
-      ? `http://localhost:8890/user.getEmailAddress?id=${id}`
-      : `/email/user.getEmailAddress?id=${id}`;
+    const path = this.getEmailServiceUrl(`user.getEmailAddress?id=${id}`);
     return instance.get(path);
   };
 
