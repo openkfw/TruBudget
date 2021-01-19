@@ -268,6 +268,7 @@ describe("update workflowitem: how modifications are applied", () => {
       'are cleared if the amountType is set to "N/A" by the update',
     async () => {
       const modification = {
+        // eslint-disable-next-line @typescript-eslint/prefer-as-const
         amountType: "N/A" as "N/A",
       };
       const result = await updateWorkflowitem(

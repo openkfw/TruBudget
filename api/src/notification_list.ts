@@ -189,8 +189,9 @@ interface Service {
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
 }
 
-// C'mon, TypeScript!
+// eslint-disable-next-line @typescript-eslint/prefer-as-const
 const TRUE = true as true;
+// eslint-disable-next-line @typescript-eslint/prefer-as-const
 const FALSE = false as false;
 
 async function getProjectMetadata(

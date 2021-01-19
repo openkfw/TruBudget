@@ -9,7 +9,9 @@ import * as WorkflowitemClosed from "./workflowitem_closed";
 import { sortWorkflowitems } from "./workflowitem_ordering";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 
+// eslint-disable-next-line @typescript-eslint/prefer-as-const
 const OPEN = "open" as "open";
+// eslint-disable-next-line @typescript-eslint/prefer-as-const
 const CLOSED = "closed" as "closed";
 
 const ctx: Ctx = { requestId: "", source: "test" };
