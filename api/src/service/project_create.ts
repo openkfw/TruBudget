@@ -27,7 +27,7 @@ export async function createProject(
   );
 
   if (Result.isErr(creationEventResult)) {
-    return new VError(creationEventResult, `create project failed`);
+    return new VError(creationEventResult, "create project failed");
   }
   const creationEvent = creationEventResult;
 

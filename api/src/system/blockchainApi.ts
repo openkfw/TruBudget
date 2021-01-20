@@ -27,7 +27,7 @@ class BlockchainApi {
     instance.defaults.baseURL = `${url}`;
   };
 
-  fetchVersion = () => instance.get(`/version`);
+  fetchVersion = () => instance.get("/version");
 }
 
 export default BlockchainApi;

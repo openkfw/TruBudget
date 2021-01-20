@@ -31,7 +31,7 @@ export async function createSubproject(
   });
 
   if (Result.isErr(createEventResult)) {
-    return new VError(createEventResult, `close project failed`);
+    return new VError(createEventResult, "close project failed");
   }
   const createEvent = createEventResult;
 

@@ -87,7 +87,7 @@ function applyRead(
 ) {
   const notification = deepcopy(notificationsById.get(notificationRead.notificationId));
   if (notification === undefined) {
-    errors.push(new EventSourcingError({ ctx, event: notificationRead }, `notification not found`));
+    errors.push(new EventSourcingError({ ctx, event: notificationRead }, "notification not found"));
     return;
   }
 

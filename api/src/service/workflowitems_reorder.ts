@@ -32,7 +32,7 @@ export async function setWorkflowitemOrdering(
   );
 
   if (Result.isErr(reorderWorkflowitemsResult)) {
-    return new VError(reorderWorkflowitemsResult, `reorder workflowitems failed`);
+    return new VError(reorderWorkflowitemsResult, "reorder workflowitems failed");
   }
   const newEvents = reorderWorkflowitemsResult;
 

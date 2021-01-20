@@ -146,13 +146,13 @@ if (!process.env.ROOT_SECRET) {
 }
 const organization: string = process.env.ORGANIZATION || "";
 if (!organization) {
-  logger.fatal(`Please set ORGANIZATION to the organization this node belongs to.`);
+  logger.fatal("Please set ORGANIZATION to the organization this node belongs to.");
   process.exit(1);
 }
 const organizationVaultSecret: string = process.env.ORGANIZATION_VAULT_SECRET || "";
 if (!organizationVaultSecret) {
   logger.fatal(
-    `Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.`,
+    "Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.",
   );
   process.exit(1);
 }

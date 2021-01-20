@@ -40,7 +40,7 @@ export async function deleteProjectedBudget(
     ),
   );
   if (Result.isErr(deleteProjectedBudgetResult)) {
-    return new VError(deleteProjectedBudgetResult, `delete projected budget of subproject failed`);
+    return new VError(deleteProjectedBudgetResult, "delete projected budget of subproject failed");
   }
   const { newEvents, projectedBudgets } = deleteProjectedBudgetResult;
   for (const event of newEvents) {

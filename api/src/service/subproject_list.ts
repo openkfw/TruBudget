@@ -23,6 +23,6 @@ export async function listSubprojects(
   );
   return Result.mapErr(
     visibleSubprojectsResult,
-    (err) => new VError(err, `list subprojects failed`),
+    (err) => new VError(err, "list subprojects failed"),
   );
 }

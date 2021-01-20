@@ -19,5 +19,5 @@ export async function listProjects(
       },
     }),
   );
-  return Result.mapErr(visibleProjectsResult, (err) => new VError(err, `list projects failed`));
+  return Result.mapErr(visibleProjectsResult, (err) => new VError(err, "list projects failed"));
 }

@@ -38,7 +38,7 @@ export async function revokeSubprojectPermission(
     ),
   );
   if (Result.isErr(newEventsResult)) {
-    return new VError(newEventsResult, `close project failed`);
+    return new VError(newEventsResult, "close project failed");
   }
   const newEvents = newEventsResult;
 

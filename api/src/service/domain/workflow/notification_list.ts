@@ -21,7 +21,7 @@ export async function getUserNotifications(
 
   const notificationEventsResult = await repository.getUserNotificationEvents(user.id);
   if (Result.isErr(notificationEventsResult)) {
-    return new VError(notificationEventsResult, `fetch notification events failed`);
+    return new VError(notificationEventsResult, "fetch notification events failed");
   }
   const { notificationsById } = sourceNotifications(ctx, notificationEventsResult);
 

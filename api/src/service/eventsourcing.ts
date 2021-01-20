@@ -157,7 +157,7 @@ export function applyStreamItems(streamItems: Item[], project?: Project): Projec
     const event = item.data.json as Event;
 
     if (event.intent === undefined) {
-      logger.debug({ event }, `cache1: ignoring event`);
+      logger.debug({ event }, "cache1: ignoring event");
       continue;
     }
 
@@ -183,7 +183,7 @@ export function applyStreamItems(streamItems: Item[], project?: Project): Projec
       });
     }
 
-    logger.trace({ project, item }, `Applied stream item to project`);
+    logger.trace({ project, item }, "Applied stream item to project");
   }
   return project;
 }

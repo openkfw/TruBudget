@@ -143,7 +143,7 @@ export async function updateWorkflowitem(
       // Documents of newEvent are created from documents given by the requestData(modification).
       // If documents exist in newEvent there has to be the same amount in modification
       // The documents in modification have to be used to find out the base64 string since it may not be part of the update event itself
-      return new Error(`Assertion: This is a bug.`);
+      return new Error("Assertion: This is a bug.");
     }
     const modDocuments = modification.documents;
     newDocumentUploadedEventsResult = documents.map((d, i) => {

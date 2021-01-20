@@ -39,7 +39,7 @@ export async function closeWorkflowitem(
   );
 
   if (Result.isErr(newEventsResult)) {
-    return new VError(newEventsResult, `close workflowitem failed`);
+    return new VError(newEventsResult, "close workflowitem failed");
   }
   const newEvents = newEventsResult;
 
