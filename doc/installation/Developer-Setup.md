@@ -487,6 +487,18 @@ npm run e2etest -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=htt
 
 or through the Cypress frontend under settings.
 
+When you run built appication locally( e. g. with `sh scripts/local/start-and-provision-master-node.sh`), you can use following command:
+```node
+npm run cypress -- --config baseUrl=http://localhost
+```
+API and Excel Export base URL do not need to be set, Nginx run in frontend container takes care for request routing.
+
+After running in Docker Compose develompent mode (`sh scripts/development/start-dev.sh`), you can run E2E tests with 
+```bash
+ sh scripts/development/run-e2e-test.sh
+```
+ Note: This runs single test file currently. You can change the file path in _docker-compose/development/e2e.test.yml_.
+
 ### Unit Tests
 
 Before checking in, you should always create unit tests for the implemented part. For unit testing we use the testing framework [Mocha] with [Chai] as assertion library.
