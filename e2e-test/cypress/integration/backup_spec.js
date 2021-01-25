@@ -22,7 +22,7 @@ describe("Backup Feature", function () {
     // a backup will be downloaded
     cy.server();
     cy.route("GET", apiRoute + "/system.createBackup*").as("create");
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=download-backup]").click();
@@ -71,8 +71,7 @@ describe("Backup Feature", function () {
     });
   });
 
-  it("Tests the download of a backup.gz file", function() {
-    cy.log("dss");
+  it("Tests the download of a backup.gz file", function () {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.createBackup().then(headers => {
       expect(headers).to.include({
@@ -162,44 +161,6 @@ describe("Backup Feature", function () {
                   .should("not.include", "Backup Successful");
               });
           });
-      });
-  });
-
-  it("Tests the restore of a valid backup", function() {
-    const fileName = "valid_backup.gz";
-
-    cy.server();
-    cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
-
-    cy.login("root", Cypress.env("ROOT_SECRET"));
-    cy.visit("/projects");
-    cy.get("[data-test=openSideNavbar]").click();
-    cy.get("[data-test=side-navigation]");
-    //Upload file
-    cy.fixture(fileName, "binary")
-      .then(fileContent => Cypress.Blob.binaryStringToBlob(fileContent))
-      .then(fileContent => {
-        cy.get("#uploadBackup").upload(
-          { fileContent: fileContent, fileName, mimeType: "application/gzip", encoding: "utf-8" },
-          { subjectType: "input" }
-        );
-      });
-    cy.wait("@restore")
-      .should(xhr => {
-        expect(xhr.status).to.eq(200);
-      })
-      .then(() => {
-        cy.task("awaitApiReady", baseUrl).then(() => {
-          cy.url()
-            .should("include", "/login")
-            .then(() => {
-              cy.login("root", Cypress.env("ROOT_SECRET"));
-              cy.visit("/projects");
-              cy.get("[data-test=project-title] span")
-                .invoke("text")
-                .should("include", "Backup Successful");
-            });
-        });
       });
   });
 });
