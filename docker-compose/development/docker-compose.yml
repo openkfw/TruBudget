@@ -94,6 +94,7 @@ services:
       CHOKIDAR_USEPOLLING: "true" # for hot reloading of source files
       REACT_APP_VERSION: ${REACT_APP_VERSION}
       REACT_APP_EXPORT_SERVICE_ENABLED: "true"
+      HOST: frontend # fix Invalid host header in docker composed E2E tests, React App parameter
     volumes:
       - "../../frontend/src:/app/src"
       - "/app/node_modules"
