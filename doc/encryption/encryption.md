@@ -1,5 +1,7 @@
 # Approaches tried to achieve encrypted communication between nodes
 
+Please take it with a grain of salt, and a healthy dose of scpeticism. I am not an expert in any of the topics discussed below. It's always possible that I configured something incorrectly.
+
 ## SOCKS proxy
 
 MultiChain daemon has an option to connect node via proxy, which is probably SOCKS proxy. 
@@ -8,7 +10,15 @@ Usage is
 ```
 multichaind [chain]@[ip-address]:[port] - daemon -proxy:[user]:[pass]@[myproxy]:[myproxyport]
 ```
-SOCKS in intself does not provide encryption. The most common usage scenarios are probably to give a node running on a computer with no Internet access connectivity via proxy connected to the Internet, or to connect Bitcoin node to TOR (The Onion Network).
+
+The most common usage scenarios are probably to give a node running on a computer with no Internet access connectivity via proxy connected to the Internet, or to connect Bitcoin node to TOR (The Onion Router).
+
+SOCKS protocol in itself does not provide encryption. Dynamic port forwarding with SSH creates a local SOCKS proxy server. When client connects to a port associated with the SOCKS proxy, its connection is forwarded to the configured *ssh server*. It is this part of connection that is encrypted, namely from ssh client to ssh server, and back. Traffic from server to destination is, and should be, the same as before it entered proxy, which in our case is unencrypted.
+
+Problem which arises if SOCKS proxy would be used as a solution for adding encryption on top of unsecured HTTP without VPN is the need to create a *complete digraph*, in which every multichain node is connected to every other multichain node by a bidirectional encrypted communication channel. 
+
+If it was possible to automate creation of tunnels, it might be a viable option.
+
 
 ## SSH tunnel
 
