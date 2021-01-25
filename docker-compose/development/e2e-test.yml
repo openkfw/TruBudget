@@ -1,0 +1,20 @@
+version: "3"
+services:
+  e2e-test:
+    shm_size: 8gb
+    build: ../../e2e-test
+    ipc: "host"
+    environment:
+      # pass base url to test pointing at the web application
+      CYPRESS_baseUrl: http://frontend:3000
+      CYPRESS_numTestsKeptInMemory: 0
+      CYPRESS_API_BASE_URL: http://master-api:${API_PORT}
+      CYPRESS_EXPORT_SERVICE_BASE_URL: http://excel-export:8888
+    entrypoint: ["npm", "run", "e2etest"]
+    command: ["--", "--spec", "**/login_spec.js"]
+    working_dir: /e2e-test
+    tty: true
+    stdin_open: true
+    # share the current folder as volume to avoid copying
+    volumes:
+      - ../../e2e-test:/e2e-test
