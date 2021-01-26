@@ -1,3 +1,7 @@
+body {
+  overflow: visible !important;
+  padding: 0px !important;
+}
 .container {
   flex: 1;
   width: 74%;
