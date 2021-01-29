@@ -21,6 +21,11 @@
 
 TruBudget - a trusted public expenditure tool. A collaborative workflow tool and secured platform to track and coordinate the implementation of donor-funded investment projects.
 
+Please refer to following videos to get an overview of Trubudget, and motivation behind its development.
+
+- [Short overview](https://www.youtube.com/watch?v=_eN0X1PyXAE)
+- [In depth talk about TruBudget at OpenSlava 2019 by Dr. Jure Zakotnik](https://www.youtube.com/watch?v=rnTsPjhTVj0)  
+
 If you have questions or just want to talk to us, find us on [Gitter](https://gitter.im/Tru-Community/community)!
 
 # Getting Started
