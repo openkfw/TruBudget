@@ -463,7 +463,7 @@ const pt = {
     subproject_intent_revokePermission: "As permissões para o subprojeto {0} foram alteradas",
     subproject_projected_budget_deleted: "Orçamento projetado do subprojeto {0} foi excluído",
     subproject_projected_budget_updated: "Orçamento projetado do subprojeto {0} foi atualizado",
-    subproject_reorderWorkflowitems: "Os items de workflow do subprojeto {0} foram reordenados",
+    subproject_reorderWorkflowitems: "Os items de workflow {2} do subprojeto {0} foram reordenados",
     subproject_update: "Subprojeto {0} foi atualizado",
     subproject_updated: "Subprojeto {0} foi atualizado",
     workflowitem_assign: "Item de workflow {0} foi atribuído a você",

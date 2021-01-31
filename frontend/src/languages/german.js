@@ -462,7 +462,7 @@ const de = {
     subproject_intent_revokePermission: "German: The permissions for subproject {0} changed",
     subproject_projected_budget_deleted: "Geplantes Budget von Subprojekt {0} wurde entfernt",
     subproject_projected_budget_updated: "Geplantes Budget von Subprojekt {0} wurde aktualisiert",
-    subproject_reorderWorkflowitems: "German: The workflowitems of subproject {0} were reordered",
+    subproject_reorderWorkflowitems: "German: The workflowitems {2} of subproject {0} were reordered",
     subproject_update: "German: Subproject {0} was updated",
     subproject_updated: "German: Subproject {0} was updated",
     workflowitem_assign: "German: Workflowitem {0} was assigned to you",

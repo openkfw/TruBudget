@@ -4,6 +4,14 @@ import strings from "../../../localizeStrings";
 
 const formatPermission = data => `"${strings.permissions[data.replace(/[.]/g, "_")]}"` || `"${data.intent}"`;
 
+const reorderRowPosition = (currPos, prevPos, workflowitems) => {
+  let rows = [];
+  currPos.map((item, index) => prevPos[index] !== currPos[index]
+    && workflowitems.filter(workflowitem => workflowitem.id === item && rows.push(` ${workflowitem.displayName}`))
+  );
+  return rows;
+}
+
 const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
   const createdBy = getUserDisplayname(businessEvent.publisher);
   const eventType = businessEvent.type;
@@ -72,8 +80,14 @@ const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
         getUserDisplayname(businessEvent.revokee),
         displayName
       );
-    case "workflowitems_reordered":
-      return formatString(strings.history.subproject_reorderWorkflowitems, createdBy, displayName);
+    case "workflowitems_reordered": {
+      const currentOrdering = businessEvent && businessEvent.ordering;
+      const previousOrdering = businessEvent && businessEvent.previousOrdering;
+      const workflowitems = businessEvent && businessEvent.workflowitems;
+      const rowPositions = reorderRowPosition(currentOrdering, previousOrdering, workflowitems);
+
+      return formatString(strings.history.subproject_reorderWorkflowitems, createdBy, displayName, rowPositions);
+    }
 
     case "workflowitem_created":
       return formatString(strings.history.subproject_createWorkflowitem, createdBy, displayName);

@@ -524,7 +524,7 @@ const ka = {
     workflowitem_revokePermission_details: "{0} გაუუქმა {2}-სა და {3}-ს ნებართვა {1}",
     workflowitem_revokePermission: "{0} გაუუქმა {2}-ს ნებართვა {1}",
     workflowitem_update_docs: "{0} დაამატა დოკუმენტები workflowitem-ს {1} ",
-    workflowitem_update: "{0} შეცვალა workflowitem-ი {1} "
+    workflowitem_update: "{0} შეცვალა {2} workflowitem-ი {1} "
   },
 
   permissions: {

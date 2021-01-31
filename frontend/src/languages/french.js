@@ -515,7 +515,7 @@ const fr = {
     subproject_createWorkflowitem: "{0} a crée l’étape de workflow {1}",
     subproject_grantPermission_details: "{0} a modifié l'autorisation {1} à {2} de {3}",
     subproject_grantPermission: "{0} a modifié l'autorisation {1} à {2}",
-    subproject_reorderWorkflowitems: "{0} a changé l'ordre des workflows",
+    subproject_reorderWorkflowitems: "{0} a changé l'ordre des workflows {2}",
     subproject_revokePermission_details: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     subproject_revokePermission: "{0} a révoqué l'autorisation {1} de {2}",
     subproject_update: "{0} a modifié la composante {1} ",
