@@ -10,6 +10,7 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
+import * as Workflowitem from "./workflowitem";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as WorkflowitemOrdering from "./workflowitem_ordering";
 import * as WorkflowitemsReordered from "./workflowitems_reordered";
@@ -19,6 +20,10 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Subproject.Subproject>>;
+  getWorkflowitems(
+    projectId: string,
+    subprojectId: string,
+  ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
 }
 
 export async function setWorkflowitemOrdering(
@@ -33,19 +38,27 @@ export async function setWorkflowitemOrdering(
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
   }
-  const currentOrder = subproject.workflowitemOrdering;
+
+  const workflowitems = await repository.getWorkflowitems(projectId, subprojectId);
+  if (Result.isErr(workflowitems)) {
+    return new NotFound(ctx, "subproject", subprojectId);
+  }
+  const workflowitemsId = workflowitems.map((workflowitem, index) => workflowitem.id );
+
+  const currentOrder = subproject.workflowitemOrdering.length > 0 ? subproject.workflowitemOrdering : workflowitemsId;
 
   if (isEqual(currentOrder, ordering)) {
     // Ordering hasn't changed, therefore do nothing
     return [];
   }
-
   const reorderEvent = WorkflowitemsReordered.createEvent(
     ctx.source,
     issuer.id,
     projectId,
     subprojectId,
     ordering,
+    currentOrder,
+    workflowitems
   );
   if (Result.isErr(reorderEvent)) {
     return new VError(reorderEvent, "failed to create reorder event");

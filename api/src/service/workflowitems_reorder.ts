@@ -27,6 +27,7 @@ export async function setWorkflowitemOrdering(
       ordering,
       {
         getSubproject: async (pId, spId) => cache.getSubproject(pId, spId),
+        getWorkflowitems: async (pId, spId) => cache.getWorkflowitems(pId, spId),
       },
     ),
   );

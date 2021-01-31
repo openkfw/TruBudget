@@ -18,6 +18,8 @@ export interface Event {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   ordering: Workflowitem.Id[];
+  previousOrdering: Workflowitem.Id[];
+  workflowitems: Workflowitem.Workflowitem[];
 }
 
 export const schema = Joi.object({
@@ -28,6 +30,8 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   ordering: Joi.array().items(Workflowitem.idSchema).required(),
+  previousOrdering: Joi.array().items(Workflowitem.idSchema).required(),
+  workflowitems: Joi.array().required(),
 });
 
 export function createEvent(
@@ -36,6 +40,8 @@ export function createEvent(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   ordering: Workflowitem.Id[],
+  previousOrdering: Workflowitem.Id[],
+  workflowitems: Workflowitem.Workflowitem[],
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
   const event = {
@@ -45,6 +51,8 @@ export function createEvent(
     projectId,
     subprojectId,
     ordering,
+    previousOrdering,
+    workflowitems,
     time,
   };
 
