@@ -526,7 +526,10 @@ const pt = {
     workflowitem_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_revokePermission: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_update_docs: "{0} adicionou documentos ao item de workflow {1} ",
-    workflowitem_update: "{0} modificou o item de workflow {1} "
+    workflowitem_update: "{0} modificou o item de workflow {1} ",
+    workflowitem_update_amount: "{0} modificou o item de workflow {1} despesas dentro {2} ",
+    workflowitem_document_validated: "{0} documento de item de fluxo de trabalho validado denominado {1} em {2} ",
+    workflowitem_document_invalidated: "{0} usado documento diferente no item de fluxo de trabalho para validar o documento nomeado com {1} em {2} "
   },
 
   permissions: {
@@ -593,6 +596,7 @@ const pt = {
     subproject_projected_budget_deleted: "Orçamento do subprojecto encerrado",
 
     workflowitem_created: "Workflowitem criado",
+    workflowitem_document_validated: "Documento de item de fluxo de trabalho validado",
     workflowitem_updated: "Workflowitem actualizado",
     workflowitem_assigned: "Workflowitem assigned",
     workflowitem_closed: "Workflowitem encerrado",

@@ -1,13 +1,24 @@
+import { toAmountString } from "../../helper";
 export const compareWorkflowItems = (originalItem, itemToCompare) => {
   function isNewDocument(doc) {
     return doc.hasOwnProperty("base64");
   }
 
-  const changesExceptDocuments = Object.keys(itemToCompare)
+  const modifiedOriginalItem = {
+    ...originalItem,
+    amount: toAmountString(originalItem.amount)
+  }
+
+  const modifiedItemToCompare = {
+    ...itemToCompare,
+    exchangeRate: itemToCompare.exchangeRate ? itemToCompare.exchangeRate.toString() : undefined
+  }
+
+  const changesExceptDocuments = Object.keys(modifiedItemToCompare)
     .filter(key => key !== "documents")
-    .filter(key => originalItem[key] !== itemToCompare[key])
+    .filter(key => modifiedOriginalItem[key] !== modifiedItemToCompare[key])
     .reduce((acc, key) => {
-      acc[key] = itemToCompare[key];
+      acc[key] = modifiedItemToCompare[key];
       return acc;
     }, {});
 

@@ -48,7 +48,7 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
   const getMenuItems = items => {
     return items.map(item => {
       return (
-        <MenuItem key={item.displayName} value={item.id}>
+        <MenuItem key={`${item.displayName}_${item.id}`} value={item.id}>
           {item.displayName}
         </MenuItem>
       );

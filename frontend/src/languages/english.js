@@ -522,7 +522,10 @@ const en = {
     workflowitem_revokePermission_details: "{0} revoked permission {1} from {2} on {3}",
     workflowitem_revokePermission: "{0} revoked permission {1} from {2}",
     workflowitem_update_docs: "{0} added documents to workflowitem {1} ",
-    workflowitem_update: "{0} changed workflowitem {1} "
+    workflowitem_update: "{0} changed workflowitem {1} ",
+    workflowitem_update_amount: "{0} changed workflowitem {1} budget in {2} ",
+    workflowitem_document_validated: "{0} validated workflowitem document named {1} in {2} ",
+    workflowitem_document_invalidated: "{0} used different document in workflowitem to validate document named with  {1} in {2} "
   },
 
   permissions: {
@@ -589,6 +592,7 @@ const en = {
     subproject_projected_budget_deleted: "Subproject budget closed",
 
     workflowitem_created: "Workflowitem created",
+    workflowitem_document_validated: "Workflowitem document validated",
     workflowitem_updated: "Workflowitem updated",
     workflowitem_assigned: "Workflowitem assigned",
     workflowitem_closed: "Workflowitem closed",
