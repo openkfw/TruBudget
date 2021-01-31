@@ -758,9 +758,9 @@ export function* reorderWorkflowitemsSaga({ projectId, subprojectId, ordering })
   }, true);
 }
 
-export function* validateDocumentSaga({ base64String, hash }) {
+export function* validateDocumentSaga({ base64String, hash, id, projectId, subprojectId, workflowitemId }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.validateDocument, base64String, hash);
+    const { data } = yield callApi(api.validateDocument, base64String, hash, id, projectId, subprojectId, workflowitemId);
     yield put({
       type: VALIDATE_DOCUMENT_SUCCESS,
       isIdentical: data.isIdentical

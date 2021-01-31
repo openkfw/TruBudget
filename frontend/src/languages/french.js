@@ -527,7 +527,10 @@ const fr = {
     workflowitem_revokePermission_details: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_revokePermission: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_update_docs: "{0} a ajouté des documents au workflow {1} ",
-    workflowitem_update: "{0} a modifié le workflow {1} "
+    workflowitem_update: "{0} a modifié le workflow {1} ",
+    workflowitem_update_amount: "{0} a modifié le workflow {1} budget dans {2}",
+    workflowitem_document_validated: "{0} document d'élément de flux de travail validé nommé {1} dans {2} ",
+    workflowitem_document_invalidated: "{0} a utilisé un document différent dans le workflowitem pour valider le document nommé avec {1} dans {2} "
   },
 
   permissions: {
@@ -594,6 +597,7 @@ const fr = {
     subproject_projected_budget_deleted: "Budget de la composante clôturé",
 
     workflowitem_created: " Étape de workflow créée",
+    workflowitem_document_validated: "Document workflowitem validé",
     workflowitem_updated: " Étape de workflow mise à jour",
     workflowitem_assigned: " Étape de workflow assignée",
     workflowitem_closed: " Étape de workflow fermée",

@@ -5,12 +5,15 @@ export const ADD_DOCUMENT_SUCCESS = "ADD_DOCUMENT_SUCCESS";
 export const CLEAR_DOCUMENTS = "CLEAR_DOCUMENTS";
 export const DOWNLOAD_DOCUMENT = "DOWNLOAD_DOCUMENT";
 
-export function validateDocument(hash, base64String, id) {
+export function validateDocument(hash, base64String, id, projectId, subprojectId, workflowitemId) {
   return {
     type: VALIDATE_DOCUMENT,
     base64String: base64String,
     hash: hash,
-    id: id
+    id: id,
+    projectId,
+    subprojectId,
+    workflowitemId
   };
 }
 export function addDocument(payload, filename) {

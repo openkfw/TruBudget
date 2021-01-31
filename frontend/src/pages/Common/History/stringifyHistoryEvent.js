@@ -7,6 +7,8 @@ const formatPermission = data => `"${strings.permissions[data.replace(/[.]/g, "_
 const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
   const createdBy = getUserDisplayname(businessEvent.publisher);
   const eventType = businessEvent.type;
+  const documentId = businessEvent.documentId || "";
+  const isDocumentValid = businessEvent.isDocumentValid;
   const displayName = snapshot.displayName || "";
 
   switch (eventType) {
@@ -77,11 +79,16 @@ const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
 
     case "workflowitem_created":
       return formatString(strings.history.subproject_createWorkflowitem, createdBy, displayName);
-    case "workflowitem_updated":
+    case "workflowitem_updated": {
       const update = businessEvent.update;
-      return update.documents && !_isEmpty(update.documents)
-        ? formatString(strings.history.workflowitem_update_docs, createdBy, displayName)
-        : formatString(strings.history.workflowitem_update, createdBy, displayName);
+      if (update.documents && !_isEmpty(update.documents)) {
+        return formatString(strings.history.workflowitem_update_docs, createdBy, displayName);
+      } else if (update && update.amount) {
+        return formatString(strings.history.workflowitem_update_amount, createdBy, update.amount, displayName);
+      } else {
+        return formatString(strings.history.workflowitem_update, createdBy, displayName);
+      }
+    }
     case "workflowitem_assigned":
       return formatString(
         strings.history.workflowitem_assign,
@@ -89,6 +96,10 @@ const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
         displayName,
         getUserDisplayname(businessEvent.assignee)
       );
+    case "workflowitem_document_validated":
+      return isDocumentValid
+        ? formatString(strings.history.workflowitem_document_validated, createdBy, documentId, displayName)
+        :  formatString(strings.history.workflowitem_document_invalidated, createdBy, documentId, displayName);
     case "workflowitem_closed":
       return formatString(strings.history.workflowitem_close, createdBy, displayName);
     case "workflowitem_permission_granted":
