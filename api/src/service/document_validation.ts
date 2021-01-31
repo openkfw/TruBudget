@@ -1,6 +1,18 @@
+
 import * as crypto from "crypto";
-import * as Result from "../result";
 import VError = require("verror");
+import { ConnToken } from "./conn";
+import * as Cache from "./cache2";
+import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
+import * as DocumentValidate from "./domain/workflow/document_validate";
+import { ServiceUser } from "./domain/organization/service_user";
+import * as Project from "./domain/workflow/project";
+import * as Subproject from "./domain/workflow/subproject";
+import * as Workflowitem from "./domain/workflow/workflowitem";
+import * as GroupQuery from "./group_query";
+import { store } from "./store";
+
 
 /**
  * Returns true if the given hash matches the given document.
@@ -11,13 +23,53 @@ import VError = require("verror");
 export async function isSameDocument(
   documentBase64: string,
   expectedSHA256: string,
+  documentId: string,
+  conn: ConnToken,
+  ctx: Ctx,
+  issuer: ServiceUser,
+  projectId: Project.Id,
+  subprojectId: Subproject.Id,
+  workflowitemId: Workflowitem.Id,
 ): Promise<Result.Type<boolean>> {
+
+  let isDocumentValid: boolean = false;
   try {
     const hash = crypto.createHash("sha256");
     hash.update(Buffer.from(documentBase64, "base64"));
     const computedHash = hash.digest("hex");
-    return computedHash === expectedSHA256;
+    isDocumentValid = computedHash === expectedSHA256;
   } catch (error) {
     return new VError(error, "compare documents failed");
   }
+
+  const documentValidationResult = await Cache.withCache(conn, ctx, async (cache) => {
+    return DocumentValidate.documentValidate(
+      isDocumentValid,
+      documentId,
+      ctx,
+      issuer,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      {
+        getWorkflowitem: async (id) => {
+          return cache.getWorkflowitem(projectId, subprojectId, id);
+        },
+        getUsersForIdentity: async (identity) => {
+          return GroupQuery.resolveUsers(conn, ctx, issuer, identity);
+        }
+      }
+    );
+  });
+  if (Result.isErr(documentValidationResult)) {
+    return new VError(documentValidationResult, "failed to create event in service");
+  }
+
+  const { newEvents } = documentValidationResult;
+
+  for (const event of newEvents) {
+    await store(conn, ctx, event);
+  }
+
+  return isDocumentValid;
 }
