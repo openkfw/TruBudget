@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.18.0] - 2021-01-14
 
 ### Fixed
-
+- Updated ui: Display history for each workflow item [#236](https://github.com/openkfw/TruBudget/issues/236)
 - Fixed the width of dropdowns in workflowitem batch edit [#678](https://github.com/openkfw/TruBudget/issues/678)
 - Fixed Actions table of confirmation dialog alignment [#677](https://github.com/openkfw/TruBudget/issues/677)
 
