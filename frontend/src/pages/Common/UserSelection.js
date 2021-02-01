@@ -50,7 +50,7 @@ const styles = theme => ({
     overflow: "hidden",
     textOverflow: "ellipsis"
   },
-  itemContainer: { maxHeight: "70vh", overflow: "auto", maxWidth: "300px", minWidth: "300px" }
+  itemContainer: { maxHeight: "70vh", overflow: "auto", maxWidth: "300px", minWidth: "300px", boxShadow: 'none'  }
 });
 
 function UserSelection(props) {
