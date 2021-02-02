@@ -259,6 +259,7 @@ const de = {
     groups: "German: Groups",
     add_user: "German: Add Users",
     group_created: "German: Group successfully created",
+    group_updated: "Gruppe aktualisiert",
     add_group: "German: Add Group",
     edit_group: "German: Edit Group",
     edit_permissions_for: "German: Edit permissions for",

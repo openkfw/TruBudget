@@ -44,19 +44,22 @@ const GroupDialogContent = ({
   storeGroupId,
   storeGroupName,
   addInitialUserToGroup,
+  addUserToEditedGroup,
+  removeUserFromEditedGroup,
   editMode,
   removeInitialUserFromGroup,
-  removeUserFromGroup,
-  addUser,
   classes
 }) => {
   const { groupId, displayName, groupUsers } = groupToAdd;
+
   const addUserToGroup = userId => {
-    addUser(groupId, userId);
+    addUserToEditedGroup(groupId, userId);
   };
+
   const removeUser = userId => {
-    removeUserFromGroup(groupId, userId);
+    removeUserFromEditedGroup(groupId, userId);
   };
+
   return (
     <div>
       <span className={classes.info}>

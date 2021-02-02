@@ -261,6 +261,7 @@ const fr = {
     edit_group: "Éditer un groupe",
     edit_permissions_for: "Éditer les autorisations pour",
     group_created: "Groupe créé avec succès",
+    group_updated: "Groupe mis à jour avec succès",
     groups: "Groupes",
     invalid_password: "Mot de passe invalide",
     new_group: "Nouveau groupe d'utilisateurs",

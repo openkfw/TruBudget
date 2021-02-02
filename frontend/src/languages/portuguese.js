@@ -126,6 +126,7 @@ const pt = {
     edit_group: "Editar grupo",
     edit_permissions_for: "Editar permissões para",
     group_created: "Grupo de usuários criado com sucesso",
+    group_updated: "Grupo atualizado com sucesso",
     groups: "Grupos",
     invalid_password: "Sehna inválida",
     new_group: "Novo grupo de usuários",

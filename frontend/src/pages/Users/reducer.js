@@ -17,6 +17,8 @@ import {
   GROUP_NAME,
   ADD_INITIAL_USER,
   REMOVE_INITIAL_USER,
+  ADD_USER_TO_EDITED_GROUP,
+  REMOVE_USER_FROM_EDITED_GROUP,
   CREATE_GROUP_SUCCESS,
   LIST_GLOBAL_PERMISSIONS_SUCCESS,
   CHECK_USER_PASSWORD_SUCCESS,
@@ -53,6 +55,11 @@ const defaultState = fromJS({
     name: "",
     groupUsers: []
   },
+  groupToEdit: {
+    groupId: "",
+    groupUsersToAdd: [],
+    groupUsersToRemove: []
+  },
   userPassword: "",
   newPassword: "",
   newPasswordConfirmation: "",
@@ -75,11 +82,22 @@ export default function userDashboardReducer(state = defaultState, action) {
     case ADD_INITIAL_USER:
       return state.updateIn(["groupToAdd", "groupUsers"], users => [...users, action.userId]);
     case REMOVE_INITIAL_USER:
-      // Offical way to delete something from an array with immutability https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
+    // Offical way to delete something from an array with immutability https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
       return state.updateIn(["groupToAdd", "groupUsers"], users => [
         ...users.slice(0, users.indexOf(action.userId)),
         ...users.slice(users.indexOf(action.userId) + 1)
       ]);
+    case ADD_USER_TO_EDITED_GROUP: {
+      const groupIndex = state.toJS().groups.findIndex(group => group.groupId === action.groupId);
+      return state.updateIn(["groups", groupIndex, "users"], users => [...users, action.userId]);
+    }
+    case REMOVE_USER_FROM_EDITED_GROUP: {
+      const groupIndex = state.toJS().groups.findIndex(group => group.groupId === action.groupId);
+      return state.updateIn(["groups", groupIndex, "users"], users => [
+        ...users.slice(0, users.indexOf(action.userId)),
+        ...users.slice(users.indexOf(action.userId) + 1)
+      ]);
+    }
     case CREATE_GROUP_SUCCESS:
       return state.set("groupToAdd", defaultState.get("groupToAdd"));
     case SET_ORGANIZATION:

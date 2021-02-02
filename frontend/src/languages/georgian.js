@@ -125,6 +125,7 @@ const ka = {
     edit_group: "ჯგუფის რედაქტირება",
     edit_permissions_for: "ნებართვის რედაქტირება",
     group_created: "ჯგუფი წარმატებით შექმნილია",
+    group_updated: "ჯგუფი წარმატებით განახლდა",
     groups: "ჯგუფები",
     invalid_password: "პაროლი არასწორია",
     new_group: "ახალი ჯგუფი",

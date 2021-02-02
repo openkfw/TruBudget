@@ -46,6 +46,12 @@
       "named": "never",
       "asyncArrow": "always"
     }],
-    "comma-dangle": ["error", "never"]
+    "comma-dangle": ["error", "never"],
+    "object-curly-spacing": ["error", "always"],
+    "array-bracket-spacing": ["error", "never", { "singleValue": false }],
+    "indent": ["error", 2, {"SwitchCase": 1}],
+    "space-infix-ops": "error",
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "no-multi-spaces": "error"
   }
 }

@@ -54,6 +54,7 @@ const styles = theme => ({
 });
 
 function UserSelection(props) {
+  const { classes, users, addToSelection, selectedItems, handleDelete } = props;
   const [searchTerm, setSearchTerm] = useState("");
   const [selectIsOpen, setSelectIsOpen] = useState(false);
 
@@ -93,7 +94,6 @@ function UserSelection(props) {
     return renderUser(suggestedUsers, selectedItems, addToSelection);
   };
 
-  const { classes, users, addToSelection, selectedItems, handleDelete } = props;
   const suggestedUsers = renderUserSelection(users, searchTerm, selectedItems, addToSelection);
 
   const openSelect = () => {
@@ -167,6 +167,6 @@ function UserSelection(props) {
       </div>
     </div>
   );
-}
+};
 
 export default withStyles(styles)(UserSelection);

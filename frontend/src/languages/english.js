@@ -125,6 +125,7 @@ const en = {
     edit_group: "Edit Group",
     edit_permissions_for: "Edit permissions for",
     group_created: "Group successfully created",
+    group_updated: "Group successfully updated",
     groups: "Groups",
     invalid_password: "Password invalid",
     new_group: "New Group",

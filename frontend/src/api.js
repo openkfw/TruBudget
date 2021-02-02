@@ -134,23 +134,39 @@ class Api {
         users
       }
     });
+
+  updateGroup = (groupId, displayName, users) =>
+    instance.post(`/global.updateGroup`, {
+      group: {
+        displayName,
+        id: groupId,
+        users
+      }
+    });
+
   addUserToGroup = (groupId, userId) =>
     instance.post(`/group.addUser`, {
       groupId,
       userId
     });
+
   removeUserFromGroup = (groupId, userId) =>
     instance.post(`/group.removeUser`, {
       groupId,
       userId
     });
+
   listGroup = () => instance.get(`/group.list`);
+
   listNodes = () => instance.get(`/network.list`);
+
   listActiveNodes = () => instance.get(`/network.listActive`);
+
   approveNewOrganization = organization =>
     instance.post(`/network.approveNewOrganization`, {
       organization
     });
+
   approveNewNodeForOrganization = address =>
     instance.post(`/network.approveNewNodeForExistingOrganization`, {
       address
@@ -159,7 +175,9 @@ class Api {
     instance.post(`/network.declineNode`, {
       node
     });
+
   listProjects = () => instance.get(`/project.list`);
+
   listSubprojects = projectId => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
 
   createProject = (displayName, description, thumbnail, projectedBudgets, tags) =>
@@ -361,7 +379,15 @@ class Api {
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
     instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
 
-  validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) => instance.post(`/workflowitem.validateDocument`, { base64String, hash, id, projectId, subprojectId, workflowitemId });
+  validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) =>
+    instance.post(`/workflowitem.validateDocument`, {
+      base64String,
+      hash,
+      id,
+      projectId,
+      subprojectId,
+      workflowitemId
+    });
 
   listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
     instance.get(

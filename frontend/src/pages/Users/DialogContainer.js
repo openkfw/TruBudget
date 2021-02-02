@@ -6,8 +6,11 @@ import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import {
   addInitialUserToGroup,
   addUser,
+  addUserToEditedGroup,
+  removeUserFromEditedGroup,
   createUser,
   createUserGroup,
+  updateUserGroup,
   grantGlobalPermission,
   hideDashboardDialog,
   hidePasswordDialog,
@@ -97,7 +100,10 @@ const mapDispatchToProps = dispatch => {
     removeInitialUserFromGroup: userId => dispatch(removeInitialUserFromGroup(userId)),
     addUser: (groupId, userId) => dispatch(addUser(groupId, userId)),
     removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
+    addUserToEditedGroup: (groupId, userId) => dispatch(addUserToEditedGroup(groupId, userId)),
+    removeUserFromEditedGroup: (groupId, userId) => dispatch(removeUserFromEditedGroup(groupId, userId)),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
+    updateUserGroup: (groupId, name, users) => dispatch(updateUserGroup(groupId, name, users)),
     createUser: (displayName, organization, username, password) =>
       dispatch(createUser(displayName, organization, username, password)),
     showSnackbar: () => dispatch(showSnackbar()),

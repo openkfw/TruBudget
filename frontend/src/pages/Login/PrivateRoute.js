@@ -15,8 +15,8 @@ class PrivateRoute extends Component {
         rest.jwt ? (
           <Component {...props} />
         ) : (
-            <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-          )
+          <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
+        )
       )} />
     );
   }

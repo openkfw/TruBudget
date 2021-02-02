@@ -179,7 +179,9 @@ import {
   DISABLE_USER_SUCCESS,
   DISABLE_USER_FAILURE,
   FETCH_USER_ASSIGNMENTS,
-  FETCH_USER_ASSIGNMENTS_SUCCESS
+  FETCH_USER_ASSIGNMENTS_SUCCESS,
+  UPDATE_GROUP,
+  UPDATE_GROUP_SUCCESS
 } from "./pages/Users/actions.js";
 import {
   ASSIGN_SUBPROJECT,
@@ -1119,6 +1121,19 @@ export function* createGroupSaga({ groupId, name, users }) {
     yield callApi(api.createGroup, groupId, name, users);
     yield put({
       type: CREATE_GROUP_SUCCESS
+    });
+    yield put({
+      type: FETCH_GROUPS,
+      show: true
+    });
+  }, true);
+}
+
+export function* updateGroupSaga({ groupId, name, users }) {
+  yield execute(function*() {
+    yield callApi(api.updateGroup, groupId, name, users);
+    yield put({
+      type: UPDATE_GROUP_SUCCESS
     });
     yield put({
       type: FETCH_GROUPS,
@@ -2734,6 +2749,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_USER, fetchUserSaga),
       yield takeEvery(FETCH_GROUPS, fetchGroupSaga),
       yield takeEvery(CREATE_GROUP, createGroupSaga),
+      yield takeEvery(UPDATE_GROUP, updateGroupSaga),
       yield takeEvery(ADD_USER, addUserToGroupSaga),
       yield takeEvery(REMOVE_USER, removeUserFromGroupSaga),
       yield takeEvery(FETCH_NODES, fetchNodesSaga),

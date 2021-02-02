@@ -34,6 +34,7 @@ const Dialog = props => {
     organization: userOrganization,
     hideDashboardDialog,
     createUserGroup,
+    updateUserGroup,
     storeSnackbarMessage,
     showSnackbar,
     grantAllUserPermissions,
@@ -126,15 +127,15 @@ const Dialog = props => {
             action.userIds.forEach(user => {
               revokeGlobalPermission(userToEditPermissions.id, action.permission);
             });
-            // eslint-disable-next-line no-console
+          // eslint-disable-next-line no-console
           } else console.error("Not a recognized action", action.type);
         });
         hideDashboardDialog();
       };
 
       break;
-    case "editGroup":
-      const group = groups.find(group => group.groupId === editId);
+    case "editGroup": {
+      const group = groups.find(g => g.groupId === editId);
       const groupToEdit = {
         groupId: group.groupId,
         displayName: group.displayName,
@@ -154,17 +155,18 @@ const Dialog = props => {
             />
           ),
           nextDisabled: false,
-          hideCancel: true,
-          submitButtonText: strings.common.done
+          submitButtonText: strings.common.submit
         }
       ];
       handleSubmitFunc = () => {
+        updateUserGroup(groupToEdit.groupId, groupToEdit.displayName, groupToEdit.groupUsers);
         hideDashboardDialog();
+        storeSnackbarMessage(strings.users.group_updated);
+        showSnackbar();
       };
 
       break;
-
-    default:
+    } default:
       steps = [{ title: "no content" }];
       break;
   }
