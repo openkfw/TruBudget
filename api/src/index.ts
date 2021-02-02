@@ -3,6 +3,7 @@ import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
 import * as GlobalPermissionsListAPI from "./global_permissions_list";
 import * as GroupCreateAPI from "./group_create";
+import * as GroupUpdateAPI from "./group_update";
 import * as GroupListAPI from "./group_list";
 import * as GroupMemberAddAPI from "./group_member_add";
 import * as GroupMemberRemoveAPI from "./group_member_remove";
@@ -39,6 +40,7 @@ import * as GlobalPermissionGrantService from "./service/global_permission_grant
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
 import * as GlobalPermissionsGetService from "./service/global_permissions_get";
 import * as GroupCreateService from "./service/group_create";
+import * as GroupUpdateService from "./service/group_update";
 import * as GroupMemberAddService from "./service/group_member_add";
 import * as GroupMemberRemoveService from "./service/group_member_remove";
 import * as GroupPermissionsListService from "./service/group_permissions_list";
@@ -352,6 +354,10 @@ UserPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
 
 GroupCreateAPI.addHttpHandler(server, URL_PREFIX, {
   createGroup: (ctx, issuer, reqData) => GroupCreateService.createGroup(db, ctx, issuer, reqData),
+});
+
+GroupUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateGroup: (ctx, issuer, reqData) => GroupUpdateService.updateGroup(db, ctx, issuer, reqData),
 });
 
 GroupListAPI.addHttpHandler(server, URL_PREFIX, {
@@ -797,6 +803,8 @@ WorkflowitemsDocumentDownloadMinioAPI.addHttpHandler(server, URL_PREFIX, {
 server.listen(port, "0.0.0.0", async (err) => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
+    // added console.log, because logger doesn't really put the error to console
+    console.log(err);
     console.trace();
     process.exit(1);
   }

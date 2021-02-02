@@ -23,6 +23,9 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
       await ensureStreamExists(conn, ctx, "groups", "groups");
       return writeTo(conn, ctx, { stream: "groups", keys: [event.group.id], event });
 
+    case "group_updated": {
+      return writeTo(conn, ctx, { stream: "groups", keys: [event.group.id], event });
+    }
     case "group_member_added":
     case "group_member_removed":
       return writeTo(conn, ctx, { stream: "groups", keys: [event.groupId], event });

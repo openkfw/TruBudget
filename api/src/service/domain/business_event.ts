@@ -1,6 +1,7 @@
 import Joi = require("joi");
 
 import * as GroupCreated from "./organization/group_created";
+import * as GroupUpdated from "./organization/group_updated";
 import * as GroupMemberAdded from "./organization/group_member_added";
 import * as GroupMemberRemoved from "./organization/group_member_removed";
 import * as GroupPermissionGranted from "./organization/group_permissions_granted";
@@ -45,6 +46,7 @@ export type BusinessEvent =
   | GlobalPermissionsGranted.Event
   | GlobalPermissionsRevoked.Event
   | GroupCreated.Event
+  | GroupUpdated.Event
   | GroupMemberAdded.Event
   | GroupMemberRemoved.Event
   | GroupPermissionGranted.Event

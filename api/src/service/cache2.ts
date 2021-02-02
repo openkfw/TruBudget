@@ -10,6 +10,7 @@ import * as NodeRegistered from "./domain/network/node_registered";
 import * as NodeDeclined from "./domain/network/node_declined";
 import * as NodesLogged from "./domain/network/nodes_logged";
 import * as GroupCreated from "./domain/organization/group_created";
+import * as GroupUpdated from "./domain/organization/group_updated";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
 import * as UserCreated from "./domain/organization/user_created";
@@ -516,6 +517,7 @@ const EVENT_PARSER_MAP = {
   global_permission_granted: GlobalPermissionsGranted.validate,
   global_permission_revoked: GlobalPermissionsRevoked.validate,
   group_created: GroupCreated.validate,
+  group_updated: GroupUpdated.validate,
   group_member_added: GroupMemberAdded.validate,
   group_member_removed: GroupMemberRemoved.validate,
   node_registered: NodeRegistered.validate,

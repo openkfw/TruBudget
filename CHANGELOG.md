@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- ## Unreleased -->
-
+- Added Cancel button to edit user group dialog [#725](https://github.com/openkfw/TruBudget/issues/725)
 <!-- ### Added -->
 
 - Added a decline option on the nodes page, which hides the request for everyone in an organization [#27](https://github.com/openkfw/TruBudget/issues/27)

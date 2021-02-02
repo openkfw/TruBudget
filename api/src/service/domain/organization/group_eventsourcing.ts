@@ -5,6 +5,7 @@ import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as Group from "./group";
 import * as GroupCreated from "./group_created";
+import * as GroupUpdated from "./group_updated";
 import * as GroupMemberAdded from "./group_member_added";
 import * as GroupMemberRemoved from "./group_member_removed";
 import * as GroupPermissionGranted from "./group_permissions_granted";
@@ -31,6 +32,8 @@ function apply(
 ) {
   if (event.type === "group_created") {
     handleGroupCreated(ctx, groups, event, errors);
+  } else if (event.type === "group_updated") {
+    handleGroupUpdated(ctx, groups, event, errors);
   } else if (event.type === "group_member_added") {
     applyMemberAdded(ctx, groups, event, errors);
   } else if (event.type === "group_member_removed") {
@@ -74,6 +77,46 @@ function handleGroupCreated(
     entityId: initialData.id,
     entityType: "group",
     businessEvent: groupCreated,
+    snapshot: {
+      displayName: group.displayName,
+    },
+  };
+  group.log.push(traceEvent);
+
+  groups.set(initialData.id, group);
+}
+
+function handleGroupUpdated(
+  ctx: Ctx,
+  groups: Map<Group.Id, Group.Group>,
+  groupUpdated: GroupUpdated.Event,
+  errors: EventSourcingError[],
+) {
+  const initialData = groupUpdated.group;
+
+  let group = groups.get(initialData.id);
+
+  group = {
+    id: initialData.id,
+    createdAt: groupUpdated.time,
+    displayName: initialData.displayName,
+    description: initialData.description,
+    members: groupUpdated.group.members,
+    permissions: initialData.permissions,
+    log: [],
+    additionalData: initialData.additionalData,
+  };
+
+  const result = Group.validate(group);
+  if (Result.isErr(result)) {
+    errors.push(new EventSourcingError({ ctx, event: groupUpdated }, result));
+    return;
+  }
+
+  const traceEvent: GroupTraceEvent = {
+    entityId: initialData.id,
+    entityType: "group",
+    businessEvent: groupUpdated,
     snapshot: {
       displayName: group.displayName,
     },
