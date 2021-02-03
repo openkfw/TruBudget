@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+### Fixed
+
+- Fixed a bug in the confirmation dialog because of missing additional actions [#761](https://github.com/openkfw/TruBudget/issues/761)
+
 <!-- ### Security -->
 
 ## [1.18.0] - 2021-01-14
