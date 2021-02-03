@@ -72,15 +72,14 @@ describe("Subproject Permissions", function() {
   /**
    * @param {boolean} listPermIncluded    If set to true subproject.intent.listPermissions is also added
    */
-  function addViewPermissions(permissions, identity, listPermIncluded = true) {
+  function addViewPermissions(permissions, identity) {
     const permissionsCopy = _cloneDeep(permissions);
     addPermission(permissionsCopy.project, "project.viewSummary", identity);
     addPermission(permissionsCopy.project, "project.viewDetails", identity);
+    addPermission(permissionsCopy.project, "project.intent.listPermissions", identity);
     addPermission(permissionsCopy.subproject, "subproject.viewSummary", identity);
     addPermission(permissionsCopy.subproject, "subproject.viewDetails", identity);
-    if (listPermIncluded) {
-      addPermission(permissionsCopy.subproject, "subproject.intent.listPermissions", identity);
-    }
+    addPermission(permissionsCopy.subproject, "subproject.intent.listPermissions", identity);
     return permissionsCopy;
   }
 
@@ -348,7 +347,7 @@ describe("Subproject Permissions", function() {
     cy.get("[data-test=actions-table-body]")
       .should("be.visible")
       .children()
-      .should("have.length", 5);
+      .should("have.length", 6);
   });
 
   it("Granting view permissions doesn't additionally view the same permission", function() {
@@ -411,7 +410,7 @@ describe("Subproject Permissions", function() {
       .get("[data-test=actions-table-body]")
       .should("be.visible")
       .children()
-      .should("have.length", 5);
+      .should("have.length", 6);
     cy.get("[data-test=confirmation-dialog-confirm]")
       .should("be.visible")
       .click();
@@ -466,7 +465,7 @@ describe("Subproject Permissions", function() {
         .get("[data-test=actions-table-body]")
         .should("be.visible")
         .children()
-        .should("have.length", 5);
+        .should("have.length", 6);
       // Confirm additional actions
       cy.get("[data-test=confirmation-dialog-confirm]").click();
 
@@ -500,7 +499,7 @@ describe("Subproject Permissions", function() {
     cy.get("[data-test=actions-table-body]")
       .should("be.visible")
       .children()
-      .should("have.length", 5)
+      .should("have.length", 6)
       .find("td")
       .contains("view permissions")
       .should("have.length", 1);
@@ -538,8 +537,8 @@ describe("Subproject Permissions", function() {
       .scrollIntoView({ offset: { top: 150, left: 0 } })
       .should("be.visible")
       .children()
-      // 4 permissions per user/group granted
-      .should("have.length", 4 * 3);
+      // 6 permissions per user/group granted
+      .should("have.length", 6 * 3);
     // Confirm additional actions
     cy.get("[data-test=confirmation-dialog-confirm]").click();
 
@@ -551,7 +550,7 @@ describe("Subproject Permissions", function() {
     cy.wrap(testIds)
       .each(id => {
         permissionsBeforeTesting.subproject["subproject.createWorkflowitem"].push(id);
-        permissionsBeforeTesting = addViewPermissions(permissionsBeforeTesting, id, false);
+        permissionsBeforeTesting = addViewPermissions(permissionsBeforeTesting, id);
       })
       .then(() => {
         // Push identities in specific order so assertion doesn't fail
