@@ -441,11 +441,23 @@ If you want to start this service or simply see more details regarding this feat
 
 ### End-to-end Tests
 
-Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
+Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. If you want to start all e2e-tests to check if your changes are not breaking any stuff we recommend the [Docker-Compose-Setup](#Docker-Compose Setup) More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
+
+#### Docker-Compose Setup
+
+One way to start the end-to-end tests is starting the e2e-test script. To start them execute following commands from root directory to make sure e2e-test will work:
+
+```bash
+cp .env_example .env
+sed -i 's/ORGANIZATION=.*/ORGANIZATION=KfW/g' .env
+sh scripts/testing/start-e2e-tests.sh
+```
+
+Note that the organization has to be "KfW" because the e2e-test's Organization is still hardcoded.
 
 #### Prerequisits
 
-Before running the tests you should make sure that the application is started (including the [excel export service](#excel-export-optional)) and that you first run the [provisioning](#provisioning-optional). In order for the backup_spec tests to pass you should also start the project with the same configurations (Organization and RPC Password) as the valid backup hardcoded in the `e2e-test/cypress/fixtures` folder. When running the e2e-tests locally, you have to make sure that the password used for authentication as root user in the test matches the one used in the project that is currently running, otherwise some tests can fail because of an "Authentication failed" error.
+Before running the tests you should make sure that the application is started (including the [excel export service](#excel-export-optional)) and that you first run the [provisioning](#provisioning-optional). In order for the backup_spec tests to pass you should also start the project with the same configurations (Organization and RPC Password). When running the e2e-tests locally, you have to make sure that the password used for authentication as root user in the test matches the one used in the project that is currently running, otherwise some tests can fail because of an "Authentication failed" error.
 
 #### Setup
 
