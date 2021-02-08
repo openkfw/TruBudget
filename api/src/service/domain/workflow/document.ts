@@ -22,6 +22,7 @@ export interface UploadedDocument {
   id: string;
   base64: string;
   fileName: string;
+  url?: string;
 }
 
 export const uploadedDocumentSchema = Joi.object({
@@ -30,6 +31,7 @@ export const uploadedDocumentSchema = Joi.object({
     .required()
     .error(() => new Error("Document can't be an empty file")),
   fileName: Joi.string(),
+  orgAccess: Joi.array().items(Joi.string()).optional(),
 });
 
 export async function hashDocument(

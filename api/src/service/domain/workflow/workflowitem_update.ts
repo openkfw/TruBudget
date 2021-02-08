@@ -1,5 +1,6 @@
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
+import { minioEndPoint, hostPort } from "../../../config";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -11,12 +12,14 @@ import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import { hashDocuments, StoredDocument, UploadedDocument } from "./document";
 import * as NotificationCreated from "./notification_created";
+import * as Nodes from "../../../network/model/Nodes";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+
 
 export interface RequestData {
   displayName?: string;
@@ -34,6 +37,9 @@ export interface RequestData {
 export type EventData = WorkflowitemUpdated.Modification;
 export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
 
+interface NodeInfoAddress {
+  organization: string
+}
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
@@ -41,6 +47,8 @@ interface Repository {
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
+  uploadDocument(document: UploadedDocument): Promise<void>;
+  getOrganizations(): Promise<Nodes.NodeInfo[]>;
 }
 
 export async function updateWorkflowitem(
@@ -136,7 +144,7 @@ export async function updateWorkflowitem(
   }
 
   // Handle new documents
-  let newDocumentUploadedEventsResult: Result.Type<BusinessEvent>[] = [];
+  let newDocumentUploadedEventsResult: Result.Type<WorkflowitemDocumentUploaded.Event>[] = [];
   if (newEvent.update.documents && newEvent.update.documents.length > 0) {
     const { documents } = newEvent.update;
     if (modification.documents === undefined) {
@@ -177,12 +185,21 @@ export async function updateWorkflowitem(
     });
   }
 
-  const newDocumentUploadedEvents: BusinessEvent[] = [];
+  const newDocumentUploadedEvents: WorkflowitemDocumentUploaded.Event[] = [];
   for (const result of newDocumentUploadedEventsResult) {
     if (Result.isErr(result)) {
       return result;
     }
-    newDocumentUploadedEvents.push(result);
+    const { document } = result as WorkflowitemDocumentUploaded.Event;
+    // document should be private
+    if (minioEndPoint) {
+      await repository.uploadDocument(document);
+
+      newDocumentUploadedEvents.push({...result, document: {...document, base64: "", url: hostPort}});
+    } else {
+      newDocumentUploadedEvents.push(result);
+    }
+
   }
 
   const workflowitemTypeEventsResult = repository.applyWorkflowitemType(newEvent, workflowitem);

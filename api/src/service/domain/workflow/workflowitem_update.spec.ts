@@ -6,9 +6,10 @@ import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
-import { hashDocument, StoredDocument } from "./document";
+import { hashDocument, StoredDocument, UploadedDocument } from "./document";
 import { Workflowitem } from "./workflowitem";
 import { updateWorkflowitem } from "./workflowitem_update";
+import * as Nodes from "../../../network/model/Nodes";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const root: ServiceUser = { id: "root", groups: [] };
@@ -51,6 +52,8 @@ const baseRepository = {
     if (identity === "root") return ["root"];
     throw Error(`unexpected identity: ${identity}`);
   },
+  uploadDocument: (document: UploadedDocument): Promise<void> => { return new Promise((resolve) => resolve(undefined)); },
+  getOrganizations: (): Promise<Nodes.NodeInfo[]> => { return new Promise((resolve) => resolve([])); },
 };
 
 describe("update workflowitem: authorization", () => {
