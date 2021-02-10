@@ -10,7 +10,9 @@ import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemCreate from "./domain/workflow/workflowitem_create";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
+import { UploadedDocument } from "./domain/workflow/document";
 import { store } from "./store";
+import { uploadAsPromised } from "../lib/minio";
 
 export { RequestData } from "./domain/workflow/workflowitem_create";
 
@@ -34,6 +36,9 @@ export async function createWorkflowitem(
         await cache.getSubproject(projectId, subprojectId),
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
         return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
+      },
+      uploadDocument: async (document: UploadedDocument) => {
+        await uploadAsPromised(document.id, document.base64, { fileName: document.fileName });
       },
     });
   });

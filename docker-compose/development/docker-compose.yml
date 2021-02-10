@@ -20,6 +20,7 @@ services:
     build: ../../api
     environment:
       APP_NAME: Trubudget
+      API_HOST: master-api
       PORT: ${API_PORT}
       NODE_LOCATION_LAT: "30.11"
       NODE_LOCATION_LNG: "4.68"
@@ -31,7 +32,15 @@ services:
       RPC_PORT: ${RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: ${RPC_PASSWORD}
+      MINIO_ENDPOINT: nginx
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
     command: ["npm", "run", "dev"]
+    links:
+      - minio1
+      - nginx
     volumes:
       - "../../api/src:/home/node/src:delegated"
     ports:
@@ -94,3 +103,28 @@ services:
       - master-api
       - excel-export
     stdin_open: true
+
+  minio1:
+    image: minio/minio
+    volumes:
+      - ../../minio/data:/data
+    expose:
+      - "9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  nginx:
+    image: nginx:1.19.2-alpine
+    volumes:
+      - ../../minio/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "9000:9000"
+    depends_on:
+      - minio1

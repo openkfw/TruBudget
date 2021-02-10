@@ -126,7 +126,7 @@ export const createBasicApp = (
 
   server.addContentTypeParser("application/gzip", async function (request, payload) {
     request.headers["content-length"] = "1024mb";
-    return payload; 
+    return payload;
   });
 
   // app.use(logging);
