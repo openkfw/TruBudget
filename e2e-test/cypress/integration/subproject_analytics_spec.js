@@ -176,8 +176,7 @@ describe("Subproject Analytics", function() {
     }).then(({ id }) => {
       notListedSubprojectId = id;
       // Revoke subproject view permissions
-      cy.revokeSubprojectPermission(project.id, notListedSubprojectId, "subproject.viewSummary", executingUser);
-      cy.revokeSubprojectPermission(project.id, notListedSubprojectId, "subproject.viewDetails", executingUser);
+      cy.revokeSubprojectPermission(project.id, notListedSubprojectId, "subproject.view", executingUser);
 
       // Open dialog
       cy.get("[data-test=details-analytics-button]")

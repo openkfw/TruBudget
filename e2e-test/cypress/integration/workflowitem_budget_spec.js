@@ -11,7 +11,7 @@ describe("Workflowitem budget test", function() {
   beforeEach(function() {
     cy.login();
     cy.server();
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetailsSubroject");
+    cy.route("GET", apiRoute + "/subproject.view*").as("viewDetailsSubroject");
     cy.route("POST", apiRoute + "/workflowitem.update").as("updateWorkflowitem");
   });
 

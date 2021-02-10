@@ -38,10 +38,8 @@ describe("Subproject Assignee", function() {
       permissions.project = p;
     });
     // Subproject
-    if (permissions.subproject["subproject.viewSummary"].includes(assigneeId))
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assigneeId);
-    if (permissions.subproject["subproject.viewDetails"].includes(assigneeId))
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", assigneeId);
+    if (permissions.subproject["subproject.view"].includes(assigneeId))
+      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.view", assigneeId);
     cy.listSubprojectPermissions(projectId, subprojectId).then(p => {
       permissions.subproject = p;
     });
@@ -66,16 +64,10 @@ describe("Subproject Assignee", function() {
     });
     cy.listSubprojectPermissions(projectId, subprojectId).then(permissions => {
       assert.equal(
-        permissions["subproject.viewSummary"].length,
+        permissions["subproject.view"].length,
         increased
-          ? permissionsBeforeTesting.subproject["subproject.viewSummary"].length + 1
-          : permissionsBeforeTesting.subproject["subproject.viewSummary"].length
-      );
-      assert.equal(
-        permissions["subproject.viewDetails"].length,
-        increased
-          ? permissionsBeforeTesting.subproject["subproject.viewDetails"].length + 1
-          : permissionsBeforeTesting.subproject["subproject.viewDetails"].length
+          ? permissionsBeforeTesting.subproject["subproject.view"].length + 1
+          : permissionsBeforeTesting.subproject["subproject.view"].length
       );
     });
   }
@@ -305,8 +297,7 @@ describe("Subproject Assignee", function() {
   });
   it("All missing project permissions are shown", function() {
     cy.get("@assigneeId").then(assigneeId => {
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assigneeId);
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", assigneeId);
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.view", assigneeId);
     });
 
     // Open dialog
@@ -321,8 +312,7 @@ describe("Subproject Assignee", function() {
       .should("have.length", 2);
     // Reset permissions
     cy.get("@assigneeId").then(assigneeId => {
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assigneeId);
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", assigneeId);
+      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.view", assigneeId);
     });
   });
   it("All missing subproject permissions are shown", function() {
@@ -352,8 +342,7 @@ describe("Subproject Assignee", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.viewSummary", assigneeId);
       cy.grantProjectPermission(projectId, "project.viewDetails", assigneeId);
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assigneeId);
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", assigneeId);
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.view", assigneeId);
     });
 
     // Open dialog
@@ -368,8 +357,7 @@ describe("Subproject Assignee", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.revokeProjectPermission(projectId, "project.viewSummary", assigneeId);
       cy.revokeProjectPermission(projectId, "project.viewDetails", assigneeId);
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assigneeId);
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", assigneeId);
+      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.view", assigneeId);
     });
   });
 });

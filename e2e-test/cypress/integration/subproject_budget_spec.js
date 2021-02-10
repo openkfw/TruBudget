@@ -44,7 +44,7 @@ describe("Subproject budget test", function() {
     cy.login();
     cy.server();
     cy.route("GET", apiRoute + "/project.viewDetails*").as("viewDetailsProject");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetailsSubproject");
+    cy.route("GET", apiRoute + "/subproject.view*").as("viewDetailsSubproject");
     cy.route("GET", apiRoute + "/project.list*").as("listProjects");
     cy.route("POST", apiRoute + "/global.createProject").as("createProject");
     cy.route("POST", apiRoute + "/project.createSubproject").as("createSubproject");

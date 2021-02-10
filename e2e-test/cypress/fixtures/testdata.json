@@ -26,8 +26,7 @@
       ],
       "assignee": "jdoe",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"],
+        "subproject.view": ["jxavier"],
         "subproject.intent.grantPermission": ["mstein"]
       },
       "workflows": [

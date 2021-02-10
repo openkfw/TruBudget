@@ -77,8 +77,7 @@ describe("Subproject Permissions", function() {
     addPermission(permissionsCopy.project, "project.viewSummary", identity);
     addPermission(permissionsCopy.project, "project.viewDetails", identity);
     addPermission(permissionsCopy.project, "project.intent.listPermissions", identity);
-    addPermission(permissionsCopy.subproject, "subproject.viewSummary", identity);
-    addPermission(permissionsCopy.subproject, "subproject.viewDetails", identity);
+    addPermission(permissionsCopy.subproject, "subproject.view", identity);
     addPermission(permissionsCopy.subproject, "subproject.intent.listPermissions", identity);
     return permissionsCopy;
   }
@@ -181,13 +180,13 @@ describe("Subproject Permissions", function() {
   });
 
   it("Submitting the permission dialog after removing a user opens a confirmation dialog", function() {
-    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id).then(() => {
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.view", testUser.id).then(() => {
       cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
       cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
         .should("be.visible")
         .click();
       // Open permission search popup
-      cy.get("[data-test='permission-select-subproject.viewSummary']").click();
+      cy.get("[data-test='permission-select-subproject.view']").click();
       // Select and add a User
       cy.get("[data-test='permission-list']")
         .scrollIntoView()
@@ -210,7 +209,7 @@ describe("Subproject Permissions", function() {
       .should("be.visible")
       .click();
     // Open permission search popup
-    cy.get("[data-test='permission-select-subproject.viewSummary']").click();
+    cy.get("[data-test='permission-select-subproject.view']").click();
     // Select and add a User
     cy.get("[data-test='permission-list']")
       .scrollIntoView()
@@ -251,7 +250,7 @@ describe("Subproject Permissions", function() {
   it("Submitting the permission dialog without subproject.intent.revokePermission disables the submit button when removing user", function() {
     cy.login("root", rootSecret);
     // Grant test User view-permission
-    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id).then(() => {
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.view", testUser.id).then(() => {
       // Revoke revoke-permission from mstein
       cy.revokeSubprojectPermission(
         projectId,
@@ -266,7 +265,7 @@ describe("Subproject Permissions", function() {
           .should("be.visible")
           .click();
         // Open permission search popup
-        cy.get("[data-test='permission-select-subproject.viewSummary']").click();
+        cy.get("[data-test='permission-select-subproject.view']").click();
         // Select and remove a User
         cy.get("[data-test='permission-list']")
           .scrollIntoView()
@@ -285,7 +284,7 @@ describe("Subproject Permissions", function() {
   it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function() {
     cy.login("root", rootSecret);
     // Grant test User view-permission
-    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id).then(() => {
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.view", testUser.id).then(() => {
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id).then(() => {
         // Test user login
         cy.login(testUser.id, testUser.password);
@@ -361,7 +360,7 @@ describe("Subproject Permissions", function() {
           .should("be.visible")
           .click();
         // Open permission search popup
-        cy.get("[data-test='permission-select-subproject.viewDetails']").click();
+        cy.get("[data-test='permission-select-subproject.view']").click();
         // Select and add test user
         cy.get("[data-test='permission-list']")
           .scrollIntoView()
@@ -426,16 +425,14 @@ describe("Subproject Permissions", function() {
       // grant permissions to testgroup
       cy.grantProjectPermission(projectId, "project.viewSummary", testGroup.id),
       cy.grantProjectPermission(projectId, "project.viewDetails", testGroup.id),
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroup.id),
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroup.id),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.view", testGroup.id),
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroup.id),
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testGroup.id)
     ]).then(() => {
       // Modify permissionsBeforeTestingr regarding theprevious api calls
       permissionsBeforeTesting.project["project.viewSummary"].push(testGroup.id);
       permissionsBeforeTesting.project["project.viewDetails"].push(testGroup.id);
-      permissionsBeforeTesting.subproject["subproject.viewSummary"].push(testGroup.id);
-      permissionsBeforeTesting.subproject["subproject.viewDetails"].push(testGroup.id);
+      permissionsBeforeTesting.subproject["subproject.view"].push(testGroup.id);
       permissionsBeforeTesting.subproject["subproject.intent.listPermissions"].push(testGroup.id);
       permissionsBeforeTesting.subproject["subproject.intent.grantPermission"].push(testGroup.id);
       // user from testgroup grant permission to user

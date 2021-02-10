@@ -50,7 +50,7 @@ describe("Subproject Close", function() {
 
         cy.server();
         cy.route("POST", apiRoute + `/workflowitem.close`).as("workflowitemClose");
-        cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+        cy.route("GET", apiRoute + "/subproject.view*").as("viewDetails");
 
         cy.visit(`/projects/${projectId}`);
         cy.get("[data-test=pc-button]").should("be.disabled");

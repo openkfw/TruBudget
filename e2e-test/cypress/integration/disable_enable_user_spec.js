@@ -38,7 +38,7 @@ describe("Disable and enable users", function() {
     cy.route("GET", apiRoute + "/group.list").as("groupList");
     cy.route("GET", apiRoute + "/global.listPermissions").as("globalPermissionsList");
     cy.route("GET", apiRoute + "/project.viewDetails*").as("projectDetails");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("subprojectDetails");
+    cy.route("GET", apiRoute + "/subproject.view*").as("subprojectDetails");
 
     // Create new user
     testUserId = generateUserId();
@@ -397,8 +397,7 @@ describe("Disable and enable users", function() {
         ({ id }) => {
           const subprojectId = id;
           // Remove view - permissions for current user (mstein)
-          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", "mstein");
-          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", "mstein");
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.view", "mstein");
           // Open disable dialog
           cy.get(`[data-test=disable-user-${testUserId}]`)
             .should("be.visible")

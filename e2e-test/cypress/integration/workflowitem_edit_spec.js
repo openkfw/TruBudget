@@ -28,7 +28,7 @@ describe("Workflowitem edit", function() {
     function() {
       cy.server();
       cy.route("POST", apiRoute + "/subproject.createWorkflowitem*").as("create");
-      cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+      cy.route("GET", apiRoute + "/subproject.view*").as("viewDetails");
       // Create a workflow item and select a different currency
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=nameinput]").type("Test");
@@ -67,7 +67,7 @@ describe("Workflowitem edit", function() {
   it("If no due date is set, the due date field in edit dialog is empty", function() {
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.route("GET", apiRoute + "/subproject.view*").as("viewDetails");
     // Create a workflowitem
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
       dueDate: ""
@@ -169,7 +169,7 @@ describe("Workflowitem edit", function() {
   it("The due-date can be removed from a workflowitem", function() {
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.route("GET", apiRoute + "/subproject.view*").as("viewDetails");
     // Create a workflowitem
     const dueDate = new Date().toISOString();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {

@@ -16,7 +16,7 @@ describe("Workflowitem close", function() {
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id);
       cy.createSubproject(projectId, "workflowitem close test", "EUR").then(({ id }) => {
         subprojectId = id;
-        cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id);
+        cy.grantSubprojectPermission(projectId, subprojectId, "subproject.view", testUser.id);
       });
     });
   });
@@ -33,7 +33,7 @@ describe("Workflowitem close", function() {
   it("The workflowitem can be closed by the assignee only", function() {
     cy.server();
     cy.route("POST", apiRoute + `/workflowitem.close`).as("workflowitemClose");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.route("GET", apiRoute + "/subproject.view*").as("viewDetails");
 
     // testUser may not close the workflowitem
     cy.login(testUser.id, testUser.password);

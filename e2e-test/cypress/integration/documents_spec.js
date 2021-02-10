@@ -62,7 +62,7 @@ describe("Attaching a document to a workflowitem.", function() {
     const fileDisplayName = "Validation_Test";
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.route("GET", apiRoute + "/subproject.view*").as("viewDetails");
     cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
 
     uploadDocument(fileDisplayName, fileName);
@@ -101,7 +101,7 @@ describe("Attaching a document to a workflowitem.", function() {
     const fileDisplayName = "Wrong_Document_Test";
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.route("GET", apiRoute + "/subproject.view*").as("viewDetails");
     cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
 
     uploadDocument(fileDisplayName, fileName);

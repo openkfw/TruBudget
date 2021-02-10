@@ -103,7 +103,7 @@ describe("Subproject Search", function() {
       .click()
       .type("SearchTestExample");
     // Go into detail view
-    cy.get("[data-test=subproject-view-details-0]").click();
+    cy.get("[data-test=subproject-view-0]").click();
     // Go back to subproject view
     cy.get(`[data-test=breadcrumb-${projectWithTag.displayName}]`).click();
     cy.get("[data-test=sub-projects]")

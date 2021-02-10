@@ -21,7 +21,7 @@ describe("Subproject display name", function() {
     cy.get("[data-test*=spp-button]")
       .last()
       .should("be.visible");
-    cy.get("[data-test*=subproject-view-details]")
+    cy.get("[data-test*=subproject-view]")
       .last()
       .should("be.visible");
   });

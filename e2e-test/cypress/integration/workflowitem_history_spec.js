@@ -64,7 +64,7 @@ describe("Workflowitem's history", function() {
   it("The history is sorted from new to old", function() {
     cy.server();
     cy.route("GET", apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.route("GET", apiRoute + "/subproject.view*").as("viewDetails");
 
     // Update workflowitem to create new history event
     cy.get(`[data-test=workflowitem-${workflowitemId}]`).should("be.visible");
