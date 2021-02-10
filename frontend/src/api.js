@@ -236,7 +236,7 @@ class Api {
     });
 
   viewSubProjectDetails = (projectId, subprojectId) =>
-    instance.get(removeEmptyQueryParams(`/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`));
+    instance.get(removeEmptyQueryParams(`/subproject.view?projectId=${projectId}&subprojectId=${subprojectId}`));
 
   viewSubProjectHistory = (projectId, subprojectId, offset, limit, filter) => {
     let url = removeEmptyQueryParams(

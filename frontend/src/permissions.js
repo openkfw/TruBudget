@@ -15,8 +15,7 @@ export const canCreateSubProject = i => can("project.createSubproject", i);
 // Subproject intents
 export const canViewSubProjectPermissions = i => can("subproject.intent.listPermissions", i);
 export const canGrantSubProjectPermissions = i => can("subproject.intent.grantPermissions", i);
-export const canViewSubProjectDetails = i => can("subproject.viewDetails", i);
-export const canViewSubProjectSummary = i => can("subproject.viewSummary", i);
+export const canViewSubProjectDetails = i => can("subproject.view", i);
 export const canUpdateSubProject = i => can("subproject.update", i);
 export const canAssignSubProject = i => can("subproject.assign", i);
 export const canCreateWorkflowItems = i => can("subproject.createWorkflowitem", i);
@@ -68,7 +67,7 @@ export const projectIntentOrder = [
 export const subProjectIntentOrder = [
   {
     name: "view",
-    intents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.intent.listPermissions"]
+    intents: ["subproject.view", "subproject.intent.listPermissions"]
   },
   {
     name: "write",

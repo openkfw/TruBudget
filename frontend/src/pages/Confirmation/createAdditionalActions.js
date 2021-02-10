@@ -257,7 +257,7 @@ export function createAdditionalActions(originalActions, permissions, project, s
         let subprojectPermissions = { project: permissions.project, subproject: permissions.subproject };
         const grantee = payload.grantee;
 
-        if (payload.intent !== "subproject.viewSummary") {
+        if (payload.intent !== "subproject.view") {
           subprojectPermissions.subproject = applyOriginalActions(subprojectPermissions, originalActions, true);
           additionalActions = createAdditionalActionsforIntent(subprojectPermissions, grantee.id, project, subproject);
         }

@@ -23,8 +23,7 @@ import strings from "../../localizeStrings";
 import {
   canUpdateSubProject,
   canViewSubProjectDetails,
-  canViewSubProjectPermissions,
-  canViewSubProjectSummary
+  canViewSubProjectPermissions
 } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
 import SubProjectSearch from "./SubProjectSearch";
@@ -130,7 +129,7 @@ const getTableEntries = ({
     const editDisabled = !(canUpdateSubProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewSubProjectPermissions(allowedIntents);
     const redacted = displayName === null && _isEmpty(projectedBudgets);
-    const visibleSubproject = canViewSubProjectSummary(allowedIntents);
+    const visibleSubproject = canViewSubProjectDetails(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
     const isBadgeHidden = idsPermissionsUnassigned.find(el => el === id) === undefined ? true : false;
 
@@ -188,14 +187,14 @@ const getTableEntries = ({
               </div>
               <div className={classes.button}>
                 <ActionButton
-                  notVisible={!canViewSubProjectDetails(allowedIntents)}
+                  notVisible={!visibleSubproject}
                   onClick={() => {
                     storeSubSearchTerm("");
                     history.push("/projects/" + location.pathname.split("/")[2] + "/" + id);
                   }}
                   title={strings.common.view}
                   icon={<LaunchIcon />}
-                  data-test={`subproject-view-details-${index}`}
+                  data-test={`subproject-view-${index}`}
                 />
               </div>
             </div>
