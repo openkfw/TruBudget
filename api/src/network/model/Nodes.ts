@@ -1,7 +1,7 @@
 import Intent from "../../authz/intents";
 import logger from "../../lib/logger";
 import * as Result from "../../result";
-import { MultichainClient } from "../../service/Client.h";
+import { MultichainClient, PeerInfo } from "../../service/Client.h";
 import * as NodeRegistered from "../../service/domain/network/node_registered";
 import { Event } from "../../service/event";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
@@ -28,6 +28,7 @@ export interface AugmentedWalletAddress {
 export interface NodeInfo {
   address: AugmentedWalletAddress;
   networkPermissions: PermissionInfo[];
+  isConnected?: boolean;
 }
 
 export interface PermissionInfo {
@@ -101,6 +102,21 @@ export async function publish(
   });
 }
 
+/**
+ * Detects if a node with the given address is currently connected to the network
+ * @param address Node wallet address
+ * @param publishers List of the publishers
+ * @param peerInfo List of directly connected peers (nodes)
+ */
+function isNodeConnected(address: WalletAddress = "", publishers : string[] = [], peerInfo: PeerInfo[] = []): boolean {
+
+  if (publishers.some(publisher => publisher === address)) {
+    return true;
+  }
+
+  return !!peerInfo.find(({ handshake, handshakelocal }) => handshake === address || handshakelocal === address);
+}
+
 export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
     .v2_readStreamItems(streamName, "*")
@@ -115,6 +131,9 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
         throw err;
       }
     });
+
+  // add peer info
+  const peerInfo = await multichain.getPeerInfo();
 
   const nodeEventsByAddress = new Map<WalletAddress, NodeInfo>();
   const organizationsByAddress = new Map<WalletAddress, Organization>();
@@ -135,7 +154,10 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
     if (nodeInfo === undefined) {
       throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
     } else {
-      nodeEventsByAddress.set(address, nodeInfo);
+      nodeEventsByAddress.set(address, {
+        ...nodeInfo,
+        isConnected: isNodeConnected(address, item.publishers, peerInfo),
+      });
       const { organization } = nodeInfo.address;
       if (organization) organizationsByAddress.set(address, organization);
     }
