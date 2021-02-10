@@ -438,7 +438,6 @@ const de = {
     notification_table_subproject: "German: Subproject",
     notification_table_view: "German: View",
     notification_title: "German: Notifications",
-    project_archive: "German: Project {0} was archived",
     project_assign: "German: Project {0} was assigned to you",
     project_assigned: "German: Project {0} was assigned to you",
     project_close: "German: Project {0} was closed",
@@ -454,7 +453,6 @@ const de = {
     review_transaction: "German: You are assigned to review the transaction {0}",
     review_workflow: "German: You are assigned to review the workflowitem {0}",
     save_email_error: "Email konnte nicht gespeichert werden",
-    subproject_archive: "German: Subproject {0} was archived",
     subproject_assign: "German: Subproject {0} was assigned to you",
     subproject_assigned: "German: Subproject {0} was assigned to you",
     subproject_close: "German: Subproject {0} was closed",
@@ -467,7 +465,6 @@ const de = {
     subproject_reorderWorkflowitems: "German: The workflowitems of subproject {0} were reordered",
     subproject_update: "German: Subproject {0} was updated",
     subproject_updated: "German: Subproject {0} was updated",
-    workflowitem_archive: "German: Workflowitem {0} was archived",
     workflowitem_assign: "German: Workflowitem {0} was assigned to you",
     workflowitem_assigned: "German: Workflowitem {0} was assigned to you",
     workflowitem_close: "German: Workflowitem {0} was closed",
@@ -528,7 +525,10 @@ const de = {
     workflowitem_revokePermission_details: "German: {0} revoked permission {1} to {2} on {3}",
     workflowitem_revokePermission: "German: {0} revoked permission {1} of {3} from {2}",
     workflowitem_update_docs: "{0} fügte Dokumente zu Workflowitem {1} hinzu ",
-    workflowitem_update: "{0} veränderte Workflowitem {1} "
+    workflowitem_update: "{0} veränderte Workflowitem {1} ",
+    workflowitem_update_amount: "{0} veränderte workflowitem {1} budget in {2} ",
+    workflowitem_document_validated: "{0} validiertes Workflowitem-Dokument mit dem Namen {1} in {2} ",
+    workflowitem_document_invalidated: "{0} hat ein anderes Dokument in Workflowitem verwendet, um das mit benannte Dokument zu validieren {1} in {2} "
   },
 
   permissions: {
@@ -554,7 +554,6 @@ const de = {
     project_viewDetails: "German: View project details",
     project_viewSummary: "German: View project in overview",
     read_only: "German: Read-only permissions",
-    subproject_archive: "German: Archive subproject",
     subproject_assign: "German: Assign subproject",
     subproject_close: "German: Close subproject",
     subproject_createWorkflowitem: "German: Create workflowitems",
@@ -566,7 +565,6 @@ const de = {
     subproject_viewDetails: "German: View subproject details",
     subproject_viewSummary: "German: View subproject overview",
     view: "German: View permissions",
-    workflowitem_archive: "German: Archive workflowitem",
     workflowitem_assign: "German: Assign workflowitem",
     workflowitem_close: "German: Close workflowitem",
     workflowitem_intent_grantPermission: "German: Grant workflowitem permission",
@@ -597,6 +595,7 @@ const de = {
     subproject_projected_budget_deleted: "Teilprojekt-Budget geschlossen",
 
     workflowitem_created: "Workflowitem erzeugt",
+    workflowitem_document_validated: "Workflowitem dokument validiert",
     workflowitem_updated: "Workflowitem aktualisiert",
     workflowitem_assigned: "Workflowitem zugeordnet",
     workflowitem_closed: "Workflowitem geschlossen",

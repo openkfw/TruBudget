@@ -41,7 +41,6 @@ const requiredPermissions = new Map<EventType, Intent[]>([
   ["workflowitem_assigned", ["workflowitem.view"]],
   ["workflowitem_updated", ["workflowitem.view"]],
   ["workflowitem_closed", ["workflowitem.view"]],
-  ["workflowitem_archived", ["workflowitem.view"]],
   ["workflowitem_projected_budget_updated", ["workflowitem.view"]],
   ["workflowitem_projected_budget_deleted", ["workflowitem.view"]],
 ]);

@@ -13,7 +13,7 @@ class DocumentOverviewContainer extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    validateDocument: (hash, base64String, id) => dispatch(validateDocument(hash, base64String, id)),
+    validateDocument: (hash, base64String, id, projectId, subprojectId, workflowitemId) => dispatch(validateDocument(hash, base64String, id, projectId, subprojectId, workflowitemId)),
     downloadDocument: (projectId, subprojectId, workflowitemId, documentId) =>
       dispatch(downloadDocument(projectId, subprojectId, workflowitemId, documentId))
   };

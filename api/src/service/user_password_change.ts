@@ -26,7 +26,7 @@ export async function changeUserPassword(
     },
   );
   if (Result.isErr(newEventsResult)) {
-    return new VError(newEventsResult, `failed to change password`);
+    return new VError(newEventsResult, "failed to change password");
   }
   const newEvents = newEventsResult;
 

@@ -17,7 +17,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
-<!-- ### Security -->
+## [1.19.0] - 2021-02-10
+
+### Added
+
+- Display history for each workflow item [#236](https://github.com/openkfw/TruBudget/issues/236)
+- Added attachmentfile icon in workflow table [#234](https://github.com/openkfw/TruBudget/issues/234)
+
+### Fixed
+
+- Fixed a bug in the confirmation dialog because of missing additional actions [#761](https://github.com/openkfw/TruBudget/issues/761)
+- Prevent the background image from zooming in when open a dialog [#29](https://github.com/openkfw/TruBudget/issues/29)
+
+### Changed
+
+- Add Min.io to storage files [#757](https://github.com/openkfw/TruBudget/pull/757)
 
 ## [1.18.0] - 2021-01-14
 
@@ -568,7 +582,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.17.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.19.0...master
+[1.19.0]: https://github.com/openkfw/TruBudget/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/openkfw/TruBudget/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/openkfw/TruBudget/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/openkfw/TruBudget/compare/v1.15.0...v1.16.0

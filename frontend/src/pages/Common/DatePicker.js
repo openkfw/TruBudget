@@ -31,8 +31,8 @@ function DatePicker({ classes, name, label, onChange, onDelete, datetime, id = "
 
   const handleOnBlur = (date, name) => {
     const modifiedDate = dayjs(date).isValid() ? dayjs(date).format("YYYY-MM-DD") : null;
-    onChange(modifiedDate, name)
-  }
+    onChange(modifiedDate, name);
+  };
 
   return (
     <div className={classes.searchField}>

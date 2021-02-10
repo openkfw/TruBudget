@@ -38,6 +38,14 @@
     "react-hooks/exhaustive-deps": "warn",
     "no-var": 1,
     "no-console": 1,
-    "import/named": 2
+    "import/named": 2,
+    "semi-style": ["error", "last"],
+    "semi": [2, "always"],
+    "space-before-function-paren": ["error", {
+      "anonymous": "always",
+      "named": "never",
+      "asyncArrow": "always"
+    }],
+    "comma-dangle": ["error", "never"]
   }
 }

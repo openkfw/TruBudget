@@ -60,7 +60,8 @@ schemes
           base64: Joi.string()
             .required()
             .allow(""),
-          fileName: Joi.string().allow("")
+          fileName: Joi.string().allow(""),
+          orgAccess: Joi.array().items(Joi.string()).optional()
         }),
         status: Joi.string().valid("open"),
         dueDate: Joi.date().allow(null),
@@ -167,7 +168,9 @@ export const validate = (intent, payload) => {
   if (!validatePayload.error) {
     return false;
   }
+  // eslint-disable-next-line no-console
   console.error("validation error", validatePayload.error);
+  // eslint-disable-next-line no-console
   console.log("validation values", validatePayload.value);
   return true;
 };

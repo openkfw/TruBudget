@@ -20,7 +20,7 @@ export async function getUsers(
       },
     }),
   );
-  return Result.mapErr(usersResult, (err) => new VError(err, `could not fetch users`));
+  return Result.mapErr(usersResult, (err) => new VError(err, "could not fetch users"));
 }
 
 export async function getUser(
@@ -31,7 +31,7 @@ export async function getUser(
 ): Promise<Result.Type<UserRecord.UserRecord>> {
   const usersResult = await getUsers(conn, ctx, serviceUser);
   if (Result.isErr(usersResult)) {
-    return new VError(usersResult, `could not fetch users`);
+    return new VError(usersResult, "could not fetch users");
   }
   const user = usersResult.find((x) => x.id === userId);
   if (user === undefined) {
@@ -48,7 +48,7 @@ export async function userExists(
 ): Promise<Result.Type<boolean>> {
   const usersResult = await getUsers(conn, ctx, serviceUser);
   if (Result.isErr(usersResult)) {
-    return new VError(usersResult, `could not fetch users`);
+    return new VError(usersResult, "could not fetch users");
   }
   return usersResult.find((x) => x.id === userId) !== undefined;
 }

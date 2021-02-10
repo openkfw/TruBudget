@@ -1,6 +1,10 @@
+import axios from "axios";
+import * as crypto from "crypto";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
+import { hostPort } from "../config/index";
+import { downloadAsPromised } from "../lib/minio";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as WorkflowitemDocument from "./domain/workflow/document";
@@ -33,7 +37,23 @@ export async function getDocument(
           1,
         );
 
-        const documentEvents: WorkflowitemDocumentUploaded.Event[] = items.map((i) => i.data.json);
+        const documentEvents: WorkflowitemDocumentUploaded.Event[] = [];
+        for (const item of items) {
+          const event = item.data.json;
+          if (event.document.base64 === "") {
+            // check if this file is stored locally
+            if (event.document.url === hostPort) {
+              event.document.base64 = await downloadAsPromised(event.document.id);
+            } else {
+              const remoteFile = await axios.get(`${event.document.url}/api/workflowitem.downloadDocumentMinio?projectId=${event.projectId}&subprojectId=${event.subprojectId}&workflowitemId=${event.workflowitemId}&documentId=${event.document.id}`);
+              event.document.base64 = Buffer.from(remoteFile.data).toString("base64");
+            }
+
+          }
+          documentEvents.push(event);
+
+        }
+
         return documentEvents;
       },
     }),

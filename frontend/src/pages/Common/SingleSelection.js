@@ -55,7 +55,7 @@ const styles = {
   disabled: {},
   closeButtonContainer: { float: "right", marginTop: -8 },
   closeButtonSize: { fontSize: 15 },
-  itemContainer: { maxHeight: "70vh", overflow: "auto" },
+  itemContainer: { maxHeight: "70vh", overflow: "auto", boxShadow: 'none' },
   clearButton: {
     width: 45,
     height: 45,

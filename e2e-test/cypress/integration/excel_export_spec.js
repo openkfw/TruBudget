@@ -1,15 +1,13 @@
-let exportBaseUrl, exportUrl;
+let exportBaseUrl = `${Cypress.config("baseUrl")}`;
+
+if (Cypress.env("EXPORT_SERVICE_BASE_URL")) {
+  exportBaseUrl = Cypress.env("EXPORT_SERVICE_BASE_URL");
+}
+let exportUrl = `${exportBaseUrl}/test/api/export/xlsx`;
+
 let file = "cypress/fixtures/TruBudget_Export.xlsx";
 
 before(() => {
-  if (Cypress.env("EXPORT_SERVICE_BASE_URL")) {
-    exportBaseUrl = Cypress.env("EXPORT_SERVICE_BASE_URL");
-    exportUrl = exportBaseUrl;
-  } else {
-    exportBaseUrl = `${Cypress.config("baseUrl")}/test`;
-    exportUrl = exportBaseUrl + "/api/export/xlsx";
-  }
-
   //download directly to fixture folder, without pop-ups
   if (Cypress.browser.name !== "firefox") {
     cy.wrap(
@@ -34,7 +32,7 @@ describe("Excel Export feature", function() {
     //create export
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
-    cy.get("[data-test=side-navigation]");
+    cy.get("[data-test=side-navigation]").should("be.visible");
     cy.get("[data-test=side-navigation-export]")
       .should("be.visible")
       .click();
@@ -74,7 +72,7 @@ describe("Excel Export feature", function() {
     //export excel
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
-    cy.get("[data-test=side-navigation]");
+    cy.get("[data-test=side-navigation]").should("be.visible");
     cy.get("[data-test=side-navigation-export]")
       .should("be.visible")
       .click();

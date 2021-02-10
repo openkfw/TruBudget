@@ -11,20 +11,19 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["project.intent.revokePermission", ["project.intent.listPermissions"]],
   ["project.assign", ["project.viewDetails"]],
   ["project.update", ["project.viewDetails"]],
-  ["project.archive", ["project.viewDetails"]],
+
   ["project.createSubproject", ["project.viewDetails", "subproject.viewDetails"]],
   ["subproject.intent.grantPermission", ["subproject.intent.listPermissions"]],
   ["subproject.intent.revokePermission", ["subproject.intent.listPermissions"]],
   ["subproject.assign", ["subproject.viewDetails"]],
   ["subproject.update", ["subproject.viewDetails"]],
-  ["subproject.archive", ["subproject.viewDetails"]],
+
   ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.view"]],
   ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.view"]],
   ["workflowitem.intent.grantPermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.intent.revokePermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.assign", ["workflowitem.view"]],
   ["workflowitem.update", ["workflowitem.view"]],
-  ["workflowitem.archive", ["workflowitem.view"]],
 ]);
 
 export function onlyAllowedData(event: Event, userIntents: Intent[]): Event | null {
@@ -98,7 +97,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
     }
   } else {
     // No special handling needed
-    logger.debug({ event }, `No special handling for event needed`);
+    logger.debug({ event }, "No special handling for event needed");
   }
   return event;
 }

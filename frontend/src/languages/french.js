@@ -435,7 +435,6 @@ const fr = {
     notification_table_view: "Vue",
     notification_title: "Notifications",
     previous_page: "Page précédente",
-    project_archive: "Projet {0} a été archivé",
     project_assign: "Projet {0} vous a été assigné",
     project_assigned: "Projet {0} vous a été assigné",
     project_close: "Projet {0} est terminé",
@@ -452,7 +451,6 @@ const fr = {
     review_workflow: "Vous êtes assigné à examiner l’étape de workflow {0}",
     rows_per_page: "Lignes par page",
     save_email_error: "Impossible d'enregistrer l'email",
-    subproject_archive: "Composante {0} a été archivée",
     subproject_assign: "Composante {0} vous a été assignée",
     subproject_assigned: "Composante {0} vous a été assignée",
     subproject_close: "Composante {0} a été fermée",
@@ -465,7 +463,6 @@ const fr = {
     subproject_reorderWorkflowitems: "Les étapes de workflow {0} ont été restauré",
     subproject_update: "Composante {0} a été actualisée",
     subproject_updated: "Composante {0} a été actualisée",
-    workflowitem_archive: "L’étape de workflow {0} a été archivée",
     workflowitem_assign: " L’étape de workflow {0} vous a été assignée",
     workflowitem_assigned: " L’étape de workflow {0} vous a été assignée",
     workflowitem_close: " L’étape de workflow {0} a été fermée",
@@ -530,7 +527,10 @@ const fr = {
     workflowitem_revokePermission_details: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_revokePermission: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_update_docs: "{0} a ajouté des documents au workflow {1} ",
-    workflowitem_update: "{0} a modifié le workflow {1} "
+    workflowitem_update: "{0} a modifié le workflow {1} ",
+    workflowitem_update_amount: "{0} a modifié le workflow {1} budget dans {2}",
+    workflowitem_document_validated: "{0} document d'élément de flux de travail validé nommé {1} dans {2} ",
+    workflowitem_document_invalidated: "{0} a utilisé un document différent dans le workflowitem pour valider le document nommé avec {1} dans {2} "
   },
 
   permissions: {
@@ -556,7 +556,6 @@ const fr = {
     project_viewDetails: "Voir les détails du projet",
     project_viewSummary: "Voir le projet en aperçu",
     read_only: "Autorisations en lecture seule",
-    subproject_archive: "Archives de la composante",
     subproject_assign: "Attribuer la composante",
     subproject_close: "Fermer la composante",
     subproject_createWorkflowitem: "Créer des étapes de workflow",
@@ -568,7 +567,6 @@ const fr = {
     subproject_viewDetails: "Voir les détails de la composante",
     subproject_viewSummary: "Voir la vue d'ensemble de la composante",
     view: "Autorisations de lecture",
-    workflowitem_archive: "Archiver l’étape de workflow",
     workflowitem_assign: "Assigner l’étape de workflow",
     workflowitem_close: "Fermer l’étape de workflow",
     workflowitem_intent_grantPermission: "Accorder des autorisations sur l’étape de workflow",
@@ -599,6 +597,7 @@ const fr = {
     subproject_projected_budget_deleted: "Budget de la composante clôturé",
 
     workflowitem_created: " Étape de workflow créée",
+    workflowitem_document_validated: "Document workflowitem validé",
     workflowitem_updated: " Étape de workflow mise à jour",
     workflowitem_assigned: " Étape de workflow assignée",
     workflowitem_closed: " Étape de workflow fermée",

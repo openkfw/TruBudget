@@ -39,7 +39,7 @@ const en = {
     type: "Workflowitem Type",
     subproject_currency: "Subproject Currency",
     allocated: "Assigned",
-    disbursed: "Payed",
+    disbursed: "Paid",
     na: "N/A",
   },
 

@@ -111,7 +111,7 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
         logger.debug(`The stream ${streamName} does not exist yet.`);
         return [];
       } else {
-        logger.error({ error: err }, `Getting stream items failed.`);
+        logger.error({ error: err }, "Getting stream items failed.");
         throw err;
       }
     });

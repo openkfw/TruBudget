@@ -123,7 +123,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         // TODO use an exposedPermissions interface instead of a filter function
         const filteredSubprojectPermissions = filterPermissions(subprojectPermissions, [
           "subproject.close",
-          "subproject.archive",
         ]);
 
         const code = 200;

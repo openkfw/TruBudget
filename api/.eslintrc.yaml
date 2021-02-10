@@ -12,11 +12,12 @@ parserOptions:
   project: "./tsconfig.json"
   sourceType: module
 rules:
-  ## temporarily overriden below
-  # "@typescript-eslint/quotes":
-  #   - 2
-  #   - "double"
-  #   - "avoidEscape": true
+
+  "@typescript-eslint/quotes":
+    - 2
+    - "double"
+    - "avoidEscape": true
+
   ## "@typescript-eslint/no-unused-vars": 2 doesn't seem to be working properly
   "@typescript-eslint/no-unused-vars": 0
   generator-star-spacing:
@@ -233,13 +234,6 @@ rules:
   ## strictly enforcing no-explicit-any is beneficial, perhaps override per-file or inline?
   "@typescript-eslint/no-explicit-any": 0
 
-  ## autofixable
-  # "@typescript-eslint/quotes":
-  # - 2
-  # - "double"
-  # - "avoidEscape": true
-  "@typescript-eslint/quotes": 0
-
   ## TODO discussion
   ## no-throw-literal: 0
   ## "@typescript-eslint/no-throw-literal": 2
@@ -264,8 +258,3 @@ rules:
 
   ## @typescript-eslint/indent should stay disabled because it messes with formatting
   "@typescript-eslint/indent": 0
-
-  ## this rule is on by default
-  ## and changes among others "const TRUE = true as true;"" to "const TRUE = true as const;"
-  ## which probably is not desired
-  "@typescript-eslint/prefer-as-const": 0

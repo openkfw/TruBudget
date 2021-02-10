@@ -84,6 +84,7 @@ import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
+import * as WorkflowitemDocumentDownloadMinioService from "./service/workflowitem_document_minio_download";
 import * as WorkflowitemGetService from "./service/workflowitem_get";
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
@@ -119,6 +120,7 @@ import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
+import * as WorkflowitemsDocumentDownloadMinioAPI from "./workflowitem_download_document_minio";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
@@ -146,18 +148,19 @@ if (!process.env.ROOT_SECRET) {
 }
 const organization: string = process.env.ORGANIZATION || "";
 if (!organization) {
-  logger.fatal(`Please set ORGANIZATION to the organization this node belongs to.`);
+  logger.fatal("Please set ORGANIZATION to the organization this node belongs to.");
   process.exit(1);
 }
 const organizationVaultSecret: string = process.env.ORGANIZATION_VAULT_SECRET || "";
 if (!organizationVaultSecret) {
   logger.fatal(
-    `Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.`,
+    "Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.",
   );
   process.exit(1);
 }
 
 const SWAGGER_BASEPATH = process.env.SWAGGER_BASEPATH || "/";
+
 
 /*
  * Initialize the components:
@@ -738,8 +741,27 @@ WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
-  matches: (documentBase64: string, expectedSHA256: string) =>
-    DocumentValidationService.isSameDocument(documentBase64, expectedSHA256),
+  matches: (
+    documentBase64: string,
+    expectedSHA256: string,
+    id: string,
+    ctx,
+    user,
+    projectId,
+    subprojectId,
+    workflowitemId
+  ) =>
+    DocumentValidationService.isSameDocument(
+      documentBase64,
+      expectedSHA256,
+      id,
+      db,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+    ),
 });
 
 WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
@@ -748,6 +770,18 @@ WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
       db,
       ctx,
       user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      documentId,
+    ),
+});
+
+WorkflowitemsDocumentDownloadMinioAPI.addHttpHandler(server, URL_PREFIX, {
+  getDocumentMinio: (ctx, projectId, subprojectId, workflowitemId, documentId) =>
+    WorkflowitemDocumentDownloadMinioService.getDocumentMinio(
+      db,
+      ctx,
       projectId,
       subprojectId,
       workflowitemId,

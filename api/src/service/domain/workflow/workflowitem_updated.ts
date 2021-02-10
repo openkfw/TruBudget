@@ -109,14 +109,14 @@ export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): R
   }
 
   if (workflowitem.status !== "open") {
-    return new VError(`a workflowitem may only be updated if its status is "open"`);
+    return new VError("a workflowitem may only be updated if its status is \"open\"");
   }
 
   updateProps(workflowitem, event.update);
   updateAdditionalData(workflowitem, event.update.additionalData);
   const updatedDocumentResult = updateDocuments(workflowitem, event.update.documents);
   if (Result.isErr(updatedDocumentResult)) {
-    return new VError(updatedDocumentResult, `update documents failed`);
+    return new VError(updatedDocumentResult, "update documents failed");
   }
 
   // Setting the amount type to "N/A" removes fields that
@@ -175,7 +175,7 @@ function updateDocuments(
       if (existingDocument.hash !== document.hash) {
         return new VError(
           `cannot update document ${document.id}, ` +
-            `as changing existing documents is not allowed`,
+            "as changing existing documents is not allowed",
         );
       }
     }

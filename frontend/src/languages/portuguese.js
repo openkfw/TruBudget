@@ -439,7 +439,6 @@ const pt = {
     notification_table_subproject: "Subprojetos",
     notification_table_view: "Ler",
     notification_title: "Notificações",
-    project_archive: "Projeto {0} foi arquivado",
     project_assign: "Projeto {0} foi atribuído a você",
     project_assigned: "Projeto {0} foi atribuído a você",
     project_close: "Projeto {0} foi fechado",
@@ -455,7 +454,6 @@ const pt = {
     review_transaction: "Você foi solicitado a revisar a transação {0}",
     review_workflow: "Você foi solicitado a revisar o item de workflow {0}",
     save_email_error: "Não foi possível salvar o email",
-    subproject_archive: "Subprojeto {0} foi arquivado",
     subproject_assign: "Subprojeto {0} foi atribuído a você",
     subproject_assigned: "Subprojeto {0} foi atribuído a você",
     subproject_close: "Subprojeto {0} foi fechado",
@@ -468,7 +466,6 @@ const pt = {
     subproject_reorderWorkflowitems: "Os items de workflow do subprojeto {0} foram reordenados",
     subproject_update: "Subprojeto {0} foi atualizado",
     subproject_updated: "Subprojeto {0} foi atualizado",
-    workflowitem_archive: "Item de workflow {0} foi arquivado",
     workflowitem_assign: "Item de workflow {0} foi atribuído a você",
     workflowitem_assigned: "Item de workflow {0} foi atribuído a você",
     workflowitem_close: "Item de Workflow {0} foi fechado",
@@ -529,7 +526,10 @@ const pt = {
     workflowitem_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_revokePermission: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_update_docs: "{0} adicionou documentos ao item de workflow {1} ",
-    workflowitem_update: "{0} modificou o item de workflow {1} "
+    workflowitem_update: "{0} modificou o item de workflow {1} ",
+    workflowitem_update_amount: "{0} modificou o item de workflow {1} despesas dentro {2} ",
+    workflowitem_document_validated: "{0} documento de item de fluxo de trabalho validado denominado {1} em {2} ",
+    workflowitem_document_invalidated: "{0} usado documento diferente no item de fluxo de trabalho para validar o documento nomeado com {1} em {2} "
   },
 
   permissions: {
@@ -555,7 +555,6 @@ const pt = {
     project_viewDetails: "Visualizar detalhes do projeto",
     project_viewSummary: "Visualizar dados gerais do projeto",
     read_only: "Permissões somente leitura",
-    subproject_archive: "Arquivar subprojeto",
     subproject_assign: "Atribuir subprojeto a outros",
     subproject_close: "Fechar subprojeto",
     subproject_createWorkflowitem: "Criar item de workflow",
@@ -567,7 +566,6 @@ const pt = {
     subproject_viewDetails: "Visualizar detalhes do subprojeto",
     subproject_viewSummary: "Visualizar dados gerais do subprojeto",
     view: "Permissões de leitura",
-    workflowitem_archive: "Arquivar item de workflow",
     workflowitem_assign: "Atribuir item de workflow a outros",
     workflowitem_close: "Fechar item de workflow",
     workflowitem_intent_grantPermission: "Conceder permissões do item de workflow",
@@ -598,6 +596,7 @@ const pt = {
     subproject_projected_budget_deleted: "Orçamento do subprojecto encerrado",
 
     workflowitem_created: "Workflowitem criado",
+    workflowitem_document_validated: "Documento de item de fluxo de trabalho validado",
     workflowitem_updated: "Workflowitem actualizado",
     workflowitem_assigned: "Workflowitem assigned",
     workflowitem_closed: "Workflowitem encerrado",

@@ -506,6 +506,7 @@ Here you can find a summary of all the technologies used in TruBudget with links
 
 - [README.md](https://github.com/openkfw/TruBudget/blob/master/blockchain/README.md)
 - [Multichain](https://www.multichain.com/developers/)
+- [Multichain-CLI tutorial](https://github.com/openkfw/TruBudget/blob/master/doc/tutorials/multichain-cli/multichain-cli.md)
 
 ### API
 

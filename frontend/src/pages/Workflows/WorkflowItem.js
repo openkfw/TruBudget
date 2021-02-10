@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import DoneIcon from "@material-ui/icons/Check";
 import EditIcon from "@material-ui/icons/Edit";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
+import AttachmentIcon from '@material-ui/icons/Attachment';
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import MoreIcon from "@material-ui/icons/MoreHoriz";
 import OpenIcon from "@material-ui/icons/Remove";
@@ -30,6 +31,14 @@ const styles = theme => {
   return {
     text: {
       fontSize: "14px"
+    },
+    tooltip: {
+      margin: '0px',
+      padding: '0px 5px 0px 15px'
+    },
+    tooltipItem: {
+      fontSize: '12px',
+      margin: '5px 0'
     },
     dots: {
       height: 20,
@@ -289,6 +298,41 @@ const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEna
   );
 };
 
+const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
+  const {documents} = workflow;
+  const showAttachFileBadge = documents && documents.length > 0;
+  const attachmentFileTooltip = () => showAttachFileBadge &&
+    <ul className={classes.tooltip}>
+      {documents.map((item, index) => <li key={`${item.id}_${index}`} className={classes.tooltipItem}>{item.id}</li>)}
+    </ul>;
+  return (
+    <div>
+      {
+        showAttachFileBadge &&
+          <Tooltip
+            id={`tooltip-workflow-attachfile-${workflow.id}`}
+            data-test={`tooltip-workflow-attachfile-data-${workflow.id}`}
+            title={attachmentFileTooltip()}
+          >
+            <StyledBadge
+              variant="dot"
+              invisible={!showAttachFileBadge}
+              data-test={`attachment-file-badge-show-${workflow.id}`}
+              className={classes.buttonStyle}
+            >
+              <IconButton
+                style={{cursor: 'default'}}
+                data-test={`workflowitem-attachment-file-button-${workflow.id}`}
+              >
+                <AttachmentIcon />
+              </IconButton>
+            </StyledBadge>
+          </Tooltip>
+      }
+    </div>
+  );
+}
+
 const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, status) => {
   const workflowSortable = status === "open";
   return workflowSortEnabled ? workflowSortable : currentWorkflowSelectable;
@@ -459,6 +503,7 @@ export const WorkflowItem = withTheme(
         const itemStyle = workflowSelectable ? {} : { opacity: 0.31 };
         const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
         const infoButton = getInfoButton(classes, props, status, workflowSortEnabled, workflow.data);
+        const attachmentButton = getAttachmentButton(classes, props, status, workflowSortEnabled, workflow.data);
         const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
         const canCloseWorkflowitem = currentUser === assignee;
         const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";
@@ -484,6 +529,7 @@ export const WorkflowItem = withTheme(
             >
               <div className={classes.workflowContent} data-test={`workflowitem-${id}`}>
                 <div className={classes.infoCell}>{infoButton}</div>
+                <div className={classes.infoCell}>{attachmentButton}</div>
                 <div className={`${classes.text} ${classes.workflowCell}`} style={itemStyle}>
                   <Typography variant="body2" className={classes.typographs}>
                     {displayName}

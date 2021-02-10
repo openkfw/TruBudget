@@ -37,14 +37,20 @@ function addAdditionalActions(newActions, allActions) {
   return allActions;
 }
 
-function createAdditionalActionsForResource(permissions, resource, intent, id, displayName, identity) {
+function createAdditionalActionsForResource(
+  permissions,
+  resource,
+  intent,
+  id,
+  displayName,
+  identity,
+  listPermissionIntentNeededFor
+) {
   const viewSummary = `${resource}.viewSummary`;
   const viewDetails = `${resource}.viewDetails`;
   const viewWorkflowitem = `${resource}.view`;
   const listPermissions = `${resource}.intent.listPermissions`;
-  const grantPermission = `${resource}.intent.grantPermission`;
-  const revokePermission = `${resource}.intent.revokePermission`;
-  const assignPermission = `${resource}.assign`;
+
   let actions = [];
   if (resource !== "workflowitem") {
     if (permissions[viewSummary] === undefined || !permissions[viewSummary].includes(identity)) {
@@ -61,11 +67,8 @@ function createAdditionalActionsForResource(permissions, resource, intent, id, d
       actions.push(action);
     }
   }
-  // Only check for listPermissions if identity has grant/revoke or assign permissions
   if (
-    (permissions[grantPermission].includes(identity) ||
-      permissions[revokePermission].includes(identity) ||
-      permissions[assignPermission].includes(identity)) &&
+    listPermissionIntentNeededFor[resource] &&
     (permissions[listPermissions] === undefined || !permissions[listPermissions].includes(identity))
   ) {
     const action = { intent, id, displayName, permission: listPermissions, identity };
@@ -83,6 +86,41 @@ function createAdditionalActionsforIntent(
 ) {
   const resources = ["project", "subproject", "workflowitem"];
   const additionalActions = [];
+
+  // Set additional listpermissions for required intents
+  let listPermissionIntentNeededFor = { project: false, subproject: false, workflowitem: false };
+  if (
+    permissions.project &&
+    (permissions.project["project.createSubproject"].includes(identity) ||
+      permissions.project["project.assign"].includes(identity) ||
+      permissions.project["project.intent.grantPermission"].includes(identity) ||
+      permissions.project["project.intent.revokePermission"].includes(identity))
+  ) {
+    listPermissionIntentNeededFor.project = true;
+  }
+
+  if (
+    permissions.subproject &&
+    (permissions.subproject["subproject.createWorkflowitem"].includes(identity) ||
+      permissions.subproject["subproject.assign"].includes(identity) ||
+      permissions.subproject["subproject.intent.grantPermission"].includes(identity) ||
+      permissions.subproject["subproject.intent.revokePermission"].includes(identity))
+  ) {
+    listPermissionIntentNeededFor.project = true;
+    listPermissionIntentNeededFor.subproject = true;
+  }
+
+  if (
+    permissions.workflowitem &&
+    (permissions.workflowitem["workflowitem.assign"].includes(identity) ||
+      permissions.workflowitem["workflowitem.intent.grantPermission"].includes(identity) ||
+      permissions.workflowitem["workflowitem.intent.revokePermission"].includes(identity))
+  ) {
+    listPermissionIntentNeededFor.project = true;
+    listPermissionIntentNeededFor.subproject = true;
+    listPermissionIntentNeededFor.workflowitem = true;
+  }
+
   resources.forEach(res => {
     const resourcePermissions = permissions[res];
     if (!_isEmpty(resourcePermissions)) {
@@ -109,7 +147,15 @@ function createAdditionalActionsforIntent(
           displayName = project.displayName;
           break;
       }
-      const actions = createAdditionalActionsForResource(resourcePermissions, res, intent, id, displayName, identity);
+      const actions = createAdditionalActionsForResource(
+        resourcePermissions,
+        res,
+        intent,
+        id,
+        displayName,
+        identity,
+        listPermissionIntentNeededFor
+      );
       if (actions.length !== 0) additionalActions.push(...actions);
     }
   });

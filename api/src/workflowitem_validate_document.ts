@@ -8,12 +8,19 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import * as Project from "./service/domain/workflow/project";
+import * as Subproject from "./service/domain/workflow/subproject";
+import * as Workflowitem from "./service/domain/workflow/workflowitem";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
   data: {
     base64String: string;
     hash: string;
+    id: string;
+    projectId: Project.Id;
+    subprojectId: Subproject.Id;
+    workflowitemId: Workflowitem.Id;
   };
 }
 
@@ -22,6 +29,10 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     base64String: Joi.string().required(),
     hash: Joi.string().required(),
+    id: Joi.string().required(),
+    projectId: Project.idSchema.required(),
+    subprojectId: Subproject.idSchema.required(),
+    workflowitemId: Workflowitem.idSchema.required(),
   }).required(),
 });
 
@@ -59,6 +70,22 @@ function mkSwaggerSchema(server: FastifyInstance) {
                 type: "string",
                 example: "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
               },
+              id: {
+                type: "string",
+                example: "test"
+              },
+              projectId: {
+                type: "string",
+                example: "3r28c69eg298c87e3899119e025eff1f"
+              },
+              subprojectId: {
+                type: "string",
+                example: "5t28c69eg298c87e3899119e025eff1f"
+              },
+              workflowitemId: {
+                type: "string",
+                example: "4j28c69eg298c87e3899119e025eff1f"
+              },
             },
           },
         },
@@ -84,7 +111,16 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  matches(documentBase64: string, expectedSHA256: string): Promise<Result.Type<boolean>>;
+  matches(
+    documentBase64: string,
+    expectedSHA256: string,
+    id: string,
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: Project.Id,
+    subprojectId: Subproject.Id,
+    workflowitemId: Workflowitem.Id
+  ): Promise<Result.Type<boolean>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -99,10 +135,26 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         return;
       }
 
-      const { base64String: documentBase64, hash: expectedSHA256 } = bodyResult.data;
+      const ctx: Ctx = { requestId: request.id, source: "http" };
+
+      const user: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+      };
+
+      const { base64String: documentBase64, hash: expectedSHA256, id, projectId, subprojectId, workflowitemId } = bodyResult.data;
 
       service
-        .matches(documentBase64, expectedSHA256)
+        .matches(
+          documentBase64,
+          expectedSHA256,
+          id,
+          ctx,
+          user,
+          projectId,
+          subprojectId,
+          workflowitemId
+        )
         .then((validateWorkflowitemResult) => {
           if (Result.isErr(validateWorkflowitemResult)) {
             throw new VError(validateWorkflowitemResult, "workflowitem.validateDocument failed");

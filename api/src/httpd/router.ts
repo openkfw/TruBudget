@@ -41,7 +41,7 @@ const handleError = (req, res, err: any) => {
       break;
     }
     case "AddressIsInvalid": {
-      const message = `The address is invalid.`;
+      const message = "The address is invalid.";
       logger.error({ error: err }, message);
       send(res, [
         400,
@@ -311,7 +311,7 @@ export const registerRoutes = (
       createBackup(multichainHost, backupApiPort, req)
         .then((data) => {
           reply.header("Content-Type", "application/gzip");
-          reply.header("Content-Disposition", `attachment; filename="backup.gz"`);
+          reply.header("Content-Disposition", "attachment; filename=\"backup.gz\"");
           reply.send(data);
         })
         .catch((err) => handleError(req, reply, err));
