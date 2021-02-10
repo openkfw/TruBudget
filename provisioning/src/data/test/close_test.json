@@ -28,8 +28,7 @@
       }],
       "assignee": "mstein",
       "permissions": {
-        "subproject.viewSummary": ["mstein"],
-        "subproject.viewDetails": ["mstein"],
+        "subproject.view": ["mstein"],
         "subproject.close": ["mstein"]
       },
       "workflows": []
@@ -46,8 +45,7 @@
       }],
       "assignee": "jdoe",
       "permissions": {
-        "subproject.viewSummary": ["jdoe"],
-        "subproject.viewDetails": ["jdoe"],
+        "subproject.view": ["jdoe"],
         "subproject.close": ["jdoe"]
       },
       "workflows": []

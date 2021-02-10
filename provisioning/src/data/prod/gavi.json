@@ -66,17 +66,7 @@
       ],
       "assignee": "msiddiqui",
       "permissions": {
-        "subproject.viewSummary": [
-          "msiddiqui",
-          "aproducer",
-          "kdeliverer",
-          "ccustoms",
-          "sdistributor",
-          "fhealth",
-          "ihealth",
-          "ahealth"
-        ],
-        "subproject.viewDetails": [
+        "subproject.view": [
           "msiddiqui",
           "aproducer",
           "kdeliverer",
@@ -417,17 +407,7 @@
       ],
       "assignee": "msiddiqui",
       "permissions": {
-        "subproject.viewSummary": [
-          "msiddiqui",
-          "aproducer",
-          "kdeliverer",
-          "ccustoms",
-          "sdistributor",
-          "fhealth",
-          "ihealth",
-          "ahealth"
-        ],
-        "subproject.viewDetails": [
+        "subproject.view": [
           "msiddiqui",
           "aproducer",
           "kdeliverer",

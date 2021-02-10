@@ -68,16 +68,7 @@
       ],
       "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": [
-          "atutelle",
-          "rfinance",
-          "pbailleur",
-          "stresor",
-          "faudit",
-          "ftender",
-          "pchantier"
-        ],
-        "subproject.viewDetails": [
+        "subproject.view": [
           "atutelle",
           "rfinance",
           "pbailleur",
@@ -422,16 +413,7 @@
       ],
       "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": [
-          "atutelle",
-          "rfinance",
-          "pbailleur",
-          "stresor",
-          "faudit",
-          "ftender",
-          "pchantier"
-        ],
-        "subproject.viewDetails": [
+        "subproject.view": [
           "atutelle",
           "rfinance",
           "pbailleur",
@@ -772,16 +754,7 @@
       ],
       "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": [
-          "atutelle",
-          "rfinance",
-          "pbailleur",
-          "stresor",
-          "faudit",
-          "ftender",
-          "pchantier"
-        ],
-        "subproject.viewDetails": [
+        "subproject.view": [
           "atutelle",
           "rfinance",
           "pbailleur",
@@ -1118,16 +1091,7 @@
       ],
       "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": [
-          "atutelle",
-          "rfinance",
-          "pbailleur",
-          "stresor",
-          "faudit",
-          "ftender",
-          "pchantier"
-        ],
-        "subproject.viewDetails": [
+        "subproject.view": [
           "atutelle",
           "rfinance",
           "pbailleur",
@@ -1432,16 +1396,7 @@
       ],
       "assignee": "atutelle",
       "permissions": {
-        "subproject.viewSummary": [
-          "atutelle",
-          "rfinance",
-          "pbailleur",
-          "stresor",
-          "faudit",
-          "ftender",
-          "pchantier"
-        ],
-        "subproject.viewDetails": [
+        "subproject.view": [
           "atutelle",
           "rfinance",
           "pbailleur",

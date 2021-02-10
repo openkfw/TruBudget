@@ -33,8 +33,7 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.view": ["jxavier"]
       },
       "workflows": [
         {
@@ -137,8 +136,7 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.view": ["jxavier"]
       },
       "workflows": [
         {
@@ -234,8 +232,7 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.view": ["jxavier"]
       },
       "workflows": [
         {
@@ -331,8 +328,7 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.view": ["jxavier"]
       },
       "workflows": [
         {
@@ -420,8 +416,7 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.view": ["jxavier"]
       },
       "workflows": [
         {
