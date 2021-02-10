@@ -16,8 +16,7 @@ const subprojectId = "dummy-subproject";
 const subprojectName = "dummy-Name";
 
 const permissions: Permissions = {
-    "subproject.viewSummary": ["alice"],
-    "subproject.viewDetails": ["alice"],
+    "subproject.view": ["alice"]
   };
 
 const baseSubproject: Subproject = {

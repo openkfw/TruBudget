@@ -1246,7 +1246,7 @@
           "response": []
         },
         {
-          "name": "subproject.viewDetails",
+          "name": "subproject.view",
           "request": {
             "auth": {
               "type": "bearer",
@@ -1266,10 +1266,10 @@
               }
             ],
             "url": {
-              "raw": "{{host}}:{{port}}{{base}}/subproject.viewDetails?projectId={{projectId}}&subprojectId={{subprojectId}}",
+              "raw": "{{host}}:{{port}}{{base}}/subproject.view?projectId={{projectId}}&subprojectId={{subprojectId}}",
               "host": ["{{host}}"],
               "port": "{{port}}{{base}}",
-              "path": ["subproject.viewDetails"],
+              "path": ["subproject.view"],
               "query": [
                 {
                   "key": "projectId",

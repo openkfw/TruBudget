@@ -190,7 +190,7 @@ interface Request extends RequestGenericInterface {
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
   server.get<Request>(
-    `${urlPrefix}/subproject.viewDetails`,
+    `${urlPrefix}/subproject.view`,
     mkSwaggerSchema(server),
     async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
@@ -229,7 +229,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         // Get project info
         const projectResult = await service.getProject(ctx, user, projectId);
         if (Result.isErr(projectResult)) {
-          throw new VError(projectResult, "subproject.viewDetails failed");
+          throw new VError(projectResult, "subproject.view failed");
         }
         const displayName = projectResult.displayName;
         const exposedProject: ExposedProject = {
@@ -240,7 +240,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         // Get subproject info
         const subprojectResult = await service.getSubproject(ctx, user, projectId, subprojectId);
         if (Result.isErr(subprojectResult)) {
-          throw new VError(subprojectResult, "subproject.viewDetails failed");
+          throw new VError(subprojectResult, "subproject.view failed");
         }
         const subproject: Subproject.Subproject = subprojectResult;
         const exposedSubproject: ExposedSubproject = {
@@ -268,7 +268,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           subprojectId,
         );
         if (Result.isErr(workflowitemsResult)) {
-          throw new VError(workflowitemsResult, "subproject.viewDetails failed");
+          throw new VError(workflowitemsResult, "subproject.view failed");
         }
         const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map((workflowitem) => ({
           allowedIntents: workflowitem.isRedacted

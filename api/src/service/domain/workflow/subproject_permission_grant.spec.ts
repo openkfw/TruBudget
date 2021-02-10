@@ -15,8 +15,7 @@ const executingUser: ServiceUser = { id: "mstein", groups: [] };
 const testUser: ServiceUser = { id: "testUser", groups: [] };
 
 const permissions: Permissions = {
-  "subproject.viewSummary": ["testUser"],
-  "subproject.viewDetails": [],
+  "subproject.view": [],
   "subproject.intent.revokePermission": ["testUser"],
   "subproject.intent.grantPermission": ["mstein"],
 };
@@ -45,7 +44,7 @@ describe("grant subproject permissions", () => {
       testsubproject.projectId,
       testsubproject.id,
       testUser.id,
-      "subproject.viewDetails",
+      "subproject.view",
       {
         getSubproject: async () => testsubproject,
       },
@@ -64,7 +63,7 @@ describe("grant subproject permissions", () => {
       time: grantEvent.time,
       projectId: testsubproject.projectId,
       subprojectId: testsubproject.id,
-      permission: "subproject.viewDetails",
+      permission: "subproject.view",
       grantee: testUser.id,
     };
     assert.deepEqual(expectedEvent, grantEvent);
@@ -92,7 +91,7 @@ describe("grant subproject permissions", () => {
       testsubproject.projectId,
       testsubproject.id,
       testUser.id,
-      "subproject.viewDetails",
+      "subproject.view",
       {
         getSubproject: async () => subprojectWithoutPermission,
       },
@@ -110,7 +109,7 @@ describe("grant subproject permission: preconditions", () => {
       testsubproject.projectId,
       testsubproject.id,
       testUser.id,
-      "subproject.viewDetails",
+      "subproject.view",
       {
         getSubproject: async () => new Error("some error"),
       },
@@ -120,8 +119,7 @@ describe("grant subproject permission: preconditions", () => {
   });
   it("No changes to existing permissions emit no new events", async () => {
     const existingPermissions: Permissions = {
-      "subproject.viewSummary": ["testUser"],
-      "subproject.viewDetails": ["testUser"],
+      "subproject.view": ["testUser"],
       "subproject.intent.revokePermission": ["testUser"],
       "subproject.intent.grantPermission": ["mstein"],
     };
@@ -135,7 +133,7 @@ describe("grant subproject permission: preconditions", () => {
       testsubproject.projectId,
       testsubproject.id,
       testUser.id,
-      "subproject.viewDetails",
+      "subproject.view",
       {
         getSubproject: async () => baseSubproject,
       },

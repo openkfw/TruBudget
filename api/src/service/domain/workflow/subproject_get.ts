@@ -25,7 +25,7 @@ export async function getSubproject(
   }
 
   if (user.id !== "root") {
-    const intents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
+    const intents: Intent[] = ["subproject.view"];
     if (!Subproject.permits(subproject, user, intents)) {
       return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: subproject });
     }
@@ -36,14 +36,14 @@ export async function getSubproject(
 
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
-  ["subproject_created", ["subproject.viewSummary", "subproject.viewDetails"]],
+  ["subproject_created", ["subproject.view"]],
   ["subproject_permission_granted", ["subproject.intent.listPermissions"]],
   ["subproject_permission_revoked", ["subproject.intent.listPermissions"]],
-  ["subproject_assigned", ["subproject.viewDetails"]],
-  ["subproject_updated", ["subproject.viewDetails"]],
-  ["subproject_closed", ["subproject.viewSummary", "subproject.viewDetails"]],
-  ["subproject_projected_budget_updated", ["subproject.viewDetails"]],
-  ["subproject_projected_budget_deleted", ["subproject.viewDetails"]],
+  ["subproject_assigned", ["subproject.view"]],
+  ["subproject_updated", ["subproject.view"]],
+  ["subproject_closed", ["subproject.view"]],
+  ["subproject_projected_budget_updated", ["subproject.view"]],
+  ["subproject_projected_budget_deleted", ["subproject.view"]],
   ["workflowitems_reordered", ["subproject.reorderWorkflowitems"]],
 ]);
 

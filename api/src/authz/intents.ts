@@ -33,8 +33,7 @@ type Intent =
   | "subproject.intent.grantPermission"
   | "subproject.intent.revokePermission"
   // TODO: rename to subproject.list
-  | "subproject.viewSummary"
-  | "subproject.viewDetails"
+  | "subproject.view"
   | "subproject.viewHistory"
   | "subproject.assign"
   | "subproject.update"
@@ -132,8 +131,7 @@ export const subprojectIntents: Intent[] = [
   "subproject.intent.listPermissions",
   "subproject.intent.grantPermission",
   "subproject.intent.revokePermission",
-  "subproject.viewSummary",
-  "subproject.viewDetails",
+  "subproject.view",
   "subproject.viewHistory",
   "subproject.assign",
   "subproject.update",
@@ -191,8 +189,7 @@ export const allIntents: Intent[] = [
   "subproject.intent.listPermissions",
   "subproject.intent.grantPermission",
   "subproject.intent.revokePermission",
-  "subproject.viewSummary",
-  "subproject.viewDetails",
+  "subproject.view",
   "subproject.viewHistory",
   "subproject.assign",
   "subproject.update",

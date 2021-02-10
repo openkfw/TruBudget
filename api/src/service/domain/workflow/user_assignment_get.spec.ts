@@ -206,8 +206,7 @@ describe("Get user assignments: authorization and conditions", () => {
           {
             ...baseSubproject[0],
             permissions: {
-              "subproject.viewSummary": [admin.id],
-              "subproject.viewDetails": [admin.id],
+              "subproject.view": [admin.id]
             },
           },
         ];

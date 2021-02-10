@@ -1286,7 +1286,7 @@ const schemas = {
                       data: {
                         type: "object",
                         additionalProperties: true,
-                        example: { identity: "aSmith", intent: "subproject.viewDetails" },
+                        example: { identity: "aSmith", intent: "subproject.view" },
                         properties: {
                           permissions: {
                             type: "object",

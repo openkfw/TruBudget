@@ -15,8 +15,7 @@ const executingUser: ServiceUser = { id: "mstein", groups: [] };
 const testUser: ServiceUser = { id: "testUser", groups: [] };
 
 const permissions: Permissions = {
-  "subproject.viewSummary": ["testUser"],
-  "subproject.viewDetails": ["testUser"],
+  "subproject.view": ["testUser"],
   "subproject.intent.grantPermission": ["testUser"],
   "subproject.intent.revokePermission": ["mstein"],
 };
@@ -45,7 +44,7 @@ describe("revoke subproject permissions", () => {
       testsubproject.projectId,
       testsubproject.id,
       testUser.id,
-      "subproject.viewDetails",
+      "subproject.view",
       {
         getSubproject: async () => testsubproject,
       },
@@ -64,7 +63,7 @@ describe("revoke subproject permissions", () => {
       time: revokeEvent.time,
       projectId: testsubproject.projectId,
       subprojectId: testsubproject.id,
-      permission: "subproject.viewDetails",
+      permission: "subproject.view",
       revokee: testUser.id,
     };
     assert.deepEqual(expectedEvent, revokeEvent);
@@ -92,7 +91,7 @@ describe("revoke subproject permissions", () => {
       testsubproject.projectId,
       testsubproject.id,
       testUser.id,
-      "subproject.viewDetails",
+      "subproject.view",
       {
         getSubproject: async () => subprojectWithoutPermission,
       },
@@ -125,7 +124,7 @@ describe("revoke subproject permissions", () => {
       testsubproject.projectId,
       testsubproject.id,
       testUser.id,
-      "subproject.viewDetails",
+      "subproject.view",
       {
         getSubproject: async () => new Error("some error"),
       },
@@ -135,8 +134,7 @@ describe("revoke subproject permissions", () => {
   });
   it("No changes to existing permissions emit no new events", async () => {
     const existingPermissions: Permissions = {
-      "subproject.viewSummary": ["testUser"],
-      "subproject.viewDetails": [],
+      "subproject.view": [],
       "subproject.intent.grantPermission": ["testUser"],
       "subproject.intent.revokePermission": ["mstein"],
     };
@@ -150,7 +148,7 @@ describe("revoke subproject permissions", () => {
       testsubproject.projectId,
       testsubproject.id,
       testUser.id,
-      "subproject.viewDetails",
+      "subproject.view",
       {
         getSubproject: async () => baseSubproject,
       },

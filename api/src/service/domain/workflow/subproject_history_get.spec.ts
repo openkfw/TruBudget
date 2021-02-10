@@ -28,7 +28,7 @@ const filter: Filter = {
 };
 
 const permissions: Permissions = {
-  "subproject.viewDetails": ["alice"],
+  "subproject.view": ["alice"],
   "subproject.viewHistory": ["alice"],
 };
 
@@ -99,7 +99,7 @@ describe("get subproject history: authorization", () => {
   it("With only viewDetials permissions, a user can still get a subproject's history.", async () => {
     const modifiedSubproject: Subproject = {
       ...baseSubproject,
-      permissions: { "subproject.viewDetails": ["alice"] },
+      permissions: { "subproject.view": ["alice"] },
     };
     const result = await getHistory(ctx, alice, projectId, subprojectId, {
       ...baseRepository,

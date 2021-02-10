@@ -27,10 +27,7 @@ export async function getAllVisible(
     user.id === "root"
       ? () => true
       : (subproject: Subproject.Subproject) =>
-          Subproject.permits(subproject, user, [
-            "subproject.viewSummary",
-            "subproject.viewDetails",
-          ]);
+          Subproject.permits(subproject, user, ["subproject.view"]);
 
   const removeNonvisibleHistory = (subproject: Subproject.Subproject) =>
     dropHiddenHistoryEvents(subproject, user);
@@ -41,14 +38,14 @@ export async function getAllVisible(
 
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
-  ["subproject_created", ["subproject.viewSummary", "subproject.viewDetails"]],
+  ["subproject_created", ["subproject.view"]],
   ["subproject_permission_granted", ["subproject.intent.listPermissions"]],
   ["subproject_permission_revoked", ["subproject.intent.listPermissions"]],
-  ["subproject_assigned", ["subproject.viewDetails"]],
-  ["subproject_updated", ["subproject.viewDetails"]],
-  ["subproject_closed", ["subproject.viewSummary", "subproject.viewDetails"]],
-  ["subproject_projected_budget_updated", ["subproject.viewDetails"]],
-  ["subproject_projected_budget_deleted", ["subproject.viewDetails"]],
+  ["subproject_assigned", ["subproject.view"]],
+  ["subproject_updated", ["subproject.view"]],
+  ["subproject_closed", ["subproject.view"]],
+  ["subproject_projected_budget_updated", ["subproject.view"]],
+  ["subproject_projected_budget_deleted", ["subproject.view"]],
   ["workflowitems_reordered", ["subproject.reorderWorkflowitems"]],
 ]);
 

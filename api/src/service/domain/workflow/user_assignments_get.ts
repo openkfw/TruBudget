@@ -68,7 +68,7 @@ export async function getUserAssignments(
   }
 
   const projectIntents: Intent[] = ["project.viewSummary", "project.viewDetails"];
-  const subprojectIntents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
+  const subprojectIntents: Intent[] = ["subproject.view"];
   const workflowitemIntents: Intent[] = ["workflowitem.view"];
 
   let projects: Project.Project[] = [];
