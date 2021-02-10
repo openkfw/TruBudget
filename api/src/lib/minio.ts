@@ -1,5 +1,4 @@
 import * as Minio from "minio";
-import { v4 as uuid } from "uuid";
 import { minioEndPoint, minioPort, minioUseSSL, minioAccessKey, minioSecretKey } from "../config";
 
 const Readable = require("stream").Readable;
@@ -27,7 +26,8 @@ const bucketName: string = "trubudget";
 const makeBucket = (bucket: string, cb: Function) => {
   minioClient.bucketExists(bucket, (err, exists) => {
     if (err) {
-      return console.error("Error during searching for bucket", err);
+      console.error("Error during searching for bucket", err);
+      return cb(err);
     }
 
     if (!exists) {
@@ -131,6 +131,34 @@ export const getMetadataAsPromised = (fileHash: string) => {
   });
 };
 
-makeBucketAsPromised(bucketName);
+const sleep = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+};
+
+const establishConnection = async () => {
+  const retries = 20;
+  for (let i = 0; i <= retries; i++) {
+    try {
+      await sleep(20000);
+
+      await makeBucketAsPromised(bucketName);
+
+      console.log("Connection with min.io established.");
+      break;
+    } catch (e) {
+      console.error("Problem with establishing connection to min.io and creating bucket.");
+
+      if (i === retries) {
+        console.error("Unable to connect with min.io. EXITING!");
+        process.exit(1);
+      }
+    }
+
+  }
+};
+
+establishConnection();
 
 export default minioClient;
