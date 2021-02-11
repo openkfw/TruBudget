@@ -29,11 +29,12 @@ const groupBy = nodes => {
     if (node.currentAccess.accessType !== "none") {
       const key = node.address.organization;
       const index = acc.findIndex(x => x.organization === key);
+      const permissionsString = `${node.currentAccess.accessType} (${node.isConnected ? strings.status.connection : strings.status.not_connected})`;
       if (index === -1) {
-        acc.push({ organization: key, count: 1, permissions: node.currentAccess.accessType });
+        acc.push({ organization: key, count: 1, permissions: permissionsString});
       } else {
         acc[index].count += 1;
-        acc[index].permissions = acc[index].permissions.concat(`, ${node.currentAccess.accessType}`);
+        acc[index].permissions = acc[index].permissions.concat(`, ${permissionsString}`);
       }
     }
     return acc;
