@@ -288,6 +288,7 @@ export function grantWorkflowItemPermission(
   intent,
   granteeId,
   granteeDisplayName,
+  additionalActions,
   showLoading = false
 ) {
   return {
@@ -301,6 +302,7 @@ export function grantWorkflowItemPermission(
     intent,
     granteeId,
     granteeDisplayName,
+    additionalActions,
     showLoading
   };
 }
@@ -340,6 +342,7 @@ export function assignWorkflowItem(
   workflowitemDisplayName,
   assigneeId,
   assigneeDisplayName,
+  additionalActions,
   showLoading = false
 ) {
   return {
@@ -352,6 +355,7 @@ export function assignWorkflowItem(
     workflowitemDisplayName,
     assigneeId,
     assigneeDisplayName,
+    additionalActions,
     showLoading
   };
 }
@@ -363,6 +367,7 @@ export function assignSubproject(
   subprojectDisplayName,
   assigneeId,
   assigneeDisplayName,
+  additionalActions,
   showLoading = false
 ) {
   return {
@@ -373,6 +378,7 @@ export function assignSubproject(
     subprojectDisplayName,
     assigneeId,
     assigneeDisplayName,
+    additionalActions,
     showLoading
   };
 }
@@ -588,6 +594,7 @@ export function createWorkflowItem(
   subprojectDisplayName,
   assignee,
   assigneeDisplayName,
+  additionalActions,
   postActions
 ) {
   return {
@@ -608,6 +615,7 @@ export function createWorkflowItem(
     subprojectDisplayName,
     assignee,
     assigneeDisplayName,
+    additionalActions,
     postActions
   };
 }

@@ -1,66 +1,70 @@
 import { Button } from "@material-ui/core";
-//import { Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import DialogActions from "@material-ui/core/DialogActions";
 import { withStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
-import React from "react";
+import React  from "react";
 import strings from "../../localizeStrings";
 
 const styles = {
   dialogActions: {
     margin: "8px 4px 8px 24px"
   },
-  progressInfo: {
+  progessContainer: {
     flex: "auto"
+  },
+  progressInfo: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-start"
   }
 };
 
-class DialogButtons extends React.Component {
-  render() {
-    const {
-      classes,
-      confirmButtonText,
-      doneButtonText,
-      onConfirm,
-      onCancel,
-      confirmDisabled,
-      // actions,
-      //  executedActions,
-      actionsAreExecuted,
-      executingActions,
-      failedAction
-    } = this.props;
+const DialogButtons = props => {
+  const {
+    classes,
+    confirmButtonText,
+    onConfirm,
+    onCancel,
+    confirmDisabled,
+    additionalActions = [],
+    originalActions = [],
+    postActions = [],
+    executedActions = [],
+    actionsAreExecuted,
+    executingActions,
+    failedAction
+  } = props;
 
-    return (
-      <DialogActions className={classes.dialogActions}>
-        {
-          // ToDo: action is not correct: use postActions! Issue https://github.com/openkfw/TruBudget/issues/697
-          /* {actions.length ? (
-          <Typography key="progressInfo" className={classes.progressInfo}>
-            {strings.formatString(strings.preview.actions_done, executedActions.length, actions.length)}
-          </Typography>
-        ) : null} */
-        }
-        <Button
-          disabled={executingActions || actionsAreExecuted}
-          aria-label="cancel"
-          data-test="confirmation-dialog-cancel"
-          color="secondary"
-          onClick={() => onCancel()}
-        >
-          {strings.common.cancel}
-        </Button>
-        <Button
-          aria-label="confirm"
-          data-test="confirmation-dialog-confirm"
-          color="primary"
-          onClick={_isEmpty(failedAction) ? () => onConfirm() : () => onCancel()}
-          disabled={confirmDisabled || executingActions}
-        >
-          {actionsAreExecuted ? doneButtonText : confirmButtonText}
-        </Button>
-      </DialogActions>
-    );
-  }
-}
+  const totalActionsLength = additionalActions?.length + originalActions?.length + postActions?.length;
+
+  return (
+    <DialogActions className={classes.dialogActions}>
+      <div className={classes.progessContainer}>
+        <Typography key="progressInfo" className={classes.progressInfo}>
+          {strings.formatString(strings.preview.actions_done, executedActions.length, totalActionsLength)}
+        </Typography>
+      </div>
+      <Button
+        disabled={executingActions || actionsAreExecuted}
+        aria-label="cancel"
+        data-test="confirmation-dialog-cancel"
+        color="secondary"
+        onClick={() => onCancel()}
+      >
+        {strings.common.cancel}
+      </Button>
+      <Button
+        aria-label="confirm"
+        data-test="confirmation-dialog-confirm"
+        color="primary"
+        onClick={_isEmpty(failedAction) ? () => onConfirm() : () => onCancel()}
+        disabled={confirmDisabled || executingActions || actionsAreExecuted}
+      >
+        {confirmButtonText}
+      </Button>
+    </DialogActions>
+  );
+};
+
 export default withStyles(styles)(DialogButtons);

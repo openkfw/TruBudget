@@ -94,6 +94,7 @@ export function grantSubProjectPermission(
   intent,
   granteeId,
   granteeDisplayName,
+  additionalActions,
   showLoading = false
 ) {
   return {
@@ -105,6 +106,7 @@ export function grantSubProjectPermission(
     intent,
     granteeId,
     granteeDisplayName,
+    additionalActions,
     showLoading
   };
 }
@@ -184,13 +186,21 @@ export function showProjectAssignees() {
   };
 }
 
-export function assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName, showLoading = false) {
+export function assignProject(
+  projectId,
+  projectDisplayName,
+  assigneeId,
+  assigneeDisplayName,
+  additionalActions,
+  showLoading = false
+) {
   return {
     type: ASSIGN_PROJECT,
     projectId,
     projectDisplayName,
     assigneeId,
-    assigneeDisplayName
+    assigneeDisplayName,
+    additionalActions
   };
 }
 

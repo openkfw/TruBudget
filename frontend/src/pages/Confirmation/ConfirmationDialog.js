@@ -1,12 +1,12 @@
 import { Button, CircularProgress, DialogActions, Typography } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialogtitle from "@material-ui/core/Dialogtitle";
 import { withStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
 
-import { formatString, hasUserAssignments } from "../../helper";
+import { formatString, hasUserAssignments, isEmptyDeep } from "../../helper";
 import strings from "../../localizeStrings";
 import DisableUserDialogContent from "../Users/DisableUserDialogContent";
 import EnableUserDialogContent from "../Users/EnableUserDialogContent";
@@ -38,7 +38,7 @@ const styles = {
   }
 };
 
-// Implement a new confirmation dialog by setting title, content and confirmButtonText
+// Implement a new confirmation dialog by setting  title, content and confirmButtonText
 const ConfirmationDialog = props => {
   const {
     classes,
@@ -48,22 +48,29 @@ const ConfirmationDialog = props => {
     groups,
     executedAdditionalActions,
     additionalActions,
-    additionalActionsExecuted,
-    executingAdditionalActions,
     originalActions,
-    project,
-    subproject,
     requestedPermissions,
-    failedAction,
     onCancel,
     isListPermissionsRequiredFromApi,
     isFetchingPermissions,
-    userList,
+    enabledUserList,
+    disabledUserList,
     fetchUserAssignments,
     cleanUserAssignments,
     userAssignments,
-    editId,
-    postActions
+    postActions,
+    failedAction,
+    additionalActionsExecuted,
+    executingAdditionalActions,
+    failedPostAction,
+    postActionsExecuted,
+    executingPostActions,
+    executedPostActions,
+    executeAllActions,
+    executedOriginalActions,
+    executingOriginalActions,
+    originalActionsExecuted,
+    failedOriginalAction
   } = props;
 
   const [hasAssignments, setHasAssignments] = useState(true);
@@ -82,14 +89,15 @@ const ConfirmationDialog = props => {
     );
   }
 
-  let title, content;
+  let title = strings.confirmation.confirmation_required;
+  let content = null;
   let confirmButtonText = strings.common.confirm;
-  let doneButtonText = strings.common.done;
   let permittedToGrant = false;
+  const marginTop = additionalActionsExist(additionalActions) ? { marginTop: "28px" } : {};
 
   originalActions.forEach(originalAction => {
     const { intent, payload } = originalAction;
-
+    content = null;
     // Payload is defined by the saga which triggers the CONFIRM_INTENT-action
     switch (intent) {
       case "project.assign":
@@ -104,7 +112,6 @@ const ConfirmationDialog = props => {
             payload.project.displayName
           );
 
-          title = strings.confirmation.additional_permissions_required;
           content = (
             <>
               <Typography>{dialogText}</Typography>
@@ -113,24 +120,29 @@ const ConfirmationDialog = props => {
                 executedActions={executedAdditionalActions}
                 executingActions={executingAdditionalActions}
                 failedAction={failedAction}
-                userList={userList}
+                userList={enabledUserList}
               />
             </>
           );
           confirmButtonText = strings.confirmation.execute_actions;
-          doneButtonText = strings.common.assign;
-        } else {
-          const dialogText = formatString(
-            strings.confirmation.assigning_text,
-            payload.assignee.displayName,
-            strings.common.project,
-            payload.project.displayName
-          );
-
-          title = strings.confirmation.confirm_assign;
-          content = <Typography>{dialogText}</Typography>;
-          confirmButtonText = strings.common.assign;
         }
+
+        content = (
+          <>
+            {content}
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={enabledUserList}
+              />
+            </div>
+          </>
+        );
+
         break;
       case "subproject.assign":
         permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
@@ -144,7 +156,6 @@ const ConfirmationDialog = props => {
             payload.subproject.displayName
           );
 
-          title = strings.confirmation.additional_permissions_required;
           content = (
             <>
               <Typography>{dialogText}</Typography>
@@ -153,24 +164,28 @@ const ConfirmationDialog = props => {
                 executedActions={executedAdditionalActions}
                 executingActions={executingAdditionalActions}
                 failedAction={failedAction}
-                userList={userList}
+                userList={enabledUserList}
               />
             </>
           );
           confirmButtonText = strings.confirmation.execute_actions;
-          doneButtonText = strings.common.assign;
-        } else {
-          const dialogText = formatString(
-            strings.confirmation.assigning_text,
-            payload.assignee.displayName,
-            strings.common.subproject,
-            payload.subproject.displayName
-          );
-
-          title = strings.confirmation.confirm_assign;
-          content = <Typography>{dialogText}</Typography>;
-          confirmButtonText = strings.common.assign;
         }
+
+        content = (
+          <>
+            {content}
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={enabledUserList}
+              />
+            </div>
+          </>
+        );
         break;
       case "workflowitem.assign":
         permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
@@ -184,7 +199,6 @@ const ConfirmationDialog = props => {
             payload.workflowitem.displayName
           );
 
-          title = strings.confirmation.additional_permissions_required;
           content = (
             <>
               <Typography>{dialogText}</Typography>
@@ -193,35 +207,36 @@ const ConfirmationDialog = props => {
                 executedActions={executedAdditionalActions}
                 executingActions={executingAdditionalActions}
                 failedAction={failedAction}
-                userList={userList}
+                userList={enabledUserList}
               />
             </>
           );
           confirmButtonText = strings.confirmation.execute_actions;
-          doneButtonText = strings.common.assign;
-        } else {
-          const dialogText = formatString(
-            strings.confirmation.assigning_text,
-            payload.assignee.displayName,
-            strings.common.workflowitem,
-            payload.workflowitem.displayName
-          );
-
-          title = strings.confirmation.confirm_assign;
-          content = <Typography>{dialogText}</Typography>;
-          confirmButtonText = strings.common.assign;
         }
+
+        content = (
+          <>
+            {content}
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={enabledUserList}
+              />
+            </div>
+          </>
+        );
         break;
       case "subproject.createWorkflowitem":
         permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
         confirmButtonText = strings.common.create;
-        doneButtonText = strings.common.create;
 
         // Build Dialog content
         if (additionalActionsExist(additionalActions)) {
           const additionalActionsDialogText = strings.confirmation.additional_permissions_dialog_text;
-
-          title = strings.confirmation.additional_permissions_required;
           content = (
             <>
               <Typography>{additionalActionsDialogText}</Typography>
@@ -230,38 +245,46 @@ const ConfirmationDialog = props => {
                 executedActions={executedAdditionalActions}
                 executingActions={executingAdditionalActions}
                 failedAction={failedAction}
-                userList={userList}
+                userList={enabledUserList}
               />
             </>
           );
           confirmButtonText = strings.confirmation.execute_actions;
         }
+
+        content = (
+          <>
+            {content}
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={enabledUserList}
+              />
+            </div>
+          </>
+        );
+
         if (!_isEmpty(postActions)) {
           const postActionsDialogText = strings.confirmation.post_actions_dialog_text;
-          const marginTop = additionalActionsExist(additionalActions) ? { marginTop: "28px" } : {};
-          title = strings.confirmation.additional_permissions_required;
           content = (
             <>
               {content}
-              <div style={marginTop}>
+              <div style={{ marginTop: "28px" }}>
                 <Typography>{postActionsDialogText}</Typography>
                 <ActionsTable
                   actions={postActions}
-                  executedActions={executedAdditionalActions}
-                  executingActions={executingAdditionalActions}
-                  failedAction={failedAction}
-                  userList={userList}
-                  status={false}
+                  executedActions={executedPostActions}
+                  executingActions={executingPostActions}
+                  failedAction={failedPostAction}
+                  userList={enabledUserList}
                 />
               </div>
             </>
           );
-        }
-        if (!additionalActionsExist(additionalActions) && _isEmpty(postActions)) {
-          const dialogText = "Please confirm Workflow creation";
-
-          title = strings.confirmation.workflowitem_create;
-          content = <Typography>{dialogText}</Typography>;
         }
         break;
       case "project.intent.grantPermission":
@@ -271,8 +294,6 @@ const ConfirmationDialog = props => {
         // Build Dialog content
         if (additionalActionsExist(additionalActions)) {
           const dialogText = strings.confirmation.additional_permissions_dialog_text;
-
-          title = strings.confirmation.additional_permissions_required;
           content = (
             <>
               <Typography>{dialogText}</Typography>
@@ -281,19 +302,28 @@ const ConfirmationDialog = props => {
                 executedActions={executedAdditionalActions}
                 executingActions={executingAdditionalActions}
                 failedAction={failedAction}
-                userList={userList}
+                userList={enabledUserList}
               />
             </>
           );
           confirmButtonText = strings.confirmation.execute_actions;
-          doneButtonText = strings.common.grant + "/" + strings.common.revoke;
-        } else {
-          const dialogText = strings.confirmation.update_permissions_dialog_text;
-
-          title = strings.confirmation.confirm_update_permissions;
-          content = <Typography>{dialogText}</Typography>;
-          confirmButtonText = strings.common.grant + "/" + strings.common.revoke;
         }
+
+        content = (
+          <>
+            {content}
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={enabledUserList}
+              />
+            </div>
+          </>
+        );
         break;
       case "subproject.intent.grantPermission":
       case "subproject.intent.revokePermission":
@@ -312,19 +342,28 @@ const ConfirmationDialog = props => {
                 executedActions={executedAdditionalActions}
                 executingActions={executingAdditionalActions}
                 failedAction={failedAction}
-                userList={userList}
+                userList={enabledUserList}
               />
             </>
           );
           confirmButtonText = strings.confirmation.execute_actions;
-          doneButtonText = strings.common.grant + "/" + strings.common.revoke;
-        } else {
-          const dialogText = strings.confirmation.update_permissions_dialog_text;
-
-          title = strings.confirmation.confirm_update_permissions;
-          content = <Typography>{dialogText}</Typography>;
-          confirmButtonText = strings.common.grant + "/" + strings.common.revoke;
         }
+
+        content = (
+          <>
+            {content}
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={enabledUserList}
+              />
+            </div>
+          </>
+        );
         break;
 
       case "workflowitem.intent.grantPermission":
@@ -334,7 +373,6 @@ const ConfirmationDialog = props => {
         if (additionalActionsExist(additionalActions)) {
           const dialogText = strings.confirmation.additional_permissions_dialog_text;
 
-          title = strings.confirmation.additional_permissions_required;
           content = (
             <>
               <Typography>{dialogText}</Typography>
@@ -343,19 +381,28 @@ const ConfirmationDialog = props => {
                 executedActions={executedAdditionalActions}
                 executingActions={executingAdditionalActions}
                 failedAction={failedAction}
-                userList={userList}
+                userList={enabledUserList}
               />
             </>
           );
           confirmButtonText = strings.confirmation.execute_actions;
-          doneButtonText = strings.common.grant + "/" + strings.common.revoke;
-        } else {
-          const dialogText = strings.confirmation.update_permissions_dialog_text;
-
-          title = strings.confirmation.confirm_update_permissions;
-          content = <Typography>{dialogText}</Typography>;
-          confirmButtonText = strings.common.grant + "/" + strings.common.revoke;
         }
+
+        content = (
+          <>
+            {content}
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={enabledUserList}
+              />
+            </div>
+          </>
+        );
         break;
       case "project.close": {
         const dialogText = strings.confirmation.project_close_text;
@@ -382,21 +429,47 @@ const ConfirmationDialog = props => {
         break;
       }
       case "global.disableUser": {
-        title = formatString(strings.users.disable_userId, editId);
+        title = formatString(strings.users.disable_userId, payload.userId);
         content = (
-          <DisableUserDialogContent
-            fetchUserAssignments={fetchUserAssignments}
-            cleanUserAssignments={cleanUserAssignments}
-            userAssignments={userAssignments}
-            editId={editId}
-          />
+          <>
+            <DisableUserDialogContent
+              fetchUserAssignments={fetchUserAssignments}
+              cleanUserAssignments={cleanUserAssignments}
+              userAssignments={userAssignments}
+              editId={payload.userId}
+            />
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={[...enabledUserList, ...disabledUserList]}
+              />
+            </div>
+          </>
         );
         confirmButtonText = strings.users.disable_user;
         break;
       }
       case "global.enableUser": {
-        title = formatString(strings.users.enable_userId, editId);
-        content = <EnableUserDialogContent editId={editId} />;
+        title = formatString(strings.users.enable_userId, payload.userId);
+        content = (
+          <>
+            <EnableUserDialogContent editId={payload.userId} />
+            <div style={marginTop}>
+              <Typography>{strings.confirmation.original_actions}</Typography>
+              <ActionsTable
+                actions={originalActions}
+                executedActions={executedOriginalActions}
+                executingActions={executingOriginalActions}
+                failedAction={failedOriginalAction}
+                userList={[...enabledUserList, ...disabledUserList]}
+              />
+            </div>
+          </>
+        );
         confirmButtonText = strings.users.enable_user;
         break;
       }
@@ -407,26 +480,22 @@ const ConfirmationDialog = props => {
     }
   });
 
-  const executeActions = () => {
-    if (additionalActionsExist(additionalActions))
-      props.executeConfirmedActions(additionalActions, project.id, subproject ? subproject.id : undefined);
-  };
-
   return (
     <Dialog classes={{ paper: classes.paperRoot }} open={open} data-test="confirmation-dialog">
-      <DialogTitle>{title}</DialogTitle>
+      <Dialogtitle>{title}</Dialogtitle>
       <DialogContent>{content}</DialogContent>
       {renderErrorInformation(permittedToGrant, additionalActions, failedAction)}
       <DialogButtons
         confirmButtonText={confirmButtonText}
-        doneButtonText={doneButtonText}
-        onConfirm={_isEmpty(additionalActions) || additionalActionsExecuted ? props.onConfirm : executeActions}
+        onConfirm={executeAllActions}
         onCancel={requestedPermissions ? () => onCancel(requestedPermissions) : onCancel}
         confirmDisabled={(!permittedToGrant && additionalActionsExist(additionalActions)) || hasAssignments}
-        actions={additionalActions}
-        executedActions={executedAdditionalActions}
-        actionsAreExecuted={additionalActionsExecuted}
-        executingActions={executingAdditionalActions}
+        additionalActions={additionalActions}
+        originalActions={originalActions}
+        postActions={postActions}
+        executedActions={[...executedAdditionalActions, ...executedOriginalActions, ...executedPostActions]}
+        actionsAreExecuted={additionalActionsExecuted || originalActionsExecuted || postActionsExecuted}
+        executingActions={executingAdditionalActions || executingOriginalActions || executingPostActions}
         failedAction={failedAction}
       />
     </Dialog>
@@ -444,7 +513,7 @@ function buildDialogWithLoadingIndicator(
     <Dialog classes={{ paper: classes.paperRoot }} open={open} data-test="confirmation-dialog">
       {isListPermissionsRequiredFromApi ? (
         <React.Fragment>
-          <DialogTitle data-test="confirmation-dialog-title">{strings.confirmation.permissions_required}</DialogTitle>
+          <Dialogtitle data-test="confirmation-dialog-title">{strings.confirmation.permissions_required}</Dialogtitle>
           <DialogContent className={classes.dialogContent}>
             <Typography>{strings.confirmation.list_permissions_required_text}</Typography>
           </DialogContent>
@@ -493,6 +562,7 @@ function renderErrorInformation(permittedToGrant, additionalActions, failedActio
 }
 
 function isPermittedToGrant(username, groups, permissions, actions) {
+  if (isEmptyDeep(permissions)) return true;
   const resourcesToCheck = actions.reduce((resourcesToCheck, action) => {
     const resource = action.intent.split(".")[0];
     if (!resourcesToCheck.includes(resource)) {
@@ -500,12 +570,10 @@ function isPermittedToGrant(username, groups, permissions, actions) {
     }
     return resourcesToCheck;
   }, []);
-
   //check permission by username
   const isUserPermitted = resourcesToCheck.every(resource => {
     return permissions[resource][`${resource}.intent.grantPermission`].includes(username);
   });
-
   if (typeof groups === undefined || groups.length === 0 || groups == null) {
     return isUserPermitted;
   } else {

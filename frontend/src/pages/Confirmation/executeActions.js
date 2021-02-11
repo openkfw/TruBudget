@@ -1,4 +1,4 @@
-export function executeOriginalActions(
+export function executeActions(
   actions,
   assignProject,
   assignSubproject,
@@ -15,6 +15,7 @@ export function executeOriginalActions(
   closeWorkflowItem,
   disableUser,
   enableUser,
+  additionalActions,
   postActions
 ) {
   actions.forEach(action => {
@@ -23,7 +24,14 @@ export function executeOriginalActions(
         const project = action.payload.project;
         const intent = action.payload.intent;
         const grantee = action.payload.grantee;
-        grantProjectPermission(project.id, project.displayName, intent, grantee.id, grantee.displayName);
+        grantProjectPermission(
+          project.id,
+          project.displayName,
+          intent,
+          grantee.id,
+          grantee.displayName,
+          additionalActions
+        );
         break;
       }
       case "project.intent.revokePermission": {
@@ -36,7 +44,7 @@ export function executeOriginalActions(
       case "project.assign": {
         const project = action.payload.project;
         const assignee = action.payload.assignee;
-        assignProject(project.id, project.displayName, assignee.id, assignee.displayName);
+        assignProject(project.id, project.displayName, assignee.id, assignee.displayName, additionalActions);
         break;
       }
       case "subproject.intent.grantPermission": {
@@ -51,7 +59,8 @@ export function executeOriginalActions(
           subproject.displayName,
           intent,
           grantee.id,
-          grantee.displayName
+          grantee.displayName,
+          additionalActions
         );
         break;
       }
@@ -81,7 +90,8 @@ export function executeOriginalActions(
           subproject.id,
           subproject.displayName,
           assignee.id,
-          assignee.displayName
+          assignee.displayName,
+          additionalActions
         );
         break;
       }
@@ -121,6 +131,7 @@ export function executeOriginalActions(
           subprojectDisplayName,
           assignee,
           assigneeDisplayName,
+          additionalActions,
           postActions
         );
         break;
@@ -140,7 +151,8 @@ export function executeOriginalActions(
           workflowitem.displayName,
           intent,
           grantee.id,
-          grantee.displayName
+          grantee.displayName,
+          additionalActions
         );
         break;
       }
@@ -159,7 +171,8 @@ export function executeOriginalActions(
           workflowitem.displayName,
           intent,
           revokee.id,
-          revokee.displayName
+          revokee.displayName,
+          additionalActions
         );
         break;
       }
@@ -176,7 +189,8 @@ export function executeOriginalActions(
           workflowitem.id,
           workflowitem.displayName,
           assignee.id,
-          assignee.displayName
+          assignee.displayName,
+          additionalActions
         );
         break;
       }

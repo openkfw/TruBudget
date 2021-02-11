@@ -26,7 +26,8 @@ import {
   additionalActionUpdateRequired,
   cancelConfirmation,
   confirmConfirmation,
-  executeAdditionalActions,
+  finishConfirmation,
+  executeConfirmedActions,
   storeAdditionalActions,
   storePostActions,
   storeRequestedPermissions,
@@ -34,7 +35,7 @@ import {
 } from "./actions";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { applyOriginalActions, createAdditionalActions } from "./createAdditionalActions";
-import { executeOriginalActions } from "./executeOriginalActions";
+import { executeActions } from "./executeActions";
 
 class ConfirmationContainer extends React.Component {
   componentDidUpdate(prevProps) {
@@ -101,9 +102,21 @@ class ConfirmationContainer extends React.Component {
       this.props.fetchWorkflowitemPermissions(project.id, subproject.id, workflowitem.id);
   }
 
-  onConfirm(confirm) {
-    confirm();
-    executeOriginalActions(
+  executeAdditionalActions = () => {
+    if (!_isEmpty(this.props.additionalActions) && !this.props.additionalActionsExecuted) {
+      this.props.executeConfirmedActions(
+        "additionalAction",
+        this.props.additionalActions,
+        this.props.project.id,
+        this.props.subproject ? this.props.subproject.id : undefined
+      );
+    }
+  };
+
+  executeAllActions = () => {
+    this.props.confirmConfirmation();
+    //RENAME TO executeActions
+    executeActions(
       this.props.originalActions,
       this.props.assignProject,
       this.props.assignSubproject,
@@ -120,9 +133,10 @@ class ConfirmationContainer extends React.Component {
       this.props.closeWorkflowItem,
       this.props.disableUser,
       this.props.enableUser,
+      this.props.additionalActions,
       this.props.postActions
     );
-  }
+  };
 
   includesPermissionIntent(originalActions) {
     return originalActions.some(originalAction => {
@@ -136,9 +150,7 @@ class ConfirmationContainer extends React.Component {
       cancelConfirmation,
       confirmConfirmation,
       confirmationDialogOpen,
-      confirmed,
       originalActions,
-      executeConfirmedActions,
       permissions,
       confirmingUser,
       groups,
@@ -152,21 +164,31 @@ class ConfirmationContainer extends React.Component {
       isListPermissionsRequiredFromApi,
       failedAction,
       requestedPermissions,
-      userList,
+      enabledUserList,
+      disabledUserList,
       fetchUserAssignments,
       cleanUserAssignments,
       userAssignments,
-      editId,
-      postActions
+      postActions,
+      executeConfirmedActions,
+      failedPostAction,
+      postActionsExecuted,
+      executingPostActions,
+      executedPostActions,
+      finishConfirmation,
+      executedOriginalActions,
+      executingOriginalActions,
+      originalActionsExecuted,
+      failedOriginalAction
     } = this.props;
-    if (confirmationDialogOpen && !confirmed) {
+
+    if (confirmationDialogOpen) {
       return (
         <ConfirmationDialog
-          open={confirmationDialogOpen}
+          open={true}
           originalActions={originalActions}
-          onConfirm={() => this.onConfirm(confirmConfirmation)}
-          onCancel={cancelConfirmation}
           executeConfirmedActions={executeConfirmedActions}
+          onCancel={cancelConfirmation}
           permissions={permissions}
           confirmingUser={confirmingUser}
           groups={groups}
@@ -181,12 +203,23 @@ class ConfirmationContainer extends React.Component {
           isListPermissionsRequiredFromApi={isListPermissionsRequiredFromApi}
           failedAction={failedAction}
           requestedPermissions={requestedPermissions}
-          userList={userList}
+          enabledUserList={enabledUserList}
+          disabledUserList={disabledUserList}
           fetchUserAssignments={fetchUserAssignments}
           cleanUserAssignments={cleanUserAssignments}
           userAssignments={userAssignments}
-          editId={editId}
           postActions={postActions}
+          failedPostAction={failedPostAction}
+          postActionsExecuted={postActionsExecuted}
+          executingPostActions={executingPostActions}
+          executedPostActions={executedPostActions}
+          confirmConfirmation={confirmConfirmation}
+          finishConfirmation={finishConfirmation}
+          executeAllActions={this.executeAllActions}
+          executedOriginalActions={executedOriginalActions}
+          executingOriginalActions={executingOriginalActions}
+          originalActionsExecuted={originalActionsExecuted}
+          failedOriginalAction={failedOriginalAction}
         />
       );
     } else {
@@ -204,28 +237,66 @@ const mapDispatchToProps = dispatch => {
     showValidationErrorMessage: () => dispatch(showValidationErrorMessage()),
     confirmConfirmation: () => dispatch(confirmConfirmation()),
     cancelConfirmation: permissions => dispatch(cancelConfirmation(permissions)),
-    executeConfirmedActions: (actions, pId, subId) => dispatch(executeAdditionalActions(actions, pId, subId, false)),
+    executeConfirmedActions: (actionType, actions, pId, subId, wId) =>
+      dispatch(executeConfirmedActions(actionType, actions, pId, subId, wId, false)),
     storeAdditionalActions: actions => dispatch(storeAdditionalActions(actions)),
     storePostActions: actions => dispatch(storePostActions(actions)),
     storeRequestedPermissions: permissions => dispatch(storeRequestedPermissions(permissions)),
-    assignProject: (projectId, projectDisplayName, assigneeId, assigneeDisplayName) =>
-      dispatch(assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName)),
-    assignSubproject: (pId, pDisplayName, subpId, subpName, assigneeId, assigneeName) =>
-      dispatch(assignSubproject(pId, pDisplayName, subpId, subpName, assigneeId, assigneeName)),
-    assignWorkflowitem: (pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName) =>
-      dispatch(assignWorkflowItem(pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName)),
+    assignProject: (projectId, projectDisplayName, assigneeId, assigneeDisplayName, additionalActions) =>
+      dispatch(assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName, additionalActions)),
+    assignSubproject: (pId, pDisplayName, subpId, subpName, assigneeId, assigneeName, additionalActions) =>
+      dispatch(assignSubproject(pId, pDisplayName, subpId, subpName, assigneeId, assigneeName, additionalActions)),
+    assignWorkflowitem: (
+      pId,
+      pDisplayName,
+      subpId,
+      subpName,
+      wId,
+      wName,
+      assigneeId,
+      assigneeName,
+      additionalActions
+    ) =>
+      dispatch(
+        assignWorkflowItem(pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName, additionalActions)
+      ),
     createWorkflowitem: (...workflowitemData) => dispatch(createWorkflowItem(...workflowitemData)),
-    grantProjectPermission: (pId, pName, permission, granteeId, granteeName) =>
-      dispatch(grantProjectPermission(pId, pName, permission, granteeId, granteeName, true)),
+    grantProjectPermission: (pId, pName, permission, granteeId, granteeName, additionalActions) =>
+      dispatch(grantProjectPermission(pId, pName, permission, granteeId, granteeName, additionalActions, true)),
     revokeProjectPermission: (pId, pName, permission, revokeeId, revokeeName) =>
       dispatch(revokeProjectPermission(pId, pName, permission, revokeeId, revokeeName, true)),
-    grantSubprojectPermission: (pId, pName, sId, sName, permission, granteeId, granteeName) =>
-      dispatch(grantSubProjectPermission(pId, pName, sId, sName, permission, granteeId, granteeName, true)),
+    grantSubprojectPermission: (pId, pName, sId, sName, permission, granteeId, granteeName, additionalActions) =>
+      dispatch(
+        grantSubProjectPermission(pId, pName, sId, sName, permission, granteeId, granteeName, additionalActions, true)
+      ),
     revokeSubprojectPermission: (pId, pName, sId, sName, permission, revokeeId, revokeeName) =>
       dispatch(revokeSubProjectPermission(pId, pName, sId, sName, permission, revokeeId, revokeeName, true)),
-    grantWorkflowitemPermission: (pId, pName, sId, sName, wId, wName, permission, granteeId, granteeName) =>
+    grantWorkflowitemPermission: (
+      pId,
+      pName,
+      sId,
+      sName,
+      wId,
+      wName,
+      permission,
+      granteeId,
+      granteeName,
+      additionalActions
+    ) =>
       dispatch(
-        grantWorkflowItemPermission(pId, pName, sId, sName, wId, wName, permission, granteeId, granteeName, true)
+        grantWorkflowItemPermission(
+          pId,
+          pName,
+          sId,
+          sName,
+          wId,
+          wName,
+          permission,
+          granteeId,
+          granteeName,
+          additionalActions,
+          true
+        )
       ),
     revokeWorkflowitemPermission: (pId, pName, sId, sName, wId, wName, permission, revokeeId, revokeeName) =>
       dispatch(
@@ -238,7 +309,8 @@ const mapDispatchToProps = dispatch => {
     disableUser: userId => dispatch(disableUser(userId)),
     enableUser: userId => dispatch(enableUser(userId)),
     fetchUserAssignments: userId => dispatch(fetchUserAssignments(userId)),
-    cleanUserAssignments: () => dispatch(cleanUserAssignments())
+    cleanUserAssignments: () => dispatch(cleanUserAssignments()),
+    finishConfirmation: () => dispatch(finishConfirmation())
   };
 };
 
@@ -246,17 +318,25 @@ const mapStateToProps = state => {
   return {
     confirmationDialogOpen: state.getIn(["confirmation", "open"]),
     originalActions: state.getIn(["confirmation", "originalActions"]),
+    executedOriginalActions: state.getIn(["confirmation", "executedOriginalActions"]),
+    executingOriginalActions: state.getIn(["confirmation", "executingOriginalActions"]),
+    failedOriginalAction: state.getIn(["confirmation", "failedOriginalAction"]),
     confirmDisabled: state.getIn(["confirmation", "disabled"]),
     permissions: state.getIn(["confirmation", "permissions"]),
     confirmingUser: state.getIn(["login", "id"]),
-    userList: state.getIn(["login", "enabledUsers"]),
+    enabledUserList: state.getIn(["login", "enabledUsers"]),
+    disabledUserList: state.getIn(["login", "disabledUsers"]),
     isFetchingProjectPermissions: state.getIn(["confirmation", "isFetchingProjectPermissions"]),
     isFetchingSubprojectPermissions: state.getIn(["confirmation", "isFetchingSubprojectPermissions"]),
     isFetchingWorkflowitemPermissions: state.getIn(["confirmation", "isFetchingWorkflowitemPermissions"]),
     executedAdditionalActions: state.getIn(["confirmation", "executedAdditionalActions"]),
+    executedPostActions: state.getIn(["confirmation", "executedPostActions"]),
     additionalActions: state.getIn(["confirmation", "additionalActions"]),
     postActions: state.getIn(["confirmation", "postActions"]),
     additionalActionsExecuted: state.getIn(["confirmation", "additionalActionsExecuted"]),
+    postActionsExecuted: state.getIn(["confirmation", "postActionsExecuted"]),
+    originalActionsExecuted: state.getIn(["confirmation", "originalActionsExecuted"]),
+    executingPostActions: state.getIn(["confirmation", "executingPostActions"]),
     executingAdditionalActions: state.getIn(["confirmation", "executingAdditionalActions"]),
     confirmed: state.getIn(["confirmation", "confirmed"]),
     project: state.getIn(["confirmation", "project"]),
@@ -268,8 +348,7 @@ const mapStateToProps = state => {
     requestedPermissions: state.getIn(["confirmation", "requestedPermissions"]),
     isPayloadValidationFailed: state.getIn(["confirmation", "isPayloadValidationFailed"]),
     groups: state.getIn(["users", "groups"]),
-    userAssignments: state.getIn(["users", "userAssignments"]),
-    editId: state.getIn(["users", "editId"])
+    userAssignments: state.getIn(["users", "userAssignments"])
   };
 };
 

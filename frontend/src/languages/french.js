@@ -48,6 +48,7 @@ const fr = {
     edited: "Modifié",
     email: "Email",
     finish: "Terminer",
+    global: "global",
     grant: "Accorder",
     history_end: "Dernier évènement atteint",
     history: "Historique",
@@ -324,10 +325,7 @@ const fr = {
     assign_permissions: "Attribuer des autorisations",
     additional_permissions_dialog_text:
       "Des actions supplémentaires doivent être exécutées pour que les utilisateurs puissent également afficher toutes les ressources requises.",
-    additional_permissions_required: "Autorisations supplémentaires requises",
-    assigning_text: `    Voullez-vous vraiment assigner {0} à {1} "{2}"?`,
-    confirm_assign: "Confirmer assigner",
-    confirm_update_permissions: "Confirmer les autorisations de mise à jour",
+    confirmation_required: "Confirmation requise",
     execute_actions: "Exécuter des actions",
     failed_action_error:
       "Erreur: Échec de l’octroi d’{0} à {1}. Toutes les actions qui ont été exécutées après que l'erreur se soit produite, y compris les actions d'origine, sont annulées.",
@@ -335,6 +333,7 @@ const fr = {
     list_permissions_required_text:
       "Assurez-vous que vous avez la liste des autorisations requises pour toutes les ressources impliquées",
     no_permission_warning: "Avertissement: Vous n'êtes pas autorisé à exécuter toutes les actions répertoriées!",
+    original_actions: "Vous avez demandé les actions suivantes:",
     permissions_required: "Autorisations requises",
     permissions_text: `{0} a besoin d'autorisations supplémentaires pour voir {1} "{2}".`,
     post_actions_dialog_text: "Après la création, les actions suivantes sont exécutées",
@@ -342,12 +341,10 @@ const fr = {
     project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
     subproject_close: "Fermer la composante",
     subproject_close_text: "Vous êtes sûr de vouloir fermer cette composante ?",
-    update_permissions_dialog_text: "Voulez-vous vraiment mettre à jour les autorisations?",
     user_group: "Utilisateur/Groupe",
     workflowitem_close: "Fermer l’étape de workflow ",
     workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",
-    workflowitem_create: "créer des étapes de workflow",
-    workflowitem_create_text: "Êtes-vous sûr de vouloir créer l’étape de workflow?"
+    workflowitem_create: "créer des étapes de workflow"
   },
 
   intents: {
@@ -530,7 +527,8 @@ const fr = {
     workflowitem_update: "{0} a modifié le workflow {1} ",
     workflowitem_update_amount: "{0} a modifié le workflow {1} budget dans {2}",
     workflowitem_document_validated: "{0} document d'élément de flux de travail validé nommé {1} dans {2} ",
-    workflowitem_document_invalidated: "{0} a utilisé un document différent dans le workflowitem pour valider le document nommé avec {1} dans {2} "
+    workflowitem_document_invalidated:
+      "{0} a utilisé un document différent dans le workflowitem pour valider le document nommé avec {1} dans {2} "
   },
 
   permissions: {

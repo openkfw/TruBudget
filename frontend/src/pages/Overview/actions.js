@@ -192,6 +192,7 @@ export function grantProjectPermission(
   intent,
   granteeId,
   granteeDisplayName,
+  additionalActions,
   showLoading = false
 ) {
   return {
@@ -201,6 +202,7 @@ export function grantProjectPermission(
     intent,
     granteeId,
     granteeDisplayName,
+    additionalActions,
     showLoading
   };
 }
