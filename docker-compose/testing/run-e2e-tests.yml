@@ -11,11 +11,17 @@ services:
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
       SWAGGER_BASEPATH: /test
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
     shm_size: 1024M
     ports:
       - "${API_PORT}:${API_PORT}" # Mapping the nginx port
     links:
       - master
+      - minio
 
   master:
     image: trubudget/blockchain:${TAG}
@@ -102,3 +108,19 @@ services:
         echo 'Provisioning finished!'
         $$(npm bin)/cypress run -- -b chrome
       "
+
+  minio:
+    image: minio/minio
+    volumes:
+      - ../../minio/data:/data
+    expose:
+      - "9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
