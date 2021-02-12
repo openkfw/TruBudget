@@ -44,7 +44,7 @@ const groupBy = nodes => {
 const NodesTable = ({ nodes, classes }) => {
   const groupedNodes = groupBy(nodes);
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} data-test="nodes-table">
       <div className={classes.title}>
         <Typography variant="h6" color="primary" id="tableTitle">
           {strings.nodesDashboard.network}
