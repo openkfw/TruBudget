@@ -242,7 +242,7 @@ class Api {
     let url = removeEmptyQueryParams(
       `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
     );
-    // filter: startAt|endAt|publisher|eventType
+    // filter: startAt|endAt|publisher|eventType.
     for (const key in filter) {
       if (!_isEmpty(filter[key])) {
         url = url + `&${key}=${filter[key]}`;
