@@ -1,7 +1,7 @@
 import { Button, CircularProgress, DialogActions, Typography } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
-import Dialogtitle from "@material-ui/core/Dialogtitle";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
@@ -482,7 +482,7 @@ const ConfirmationDialog = props => {
 
   return (
     <Dialog classes={{ paper: classes.paperRoot }} open={open} data-test="confirmation-dialog">
-      <Dialogtitle>{title}</Dialogtitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>{content}</DialogContent>
       {renderErrorInformation(permittedToGrant, additionalActions, failedAction)}
       <DialogButtons
@@ -513,7 +513,7 @@ function buildDialogWithLoadingIndicator(
     <Dialog classes={{ paper: classes.paperRoot }} open={open} data-test="confirmation-dialog">
       {isListPermissionsRequiredFromApi ? (
         <React.Fragment>
-          <Dialogtitle data-test="confirmation-dialog-title">{strings.confirmation.permissions_required}</Dialogtitle>
+          <DialogTitle data-test="confirmation-dialog-title">{strings.confirmation.permissions_required}</DialogTitle>
           <DialogContent className={classes.dialogContent}>
             <Typography>{strings.confirmation.list_permissions_required_text}</Typography>
           </DialogContent>
