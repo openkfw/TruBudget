@@ -351,7 +351,6 @@ const en = {
     close: "close",
     createSubproject: "create Subprojects",
     createWorkflowitem: "create Workflowitems",
-    global: "global",
     grantPermission: "grant permissions",
     listPermissions: "view permissions",
     reorderWorkflowitems: "reorder Workflowitems",
