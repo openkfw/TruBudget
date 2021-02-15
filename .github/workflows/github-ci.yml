@@ -46,39 +46,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 100
-          path: ${{ matrix.project }}
-
-      - uses: marceloprado/has-changed-path@v1
-        id: frontend-changed
-        with:
-          path:  ${{ matrix.project.frontend }}
-        env:
-          SOURCE: ${{ matrix.project }}
-
-      - uses: marceloprado/has-changed-path@v1
-        id: api-changed
-        with:
-          path:  ${{ matrix.project.api }}
-        env:
-          SOURCE: ${{ matrix.project }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Test frontend
-        if: steps.frontend-changed.outputs.changed == 'true'
       - run: npm ci
-      - name: Run tests for ${{ matrix.project.frontend }}
-        run: npm test
-
-      - name: Test api
-        if: steps.api-changed.outputs.changed == 'true'
-      - run: npm ci
-      - name: Run tests for ${{ matrix.project.api }}
+      - name: Run tests for ${{ matrix.project }}
         run: npm test
 
   docker-build:
