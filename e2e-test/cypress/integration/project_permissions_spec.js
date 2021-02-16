@@ -247,7 +247,7 @@ describe("Project Permissions", function() {
     cy.get("[data-test=confirmation-dialog-cancel]").should("not.be.visible");
 
     // Reset permissions
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser.id);
   });
 
@@ -287,7 +287,7 @@ describe("Project Permissions", function() {
       .find("input")
       .should("be.disabled");
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser.id);
     cy.grantProjectPermission(projectId, "project.intent.revokePermission", executingUser.id);
   });

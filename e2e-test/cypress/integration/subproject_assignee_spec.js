@@ -171,7 +171,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
     // Reset permissions
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
   it("Assigning without subproject permission to grant view permissions is not possible", function() {
@@ -194,7 +194,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
   it("Assigning without project nor subproject permission to grant view permissions is not possible", function() {
@@ -219,7 +219,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
@@ -242,7 +242,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
   it("Assigning without subproject 'list permissions'- permissions opens dialog viewing this information", function() {
@@ -264,7 +264,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
   });
   it("Assigning without project nor subproject 'list permissions'- permissions opens dialog viewing this information", function() {
@@ -287,7 +287,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
   });
