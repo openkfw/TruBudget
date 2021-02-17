@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        project: [frontend]
+        project: [frontend,api,blockchain,provisioning,e2e-test,excel-export,email-notification]
         
     defaults:
       run:
@@ -67,7 +67,7 @@ jobs:
         env:
           VALIDATE_JAVASCRIPT_ES: true
           DEFAULT_BRANCH: master
-          DEFAULT_WORKSPACE: ${{ matrix.project }}
+          DEFAULT_WORKSPACE: .*src/*
           FILTER_REGEX_EXCLUDE: .*src/spec.*
           JAVASCRIPT_DEFAULT_STYLE: prettier
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
