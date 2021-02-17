@@ -67,7 +67,7 @@ jobs:
         env:
           VALIDATE_JAVASCRIPT_ES: true
           DEFAULT_BRANCH: master
-          DEFAULT_WORKSPACE: /api
+          DEFAULT_WORKSPACE: /github/workspace/api
           JAVASCRIPT_DEFAULT_STYLE: prettier
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
