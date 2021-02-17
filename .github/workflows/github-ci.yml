@@ -57,9 +57,14 @@ jobs:
       - run: npm ci
       
       - name: Run linters
-        uses: wearerequired/lint-action@v1
+        uses: marceloprado/has-changed-path@v1
+        id: files-changed
         with:
           paths: api
+      - name: Conditional Test Run 
+        if: steps.files-changed.outputs.changed == 'true'      
+        uses: wearerequired/lint-action@v1
+        with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # Enable linters
           eslint: true        
