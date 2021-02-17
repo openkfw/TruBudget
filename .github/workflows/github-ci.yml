@@ -64,11 +64,11 @@ jobs:
       - name: Check for changes to run linters
         if: steps.run-lint.outputs.changed == 'false'      
       - name: Lint Code Base
-        uses: github/super-linter@v3
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        uses: wearerequired/lint-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Enable linters
+          prettier: true 
 
   test:
     runs-on: ubuntu-latest
