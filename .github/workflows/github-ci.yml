@@ -63,8 +63,7 @@ jobs:
           paths: ${{ matrix.project }}
       - name: Check for changes in ${{ matrix.project }}
         if: steps.run-lint.outputs.changed == 'false'        
-        uses: github/super-linter@v3
-      - name: Run Lint for ${{ matrix.project }}        
+        uses: github/super-linter@v3  
         env:
           VALIDATE_JAVASCRIPT_ES: true
           DEFAULT_BRANCH: master
