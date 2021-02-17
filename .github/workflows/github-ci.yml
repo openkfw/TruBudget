@@ -31,6 +31,38 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Audit project ${{ matrix.project }}
         run: npm audit --audit-level=high
+        
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+        project: [frontend,api,blockchain,provisioning,e2e-test,excel-export,email-notification]
+        
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          paths: api
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Enable linters
+          eslint: true        
 
   test:
     runs-on: ubuntu-latest
