@@ -65,9 +65,10 @@ jobs:
         if: steps.run-lint.outputs.changed == 'false'        
         uses: github/super-linter@v3  
         env:
+          VALIDATE_ALL_CODEBASE: false        
           VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_TYPESCRIPT_ES: true
           DEFAULT_BRANCH: master
-          DEFAULT_WORKSPACE: /github/workspace/api
           JAVASCRIPT_DEFAULT_STYLE: prettier
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
