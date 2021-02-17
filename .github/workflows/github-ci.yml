@@ -61,13 +61,14 @@ jobs:
         id: run-lint
         with:
           paths: ${{ matrix.project }}
-      - name: Run linters
+      - name: Condition to Run linters
         if: steps.run-lint.outputs.changed == 'false'      
-        uses: wearerequired/lint-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Enable linters
-          prettier: true  
+      - name: Lint Code Base
+        uses: github/super-linter@v3
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
   test:
     runs-on: ubuntu-latest
