@@ -67,6 +67,7 @@ jobs:
         env:
           VALIDATE_JAVASCRIPT_ES: true
           DEFAULT_BRANCH: master
+          DEFAULT_WORKSPACE: ${{ matrix.project }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
