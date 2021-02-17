@@ -56,18 +56,18 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
 
-      - name: Lint CI
+      - name: Check for changes in ${{ matrix.project }}
         uses: marceloprado/has-changed-path@v1
         id: run-lint
         with:
           paths: ${{ matrix.project }}
-      - name: Check for changes in ${{ matrix.project }}
+      - name: Run Lint CI
         if: steps.run-lint.outputs.changed == 'false'        
         uses: github/super-linter@v3  
         env:
           VALIDATE_JAVASCRIPT_ES: true
           DEFAULT_BRANCH: master
-          DEFAULT_WORKSPACE: ${{ matrix.project }}
+          DEFAULT_WORKSPACE: /api
           JAVASCRIPT_DEFAULT_STYLE: prettier
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
