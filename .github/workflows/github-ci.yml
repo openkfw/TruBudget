@@ -60,14 +60,15 @@ jobs:
         uses: marceloprado/has-changed-path@v1
         id: run-lint
         with:
-          paths: api
+          paths: ${{ matrix.project }}
       - name: Conditional Test Run 
         if: steps.run-lint.outputs.changed == 'false'      
-        uses: wearerequired/lint-action@v1
+      - uses: mrdivyansh/eslint-action@1.0.7
+        if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }} 
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Enable linters
-          eslint: true        
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+          eslint-rc: .eslintrc
+          execute-on-files: ${{ matrix.project }}   
 
   test:
     runs-on: ubuntu-latest
