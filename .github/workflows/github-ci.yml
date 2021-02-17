@@ -70,7 +70,7 @@ jobs:
           DEFAULT_WORKSPACE: frontend
           FILTER_REGEX_EXCLUDE: .*src/spec.*
           JAVASCRIPT_DEFAULT_STYLE: prettier
-          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.yml, .eslintrc
+          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc*
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
