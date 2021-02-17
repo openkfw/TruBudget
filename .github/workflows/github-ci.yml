@@ -58,11 +58,11 @@ jobs:
       
       - name: Run linters
         uses: marceloprado/has-changed-path@v1
-        id: files-changed
+        id: run-lint
         with:
           paths: api
       - name: Conditional Test Run 
-        if: steps.files-changed.outputs.changed == 'true'      
+        if: steps.run-lint.outputs.changed == 'false'      
         uses: wearerequired/lint-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
