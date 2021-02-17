@@ -1,12 +1,7 @@
 describe("Component Versions", function() {
   let exportBaseUrl, exportUrl, apiBaseUrl, apiUrl;
   before(() => {
-    apiBaseUrl = Cypress.config("baseUrl");
-
-    // Not api base url set? We use frontend url, this happens usually in production
-    if (!Cypress.env("API_BASE_URL")) {
-      apiBaseUrl.concat('/test');
-    }
+    apiBaseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiUrl = apiBaseUrl + "/api";
     if (Cypress.env("EXPORT_SERVICE_BASE_URL")) {
       exportBaseUrl = Cypress.env("EXPORT_SERVICE_BASE_URL");
