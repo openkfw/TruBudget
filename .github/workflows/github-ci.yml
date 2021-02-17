@@ -31,7 +31,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Audit project ${{ matrix.project }}
         run: npm audit --audit-level=high
-  
+
   test:
     runs-on: ubuntu-latest
 
@@ -46,13 +46,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - name: Run tests for ${{ matrix.project }}
+
+      - name: Check for Changes
+        uses: marceloprado/has-changed-path@v1
+        id: files-changed
+        with:
+          paths: ${{ matrix.project }}
+      - name: Conditional Test Run 
+        if: steps.files-changed.outputs.changed == 'true'
         run: npm test
 
   docker-build:
