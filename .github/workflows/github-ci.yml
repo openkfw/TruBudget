@@ -67,8 +67,7 @@ jobs:
         env:
           VALIDATE_JAVASCRIPT_ES: true
           DEFAULT_BRANCH: master
-          DEFAULT_WORKSPACE: .*src/*
-          FILTER_REGEX_EXCLUDE: .*src/spec.*
+          DEFAULT_WORKSPACE: ${{ matrix.project }}
           JAVASCRIPT_DEFAULT_STYLE: prettier
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
