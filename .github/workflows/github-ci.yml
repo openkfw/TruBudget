@@ -54,8 +54,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      
+      - run: npm install
+
       - name: Run linters
         uses: marceloprado/has-changed-path@v1
         id: run-lint
