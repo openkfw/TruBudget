@@ -47,6 +47,15 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+          EDITORCONFIG_FILE_NAME: .editorconfig          
+          VALIDATE_EDITORCONFIG: true
+          
+          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc
+          VALIDATE_JAVASCRIPT_ES: true
+          
+          TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.yaml
+          VALIDATE_TYPESCRIPT_ES: true
 
   test:
     runs-on: ubuntu-latest
