@@ -55,16 +55,17 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
+          DEFAULT_WORKSPACE: ${{ matrix.project }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINTER_RULES_PATH: ${{ matrix.project }}
           run: |
-            if ${{ matrix.project }} == 'frontend'; then
+            if ${DEFAULT_WORKSPACE} == 'frontend'; then
             echo "::set-env name=JAVASCRIPT_ES_CONFIG_FILE::.eslintrc"
             echo "set JAVASCRIPT_ES_CONFIG_FILE to .eslintrc"
             echo "::set-env name=VALIDATE_JAVASCRIPT_ES::true"
             echo "set VALIDATE_JAVASCRIPT_ES to true"
 
-            if ${{ matrix.project }} == 'api'; then
+            if ${DEFAULT_WORKSPACE} == 'api'; then
             echo "::set-env name=TYPESCRIPT_ES_CONFIG_FILE::.eslintrc.yml"
             echo "set TYPESCRIPT_ES_CONFIG_FILE to .eslintrc.yml"
             echo "::set-env name=VALIDATE_TYPESCRIPT_ES::true"
