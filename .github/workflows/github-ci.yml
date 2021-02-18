@@ -50,27 +50,25 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Lint Code Base in frontend
-        if: ${{ matrix.project }} == 'frontend'
+      - name: Lint Code Base in ${{ matrix.project }}
         uses: github/super-linter@v3
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINTER_RULES_PATH: ${{ matrix.project }}
-          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc
-          VALIDATE_JAVASCRIPT_ES: true
-      
-      - name: Lint Code Base in api
-        if: ${{ matrix.project }} == 'api'
-        uses: github/super-linter@v3
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: ${{ matrix.project }}
-          TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.yml
-          VALIDATE_TYPESCRIPT_ES: true
+          run: |
+            if ${{ matrix.project }} == 'frontend'; then
+            echo "::set-env name=JAVASCRIPT_ES_CONFIG_FILE::.eslintrc"
+            echo "set JAVASCRIPT_ES_CONFIG_FILE to .eslintrc"
+            echo "::set-env name=VALIDATE_JAVASCRIPT_ES::true"
+            echo "set VALIDATE_JAVASCRIPT_ES to true"
+
+            if ${{ matrix.project }} == 'api'; then
+            echo "::set-env name=TYPESCRIPT_ES_CONFIG_FILE::.eslintrc.yml"
+            echo "set TYPESCRIPT_ES_CONFIG_FILE to .eslintrc.yml"
+            echo "::set-env name=VALIDATE_TYPESCRIPT_ES::true"
+            echo "set VALIDATE_TYPESCRIPT_ES to true"
 
   test:
     runs-on: ubuntu-latest
