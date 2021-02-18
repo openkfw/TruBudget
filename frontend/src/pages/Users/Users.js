@@ -48,8 +48,6 @@ const renderTab = props => {
     disabledUsers,
     showDashboardDialog
   } = props;
-  let hello;
-  console.log('tabIndex', tabIndex);
 
   if (isDataLoading) {
     return <LoadingIndicator />;
