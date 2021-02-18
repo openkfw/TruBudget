@@ -50,8 +50,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Lint Code Base in ${{ matrix.project }}
-        if: ${{ matrix.project }} == 'frontend'      
+      - name: Lint Code Base in ${{ matrix.project }}    
         uses: github/super-linter@v3
         env:
           VALIDATE_ALL_CODEBASE: false
@@ -59,16 +58,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc
           VALIDATE_JAVASCRIPT_ES: true
-          
-      - name: Lint Code Base in ${{ matrix.project }}
-        if: ${{ matrix.project }} == 'api'      
-        uses: github/super-linter@v3
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
           TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.yaml
-          VALIDATE_TYPESCRIPT_ES: true          
+          VALIDATE_TYPESCRIPT_ES: true        
 
   test:
     runs-on: ubuntu-latest
