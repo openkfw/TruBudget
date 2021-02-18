@@ -62,7 +62,7 @@ jobs:
         with:
           paths: ${{ matrix.project }}
       - name: Run Lint-CI
-        if: steps.run-lint.outputs.changed == 'true' && (${{ matrix.project }} == 'frontend' || ${{ matrix.project }} == 'e2e-test')
+        if: steps.run-lint.outputs.changed == 'true'
         uses: github/super-linter@v3  
         env:
           DEFAULT_BRANCH: master
@@ -71,8 +71,7 @@ jobs:
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_JAVASCRIPT_ES: true
-          CI: true
-          DISABLE_ERRORS: false           
+          CI: true    
 
   test:
     runs-on: ubuntu-latest
