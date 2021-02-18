@@ -32,7 +32,7 @@ jobs:
       - name: Audit project ${{ matrix.project }}
         run: npm audit --audit-level=high
         
-  run-linters:
+  lint:
     name: Run linters
     runs-on: ubuntu-latest
 
