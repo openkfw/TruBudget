@@ -36,26 +36,39 @@ jobs:
     name: Run linters
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [10.x]
+        project: [frontend,api]
+        
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+        
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Lint Code Base
+      - name: Lint Code Base in ${{ matrix.project }}
+        if: ${{ matrix.project }} == 'frontend'      
         uses: github/super-linter@v3
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-          EDITORCONFIG_FILE_NAME: .editorconfig          
-          VALIDATE_EDITORCONFIG: true
-          
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc
           VALIDATE_JAVASCRIPT_ES: true
           
+      - name: Lint Code Base in ${{ matrix.project }}
+        if: ${{ matrix.project }} == 'api'      
+        uses: github/super-linter@v3
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
           TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.yaml
-          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_TYPESCRIPT_ES: true          
 
   test:
     runs-on: ubuntu-latest
