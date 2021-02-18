@@ -4,27 +4,26 @@ import { minioEndPoint, minioPort, minioUseSSL, minioAccessKey, minioSecretKey }
 const Readable = require("stream").Readable;
 
 interface Metadata {
-  "Content-Type"?: string,
-  fileName: string,
+  "Content-Type"?: string;
+  fileName: string;
 }
 
 interface MetadataWithName extends Metadata {
-  name: string
+  name: string;
 }
 
 const minioClient: any = new Minio.Client({
-    endPoint: minioEndPoint || "nginx",
-    port: minioPort,
-    useSSL: minioUseSSL,
-    accessKey: minioAccessKey,
-    secretKey: minioSecretKey,
+  endPoint: minioEndPoint || "nginx",
+  port: minioPort,
+  useSSL: minioUseSSL,
+  accessKey: minioAccessKey,
+  secretKey: minioSecretKey,
 });
 
 const bucketName: string = "trubudget";
 
-
 const makeBucket = (bucket: string, cb: Function) => {
-  minioClient.bucketExists(bucket, (err, exists) => {
+  minioClient.bucketExists(bucket, (err: any, exists: any) => {
     if (err) {
       console.error("Error during searching for bucket", err);
       return cb(err);
@@ -53,7 +52,6 @@ export const makeBucketAsPromised = (bucket: string) => {
   });
 };
 
-
 const upload = (file: string, content: string, metaData: Metadata, cb: Function) => {
   const s = new Readable();
   s._read = () => {};
@@ -61,8 +59,8 @@ const upload = (file: string, content: string, metaData: Metadata, cb: Function)
   s.push(null);
 
   const metaDataWithName: MetadataWithName = { ...metaData, name: file };
-  // Using putObject API upload your file to the bucket .
-  minioClient.putObject(bucketName, file, s, metaDataWithName, (err, etag) => {
+  // Using putObject API upload your file to the bucket.
+  minioClient.putObject(bucketName, file, s, metaDataWithName, (err: any, etag: any) => {
     if (err) {
       console.error("minioClient.putObject", err);
       return cb(err);
@@ -72,7 +70,11 @@ const upload = (file: string, content: string, metaData: Metadata, cb: Function)
   });
 };
 
-export const uploadAsPromised = (file: string, content: string, metaData: Metadata = {fileName: "default"}) => {
+export const uploadAsPromised = (
+  file: string,
+  content: string,
+  metaData: Metadata = { fileName: "default" },
+) => {
   return new Promise((resolve, reject) => {
     upload(file, content, metaData, (err, etag) => {
       if (err) return reject(err);
@@ -141,8 +143,6 @@ const establishConnection = async () => {
   const retries = 20;
   for (let i = 0; i <= retries; i++) {
     try {
-      await sleep(20000);
-
       await makeBucketAsPromised(bucketName);
 
       console.log("Connection with min.io established.");
@@ -154,11 +154,15 @@ const establishConnection = async () => {
         console.error("Unable to connect with min.io. EXITING!");
         process.exit(1);
       }
+      await sleep(20000);
     }
-
   }
 };
 
-establishConnection();
+if (minioEndPoint) {
+  establishConnection();
+} else {
+  console.log("MINIO_ENDPOINT not set. Defaulting to chain storage.");
+}
 
 export default minioClient;
