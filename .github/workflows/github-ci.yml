@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        project: [frontend,api, excel-export, e2e-test, blockchain]
+        project: [frontend,api,excel-export,e2e-test,blockchain]
         
     defaults:
       run:
