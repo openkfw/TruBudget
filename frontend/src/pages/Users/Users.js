@@ -49,8 +49,6 @@ const renderTab = props => {
     showDashboardDialog
   } = props;
 
-  let userInfo = ""
-
   if (isDataLoading) {
     return <LoadingIndicator />;
   }
