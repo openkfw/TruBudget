@@ -32,7 +32,7 @@ const styles = {
   },
   info: {
     display: "flex",
-    paddingRight: 30
+    paddingRight: '40px'
   },
   customWidth: {},
   createButtonContainer: {},
