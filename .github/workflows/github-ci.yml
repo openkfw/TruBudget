@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        project: [frontend,api,excel-export,e2e-test,blockchain]
+        project: [frontend,api]
         
     defaults:
       run:
@@ -50,7 +50,7 @@ jobs:
         with:
           fetch-depth: 0
       
-      - if: matrix.project == 'frontend' || matrix.project == 'e2e-test' || matrix.project == 'blockchain'
+      - if: matrix.project == 'frontend'
         name: Lint Code Base in ${{ matrix.project }}
         uses: github/super-linter@v3
         env:
@@ -61,7 +61,7 @@ jobs:
           JAVASCRIPT_ES_CONFIG_FILE: .eslintrc
           VALIDATE_JAVASCRIPT_ES: true
           
-      - if: matrix.project == 'api' || matrix.project == 'excel-export'
+      - if: matrix.project == 'api'
         name: Lint Code Base in ${{ matrix.project }}
         uses: github/super-linter@v3
         env:
