@@ -28,6 +28,7 @@ export async function assignSubproject(
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; subproject: Subproject.Subproject }>> {
   let subproject = await repository.getSubproject();
+  console.log('subproject', subproject);
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);
   }
