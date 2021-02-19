@@ -49,7 +49,6 @@ const UserDialogContent = ({
   organization,
   usernameInvalid
 }) => {
-  console.log('displayName', displayName);
   const { displayName, password, username } = user;
   return (
     <div className={classes.container}>
