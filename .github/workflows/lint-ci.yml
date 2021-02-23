@@ -31,7 +31,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       
       - name: install node in ${{ matrix.project }}
-        run: npm install
+        run: npm ci
           
       - name: run Lint in ${{ matrix.project }}
         run: npm run lint          
