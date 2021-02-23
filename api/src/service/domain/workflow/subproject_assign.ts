@@ -37,7 +37,7 @@ export async function assignSubproject(
     return { newEvents: [], subproject };
   }
 
-  // Create the new event test:
+  // Create the new event:
   const subprojectAssignedResult = SubprojectAssigned.createEvent(
     ctx.source,
     issuer.id,

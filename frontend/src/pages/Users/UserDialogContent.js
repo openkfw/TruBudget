@@ -50,8 +50,7 @@ const UserDialogContent = ({
   usernameInvalid
 }) => {
   const { displayName, password, username } = user;
-  let test = "";
-
+  const test = "";
   return (
     <div className={classes.container}>
       <span className={classes.info}>
