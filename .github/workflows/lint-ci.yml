@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        project: [frontend,api,blockchain]
+        project: [frontend,api]
         
     defaults:
       run:
