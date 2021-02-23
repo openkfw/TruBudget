@@ -44,7 +44,7 @@ export async function documentValidate(
     issuer.id,
     projectId,
     subprojectId,
-    workflowitemId
+    workflowitemId,
   );
   if (Result.isErr(documentValidatedEvent)) {
     return new VError(documentValidatedEvent, "failed to create event in domain");
