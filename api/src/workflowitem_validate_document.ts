@@ -72,19 +72,19 @@ function mkSwaggerSchema(server: FastifyInstance) {
               },
               id: {
                 type: "string",
-                example: "test"
+                example: "test",
               },
               projectId: {
                 type: "string",
-                example: "3r28c69eg298c87e3899119e025eff1f"
+                example: "3r28c69eg298c87e3899119e025eff1f",
               },
               subprojectId: {
                 type: "string",
-                example: "5t28c69eg298c87e3899119e025eff1f"
+                example: "5t28c69eg298c87e3899119e025eff1f",
               },
               workflowitemId: {
                 type: "string",
-                example: "4j28c69eg298c87e3899119e025eff1f"
+                example: "4j28c69eg298c87e3899119e025eff1f",
               },
             },
           },
@@ -153,7 +153,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           user,
           projectId,
           subprojectId,
-          workflowitemId
+          workflowitemId,
         )
         .then((validateWorkflowitemResult) => {
           if (Result.isErr(validateWorkflowitemResult)) {
