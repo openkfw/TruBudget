@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        project: [frontend]
+        project: [frontend,api,e2e-test]
         
     defaults:
       run:
