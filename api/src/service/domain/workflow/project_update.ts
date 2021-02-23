@@ -36,7 +36,6 @@ export async function updateProject(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const project = await repository.getProject(projectId);
-  const test = ""
 
   if (Result.isErr(project)) {
     return new NotFound(ctx, "project", projectId);
