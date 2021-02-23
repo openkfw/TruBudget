@@ -31,49 +31,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Audit project ${{ matrix.project }}
         run: npm audit --audit-level=high
-        
-  lint:
-    name: Run linters
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x]
-        project: [frontend,api]
-        
-    defaults:
-      run:
-        working-directory: ${{ matrix.project }}
-        
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci          
-      
-      - if: matrix.project == 'frontend'
-        name: Lint Code Base in ${{ matrix.project }}
-        uses: github/super-linter@v3
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_JAVASCRIPT_ES: true
-          
-      - if: matrix.project == 'api'
-        name: Lint Code Base in ${{ matrix.project }}
-        uses: github/super-linter@v3
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_TYPESCRIPT_ES: true
-
 
   test:
     runs-on: ubuntu-latest
