@@ -32,6 +32,13 @@ jobs:
       
       - name: install node in ${{ matrix.project }}
         run: npm ci
+        
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Enable linters
+          eslint: true       
           
-      - name: run Lint in ${{ matrix.project }}
-        run: npm run lint          
+      #- name: run Lint in ${{ matrix.project }}
+        #run: npm run lint          
