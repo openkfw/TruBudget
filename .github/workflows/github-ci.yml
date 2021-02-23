@@ -1,4 +1,4 @@
-name: Audit/Test/Build CI
+name: Test/Build CI
 
 on: 
   push:
@@ -10,28 +10,6 @@ on:
 
 jobs:
 
-  audit:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x]
-        project: [frontend,api,blockchain,provisioning,e2e-test,excel-export,email-notification]
-        
-    defaults:
-      run:
-        working-directory: ${{ matrix.project }}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Audit project ${{ matrix.project }}
-        run: npm audit --audit-level=high
-  
   test:
     runs-on: ubuntu-latest
 
@@ -46,13 +24,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - name: Run tests for ${{ matrix.project }}
+
+      - name: Check for Changes in ${{ matrix.project }}
+        uses: marceloprado/has-changed-path@v1
+        id: run-test
+        with:
+          paths: ${{ matrix.project }}
+      - name: Run Test
+        if: steps.run-test.outputs.changed == 'true'
         run: npm test
 
   docker-build:
