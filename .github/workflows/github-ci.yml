@@ -1,4 +1,4 @@
-name: Audit CI
+name: Test/Build CI
 
 on: 
   push:
