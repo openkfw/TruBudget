@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        project: [frontend,api,blockchain,provisioning,e2e-test,excel-export,email-notification]
+        project: [frontend,api]
         
     defaults:
       run:
@@ -24,15 +24,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       
+      - name: install node in ${{ matrix.project }}
+        run: npm ci
+         
       - name: run Lint in ${{ matrix.project }}
-        run: |
-          npm install
-          npm run lint
+        run: npm run lint          
