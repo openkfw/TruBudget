@@ -63,8 +63,6 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: ${{ matrix.project }}
-          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc          
           VALIDATE_JAVASCRIPT_ES: true
           
       - if: matrix.project == 'api'
@@ -74,9 +72,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: ${{ matrix.project }}
-          TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.yml
-          VALIDATE_TYPESCRIPT_ES: true          
+          VALIDATE_TYPESCRIPT_ES: true
 
 
   test:
