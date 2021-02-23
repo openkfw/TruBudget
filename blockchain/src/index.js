@@ -277,8 +277,8 @@ app.post("/chain", async (req, res) => {
         if (!validSha256) {
           validMD5 = await verifyHash(config.DirectoryHash, extractPath);
         }
-        const chainConfig = yaml.safeLoad(fs.readFileSync(chainConfigPath, "utf8"));;
-        var correctConfig = chainConfig.includes(RPC_PASSWORD);
+        const chainConfig = yaml.safeLoad(fs.readFileSync(chainConfigPath, "utf8"));
+        let correctConfig = chainConfig.includes(RPC_PASSWORD);
 
         if (config.hasOwnProperty("Organisation")) {
           const correctOrg = config.Organisation === ORGANIZATION;
