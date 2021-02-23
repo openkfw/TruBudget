@@ -24,13 +24,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - name: Run tests for ${{ matrix.project }}
+
+      - name: Check for Changes in ${{ matrix.project }}
+        uses: marceloprado/has-changed-path@v1
+        id: run-test
+        with:
+          paths: ${{ matrix.project }}
+      - name: Run Test
+        if: steps.run-test.outputs.changed == 'true'
         run: npm test
 
   docker-build:
