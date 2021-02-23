@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [unreleased]
+
+### Added
+
+- Display connection status for each Multichain node [#746](https://github.com/openkfw/TruBudget/issues/746)
+
 ## [1.19.0] - 2021-02-10
 
 ### Added

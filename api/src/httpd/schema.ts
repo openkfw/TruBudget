@@ -3172,6 +3172,7 @@ const schemas = {
                         },
                       },
                       myVote: { type: "string", example: "admin" },
+                      isConnected: { type: "boolean", example: true },
                       currentAccess: {
                         type: "object",
                         properties: {

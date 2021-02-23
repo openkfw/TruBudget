@@ -30,7 +30,7 @@ export const workflowitemEventTypes = () => [
   { id: "workflowitem_permission_granted", displayName: strings.eventTypes.workflowitem_permission_granted },
   { id: "workflowitem_permission_revoked", displayName: strings.eventTypes.workflowitem_permission_revoked },
   { id: "workflowitems_reordered", displayName: strings.eventTypes.workflowitems_reordered },
-  { id: "workflowitem_document_validated", displayName: strings.eventTypes.workflowitem_document_validated },
+  { id: "workflowitem_document_validated", displayName: strings.eventTypes.workflowitem_document_validated }
 ];
 
 const eventTypes = { projectEventTypes, subprojectEventTypes, workflowitemEventTypes };

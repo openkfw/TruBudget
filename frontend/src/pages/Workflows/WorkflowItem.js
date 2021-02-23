@@ -331,7 +331,7 @@ const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowS
       }
     </div>
   );
-}
+};
 
 const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, status) => {
   const workflowSortable = status === "open";

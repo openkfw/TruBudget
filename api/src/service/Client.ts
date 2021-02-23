@@ -1,5 +1,6 @@
 import logger from "../lib/logger";
 import {
+  PeerInfo,
   BlockInfo,
   BlockListItem,
   CreateStreamOptions,
@@ -37,7 +38,7 @@ export const asMapKey = (item: Liststreamkeyitems.Item): string => item.keys.joi
 
 export class RpcMultichainClient implements MultichainClient {
   private rpcClient: RpcClient;
-  
+
   private hasWriteLock: boolean;
 
   constructor(settings: ConnectionSettings) {
@@ -237,6 +238,10 @@ export class RpcMultichainClient implements MultichainClient {
     return this.rpcClient.invoke("getlastblockinfo", skip);
   }
 
+  public async getPeerInfo(): Promise<PeerInfo[]> {
+    return this.rpcClient.invoke("getpeerinfo");
+  }
+
   public async ping(): Promise<any> {
     return this.rpcClient.invoke("ping");
   }
@@ -299,7 +304,7 @@ export class RpcMultichainClient implements MultichainClient {
         if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
           logger.warn(
             "Reached max data size. Maybe you should increase the runtime variable 'maxshowndata' of the multichain" +
-              "with command: 'setruntimeparam maxshowndata <value>'.",
+            "with command: 'setruntimeparam maxshowndata <value>'.",
           );
           item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
           logger.debug({ item: item.data }, "Received items.");

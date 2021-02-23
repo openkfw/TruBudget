@@ -133,7 +133,7 @@ const NodeVoting = ({ nodes, approveNewNodeForExistingOrganization, allowedInten
   );
 
   return (
-    <div className={classes.container}>
+    <div className={classes.container} data-test="node-voting">
       <Card className={classes.card}>
         <CardHeader title={strings.nodesDashboard.new_organization} />
         {isDataLoading ? (

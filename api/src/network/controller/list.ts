@@ -32,6 +32,7 @@ interface NodeInfoDto {
   myVote: AccessVote.T;
   currentAccess: CurrentAccess;
   pendingAccess?: PendingAccess;
+  isConnected?: boolean;
 }
 
 export async function getNodeList(
@@ -163,6 +164,7 @@ function dtoFromNodeInfo(info: Nodes.NodeInfo, callerAddress: WalletAddress): No
 
   const dto: NodeInfoDto = {
     address: info.address,
+    isConnected: info.isConnected,
     myVote,
     currentAccess,
   };
