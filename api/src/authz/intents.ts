@@ -57,7 +57,8 @@ type Intent =
   | "network.listActive"
   | "network.voteForPermission"
   | "network.approveNewOrganization"
-  | "network.approveNewNodeForExistingOrganization";
+  | "network.approveNewNodeForExistingOrganization"
+  | "network.declineNode";
 
 export const globalIntents: Intent[] = [
   "global.listPermissions",
@@ -76,6 +77,7 @@ export const globalIntents: Intent[] = [
   "network.voteForPermission",
   "network.approveNewOrganization",
   "network.approveNewNodeForExistingOrganization",
+  "network.declineNode",
 ];
 
 export const userAssignableIntents: Intent[] = [
