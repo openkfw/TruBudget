@@ -73,7 +73,7 @@ describe("Validating uploaded document in workflowitem", () => {
           if (identity === "alice") return ["alice"];
           if (identity === "bob") return ["bob"];
           return Error(`unexpected identity: ${identity}`);
-        }
+        },
       },
     );
     assert.isTrue(Result.isErr(newEventsResult));
@@ -96,7 +96,7 @@ describe("Validating uploaded document in workflowitem", () => {
           if (identity === "alice") return ["alice"];
           if (identity === "bob") return ["bob"];
           return Error(`unexpected identity: ${identity}`);
-        }
+        },
       },
     );
     assert.isTrue(Result.isOk(newEventsResult));

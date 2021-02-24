@@ -749,7 +749,7 @@ WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
     user,
     projectId,
     subprojectId,
-    workflowitemId
+    workflowitemId,
   ) =>
     DocumentValidationService.isSameDocument(
       documentBase64,
