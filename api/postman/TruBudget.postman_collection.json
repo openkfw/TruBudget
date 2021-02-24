@@ -2182,6 +2182,49 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "network.declineNode",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2cfd0663-1770-4184-974e-63129061d389",
+                "type": "text/javascript",
+                "exec": [""]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{rootToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"node\": { \n\t\t\t\"address\": \"1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM\",\n\t\t\t\"organization\": \"BNDES\"\n\t\t}\n\t}\n}"
+            },
+            "url": {
+              "raw": "{{host}}:{{port}}{{base}}/network.declineNode",
+              "host": ["{{host}}"],
+              "port": "{{port}}{{base}}",
+              "path": ["network.declineNode"]
+            }
+          },
+          "response": []
         }
       ]
     },
