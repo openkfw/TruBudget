@@ -73,7 +73,9 @@ import {
   APPROVE_ORGANIZATION,
   APPROVE_ORGANIZATION_SUCCESS,
   FETCH_NODES,
-  FETCH_NODES_SUCCESS
+  FETCH_NODES_SUCCESS,
+  DECLINE_NODE,
+  DECLINE_NODE_SUCCESS
 } from "./pages/Nodes/actions.js";
 import {
   FETCH_ALL_NOTIFICATIONS,
@@ -760,7 +762,15 @@ export function* reorderWorkflowitemsSaga({ projectId, subprojectId, ordering })
 
 export function* validateDocumentSaga({ base64String, hash, id, projectId, subprojectId, workflowitemId }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.validateDocument, base64String, hash, id, projectId, subprojectId, workflowitemId);
+    const { data } = yield callApi(
+      api.validateDocument,
+      base64String,
+      hash,
+      id,
+      projectId,
+      subprojectId,
+      workflowitemId
+    );
     yield put({
       type: VALIDATE_DOCUMENT_SUCCESS,
       isIdentical: data.isIdentical
@@ -1291,6 +1301,19 @@ export function* approveNewNodeForOrganizationSaga({ address, showLoading }) {
     yield callApi(api.approveNewNodeForOrganization, address);
     yield put({
       type: APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS
+    });
+    yield put({
+      type: FETCH_NODES,
+      show: true
+    });
+  }, showLoading);
+}
+
+export function* declineNode({ node, showLoading }) {
+  yield execute(function*() {
+    yield callApi(api.declineNode, node);
+    yield put({
+      type: DECLINE_NODE_SUCCESS
     });
     yield put({
       type: FETCH_NODES,
@@ -2716,6 +2739,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_NODES, fetchNodesSaga),
       yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga),
       yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga),
+      yield takeEvery(DECLINE_NODE, declineNode),
       yield takeLatest(STORE_ENVIRONMENT, setEnvironmentSaga),
       yield takeLatest(FETCH_ENVIRONMENT, getEnvironmentSaga),
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),

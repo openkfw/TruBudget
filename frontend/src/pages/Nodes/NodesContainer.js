@@ -6,7 +6,7 @@ import { canViewNodesDashboard } from "../../permissions";
 import NotAuthorized from "../Error/NotAuthorized";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
-import { approveNewNodeForExistingOrganization, approveNewOrganization, fetchNodes } from "./actions";
+import { approveNewNodeForExistingOrganization, approveNewOrganization, fetchNodes, declineNode } from "./actions";
 import Nodes from "./Nodes";
 
 class NodesContainer extends Component {
@@ -26,7 +26,8 @@ const mapStateToProps = state => {
   return {
     nodes: state.getIn(["nodes", "nodes"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
-    isDataLoading: state.getIn(["loading", "loadingVisible"])
+    isDataLoading: state.getIn(["loading", "loadingVisible"]),
+    organization: state.getIn(["login", "organization"])
   };
 };
 
@@ -37,7 +38,8 @@ const mapDispatchToProps = dispatch => {
     showSnackbar: () => dispatch(showSnackbar()),
     storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
     approveNewOrganization: organization => dispatch(approveNewOrganization(organization)),
-    approveNewNodeForExistingOrganization: address => dispatch(approveNewNodeForExistingOrganization(address))
+    approveNewNodeForExistingOrganization: address => dispatch(approveNewNodeForExistingOrganization(address)),
+    declineNode: node => dispatch(declineNode(node))
   };
 };
 

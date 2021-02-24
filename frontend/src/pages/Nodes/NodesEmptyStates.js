@@ -67,4 +67,30 @@ const ExistingNodesEmptyState = withTheme(
   })
 );
 
-export { NewOrganizationsEmptyState, ExistingNodesEmptyState };
+const DeclinedNodesEmptyState = withTheme(
+  withStyles(styles)(props => {
+    const { classes } = props;
+    return (
+      <table style={{ alignItems: "center" }}>
+        <tbody>
+          <tr>
+            <td width="200vw">
+              <img
+                src="images-for-empty-state/nodes-for-orga-empty-state.png"
+                alt="No declined nodes found"
+                width="150vw"
+              />
+            </td>
+            <td>
+              <Typography variant="body2" className={classes.caption}>
+                No declined nodes found
+              </Typography>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    );
+  })
+);
+
+export { NewOrganizationsEmptyState, ExistingNodesEmptyState, DeclinedNodesEmptyState };

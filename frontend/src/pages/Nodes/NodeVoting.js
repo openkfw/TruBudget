@@ -70,14 +70,14 @@ const splitNodes = nodes => {
   return nodes.reduce(
     ([self, newOrgaNodes, existingOrgaNodes], node) => {
       const isOwnNode = node.currentAccess.accessType !== "none";
-
       if (isOwnNode) {
         return [[...self, node], newOrgaNodes, existingOrgaNodes];
       } else {
         const organizationExists = nodes.find(
           existingNode =>
             existingNode.address.organization === node.address.organization &&
-            existingNode.address.address !== node.address.address
+            existingNode.address.address !== node.address.address &&
+            existingNode.currentAccess.accessType !== "none"
         );
 
         if (!organizationExists) {
@@ -91,7 +91,29 @@ const splitNodes = nodes => {
   );
 };
 
-const getListEntries = (nodes, canApprove, classes, cb) => {
+const filterDeclinedNodes = (nodes, organization) => {
+  return nodes.filter(node => {
+    if (node.currentAccess.decliners.length > 0) {
+      return node.currentAccess.decliners.forEach(declinerObject => {
+        return declinerObject.organization !== organization;
+      });
+    } else return true;
+  });
+};
+
+const getDeclinersString = decliners => {
+  let resultString = "";
+  let stringArray = [];
+  if (decliners.length > 0) {
+    decliners.forEach(declinerObject => {
+      stringArray.push(declinerObject.organization);
+    });
+    resultString = `\n ${strings.nodesDashboard.declined_by}: ${stringArray.join(", ")}`;
+  }
+  return resultString;
+};
+
+const getListEntries = (nodes, canApprove, classes, declineNode, approveNode) => {
   return nodes.map(node => {
     return (
       <div key={node.address.address}>
@@ -102,16 +124,34 @@ const getListEntries = (nodes, canApprove, classes, cb) => {
                 <Typography variant="subtitle1"> {node.address.organization}</Typography>
               </div>
             }
-            secondary={`${strings.nodesDashboard.address}: ${node.address.address}`}
+            secondary={
+              <span component={"span"} variant="body2" className={classes.listItem}>
+                <Typography variant="body2" display="block" component={"span"}>
+                  {`${strings.nodesDashboard.address}: ${node.address.address} `}
+                </Typography>
+                <Typography variant="body2" display="block" component={"span"}>
+                  {getDeclinersString(node.currentAccess.decliners)}
+                </Typography>
+              </span>
+            }
           />
           <Button
             variant="contained"
             disabled={node.myVote !== "none" || !canApprove}
             color="primary"
             className={classes.button}
-            onClick={() => cb(node.address)}
+            onClick={() => approveNode(node.address)}
           >
             {strings.nodesDashboard.approve}
+          </Button>
+          <Button
+            variant="contained"
+            disabled={node.myVote !== "none" || !canApprove}
+            color="primary"
+            className={classes.button}
+            onClick={() => declineNode(node.address)}
+          >
+            {strings.nodesDashboard.decline}
           </Button>
         </ListItem>
         <Divider />
@@ -120,16 +160,29 @@ const getListEntries = (nodes, canApprove, classes, cb) => {
   });
 };
 
-const NodeVoting = ({ nodes, approveNewNodeForExistingOrganization, allowedIntents, classes, isDataLoading }) => {
+const NodeVoting = ({
+  nodes,
+  approveNewNodeForExistingOrganization,
+  allowedIntents,
+  classes,
+  isDataLoading,
+  organization,
+  declineNode
+}) => {
   const canApprove = canApproveNode(allowedIntents);
+  const visibleNodes = filterDeclinedNodes(nodes, organization);
 
-  const [, newOrgaNodes, existingOrgaNodes] = splitNodes(nodes);
+  const [, newOrgaNodes, existingOrgaNodes] = splitNodes(visibleNodes);
 
-  const newOrgaNodesListEntries = getListEntries(newOrgaNodes, canApprove, classes, ({ address }) =>
+  const newOrgaNodesListEntries = getListEntries(newOrgaNodes, canApprove, classes, declineNode, ({ address }) =>
     approveNewNodeForExistingOrganization(address)
   );
-  const existingOrgaNodesListEntries = getListEntries(existingOrgaNodes, canApprove, classes, ({ address }) =>
-    approveNewNodeForExistingOrganization(address)
+  const existingOrgaNodesListEntries = getListEntries(
+    existingOrgaNodes,
+    canApprove,
+    classes,
+    declineNode,
+    ({ address }) => approveNewNodeForExistingOrganization(address)
   );
 
   return (

@@ -172,10 +172,12 @@ const ka = {
     additional_organization_node: "მოთხოვნები დამატებითი კვანძებისთვის",
     address: "მისამართი",
     approve: "დადასტურება",
+    decline: "ვარდნა",
     network: "ქსელი",
     new_organization: "მოთხოვნები ახალი ორგანიზაციებისთვის",
     nodes: "Nodes",
-    permissions: "ნებართვები"
+    permissions: "ნებართვები",
+    declined_by: "უარი თქვა"
   },
 
   login: {
@@ -527,7 +529,8 @@ const ka = {
     workflowitem_update: "{0} შეცვალა workflowitem-ი {1} ",
     workflowitem_update_amount: "{0} შეცვალა workflowitem-ი {1} ბიუჯეტი წელს {2}",
     workflowitem_document_validated: "{0} დადასტურებულია workflowitem სისტემაში მითითებული დოკუმენტ {1} ი {2} ",
-    workflowitem_document_invalidated: "{0} გამოყენებული სამუშაო ნაკადის ერთეული დოკუმენტი, რომელსაც სხვადასხვა დოკუმენტი აქვს დასახელებული {1} ი {2} "
+    workflowitem_document_invalidated:
+      "{0} გამოყენებული სამუშაო ნაკადის ერთეული დოკუმენტი, რომელსაც სხვადასხვა დოკუმენტი აქვს დასახელებული {1} ი {2} "
   },
 
   permissions: {

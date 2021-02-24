@@ -173,10 +173,12 @@ const pt = {
     additional_organization_node: "Pedidos de nós adicionais",
     address: "Endereço",
     approve: "Aprovar",
+    decline: "declínio",
     network: "Rede",
     new_organization: "Pedidos de novas organizações",
     nodes: "Nós",
-    permissions: "Permissões"
+    permissions: "Permissões",
+    declined_by: "Recusado por"
   },
 
   login: {
@@ -529,7 +531,8 @@ const pt = {
     workflowitem_update: "{0} modificou o item de workflow {1} ",
     workflowitem_update_amount: "{0} modificou o item de workflow {1} despesas dentro {2} ",
     workflowitem_document_validated: "{0} documento de item de fluxo de trabalho validado denominado {1} em {2} ",
-    workflowitem_document_invalidated: "{0} usado documento diferente no item de fluxo de trabalho para validar o documento nomeado com {1} em {2} "
+    workflowitem_document_invalidated:
+      "{0} usado documento diferente no item de fluxo de trabalho para validar o documento nomeado com {1} em {2} "
   },
 
   permissions: {

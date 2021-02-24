@@ -304,10 +304,12 @@ const fr = {
     additional_organization_node: "Demandes de nœuds supplémentaires",
     address: "Adresse",
     approve: "Approuver",
+    decline: "Refuser",
     network: "Réseau",
     new_organization: "Demandes de nouvelles organisations",
     nodes: "Noeuds",
-    permissions: "Autorisations"
+    permissions: "Autorisations",
+    declined_by: "Refusé par"
   },
 
   preview: {
@@ -530,7 +532,8 @@ const fr = {
     workflowitem_update: "{0} a modifié le workflow {1} ",
     workflowitem_update_amount: "{0} a modifié le workflow {1} budget dans {2}",
     workflowitem_document_validated: "{0} document d'élément de flux de travail validé nommé {1} dans {2} ",
-    workflowitem_document_invalidated: "{0} a utilisé un document différent dans le workflowitem pour valider le document nommé avec {1} dans {2} "
+    workflowitem_document_invalidated:
+      "{0} a utilisé un document différent dans le workflowitem pour valider le document nommé avec {1} dans {2} "
   },
 
   permissions: {
