@@ -608,7 +608,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
       : "./src/data/test/";
 
     axios.defaults.baseURL = `http://${host}:${port}/api`;
-    console.log("Axios baseURL is set to "+axios.defaults.baseURL)
+    console.log("Axios baseURL is set to " + axios.defaults.baseURL);
     axios.defaults.timeout = 10000;
 
     await impersonate("root", rootSecret);
