@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
+- Added a decline option on the nodes page, which hides the request for everyone in an organization [#27](https://github.com/openkfw/TruBudget/issues/27)
+
 <!-- ### Changed -->
 
 <!-- ### Deprecated -->

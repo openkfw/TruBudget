@@ -171,10 +171,12 @@ const en = {
     additional_organization_node: "Requests for Additional Nodes",
     address: "Address",
     approve: "Approve",
+    decline: "Decline",
     network: "Network",
     new_organization: "Requests for New Organizations",
     nodes: "Nodes",
-    permissions: "Permissions"
+    permissions: "Permissions",
+    declined_by: "Declined by"
   },
 
   login: {
@@ -525,7 +527,8 @@ const en = {
     workflowitem_update: "{0} changed workflowitem {1} ",
     workflowitem_update_amount: "{0} changed workflowitem {1} budget in {2} ",
     workflowitem_document_validated: "{0} validated workflowitem document named {1} in {2} ",
-    workflowitem_document_invalidated: "{0} used different document in workflowitem to validate document named with  {1} in {2} "
+    workflowitem_document_invalidated:
+      "{0} used different document in workflowitem to validate document named with  {1} in {2} "
   },
 
   permissions: {

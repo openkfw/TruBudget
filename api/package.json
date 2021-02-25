@@ -115,6 +115,7 @@
     "nyc": "^14.1.0",
     "openapi-typescript": "^2.4.2",
     "rimraf": "*",
+    "sinon": "^9.2.4",
     "supertest": "^4.0.2",
     "swagger-to-joi": "^1.2.4",
     "ts-node": "^8.0.3",

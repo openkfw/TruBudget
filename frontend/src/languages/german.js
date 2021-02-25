@@ -306,10 +306,12 @@ const de = {
     additional_organization_node: "Anfragen für zusätzliche Nodes",
     address: "German: Access",
     approve: "German: Approve",
+    decline: "Ablehnen",
     network: "German: Network",
     new_organization: "Anfragen für neue Organisationen",
     nodes: "German: Nodes",
-    permissions: "German: Permissions"
+    permissions: "German: Permissions",
+    declined_by: "Abgelehnt von"
   },
 
   preview: {
@@ -528,7 +530,8 @@ const de = {
     workflowitem_update: "{0} veränderte Workflowitem {1} ",
     workflowitem_update_amount: "{0} veränderte workflowitem {1} budget in {2} ",
     workflowitem_document_validated: "{0} validiertes Workflowitem-Dokument mit dem Namen {1} in {2} ",
-    workflowitem_document_invalidated: "{0} hat ein anderes Dokument in Workflowitem verwendet, um das mit benannte Dokument zu validieren {1} in {2} "
+    workflowitem_document_invalidated:
+      "{0} hat ein anderes Dokument in Workflowitem verwendet, um das mit benannte Dokument zu validieren {1} in {2} "
   },
 
   permissions: {

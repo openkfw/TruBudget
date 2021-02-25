@@ -18,6 +18,7 @@ const adminPermission: Nodes.NetworkPermission = "admin";
 interface CurrentAccess {
   accessType: AccessVote.T;
   approvers: AugmentedWalletAddress[];
+  decliners: AugmentedWalletAddress[];
 }
 
 interface PendingAccess {
@@ -103,6 +104,7 @@ function dtoFromNodeInfo(info: Nodes.NodeInfo, callerAddress: WalletAddress): No
   let pendingAccessType: AccessVote.T | undefined;
   let pendingAccessApprovers: AugmentedWalletAddress[] | undefined;
   let pendingApproversRemaining: number | undefined;
+  let currentAccessDecliners: AugmentedWalletAddress[] = info.declinedBy;
 
   if (hasAdminApprovers && hasAdminChangePending) {
     // admin revocation pending
@@ -160,6 +162,7 @@ function dtoFromNodeInfo(info: Nodes.NodeInfo, callerAddress: WalletAddress): No
   const currentAccess = {
     accessType: currentAccessType,
     approvers: currentAccessApprovers,
+    decliners: currentAccessDecliners,
   };
 
   const dto: NodeInfoDto = {

@@ -7,6 +7,7 @@ import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
 import { NotFound } from "./domain/errors/not_found";
 import * as NodeRegistered from "./domain/network/node_registered";
+import * as NodeDeclined from "./domain/network/node_declined";
 import * as GroupCreated from "./domain/organization/group_created";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
@@ -517,6 +518,7 @@ const EVENT_PARSER_MAP = {
   group_member_added: GroupMemberAdded.validate,
   group_member_removed: GroupMemberRemoved.validate,
   node_registered: NodeRegistered.validate,
+  node_declined: NodeDeclined.validate,
   notification_created: NotificationCreated.validate,
   notification_marked_read: NotificationMarkedRead.validate,
   project_assigned: ProjectAssigned.validate,
