@@ -37,8 +37,8 @@ export async function createWorkflowitem(
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
         return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
       },
-      uploadDocument: async (document: UploadedDocument) => {
-        await uploadAsPromised(document.id, document.base64, { fileName: document.fileName });
+      uploadDocument: async (document: UploadedDocument): Promise<string> => {
+        return await uploadAsPromised(document.id, document.base64, { fileName: document.fileName });
       },
     });
   });

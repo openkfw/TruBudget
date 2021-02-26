@@ -80,7 +80,7 @@ interface Repository {
   ): Result.Type<BusinessEvent[]>;
   uploadDocument(
     document: UploadedDocument
-  ): Promise<void>;
+  ): Promise<string>;
 }
 
 export async function createWorkflowitem(

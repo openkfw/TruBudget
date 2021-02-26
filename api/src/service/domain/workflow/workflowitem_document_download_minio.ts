@@ -10,13 +10,15 @@ import VError = require("verror");
 
 interface Repository {
   getWorkflowitem(workflowitemId): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getDocumentEvents(documentId): Promise<Result.Type<WorkflowitemDocumentUploaded.Event[]>>;
+  getDocumentEvents(documentId, secret): Promise<Result.Type<WorkflowitemDocumentUploaded.Event[]>>;
+  getDocumentEncryptedSecret(documentId): Promise<string>;
 }
 
 export async function getDocumentMinio(
   ctx: Ctx,
   workflowitemId: string,
   documentId: string,
+  secret: string,
   repository: Repository,
 ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>> {
   // check for permissions etc
@@ -25,8 +27,21 @@ export async function getDocumentMinio(
     return workflowitem;
   }
 
+  const documentSecret = await repository.getDocumentEncryptedSecret(documentId);
+
+  if (!documentSecret) {
+    return new VError(
+      new NotAuthorized({
+        ctx,
+        userId: "root",
+        intent: "workflowitem.view",
+      }),
+      `document secret for document ${documentId} was not found`,
+    );
+  }
+
   // Get all events from one document
-  const documentEvents = await repository.getDocumentEvents(documentId);
+  const documentEvents = await repository.getDocumentEvents(documentId, documentSecret);
   if (Result.isErr(documentEvents)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
@@ -42,7 +57,12 @@ export async function getDocumentMinio(
     );
   }
 
-  return documentEvents
+  const document = documentEvents
     .filter((d) => d.workflowitemId === workflowitem.id)
     .map((d) => d.document)[0];
+
+
+
+
+  return document;
 }

@@ -1,4 +1,5 @@
 import * as Minio from "minio";
+import { v4 } from "uuid";
 import { minioEndPoint, minioPort, minioUseSSL, minioAccessKey, minioSecretKey } from "../config";
 
 const Readable = require("stream").Readable;
@@ -6,10 +7,23 @@ const Readable = require("stream").Readable;
 interface Metadata {
   "Content-Type"?: string;
   fileName: string;
+  secret?: string;
 }
 
 interface MetadataWithName extends Metadata {
   name: string;
+}
+
+interface FullStat {
+  size: number;
+  metaData: MetadataWithName;
+  lastModified: Date;
+  etag: string;
+}
+
+interface FileWithMeta {
+  data: string;
+  meta: MetadataWithName;
 }
 
 const minioClient: any = new Minio.Client({
@@ -70,16 +84,24 @@ const upload = (file: string, content: string, metaData: Metadata, cb: Function)
   });
 };
 
+/**
+ *
+ * @param file
+ * @param content
+ * @param metaData
+ * @returns {string} document secret
+ */
 export const uploadAsPromised = (
   file: string,
   content: string,
   metaData: Metadata = { fileName: "default" },
-) => {
+): Promise<string> => {
   return new Promise((resolve, reject) => {
-    upload(file, content, metaData, (err, etag) => {
+    const secret = v4();
+    upload(file, content, { ...metaData, secret }, (err) => {
       if (err) return reject(err);
 
-      resolve(etag);
+      resolve(secret);
     });
   });
 };
@@ -94,8 +116,10 @@ const download = (file: string, cb: Function) => {
     dataStream.on("data", (chunk: string) => {
       fileContent += chunk;
     });
-    dataStream.on("end", () => {
-      cb(null, fileContent);
+    dataStream.on("end", async () => {
+      const meta = await getMetadataAsPromised(file);
+
+      cb(null, { data: fileContent, meta });
     });
     dataStream.on("error", function (err) {
       console.error("Error during getting file object datastream", err);
@@ -103,9 +127,9 @@ const download = (file: string, cb: Function) => {
   });
 };
 
-export const downloadAsPromised = (file: string) => {
+export const downloadAsPromised = (file: string): Promise<FileWithMeta> => {
   return new Promise((resolve, reject) => {
-    download(file, (err, fileContent: string) => {
+    download(file, (err, fileContent: FileWithMeta) => {
       if (err) return reject(err);
 
       resolve(fileContent);
@@ -114,16 +138,16 @@ export const downloadAsPromised = (file: string) => {
 };
 
 const getMetadata = (fileHash: string, cb: Function) => {
-  minioClient.statObject(bucketName, fileHash, (err, stat: MetadataWithName) => {
+  minioClient.statObject(bucketName, fileHash, (err, stat: FullStat) => {
     if (err) {
       console.error(err);
       return cb(err);
     }
-    cb(null, stat);
+    cb(null, stat.metaData);
   });
 };
 
-export const getMetadataAsPromised = (fileHash: string) => {
+export const getMetadataAsPromised = (fileHash: string): Promise<MetadataWithName> => {
   return new Promise((resolve, reject) => {
     getMetadata(fileHash, (err, metaData: MetadataWithName) => {
       if (err) return reject(err);

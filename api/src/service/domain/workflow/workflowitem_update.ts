@@ -1,6 +1,7 @@
+import crypto from "crypto";
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
-import { minioEndPoint, hostPort } from "../../../config";
+import { minioEndPoint, hostPort, organization as thisOrganization } from "../../../config";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -11,6 +12,7 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import { hashDocuments, StoredDocument, UploadedDocument } from "./document";
+import { getAll as getAllPermissions } from "./workflowitem_permissions_list";
 import * as NotificationCreated from "./notification_created";
 import * as Nodes from "../../../network/model/Nodes";
 import * as Project from "./project";
@@ -47,8 +49,10 @@ interface Repository {
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
-  uploadDocument(document: UploadedDocument): Promise<void>;
+  uploadDocument(document: UploadedDocument): Promise<string>;
   getOrganizations(): Promise<Nodes.NodeInfo[]>;
+  getAllUsers(): Promise<any[]>;
+  getAllPublicKeys(): Promise<any[]>;
 }
 
 export async function updateWorkflowitem(
@@ -65,6 +69,7 @@ export async function updateWorkflowitem(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
+  const documentSecrets: any[] = [];
   const documentHashes: StoredDocument[] = [];
   if (modification.documents !== undefined) {
     const documentHashesResult = await hashDocuments(modification.documents);
@@ -72,6 +77,24 @@ export async function updateWorkflowitem(
       return new VError(documentHashesResult, "failed to hash documents");
     }
     documentHashes.push(...documentHashesResult);
+
+    // list all users with view rights
+    const usersPermissions = workflowitem.permissions["workflowitem.view"];
+    // list all organizations with view rights
+    const allUsers = await repository.getAllUsers();
+    const organizationsWithPermissions = allUsers
+      .filter(user => usersPermissions?.includes(user?.user?.id))
+      .map(user => user?.user?.organization)
+      .filter((orgName, index, self) => self.indexOf(orgName) === index);
+
+    // remove current organization from list
+    const index = organizationsWithPermissions.indexOf(thisOrganization);
+    if (index > -1) {
+      organizationsWithPermissions.splice(index, 1);
+    }
+
+    // TODO user publish in api/src/service/domain/workflow/workflowitem_document_secret.ts to publish secrets
+
   }
   const modificationWithDocumentHashes: EventData = {
     ...modification,
@@ -193,7 +216,7 @@ export async function updateWorkflowitem(
     const { document } = result as WorkflowitemDocumentUploaded.Event;
     // document should be private
     if (minioEndPoint) {
-      await repository.uploadDocument(document);
+      const secret = await repository.uploadDocument(document);
 
       newDocumentUploadedEvents.push({...result, document: {...document, base64: "", url: hostPort}});
     } else {

@@ -13,6 +13,7 @@ import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type
 import * as GroupQuery from "./group_query";
 import { UploadedDocument } from "./domain/workflow/document";
 import * as Nodes from "../network/model/Nodes";
+import * as PubKeys from "../network/model/PubKeys";
 import { store } from "./store";
 import { uploadAsPromised } from "../lib/minio";
 
@@ -45,12 +46,18 @@ export async function updateWorkflowitem(
         applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
           return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
         },
-        uploadDocument: async (document: UploadedDocument) => {
-          await uploadAsPromised(document.id, document.base64, { fileName: document.fileName });
+        uploadDocument: async (document: UploadedDocument): Promise<string> => {
+          return await uploadAsPromised(document.id, document.base64, { fileName: document.fileName });
         },
         getOrganizations: async () => {
           const nodes = await Nodes.get(conn.multichainClient);
           return nodes;
+        },
+        getAllUsers: async () => {
+          return cache.getUserEvents();
+        },
+        getAllPublicKeys: async () => {
+          return await PubKeys.getAll(conn.multichainClient);
         },
       },
     );

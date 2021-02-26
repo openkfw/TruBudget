@@ -32,6 +32,7 @@ import * as ProjectPermissionsRevoked from "./domain/workflow/project_permission
 import * as ProjectProjectedBudgetDeleted from "./domain/workflow/project_projected_budget_deleted";
 import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
+import * as PublicKeyPublished from "./domain/organization/publickey_published";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "./domain/workflow/subproject_closed";
@@ -55,6 +56,7 @@ import * as WorkflowitemDocumentUploaded from "./domain/workflow/workflowitem_do
 import * as DocumentValidated from "./domain/workflow/document_validated";
 
 import { Item } from "./liststreamitems";
+
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -530,6 +532,7 @@ const EVENT_PARSER_MAP = {
   project_projected_budget_deleted: ProjectProjectedBudgetDeleted.validate,
   project_projected_budget_updated: ProjectProjectedBudgetUpdated.validate,
   project_updated: ProjectUpdated.validate,
+  publickey_published: PublicKeyPublished.validate,
   subproject_assigned: SubprojectAssigned.validate,
   subproject_closed: SubprojectClosed.validate,
   subproject_created: SubprojectCreated.validate,
@@ -571,7 +574,7 @@ export function parseBusinessEvents(
       if (parser === undefined) {
         const eventType = event && event.type ? event.type : JSON.stringify(event);
         logger.fatal(
-          { streamName, item },
+          { streamName, item, eventType },
           "Cache: Event type not implemented. Please file an issue and include this log entry - thank you.",
         );
         process.exit(1);

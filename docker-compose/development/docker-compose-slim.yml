@@ -9,8 +9,8 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
-    volumes:
-      - /tmp/bcMasterVolume:/root/.multichain
+    # volumes:
+    #   - /tmp/bcMasterVolume:/root/.multichain
     ports:
       - ${RPC_PORT}:${RPC_PORT}
       - "8085:8085"

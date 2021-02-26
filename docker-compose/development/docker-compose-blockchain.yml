@@ -1,0 +1,51 @@
+version: "3"
+services:
+  master-node:
+    build: ../../blockchain
+    environment:
+      RPC_HOST: master-node
+      RPC_PORT: ${RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      ORGANIZATION: ${ORGANIZATION}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+    volumes:
+      - /tmp/bcMasterVolume:/root/.multichain
+    ports:
+      - ${RPC_PORT}:${RPC_PORT}
+      - "8085:8085"
+      - "7447:7447"
+    networks: 
+      - "trubudgetnetwork"
+
+  minio1:
+    image: minio/minio
+    volumes:
+      - ../../minio/data:/data
+    expose:
+      - "9000"
+    networks: 
+      - "trubudgetnetwork"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  nginx:
+    image: nginx:1.19.2-alpine
+    volumes:
+      - ../../minio/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "9000:9000"
+    networks: 
+      - "trubudgetnetwork"
+    depends_on:
+      - minio1
+
+networks:
+  trubudgetnetwork:

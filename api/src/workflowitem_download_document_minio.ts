@@ -33,6 +33,14 @@ function mkSwaggerSchema() {
           },
         },
       },
+      body: {
+        type: "object",
+        properties: {
+          secret: {
+            type: "string",
+          },
+        },
+      },
       security: [
         {
           bearerToken: [],
@@ -61,6 +69,7 @@ interface Service {
     subprojectId: string,
     workflowitemId: string,
     documentId: string,
+    secret: string,
   ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>;
 }
 
@@ -85,21 +94,26 @@ interface Request extends RequestGenericInterface {
     workflowitemId: string;
     documentId: string;
   };
+  Body: {
+    secret: string;
+  }
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
-  server.get<Request>(
+  server.post<Request>(
     `${urlPrefix}/workflowitem.downloadDocumentMinio`,
     async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
       const { projectId, subprojectId, workflowitemId, documentId } = request.query;
+      const { secret } = request.body;
 
       if (
         sendErrorIfEmpty(reply, projectId) ||
         sendErrorIfEmpty(reply, subprojectId) ||
         sendErrorIfEmpty(reply, workflowitemId) ||
-        sendErrorIfEmpty(reply, documentId)
+        sendErrorIfEmpty(reply, documentId) ||
+        sendErrorIfEmpty(reply, secret)
       ) {
         return;
       }
@@ -111,6 +125,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           subprojectId,
           workflowitemId,
           documentId,
+          secret,
         );
 
         if (Result.isErr(documentResult)) {

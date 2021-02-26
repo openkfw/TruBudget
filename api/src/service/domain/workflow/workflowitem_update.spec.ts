@@ -41,6 +41,8 @@ const stripOutDocumentId = (docs: StoredDocument[]) => {
   return docs.map((d) => ({ id: d.id, hash: d.hash }));
 };
 
+const uuid = "1633f0ca-5d41-4390-8bdb-283e84aee2f1";
+
 const baseRepository = {
   applyWorkflowitemType: () => [],
   getUsersForIdentity: async (identity) => {
@@ -52,8 +54,10 @@ const baseRepository = {
     if (identity === "root") return ["root"];
     throw Error(`unexpected identity: ${identity}`);
   },
-  uploadDocument: (document: UploadedDocument): Promise<void> => { return new Promise((resolve) => resolve(undefined)); },
+  uploadDocument: (document: UploadedDocument): Promise<string> => { return new Promise((resolve) => resolve(uuid)); },
   getOrganizations: (): Promise<Nodes.NodeInfo[]> => { return new Promise((resolve) => resolve([])); },
+  getAllUsers: (): Promise<any[]> => { return new Promise((resolve) => resolve([])); },
+  getAllPublicKeys: (): Promise<any[]> => { return new Promise((resolve) => resolve([])); },
 };
 
 describe("update workflowitem: authorization", () => {

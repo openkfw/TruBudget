@@ -19,6 +19,7 @@ import * as NotificationCountAPI from "./notification_count";
 import * as NotificationListAPI from "./notification_list";
 import * as NotificationMarkReadAPI from "./notification_mark_read";
 import { ensureOrganizationStream } from "./organization/organization";
+import { ensurePublishKeyPublished } from "./network/model/PubKeys";
 import * as ProjectAssignAPI from "./project_assign";
 import * as ProjectProjectedBudgetDeleteAPI from "./project_budget_delete_projected";
 import * as ProjectProjectedBudgetUpdateAPI from "./project_budget_update_projected";
@@ -779,7 +780,7 @@ WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 WorkflowitemsDocumentDownloadMinioAPI.addHttpHandler(server, URL_PREFIX, {
-  getDocumentMinio: (ctx, projectId, subprojectId, workflowitemId, documentId) =>
+  getDocumentMinio: (ctx, projectId, subprojectId, workflowitemId, documentId, secret) =>
     WorkflowitemDocumentDownloadMinioService.getDocumentMinio(
       db,
       ctx,
@@ -787,6 +788,7 @@ WorkflowitemsDocumentDownloadMinioAPI.addHttpHandler(server, URL_PREFIX, {
       subprojectId,
       workflowitemId,
       documentId,
+      secret,
     ),
 });
 
@@ -830,6 +832,15 @@ server.listen(port, "0.0.0.0", async (err) => {
     );
     await timeout(retryIntervalMs);
   }
+
+  while (!(await ensurePublishKeyPublished(multichainClient, organization))) {
+    logger.info(
+      { multichainClient, organization },
+      `Failed to publish public key. Trying again in ${retryIntervalMs / 1000}s`,
+    );
+    await timeout(retryIntervalMs);
+  }
+
   logger.debug({ params: { multichainClient, organization } }, "Node registered in nodes stream");
 
   // Logging peerinfo runs immidiately and then every 24H on every API (use DAY_MS)

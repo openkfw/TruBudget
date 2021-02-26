@@ -43,9 +43,15 @@ export async function getDocument(
           if (event.document.base64 === "") {
             // check if this file is stored locally
             if (event.document.url === hostPort) {
-              event.document.base64 = await downloadAsPromised(event.document.id);
+               const { data: base64 } = await downloadAsPromised(event.document.id);
+               event.document.base64 = base64;
             } else {
-              const remoteFile = await axios.get(`${event.document.url}/api/workflowitem.downloadDocumentMinio?projectId=${event.projectId}&subprojectId=${event.subprojectId}&workflowitemId=${event.workflowitemId}&documentId=${event.document.id}`);
+              const remoteFile = await axios.post(
+                `${event.document.url}/api/workflowitem.downloadDocumentMinio?projectId=${event.projectId}&subprojectId=${event.subprojectId}&workflowitemId=${event.workflowitemId}&documentId=${event.document.id}`,
+                {
+                  secret: "secret",
+                },
+                );
               event.document.base64 = Buffer.from(remoteFile.data).toString("base64");
             }
 
