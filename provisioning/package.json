@@ -19,6 +19,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
+    "wait": "sleep 30 && node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node src/index.js --inspect",
     "lint": "eslint src",
