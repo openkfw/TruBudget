@@ -10,7 +10,7 @@ export MASTER_API_PORT=8080
 
 echo "Building and Starting TruBudget"
 
-COMPOSE="docker-compose -f docker-compose/multi/multi-nodes.yml -p trubudget"
+COMPOSE="docker-compose -f docker-compose/multi/multi-nodes-774.yml -p trubudget"
 
 $COMPOSE down
 $COMPOSE build --pull

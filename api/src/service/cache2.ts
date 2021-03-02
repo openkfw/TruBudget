@@ -8,6 +8,7 @@ import { BusinessEvent } from "./domain/business_event";
 import { NotFound } from "./domain/errors/not_found";
 import * as NodeRegistered from "./domain/network/node_registered";
 import * as NodeDeclined from "./domain/network/node_declined";
+import * as NodesLogged from "./domain/network/nodes_logged";
 import * as GroupCreated from "./domain/organization/group_created";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
@@ -552,6 +553,7 @@ const EVENT_PARSER_MAP = {
   workflowitem_updated: WorkflowitemUpdated.validate,
   workflowitem_document_uploaded: WorkflowitemDocumentUploaded.validate,
   workflowitem_document_validated: DocumentValidated.validate,
+  peerinfo_saved: NodesLogged.validate,
 };
 
 export function parseBusinessEvents(
