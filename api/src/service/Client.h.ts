@@ -11,7 +11,8 @@ export type StreamKind =
   | "subproject"
   | "notifications"
   | "nodes"
-  | "groups";
+  | "groups"
+  | "network_log";
 
 // The "stream details" are read-only, so they're only used to define the stream's nature:
 interface StreamDetails {
@@ -32,27 +33,27 @@ export interface BlockInfo {
 }
 
 export interface PeerInfo {
-  id: number,
-  addr: string,
-  addrlocal: string,
-  services: string,
-  lastsend: number,
-  lastrecv: number,
-  bytessent: number,
-  bytesrecv: number,
-  conntime: number,
-  pingtime: number,
-  version: number,
-  subver: string,
-  handshakelocal: string,
-  handshake: string,
-  inbound: boolean,
-  startingheight: number,
-  banscore: number,
-  synced_headers: number,
-  synced_blocks: number,
-  inflight: Array<any>,
-  whitelisted: boolean
+  id: number;
+  addr: string;
+  addrlocal: string;
+  services: string;
+  lastsend: number;
+  lastrecv: number;
+  bytessent: number;
+  bytesrecv: number;
+  conntime: number;
+  pingtime: number;
+  version: number;
+  subver: string;
+  handshakelocal: string;
+  handshake: string;
+  inbound: boolean;
+  startingheight: number;
+  banscore: number;
+  synced_headers: number;
+  synced_blocks: number;
+  inflight: Array<any>;
+  whitelisted: boolean;
 }
 
 export interface BlockListItem extends BlockInfo {

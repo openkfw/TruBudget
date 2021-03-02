@@ -3253,6 +3253,10 @@ const schemas = {
                           },
                         },
                       },
+                      lastSeen: {
+                        type: "string",
+                        example: "2021-02-11",
+                      },
                     },
                   },
                 },

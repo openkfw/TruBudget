@@ -13,6 +13,7 @@ import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
 import timeout from "./lib/timeout";
+import { checkNodes } from "./network/controller/logNodes";
 import { registerNode } from "./network/controller/registerNode";
 import * as NotificationCountAPI from "./notification_count";
 import * as NotificationListAPI from "./notification_list";
@@ -131,6 +132,7 @@ import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
 
 const URL_PREFIX = "/api";
+const DAY_MS = 86400000;
 
 /*
  * Deal with the environment:
@@ -160,7 +162,6 @@ if (!organizationVaultSecret) {
 }
 
 const SWAGGER_BASEPATH = process.env.SWAGGER_BASEPATH || "/";
-
 
 /*
  * Initialize the components:
@@ -830,6 +831,12 @@ server.listen(port, "0.0.0.0", async (err) => {
     await timeout(retryIntervalMs);
   }
   logger.debug({ params: { multichainClient, organization } }, "Node registered in nodes stream");
+
+  // Logging peerinfo runs immidiately and then every 24H on every API (use DAY_MS)
+  checkNodes(multichainClient);
+  setInterval(async () => {
+    checkNodes(multichainClient);
+  }, DAY_MS);
 });
 
 function rpcSettingsWithoutPassword(settings) {

@@ -11,6 +11,7 @@ import * as GlobalPermissionsGet from "../../service/global_permissions_get";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
 import { AugmentedWalletAddress, WalletAddress } from "../model/Nodes";
+import { getLatestDateOnlineByAddress } from "../../network/controller/logNodes";
 
 const basicPermission: Nodes.NetworkPermission = "connect";
 const adminPermission: Nodes.NetworkPermission = "admin";
@@ -34,6 +35,7 @@ interface NodeInfoDto {
   currentAccess: CurrentAccess;
   pendingAccess?: PendingAccess;
   isConnected?: boolean;
+  lastSeen?: string;
 }
 
 export async function getNodeList(
@@ -71,9 +73,27 @@ export async function getNodeList(
   // - ADMIN ACCESS: the organization has admin permission and, by extension, permissions
   // to do anything with the network (while respecting the settings for admin consensus).
 
-  const myAddress = req.user.organizationAddress;
-  const list: NodeInfoDto[] = nodes.map((info) => dtoFromNodeInfo(info, myAddress));
-  logger.debug({ nodes, myAddress, list }, "List of nodes received");
+  const myAddress: WalletAddress = req.user.organizationAddress;
+  const dtoList: NodeInfoDto[] = nodes.map((info) => dtoFromNodeInfo(info, myAddress));
+
+  const list: NodeInfoDto[] = await Promise.all(
+    dtoList.map(async (node) => {
+      if (myAddress === node.address.address) {
+        return node;
+      }
+      const lastSeen = await getLatestDateOnlineByAddress(multichain, node.address.address);
+      if (!lastSeen) {
+        return node;
+      }
+      const enhancedNod = {
+        ...node,
+        lastSeen: lastSeen,
+      };
+      return enhancedNod;
+    }),
+  );
+  logger.debug({ nodes, myAddress, list: dtoList }, "List of nodes received");
+
   return [
     200,
     {
