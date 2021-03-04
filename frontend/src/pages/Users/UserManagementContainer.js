@@ -7,7 +7,7 @@ import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import {
   addInitialUserToGroup,
-  addUser,
+  // addUser,
   addUserToEditedGroup,
   removeUserFromEditedGroup,
   checkAndChangeUserPassword,
@@ -17,7 +17,7 @@ import {
   grantAllUserPermissions,
   listPermissions,
   removeInitialUserFromGroup,
-  removeUser,
+  // removeUser,
   resetUserToAdd,
   setAdminPermissions,
   setDisplayName,
@@ -95,8 +95,8 @@ const mapDispatchToProps = dispatch => {
     addUserToEditedGroup: (groupId, userId) => dispatch(addUserToEditedGroup(groupId, userId)),
     removeUserFromEditedGroup: (groupId, userId) => dispatch(removeUserFromEditedGroup(groupId, userId)),
     removeInitialUserFromGroup: userId => dispatch(removeInitialUserFromGroup(userId)),
-    addUser: (groupId, userId) => dispatch(addUser(groupId, userId)),
-    removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
+    // addUser: (groupId, userId) => dispatch(addUser(groupId, userId)),
+    // removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     updateUserGroup: (groupId, name, users) => dispatch(updateUserGroup(groupId, name, users)),
     setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),

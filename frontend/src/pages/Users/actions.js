@@ -32,17 +32,14 @@ export const CREATE_GROUP_SUCCESS = "CREATE_GROUP_SUCCESS";
 export const UPDATE_GROUP = "UPDATE_GROUP";
 export const UPDATE_GROUP_SUCCESS = "UPDATE_GROUP_SUCCESS";
 
-export const ADD_USER = "ADD_USER";
-export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
+// export const ADD_USER = "ADD_USER";
+// export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 
-export const REMOVE_USER = "REMOVE_USER";
-export const REMOVE_USER_SUCCESS = "REMOVE_USER_SUCCESS";
+// export const REMOVE_USER = "REMOVE_USER";
+// export const REMOVE_USER_SUCCESS = "REMOVE_USER_SUCCESS";
 
 export const ADD_USER_TO_EDITED_GROUP = "ADD_USER_TO_EDITED_GROUP";
-export const ADD_USER_TO_EDITED_GROUP_SUCCESS = "ADD_USER_TO_EDITED_GROUP_SUCCESS";
-
 export const REMOVE_USER_FROM_EDITED_GROUP = "REMOVE_USER_FROM_EDITED_GROUP";
-export const REMOVE_USER_FROM_EDITED_GROUP_SUCCESS = "REMOVE_USER_FROM_EDITED_GROUP_SUCCESS";
 
 export const GRANT_ALL_USER_PERMISSIONS = "GRANT_ALL_USER_PERMISSIONS";
 export const GRANT_ALL_USER_PERMISSIONS_SUCCESS = "GRANT_ALL_USER_PERMISSIONS_SUCCESS";
@@ -138,21 +135,21 @@ export function updateUserGroup(groupId, name, users) {
   };
 }
 
-export function addUser(groupId, userId) {
-  return {
-    type: ADD_USER,
-    groupId,
-    userId
-  };
-}
+// export function addUser(groupId, userId) {
+//   return {
+//     type: ADD_USER,
+//     groupId,
+//     userId
+//   };
+// }
 
-export function removeUser(groupId, userId) {
-  return {
-    type: REMOVE_USER,
-    groupId,
-    userId
-  };
-}
+// export function removeUser(groupId, userId) {
+//   return {
+//     type: REMOVE_USER,
+//     groupId,
+//     userId
+//   };
+// }
 
 export function resetUserToAdd() {
   return {

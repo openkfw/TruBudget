@@ -144,17 +144,17 @@ class Api {
       }
     });
 
-  addUserToGroup = (groupId, userId) =>
-    instance.post(`/group.addUser`, {
-      groupId,
-      userId
-    });
+  // addUserToGroup = (groupId, userId) =>
+  //   instance.post(`/group.addUser`, {
+  //     groupId,
+  //     userId
+  //   });
 
-  removeUserFromGroup = (groupId, userId) =>
-    instance.post(`/group.removeUser`, {
-      groupId,
-      userId
-    });
+  // removeUserFromGroup = (groupId, userId) =>
+  //   instance.post(`/group.removeUser`, {
+  //     groupId,
+  //     userId
+  //   });
 
   listGroup = () => instance.get(`/group.list`);
 

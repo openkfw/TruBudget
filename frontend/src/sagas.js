@@ -150,8 +150,8 @@ import {
   SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT
 } from "./pages/SubProjects/actions";
 import {
-  ADD_USER,
-  ADD_USER_SUCCESS,
+  // ADD_USER,
+  // ADD_USER_SUCCESS,
   CHANGE_USER_PASSWORD_SUCCESS,
   CHECK_AND_CHANGE_USER_PASSWORD,
   CHECK_USER_PASSWORD_ERROR,
@@ -168,8 +168,8 @@ import {
   GRANT_GLOBAL_PERMISSION_SUCCESS,
   LIST_GLOBAL_PERMISSIONS,
   LIST_GLOBAL_PERMISSIONS_SUCCESS,
-  REMOVE_USER,
-  REMOVE_USER_SUCCESS,
+  // REMOVE_USER,
+  // REMOVE_USER_SUCCESS,
   REVOKE_GLOBAL_PERMISSION,
   REVOKE_GLOBAL_PERMISSION_SUCCESS,
   ENABLE_USER,
@@ -1142,18 +1142,18 @@ export function* updateGroupSaga({ groupId, name, users }) {
   }, true);
 }
 
-export function* addUserToGroupSaga({ groupId, userId }) {
-  yield execute(function*() {
-    yield callApi(api.addUserToGroup, groupId, userId);
-    yield put({
-      type: ADD_USER_SUCCESS
-    });
-    yield put({
-      type: FETCH_GROUPS,
-      show: true
-    });
-  }, true);
-}
+// export function* addUserToGroupSaga({ groupId, userId }) {
+//   yield execute(function*() {
+//     yield callApi(api.addUserToGroup, groupId, userId);
+//     yield put({
+//       type: ADD_USER_SUCCESS
+//     });
+//     yield put({
+//       type: FETCH_GROUPS,
+//       show: true
+//     });
+//   }, true);
+// }
 
 export function* changeUserPasswordSaga({ username, newPassword }) {
   yield execute(function*() {
@@ -1275,18 +1275,18 @@ export function* disableUserSaga({ userId }) {
   }, true);
 }
 
-export function* removeUserFromGroupSaga({ groupId, userId }) {
-  yield execute(function*() {
-    yield callApi(api.removeUserFromGroup, groupId, userId);
-    yield put({
-      type: REMOVE_USER_SUCCESS
-    });
-    yield put({
-      type: FETCH_GROUPS,
-      show: true
-    });
-  }, true);
-}
+// export function* removeUserFromGroupSaga({ groupId, userId }) {
+//   yield execute(function*() {
+//     yield callApi(api.removeUserFromGroup, groupId, userId);
+//     yield put({
+//       type: REMOVE_USER_SUCCESS
+//     });
+//     yield put({
+//       type: FETCH_GROUPS,
+//       show: true
+//     });
+//   }, true);
+// }
 
 export function* fetchNodesSaga({ showLoading }) {
   yield execute(function*() {
@@ -2750,8 +2750,8 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_GROUPS, fetchGroupSaga),
       yield takeEvery(CREATE_GROUP, createGroupSaga),
       yield takeEvery(UPDATE_GROUP, updateGroupSaga),
-      yield takeEvery(ADD_USER, addUserToGroupSaga),
-      yield takeEvery(REMOVE_USER, removeUserFromGroupSaga),
+      // yield takeEvery(ADD_USER, addUserToGroupSaga),
+      // yield takeEvery(REMOVE_USER, removeUserFromGroupSaga),
       yield takeEvery(FETCH_NODES, fetchNodesSaga),
       yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga),
       yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga),
