@@ -74,21 +74,23 @@ const createPermissionEvents = (
   }
 
   const permissionRevokedEvents: Result.Type<WorkflowitemPermissionRevoked.Event[]> = [];
-  for (const intent of workflowitemIntents) {
-    if (intent !== "workflowitem.view") {
-      const createEventResult = WorkflowitemPermissionRevoked.createEvent(
-        ctx.source,
-        publisher.id,
-        projectId,
-        subprojectId,
-        workflowitemId,
-        intent,
-        publisher.id,
-      );
-      if (Result.isErr(createEventResult)) {
-        return new VError(createEventResult, "failed to create permission revoke event");
+  if (assignee !== publisher.id) {
+    for (const intent of workflowitemIntents) {
+      if (intent !== "workflowitem.view") {
+        const createEventResult = WorkflowitemPermissionRevoked.createEvent(
+          ctx.source,
+          publisher.id,
+          projectId,
+          subprojectId,
+          workflowitemId,
+          intent,
+          publisher.id,
+        );
+        if (Result.isErr(createEventResult)) {
+          return new VError(createEventResult, "failed to create permission revoke event");
+        }
+        permissionRevokedEvents.push(createEventResult);
       }
-      permissionRevokedEvents.push(createEventResult);
     }
   }
   // Split the permission "revoked" Events into revoke intents and other intents,

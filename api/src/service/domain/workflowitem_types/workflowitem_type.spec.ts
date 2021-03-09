@@ -75,6 +75,45 @@ describe("Check workflowitem's type behavior", () => {
   });
 
   describe("Workflowitem type: restricted", () => {
+    it("When creating a restricted workfloitem and assigning it to the creator, the permissions are not revoked", () => {
+      const assigner = alice;
+      const assignee = alice.id;
+      const assignEvent = WorkflowitemAssigned.createEvent(
+        ctx.source,
+        assigner.id,
+        projectId,
+        subprojectId,
+        workflowitemId,
+        assignee,
+      );
+      if (Result.isErr(assignEvent)) {
+        throw assignEvent;
+      }
+      const workflowitemTypeEvents = applyWorkflowitemType(
+        assignEvent,
+        ctx,
+        assigner,
+        workflowitemRestricted,
+      );
+
+      assert.isTrue(Result.isOk(workflowitemTypeEvents), (workflowitemTypeEvents as Error).message);
+      const newEvents = Result.unwrap(workflowitemTypeEvents);
+
+      // Check if the permissions are granted
+      assert.isTrue(
+        newEvents.some(
+          (event) => event.type === "workflowitem_permission_granted" && event.grantee === alice.id,
+        ),
+      );
+
+      // Check if no permissions are revoked
+      assert.isFalse(
+        newEvents.some(
+          (event) => event.type === "workflowitem_permission_revoked" && event.revokee === alice.id,
+        ),
+      );
+    });
+
     it("When assigning a workflowitem of type restricted, permissions are automatically granted and revoked", () => {
       const assigner = alice;
       const assignee = bob.id;
