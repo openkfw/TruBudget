@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ## Unreleased -->
 
-<!-- ### Added -->
+### Added
+
+- Extend confirmation dialog by showing all actions executed after workflowitem creation [#724](https://github.com/openkfw/TruBudget/issues/724)
 
 - Added a decline option on the nodes page, which hides the request for everyone in an organization [#27](https://github.com/openkfw/TruBudget/issues/27)
 
@@ -17,7 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Fixed action counter in confirmation dialog [#697](https://github.com/openkfw/TruBudget/issues/697)
 
 ## [unreleased]
 
