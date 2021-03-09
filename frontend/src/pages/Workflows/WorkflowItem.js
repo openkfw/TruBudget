@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import DoneIcon from "@material-ui/icons/Check";
 import EditIcon from "@material-ui/icons/Edit";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
-import AttachmentIcon from '@material-ui/icons/Attachment';
+import AttachmentIcon from "@material-ui/icons/Attachment";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import MoreIcon from "@material-ui/icons/MoreHoriz";
 import OpenIcon from "@material-ui/icons/Remove";
@@ -33,12 +33,12 @@ const styles = theme => {
       fontSize: "14px"
     },
     tooltip: {
-      margin: '0px',
-      padding: '0px 5px 0px 15px'
+      margin: "0px",
+      padding: "0px 5px 0px 15px"
     },
     tooltipItem: {
-      fontSize: '12px',
-      margin: '5px 0'
+      fontSize: "12px",
+      margin: "5px 0"
     },
     dots: {
       height: 20,
@@ -299,36 +299,38 @@ const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEna
 };
 
 const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
-  const {documents} = workflow;
+  const { documents } = workflow;
   const showAttachFileBadge = documents && documents.length > 0;
-  const attachmentFileTooltip = () => showAttachFileBadge &&
-    <ul className={classes.tooltip}>
-      {documents.map((item, index) => <li key={`${item.id}_${index}`} className={classes.tooltipItem}>{item.id}</li>)}
-    </ul>;
+  const attachmentFileTooltip = () =>
+    showAttachFileBadge && (
+      <ul className={classes.tooltip}>
+        {documents.map((item, index) => (
+          <li key={`${item.id}_${index}`} className={classes.tooltipItem}>
+            {item.id}
+          </li>
+        ))}
+      </ul>
+    );
   return (
     <div>
-      {
-        showAttachFileBadge &&
-          <Tooltip
-            id={`tooltip-workflow-attachfile-${workflow.id}`}
-            data-test={`tooltip-workflow-attachfile-data-${workflow.id}`}
-            title={attachmentFileTooltip()}
+      {showAttachFileBadge && (
+        <Tooltip
+          id={`tooltip-workflow-attachfile-${workflow.id}`}
+          data-test={`tooltip-workflow-attachfile-data-${workflow.id}`}
+          title={attachmentFileTooltip()}
+        >
+          <StyledBadge
+            variant="dot"
+            invisible={!showAttachFileBadge}
+            data-test={`attachment-file-badge-show-${workflow.id}`}
+            className={classes.buttonStyle}
           >
-            <StyledBadge
-              variant="dot"
-              invisible={!showAttachFileBadge}
-              data-test={`attachment-file-badge-show-${workflow.id}`}
-              className={classes.buttonStyle}
-            >
-              <IconButton
-                style={{cursor: 'default'}}
-                data-test={`workflowitem-attachment-file-button-${workflow.id}`}
-              >
-                <AttachmentIcon />
-              </IconButton>
-            </StyledBadge>
-          </Tooltip>
-      }
+            <IconButton style={{ cursor: "default" }} data-test={`workflowitem-attachment-file-button-${workflow.id}`}>
+              <AttachmentIcon />
+            </IconButton>
+          </StyledBadge>
+        </Tooltip>
+      )}
     </div>
   );
 };
@@ -411,10 +413,7 @@ const renderActionButtons = (
   const additionalDataDisabled = _isEmpty(additionalData) || workflowSortEnabled;
   const editDisabled = !canEditWorkflow || workflowSortEnabled;
   const permissionsDisabled = !canListWorkflowPermissions || workflowSortEnabled;
-  const workflowitemAssigneeChanged = idsPermissionsUnassigned.find(el => el === id) === undefined;
-  const isBadgeHidden = workflowitemAssigneeChanged || workflowSortEnabled || permissionsDisabled;
   const closeDisabled = !canCloseWorkflow || workflowSortEnabled;
-  const permissionsTitle = isBadgeHidden ? strings.common.show_permissions : strings.confirmation.assign_permissions;
   return (
     <div className={classes.actionCell}>
       <div className={classes.actions}>
@@ -438,23 +437,16 @@ const renderActionButtons = (
           data-test="edit-workflowitem"
           iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
         />
-        <StyledBadge
-          variant="dot"
-          invisible={isBadgeHidden}
-          data-test={isBadgeHidden ? "perm-warning-badge-disabled" : "perm-warning-badge-enabled"}
-          className={classes.buttonStyle}
-        >
-          <ActionButton
-            notVisible={workflowSortEnabled || permissionsDisabled}
-            onClick={permissionsDisabled ? undefined : showPerm}
-            icon={<PermissionIcon />}
-            title={permissionsDisabled ? "" : permissionsTitle}
-            workflowSortEnabled={workflowSortEnabled}
-            status={status}
-            data-test="show-workflowitem-permissions"
-            iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-          />
-        </StyledBadge>
+        <ActionButton
+          notVisible={workflowSortEnabled || permissionsDisabled}
+          onClick={permissionsDisabled ? undefined : showPerm}
+          icon={<PermissionIcon />}
+          title={permissionsDisabled ? "" : strings.common.show_permissions}
+          workflowSortEnabled={workflowSortEnabled}
+          status={status}
+          data-test="show-workflowitem-permissions"
+          iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+        />
         <ActionButton
           notVisible={workflowSortEnabled || status === "closed" || closeDisabled}
           onClick={closeDisabled ? undefined : close}
