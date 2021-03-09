@@ -153,9 +153,6 @@ describe("Workflowitem Assignee", function() {
         cy.get("[data-test=confirmation-dialog-confirm]")
           .should("be.visible")
           .click();
-        cy.get("[data-test=confirmation-dialog-confirm]")
-          .should("be.visible")
-          .click();
 
         // Check if right assignee in assignee list is checked
         cy.wait("@assign")
@@ -455,10 +452,20 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 5);
+    // 5 additional action
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 5);
+    });
+    // 1 original action
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
   });
 
   it("Only missing project permissions are shown", function() {
@@ -474,10 +481,13 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 2);
+
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 2);
+    });
 
     // reset Permissions
     cy.get("@assigneeId").then(assigneeId => {
@@ -500,10 +510,12 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 2);
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 2);
+    });
     // Reset permissions
     cy.get("@assigneeId").then(assigneeId => {
       cy.revokeProjectPermission(projectId, "project.viewSummary", assigneeId);
@@ -527,7 +539,7 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]").should("not.be.visible");
+    cy.get("[data-test=additional-actions]").should("not.be.visible");
 
     // reset Permissions
     cy.get("@assigneeId").then(assigneeId => {

@@ -2,7 +2,7 @@ describe("Workflowitem create", function() {
   let projectId;
   let subprojectId;
   let baseUrl, apiRoute;
-  const today = new Date().toISOString();;
+  const today = new Date().toISOString();
 
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
@@ -42,61 +42,6 @@ describe("Workflowitem create", function() {
     // When the currency is equal to the currency of the subproject
     // the exchange rate field is disabled
     cy.get("[data-test=rateinput] input").should("be.disabled");
-  });
-
-  it("Check warnings that permissions are not assigned", function() {
-    // Create a workflow item
-    cy.get("[data-test=createWorkflowitem]").click();
-    cy.get("[data-test=nameinput]").type("Test");
-    cy.get("[data-test=datepicker-due-date]")
-      .click()
-      .type("02-02-2050");
-    cy.get("[data-test=commentinput]").type("Test");
-    cy.get("[data-test=amount-type-allocated]").click();
-
-    // Select a different currency than the subproject currency
-    cy.get("[data-test=dropdown-currencies-click]").click();
-    cy.get("[data-value=USD]")
-      .should("be.visible")
-      .click();
-
-    // Enter amount
-    cy.get("[data-test=amountinput] input")
-      .click()
-      .type("1234");
-
-    // The exchange rate field should be enabled because
-    // we selected a different currency
-    cy.get("[data-test=rateinput] input").should("be.enabled");
-    cy.get("[data-test=rateinput] input")
-      .click()
-      .type("1.5");
-    cy.get("[data-test=next]").click();
-    cy.get("[data-test=submit]").click();
-
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .should("be.visible")
-      .click();
-
-    //Check snackbar warning visible
-    cy.get("[data-test=client-snackbar]")
-      .should("be.visible")
-      .should("contain", "permissions");
-
-    //Check warning badge
-    cy.get("[data-test=perm-warning-badge-enabled]").should("be.visible");
-
-    // Check if warning badge dissappears after opening the permission-dialog
-    cy.get("[data-test=workflowitem-table]")
-      .find("[data-test=show-workflowitem-permissions]")
-      .last()
-      .click({ force: true });
-    cy.get("[data-test=permission-container]")
-      .should("be.visible")
-      .get("[data-test=permission-submit]")
-      .click();
-
-    cy.get("[data-test=perm-warning-badge-disabled]").should("be.visible");
   });
 
   it("Show exchange rate correctly when currency of workflowitem differs from the subproject currency", function() {
@@ -243,22 +188,47 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=createWorkflowitem]").click();
     cy.get("[data-test=creation-dialog]").should("be.visible");
     cy.get("[data-test=nameinput]").type("Test");
-    // Default assignee is current user
+    // Default assignee is preset to current user
     cy.get(`[data-test=single-select]`).should("contain", "Mauro Stein");
     cy.get("[data-test=workflow-dialog-content]")
       .find("[data-test=single-select]")
       .click();
+    // set Tom House as assignee
     cy.get("[data-test=single-select-list]")
-      .find("[value=auditUser]")
+      .find("[value=thouse]")
       .click();
 
     cy.get("[data-test=next]").click({ force: true });
     cy.get("[data-test=next]").click({ force: true });
     cy.get("[data-test=submit]").click();
     // Confirmation dialog opens to grant assignee required view permissions
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .should("be.visible")
-      .click();
+    // 6 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 6);
+    });
+    // 1 original action
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
+    // 6 post action
+    cy.get("[data-test=post-actions]")
+      .scrollIntoView()
+      .within(() => {
+        cy.get("[data-test=actions-table-body]")
+          .should("be.visible")
+          .children()
+          .should("have.length", 6);
+      });
+    // actions counter displays correct amount of actions
+    cy.get("[data-test=actions-counter]")
+      .scrollIntoView()
+      .contains("0 from 13 actions done");
     cy.get("[data-test=confirmation-dialog-confirm]")
       .should("be.visible")
       .click();
@@ -266,7 +236,7 @@ describe("Workflowitem create", function() {
     cy.get("[data-test^=workflowitem-]")
       .last()
       .find(`[data-test=single-select]`)
-      .should("contain", "Romina Checker");
+      .should("contain", "Tom House");
   });
 
   it("When the subproject type is general, the workflowitem type is also fixed to general", function() {
@@ -286,6 +256,9 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=dropdown-types-click]").click();
     cy.get("[data-value=general]").click();
     cy.get("[data-test=submit]").click();
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
 
     cy.wait("@subprojectCreated").then(xhr => {
       cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
@@ -315,7 +288,9 @@ describe("Workflowitem create", function() {
       .click()
       .then(() => cy.get("[data-value=EUR]").click());
     cy.get("[data-test=submit]").click();
-
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
     cy.wait("@subprojectCreated").then(xhr => {
       cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
 
@@ -368,6 +343,9 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=close-select]").click();
 
     cy.get("[data-test=submit]").click();
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
 
     cy.wait("@subprojectCreated").then(xhr => {
       cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
@@ -396,7 +374,9 @@ describe("Workflowitem create", function() {
       .click()
       .then(() => cy.get("[data-value=EUR]").click());
     cy.get("[data-test=submit]").click();
-
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
     cy.wait("@subprojectCreated").then(xhr => {
       cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
       // test assignee field in workflowitem creation
@@ -415,10 +395,77 @@ describe("Workflowitem create", function() {
       cy.get("[data-test=confirmation-dialog-confirm]")
         .should("be.visible")
         .click();
+
+      cy.wait("@workflowitemCreated").then(xhr => {
+        expect(xhr.status).to.eq(200);
+      });
+    });
+  });
+
+  it("When the workflowitem type is restricted, there are no post actions", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.route("POST", apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+
+    //Create a subproject
+    cy.visit(`/projects/${projectId}`);
+    cy.wait("@loadPage")
+      .get("[data-test=subproject-create-button]")
+      .click();
+    cy.get("[data-test=nameinput] input").type("Test");
+    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
+      .click()
+      .then(() => cy.get("[data-value=EUR]").click());
+    cy.get("[data-test=dropdown-types]")
+      .click()
+      .then(() => cy.get("[data-value=restricted]").click());
+    cy.get("[data-test=submit]").click();
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+
+    cy.wait("@subprojectCreated").then(xhr => {
+      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+      // test assignee field in workflowitem creation
+      cy.get("[data-test=createWorkflowitem]").click();
+      cy.get("[data-test=creation-dialog]").should("be.visible");
+      cy.get("[data-test=nameinput]").type("Test");
+
+      cy.get("[data-test=single-select-container]")
+        .last()
+        .click();
+      //Romina Checker is validator
+      cy.get("[value=auditUser]").click();
+      cy.get("[data-test=next]").click({ force: true });
+      cy.get("[data-test=submit]").click();
+
+      // 6 additional action
+      cy.get("[data-test=additional-actions]")
+        .scrollIntoView()
+        .within(() => {
+          cy.get("[data-test=actions-table-body]")
+            .should("be.visible")
+            .children()
+            .should("have.length", 6);
+        });
+      // 1 original action
+      cy.get("[data-test=original-actions]")
+        .scrollIntoView()
+        .within(() => {
+          cy.get("[data-test=actions-table-body]")
+            .should("be.visible")
+            .children()
+            .should("have.length", 1);
+        });
+      // No post actions
+      cy.get("[data-test=post-actions]").should("not.be.visible");
+      // actions counter displays correct amount of actions
+      cy.get("[data-test=actions-counter]")
+        .scrollIntoView()
+        .contains("0 from 7 actions done");
+      // Confirm creation
       cy.get("[data-test=confirmation-dialog-confirm]")
         .should("be.visible")
         .click();
-
       cy.wait("@workflowitemCreated").then(xhr => {
         expect(xhr.status).to.eq(200);
       });
