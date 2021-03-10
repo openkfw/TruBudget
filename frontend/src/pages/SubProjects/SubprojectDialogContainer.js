@@ -35,7 +35,8 @@ const mapStateToProps = state => {
     users: state.getIn(["login", "enabledUsers"]),
     selectedValidator: state.getIn(["detailview", "subprojectToAdd", "validator"]),
     selectedWorkflowitemType: state.getIn(["detailview", "subprojectToAdd", "workflowitemType"]),
-    currentUser: state.getIn(["login", "id"])
+    currentUser: state.getIn(["login", "id"]),
+    projectDisplayName: state.getIn(["detailview", "projectName"])
   };
 };
 
@@ -43,9 +44,27 @@ const mapDispatchToProps = dispatch => {
   return {
     hideSubprojectDialog: () => dispatch(hideSubprojectDialog()),
     storeSubProjectName: name => dispatch(storeSubProjectName(name)),
-    createSubProject: (projectId, displayName, description, currency, projectedBudget, validator, workflowitemType) =>
+    createSubProject: (
+      projectId,
+      projectDisplayName,
+      subprojectDisplayName,
+      description,
+      currency,
+      projectedBudget,
+      validator,
+      workflowitemType
+    ) =>
       dispatch(
-        createSubProject(projectId, displayName, description, currency, projectedBudget, validator, workflowitemType)
+        createSubProject(
+          projectId,
+          projectDisplayName,
+          subprojectDisplayName,
+          description,
+          currency,
+          projectedBudget,
+          validator,
+          workflowitemType
+        )
       ),
     editSubproject: (pId, sId, changes, deletedBudgets) => dispatch(editSubproject(pId, sId, changes, deletedBudgets)),
     storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),

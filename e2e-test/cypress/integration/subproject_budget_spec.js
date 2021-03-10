@@ -118,8 +118,8 @@ describe("Subproject budget test", function() {
         cy.get("[data-test=edit-projected-budget]")
           .first()
           .click();
-        // Send to API
         cy.get(`[data-test=submit]`).click();
+        cy.get(`[data-test=confirmation-dialog-confirm]`).click();
         cy.wait("@createSubproject").then(xhr => {
           subprojectId = xhr.response.body.data.subproject.id;
           cy.visit(`/projects/${projectId}/${subprojectId}`).wait("@viewDetailsSubproject");
@@ -564,6 +564,7 @@ describe("Subproject budget test", function() {
       cy.get("[data-test=submit]")
         .should("be.enabled")
         .click();
+      cy.get(`[data-test=confirmation-dialog-confirm]`).click();
       cy.wait("@createSubproject").then(xhr => {
         subprojectId = xhr.response.body.data.subproject.id;
         // Check on detailview for 3 budgets (length +1 for header)

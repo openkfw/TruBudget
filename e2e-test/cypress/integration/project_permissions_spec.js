@@ -69,14 +69,23 @@ describe("Project Permissions", function() {
       .type("{esc}");
   }
 
-  function actionTableIncludes(permissionText) {
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 3)
-      .find("td")
-      .contains(permissionText)
-      .should("have.length", 1);
+  function additionalActionTableIncludes(permissionText) {
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 3)
+        .find("td")
+        .contains(permissionText)
+        .should("have.length", 1);
+    });
+    // 1 original action
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
   }
 
   function filterPermissionsById(permissions, id) {
@@ -165,20 +174,30 @@ describe("Project Permissions", function() {
       cy.get("[data-test=permission-submit]").click();
       // Confirmation opens
       // listPermissions calls are done
-      cy.get("[data-test=actions-table-body]")
-        .should("be.visible")
-        .children()
-        .should("have.length", 3);
+      // 3 additional actions
+      cy.get("[data-test=additional-actions]").within(() => {
+        cy.get("[data-test=actions-table-body]")
+          .should("be.visible")
+          .children()
+          .should("have.length", 3);
+      });
+      // 1 original action
+      cy.get("[data-test=original-actions]").within(() => {
+        cy.get("[data-test=actions-table-body]")
+          .should("be.visible")
+          .children()
+          .should("have.length", 1);
+      });
       // Make sure cypress waits for future listPermissions calls
       cy.server();
       cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listPermissions");
       cy.get("[data-test=confirmation-dialog-confirm]").click();
       // Additional actions are executed
       cy.wait("@listPermissions");
-      cy.get("[data-test=confirmation-dialog-confirm]").should("not.be.disabled");
       // Reset permissions
       Cypress.Promise.all([
         cy.login("mstein", "test"),
+        cy.revokeProjectPermission(projectId, "project.intent.revokePermission", groupToGivePermissions),
         cy.revokeProjectPermission(projectId, "project.viewSummary", testGroupId),
         cy.revokeProjectPermission(projectId, "project.viewDetails", testGroupId),
         cy.revokeProjectPermission(projectId, "project.update", testGroupId),
@@ -292,7 +311,7 @@ describe("Project Permissions", function() {
     cy.grantProjectPermission(projectId, "project.intent.revokePermission", executingUser.id);
   });
 
-  it("Granting update permissions views 4 additional permissions needed", function() {
+  it("Granting update permissions views 2 additional permissions needed", function() {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -300,10 +319,20 @@ describe("Project Permissions", function() {
     changePermissionInGui("project.update", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 2);
+    // 2 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 2);
+    });
+    // 1 original action
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
   });
 
   it("Granting revoke permissions views 5 additional permissions needed including 'view permission'-permissions", function() {
@@ -314,7 +343,7 @@ describe("Project Permissions", function() {
     changePermissionInGui("project.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    actionTableIncludes("view permissions");
+    additionalActionTableIncludes("view permissions");
   });
 
   it("Granting view permissions doesn't additionally view the same permission", function() {
@@ -325,16 +354,21 @@ describe("Project Permissions", function() {
     changePermissionInGui("project.viewDetails", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 1)
-      .find("td")
-      .contains("view summary")
-      .should("have.length", 1);
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1)
+        .find("td")
+        .contains("view summary")
+        .should("have.length", 1);
+    });
   });
 
   it("Executing additional actions grant permissions correctly", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listPermissions");
+    cy.route("POST", apiRoute + "/project.intent.grantPermission").as("grantPermission");
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -342,25 +376,35 @@ describe("Project Permissions", function() {
     changePermissionInGui("project.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    // listPermissions calls are done
-    cy.get("[data-test=actions-table-body]")
+    // 3 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 3);
+    });
+    // 1 original actions
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
+    cy.get("[data-test=confirmation-dialog-confirm]")
       .should("be.visible")
-      .children()
-      .should("have.length", 3);
-    // Make sure cypress waits for future listPermissions calls
-    cy.server();
-    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listPermissions");
-    cy.get("[data-test=confirmation-dialog-confirm]").click();
-    // Additional actions are executed
+      .click();
     cy.wait("@listPermissions");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("not.be.disabled");
-    assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId);
 
-    // Reset permissions
-    Cypress.Promise.all([
-      cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id)
-    ]);
+    // Remove project.intent.revokePermission permission
+    cy.get(`[data-test=project-card-${projectId}]`)
+      .find("button[data-test^='pp-button']")
+      .click();
+    changePermissionInGui("project.intent.revokePermission", testUser.id);
+    cy.get("[data-test=permission-submit]").click();
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.wait("@listPermissions");
+    // compare Permissions to check if additional permission are granted successfully
+    assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId);
   });
 
   it("Granting assign/grant/revoke permissions additionally generates an action to grant 'list permissions'-permissions", function() {
@@ -371,24 +415,28 @@ describe("Project Permissions", function() {
     changePermissionInGui("project.assign", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    actionTableIncludes("view permissions");
+    additionalActionTableIncludes("view permissions");
     cy.get("[data-test=confirmation-dialog-cancel]").click();
     changePermissionInGui("project.assign", testUser.id);
     // Check grant
     changePermissionInGui("project.intent.grantPermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    actionTableIncludes("view permissions");
+    additionalActionTableIncludes("view permissions");
     cy.get("[data-test=confirmation-dialog-cancel]").click();
     changePermissionInGui("project.intent.grantPermission", testUser.id);
     // Check revoke
     changePermissionInGui("project.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    actionTableIncludes("view permissions");
+    additionalActionTableIncludes("view permissions");
   });
 
   it("Confirmation of multiple grant permission changes grants permissions correctly", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listPermissions");
+    cy.route("POST", apiRoute + "/project.intent.grantPermission").as("grantPermission");
+
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -399,26 +447,22 @@ describe("Project Permissions", function() {
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
     cy.get("[data-test=actions-table-body]").should("be.visible");
-    cy.server();
-    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listPermissions");
-    cy.get("[data-test=confirmation-dialog-confirm]").click();
-    // Additional actions are executed
-    cy.wait("@listPermissions");
-    cy.get("[data-test=confirmation-dialog-confirm]").click();
-    // Original actions are executed
-    cy.get("[data-test=permission-submit]").should("not.be.visible");
-    cy.wait("@listPermissions");
-    let permissions = addViewPermissions(permissionsBeforeTesting, testUser.id);
-    permissions.project["project.update"].push(testUser.id);
-    assertUnchangedPermissions(permissions, projectId);
 
-    // Reset permissions
-    Cypress.Promise.all([
-      cy.revokeProjectPermission(projectId, "project.viewSummary", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.update", testUser.id),
-      cy.revokeProjectPermission(projectId, "project.intent.listPermissions", testUser.id)
-    ]);
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .click()
+      .wait("@grantPermission");
+    // actions are executed
+    cy.wait("@listPermissions");
+    // Remove project.update permission
+    cy.get(`[data-test=project-card-${projectId}]`)
+      .find("button[data-test^='pp-button']")
+      .click();
+    changePermissionInGui("project.update", testUser.id);
+    cy.get("[data-test=permission-submit]").click();
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.wait("@listPermissions");
+    // compare Permissions to check if additional permission are granted successfully
+    assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId);
   });
 
   it("Confirmation of multiple revoke permission changes grants permissions correctly", function() {
@@ -444,12 +488,10 @@ describe("Project Permissions", function() {
         changePermissionInGui("project.intent.listPermissions", testUser.id);
         cy.get("[data-test=permission-submit]").click();
         // Confirmation opens
-        cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible");
         cy.server();
         cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listPermissions");
         cy.get("[data-test=confirmation-dialog-confirm]").click();
         // Original actions are executed
-        cy.get("[data-test=permission-submit]").should("not.be.visible");
         cy.wait("@listPermissions");
         // Equal permissions
         permCopy.project = removePermission(permCopy.project, "project.update", testUser.id);

@@ -8,6 +8,7 @@ export const SHOW_SUBPROJECT_EDIT = "SHOW_SUBPROJECT_EDIT";
 
 export const CREATE_SUBPROJECT = "CREATE_SUBPROJECT";
 export const CREATE_SUBPROJECT_SUCCESS = "CREATE_SUBPROJECT_SUCCESS";
+export const CREATE_SUBPROJECT_FAILURE = "CREATE_SUBPROJECT_FAILURE";
 
 export const EDIT_SUBPROJECT = "EDIT_SUBPROJECT";
 export const EDIT_SUBPROJECT_SUCCESS = "EDIT_SUBPROJECT_SUCCESS";
@@ -196,7 +197,8 @@ export function assignProject(projectId, projectDisplayName, assigneeId, assigne
 
 export function createSubProject(
   projectId,
-  name,
+  projectDisplayName,
+  subprojectDisplayName,
   description,
   currency,
   validator,
@@ -207,12 +209,14 @@ export function createSubProject(
   return {
     type: CREATE_SUBPROJECT,
     projectId,
-    name,
+    projectDisplayName,
+    subprojectDisplayName,
     description,
     currency,
     validator,
     workflowitemType,
     projectedBudgets,
+
     showLoading
   };
 }

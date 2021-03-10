@@ -49,6 +49,7 @@ const de = {
     edited: "German: Edited",
     email: "Email",
     finish: "Finish",
+    global: "Global",
     grant: "German: grant",
     history: "History",
     in_progress: "In Progress",
@@ -328,10 +329,7 @@ const de = {
     assign_permissions: "Berechtigungen zuweisen",
     additional_permissions_dialog_text:
       "Zusätzliche Aktionen müssen ausgeführt werden, um sicherzustellen, dass Benutzer auch alle erforderlichen Ressourcen anzeigen können.",
-    additional_permissions_required: "Zusätzliche Berechtigungen benötigt",
-    assigning_text: `Soll {0} wirklich zum {1} "{2}" zugewiesen werden?`,
-    confirm_assign: "Zuweisung bestätigen",
-    confirm_update_permissions: "Bestätigen Sie die Aktualisierung der Berechtigungen",
+    confirmation_required: "Bestätigung notwendig",
     execute_actions: "Aktionen ausführen",
     failed_action_error:
       "Fehler: Das Gewähren von {0} an {1} ist fehlgeschlagen. Alle Aktionen, die nach dem Auftreten des Fehlers ausgeführt worden wären, einschließlich der ursprünglichen Aktionen, werden abgebrochen.",
@@ -339,6 +337,7 @@ const de = {
     list_permissions_required_text:
       "Stellen Sie sicher, dass Sie Leseberechtigungen für Berechtigungen der beteiligten Ressourcen besitzen",
     no_permission_warning: "Warnung: Sie haben nicht die Berechtigung, alle aufgelisteten Aktionen auszuführen!",
+    original_actions: "Sie haben folgende Aktionen angefordert:",
     permissions_required: "Berechtigungen erforderlich",
     permissions_text: `{0} benötigt zusätzliche Berechtigungen um {1} "{2}" sehen zu können.`,
     post_actions_dialog_text: "Nach Erstellung des Workflowitems werden folgende Aktionen ausgeführt",
@@ -346,12 +345,10 @@ const de = {
     project_close_text: "Sind Sie sicher, dass Sie dieses Projekt schließen wollen?",
     subproject_close: "Teilprojekt schliessen",
     subproject_close_text: "Sind Sie sicher, dass Sie dieses Teilprojekt schließen wollen?",
-    update_permissions_dialog_text: "Möchten Sie die Berechtigungen wirklich aktualisieren?",
     user_group: "Benutzer/Gruppe",
     workflowitem_close: "Workflowitem schliessen",
     workflowitem_close_text: "Sind Sie sicher, dass Sie dieses Workflow-Item schließen wollen?",
-    workflowitem_create: "Erstelle Workflowitem",
-    workflowitem_create_text: "Sind Sie sicher, dass Sie das Workflowitem erstellen wollen?"
+    workflowitem_create: "Erstelle Workflowitem"
   },
 
   intents: {

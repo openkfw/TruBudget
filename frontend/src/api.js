@@ -214,11 +214,11 @@ class Api {
     displayName,
     description,
     currency,
-    projectedBudgets,
-    validator = undefined,
+    projectedBudgets = [],
+    validatorId = undefined,
     workflowitemType = undefined
   ) => {
-    if (_isEmpty(validator)) validator = undefined;
+    if (_isEmpty(validatorId)) validatorId = undefined;
     if (_isEmpty(workflowitemType)) workflowitemType = undefined;
     return instance.post(`/project.createSubproject`, {
       projectId,
@@ -227,7 +227,7 @@ class Api {
         description,
         currency,
         projectedBudgets,
-        validator,
+        validator: validatorId,
         workflowitemType
       }
     });
@@ -361,7 +361,15 @@ class Api {
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
     instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
 
-  validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) => instance.post(`/workflowitem.validateDocument`, { base64String, hash, id, projectId, subprojectId, workflowitemId });
+  validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) =>
+    instance.post(`/workflowitem.validateDocument`, {
+      base64String,
+      hash,
+      id,
+      projectId,
+      subprojectId,
+      workflowitemId
+    });
 
   listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
     instance.get(
