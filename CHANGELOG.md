@@ -11,8 +11,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Extend confirmation dialog by showing all actions executed after workflowitem creation [#724](https://github.com/openkfw/TruBudget/issues/724)
 
-- Added a decline option on the nodes page, which hides the request for everyone in an organization [#27](https://github.com/openkfw/TruBudget/issues/27)
-
 <!-- ### Changed -->
 
 <!-- ### Deprecated -->
@@ -27,7 +25,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Added a decline option on the nodes page, which hides the request for everyone in an organization [#27](https://github.com/openkfw/TruBudget/issues/27)
+
+- Update the network table to have two tabs, for approved and declined nodes. Show more info for each node in the approved list [785](https://github.com/openkfw/TruBudget/issues/785)
+
 - Display connection status for each Multichain node [#746](https://github.com/openkfw/TruBudget/issues/746)
+
+- Display a "last seen" timestamp that is updated once every 24h [#774](https://github.com/openkfw/TruBudget/issues/774)
 
 ## [1.19.0] - 2021-02-10
 
