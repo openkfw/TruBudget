@@ -179,7 +179,10 @@ const pt = {
     new_organization: "Pedidos de novas organizações",
     nodes: "Nós",
     permissions: "Permissões",
-    declined_by: "Recusado por"
+    declined_by: "Recusado por",
+    connection_status: "Status da conexão",
+    last_seen: "Visto pela última vez",
+    admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'"
   },
 
   login: {

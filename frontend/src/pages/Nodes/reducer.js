@@ -3,7 +3,8 @@ import { fromJS } from "immutable";
 import { FETCH_NODES_SUCCESS } from "./actions";
 
 const defaultState = fromJS({
-  nodes: []
+  nodes: [],
+  tabIndex: 0
 });
 
 export default function nodeDashboardReducer(state = defaultState, action) {

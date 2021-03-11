@@ -1,5 +1,4 @@
 import React from "react";
-import DeclinedNodesTable from "./DeclinedNodesTable";
 import NodesTable from "./NodesTable";
 import NodeVoting from "./NodeVoting";
 
@@ -8,7 +7,6 @@ const Nodes = props => {
     <div>
       <NodeVoting {...props} />
       <NodesTable {...props} />
-      <DeclinedNodesTable {...props} />
     </div>
   );
 };

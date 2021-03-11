@@ -310,7 +310,11 @@ const fr = {
     new_organization: "Demandes de nouvelles organisations",
     nodes: "Noeuds",
     permissions: "Autorisations",
-    declined_by: "Refusé par"
+    declined_by: "Refusé par",
+    connection_status: "Statut de connexion",
+    last_seen: "Vu pour la dernière fois",
+    admin_description: "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
+
   },
 
   preview: {

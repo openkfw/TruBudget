@@ -312,7 +312,11 @@ const de = {
     new_organization: "Anfragen für neue Organisationen",
     nodes: "German: Nodes",
     permissions: "German: Permissions",
-    declined_by: "Abgelehnt von"
+    declined_by: "Abgelehnt von",
+    connection_status: "Verbindungsstatus",
+    last_seen: "Zuletzt gesehen",
+    admin_description:
+      "Der Administratorknoten ist der Anfangsknoten des Netzwerks und verfügt über zusätzliche 'Mine' und 'Admin' Berechtigungen."
   },
 
   preview: {
