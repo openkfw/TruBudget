@@ -1,34 +1,24 @@
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import Divider from "@material-ui/core/Divider";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import React from "react";
-
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import Paper from "@material-ui/core/Paper";
 import strings from "../../localizeStrings";
-import { canApproveNode } from "../../permissions";
-import { DeclinedNodesEmptyState } from "./NodesEmptyStates";
 
-const styles = theme => ({
+const styles = {
   container: {
-    marginTop: 40,
+    width: "100%",
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "center"
   },
-  card: {
-    width: "48%",
-    paddingBottom: "20px"
-  },
-  listItem: {
-    display: "flex",
-    flexDirection: "column"
+  customWidth: {
+    width: "100%",
+    marginTop: "40px"
   }
-});
+};
 
 const filterDeclinedNodes = (nodes, organization) => {
   return nodes.filter(node => {
@@ -47,59 +37,49 @@ const getDeclinersString = decliners => {
     decliners.forEach(declinerObject => {
       stringArray.push(declinerObject.organization);
     });
-    resultString = `\n ${strings.nodesDashboard.declined_by}: ${stringArray.join(", ")}`;
+    resultString = `${stringArray.join(", ")}`;
   }
   return resultString;
 };
 
-const getListEntries = (declinedNodes, classes) => {
-  return declinedNodes.map(node => {
-    return (
-      <div key={node.address.address}>
-        <ListItem key={node.address.address}>
-          <ListItemText
-            primary={
-              <div className={classes.listItem}>
-                <Typography variant="subtitle1"> {node.address.organization}</Typography>
-              </div>
-            }
-            secondary={
-              <span className={classes.listItem}>
-                <Typography variant="body2" display="block" component={"span"}>
-                  {`${strings.nodesDashboard.address}: ${node.address.address} `}
-                </Typography>
-                <Typography variant="body2" display="block" component={"span"}>
-                  {getDeclinersString(node.currentAccess.decliners)}
-                </Typography>
-              </span>
-            }
-          />
-        </ListItem>
-        <Divider />
-      </div>
-    );
-  });
+const getListEntries = (declinedNodes) => {
+  if (declinedNodes.length) {
+    return declinedNodes.map(node => {
+      return (
+        <TableRow key={node.address.address}>
+          <TableCell align="right">
+            {node.address.organization}
+          </TableCell>
+          <TableCell align="center">{node.address.address}</TableCell>
+          <TableCell align="left">{getDeclinersString(node.currentAccess.decliners)}</TableCell>
+        </TableRow>
+      );
+    });
+  }
 };
 
-const DeclinedNodesTable = ({ nodes, allowedIntents, classes, isDataLoading, organization }) => {
-  const canApprove = canApproveNode(allowedIntents);
+const DeclinedNodesTable = props => {
+  const { classes, nodes, organization } = props;
   const declinedNodes = filterDeclinedNodes(nodes, organization);
 
-  const declinedNodesListEntries = getListEntries(declinedNodes, canApprove, classes);
+  const declinedNodesListEntries = getListEntries(declinedNodes, classes);
 
   return (
-    <div className={classes.container}>
-      <Card className={classes.card}>
-        <CardHeader title={`${strings.nodesDashboard.declined_by} ${organization} `} />
-        {isDataLoading ? (
-          <div />
-        ) : (
-          <CardContent style={styles.cardContent}>
-            <List>{declinedNodes.length ? declinedNodesListEntries : <DeclinedNodesEmptyState />}</List>
-          </CardContent>
-        )}
-      </Card>
-    </div>
+
+    <Paper data-test="declined-nodes-table">
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell align="right">{strings.common.organization}</TableCell>
+            <TableCell align="center">{strings.nodesDashboard.nodes}</TableCell>
+            <TableCell align="left">{strings.nodesDashboard.declined_by}</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody data-test="declined-nodes-table-body">
+          {declinedNodesListEntries}
+        </TableBody>
+      </Table>
+    </Paper>
   );
 };
 

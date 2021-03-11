@@ -178,7 +178,10 @@ const ka = {
     new_organization: "მოთხოვნები ახალი ორგანიზაციებისთვის",
     nodes: "Nodes",
     permissions: "ნებართვები",
-    declined_by: "უარი თქვა"
+    declined_by: "უარი თქვა",
+    connection_status: "კავშირის სტატუსი",
+    last_seen: "ბოლო ნახვა",
+    admin_description: "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
   },
 
   login: {

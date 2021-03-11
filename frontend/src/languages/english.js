@@ -177,7 +177,10 @@ const en = {
     new_organization: "Requests for New Organizations",
     nodes: "Nodes",
     permissions: "Permissions",
-    declined_by: "Declined by"
+    declined_by: "Declined by",
+    connection_status: "Connection status",
+    last_seen: "Last seen",
+    admin_description: "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
   },
 
   login: {
