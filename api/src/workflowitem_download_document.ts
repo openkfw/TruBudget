@@ -50,11 +50,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
   };
 }
 
-interface Document {
-  data: string;
-  fileName: string;
-}
-
 interface Service {
   getDocument(
     ctx: Ctx,

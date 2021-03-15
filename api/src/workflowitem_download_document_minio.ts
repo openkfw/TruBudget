@@ -3,15 +3,14 @@ import { VError } from "verror";
 
 import { toHttpError } from "./http_errors";
 import * as NotFound from "./http_errors/not_found";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
-import { ServiceUser } from "./service/domain/organization/service_user";
 import * as WorkflowitemDocument from "./service/domain/workflow/document";
 
-function mkSwaggerSchema() {
+function mkSwaggerSchema(server: FastifyInstance) {
   return {
+    preValidation: [(server as any).authenticate],
     schema: {
       description: "Download documents attached to workflowitems",
       tags: ["workflowitem"],
@@ -36,8 +35,14 @@ function mkSwaggerSchema() {
       body: {
         type: "object",
         properties: {
-          secret: {
-            type: "string",
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            properties: {
+              secret: {
+                type: "string",
+              },
+            },
           },
         },
       },
@@ -55,11 +60,6 @@ function mkSwaggerSchema() {
       },
     },
   };
-}
-
-interface Document {
-  data: string;
-  fileName: string;
 }
 
 interface Service {
@@ -95,18 +95,22 @@ interface Request extends RequestGenericInterface {
     documentId: string;
   };
   Body: {
-    secret: string;
-  }
+    apiVersion: string;
+    data: {
+      secret: string;
+    };
+  };
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
   server.post<Request>(
     `${urlPrefix}/workflowitem.downloadDocumentMinio`,
+    mkSwaggerSchema(server),
     async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
       const { projectId, subprojectId, workflowitemId, documentId } = request.query;
-      const { secret } = request.body;
+      const { secret } = request.body.data;
 
       if (
         sendErrorIfEmpty(reply, projectId) ||

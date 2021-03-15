@@ -23,12 +23,13 @@ export async function getDocumentMinio(
   secret: string,
 ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>> {
   const documentResult = await Cache.withCache(conn, ctx, async (cache) =>
-    WorkflowitemDocumentDownloadMinio.getDocumentMinio(ctx, workflowitemId, secret,  documentId, {
+    WorkflowitemDocumentDownloadMinio.getDocumentMinio(ctx, workflowitemId, secret, documentId, {
       getWorkflowitem: async () => {
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
       },
       getDocumentEncryptedSecret: async (documentId) => {
         // TODO get encrypted document secret
+        return "todo";
       },
       getDocumentEvents: async (documentId, secret) => {
         const items: Liststreamkeyitems.Item[] = await conn.multichainClient.v2_readStreamItems(
@@ -45,10 +46,8 @@ export async function getDocumentMinio(
             if (meta.secret === secret) {
               event.document.base64 = base64;
             }
-
           }
           documentEvents.push(event);
-
         }
         return documentEvents;
       },

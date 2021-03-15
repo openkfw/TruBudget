@@ -162,7 +162,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     const { projectId, subprojectId, workflowitemId, ...data } = bodyResult.data;
 
-
     /**
      * @see WorkflowitemUpdate.updateWorkflowitem
      */

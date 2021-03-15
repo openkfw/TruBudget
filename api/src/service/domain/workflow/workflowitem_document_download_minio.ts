@@ -45,7 +45,7 @@ export async function getDocumentMinio(
   if (Result.isErr(documentEvents)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
-      `couldn't get document events from ${workflowitem}`,
+      `couldn't get document events from workfowitem ${workflowitem.id}`,
     );
   }
 
@@ -53,16 +53,13 @@ export async function getDocumentMinio(
   if (!workflowitem.documents.some((d) => d.documentId === documentId)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
-      `workfowitem ${workflowitem} has no link to document`,
+      `workfowitem ${workflowitem.id} has no link to document`,
     );
   }
 
   const document = documentEvents
     .filter((d) => d.workflowitemId === workflowitem.id)
     .map((d) => d.document)[0];
-
-
-
 
   return document;
 }

@@ -40,7 +40,7 @@ export async function getDocument(
   if (Result.isErr(documentEvents)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
-      `couldn't get document events from ${workflowitem}`,
+      `couldn't get document events from workfowitem ${workflowitem.id}`,
     );
   }
 
@@ -48,7 +48,7 @@ export async function getDocument(
   if (!workflowitem.documents.some((d) => d.documentId === documentId)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
-      `workfowitem ${workflowitem} has no link to document`,
+      `workfowitem ${workflowitem.id} has no link to document`,
     );
   }
 

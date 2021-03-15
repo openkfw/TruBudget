@@ -106,7 +106,6 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
         keys: [`${event.subprojectId}_workflows`, event.workflowitemId],
         event,
       });
-
     case "workflowitem_document_uploaded":
       await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
       return writeTo(
@@ -119,7 +118,18 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
         },
         true,
       );
-      break;
+    case "document_secret_published":
+      await ensureStreamExists(conn, ctx, "document_secrets", "document_secrets");
+      return writeTo(
+        conn,
+        ctx,
+        {
+          stream: "document_secrets",
+          keys: [event.documentId, event.organization],
+          event,
+        },
+        true,
+      );
 
     case "workflowitem_document_validated":
       return writeTo(conn, ctx, {

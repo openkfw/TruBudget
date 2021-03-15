@@ -54,10 +54,18 @@ const baseRepository = {
     if (identity === "root") return ["root"];
     throw Error(`unexpected identity: ${identity}`);
   },
-  uploadDocument: (document: UploadedDocument): Promise<string> => { return new Promise((resolve) => resolve(uuid)); },
-  getOrganizations: (): Promise<Nodes.NodeInfo[]> => { return new Promise((resolve) => resolve([])); },
-  getAllUsers: (): Promise<any[]> => { return new Promise((resolve) => resolve([])); },
-  getAllPublicKeys: (): Promise<any[]> => { return new Promise((resolve) => resolve([])); },
+  uploadDocument: (document: UploadedDocument): Promise<string> => {
+    return new Promise((resolve) => resolve(uuid));
+  },
+  getOrganizations: (): Promise<Nodes.NodeInfo[]> => {
+    return new Promise((resolve) => resolve([]));
+  },
+  getAllUsers: (): Promise<any[]> => {
+    return new Promise((resolve) => resolve([]));
+  },
+  getPublicKeyOfOrganization: (organization): Promise<string> => {
+    return new Promise((resolve) => resolve(""));
+  },
 };
 
 describe("update workflowitem: authorization", () => {

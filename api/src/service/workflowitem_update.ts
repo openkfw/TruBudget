@@ -47,7 +47,9 @@ export async function updateWorkflowitem(
           return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
         },
         uploadDocument: async (document: UploadedDocument): Promise<string> => {
-          return await uploadAsPromised(document.id, document.base64, { fileName: document.fileName });
+          return await uploadAsPromised(document.id, document.base64, {
+            fileName: document.fileName,
+          });
         },
         getOrganizations: async () => {
           const nodes = await Nodes.get(conn.multichainClient);
@@ -56,8 +58,8 @@ export async function updateWorkflowitem(
         getAllUsers: async () => {
           return cache.getUserEvents();
         },
-        getAllPublicKeys: async () => {
-          return await PubKeys.getAll(conn.multichainClient);
+        getPublicKeyOfOrganization: async (organization) => {
+          return await PubKeys.getPublicKeyOfOrganization(conn.multichainClient, organization);
         },
       },
     );

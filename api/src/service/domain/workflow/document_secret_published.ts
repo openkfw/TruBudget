@@ -7,6 +7,11 @@ import { Identity } from "../organization/identity";
 type EventTypeType = "document_secret_published";
 const eventType: EventTypeType = "document_secret_published";
 
+export interface OrganizationPublicKey {
+  organization: string;
+  publicKey: string;
+}
+
 export interface Event {
   type: EventTypeType;
   source: string;
@@ -19,12 +24,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   organization: Joi.string().required(),
   documentId: Joi.string().required(),
@@ -38,7 +39,7 @@ export function createEvent(
   documentId: string,
   encryptedSecret: string,
   time: string = new Date().toISOString(),
-): Result.Type<Event>  {
+): Result.Type<Event> {
   const event = {
     type: eventType,
     source,

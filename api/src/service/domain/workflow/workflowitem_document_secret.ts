@@ -1,11 +1,11 @@
-import crypto from "crypto";
+import * as crypto from "crypto";
 import logger from "../../../lib/logger";
 import { publicKey, organization } from "../../../config";
 import { MultichainClient } from "../../Client.h";
-import * as DocumentSecretPublished from "./workflowitem_document_secret_published";
+import * as DocumentSecretPublished from "./document_secret_published";
 import { getAll as getAllPublicKeys } from "../../../network/model/PubKeys";
 import * as Liststreamkeyitems from "../../liststreamkeyitems";
-
+import { encryptWithKey } from "../../../lib/asymmetricCrypto";
 
 const streamName = "document_secrets";
 
@@ -25,20 +25,20 @@ export type NetworkPermission =
   | "activate"
   | "admin";
 
-export interface DocumentSecret{
+export interface DocumentSecret {
   organization: Organization;
   documentId: DocumentId;
   encryptedSecret: EncryptedDocumentSecretString;
 }
 
 interface Event {
-  type: string,
-  source: string,
-  publisher: string,
-  organization: Organization,
-  documentId: DocumentId,
-  encryptedSecret: EncryptedDocumentSecretString,
-  time: string,
+  type: string;
+  source: string;
+  publisher: string;
+  organization: Organization;
+  documentId: DocumentId;
+  encryptedSecret: EncryptedDocumentSecretString;
+  time: string;
 }
 
 export async function publish(
@@ -52,20 +52,23 @@ export async function publish(
   const publicKeys = await getAllPublicKeys(multichain);
 
   for (const organizationName of organizations) {
-    const publicKey = publicKeys.find(key => key.organization === organizationName);
+    const publicKey = publicKeys.find((key) => key.organization === organizationName);
     if (!publicKey?.publicKey) {
       logger.error(`Public key for organization ${organizationName} is not stored correctly.`);
       break;
     }
 
     // first check if secret is already published
-    const existingSecret = await getDocumentEncryptedSecret(multichain, documentId, organizationName);
+    const existingSecret = await getDocumentEncryptedSecret(
+      multichain,
+      documentId,
+      organizationName,
+    );
     if (existingSecret) {
       continue;
     }
 
-    const secretBuffer = Buffer.from(secret, "utf8");
-    const encryptedSecret = crypto.publicEncrypt(publicKey?.publicKey, secretBuffer).toString();
+    const encryptedSecret = encryptWithKey(secret, publicKey?.publicKey);
 
     const event = DocumentSecretPublished.createEvent(
       "system",
@@ -100,15 +103,13 @@ export async function publish(
         throw err;
       }
     }
-
   }
-
 }
 
 export async function getAll(multichain: MultichainClient): Promise<Event[]> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
     .v2_readStreamItems(streamName, "*")
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "NotFound" && err.what === "stream nodes") {
         // The stream does not exist yet, which happens on (freshly installed) systems that
         // have not seen any notifications yet.
@@ -120,19 +121,24 @@ export async function getAll(multichain: MultichainClient): Promise<Event[]> {
       }
     });
 
-  const itemsDetails = streamItems.map(item => {
+  const itemsDetails = streamItems.map((item) => {
     return item.data.json;
   });
 
   return itemsDetails;
 }
 
-export async function getDocumentEncryptedSecret(multichain: MultichainClient, documentId: Organization, org: Organization = organization): Promise<PublicKey | undefined> {
+export async function getDocumentEncryptedSecret(
+  multichain: MultichainClient,
+  documentId: Organization,
+  org: Organization = organization,
+): Promise<PublicKey | undefined> {
   // get all public keys
   const secrets = await getAll(multichain);
 
-  const documentSecret = secrets.find(secret => secret.organization === org && secret.documentId === documentId);
+  const documentSecret = secrets.find(
+    (secret) => secret.organization === org && secret.documentId === documentId,
+  );
 
   return documentSecret?.encryptedSecret;
 }
-

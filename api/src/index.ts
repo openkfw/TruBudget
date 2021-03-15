@@ -131,6 +131,7 @@ import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
+import { publicKey } from "./config/index";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;

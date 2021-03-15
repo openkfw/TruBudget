@@ -1,8 +1,9 @@
-import crypto from "crypto";
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
-import { minioEndPoint, hostPort, organization as thisOrganization } from "../../../config";
+
+import { hostPort, minioEndPoint, organization as thisOrganization } from "../../../config";
 import { Ctx } from "../../../lib/ctx";
+import * as Nodes from "../../../network/model/Nodes";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -12,16 +13,18 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import { hashDocuments, StoredDocument, UploadedDocument } from "./document";
-import { getAll as getAllPermissions } from "./workflowitem_permissions_list";
+import * as DocumentSecretPublished from "./document_secret_published";
 import * as NotificationCreated from "./notification_created";
-import * as Nodes from "../../../network/model/Nodes";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-
+import { PublicKey } from "../../../network/model/PubKeys";
+import Intent from "../../../authz/intents";
+import { encryptWithKey } from "../../../lib/asymmetricCrypto";
+import logger from "../../../lib/logger";
 
 export interface RequestData {
   displayName?: string;
@@ -40,7 +43,7 @@ export type EventData = WorkflowitemUpdated.Modification;
 export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
 
 interface NodeInfoAddress {
-  organization: string
+  organization: string;
 }
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
@@ -52,7 +55,7 @@ interface Repository {
   uploadDocument(document: UploadedDocument): Promise<string>;
   getOrganizations(): Promise<Nodes.NodeInfo[]>;
   getAllUsers(): Promise<any[]>;
-  getAllPublicKeys(): Promise<any[]>;
+  getPublicKeyOfOrganization(organization: string): Promise<Result.Type<PublicKey>>;
 }
 
 export async function updateWorkflowitem(
@@ -69,36 +72,18 @@ export async function updateWorkflowitem(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  const documentSecrets: any[] = [];
-  const documentHashes: StoredDocument[] = [];
+  const newDocuments: StoredDocument[] = [];
   if (modification.documents !== undefined) {
-    const documentHashesResult = await hashDocuments(modification.documents);
-    if (Result.isErr(documentHashesResult)) {
-      return new VError(documentHashesResult, "failed to hash documents");
+    const hashDocumentsResult = await hashDocuments(modification.documents);
+    if (Result.isErr(hashDocumentsResult)) {
+      return new VError(hashDocumentsResult, "failed to hash documents");
     }
-    documentHashes.push(...documentHashesResult);
-
-    // list all users with view rights
-    const usersPermissions = workflowitem.permissions["workflowitem.view"];
-    // list all organizations with view rights
-    const allUsers = await repository.getAllUsers();
-    const organizationsWithPermissions = allUsers
-      .filter(user => usersPermissions?.includes(user?.user?.id))
-      .map(user => user?.user?.organization)
-      .filter((orgName, index, self) => self.indexOf(orgName) === index);
-
-    // remove current organization from list
-    const index = organizationsWithPermissions.indexOf(thisOrganization);
-    if (index > -1) {
-      organizationsWithPermissions.splice(index, 1);
-    }
-
-    // TODO user publish in api/src/service/domain/workflow/workflowitem_document_secret.ts to publish secrets
-
+    newDocuments.push(...hashDocumentsResult);
   }
+
   const modificationWithDocumentHashes: EventData = {
     ...modification,
-    documents: documentHashes.length <= 0 ? undefined : documentHashes,
+    documents: newDocuments.length <= 0 ? undefined : newDocuments,
   };
 
   const newEvent = WorkflowitemUpdated.createEvent(
@@ -209,20 +194,58 @@ export async function updateWorkflowitem(
   }
 
   const newDocumentUploadedEvents: WorkflowitemDocumentUploaded.Event[] = [];
+  const documentSecretPublishedEvents: DocumentSecretPublished.Event[] = [];
+  const organizationsWithPermission = await getOrganizationsWithPermission(
+    "workflowitem.view",
+    workflowitem,
+    repository,
+  );
   for (const result of newDocumentUploadedEventsResult) {
     if (Result.isErr(result)) {
       return result;
     }
     const { document } = result as WorkflowitemDocumentUploaded.Event;
-    // document should be private
-    if (minioEndPoint) {
-      const secret = await repository.uploadDocument(document);
 
-      newDocumentUploadedEvents.push({...result, document: {...document, base64: "", url: hostPort}});
+    if (minioEndPoint) {
+      // Upload document and get secret for future access
+      //TODO Result
+      const secret = await repository.uploadDocument(document);
+      logger.info("Uploaded Document with access secret: ", secret);
+      for (const organization of organizationsWithPermission) {
+        //Encrypt secret with public key of organizations with permissions
+        const publicKeyResult = await repository.getPublicKeyOfOrganization(organization);
+        if (Result.isErr(publicKeyResult)) {
+          return new VError(publicKeyResult, "failed to get public key");
+        }
+        const publicKey: PublicKey = publicKeyResult;
+        logger.info("Encrypt secret with public key...");
+        const encryptedSecret = encryptWithKey(secret, publicKey);
+        const newDocumentSecretPublishedEvent = DocumentSecretPublished.createEvent(
+          ctx.source,
+          issuer.id,
+          organization,
+          document.id,
+          encryptedSecret,
+        );
+        if (Result.isErr(newDocumentSecretPublishedEvent)) {
+          return new VError(
+            newDocumentSecretPublishedEvent,
+            `cannot create document_secret_published event for ${organization} and document ${document.id}`,
+          );
+        }
+
+        // Check if event is indeed valid
+
+        documentSecretPublishedEvents.push(newDocumentSecretPublishedEvent);
+      }
+
+      newDocumentUploadedEvents.push({
+        ...result,
+        document: { ...document, base64: "", url: hostPort },
+      } as WorkflowitemDocumentUploaded.Event);
     } else {
       newDocumentUploadedEvents.push(result);
     }
-
   }
 
   const workflowitemTypeEventsResult = repository.applyWorkflowitemType(newEvent, workflowitem);
@@ -236,11 +259,34 @@ export async function updateWorkflowitem(
     newEvents: [
       newEvent,
       ...newDocumentUploadedEvents,
+      ...documentSecretPublishedEvents,
       ...notifications,
       ...workflowitemTypeEvents,
     ],
     workflowitem: updatedWorkflowitem,
   };
+}
+
+async function getOrganizationsWithPermission(
+  intent: Intent,
+  workflowitem: Workflowitem.Workflowitem,
+  repository: Repository,
+) {
+  const identitiesWithPermission = workflowitem.permissions[intent];
+  // list all organizations with view rights
+  const allUsers = await repository.getAllUsers();
+  const organizationsWithPermissions = allUsers
+    .filter((user) => identitiesWithPermission?.includes(user?.user?.id))
+    .map((user) => user?.user?.organization)
+    .filter((orgName, index, self) => self.indexOf(orgName) === index);
+
+  // remove current organization from list
+  // TODO uncomment it again to ensure that no secret is generated for own orga
+  // const index = organizationsWithPermissions.indexOf(thisOrganization);
+  // if (index > -1) {
+  //   organizationsWithPermissions.splice(index, 1);
+  // }
+  return organizationsWithPermissions;
 }
 
 function isEqualIgnoringLog(
