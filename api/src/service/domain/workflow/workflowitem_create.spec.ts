@@ -42,7 +42,6 @@ describe("Create workflowitem", () => {
       workflowitemExists: async (_projectId, _subprojectId, _workflowitemId) => false,
       getSubproject: async () => baseSubproject,
       applyWorkflowitemType: () => [],
-      uploadDocument: () => new Promise(() => undefined),
     });
 
     assert.isTrue(Result.isErr(result));
@@ -62,7 +61,6 @@ describe("Create workflowitem", () => {
       workflowitemExists: async (_projectId, _subprojectId, _workflowitemId) => false,
       getSubproject: async () => baseSubproject,
       applyWorkflowitemType: () => [],
-      uploadDocument: () => new Promise(() => undefined),
     });
 
     assert.isTrue(Result.isErr(result));

@@ -6,7 +6,6 @@ import { ServiceUser } from "../organization/service_user";
 import * as WorkflowitemDocument from "./document";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
-import { getDocument as getDocumentService } from "../../workflowitem_document_download";
 import VError = require("verror");
 
 interface Repository {
@@ -32,10 +31,7 @@ export async function getDocument(
     return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
   }
 
-  /**
-   * Get all events from one document
-   * @see getDocumentService
-   */
+  // Get all events from one document
   const documentEvents = await repository.getDocumentEvents(documentId);
   if (Result.isErr(documentEvents)) {
     return new VError(

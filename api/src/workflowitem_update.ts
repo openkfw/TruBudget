@@ -101,12 +101,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
                       type: "string",
                       example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
                     },
-                    orgAccess: {
-                      type: "array",
-                      items: {
-                        type: "string",
-                      },
-                    },
                   },
                 },
               },
@@ -162,10 +156,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     const { projectId, subprojectId, workflowitemId, ...data } = bodyResult.data;
 
-
-    /**
-     * @see WorkflowitemUpdate.updateWorkflowitem
-     */
     service
       .updateWorkflowitem(ctx, user, projectId, subprojectId, workflowitemId, data)
       .then((result) => {
