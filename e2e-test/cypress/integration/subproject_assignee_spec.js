@@ -122,9 +122,6 @@ describe("Subproject Assignee", function() {
     cy.get("[data-test=confirmation-dialog-confirm]")
       .should("be.visible")
       .click();
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .should("be.visible")
-      .click();
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("be.checked");
     });
@@ -171,7 +168,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
     // Reset permissions
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
   it("Assigning without subproject permission to grant view permissions is not possible", function() {
@@ -194,7 +191,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
   it("Assigning without project nor subproject permission to grant view permissions is not possible", function() {
@@ -219,7 +216,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
@@ -242,7 +239,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
   it("Assigning without subproject 'list permissions'- permissions opens dialog viewing this information", function() {
@@ -264,7 +261,7 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
   });
   it("Assigning without project nor subproject 'list permissions'- permissions opens dialog viewing this information", function() {
@@ -287,21 +284,31 @@ describe("Subproject Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
   });
-  it("All missing project/subproject permissions are shown", function() {
+  it("All required project/subproject action are shown", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 4);
+    // 4 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 4);
+    });
+    // 1 original action
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
   });
   it("All missing project permissions are shown", function() {
     cy.get("@assigneeId").then(assigneeId => {
@@ -315,10 +322,13 @@ describe("Subproject Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 2);
+    // 2 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 2);
+    });
     // Reset permissions
     cy.get("@assigneeId").then(assigneeId => {
       cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assigneeId);
@@ -337,10 +347,13 @@ describe("Subproject Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 2);
+    // 2 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 2);
+    });
 
     // reset Permissions
     cy.get("@assigneeId").then(assigneeId => {
@@ -348,7 +361,7 @@ describe("Subproject Assignee", function() {
       cy.revokeProjectPermission(projectId, "project.viewDetails", assigneeId);
     });
   });
-  it("No missing permissions are shown if there aren't any", function() {
+  it("No missing actions are shown if there aren't any", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.viewSummary", assigneeId);
       cy.grantProjectPermission(projectId, "project.viewDetails", assigneeId);
@@ -362,7 +375,9 @@ describe("Subproject Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]").should("not.be.visible");
+
+    cy.get("[data-test=additional-actions]").should("not.be.visible");
+    cy.get("[data-test=original-actions]").should("be.visible");
 
     // reset Permissions
     cy.get("@assigneeId").then(assigneeId => {

@@ -10,7 +10,7 @@ const getStepContent = ({ currentStep = 0, steps, ...props }) => {
 };
 
 const styles = {
-  contentStyle: { margin: "0 16px",  },
+  contentStyle: { margin: "0 16px"  },
   multiStep: { width: "90%" }
 };
 

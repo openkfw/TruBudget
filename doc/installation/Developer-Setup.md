@@ -155,24 +155,26 @@ If you want to start developing on Trubudget, you need to setup the application 
 ### Dockerized Application
 
 This is the fastes way you can run all services needed for development. Everything is run in one command:
- 1. in root directory execute: `sh scripts/development/start-dev.sh`
 
- The script cares for `.env` file. No further step needed. 
- 
- Following services are dockerized:
-  - Blockchain (master node)
-  - API (master API)
-  - Provisioning (feeds application with dummy data)
-  - Excel export
-  - Frontend
+1.  in root directory execute: `sh scripts/development/start-dev.sh`
 
-  It takes some time to build and run at the first launch. After that, source codes of API and frontend are live reloaded. That means any change in `./src` folder is reflected in respective containter automatically. 
+The script cares for `.env` file. No further step needed.
 
-  The frontend should be availaible as usual at http://localhost:3000
-  
-  Docker Compose ensures that services are communicating and have correct environment variables set. Docker Compose puts all services in the same network and exposes needed ports.
+Following services are dockerized:
 
-  You can inspect each container individually:  `docker logs --follow CONTAINER`. Where CONTAINER represents selected value of NAMES column container in output of `docker ps` command.
+- Blockchain (master node)
+- API (master API)
+- Provisioning (feeds application with dummy data)
+- Excel export
+- Frontend
+
+It takes some time to build and run at the first launch. After that, source codes of API and frontend are live reloaded. That means any change in `./src` folder is reflected in respective containter automatically.
+
+The frontend should be availaible as usual at http://localhost:3000
+
+Docker Compose ensures that services are communicating and have correct environment variables set. Docker Compose puts all services in the same network and exposes needed ports.
+
+You can inspect each container individually: `docker logs --follow CONTAINER`. Where CONTAINER represents selected value of NAMES column container in output of `docker ps` command.
 
 ### Blockchain
 
@@ -439,11 +441,23 @@ If you want to start this service or simply see more details regarding this feat
 
 ### End-to-end Tests
 
-Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
+Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. If you want to start all e2e-tests to check if your changes are not breaking any stuff we recommend the [Docker-Compose-Setup](#Docker-Compose Setup) More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
+
+#### Docker-Compose Setup
+
+One way to start the end-to-end tests is starting the e2e-test script. To start them execute following commands from root directory to make sure e2e-test will work:
+
+```bash
+cp .env_example .env
+sed -i 's/ORGANIZATION=.*/ORGANIZATION=KfW/g' .env
+sh scripts/testing/start-e2e-tests.sh
+```
+
+Note that the organization has to be "KfW" because the e2e-test's Organization is still hardcoded.
 
 #### Prerequisits
 
-Before running the tests you should make sure that the application is started (including the [excel export service](#excel-export-optional)) and that you first run the [provisioning](#provisioning-optional). In order for the backup_spec tests to pass you should also start the project with the same configurations (Organization and RPC Password) as the valid backup hardcoded in the `e2e-test/cypress/fixtures` folder. When running the e2e-tests locally, you have to make sure that the password used for authentication as root user in the test matches the one used in the project that is currently running, otherwise some tests can fail because of an "Authentication failed" error.
+Before running the tests you should make sure that the application is started (including the [excel export service](#excel-export-optional)) and that you first run the [provisioning](#provisioning-optional). In order for the backup_spec tests to pass you should also start the project with the same configurations (Organization and RPC Password). When running the e2e-tests locally, you have to make sure that the password used for authentication as root user in the test matches the one used in the project that is currently running, otherwise some tests can fail because of an "Authentication failed" error.
 
 #### Setup
 
@@ -463,11 +477,11 @@ In the `e2e-test` folder you can run the following commands:
 You need to run cypress while also specifying the urls of the frontend, api and excel export service you are using
 
 ```bash
-npm run cypress -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888
+npm run cypress -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888,ROOT_SECRET=root-secret
 
 or
 
-npm run e2etest -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888
+npm run e2etest -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888,ROOT_SECRET=root-secret
 
 ```
 

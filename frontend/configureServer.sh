@@ -45,6 +45,14 @@ if [ -n "$EMAIL_PORT" ]; then
   email_port=$EMAIL_PORT
 fi
 
+if [ "$USE_SSL" == "ssl" ]; then
+  export DOLLAR='$'
+  rm /etc/nginx/conf.d/default.conf
+  envsubst < /etc/nginx/conf.d/default-ssl.conf > /etc/nginx/conf.d/default.conf
+fi
+rm /etc/nginx/conf.d/default-ssl.conf
+
+
 # add the proxy pass and store the conf into the nginx conf directory
 sed -i -e "/# pathToApi/i\\
   proxy_pass http://$prod_host:$prod_port/;" /etc/nginx/conf.d/default.conf

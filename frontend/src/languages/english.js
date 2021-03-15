@@ -48,6 +48,7 @@ const en = {
     edited: "Edited",
     email: "Email",
     finish: "Finish",
+    global: "global",
     grant: "grant",
     history_end: "Last event reached",
     history: "History",
@@ -171,10 +172,15 @@ const en = {
     additional_organization_node: "Requests for Additional Nodes",
     address: "Address",
     approve: "Approve",
+    decline: "Decline",
     network: "Network",
     new_organization: "Requests for New Organizations",
     nodes: "Nodes",
-    permissions: "Permissions"
+    permissions: "Permissions",
+    declined_by: "Declined by",
+    connection_status: "Connection status",
+    last_seen: "Last seen",
+    admin_description: "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
   },
 
   login: {
@@ -324,16 +330,14 @@ const en = {
     assign_permissions: "Assign permissions",
     additional_permissions_dialog_text:
       "Additional actions must be executed to ensure users are also able to view all required resources.",
-    additional_permissions_required: "Additional permissions required",
-    assigning_text: `Do you really want to assign {0} to {1} "{2}"?`,
-    confirm_assign: "Confirm assign",
-    confirm_update_permissions: "Confirm update permissions",
+    confirmation_required: "Confirmation required",
     execute_actions: "Execute Actions",
     failed_action_error:
       "Error: Grant {0} to {1} failed. All actions that would have been executed after the error occured including the original actions are cancelled.",
     grant_and_assign: "Grant & Assign",
     list_permissions_required_text: "Make sure you have required list Permissions for all resources involved",
     no_permission_warning: "Warning: You don't have permission to execute all listed actions!",
+    original_actions: "You requested the following actions:",
     permissions_required: "Permissions required",
     permissions_text: `{0} needs additional permissions to view {1} "{2}".`,
     post_actions_dialog_text: "After creation following actions are executed",
@@ -341,12 +345,10 @@ const en = {
     project_close_text: "Are you sure, you want to close this project?",
     subproject_close: "Close subproject",
     subproject_close_text: "Are you sure, you want to close this subproject?",
-    update_permissions_dialog_text: "Do you really want to update permissions?",
     user_group: "User/Group",
     workflowitem_close: "Close workflowitem",
     workflowitem_close_text: "Are you sure, you want to close this workflowitem?",
-    workflowitem_create: "Create workflowitem",
-    workflowitem_create_text: "Are you sure, you want to create the workflowitem?"
+    workflowitem_create: "Create workflowitem"
   },
 
   intents: {
@@ -525,7 +527,8 @@ const en = {
     workflowitem_update: "{0} changed workflowitem {1} ",
     workflowitem_update_amount: "{0} changed workflowitem {1} budget in {2} ",
     workflowitem_document_validated: "{0} validated workflowitem document named {1} in {2} ",
-    workflowitem_document_invalidated: "{0} used different document in workflowitem to validate document named with  {1} in {2} "
+    workflowitem_document_invalidated:
+      "{0} used different document in workflowitem to validate document named with  {1} in {2} "
   },
 
   permissions: {

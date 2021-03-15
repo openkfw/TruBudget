@@ -6,17 +6,31 @@ import SubprojectDialogContent from "./SubprojectDialogContent";
 import { compareObjects, fromAmountString, shortenedDisplayName, isEmptyDeep } from "../../helper";
 
 const handleCreate = props => {
-  const { createSubProject, onDialogCancel, subprojectToAdd, location, storeSnackbarMessage } = props;
-  const { displayName, description, currency, validator, workflowitemType, projectedBudgets } = subprojectToAdd;
+  const {
+    createSubProject,
+    onDialogCancel,
+    projectDisplayName,
+    subprojectToAdd,
+    location,
+    storeSnackbarMessage,
+    users
+  } = props;
+  const { displayName, description, currency, workflowitemType, projectedBudgets } = subprojectToAdd;
   const projectId = location.pathname.split("/")[2];
+  const validator = {
+    id: subprojectToAdd.validator,
+    displayName: users.find(u => u.id === subprojectToAdd.validator)?.displayName
+  };
+
   createSubProject(
     projectId,
+    projectDisplayName,
     displayName,
     description,
     currency,
-    projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) })),
     validator,
-    workflowitemType
+    workflowitemType,
+    projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) }))
   );
   onDialogCancel();
 

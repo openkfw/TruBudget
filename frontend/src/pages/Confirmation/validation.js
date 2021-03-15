@@ -23,6 +23,30 @@ schemes
     })
   )
   .set(
+    "project.createSubproject",
+    Joi.object({
+      project: Joi.object().concat(validationForIdNamePermissionneeded),
+      validator: Joi.object().optional(),
+      subproject: Joi.object({
+        listPermissionsNeeded: Joi.boolean(),
+        projectId: Joi.string().required(),
+        displayName: Joi.string().required(),
+        validator: Joi.object().optional(),
+        projectedBudgets: Joi.array()
+          .items({
+            organization: Joi.string().required(),
+            value: Joi.string().required(),
+            currencyCode: Joi.string().required()
+          })
+          .optional(),
+        currency: Joi.string().required(),
+        description: Joi.string().allow(""),
+        workflowitemType: Joi.string().valid("restricted", "general", ""),
+        subprojectDisplayName: Joi.string().required()
+      })
+    })
+  )
+  .set(
     "subproject.assign",
     Joi.object({
       project: Joi.object().concat(validationForIdNamePermissionneeded),

@@ -10,7 +10,7 @@ describe("Overview Page", function() {
   });
 
   it("Disable project creation for 'root' user", function() {
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit(`/projects`);
     cy.get("[data-test=project-creation]").should("be.visible");
     cy.get("[data-test=project-creation] button").should("be.disabled");

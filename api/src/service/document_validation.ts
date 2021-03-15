@@ -57,8 +57,8 @@ export async function isSameDocument(
         },
         getUsersForIdentity: async (identity) => {
           return GroupQuery.resolveUsers(conn, ctx, issuer, identity);
-        }
-      }
+        },
+      },
     );
   });
   if (Result.isErr(documentValidationResult)) {

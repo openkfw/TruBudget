@@ -48,6 +48,7 @@ const pt = {
     edited: "Editado",
     email: "Email",
     finish: "Finalizar",
+    global: "global",
     grant: "Conceder",
     history_end: "Fim do histórico",
     history: "Histórico",
@@ -173,10 +174,15 @@ const pt = {
     additional_organization_node: "Pedidos de nós adicionais",
     address: "Endereço",
     approve: "Aprovar",
+    decline: "declínio",
     network: "Rede",
     new_organization: "Pedidos de novas organizações",
     nodes: "Nós",
-    permissions: "Permissões"
+    permissions: "Permissões",
+    declined_by: "Recusado por",
+    connection_status: "Status da conexão",
+    last_seen: "Visto pela última vez",
+    admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'"
   },
 
   login: {
@@ -327,10 +333,7 @@ const pt = {
     assign_permissions: "Atribuir permissões",
     additional_permissions_dialog_text:
       "Ações adicionais devem ser executadas para garantir que os usuários também possam visualizar todos os recursos necessários.",
-    additional_permissions_required: "Permissões adicionais necessárias",
-    assigning_text: `Você realmente gostaria de atribuir {0} ao {1} "{2}"?`,
-    confirm_assign: "Confirmar atribuição",
-    confirm_update_permissions: "Confirme as permissões de atualização",
+    confirmation_required: "Confirmação necessária",
     execute_actions: "Executar ações",
     failed_action_error:
       "Erro: concedeu {0} a {1} falhou. Todas as ações que teriam sido executadas após o erro, incluindo as ações originais, foram canceladas.",
@@ -338,6 +341,7 @@ const pt = {
     list_permissions_required_text:
       "Verifique se você tem permissões de lista necessárias para todos os recursos envolvidos",
     no_permission_warning: "Aviso: você não tem permissão para executar todas as ações listadas!",
+    original_actions: "Solicitou as seguintes acções:",
     permissions_required: "Permissões necessárias",
     permissions_text: `{0} precisa de permissões adicionais para visualizar {1} "{2}".`,
     post_actions_dialog_text: "Tem certeza de que deseja criar o workflowitem",
@@ -345,12 +349,10 @@ const pt = {
     project_close_text: "Tem a certeza de que quer encerrar este projecto?",
     subproject_close: "Fechar subprojecto",
     subproject_close_text: "Tem a certeza de que quer encerrar este subprojecto?",
-    update_permissions_dialog_text: "Deseja realmente atualizar as permissões?",
     user_group: "Usuários/Grupo",
     workflowitem_close: "Fechar item de workflow",
     workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?",
-    workflowitem_create: "Criar item de fluxo de trabalho",
-    workflowitem_create_text: "Tem certeza de que deseja criar o item de fluxo de trabalho?"
+    workflowitem_create: "Criar item de fluxo de trabalho"
   },
 
   intents: {
@@ -529,7 +531,8 @@ const pt = {
     workflowitem_update: "{0} modificou o item de workflow {1} ",
     workflowitem_update_amount: "{0} modificou o item de workflow {1} despesas dentro {2} ",
     workflowitem_document_validated: "{0} documento de item de fluxo de trabalho validado denominado {1} em {2} ",
-    workflowitem_document_invalidated: "{0} usado documento diferente no item de fluxo de trabalho para validar o documento nomeado com {1} em {2} "
+    workflowitem_document_invalidated:
+      "{0} usado documento diferente no item de fluxo de trabalho para validar o documento nomeado com {1} em {2} "
   },
 
   permissions: {

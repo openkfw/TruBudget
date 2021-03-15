@@ -55,7 +55,7 @@ const styles = {
   disabled: {},
   closeButtonContainer: { float: "right", marginTop: -8 },
   closeButtonSize: { fontSize: 15 },
-  itemContainer: { maxHeight: "70vh", overflow: "auto", boxShadow: 'none' },
+  itemContainer: { maxHeight: "70vh", overflow: "auto", boxShadow: "none" },
   clearButton: {
     width: 45,
     height: 45,
@@ -84,7 +84,7 @@ class SingleSelection extends Component {
           onClick={() => (id !== selectId ? this.props.onSelect(id, displayName) : undefined)}
         >
           <Radio className={classes.radioButton} disabled={disabled} checked={id === selectId} />
-          <ListItemText data-test={`single-select-name-${displayName}`} className={classes.nameContainer}>
+          <ListItemText data-test={`single-select-name-${id}`} className={classes.nameContainer}>
             <OverflowTooltip text={displayName} />
           </ListItemText>
         </MenuItem>

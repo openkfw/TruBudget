@@ -1,9 +1,10 @@
-export function executeOriginalActions(
+export function executeActions(
   actions,
   assignProject,
   assignSubproject,
   assignWorkflowitem,
   createWorkflowitem,
+  createSubProject,
   grantProjectPermission,
   revokeProjectPermission,
   grantSubprojectPermission,
@@ -14,8 +15,7 @@ export function executeOriginalActions(
   closeSubproject,
   closeWorkflowItem,
   disableUser,
-  enableUser,
-  postActions
+  enableUser
 ) {
   actions.forEach(action => {
     switch (action.intent) {
@@ -37,6 +37,19 @@ export function executeOriginalActions(
         const project = action.payload.project;
         const assignee = action.payload.assignee;
         assignProject(project.id, project.displayName, assignee.id, assignee.displayName);
+        break;
+      }
+      case "project.createSubproject": {
+        createSubProject(
+          action.payload.project.id,
+          action.payload.project.displayName,
+          action.payload.subproject.displayName,
+          action.payload.subproject.description,
+          action.payload.subproject.currency,
+          action.payload.subproject.validator,
+          action.payload.subproject.workflowitemType,
+          action.payload.subproject.projectedBudgets
+        );
         break;
       }
       case "subproject.intent.grantPermission": {
@@ -120,8 +133,7 @@ export function executeOriginalActions(
           projectDisplayName,
           subprojectDisplayName,
           assignee,
-          assigneeDisplayName,
-          postActions
+          assigneeDisplayName
         );
         break;
       }

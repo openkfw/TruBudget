@@ -5,57 +5,103 @@ describe("Subproject creation", function() {
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
-
-  it("Root cannot add a subproject", function() {
     const organization = "ACME Corp";
     const projectProjectedBudget = {
       organization,
       currencyCode: "EUR",
       value: "10000"
     };
-
-    //Create a project
     cy.login()
       .then(() =>
         cy.createProject("subproject budget test project", "subproject budget test", [projectProjectedBudget])
       )
       .then(({ id }) => {
         projectId = id;
-      })
-      //Log in as root since root can not create projects
-      .then(() => cy.login("root", "root-secret"))
-      .then(() => cy.visit(`/projects/${projectId}`))
-      .then(() => cy.get("[data-test=subproject-create-button]").should("be.visible"))
-      .then(() => cy.get("[data-test=subproject-create-button]").should("be.disabled"));
+      });
   });
 
-  it("Check warnings that permissions are not assigned", function() {
+  it("Root cannot add a subproject", function() {
+    //Log in as root since root can not create subprojects
+    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.visit(`/projects/${projectId}`);
+    cy.get("[data-test=subproject-create-button]").should("be.visible");
+    cy.get("[data-test=subproject-create-button]").should("be.disabled");
+  });
+
+  it("Check confirmation dialog without a selected default assignee", function() {
     cy.login();
     cy.visit(`/projects/${projectId}`);
     cy.server();
     cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
-
     //Create a subproject
     cy.wait("@loadPage")
       .get("[data-test=subproject-create-button]")
       .click();
     cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
-      .click()
-      .then(() => cy.get("[data-value=EUR]").click());
+    cy.get("[data-test=dropdown-sp-dialog-currencies-click]").click();
+    cy.get("[data-value=EUR]").click();
+    cy.get("[data-test=submit]").click();
+    // 1 original action
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
+    cy.get("[data-test=additional-actions]").should("not.be.visible");
+    cy.get("[data-test=post-actions]").should("not.be.visible");
+    // actions counter displays correct amount of actions
+    cy.get("[data-test=actions-counter]")
+      .scrollIntoView()
+      .contains("0 from 1 actions done");
+  });
+
+  it("Check additional, original and post actions when creating a subproject with validator", function() {
+    cy.login();
+    cy.visit(`/projects/${projectId}`);
+    cy.server();
+    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
+    //Create a subproject
+    cy.wait("@loadPage")
+      .get("[data-test=subproject-create-button]")
+      .click();
+    cy.get("[data-test=nameinput] input").type("Test");
+    cy.get("[data-test=dropdown-sp-dialog-currencies-click]").click();
+    cy.get("[data-value=EUR]").click();
+    // set default assignee
+    cy.get("[data-test=subproject-dialog-content]").within(() => {
+      cy.get("[data-test=single-select]").click();
+    });
+    cy.get("[data-test=single-select-name-thouse]").click();
+    cy.get("[data-test=close-select]").click();
     cy.get("[data-test=submit]").click();
 
-    //Check snackbar warning visible
-    cy.get("[data-test=client-snackbar]")
-      .should("be.visible")
-      .should("contain", "permissions");
-
-    //Check warning badge
-    cy.get("[data-test=warning-badge]").should("be.visible");
-    cy.get("[data-test=spp-button-0]").click({ force: true });
-    cy.get("[data-test=warning-badge]").should("not.be.checked");
-    cy.get("[data-test=permission-submit]").click();
-    cy.get("[data-test=warning-badge]").should("not.be.checked");
+    // 3 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 3);
+    });
+    // 1 original action
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
+    // 3 post action
+    cy.get("[data-test=post-actions]")
+      .scrollIntoView()
+      .within(() => {
+        cy.get("[data-test=actions-table-body]")
+          .should("be.visible")
+          .children()
+          .should("have.length", 3);
+      });
+    // actions counter displays correct amount of actions
+    cy.get("[data-test=actions-counter]")
+      .scrollIntoView()
+      .contains("0 from 7 actions done");
   });
 });

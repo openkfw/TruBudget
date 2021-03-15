@@ -23,6 +23,7 @@ rules:
   comma-dangle: 0
   no-underscore-dangle: 0
   no-control-regex: 0
+  linebreak-style: 0
   ## temporarily overriden below
   # import/no-extraneous-dependencies:
   #   - 2

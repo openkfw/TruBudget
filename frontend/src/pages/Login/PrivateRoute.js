@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Route, Redirect,
+  Route, Redirect
 } from 'react-router';
 
 
@@ -24,7 +24,7 @@ class PrivateRoute extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    jwt: state.getIn(['login', 'jwt']),
+    jwt: state.getIn(['login', 'jwt'])
   };
 };
 const mapDispatchToProps = (dispatch) => {

@@ -63,8 +63,10 @@ class Api {
    * @param {*} urlSlug tail segment of the URL
    * @param {*} devModePrefix prefixes urlSlug with additional string, if needed
    */
-  getExportServiceUrl = (urlSlug, devModePrefix = '') => {
-    const baseURL = devMode ? `http://localhost:${PORT_EXPORT_SVC}${!devModePrefix.length ? '' : `/${devModePrefix}`}` : '/export/xlsx';
+  getExportServiceUrl = (urlSlug, devModePrefix = "") => {
+    const baseURL = devMode
+      ? `http://localhost:${PORT_EXPORT_SVC}${!devModePrefix.length ? "" : `/${devModePrefix}`}`
+      : "/export/xlsx";
     return `${baseURL}/${urlSlug}`;
   };
 
@@ -72,8 +74,7 @@ class Api {
    * Returns URL for calling Email service
    * @param {*} urlSlug tail segment of the URL
    */
-  getEmailServiceUrl = (urlSlug) =>
-     `${devMode ? `http://localhost:${PORT_EMAIL_SVC}` : '/email'}/${urlSlug}`;
+  getEmailServiceUrl = urlSlug => `${devMode ? `http://localhost:${PORT_EMAIL_SVC}` : "/email"}/${urlSlug}`;
 
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
@@ -154,6 +155,10 @@ class Api {
     instance.post(`/network.approveNewNodeForExistingOrganization`, {
       address
     });
+  declineNode = node =>
+    instance.post(`/network.declineNode`, {
+      node
+    });
   listProjects = () => instance.get(`/project.list`);
   listSubprojects = projectId => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
 
@@ -209,11 +214,11 @@ class Api {
     displayName,
     description,
     currency,
-    projectedBudgets,
-    validator = undefined,
+    projectedBudgets = [],
+    validatorId = undefined,
     workflowitemType = undefined
   ) => {
-    if (_isEmpty(validator)) validator = undefined;
+    if (_isEmpty(validatorId)) validatorId = undefined;
     if (_isEmpty(workflowitemType)) workflowitemType = undefined;
     return instance.post(`/project.createSubproject`, {
       projectId,
@@ -222,7 +227,7 @@ class Api {
         description,
         currency,
         projectedBudgets,
-        validator,
+        validator: validatorId,
         workflowitemType
       }
     });
@@ -356,7 +361,15 @@ class Api {
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
     instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
 
-  validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) => instance.post(`/workflowitem.validateDocument`, { base64String, hash, id, projectId, subprojectId, workflowitemId });
+  validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) =>
+    instance.post(`/workflowitem.validateDocument`, {
+      base64String,
+      hash,
+      id,
+      projectId,
+      subprojectId,
+      workflowitemId
+    });
 
   listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
     instance.get(
@@ -452,38 +465,38 @@ class Api {
     return response;
   };
   export = () => {
-    const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, 'test/api/export/xlsx');
+    const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, "test/api/export/xlsx");
     return instance.get(path, { responseType: "blob" });
   };
   fetchExportServiceVersion = () => {
-    const path = this.getExportServiceUrl('version');
+    const path = this.getExportServiceUrl("version");
     return instance.get(path);
   };
   checkExportService = () => {
-    const path = this.getExportServiceUrl('readiness');
+    const path = this.getExportServiceUrl("readiness");
     return instance.get(path);
   };
   checkEmailService = () => {
-    const path = this.getEmailServiceUrl('readiness');
+    const path = this.getEmailServiceUrl("readiness");
     return instance.get(path);
   };
   fetchEmailServiceVersion = () => {
-    const path = this.getEmailServiceUrl('version');
+    const path = this.getEmailServiceUrl("version");
     return instance.get(path);
   };
   insertEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
-    const path = this.getEmailServiceUrl('user.insert');
+    const path = this.getEmailServiceUrl("user.insert");
     return instance.post(path, data);
   };
   updateEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
-    const path = this.getEmailServiceUrl('user.update');
+    const path = this.getEmailServiceUrl("user.update");
     return instance.post(path, data);
   };
   deleteEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
-    const path = this.getEmailServiceUrl('user.delete');
+    const path = this.getEmailServiceUrl("user.delete");
     return instance.post(path, data);
   };
   getEmailAddress = id => {

@@ -60,7 +60,7 @@ describe("Subproject Edit", function() {
 
   it("The edit button isn't visible without edit permissions", function() {
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=subproject-edit-button]").click();
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.update", "mstein");
     cy.login();
     cy.visit(`/projects/${projectId}`);

@@ -4,16 +4,14 @@ const fs = require("fs");
 const { md5Dir } = require("./md5");
 const { sha256Dir } = require("./sha256");
 
-const verifyHash = async (backupDirectoryHash, extractPath) => {
-  return (await md5Dir(extractPath)) === backupDirectoryHash;
-};
+const verifyHash = async (backupDirectoryHash, extractPath) => (await md5Dir(extractPath)) === backupDirectoryHash;
 
 const createMetadataFileSha256 = async (chainName, multichainDir, organisation) => {
   let dirHash;
   try {
     dirHash = await sha256Dir(`${multichainDir}/${chainName}`);
   } catch (e) {
-    console.log('sha256 error', e);
+    console.log("sha256 error", e);
   }
 
   const filePath = `${multichainDir}/${chainName}/metadata.yml`;

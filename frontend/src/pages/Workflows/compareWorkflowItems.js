@@ -7,12 +7,12 @@ export const compareWorkflowItems = (originalItem, itemToCompare) => {
   const modifiedOriginalItem = {
     ...originalItem,
     amount: toAmountString(originalItem.amount)
-  }
+  };
 
   const modifiedItemToCompare = {
     ...itemToCompare,
     exchangeRate: itemToCompare.exchangeRate ? itemToCompare.exchangeRate.toString() : undefined
-  }
+  };
 
   const changesExceptDocuments = Object.keys(modifiedItemToCompare)
     .filter(key => key !== "documents")

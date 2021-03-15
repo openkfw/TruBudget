@@ -1,8 +1,9 @@
 import Intent from "../../authz/intents";
 import logger from "../../lib/logger";
 import * as Result from "../../result";
-import { MultichainClient } from "../../service/Client.h";
+import { MultichainClient, PeerInfo } from "../../service/Client.h";
 import * as NodeRegistered from "../../service/domain/network/node_registered";
+import * as NodeDeclined from "../../service/domain/network/node_declined";
 import { Event } from "../../service/event";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 
@@ -28,6 +29,8 @@ export interface AugmentedWalletAddress {
 export interface NodeInfo {
   address: AugmentedWalletAddress;
   networkPermissions: PermissionInfo[];
+  isConnected?: boolean;
+  declinedBy: AugmentedWalletAddress[];
 }
 
 export interface PermissionInfo {
@@ -68,12 +71,25 @@ export async function publish(
   },
 ): Promise<Event> {
   const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
-  const event = NodeRegistered.createEvent(
-    "system",
-    "system",
-    (data as any).address,
-    (data as any).organization,
-  );
+  let event;
+  if (intent === "network.registerNode") {
+    event = NodeRegistered.createEvent(
+      "system",
+      "system",
+      (data as any).address,
+      (data as any).organization,
+    );
+  } else if (intent === "network.declineNode") {
+    event = NodeDeclined.createEvent(
+      "system",
+      "system",
+      (data as any).address,
+      (data as any).organization,
+      (data as any).declinerAddress,
+      (data as any).declinerOrganization,
+    );
+  }
+
   const streamItemKey = address;
   const streamItem = { json: event };
 
@@ -85,7 +101,7 @@ export async function publish(
       .then(() => event);
   };
 
-  return publishEvent().catch(err => {
+  return publishEvent().catch((err) => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
       logger.debug(
@@ -101,10 +117,35 @@ export async function publish(
   });
 }
 
+/**
+ * Detects if a node with the given address is currently connected to the network
+ * @param address Node wallet address
+ * @param publishers List of the publishers
+ * @param peerInfo List of directly connected peers (nodes)
+ */
+function isNodeConnected(
+  address: WalletAddress = "",
+  publishers: string[] = [],
+  peerInfo: PeerInfo[] = [],
+): boolean {
+  if (publishers.some((publisher) => publisher === address)) {
+    return true;
+  }
+
+  return !!peerInfo.find(
+    ({ handshake, handshakelocal }) => handshake === address || handshakelocal === address,
+  );
+}
+
+/**
+ * Gets a list with all registered nodes
+ *
+ * @param multichain the multichain on which the nodes were registered
+ */
 export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
     .v2_readStreamItems(streamName, "*")
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "NotFound" && err.what === "stream nodes") {
         // The stream does not exist yet, which happens on (freshly installed) systems that
         // have not seen any notifications yet.
@@ -116,11 +157,14 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
       }
     });
 
+  // add peer info
+  const peerInfo = await multichain.getPeerInfo();
+
   const nodeEventsByAddress = new Map<WalletAddress, NodeInfo>();
   const organizationsByAddress = new Map<WalletAddress, Organization>();
 
   for (const item of streamItems) {
-    const event = item.data.json as NodeRegistered.Event;
+    const event = item.data.json as NodeRegistered.Event | NodeDeclined.Event;
 
     if (item.keys.length !== 1) {
       const message = "Unexpected item key in 'nodes' stream";
@@ -135,7 +179,18 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
     if (nodeInfo === undefined) {
       throw Error(`I don't know how to handle this event: ${JSON.stringify(event)}.`);
     } else {
-      nodeEventsByAddress.set(address, nodeInfo);
+      nodeEventsByAddress.set(address, {
+        ...nodeInfo,
+        isConnected: isNodeConnected(address, item.publishers, peerInfo),
+      });
+      //add the decliners to the nodeInfo
+      if (item.data.json.type === "node_declined") {
+        const declinerAddress: AugmentedWalletAddress = {
+          address: item.data.json.declinerAddress,
+          organization: item.data.json.declinerOrganization,
+        };
+        nodeInfo.declinedBy.push(declinerAddress);
+      }
       const { organization } = nodeInfo.address;
       if (organization) organizationsByAddress.set(address, organization);
     }
@@ -158,6 +213,29 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
   return [...nodeEventsByAddress.values()];
 }
 
+/**
+ * Gets a node registered on the multichain
+ *
+ * @param multichain the multichain on which the node is registered
+ * @param address the address of the node
+ * @param organization if given, also checks that the organization of the node matches the address
+ */
+export async function getNode(
+  multichain: MultichainClient,
+  address: WalletAddress,
+  organization?: string,
+): Promise<NodeInfo | undefined> {
+  const nodes = await get(multichain);
+  for (const node of nodes) {
+    if (
+      (!organization || node.address.organization === organization) &&
+      node.address.address === address
+    ) {
+      return node;
+    }
+  }
+}
+
 export async function active(multichain: MultichainClient): Promise<number> {
   const networkInfo: MultichainNetworkInfo = await multichain
     .getRpcClient()
@@ -175,6 +253,7 @@ function handleCreate(input: any): NodeInfo | undefined {
       address: event.address,
       organization: event.organization,
     },
+    declinedBy: [],
     networkPermissions: [],
   };
 }
@@ -237,7 +316,7 @@ export async function getNetworkPermissions(
   address: WalletAddress,
   organizationsByAddress?: Map<WalletAddress, Organization>,
 ): Promise<PermissionInfo[]> {
-  const augment = addr => augmentAddress(addr, organizationsByAddress);
+  const augment = (addr) => augmentAddress(addr, organizationsByAddress);
 
   const permissions: NetworkPermission[] = ["connect", "admin"];
   const isVerbose = true;
@@ -248,11 +327,11 @@ export async function getNetworkPermissions(
   return (
     items
       // only those that refer to the address we're looking for:
-      .filter(item => item.address === address)
+      .filter((item) => item.address === address)
       // only consider global permissions:
-      .filter(item => item.for === null)
+      .filter((item) => item.for === null)
       // and from those only the permissions:
-      .map(item => {
+      .map((item) => {
         if (item.pending.length > 1) wtf(item);
 
         const pending = item.pending.length ? item.pending[0] : undefined;

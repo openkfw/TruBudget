@@ -5,6 +5,7 @@ import { withStyles } from "@material-ui/core/styles";
 import ErrorIcon from "@material-ui/icons/Close";
 import DoneIcon from "@material-ui/icons/Done";
 import TBDIcon from "@material-ui/icons/Remove";
+import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
 import React from "react";
 import strings from "../../localizeStrings";
@@ -25,7 +26,8 @@ const styles = {
     marginTop: "24px"
   },
   container: {
-    height: "180px"
+    minHeight: "56px",
+    maxHeight: "180px"
   },
   tableBody: {
     display: "flex",
@@ -47,12 +49,17 @@ const styles = {
     padding: "0px"
   },
   columnHeaderCell: {
-    fontSize: "14px",
     fontWeight: "bold",
-    alignSelf: "center",
-    flex: "1",
+    backgroundColor: "transparent",
+
+    fontSize: "14px",
+    borderBottom: "unset",
     padding: "0px 3px 4px 8px",
-    backgroundColor: "transparent"
+    alignSelf: "center",
+    flex: 1,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "140px"
   },
   tableRow: {
     display: "flex",
@@ -63,32 +70,42 @@ const styles = {
     fontSize: "14px",
     borderBottom: "unset",
     padding: "0px 3px 4px 8px",
+    alignSelf: "center",
     flex: 1,
     overflow: "hidden",
     textOverflow: "ellipsis",
-    '& div': {
-      width: '150px'
-    }
+    maxWidth: "140px"
   }
 };
 
-function generateHeader(classes, status) {
+function generateHeader(classes, status, actionTableColumns) {
   return (
     <TableRow className={classes.headerRow} key={"header"}>
-      <TableCell key={"header-type"} className={classes.columnHeaderCell} style={{ flex: 2 }}>
+      <TableCell key={"header-type"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
         {strings.common.type}
       </TableCell>
-      <TableCell key={"header-displayName"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-        {strings.common.name}
-      </TableCell>
-      <TableCell key={"header-permission"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-        {strings.common.permission}
-      </TableCell>
-      <TableCell key={"header-identity"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-        {strings.confirmation.user_group}
-      </TableCell>
+      {actionTableColumns.nameColumn ? (
+        <TableCell key={"header-displayName"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
+          {strings.common.name}
+        </TableCell>
+      ) : null}
+      {actionTableColumns.permissionColumn ? (
+        <TableCell key={"header-permission"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
+          {strings.common.permission}
+        </TableCell>
+      ) : null}
+      {actionTableColumns.actionColumn ? (
+        <TableCell key={"header-action"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
+          {strings.common.actions}
+        </TableCell>
+      ) : null}
+      {actionTableColumns.userOrGroupColumn ? (
+        <TableCell key={"header-identity"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
+          {strings.confirmation.user_group}
+        </TableCell>
+      ) : null}
       {status ? (
-        <TableCell key={"header-status"} className={classes.columnHeaderCell} style={{ textAlign: "right", flex: 2 }}>
+        <TableCell key={"header-status"} className={classes.columnHeaderCell} style={{ textAlign: "right", flex: 1 }}>
           {strings.common.status}
         </TableCell>
       ) : null}
@@ -96,30 +113,42 @@ function generateHeader(classes, status) {
   );
 }
 
-function generateActions(classes, actions, executedActions, failedAction, userList, status) {
+function generateActions(classes, actions, executedActions, failedAction, userList, status, actionTableColumns) {
   const actionsTable = [];
   actions.forEach((action, index) => {
     const type = strings.common[action.intent.split(".")[0]];
     const user = userList.find(user => user.id === action.identity);
+
     actionsTable.push(
       <TableRow className={classes.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
-        <TableCell key={index + "-type"} className={classes.tableCell} style={{ flex: 2 }}>
+        <TableCell key={index + "-type"} className={classes.tableCell} style={{ flex: 3 }}>
           {type}
         </TableCell>
-        <TableCell key={index + "-displayName"} className={classes.tableCell} style={{ flex: 3 }}>
-          <OverflowTooltip text={action.displayName} />
-        </TableCell>
-        <TableCell key={index + "-permission"} className={classes.tableCell} style={{ flex: 3 }}>
-          <OverflowTooltip text={makePermissionReadable(action.permission)} />
-        </TableCell>
-        <TableCell key={index + "-userName"} className={classes.tableCell} style={{ flex: 3 }}>
-          <OverflowTooltip text={user ? user.displayName : ""} />
-        </TableCell>
+        {actionTableColumns.nameColumn ? (
+          <TableCell key={index + "-displayName"} className={classes.tableCell} style={{ flex: 3 }}>
+            <OverflowTooltip text={action.displayName} />
+          </TableCell>
+        ) : null}
+        {actionTableColumns.permissionColumn ? (
+          <TableCell key={index + "-permission"} className={classes.tableCell} style={{ flex: 3 }}>
+            <OverflowTooltip text={makeReadable(action.permission)} />
+          </TableCell>
+        ) : null}
+        {actionTableColumns.actionColumn ? (
+          <TableCell key={index + "-action"} className={classes.tableCell} style={{ flex: 3 }}>
+            <OverflowTooltip text={makeReadable(action.intent)} />
+          </TableCell>
+        ) : null}
+        {actionTableColumns.userOrGroupColumn ? (
+          <TableCell key={index + "-userName"} className={classes.tableCell} style={{ flex: 3 }}>
+            <OverflowTooltip text={user ? user.displayName : ""} />
+          </TableCell>
+        ) : null}
         {status ? (
           <TableCell
             key={index + "-status"}
             className={classes.tableCell}
-            style={{ textAlign: "right", position: "relative", bottom: "4px", flex: 2 }}
+            style={{ textAlign: "right", position: "relative", bottom: "4px", flex: 1 }}
           >
             {getStatusIcon(executedActions, failedAction, action)}
           </TableCell>
@@ -143,32 +172,56 @@ function getStatusIcon(executedActions, failedAction, action) {
 }
 
 const actionExecuted = (executedActions, action) => {
-  return executedActions.some(
-    item =>
-      action.id === item.id &&
-      action.identity === item.identity &&
-      action.intent === item.intent &&
-      action.permission === item.permission
-  );
+  return executedActions.some(item => {
+    return action.identity === item.identity && action.intent === item.intent && action.permission === item.permission;
+  });
 };
 
-function makePermissionReadable(intent) {
+function makeReadable(intent) {
   const splittedString = intent.split(".");
   return strings.intents[splittedString[splittedString.length - 1]] || splittedString[splittedString.length - 1];
 }
 
 const ActionsTable = props => {
-  const { classes, actions, executedActions, executingActions, failedAction, userList, status = true } = props;
+  const {
+    classes,
+    actions,
+    executedActions,
+    executingActions,
+    failedAction,
+    userList,
+    status = true,
+    // eslint-disable-next-line no-useless-computed-key
+    ["data-test"]: dataTest
+  } = props;
+  let actionTableColumns = {
+    nameColumn: false,
+    permissionColumn: false,
+    actionColumn: false,
+    userOrGroupColumn: false
+  };
+
+  actions.forEach(a => {
+    _isEmpty(a.displayName) ? (actionTableColumns.nameColumn = false) : (actionTableColumns.nameColumn = true);
+    _isEmpty(a.permission)
+      ? (actionTableColumns.permissionColumn = false)
+      : (actionTableColumns.permissionColumn = true);
+    _isEmpty(a.intent) ? (actionTableColumns.actionColumn = false) : (actionTableColumns.actionColumn = true);
+    _isEmpty(a.identity)
+      ? (actionTableColumns.userOrGroupColumn = false)
+      : (actionTableColumns.userOrGroupColumn = true);
+  });
+
   return actions ? (
     <>
-      <Card className={classes.card}>
+      <Card className={classes.card} data-test={dataTest}>
         <TableContainer className={classes.container}>
           <Table aria-label="sticky table" data-test="actions-table">
             <TableHead data-test="actions-table-head" key={"wrapper"}>
-              {generateHeader(classes, status)}
+              {generateHeader(classes, status, actionTableColumns)}
             </TableHead>
             <TableBody data-test="actions-table-body" className={classes.tableBody}>
-              {generateActions(classes, actions, executedActions, failedAction, userList, status)}
+              {generateActions(classes, actions, executedActions, failedAction, userList, status, actionTableColumns)}
             </TableBody>
           </Table>
         </TableContainer>

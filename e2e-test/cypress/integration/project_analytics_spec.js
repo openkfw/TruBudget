@@ -160,7 +160,7 @@ describe("Project Analytics", function() {
     cy.get("[data-test=redacted-warning]").should("be.visible");
 
     // Reset permissions
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantWorkflowitemPermission(
       project.id,
       subproject.id,

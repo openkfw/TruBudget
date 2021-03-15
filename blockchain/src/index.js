@@ -43,6 +43,8 @@ const P2P_PORT = process.env.P2P_PORT || 7447;
 const API_PROTO = process.env.API_PROTO || "http";
 const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
+const MASTER_API_HOST = process.env.MASTER_API_HOST || API_HOST;
+const MASTER_API_PORT = process.env.MASTER_API_PORT || API_PORT;
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 
 // Email Service
@@ -144,7 +146,7 @@ function initMultichain() {
       multichainDir,
     ),);
     setTimeout(
-      () => registerNodeAtMaster(ORGANIZATION, API_PROTO, API_HOST, API_PORT),
+      () => registerNodeAtMaster(ORGANIZATION, API_PROTO, MASTER_API_HOST, MASTER_API_PORT),
       5000,
     );
   }
@@ -277,8 +279,8 @@ app.post("/chain", async (req, res) => {
         if (!validSha256) {
           validMD5 = await verifyHash(config.DirectoryHash, extractPath);
         }
-        const chainConfig = yaml.safeLoad(fs.readFileSync(chainConfigPath, "utf8"));;
-        var correctConfig = chainConfig.includes(RPC_PASSWORD);
+        const chainConfig = yaml.safeLoad(fs.readFileSync(chainConfigPath, "utf8"));
+        let correctConfig = chainConfig.includes(RPC_PASSWORD);
 
         if (config.hasOwnProperty("Organisation")) {
           const correctOrg = config.Organisation === ORGANIZATION;

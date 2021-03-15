@@ -96,9 +96,6 @@ describe("Project Assignee", function() {
     cy.get("[data-test=confirmation-dialog-confirm]")
       .should("be.visible")
       .click();
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .should("be.visible")
-      .click();
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("be.checked");
     });
@@ -144,7 +141,7 @@ describe("Project Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
     // Reset permissions
-    cy.login("root", "root-secret");
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
 
@@ -165,24 +162,35 @@ describe("Project Assignee", function() {
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
-    cy.login("root", "root-secret");
+
+    cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
 
-  it("All missing project permissions are shown", function() {
+  it("All required project permissions and actions are shown", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]")
-      .should("be.visible")
-      .children()
-      .should("have.length", 2);
+    // 2 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 2);
+    });
+    // 1 original action
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
   });
 
-  it("No missing permissions are shown if there aren't any", function() {
+  it("No additional permissions are shown if there aren't any", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.viewSummary", assigneeId);
       cy.grantProjectPermission(projectId, "project.viewDetails", assigneeId);
@@ -193,7 +201,8 @@ describe("Project Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=actions-table-body]").should("not.be.visible");
+    cy.get("[data-test=additional-actions]").should("not.be.visible");
+    cy.get("[data-test=original-actions]").should("be.visible");
     // reset Permissions
     cy.get("@assigneeId").then(assigneeId => {
       cy.revokeProjectPermission(projectId, "project.viewSummary", assigneeId);
@@ -211,7 +220,7 @@ describe("Project Assignee", function() {
 
   it("If the assignee name is too long, an ellipses with tooltip is shown", function() {
     cy.get("[data-test=single-select-list]").should("be.visible");
-    cy.get(`[data-test=single-select-name-${longUserName}]`)
+    cy.get(`[data-test=single-select-name-${longUserId}]`)
       .contains(longUserName)
       .trigger("mouseover");
     // show tooltip

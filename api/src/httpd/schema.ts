@@ -2998,6 +2998,48 @@ const schemas = {
       },
     },
   },
+  declineNode: {
+    schema: {
+      description: "A user declines a node's request to connect to the network",
+      tags: ["network"],
+      summary: "Decline a node's request",
+      body: {
+        type: "object",
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              node: {
+                type: "object",
+                properties: {
+                  address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
+                  organization: { type: "string", example: "Alice's Solutions & Co" },
+                },
+                required: ["address", "organization"],
+              },
+            },
+            required: ["node"],
+          },
+        },
+      },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+            },
+          },
+        },
+        401: getAuthErrorSchema(),
+      },
+    },
+  },
+
   voteForPermission: {
     schema: {
       description:
@@ -3172,6 +3214,7 @@ const schemas = {
                         },
                       },
                       myVote: { type: "string", example: "admin" },
+                      isConnected: { type: "boolean", example: true },
                       currentAccess: {
                         type: "object",
                         properties: {
@@ -3192,7 +3235,27 @@ const schemas = {
                               },
                             },
                           },
+                          decliners: {
+                            type: "array",
+                            items: {
+                              type: "object",
+                              properties: {
+                                address: {
+                                  type: "string",
+                                  example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM",
+                                },
+                                organization: {
+                                  type: "string",
+                                  example: "Alice's Solutions & Co",
+                                },
+                              },
+                            },
+                          },
                         },
+                      },
+                      lastSeen: {
+                        type: "string",
+                        example: "2021-02-11",
                       },
                     },
                   },

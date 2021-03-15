@@ -48,6 +48,7 @@ const ka = {
     edited: "რედაქტირებულია",
     email: "Email",
     finish: "დასრულება",
+    global: "გლობალური",
     grant: "მინიჭება",
     history_end: "Last event reached",
     history: "ისტორია",
@@ -172,10 +173,15 @@ const ka = {
     additional_organization_node: "მოთხოვნები დამატებითი კვანძებისთვის",
     address: "მისამართი",
     approve: "დადასტურება",
+    decline: "ვარდნა",
     network: "ქსელი",
     new_organization: "მოთხოვნები ახალი ორგანიზაციებისთვის",
     nodes: "Nodes",
-    permissions: "ნებართვები"
+    permissions: "ნებართვები",
+    declined_by: "უარი თქვა",
+    connection_status: "კავშირის სტატუსი",
+    last_seen: "ბოლო ნახვა",
+    admin_description: "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
   },
 
   login: {
@@ -326,16 +332,14 @@ const ka = {
     assign_permissions: "მიანიჭეთ ნებართვები",
     additional_permissions_dialog_text:
       "Additional actions must be executed to ensure users are also able to view all required resources.",
-    additional_permissions_required: "აუცილებელია დამატებითი ნებართვა",
-    assigning_text: `ნამდვილად გსურთ მიანიჭოთ {0} {1}-ს "{2}"?`,
-    confirm_assign: "მინიჭების დადასტურება",
-    confirm_update_permissions: "უფლებამოსილებების განახლების დადასტურება",
+    confirmation_required: "საჭიროა დადასტურება",
     execute_actions: "ქმედებების განხორციელება",
     failed_action_error:
       "Error: Grant {0} to {1} failed. All actions that would have been executed after the error occured including the original actions are cancelled.",
     grant_and_assign: "Grant & Assign",
     list_permissions_required_text: "Make sure you have required list Permissions for all resources involved",
     no_permission_warning: "გაფრთხილება: თქვენ არ შეგიძლიათ აღნიშნული ქმედების განხორციელება!",
+    original_actions: "თქვენ მოითხოვეთ შემდეგი ქმედებები:",
     permissions_required: "აუცილებელია ნებართვა",
     permissions_text: `{0} ესაჭიროება დამატებითი ნებართვა რათა იხილოს {1} "{2}".`,
     post_actions_dialog_text: "შექმნის შემდეგ შესრულებულია შემდეგი მოქმედებები",
@@ -343,12 +347,10 @@ const ka = {
     project_close_text: "დარწმუნებული ხართ, გსურთ ამ პროექტის დახურვა?",
     subproject_close: "ქვეპროექტის დახურვა",
     subproject_close_text: "დარწმუნებული ხართ, გსურთ ამ ქვეპროექტის დახურვა?",
-    update_permissions_dialog_text: "ნამდვილად გსურთ ნებართვების განახლება?",
     user_group: "მომხმარებელი/ჯგუფი",
     workflowitem_close: "სამუშაო ნაკადის დახურვა",
     workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?",
-    workflowitem_create: "სამუშაო პროცესის შექმნა",
-    workflowitem_create_text: "დარწმუნებული ხართ, რომ გსურთ შექმნათ workflowitem?"
+    workflowitem_create: "სამუშაო პროცესის შექმნა"
   },
 
   intents: {
@@ -527,7 +529,8 @@ const ka = {
     workflowitem_update: "{0} შეცვალა workflowitem-ი {1} ",
     workflowitem_update_amount: "{0} შეცვალა workflowitem-ი {1} ბიუჯეტი წელს {2}",
     workflowitem_document_validated: "{0} დადასტურებულია workflowitem სისტემაში მითითებული დოკუმენტ {1} ი {2} ",
-    workflowitem_document_invalidated: "{0} გამოყენებული სამუშაო ნაკადის ერთეული დოკუმენტი, რომელსაც სხვადასხვა დოკუმენტი აქვს დასახელებული {1} ი {2} "
+    workflowitem_document_invalidated:
+      "{0} გამოყენებული სამუშაო ნაკადის ერთეული დოკუმენტი, რომელსაც სხვადასხვა დოკუმენტი აქვს დასახელებული {1} ი {2} "
   },
 
   permissions: {

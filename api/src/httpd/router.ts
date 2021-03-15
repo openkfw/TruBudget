@@ -9,6 +9,7 @@ import { approveNewOrganization } from "../network/controller/approveNewOrganiza
 import { getNodeList } from "../network/controller/list";
 import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
+import { declineNode } from "../network/controller/declineNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
 import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
@@ -254,6 +255,16 @@ export const registerRoutes = (
   );
 
   server.post(
+    `${urlPrefix}/network.declineNode`,
+    getSchema(server, "declineNode"),
+    (request, reply) => {
+      declineNode(multichainClient, request as AuthenticatedRequest)
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(request, reply, err));
+    },
+  );
+
+  server.post(
     `${urlPrefix}/network.voteForPermission`,
     getSchema(server, "voteForPermission"),
     (request, reply) => {
@@ -311,7 +322,7 @@ export const registerRoutes = (
       createBackup(multichainHost, backupApiPort, req)
         .then((data) => {
           reply.header("Content-Type", "application/gzip");
-          reply.header("Content-Disposition", "attachment; filename=\"backup.gz\"");
+          reply.header("Content-Disposition", 'attachment; filename="backup.gz"');
           reply.send(data);
         })
         .catch((err) => handleError(req, reply, err));
