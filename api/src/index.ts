@@ -85,7 +85,6 @@ import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
-import * as WorkflowitemDocumentDownloadMinioService from "./service/workflowitem_document_minio_download";
 import * as WorkflowitemGetService from "./service/workflowitem_get";
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
@@ -121,7 +120,6 @@ import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
-import * as WorkflowitemsDocumentDownloadMinioAPI from "./workflowitem_download_document_minio";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
@@ -771,18 +769,6 @@ WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
       db,
       ctx,
       user,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      documentId,
-    ),
-});
-
-WorkflowitemsDocumentDownloadMinioAPI.addHttpHandler(server, URL_PREFIX, {
-  getDocumentMinio: (ctx, projectId, subprojectId, workflowitemId, documentId) =>
-    WorkflowitemDocumentDownloadMinioService.getDocumentMinio(
-      db,
-      ctx,
       projectId,
       subprojectId,
       workflowitemId,

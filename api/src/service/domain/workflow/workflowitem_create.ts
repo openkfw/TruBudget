@@ -1,6 +1,5 @@
 import Joi = require("joi");
 import { VError } from "verror";
-import { minioEndPoint, hostPort } from "../../../config";
 import Intent, { workflowitemIntents } from "../../../authz/intents";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
@@ -78,9 +77,6 @@ interface Repository {
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
-  uploadDocument(
-    document: UploadedDocument
-  ): Promise<void>;
 }
 
 export async function createWorkflowitem(
@@ -203,16 +199,7 @@ export async function createWorkflowitem(
     if (Result.isErr(result)) {
       return result;
     }
-    const { document } = result as WorkflowitemDocumentUploaded.Event;
-    // document should be private
-    if (minioEndPoint) {
-      await repository.uploadDocument(document);
-      const eventData = {...result, document: {...document, base64: "", url: hostPort}};
-      documentUploadedEvents.push(eventData);
-    } else {
-      documentUploadedEvents.push(result);
-    }
-
+    documentUploadedEvents.push(result);
   }
 
   // Check the workflowitem type

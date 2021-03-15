@@ -84,10 +84,7 @@ schemes
           base64: Joi.string()
             .required()
             .allow(""),
-          fileName: Joi.string().allow(""),
-          orgAccess: Joi.array()
-            .items(Joi.string())
-            .optional()
+          fileName: Joi.string().allow("")
         }),
         status: Joi.string().valid("open"),
         dueDate: Joi.date().allow(null),

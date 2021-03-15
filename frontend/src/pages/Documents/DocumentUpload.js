@@ -28,26 +28,8 @@ export default class DocumentUpload extends Component {
   constructor() {
     super();
     this.state = {
-      name: "",
-      orgAccess: []
+      name: ""
     };
-  }
-
-  checkOrgAccess = (org, checked) => {
-    this.setState((state) => {
-      const {orgAccess} = state;
-      // adding organisation
-      if (checked) {
-        if (!orgAccess.includes(org)) {
-          orgAccess.push(org);
-        }
-      } else {
-        if (orgAccess.includes(org)) {
-          orgAccess.splice(orgAccess.indexOf(org), 1);
-        }
-      }
-      return {orgAccess};
-    });
   }
 
   render = () => {
@@ -65,17 +47,6 @@ export default class DocumentUpload extends Component {
             id="documentnameinput"
             onChange={event => this.setState({ name: event.target.value })}
           />
-          {/* {
-            ['Org1', 'Org2'].map((org) => {
-              return (
-                <div key={`org-access-${org}`}>
-                  {org}
-                  <Checkbox value={org} onChange={event => this.checkOrgAccess(event.target.value, event.target.checked)} />
-                </div>
-
-              );
-            })
-          } */}
           <Button
             style={styles.uploadButton}
             disabled={
@@ -96,7 +67,7 @@ export default class DocumentUpload extends Component {
                     reader.onloadend = e => {
                       if (e.target.result !== undefined) {
                         const dataUrl = e.target.result.split(";base64,")[1];
-                        storeWorkflowDocument(this.state.name, dataUrl, file.name, this.state.orgAccess);
+                        storeWorkflowDocument(this.state.name, dataUrl, file.name);
                       }
                       this.setState({ name: "" });
                     };
