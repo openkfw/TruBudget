@@ -1466,6 +1466,12 @@ export function* removeUserFromGroupSaga({ groupId, userId }) {
 export function* fetchNodesSaga({ showLoading }) {
   yield execute(function*() {
     const { data } = yield callApi(api.listNodes);
+      // allows backwards compatibility:
+      data.nodes.forEach((node) => {
+        if (!node.currentAccess.decliners) {
+          node.currentAccess = { ...node.currentAccess, decliners: [] };
+        }
+      });     
     yield put({
       type: FETCH_NODES_SUCCESS,
       nodes: data.nodes
