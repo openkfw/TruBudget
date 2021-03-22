@@ -15,6 +15,7 @@ import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
 import { createBackup } from "../system/createBackup";
 import { getVersion } from "../system/getVersion";
+import { getProvisioningState } from "../system/getProvisioningState";
 import { restoreBackup } from "../system/restoreBackup";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
@@ -242,6 +243,16 @@ export const registerRoutes = (
       })
       .catch((err) => handleError(request, reply, err));
   });
+
+  server.get(
+    `${urlPrefix}/provisioned`,
+    getSchema(server, "provisioned"),
+    async (request, reply) => {
+      getProvisioningState(multichainClient)
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(request, reply, err));
+    },
+  );
 
   // ------------------------------------------------------------
   //       network

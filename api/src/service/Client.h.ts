@@ -12,7 +12,8 @@ export type StreamKind =
   | "notifications"
   | "nodes"
   | "groups"
-  | "network_log";
+  | "network_log"
+  | "system_information";
 
 // The "stream details" are read-only, so they're only used to define the stream's nature:
 interface StreamDetails {

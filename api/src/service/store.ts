@@ -167,6 +167,22 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
     case "public_key_updated":
       return writeTo(conn, ctx, { stream: "public_keys", keys: [event.organization], event });
 
+    case "provisioning_started":
+      await ensureStreamExists(conn, ctx, "system_information", "system_information");
+      return writeTo(conn, ctx, {
+        stream: "system_information",
+        keys: [event.type, event.time],
+        event,
+      });
+
+    case "provisioning_ended":
+      await ensureStreamExists(conn, ctx, "system_information", "system_information");
+      return writeTo(conn, ctx, {
+        stream: "system_information",
+        keys: [event.type, event.time],
+        event,
+      });
+
     default:
       return Promise.reject(Error(`Not implemented: store(${JSON.stringify(event)})`));
   }

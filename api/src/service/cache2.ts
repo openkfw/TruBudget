@@ -59,6 +59,8 @@ import * as DocumentUploaded from "./domain/document/document_uploaded";
 import * as DocumentShared from "./domain/document/document_shared";
 import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
 import { Item } from "./liststreamitems";
+import * as ProvisioningStarted from "./domain/workflow/provisioning_started";
+import * as ProvisioningEnded from "./domain/workflow/provisioning_ended";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -619,6 +621,8 @@ const EVENT_PARSER_MAP = {
   workflowitem_document_uploaded: WorkflowitemDocumentUploaded.validate,
   workflowitem_document_validated: DocumentValidated.validate,
   peerinfo_saved: NodesLogged.validate,
+  provisioning_started: ProvisioningStarted.validate,
+  provisioning_ended: ProvisioningEnded.validate,
 };
 
 export function parseBusinessEvents(

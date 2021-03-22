@@ -132,6 +132,41 @@ const schemas = {
       },
     },
   },
+
+  provisioned: {
+    schema: {
+      description: "Returns boolean if the multichain was provisioned successfully",
+      tags: ["system"],
+      summary: "Check if provisioned",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                isProvisioned: {
+                  type: "boolean",
+                  example: "true",
+                },
+                message: {
+                  type: "string",
+                  example: "The Multichain has been provisioned successfully",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   // ------------------------------------------------------------
   //       user
   // ------------------------------------------------------------
@@ -3361,6 +3396,7 @@ const schemas = {
     },
   },
 };
+
 export function getSchema(server, id): Schema {
   const schema = schemas[id];
   return {

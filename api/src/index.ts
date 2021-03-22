@@ -133,6 +133,10 @@ import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revo
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
+import * as ProvisioningStartAPI from "./provisioning_start";
+import * as ProvisioningStartService from "./service/provisioning_start";
+import * as ProvisioningEndAPI from "./provisioning_end";
+import * as ProvisioningEndService from "./service/provisioning_end";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -784,6 +788,18 @@ WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
       workflowitemId,
       documentId,
     ),
+});
+
+/*
+ * APIs related to system
+ */
+
+ProvisioningStartAPI.addHttpHandler(server, URL_PREFIX, {
+  startProvisioning: (ctx, user) => ProvisioningStartService.startProvisioning(db, ctx, user),
+});
+
+ProvisioningEndAPI.addHttpHandler(server, URL_PREFIX, {
+  endProvisioning: (ctx, user) => ProvisioningEndService.endProvisioning(db, ctx, user),
 });
 
 /*
