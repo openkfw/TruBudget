@@ -37,6 +37,7 @@ const renderSortButton = props => (
     }
     onClick={() => handleEnableWorkflowEdit(props)}
     style={styles.editButton}
+    data-test="enable-workflowitem-sort"
   >
     <EditIcon />
   </Fab>
@@ -50,7 +51,12 @@ const handleEnableWorkflowEdit = props => {
 };
 
 const renderSubmitSortButton = props => (
-  <Fab size="small" onClick={() => handleSubmitEdit(props)} style={styles.editButton}>
+  <Fab
+    size="small"
+    onClick={() => handleSubmitEdit(props)}
+    style={styles.editButton}
+    data-test="submit-workflowitem-sort"
+  >
     <DoneIcon />
   </Fab>
 );
