@@ -78,7 +78,7 @@ services:
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
 
-  e2etest:
+  cypress:
     build:
       context: "../../e2e-test"
     links:
@@ -89,6 +89,7 @@ services:
     environment:
       CYPRESS_ROOT_SECRET: ${ROOT_SECRET}
       CYPRESS_BASE_URL: http://frontend
+      - DISPLAY
     depends_on:
       - frontend
       - master

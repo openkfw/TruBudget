@@ -21,6 +21,7 @@ This document describes how to set up your environment to start developing and d
     - [IDE](#ide)
     - [Chrome Developer Tools](#chrome-developer-tools)
     - [Git-Secrets](#git-secrets)
+    - [Environment variables](#environment-variables)
     - [Docker Environment](#docker-environment)
 
   - [Development Setup](#development-setup)
@@ -142,11 +143,15 @@ cd .githooks
 sh setupGitSecrets.sh
 ```
 
-### Docker Environment
+### Environment variables
 
 All projects in TruBudget (blockchain, api, frontend, etc) have a docker-compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env_example` in each project directory. To use these environemnt variables, simply copy the `.env.example` file and rename it to `.env`.
 
-Furthermore, there is a folder called `docker-compose`in the root project directory. Running the project from these files is also possible, however check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/docker-compose/README.md) for more details.
+Note: Do NOT use other additional ways to set environment variables like inline env-variables or env-variables defined by 'export'. Why? - Because these env-variables will overwrite each which makes it very hard to find mistakes.
+
+### Docker Environment
+
+There is a folder called `docker-compose` in the root project directory. Running the project from these files is also possible, however check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/docker-compose/README.md) for more details.
 
 ## Development Setup
 
@@ -441,19 +446,21 @@ If you want to start this service or simply see more details regarding this feat
 
 ### End-to-end Tests
 
-Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. If you want to start all e2e-tests to check if your changes are not breaking any stuff we recommend the [Docker-Compose-Setup](#Docker-Compose Setup) More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
+Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. If you want to start all e2e-tests to check if your changes are not breaking any stuff we recommend the [Docker Compose Setup](#docker-compose-setup). More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
 
 #### Docker-Compose Setup
 
-One way to start the end-to-end tests is starting the e2e-test script. To start them execute following commands from root directory to make sure e2e-test will work:
+One way to start the all end-to-end tests is starting the e2e-test script. To start them execute following commands from root directory to make sure e2e-test will work:
 
 ```bash
 cp .env_example .env
 sed -i 's/ORGANIZATION=.*/ORGANIZATION=KfW/g' .env
-sh scripts/testing/start-e2e-tests.sh
+sh scripts/testing/start-all-e2e-tests.sh
 ```
 
 Note that the organization has to be "KfW" because the e2e-test's Organization is still hardcoded.
+
+More information about the docker compose setup can be found in the e2e-test [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
 
 #### Prerequisits
 
@@ -474,18 +481,22 @@ cd e2e-test
 
 In the `e2e-test` folder you can run the following commands:
 
-You need to run cypress while also specifying the urls of the frontend, api and excel export service you are using
+Before you run cypress, you need to specify the environment variables (such as Organization, URLs of fronted, api, excel export, email service) in the .env\* file. If you have not .env\* file, create one and copy the content from /e2e-test/.env_example\* to /e2e-test/.env\*. For more information see [Environment variables](#environment-variables)
 
 ```bash
-npm run cypress -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888,ROOT_SECRET=root-secret
+npm run cypress
 
 or
 
-npm run e2etest -- --config baseUrl=http://localhost:3000 --env API_BASE_URL=http://localhost:8080,EXPORT_SERVICE_BASE_URL=http://localhost:8888,ROOT_SECRET=root-secret
+npm run e2etest
 
 ```
 
 or through the Cypress frontend under settings.
+
+For further information see the [README.md](../../e2e-test/README.md) of /e2e-test
+
+Note: .env\* file is needed.
 
 ### Unit Tests
 
