@@ -56,8 +56,6 @@ services:
       ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
-    volumes:
-      - "../../provisioning/src:/usr/src/app/src:delegated"
     depends_on:
       - master-api
 
@@ -120,7 +118,7 @@ services:
   nginx:
     image: nginx:1.19.2-alpine
     volumes:
-      - ../../minio/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../../minio/nginx:/etc/nginx:ro
     ports:
       - "9000:9000"
     depends_on:
