@@ -501,7 +501,7 @@ export const WorkflowItem = withTheme(
         const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";
 
         return (
-          <div className={classes.container}>
+          <div className={classes.container} data-test={`workflowitem-container-${id}`}>
             {createLine(classes, mapIndex === 0, workflowSelectable)}
             <StepDot
               classes={classes}
@@ -514,6 +514,7 @@ export const WorkflowItem = withTheme(
               allowedIntents={allowedIntents}
             />
             <Card
+              data-test="selectable-card"
               elevation={workflowSelectable ? 1 : 0}
               key={mapIndex}
               className={`${getCardClass(classes, workflowSortEnabled, status)} ${classes.card}`}
@@ -595,7 +596,12 @@ export const RedactedWorkflowItem = withTheme(
           <div className={classes.container}>
             {createLine(classes, mapIndex === 0, workflowSelectable)}
             <StepDot classes={classes} status={status} selectable={workflowSelectable} redacted={true} />
-            <Card elevation={workflowSelectable ? 1 : 0} key={mapIndex} className={classes.card}>
+            <Card
+              data-test="redacted-selectable-card"
+              elevation={workflowSelectable ? 1 : 0}
+              key={mapIndex}
+              className={classes.card}
+            >
               <div className={classes.workflowContent}>
                 <div style={{ flex: 1 }}>
                   <IconButton className={classes.buttonStyle}>
