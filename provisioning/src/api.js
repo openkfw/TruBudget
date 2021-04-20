@@ -40,7 +40,7 @@ const addUserToGroup = async (axios, groupId, userId) => {
   await withRetry(() =>
     axios.post("/group.addUser", {
       groupId,
-      userId,
+      userIds: [userId],
     })
   );
 };
@@ -49,7 +49,7 @@ const removeUserFromGroup = async (axios, groupId, userId) => {
   await withRetry(() =>
     axios.post("/group.removeUser", {
       groupId,
-      userId,
+      userIds: [userId],
     })
   );
 };
