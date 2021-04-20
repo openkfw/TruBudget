@@ -5,14 +5,14 @@ import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import {
   addInitialUserToGroup,
-  addUser,
+  addUsers,
   createUser,
   createUserGroup,
   grantGlobalPermission,
   hideDashboardDialog,
   hidePasswordDialog,
   removeInitialUserFromGroup,
-  removeUser,
+  removeUsers,
   revokeGlobalPermission,
   storeNewPassword,
   storeNewPasswordConfirmation,
@@ -97,8 +97,8 @@ const mapDispatchToProps = dispatch => {
     storeGroupId: groupId => dispatch(storeGroupId(groupId)),
     addInitialUserToGroup: userId => dispatch(addInitialUserToGroup(userId)),
     removeInitialUserFromGroup: userId => dispatch(removeInitialUserFromGroup(userId)),
-    addUser: (groupId, userId) => dispatch(addUser(groupId, userId)),
-    removeUserFromGroup: (groupId, userId) => dispatch(removeUser(groupId, userId)),
+    addUsers: (groupId, userIds) => dispatch(addUsers(groupId, userIds)),
+    removeUsers: (groupId, userIds) => dispatch(removeUsers(groupId, userIds)),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     createUser: (displayName, organization, username, password) =>
       dispatch(createUser(displayName, organization, username, password)),
