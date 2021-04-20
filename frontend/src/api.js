@@ -134,15 +134,15 @@ class Api {
         users
       }
     });
-  addUserToGroup = (groupId, userId) =>
+  addUsersToGroup = (groupId, userIds) =>
     instance.post(`/group.addUser`, {
       groupId,
-      userId
+      userIds
     });
-  removeUserFromGroup = (groupId, userId) =>
+  removeUsersFromGroup = (groupId, userIds) =>
     instance.post(`/group.removeUser`, {
       groupId,
-      userId
+      userIds
     });
   listGroup = () => instance.get(`/group.list`);
   listNodes = () => instance.get(`/network.list`);

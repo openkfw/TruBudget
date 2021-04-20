@@ -158,8 +158,8 @@ import {
   SET_TOTAL_PROJECT_HISTORY_ITEM_COUNT
 } from "./pages/SubProjects/actions";
 import {
-  ADD_USER,
-  ADD_USER_SUCCESS,
+  ADD_USERS,
+  ADD_USERS_SUCCESS,
   CHANGE_USER_PASSWORD_SUCCESS,
   CHECK_AND_CHANGE_USER_PASSWORD,
   CHECK_USER_PASSWORD_ERROR,
@@ -184,8 +184,8 @@ import {
   GRANT_GLOBAL_PERMISSION_SUCCESS,
   LIST_GLOBAL_PERMISSIONS,
   LIST_GLOBAL_PERMISSIONS_SUCCESS,
-  REMOVE_USER,
-  REMOVE_USER_SUCCESS,
+  REMOVE_USERS,
+  REMOVE_USERS_SUCCESS,
   REVOKE_GLOBAL_PERMISSION,
   REVOKE_GLOBAL_PERMISSION_SUCCESS
 } from "./pages/Users/actions.js";
@@ -1308,11 +1308,11 @@ export function* createGroupSaga({ groupId, name, users }) {
   }, true);
 }
 
-export function* addUserToGroupSaga({ groupId, userId }) {
+export function* addUsersToGroupSaga({ groupId, userIds }) {
   yield execute(function*() {
-    yield callApi(api.addUserToGroup, groupId, userId);
+    yield callApi(api.addUsersToGroup, groupId, userIds);
     yield put({
-      type: ADD_USER_SUCCESS
+      type: ADD_USERS_SUCCESS
     });
     yield put({
       type: FETCH_GROUPS,
@@ -1459,11 +1459,11 @@ export function* disableUserSaga({ userId }) {
   }, true);
 }
 
-export function* removeUserFromGroupSaga({ groupId, userId }) {
+export function* removeUsersFromGroupSaga({ groupId, userIds }) {
   yield execute(function*() {
-    yield callApi(api.removeUserFromGroup, groupId, userId);
+    yield callApi(api.removeUsersFromGroup, groupId, userIds);
     yield put({
-      type: REMOVE_USER_SUCCESS
+      type: REMOVE_USERS_SUCCESS
     });
     yield put({
       type: FETCH_GROUPS,
@@ -3156,8 +3156,8 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_USER, fetchUserSaga),
       yield takeEvery(FETCH_GROUPS, fetchGroupSaga),
       yield takeEvery(CREATE_GROUP, createGroupSaga),
-      yield takeEvery(ADD_USER, addUserToGroupSaga),
-      yield takeEvery(REMOVE_USER, removeUserFromGroupSaga),
+      yield takeEvery(ADD_USERS, addUsersToGroupSaga),
+      yield takeEvery(REMOVE_USERS, removeUsersFromGroupSaga),
       yield takeEvery(FETCH_NODES, fetchNodesSaga),
       yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga),
       yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga),
