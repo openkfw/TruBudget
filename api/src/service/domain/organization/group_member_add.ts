@@ -15,11 +15,11 @@ interface Repository {
   getGroupEvents(): Promise<BusinessEvent[]>;
 }
 
-export async function addMember(
+export async function addMembers(
   ctx: Ctx,
   issuer: ServiceUser,
   groupId: Group.Id,
-  newMember: Group.Member,
+  newMembers: Group.Member[],
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent>> {
   const groupEvents = await repository.getGroupEvents();
@@ -32,9 +32,9 @@ export async function addMember(
   }
 
   logger.trace("Creating new GroupMemberAdded event");
-  const memberAdded = GroupMemberAdded.createEvent(ctx.source, issuer.id, groupId, newMember);
-  if (Result.isErr(memberAdded)) {
-    return new VError(memberAdded, "failed to create group added event");
+  const membersAdded = GroupMemberAdded.createEvent(ctx.source, issuer.id, groupId, newMembers);
+  if (Result.isErr(membersAdded)) {
+    return new VError(membersAdded, "failed to create group added event");
   }
 
   logger.trace({ issuer }, "Checking if user is root or has permissions");
@@ -46,10 +46,10 @@ export async function addMember(
   }
 
   logger.trace("Checking that the groupEvents are valid");
-  const { errors } = sourceGroups(ctx, groupEvents.concat([memberAdded]));
+  const { errors } = sourceGroups(ctx, groupEvents.concat([membersAdded]));
   if (errors.length > 0) {
-    return new InvalidCommand(ctx, memberAdded, errors);
+    return new InvalidCommand(ctx, membersAdded, errors);
   }
 
-  return memberAdded;
+  return membersAdded;
 }

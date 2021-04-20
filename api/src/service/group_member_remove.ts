@@ -9,17 +9,17 @@ import * as GroupMemberRemove from "./domain/organization/group_member_remove";
 import { ServiceUser } from "./domain/organization/service_user";
 import { store } from "./store";
 
-export async function removeMember(
+export async function removeMembers(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
   groupId: Group.Id,
-  userId: Group.Member,
+  userIds: Group.Member[],
 ): Promise<Result.Type<void>> {
-  logger.debug({ userId }, "Removing user from group");
+  logger.debug({ userIds }, "Removing users from group");
 
   const memberRemoveResult = await Cache.withCache(conn, ctx, (cache) =>
-    GroupMemberRemove.removeMember(ctx, serviceUser, groupId, userId, {
+    GroupMemberRemove.removeMembers(ctx, serviceUser, groupId, userIds, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
       },
