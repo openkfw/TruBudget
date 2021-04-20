@@ -34,7 +34,7 @@ function apply(
   if (event.type === "group_created") {
     handleGroupCreated(ctx, groups, event, errors);
   } else if (event.type === "group_member_added") {
-    applyMemberAdded(ctx, groups, event, errors);
+    applyMembersAdded(ctx, groups, event, errors);
   } else if (event.type === "group_member_removed") {
     applyMemberRemoved(ctx, groups, event, errors);
   } else if (event.type === "group_permissions_granted") {
@@ -85,79 +85,89 @@ function handleGroupCreated(
   groups.set(initialData.id, group);
 }
 
-function applyMemberAdded(
+function applyMembersAdded(
   ctx: Ctx,
   groups: Map<Group.Id, Group.Group>,
-  memberAdded: GroupMemberAdded.Event,
+  membersAdded: GroupMemberAdded.Event,
   errors: EventSourcingError[],
 ) {
   logger.trace("Adding member to group...");
-
-  const group = deepcopy(groups.get(memberAdded.groupId));
+  // newMembers are member that are currently not in the group
+  let newMembers: string[] = [];
+  const group = deepcopy(groups.get(membersAdded.groupId));
   if (group === undefined) return;
 
-  if (group.members.includes(memberAdded.newMember)) {
+  membersAdded.newMembers.forEach((member) => {
+    if (group.members.includes(member)) {
+      return;
+    }
+    newMembers.push(member);
+  });
+
+  if (newMembers.length === 0) {
     return;
   }
 
-  group.members.push(memberAdded.newMember);
+  group.members.push(...newMembers);
 
   const result = Group.validate(group);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError({ ctx, event: memberAdded }, result));
+    errors.push(new EventSourcingError({ ctx, event: membersAdded }, result));
     return;
   }
 
   const traceEvent: GroupTraceEvent = {
-    entityId: memberAdded.groupId,
+    entityId: membersAdded.groupId,
     entityType: "group",
-    businessEvent: memberAdded,
+    businessEvent: membersAdded,
     snapshot: {
       displayName: group.displayName,
     },
   };
   group.log.push(traceEvent);
 
-  groups.set(memberAdded.groupId, group);
+  groups.set(membersAdded.groupId, group);
 }
 
 function applyMemberRemoved(
   ctx: Ctx,
   groups: Map<Group.Id, Group.Group>,
-  memberRemoved: GroupMemberRemoved.Event,
+  membersRemoved: GroupMemberRemoved.Event,
   errors: EventSourcingError[],
 ) {
   logger.trace("Remove member from group...");
-
-  const group = deepcopy(groups.get(memberRemoved.groupId));
+  const group = deepcopy(groups.get(membersRemoved.groupId));
   if (group === undefined) return;
 
-  const memberIdx = group.members.indexOf(memberRemoved.member);
-  if (memberIdx === -1) {
-    logger.trace("The member to remove does not belong to this group => all good!");
-    return;
-  }
-  // Remove the user from the array:
-  group.members.splice(memberIdx, 1);
+  membersRemoved.members.forEach((member) => {
+    const memberIdx = group.members.indexOf(member);
+    if (memberIdx === -1) {
+      // The "member" already doesn't belong to this group, so there's nothing left to do.
+      logger.trace("The member to remove does not belong to this group => all good!");
+      return;
+    }
+    // Remove the user from the array:
+    group.members.splice(memberIdx, 1);
+  });
 
   const result = Group.validate(group);
   if (Result.isErr(result)) {
-    errors.push(new EventSourcingError({ ctx, event: memberRemoved }, result));
+    errors.push(new EventSourcingError({ ctx, event: membersRemoved }, result));
     return;
   }
   logger.trace("Publishing member removal ...");
 
   const traceEvent: GroupTraceEvent = {
-    entityId: memberRemoved.groupId,
+    entityId: membersRemoved.groupId,
     entityType: "group",
-    businessEvent: memberRemoved,
+    businessEvent: membersRemoved,
     snapshot: {
       displayName: group.displayName,
     },
   };
   group.log.push(traceEvent);
 
-  groups.set(memberRemoved.groupId, group);
+  groups.set(membersRemoved.groupId, group);
 }
 
 function applyPermissionGranted(

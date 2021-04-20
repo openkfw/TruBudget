@@ -14,15 +14,15 @@ interface RequestBodyV1 {
   apiVersion: "1.0";
   data: {
     groupId: string;
-    userId: string;
+    userIds: string[];
   };
 }
 
 const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
-    groupId: safeIdSchema.required(),
-    userId: safeIdSchema.required(),
+    groupId: Joi.string().required(),
+    userIds: Joi.array().items(safeIdSchema).required(),
   }).required(),
 });
 
@@ -38,9 +38,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
     schema: {
-      description: "Add user to a group",
+      description: "Add one or more users to a group",
       tags: ["group"],
-      summary: "Add a user to a group",
+      summary: "Add users to a group",
       security: [
         {
           bearerToken: [],
@@ -53,10 +53,16 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
-            required: ["groupId", "userId"],
+            required: ["groupId", "userIds"],
             properties: {
               groupId: { type: "string", example: "Manager" },
-              userId: { type: "string", example: "aSmith" },
+              userIds: {
+                type: "array",
+                items: {
+                  type: "string",
+                  example: "aSmith",
+                },
+              },
             },
           },
         },
@@ -79,11 +85,11 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
 }
 
 interface Service {
-  addGroupMember(
+  addGroupMembers(
     ctx: Ctx,
     user: ServiceUser,
     groupId: string,
-    userId: string,
+    userIds: string[],
   ): Promise<Result.Type<void>>;
 }
 
@@ -113,8 +119,8 @@ export function addHttpHandler(
     let invokeService: Promise<Result.Type<void>>;
     switch (bodyResult.apiVersion) {
       case "1.0": {
-        const { groupId, userId } = bodyResult.data;
-        invokeService = service.addGroupMember(ctx, user, groupId, userId);
+        const { groupId, userIds } = bodyResult.data;
+        invokeService = service.addGroupMembers(ctx, user, groupId, userIds);
         break;
       }
       default:
