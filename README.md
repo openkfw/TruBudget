@@ -16,6 +16,7 @@
   - [Hints and Pitfalls](#hints-and-pitfalls)
 - [Build and Develop from Local Sources](#build-and-develop-from-local-sources)
 - [More Information](#more-information)
+- [Frequently Asked Questions (FAQ)](#frequently-asked-questions-faq)
 
 # Introduction
 
@@ -24,7 +25,7 @@ TruBudget - a trusted public expenditure tool. A collaborative workflow tool and
 Please refer to following videos to get an overview of Trubudget, and motivation behind its development.
 
 - [Short overview](https://www.youtube.com/watch?v=_eN0X1PyXAE)
-- [In depth talk about TruBudget at OpenSlava 2019 by Dr. Jure Zakotnik](https://www.youtube.com/watch?v=rnTsPjhTVj0)  
+- [In depth talk about TruBudget at OpenSlava 2019 by Dr. Jure Zakotnik](https://www.youtube.com/watch?v=rnTsPjhTVj0)
 
 If you have questions or just want to talk to us, find us on [Gitter](https://gitter.im/Tru-Community/community)!
 
@@ -186,3 +187,31 @@ Checkout the [Developer Setup](./doc/installation/Developer-Setup.md) to learn h
 # More Information
 
 Check out our [**Trubudget-Wiki**](./doc/README.md) to find out how Trubudget works.
+
+# Frequently Asked Questions (FAQ)
+
+- Can it be done without blockchain?
+
+If it could, it would have been done already. The blockchain in this use case solves the problem of an integration
+architecture between several parties, which is not owned by a single participant.
+
+- Why don‘t you use a Sharepoint?
+
+In theory a good idea. However, you have to agree, who shoud host the Sharepoint. Should it be the donor? Which one in a multi-donor situation? Or should it be the partner? Do we trust the party who owns the sharepoint? Lots of open questions.
+
+- Why don‘t you use a cloud service by a 3rd party provider (google, amazon, ..)
+
+Two reasons: Not everyone is ready to go to a cloud. Moreover, the cloud provider is paid by someone – who should this be? It
+is difficult to find a truly independent 3rd party provider.
+
+- Is the blockchain consuming lots of energy, like Bitcoin?
+
+No it‘s not, since the consensus algorithm is configurable and configured to round-robin instead of proof-of-work
+
+- Is the KfW responsible for development and operation of TruBudget nodes?
+
+No, each organization is responsible for the hosting of their TruBudget installation. All participants in the network agree on which data/semantics will be shared in the cooperation. The KfW is contributing to the respective open source solution, under the GNU General Public License v3.0.
+
+- How do you handle GDPR (DSGVO) if data cannot be deleted?
+
+Data that is relevant for GDPR (e.g. personal data) is stored off-chain
