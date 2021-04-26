@@ -1,0 +1,12 @@
+name: "DangerJS"
+description: "Checks out the repository and does something"
+runs:
+  using: "composite"
+  steps:
+    - name: Install danger
+      run: npm install && npm ci
+      shell: bash
+
+    - name: Run danger and create github comment if necessary
+      run: npm run danger ci
+      shell: bash
