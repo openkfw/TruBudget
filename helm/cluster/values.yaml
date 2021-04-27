@@ -104,7 +104,7 @@ api-prod-1:
       ROOT_SECRET: root-secret
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
-      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /prod
 
 api-prod-2:
@@ -117,7 +117,7 @@ api-prod-2:
       ROOT_SECRET: root-secret
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
-      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /prod
 
 api-test-1:
@@ -131,7 +131,7 @@ api-test-1:
       ROOT_SECRET: root-secret
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
-      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /test
 
 api-test-2:
@@ -144,7 +144,7 @@ api-test-2:
       ROOT_SECRET: root-secret
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
-      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /test
 
 frontend-1:

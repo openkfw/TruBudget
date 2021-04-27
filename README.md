@@ -123,7 +123,7 @@ Well, let's create a new organization (`CoolNewOrga`) which wants to connect to 
 ```
 ...
 ORGANIZATION=CoolNewOrga
-ORGANIZATION_VAULT_SECRET=moresecretthananythingelse
+ORGANIZATION_VAULT_SECRET=secret
 ...
 P2P_TEST_HOST=51.51.51.51
 P2P_TEST_PORT=7448

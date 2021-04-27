@@ -4,13 +4,13 @@ services:
     build:
       context: ../../api
     environment:
-      RPC_HOST: master-chain      
+      RPC_HOST: master-chain
       RPC_PORT: ${RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
-      ROOT_SECRET: asdf
+      ROOT_SECRET: ${ROOT_SECRET}
       LOG_LEVEL: ${LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
     links:
@@ -39,7 +39,7 @@ services:
     ports:
       - "7447:7447"
 
-  # frontend cannot be hot-loaded, container contains only built application, no source files 
+  # frontend cannot be hot-loaded, container contains only built application, no source files
   master-frontend:
     image: trubudget/frontend:latest
     environment:
@@ -79,7 +79,7 @@ services:
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
-      ROOT_SECRET: asdf
+      ROOT_SECRET: ${ROOT_SECRET}
       LOG_LEVEL: ${LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
     command: ["npm", "run", "watch"]
@@ -103,10 +103,10 @@ services:
       MASTER_API_HOST: master-api
       MASTER_API_PORT: ${API_PORT}
     depends_on:
-     - master-chain
+      - master-chain
     links:
-     - slave-api
-     - master-api
+      - slave-api
+      - master-api
     ports:
       - "7448:7447" # SLAVE_P2P_PORT
 

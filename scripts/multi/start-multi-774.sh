@@ -1,8 +1,8 @@
 #!/bin/bash
 
 export ORGANIZATION=ACMECorp
-export ROOT_SECRET='asdf'
-export ORGANIZATION_VAULT_SECRET="asdf"
+export ROOT_SECRET='root-secret'
+export ORGANIZATION_VAULT_SECRET="secret"
 export RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
 export RPC_PORT=8000
 export API_PORT=8080
