@@ -39,6 +39,8 @@ This document describes how to set up your environment to start developing and d
     - [End-to-end Tests](#end-to-end-tests)
     - [Unit Tests](#unit-tests)
 
+  - [CI/CD](#ci/cd)
+
   - [Links](#links)
 
 ## Software components
@@ -487,6 +489,9 @@ Following command executes a specific test group (e.g. "Updating a project") def
 cd api
 npm run test:here <folderName> <describeString>
 ```
+
+### CI/CD
+The CI/CD is described [here](https://github.com/openkfw/TruBudget/tree/master/.github/workflows/README.md)
 
 ## Links
 
