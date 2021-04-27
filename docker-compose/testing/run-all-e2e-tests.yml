@@ -89,7 +89,6 @@ services:
     environment:
       CYPRESS_ROOT_SECRET: ${ROOT_SECRET}
       CYPRESS_BASE_URL: http://frontend
-      - DISPLAY
     depends_on:
       - frontend
       - master

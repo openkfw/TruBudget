@@ -230,28 +230,16 @@ cd ../api
 
 1. Set environment variables
 
-- Terminal Mac/Git Bash
+- Rename the .env_example file to .env and set following environment variables accordingly.
 
 ```bash
-export ORGANIZATION=ACMECorp
-export RPC_HOST=127.0.0.1
-export RPC_PORT=8000
-export PORT=8080
-export ROOT_SECRET='asdf'
-export ORGANIZATION_VAULT_SECRET="asdf"
-export RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-```
-
-- Windows Command Prompt / PowerShell
-
-```bash
-SET ORGANIZATION=ACMECorp
-SET RPC_HOST=127.0.0.1
-SET RPC_PORT=8000
-SET PORT=8080
-SET ROOT_SECRET='asdf'
-SET ORGANIZATION_VAULT_SECRET="asdf"
-SET RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+ORGANIZATION=ACMECorp
+RPC_HOST=127.0.0.1
+RPC_PORT=8000
+PORT=8080
+ROOT_SECRET='root-secret'
+ORGANIZATION_VAULT_SECRET="secret"
+RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
 ```
 
 2. Install node-modules
@@ -312,16 +300,10 @@ cd ../frontend
 
 1. Set environment variables
 
-- Terminal Mac/Git Bash
+- Rename the .env_example file to .env and set following environment variables accordingly.
 
 ```bash
-export PORT=3000
-```
-
-- Windows Command Prompt / PowerShell
-
-```bash
-SET PORT=3000
+PORT=3000
 ```
 
 **Additionally** you can connect the frontend to the optional excel export service, by adding the environment variables mentioned in the excel-export section of the [README.md](https://github.com/openkfw/TruBudget/blob/master/frontend/README.md#Excel-Export-Service)
@@ -358,19 +340,12 @@ cd ../provisioning
 
 1. Set environment variables
 
-- Terminal Mac/Git Bash
+- Rename the .env_example file to .env and set following environment variables accordingly.
 
 ```bash
-export API_PORT=8080
-export ORGANIZATION=ACMECorp
-```
-
-- Windows Command Prompt / PowerShell
-
-```bash
-SET API_PORT=8080
-SET ORGANIZATION=ACMECorp
-SET ROOT_SECRET='asdf'
+API_PORT=8080
+ORGANIZATION=ACMECorp
+ROOT_SECRET='root-secret'
 ```
 
 2. Install node-modules
@@ -398,24 +373,14 @@ cd ../excel-export
 
 1. Set environment variables
 
-- Terminal Mac/Git Bash
+- Rename the .env_example file to .env and set following environment variables accordingly.
 
 ```bash
-export PROD_API_PORT=8080
-export TEST_API_PORT=8080
-export PROD_API_HOST="localhost"
-export TEST_API_HOST="localhost"
-export PORT=8888
-```
-
-- Windows Command Prompt / PowerShell
-
-```bash
-SET PROD_API_PORT=8080
-SET TEST_API_PORT=8080
-SET PROD_API_HOST="localhost"
-SET TEST_API_HOST="localhost"
-SET PORT=8888
+PROD_API_PORT=8080
+TEST_API_PORT=8080
+PROD_API_HOST="localhost"
+TEST_API_HOST="localhost"
+PORT=8888
 ```
 
 2. Install node-modules

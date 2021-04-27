@@ -23,7 +23,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"root\",\n\t\t\t\"password\": \"asdf\"\n\t\t}\n\t}\n}"
+              "raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"root\",\n\t\t\t\"password\": \"root-secret\"\n\t\t}\n\t}\n}"
             },
             "url": {
               "raw": "{{host}}:{{port}}{{base}}/user.authenticate",
