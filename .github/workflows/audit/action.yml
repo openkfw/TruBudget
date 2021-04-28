@@ -1,0 +1,7 @@
+name: "Audit"
+runs:
+  using: "composite"
+  steps:
+    - name: Audit project ${{ matrix.project }}
+      run: cd ${{ matrix.project }} && npm install && npm audit --audit-level=high
+      shell: bash

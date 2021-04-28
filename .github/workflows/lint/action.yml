@@ -1,0 +1,12 @@
+name: "Lint"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install node in ${{ matrix.project }}
+      run: cd ${{ matrix.project }} && npm install && npm ci
+      shell: bash
+
+    - name: Run Lint in ${{ matrix.project }}
+      run: cd ${{ matrix.project }} && npm run lint
+      shell: bash
