@@ -62,11 +62,11 @@ axios.interceptors.response.use(
   }
 );
 
-async function impersonate(userId, password) {
+const impersonate = async (userId, password) => {
   const token = await authenticate(axios, userId, password);
   console.log(`Now logged in as ${userId}`);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-}
+};
 
 const fmtList = (l) =>
   l
