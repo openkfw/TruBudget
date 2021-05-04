@@ -6,6 +6,7 @@ import DbConnector from "./db";
 import logger from "./logger";
 import * as Middleware from "./middleware";
 import sendMail from "./sendMail";
+import isBodyValid from "./validation";
 
 interface User {
   id: string;
@@ -87,6 +88,15 @@ emailService.get("/version", (_req: express.Request, res: express.Response) => {
 });
 
 emailService.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
+  console.log("in USER/INSERT");
+  console.log(req.body.data);
+  const isDataValid = isBodyValid("/user.insert", req.body.data);
+  if (!isDataValid) {
+    res.status(400).send({
+      message: `The request body validation failed`,
+    });
+    return;
+  }
   const user: User = req.body.data.user;
   if (!isAllowed(user.id, res)) {
     res.status(401).send({
@@ -114,6 +124,13 @@ emailService.post("/user.insert", (req: UserEditRequest, res: express.Response) 
 });
 
 emailService.post("/user.update", (req: UserEditRequest, res: express.Response) => {
+  const isDataValid = isBodyValid("/user.update", req.body.data);
+  if (!isDataValid) {
+    res.status(400).send({
+      message: `The request body validation failed`,
+    });
+    return;
+  }
   const user: User = req.body.data.user;
   if (!isAllowed(user.id, res)) {
     res.status(401).send({
@@ -143,6 +160,13 @@ emailService.post("/user.update", (req: UserEditRequest, res: express.Response) 
 });
 
 emailService.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
+  const isDataValid = isBodyValid("/user.delete", req.body.data);
+  if (!isDataValid) {
+    res.status(400).send({
+      message: `The request body validation failed`,
+    });
+    return;
+  }
   const user: User = req.body.data.user;
   if (!isAllowed(user.id, res)) {
     res.status(401).send({
@@ -166,6 +190,13 @@ emailService.post("/user.delete", (req: UserEditRequest, res: express.Response) 
 emailService.get(
   "/user.getEmailAddress",
   (req: UserGetEmailAddressRequest, res: express.Response) => {
+    const isDataValid = isBodyValid("/user.getEmailAddress", req.query);
+    if (!isDataValid) {
+      res.status(400).send({
+        message: `The request body validation failed`,
+      });
+      return;
+    }
     if (!isAllowed(req.query.id, res)) {
       res.status(401).send({
         message: `JWT-Token is not valid to insert an email address of user ${req.query.id}`,
@@ -195,6 +226,13 @@ emailService.get(
 );
 
 emailService.post("/notification.send", (req: NotificationRequest, res: express.Response) => {
+  const isDataValid = isBodyValid("/notification.send", req.body.data);
+  if (!isDataValid) {
+    res.status(400).send({
+      message: `The request body validation failed`,
+    });
+    return;
+  }
   const id: string = req.body.data.user.id;
   // authenticate
   if (config.mode !== "DEBUG") {
