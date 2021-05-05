@@ -8,7 +8,8 @@ export const currencies = {
   XOF: { symbol: "CFA" },
   DKK: { symbol: "kr." },
   TND: { symbol: "DT" },
-  ETB: { symbol: "Br" }
+  ETB: { symbol: "Br" },
+  NOK: { symbol: "nkr" }
 };
 
 export const languages = ["en-gb", "fr", "pt", "de", "ka"];

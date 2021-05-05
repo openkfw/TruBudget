@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Add currency tunisian dinar to TruBudget [#806](https://github.com/openkfw/TruBudget/issues/806)
-- Add currency ethiopian birr to TruBudget [#806](https://github.com/openkfw/TruBudget/issues/813)
+- Add currency ethiopian birr to TruBudget [#813](https://github.com/openkfw/TruBudget/issues/813)
+- Add currency norwegian krone to TruBudget [#817](https://github.com/openkfw/TruBudget/issues/817)
 
 <!-- ### Changed -->
 
