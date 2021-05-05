@@ -10,7 +10,7 @@ import { ServiceUser } from "./service_user";
 import { UserTraceEvent, userTraceEventSchema } from "./user_trace_event";
 
 export type Id = string;
-export const idSchema = Joi.string().max(32);
+export const idSchema = Joi.string().max(64);
 
 export interface UserRecord {
   id: string;
@@ -27,18 +27,14 @@ export interface UserRecord {
 
 const schema = Joi.object({
   id: idSchema.required(),
-  createdAt: Joi.date()
-    .iso()
-    .required(),
+  createdAt: Joi.date().iso().required(),
   displayName: Joi.string().required(),
   organization: Joi.string().required(),
   passwordHash: Joi.string().required(),
   address: Joi.string().required(),
   encryptedPrivKey: Joi.string().required(),
   permissions: permissionsSchema.required(),
-  log: Joi.array()
-    .required()
-    .items(userTraceEventSchema),
+  log: Joi.array().required().items(userTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
 });
 
@@ -52,7 +48,7 @@ export function permits(user: UserRecord, actingUser: ServiceUser, intents: Inte
     const eligibles = user.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;
