@@ -6,7 +6,10 @@ export const currencies = {
   USD: { symbol: "$" },
   BRL: { symbol: "R$" },
   XOF: { symbol: "CFA" },
-  DKK: { symbol: "kr." }
+  DKK: { symbol: "kr." },
+  TND: { symbol: "DT" },
+  ETB: { symbol: "Br" },
+  NOK: { symbol: "nkr" }
 };
 
 export const languages = ["en-gb", "fr", "pt", "de", "ka"];

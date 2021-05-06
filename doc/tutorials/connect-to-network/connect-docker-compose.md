@@ -97,7 +97,7 @@ The `.env` file to connect to an existing Blockchain network should consist of t
 API_PORT=8080
 RPC_PORT=8000
 ORGANIZATION=TheNewOrganization
-ORGANIZATION_VAULT_SECRET=othersecret
+ORGANIZATION_VAULT_SECRET=secret
 TAG=master
 ROOT_SECRET=root-secret
 P2P_TEST_HOST=52.52.52.52

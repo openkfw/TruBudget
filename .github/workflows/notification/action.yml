@@ -1,0 +1,29 @@
+name: "notification"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Extract GITHUB_BRANCH
+      run: |
+        echo "GITHUB_BASE_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Set branch env vars
+      run: |
+        if [ "$GITHUB_PR_NUMBER" != "" ]; then
+          echo "GITHUB_BASE_BRANCH=$GITHUB_BASE_REF" >> $GITHUB_ENV
+          echo "GITHUB_HEAD_BRANCH=$GITHUB_HEAD_REF" >> $GITHUB_ENV
+        fi
+      shell: bash
+
+    - name: Trigger e2e-tests
+      run: curl -sX POST -F token=$WEBHOOK_TOKEN
+        -F ref=$WEBHOOK_REF
+        -F "variables[TRAVIS_PULL_REQUEST_BRANCH]=$GITHUB_HEAD_BRANCH"
+        -F "variables[TRAVIS_BRANCH]=$GITHUB_BASE_BRANCH"
+        -F "variables[TRAVIS_BUILD_ID]=t_$GITHUB_RUN_ID"
+        -F "variables[TRAVIS_EVENT_TYPE_FOR_BRANCH]=$GITHUB_EVENT_NAME-$GITHUB_BASE_BRANCH"
+        -F "variables[GITHUB_PULL_REQUEST]=$GITHUB_PR_NUMBER"
+        -F "variables[GITHUB_REPOSITORY]=$GITHUB_REPOSITORY"
+        $WEBHOOK_URL > /dev/null
+      shell: bash

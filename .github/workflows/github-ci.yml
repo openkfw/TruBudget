@@ -1,128 +1,151 @@
-name: Audit/Test/Build CI
-
-on: 
+name: Test/Build CI
+on:
   push:
     branches:
       - master
   pull_request:
   release:
     types: [published]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-
-  audit:
+  danger:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x]
-        project: [frontend,api,blockchain,provisioning,e2e-test,excel-export,email-notification]
-        
-    defaults:
-      run:
-        working-directory: ${{ matrix.project }}
 
     steps:
       - uses: actions/checkout@v2
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Audit project ${{ matrix.project }}
-        run: npm audit --audit-level=high
-  
-  test:
-    runs-on: ubuntu-latest
+      - name: Install danger
+        run: npm ci
+      - name: Run danger and create github comment if necessary
+        run: npm run danger ci
 
+  lint:
+    runs-on: ubuntu-latest
+    needs: danger
     strategy:
       matrix:
         node-version: [10.x]
-        project: [frontend, api]
-        
+        project: [frontend, api, blockchain, provisioning]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ./.github/workflows/lint
+
+  audit:
+    runs-on: ubuntu-latest
+    needs: [danger, lint]
+    strategy:
+      matrix:
+        node-version: [10.x]
+        project:
+          [
+            frontend,
+            api,
+            blockchain,
+            provisioning,
+            e2e-test,
+            excel-export,
+            email-notification,
+          ]
+
     defaults:
       run:
         working-directory: ${{ matrix.project }}
 
     steps:
       - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: ./.github/workflows/audit
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [danger, lint, audit]
+    strategy:
+      matrix:
+        node-version: [10.x]
+        project: [frontend, api]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - name: Run tests for ${{ matrix.project }}
-        run: npm test
 
-  docker-build:
+      - name: Check for Changes in ${{ matrix.project }}
+        uses: marceloprado/has-changed-path@v1
+        id: run-test
+        with:
+          paths: ${{ matrix.project }}
+      - name: Test
+        if: steps.run-test.outputs.changed == 'true'
+        uses: ./.github/workflows/test
+
+  build:
     runs-on: ubuntu-latest
-    
-    needs: [test]
+    needs: [danger, lint, audit, test]
 
     strategy:
       matrix:
-        project: [frontend,api,blockchain,provisioning,e2e-test,excel-export,email-notification]
-        
+        project:
+          [
+            frontend,
+            api,
+            blockchain,
+            provisioning,
+            e2e-test,
+            excel-export,
+            email-notification,
+          ]
+
     defaults:
       run:
         working-directory: ${{ matrix.project }}
 
     env:
-      PROJECT_NAME: ${{ matrix.project }}
+      GITHUB_PR_NUMBER: ${{ github.event.number}}
+      GITHUB_BASE_REF: ${{ github.base_ref}}
+      GITHUB_HEAD_REF: ${{ github.head_ref}}
+      PRIVATE_REGISTRY: ${{ secrets.PRIVATE_REGISTRY}}
+      PRIVATE_REGISTRY_BASE: ${{ secrets.PRIVATE_REGISTRY_BASE}}
+      PRIVATE_REGISTRY_USERNAME: ${{ secrets.PRIVATE_REGISTRY_USERNAME}}
+      PRIVATE_REGISTRY_PASSWORD: ${{ secrets.PRIVATE_REGISTRY_PASSWORD}}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
 
     steps:
       - uses: actions/checkout@v2
       - uses: docker-practice/actions-setup-docker@master
-      - name: Extract GITHUB_BRANCH
-        shell: bash
-        run: echo "GITHUB_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-      - run: chmod +x ../scripts/pipeline/publish-docker-images.sh
-      - name: Build and publish docker images to private registry
-        run: ../scripts/pipeline/publish-docker-images.sh
-        env:
-          GITHUB_PR_NUMBER: ${{ github.event.number}}
-          GITHUB_BASE_REF: ${{ github.base_ref}}
-          GITHUB_HEAD_REF: ${{ github.head_ref}}
-          PRIVATE_REGISTRY: ${{ secrets.PRIVATE_REGISTRY}}
-          PRIVATE_REGISTRY_BASE: ${{ secrets.PRIVATE_REGISTRY_BASE}}
-          PRIVATE_REGISTRY_USERNAME: ${{ secrets.PRIVATE_REGISTRY_USERNAME}}
-          PRIVATE_REGISTRY_PASSWORD: ${{ secrets.PRIVATE_REGISTRY_PASSWORD}}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
-    
+      - uses: ./.github/workflows/build
+
   notification:
     runs-on: ubuntu-latest
-
-    needs: [docker-build]
-
+    needs: [lint, test, danger, audit, build]
     env:
       GITHUB_BASE_REF: ${{ github.base_ref}}
       GITHUB_HEAD_REF: ${{ github.head_ref}}
       GITHUB_PR_NUMBER: ${{ github.event.number}}
-
+      WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
+      WEBHOOK_REF: ${{ secrets.WEBHOOK_REF }}
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
     steps:
-     - name: Extract GITHUB_BRANCH
-       shell: bash
-       run: |
-        echo "GITHUB_BASE_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-     - name: Set branch env vars
-       run: |
-         if [ "$GITHUB_PR_NUMBER" != "" ]; then
-           echo "GITHUB_BASE_BRANCH=$GITHUB_BASE_REF" >> $GITHUB_ENV
-           echo "GITHUB_HEAD_BRANCH=$GITHUB_HEAD_REF" >> $GITHUB_ENV
-         fi
-     - name: Trigger e2e-tests
-       run: curl -sX POST -F token=$WEBHOOK_TOKEN
-            -F ref=$WEBHOOK_REF
-            -F "variables[TRAVIS_PULL_REQUEST_BRANCH]=$GITHUB_HEAD_BRANCH"
-            -F "variables[TRAVIS_BRANCH]=$GITHUB_BASE_BRANCH"
-            -F "variables[TRAVIS_BUILD_ID]=t_$GITHUB_RUN_ID"
-            -F "variables[TRAVIS_EVENT_TYPE_FOR_BRANCH]=$GITHUB_EVENT_NAME-$GITHUB_BASE_BRANCH"
-            -F "variables[GITHUB_PULL_REQUEST]=$GITHUB_PR_NUMBER"
-            -F "variables[GITHUB_REPOSITORY]=$GITHUB_REPOSITORY"
-            $WEBHOOK_URL > /dev/null
-       env:
-         WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
-         WEBHOOK_REF: ${{ secrets.WEBHOOK_REF }}
-         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+      - uses: actions/checkout@v2
+      - uses: ./.github/workflows/notification

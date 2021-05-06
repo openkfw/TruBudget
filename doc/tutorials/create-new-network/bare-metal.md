@@ -89,15 +89,15 @@ stdout: Node ready.
 Set the environment parameters listed below on the machine:
 
 ```bash
-export ORGANIZATION="MyOrga"
+export ORGANIZATION=MyOrga
 export P2P_PORT=7447
 export RPC_PORT=8000
 export PORT=8080
 export RPC_HOST=127.0.0.1
-export RPC_USER="multichainrpc"
-export RPC_PASSWORD="password"
-export ORGANIZATION_VAULT_SECRET="asdf"
-export ROOT_SECRET="asdf"
+export RPC_USER=multichainrpc
+export RPC_PASSWORD=password
+export ORGANIZATION_VAULT_SECRET=secret
+export ROOT_SECRET=root-secret
 ```
 
 Once Node.js is installed navigate into the `api` directory and run the following commands to start the API:
@@ -192,7 +192,7 @@ cd ../excel-export
 
 ### Set Environment Variables
 
-The following environment variables need to be set: 
+The following environment variables need to be set:
 
 - Terminal Mac/Git Bash
 
@@ -206,6 +206,7 @@ export ACCESS_CONTROL_ALLOW_ORIGIN="*"
 ```
 
 - Terminal Windows/Command Shell
+
 ```bash
 SET PROD_API_HOST=127.0.0.1
 SET TEST_API_HOST=127.0.0.1
@@ -217,7 +218,7 @@ SET ACCESS_CONTROL_ALLOW_ORIGIN="*"
 
 ### Install Node Modules
 
-Install the node modules via 
+Install the node modules via
 
 ```bash
 npm install
@@ -247,7 +248,7 @@ cd ../provisioning
 ```bash
 export API_PORT=8080
 export ORGANIZATION="MyOrga"
-export ROOT_SECRET=test
+export ROOT_SECRET=root-secret
 ```
 
 - Terminal Windows/Command Shell
@@ -255,7 +256,7 @@ export ROOT_SECRET=test
 ```bash
 SET API_PORT = 8080
 SET ORGANIZATION = "MyOrga"
-SET ROOT_SECRET = test
+SET ROOT_SECRET = root-secret
 ```
 
 ### Install node-modules

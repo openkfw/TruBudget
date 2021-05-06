@@ -12,6 +12,37 @@ const provisioningSources = danger.git.fileMatch("provisioning/src/**/*");
 const e2eTestSources = danger.git.fileMatch("e2e-test/cypress/**/*");
 const excelExportSources = danger.git.fileMatch("excel-export/src/**/*");
 
+const envExampleFiles = danger.git.modified_files.filter((path) =>
+  path.endsWith(".env_example")
+);
+envExampleFiles.forEach((file) =>
+  getChanges(file).then((changes) => {
+    const rootSecrets = changes.reduce((res, { content, type }) => {
+      if (content.includes("ROOT_SECRET") && type === "add")
+        if (content.includes("'") || content.includes('"'))
+          res.push(content.split("=")[1].slice(1, -1));
+        else res.push(content.split("=")[1]);
+
+      return res;
+    }, []);
+    const orgaVaultSecrets = changes.reduce((res, { content, type }) => {
+      if (content.includes("ORGANIZATION_VAULT_SECRET") && type === "add")
+        if (content.includes("'") || content.includes('"'))
+          res.push(content.split("=")[1].slice(1, -1));
+        else res.push(content.split("=")[1]);
+      return res;
+    }, []);
+    if (!rootSecrets.every((val, i, arr) => val === "root-secret")) {
+      warn("Make sure the Root-Secret is the same in all .env_example files");
+    }
+    if (!orgaVaultSecrets.every((val, i, arr) => val === "secret")) {
+      warn(
+        "Make sure the Organization-Vault-Secret is the same in all .env_example files"
+      );
+    }
+  })
+);
+
 const title = danger.github.pr.title.toLowerCase();
 const trivialPR = title.includes("refactor");
 const changelogChanges = includes(danger.git.modified_files, "CHANGELOG.md");

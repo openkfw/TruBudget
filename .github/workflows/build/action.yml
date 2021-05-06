@@ -1,0 +1,23 @@
+name: "Docker Build"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Extract GITHUB_BRANCH
+      run: echo "GITHUB_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+      shell: bash
+      env:
+        PROJECT_NAME: ${{ matrix.project }}
+
+    - name: Set rights
+      run: chmod +x "${GITHUB_WORKSPACE}/scripts/pipeline/publish-docker-images.sh"
+      shell: bash
+      env:
+        PROJECT_NAME: ${{ matrix.project }}
+
+    - name: Run build
+      run: cd ${{ matrix.project }} && "${GITHUB_WORKSPACE}/scripts/pipeline/publish-docker-images.sh"
+      shell: bash
+      env:
+        PROJECT_NAME: ${{ matrix.project }}

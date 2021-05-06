@@ -62,16 +62,17 @@ axios.interceptors.response.use(
   }
 );
 
-async function impersonate(userId, password) {
+const impersonate = async (userId, password) => {
   const token = await authenticate(axios, userId, password);
   console.log(`Now logged in as ${userId}`);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-}
+};
 
-const fmtList = (l) => l
-  .map((x) => (x.data.displayName === undefined ? x : x.data.displayName))
-  .map((x) => `"${x}"`)
-  .join(" > ");
+const fmtList = (l) =>
+  l
+    .map((x) => (x.data.displayName === undefined ? x : x.data.displayName))
+    .map((x) => `"${x}"`)
+    .join(" > ");
 
 const provisionWorkflowitem = async (
   project,
@@ -104,7 +105,8 @@ const provisionWorkflowitem = async (
       ? workflowitemTemplate.amount.toString()
       : undefined;
     const currency = workflowitemTemplate.currency;
-    const body = data.amountType === "N/A" ? data : { ...data, amount, currency };
+    const body =
+      data.amountType === "N/A" ? data : { ...data, amount, currency };
     await createWorkflowitem(axios, body);
     workflowitem = await findWorkflowitem(
       axios,
@@ -177,8 +179,8 @@ const provisionSubproject = async (project, subprojectTemplate) => {
     subproject.data.id
   );
   if (
-    subprojectTemplate.description !== undefined
-    && subproject.status === "open"
+    subprojectTemplate.description !== undefined &&
+    subproject.status === "open"
   ) {
     await updateSubproject(
       axios,
@@ -235,8 +237,8 @@ const provisionFromData = async (projectTemplate) => {
     }
 
     if (
-      projectTemplate.description !== undefined
-      && project.status === "open"
+      projectTemplate.description !== undefined &&
+      project.status === "open"
     ) {
       console.log("Testing project update..");
       await updateProject(axios, project.data.id, projectTemplate.description);
@@ -289,7 +291,8 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
   // Let's close the subproject (as root, because not visible to mstein):
   await impersonate("root", rootSecret);
   const subprojectTemplate = closeProjectTest.subprojects[1];
-  if (subprojectTemplate.status !== "open") throw Error("Unexpected test data.");
+  if (subprojectTemplate.status !== "open")
+    throw Error("Unexpected test data.");
   const subproject = await findSubproject(axios, project, subprojectTemplate);
   await closeSubproject(axios, project.data.id, subproject.data.id);
 
@@ -390,10 +393,10 @@ async function testWorkflowitemUpdate(folder) {
 
   // make sure the workflow item has been reset and is still open
   if (
-    updatedWorkflowitem.data.amountType !== amountType
-    || updatedWorkflowitem.data.amount !== amount
-    || updatedWorkflowitem.data.currency !== currency
-    || updatedWorkflowitem.data.status !== "open"
+    updatedWorkflowitem.data.amountType !== amountType ||
+    updatedWorkflowitem.data.amount !== amount ||
+    updatedWorkflowitem.data.currency !== currency ||
+    updatedWorkflowitem.data.status !== "open"
   ) {
     throw Error(
       "The update should not have had any effect on the workflowitem"
@@ -427,8 +430,8 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
   if (
-    !Array.isArray(itemWithDocuments.data.documents)
-    || itemWithDocuments.data.documents.length !== 2
+    !Array.isArray(itemWithDocuments.data.documents) ||
+    itemWithDocuments.data.documents.length !== 2
   ) {
     throw Error("Adding documents to a workflowitem failed :(");
   }
@@ -461,8 +464,8 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
   if (
-    stillTheItemWithDocuments.data.documents[0].hash
-    !== "657fa2f1a088db531144752b5b3a6c1de5edd5aa823cab99884143361f5d0470"
+    stillTheItemWithDocuments.data.documents[0].hash !==
+    "657fa2f1a088db531144752b5b3a6c1de5edd5aa823cab99884143361f5d0470"
   ) {
     throw Error(
       "The document has changed but shouldn't (or the ordering was not preserved) :("
@@ -519,17 +522,20 @@ async function testWorkflowitemReordering(folder) {
   );
 
   // We check that the ordering is as expected:
-  const getOrderingAsMap = () => axios
-    .get(
-      `/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`
-    )
-    .then((res) => res.data.data.workflowitems)
-    .then((items) => items
-      .map((x) => x.data)
-      .reduce((acc, x, index) => {
-        acc[x.displayName] = index;
-        return acc;
-      }, {}));
+  const getOrderingAsMap = () =>
+    axios
+      .get(
+        `/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`
+      )
+      .then((res) => res.data.data.workflowitems)
+      .then((items) =>
+        items
+          .map((x) => x.data)
+          .reduce((acc, x, index) => {
+            acc[x.displayName] = index;
+            return acc;
+          }, {})
+      );
 
   const originalOrdering = await getOrderingAsMap();
   if (originalOrdering[interimInstName] >= originalOrdering[finalInstName]) {
@@ -559,8 +565,8 @@ async function testWorkflowitemReordering(folder) {
   }
   if (changedOrdering[finalInstName] >= originalOrdering[finalInstName]) {
     throw Error(
-      "The final installment workflowitem should have moved to an earlier position."
-        + ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${
+      "The final installment workflowitem should have moved to an earlier position." +
+        ` Instead, it has moved from ${originalOrdering[finalInstName]} to ${
           changedOrdering[finalInstName]
         }. original ordering = ${JSON.stringify(
           originalOrdering
@@ -569,9 +575,9 @@ async function testWorkflowitemReordering(folder) {
   }
   if (changedOrdering[finalInstName] >= changedOrdering[interimInstName]) {
     throw Error(
-      "The final installment workflowitem should have move before the interim installment workflowitem."
-        + ` Instead, final installment has moved from ${originalOrdering[finalInstName]} to ${changedOrdering[finalInstName]},`
-        + ` while interim installment has moved from ${originalOrdering[interimInstName]} to ${changedOrdering[interimInstName]}`
+      "The final installment workflowitem should have move before the interim installment workflowitem." +
+        ` Instead, final installment has moved from ${originalOrdering[finalInstName]} to ${changedOrdering[finalInstName]},` +
+        ` while interim installment has moved from ${originalOrdering[interimInstName]} to ${changedOrdering[interimInstName]}`
     );
   }
 
@@ -603,9 +609,10 @@ async function runIntegrationTests(rootSecret, folder) {
 
 const provisionBlockchain = async (host, port, rootSecret, organization) => {
   try {
-    const folder = process.env.ENVIRONMENT_TYPE === "PROD"
-      ? "./src/data/prod/"
-      : "./src/data/test/";
+    const folder =
+      process.env.ENVIRONMENT_TYPE === "PROD"
+        ? "./src/data/prod/"
+        : "./src/data/test/";
 
     axios.defaults.baseURL = `http://${host}:${port}/api`;
     console.log("Axios baseURL is set to " + axios.defaults.baseURL);
@@ -640,7 +647,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
 
 const port = process.env.API_PORT || 8080;
 const host = process.env.API_HOST || "localhost";
-const rootSecret = process.env.ROOT_SECRET || "asdf";
+const rootSecret = process.env.ROOT_SECRET;
 const organization = process.env.ORGANIZATION;
 
 if (!organization) {

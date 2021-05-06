@@ -3,12 +3,13 @@
 This guide describes how to connect to an existing network without the use of Docker, Docker-Compose or Kubernetes. Before starting the network make sure to [install the necessary software on your machine.](../bare-metal-installation.md)
 
 ## Table of Contents
+
 - [Connect to an Existing Network Directly from Machine](#connect-to-an-existing-network-directly-from-machine)
   - [Table of Contents](#table-of-contents)
   - [Get the repository](#get-the-repository)
   - [Blockchain](#blockchain)
   - [API](#api)
-      - [Log-Rotation](#log-rotation)
+    - [Log-Rotation](#log-rotation)
   - [Excel Export](#excel-export)
     - [Set Environment Variables](#set-environment-variables)
     - [Install Node Modules](#install-node-modules)
@@ -127,8 +128,8 @@ If you provisioned a Blockchain of the type "Connect to an existing network" set
 export ORGANIZATION="YourOrga" (same as for the Blockchain configuration)
 export RPC_HOST=localhost
 export RPC_PORT=8000
-export ORGANIZATION_VAULT_SECRET=test
-export ROOT_SECRET=test
+export ORGANIZATION_VAULT_SECRET=secret
+export ROOT_SECRET=root-secret
 export RPC_PASSWORD="password"
 ```
 
@@ -215,7 +216,7 @@ cd ../excel-export
 
 ### Set Environment Variables
 
-The following environment variables need to be set: 
+The following environment variables need to be set:
 
 - Terminal Mac/Git Bash
 
@@ -229,6 +230,7 @@ export ACCESS_CONTROL_ALLOW_ORIGIN="*"
 ```
 
 - Terminal Windows/Command Shell
+
 ```bash
 SET PROD_API_HOST=127.0.0.1
 SET TEST_API_HOST=127.0.0.1
@@ -240,7 +242,7 @@ SET ACCESS_CONTROL_ALLOW_ORIGIN="*"
 
 ### Install Node Modules
 
-Install the node modules via 
+Install the node modules via
 
 ```bash
 npm install

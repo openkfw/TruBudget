@@ -28,7 +28,7 @@ api-prod:
       ROOT_SECRET: root-secret
       RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
-      ORGANIZATION_VAULT_SECRET: ker5Ecet
+      ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /prod
 
 frontend:

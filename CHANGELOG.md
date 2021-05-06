@@ -17,6 +17,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.21.0] - 2021-05-06
+
+### Added
+
+- Add currency tunisian dinar to TruBudget [#806](https://github.com/openkfw/TruBudget/issues/806)
+- Add currency ethiopian birr to TruBudget [#813](https://github.com/openkfw/TruBudget/issues/813)
+- Add currency norwegian krone to TruBudget [#817](https://github.com/openkfw/TruBudget/issues/817)
+
 ## [1.20.0] - 2021-03-15
 
 ### Added
@@ -602,7 +610,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.20.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.21.0...master
+[1.21.0]: https://github.com/openkfw/TruBudget/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/openkfw/TruBudget/compare/v1.19.1...v1.20.0
 [1.19.1]: https://github.com/openkfw/TruBudget/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/openkfw/TruBudget/compare/v1.18.0...v1.19.0

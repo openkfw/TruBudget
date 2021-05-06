@@ -27,9 +27,14 @@ export async function getExchangeRates(baseCurrency = "EUR") {
     const exchangeRate = getRate(series["0:" + index + ":0:0:0"]);
     exchangeRates[currency] = exchangeRate;
   }
+
   exchangeRates["EUR"] = 1;
+  // Hardcoded exchange rates
   exchangeRates["XOF"] = 655.957;
   exchangeRates["KES"] = 114.882;
+  exchangeRates["TND"] = 3.2924;
+  exchangeRates["ETB"] = 47.156;
+
   if (baseCurrency !== "EUR") {
     const baseRate = exchangeRates[baseCurrency];
     for (const key in exchangeRates) {
@@ -37,6 +42,7 @@ export async function getExchangeRates(baseCurrency = "EUR") {
     }
     exchangeRates[baseCurrency] = 1;
   }
+
   return exchangeRates;
 }
 
