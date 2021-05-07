@@ -6,7 +6,7 @@ if [ -n "$GITHUB_HEAD_REF" ]; then
   export GITHUB_BRANCH="$GITHUB_HEAD_REF"
 fi
 if [[ "$GITHUB_EVENT_NAME" = "release" ]]; then
-  export GITHUB_BRANCH="release"
+  export GITHUB_BRANCH=$SOURCE_TAG
 fi
 export TAG=trubudget/"$PROJECT_NAME":"$GITHUB_BRANCH"
 
