@@ -22,13 +22,13 @@ class LoginPageContainer extends Component {
     // window.injectedEnv exists when deploying via docker and nginx
     // process.env exists when using node.js
     if (
-      window.injectedEnv.REACT_APP_EMAIL_SERVICE_ENABLED === "true" ||
+      window?.injectedEnv?.REACT_APP_EMAIL_SERVICE_ENABLED === "true" ||
       process.env.REACT_APP_EMAIL_SERVICE_ENABLED === "true"
     ) {
       this.props.checkEmailService();
     }
     if (
-      window.injectedEnv.REACT_APP_EXPORT_SERVICE_ENABLED === "true" ||
+      window?.injectedEnv?.REACT_APP_EXPORT_SERVICE_ENABLED === "true" ||
       process.env.REACT_APP_EXPORT_SERVICE_ENABLED === "true"
     ) {
       this.props.checkExportService();
