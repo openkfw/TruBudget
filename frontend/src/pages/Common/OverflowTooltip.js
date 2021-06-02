@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Tooltip from "@material-ui/core/Tooltip";
 
-const OverflowTooltip = ({ text }) => {
+const OverflowTooltip = ({ text = "", maxWidth = "140px" }) => {
   const textElementRef = useRef();
   const [isOverflowed, setIsOverflowed] = useState(false);
 
@@ -25,7 +25,8 @@ const OverflowTooltip = ({ text }) => {
         style={{
           whiteSpace: "nowrap",
           overflow: "hidden",
-          textOverflow: "ellipsis"
+          textOverflow: "ellipsis",
+          maxWidth: maxWidth
         }}
       >
         {text}
