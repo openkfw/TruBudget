@@ -12,11 +12,13 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       JWT_SECRET: ${JWT_SECRET}
       LOG_LEVEL: ${LOG_LEVEL}
+      MULTICHAIN_FEED: ${MULTICHAIN_FEED}
     links:
       - email-service
     ports:
       - "8000:${RPC_PORT}"
       - "8085:8085"
+
   email-service:
     build:
       context: .
@@ -35,6 +37,7 @@ services:
       - emaildb
     ports:
       - "8890:8890"
+
   emaildb:
     image: postgres
     restart: always
@@ -46,6 +49,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - 5432:5432
+
   master-api:
     build:
       context: ../api
@@ -61,6 +65,7 @@ services:
       - 8080:8080
     links:
       - master-node
+
   provisioning:
     image: trubudget/provisioning:latest
     command: ["npm", "start"]
@@ -72,6 +77,10 @@ services:
       ORGANIZATION: ${ORGANIZATION}
     links:
       - master-api
+    depends_on:
+      - master-api
+      - master-node
+
   frontend:
     build:
       context: ../frontend
@@ -87,3 +96,6 @@ services:
       - "81:80" # Mapping the nginx port
     links:
       - master-api
+    depends_on:
+      - master-api
+      - master-node

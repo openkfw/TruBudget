@@ -8,6 +8,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
+      MULTICHAIN_FEED: ${MULTICHAIN_FEED}
     ports:
       - "8000:8000"
       - "8085:8085"

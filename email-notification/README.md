@@ -66,7 +66,7 @@ The JWT_SECRET is shared between Trubudget's blockchain api and email-service. T
 
 ## Architecture
 
-As shown in the architecture section below, a script shall filter every transaction. This script is called `multichain-feed` and is part of the mono repository of Trubudget. The script filter transactions after notifications and saves them locally named with a timestamp as json files in the `/notifications` folder of the blockchain application.
+As shown in the architecture section below, a script shall filter every transaction. This script is called `multichain-feed` and is part of the mono repository of Trubudget. The script filters transactions after notifications and saves them locally named with a timestamp as json files in the `/notifications` folder of the blockchain application.
 An external process called `notification-watcher` watches the notifications folder and sends the user's ids parsed from the saved transactions via http request to the email service using the `notification.send` endpoint.
 The email service checks if the connected database includes an email address for the passed user id. If an email address is found a notification is sent to the configured SMTP host.
 Subscribing/unsubscribing to the email notification service can be handled by the user profile of the Trubudget frontend or by using the user.insert/user.delete endpoint of the email service.

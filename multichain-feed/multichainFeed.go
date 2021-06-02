@@ -57,6 +57,7 @@ func main() {
 	switch txType {
 	case "notification_created":
 		myPersister = NewDiskPersister(notificationPath)
+		break
 	default:
 		// Unknown transaction types
 	}
