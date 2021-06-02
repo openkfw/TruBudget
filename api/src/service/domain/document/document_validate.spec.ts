@@ -1,12 +1,9 @@
 import { assert } from "chai";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
-import { BusinessEvent } from "../business_event";
-import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
-import { Subproject } from "./subproject";
-import { Workflowitem } from "./workflowitem";
+import { Subproject } from "../workflow/subproject";
+import { Workflowitem } from "../workflow/workflowitem";
 import { documentValidate } from "./document_validate";
 
 const ctx: Ctx = {

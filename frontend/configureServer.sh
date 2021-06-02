@@ -12,6 +12,8 @@ export_host=localhost
 export_port=8888
 email_host=localhost
 email_port=8890
+storage_service_host=localhost
+storage_service_port=8090
 
 # Check if the required env variables are set otherwise localhost will be used.
 if [ -n "$PROD_API_HOST" ]; then
@@ -45,6 +47,14 @@ if [ -n "$EMAIL_PORT" ]; then
   email_port=$EMAIL_PORT
 fi
 
+if [ -n "$STORAGE_SERVICE_HOST" ]; then
+  storage_service_host=$STORAGE_SERVICE_HOST
+fi
+
+if [ -n "$STORAGE_SERVICE_PORT" ]; then
+  storage_service_port=$STORAGE_SERVICE_PORT
+fi
+
 if [ "$USE_SSL" == "ssl" ]; then
   export DOLLAR='$'
   rm /etc/nginx/conf.d/default.conf
@@ -64,6 +74,8 @@ sed -i -e "/# pathToTestExcelExport/i\\
   proxy_pass http://$export_host:$export_port/test/;" /etc/nginx/conf.d/default.conf
 sed -i -e "/# pathToEmailService/i\\
   proxy_pass http://$email_host:$email_port/;" /etc/nginx/conf.d/default.conf
+sed -i -e "/# pathToStorageService/i\\
+  proxy_pass http://$storage_service_host:$storage_service_port/download;" /etc/nginx/conf.d/default.conf
 
 sed -i -e "s/^\(\s*include \/etc\/nginx\/sites-enabled\)/#&/" /etc/nginx/nginx.conf
 

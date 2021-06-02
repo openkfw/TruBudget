@@ -6,6 +6,8 @@ import * as Result from "../result";
 import { MultichainClient } from "../service/Client.h";
 import { organizationStreamName } from "./streamNames";
 
+type Base64String = string;
+
 interface GetaddressesItem {
   address: string;
   ismine: boolean;
@@ -20,6 +22,10 @@ interface GetaddressesItem {
 interface OrganizationAddressItem {
   address: WalletAddress;
   privkey: string;
+}
+
+interface PrivateKeyItem {
+  privateKey: string;
 }
 
 export async function ensureOrganizationStream(
@@ -37,6 +43,82 @@ export async function ensureOrganizationStream(
     organization,
     organizationVaultSecret,
   );
+}
+
+export async function getPrivateKeyItem(
+  multichain: MultichainClient,
+  organization: Organization,
+): Promise<Result.Type<PrivateKeyItem>> {
+  const streamName = organizationStreamName(organization);
+  const streamKey = "privateKey";
+  const privateKeyItem = await multichain
+    .v2_readStreamItems(streamName, streamKey, 1)
+    .then((items) => items.map((x) => x.data.json))
+    .then((items) => items.find((_) => true))
+    .catch((error) => {
+      return error;
+    });
+  if (!privateKeyItem) {
+    const notFoundError = new Error("private key not found");
+    notFoundError.name = "NotFound";
+    return notFoundError;
+  }
+  return privateKeyItem;
+}
+
+export async function getPrivateKey(
+  multichain: MultichainClient,
+  organization: Organization,
+  organizationVaultSecret: string,
+): Promise<Result.Type<Base64String>> {
+  const privateKeyItemResult = await getPrivateKeyItem(multichain, organization);
+  if (Result.isErr(privateKeyItemResult)) {
+    if (VError.hasCauseWithName(privateKeyItemResult, "NotFound")) {
+      return privateKeyItemResult;
+    }
+    return new Error("cannot get organization address item");
+  }
+  const decryptedPrivateKeyResult = SymmetricCrypto.decrypt(
+    organizationVaultSecret,
+    privateKeyItemResult.privateKey,
+  );
+  if (Result.isErr(decryptedPrivateKeyResult)) {
+    return new VError(decryptedPrivateKeyResult, "cannot decrypt private key");
+  }
+  const buffer = Buffer.from(decryptedPrivateKeyResult, "utf8");
+  const privateKey = buffer.toString("base64");
+  return privateKey;
+}
+
+export async function publishPrivateKey(
+  multichain: MultichainClient,
+  organization: Organization,
+  privateKey: string,
+  organizationVaultSecret: string,
+): Promise<Result.Type<PrivateKeyItem>> {
+  const privateKeyItemResult = await getPrivateKeyItem(multichain, organization);
+  if (Result.isOk(privateKeyItemResult)) {
+    logger.info("Private Key already published.");
+    const error = new VError("cannot publish private key, a private key is already published");
+    error.name = "AlreadyExists";
+    return error;
+  }
+  if (VError.hasCauseWithName(privateKeyItemResult, "NotFound")) {
+    privateKey = privateKey.replace(/\\n/gm, "\n");
+    const encryptedHexPrivateKey = SymmetricCrypto.encrypt(organizationVaultSecret, privateKey);
+    const streamName = organizationStreamName(organization);
+    const streamItemKey = "privateKey";
+    const privateKeyItem: PrivateKeyItem = {
+      privateKey: encryptedHexPrivateKey,
+    };
+    const streamItem = { json: privateKeyItem };
+    logger.trace(`Publishing private key to ${streamName}/${streamItemKey}`);
+    await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
+    return privateKeyItem;
+  } else {
+    // Non expected error
+    return new VError(privateKeyItemResult, "cannot publish private key");
+  }
 }
 
 async function ensureOrganizationAddress(

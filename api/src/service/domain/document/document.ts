@@ -5,20 +5,36 @@ import * as Result from "../../../result";
 import VError = require("verror");
 
 export interface StoredDocument {
-  // id per workflowitem (same id in different workflowitems allowed)
   id: string;
   hash: string;
-  // unique id in general, used to find the right document stored offchain
   documentId: string;
+  // new document feature properties
+  fileName?: string;
+  organization?: string;
+  organizationUrl?: string;
 }
 
 export const storedDocumentSchema = Joi.object({
   id: Joi.string().required(),
-  hash: Joi.string().required(),
-  documentId: Joi.string(),
+  hash: Joi.string().allow("").required(),
+  documentId: Joi.string().required(),
+  fileName: Joi.string(),
+  organization: Joi.string(),
+  organizationUrl: Joi.string(),
 });
 
-export interface UploadedDocument {
+export interface DocumentInfo extends GenericDocument {
+  id: string;
+  fileName: string;
+  organization: string;
+  organizationUrl: string;
+}
+
+export interface GenericDocument {
+  id: string;
+}
+
+export interface UploadedDocument extends GenericDocument {
   id: string;
   base64: string;
   fileName: string;
@@ -38,7 +54,8 @@ export async function hashDocument(
   return hashBase64String(document.base64).then((hashValue) => ({
     id: document.id,
     hash: hashValue,
-    documentId: uuid.v4(),
+    documentId: document.id,
+    fileName: document.fileName,
   }));
 }
 

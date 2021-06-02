@@ -134,8 +134,6 @@ const generate = () => {
     process.stderr.write(rightColor(part.value));
   });
 
-  console.log();
-
   if (replace) {
     const newFileContent = fileContent.replace(
       `${found}`,

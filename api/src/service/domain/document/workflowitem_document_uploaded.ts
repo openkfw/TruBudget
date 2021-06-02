@@ -2,10 +2,10 @@ import Joi = require("joi");
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
-import * as WorkflowitemDocument from "../workflow/document";
-import * as Project from "./project";
-import * as Subproject from "./subproject";
-import * as Workflowitem from "./workflowitem";
+import * as WorkflowitemDocument from "./document";
+import * as Project from "../workflow/project";
+import * as Subproject from "../workflow/subproject";
+import * as Workflowitem from "../workflow/workflowitem";
 import { Ctx } from "../../../lib/ctx";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 

@@ -572,6 +572,7 @@ Cypress.Commands.add("listProjectPermissions", projectId => {
     .its("body")
     .then(body => Cypress.Promise.resolve(body.data));
 });
+
 Cypress.Commands.add("listSubprojectPermissions", (projectId, subprojectId) => {
   cy.request({
     url: `${baseUrl}/api/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`,
@@ -583,6 +584,7 @@ Cypress.Commands.add("listSubprojectPermissions", (projectId, subprojectId) => {
     .its("body")
     .then(body => Cypress.Promise.resolve(body.data));
 });
+
 Cypress.Commands.add("listWorkflowitemPermissions", (projectId, subprojectId, workflowitemId) => {
   cy.request({
     url: `${baseUrl}/api/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`,
@@ -606,6 +608,7 @@ Cypress.Commands.add("listWorkflowitems", (projectId, subprojectId, workflowitem
     .its("body")
     .then(body => Cypress.Promise.resolve(body.data));
 });
+
 Cypress.Commands.add("createBackup", () => {
   cy.request({
     url: `${baseUrl}/api/system.createBackup`,
@@ -617,4 +620,16 @@ Cypress.Commands.add("createBackup", () => {
   })
     .its("headers")
     .then(headers => Cypress.Promise.resolve(headers));
+});
+
+Cypress.Commands.add("getVersion", () => {
+  cy.request({
+    url: `${baseUrl}/api/version`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .its("body")
+    .then(body => Cypress.Promise.resolve(body.data));
 });

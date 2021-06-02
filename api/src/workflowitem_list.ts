@@ -13,6 +13,7 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
+import { StoredDocument } from "./service/domain/document/document";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -82,6 +83,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                                   example:
                                     "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
                                 },
+                                fileName: { type: "string", example: "myFile.pdf" },
                                 documentId: {
                                   type: "string",
                                   example: "abc-cde-adf",
@@ -112,18 +114,18 @@ interface ExposedWorkflowitem {
     id: string;
     creationUnixTs: string;
     status: "open" | "closed";
-    amountType: "N/A" | "disbursed" | "allocated";
-    displayName: string;
-    description: string;
-    amount: string;
-    assignee: string;
-    currency: string;
-    billingDate: string;
-    dueDate: string;
-    exchangeRate: string;
-    documents: [{ id: string; hash: string; documentId: string }];
+    amountType: "N/A" | "disbursed" | "allocated" | null;
+    displayName: string | null;
+    description: string | null;
+    amount: string | null | undefined;
+    assignee: string | null;
+    currency: string | null | undefined;
+    billingDate: string | null | undefined;
+    dueDate: string | null | undefined;
+    exchangeRate: string | null | undefined;
+    documents: StoredDocument[];
     additionalData: object;
-    workflowitemType: Type;
+    workflowitemType: Type | undefined;
   };
 }
 
@@ -184,7 +186,8 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           const workflowitems = workflowitemsResult;
 
           return workflowitems.map((workflowitem) => {
-            return {
+            const d = workflowitem.documents;
+            const exposedWorkflowitem: ExposedWorkflowitem = {
               allowedIntents: workflowitem.isRedacted
                 ? []
                 : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
@@ -206,6 +209,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
                 workflowitemType: workflowitem.workflowitemType,
               },
             };
+            return exposedWorkflowitem;
           });
         })
         .then((workflowitems: ExposedWorkflowitem[]) => {

@@ -17,6 +17,7 @@ import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { withStyles } from "@material-ui/core";
+import OverflowTooltip from "../Common/OverflowTooltip";
 
 const styles = {
   uploadButtonNotValidated: {
@@ -30,9 +31,6 @@ const styles = {
     left: 0,
     width: "100%",
     opacity: 0
-  },
-  hashButton: {
-    display: "flex"
   },
   actionContainer: {
     display: "flex",
@@ -107,12 +105,6 @@ class DocumentOverview extends Component {
     </Button>
   );
 
-  generateHashIcon = hash => (
-    <div style={styles.hashButton}>
-      <Typography>{`${hash.slice(0, 6)}...`}</Typography>
-    </div>
-  );
-
   generateDocumentList = props => {
     const {
       classes,
@@ -127,7 +119,7 @@ class DocumentOverview extends Component {
     const header = this.generateDocumentListHeader(validationActive);
     const rows = documents.map((document, index) => {
       let validated = undefined;
-      const { id, hash } = document;
+      const { id, fileName, hash } = document;
       if (validationActive) {
         validated = validatedDocuments[id];
       }
@@ -139,9 +131,14 @@ class DocumentOverview extends Component {
             </TableCell>
           ) : null}
           <TableCell data-test="workflowitemDocumentId" className={classes.noHorizontalPadding}>
-            {id}
+            {id ? <OverflowTooltip text={id} maxWidth="200px" /> : null}
+            {fileName ? <OverflowTooltip text={"(" + fileName + ")"} maxWidth="200px" /> : null}
           </TableCell>
-          {validationActive ? <TableCell>{this.generateHashIcon(hash)}</TableCell> : null}
+          {validationActive && hash ? (
+            <TableCell>
+              <OverflowTooltip text={hash} maxWidth="70px" />
+            </TableCell>
+          ) : null}
           {validationActive ? (
             <TableCell className={classes.noHorizontalPadding}>
               <div className={classes.actionContainer}>
@@ -170,7 +167,7 @@ class DocumentOverview extends Component {
         <TableCell>
           <Typography variant="body1">{strings.common.name}</Typography>
         </TableCell>
-        {validationActive ? <TableCell></TableCell> : null}
+        {validationActive ? <TableCell /> : null}
         {validationActive ? (
           <TableCell>
             <Typography style={{ paddingLeft: "0px" }} variant="body2">
