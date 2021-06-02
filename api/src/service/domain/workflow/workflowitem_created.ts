@@ -8,7 +8,7 @@ import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
-import { StoredDocument, storedDocumentSchema } from "./document";
+import { StoredDocument, storedDocumentSchema } from "../document/document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";

@@ -1,19 +1,25 @@
+import { config } from "../config";
+import { decryptWithKey } from "../lib/asymmetricCrypto";
 import { Ctx } from "../lib/ctx";
+import * as PrivateKeyGet from "../organization/organization";
 import * as Result from "../result";
 import * as Cache from "./cache2";
+import StorageServiceClient from "./Client_storage_service";
+import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
+import * as WorkflowitemDocument from "./domain/document/document";
+import * as DocumentGet from "./domain/document/document_get";
+import * as SecretGet from "./domain/document/secret_get";
+import * as WorkflowitemDocumentDownload from "./domain/document/workflowitem_document_download";
 import { ServiceUser } from "./domain/organization/service_user";
-import * as WorkflowitemDocument from "./domain/workflow/document";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
-import * as WorkflowitemDocumentDownload from "./domain/workflow/workflowitem_document_download";
-import * as WorkflowitemDocumentUploaded from "./domain/workflow/workflowitem_document_uploaded";
-import * as Liststreamkeyitems from "./liststreamkeyitems";
 import VError = require("verror");
 
 export async function getDocument(
   conn: ConnToken,
+  storageServiceClient: StorageServiceClientI,
   ctx: Ctx,
   serviceUser: ServiceUser,
   projectId: Project.Id,
@@ -26,15 +32,52 @@ export async function getDocument(
       getWorkflowitem: async () => {
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
       },
-      getDocumentEvents: async (documentId) => {
-        const items: Liststreamkeyitems.Item[] = await conn.multichainClient.v2_readStreamItems(
-          "offchain_documents",
-          documentId,
-          1,
+      getOffchainDocument: async (docId) => {
+        return await DocumentGet.getOffchainDocument(ctx, docId, {
+          getDocumentsEvents: async () => {
+            return await cache.getDocumentUploadedEvents();
+          },
+          getOffchainDocumentsEvents: async () => {
+            return await cache.getOffchainDocumentsEvents();
+          },
+        });
+      },
+      getDocumentInfo: async (docId) => {
+        return await DocumentGet.getDocumentInfo(ctx, docId, {
+          getDocumentsEvents: async () => {
+            return await cache.getDocumentUploadedEvents();
+          },
+          getOffchainDocumentsEvents: async () => {
+            return await cache.getOffchainDocumentsEvents();
+          },
+        });
+      },
+      getSecret: async (docId, organization) => {
+        return SecretGet.getSecret(ctx, docId, organization, {
+          getSecretPublishedEvents: async () => {
+            return cache.getSecretPublishedEvents();
+          },
+        });
+      },
+      getPrivateKey: async (organization) => {
+        return PrivateKeyGet.getPrivateKey(
+          conn.multichainClient,
+          organization,
+          config.organizationVaultSecret,
         );
-
-        const documentEvents: WorkflowitemDocumentUploaded.Event[] = items.map((i) => i.data.json);
-        return documentEvents;
+      },
+      decryptWithKey: async (secret, privateKey) => {
+        return decryptWithKey(secret, privateKey);
+      },
+      getDocumentFromStorage: async (id, secret) => {
+        return await storageServiceClient.downloadObject(id, secret);
+      },
+      getDocumentFromExternalStorage: async (id, secret, storageServiceUrl) => {
+        const externalStorageServiceClient = new StorageServiceClient({
+          baseURL: storageServiceUrl,
+          timeout: 10000,
+        });
+        return await externalStorageServiceClient.downloadObject(id, secret);
       },
     }),
   );

@@ -9,6 +9,8 @@ import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemPermissionGrant from "./workflowitem_permission_grant";
+import * as UserRecord from "../organization/user_record";
+import * as Group from "../organization/group";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const executingUser: ServiceUser = { id: "mstein", groups: [] };
@@ -38,6 +40,40 @@ const testworkflowitem: Workflowitem.Workflowitem = {
   additionalData: {},
 };
 
+const userRecord: UserRecord.UserRecord = {
+  id: "",
+  createdAt: "",
+  displayName: "",
+  organization: "",
+  passwordHash: "",
+  address: "",
+  encryptedPrivKey: "",
+  permissions: {},
+  log: [],
+  additionalData: {},
+};
+
+const groupRecord: Group.Group = {
+  id: "",
+  createdAt: "",
+  displayName: "",
+  description: "",
+  members: [],
+  permissions: {},
+  log: [],
+  additionalData: {},
+};
+
+const secretPublishedEvent: BusinessEvent = {
+  type: "secret_published",
+  source: "",
+  time: "",
+  publisher: "",
+  docId: "",
+  organization: "",
+  encryptedSecret: "",
+};
+
 describe("grant workflowitem permissions", () => {
   it("With the 'workflowitem.intent.grantPermission' permission, the user can grant workflowitem permissions", async () => {
     const grantResult = await WorkflowitemPermissionGrant.grantWorkflowitemPermission(
@@ -50,6 +86,11 @@ describe("grant workflowitem permissions", () => {
       "workflowitem.assign",
       {
         getWorkflowitem: async () => testworkflowitem,
+        userExists: async (user) => false,
+        getUser: async (user) => userRecord,
+        shareDocument: async (id, organization) => secretPublishedEvent,
+        groupExists: async (group) => false,
+        getGroup: async (group) => groupRecord,
       },
     );
 
@@ -99,6 +140,11 @@ describe("grant workflowitem permissions", () => {
       "workflowitem.view",
       {
         getWorkflowitem: async () => workflowitemWithoutPermission,
+        userExists: async (user) => false,
+        getUser: async (user) => userRecord,
+        shareDocument: async (id, organization) => secretPublishedEvent,
+        groupExists: async (group) => false,
+        getGroup: async (group) => groupRecord,
       },
     );
 
@@ -118,6 +164,11 @@ describe("grant workflowitem permission: preconditions", () => {
       "workflowitem.view",
       {
         getWorkflowitem: async () => new Error("some error"),
+        userExists: async (user) => false,
+        getUser: async (user) => userRecord,
+        shareDocument: async (id, organization) => secretPublishedEvent,
+        groupExists: async (group) => false,
+        getGroup: async (group) => groupRecord,
       },
     );
     assert.isTrue(Result.isErr(grantResult));
@@ -143,6 +194,11 @@ describe("grant workflowitem permission: preconditions", () => {
       "workflowitem.view",
       {
         getWorkflowitem: async () => baseWorkflowitem,
+        userExists: async (user) => false,
+        getUser: async (user) => userRecord,
+        shareDocument: async (id, organization) => secretPublishedEvent,
+        groupExists: async (group) => false,
+        getGroup: async (group) => groupRecord,
       },
     );
 

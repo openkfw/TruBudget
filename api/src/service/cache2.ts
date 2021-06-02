@@ -6,18 +6,21 @@ import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
 import { NotFound } from "./domain/errors/not_found";
-import * as NodeRegistered from "./domain/network/node_registered";
-import * as NodeDeclined from "./domain/network/node_declined";
 import * as NodesLogged from "./domain/network/nodes_logged";
+import * as NodeDeclined from "./domain/network/node_declined";
+import * as NodeRegistered from "./domain/network/node_registered";
 import * as GroupCreated from "./domain/organization/group_created";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
+import * as PublicKeyPublished from "./domain/organization/public_key_published";
+import * as PublicKeyUpdated from "./domain/organization/public_key_updated";
 import * as UserCreated from "./domain/organization/user_created";
-import * as UserPasswordChanged from "./domain/organization/user_password_changed";
-import * as UserEnabled from "./domain/organization/user_enabled";
 import * as UserDisabled from "./domain/organization/user_disabled";
+import * as UserEnabled from "./domain/organization/user_enabled";
+import * as UserPasswordChanged from "./domain/organization/user_password_changed";
 import * as UserPermissionsGranted from "./domain/organization/user_permission_granted";
 import * as UserPermissionsRevoked from "./domain/organization/user_permission_revoked";
+import * as DocumentValidated from "./domain/document/document_validated";
 import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as NotificationCreated from "./domain/workflow/notification_created";
@@ -43,23 +46,23 @@ import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
 import * as SubprojectUpdated from "./domain/workflow/subproject_updated";
 import * as Workflowitem from "./domain/workflow/workflowitem";
+import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
+import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
 import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
-import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
-import * as WorkflowitemDocumentUploaded from "./domain/workflow/workflowitem_document_uploaded";
-import * as DocumentValidated from "./domain/workflow/document_validated";
-
+import * as DocumentUploaded from "./domain/document/document_uploaded";
+import * as DocumentShared from "./domain/document/document_shared";
+import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
 import { Item } from "./liststreamitems";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
   "organization",
-  "offchain_documents",
 ];
 
 type StreamName = string;
@@ -111,6 +114,7 @@ interface CacheInstance {
   getUserEvents(userId?: string): BusinessEvent[];
   getGroupEvents(groupId?: string): BusinessEvent[];
   getNotificationEvents(userId: string): Result.Type<BusinessEvent[]>;
+  getPublicKeyEvents(): Result.Type<BusinessEvent[]>;
 
   // Project:
   getProjects(): Promise<Project.Project[]>;
@@ -130,6 +134,10 @@ interface CacheInstance {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
+  getOffchainDocumentsEvents(): Result.Type<BusinessEvent[]>;
+  getDocumentUploadedEvents(): Result.Type<BusinessEvent[]>;
+  getStorageServiceUrlPublishedEvents(): Result.Type<BusinessEvent[]>;
+  getSecretPublishedEvents(): Result.Type<BusinessEvent[]>;
 }
 
 export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
@@ -166,6 +174,56 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       };
 
       return (cache.eventsByStream.get("notifications") || []).filter(userFilter);
+    },
+
+    getPublicKeyEvents: (): Result.Type<BusinessEvent[]> => {
+      return cache.eventsByStream.get("public_keys") || [];
+    },
+    getOffchainDocumentsEvents: (): Result.Type<BusinessEvent[]> => {
+      const documentFilter = (event) => {
+        switch (event.type) {
+          case "workflowitem_document_uploaded":
+            return true;
+          default:
+            return false;
+        }
+      };
+      return cache.eventsByStream.get("offchain_documents") || [].filter(documentFilter);
+    },
+    getDocumentUploadedEvents: (): Result.Type<BusinessEvent[]> => {
+      const documentFilter = (event) => {
+        switch (event.type) {
+          case "document_uploaded":
+            return true;
+          case "storage_service_url_published":
+            return true;
+          default:
+            return false;
+        }
+      };
+      return cache.eventsByStream.get("offchain_documents") || [].filter(documentFilter);
+    },
+    getStorageServiceUrlPublishedEvents: (): Result.Type<BusinessEvent[]> => {
+      const storageServiceUrlFilter = (event) => {
+        switch (event.type) {
+          case "storage_service_url_published":
+            return true;
+          default:
+            return false;
+        }
+      };
+      return cache.eventsByStream.get("offchain_documents") || [].filter(storageServiceUrlFilter);
+    },
+    getSecretPublishedEvents: (): Result.Type<BusinessEvent[]> => {
+      const secretPhublishedFilter = (event) => {
+        switch (event.type) {
+          case "secret_published":
+            return true;
+          default:
+            return false;
+        }
+      };
+      return cache.eventsByStream.get("offchain_documents") || [].filter(secretPhublishedFilter);
     },
 
     getProjects: async (): Promise<Project.Project[]> => {
@@ -339,7 +397,7 @@ async function fetchItems(
   );
   for (const item of items) {
     if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
-      item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
+      item.data = await rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
     }
   }
   return items;
@@ -458,6 +516,8 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
     case "users":
     case "groups":
     case "notifications":
+    case "public_keys":
+    case "offchain_documents":
       const eventsSoFar = cache.eventsByStream.get(streamName) || [];
       cache.eventsByStream.set(streamName, eventsSoFar.concat(newEvents));
       break;
@@ -513,6 +573,9 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
 }
 
 const EVENT_PARSER_MAP = {
+  document_uploaded: DocumentUploaded.validate,
+  secret_published: DocumentShared.validate,
+  storage_service_url_published: StorageServiceUrlUpdated.validate,
   global_permission_granted: GlobalPermissionsGranted.validate,
   global_permission_revoked: GlobalPermissionsRevoked.validate,
   group_created: GroupCreated.validate,
@@ -530,6 +593,8 @@ const EVENT_PARSER_MAP = {
   project_projected_budget_deleted: ProjectProjectedBudgetDeleted.validate,
   project_projected_budget_updated: ProjectProjectedBudgetUpdated.validate,
   project_updated: ProjectUpdated.validate,
+  public_key_published: PublicKeyPublished.validate,
+  public_key_updated: PublicKeyUpdated.validate,
   subproject_assigned: SubprojectAssigned.validate,
   subproject_closed: SubprojectClosed.validate,
   subproject_created: SubprojectCreated.validate,

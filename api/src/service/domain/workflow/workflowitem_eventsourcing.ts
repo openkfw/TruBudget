@@ -13,7 +13,7 @@ import * as WorkflowitemPermissionGranted from "./workflowitem_permission_grante
 import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoked";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import * as DocumentValidated from "./document_validated";
+import * as DocumentValidated from "../document/document_validated";
 
 export function sourceWorkflowitems(
   ctx: Ctx,

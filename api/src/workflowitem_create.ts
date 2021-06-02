@@ -7,7 +7,7 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
-import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/workflow/document";
+import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
 import { conversionRateSchema, moneyAmountSchema } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
@@ -143,6 +143,16 @@ function mkSwaggerSchema(server: FastifyInstance) {
                   type: "object",
                   properties: {
                     id: { type: "string" },
+                    documents: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string", example: "05c22b92-abb1-4f7c-8f6f-7ff5e8a2bfd3" },
+                          fileName: { type: "string", example: "test-document" },
+                        },
+                      },
+                    },
                   },
                 },
               },

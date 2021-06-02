@@ -3,9 +3,9 @@ import { VError } from "verror";
 
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
-import * as Project from "./project";
-import * as Subproject from "./subproject";
-import * as Workflowitem from "./workflowitem";
+import * as Project from "../workflow/project";
+import * as Subproject from "../workflow/subproject";
+import * as Workflowitem from "../workflow/workflowitem";
 
 type EventTypeType = "workflowitem_document_validated";
 const eventType: EventTypeType = "workflowitem_document_validated";
@@ -66,7 +66,6 @@ export function validate(input: any): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }
-
 
 /**
  * Applies the event to the given workflowitem, or returns an error.

@@ -10,7 +10,9 @@ export class NotFound extends Error {
       | "group"
       | "user"
       | "document"
-      | "notification",
+      | "notification"
+      | "key"
+      | "secret",
     private readonly entityId: string,
   ) {
     super(`Not found: ${entityType} ${entityId}`);

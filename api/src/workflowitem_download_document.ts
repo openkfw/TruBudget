@@ -8,7 +8,7 @@ import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import * as WorkflowitemDocument from "./service/domain/workflow/document";
+import * as WorkflowitemDocument from "./service/domain/document/document";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -63,7 +63,7 @@ interface Service {
     subprojectId: string,
     workflowitemId: string,
     documentId: string,
-  ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>;
+  ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>; 
 }
 
 function sendErrorIfEmpty(reply, resourceParameter) {
