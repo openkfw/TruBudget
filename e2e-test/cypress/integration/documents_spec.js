@@ -4,10 +4,15 @@ let projectId;
 let subprojectId;
 let workflowitemId;
 let baseUrl, apiRoute;
+let isExternalStorageEnabled = false;
+
+// Generate random IDs since every document ID can only exists once in the multichain
+const generateId = () => `doc_${Math.floor(Math.random() * 1000000)}`;
+
 // Actual file in fixture folder
 const fileName = "documents_test.json";
 
-describe("Attaching a document to a workflowitem.", function() {
+describe("Attaching a document to a workflowitem.", function () {
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
@@ -27,7 +32,7 @@ describe("Attaching a document to a workflowitem.", function() {
       });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
@@ -50,7 +55,7 @@ describe("Attaching a document to a workflowitem.", function() {
 
     // "upload" the file:
     cy.fixture(fileName).then(fileContent => {
-      cy.get("#docupload").upload(
+      cy.get("#docupload").attachFile(
         { fileContent: JSON.stringify(fileContent), fileName, mimeType: "application/json" },
         { subjectType: "input" }
       );
@@ -58,8 +63,8 @@ describe("Attaching a document to a workflowitem.", function() {
     return cy.get("[data-test=workflowitemDocumentId]").should("contain", fileDisplayName);
   };
 
-  it("A document can be validated.", function() {
-    const fileDisplayName = "Validation_Test";
+  it("A document can be validated.", function () {
+    const fileDisplayName = "Validation_Test_" + generateId();
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
@@ -85,7 +90,7 @@ describe("Attaching a document to a workflowitem.", function() {
 
     // upload the same file, for validation:
     cy.fixture(fileName).then(fileContent => {
-      cy.get("#docvalidation").upload(
+      cy.get("#docvalidation").attachFile(
         { fileContent: JSON.stringify(fileContent), fileName, mimeType: "application/json" },
         { subjectType: "input" }
       );
@@ -97,8 +102,8 @@ describe("Attaching a document to a workflowitem.", function() {
       .should("contain", "Identical");
   });
 
-  it("Validation of wrong document fails.", function() {
-    const fileDisplayName = "Wrong_Document_Test";
+  it("Validation of wrong document fails.", function () {
+    const fileDisplayName = "Wrong_Document_Test_" + generateId();
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
@@ -125,7 +130,7 @@ describe("Attaching a document to a workflowitem.", function() {
     // upload wrong document
     const wrongFileName = "testdata.json";
     cy.fixture(wrongFileName).then(fileContent => {
-      cy.get("#docvalidation").upload(
+      cy.get("#docvalidation").attachFile(
         { fileContent: JSON.stringify(fileContent), fileName: wrongFileName, mimeType: "application/json" },
         { subjectType: "input" }
       );
@@ -135,5 +140,43 @@ describe("Attaching a document to a workflowitem.", function() {
     cy.wait("@validate")
       .get(`button[label="Changed!"] > span`)
       .should("contain", "Different");
+  });
+
+  it("The filename and document name are shown correctly", function () {
+    const fileDisplayName = "Another_Doc_" + generateId();
+    cy.server();
+    cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
+    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
+
+    uploadDocument(fileDisplayName, fileName);
+    // submit and close the dialog:
+    cy.get("[data-test=submit]")
+      .should("be.visible")
+      .click();
+
+    // open the info dialog window:
+    cy.wait("@update")
+      .wait("@viewDetails")
+      .get(`[data-test^='workflowitem-info-button-${workflowitemId}']`)
+      .should("be.visible")
+      .click();
+
+    // go to the documents tab:
+    cy.get("[data-test=workflowitem-documents-tab]")
+      .should("be.visible")
+      .click();
+
+    // Check document name
+    cy.get("[data-test=workflowitemDocumentId]")
+      .should("be.visible")
+      .contains(fileDisplayName);
+
+    // Check filename if saved on external storage (minio)
+    if (isExternalStorageEnabled) {
+      cy.get("[data-test=workflowitemDocumentId]")
+        .should("be.visible")
+        .contains(`(${fileName})`);
+    }
   });
 });

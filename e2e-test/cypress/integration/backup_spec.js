@@ -6,7 +6,7 @@ let fileName = "backup.gz";
 
 let pathToFile = `cypress/fixtures/${fileName}`;
 
-describe("Backup Feature", function () {
+describe("Backup Feature", function() {
   before(() => {
     //download directly to fixture folder, without pop-ups
     if (Cypress.browser.name !== "firefox") {
@@ -55,7 +55,7 @@ describe("Backup Feature", function () {
     cy.fixture(fileName, "binary")
       .then(fileContent => Cypress.Blob.binaryStringToBlob(fileContent))
       .then(fileContent => {
-        cy.get("#uploadBackup").upload(
+        cy.get("#uploadBackup").attachFile(
           { fileContent: fileContent, fileName, mimeType: "application/gzip", encoding: "utf-8" },
           { subjectType: "input" }
         );
@@ -71,7 +71,7 @@ describe("Backup Feature", function () {
     });
   });
 
-  it("Tests the download of a backup.gz file", function () {
+  it("Tests the download of a backup.gz file", function() {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.createBackup().then(headers => {
       expect(headers).to.include({
@@ -81,7 +81,7 @@ describe("Backup Feature", function () {
     });
   });
 
-  it("Tests the restore of an invalid backup", function () {
+  it("Tests the restore of an invalid backup", function() {
     const invalidBackupFile = "backup_invalidHash.gz";
 
     cy.task("modifyHash", { pathToFile, newHash: "wrongHash", newBackup: invalidBackupFile }).then(success => {
@@ -100,7 +100,7 @@ describe("Backup Feature", function () {
     cy.fixture(invalidBackupFile, "binary")
       .then(fileContent => Cypress.Blob.binaryStringToBlob(fileContent))
       .then(fileContent => {
-        cy.get("#uploadBackup").upload(
+        cy.get("#uploadBackup").attachFile(
           { fileContent: fileContent, fileName: invalidBackupFile, mimeType: "application/gzip", encoding: "utf-8" },
           { subjectType: "input" }
         );
@@ -126,7 +126,7 @@ describe("Backup Feature", function () {
       });
   });
 
-  it("Tests the restore of a backup with the wrong organisation", function () {
+  it("Tests the restore of a backup with the wrong organisation", function() {
     const wrongOrgaFile = "backup_orga_test.gz";
 
     cy.server();
@@ -141,7 +141,7 @@ describe("Backup Feature", function () {
     cy.fixture(wrongOrgaFile, "binary")
       .then(fileContent => Cypress.Blob.binaryStringToBlob(fileContent))
       .then(fileContent => {
-        cy.get("#uploadBackup").upload(
+        cy.get("#uploadBackup").attachFile(
           { fileContent: fileContent, fileName: wrongOrgaFile, mimeType: "application/gzip", encoding: "utf-8" },
           { subjectType: "input" }
         );
