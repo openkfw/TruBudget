@@ -33,6 +33,7 @@ This document describes how to set up your environment to start developing and d
     - [Provisioning (Optional)](#provisioning-optional)
     - [Excel-Export (Optional)](#excel-export-optional)
     - [Email-Notification (Optional)](#email-notification-optional)
+    - [Storage-Service (Optional)](#storage-service-optional)
 
   - [Tests](#tests)
 
@@ -409,6 +410,12 @@ The email notification service is responsible for saving/deleting email adresses
 
 If you want to start this service or simply see more details regarding this feature you can check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/email-notification/README.md) file.
 
+### Storage-Service (Optional)
+
+The storage service is responsible for saving/accessing documents to Minio, an external storage server.
+
+More details and how to enable the storage service with an external storage can be found in [README.md](https://github.com/openkfw/TruBudget/blob/master/storage-service/README.md) file.
+
 ## Tests
 
 ### End-to-end Tests
@@ -491,6 +498,7 @@ npm run test:here <folderName> <describeString>
 ```
 
 ### CI/CD
+
 The CI/CD is described [here](https://github.com/openkfw/TruBudget/tree/master/.github/workflows/README.md)
 
 ## Links
