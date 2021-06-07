@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.22.0] - 2021-06-02
+
+### Added
+
+- Add a document feature that allows users to share documents that are published on an external storage with other organizations if `workflowitem.view` permissions are shared. Additional configurations for activating the feature are needed. [#809](https://github.com/openkfw/TruBudget/pull/809)
+- Add multichain feed documentation [#814](https://github.com/openkfw/TruBudget/issues/814)
+
 ## [1.21.0] - 2021-05-06
 
 ### Added
@@ -611,6 +618,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
 [unreleased]: https://github.com/openkfw/TruBudget/compare/v1.21.0...master
+[1.22.0]: https://github.com/openkfw/TruBudget/compare/v1.21.0...v1.22.0
 [1.21.0]: https://github.com/openkfw/TruBudget/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/openkfw/TruBudget/compare/v1.19.1...v1.20.0
 [1.19.1]: https://github.com/openkfw/TruBudget/compare/v1.19.0...v1.19.1
