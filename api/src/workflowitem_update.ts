@@ -8,7 +8,7 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/workflow/document";
+import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";

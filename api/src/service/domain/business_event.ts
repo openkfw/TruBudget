@@ -5,16 +5,22 @@ import * as GroupMemberAdded from "./organization/group_member_added";
 import * as GroupMemberRemoved from "./organization/group_member_removed";
 import * as GroupPermissionGranted from "./organization/group_permissions_granted";
 import * as GroupPermissionRevoked from "./organization/group_permissions_revoked";
+import * as PublicKeyPublished from "./organization/public_key_published";
+import * as PublicKeyUpdated from "./organization/public_key_updated";
 import * as UserCreated from "./organization/user_created";
-import * as UserPasswordChanged from "./organization/user_password_changed";
-import * as UserEnabled from "./organization/user_enabled";
 import * as UserDisabled from "./organization/user_disabled";
+import * as UserEnabled from "./organization/user_enabled";
+import * as UserPasswordChanged from "./organization/user_password_changed";
 import * as UserPermissionGranted from "./organization/user_permission_granted";
 import * as UserPermissionRevoked from "./organization/user_permission_revoked";
+import * as DocumentValidated from "./document/document_validated";
+import * as DocumentUploaded from "./document/document_uploaded";
+import * as DocumentShared from "./document/document_shared";
 import * as GlobalPermissionsGranted from "./workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./workflow/global_permission_revoked";
 import * as NotificationCreated from "./workflow/notification_created";
 import * as NotificationMarkedRead from "./workflow/notification_marked_read";
+import * as OrganizationUrlUpdated from "./document/storage_service_url_updated";
 import * as ProjectAssigned from "./workflow/project_assigned";
 import * as ProjectClosed from "./workflow/project_closed";
 import * as ProjectCreated from "./workflow/project_created";
@@ -31,15 +37,14 @@ import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_r
 import * as SubprojectProjectedBudgetDeleted from "./workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./workflow/subproject_projected_budget_updated";
 import * as SubprojectUpdated from "./workflow/subproject_updated";
+import * as WorkflowitemsReordered from "./workflow/workflowitems_reordered";
 import * as WorkflowitemAssigned from "./workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./workflow/workflowitem_created";
+import * as WorkflowitemDocumentUploaded from "./document/workflowitem_document_uploaded";
 import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./workflow/workflowitem_updated";
-import * as WorkflowitemsReordered from "./workflow/workflowitems_reordered";
-import * as WorkflowitemDocumentUploaded from "./workflow/workflowitem_document_uploaded";
-import * as DocumentValidated from "./workflow/document_validated";
 
 export type BusinessEvent =
   | GlobalPermissionsGranted.Event
@@ -81,7 +86,12 @@ export type BusinessEvent =
   | WorkflowitemPermissionRevoked.Event
   | WorkflowitemUpdated.Event
   | WorkflowitemDocumentUploaded.Event
-  | DocumentValidated.Event;
+  | DocumentValidated.Event
+  | PublicKeyPublished.Event
+  | PublicKeyUpdated.Event
+  | DocumentUploaded.Event
+  | DocumentShared.Event
+  | OrganizationUrlUpdated.Event;
 
 export const businessEventSchema = Joi.object({
   type: Joi.string().required(),

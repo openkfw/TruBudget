@@ -1,7 +1,9 @@
-import * as GlobalPermissionGrantAPI from "./global_permission_grant";
-import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
+import { AxiosRequestConfig } from "axios";
+import getValidConfig from "./config";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
 import * as GlobalPermissionsListAPI from "./global_permissions_list";
+import * as GlobalPermissionGrantAPI from "./global_permission_grant";
+import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
 import * as GroupCreateAPI from "./group_create";
 import * as GroupListAPI from "./group_list";
 import * as GroupMemberAddAPI from "./group_member_add";
@@ -25,25 +27,26 @@ import * as ProjectProjectedBudgetUpdateAPI from "./project_budget_update_projec
 import * as ProjectCloseAPI from "./project_close";
 import * as ProjectCreateAPI from "./project_create";
 import * as ProjectListAPI from "./project_list";
+import * as ProjectPermissionsListAPI from "./project_permissions_list";
 import * as ProjectPermissionGrantAPI from "./project_permission_grant";
 import * as ProjectPermissionRevokeAPI from "./project_permission_revoke";
-import * as ProjectPermissionsListAPI from "./project_permissions_list";
 import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
 import * as ProjectViewHistoryAPIv2 from "./project_view_history_v2";
+import * as Result from "./result";
 import * as Multichain from "./service";
 import * as Cache from "./service/cache2";
+import StorageServiceClient from "./service/Client_storage_service";
 import * as DocumentValidationService from "./service/document_validation";
+import * as GlobalPermissionsGetService from "./service/global_permissions_get";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
-import * as GlobalPermissionsGetService from "./service/global_permissions_get";
 import * as GroupCreateService from "./service/group_create";
 import * as GroupMemberAddService from "./service/group_member_add";
 import * as GroupMemberRemoveService from "./service/group_member_remove";
 import * as GroupPermissionsListService from "./service/group_permissions_list";
 import * as GroupQueryService from "./service/group_query";
-import { randomString } from "./service/hash";
 import * as NotificationListService from "./service/notification_list";
 import * as NotificationMarkReadService from "./service/notification_mark_read";
 import * as ProjectAssignService from "./service/project_assign";
@@ -52,9 +55,9 @@ import * as ProjectCreateService from "./service/project_create";
 import * as ProjectGetService from "./service/project_get";
 import * as ProjectViewHistoryService from "./service/project_history_get";
 import * as ProjectListService from "./service/project_list";
+import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectPermissionGrantService from "./service/project_permission_grant";
 import * as ProjectPermissionRevokeService from "./service/project_permission_revoke";
-import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
@@ -65,9 +68,9 @@ import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
 import * as SubprojectViewHistoryService from "./service/subproject_history_get";
 import * as SubprojectListService from "./service/subproject_list";
+import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
-import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
 import * as SubprojectUpdateService from "./service/subproject_update";
@@ -77,10 +80,11 @@ import * as UserCreateService from "./service/user_create";
 import * as UserDisableService from "./service/user_disable";
 import * as UserEnableService from "./service/user_enable";
 import * as UserPasswordChangeService from "./service/user_password_change";
+import * as UserPermissionsListService from "./service/user_permissions_list";
 import * as UserPermissionGrantService from "./service/user_permission_grant";
 import * as UserPermissionRevokeService from "./service/user_permission_revoke";
-import * as UserPermissionsListService from "./service/user_permissions_list";
 import * as UserQueryService from "./service/user_query";
+import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
@@ -88,24 +92,25 @@ import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_doc
 import * as WorkflowitemGetService from "./service/workflowitem_get";
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
+import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
-import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
-import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as SubprojectCloseAPI from "./subproject_close";
 import * as SubprojectCreateAPI from "./subproject_create";
 import * as SubprojectListAPI from "./subproject_list";
+import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
 import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
 import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
-import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
 import * as SubprojectUpdateAPI from "./subproject_update";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as SubprojectViewHistoryAPI from "./subproject_view_history";
 import * as SubprojectViewHistoryAPIv2 from "./subproject_view_history_v2";
+import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
+import ensureStorageServiceUrlPublished from "./system/ensureOrganizationUrlPublished";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserDisableAPI from "./user_disable";
@@ -113,21 +118,21 @@ import * as UserEnableAPI from "./user_enable";
 import * as UserListAPI from "./user_list";
 import * as UserAssignmentsAPI from "./user_listAssignments";
 import * as UserPasswordChangeAPI from "./user_password_change";
+import * as UserPermissionsListAPI from "./user_permissions_list";
 import * as UserPermissionGrantAPI from "./user_permission_grant";
 import * as UserPermissionRevokeAPI from "./user_permission_revoke";
-import * as UserPermissionsListAPI from "./user_permissions_list";
+import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
 import * as WorkflowitemListAPI from "./workflowitem_list";
+import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
-import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
-import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -136,30 +141,16 @@ const DAY_MS = 86400000;
  * Deal with the environment:
  */
 
-const port: number = (process.env.PORT && parseInt(process.env.PORT, 10)) || 8080;
-
-const jwtSecret: string = process.env.JWT_SECRET || randomString(32);
-if (jwtSecret.length < 32) {
-  logger.warn("Warning: the JWT secret key should be at least 32 characters long.");
-}
-const rootSecret: string = process.env.ROOT_SECRET || randomString(32);
-if (!process.env.ROOT_SECRET) {
-  logger.warn(`Warning: root password not set; autogenerated to ${rootSecret}`);
-}
-const organization: string = process.env.ORGANIZATION || "";
-if (!organization) {
-  logger.fatal("Please set ORGANIZATION to the organization this node belongs to.");
-  process.exit(1);
-}
-const organizationVaultSecret: string = process.env.ORGANIZATION_VAULT_SECRET || "";
-if (!organizationVaultSecret) {
-  logger.fatal(
-    "Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.",
-  );
-  process.exit(1);
-}
-
-const SWAGGER_BASEPATH = process.env.SWAGGER_BASEPATH || "/";
+const {
+  organization,
+  organizationVaultSecret,
+  rootSecret,
+  jwtSecret,
+  port,
+  swaggerBasepath,
+  storageService,
+  documentFeatureEnabled,
+} = getValidConfig();
 
 /*
  * Initialize the components:
@@ -183,7 +174,23 @@ logger.info(
 const db = Multichain.init(rpcSettings);
 const { multichainClient } = db;
 
-const server = createBasicApp(jwtSecret, URL_PREFIX, port, SWAGGER_BASEPATH);
+let storageServiceSettings: AxiosRequestConfig;
+if (documentFeatureEnabled) {
+  storageServiceSettings = {
+    baseURL: `http://${storageService.host}:${storageService.port}`,
+    // 2.5 seconds request timeout
+    timeout: 2500,
+  };
+} else {
+  storageServiceSettings = {
+    baseURL: "placeholder",
+    // 2.5 seconds request timeout
+    timeout: 2500,
+  };
+}
+const storageServiceClient = new StorageServiceClient(storageServiceSettings);
+
+const server = createBasicApp(jwtSecret, URL_PREFIX, port, swaggerBasepath);
 
 /*
  * Run the app:
@@ -224,7 +231,7 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, () =>
+registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, storageServiceClient, () =>
   Cache.invalidateCache(db),
 );
 
@@ -666,7 +673,7 @@ WorkflowitemCloseAPI.addHttpHandler(server, URL_PREFIX, {
 
 WorkflowitemCreateAPI.addHttpHandler(server, URL_PREFIX, {
   createWorkflowitem: (ctx, user, requestData) =>
-    WorkflowitemCreateService.createWorkflowitem(db, ctx, user, requestData),
+    WorkflowitemCreateService.createWorkflowitem(db, storageServiceClient, ctx, user, requestData),
 });
 
 WorkflowitemAssignAPI.addHttpHandler(server, URL_PREFIX, {
@@ -730,6 +737,7 @@ WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>
     WorkflowitemUpdateService.updateWorkflowitem(
       db,
+      storageServiceClient,
       ctx,
       user,
       projectId,
@@ -767,6 +775,7 @@ WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
   getDocument: (ctx, user, projectId, subprojectId, workflowitemId, documentId) =>
     WorkflowitemDocumentDownloadService.getDocument(
       db,
+      storageServiceClient,
       ctx,
       user,
       projectId,
@@ -817,6 +826,19 @@ server.listen(port, "0.0.0.0", async (err) => {
     await timeout(retryIntervalMs);
   }
   logger.debug({ params: { multichainClient, organization } }, "Node registered in nodes stream");
+
+  const ensurePublicKeyPublishedResult = await ensurePublicKeyPublished(db, organization);
+  if (Result.isErr(ensurePublicKeyPublishedResult)) {
+    logger.fatal(ensurePublicKeyPublishedResult);
+    process.exit(1);
+  }
+  if (documentFeatureEnabled) {
+    const storageServiceUrlResult = await ensureStorageServiceUrlPublished(db, organization);
+    if (Result.isErr(storageServiceUrlResult)) {
+      logger.fatal(storageServiceUrlResult);
+      process.exit(1);
+    }
+  }
 
   // Logging peerinfo runs immidiately and then every 24H on every API (use DAY_MS)
   checkNodes(multichainClient);

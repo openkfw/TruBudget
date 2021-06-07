@@ -9,12 +9,12 @@ import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import * as NotificationCreated from "./notification_created";
-import * as Project from "./project";
-import * as Subproject from "./subproject";
+import * as NotificationCreated from "../workflow/notification_created";
+import * as Project from "../workflow/project";
+import * as Subproject from "../workflow/subproject";
 import * as DocumentValidated from "./document_validated";
-import * as Workflowitem from "./workflowitem";
-import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
+import * as Workflowitem from "../workflow/workflowitem";
+import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
 
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;

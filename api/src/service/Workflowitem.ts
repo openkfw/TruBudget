@@ -10,6 +10,7 @@ const maxItemCount: number = 0x7fffffff;
 export interface Document {
   id: string;
   hash: string;
+  fileName?: string;
 }
 
 interface HistoryEvent {

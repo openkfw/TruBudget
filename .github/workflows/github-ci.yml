@@ -54,6 +54,7 @@ jobs:
             e2e-test,
             excel-export,
             email-notification,
+            storage-service,
           ]
 
     defaults:
@@ -114,6 +115,7 @@ jobs:
             e2e-test,
             excel-export,
             email-notification,
+            storage-service,
           ]
 
     defaults:

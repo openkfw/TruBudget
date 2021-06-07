@@ -4,7 +4,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
-import { StoredDocument, storedDocumentSchema, UploadedDocument } from "./document";
+import { StoredDocument, storedDocumentSchema } from "../document/document";
 import { conversionRateSchema, moneyAmountSchema } from "./money";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -109,7 +109,7 @@ export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): R
   }
 
   if (workflowitem.status !== "open") {
-    return new VError("a workflowitem may only be updated if its status is \"open\"");
+    return new VError('a workflowitem may only be updated if its status is "open"');
   }
 
   updateProps(workflowitem, event.update);

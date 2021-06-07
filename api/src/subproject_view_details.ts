@@ -15,6 +15,7 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
+import { StoredDocument } from "./service/domain/document/document";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -148,10 +149,7 @@ interface ExposedWorkflowitem {
     description: string | null;
     status: string;
     assignee: string | undefined | null;
-    documents: Array<{
-      id: string;
-      hash: string;
-    }> | null;
+    documents: StoredDocument[];
     amount?: string | null;
     additionalData: object | null;
     workflowitemType?: WorkflowitemType;

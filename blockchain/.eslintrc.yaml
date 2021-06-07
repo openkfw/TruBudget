@@ -1,7 +1,7 @@
 ---
 extends:
-  - eslint:recommended
   - airbnb-base
+  - prettier
 env:
   node: true
   mocha: true

@@ -121,6 +121,31 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
       );
       break;
 
+    case "document_uploaded":
+      await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
+      return writeTo(conn, ctx, {
+        stream: "offchain_documents",
+        keys: [event.docId],
+        event,
+      });
+      break;
+    case "storage_service_url_published":
+      await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
+      return writeTo(conn, ctx, {
+        stream: "offchain_documents",
+        keys: [event.organization],
+        event,
+      });
+      break;
+
+    case "secret_published":
+      await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
+      return writeTo(conn, ctx, {
+        stream: "offchain_documents",
+        keys: [event.docId, event.organization],
+        event,
+      });
+      break;
     case "workflowitem_document_validated":
       return writeTo(conn, ctx, {
         stream: event.projectId,
@@ -134,6 +159,13 @@ export async function store(conn: ConnToken, ctx: Ctx, event: BusinessEvent): Pr
 
     case "notification_marked_read":
       return writeTo(conn, ctx, { stream: "notifications", keys: [event.recipient], event });
+
+    case "public_key_published":
+      await ensureStreamExists(conn, ctx, "public_keys", "public_keys");
+      return writeTo(conn, ctx, { stream: "public_keys", keys: [event.organization], event });
+
+    case "public_key_updated":
+      return writeTo(conn, ctx, { stream: "public_keys", keys: [event.organization], event });
 
     default:
       return Promise.reject(Error(`Not implemented: store(${JSON.stringify(event)})`));

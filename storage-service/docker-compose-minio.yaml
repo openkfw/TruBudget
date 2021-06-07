@@ -1,0 +1,15 @@
+version: "3.2"
+services:
+  minio:
+    image: minio/minio
+    ports:
+      - ${MINIO_PORT}:${MINIO_PORT}
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3

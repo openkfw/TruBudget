@@ -21,6 +21,12 @@ func NewDiskPersister(p string) *DiskPersister {
 
 func (p *DiskPersister) persist(message string) error {
 	unixTimestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
+
+	// Create directory if not existing
+	if _, err := os.Stat(p.path); os.IsNotExist(err) {
+	    os.Mkdir(p.path, os.ModePerm)
+	}
+
 	file, err := os.Create(p.path + unixTimestamp + ".json")
 	defer file.Close()
 

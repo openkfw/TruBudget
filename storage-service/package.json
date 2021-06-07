@@ -1,0 +1,40 @@
+{
+  "name": "storage-service",
+  "version": "1.22.0",
+  "private": true,
+  "description": "Handles the TruBudget object storage",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openkfw/TruBudget.git"
+  },
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/openkfw/TruBudget/issues"
+  },
+  "homepage": "https://github.com/openkfw/TruBudget#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.11.1",
+    "minio": "^7.0.18",
+    "url": "^0.11.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/minio": "^7.0.7",
+    "@types/node": "^14.14.2",
+    "@types/uuid": "^8.3.0",
+    "nodemon": "^2.0.3",
+    "rimraf": "*",
+    "typescript": "^4.0.3"
+  }
+}

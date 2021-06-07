@@ -1,16 +1,16 @@
 import { FastifyInstance } from "fastify";
-
 import { toHttpError } from "../http_errors";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { isReady } from "../lib/readiness";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
+import { declineNode } from "../network/controller/declineNode";
 import { getNodeList } from "../network/controller/list";
 import { getActiveNodes } from "../network/controller/listActive";
 import { registerNode } from "../network/controller/registerNode";
-import { declineNode } from "../network/controller/declineNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
+import StorageServiceClient from "../service/Client_storage_service";
 import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
 import { createBackup } from "../system/createBackup";
@@ -210,6 +210,7 @@ export const registerRoutes = (
   urlPrefix: string,
   multichainHost: string,
   backupApiPort: string,
+  storageServiceClient: StorageServiceClient,
   invalidateCache: () => void,
 ) => {
   const multichainClient = conn.multichainClient;
@@ -235,8 +236,10 @@ export const registerRoutes = (
   });
 
   server.get(`${urlPrefix}/version`, getSchema(server, "version"), async (request, reply) => {
-    getVersion(multichainHost, backupApiPort, multichainClient)
-      .then((response) => send(reply, response))
+    getVersion(multichainHost, backupApiPort, multichainClient, storageServiceClient)
+      .then((response) => {
+        send(reply, response);
+      })
       .catch((err) => handleError(request, reply, err));
   });
 

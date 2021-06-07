@@ -13,12 +13,18 @@ import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
-import { hashDocument, StoredDocument, UploadedDocument, uploadedDocumentSchema } from "./document";
+import { config } from "../../../config";
+import {
+  hashDocument,
+  StoredDocument,
+  UploadedDocument,
+  uploadedDocumentSchema,
+} from "../document/document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
-import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
+import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document_uploaded";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -77,6 +83,11 @@ interface Repository {
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
+  uploadDocumentToStorageService(
+    fileName: string,
+    documentBase64: string,
+    docId: string | undefined,
+  ): Promise<Result.Type<BusinessEvent[]>>;
 }
 
 export async function createWorkflowitem(
@@ -85,21 +96,77 @@ export async function createWorkflowitem(
   reqData: RequestData,
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
+  const publisher = creatingUser.id;
+  const workflowitemId = reqData.workflowitemId || randomString();
   const documents: StoredDocument[] = [];
-  for (const doc of reqData.documents || []) {
-    const hashedDocumentResult = await hashDocument(doc);
-    if (Result.isErr(hashedDocumentResult)) {
-      return new VError(
-        hashedDocumentResult,
-        "failed to create workflowitem, permission check failed",
-      );
+  const documentUploadedEvents: BusinessEvent[] = [];
+
+  if (reqData.documents) {
+    // preparation for workflowitem_created event
+    for (const doc of reqData.documents || []) {
+      const hashedDocumentResult = await hashDocument(doc);
+      if (Result.isErr(hashedDocumentResult)) {
+        return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+      }
+      documents.push(hashedDocumentResult);
     }
-    documents.push(hashedDocumentResult);
+
+    if (config.documentFeatureEnabled) {
+      // upload documents to storage service
+      // generate document events (document_uploaded, secret_published)
+      const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
+        reqData.documents.map(async (d) => {
+          return await repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+        }),
+      );
+      for (const result of documentUploadedEventsResults) {
+        if (Result.isErr(result)) {
+          // Only returns the first error occured
+          return result;
+        }
+        documentUploadedEvents.push(...result);
+      }
+    } else {
+      // upload documents to offchain storage service
+      // generate workflowitem_document_uploaded event
+      const documentUploadedEventsResults: Result.Type<BusinessEvent>[] = documents.map((d, i) => {
+        const docToUpload: UploadedDocument = {
+          base64: reqData.documents ? reqData.documents[i].base64 : "",
+          fileName:
+            reqData.documents && reqData.documents[i].fileName
+              ? reqData.documents[i].fileName
+              : "uploaded_file.pdf",
+          id: d.documentId,
+        };
+
+        const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
+          ctx.source,
+          publisher,
+          reqData.projectId,
+          reqData.subprojectId,
+          workflowitemId,
+          docToUpload,
+        );
+        if (Result.isErr(workflowitemEvent)) {
+          return new VError(workflowitemEvent, "failed to create event");
+        }
+
+        // Check that the event is valid:
+        const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
+        if (Result.isErr(result)) {
+          return new InvalidCommand(ctx, workflowitemEvent, [result]);
+        }
+        return workflowitemEvent;
+      });
+      for (const result of documentUploadedEventsResults) {
+        if (Result.isErr(result)) {
+          return result;
+        }
+        documentUploadedEvents.push(result);
+      }
+    }
   }
 
-  const publisher = creatingUser.id;
-
-  const workflowitemId = reqData.workflowitemId || randomString();
   const workflowitemCreated = WorkflowitemCreated.createEvent(
     ctx.source,
     publisher,
@@ -161,45 +228,6 @@ export async function createWorkflowitem(
   const result = WorkflowitemCreated.createFrom(ctx, workflowitemCreated);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, workflowitemCreated, [result]);
-  }
-
-  // handle new documents
-  const documentUploadedEventsResults: Result.Type<BusinessEvent>[] = documents.map((d, i) => {
-    const docToUpload: UploadedDocument = {
-      base64: reqData.documents ? reqData.documents[i].base64 : "",
-      fileName:
-        reqData.documents && reqData.documents[i].fileName
-          ? reqData.documents[i].fileName
-          : "uploaded_file.pdf",
-      id: d.documentId,
-    };
-
-    const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
-      ctx.source,
-      publisher,
-      reqData.projectId,
-      reqData.subprojectId,
-      workflowitemId,
-      docToUpload,
-    );
-    if (Result.isErr(workflowitemEvent)) {
-      return new VError(workflowitemEvent, "failed to create event");
-    }
-
-    // Check that the event is valid:
-    const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
-    if (Result.isErr(result)) {
-      return new InvalidCommand(ctx, workflowitemEvent, [result]);
-    }
-    return workflowitemEvent;
-  });
-
-  const documentUploadedEvents: BusinessEvent[] = [];
-  for (const result of documentUploadedEventsResults) {
-    if (Result.isErr(result)) {
-      return result;
-    }
-    documentUploadedEvents.push(result);
   }
 
   // Check the workflowitem type

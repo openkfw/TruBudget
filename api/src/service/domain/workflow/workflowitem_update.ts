@@ -9,12 +9,13 @@ import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import { hashDocuments, StoredDocument, UploadedDocument } from "./document";
+import { config } from "../../../config";
+import { hashDocument, StoredDocument, UploadedDocument } from "../document/document";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
+import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document_uploaded";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
 
@@ -41,6 +42,11 @@ interface Repository {
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
+  uploadDocumentToStorageService(
+    fileName: string,
+    documentBase64: string,
+    docId: string | undefined,
+  ): Promise<Result.Type<BusinessEvent[]>>;
 }
 
 export async function updateWorkflowitem(
@@ -57,26 +63,87 @@ export async function updateWorkflowitem(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  const documentHashes: StoredDocument[] = [];
-  if (modification.documents !== undefined) {
-    const documentHashesResult = await hashDocuments(modification.documents);
-    if (Result.isErr(documentHashesResult)) {
-      return new VError(documentHashesResult, "failed to hash documents");
-    }
-    documentHashes.push(...documentHashesResult);
-  }
-  const modificationWithDocumentHashes: EventData = {
-    ...modification,
-    documents: documentHashes.length <= 0 ? undefined : documentHashes,
-  };
+  const documents: StoredDocument[] = [];
+  const documentUploadedEvents: BusinessEvent[] = [];
 
+  if (modification.documents && modification.documents.length > 0) {
+    // preparation for workflowitem_updated event
+    for (const doc of modification.documents || []) {
+      const hashedDocumentResult = await hashDocument(doc);
+      if (Result.isErr(hashedDocumentResult)) {
+        return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+      }
+      documents.push(hashedDocumentResult);
+    }
+    if (config.documentFeatureEnabled) {
+      // upload documents to storage service
+      // generate document events (document_uploaded, secret_published)
+      const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
+        modification.documents.map(async (d) => {
+          return await repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+        }),
+      );
+      for (const result of documentUploadedEventsResults) {
+        if (Result.isErr(result)) {
+          // Only returns the first error occured
+          return result;
+        }
+        documentUploadedEvents.push(...result);
+      }
+    } else {
+      // upload documents to offchain storage service
+      // generate workflowitem_document_uploaded event
+      const modDocuments = modification.documents;
+      const newDocumentUploadedEventsResult: Result.Type<BusinessEvent>[] = modDocuments.map(
+        (d, i) => {
+          const docToUpload: UploadedDocument = {
+            base64: modDocuments[i].base64,
+            fileName: modDocuments[i].fileName ? modDocuments[i].fileName : "unknown-file.pdf",
+            id: d.id,
+          };
+
+          const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
+            ctx.source,
+            issuer.id,
+            projectId,
+            subprojectId,
+            workflowitemId,
+            docToUpload,
+          );
+          if (Result.isErr(workflowitemEvent)) {
+            return new VError(workflowitemEvent, "failed to create event");
+          }
+
+          // Check that the event is valid:
+          const uploadedDocumentResult = WorkflowitemDocumentUploaded.createFrom(
+            ctx,
+            workflowitemEvent,
+          );
+          if (Result.isErr(uploadedDocumentResult)) {
+            return new InvalidCommand(ctx, workflowitemEvent, [uploadedDocumentResult]);
+          }
+          return workflowitemEvent;
+        },
+      );
+      for (const result of newDocumentUploadedEventsResult) {
+        if (Result.isErr(result)) {
+          return result;
+        }
+        documentUploadedEvents.push(result);
+      }
+    }
+  }
+  const modificationWithStoredDocuments: EventData = {
+    ...modification, // including UploadedDocuments
+    documents: documents.length <= 0 ? undefined : documents,
+  };
   const newEvent = WorkflowitemUpdated.createEvent(
     ctx.source,
     issuer.id,
     projectId,
     subprojectId,
     workflowitemId,
-    modificationWithDocumentHashes,
+    modificationWithStoredDocuments,
   );
   if (Result.isErr(newEvent)) {
     return new VError(newEvent, "cannot update workflowitem");
@@ -135,56 +202,6 @@ export async function updateWorkflowitem(
     return new VError(notifications, "failed to create notification events");
   }
 
-  // Handle new documents
-  let newDocumentUploadedEventsResult: Result.Type<BusinessEvent>[] = [];
-  if (newEvent.update.documents && newEvent.update.documents.length > 0) {
-    const { documents } = newEvent.update;
-    if (modification.documents === undefined) {
-      // Documents of newEvent are created from documents given by the requestData(modification).
-      // If documents exist in newEvent there has to be the same amount in modification
-      // The documents in modification have to be used to find out the base64 string since it may not be part of the update event itself
-      return new Error("Assertion: This is a bug.");
-    }
-    const modDocuments = modification.documents;
-    newDocumentUploadedEventsResult = documents.map((d, i) => {
-      const docToUpload: UploadedDocument = {
-        base64: modDocuments[i].base64,
-        fileName: modDocuments[i].fileName ? modDocuments[i].fileName : "unknown-file.pdf",
-        id: d.documentId,
-      };
-
-      const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
-        ctx.source,
-        issuer.id,
-        projectId,
-        subprojectId,
-        workflowitemId,
-        docToUpload,
-      );
-      if (Result.isErr(workflowitemEvent)) {
-        return new VError(workflowitemEvent, "failed to create event");
-      }
-
-      // Check that the event is valid:
-      const uploadedDocumentResult = WorkflowitemDocumentUploaded.createFrom(
-        ctx,
-        workflowitemEvent,
-      );
-      if (Result.isErr(uploadedDocumentResult)) {
-        return new InvalidCommand(ctx, workflowitemEvent, [uploadedDocumentResult]);
-      }
-      return workflowitemEvent;
-    });
-  }
-
-  const newDocumentUploadedEvents: BusinessEvent[] = [];
-  for (const result of newDocumentUploadedEventsResult) {
-    if (Result.isErr(result)) {
-      return result;
-    }
-    newDocumentUploadedEvents.push(result);
-  }
-
   const workflowitemTypeEventsResult = repository.applyWorkflowitemType(newEvent, workflowitem);
 
   if (Result.isErr(workflowitemTypeEventsResult)) {
@@ -193,12 +210,7 @@ export async function updateWorkflowitem(
   const workflowitemTypeEvents = workflowitemTypeEventsResult;
 
   return {
-    newEvents: [
-      newEvent,
-      ...newDocumentUploadedEvents,
-      ...notifications,
-      ...workflowitemTypeEvents,
-    ],
+    newEvents: [newEvent, ...documentUploadedEvents, ...notifications, ...workflowitemTypeEvents],
     workflowitem: updatedWorkflowitem,
   };
 }

@@ -6,7 +6,7 @@ import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
-import { hashDocument, StoredDocument } from "./document";
+import { hashDocument, StoredDocument } from "../document/document";
 import { Workflowitem } from "./workflowitem";
 import { updateWorkflowitem } from "./workflowitem_update";
 
@@ -51,6 +51,7 @@ const baseRepository = {
     if (identity === "root") return ["root"];
     throw Error(`unexpected identity: ${identity}`);
   },
+  uploadDocumentToStorageService: () => Promise.resolve([]),
 };
 
 describe("update workflowitem: authorization", () => {
@@ -345,14 +346,16 @@ describe("update workflowitem: how modifications are applied", () => {
         ...baseRepository,
         getWorkflowitem: async (_workflowitemId) => ({
           ...baseWorkflowitem,
-          documents: [{ id: "a", hash: "hashA", documentId: "abc" }],
+          documents: [{ id: "a", hash: "hashA", documentId: "abc", fileName: "abc" }],
         }),
       },
     );
 
     assert.isTrue(Result.isOk(result), (result as Error).message);
     const { workflowitem } = Result.unwrap(result);
-    assert.deepEqual(workflowitem.documents, [{ id: "a", hash: "hashA", documentId: "abc" }]);
+    assert.deepEqual(workflowitem.documents, [
+      { id: "a", hash: "hashA", documentId: "abc", fileName: "abc" },
+    ]);
   });
 
   it("An update to documents adds new documents", async () => {
@@ -376,7 +379,7 @@ describe("update workflowitem: how modifications are applied", () => {
         ...baseRepository,
         getWorkflowitem: async (_workflowitemId) => ({
           ...baseWorkflowitem,
-          documents: [{ id: "A", hash: "hash for A", documentId: "abc" }],
+          documents: [{ id: "A", hash: "hash for A", documentId: "abc", fileName: "abc" }],
         }),
       },
     );
@@ -386,9 +389,9 @@ describe("update workflowitem: how modifications are applied", () => {
     assert.sameDeepMembers(
       stripOutDocumentId(workflowitem.documents),
       stripOutDocumentId([
-        { id: "A", hash: "hash for A", documentId: "abc1" },
-        { id: "B", hash: expectedHashForB, documentId: "abc2" },
-        { id: "C", hash: expectedHashForC, documentId: "abc3" },
+        { id: "A", hash: "hash for A", documentId: "abc", fileName: "abc1" },
+        { id: "B", hash: expectedHashForB, documentId: "abc", fileName: "abc2" },
+        { id: "C", hash: expectedHashForC, documentId: "abc", fileName: "abc3" },
       ]),
     );
   });
@@ -410,7 +413,7 @@ describe("update workflowitem: how modifications are applied", () => {
         ...baseRepository,
         getWorkflowitem: async (_workflowitemId) => ({
           ...baseWorkflowitem,
-          documents: [{ id: "A", hash: hashForDocumentA, documentId: "abc" }],
+          documents: [{ id: "A", hash: hashForDocumentA, documentId: "abc", fileName: "abc" }],
         }),
       },
     );
@@ -419,7 +422,7 @@ describe("update workflowitem: how modifications are applied", () => {
     const { workflowitem } = Result.unwrap(result);
     assert.sameDeepMembers(
       stripOutDocumentId(workflowitem.documents),
-      stripOutDocumentId([{ id: "A", hash: hashForDocumentA, documentId: "abc" }]),
+      stripOutDocumentId([{ id: "A", hash: hashForDocumentA, documentId: "abc", fileName: "abc" }]),
     );
   });
 
@@ -438,7 +441,7 @@ describe("update workflowitem: how modifications are applied", () => {
         ...baseRepository,
         getWorkflowitem: async (_workflowitemId) => ({
           ...baseWorkflowitem,
-          documents: [{ id: "A", hash: "old hash for A", documentId: "abc" }],
+          documents: [{ id: "A", hash: "old hash for A", documentId: "abc", fileName: "abc" }],
         }),
       },
     );

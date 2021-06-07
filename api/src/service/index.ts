@@ -23,8 +23,8 @@ export * from "./ProjectEvents";
 export * from "./SubprojectEvents";
 export { ConnToken } from "./conn";
 
-const workflowitemsGroupKey = subprojectId => `${subprojectId}_workflows`;
-const workflowitemOrderingKey = subprojectId => `${subprojectId}_workflowitem_ordering`;
+const workflowitemsGroupKey = (subprojectId) => `${subprojectId}_workflows`;
+const workflowitemOrderingKey = (subprojectId) => `${subprojectId}_workflowitem_ordering`;
 const globalSelfKey = "self";
 
 type ResourceType = "project" | "subproject" | "workflowitem";
@@ -98,7 +98,7 @@ export async function grantGlobalPermission(
       .then(() => event);
   };
 
-  return publishEvent().catch(err => {
+  return publishEvent().catch((err) => {
     if (err.code === -708) {
       // The stream does not exist yet. Create the stream and try again:
       return conn.multichainClient
@@ -149,7 +149,7 @@ export async function revokeGlobalPermission(
       .then(() => event);
   };
 
-  return publishEvent().catch(err => {
+  return publishEvent().catch((err) => {
     if (err.code === -708) {
       // stream does not exist yet. Return without revoking permission
       return;
@@ -197,7 +197,7 @@ export async function issueNotification(
       json: event,
     });
   };
-  return publishEvent().catch(err => {
+  return publishEvent().catch((err) => {
     if (err.code === -708) {
       logger.debug(
         `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
@@ -323,11 +323,11 @@ export async function getWorkflowitemOrdering(
 
   const streamItems = await conn.multichainClient
     .v2_readStreamItems(projectId, workflowitemOrderingKey(subprojectId), nValues)
-    .then(items => {
+    .then((items) => {
       if (items.length > 0) return items;
       else throw { kind: "NotFound", what: workflowitemOrderingKey(subprojectId) };
     })
-    .catch(err => {
+    .catch((err) => {
       if (err.kind === "NotFound") {
         return [{ data: { json: { dataVersion: 1, data: [] } } }];
       } else {

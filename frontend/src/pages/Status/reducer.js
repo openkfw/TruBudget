@@ -32,10 +32,7 @@ export default function nodeDashboardReducer(state = defaultState, action) {
     case FETCH_VERSIONS_SUCCESS:
       return state
         .mergeIn(["versions"], {
-          frontend: action.versions.frontend,
-          api: action.versions.api,
-          blockchain: action.versions.blockchain,
-          multichain: action.versions.multichain
+          ...action.versions
         })
         .set("isFetchingVersions", false);
     case FETCH_VERSIONS_FAILURE:
