@@ -88,8 +88,6 @@ emailService.get("/version", (_req: express.Request, res: express.Response) => {
 });
 
 emailService.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
-  console.log("in USER/INSERT");
-  console.log(req.body.data);
   const isDataValid = isBodyValid("/user.insert", req.body.data);
   if (!isDataValid) {
     res.status(400).send({
@@ -181,7 +179,7 @@ emailService.post("/user.delete", (req: UserEditRequest, res: express.Response) 
       user: { id: user.id, status: "deleted", emailAddress: user.emailAddress },
     };
     res.status(200).send(body);
-  })().catch((error) => () => {
+  })().catch((error) => {
     logger.error(error);
     res.status(500).send(error);
   });

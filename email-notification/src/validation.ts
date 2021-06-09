@@ -1,4 +1,5 @@
 import Joi from "@hapi/joi";
+import logger from "./logger";
 
 const schemes = new Map();
 schemes
@@ -51,10 +52,8 @@ const isBodyValid = (request, payload) => {
   }
   const validatePayload = schema.validate(payload, { abortEarly: false }, (error, values) => error);
   if (validatePayload.error) {
-    // eslint-disable-next-line no-console
-    console.error("validation error", validatePayload.error);
-    // eslint-disable-next-line no-console
-    console.log("validation values", validatePayload.value);
+    logger.error("validation error", validatePayload.error);
+    logger.info("validation values", validatePayload.value);
     return false;
   }
   return true;
