@@ -52,14 +52,14 @@ export async function updateWorkflowitem(
         applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
           return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
         },
-        uploadDocumentToStorageService: (fileName, documentBase64, docId) => {
+        uploadDocumentToStorageService: (fileName, documentBase64, id) => {
           return DocumentUpload.uploadDocument(
             ctx,
             serviceUser,
-            { fileName, documentBase64, docId },
+            { fileName, documentBase64, id },
             {
-              getAllDocumentInfos: async () => {
-                return await DocumentGet.getAllDocumentInfos(ctx, {
+              getAllDocuments: async () => {
+                return await DocumentGet.getAllDocuments(ctx, {
                   getDocumentsEvents: async () => {
                     return await cache.getDocumentUploadedEvents();
                   },
@@ -79,6 +79,16 @@ export async function updateWorkflowitem(
               },
             },
           );
+        },
+        getAllDocuments: async () => {
+          return await DocumentGet.getAllDocuments(ctx, {
+            getDocumentsEvents: async () => {
+              return cache.getDocumentUploadedEvents();
+            },
+            getOffchainDocumentsEvents: async () => {
+              return cache.getOffchainDocumentsEvents();
+            },
+          });
         },
       },
     );
