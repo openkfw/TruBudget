@@ -96,7 +96,7 @@ export class RpcMultichainClient implements MultichainClient {
     );
     return items.map((item) => ({
       key: item.keys[0],
-      value: item.data,
+      value: hexToObject(item.data),
     }));
   }
 
@@ -304,7 +304,7 @@ export class RpcMultichainClient implements MultichainClient {
         if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
           logger.warn(
             "Reached max data size. Maybe you should increase the runtime variable 'maxshowndata' of the multichain" +
-              "with command: 'setruntimeparam maxshowndata <value>'.",
+            "with command: 'setruntimeparam maxshowndata <value>'.",
           );
           item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
           logger.debug({ item: item.data }, "Received items.");

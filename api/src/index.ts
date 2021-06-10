@@ -133,6 +133,8 @@ import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revo
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
+import * as ProvisioningStatusAPI from "./provisioning_get";
+import * as ProvisioningStatusService from "./service/provisioning_get";
 import * as ProvisioningStartAPI from "./provisioning_start";
 import * as ProvisioningStartService from "./service/provisioning_start";
 import * as ProvisioningEndAPI from "./provisioning_end";
@@ -800,6 +802,10 @@ ProvisioningStartAPI.addHttpHandler(server, URL_PREFIX, {
 
 ProvisioningEndAPI.addHttpHandler(server, URL_PREFIX, {
   endProvisioning: (ctx, user) => ProvisioningEndService.endProvisioning(db, ctx, user),
+});
+
+ProvisioningStatusAPI.addHttpHandler(server, URL_PREFIX, {
+  getProvisionStatus: (ctx, user) => ProvisioningStatusService.getProvisionStatus(db, ctx, user),
 });
 
 /*

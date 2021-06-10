@@ -4,7 +4,7 @@ import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
-import * as ProvisioningEnd from "./domain/workflow/provisioning_end";
+import * as ProvisioningEnd from "./domain/system_information/provisioning_end";
 import { store } from "./store";
 
 export async function endProvisioning(
@@ -12,16 +12,17 @@ export async function endProvisioning(
   ctx: Ctx,
   serviceUser: ServiceUser,
 ): Promise<Result.Type<void>> {
-  const provisioningEndResult = await Cache.withCache(conn, ctx, async (cache) =>
+  const provisioningEndEventResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProvisioningEnd.endProvisioning(ctx, serviceUser),
   );
 
-  if (Result.isErr(provisioningEndResult)) {
-    return new VError(provisioningEndResult, "end provisioning failed");
+  if (Result.isErr(provisioningEndEventResult)) {
+    return new VError(provisioningEndEventResult, "end provisioning failed");
   }
-  const { newEvents } = provisioningEndResult;
 
-  for (const event of newEvents) {
+  const provisioningEndEvent = provisioningEndEventResult;
+
+  for (const event of provisioningEndEvent) {
     await store(conn, ctx, event);
   }
 }

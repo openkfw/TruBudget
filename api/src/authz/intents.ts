@@ -60,7 +60,8 @@ type Intent =
   | "network.approveNewNodeForExistingOrganization"
   | "network.declineNode"
   | "provisioning.start"
-  | "provisioning.end";
+  | "provisioning.end"
+  | "provisioning.get";
 
 export const globalIntents: Intent[] = [
   "global.listPermissions",
@@ -82,6 +83,7 @@ export const globalIntents: Intent[] = [
   "network.declineNode",
   "provisioning.start",
   "provisioning.end",
+  "provisioning.get",
 ];
 
 export const userAssignableIntents: Intent[] = [
@@ -221,6 +223,7 @@ export const allIntents: Intent[] = [
   "network.approveNewNodeForExistingOrganization",
   "provisioning.start",
   "provisioning.end",
+  "provisioning.get",
 ];
 
 export default Intent;

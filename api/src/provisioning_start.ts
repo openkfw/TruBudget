@@ -30,7 +30,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
   return {
     preValidation: [(server as any).authenticate],
     schema: {
-      description: "Set the provisioning status to 'start' to the systemInformation stream",
+      description: "Set the provisioning status to 'start' to the system_information stream",
       tags: ["system"],
       summary: "Set provisioning start flag",
       security: [
@@ -100,7 +100,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           apiVersion: "1.0",
           data: {},
         };
-        reply.status(code).send(body);
         reply.status(code).send(body);
       })
       .catch((err) => {

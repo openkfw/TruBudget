@@ -45,8 +45,8 @@ import * as WorkflowitemDocumentUploaded from "./document/workflowitem_document_
 import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./workflow/workflowitem_updated";
-import * as ProvisioningStarted from "./workflow/provisioning_started";
-import * as ProvisioningEnded from "./workflow/provisioning_ended";
+import * as ProvisioningStarted from "./system_information/provisioning_started";
+import * as ProvisioningEnded from "./system_information/provisioning_ended";
 
 export type BusinessEvent =
   | GlobalPermissionsGranted.Event

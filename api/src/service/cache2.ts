@@ -59,8 +59,8 @@ import * as DocumentUploaded from "./domain/document/document_uploaded";
 import * as DocumentShared from "./domain/document/document_shared";
 import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
 import { Item } from "./liststreamitems";
-import * as ProvisioningStarted from "./domain/workflow/provisioning_started";
-import * as ProvisioningEnded from "./domain/workflow/provisioning_ended";
+import * as ProvisioningStarted from "./domain/system_information/provisioning_started";
+import * as ProvisioningEnded from "./domain/system_information/provisioning_ended";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -113,6 +113,7 @@ function clearCache(cache: Cache2): void {
 
 interface CacheInstance {
   getGlobalEvents(): BusinessEvent[];
+  getSystemEvents(): BusinessEvent[];
   getUserEvents(userId?: string): BusinessEvent[];
   getGroupEvents(groupId?: string): BusinessEvent[];
   getNotificationEvents(userId: string): Result.Type<BusinessEvent[]>;
@@ -146,6 +147,10 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
   return {
     getGlobalEvents: (): BusinessEvent[] => {
       return cache.eventsByStream.get("global") || [];
+    },
+    //system_information
+    getSystemEvents: (): BusinessEvent[] => {
+      return cache.eventsByStream.get("system_information") || [];
     },
 
     getUserEvents: (_userId?: string): BusinessEvent[] => {
@@ -520,6 +525,7 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
     case "notifications":
     case "public_keys":
     case "offchain_documents":
+    case "system_information":
       const eventsSoFar = cache.eventsByStream.get(streamName) || [];
       cache.eventsByStream.set(streamName, eventsSoFar.concat(newEvents));
       break;
