@@ -43,6 +43,7 @@ describe("Create workflowitem", () => {
       getSubproject: async () => baseSubproject,
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
+      getAllDocuments: async () => [],
     });
 
     assert.isTrue(Result.isErr(result));
@@ -63,6 +64,7 @@ describe("Create workflowitem", () => {
       getSubproject: async () => baseSubproject,
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
+      getAllDocuments: async () => [],
     });
 
     assert.isTrue(Result.isErr(result));
