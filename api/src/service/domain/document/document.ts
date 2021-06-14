@@ -44,7 +44,8 @@ export const uploadedDocumentSchema = Joi.object({
   id: Joi.string().required(),
   base64: Joi.string()
     .required()
-    .error(() => new Error("Document can't be an empty file")),
+    .max(67000000)
+    .error(() => new Error("Document is not valid")),
   fileName: Joi.string(),
 });
 
