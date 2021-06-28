@@ -1,0 +1,45 @@
+name: Update Documentation
+# on: push
+on:
+  release:
+    types: [released]
+
+jobs:
+  copy:
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
+      - name: Set SHA
+        id: sha
+        run: | 
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Publish Doc
+        env:
+          USE_SSH: true
+          GIT_USER: git
+        run: |
+          git config --global user.email "22145802+mayrmartin@users.noreply.github.com"
+          git config --global user.name "mayrmartin"
+          cd ..
+          git clone git@github.com:mayrmartin/TrubudgetWebsite.git
+          cd TrubudgetWebsite
+          git remote update
+          git checkout next
+          git merge master
+          cd ./../TruBudget/docs/
+          cp -Rf ./* ./../../TrubudgetWebsite/docs
+          cd ./../../
+          cd TrubudgetWebsite
+          git add -A .
+          git commit -m "Bump Doc ${{ steps.sha.outputs.sha_short }}"
+          git push
+      - run: |
+          echo The action failed! This can have two reasons 1. Already Up to date 2. Wrong configuration 
+        if: ${{ failure() }}
