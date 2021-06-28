@@ -4,7 +4,7 @@ numLabels: 40
 # Pass a blank array if no labels are to be excluded.
 # excludeLabels: []
 excludeLabels:
-  - duplicate
+  - "duplicate"
   # - pinned
 # custom configuration to override default behaviour
 # control explicitly what gets added and when
