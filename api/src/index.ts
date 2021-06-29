@@ -178,8 +178,9 @@ let storageServiceSettings: AxiosRequestConfig;
 if (documentFeatureEnabled) {
   storageServiceSettings = {
     baseURL: `http://${storageService.host}:${storageService.port}`,
-    // 2.5 seconds request timeout
-    timeout: 2500,
+    // 10 seconds request timeout
+    timeout: 10000,
+    maxBodyLength: 67000000, //  ~50mb in base64
   };
 } else {
   storageServiceSettings = {

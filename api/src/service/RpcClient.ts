@@ -74,6 +74,7 @@ export class RpcClient {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
       maxContentLength: 104857600,
+      maxBodyLength: 67000000, // ~50mb in base64
       auth: {
         username: settings.username || "multichainrpc",
         password: settings.password,
