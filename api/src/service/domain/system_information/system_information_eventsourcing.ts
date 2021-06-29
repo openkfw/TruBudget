@@ -1,12 +1,10 @@
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import logger from "../../../lib/logger";
 import { EventSourcingError } from "../errors/event_sourcing_error";
-import { ProvisioningState } from "./ProvisioningState";
-import * as SystemInformation from "./system_information";
 import * as ProvisioningEnded from "./provisioning_ended";
 import * as ProvisioningStarted from "./provisioning_started";
+import * as SystemInformation from "./system_information";
 
 export function sourceSystemInformation(
   ctx: Ctx,
@@ -15,9 +13,11 @@ export function sourceSystemInformation(
   systemInformation: SystemInformation.SystemInformation;
   errors: EventSourcingError[];
 } {
-  let provisioningEvents: ProvisioningStarted.Event | ProvisioningEnded.Event[] = [];
   let systemInformation: SystemInformation.SystemInformation = {
-    provisioningEvents,
+    provisioningStatus: {
+      isProvisioned: false,
+      message: "Not provisioned yet.",
+    },
   };
   const errors: EventSourcingError[] = [];
   for (const event of events) {
@@ -46,11 +46,17 @@ function applyProvisioningStarted(
   event: ProvisioningStarted.Event,
   errors: EventSourcingError[],
 ) {
-  systemInformation.provisioningEvents.push(event);
+  // Ignore all start events if the provisioning end flag is set
+  if (systemInformation.provisioningStatus.isProvisioned) {
+    return;
+  }
+  systemInformation.provisioningStatus = {
+    isProvisioned: false,
+    message: "Provisioning started flag set.",
+  };
   const result = SystemInformation.validate(systemInformation);
   if (Result.isErr(result)) {
     errors.push(new EventSourcingError({ ctx, event }, result));
-    return;
   }
 }
 
@@ -60,55 +66,13 @@ function applyProvisioningEnded(
   event: ProvisioningEnded.Event,
   errors: EventSourcingError[],
 ) {
-  systemInformation.provisioningEvents.push(event);
+  systemInformation.provisioningStatus = {
+    isProvisioned: true,
+    message: "Provisioning ended flag set. Trubudget seems to be provisioned.",
+  };
   const result = SystemInformation.validate(systemInformation);
   if (Result.isErr(result)) {
     errors.push(new EventSourcingError({ ctx, event }, result));
     return;
   }
-}
-
-export function sourceProvisioningState(
-  ctx: Ctx,
-  events: BusinessEvent[],
-): { provisioningState: ProvisioningState; errors: EventSourcingError[] } {
-  let message: string = "The Multichain has never been provisioned";
-  let isProvisioned: Boolean = false;
-  let isStartFlagSet: Boolean = false;
-  let isEndFlagSet: Boolean = false;
-  const errors: EventSourcingError[] = [];
-  const provisioningState: ProvisioningState = { isProvisioned, message };
-
-  try {
-    // Iterate through the items from the end to the beginning
-    // Provisioning was successfully if  a start-flag is followed by an end-flag
-    // eslint-disable-next-line for-direction
-    for (let i = events.length - 1; i >= 0; i--) {
-      if (events[i].type === "provisioning_started") {
-        isStartFlagSet = true;
-        if (isEndFlagSet) {
-          provisioningState.message = "The Multichain has already been provisioned successfully";
-          provisioningState.isProvisioned = true;
-          break;
-        }
-        if (!isEndFlagSet) {
-          provisioningState.message =
-            "The Multichain has been provisioned partly (no provisioning_ended flag set)";
-          provisioningState.isProvisioned = false;
-          break;
-        }
-        continue;
-      }
-      if (events[i].type === "provisioning_ended") {
-        isEndFlagSet = true;
-        // only start flags from the left side of the array from the end flag belongs to the end flag
-        isStartFlagSet = false;
-      }
-    }
-  } catch (err) {
-    errors.push(err);
-    logger.error({ error: err }, "Error during system_information_eventsourcing");
-  }
-
-  return { provisioningState, errors };
 }

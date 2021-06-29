@@ -8,10 +8,10 @@ import { ServiceUser } from "../organization/service_user";
 import * as ProvisioningStarted from "./provisioning_started";
 import { sourceSystemInformation } from "./system_information_eventsourcing";
 
-export async function startProvisioning(
+export async function setProvisioningStartFlag(
   ctx: Ctx,
   issuer: ServiceUser,
-): Promise<Result.Type<BusinessEvent[]>> {
+): Promise<Result.Type<BusinessEvent>> {
   // Check authorization (only root):
   if (issuer.id !== "root") {
     const intent = "provisioning.start";
@@ -31,5 +31,5 @@ export async function startProvisioning(
     return new InvalidCommand(ctx, provisioningStartedEvent, errors);
   }
 
-  return [provisioningStartedEvent];
+  return provisioningStartedEvent;
 }

@@ -67,7 +67,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  startProvisioning(ctx: Ctx, user: ServiceUser): Promise<Result.Type<void>>;
+  setProvisioningStartFlag(ctx: Ctx, user: ServiceUser): Promise<Result.Type<void>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -90,7 +90,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     }
 
     service
-      .startProvisioning(ctx, user)
+      .setProvisioningStartFlag(ctx, user)
       .then((result) => {
         if (Result.isErr(result)) {
           throw new VError(result, "provisioning.start failed");

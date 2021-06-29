@@ -797,11 +797,13 @@ WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
  */
 
 ProvisioningStartAPI.addHttpHandler(server, URL_PREFIX, {
-  startProvisioning: (ctx, user) => ProvisioningStartService.startProvisioning(db, ctx, user),
+  setProvisioningStartFlag: (ctx, user) =>
+    ProvisioningStartService.setProvisioningStartFlag(db, ctx, user),
 });
 
 ProvisioningEndAPI.addHttpHandler(server, URL_PREFIX, {
-  endProvisioning: (ctx, user) => ProvisioningEndService.endProvisioning(db, ctx, user),
+  setProvisioningEndFlag: (ctx, user) =>
+    ProvisioningEndService.setProvisioningEndFlag(db, ctx, user),
 });
 
 ProvisioningStatusAPI.addHttpHandler(server, URL_PREFIX, {

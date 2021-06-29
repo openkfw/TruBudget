@@ -8,7 +8,7 @@ import { ServiceUser } from "../organization/service_user";
 import * as ProvisioningEnded from "./provisioning_ended";
 import { sourceSystemInformation } from "./system_information_eventsourcing";
 
-export async function endProvisioning(
+export async function setProvisioningEndFlag(
   ctx: Ctx,
   issuer: ServiceUser,
 ): Promise<Result.Type<BusinessEvent[]>> {

@@ -5,7 +5,7 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { ProvisioningState } from "./service/domain/system_information/ProvisioningState";
+import * as SystemInformation from "./service/domain/system_information/system_information";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -46,7 +46,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
 }
 
 interface Service {
-  getProvisionStatus(ctx: Ctx, user: ServiceUser): Promise<Result.Type<ProvisioningState>>;
+  getProvisionStatus(
+    ctx: Ctx,
+    user: ServiceUser,
+  ): Promise<Result.Type<SystemInformation.ProvisioningStatus>>;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -66,7 +69,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const provisioned = result;
         return provisioned;
       })
-      .then((provisioned: ProvisioningState) => {
+      .then((provisioned: SystemInformation.ProvisioningStatus) => {
         const code = 200;
         const body = {
           apiVersion: "1.0",

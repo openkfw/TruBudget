@@ -7,13 +7,13 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as ProvisioningEnd from "./domain/system_information/provisioning_end";
 import { store } from "./store";
 
-export async function endProvisioning(
+export async function setProvisioningEndFlag(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
 ): Promise<Result.Type<void>> {
   const provisioningEndEventResult = await Cache.withCache(conn, ctx, async (cache) =>
-    ProvisioningEnd.endProvisioning(ctx, serviceUser),
+    ProvisioningEnd.setProvisioningEndFlag(ctx, serviceUser),
   );
 
   if (Result.isErr(provisioningEndEventResult)) {
