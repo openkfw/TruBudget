@@ -688,4 +688,7 @@ if (!organization) {
   process.exit(1);
 }
 
-provisionBlockchain(host, port, rootSecret, organization);
+provisionBlockchain(host, port, rootSecret, organization).then(() => {
+  console.log("\x1b[32m%s\x1b[0m", "Successfully provisioned Trubudget!");
+  process.exit(0);
+});
