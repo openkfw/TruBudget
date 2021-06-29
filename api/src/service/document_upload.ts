@@ -22,8 +22,8 @@ export async function documentUpload(
 ): Promise<Result.Type<Document>> {
   const uploadedDocumentResult = await Cache.withCache(conn, ctx, async (cache) => {
     return DocumentUpload.uploadDocument(ctx, serviceUser, requestData, {
-      getAllDocumentInfos: async () => {
-        return await DocumentGet.getAllDocumentInfos(ctx, {
+      getAllDocuments: async () => {
+        return await DocumentGet.getAllDocuments(ctx, {
           getDocumentsEvents: async () => {
             return cache.getDocumentUploadedEvents();
           },

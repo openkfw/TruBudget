@@ -80,7 +80,6 @@ schemes
         currency: Joi.string().required(),
         description: Joi.string().allow(""),
         documents: Joi.array().items({
-          id: Joi.string().required(),
           base64: Joi.string()
             .required()
             .allow(""),

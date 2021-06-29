@@ -116,7 +116,7 @@ export async function getDocument(
   }
 
   // Only return if document has relation to the workflowitem
-  if (!workflowitem.documents.some((d) => d.documentId === documentId)) {
+  if (!workflowitem.documents.some((d) => d.id === documentId)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
       `workfowitem ${workflowitem} has no link to document`,
