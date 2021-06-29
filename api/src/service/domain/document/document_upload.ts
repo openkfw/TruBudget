@@ -1,13 +1,12 @@
 import { VError } from "verror";
+import { config } from "../../../config";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
-import * as DocumentUploaded from "./document_uploaded";
-import * as DocumentShared from "./document_shared";
-import * as Crypto from "crypto";
-import { config } from "../../../config";
 import { GenericDocument } from "./document";
+import * as DocumentShared from "./document_shared";
+import * as DocumentUploaded from "./document_uploaded";
 
 export interface RequestData {
   id: string;
@@ -42,7 +41,6 @@ export async function uploadDocument(
 ): Promise<Result.Type<BusinessEvent[]>> {
   const { id, documentBase64, fileName } = requestData;
 
-  // const id = "9d14c5c6-7a0c-4acf-a856-7f7691e3799d";
   const existingDocuments = await repository.getAllDocuments();
   if (Result.isErr(existingDocuments)) {
     return new VError(existingDocuments, "cannot get documents");
