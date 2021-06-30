@@ -58,7 +58,10 @@ type Intent =
   | "network.voteForPermission"
   | "network.approveNewOrganization"
   | "network.approveNewNodeForExistingOrganization"
-  | "network.declineNode";
+  | "network.declineNode"
+  | "provisioning.start"
+  | "provisioning.end"
+  | "provisioning.get";
 
 export const globalIntents: Intent[] = [
   "global.listPermissions",
@@ -78,6 +81,9 @@ export const globalIntents: Intent[] = [
   "network.approveNewOrganization",
   "network.approveNewNodeForExistingOrganization",
   "network.declineNode",
+  "provisioning.start",
+  "provisioning.end",
+  "provisioning.get",
 ];
 
 export const userAssignableIntents: Intent[] = [
@@ -124,7 +130,6 @@ export const projectIntents: Intent[] = [
   "project.assign",
   "project.update",
   "project.close",
-
   "project.createSubproject",
   "project.budget.updateProjected",
   "project.budget.deleteProjected",
@@ -140,7 +145,6 @@ export const subprojectIntents: Intent[] = [
   "subproject.assign",
   "subproject.update",
   "subproject.close",
-
   "subproject.createWorkflowitem",
   "subproject.reorderWorkflowitems",
   "subproject.budget.updateProjected",
@@ -186,7 +190,6 @@ export const allIntents: Intent[] = [
   "project.assign",
   "project.update",
   "project.close",
-
   "project.createSubproject",
   "project.budget.updateProjected",
   "project.budget.deleteProjected",
@@ -199,7 +202,6 @@ export const allIntents: Intent[] = [
   "subproject.assign",
   "subproject.update",
   "subproject.close",
-
   "subproject.createWorkflowitem",
   "subproject.reorderWorkflowitems",
   "subproject.budget.updateProjected",
@@ -219,6 +221,9 @@ export const allIntents: Intent[] = [
   "network.voteForPermission",
   "network.approveNewOrganization",
   "network.approveNewNodeForExistingOrganization",
+  "provisioning.start",
+  "provisioning.end",
+  "provisioning.get",
 ];
 
 export default Intent;
