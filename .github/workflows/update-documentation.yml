@@ -1,6 +1,7 @@
 name: Update Documentation
 # on: push
 on:
+  workflow_dispatch
   release:
     types: [released]
 
@@ -18,7 +19,7 @@ jobs:
           ssh-private-key: ${{ secrets.GH_PAGES_DEPLOY }}
       - name: Set SHA
         id: sha
-        run: | 
+        run: |
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - name: Publish Doc
         env:
@@ -41,5 +42,5 @@ jobs:
           git commit -m "Bump Doc ${{ steps.sha.outputs.sha_short }}"
           git push
       - run: |
-          echo The action failed! This can have two reasons 1. Already Up to date 2. Wrong configuration 
+          echo The action failed! This can have two reasons 1. Already Up to date 2. Wrong configuration
         if: ${{ failure() }}

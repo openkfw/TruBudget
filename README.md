@@ -14,8 +14,6 @@ If you have any questions refer to the [Frequently Asked Questions (FAQ)](#frequ
 
 Trubudget can be installed in different ways. Choose your prefered installation guide:
 
-<!-- TODO Docker installation guide -->
-
 - [Install using Docker/Docker-Compose](./doc/installation/README.md#docker)
 - [Install bare metal](./doc/installation/README.md#bare-metal)
 
