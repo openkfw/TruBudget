@@ -52,8 +52,8 @@ jobs:
             blockchain,
             provisioning,
             e2e-test,
-            excel-export,
-            email-notification,
+            excel-export-service,
+            email-notification-service,
             storage-service,
           ]
 
@@ -113,8 +113,8 @@ jobs:
             blockchain,
             provisioning,
             e2e-test,
-            excel-export,
-            email-notification,
+            excel-export-service,
+            email-notification-service,
             storage-service,
           ]
 

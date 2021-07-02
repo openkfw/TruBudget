@@ -2,33 +2,29 @@
 
 This project encapsulates the Multichain implementation for Trubudget. It can be seen as the data tier in Trubudget
 
-## Master vs. Slave Mode
+## Getting started
 
-Trubudget is a private Blockchain (BC) network. That means a master need to give new nodes (slaves) a one-time grant in order to access the network. The decision if I want to spawn a Master or a Slave node is simple:
+The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole TruBudget application (that means you need to install [Docker](https://www.docker.com/community-edition#/download)). It uses the local build of the blockchain and the master-deployments of the TruBudget API and Frontend. The pre-set cluster contains:
 
-- Masternode: I want to create a new network
-- Slavenode: I want to participate on an existing network
+- 1 Master-Node + 1 Slave-Node
+- 1 Master API connected to Master-Node
+- 1 Frontend connected to Master-API
 
-## Lifecycle
+Since the required docker images are located in the private Dockerregistry you need to authenticate.
 
-As described before: The Trubudget Blockchain is created one by a master, which then grants slaves access on demand.
+To do so you simply create a login token by `$ echo $DOCKER_PASSWORD > DOCKER_REGISTRY_PASSWORD`
 
-1.  Start Master-Node of Trubudget Blockchain (Master sets chain configurations for network and has admit privileges)
-1.  Start API (Master-API)
-1.  API will set up Master-Node for Trubudget (creating Admin-Streams)
-1.  Start Slave-Node(s)
-1.  Slave-Node will try to join the network by connection to the master-node
-1.  Slave-Node attempt to access the network will be rejected because they have not be granted access
-1.  Slave-Node frequests to be granted access to the network by sending its blockchain-address and information about the Organization operating the node to the Master-API
-1.  Eventually, Master-API grants read/write (not admin) access to the network for the supplied address
-1.  Slave-Node retries to join the network
-1.  Slave-Node is granted access and syncronized blockchain data
+If you have set your password token you can simply start the cluster `$ ./start-service.sh`
+
+Enjoy!
 
 ## Configuration
 
 The Blockchain node is fully configurated through environment variables.
 
 ### Environment Variables
+
+Depending on the Trubudget setup environment variables 
 
 | Env Variable                | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                                        |
 | --------------------------- | -------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -51,6 +47,8 @@ The Blockchain node is fully configurated through environment variables.
 | BUILDTIMESTAMP              | no       |               | The /version endpoint returns this variable as `buildTimeStamp` property                                                                                                                                                                                                                                                                           |
 | BLOCKNOTIFY_SCRIPT          | no       |               | Configure the blocknotifiy argument of the multichain configuration like -blocknotify=[BLOCKNOTIFY_SCRIPT]                                                                                                                                                                                                                                         |
 
+
+<!-- TODO: move to Email-Notification Servcie -->
 #### Email-Service
 
 | Env Variable               | Required | Default Value    | Description                                                                                                                                                      |
@@ -64,6 +62,7 @@ The Blockchain node is fully configurated through environment variables.
 | NOTIFICATION_SEND_INTERVAL | no       | 10               | This number configure in which interval the notifications in the NOTIFICATION_PATH should be checked and send                                                    |
 | JWT_SECRET                 | no       |                  | The `JWT_SECRET` is only required if the Email feature is enabled. It is used to authenticate the blockchain at the email-service, so it can send notifications. |
 
+<!-- TODO: attach to basic blockchain env list -->
 #### Kubernetes
 
 | Env Variable | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -72,22 +71,30 @@ The Blockchain node is fully configurated through environment variables.
 | SERVICE_NAME | no       |               | This variable is only required if EXPOSE_MC is set to true. It defines which service the kubernetes client should search for in the configured kubernetes cluster                                                                                                                                                                                                                                                                                          |
 | NAMESPACE    | no       |               | This variable is only required if EXPOSE_MC is set to true. It defines in which namespace the kubernetes client should search for the given service                                                                                                                                                                                                                                                                                                        |
 
-## Getting started
+## Lifecycle
 
-The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole TruBudget application (that means you need to install [Docker](https://www.docker.com/community-edition#/download)). It uses the local build of the blockchain and the master-deployments of the TruBudget API and Frontend. The pre-set cluster contains:
+As described before: The Trubudget Blockchain is created one by a master, which then grants slaves access on demand.
 
-- 1 Master-Node + 1 Slave-Node
-- 1 Master API connected to Master-Node
-- 1 Frontend connected to Master-API
+1.  Start Master-Node of Trubudget Blockchain (Master sets chain configurations for network and has admit privileges)
+1.  Start API (Master-API)
+1.  API will set up Master-Node for Trubudget (creating Admin-Streams)
+1.  Start Slave-Node(s)
+1.  Slave-Node will try to join the network by connection to the master-node
+1.  Slave-Node attempt to access the network will be rejected because they have not be granted access
+1.  Slave-Node frequests to be granted access to the network by sending its blockchain-address and information about the Organization operating the node to the Master-API
+1.  Eventually, Master-API grants read/write (not admin) access to the network for the supplied address
+1.  Slave-Node retries to join the network
+1.  Slave-Node is granted access and syncronized blockchain data
 
-Since the required docker images are located in the private Dockerregistry you need to authenticate.
+## Master vs. Slave Node
 
-To do so you simply create a login token by `$ echo $DOCKER_PASSWORD > DOCKER_REGISTRY_PASSWORD`
+Trubudget is a private Blockchain (BC) network. That means a master need to give new nodes (slaves) a one-time grant in order to access the network. The decision if I want to spawn a Master or a Slave node is simple:
 
-If you have set your password token you can simply start the cluster `$ ./startDev.sh`
+- Masternode: I want to create a new network
+- Slavenode: I want to participate on an existing network
 
-Enjoy!
 
+<!-- TODO: move to Email-Notification Servcie -->
 ## Enable email notifications
 
 If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification transactions. In other words The blockchain starts the background processes to send user ids to the email-notification service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false).
@@ -108,6 +115,7 @@ When started the Email-Service sends email notifications to the configured SMTP-
 
 More details about the email notification service can be found in the [email notification documentation](../email-notification/README.md#)
 
+<!-- TODO: move to Email-Notification Servcie -->
 ## Disable email notifications
 
 To disable email notifications for blockchain simply set the `EMAIL_SERVICE` to "DISABLED" or unset it.
