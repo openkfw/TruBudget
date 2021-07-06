@@ -79,7 +79,7 @@ services:
 
   export:
     build:
-      context: ../../excel-export
+      context: ../../excel-export-service
     environment:
       PROD_API_HOST: api
       PROD_API_PORT: ${API_PORT}
