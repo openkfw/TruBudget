@@ -29,10 +29,7 @@ export default class DocumentUpload extends Component {
           <DocumentOverview documents={workflowDocuments} validationActive={false} />
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-          <Button
-            style={styles.uploadButton}
-            component="div"
-          >
+          <Button style={styles.uploadButton} component="div">
             {strings.workflow.workflow_upload_document}
             <input
               id="docupload"
@@ -48,7 +45,9 @@ export default class DocumentUpload extends Component {
                       storeWorkflowDocument(dataUrl, file.name);
                     }
                   };
-                  reader.readAsDataURL(file);
+                  if (file) {
+                    reader.readAsDataURL(file);
+                  }
                 }
               }}
             />
