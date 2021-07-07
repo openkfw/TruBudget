@@ -12,7 +12,6 @@ env:
 jobs:
   danger:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -117,7 +116,23 @@ jobs:
             email-notification-service,
             storage-service,
           ]
-
+        include:
+          - project: frontend
+            image_name: trubudget/frontend
+          - project: api
+            image_name: trubudget/api
+          - project: blockchain
+            image_name: trubudget/blockchain
+          - project: provisioning
+            image_name: trubudget/provisioning
+          - project: e2e-test
+            image_name: trubudget/e2e-test
+          - project: excel-export-service
+            image_name: trubudget/excel-export
+          - project: email-notification-service
+            image_name: trubudget/email-notification
+          - project: storage-service
+            image_name: trubudget/storage-service
     defaults:
       run:
         working-directory: ${{ matrix.project }}
@@ -132,6 +147,7 @@ jobs:
       PRIVATE_REGISTRY_PASSWORD: ${{ secrets.PRIVATE_REGISTRY_PASSWORD}}
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
+      IMAGE_NAME: ${{ matrix.image_name}}
 
     steps:
       - uses: actions/checkout@v2
