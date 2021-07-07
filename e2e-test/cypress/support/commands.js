@@ -647,7 +647,8 @@ Cypress.Commands.add("getVersion", () => {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`
-    }
+    },
+    timeout: 60000
   })
     .its("body")
     .then(body => Cypress.Promise.resolve(body.data));
