@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/openkfw/TruBudget/issues"
   },
-  "homepage": "https://github.com/openkfw/TruBudget/email-notification/#readme",
+  "homepage": "https://github.com/openkfw/TruBudget/email-notification-service/#readme",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "@types/jsonwebtoken": "^8.3.8",

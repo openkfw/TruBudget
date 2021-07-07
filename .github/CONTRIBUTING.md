@@ -64,7 +64,7 @@ If you make changes that are relevant to the end user you should add an entry in
 When writing commits you should consider the following guidelines:
 
 - Follow these [git commit guidelines]
-- Always include a prefix in the commit message with the abbreviation of the project you're working on (api, bc, doc, UI, e2e-test, excel-export, email-service)
+- Always include a prefix in the commit message with the abbreviation of the project you're working on (api, bc, doc, UI, e2e-test, excel-export, email-service, storage-service)
 - When you're only changing the documentation you can include `[ci skip]` in the commit title
 
 ### Git Branches

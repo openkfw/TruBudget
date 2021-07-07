@@ -366,12 +366,12 @@ npm start
 ### Excel-Export (Optional)
 
 There is a service that exports TruBudget data into an Excel sheet. For exporting we use the npm package [exceljs].
-The service is a node package and needs to be started separately. More details regarding the excel-export service can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/excel-export/README.md).
+The service is a node package and needs to be started separately. More details regarding the excel-export service can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/excel-export-service/README.md).
 
 To start the service locally, follow these commands:
 
 ```bash
-cd ../excel-export
+cd ../excel-export-service
 ```
 
 1. Set environment variables
@@ -408,7 +408,7 @@ The service is then available either on the host and port set by the environment
 
 The email notification service is responsible for saving/deleting email adresses per Trubudget user in a connected database. These email addresses are used to send configurable notifications to a connected SMTP server.
 
-If you want to start this service or simply see more details regarding this feature you can check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/email-notification/README.md) file.
+If you want to start this service or simply see more details regarding this feature you can check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/email-notification-service/README.md) file.
 
 ### Storage-Service (Optional)
 
@@ -532,7 +532,12 @@ Here you can find a summary of all the technologies used in TruBudget with links
 
 ### Excel-Export
 
-- [README.md](https://github.com/openkfw/TruBudget/blob/master/excel-export/README.md)
+- [README.md](https://github.com/openkfw/TruBudget/blob/master/excel-export-service/README.md)
+- [Exceljs]
+
+### Email-Notification
+
+- [README.md](https://github.com/openkfw/TruBudget/blob/master/email-notification-service/README.md)
 - [Exceljs]
 
 ### E2E-Tests

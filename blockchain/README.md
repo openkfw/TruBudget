@@ -24,7 +24,7 @@ The Blockchain node is fully configurated through environment variables.
 
 ### Environment Variables
 
-Depending on the Trubudget setup environment variables 
+Depending on the Trubudget setup environment variables
 
 | Env Variable                | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                                        |
 | --------------------------- | -------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -47,8 +47,8 @@ Depending on the Trubudget setup environment variables
 | BUILDTIMESTAMP              | no       |               | The /version endpoint returns this variable as `buildTimeStamp` property                                                                                                                                                                                                                                                                           |
 | BLOCKNOTIFY_SCRIPT          | no       |               | Configure the blocknotifiy argument of the multichain configuration like -blocknotify=[BLOCKNOTIFY_SCRIPT]                                                                                                                                                                                                                                         |
 
-
 <!-- TODO: move to Email-Notification Servcie -->
+
 #### Email-Service
 
 | Env Variable               | Required | Default Value    | Description                                                                                                                                                      |
@@ -63,6 +63,7 @@ Depending on the Trubudget setup environment variables
 | JWT_SECRET                 | no       |                  | The `JWT_SECRET` is only required if the Email feature is enabled. It is used to authenticate the blockchain at the email-service, so it can send notifications. |
 
 <!-- TODO: attach to basic blockchain env list -->
+
 #### Kubernetes
 
 | Env Variable | Required | Default Value | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -93,8 +94,8 @@ Trubudget is a private Blockchain (BC) network. That means a master need to give
 - Masternode: I want to create a new network
 - Slavenode: I want to participate on an existing network
 
-
 <!-- TODO: move to Email-Notification Servcie -->
+
 ## Enable email notifications
 
 If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification transactions. In other words The blockchain starts the background processes to send user ids to the email-notification service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false).
@@ -113,9 +114,10 @@ When started the Email-Service sends email notifications to the configured SMTP-
 - SMTP_HOST: host.docker.internal(localhost)
 - SMTP_PORT: 2500
 
-More details about the email notification service can be found in the [email notification documentation](../email-notification/README.md#)
+More details about the email notification service can be found in the [email notification documentation](../email-notification-service/README.md#)
 
 <!-- TODO: move to Email-Notification Servcie -->
+
 ## Disable email notifications
 
 To disable email notifications for blockchain simply set the `EMAIL_SERVICE` to "DISABLED" or unset it.
