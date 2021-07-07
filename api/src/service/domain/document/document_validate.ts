@@ -15,10 +15,14 @@ import * as Subproject from "../workflow/subproject";
 import * as DocumentValidated from "./document_validated";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
+import { GenericDocument } from "./document";
+import { getAllDocuments } from "./document_get";
 
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
+  getDocumentsEvents(): Promise<Result.Type<BusinessEvent[]>>;
+  getOffchainDocumentsEvents(): Promise<Result.Type<BusinessEvent[]>>;
 }
 
 export async function documentValidate(
@@ -36,6 +40,16 @@ export async function documentValidate(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
+  // Check if document exists
+  const allDocumentIds = await getAllDocuments(ctx, repository);
+  if (Result.isErr(allDocumentIds)) {
+    return new VError(allDocumentIds, "failed to fetch all documents");
+  }
+  const hasDocument = allDocumentIds.find(doc => doc.id === documentId);
+  if (!hasDocument) {
+    return new NotFound(ctx, "document", documentId);
+  }
+
   // Create the new event:
   const documentValidatedEvent = DocumentValidated.createEvent(
     isDocumentValid,
@@ -48,6 +62,11 @@ export async function documentValidate(
   );
   if (Result.isErr(documentValidatedEvent)) {
     return new VError(documentValidatedEvent, "failed to create event in domain");
+  }
+
+  // Root user cannot validate a document
+  if (issuer.id === "root") {
+    return new PreconditionError(ctx, documentValidatedEvent, "'root' user cannot validate a document");
   }
 
   // Check that the new event is indeed valid:

@@ -10,11 +10,16 @@ let isExternalStorageEnabled = false;
 // Actual file in fixture folder
 const fileName = "documents_test.json";
 
-describe("Attaching a document to a workflowitem.", function () {
+describe("Attaching a document to a workflowitem.", function() {
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
+    cy.getVersion().then(data => {
+      if (data.storage && data.storage.release) {
+        isExternalStorageEnabled = true;
+      }
+    });
     cy.createProject("documents test project", "workflowitem documents test", [])
       .then(({ id }) => {
         projectId = id;
@@ -30,7 +35,7 @@ describe("Attaching a document to a workflowitem.", function () {
       });
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });

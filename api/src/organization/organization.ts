@@ -45,7 +45,7 @@ export async function ensureOrganizationStream(
   );
 }
 
-export async function getPrivateKeyItem(
+async function getPrivateKeyItem(
   multichain: MultichainClient,
   organization: Organization,
 ): Promise<Result.Type<PrivateKeyItem>> {

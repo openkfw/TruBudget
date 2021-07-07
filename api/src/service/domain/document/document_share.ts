@@ -1,16 +1,22 @@
 import { VError } from "verror";
+import { config } from "../../../config";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
 import * as DocumentShared from "./document_shared";
-import { config } from "../../../config";
+import * as Workflowitem from "../workflow/workflowitem";
+import { NotAuthorized } from "../errors/not_authorized";
+import { PreconditionError } from "../errors/precondition_error";
 
 type Base64String = string;
 
 export interface RequestData {
   organization: string;
   docId: string;
+  projectId: string;
+  subprojectId: string;
+  workflowitemId: string;
 }
 
 interface Repository {
@@ -20,6 +26,11 @@ interface Repository {
   getPrivateKey(organization): Promise<Result.Type<Base64String>>;
   getSecret(docId, organization): Promise<Result.Type<DocumentShared.SecretPublished>>;
   secretAlreadyExists(docId, organization): Promise<Result.Type<boolean>>;
+  getWorkflowitem(
+    projectId: string,
+    subprojectId: string,
+    workflowitemId: string,
+  ): Promise<Result.Type<Workflowitem.Workflowitem>>;
 }
 
 export async function shareDocument(
@@ -28,7 +39,7 @@ export async function shareDocument(
   requestData: RequestData,
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent | undefined>> {
-  const { organization, docId } = requestData;
+  const { organization, docId, projectId, subprojectId, workflowitemId } = requestData;
   const publisherOrganization = config.organization;
 
   // if secret is already published for this document and organization no event is created
@@ -79,5 +90,29 @@ export async function shareDocument(
   if (Result.isErr(newSecretPublishedEvent)) {
     return new VError(newSecretPublishedEvent, "cannot publish document secret");
   }
+
+  if (issuer.id !== "root") {
+    // check if issuer has the workflowitem.intent.grantPermission permission to be allowed to share documents
+    const workflowitemResult = await repository.getWorkflowitem(
+      projectId,
+      subprojectId,
+      workflowitemId,
+    );
+    if (Result.isErr(workflowitemResult)) {
+      return new VError(" Error while fetching workflowitem!");
+    }
+    const workflowitem = workflowitemResult;
+    const intent = "workflowitem.intent.grantPermission";
+    if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: workflowitem });
+    }
+  } else {
+    return new PreconditionError(
+      ctx,
+      newSecretPublishedEvent,
+      "user 'root' is not allowed to share documents",
+    );
+  }
+
   return newSecretPublishedEvent;
 }

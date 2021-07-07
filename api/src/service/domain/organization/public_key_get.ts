@@ -5,7 +5,6 @@ import { BusinessEvent } from "../business_event";
 import { KeysByOrganization, sourcePublicKeys } from "./public_key_eventsourcing";
 import { Organization, PublicKeyBase64 } from "./public_key";
 import { NotFound } from "../errors/not_found";
-import { NotFoundError } from "../../../error";
 
 interface Repository {
   getPublicKeysEvents(): Promise<Result.Type<BusinessEvent[]>>;

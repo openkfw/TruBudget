@@ -107,7 +107,7 @@ export async function updateWorkflowitem(
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
         modification.documents.map(async (d) => {
-          return await repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+          return repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
         }),
       );
       for (const result of documentUploadedEventsResults) {
