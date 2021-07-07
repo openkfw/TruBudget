@@ -188,4 +188,4 @@ Use the admin credentials to login onto the dashboard. If `BC_ADDRESS_VERIFICATI
 ## Email notifications
 
 To enable/disable email notifications for blockchain simply set the `REACT_APP_EMAIL_SERVICE_ENABLED` to "true" or unset it.
-When enabled the frontend requesting a email-notifcations readiness call when entering the login screen. If the email notification service is ready the email section in the user profile is activated and visible so the user can create/edit the email-address where he/she wants to get notifications to. More details about the email notification service can be found in the [email notification documentation](../email-notification/README.md#)
+When enabled the frontend requesting a email-notifcations readiness call when entering the login screen. If the email notification service is ready the email section in the user profile is activated and visible so the user can create/edit the email-address where he/she wants to get notifications to. More details about the email notification service can be found in the [email notification documentation](../email-notification-service/README.md#)

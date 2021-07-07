@@ -197,10 +197,10 @@ This is just an example. Please refer to the [official documentation](http://pm2
 
 ## Excel Export
 
-To enable the export of TruBudget data into Excel files, a separate service needs to be started. To start that service, first change the directory to the `excel-export` folder:
+To enable the export of TruBudget data into Excel files, a separate service needs to be started. To start that service, first change the directory to the `excel-export-service` folder:
 
 ```bash
-cd ../excel-export
+cd ../excel-export-service
 ```
 
 ### Set Environment Variables

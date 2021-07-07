@@ -55,8 +55,8 @@ services:
     depends_on:
       - master-api
 
-  excel-export:
-    build: ../../excel-export
+  excel-export-service:
+    build: ../../excel-export-service
     environment:
       PROD_API_HOST: master-api
       PROD_API_PORT: ${API_PORT}
@@ -65,7 +65,7 @@ services:
       PORT: 8888
     command: ["npm", "run", "dev"]
     volumes:
-      - "../../excel-export/src:/home/node/src:delegated"
+      - "../../excel-export-service/src:/home/node/src:delegated"
     ports:
       - "8888:8888"
       - "9231:9229"
@@ -76,7 +76,7 @@ services:
     build:
       context: ../../frontend
       dockerfile: Dockerfile.dev
-      args: 
+      args:
         API_HOST: master-api
         API_PORT: ${API_PORT}
     environment:
@@ -92,5 +92,5 @@ services:
       - "3000:3000"
     depends_on:
       - master-api
-      - excel-export
+      - excel-export-service
     stdin_open: true

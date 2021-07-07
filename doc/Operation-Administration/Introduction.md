@@ -43,8 +43,8 @@ The [provisioning](../provisioning/README.md) project create a bunch of test dat
 The [docker-compose](../docker-compose/README.md) environment variables are only important if the deployment is done via a docker-compose file provided by the Trubudget repository.
 Environment Varaibles of other projects that are required to enable optional features can be found in the particular project's `README`:
 
-- [Excel-Export](../excel-export/README.md)
-- [Email-Notifications](../email-notification/README.md)
+- [Excel-Export](../excel-export-service/README.md)
+- [Email-Notifications](../email-notification-service/README.md)s
 
   The `Used by` section describes which projects are using the environment variable.
   Following shortcuts are used:

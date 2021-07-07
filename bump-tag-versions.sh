@@ -5,7 +5,7 @@ if [ -z ${trubudget_version} ]; then
   echo "Usage: bash bump-tag-versions.sh [TAG-VERSION]"
   exit 0
 fi
-trubudget_projects=('frontend' 'api' 'blockchain' 'e2e-test' 'provisioning' 'excel-export' 'email-notification')
+trubudget_projects=('frontend' 'api' 'blockchain' 'e2e-test' 'provisioning' 'excel-export-service' 'email-notification-service' 'storage-service')
  
 for project in "${trubudget_projects[@]}"
 do
