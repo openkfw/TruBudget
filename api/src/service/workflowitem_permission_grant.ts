@@ -51,7 +51,7 @@ export async function grantWorkflowitemPermission(
           DocumentShare.shareDocument(
             ctx,
             serviceUser,
-            { docId: id, organization },
+            { docId: id, organization, projectId, subprojectId, workflowitemId },
             {
               encryptWithKey: async (secret, publicKey) => {
                 return encryptWithKey(secret, publicKey);
@@ -82,6 +82,9 @@ export async function grantWorkflowitemPermission(
                     return cache.getSecretPublishedEvents();
                   },
                 });
+              },
+              getWorkflowitem: async (projectId, subprojectId, workflowitemId) => {
+                return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
               },
             },
           ),

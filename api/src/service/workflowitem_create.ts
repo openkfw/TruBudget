@@ -17,6 +17,7 @@ import * as WorkflowitemCreate from "./domain/workflow/workflowitem_create";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
 import * as PublicKeyGet from "./public_key_get";
+import * as UserQuery from "./user_query";
 import { store } from "./store";
 
 export { RequestData } from "./domain/workflow/workflowitem_create";
@@ -39,7 +40,7 @@ export async function createWorkflowitem(
         return Result.isOk(item);
       },
       getSubproject: async (projectId: string, subprojectId: string) =>
-        await cache.getSubproject(projectId, subprojectId),
+        cache.getSubproject(projectId, subprojectId),
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
         return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
       },
@@ -52,22 +53,23 @@ export async function createWorkflowitem(
             getAllDocuments: async () => {
               return await DocumentGet.getAllDocuments(ctx, {
                 getDocumentsEvents: async () => {
-                  return await cache.getDocumentUploadedEvents();
+                  return cache.getDocumentUploadedEvents();
                 },
                 getOffchainDocumentsEvents: async () => {
-                  return await cache.getOffchainDocumentsEvents();
+                  return cache.getOffchainDocumentsEvents();
                 },
               });
             },
             getPublicKey: async (organization) => {
               return PublicKeyGet.getPublicKey(conn, ctx, organization);
             },
-            storeDocument: async (id, hash) => {
-              return await storageServiceClient.uploadObject(id, fileName, hash);
+            storeDocument: async (id, name, hash) => {
+              return storageServiceClient.uploadObject(id, name, hash);
             },
             encryptWithKey: async (secret, publicKey) => {
               return encryptWithKey(secret, publicKey);
             },
+            getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
           },
         );
       },

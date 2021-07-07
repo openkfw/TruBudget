@@ -58,6 +58,12 @@ export async function isSameDocument(
         getUsersForIdentity: async (identity) => {
           return GroupQuery.resolveUsers(conn, ctx, issuer, identity);
         },
+        getDocumentsEvents: async () => {
+          return cache.getDocumentUploadedEvents();
+        },
+        getOffchainDocumentsEvents: async () => {
+          return cache.getOffchainDocumentsEvents();
+        },
       },
     );
   });

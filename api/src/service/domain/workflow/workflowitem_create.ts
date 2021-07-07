@@ -138,7 +138,7 @@ export async function createWorkflowitem(
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
         reqData.documents.map(async (d) => {
-          return await repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+          return repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
         }),
       );
       for (const result of documentUploadedEventsResults) {

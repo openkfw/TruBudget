@@ -11,6 +11,7 @@ import * as DocumentUpload from "./domain/document/document_upload";
 import { Document } from "./domain/document/document_uploaded";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as PublicKeyGet from "./public_key_get";
+import * as UserQuery from "./user_query";
 import { store } from "./store";
 
 export async function documentUpload(
@@ -35,12 +36,13 @@ export async function documentUpload(
       getPublicKey: async (organization) => {
         return PublicKeyGet.getPublicKey(conn, ctx, organization);
       },
-      storeDocument: async (id, hash) => {
-        return await storageServiceClient.uploadObject(id, "name", hash);
+      storeDocument: async (id, name, hash) => {
+        return storageServiceClient.uploadObject(id, name, hash);
       },
       encryptWithKey: async (secret, publicKey) => {
         return encryptWithKey(secret, publicKey);
       },
+      getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
     });
   });
 

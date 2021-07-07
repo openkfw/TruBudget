@@ -2,8 +2,12 @@ import { assert, expect } from "chai";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
+import { UserRecord } from "../organization/user_record";
 import { UploadedDocument } from "./document";
 import { RequestData, shareDocument } from "./document_share";
+import { Workflowitem } from "../workflow/workflowitem";
+import { NotAuthorized } from "../errors/not_authorized";
+import { PreconditionError } from "../errors/precondition_error";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -11,9 +15,11 @@ const ctx: Ctx = {
 };
 
 const alice: ServiceUser = { id: "alice", groups: ["alice"] };
-const bob: ServiceUser = { id: "charlie", groups: ["bob"] };
+const bob: ServiceUser = { id: "bob", groups: ["bob"] };
 const root: ServiceUser = { id: "root", groups: ["root"] };
-
+const projectId = "dummy-project";
+const subprojectId = "dummy-subproject";
+const workflowitemId = "dummy-workflowitem";
 const document: UploadedDocument = {
   id: "1",
   base64: "lakjflaksdjf",
@@ -26,90 +32,87 @@ const secret = {
   encryptedSecret: "secret",
 };
 
-const publicKey = "a public key as String in pem format";
-const privateKey = "a private key as String in pem format";
+const baseUser: UserRecord = {
+  id: "alice",
+  createdAt: new Date().toISOString(),
+  displayName: "baseUser",
+  organization: "organization",
+  passwordHash: "12345",
+  address: "12345",
+  encryptedPrivKey: "12345",
+  permissions: {
+    "workflowitem.intent.grantPermission": [alice.id],
+  },
+  log: [],
+  additionalData: {},
+};
+const requestData: RequestData = {
+  organization: "organization",
+  docId: document.id,
+  projectId,
+  subprojectId,
+  workflowitemId,
+};
+const baseWorkflowitem: Workflowitem = {
+  isRedacted: false,
+  id: workflowitemId,
+  subprojectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  assignee: alice.id,
+  displayName: "dummy",
+  description: "dummy",
+  amountType: "N/A",
+  documents: [],
+  permissions: { "workflowitem.intent.grantPermission": ["alice"] },
+  log: [],
+  additionalData: {},
+  workflowitemType: "general",
+};
 
 const repository = {
   encryptWithKey: (secret, publicKey) => Promise.resolve("plain"),
   decryptWithKey: (secret, privateKey) => Promise.resolve("secret"),
-  getPublicKey: (organization) => Promise.resolve(publicKey),
-  getPrivateKey: (organization) => Promise.resolve(privateKey),
+  getPublicKey: (organization) => Promise.resolve(organization),
+  getPrivateKey: (organization) => Promise.resolve(""),
   getSecret: (docId, organization) => Promise.resolve(secret),
   secretAlreadyExists: (docId, organization) => Promise.resolve(false),
+  getWorkflowitem: (projectId, subprojectId, workflowitemId) => Promise.resolve(baseWorkflowitem),
 };
 
 describe("Share a document", async () => {
-  it("An existing document can be shared", async () => {
-    const requestData: RequestData = {
-      organization: "organization",
-      docId: document.id,
-    };
-
+  it("An existing document can be shared by a user with workflowitem.intent.grantPermission permission", async () => {
     const result = await shareDocument(ctx, alice, requestData, repository);
 
     assert.isTrue(Result.isOk(result));
     expect(result).to.not.equal(undefined);
+    expect(result).to.include({ type: "secret_published" });
   });
 
-  it("An non existing document can not be shared", async () => {
-    // TODO: THIS TEST FAILS
-    /*
-    const requestData: RequestData = {
-      organization: "organization",
-      docId: "-1",
-    };
+  it("An existing document cannot be shared without the workflowitem.intent.grantPermission permission", async () => {
+    const result = await shareDocument(ctx, bob, requestData, repository);
 
-    const result = await shareDocument(ctx, alice, requestData, repository);
-
-    assert.isTrue(Result.isOk(result));
-    expect(result).to.equal(undefined);
-    */
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, NotAuthorized);
   });
 
-  it("An existing document only be shared from the corrisponding organisation", async () => {
-    //Alice (Orga A) shares document from Orga B
-    // TODO: THIS TEST FAILS
-    /*
-    const requestData: RequestData = {
-      organization: "other organization",
-      docId: document.id,
-    };
+  it("A non existing document can not be shared", async () => {
+    const result = await shareDocument(
+      ctx,
+      alice,
+      { ...requestData, docId: "-1" },
+      {
+        ...repository,
+        getSecret: (docId, organization) => Promise.resolve(new Error("Could not find")),
+      },
+    );
 
-    const result = await shareDocument(ctx, alice, requestData, repository);
-
-    assert.isTrue(Result.isOk(result));
-    expect(result).to.equal(undefined);
-    */
+    assert.isTrue(Result.isErr(result));
   });
 
   it("Root user can not share", async () => {
-    // TODO: THIS TEST FAILS
-    /*
-
-    const requestData: RequestData = {
-      organization: "organization",
-      docId: document.id,
-    };
-
     const result = await shareDocument(ctx, root, requestData, repository);
-
-    assert.isTrue(Result.isOk(result));
-    expect(result).to.equal(undefined);
-    */
-  });
-
-  it("workflow_grant_permissions has to be set to share a document", async () => {
-    // TODO: THIS TEST FAILS
-    /*
-    const requestData: RequestData = {
-      organization: "organization",
-      docId: document.id,
-    };
-
-    const result = await shareDocument(ctx, bob, requestData, repository);
-
-    assert.isTrue(Result.isOk(result));
-    expect(result).to.equal(undefined);
-    */
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, PreconditionError);
   });
 });
