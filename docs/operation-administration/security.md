@@ -83,7 +83,7 @@ There are two ways Nodes can join the TruBudget network:
 - A node of a new organization wants to join
 - A node of an existing organization wants to join
 
-In both cases a certain number of organizations in the network has to approve the new node. The difference is that a new organization needs 51% of all organizations in the network and a new node of an existing organization only needs one approval. More about how to connect a new node to an existing network can be found in the [documentation](./installation/connect-to-network/connect-to-existing-node/connect-docker-compose.md).
+In both cases a certain number of organizations in the network has to approve the new node. The difference is that a new organization needs 51% of all organizations in the network and a new node of an existing organization only needs one approval. More about how to connect a new node to an existing network can be found in the [documentation](./installation/connect-to-existing-node/connect-docker-compose.md).
 
 ### Given that third party organizations who manage blockchain nodes are required to comply with the same security standards, what is the security policy or security measures applicable to the nodes to be integrated into TruBudget in terms of security governance (governance model, node control process), regulatory requirements, prevention (data protection, application protection, identity protection, infrastructure protection), resilience?
 
