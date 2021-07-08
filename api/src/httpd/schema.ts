@@ -132,6 +132,7 @@ const schemas = {
       },
     },
   },
+
   // ------------------------------------------------------------
   //       user
   // ------------------------------------------------------------
@@ -3361,6 +3362,7 @@ const schemas = {
     },
   },
 };
+
 export function getSchema(server, id): Schema {
   const schema = schemas[id];
   return {

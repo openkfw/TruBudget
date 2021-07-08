@@ -21,6 +21,9 @@ const {
   revokeProjectPermission,
   queryApiDoc,
   createWorkflowitem,
+  queryProvisionState,
+  setProvisionStartFlag,
+  setProvisionEndFlag,
 } = require("./api");
 
 const DEFAULT_API_VERSION = "1.0";
@@ -342,12 +345,6 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
 
-  if (workflowitem.data.documents.length !== 0) {
-    throw new Error(
-      `workflowitem ${workflowitem.data.id} is not expected to already have documents attached. Note that the provisioning script shouldn't run more than once.`
-    );
-  }
-
   const { amountType, amount, currency } = workflowitem.data;
   if (amountType === "N/A" || !amount || !currency) {
     throw Error(
@@ -403,58 +400,47 @@ async function testWorkflowitemUpdate(folder) {
     );
   }
 
-  // Adding a document:
-  const now = new Date().toISOString();
-  const documentId1 = `${now} first contract`;
-  const documentId2 = `${now} second contract`;
-  await axios.post("/workflowitem.update", {
-    projectId: project.data.id,
-    subprojectId: subproject.data.id,
-    workflowitemId: workflowitem.data.id,
-    documents: [
-      {
-        id: documentId1,
-        base64: "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4=",
-      },
-      {
-        id: documentId2,
-        base64: "VGhhdCdzIG91ciBzZWNvbmQgY29udHJhY3Qu",
-      },
-    ],
-  });
-
-  const itemWithDocuments = await findWorkflowitem(
-    axios,
-    project,
-    subproject,
-    workflowitemTemplate
-  );
-  if (
-    !Array.isArray(itemWithDocuments.data.documents) ||
-    itemWithDocuments.data.documents.length !== 2
-  ) {
-    throw Error("Adding documents to a workflowitem failed :(");
-  }
-
-  // Updating an existing document shouldn't be allowed:
-  try {
+  if (workflowitem.data.documents.length !== 0) {
+    // throw new Error(
+    console.log(
+      `workflowitem ${workflowitem.data.id} is not expected to already have documents attached. No further documents will be attached.`
+    );
+  } else {
+    // Adding a document:
+    const randomId = `id-${Math.floor(Math.random() * 1000000)}`;
     await axios.post("/workflowitem.update", {
       projectId: project.data.id,
       subprojectId: subproject.data.id,
       workflowitemId: workflowitem.data.id,
+
       documents: [
         {
-          id: documentId1,
-          base64:
-            "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4gSnVzdCBraWRkaW5nLCBJJ3ZlIGNoYW5nZWQgaXQhIG11YWhhaGE=",
+          // "That's our first contract." in base64: VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4=
+          base64: "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4=",
+          fileName: "document1-" + randomId + ".txt",
+        },
+        {
+          // "That's our second contract." in base64: VGhhdCdzIG91ciBzZWNvbmQgY29udHJhY3Qu
+          base64: "VGhhdCdzIG91ciBzZWNvbmQgY29udHJhY3Qu",
+          fileName: "document2-" + randomId + ".txt",
         },
       ],
     });
-    throw Error(
-      "Updated an existing document, but that isn't supposed to work :("
+
+    const itemWithDocuments = await findWorkflowitem(
+      axios,
+      project,
+      subproject,
+      workflowitemTemplate
     );
-  } catch (_err) {
-    // ignore error
+    if (
+      !Array.isArray(itemWithDocuments.data.documents) ||
+      itemWithDocuments.data.documents.length !== 2
+    ) {
+      console.log(itemWithDocuments.data.documents.length);
+      console.log(Array.isArray(itemWithDocuments.data.documents));
+      throw Error("Adding documents to a workflowitem failed :(");
+    }
   }
 
   const stillTheItemWithDocuments = await findWorkflowitem(
@@ -607,6 +593,14 @@ async function runIntegrationTests(rootSecret, folder) {
   console.log("Integration tests complete.");
 }
 
+async function checkProvisionState(axios) {
+  const { isProvisioned, message } = await queryProvisionState(axios);
+  console.log(message);
+  if (isProvisioned) {
+    process.exit(1);
+  }
+}
+
 const provisionBlockchain = async (host, port, rootSecret, organization) => {
   try {
     const folder =
@@ -619,7 +613,12 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     axios.defaults.timeout = 10000;
 
     await impersonate("root", rootSecret);
+
+    await checkProvisionState(axios);
+
     console.log("Start to provision users");
+    console.log("Set provision_started flag on multichain");
+    await setProvisionStartFlag(axios);
     await provisionUsers(axios, folder, organization);
     await provisionGroups(axios, folder);
 
@@ -635,6 +634,10 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     if (process.env.ENVIRONMENT_TYPE !== "PROD") {
       await runIntegrationTests(rootSecret, folder);
     }
+
+    await impersonate("root", rootSecret);
+    console.log("Set provision_ended flag on multichain");
+    await setProvisionEndFlag(axios);
   } catch (err) {
     console.log(err);
     if (err.code && err.code === "MAX_RETRIES") {
@@ -655,4 +658,7 @@ if (!organization) {
   process.exit(1);
 }
 
-provisionBlockchain(host, port, rootSecret, organization);
+provisionBlockchain(host, port, rootSecret, organization).then(() => {
+  console.log("\x1b[32m%s\x1b[0m", "Successfully provisioned Trubudget!");
+  process.exit(0);
+});

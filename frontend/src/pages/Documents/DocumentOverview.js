@@ -131,8 +131,7 @@ class DocumentOverview extends Component {
             </TableCell>
           ) : null}
           <TableCell data-test="workflowitemDocumentId" className={classes.noHorizontalPadding}>
-            {id ? <OverflowTooltip text={id} maxWidth="200px" /> : null}
-            {fileName ? <OverflowTooltip text={"(" + fileName + ")"} maxWidth="200px" /> : null}
+            {fileName ? <OverflowTooltip text={fileName} maxWidth="200px" /> : null}
           </TableCell>
           {validationActive && hash ? (
             <TableCell>
@@ -143,7 +142,7 @@ class DocumentOverview extends Component {
             <TableCell className={classes.noHorizontalPadding}>
               <div className={classes.actionContainer}>
                 {this.generateUploadButton(hash, validated, id, projectId, subprojectId, workflowitemId)}
-                {document.documentId
+                {document.id
                   ? this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)
                   : null}
               </div>
@@ -202,14 +201,14 @@ class DocumentOverview extends Component {
         {_isEmpty(documents)
           ? this.generateEmptyList()
           : this.generateDocumentList({
-              workflowitemId,
-              projectId,
-              subprojectId,
-              documents,
-              validationActive,
-              validatedDocuments,
-              downloadDocument
-            })}
+            workflowitemId,
+            projectId,
+            subprojectId,
+            documents,
+            validationActive,
+            validatedDocuments,
+            downloadDocument
+          })}
       </Table>
     );
   };
@@ -221,7 +220,7 @@ class DocumentOverview extends Component {
         aria-label="upload picture"
         data-test="download-document"
         component="span"
-        onClick={() => downloadDocument(projectId, subprojectId, workflowitemId, document.documentId)}
+        onClick={() => downloadDocument(projectId, subprojectId, workflowitemId, document.id)}
       >
         <DownloadIcon />
         {strings.common.download}

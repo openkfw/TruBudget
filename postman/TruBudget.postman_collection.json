@@ -54,13 +54,13 @@
 							"type": "basic",
 							"basic": [
 								{
-									"key": "password",
-									"value": "{{rpcPassword}}",
+									"key": "username",
+									"value": "{{rpcUser}}",
 									"type": "string"
 								},
 								{
-									"key": "username",
-									"value": "multichainrpc",
+									"key": "password",
+									"value": "{{rpcPassword}}",
 									"type": "string"
 								}
 							]
@@ -74,14 +74,17 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"method\": \"liststreamitems\",\n\t\"params\": [\"nodes\"]\n}"
+							"raw": "{\n\t\"method\": \"liststreamitems\",\n\t\"params\": [\"offchain_documents\"]\n}"
 						},
 						"url": {
-							"raw": "localhost:8000",
+							"raw": "{{rpcHost}}:{{rpcPort}}/",
 							"host": [
-								"localhost"
+								"{{rpcHost}}"
 							],
-							"port": "8000"
+							"port": "{{rpcPort}}",
+							"path": [
+								""
+							]
 						}
 					},
 					"response": []
@@ -156,6 +159,132 @@
 							]
 						},
 						"description": "Download a backup of the current multichain folder\r\nUse \"Send and Download\" instead of just \"Send\""
+					},
+					"response": []
+				},
+				{
+					"name": "getaddresses(public_keys)",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{rpcUser}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{rpcPassword}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"method\": \"getaddresses\",\n\t\"params\": [true]\n}"
+						},
+						"url": {
+							"raw": "{{rpcHost}}:{{rpcPort}}/",
+							"host": [
+								"{{rpcHost}}"
+							],
+							"port": "{{rpcPort}}",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dumpprivatekey",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{rpcUser}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{rpcPassword}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"method\": \"dumpprivkey\",\n\t\"params\": [\"1LFBdkLPHUpieRhn7j6QzPMY5PuY2VYqnoDpY1\"]\n}"
+						},
+						"url": {
+							"raw": "{{rpcHost}}:{{rpcPort}}/",
+							"host": [
+								"{{rpcHost}}"
+							],
+							"port": "{{rpcPort}}",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createkeypairs",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{rpcUser}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{rpcPassword}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"method\": \"createkeypairs\",\n\t\"params\": []\n}"
+						},
+						"url": {
+							"raw": "{{rpcHost}}:{{rpcPort}}/",
+							"host": [
+								"{{rpcHost}}"
+							],
+							"port": "{{rpcPort}}",
+							"path": [
+								""
+							]
+						}
 					},
 					"response": []
 				}
@@ -444,7 +573,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"Melt 1T of chocolate\",\n\t\t\"amount\": \"1\",\n\t\t\"currency\": \"EUR\",\n\t\t\"amountType\": \"disbursed\",\n\t\t\"description\": \"\",\n\t\t\"status\": \"open\",\n\t\t\"assignee\":\"mstein\",\n\t\t\"documents\": []\n\t}\n}"
+											"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"projectId\": \"{{projectId}}\",\n\t\t\"subprojectId\": \"{{subprojectId}}\",\n\t\t\"displayName\": \"Melt 1T of chocolate\",\n\t\t\"amount\": \"1\",\n\t\t\"currency\": \"EUR\",\n\t\t\"amountType\": \"disbursed\",\n\t\t\"description\": \"\",\n\t\t\"status\": \"open\",\n\t\t\"assignee\":\"mstein\",\n\t\t\"documents\": [\n            {\n                \"id\": \"classroom-contract\",\n                \"base64\": \"dGVzdCBiYXNlNjRTdHJpbmc=\",\n                \"fileName\": \"test-document\"\n            }\n        ]\n\t}\n}"
 										},
 										"url": {
 											"raw": "{{host}}:{{port}}{{base}}/subproject.createWorkflowitem",
@@ -2159,61 +2288,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "workflowitem.downloadDocumentMinio",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n\t\"apiVersion\": \"1.0\",\r\n\t\"data\": {\r\n\t\t\"secret\": \"some\"\r\n\t\t}\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/workflowitem.downloadDocumentMinio?projectId={{projectId}}&subprojectId={{subprojectId}}&workflowitemId={{workflowitem}}&documentId={{documentId}}",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"workflowitem.downloadDocumentMinio"
-									],
-									"query": [
-										{
-											"key": "projectId",
-											"value": "{{projectId}}"
-										},
-										{
-											"key": "subprojectId",
-											"value": "{{subprojectId}}"
-										},
-										{
-											"key": "workflowitemId",
-											"value": "{{workflowitem}}"
-										},
-										{
-											"key": "documentId",
-											"value": "{{documentId}}"
-										}
-									]
-								}
-							},
-							"response": []
 						}
 					]
 				},
@@ -3886,7 +3960,7 @@
 					"name": "Provisioning",
 					"item": [
 						{
-							"name": "network.approveNewOrganization Copy",
+							"name": "provisioning.start",
 							"event": [
 								{
 									"listen": "test",
@@ -3971,7 +4045,7 @@
 							"response": []
 						},
 						{
-							"name": "network.approveNewOrganization Copy 2",
+							"name": "provisioning.end",
 							"event": [
 								{
 									"listen": "test",
@@ -4056,7 +4130,7 @@
 							"response": []
 						},
 						{
-							"name": "network.approveNewOrganization Copy 3",
+							"name": "provisioned",
 							"event": [
 								{
 									"listen": "test",

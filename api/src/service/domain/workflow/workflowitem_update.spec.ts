@@ -37,7 +37,7 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const stripOutDocumentId = (docs: StoredDocument[]) => {
-  return docs.map((d) => ({ id: d.id, hash: d.hash }));
+  return docs.map((d) => ({ hash: d.hash }));
 };
 
 const baseRepository = {
@@ -52,6 +52,7 @@ const baseRepository = {
     throw Error(`unexpected identity: ${identity}`);
   },
   uploadDocumentToStorageService: () => Promise.resolve([]),
+  getAllDocuments: async () => [],
 };
 
 describe("update workflowitem: authorization", () => {
@@ -346,16 +347,14 @@ describe("update workflowitem: how modifications are applied", () => {
         ...baseRepository,
         getWorkflowitem: async (_workflowitemId) => ({
           ...baseWorkflowitem,
-          documents: [{ id: "a", hash: "hashA", documentId: "abc", fileName: "abc" }],
+          documents: [{ id: "a", hash: "hashA", fileName: "abc" }],
         }),
       },
     );
 
     assert.isTrue(Result.isOk(result), (result as Error).message);
     const { workflowitem } = Result.unwrap(result);
-    assert.deepEqual(workflowitem.documents, [
-      { id: "a", hash: "hashA", documentId: "abc", fileName: "abc" },
-    ]);
+    assert.deepEqual(workflowitem.documents, [{ id: "a", hash: "hashA", fileName: "abc" }]);
   });
 
   it("An update to documents adds new documents", async () => {
@@ -379,7 +378,7 @@ describe("update workflowitem: how modifications are applied", () => {
         ...baseRepository,
         getWorkflowitem: async (_workflowitemId) => ({
           ...baseWorkflowitem,
-          documents: [{ id: "A", hash: "hash for A", documentId: "abc", fileName: "abc" }],
+          documents: [{ id: "A", hash: "hash for A", fileName: "abc" }],
         }),
       },
     );
@@ -389,40 +388,10 @@ describe("update workflowitem: how modifications are applied", () => {
     assert.sameDeepMembers(
       stripOutDocumentId(workflowitem.documents),
       stripOutDocumentId([
-        { id: "A", hash: "hash for A", documentId: "abc", fileName: "abc1" },
-        { id: "B", hash: expectedHashForB, documentId: "abc", fileName: "abc2" },
-        { id: "C", hash: expectedHashForC, documentId: "abc", fileName: "abc3" },
+        { id: "A", hash: "hash for A", fileName: "abc1" },
+        { id: "B", hash: expectedHashForB, fileName: "test.pdf" },
+        { id: "C", hash: expectedHashForC, fileName: "test.pdf" },
       ]),
-    );
-  });
-
-  it("An update to existing documents is ignored if the update doesn't change the documents' hashes", async () => {
-    const modification = {
-      documents: [{ id: "A", base64: "abc", fileName: "test.pdf" }],
-    };
-
-    const hashForDocumentA = Result.unwrap(await hashDocument(modification.documents[0])).hash;
-    const result = await updateWorkflowitem(
-      ctx,
-      alice,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      modification,
-      {
-        ...baseRepository,
-        getWorkflowitem: async (_workflowitemId) => ({
-          ...baseWorkflowitem,
-          documents: [{ id: "A", hash: hashForDocumentA, documentId: "abc", fileName: "abc" }],
-        }),
-      },
-    );
-
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-    const { workflowitem } = Result.unwrap(result);
-    assert.sameDeepMembers(
-      stripOutDocumentId(workflowitem.documents),
-      stripOutDocumentId([{ id: "A", hash: hashForDocumentA, documentId: "abc", fileName: "abc" }]),
     );
   });
 
@@ -441,7 +410,7 @@ describe("update workflowitem: how modifications are applied", () => {
         ...baseRepository,
         getWorkflowitem: async (_workflowitemId) => ({
           ...baseWorkflowitem,
-          documents: [{ id: "A", hash: "old hash for A", documentId: "abc", fileName: "abc" }],
+          documents: [{ id: "A", hash: "old hash for A", fileName: "abc" }],
         }),
       },
     );

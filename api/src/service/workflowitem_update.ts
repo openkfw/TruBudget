@@ -52,24 +52,24 @@ export async function updateWorkflowitem(
         applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
           return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
         },
-        uploadDocumentToStorageService: (fileName, documentBase64, docId) => {
+        uploadDocumentToStorageService: (fileName, documentBase64, id) => {
           return DocumentUpload.uploadDocument(
             ctx,
             serviceUser,
-            { fileName, documentBase64, docId },
+            { fileName, documentBase64, id },
             {
-              getAllDocumentInfos: async () => {
-                return await DocumentGet.getAllDocumentInfos(ctx, {
+              getAllDocuments: async () => {
+                return await DocumentGet.getAllDocuments(ctx, {
                   getDocumentsEvents: async () => {
-                    return await cache.getDocumentUploadedEvents();
+                    return cache.getDocumentUploadedEvents();
                   },
                   getOffchainDocumentsEvents: async () => {
-                    return await cache.getOffchainDocumentsEvents();
+                    return cache.getOffchainDocumentsEvents();
                   },
                 });
               },
-              storeDocument: async (id, hash) => {
-                return await storageServiceClient.uploadObject(id, fileName, hash);
+              storeDocument: async (id, name, hash) => {
+                return storageServiceClient.uploadObject(id, name, hash);
               },
               getPublicKey: async (organization) => {
                 return PublicKeyGet.getPublicKey(conn, ctx, organization);
@@ -77,8 +77,19 @@ export async function updateWorkflowitem(
               encryptWithKey: async (secret, publicKey) => {
                 return encryptWithKey(secret, publicKey);
               },
+              getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
             },
           );
+        },
+        getAllDocuments: async () => {
+          return await DocumentGet.getAllDocuments(ctx, {
+            getDocumentsEvents: async () => {
+              return cache.getDocumentUploadedEvents();
+            },
+            getOffchainDocumentsEvents: async () => {
+              return cache.getOffchainDocumentsEvents();
+            },
+          });
         },
       },
     );
@@ -113,6 +124,9 @@ export async function updateWorkflowitem(
           const event = await DocumentShare.documentShare(conn, ctx, serviceUser, {
             organization,
             docId: doc.id,
+            projectId,
+            subprojectId,
+            workflowitemId,
           });
           if (Result.isErr(event)) {
             return new VError(event, "failed to share document");

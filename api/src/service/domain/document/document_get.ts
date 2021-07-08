@@ -75,7 +75,7 @@ export async function getOffchainDocument(
     return new VError(offchainDocuments, "get all offchain documents failed");
   }
   const isErr = offchainDocuments.find((d) => Result.isErr(d));
-  if (isErr) return new VError("offchain documents failed");
+  if (isErr) return new VError("get all offchain documents failed");
 
   const offchainDocument = offchainDocuments.find((doc) => doc.id === docId);
   return offchainDocument;

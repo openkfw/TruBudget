@@ -74,6 +74,7 @@ export class RpcClient {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
       maxContentLength: 104857600,
+      maxBodyLength: 67000000, // ~50mb in base64
       auth: {
         username: settings.username || "multichainrpc",
         password: settings.password,
@@ -150,8 +151,8 @@ export class RpcClient {
             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
             // http.ClientRequest in node.js
             // console.error(error.request);
-            logger.error({ error: error.message }, "No response received.");
-            response = new RpcError(500, "No Response", {}, error.message);
+            logger.error({ error: error.message }, "No response from multichain received.");
+            response = new RpcError(500, "No Response from Multichain", {}, error.message);
           } else {
             // Something happened in setting up the request that triggered an Error
             logger.error({ error: error.message }, "Error ", error.message);

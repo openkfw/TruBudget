@@ -3,14 +3,14 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
-import * as DocumentUploaded from "./document_uploaded";
+import { GenericDocument } from "./document";
 import * as DocumentShared from "./document_shared";
-import uuid = require("uuid");
-import * as Crypto from "crypto";
-import { config } from "../../../config";
+import * as DocumentUploaded from "./document_uploaded";
+import * as UserRecord from "../organization/user_record";
+import { PreconditionError } from "../errors/precondition_error";
 
 export interface RequestData {
-  docId?: string;
+  id: string;
   fileName: string;
   documentBase64: string;
 }
@@ -24,43 +24,15 @@ interface DocumentStorageServiceResponse {
 }
 
 interface Repository {
-  getAllDocumentInfos(): Promise<Result.Type<DocumentUploaded.Document[]>>;
-  storeDocument(id, hash): Promise<Result.Type<DocumentStorageServiceResponse>>;
+  getAllDocuments(): Promise<Result.Type<GenericDocument[]>>;
+  storeDocument(id, name, hash): Promise<Result.Type<DocumentStorageServiceResponse>>;
   encryptWithKey(secret, publicKey): Promise<Result.Type<string>>;
   getPublicKey(organization): Promise<Result.Type<Base64String>>;
+  getUser(userId: string): Promise<Result.Type<UserRecord.UserRecord>>;
 }
 
-async function hashBase64String(
-  base64String: Base64String,
-): Promise<Result.Type<HashedBase64String>> {
-  return new Promise<string>((resolve) => {
-    const hash = Crypto.createHash("sha256");
-    hash.update(Buffer.from(base64String, "base64"));
-    resolve(hash.digest("hex"));
-  });
-}
-
-function docIdAlreadyExists(allDocuments: DocumentUploaded.Document[], docId: string) {
-  return allDocuments.some((doc) => doc.id === docId);
-}
-function useProvidedDocId(
-  allDocuments: DocumentUploaded.Document[],
-  providedDocId: string,
-): Result.Type<string> {
-  if (!docIdAlreadyExists(allDocuments, providedDocId)) {
-    return providedDocId;
-  } else {
-    return Error(`document id ${providedDocId} already exists`);
-  }
-}
-function generateUniqueDocId(allDocuments: DocumentUploaded.Document[]): string {
-  // Generate a new document id
-  while (true) {
-    const docId = uuid.v4();
-    if (!docIdAlreadyExists(allDocuments, docId)) {
-      return docId;
-    }
-  }
+function docIdAlreadyExists(existingDocuments: GenericDocument[], docId: string) {
+  return existingDocuments.some((doc) => doc.id === docId);
 }
 
 export async function uploadDocument(
@@ -69,35 +41,43 @@ export async function uploadDocument(
   requestData: RequestData,
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
-  const { documentBase64, fileName } = requestData;
+  const { id, documentBase64, fileName } = requestData;
 
-  // check and generate a unique docId
-  const documentInfosResult = await repository.getAllDocumentInfos();
-  if (Result.isErr(documentInfosResult)) {
-    return new VError(documentInfosResult, "cannot get documents");
+  const existingDocuments = await repository.getAllDocuments();
+  if (Result.isErr(existingDocuments)) {
+    return new VError(existingDocuments, "cannot get documents");
   }
 
-  let uniqueDocId: string;
-  if (requestData.docId) {
-    const uniqueDocIdResult = useProvidedDocId(documentInfosResult, requestData.docId);
-    if (Result.isErr(uniqueDocIdResult)) {
-      return new VError(uniqueDocIdResult, "cannot use provided document id");
-    }
-    uniqueDocId = uniqueDocIdResult;
-  } else {
-    uniqueDocId = generateUniqueDocId(documentInfosResult);
+  if (docIdAlreadyExists(existingDocuments, id)) {
+    return new VError(id, "failed to upload document, a document with this id already exists");
+  }
+
+  // check if document is empty string
+  if (documentBase64 === "") {
+    return new VError(documentBase64, "an emtpy document is not allowed");
   }
 
   // store base64 of document in external storage
   const documentStorageServiceResponseResult = await repository.storeDocument(
-    uniqueDocId,
+    id,
+    fileName,
     documentBase64,
   );
   if (Result.isErr(documentStorageServiceResponseResult)) {
     return new VError(documentStorageServiceResponseResult, "failed to store document");
   }
   const { secret } = documentStorageServiceResponseResult;
-  const organization = config.organization;
+  if (!secret || Result.isErr(secret)) {
+    return new VError("Failed to get the secret for this document");
+  }
+
+  // fetch issuer organization
+  const userResult = await repository.getUser(issuer.id);
+  if (Result.isErr(userResult)) {
+    return new VError(issuer.id, "Error getting user");
+  }
+  const user = userResult;
+  const organization = user.organization;
   const publicKeyBase64 = await repository.getPublicKey(organization);
   if (Result.isErr(publicKeyBase64)) {
     return new VError(publicKeyBase64, "failed to get public key");
@@ -113,7 +93,7 @@ export async function uploadDocument(
   const newDocumentUploadedEvent = DocumentUploaded.createEvent(
     ctx.source,
     issuer.id,
-    uniqueDocId,
+    id,
     fileName || "untitled",
     organization,
   );
@@ -125,12 +105,21 @@ export async function uploadDocument(
   const newSecretPublishedEvent = DocumentShared.createEvent(
     ctx.source,
     issuer.id,
-    uniqueDocId,
+    id,
     organization,
     encryptedSecret,
   );
   if (Result.isErr(newSecretPublishedEvent)) {
     return new VError(newSecretPublishedEvent, "cannot publish document secret");
   }
+
+  if (issuer.id === "root") {
+    return new PreconditionError(
+      ctx,
+      newDocumentUploadedEvent,
+      "user 'root' is not allowed to upload documents",
+    );
+  }
+
   return [newDocumentUploadedEvent, newSecretPublishedEvent];
 }

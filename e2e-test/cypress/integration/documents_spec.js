@@ -6,17 +6,20 @@ let workflowitemId;
 let baseUrl, apiRoute;
 let isExternalStorageEnabled = false;
 
-// Generate random IDs since every document ID can only exists once in the multichain
-const generateId = () => `doc_${Math.floor(Math.random() * 1000000)}`;
 
 // Actual file in fixture folder
 const fileName = "documents_test.json";
 
-describe("Attaching a document to a workflowitem.", function () {
+describe("Attaching a document to a workflowitem.", function() {
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
+    cy.getVersion().then(data => {
+      if (data.storage && data.storage.release) {
+        isExternalStorageEnabled = true;
+      }
+    });
     cy.createProject("documents test project", "workflowitem documents test", [])
       .then(({ id }) => {
         projectId = id;
@@ -32,12 +35,12 @@ describe("Attaching a document to a workflowitem.", function () {
       });
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  const uploadDocument = (fileDisplayName, fileName) => {
+  const uploadDocument = (fileName) => {
     // open edit dialog:
     cy.get("div[title=Edit] > button")
       .should("be.visible")
@@ -48,10 +51,6 @@ describe("Attaching a document to a workflowitem.", function () {
       .should("be.visible")
       .click();
 
-    // enter the file name:
-    cy.get("#documentnameinput")
-      .should("be.visible")
-      .type(fileDisplayName);
 
     // "upload" the file:
     cy.fixture(fileName).then(fileContent => {
@@ -60,17 +59,16 @@ describe("Attaching a document to a workflowitem.", function () {
         { subjectType: "input" }
       );
     });
-    return cy.get("[data-test=workflowitemDocumentId]").should("contain", fileDisplayName);
+    return cy.get("[data-test=workflowitemDocumentId]").should("contain", fileName)
   };
 
   it("A document can be validated.", function () {
-    const fileDisplayName = "Validation_Test_" + generateId();
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
 
-    uploadDocument(fileDisplayName, fileName);
+    uploadDocument(fileName);
     // submit and close the dialog:
     cy.get("[data-test=submit]")
       .should("be.visible")
@@ -103,13 +101,12 @@ describe("Attaching a document to a workflowitem.", function () {
   });
 
   it("Validation of wrong document fails.", function () {
-    const fileDisplayName = "Wrong_Document_Test_" + generateId();
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
 
-    uploadDocument(fileDisplayName, fileName);
+    uploadDocument(fileName);
     // submit and close the dialog:
     cy.get("[data-test=submit]")
       .should("be.visible")
@@ -143,13 +140,12 @@ describe("Attaching a document to a workflowitem.", function () {
   });
 
   it("The filename and document name are shown correctly", function () {
-    const fileDisplayName = "Another_Doc_" + generateId();
     cy.server();
     cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
     cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
 
-    uploadDocument(fileDisplayName, fileName);
+    uploadDocument(fileName);
     // submit and close the dialog:
     cy.get("[data-test=submit]")
       .should("be.visible")
@@ -170,7 +166,7 @@ describe("Attaching a document to a workflowitem.", function () {
     // Check document name
     cy.get("[data-test=workflowitemDocumentId]")
       .should("be.visible")
-      .contains(fileDisplayName);
+      .contains(fileName);
 
     // Check filename if saved on external storage (minio)
     if (isExternalStorageEnabled) {

@@ -9,6 +9,7 @@ import { BusinessEvent } from "./domain/business_event";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
+import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import { ServiceUser } from "./domain/organization/service_user";
 import { Document, ResourceMap } from "./domain/ResourceMap";
 import * as Workflowitem from "./domain/workflow/workflowitem";
@@ -16,6 +17,7 @@ import * as WorkflowitemCreate from "./domain/workflow/workflowitem_create";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
 import * as PublicKeyGet from "./public_key_get";
+import * as UserQuery from "./user_query";
 import { store } from "./store";
 
 export { RequestData } from "./domain/workflow/workflowitem_create";
@@ -38,37 +40,48 @@ export async function createWorkflowitem(
         return Result.isOk(item);
       },
       getSubproject: async (projectId: string, subprojectId: string) =>
-        await cache.getSubproject(projectId, subprojectId),
+        cache.getSubproject(projectId, subprojectId),
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
         return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
       },
-      uploadDocumentToStorageService: (fileName, documentBase64, docId) => {
+      uploadDocumentToStorageService: (fileName, documentBase64, id) => {
         return DocumentUpload.uploadDocument(
           ctx,
           serviceUser,
-          { fileName, documentBase64, docId },
+          { fileName, documentBase64, id },
           {
-            getAllDocumentInfos: async () => {
-              return await DocumentGet.getAllDocumentInfos(ctx, {
+            getAllDocuments: async () => {
+              return await DocumentGet.getAllDocuments(ctx, {
                 getDocumentsEvents: async () => {
-                  return await cache.getDocumentUploadedEvents();
+                  return cache.getDocumentUploadedEvents();
                 },
                 getOffchainDocumentsEvents: async () => {
-                  return await cache.getOffchainDocumentsEvents();
+                  return cache.getOffchainDocumentsEvents();
                 },
               });
             },
             getPublicKey: async (organization) => {
               return PublicKeyGet.getPublicKey(conn, ctx, organization);
             },
-            storeDocument: async (id, hash) => {
-              return await storageServiceClient.uploadObject(id, fileName, hash);
+            storeDocument: async (id, name, hash) => {
+              return storageServiceClient.uploadObject(id, name, hash);
             },
             encryptWithKey: async (secret, publicKey) => {
               return encryptWithKey(secret, publicKey);
             },
+            getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
           },
         );
+      },
+      getAllDocuments: async () => {
+        return await DocumentGet.getAllDocuments(ctx, {
+          getDocumentsEvents: async () => {
+            return cache.getDocumentUploadedEvents();
+          },
+          getOffchainDocumentsEvents: async () => {
+            return cache.getOffchainDocumentsEvents();
+          },
+        });
       },
     });
   });
@@ -81,22 +94,38 @@ export async function createWorkflowitem(
   let projectId = "";
   let subprojectId = "";
   let workflowitemId = "";
+  let document: Document;
   const documents: Document[] = [];
   for (const event of newEvents) {
     await store(conn, ctx, event);
-    if (isCreateEvent(event)) {
-      const workflowitemEvent: WorkflowitemCreated.Event = event;
-      projectId = workflowitemEvent.projectId;
-      subprojectId = workflowitemEvent.subprojectId;
-      workflowitemId = workflowitemEvent.workflowitem.id;
-    }
-    if (isDocumentEvent(event)) {
-      const documentEvent: DocumentUploaded.Event = event;
-      const document: Document = {
-        fileName: documentEvent.fileName,
-        id: documentEvent.docId,
-      };
-      documents.push(document);
+    switch (event.type) {
+      case "workflowitem_created":
+        const workflowitemEvent: WorkflowitemCreated.Event = event;
+        projectId = workflowitemEvent.projectId;
+        subprojectId = workflowitemEvent.subprojectId;
+        workflowitemId = workflowitemEvent.workflowitem.id;
+        break;
+
+      case "document_uploaded":
+        const documentUploadedEvent: DocumentUploaded.Event = event;
+        document = {
+          fileName: documentUploadedEvent.fileName,
+          id: documentUploadedEvent.docId,
+        };
+        documents.push(document);
+        break;
+
+      case "workflowitem_document_uploaded":
+        const offChainDocumentUploadedEvent: WorkflowitemDocumentUploaded.Event = event;
+        document = {
+          fileName: offChainDocumentUploadedEvent.document.fileName,
+          id: offChainDocumentUploadedEvent.document.id,
+        };
+        documents.push(document);
+        break;
+
+      default:
+        break;
     }
   }
 
@@ -107,11 +136,4 @@ export async function createWorkflowitem(
   };
 
   return resourceIds;
-}
-
-function isCreateEvent(businessEvent: BusinessEvent): businessEvent is WorkflowitemCreated.Event {
-  return businessEvent.type === "workflowitem_created";
-}
-function isDocumentEvent(businessEvent: BusinessEvent): businessEvent is DocumentUploaded.Event {
-  return businessEvent.type === "document_uploaded";
 }

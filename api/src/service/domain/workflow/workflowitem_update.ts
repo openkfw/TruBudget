@@ -10,7 +10,12 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import { config } from "../../../config";
-import { hashDocument, StoredDocument, UploadedDocument } from "../document/document";
+import {
+  hashDocument,
+  StoredDocument,
+  UploadedDocument,
+  GenericDocument,
+} from "../document/document";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -18,6 +23,7 @@ import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document_uploaded";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import uuid = require("uuid");
 
 export interface RequestData {
   displayName?: string;
@@ -45,8 +51,23 @@ interface Repository {
   uploadDocumentToStorageService(
     fileName: string,
     documentBase64: string,
-    docId: string | undefined,
+    docId: string,
   ): Promise<Result.Type<BusinessEvent[]>>;
+  getAllDocuments(): Promise<Result.Type<GenericDocument[]>>;
+}
+
+function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
+  return allDocuments.some((doc) => doc.id === docId);
+}
+
+function generateUniqueDocId(allDocuments: GenericDocument[]): string {
+  // Generate a new document id
+  while (true) {
+    const docId = uuid.v4();
+    if (!docIdAlreadyExists(allDocuments, docId)) {
+      return docId;
+    }
+  }
 }
 
 export async function updateWorkflowitem(
@@ -67,8 +88,14 @@ export async function updateWorkflowitem(
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (modification.documents && modification.documents.length > 0) {
+    const existingDocuments = await repository.getAllDocuments();
+    if (Result.isErr(existingDocuments)) {
+      return new VError(existingDocuments, "cannot get documents");
+    }
+
     // preparation for workflowitem_updated event
     for (const doc of modification.documents || []) {
+      doc.id = generateUniqueDocId(existingDocuments);
       const hashedDocumentResult = await hashDocument(doc);
       if (Result.isErr(hashedDocumentResult)) {
         return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
@@ -80,7 +107,7 @@ export async function updateWorkflowitem(
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
         modification.documents.map(async (d) => {
-          return await repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+          return repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
         }),
       );
       for (const result of documentUploadedEventsResults) {

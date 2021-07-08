@@ -25,6 +25,8 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
 import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document_uploaded";
+import { GenericDocument } from "../document/document";
+import uuid = require("uuid");
 
 export interface RequestData {
   projectId: Project.Id;
@@ -86,8 +88,23 @@ interface Repository {
   uploadDocumentToStorageService(
     fileName: string,
     documentBase64: string,
-    docId: string | undefined,
+    docId: string,
   ): Promise<Result.Type<BusinessEvent[]>>;
+  getAllDocuments(): Promise<Result.Type<GenericDocument[]>>;
+}
+
+function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
+  return allDocuments.some((doc) => doc.id === docId);
+}
+
+function generateUniqueDocId(allDocuments: GenericDocument[]): string {
+  // Generate a new document id
+  while (true) {
+    const docId = uuid.v4();
+    if (!docIdAlreadyExists(allDocuments, docId)) {
+      return docId;
+    }
+  }
 }
 
 export async function createWorkflowitem(
@@ -102,8 +119,13 @@ export async function createWorkflowitem(
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (reqData.documents) {
+    const existingDocuments = await repository.getAllDocuments();
+    if (Result.isErr(existingDocuments)) {
+      return new VError(existingDocuments, "cannot get documents");
+    }
     // preparation for workflowitem_created event
     for (const doc of reqData.documents || []) {
+      doc.id = generateUniqueDocId(existingDocuments);
       const hashedDocumentResult = await hashDocument(doc);
       if (Result.isErr(hashedDocumentResult)) {
         return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
@@ -116,7 +138,7 @@ export async function createWorkflowitem(
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
         reqData.documents.map(async (d) => {
-          return await repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+          return repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
         }),
       );
       for (const result of documentUploadedEventsResults) {
@@ -136,7 +158,7 @@ export async function createWorkflowitem(
             reqData.documents && reqData.documents[i].fileName
               ? reqData.documents[i].fileName
               : "uploaded_file.pdf",
-          id: d.documentId,
+          id: d.id,
         };
 
         const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(

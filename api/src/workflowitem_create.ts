@@ -106,7 +106,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
                 items: {
                   type: "object",
                   properties: {
-                    id: { type: "string", example: "classroom-contract" },
                     base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
                     fileName: { type: "string", example: "test-document" },
                   },

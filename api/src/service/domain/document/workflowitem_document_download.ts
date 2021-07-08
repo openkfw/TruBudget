@@ -21,7 +21,6 @@ interface DocumentStorageServiceResponse {
 interface Repository {
   getWorkflowitem(workflowitemId): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getOffchainDocument(docId: string): Promise<Result.Type<UploadedDocument | undefined>>;
-  getWorkflowitem(workflowitemId): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getDocumentInfo(docId: string): Promise<Result.Type<DocumentUploaded.Document | undefined>>;
   getSecret(docId, organization): Promise<Result.Type<DocumentShared.SecretPublished>>;
   decryptWithKey(secret, privateKey): Promise<Result.Type<string>>;
@@ -34,7 +33,7 @@ interface Repository {
   ): Promise<Result.Type<DocumentStorageServiceResponse>>;
 }
 
-async function getDocumentFromStorage(
+async function getDocumentFromInternalOrExternalStorage(
   ctx,
   repository,
   documentId,
@@ -46,7 +45,7 @@ async function getDocumentFromStorage(
   if (!documentInfo || Result.isErr(documentInfo)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
-      `couldn't get document information from ${workflowitem}`,
+      `couldn't get document information from ${workflowitem.displayName}`,
     );
   }
 
@@ -55,7 +54,7 @@ async function getDocumentFromStorage(
   if (!encryptedSecret || Result.isErr(encryptedSecret)) {
     return new VError(
       new NotFound(ctx, "secret", documentId),
-      `couldn't get secret for document ${documentId} and organization ${config.organization}. Document is not shared with this organizaiton`,
+      `couldn't get secret for document ${documentId} and organization ${config.organization}. Document is not shared with this organization`,
     );
   }
 
@@ -116,10 +115,10 @@ export async function getDocument(
   }
 
   // Only return if document has relation to the workflowitem
-  if (!workflowitem.documents.some((d) => d.documentId === documentId)) {
+  if (!workflowitem.documents.some((d) => d.id === documentId)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
-      `workfowitem ${workflowitem} has no link to document`,
+      `workfowitem ${workflowitem.displayName} has no link to document`,
     );
   }
   // Try to get event from offchain storage
@@ -127,13 +126,13 @@ export async function getDocument(
   if (Result.isErr(offchainDocument)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
-      `couldn't get document events from ${workflowitem}`,
+      `couldn't get document events from ${workflowitem.displayName}`,
     );
   }
 
   if (!offchainDocument) {
     // Try to get document from storage service
-    const documentFromStorage = await getDocumentFromStorage(
+    const documentFromStorage = await getDocumentFromInternalOrExternalStorage(
       ctx,
       repository,
       documentId,
@@ -143,7 +142,7 @@ export async function getDocument(
     if (Result.isErr(documentFromStorage)) {
       return new VError(
         new NotFound(ctx, "document", documentId),
-        `Error while getting document from storage for workflowitem ${workflowitem.id}`,
+        `Error while getting document from storage for workflowitem ${workflowitem.id} ERROR HERE: ${documentFromStorage}`,
       );
     } else if (!documentFromStorage) {
       return new VError(
@@ -155,7 +154,5 @@ export async function getDocument(
     }
   } else {
     return offchainDocument;
-    // .filter((d) => d.workflowitemId === workflowitem.id)
-    // .map((d) => d.document)[0];
   }
 }

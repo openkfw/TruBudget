@@ -33,22 +33,22 @@ export async function getDocument(
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
       },
       getOffchainDocument: async (docId) => {
-        return await DocumentGet.getOffchainDocument(ctx, docId, {
+        return DocumentGet.getOffchainDocument(ctx, docId, {
           getDocumentsEvents: async () => {
-            return await cache.getDocumentUploadedEvents();
+            return cache.getDocumentUploadedEvents();
           },
           getOffchainDocumentsEvents: async () => {
-            return await cache.getOffchainDocumentsEvents();
+            return cache.getOffchainDocumentsEvents();
           },
         });
       },
       getDocumentInfo: async (docId) => {
-        return await DocumentGet.getDocumentInfo(ctx, docId, {
+        return DocumentGet.getDocumentInfo(ctx, docId, {
           getDocumentsEvents: async () => {
-            return await cache.getDocumentUploadedEvents();
+            return cache.getDocumentUploadedEvents();
           },
           getOffchainDocumentsEvents: async () => {
-            return await cache.getOffchainDocumentsEvents();
+            return cache.getOffchainDocumentsEvents();
           },
         });
       },
@@ -70,14 +70,14 @@ export async function getDocument(
         return decryptWithKey(secret, privateKey);
       },
       getDocumentFromStorage: async (id, secret) => {
-        return await storageServiceClient.downloadObject(id, secret);
+        return storageServiceClient.downloadObject(id, secret);
       },
       getDocumentFromExternalStorage: async (id, secret, storageServiceUrl) => {
         const externalStorageServiceClient = new StorageServiceClient({
           baseURL: storageServiceUrl,
           timeout: 10000,
         });
-        return await externalStorageServiceClient.downloadObject(id, secret);
+        return externalStorageServiceClient.downloadObject(id, secret);
       },
     }),
   );

@@ -7,7 +7,6 @@ import VError = require("verror");
 export interface StoredDocument {
   id: string;
   hash: string;
-  documentId: string;
   // new document feature properties
   fileName?: string;
   organization?: string;
@@ -17,7 +16,6 @@ export interface StoredDocument {
 export const storedDocumentSchema = Joi.object({
   id: Joi.string().required(),
   hash: Joi.string().allow("").required(),
-  documentId: Joi.string().required(),
   fileName: Joi.string(),
   organization: Joi.string(),
   organizationUrl: Joi.string(),
@@ -41,10 +39,11 @@ export interface UploadedDocument extends GenericDocument {
 }
 
 export const uploadedDocumentSchema = Joi.object({
-  id: Joi.string().required(),
+  id: Joi.string(),
   base64: Joi.string()
     .required()
-    .error(() => new Error("Document can't be an empty file")),
+    .max(67000000)
+    .error(() => new Error("Document is not valid")),
   fileName: Joi.string(),
 });
 
@@ -54,7 +53,6 @@ export async function hashDocument(
   return hashBase64String(document.base64).then((hashValue) => ({
     id: document.id,
     hash: hashValue,
-    documentId: document.id,
     fileName: document.fileName,
   }));
 }
