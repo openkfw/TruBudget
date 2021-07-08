@@ -345,13 +345,6 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
 
-  // if (workflowitem.data.documents.length !== 0) {
-  //   // throw new Error(
-  //   console.log(
-  //     `workflowitem ${workflowitem.data.id} is not expected to already have documents attached. Note that the provisioning script shouldn't run more than once.`
-  //   );
-  // }
-
   const { amountType, amount, currency } = workflowitem.data;
   if (amountType === "N/A" || !amount || !currency) {
     throw Error(
@@ -414,21 +407,22 @@ async function testWorkflowitemUpdate(folder) {
     );
   } else {
     // Adding a document:
-    const now = new Date().toISOString();
-    const documentId1 = `${now} first contract`;
-    const documentId2 = `${now} second contract`;
+    const randomId = `id-${Math.floor(Math.random() * 1000000)}`;
     await axios.post("/workflowitem.update", {
       projectId: project.data.id,
       subprojectId: subproject.data.id,
       workflowitemId: workflowitem.data.id,
+
       documents: [
         {
-          id: documentId1,
+          // "That's our first contract." in base64: VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4=
           base64: "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4=",
+          fileName: "document1-" + randomId + ".txt",
         },
         {
-          id: documentId2,
+          // "That's our second contract." in base64: VGhhdCdzIG91ciBzZWNvbmQgY29udHJhY3Qu
           base64: "VGhhdCdzIG91ciBzZWNvbmQgY29udHJhY3Qu",
+          fileName: "document2-" + randomId + ".txt",
         },
       ],
     });
@@ -443,34 +437,10 @@ async function testWorkflowitemUpdate(folder) {
       !Array.isArray(itemWithDocuments.data.documents) ||
       itemWithDocuments.data.documents.length !== 2
     ) {
-      console.log(
-        "DEBUG: --------------------------------------------------------------------------------------------------------"
-      );
       console.log(itemWithDocuments.data.documents.length);
       console.log(Array.isArray(itemWithDocuments.data.documents));
       throw Error("Adding documents to a workflowitem failed :(");
     }
-  }
-
-  // Updating an existing document shouldn't be allowed:
-  try {
-    await axios.post("/workflowitem.update", {
-      projectId: project.data.id,
-      subprojectId: subproject.data.id,
-      workflowitemId: workflowitem.data.id,
-      documents: [
-        {
-          id: documentId1,
-          base64:
-            "VGhhdCdzIG91ciBmaXJzdCBjb250cmFjdC4gSnVzdCBraWRkaW5nLCBJJ3ZlIGNoYW5nZWQgaXQhIG11YWhhaGE=",
-        },
-      ],
-    });
-    throw Error(
-      "Updated an existing document, but that isn't supposed to work :("
-    );
-  } catch (_err) {
-    // ignore error
   }
 
   const stillTheItemWithDocuments = await findWorkflowitem(
