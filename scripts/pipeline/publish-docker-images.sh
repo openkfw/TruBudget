@@ -61,6 +61,11 @@ if [ -n "$GITHUB_HEAD_REF" ]; then
   export GITHUB_BRANCH="$GITHUB_HEAD_REF"
 fi
 export TAG="$IMAGE_NAME:$GITHUB_BRANCH"
+if [[ "$GITHUB_EVENT_NAME" = "release" ]];
+then
+  # placeholder so docker build is working correctly
+  TAG="release"
+fi
 
 # build docker image with TAG
 docker build --build-arg BUILDTIMESTAMP="$BUILDTIMESTAMP" --build-arg CI_COMMIT_SHA="$GITHUB_SHA" --tag "$TAG" -f Dockerfile .
@@ -95,7 +100,7 @@ then
   # log into docker hub
   echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   docker tag "$TAG" "$TAG_RELEASE"
-  docker push "$TAG"
+  docker push "$TAG_RELEASE"
   docker tag "$TAG" "$TAG_LATEST"
   docker push "$TAG_LATEST"
 fi
