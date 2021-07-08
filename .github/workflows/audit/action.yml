@@ -3,6 +3,5 @@ runs:
   using: "composite"
   steps:
     - name: Audit project ${{ matrix.project }}
-      # run: cd ${{ matrix.project }} && npm install && npm audit --audit-level=high
-      run: echo "Skip frontend audits"
+      run: cd ${{ matrix.project }} && npm install && npm audit --production
       shell: bash
