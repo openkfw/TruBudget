@@ -5,6 +5,7 @@ import HistoryContainer from "../../Common/History/HistoryContainer";
 import useHistoryState from "../../Common/History/historyHook";
 import { fetchNextWorkflowitemHistoryPage, fetchFirstWorkflowitemHistoryPage, hideHistory } from "./actions";
 import { workflowitemEventTypes } from "../../Common/History/eventTypes";
+import strings from "../../../localizeStrings";
 
 const WorkflowitemHistoryTab = ({
   users,
@@ -50,6 +51,7 @@ const WorkflowitemHistoryTab = ({
       isLoading={isLoading}
       getUserDisplayname={getUserDisplayname}
       fetchNext={fetchNext}
+      historyType={strings.common.workflowitem_history}
     />
   );
 };

@@ -22,7 +22,7 @@ export default class ScrollingHistory extends React.Component {
   }
 
   render() {
-    const { nEventsTotal, events, fetchNext, hasMore, isLoading, getUserDisplayname } = this.props;
+    const { nEventsTotal, events, fetchNext, hasMore, isLoading, getUserDisplayname, historyType } = this.props;
     return (
       <InfiniteScroll
         pageStart={0}
@@ -45,6 +45,7 @@ export default class ScrollingHistory extends React.Component {
           hasMore={hasMore}
           getUserDisplayname={getUserDisplayname}
           isLoading={isLoading}
+          historyType={historyType}
         />
       </InfiniteScroll>
     );

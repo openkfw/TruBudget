@@ -22,7 +22,8 @@ const HistoryContainer = ({
   isLoading,
   getUserDisplayname,
   users,
-  eventTypes
+  eventTypes,
+  historyType
 }) => {
   return (
     <div>
@@ -42,6 +43,7 @@ const HistoryContainer = ({
         isLoading={isLoading}
         getUserDisplayname={getUserDisplayname}
         fetchNext={fetchNext}
+        historyType={historyType}
       />
     </div>
   );
