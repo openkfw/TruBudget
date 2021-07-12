@@ -42,7 +42,7 @@ const getEvents = (events, getUserDisplayname) => {
   });
 };
 
-const HistoryList = ({ classes, events, nEventsTotal, hasMore, getUserDisplayname, isLoading }) => {
+const HistoryList = ({ classes, events, nEventsTotal, hasMore, getUserDisplayname, isLoading, historyType }) => {
   const [eventItems, setEventItems] = React.useState([]);
 
   React.useEffect(() => {
@@ -52,7 +52,7 @@ const HistoryList = ({ classes, events, nEventsTotal, hasMore, getUserDisplaynam
   return (
     <List
       data-test="history-list"
-      subheader={<ListSubheader disableSticky>{strings.common.history}</ListSubheader>}
+      subheader={<ListSubheader disableSticky>{historyType}</ListSubheader>}
       className={classes.list}
     >
       {!isLoading && nEventsTotal === 0 ? (
