@@ -39,7 +39,9 @@ The pre-set cluster contains:
 
 To start the storage-service without docker, you need to start all desired service yourself with the right environmental variables. To set these environmental variables, read the documentation of the services. Nevertheless, you need to start the Minio server with docker (since we use a docker image). To start the Minio Server, use the [`docker-compose-minio`](./docker-compose-minio.yaml).
 
-<!-- ## Encryption and Decryption -->
+## Encryption and Decryption
+
+The enryption and decryption of files are handled by the [`API`](../api/README.md).
 
 ## Architecture
 

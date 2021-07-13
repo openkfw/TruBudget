@@ -156,6 +156,7 @@ const {
   swaggerBasepath,
   storageService,
   documentFeatureEnabled,
+  encryptionKey,
 } = getValidConfig();
 
 /*
@@ -177,17 +178,24 @@ logger.info(
   { rpcSettings: rpcSettingsWithoutPassword(rpcSettings) },
   "Connecting to MultiChain node",
 );
+if (encryptionKey) {
+  logger.info("All data that is send to the MultiChain node and external storage will be symmetrically encrypted by the ENCRYPTION_KEY");
+}
+
+
 const db = Multichain.init(rpcSettings);
 const { multichainClient } = db;
 
 let storageServiceSettings: AxiosRequestConfig;
 if (documentFeatureEnabled) {
+  const timeout = encryptionKey ? 60000 : 10000;
   storageServiceSettings = {
     baseURL: `http://${storageService.host}:${storageService.port}`,
-    // 10 seconds request timeout
-    timeout: 10000,
+    timeout,
     maxBodyLength: 67000000, //  ~50mb in base64
   };
+  logger.info("Documents are stored in external storage");
+
 } else {
   storageServiceSettings = {
     baseURL: "placeholder",
