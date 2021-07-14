@@ -55,6 +55,7 @@ interface Config {
     port: number;
     externalUrl: string;
   };
+  encryptionKey: string | undefined;
 }
 
 const requiredEnvVars = ["ORGANIZATION", "ORGANIZATION_VAULT_SECRET"];
@@ -92,6 +93,7 @@ export const config: Config = {
     port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
     externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL,
   },
+  encryptionKey: process.env.ENCRYPTION_KEY || undefined,
 };
 
 function exitIfMissing(requiredEnvVars) {
@@ -150,7 +152,7 @@ const getValidConfig = (): Config => {
 
 declare global {
   namespace NodeJS {
-    interface ProcessEnv extends ProcessEnvVars {}
+    interface ProcessEnv extends ProcessEnvVars { }
   }
 }
 

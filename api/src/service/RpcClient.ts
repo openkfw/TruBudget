@@ -4,10 +4,14 @@ import * as https from "https";
 import { performance } from "perf_hooks";
 
 import logger from "../lib/logger";
+import { encrypt, decrypt } from "../lib/symmetricCrypto";
+import * as Result from "../result";
 import { ConnectionSettings } from "./RpcClient.h";
 import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
 import RpcResponse from "./RpcResponse.h";
+import VError from "verror";
+import { config } from "../config";
 
 const count = new Map();
 const durations = new Map();
@@ -97,17 +101,20 @@ export class RpcClient {
 
   public invoke(method: string, ...params: any[]): any {
     const startTime = process.hrtime();
+    if (config.encryptionKey && method === "publish") {
+      params = this.encryptItems(params);
+    }
 
     logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
     const request: RpcRequest = {
       method,
       params,
     };
+
     return new Promise<RpcResponse>(async (resolve, reject) => {
       this.instance
         .post("/", JSON.stringify(request))
-        .then((resp) => {
-          // this is only on Response code 2xx
+        .then(async (resp) => {
           logger.trace({ data: resp.data }, "Received valid response.");
 
           if (logger.levelVal >= logger.levels.values.debug) {
@@ -117,7 +124,16 @@ export class RpcClient {
             durations.set(countKey, (durations.get(countKey) || 0) + elapsedMilliseconds);
             count.set(countKey, (count.get(countKey) || 0) + 1);
           }
-          resolve(resp.data.result);
+          let responseData = resp.data.result;
+          if (method === "liststreamitems" || method === "liststreamkeyitems") {
+            await this.getOffchainData(responseData);
+          }
+          if (config.encryptionKey && (method === "liststreamitems" || method === "liststreamkeyitems")) {
+            const decryptedResult = this.decryptItems(responseData);
+            resolve(decryptedResult);
+          } else {
+            resolve(responseData);
+          }
         })
         .catch((error: AxiosError) => {
           let response: RpcError;
@@ -162,4 +178,51 @@ export class RpcClient {
         });
     });
   }
+
+  private encryptItems = (params: any[]) => {
+    let encryptedParams: any[];
+    encryptedParams = params.map((obj, index) => {
+      let encryptedObjectAsPlainString = "";
+      if (index === 0 || index === 1 || obj === "offchain") {
+        // streamname, keys, offchain-flag are not encrypted
+        return obj;
+      }
+      if (config.encryptionKey) {
+        encryptedObjectAsPlainString = encrypt(config.encryptionKey, JSON.stringify(obj));
+      }
+      // Wrapping encrypted plaintext into object for multichain
+      return { json: encryptedObjectAsPlainString };
+    });
+    params = encryptedParams;
+    return params;
+  };
+
+  private decryptItems = (responseData: any) => {
+    return responseData?.map((obj) => {
+      let decryptedDataResult = {};
+      if (obj.data.json) {
+        const plainStringToDecrypt = obj.data.json;
+        if (config.encryptionKey) {
+          const jsonString = decrypt(config.encryptionKey, plainStringToDecrypt);
+          if (Result.isErr(jsonString)) {
+            return new VError(jsonString, "failed to decrypt events from blockchain");
+          }
+          decryptedDataResult = JSON.parse(jsonString);
+        }
+      }
+      return { ...obj, data: decryptedDataResult };
+    });
+  };
+
+  private getOffchainData = async (responseData: any) => {
+    // For offchain items, the data property must be fetched manually
+    // Transactions with offchain items always contain txid and vout in the data object
+    for (const item of responseData) {
+      if (item.data?.hasOwnProperty("vout") && item.data?.hasOwnProperty("txid")) {
+        item.data = await this.invoke("gettxoutdata", item.data.txid, item.data.vout);
+      }
+    }
+  };
 }
+
+
