@@ -1,0 +1,35 @@
+version: "3.2"
+services:
+  multichain-master:
+    build:
+      context: .
+      dockerfile: master.Dockerfile
+    depends_on:
+      - proxy-master
+    command: multichaind -port=7447 -proxy=172.18.0.3:1080 -listen=1 -autosubscribe=streams chain1
+    ports:
+      - 8012:8012
+
+  multichain-slave:
+    build:
+      context: .
+      dockerfile: slave.Dockerfile
+    depends_on:
+      - multichain-master
+    command: multichaind -proxy=172.18.0.2:1080 -listen=1 chain1@172.18.0.4:7447
+    ports:
+      - 8011:8011
+
+  proxy-master:
+    build:
+      context: .
+      dockerfile: proxy.Dockerfile
+    volumes:
+      - "./src:/home/node/src:delegated"
+
+  proxy-slave:
+    build:
+      context: .
+      dockerfile: proxy.Dockerfile
+    volumes:
+      - "./src:/home/node/src:delegated"
