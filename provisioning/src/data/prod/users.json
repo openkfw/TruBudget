@@ -108,5 +108,35 @@
     "id": "ahealth",
     "displayName": "Alice Health",
     "password": "test"
+  },
+  {
+    "id": "ckfwpm",
+    "displayName": "Chris KfW PM",
+    "password": "test"
+  },
+  {
+    "id": "rfoundation",
+    "displayName": "Raheem Foundation",
+    "password": "test"
+  },
+  {
+    "id": "mmoh",
+    "displayName": "Melvin Ministry of Health",
+    "password": "test"
+  },
+  {
+    "id": "jport",
+    "displayName": "Jazmine Port Authority",
+    "password": "test"
+  },
+  {
+    "id": "iport",
+    "displayName": "Issac Port Authority",
+    "password": "test"
+  },
+  {
+    "id": "dhospital",
+    "displayName": "Dora Hospital",
+    "password": "test"
   }
 ]
