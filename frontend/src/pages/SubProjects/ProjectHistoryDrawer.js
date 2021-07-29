@@ -6,6 +6,8 @@ import HistoryDrawer from "../Common/History/HistoryDrawer";
 import { hideHistory } from "../Notifications/actions";
 import { fetchNextProjectHistoryPage, fetchFirstProjectHistoryPage } from "./actions";
 import { projectEventTypes } from "../Common/History/eventTypes";
+import strings from "../../localizeStrings";
+
 function ProjectHistoryDrawer({
   projectId,
   doShow,
@@ -33,6 +35,7 @@ function ProjectHistoryDrawer({
       getUserDisplayname={getUserDisplayname}
       users={users}
       eventTypes={projectEventTypes()}
+      historyType={strings.common.project_history}
     />
   );
 }

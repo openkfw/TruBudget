@@ -6,6 +6,7 @@ import HistoryDrawer from "../Common/History/HistoryDrawer";
 import { hideHistory } from "../Notifications/actions";
 import { subprojectEventTypes } from "../Common/History/eventTypes";
 import { fetchNextSubprojectHistoryPage, fetchFirstSubprojectHistoryPage } from "../Workflows/actions";
+import strings from "../../localizeStrings";
 
 function SubprojectHistoryDrawer({
   projectId,
@@ -35,6 +36,7 @@ function SubprojectHistoryDrawer({
       getUserDisplayname={getUserDisplayname}
       users={users}
       eventTypes={subprojectEventTypes()}
+      historyType={strings.common.subproject_history}
     />
   );
 }
