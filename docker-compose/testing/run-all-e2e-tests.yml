@@ -30,7 +30,7 @@ services:
       RPC_PASSWORD: ${RPC_PASSWORD}
       ORGANIZATION: KfW
     volumes:
-      - /tmp/bcMasterVolume:/root/.multichain
+      - /masterVolume:/root/.multichain
 
   frontend:
     image: trubudget/frontend:${TAG}

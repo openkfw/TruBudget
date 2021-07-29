@@ -24,7 +24,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
-      - /tmp/bcMasterVolume:/root/.multichain
+      - /masterVolume:/root/.multichain
     ports:
       - "7447:7447"
 
@@ -52,7 +52,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
-      - /tmp/bcTestMasterVolume:/root/.multichain
+      - /masterVolume:/root/.multichain
     ports:
       - "7448:7447"
 
