@@ -1,0 +1,11 @@
+defaults:
+  observer_type: histogram
+mappings:
+- match: "k6.*"
+  name: "k6_${1}"
+- match: "k6.check.*.*.*"
+  name: "k6_check"
+  labels:
+    http_name: "$1"
+    check_name: "$2"
+    outcome: "$3"
