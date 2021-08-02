@@ -12,7 +12,8 @@ const currencies = {
   DKK: { symbol: "kr.", format: strings.format.numberFormat },
   TND: { symbol: "DT", format: strings.format.numberFormat },
   ETB: { symbol: "Br", format: strings.format.numberFormat },
-  NOK: { symbol: "nkr", format: strings.format.numberFormat }
+  NOK: { symbol: "nkr", format: strings.format.numberFormat },
+  CHF: { symbol: "fr.", format: strings.format.numberFormat }
 };
 
 export default currencies;
