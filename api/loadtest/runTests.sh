@@ -7,5 +7,5 @@ docker-compose up -d \
     influxdb \
     grafana
 docker-compose run -v \
-    $CURR/k6-tests:/scripts \
-    k6 run /scripts/stress.js
+    $CURR/k6-tests/:/scripts \
+    k6 run /scripts/script.js --config /scripts/smoke.config.json

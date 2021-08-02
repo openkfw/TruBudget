@@ -1,6 +1,6 @@
 /*
  * TruBudget API documentation
- * The documentation contains all endpoints used for TruBudget blockchain communication. Start at the 'user.authenticate' endpoint to receive a token which is needed for authentication at almost every endpoint. To use the token click on the 'Authorize' Button at the top right
+ * The documentation contains all endpoints used for TruBudget blockchain communication.
  *
  * OpenAPI spec version: 0.1.0
  *
@@ -9,7 +9,7 @@
 import { check, group, sleep } from "k6";
 import http from "k6/http";
 
-const BASE_URL = "http://20.105.193.197:8080";
+const BASE_URL = "http://localhost:8080";
 // Sleep duration between successive requests.
 const SLEEP_DURATION = 0.1;
 
@@ -26,21 +26,6 @@ const jxavier = { identity: "jxavier", intent: "" };
 const createdProjects = [];
 
 const defaultGroup = "reviewers";
-export let options = {
-  stages: [
-    { duration: "2m", target: 100 }, // below normal load
-    { duration: "5m", target: 100 },
-    { duration: "2m", target: 200 }, // normal load
-    { duration: "5m", target: 200 },
-    { duration: "2m", target: 300 }, // around the breaking point
-    { duration: "5m", target: 300 },
-    { duration: "2m", target: 400 }, // beyond the breaking point
-    { duration: "5m", target: 400 },
-    { duration: "10m", target: 0 }, // scale down. Recovery stage.
-  ],
-  //thresholds: { http_req_duration: ["avg<100", "p(95)<200"] },
-  userAgent: "MyK6UserAgentString/1.0",
-};
 
 function authenticate() {
   let userRequest = http.post(
