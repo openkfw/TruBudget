@@ -17,8 +17,8 @@ const SLEEP_DURATION = 0.1;
 let MSTEIN_TOKEN = "";
 let ROOT_TOKEN = "";
 
-//organisation name
-const ORGANISATION = "KfW";
+//organization name
+const ORGANIZATION = "KfW";
 const apiVersion = "1.0";
 const jdoe = { identity: "jdoe", intent: "global.createProject" };
 const mstein = { identity: "mstein", intent: "global.createProject" };
@@ -227,7 +227,7 @@ export default function () {
         user: {
           id: Math.random().toString(36).substring(7),
           displayName: Math.random().toString(36).substring(7),
-          organization: ORGANISATION,
+          organization: ORGANIZATION,
           password: Math.random().toString(36).substring(7),
         },
       },
@@ -722,7 +722,7 @@ export default function () {
         projectId:
           createdProjects[Math.floor(Math.random() * createdProjects.length)]
             .id,
-        organization: ORGANISATION,
+        organization: ORGANIZATION,
         currencyCode: "EUR",
         value: "1",
       },
@@ -750,7 +750,7 @@ export default function () {
         projectId:
           createdProjects[Math.floor(Math.random() * createdProjects.length)]
             .id,
-        organization: ORGANISATION,
+        organization: ORGANIZATION,
         currencyCode: "EUR",
       },
     });
@@ -1013,7 +1013,7 @@ export default function () {
       data: {
         projectId,
         subprojectId,
-        organization: ORGANISATION,
+        organization: ORGANIZATION,
         currencyCode: "EUR",
         value: "23",
       },
@@ -1079,7 +1079,7 @@ export default function () {
       data: {
         projectId,
         subprojectId,
-        organization: ORGANISATION,
+        organization: ORGANIZATION,
         currencyCode: "EUR",
       },
     });

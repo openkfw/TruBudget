@@ -25,6 +25,12 @@ The test type can be changed in the provided script (`api/loadtest/runTests.sh`)
 
 :::
 
+# Getting started
+ 1) Navigate to `api/loadtest`
+ 2) Configure the test as described above and add execution rights to `runTests.sh`
+ 3) Run `./runTests.sh` 
+
+
 # Visualizing
 
 To visualize the generate data from the tests via Grafana:
@@ -40,6 +46,8 @@ To visualize the generate data from the tests via Grafana:
 :::tip
 Grafana has a bunch of pre-configured dashboards for `k6` we recommend using one of the two predefined dashboards (2587 or 11837) mentioned above. However, if you want to browse the available dashboards, you can do it [here](https://grafana.com/grafana/dashboards?search=k6). Also, feel free to contribute to the Grafana community by creating your own dashboard and publishing it to the Grafana Hub.
 :::
+
+
 
 # Minimum requirements
 
