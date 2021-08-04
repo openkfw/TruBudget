@@ -76,3 +76,8 @@ typings/
 
 # End of https://www.gitignore.io/api/node,visualstudiocode
 >>>>>>> Iterate on the Authz PoC
+
+
+# k6 load tests
+
+loadtest/k6
