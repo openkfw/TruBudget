@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)"
+    "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)",
+    "watch": "tsc --watch & (sleep 30 && nodemon --inspect=0.0.0.0:9229 dist)"
   },
   "repository": {
     "type": "git",
