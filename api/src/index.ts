@@ -156,6 +156,7 @@ const {
   swaggerBasepath,
   storageService,
   documentFeatureEnabled,
+  encryptionPassword,
 } = getValidConfig();
 
 /*
@@ -177,6 +178,12 @@ logger.info(
   { rpcSettings: rpcSettingsWithoutPassword(rpcSettings) },
   "Connecting to MultiChain node",
 );
+if (encryptionPassword) {
+  logger.info(
+    "All data that is send to the MultiChain node and external storage will be symmetrically encrypted by the ENCRYPTION_PASSWORD",
+  );
+}
+
 const db = Multichain.init(rpcSettings);
 const { multichainClient } = db;
 
@@ -188,6 +195,7 @@ if (documentFeatureEnabled) {
     timeout: 10000,
     maxBodyLength: 67000000, //  ~50mb in base64
   };
+  logger.info("Documents are stored in external storage");
 } else {
   storageServiceSettings = {
     baseURL: "placeholder",

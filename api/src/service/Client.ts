@@ -105,9 +105,13 @@ export class RpcMultichainClient implements MultichainClient {
     key: string,
     nValues: number = 1,
   ): Promise<any[]> {
-    const items: MultichainStreamItem[] = await this.rpcClient
-      .invoke("liststreamkeyitems", streamId, key, false, nValues)
-      .then(this.retrieveItems);
+    const items: MultichainStreamItem[] = await this.rpcClient.invoke(
+      "liststreamkeyitems",
+      streamId,
+      key,
+      false,
+      nValues,
+    );
     return items.map((x) => hexToObject(x.data));
   }
 
@@ -136,7 +140,6 @@ export class RpcMultichainClient implements MultichainClient {
   ): Promise<StreamItemPair[]> {
     const items: Liststreamkeyitems.Item[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
-      .then(this.retrieveItems)
       .catch((err) => {
         if (err && err.code === -708) {
           throw { kind: "NotFound", what: `stream ${streamName}` };
@@ -157,7 +160,6 @@ export class RpcMultichainClient implements MultichainClient {
   ): Promise<StreamItemPair[]> {
     const allItemsAllValues: Liststreamkeyitems.Item[] = await this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
-      .then(this.retrieveItems)
       .catch((err) => {
         if (err && err.code === -708) {
           throw { kind: "NotFound", what: `stream ${streamName}` };
@@ -262,7 +264,6 @@ export class RpcMultichainClient implements MultichainClient {
   ): Promise<Liststreamkeyitems.Item[]> {
     return this.rpcClient
       .invoke("liststreamblockitems", streamName, `${from}-${to}`, verbose)
-      .then(this.retrieveItems)
       .catch((err) => {
         if (err && err.code === -708) {
           throw { kind: "NotFound", what: `stream ${streamName}` };
@@ -283,7 +284,6 @@ export class RpcMultichainClient implements MultichainClient {
     }
     return this.rpcClient
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
-      .then((items: Liststreamkeyitems.Item[]) => this.retrieveItems(items))
       .catch((err) => {
         if (err && err.code === -708) {
           throw { kind: "NotFound", what: `stream ${streamName}` };
@@ -291,27 +291,6 @@ export class RpcMultichainClient implements MultichainClient {
           throw err;
         }
       });
-  }
-
-  private async retrieveItems(
-    items: Liststreamkeyitems.Item[],
-  ): Promise<Liststreamkeyitems.Item[]> {
-    // if data size is bigger than the runtime variable "maxshowndata"
-    // the data has to be accessed by calling gettxoutdata
-    // Increase maxshowndata with command 'setruntimeparam maxshowndata <value>' in the multichain-cli
-    return Promise.all(
-      items.map(async (item: Liststreamkeyitems.Item) => {
-        if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
-          logger.warn(
-            "Reached max data size. Maybe you should increase the runtime variable 'maxshowndata' of the multichain" +
-            "with command: 'setruntimeparam maxshowndata <value>'.",
-          );
-          item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
-          logger.debug({ item: item.data }, "Received items.");
-        }
-        return item;
-      }),
-    );
   }
 }
 

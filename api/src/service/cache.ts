@@ -153,11 +153,6 @@ async function fetchItems(
     count,
     start,
   );
-  for (const item of items) {
-    if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
-      item.data = await this.rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
-    }
-  }
   return items;
 }
 
@@ -288,8 +283,7 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
     const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
     logger.debug(
       cache.streamState,
-      `Stream cache updated in ${elapsedMilliseconds} ms: ${
-        projectStreams.length
+      `Stream cache updated in ${elapsedMilliseconds} ms: ${projectStreams.length
       } projects (${nUpdatedProjects} updated, ${nRebuiltProjects} rebuilt)`,
     );
   }
