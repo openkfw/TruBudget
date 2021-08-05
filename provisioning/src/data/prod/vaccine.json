@@ -1,0 +1,176 @@
+{
+  "displayName": "Vaccination Program",
+  "description": "Vaccination program initiated by the Ministry of Health",
+  "thumbnail": "/Thumbnail_0020.jpg",
+  "status": "open",
+  "assignee": "mmoh",
+  "projectedBudgets": [
+    {
+      "organization": "Ministry of Health",
+      "value": "264000000",
+      "currencyCode": "USD"
+    }
+  ],
+  "permissions": {
+    "project.viewDetails": ["mstein", "mmoh"],
+    "project.viewSummary": ["mstein", "mmoh"],
+    "project.assign": ["mstein", "mmoh"],
+    "project.intent.listPermissions": ["mstein", "mmoh"],
+    "project.intent.grantPermission": ["mstein", "mmoh"],
+    "project.intent.revokePermission": ["mstein", "mmoh"]
+  },
+  "subprojects": [
+    {
+      "displayName": "Vaccine NovoVac",
+      "description": "No description.",
+      "status": "open",
+      "currency": "USD",
+      "projectedBudgets": [
+        {
+          "organization": "Ministry of Health",
+          "value": "120000000",
+          "currencyCode": "USD"
+        }
+      ],
+      "assignee": "mmoh",
+      "permissions": {
+        "subproject.viewSummary": ["mmoh"],
+        "subproject.viewDetails": ["mmoh"]
+      },
+      "workflows": [
+        {
+          "displayName": "Need assessment",
+          "assignee": "mmoh",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "Order",
+          "assignee": "mmoh",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "Shipment (Export hub)",
+          "assignee": "jport",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "Shipment (Import hub)",
+          "assignee": "iport",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "National vaccine warehouse",
+          "assignee": "mmoh",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "District Hospital",
+          "assignee": "dhospital",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "Application in region A",
+          "assignee": "dhospital",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        }
+      ]
+    },
+    {
+      "displayName": "Vaccine SuperVac",
+      "description": "No description.",
+      "status": "open",
+      "currency": "USD",
+      "projectedBudgets": [
+        {
+          "organization": "Ministry of Health",
+          "value": "140000000",
+          "currencyCode": "USD"
+        }
+      ],
+      "assignee": "mmoh",
+      "permissions": {
+        "subproject.viewSummary": ["mmoh"],
+        "subproject.viewDetails": ["mmoh"]
+      },
+      "workflows": [
+        {
+          "displayName": "Need assessment",
+          "assignee": "mmoh",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "Order",
+          "assignee": "mmoh",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "Shipment (Export hub)",
+          "assignee": "jport",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "Shipment (Import hub)",
+          "assignee": "iport",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "National vaccine warehouse",
+          "assignee": "mmoh",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "District Hospital",
+          "assignee": "dhospital",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        },
+        {
+          "displayName": "Application in region A",
+          "assignee": "dhospital",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.view": ["mmoh"]
+          }
+        }
+      ]
+    }
+  ]
+}

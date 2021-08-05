@@ -1,7 +1,7 @@
 {
   "name": "email-notification",
   "description": "Sends notification-emails to provided SMTP server to identities saved in a database of choice.",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -20,7 +20,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "watch": "tsc --watch & (sleep 30 && nodemon --inspect=0.0.0.0:9229 dist)"
   },
   "bugs": {
     "url": "https://github.com/openkfw/TruBudget/issues"
@@ -47,6 +48,7 @@
     "@types/pino": "^5.15.5",
     "ts-node": "^8.6.2",
     "ts-postgres": "^1.1.2",
-    "typescript": "^3.4.3"
+    "typescript": "^3.4.3",
+    "nodemon": "^2.0.3"
   }
 }

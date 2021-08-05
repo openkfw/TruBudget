@@ -7,14 +7,43 @@ services:
       RPC_PORT: ${RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
+      EMAIL_SERVICE: ${EMAIL_SERVICE}
+      JWT_SECRET: ${JWT_SECRET}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
-    volumes:
-      - /tmp/bcMasterVolume:/root/.multichain
+    # volume for persisting data from multichain
+    # volumes:
+    #   - /masterVolume:/root/.multichain
     ports:
       - ${RPC_PORT}:${RPC_PORT}
       - "8085:8085"
       - "7447:7447"
+
+  emaildb:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5432:5432
+
+  minio:
+    image: minio/minio:RELEASE.2021-06-17T00-10-46Z
+    ports:
+      - ${MINIO_PORT}:${MINIO_PORT}
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server /data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
   master-api:
     build: ../../api
@@ -31,14 +60,47 @@ services:
       RPC_PORT: ${RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: ${RPC_PASSWORD}
-    command: ["npm", "run", "dev"]
+      DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
+      STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
+      STORAGE_SERVICE_HOST: storage
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
+      ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
+      ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+    command: ["npm", "run", "watch"] # npm run watch: hot reloading
+    # volume to track code changes
     volumes:
       - "../../api/src:/home/node/src:delegated"
+      - ../../api/dist:/home/node/dist
     ports:
       - ${API_PORT}:${API_PORT}
       - "9230:9229"
     depends_on:
       - master-node
+
+  email-service:
+    build:
+      context: ../../email-notification-service
+    #command: ["npm", "start"]
+    command: ["npm", "run", "watch"] # npm run watch: hot reloading
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      HTTP_PORT: ${HTTP_PORT}
+      LOG_LEVEL: ${LOG_LEVEL}
+      MODE: DEBUG
+    # volume for hot reloading
+    volumes:
+      - "../../email-notification-service/src:/home/node/src:delegated"
+    depends_on:
+      - emaildb
+      - master-api
+    ports:
+      - "8890:8890"
 
   provisioning:
     build:
@@ -47,11 +109,13 @@ services:
     environment:
       API_HOST: master-api
       API_PORT: ${API_PORT}
-      ENVIRONMENT_TYPE: PROD
+      ENVIRONMENT_TYPE: TEST
+      #Other provisioning data:
+      #ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
-    volumes:
-      - "../../provisioning/src:/usr/src/app/src:delegated"
+    # volumes:
+    #   - "../../provisioning/src:/usr/src/app/src:delegated"
     depends_on:
       - master-api
 
@@ -63,7 +127,8 @@ services:
       TEST_API_HOST: master-api
       TEST_API_PORT: ${API_PORT}
       PORT: 8888
-    command: ["npm", "run", "dev"]
+    command: ["npm", "run", "watch"]
+    # volume for hot reloading
     volumes:
       - "../../excel-export-service/src:/home/node/src:delegated"
     ports:
@@ -71,6 +136,25 @@ services:
       - "9231:9229"
     depends_on:
       - master-api
+
+  storage:
+    build:
+      context: ../../storage-service
+    environment:
+      PORT: ${STORAGE_SERVICE_PORT}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_HOST: minio
+      MINIO_PORT: ${MINIO_PORT}
+    depends_on:
+      - master-api
+    command: ["npm", "run", "watch"]
+    # volume for hot reloading
+    volumes:
+      - "../storage-service/src:/home/node/src:delegated"
+    ports:
+      - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
 
   frontend:
     build:
@@ -84,13 +168,40 @@ services:
       NODE_ENV: ${NODE_ENV}
       CHOKIDAR_USEPOLLING: "true" # for hot reloading of source files
       REACT_APP_VERSION: ${REACT_APP_VERSION}
-      REACT_APP_EXPORT_SERVICE_ENABLED: "true"
+      REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
+      REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+    # volume for hot reloading
     volumes:
       - "../../frontend/src:/app/src"
       - "/app/node_modules"
     ports:
       - "3000:3000"
     depends_on:
-      - master-api
+      - provisioning
       - excel-export-service
+      - storage
     stdin_open: true
+
+  # slave-node:
+  #   # image: trubudget/blockchain:latest
+  #   build:
+  #     context: ../../blockchain
+  #   environment:
+  #     RPC_PORT: ${RPC_PORT}
+  #     RPC_PASSWORD: ${RPC_PASSWORD}
+  #     ORGANIZATION: ${ORGANIZATION}
+  #     P2P_HOST: master-node
+  #     P2P_PORT: 7447
+  #     API_PROTO: http
+  #     API_HOST: master-api
+  #     API_PORT: ${API_PORT}
+  #     EXTERNAL_IP: master-node
+  #   depends_on:
+  #     - master-node
+  #   links:
+  #     - master-node
+  #     - master-api
+  #   ports:
+  #     - "7448:7447" # SLAVE_P2P_PORT

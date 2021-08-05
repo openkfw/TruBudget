@@ -55,6 +55,7 @@ interface Config {
     port: number;
     externalUrl: string;
   };
+  encryptionPassword: string | undefined;
 }
 
 const requiredEnvVars = ["ORGANIZATION", "ORGANIZATION_VAULT_SECRET"];
@@ -92,6 +93,8 @@ export const config: Config = {
     port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
     externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL,
   },
+  encryptionPassword:
+    process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,
 };
 
 function exitIfMissing(requiredEnvVars) {

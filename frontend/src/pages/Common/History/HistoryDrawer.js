@@ -18,7 +18,8 @@ const HistoryDrawer = ({
   isLoading,
   getUserDisplayname,
   users,
-  eventTypes
+  eventTypes,
+  historyType
 }) => {
   const [{ startAt, endAt, publisher, eventType }] = useHistoryState();
   const fetchNext = () => fetchNextHistoryEvents({ startAt, endAt, publisher, eventType });
@@ -34,6 +35,7 @@ const HistoryDrawer = ({
         isLoading={isLoading}
         getUserDisplayname={getUserDisplayname}
         fetchNext={fetchNext}
+        historyType={historyType}
       />
     </Drawer>
   );

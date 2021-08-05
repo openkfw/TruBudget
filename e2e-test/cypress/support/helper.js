@@ -9,7 +9,8 @@ export const currencies = {
   DKK: { symbol: "kr." },
   TND: { symbol: "DT" },
   ETB: { symbol: "Br" },
-  NOK: { symbol: "nkr" }
+  NOK: { symbol: "nkr" },
+  CHF: { symbol: "fr." }
 };
 
 export const languages = ["en-gb", "fr", "pt", "de", "ka"];

@@ -25,6 +25,3 @@ cypress/videos
 # certificates folder
 certificates/*
 !certificates/Readme.md
-
-# dotenv environment variables file
-.env

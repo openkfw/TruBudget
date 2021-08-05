@@ -61,13 +61,18 @@ axios.interceptors.response.use(
         data: { error: { message: error.message } },
       });
     }
+    if (error.response.status === 401) {
+      // JWT Token is expired / invalid / not existing => refresh JWT Token
+      console.log("Refresh of JWT Token needed");
+      impersonate(currentUser);
+    }
     return Promise.reject(error.response);
   }
 );
 
-const impersonate = async (userId, password) => {
-  const token = await authenticate(axios, userId, password);
-  console.log(`Now logged in as ${userId}`);
+const impersonate = async (user) => {
+  const token = await authenticate(axios, user.id, user.password);
+  console.log(`Now logged in as ${user.id}`);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 
@@ -271,7 +276,9 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
   rootSecret,
   folder
 ) {
-  await impersonate("mstein", "test");
+  currentUser.id = "mstein";
+  currentUser.password = "test";
+  await impersonate(currentUser);
   const closeProjectTest = readJsonFile(folder + "close_test.json");
   await provisionFromData(closeProjectTest);
 
@@ -292,7 +299,9 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
     .catch(() => "expected!");
 
   // Let's close the subproject (as root, because not visible to mstein):
-  await impersonate("root", rootSecret);
+  currentUser.id = "root";
+  currentUser.password = rootSecret;
+  await impersonate(currentUser);
   const subprojectTemplate = closeProjectTest.subprojects[1];
   if (subprojectTemplate.status !== "open")
     throw Error("Unexpected test data.");
@@ -300,7 +309,9 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
   await closeSubproject(axios, project.data.id, subproject.data.id);
 
   // Now closing the project should work:
-  await impersonate("mstein", "test");
+  currentUser.id = "mstein";
+  currentUser.password = "test";
+  await impersonate(currentUser);
   await closeProject(axios, project);
 
   await findProject(axios, closeProjectTest).then((x) => {
@@ -308,7 +319,9 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
   });
 
   // Hide the test project
-  await impersonate("root", rootSecret);
+  currentUser.id = "root";
+  currentUser.password = rootSecret;
+  await impersonate(currentUser);
   await revokeProjectPermission(
     axios,
     project.data.id,
@@ -324,7 +337,9 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
 }
 
 async function testWorkflowitemUpdate(folder) {
-  await impersonate("mstein", "test");
+  currentUser.id = "mstein";
+  currentUser.password = "test";
+  await impersonate(currentUser);
   const amazonFundProject = readJsonFile(folder + "amazon_fund.json");
   await provisionFromData(amazonFundProject);
 
@@ -470,7 +485,9 @@ async function testWorkflowitemUpdate(folder) {
 }
 
 async function testWorkflowitemReordering(folder) {
-  await impersonate("mstein", "test");
+  currentUser.id = "mstein";
+  currentUser.password = "test";
+  await impersonate(currentUser);
   const amazonFundProject = readJsonFile(folder + "amazon_fund.json");
   await provisionFromData(amazonFundProject);
 
@@ -612,7 +629,9 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     console.log("Axios baseURL is set to " + axios.defaults.baseURL);
     axios.defaults.timeout = 10000;
 
-    await impersonate("root", rootSecret);
+    currentUser.id = "root";
+    currentUser.password = rootSecret;
+    await impersonate(currentUser);
 
     await checkProvisionState(axios);
 
@@ -623,7 +642,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     await provisionGroups(axios, folder);
 
     console.log("Starting to provision projects");
-    await impersonate(serviceUser.id, serviceUser.password);
+    await impersonate(serviceUser);
     const files = readDirectory(folder);
     for (const fileName of files) {
       if (projectBlacklist.indexOf(fileName) === -1) {
@@ -635,7 +654,9 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
       await runIntegrationTests(rootSecret, folder);
     }
 
-    await impersonate("root", rootSecret);
+    currentUser.id = "root";
+    currentUser.password = rootSecret;
+    await impersonate(currentUser);
     console.log("Set provision_ended flag on multichain");
     await setProvisionEndFlag(axios);
   } catch (err) {
@@ -652,6 +673,7 @@ const port = process.env.API_PORT || 8080;
 const host = process.env.API_HOST || "localhost";
 const rootSecret = process.env.ROOT_SECRET;
 const organization = process.env.ORGANIZATION;
+let currentUser = { id: "root", password: rootSecret };
 
 if (!organization) {
   console.log("ORGANIZATION not set");

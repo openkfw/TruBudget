@@ -29,7 +29,7 @@ services:
       API_PORT: ${API_PROD_PORT}
       EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
-      - /tmp/bcSlaveVolume:/root/.multichain
+      - /masterVolume:/root/.multichain
     ports:
       - "7447:7447"
 
@@ -63,7 +63,7 @@ services:
       API_PORT: ${API_TEST_PORT}
       EXTERNAL_IP: ${EXTERNAL_IP}
     volumes:
-      - /tmp/bcTestSlaveVolume:/root/.multichain
+      - /masterVolume:/root/.multichain
     ports:
       - "7448:7447"
 
