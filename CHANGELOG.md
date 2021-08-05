@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-### Added
-
-- Add currency swiss franc to TruBudget [#899](https://github.com/openkfw/TruBudget/issues/899)
+<!-- ### Added -->
 
 <!-- ### Changed -->
 
@@ -18,6 +16,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Removed -->
 
 <!-- ### Fixed -->
+
+## [1.24.0] - 2021-08-05
+
+### Added
+
+- Added currency swiss franc to TruBudget [#899](https://github.com/openkfw/TruBudget/issues/899)
+- Added type of history to history list [#895](https://github.com/openkfw/TruBudget/issues/895)
+- Added option to enable encryption of data saved on chain [#832](https://github.com/openkfw/TruBudget/issues/832)
+
+### Changed
+
+- Improved documentation for the document feature [#830](https://github.com/openkfw/TruBudget/issues/830)
 
 ## [1.23.0] - 2021-07-08
 
@@ -640,6 +650,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
 [unreleased]: https://github.com/openkfw/TruBudget/compare/v1.23.0...master
+[1.24.0]: https://github.com/openkfw/TruBudget/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/openkfw/TruBudget/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/openkfw/TruBudget/compare/v1.21.0...v1.22.0
 [1.21.0]: https://github.com/openkfw/TruBudget/compare/v1.20.0...v1.21.0
