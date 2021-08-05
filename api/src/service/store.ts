@@ -213,7 +213,12 @@ async function writeTo(
   const streamitem = { json: event };
   logger.debug({ ctx }, `Publishing ${event.type} to ${stream}/${keys}`);
   // TODO publishfrom address
-  await conn.multichainClient
-    .getRpcClient()
-    .invoke("publish", stream, keys, streamitem, offchain ? "offchain" : "");
+  offchain ?
+    await conn.multichainClient
+      .getRpcClient()
+      .invoke("publish", stream, keys, streamitem, "offchain")
+    :
+    await conn.multichainClient
+      .getRpcClient()
+      .invoke("publish", stream, keys, streamitem);
 }

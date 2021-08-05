@@ -402,11 +402,6 @@ async function fetchItems(
     count,
     start,
   );
-  for (const item of items) {
-    if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
-      item.data = await rpcClient.invoke("gettxoutdata", item.data.txid, item.data.vout);
-    }
-  }
   return items;
 }
 

@@ -8,6 +8,8 @@ import {
   UploadResponse,
   Version,
 } from "./Client_storage_service.h";
+import { config } from "../config";
+import { encrypt, decrypt } from "../lib/symmetricCrypto";
 
 interface UploadRequest {
   fileName: string;
@@ -43,7 +45,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
   }
 
   public async isReady(): Promise<boolean> {
-    return await this.axiosInstance.get("/readiness");
+    return this.axiosInstance.get("/readiness");
   }
 
   public async getVersion(): Promise<Version> {
@@ -65,10 +67,14 @@ export default class StorageServiceClient implements StorageServiceClientI {
     name: string,
     data: string,
   ): Promise<Result.Type<UploadResponse>> {
-    const requestData: UploadRequest = {
+    let requestData: UploadRequest = {
       fileName: name,
       content: data,
     };
+    if (config.encryptionPassword) {
+      requestData.fileName = encrypt(config.encryptionPassword, requestData.fileName);
+      requestData.content = encrypt(config.encryptionPassword, requestData.content);
+    }
     const url = `/upload?docId=${id}`;
     const UploadResponseResult = await this.axiosInstance.post(url, requestData);
     if (Result.isErr(UploadResponseResult)) {
@@ -79,21 +85,35 @@ export default class StorageServiceClient implements StorageServiceClientI {
 
   public async downloadObject(id: string, secret: string): Promise<Result.Type<StorageObject>> {
     const url = `/download?docId=${id}`;
-    const config = {
+    const axiosConfig = {
       headers: {
         secret: secret,
       },
     };
-    const DownloadResponseResult = await this.axiosInstance.get(url, config);
+    const DownloadResponseResult = await this.axiosInstance.get(url, axiosConfig);
     if (Result.isErr(DownloadResponseResult)) {
       return new VError(DownloadResponseResult, "downloading object failed");
     }
 
-    const documentObject: StorageObject = {
+    let documentObject: StorageObject = {
       id: DownloadResponseResult.data.meta.docid,
       fileName: DownloadResponseResult.data.meta.filename,
       base64: DownloadResponseResult.data.data,
     };
+
+    if (config.encryptionPassword) {
+      const fileName = decrypt(config.encryptionPassword, documentObject.fileName);
+      const base64 = decrypt(config.encryptionPassword, documentObject.base64);
+      if (Result.isErr(fileName)) {
+        return new VError(fileName, "failed to decrypt fileName from storage service");
+      }
+      if (Result.isErr(base64)) {
+        return new VError(base64, "failed to decrypt file base64 from storage service");
+      }
+      documentObject.fileName = fileName;
+      documentObject.base64 = base64;
+    }
+
     return documentObject;
   }
 
