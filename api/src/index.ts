@@ -841,7 +841,10 @@ server.listen(port, "0.0.0.0", async (err) => {
   while (
     !(await ensureOrganizationStream(multichainClient, organization!, organizationVaultSecret!)
       .then(() => true)
-      .catch(() => false))
+      .catch((error) => {
+        logger.info(error); //TODO: log the error here - for example if the organizationVaultSecret is not correct this would be shown here
+        return false;
+      }))
   ) {
     logger.info(
       { multichainClient, organization },
