@@ -89,31 +89,35 @@ git clone https://github.com/openkfw/TruBudget.git
 git clone https://github.com/openkfw/TruBudget.git
 ```
 
-### IDE
+### IDE
 
-For coding, we recommend the use of Visual Studio Code, which you can find [here](https://code.visualstudio.com/).
+For coding, we recommend the use of Visual Studio Code, which you can find [here](https://code.visualstudio.com/).
 
-To ensure that the code is formatted properly we recommend following extensions for VS Code:
+To ensure that the code is formatted properly we recommend following extensions for VS Code:
 
-- aaron-bond.better-comments
+- aaron-bond.better-comments
 
-- CoenraadS.bracket-pair-colorizer
+- CoenraadS.bracket-pair-colorizer
 
-- dbaeumer.vscode-eslint
+- dbaeumer.vscode-eslint †
 
-- EditorConfig.EditorConfig
+- EditorConfig.EditorConfig
 
-- eg2.tslint
+- esbenp.prettier-vscode
 
-- esbenp.prettier-vscode
+- pmneo.tsimporter
 
-- pmneo.tsimporter
+- rbbit.typescript-hero
 
-- rbbit.typescript-hero
+- xabikos.JavaScriptSnippets
 
-- xabikos.JavaScriptSnippets
+- esbenp.prettier-vscode
 
-- ZeroDragon.prettylintednode
+:::note
+
+† Have a look [here](https://thesoreon.com/blog/how-to-set-up-eslint-with-typescript-in-vs-code) to learn more about how to set up es-lint for validating TypeScript in VSCode
+
+:::
 
 ### Chrome Developer Tools
 
