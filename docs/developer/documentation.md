@@ -8,7 +8,7 @@ sidebar_position: 5
 
 As you might have seen, TruBudget stores all relevant documentation in the `docs` folder of the main repository.
 While reading the documentation in Markdown using a dedicated markdown reader is possible and quite easy for people working in tech, user with no tech background can have a hard time reading, and navigating through the documentation. This is why the `docs` folder in this repo is linked with the [TruBudget Website](https://openkfw.github.io/trubudget-website/).
-When a new TruBudged version is released, the CI has an [additional step]() which publishes the current documentation (in the `docs` folder) on the TruBudget Website.
+When a new TruBudged version is released, the CI has an additional step which publishes the current documentation (in the `docs` folder) on the TruBudget Website.
 
 ## What is different to standard Markdown?
 
