@@ -1,14 +1,14 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { performance } from "perf_hooks";
-
+import { config } from "../config";
 import logger from "../lib/logger";
-import { encrypt, decrypt } from "../lib/symmetricCrypto";
+import { decrypt, encrypt } from "../lib/symmetricCrypto";
 import * as Result from "../result";
+import { MultichainClient } from "./Client.h";
+import * as Liststreamkeyitems from "./liststreamkeyitems";
 import { ConnectionSettings } from "./RpcClient.h";
 import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
-import { config } from "../config";
-import * as Liststreamkeyitems from "./liststreamkeyitems";
 
 const count = new Map();
 const durations = new Map();
@@ -127,7 +127,7 @@ export class RpcClient {
             method === "liststreamkeyitems" ||
             method === "liststreamblockitems"
           ) {
-            const items = await this.retrieveItems(responseData);
+            const items = await this.convertToReadableItems(responseData);
             const error = items.find((item) => Result.isErr(item));
             if (Result.isErr(error)) {
               logger.error({}, "Error ", error.message);
@@ -239,7 +239,13 @@ export class RpcClient {
     return { ...item, data: dataResult };
   };
 
-  public async retrieveItems(items): Promise<any> {
+  public async retrieveItems(streamName: string, start: number, count: number): Promise<any[]> {
+    const verbose: boolean = false;
+    const items: any[] = await this.invoke("liststreamitems", streamName, verbose, count, start);
+    return await this.convertToReadableItems(items);
+  }
+
+  private async convertToReadableItems(items): Promise<any[]> {
     // if data size is bigger than the runtime variable "maxshowndata"
     // the data has to be accessed by calling gettxoutdata
     // Increase maxshowndata with command 'setruntimeparam maxshowndata <value>' in the multichain-cli

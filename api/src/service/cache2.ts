@@ -61,6 +61,7 @@ import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url
 import { Item } from "./liststreamitems";
 import * as ProvisioningStarted from "./domain/system_information/provisioning_started";
 import * as ProvisioningEnded from "./domain/system_information/provisioning_ended";
+import { RpcClient } from "./RpcClient";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -387,24 +388,6 @@ async function findStartIndex(
   return item.txid === cursor.txid ? cursor.index + 1 : 0;
 }
 
-async function fetchItems(
-  multichainClient: MultichainClient,
-  streamName: string,
-  start: number,
-  count: number,
-): Promise<Item[]> {
-  const rpcClient = multichainClient.getRpcClient();
-  const verbose = false;
-  const items: Item[] = await rpcClient.invoke(
-    "liststreamitems",
-    streamName,
-    verbose,
-    count,
-    start,
-  );
-  return items;
-}
-
 async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): Promise<void> {
   // Let's gather some statistics:
   let nUpdatedStreams = 0;
@@ -451,9 +434,8 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
     );
     const batchSize = 100;
     let batch: Item[] = [];
-    while (
-      (batch = await fetchItems(conn.multichainClient, streamName, first, batchSize)).length > 0
-    ) {
+    const rpcClient = conn.multichainClient.getRpcClient();
+    while ((batch = await rpcClient.retrieveItems(streamName, first, batchSize)).length > 0) {
       logger.trace({ batch });
       newItems.push(...batch);
       first += batch.length;
@@ -633,6 +615,12 @@ export function parseBusinessEvents(
   return items
     .map((item) => {
       const event = item.data.json;
+      if (!event) {
+        logger.info(
+          `cache2: ignoring event no item.data.json property found ${JSON.stringify(item)}`,
+        );
+        return;
+      }
       if (event.intent) {
         logger.debug(`cache2: ignoring event of intent ${event.intent}`);
         return;
