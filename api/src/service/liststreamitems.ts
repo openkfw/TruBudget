@@ -5,4 +5,7 @@ export interface Item {
   confirmations: number;
   blocktime: number;
   txid: string;
+  v: number;
+  offchain: boolean;
+  available: boolean;
 }
