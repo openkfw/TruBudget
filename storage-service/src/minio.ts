@@ -35,7 +35,7 @@ const minioClient: any = new Minio.Client({
   secretKey: config.storage.secretKey,
 });
 
-const bucketName: string = "trubudget";
+const bucketName: string = config.storage.bucketName;
 
 const makeBucket = (bucket: string, cb: Function) => {
   minioClient.bucketExists(bucket, (err: any, exists: any) => {
