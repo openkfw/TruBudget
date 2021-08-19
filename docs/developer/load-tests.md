@@ -53,7 +53,7 @@ TruBudget can be deployed in different ways. To give your users the best experie
 
 If you plan to deploy TruBudget on a single VM with following services: Blockchain, API and Frontend, we recommend the following for minimum setup:
 | | Minimum |
-| ------- | --------- |
+| ------- | ------- |
 | CPU† | 2 vCPU |
 | RAM | 8 GB |
 | Storage | 10 GB |
