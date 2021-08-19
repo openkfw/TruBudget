@@ -623,7 +623,11 @@ const fr = {
     service: "Service",
     slow: "lent",
     version: "Version",
-    very_slow: "très lent"
+    very_slow: "très lent",
+    error: "erreur",
+    warning: "avertissement",
+    done: "fait",
+    toBeDone: "A faire"
   },
 
   language: {

@@ -619,7 +619,11 @@ const ka = {
     service: "მომსახურება",
     slow: "ნელი",
     version: "ვერსია",
-    very_slow: "ძალიან ნელი"
+    very_slow: "ძალიან ნელი",
+    error: "შეცდომა",
+    warning: "გაფრთხილება",
+    done: "შესრულებულია",
+    toBeDone: "უნდა გაკეთდეს"
   },
 
   language: {

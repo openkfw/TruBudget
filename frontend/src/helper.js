@@ -184,7 +184,7 @@ export const convertToSearchBarString = urlQueryString => {
   return urlQueryString.replace(/[=]/g, ":").replace(/[&]/g, " ");
 };
 
-export function hasUserAssignments(assignments) {
+export const hasUserAssignments = (assignments) => {
   const hasHiddenAssignments =
     assignments.hiddenAssignments !== undefined &&
     (assignments.hiddenAssignments.hasHiddenProjects === true ||
@@ -197,7 +197,7 @@ export function hasUserAssignments(assignments) {
     !_isEmpty(assignments.workflowitems) ||
     hasHiddenAssignments
   );
-}
+};
 
 /*
  * isEmptyDeep(obj) checks all nested properties of the object.
@@ -205,7 +205,7 @@ export function hasUserAssignments(assignments) {
  * A property can be an object or array
  * If property values are falsy (0, false), it is not considered as empty
  */
-export function isEmptyDeep(obj) {
+export const isEmptyDeep = (obj) => {
   if (_isObject(obj)) {
     if (Object.keys(obj).length === 0) return true;
     return _every(_map(obj, v => isEmptyDeep(v)));
@@ -213,4 +213,12 @@ export function isEmptyDeep(obj) {
     return !obj.length;
   }
   return false;
-}
+};
+
+export const getGroupsOfUser = (user, groups) => {
+  return groups.filter(group => group.users.includes(user));
+};
+
+export const isUserOrGroupPermitted = (user, groupsOfUser, permittedUsersAndGroups = []) => {
+  return permittedUsersAndGroups.some(id => id === user || groupsOfUser.find(group => group.groupId === id));
+};

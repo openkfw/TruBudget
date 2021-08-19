@@ -343,7 +343,7 @@ const de = {
     grant_and_assign: "Gewähren & Zuweisen",
     list_permissions_required_text:
       "Stellen Sie sicher, dass Sie Leseberechtigungen für Berechtigungen der beteiligten Ressourcen besitzen",
-    no_permission_warning: "Warnung: Sie haben nicht die Berechtigung, alle aufgelisteten Aktionen auszuführen!",
+    no_permission_warning: "Warnung: Sie haben keine Berechtigung, Aktionen auszuführen die markiert sind mit ",
     original_actions: "Sie haben folgende Aktionen angefordert:",
     permissions_required: "Berechtigungen erforderlich",
     permissions_text: `{0} benötigt zusätzliche Berechtigungen um {1} "{2}" sehen zu können.`,
@@ -621,7 +621,11 @@ const de = {
     service: "Service",
     slow: "langsam",
     version: "Version",
-    very_slow: "sehr langsam"
+    very_slow: "sehr langsam",
+    error: "Fehler",
+    warning: "Warnung",
+    done: "Fertig",
+    toBeDone: "Ist noch offen"
   },
 
   language: {

@@ -621,7 +621,11 @@ const pt = {
     service: "Service",
     slow: "lento",
     version: "versão",
-    very_slow: "muito lento"
+    very_slow: "muito lento",
+    error: "Erro",
+    warning: "Advertência",
+    done: "feito",
+    toBeDone: "A fazer"
   },
 
   language: {

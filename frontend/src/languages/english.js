@@ -339,7 +339,7 @@ const en = {
       "Error: Grant {0} to {1} failed. All actions that would have been executed after the error occured including the original actions are cancelled.",
     grant_and_assign: "Grant & Assign",
     list_permissions_required_text: "Make sure you have required list Permissions for all resources involved",
-    no_permission_warning: "Warning: You don't have permission to execute all listed actions!",
+    no_permission_warning: "Warning: You don't have permission to execute actions marked with ",
     original_actions: "You requested the following actions:",
     permissions_required: "Permissions required",
     permissions_text: `{0} needs additional permissions to view {1} "{2}".`,
@@ -617,7 +617,11 @@ const en = {
     service: "Service",
     slow: "slow",
     version: "Version",
-    very_slow: "very slow"
+    very_slow: "very slow",
+    error: "Error",
+    warning: "Warning",
+    done: "Done",
+    toBeDone: "To Be Done"
   },
 
   language: {
