@@ -1,0 +1,23 @@
+# tests dirs
+__tests__
+
+# source dir
+src
+
+# config files and dirs
+.github
+.prettierrc
+.vscode
+coverage
+jest.config.js
+tsconfig.json
+
+# social stuff
+logo.png
+social-banner.png
+
+# ignore the .ts files
+*.ts
+
+# include the .d.ts files
+!*.d.ts

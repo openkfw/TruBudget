@@ -1,0 +1,7 @@
+{
+  "out": "docs",
+  "readme": "none",
+  "entryPoints": ["src/index.ts"],
+  "exclude": ["src/index.ts", "src/common.ts", "**/__tests__/**"],
+  "theme": "markdown"
+}

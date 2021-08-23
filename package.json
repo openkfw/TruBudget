@@ -8,9 +8,11 @@
     "danger": "danger"
   },
   "devDependencies": {
+    "@types/verror": "^1.10.5",
     "danger": "^9.4.0",
     "husky": "^5.0.4",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "verror": "^1.10.0"
   },
   "dependencies": {
     "chart.js": "^2.9.3"
