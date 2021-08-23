@@ -1471,7 +1471,7 @@ export function* fetchNodesSaga({ showLoading }) {
         if (!node.currentAccess.decliners) {
           node.currentAccess = { ...node.currentAccess, decliners: [] };
         }
-      });     
+      });
     yield put({
       type: FETCH_NODES_SUCCESS,
       nodes: data.nodes
@@ -1933,6 +1933,7 @@ export function* revokeProjectPermissionsSaga({
     const confirmed = yield select(getConfirmedState);
     const originalAction = {
       intent: "project.intent.revokePermission",
+      permission: intent,
       identity: revokeeId,
       displayName: projectDisplayName
     };
@@ -1940,6 +1941,7 @@ export function* revokeProjectPermissionsSaga({
       yield put({
         type: CONFIRMATION_REQUIRED,
         intent: originalAction.intent,
+        permission: originalAction.permission,
         identity: originalAction.identity,
         displayName: originalAction.displayName,
         payload: {
@@ -2069,6 +2071,7 @@ export function* revokeSubProjectPermissionsSaga({
     const confirmed = yield select(getConfirmedState);
     const originalAction = {
       intent: "subproject.intent.revokePermission",
+      permission: intent,
       identity: revokeeId,
       displayName: subprojectDisplayName
     };
@@ -2076,6 +2079,7 @@ export function* revokeSubProjectPermissionsSaga({
       yield put({
         type: CONFIRMATION_REQUIRED,
         intent: originalAction.intent,
+        permission: originalAction.permission,
         identity: originalAction.identity,
         displayName: originalAction.displayName,
         payload: {
@@ -2223,6 +2227,7 @@ export function* revokeWorkflowItemPermissionsSaga({
     const confirmed = yield select(getConfirmedState);
     const originalAction = {
       intent: "workflowitem.intent.revokePermission",
+      permission: intent,
       identity: revokeeId,
       displayName: workflowitemDisplayName
     };
@@ -2230,6 +2235,7 @@ export function* revokeWorkflowItemPermissionsSaga({
       yield put({
         type: CONFIRMATION_REQUIRED,
         intent: originalAction.intent,
+        permission: originalAction.permission,
         identity: originalAction.identity,
         displayName: originalAction.displayName,
         payload: {

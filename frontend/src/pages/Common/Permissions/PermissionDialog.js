@@ -10,12 +10,14 @@ import PermissionTable from "./PermissionsTable";
 
 const createActions = (permissions, temporayPermissions) => {
   const actions = [];
+
   Object.keys(permissions).forEach(key => {
     const permissionIds = permissions[key];
     const temporaryPermissionIds = temporayPermissions[key];
 
     const revokeIds = permissionIds.filter(id => !temporaryPermissionIds.includes(id));
     if (revokeIds.length > 0) actions.push({ type: "revoke", permission: key, userIds: revokeIds });
+
     const grantIds = temporaryPermissionIds.filter(id => !permissionIds.includes(id));
     if (grantIds.length > 0) actions.push({ type: "grant", permission: key, userIds: grantIds });
   });
@@ -23,8 +25,38 @@ const createActions = (permissions, temporayPermissions) => {
   return actions;
 };
 
+const onSubmit = (submitProps) => {
+  const { hidePermissionDialog, permissions, temporaryPermissions, ...actionFunctions} = submitProps;
+
+  if (_isEmpty(permissions) || (JSON.stringify(temporaryPermissions) === JSON.stringify(permissions))) {
+    hidePermissionDialog();
+    return;
+  }
+
+  const actions = createActions(permissions, temporaryPermissions);
+
+  actions.forEach(action => executeAction(action, actionFunctions));
+};
+
+const executeAction = (action, actionFunctions) => {
+  const {grant, revoke} = actionFunctions;
+
+  if (action.type === "grant") {
+    action.userIds.forEach(user => grant(action.permission, user));
+    return;
+  }
+
+  if (action.type === "revoke") {
+    action.userIds.forEach(user => revoke(action.permission, user));
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.error("Not a recognized action", action.type);
+};
+
 const PermissionDialog = props => {
-  const { temporaryPermissions, permissions, open, disabledSubmit, disabledUserSelection, userList } = props;
+  const { open, disabledSubmit, disabledUserSelection, userList, ...submitProps } = props;
   return (
     <Dialog disableRestoreFocus data-test="permission-container" open={open} onClose={props.hidePermissionDialog}>
       <DialogTitle>{props.title}</DialogTitle>
@@ -39,25 +71,7 @@ const PermissionDialog = props => {
           disabled={disabledSubmit}
           data-test="permission-submit"
           color="primary"
-          onClick={
-            !_isEmpty(permissions) && JSON.stringify(temporaryPermissions) !== JSON.stringify(permissions)
-              ? () => {
-                  const actions = createActions(permissions, temporaryPermissions);
-                  actions.forEach(action => {
-                    if (action.type === "grant") {
-                      action.userIds.forEach(user => {
-                        props.grant(action.permission, user);
-                      });
-                    } else if (action.type === "revoke") {
-                      action.userIds.forEach(user => {
-                        props.revoke(action.permission, user);
-                      });
-                      // eslint-disable-next-line no-console
-                    } else console.error("Not a recognized action", action.type);
-                  });
-                }
-              : props.hidePermissionDialog
-          }
+          onClick={() => onSubmit(submitProps)}
         >
           {strings.common.submit}
         </Button>

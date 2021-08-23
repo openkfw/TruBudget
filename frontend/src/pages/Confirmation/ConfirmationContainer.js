@@ -56,7 +56,6 @@ class ConfirmationContainer extends React.Component {
       this.props.fetchGroups();
       this.fetchPermissions(this.props.project, this.props.subproject, this.props.workflowitem);
     }
-
     if (prevProps.originalActions.length < this.props.originalActions.length) {
       this.props.additionalActionUpdateRequired(true);
     }
@@ -67,7 +66,8 @@ class ConfirmationContainer extends React.Component {
         this.props.permissions,
         this.props.project,
         this.props.subproject,
-        this.props.confirmingUser
+        this.props.confirmingUser,
+        this.props.groups
       );
 
       this.props.storeAdditionalActions(additionalActions);
@@ -156,8 +156,8 @@ class ConfirmationContainer extends React.Component {
       isListPermissionsRequiredFromApi,
       failedAction,
       requestedPermissions,
-      enabledUserList,
-      disabledUserList,
+      enabledUsers,
+      disabledUsers,
       fetchUserAssignments,
       cleanUserAssignments,
       userAssignments,
@@ -194,8 +194,8 @@ class ConfirmationContainer extends React.Component {
           isListPermissionsRequiredFromApi={isListPermissionsRequiredFromApi}
           failedAction={failedAction}
           requestedPermissions={requestedPermissions}
-          enabledUserList={enabledUserList}
-          disabledUserList={disabledUserList}
+          enabledUsers={enabledUsers}
+          disabledUsers={disabledUsers}
           fetchUserAssignments={fetchUserAssignments}
           cleanUserAssignments={cleanUserAssignments}
           userAssignments={userAssignments}
@@ -315,8 +315,8 @@ const mapStateToProps = state => {
     confirmDisabled: state.getIn(["confirmation", "disabled"]),
     permissions: state.getIn(["confirmation", "permissions"]),
     confirmingUser: state.getIn(["login", "id"]),
-    enabledUserList: state.getIn(["login", "enabledUsers"]),
-    disabledUserList: state.getIn(["login", "disabledUsers"]),
+    enabledUsers: state.getIn(["login", "enabledUsers"]),
+    disabledUsers: state.getIn(["login", "disabledUsers"]),
     isFetchingProjectPermissions: state.getIn(["confirmation", "isFetchingProjectPermissions"]),
     isFetchingSubprojectPermissions: state.getIn(["confirmation", "isFetchingSubprojectPermissions"]),
     isFetchingWorkflowitemPermissions: state.getIn(["confirmation", "isFetchingWorkflowitemPermissions"]),

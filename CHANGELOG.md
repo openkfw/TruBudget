@@ -15,7 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Fixed group permissions were not considered when checking permissions for an action [#907](https://github.com/openkfw/TruBudget/issues/907)
+- Fixed exception when revoking and adding permissions in one step [#922](https://github.com/openkfw/TruBudget/issues/922)
 
 ## [1.24.0] - 2021-08-05
 
