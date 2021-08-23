@@ -105,12 +105,12 @@ Best practices and layout is documented in README files next to the source files
 describe. For example, take a look at [api/src/](api/src/) to get started.
 
 [github issue]: https://github.com/openkfw/TruBudget/issues
-[code of conduct]: CODE_OF_CONDUCT.md
+[code of conduct]: https://github.com/openkfw/TruBudget/blob/master/CODE_OF_CONDUCT.md
 [jure zakotnik]: https://github.com/jzakotnik
 [gitter]: https://gitter.im/Tru-Community/community
 [architecture decision records (adr)]: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
 [doc/architecture/decisions]: doc/architecture/decisions/
-[developer setup]: https://github.com/openkfw/TruBudget/blob/master/doc/installation/Developer-Setup.md#developer-setup/
+[developer setup]: https://github.com/openkfw/TruBudget/blob/master/docs/developer/developer-setup.md#developer-setup/
 [guidelines]: https://keepachangelog.com/en/1.0.0/
 [git commit guidelines]: https://chris.beams.io/posts/git-commit/
 [open a pull request]: https://github.com/openkfw/TruBudget/pulls

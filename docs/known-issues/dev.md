@@ -31,7 +31,7 @@ You can find a detailed solution on [Stackoverflow](https://stackoverflow.com/a/
 
 ### Port 80 used by PID 4
 
-This means that there is a system process blocking port 80. If you want to use TruBudget in production, you should find and disable that process. If you want to test TruBudget on your machine, an easy way to fix it is to set the exposed ports in the Yaml file to a different one. Locate the file `docker-compose/local/master-node.yml` (or the one in the `master` folder) and change the following part
+This means that there is a system process blocking port 80. If you want to use TruBudget in production, you should find and disable that process. If you want to test TruBudget on your machine, an easy way to fix it is to set the exposed ports in the Yaml file to a different one. Locate the file `scripts/development/docker-compose.yml` and change the following part
 
 ```yml
 frontend:

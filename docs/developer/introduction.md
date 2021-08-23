@@ -115,7 +115,7 @@ describe. For example, take a look at [api/src/](https://github.com/openkfw/TruB
 [githubdiscussions]: https://github.com/openkfw/TruBudget/discussions
 [architecture decision records (adr)]: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
 [doc/architecture/decisions]: ./architecture/intro.md
-[developer setup]: https://github.com/openkfw/TruBudget/blob/master/doc/installation/Developer-Setup.md#developer-setup/
+[developer setup]: ./developer-setup.md#developer-setup/
 [guidelines]: https://keepachangelog.com/en/1.0.0/
 [git commit guidelines]: https://chris.beams.io/posts/git-commit/
 [open a pull request]: https://github.com/openkfw/TruBudget/pulls

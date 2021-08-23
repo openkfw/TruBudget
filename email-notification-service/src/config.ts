@@ -29,9 +29,9 @@ interface Config {
 }
 
 const config: Config = {
-  mode: process.env.MODE || "DEBUG",
+  mode: process.env.MODE || "PROD",
   http: {
-    port: Number(process.env.HTTP_PORT) || 8890,
+    port: Number(process.env.EMAIL_PORT) || 8890,
   },
   dbType: process.env.DB_TYPE || "pg",
   db: {

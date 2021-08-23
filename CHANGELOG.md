@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-<!-- ### Added -->
+### Added
+
+- Add a bash script for a quick and easy TruBudget setup [#905](https://github.com/openkfw/TruBudget/issues/905)
 
 <!-- ### Changed -->
 
