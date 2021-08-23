@@ -31,7 +31,7 @@ Follow these steps to start the environment using docker:
 ```
 cd storage-service
 cp .env_example .env
-sh startDev.sh
+bash startDev.sh
 ```
 
 The pre-set cluster contains:
