@@ -11,3 +11,5 @@ yarn-error.log
 *.code-workspace
 .vs/
 e2e-test/debug.log
+scripts/development/.env
+scripts/operation/.env
