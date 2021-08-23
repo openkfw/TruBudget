@@ -71,7 +71,7 @@ emailService.use(bodyParser.json());
 if (config.mode !== "DEBUG") {
   configureJWT();
 } else {
-  logger.info(`${config.mode} mode active`);
+  logger.info("DEBUG mode active");
 }
 
 // Routes

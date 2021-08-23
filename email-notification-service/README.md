@@ -28,7 +28,7 @@ To ensure all necessary environment variables are set correctly this section des
 
 | Env Variable  | Default Value                     | Description                                                                                                                                  |
 | ------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTTP_PORT     | 8890                              | Port for HTTP Server                                                                                                                         |
+| EMAIL_PORT    | 8890                              | Port for HTTP Server                                                                                                                         |
 | DB_TYPE       | pg                                | Type of database. A supported list can be found in the [Database Configuration section](#database-configuration)                             |
 | DB_NAME       | trubudget_email_service           | Name of the database                                                                                                                         |
 | DB_USER       | postgres                          | User name for connected database                                                                                                             |
@@ -50,7 +50,7 @@ To ensure all necessary environment variables are set correctly this section des
 | LOG_LEVEL     | INFO                              | Defines the log output. Supported levels are `ERROR`, `WARN`, `INFO`, `DEBUG`                                                                |
 | PRETTY_PRINT  | false                             | Decides whether the logs printed by the email service are pretty printed or not.                                                             |
 | JWT_SECRET    | - (required)                      | A secret of min length of 32 - It is used to verify the JWT_TOKEN sent by users of the email-service endpoints                               |
-| MODE          | DEBUG                             | If set to DEBUG no JWT-Token is required for all endpoints                                                                                   |
+| MODE          | PROD                              | If set to DEBUG, no JWT-Token is required for all endpoints. If set PROD, a JWT token is necessary                                           |
 
 ### Blockchain
 
