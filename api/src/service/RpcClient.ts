@@ -4,9 +4,13 @@ import { config } from "../config";
 import logger from "../lib/logger";
 import { decrypt, encrypt } from "../lib/symmetricCrypto";
 import * as Result from "../result";
-import { MultichainClient } from "./Client.h";
-import * as Liststreamkeyitems from "./liststreamkeyitems";
-import { ConnectionSettings } from "./RpcClient.h";
+import { Item } from "./liststreamitems";
+import {
+  ConnectionSettings,
+  EncryptedItemToPublish,
+  StreamItem,
+  ItemToPublish,
+} from "./RpcClient.h";
 import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
 
@@ -99,7 +103,18 @@ export class RpcClient {
   public invoke(method: string, ...params: any[]): any {
     const startTime = process.hrtime();
     if (config.encryptionPassword && method === "publish") {
-      params = this.encryptItems(params);
+      const convertedParams = this.rebuildParamsWithEncryptedItems(params);
+      if (Result.isErr(convertedParams)) {
+        logger.error(`Error during invoke of ${method}`, convertedParams.message);
+        return Promise.reject(
+          new RpcError(
+            500,
+            `Error while saving data on the chain: ${convertedParams.message}`,
+            {},
+            "",
+          ),
+        );
+      } else params = convertedParams;
     }
 
     logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
@@ -130,9 +145,13 @@ export class RpcClient {
             const items = await this.convertToReadableItems(responseData);
             const error = items.find((item) => Result.isErr(item));
             if (Result.isErr(error)) {
-              logger.error({}, "Error ", error.message);
-              logger.debug({ error }, "Error ", error.message);
-              reject(error);
+              logger.error({}, "Error converting streamitems to readable items", error.message);
+              logger.debug(
+                { error },
+                "Error converting stream items to readable items ",
+                error.message,
+              );
+              throw error;
             }
             responseData = items;
             resolve(responseData);
@@ -176,7 +195,11 @@ export class RpcClient {
             response = new RpcError(500, "No Response from Multichain", {}, error.message);
           } else {
             // Something happened in setting up the request that triggered an Error
-            logger.error({ error: error.message }, "Error ", error.message);
+            logger.error(
+              { error: error.message },
+              `Error while invoking method ${method}`,
+              error.message,
+            );
             response = new RpcError(500, `other error: ${error.message}`, {}, "");
           }
           reject(response);
@@ -184,27 +207,54 @@ export class RpcClient {
     });
   }
 
-  private encryptItems = (items) => {
-    let encrypteditems: any[];
-    encrypteditems = items.map((item, index) => {
-      let encryptedObjectAsPlainString = "";
-      if (index === 0 || index === 1 || item === "offchain") {
-        // streamname, keys, offchain-flag are not encrypted
-        return item;
+  private rebuildParamsWithEncryptedItems = (params: any[]): Result.Type<ItemToPublish[]> => {
+    const items = this.getItemsFromParams(params);
+    if (Result.isErr(items)) {
+      logger.error({ error: items.message }, "Error getting items while encrypting", items.message);
+      return items;
+    }
+    const encryptedItems: EncryptedItemToPublish[] = items.map((item) => this.encryptItem(item));
+    return this.rebuildParams(params, encryptedItems);
+  };
+
+  private getItemsFromParams = (params: any[]): Result.Type<ItemToPublish[]> => {
+    const items: ItemToPublish[] = [];
+    const streamName: string = params[0];
+    const keys: string[] = params[1];
+    params.forEach((param) => {
+      if (param !== streamName && param !== keys && param !== "offchain") {
+        items.push(param); //select only items from params
       }
-      if (config.encryptionPassword) {
-        encryptedObjectAsPlainString = encrypt(config.encryptionPassword, JSON.stringify(item));
-      }
-      // Wrapping encrypted plaintext into object for multichain
-      return { json: encryptedObjectAsPlainString };
     });
-    items = encrypteditems;
+    if (!items.length) {
+      logger.error({ error: "No items to get items from params" }, "Error: Failed to publish data");
+      return new RpcError(500, "Failed to publish data", {}, "No items to publish found");
+    }
     return items;
   };
 
-  private decryptItem = (item) => {
+  private rebuildParams = (params: any, encryptedItems: EncryptedItemToPublish[]): any[] => {
+    const streamName: string = params[0];
+    const keys: string[] = params[1];
+    const offchain: string = params.includes("offchain");
+    if (offchain) {
+      return [streamName, keys, ...encryptedItems, "offchain"];
+    }
+    return [streamName, keys, ...encryptedItems];
+  };
+
+  private encryptItem = (item: ItemToPublish): EncryptedItemToPublish => {
+    let encryptedObjectAsPlainString = "";
+    if (config.encryptionPassword) {
+      encryptedObjectAsPlainString = encrypt(config.encryptionPassword, JSON.stringify(item));
+    }
+    // Wrapping encrypted plaintext into object for multichain
+    return { json: encryptedObjectAsPlainString };
+  };
+
+  private getOrDecryptItemData = (item: StreamItem): Result.Type<StreamItem> => {
     let dataResult = item.data;
-    if (item.data.json) {
+    if (dataResult.json) {
       const plainStringToDecrypt = item.data.json;
       if (config.encryptionPassword) {
         if (typeof plainStringToDecrypt !== "string") {
@@ -239,27 +289,27 @@ export class RpcClient {
     return { ...item, data: dataResult };
   };
 
-  public async retrieveItems(streamName: string, start: number, count: number): Promise<any[]> {
+  public async retrieveItems(streamName: string, start: number, count: number): Promise<Item[]> {
     const verbose: boolean = false;
-    const items: any[] = await this.invoke("liststreamitems", streamName, verbose, count, start);
-    return await this.convertToReadableItems(items);
+    return await this.invoke("liststreamitems", streamName, verbose, count, start);
   }
 
-  private async convertToReadableItems(items): Promise<any[]> {
+  private async convertToReadableItems(items: StreamItem[]): Promise<Result.Type<StreamItem>[]> {
     // if data size is bigger than the runtime variable "maxshowndata"
     // the data has to be accessed by calling gettxoutdata
     // Increase maxshowndata with command 'setruntimeparam maxshowndata <value>' in the multichain-cli
     return Promise.all(
-      items.map(async (item: Liststreamkeyitems.Item) => {
+      items.map(async (item: StreamItem) => {
+        let readableData = item.data;
         if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
           logger.warn(
             "Reached max data size. Maybe you should increase the runtime variable 'maxshowndata' of the multichain" +
               "with command: 'setruntimeparam maxshowndata <value>'.",
           );
-          item.data = await this.invoke("gettxoutdata", item.data.txid, item.data.vout);
+          readableData = await this.invoke("gettxoutdata", item.data.txid, item.data.vout);
           logger.debug({ item: item.data }, "Received items.");
         }
-        return this.decryptItem(item);
+        return this.getOrDecryptItemData({ ...item, data: readableData });
       }),
     );
   }
