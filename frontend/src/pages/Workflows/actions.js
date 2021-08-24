@@ -1,3 +1,4 @@
+
 export const SHOW_WORKFLOW_CREATE = "SHOW_WORKFLOW_CREATE";
 export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 
@@ -128,6 +129,12 @@ export const SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG = "SHOW_WORKFLOWITEM_CONFIRMA
 export const HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG = "HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG";
 export const ADD_TEMPORARY_WORKFLOWITEM_PERMISSION = "ADD_TEMPORARY_WORKFLOWITEM_PERMISSION";
 export const REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION = "REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION";
+export const STORE_REJECT_REASON = "STORE_REJECT_REASON";
+export const SHOW_REASON_DIALOG = "SHOW_REASON_DIALOG";
+export const HIDE_REASON_DIALOG = "HIDE_REASON_DIALOG";
+export const REJECT_WORKFLOWITEM ="REJECT_WORKFLOWITEM";
+export const REJECT_WORKFLOWITEM_FAILURE = "REJECT_WORKFLOWITEM_FAILURE";
+export const CLEAR_REJECT_REASON = "CLEAR_REJECT_REASON";
 
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
@@ -265,6 +272,18 @@ export function showWorkflowitemAdditionalData(wId) {
 export function hideWorkflowitemAdditionalData() {
   return {
     type: HIDE_WORKFLOWITEM_ADDITIONAL_DATA
+  };
+}
+
+export function showReasonDialog(rejectReason){
+  return {
+    type: SHOW_REASON_DIALOG,
+    rejectReason
+  };
+}
+export function hideReasonDialog(){
+  return {
+    type: HIDE_REASON_DIALOG
   };
 }
 
@@ -647,13 +666,29 @@ export function closeSubproject(projectId, subprojectId, showLoading = false) {
   };
 }
 
-export function closeWorkflowItem(projectId, subprojectId, workflowitemId, showLoading = false) {
+export function closeWorkflowItem(projectId, subprojectId, workflowitemId, isRejectDialog, showLoading = false) {
   return {
     type: CLOSE_WORKFLOWITEM,
     projectId,
     subprojectId,
     workflowitemId,
+    isRejectDialog,
     showLoading
+  };
+}
+
+
+
+export function storeRejectReason(rejectReason) {
+  return {
+    type: STORE_REJECT_REASON,
+    rejectReason
+  };
+}
+
+export function clearRejectReason() {
+  return {
+    type: CLEAR_REJECT_REASON
   };
 }
 

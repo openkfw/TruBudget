@@ -5,12 +5,13 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
-
 import { formatString, hasUserAssignments, isEmptyDeep, isUserOrGroupPermitted } from "../../helper";
-import { createContent, createCloseTexts, createToggleUserContent } from "./confirmationDialogContentCreator";
 import strings from "../../localizeStrings";
+import { createCloseTexts, createContent, createToggleUserContent } from "./confirmationDialogContentCreator";
 import DialogButtons from "./DialogButtons";
 import ErrorTypography from "./ErrorTypography";
+
+
 
 const styles = {
   paperRoot: {
@@ -68,10 +69,13 @@ const ConfirmationDialog = props => {
     executedOriginalActions,
     executingOriginalActions,
     originalActionsExecuted,
-    failedOriginalAction
+    failedOriginalAction,
+    storeRejectReason,
+    rejectReason
   } = props;
 
   const [hasAssignments, setHasAssignments] = useState(true);
+
   useEffect(() => {
     setHasAssignments(hasUserAssignments(userAssignments));
   }, [userAssignments]);
@@ -138,11 +142,11 @@ const ConfirmationDialog = props => {
       case "project.close":
       case "subproject.close":
       case "workflowitem.close":
-        const textContainer = createCloseTexts(intent);
+        const textContainer = createCloseTexts(originalAction,storeRejectReason);
 
         title = textContainer.closeTitle;
         content = textContainer.closeContent;
-        confirmButtonText = textContainer.closeConfirmButtonTest;
+        confirmButtonText = textContainer.closeConfirmButtonText;
 
         break;
 
@@ -167,6 +171,7 @@ const ConfirmationDialog = props => {
         break;
       }
 
+
       default:
         title = "Not implemented confirmation";
         content = "Confirmation Dialog for " + intent + " is not implemented yet";
@@ -183,7 +188,7 @@ const ConfirmationDialog = props => {
         confirmButtonText={confirmButtonText}
         onConfirm={executeAllActions}
         onCancel={requestedPermissions ? () => onCancel(requestedPermissions) : onCancel}
-        confirmDisabled={(!permittedToGrant && additionalActionsExist(additionalActions)) || hasAssignments}
+        confirmDisabled={(!permittedToGrant && additionalActionsExist(additionalActions)) || hasAssignments|| ( rejectReason.length === 0 && isWorkflowItemReject(originalActions)) }
         additionalActions={additionalActions}
         originalActions={originalActions}
         postActions={postActions}
@@ -236,6 +241,9 @@ function buildDialogWithLoadingIndicator(
     </Dialog>
   );
 }
+
+const isWorkflowItemReject = (originalActions) =>  originalActions.some(action => action.intent === "workflowitem.close") && originalActions.some(action => action.payload.isRejectDialog === true);
+
 
 function additionalActionsExist(additionalActions) {
   return !_isEmpty(additionalActions);

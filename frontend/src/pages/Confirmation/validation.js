@@ -113,9 +113,9 @@ schemes
     Joi.object().keys({
       project: Joi.object().concat(validatorForId),
       subproject: Joi.object().concat(validatorForId),
-      workflowitem: Joi.object().concat(validatorForId)
-    })
-  )
+      workflowitem: Joi.object().concat(validatorForId),
+      isRejectDialog:Joi.boolean()
+    }))
   .set(
     "project.intent.grantPermission",
     Joi.object().keys({

@@ -1,5 +1,4 @@
 #!/bin/bash
-# export COMPOSE_HTTP_TIMEOUT=300
 # bash start-dev.sh --slim
 
 

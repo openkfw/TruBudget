@@ -1,11 +1,13 @@
+import Typography from "@material-ui/core/Typography";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../helper";
+import strings from "../../localizeStrings";
 import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
 import globalStyles from "../../styles";
 import { openAnalyticsDialog } from "../Analytics/actions";
 import AdditionalInfo from "../Common/AdditionalInfo";
+import InformationDialog from "../Common/InformationDialog";
 import { addDocument } from "../Documents/actions";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
@@ -20,6 +22,7 @@ import {
   enableSubProjectBudgetEdit,
   enableWorkflowEdit,
   fetchAllSubprojectDetails,
+  hideReasonDialog,
   hideWorkflowDetails,
   hideWorkflowDialog,
   hideWorkflowitemAdditionalData,
@@ -30,6 +33,7 @@ import {
   saveWorkflowItemsBeforeSort,
   showCreateDialog,
   showEditDialog,
+  showReasonDialog,
   showSubProjectAssignee,
   showWorkflowDetails,
   showWorkflowitemAdditionalData,
@@ -74,7 +78,10 @@ class WorkflowContainer extends Component {
     }
   };
 
-  closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subprojectId, wId);
+  closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subprojectId, wId, false, true);
+  rejectWorkflowItem = wId => {
+    this.props.rejectWorkflowItem(this.projectId, this.subprojectId, wId, true, true);
+  };
 
   closeSubproject = () => this.props.closeSubproject(this.projectId, this.subprojectId, true);
 
@@ -114,6 +121,7 @@ class WorkflowContainer extends Component {
               projectId={this.projectId}
               subProjectId={this.subprojectId}
               closeWorkflowItem={this.closeWorkflowItem}
+              rejectWorkflowItem={this.rejectWorkflowItem}
               isDataLoading={this.props.isDataLoading}
             />
           </div>
@@ -124,8 +132,16 @@ class WorkflowContainer extends Component {
             hideAdditionalData={this.props.hideWorkflowitemAdditionalData}
             {...this.props}
           />
+
           <SubprojectHistoryDrawer projectId={this.projectId} subprojectId={this.subprojectId} />
           <WorkflowBatchEditContainer projectId={this.projectId} subProjectId={this.subprojectId} />
+          <InformationDialog
+            dialogShown={this.props.isRejectReasonDialogShown}
+            title={strings.workflow.workflow_reject_reason}
+            content={<Typography>{this.props.rejectReason}</Typography>}
+            handleClose={() => this.props.hideReasonDialog()}
+            closeLabel={strings.common.ok}
+          />
         </div>
       </div>
     );
@@ -145,9 +161,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
     closeWorkflowitemDetailsDialog: () => dispatch(closeWorkflowitemDetailsDialog()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
-    closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
+    closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, false, true)),
+    rejectWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true, true)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
-
     showWorkflowItemPermissions: (wId, wDisplayName) => dispatch(showWorkflowItemPermissions(wId, wDisplayName)),
     updateWorkflowOrderOnState: items => dispatch(updateWorkflowOrderOnState(items)),
     enableWorkflowEdit: () => dispatch(enableWorkflowEdit()),
@@ -193,7 +209,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
     openAnalyticsDialog: () => dispatch(openAnalyticsDialog()),
     showWorkflowitemAdditionalData: wId => dispatch(showWorkflowitemAdditionalData(wId)),
-    hideWorkflowitemAdditionalData: () => dispatch(hideWorkflowitemAdditionalData())
+    hideWorkflowitemAdditionalData: () => dispatch(hideWorkflowitemAdditionalData()),
+    showReasonDialog: rejectReason => dispatch(showReasonDialog(rejectReason)),
+    hideReasonDialog: () => dispatch(hideReasonDialog())
   };
 };
 
@@ -233,7 +251,9 @@ const mapStateToProps = state => {
     idsPermissionsUnassigned: state.getIn(["workflow", "idsPermissionsUnassigned"]),
     isDataLoading: state.getIn(["loading", "loadingVisible"]),
     isLiveUpdatesSubprojectEnabled: state.getIn(["workflow", "isLiveUpdatesSubprojectEnabled"]),
-    currentUser: state.getIn(["login", "id"])
+    currentUser: state.getIn(["login", "id"]),
+    rejectReason: state.getIn(["workflow", "rejectReason"]),
+    isRejectReasonDialogShown: state.getIn(["workflow", "isRejectReasonDialogShown"])
   };
 };
 

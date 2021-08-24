@@ -81,6 +81,7 @@ const de = {
     not_projected: "Nicht projiziert",
     not_disbursed: "Nicht ausgezahlt",
     not_ok: "NOK",
+    ok:"Ok",
     open: "Open",
     organization: "Organisation",
     password: "Passwort",
@@ -91,6 +92,8 @@ const de = {
     redacted: "Redigiert",
     reset: "Zurücksetzen",
     revoke: "German: revoke",
+    reject:" Ablehnen",
+    rejected:"Abgelehnt",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
     status: "Status",
@@ -241,8 +244,9 @@ const de = {
     workflowitem_type: "Workflowitem Typ",
     workflowitem_type_general: "Legen Sie ein Workflow-Item vom Typ 'general' an.",
     workflowitem_type_restricted:
-      "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte."
-  },
+      "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
+    workflow_reject_reason: "Ablehnungsgrund"
+    },
 
   snackbar: {
     update_succeed_message: "{0} erfolgreich geändert",
@@ -355,7 +359,9 @@ const de = {
     user_group: "Benutzer/Gruppe",
     workflowitem_close: "Workflowitem schliessen",
     workflowitem_close_text: "Sind Sie sicher, dass Sie dieses Workflow-Item schließen wollen?",
-    workflowitem_create: "Erstelle Workflowitem"
+    workflowitem_create: "Erstelle Workflowitem",
+    workflowitem_close_reject: "Mit Bemerkung ablehnen",
+    workflowitem_close_accept: "Ablehnen"
   },
 
   intents: {

@@ -2,30 +2,33 @@ import Card from "@material-ui/core/Card";
 import Checkbox from "@material-ui/core/Checkbox";
 import Chip from "@material-ui/core/Chip";
 import green from "@material-ui/core/colors/lightGreen";
+import red from "@material-ui/core/colors/red";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import DoneIcon from "@material-ui/icons/Check";
-import EditIcon from "@material-ui/icons/Edit";
-import InfoIcon from "@material-ui/icons/InfoOutlined";
 import AttachmentIcon from "@material-ui/icons/Attachment";
+import DoneIcon from "@material-ui/icons/Check";
+import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from "@material-ui/icons/Edit";
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import MoreIcon from "@material-ui/icons/MoreHoriz";
 import OpenIcon from "@material-ui/icons/Remove";
 import SwapIcon from "@material-ui/icons/SwapCalls";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
-import { withStyles, withTheme } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
-import ActionButton from "../Common/ActionButton";
-import StyledBadge from "../Common/StyledBadge";
-
-import { amountTypes, fromAmountString, toAmountString, isDateReached } from "../../helper.js";
+import { amountTypes, fromAmountString, isDateReached, toAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import { canAssignWorkflowItem, canUpdateWorkflowItem, canViewWorkflowItemPermissions } from "../../permissions.js";
+import ActionButton from "../Common/ActionButton";
+import StyledBadge from "../Common/StyledBadge";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
+
 
 const styles = theme => {
   return {
@@ -378,11 +381,13 @@ const getButtonClass = (classes, workflowSortEnabled, status) => {
   return {};
 };
 
-const getCardStyle = (classes, workflowSortEnabled, status) => {
+const getCardStyle = (classes, workflowSortEnabled, status, rejected) => {
   let style = {};
-  if (status === "closed") {
+  if (status === "closed" && !rejected) {
     style = { background: green[50] };
   }
+  if(status === "closed" && rejected)
+    style = { background: red[50]  };
   return style;
 };
 
@@ -395,6 +400,7 @@ const getCardClass = (classes, workflowSortEnabled, status) => {
   }
   return cardClass;
 };
+
 
 const renderActionButtons = (
   classes,
@@ -410,12 +416,17 @@ const renderActionButtons = (
   showAdditionalData,
   additionalData,
   idsPermissionsUnassigned,
-  id
+  id,
+  rejectReason,
+  showReasonDialog,
+  reject
+
 ) => {
   const additionalDataDisabled = _isEmpty(additionalData) || workflowSortEnabled;
   const editDisabled = !canEditWorkflow || workflowSortEnabled;
   const permissionsDisabled = !canListWorkflowPermissions || workflowSortEnabled;
   const closeDisabled = !canCloseWorkflow || workflowSortEnabled;
+  const statusIsClosed = workflowSortEnabled || status === "closed" || closeDisabled;
   return (
     <div className={classes.actionCell}>
       <div className={classes.actions}>
@@ -439,7 +450,8 @@ const renderActionButtons = (
           data-test="edit-workflowitem"
           iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
         />
-        <ActionButton
+        { workflowSortEnabled || permissionsDisabled ? null : (
+          <ActionButton
           notVisible={workflowSortEnabled || permissionsDisabled}
           onClick={permissionsDisabled ? undefined : showPerm}
           icon={<PermissionIcon />}
@@ -449,15 +461,43 @@ const renderActionButtons = (
           data-test="show-workflowitem-permissions"
           iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
         />
+        )
+
+        }
+
+        {
+         statusIsClosed ? null :(
+         <>
+           <ActionButton
+            onClick={closeDisabled ? undefined : reject}
+            icon={<CloseIcon />}
+            title={closeDisabled ? "" : strings.common.reject}
+            workflowSortEnabled={workflowSortEnabled}
+            status={status}
+            iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+            data-test="reject-workflowitem"
+          />
+
+          <ActionButton
+            onClick={closeDisabled ? undefined : close}
+            icon={<DoneIcon />}
+            title={closeDisabled ? "" : strings.common.close}
+            workflowSortEnabled={workflowSortEnabled}
+            status={status}
+            iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+            data-test="close-workflowitem"
+          />
+        </>
+        )}
         <ActionButton
-          notVisible={workflowSortEnabled || status === "closed" || closeDisabled}
-          onClick={closeDisabled ? undefined : close}
-          icon={<DoneIcon />}
-          title={closeDisabled ? "" : strings.common.close}
+          notVisible={ status !== "closed" || !rejectReason }
+          onClick={rejectReason ? showReasonDialog : undefined}
+          icon={<ErrorOutlineIcon/> }
+          title={strings.common.rejected}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-          data-test="close-workflowitem"
+          data-test="closed-workflowitem-reject-reason"
         />
       </div>
     </div>
@@ -490,6 +530,7 @@ export const WorkflowItem = withTheme(
           assignee,
           exchangeRate,
           currency: sourceCurrency,
+          rejectReason,
           additionalData
         } = workflow.data;
         const allowedIntents = workflow.allowedIntents;
@@ -501,6 +542,7 @@ export const WorkflowItem = withTheme(
         const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
         const canCloseWorkflowitem = currentUser === assignee;
         const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";
+
 
         return (
           <div className={classes.container} data-test={`workflowitem-container-${id}`}>
@@ -520,7 +562,7 @@ export const WorkflowItem = withTheme(
               elevation={workflowSelectable ? 1 : 0}
               key={mapIndex}
               className={`${getCardClass(classes, workflowSortEnabled, status)} ${classes.card}`}
-              style={getCardStyle(classes, workflowSortEnabled, status)}
+              style={getCardStyle(classes, workflowSortEnabled, status,rejectReason)}
             >
               <div className={classes.workflowContent} data-test={`workflowitem-${id}`}>
                 <div className={classes.infoCell}>{infoButton}</div>
@@ -566,7 +608,10 @@ export const WorkflowItem = withTheme(
                   () => props.showWorkflowitemAdditionalData(id),
                   additionalData,
                   idsPermissionsUnassigned,
-                  id
+                  id,
+                  rejectReason,
+                  () => props.showReasonDialog(rejectReason),
+                  () => props.rejectWorkflowItem(id),
                 )}
               </div>
             </Card>
