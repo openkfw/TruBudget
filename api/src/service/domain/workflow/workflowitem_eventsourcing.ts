@@ -1,9 +1,9 @@
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+import * as DocumentValidated from "../document/document_validated";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemAssigned from "./workflowitem_assigned";
@@ -13,7 +13,6 @@ import * as WorkflowitemPermissionGranted from "./workflowitem_permission_grante
 import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoked";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import * as DocumentValidated from "../document/document_validated";
 
 export function sourceWorkflowitems(
   ctx: Ctx,

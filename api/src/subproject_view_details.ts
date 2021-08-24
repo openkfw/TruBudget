@@ -1,21 +1,20 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
-
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
+import { StoredDocument } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
-import { StoredDocument } from "./service/domain/document/document";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -283,6 +282,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             amountType: workflowitem.amountType,
             description: workflowitem.description,
             status: workflowitem.status,
+            rejectReason: workflowitem.rejectReason,
             assignee: workflowitem.assignee,
             documents: workflowitem.documents,
             amount: workflowitem.amount,

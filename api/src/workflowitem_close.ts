@@ -1,16 +1,15 @@
 import { FastifyInstance } from "fastify";
-import Joi = require("joi");
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -18,6 +17,7 @@ interface RequestBodyV1 {
     projectId: Project.Id;
     subprojectId: Subproject.Id;
     workflowitemId: Workflowitem.Id;
+    rejectReason: string;
   };
 }
 
@@ -27,6 +27,7 @@ const requestBodyV1Schema = Joi.object({
     projectId: Project.idSchema.required(),
     subprojectId: Subproject.idSchema.required(),
     workflowitemId: Workflowitem.idSchema.required(),
+    rejectReason: Joi.string().optional(),
   }).required(),
 });
 
@@ -63,6 +64,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
               projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
               subprojectId: { type: "string", example: "er28c69eg298c87e3899119e025eff1f" },
               workflowitemId: { type: "string", example: "5z28c69eg298c87e3899119e025eff1f" },
+              rejectReason: { type: "string", example: "rejected due to ..." },
             },
           },
         },
@@ -91,6 +93,7 @@ interface Service {
     projectId: Project.Id,
     subprojectId: Subproject.Id,
     workflowitemId: Workflowitem.Id,
+    rejectReason?: string,
   ): Promise<Result.Type<void>>;
 }
 
@@ -111,10 +114,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       return;
     }
 
-    const { projectId, subprojectId, workflowitemId } = bodyResult.data;
+    const { projectId, subprojectId, workflowitemId, rejectReason } = bodyResult.data;
 
     service
-      .closeWorkflowitem(ctx, user, projectId, subprojectId, workflowitemId)
+      .closeWorkflowitem(ctx, user, projectId, subprojectId, workflowitemId, rejectReason)
       .then((result) => {
         if (Result.isErr(result)) {
           throw new VError(result, "workflowitem.close failed");

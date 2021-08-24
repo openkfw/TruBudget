@@ -40,6 +40,7 @@ export async function closeWorkflowitem(
   subprojectId: Subproject.Id,
   workflowitemId: Id,
   repository: Repository,
+  rejectReason?: string,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const workflowitemsResult = await repository.getWorkflowitems(projectId, subprojectId);
   if (Result.isErr(workflowitemsResult)) {
@@ -73,6 +74,8 @@ export async function closeWorkflowitem(
     projectId,
     subprojectId,
     workflowitemId,
+    new Date().toISOString(),
+    rejectReason,
   );
   if (Result.isErr(closeEvent)) {
     return new VError(closeEvent, "failed to create event");
