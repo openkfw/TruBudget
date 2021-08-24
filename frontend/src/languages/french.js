@@ -221,6 +221,7 @@ const fr = {
     workflow_enable_sort: "Trier",
     workflow_fingerprint: "Empreinte digitale",
     workflow_name: "Nom de l’étape de workflow",
+    workflow_document_not_available: "Document non disponible",
     workflow_next_step: "Prochaine étape",
     workflow_no_actions: "Pas d'action",
     workflow_no_documents: "Pas de document",
@@ -316,8 +317,8 @@ const fr = {
     declined_by: "Refusé par",
     connection_status: "Statut de connexion",
     last_seen: "Vu pour la dernière fois",
-    admin_description: "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
-
+    admin_description:
+      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
   },
 
   preview: {

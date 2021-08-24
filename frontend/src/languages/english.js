@@ -183,7 +183,8 @@ const en = {
     declined_by: "Declined by",
     connection_status: "Connection status",
     last_seen: "Last seen",
-    admin_description: "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
+    admin_description:
+      "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
   },
 
   login: {
@@ -276,6 +277,7 @@ const en = {
     workflow_document_changed: "Changed",
     workflow_document_description: "Add name of document",
     workflow_document_name: "Document Name",
+    workflow_document_not_available: "Document is not available",
     workflow_document_validate: "Validate",
     workflow_document_validated: "Validated",
     workflow_document_validation_ok: "Identical document",

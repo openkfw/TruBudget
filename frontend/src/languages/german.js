@@ -211,6 +211,7 @@ const de = {
     workflow_document_changed: "Changed",
     workflow_document_description: "Add name of document",
     workflow_document_name: "Document Name",
+    workflow_document_not_available: "Dokument ist nicht verfügbar",
     workflow_document_validate: "Validate",
     workflow_document_validated: "Validated",
     workflow_document_validation_ok: "Identisches Dokument",
