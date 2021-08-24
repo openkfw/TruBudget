@@ -77,18 +77,18 @@ function mkSwaggerSchema(server: FastifyInstance) {
                             items: {
                               type: "object",
                               properties: {
-                                id: { type: "string", example: "classroom-contract" },
                                 hash: {
                                   type: "string",
                                   example:
                                     "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
                                 },
                                 fileName: { type: "string", example: "myFile.pdf" },
-                                documentId: {
+                                id: {
                                   type: "string",
                                   example: "abc-cde-adf",
                                   additionalProperties: true,
                                 },
+                                available: { type: "boolean", example: "true" },
                               },
                             },
                           },

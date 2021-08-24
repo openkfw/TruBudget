@@ -10,6 +10,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import { sortWorkflowitems } from "./workflowitem_ordering";
+import * as WorkflowitemDocument from "../document/document";
 
 interface Repository {
   getWorkflowitems(
@@ -20,6 +21,10 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Workflowitem.Id[]>>;
+  downloadDocument(
+    workflowitemId: string,
+    docId: string,
+  ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>;
 }
 
 export async function getAllVisible(
@@ -46,15 +51,25 @@ export async function getAllVisible(
 
   const visibleWorkflowitems = sortedWorkflowitems
     // Redact workflowitems the user is not entitled to see:
-    .map(item =>
+    .map((item) =>
       user.id === "root" || Workflowitem.permits(item, user, ["workflowitem.view"])
         ? item
         : Workflowitem.redact(item),
     )
     // Only keep history event the user may see and remove all others:
-    .map(item => (item.isRedacted ? item : { ...item, log: traceEventsVisibleTo(item, user) }));
+    .map((item) => (item.isRedacted ? item : { ...item, log: traceEventsVisibleTo(item, user) }));
 
-  return visibleWorkflowitems;
+  const workflowitemsWithDocAvailability = await Promise.all(
+    visibleWorkflowitems.map(async (item) =>
+      item.documents.length > 0
+        ? ({
+            ...item,
+            documents: await setDocumentAvailability(item, repository),
+          } as Workflowitem.ScrubbedWorkflowitem)
+        : item,
+    ),
+  );
+  return workflowitemsWithDocAvailability;
 }
 
 type EventType = string;
@@ -68,9 +83,24 @@ const requiredPermissions = new Map<EventType, Intent[]>([
   ["workflowitems_reordered", ["workflowitem.view"]],
 ]);
 
+async function setDocumentAvailability(
+  item,
+  repository: Repository,
+): Promise<WorkflowitemDocument.StoredDocument[]> {
+  const docsWithAvailability: WorkflowitemDocument.StoredDocument[] = [];
+  const docs = item.documents;
+  for (const doc of docs) {
+    const result = await repository.downloadDocument(item.id, doc.id);
+    Result.isOk(result)
+      ? docsWithAvailability.push({ ...doc, available: true })
+      : docsWithAvailability.push({ ...doc, available: false });
+  }
+  return docsWithAvailability;
+}
+
 function traceEventsVisibleTo(workflowitem: Workflowitem.Workflowitem, user: ServiceUser) {
   const traceEvents = workflowitem.log;
-  return traceEvents.filter(traceEvent => {
+  return traceEvents.filter((traceEvent) => {
     if (user.id === "root") {
       return true;
     }
@@ -87,6 +117,6 @@ function traceEventsVisibleTo(workflowitem: Workflowitem.Workflowitem, user: Ser
       ),
     );
 
-    return [...eligibleIdentities.values()].some(identity => canAssumeIdentity(user, identity));
+    return [...eligibleIdentities.values()].some((identity) => canAssumeIdentity(user, identity));
   });
 }

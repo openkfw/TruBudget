@@ -11,6 +11,7 @@ export interface StoredDocument {
   fileName?: string;
   organization?: string;
   organizationUrl?: string;
+  available?: boolean;
 }
 
 export const storedDocumentSchema = Joi.object({
@@ -19,6 +20,7 @@ export const storedDocumentSchema = Joi.object({
   fileName: Joi.string(),
   organization: Joi.string(),
   organizationUrl: Joi.string(),
+  available: Joi.boolean(),
 });
 
 export interface DocumentInfo extends GenericDocument {

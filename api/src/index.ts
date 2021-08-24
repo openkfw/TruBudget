@@ -537,14 +537,28 @@ SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
   getSubproject: (ctx, user, projectId, subprojectId) =>
     SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
   getWorkflowitems: (ctx, user, projectId, subprojectId) =>
-    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+    WorkflowitemListService.listWorkflowitems(
+      db,
+      storageServiceClient,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+    ),
 });
 
 SubprojectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
   getSubproject: (ctx, user, projectId, subprojectId) =>
     SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
   getWorkflowitems: (ctx, user, projectId, subprojectId) =>
-    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+    WorkflowitemListService.listWorkflowitems(
+      db,
+      storageServiceClient,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+    ),
 });
 
 SubprojectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
@@ -646,7 +660,14 @@ SubprojectUpdateAPI.addHttpHandler(server, URL_PREFIX, {
 
 WorkflowitemListAPI.addHttpHandler(server, URL_PREFIX, {
   listWorkflowitems: (ctx, user, projectId, subprojectId) =>
-    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+    WorkflowitemListService.listWorkflowitems(
+      db,
+      storageServiceClient,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+    ),
 });
 
 WorkflowitemViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
