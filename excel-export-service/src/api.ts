@@ -69,6 +69,7 @@ export interface Workflowitem {
   exchangeRate?: string;
   dueDate?: string;
   amount?: string;
+  rejectReason?: string;
   documents: [
     {
       id: string;

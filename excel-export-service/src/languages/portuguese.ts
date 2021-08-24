@@ -38,6 +38,7 @@ const pt = {
     name: "Nome de item de workflow",
     type: "Categoria do item de workflow",
     subproject_currency: "Moeda de Subprojeto",
+    rejectReason: "Rejeitar a razão",
     allocated: "Atribuído",
     disbursed: "Pago",
     na: "N/A",
