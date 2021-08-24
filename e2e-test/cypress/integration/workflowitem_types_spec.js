@@ -82,7 +82,6 @@ describe("Workflowitem types", function() {
           // api revokes permissions for mstein, mstein has only view permissions
           cy.get("[data-test=single-select-disabled]").should("exist");
           cy.get("[data-test=edit-workflowitem]").should("be.disabled");
-          cy.get("[data-test=show-workflowitem-permissions]").should("be.disabled");
         });
 
       // thouse has all permissions
