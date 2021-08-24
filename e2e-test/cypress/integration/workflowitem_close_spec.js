@@ -46,12 +46,12 @@ describe("Workflowitem close", function() {
     cy.get("[data-test=close-workflowitem]")
       .last()
       .click({ force: true });
-    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.get("[data-test=confirmation-dialog-confirm]").click({ force: true });
     cy.wait("@workflowitemClose")
       .wait("@viewDetails")
       .get("[data-test^=workflowitem-]")
       .get(`[data-test=workflowitem-info-button-${workflowitemId}]`)
-      .click()
+      .click({ force: true })
       .get("[data-test=workflowitem-status]")
       .should("contain", "Closed");
   });

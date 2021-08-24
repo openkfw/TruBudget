@@ -86,6 +86,7 @@ const ka = {
     not_assigned: "არ არის გამოყოფილი",
     not_disbursed: "გადაუხდელი",
     not_ok: "Not OK",
+    ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
     open: "Open",
     organization: "ორგანიზაცია",
@@ -97,6 +98,8 @@ const ka = {
     redacted: "Redacted",
     reset: "გადატვირთვა",
     revoke: "გაუქმება",
+    reject:"Უარყოს",
+    rejected:"უარყოფილი",
     search: "ძიება",
     show_permissions: "მაჩვენე ნებართვები",
     status: "სტატუსი",
@@ -308,7 +311,8 @@ const ka = {
     workflowitem_type: "Workflowitem ტიპი",
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
-      "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას."
+      "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას.",
+    workflow_reject_reason:"უარყავი მიზეზი"
   },
 
   snackbar: {
@@ -353,7 +357,9 @@ const ka = {
     user_group: "მომხმარებელი/ჯგუფი",
     workflowitem_close: "სამუშაო ნაკადის დახურვა",
     workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?",
-    workflowitem_create: "სამუშაო პროცესის შექმნა"
+    workflowitem_create: "სამუშაო პროცესის შექმნა",
+    workflowitem_close_reject: "უარი თქვით კომენტარით",
+    workflowitem_close_accept: "მიღება"
   },
 
   intents: {

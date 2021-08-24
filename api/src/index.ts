@@ -34,6 +34,9 @@ import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
 import * as ProjectViewHistoryAPIv2 from "./project_view_history_v2";
+import * as ProvisioningEndAPI from "./provisioning_end";
+import * as ProvisioningStatusAPI from "./provisioning_get";
+import * as ProvisioningStartAPI from "./provisioning_start";
 import * as Result from "./result";
 import * as Multichain from "./service";
 import * as Cache from "./service/cache2";
@@ -61,6 +64,9 @@ import * as ProjectPermissionRevokeService from "./service/project_permission_re
 import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
+import * as ProvisioningEndService from "./service/provisioning_end";
+import * as ProvisioningStatusService from "./service/provisioning_get";
+import * as ProvisioningStartService from "./service/provisioning_start";
 import { ConnectionSettings } from "./service/RpcClient.h";
 import * as SubprojectAssignService from "./service/subproject_assign";
 import * as SubprojectCloseService from "./service/subproject_close";
@@ -109,8 +115,8 @@ import * as SubprojectUpdateAPI from "./subproject_update";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as SubprojectViewHistoryAPI from "./subproject_view_history";
 import * as SubprojectViewHistoryAPIv2 from "./subproject_view_history_v2";
-import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
 import ensureStorageServiceUrlPublished from "./system/ensureOrganizationUrlPublished";
+import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserCreateAPI from "./user_create";
 import * as UserDisableAPI from "./user_disable";
@@ -133,12 +139,6 @@ import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revo
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
-import * as ProvisioningStatusAPI from "./provisioning_get";
-import * as ProvisioningStatusService from "./service/provisioning_get";
-import * as ProvisioningStartAPI from "./provisioning_start";
-import * as ProvisioningStartService from "./service/provisioning_start";
-import * as ProvisioningEndAPI from "./provisioning_end";
-import * as ProvisioningEndService from "./service/provisioning_end";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -675,7 +675,7 @@ WorkflowitemPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 WorkflowitemCloseAPI.addHttpHandler(server, URL_PREFIX, {
-  closeWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId) =>
+  closeWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, rejectReason) =>
     WorkflowitemCloseService.closeWorkflowitem(
       db,
       ctx,
@@ -683,6 +683,7 @@ WorkflowitemCloseAPI.addHttpHandler(server, URL_PREFIX, {
       projectId,
       subprojectId,
       workflowitemId,
+      rejectReason,
     ),
 });
 

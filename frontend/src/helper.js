@@ -4,12 +4,12 @@ import accounting from "accounting";
 import dayjs from "dayjs";
 import { Iterable } from "immutable";
 import _cloneDeep from "lodash/cloneDeep";
+import _every from "lodash/every";
 import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
+import _isObject from "lodash/isObject";
 import _isString from "lodash/isString";
 import _isUndefined from "lodash/isUndefined";
-import _isObject from "lodash/isObject";
-import _every from "lodash/every";
 import _map from "lodash/map";
 import React from "react";
 import currencies from "./currency";
@@ -105,9 +105,11 @@ export const unixTsToString = ts => {
   return dateString;
 };
 
-export const statusMapping = status => {
+export const statusMapping = (status, rejectReason) => {
   switch (status) {
     case "closed":
+        if(rejectReason)
+          return strings.common.rejected;
       return strings.common.closed;
     case "open":
       return strings.common.open;

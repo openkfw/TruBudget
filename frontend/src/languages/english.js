@@ -86,6 +86,7 @@ const en = {
     not_assigned: "Not assigned",
     not_disbursed: "Not paid",
     not_ok: "Not OK",
+    ok:"Ok",
     not_projected: "Not projected",
     open: "Open",
     organization: "Organization",
@@ -97,6 +98,8 @@ const en = {
     redacted: "Redacted",
     reset: "Reset",
     revoke: "revoke",
+    reject:"Reject",
+    rejected:"Rejected",
     search: "Search",
     show_permissions: "Show Permissions",
     status: "Status",
@@ -306,8 +309,9 @@ const en = {
     workflowitem_type: "Workflowitem type",
     workflowitem_type_general: "Create a workflowitem of type general.",
     workflowitem_type_restricted:
-      "When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions."
-  },
+      "When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
+    workflow_reject_reason: "Reject reason"
+    },
 
   snackbar: {
     update_succeed_message: "Successfully modified {0}",
@@ -350,8 +354,10 @@ const en = {
     subproject_close_text: "Are you sure, you want to close this subproject?",
     user_group: "User/Group",
     workflowitem_close: "Close workflowitem",
-    workflowitem_close_text: "Are you sure, you want to close this workflowitem?",
-    workflowitem_create: "Create workflowitem"
+    workflowitem_close_text: "Do you want to accept and close this workflowitem?",
+    workflowitem_close_reject: "Reject with comment",
+    workflowitem_create: "Create workflowitem",
+    workflowitem_close_accept: "Accept"
   },
 
   intents: {

@@ -38,6 +38,7 @@ const de = {
     name: "Workflowitem Name",
     type: "Workflowitem Typ",
     subproject_currency: "Währung des Subprojektes",
+    rejectReason: "Ablehnungsgrund",
     allocated: "Zugewiesen",
     disbursed: "Ausgezahlt",
     na: "N/A",

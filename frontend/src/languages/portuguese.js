@@ -87,6 +87,7 @@ const pt = {
     not_assigned: "Não atribuído",
     not_disbursed: "Não pago",
     not_ok: "Não OK",
+    ok:"Ok",
     not_projected: "Não projetado",
     open: "Aberto",
     organization: "Organização",
@@ -98,6 +99,8 @@ const pt = {
     redacted: "Redigido",
     reset: "Redefinir",
     revoke: "Revogar",
+    reject:"Rejeitar",
+    rejected:"Rejeitado",
     search: "Procurar",
     show_permissions: "Mostrar permissões",
     status: "Status",
@@ -309,7 +312,9 @@ const pt = {
     workflowitem_type: "Categoria do item de workflow",
     workflowitem_type_general: "Criar un item de workflow do tipo general.",
     workflowitem_type_restricted:
-      "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização."
+      "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização.",
+    workflow_reject_reason: "Rejeitar a razão"
+
   },
 
   snackbar: {
@@ -355,7 +360,9 @@ const pt = {
     user_group: "Usuários/Grupo",
     workflowitem_close: "Fechar item de workflow",
     workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?",
-    workflowitem_create: "Criar item de fluxo de trabalho"
+    workflowitem_create: "Criar item de fluxo de trabalho",
+    workflowitem_close_accept: "Aceitar",
+    workflowitem_close_reject: "Rejeitar com comentários"
   },
 
   intents: {

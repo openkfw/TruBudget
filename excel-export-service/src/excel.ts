@@ -1,16 +1,16 @@
 import { AxiosInstance } from "axios";
 import { ServerResponse } from "http";
+import * as jwtDecode from "jwt-decode";
 import {
-  Project,
-  Subproject,
-  Workflowitem,
   getProjects,
   getSubprojects,
   getWorkflowitems,
+  Project,
+  Subproject,
+  Workflowitem,
 } from "./api";
-import * as jwtDecode from "jwt-decode";
+import { amountTypesMapping, statusMapping, workflowItemTypeMapping } from "./helper";
 import strings from "./localizeStrings";
-import { statusMapping, workflowItemTypeMapping, amountTypesMapping } from "./helper";
 
 var Excel = require("exceljs");
 
@@ -87,6 +87,7 @@ export async function writeXLSX(
       { header: strings.workflowitem.type, key: "workflowitemType", width: smallWidth },
       { header: strings.common.created, key: "creationUnixTs", width: mediumWidth },
       { header: strings.common.status, key: "status", width: smallWidth },
+      { header: strings.workflowitem.rejectReason, key: "rejectReason", width: smallWidth },
       { header: strings.common.description, key: "description", width: mediumWidth },
       { header: strings.common.assignee, key: "assignee", width: smallWidth },
       { header: strings.common.billing_date, key: "billingDate", width: mediumWidth },
@@ -194,6 +195,7 @@ export async function writeXLSX(
               workflowitemType: workflowItemTypeMapping(workflowitem.workflowitemType),
               amountType: amountTypesMapping(workflowitem.amountType),
               status: statusMapping(workflowitem.status),
+              rejectReason: workflowitem.rejectReason,
               exchangeRate: workflowitem.exchangeRate
                 ? parseFloat(workflowitem.exchangeRate)
                 : undefined,

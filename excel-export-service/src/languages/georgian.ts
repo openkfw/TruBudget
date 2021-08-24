@@ -40,6 +40,7 @@ const ka = {
     subproject_currency: "ქვეპროექტები ვალუტა",
     allocated: "დანიშნული",
     disbursed: "გადახდილი",
+    rejectReason: "უარყავი მიზეზი",
     na: "N/A",
   },
 

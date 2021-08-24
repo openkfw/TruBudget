@@ -7,9 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+## Unreleased
+
 ### Added
 
 - Add a bash script for a quick and easy TruBudget setup [#905](https://github.com/openkfw/TruBudget/issues/905)
+- Add possibility to reject a workflowitem [#845](https://github.com/openkfw/TruBudget/issues/845)
 
 <!-- ### Changed -->
 

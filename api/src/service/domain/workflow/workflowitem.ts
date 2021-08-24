@@ -4,12 +4,12 @@ import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
+import { StoredDocument, storedDocumentSchema } from "../document/document";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
-import { StoredDocument, storedDocumentSchema } from "../document/document";
 import { moneyAmountSchema } from "./money";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
@@ -32,6 +32,7 @@ export interface Workflowitem {
   amountType: "N/A" | "disbursed" | "allocated";
   description: string;
   status: "open" | "closed";
+  rejectReason?: string;
   assignee: string;
   documents: StoredDocument[];
   permissions: Permissions;
@@ -55,6 +56,7 @@ export interface RedactedWorkflowitem {
   amountType: null;
   description: null;
   status: "open" | "closed";
+  rejectReason?: string;
   assignee: null;
   documents: [];
   permissions: {};
@@ -117,6 +119,7 @@ const schema = Joi.object().keys({
   amountType: Joi.string().valid("N/A", "disbursed", "allocated").required(),
   description: Joi.string().allow(""),
   status: Joi.string().valid("open", "closed").required(),
+  rejectReason: Joi.string().optional(),
   assignee: Joi.string(),
   documents: Joi.array().required().items(storedDocumentSchema),
   permissions: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).required(),
@@ -160,6 +163,7 @@ export function redact(workflowitem: Workflowitem): RedactedWorkflowitem {
     amountType: null,
     description: null,
     status: workflowitem.status,
+    rejectReason: workflowitem.rejectReason,
     assignee: null,
     documents: [],
     permissions: {},

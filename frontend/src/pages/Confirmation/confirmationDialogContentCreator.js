@@ -1,13 +1,13 @@
-import React from "react";
 import { Typography } from "@material-ui/core";
 import _isEmpty from "lodash/isEmpty";
-
-import ActionsTable from "./ActionsTable";
+import React from "react";
+import { formatString } from "../../helper";
+import strings from "../../localizeStrings";
 import DisableUserDialogContent from "../Users/DisableUserDialogContent";
 import EnableUserDialogContent from "../Users/EnableUserDialogContent";
+import WokflowRejectDialogContent from "./../Workflows/WokflowRejectDialogContent";
+import ActionsTable from "./ActionsTable";
 
-import strings from "../../localizeStrings";
-import { formatString } from "../../helper";
 
 const ActionTypes = {
   ORIGINAL: 1,
@@ -62,7 +62,9 @@ export const createToggleUserContent = (actionTableData, originalAction, marginT
 
 };
 
-export const createCloseTexts = (intent = "") => {
+export const createCloseTexts = (originalAction,storeRejectReason) => {
+  const { intent, payload } = originalAction;
+
   switch(intent) {
     case "project.close":
       return _createCloseProjectText();
@@ -71,7 +73,7 @@ export const createCloseTexts = (intent = "") => {
       return _createCloseSubProjectText();
 
     case "workflowitem.close":
-      return _createCloseWorkflowItemText();
+      return _createCloseWorkflowItemText(payload,storeRejectReason);
 
     default:
       return {};
@@ -263,7 +265,11 @@ const _createCloseSubProjectText = () => {
   };
 };
 
-const _createCloseWorkflowItemText = () => {
+const _createCloseWorkflowItemText = (payload,storeRejectReason) => {
+  if(payload.isRejectDialog)
+  {
+    return _createRejectWorkflowItemText(storeRejectReason);
+  }
   const dialogText = strings.confirmation.workflowitem_close_text;
   const closeTitle = strings.confirmation.workflowitem_close;
 
@@ -271,6 +277,18 @@ const _createCloseWorkflowItemText = () => {
     closeTitle,
     closeContent: <Typography>{dialogText}</Typography>,
     closeConfirmButtonText: closeTitle
+  };
+};
+
+const _createRejectWorkflowItemText = (storeRejectReason) => {
+  const dialogText = {
+    commentLabel:strings.common.comment,
+    commentPlaceholder:strings.common.comment_description
+  };
+  return {
+    closeTitle: strings.confirmation.workflowitem_close_reject,
+    closeContent: <WokflowRejectDialogContent text={dialogText} storeRejectReason={storeRejectReason}/>,
+    closeConfirmButtonText: strings.common.reject
   };
 };
 

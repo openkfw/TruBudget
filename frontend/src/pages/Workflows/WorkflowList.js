@@ -4,9 +4,9 @@ import EditIcon from "@material-ui/icons/Edit";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableContainer } from "react-sortable-hoc";
-
 import { canReorderWorkflowItems } from "../../permissions.js";
 import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
+
 
 const styles = {
   editButtonContainer: {
@@ -27,6 +27,7 @@ const styles = {
     border: "1px solid #EFEFEF",
     borderRadius: 3
   }
+
 };
 
 const renderSortButton = props => (
@@ -109,6 +110,7 @@ const getSortableItems = ({ workflowItems, ...props }) => {
 
 const WorkflowList = SortableContainer(props => {
   const sortableItems = getSortableItems(props);
+
   return (
     <div style={styles.workflowItemsContainer}>
       <div style={styles.editButtonContainer}>
