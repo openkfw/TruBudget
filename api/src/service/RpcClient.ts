@@ -146,7 +146,7 @@ export class RpcClient {
             const items = await this.convertToReadableItems(responseData);
             const error = items.find((item) => Result.isErr(item));
             if (Result.isErr(error)) {
-              throw new VError("Error converting streamitems to readable items.", error);
+              throw new VError(error, "Error converting streamitems to readable items.");
             }
             responseData = items;
             resolve(responseData);
