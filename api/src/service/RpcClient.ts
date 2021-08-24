@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { performance } from "perf_hooks";
+import { VError } from "verror";
 import { config } from "../config";
 import logger from "../lib/logger";
 import { decrypt, encrypt } from "../lib/symmetricCrypto";
@@ -8,8 +9,8 @@ import { Item } from "./liststreamitems";
 import {
   ConnectionSettings,
   EncryptedItemToPublish,
-  StreamItem,
   ItemToPublish,
+  StreamItem,
 } from "./RpcClient.h";
 import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
@@ -145,13 +146,7 @@ export class RpcClient {
             const items = await this.convertToReadableItems(responseData);
             const error = items.find((item) => Result.isErr(item));
             if (Result.isErr(error)) {
-              logger.error({}, "Error converting streamitems to readable items", error.message);
-              logger.debug(
-                { error },
-                "Error converting stream items to readable items ",
-                error.message,
-              );
-              throw error;
+              throw new VError("Error converting streamitems to readable items.", error);
             }
             responseData = items;
             resolve(responseData);
@@ -159,50 +154,49 @@ export class RpcClient {
             resolve(responseData);
           }
         })
-        .catch((error: AxiosError) => {
+        .catch((error: AxiosError | Error) => {
           let response: RpcError;
+          if (axios.isAxiosError(error)) {
+            if (error.response && error.response.data.error !== null) {
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx and WITH multichain errors:
+              response = error.response.data.error;
+              reject(response);
+              logger.trace(
+                { response },
+                `Error during invoke of ${method}. Multichain errors occured.`,
+              );
+              return;
+            }
 
-          if (error.response && error.response.data.error !== null) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx and WITH multichain errors:
-            response = error.response.data.error;
-            reject(response);
-            logger.trace(
-              { response },
-              `Error during invoke of ${method}. Multichain errors occured.`,
-            );
-            return;
-          }
-
-          if (error.response) {
-            // non 2xx answer but no multichain data
-            logger.error(
-              { error: error.response },
-              `Error during invoke of ${method}. No multichain data.`,
-            );
-            response = new RpcError(
-              Number(error.response.status),
-              String(error.response.statusText),
-              error.response.headers,
-              error.response.data,
-            );
-          } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            // console.error(error.request);
-            logger.error({ error: error.message }, "No response from multichain received.");
-            response = new RpcError(500, "No Response from Multichain", {}, error.message);
+            if (error.response) {
+              // non 2xx answer but no multichain data
+              logger.error(
+                { error: error.response },
+                `Error during invoke of ${method}. No multichain data.`,
+              );
+              response = new RpcError(
+                Number(error.response.status),
+                String(error.response.statusText),
+                error.response.headers,
+                error.response.data,
+              );
+              reject(response);
+            } else if (error.request) {
+              // The request was made but no response was received
+              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+              // http.ClientRequest in node.js
+              // console.error(error.request);
+              logger.error({ error: error.message }, "No response from multichain received.");
+              response = new RpcError(500, "No Response from Multichain", {}, error.message);
+              reject(response);
+            }
           } else {
             // Something happened in setting up the request that triggered an Error
-            logger.error(
-              { error: error.message },
-              `Error while invoking method ${method}`,
-              error.message,
-            );
-            response = new RpcError(500, `other error: ${error.message}`, {}, "");
+            logger.error(error);
+            response = new RpcError(500, `other error: ${error}`, {}, "");
+            reject(response);
           }
-          reject(response);
         });
     });
   }
