@@ -17,9 +17,13 @@ import {
   ENABLE_BUDGET_EDIT,
   ENABLE_LIVE_UPDATES_SUBPROJECT,
   ENABLE_WORKFLOW_EDIT,
-  FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS, FETCH_FIRST_SUBPROJECT_HISTORY_PAGE,
-  FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS, FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
-  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS, FETCH_WORKFLOWITEM_PERMISSIONS,
+  FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+  FETCH_FIRST_SUBPROJECT_HISTORY_PAGE,
+  FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+  FETCH_WORKFLOWITEM_SUCCESS,
+  FETCH_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS, HIDE_REASON_DIALOG, HIDE_SUBPROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_CONFIRMATION_DIALOG,
@@ -41,7 +45,6 @@ import {
   SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
   SHOW_WORKFLOWITEM_PERMISSIONS,
   SHOW_WORKFLOW_CREATE,
-  SHOW_WORKFLOW_DETAILS,
   SHOW_WORKFLOW_EDIT,
   SHOW_WORKFLOW_PREVIEW, STORE_REJECT_REASON, STORE_WORKFLOWACTIONS,
   STORE_WORKFLOW_BATCH_ASSIGNEE,
@@ -96,7 +99,7 @@ const defaultState = fromJS({
   temporaryPermissions: {},
   creationDialogShown: false,
   showDetails: false,
-  showDetailsItemId: "",
+  showDetailsItem: {},
   showHistory: false,
   currentStep: 0,
   workflowSortEnabled: false,
@@ -172,6 +175,17 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowItems: fromJS(workflowitems),
         parentProject: fromJS(parentProject),
         projectedBudgets: fromJS(subproject.data.projectedBudgets)
+      });
+    case FETCH_WORKFLOWITEM_SUCCESS: {
+      return state.merge({
+        showDetails: true,
+        showDetailsItem: action.workflowitem
+      });
+    }
+    case HIDE_WORKFLOW_DETAILS:
+      return state.merge({
+        showDetails: false,
+        showDetailsItem: defaultState.getIn("showDetailsItem")
       });
     case SHOW_WORKFLOW_EDIT:
       return state.merge({
@@ -294,10 +308,7 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "status"], action.status);
     case WORKFLOW_DOCUMENT:
       return state.updateIn(["workflowToAdd", "documents"], documents =>
-        Immutable.List([
-          ...documents,
-          Immutable.Map({ base64: action.base64, fileName: action.fileName })
-        ])
+        Immutable.List([...documents, Immutable.Map({ base64: action.base64, fileName: action.fileName })])
       );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
@@ -311,16 +322,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("tempDrawerPermissions", fromJS(action.permissions));
     case SAVE_WORKFLOW_ITEM_BEFORE_SORT:
       return state.set("workflowItemsBeforeSort", fromJS(action.workflowItems));
-    case SHOW_WORKFLOW_DETAILS:
-      return state.merge({
-        showDetails: true,
-        showDetailsItemId: action.id
-      });
-    case HIDE_WORKFLOW_DETAILS:
-      return state.merge({
-        showDetails: false,
-        showDetailsItemId: defaultState.getIn("showDetailsItemId")
-      });
     case ENABLE_WORKFLOW_EDIT:
       return state.merge({
         workflowSortEnabled: true,

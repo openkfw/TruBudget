@@ -41,7 +41,6 @@ export const CREATE_WORKFLOW_SUCCESS = "CREATE_WORKFLOW_SUCCESS";
 export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
 export const EDIT_WORKFLOW_ITEM_SUCCESS = "EDIT_WORKFLOW_ITEM_SUCCESS";
 export const WORKFLOW_EDIT = "WORKFLOW_EDIT";
-export const SHOW_WORKFLOW_DETAILS = "SHOW_WORKFLOW_DETAILS";
 export const HIDE_WORKFLOW_DETAILS = "HIDE_WORKFLOW_DETAILS";
 export const CLOSE_WORKFLOWITEM_DETAILS = "CLOSE_WORKFLOWITEM_DETAILS";
 
@@ -71,6 +70,9 @@ export const POST_SUBPROJECT_EDIT = "POST_SUBPROJECT_EDIT";
 export const POST_SUBPROJECT_EDIT_SUCCESS = "POST_SUBPROJECT_EDIT_SUCCESS";
 
 export const WORKFLOW_CREATION_STEP = "WORKFLOW_CREATION_STEP";
+
+export const FETCH_WORKFLOWITEM = "FETCH_WORKFLOWITEM";
+export const FETCH_WORKFLOWITEM_SUCCESS = "FETCH_WORKFLOWITEM_SUCCESS";
 
 export const FETCH_ALL_SUBPROJECT_DETAILS = "FETCH_ALL_SUBPROJECT_DETAILS";
 export const FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS = "FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS";
@@ -145,6 +147,16 @@ export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading =
   };
 }
 
+export function fetchWorkflowitem(projectId, subprojectId, workflowitemId, showLoading = true) {
+  return {
+    type: FETCH_WORKFLOWITEM,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    showLoading
+  };
+}
+
 export function storePermissions(permissions) {
   return {
     type: SET_WORKFLOW_DRAWER_PERMISSIONS,
@@ -213,13 +225,6 @@ export function setCurrentStep(step) {
   return {
     type: WORKFLOW_CREATION_STEP,
     step
-  };
-}
-
-export function showWorkflowDetails(id) {
-  return {
-    type: SHOW_WORKFLOW_DETAILS,
-    id
   };
 }
 

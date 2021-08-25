@@ -58,11 +58,13 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 
 // Not sure about the Name
 const WorkflowTable = props => {
+  const { showDetailsItem } = props;
+
   return (
     <div data-test="workflowitem-table" style={{ paddingBottom: "8px" }}>
       {createTableHeader(props)}
       {createWorkflowItems(props)}
-      {<WorkflowDetails {...props} />}
+      {showDetailsItem && <WorkflowDetails workflowitem={showDetailsItem} {...props} />}
     </div>
   );
 };
