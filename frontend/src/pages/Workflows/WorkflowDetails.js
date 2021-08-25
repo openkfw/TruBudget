@@ -76,7 +76,6 @@ function Overview({ classes, users, workflowitem }) {
     displayName,
     description,
     amountType,
-    status,
     assignee,
     amount,
     currency,
@@ -84,6 +83,7 @@ function Overview({ classes, users, workflowitem }) {
     workflowitemType,
     rejectReason
   } = workflowitem.data;
+  const status = rejectReason ? "rejected" : workflowitem.data.status;
   const trimmedComment = removeNewLines(description);
   const assignedUser = users.find(user => user.id === assignee);
 
@@ -117,7 +117,7 @@ function Overview({ classes, users, workflowitem }) {
         </ListItemAvatar>
         <ListItemText
           data-test={"workflowitem-status"}
-          primary={statusMapping(status, rejectReason)}
+          primary={statusMapping(status)}
           secondary={strings.common.status}
         />
       </ListItem>

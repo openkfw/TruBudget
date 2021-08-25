@@ -1,5 +1,6 @@
 import DoneIcon from "@material-ui/icons/Check";
 import OpenIcon from "@material-ui/icons/Remove";
+import RejectedIcon from "@material-ui/icons/Block";
 import accounting from "accounting";
 import dayjs from "dayjs";
 import { Iterable } from "immutable";
@@ -105,12 +106,12 @@ export const unixTsToString = ts => {
   return dateString;
 };
 
-export const statusMapping = (status, rejectReason) => {
+export const statusMapping = status => {
   switch (status) {
     case "closed":
-        if(rejectReason)
-          return strings.common.rejected;
       return strings.common.closed;
+    case "rejected":
+      return strings.common.rejected;
     case "open":
       return strings.common.open;
     default:
@@ -133,6 +134,7 @@ export const amountTypes = amountType => {
 
 export const statusIconMapping = {
   closed: <DoneIcon />,
+  rejected: <RejectedIcon />,
   open: <OpenIcon />
 };
 
@@ -186,7 +188,7 @@ export const convertToSearchBarString = urlQueryString => {
   return urlQueryString.replace(/[=]/g, ":").replace(/[&]/g, " ");
 };
 
-export const hasUserAssignments = (assignments) => {
+export const hasUserAssignments = assignments => {
   const hasHiddenAssignments =
     assignments.hiddenAssignments !== undefined &&
     (assignments.hiddenAssignments.hasHiddenProjects === true ||
@@ -203,11 +205,11 @@ export const hasUserAssignments = (assignments) => {
 
 /*
  * isEmptyDeep(obj) checks all nested properties of the object.
- * If every property is empty, it return true, otherwise false
+ * If every property is empty, it returns true, otherwise false
  * A property can be an object or array
  * If property values are falsy (0, false), it is not considered as empty
  */
-export const isEmptyDeep = (obj) => {
+export const isEmptyDeep = obj => {
   if (_isObject(obj)) {
     if (Object.keys(obj).length === 0) return true;
     return _every(_map(obj, v => isEmptyDeep(v)));
