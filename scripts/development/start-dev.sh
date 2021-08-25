@@ -72,8 +72,8 @@ while [ "$1" != "" ]; do
 done
 
 
-# Get the absolute path of the script directory
-SCRIPT_DIR=$(dirname $(readlink -f $0))
+# Get the relative path of the script directory
+SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
 if [ "$IS_SLIM" = true ]; then

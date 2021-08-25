@@ -116,8 +116,8 @@ if [ "$PRUNE_DATA" = true ]; then
     fi
 fi
 
-# Get the absolute path of the script directory
-SCRIPT_DIR=$(dirname $(readlink -f $0))
+# Get the relative path of the script directory
+SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
 # Check if .env file exists in script directory
