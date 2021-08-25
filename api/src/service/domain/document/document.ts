@@ -9,6 +9,7 @@ export interface StoredDocument {
   hash: string;
   // new document feature properties
   fileName?: string;
+  available?: boolean;
   organization?: string;
   organizationUrl?: string;
 }
@@ -17,6 +18,7 @@ export const storedDocumentSchema = Joi.object({
   id: Joi.string().required(),
   hash: Joi.string().allow("").required(),
   fileName: Joi.string(),
+  available: Joi.boolean(),
   organization: Joi.string(),
   organizationUrl: Joi.string(),
 });

@@ -187,7 +187,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           const workflowitems = workflowitemsResult;
 
           return workflowitems.map((workflowitem) => {
-            const d = workflowitem.documents;
             const exposedWorkflowitem: ExposedWorkflowitem = {
               allowedIntents: workflowitem.isRedacted
                 ? []
