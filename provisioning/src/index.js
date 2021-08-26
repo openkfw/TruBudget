@@ -614,7 +614,8 @@ async function checkProvisionState(axios) {
   const { isProvisioned, message } = await queryProvisionState(axios);
   console.log(message);
   if (isProvisioned) {
-    process.exit(1);
+    console.log("The blockchain is already provisioned, skip provisioning ...");
+    process.exit(0);
   }
 }
 
