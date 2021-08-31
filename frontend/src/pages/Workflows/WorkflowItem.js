@@ -10,9 +10,9 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import AttachmentIcon from "@material-ui/icons/Attachment";
 import DoneIcon from "@material-ui/icons/Check";
-import CloseIcon from '@material-ui/icons/Close';
+import RejectedIcon from "@material-ui/icons/Block";
 import EditIcon from "@material-ui/icons/Edit";
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import MoreIcon from "@material-ui/icons/MoreHoriz";
@@ -28,7 +28,6 @@ import { canAssignWorkflowItem, canUpdateWorkflowItem, canViewWorkflowItemPermis
 import ActionButton from "../Common/ActionButton";
 import StyledBadge from "../Common/StyledBadge";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
-
 
 const styles = theme => {
   return {
@@ -390,8 +389,9 @@ const getCardStyle = (classes, workflowSortEnabled, status, rejected) => {
   if (status === "closed" && !rejected) {
     style = { background: green[50] };
   }
-  if (status === "closed" && rejected)
+  if (status === "closed" && rejected) {
     style = { background: red[50] };
+  }
   return style;
 };
 
@@ -404,7 +404,6 @@ const getCardClass = (classes, workflowSortEnabled, status) => {
   }
   return cardClass;
 };
-
 
 const renderActionButtons = (
   classes,
@@ -424,7 +423,6 @@ const renderActionButtons = (
   rejectReason,
   showReasonDialog,
   reject
-
 ) => {
   const additionalDataDisabled = _isEmpty(additionalData) || workflowSortEnabled;
   const editDisabled = !canEditWorkflow || workflowSortEnabled;
@@ -465,34 +463,32 @@ const renderActionButtons = (
             data-test="show-workflowitem-permissions"
             iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
           />
-        )
+        )}
 
-        }
+        {statusIsClosed ? null : (
+          <>
+            <ActionButton
+              onClick={closeDisabled ? undefined : reject}
+              icon={<RejectedIcon />}
+              title={closeDisabled ? "" : strings.common.reject}
+              workflowSortEnabled={workflowSortEnabled}
+              status={status}
+              iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+              data-test="reject-workflowitem"
+            />
 
-        {
-          statusIsClosed ? null : (
-            <>
-              <ActionButton
-                onClick={closeDisabled ? undefined : reject}
-                icon={<CloseIcon />}
-                title={closeDisabled ? "" : strings.common.reject}
-                workflowSortEnabled={workflowSortEnabled}
-                status={status}
-                iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-                data-test="reject-workflowitem"
-              />
+            <ActionButton
+              onClick={closeDisabled ? undefined : close}
+              icon={<DoneIcon />}
+              title={closeDisabled ? "" : strings.common.close}
+              workflowSortEnabled={workflowSortEnabled}
+              status={status}
+              iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+              data-test="close-workflowitem"
+            />
+          </>
+        )}
 
-              <ActionButton
-                onClick={closeDisabled ? undefined : close}
-                icon={<DoneIcon />}
-                title={closeDisabled ? "" : strings.common.close}
-                workflowSortEnabled={workflowSortEnabled}
-                status={status}
-                iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-                data-test="close-workflowitem"
-              />
-            </>
-          )}
         <ActionButton
           notVisible={status !== "closed" || !rejectReason}
           onClick={rejectReason ? showReasonDialog : undefined}
@@ -614,7 +610,7 @@ export const WorkflowItem = withTheme(
                   id,
                   rejectReason,
                   () => props.showReasonDialog(rejectReason),
-                  () => props.rejectWorkflowItem(id),
+                  () => props.rejectWorkflowItem(id)
                 )}
               </div>
             </Card>
