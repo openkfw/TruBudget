@@ -59,6 +59,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         id: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
                         creationUnixTs: { type: "string", example: "1536154645775" },
                         status: { type: "string", example: "open" },
+                        rejectReason: { type: "string", example: "I do not accept the price" },
                         amountType: { type: "string", example: "disbursed" },
                         displayName: { type: "string", example: "classroom" },
                         description: { type: "string", example: "build a classroom" },
@@ -111,6 +112,7 @@ interface ExposedWorkflowitem {
     id: string;
     creationUnixTs: string;
     status: "open" | "closed";
+    rejectReason?: string;
     amountType: "N/A" | "disbursed" | "allocated" | null;
     displayName: string | null;
     description: string | null;
@@ -199,6 +201,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
               id: workflowitem.id,
               creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),
               status: workflowitem.status,
+              rejectReason: workflowitem.rejectReason,
               amountType: workflowitem.amountType,
               displayName: workflowitem.displayName,
               description: workflowitem.description,
