@@ -13,6 +13,7 @@ import * as WorkflowitemPermissionGranted from "./workflowitem_permission_grante
 import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoked";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import { mapOldDocToNewDoc, StoredDocument } from "../document/document";
 
 export function sourceWorkflowitems(
   ctx: Ctx,
@@ -94,6 +95,19 @@ function sourceEvent(
     if (Result.isErr(workflowitem)) {
       return new VError(workflowitem, "could not create workflowitem from event");
     }
+    //TODO: remove with TB v2.0, old document structure should not be allowed anymore
+    const mappedDocuments: StoredDocument[] = [];
+    for (const doc of workflowitem.documents) {
+      const mappedDocument = mapOldDocToNewDoc(doc);
+      if (Result.isErr(mappedDocument)) {
+        return new VError(
+          mappedDocument,
+          "Could not map old workflowitem documents structure to new structure",
+        );
+      }
+      mappedDocuments.push(mappedDocument);
+    }
+    workflowitem.documents = mappedDocuments;
   }
 
   return workflowitem;

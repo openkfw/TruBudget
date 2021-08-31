@@ -50,6 +50,7 @@ const en = {
     finish: "Finish",
     global: "global",
     grant: "grant",
+    hash: "Hash",
     history_end: "Last event reached",
     history: "History",
     workflowitem_history: "Workflowitem history",
@@ -74,6 +75,9 @@ const en = {
     no_groups_text: "Create a new group by pressing the plus button.",
     no_history: "No events",
     no_items_text: "You can create one by pressing the plus button.",
+    no_documents: "No documents found",
+    no_documents_upload_text: "You can add one by pressing the upload button",
+    no_documents_info_text: "You can edit the workflowitem to add documents",
     no_nodes: "No requests for additonal nodes found",
     no_notifications: "No notifications found",
     no_organizations: "No requests for new organizations found",
@@ -86,7 +90,7 @@ const en = {
     not_assigned: "Not assigned",
     not_disbursed: "Not paid",
     not_ok: "Not OK",
-    ok:"Ok",
+    ok: "Ok",
     not_projected: "Not projected",
     open: "Open",
     organization: "Organization",
@@ -98,8 +102,8 @@ const en = {
     redacted: "Redacted",
     reset: "Reset",
     revoke: "revoke",
-    reject:"Reject",
-    rejected:"Rejected",
+    reject: "Reject",
+    rejected: "Rejected",
     search: "Search",
     show_permissions: "Show Permissions",
     status: "Status",
@@ -313,7 +317,7 @@ const en = {
     workflowitem_type_restricted:
       "When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
     workflow_reject_reason: "Reject reason"
-    },
+  },
 
   snackbar: {
     update_succeed_message: "Successfully modified {0}",

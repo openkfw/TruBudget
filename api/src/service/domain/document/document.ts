@@ -6,6 +6,7 @@ import VError = require("verror");
 
 export interface StoredDocument {
   id: string;
+  documentId?: string;
   hash: string;
   // new document feature properties
   fileName?: string;
@@ -16,6 +17,7 @@ export interface StoredDocument {
 
 export const storedDocumentSchema = Joi.object({
   id: Joi.string().required(),
+  documentId: Joi.string(),
   hash: Joi.string().allow("").required(),
   fileName: Joi.string(),
   available: Joi.boolean(),
@@ -84,4 +86,14 @@ async function hashBase64String(base64String: string): Promise<string> {
 export function validate(input: any): Result.Type<UploadedDocument> {
   const { error, value } = Joi.validate(input, uploadedDocumentSchema);
   return !error ? value : error;
+}
+
+export function mapOldDocToNewDoc(document: StoredDocument): Result.Type<StoredDocument> {
+  return document.documentId
+    ? {
+        id: document.documentId,
+        hash: document.hash,
+        fileName: document.id,
+      }
+    : document;
 }

@@ -51,6 +51,7 @@ const de = {
     finish: "Finish",
     global: "Global",
     grant: "German: grant",
+    hash: "Hash",
     history: "History",
     workflowitem_history: "Workflowitem History",
     subproject_history: "Subprojekt History",
@@ -68,6 +69,9 @@ const de = {
     no_groups: "Keine Gruppen gefunden",
     no_groups_text: "Erstellen Sie eine neue Gruppe, indem Sie auf das Plus drücken.",
     no_items_text: "Sie können einen neuen Eintrag erstellen, indem Sie auf das Plus drücken.",
+    no_documents: "Keine Dokumente gefunden",
+    no_documents_upload_text: "Sie können einen hinzufügen, indem Sie auf den Upload Button klicken",
+    no_documents_info_text: "Sie können das Workflow-Item bearbeiten, um Dokumente hinzuzufügen",
     no_nodes: "Keine Anfragen für zusätzliche Nodes gefunden",
     no_notifications: "Keine Benachrichtigungen gefunden",
     no_organizations: "Keine Anfragen für neue Organisationen gefunden",
@@ -81,7 +85,7 @@ const de = {
     not_projected: "Nicht projiziert",
     not_disbursed: "Nicht ausgezahlt",
     not_ok: "NOK",
-    ok:"Ok",
+    ok: "Ok",
     open: "Open",
     organization: "Organisation",
     password: "Passwort",
@@ -92,8 +96,8 @@ const de = {
     redacted: "Redigiert",
     reset: "Zurücksetzen",
     revoke: "German: revoke",
-    reject:" Ablehnen",
-    rejected:"Abgelehnt",
+    reject: " Ablehnen",
+    rejected: "Abgelehnt",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
     status: "Status",
@@ -247,7 +251,7 @@ const de = {
     workflowitem_type_restricted:
       "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
     workflow_reject_reason: "Ablehnungsgrund"
-    },
+  },
 
   snackbar: {
     update_succeed_message: "{0} erfolgreich geändert",
