@@ -33,36 +33,43 @@ const DialogButtons = props => {
     executedActions = [],
     actionsAreExecuted,
     executingActions,
-    failedAction
+    failedAction,
+    submitable = true
   } = props;
 
   const totalActionsLength = additionalActions?.length + originalActions?.length + postActions?.length;
 
   return (
     <DialogActions className={classes.dialogActions}>
-      <div className={classes.progessContainer}>
-        <Typography key="progressInfo" className={classes.progressInfo} data-test="actions-counter">
-          {strings.formatString(strings.preview.actions_done, executedActions.length, totalActionsLength)}
-        </Typography>
-      </div>
+      {submitable && (
+        <div className={classes.progessContainer}>
+          <Typography key="progressInfo" className={classes.progressInfo} data-test="actions-counter">
+            {strings.formatString(strings.preview.actions_done, executedActions.length, totalActionsLength)}
+          </Typography>
+        </div>
+      )}
+
       <Button
         disabled={executingActions || actionsAreExecuted}
         aria-label="cancel"
         data-test="confirmation-dialog-cancel"
-        color="secondary"
+        color={submitable ? "secondary" : "primary"}
         onClick={() => onCancel()}
       >
-        {strings.common.cancel}
+        {submitable ? strings.common.cancel : strings.common.ok}
       </Button>
-      <Button
-        aria-label="confirm"
-        data-test="confirmation-dialog-confirm"
-        color="primary"
-        onClick={_isEmpty(failedAction) ? () => onConfirm() : () => onCancel()}
-        disabled={confirmDisabled || executingActions || actionsAreExecuted}
-      >
-        {confirmButtonText}
-      </Button>
+
+      {submitable && (
+        <Button
+          aria-label="confirm"
+          data-test="confirmation-dialog-confirm"
+          color="primary"
+          onClick={_isEmpty(failedAction) ? () => onConfirm() : () => onCancel()}
+          disabled={confirmDisabled || executingActions || actionsAreExecuted}
+        >
+          {confirmButtonText}
+        </Button>
+      )}
     </DialogActions>
   );
 };

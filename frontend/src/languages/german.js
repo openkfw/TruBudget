@@ -352,7 +352,9 @@ const de = {
     grant_and_assign: "Gewähren & Zuweisen",
     list_permissions_required_text:
       "Stellen Sie sicher, dass Sie Leseberechtigungen für Berechtigungen der beteiligten Ressourcen besitzen",
-    no_permission_warning: "Warnung: Sie haben keine Berechtigung, Aktionen auszuführen die markiert sind mit ",
+    no_permission_warning: "Sie benötigen folgende Berechtigungen, um alle angeforderten Aktionen ausführen zu können:",
+    no_permission_help:
+      "Folgende Benutzer sind berechtigt, Ihnen Berechtigungen für die benötigten Ressourcen zu geben:",
     original_actions: "Sie haben folgende Aktionen angefordert:",
     permissions_required: "Berechtigungen erforderlich",
     permissions_text: `{0} benötigt zusätzliche Berechtigungen um {1} "{2}" sehen zu können.`,

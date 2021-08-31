@@ -2,11 +2,13 @@ describe("Project Assignee", function() {
   const executingUser = "mstein";
   const testUser = "jdoe";
   let projectId;
-  let permissionsBeforeTesting;
+  let permissionsBeforeTesting, baseUrl, apiRoute;
   const longUserId = `long_test_user_${Math.floor(Math.random() * 1000000)}`;
   const longUserName = "Z22-Testuser-with-a-very-very-very-very-very-very-long-name";
 
   before(() => {
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
     cy.createProject("p-assign", "project assign test").then(({ id }) => {
       projectId = id;
@@ -123,6 +125,9 @@ describe("Project Assignee", function() {
   });
 
   it("Assigning without project permission to grant view permissions is not possible", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
+
     // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser);
@@ -132,11 +137,18 @@ describe("Project Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=confirmation-warning]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
+
+    cy.wait("@listProjectPermissions");
+    // Permission required Dialog should be open
+    cy.get("[data-test='confirmation-dialog']")
+      .find("h2")
+      .should("be.visible")
+      .should("contain", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-cancel]")
       .should("be.visible")
       .click();
+
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });

@@ -1,11 +1,11 @@
 describe("Subproject Assignee", function() {
   const executingUser = "mstein";
   const testUser = "jdoe";
-  let projectId;
-  let subprojectId;
-  let permissionsBeforeTesting;
+  let projectId, subprojectId, permissionsBeforeTesting, baseUrl, apiRoute;
 
   before(() => {
+    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
     cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
       projectId = id;
@@ -112,6 +112,7 @@ describe("Subproject Assignee", function() {
     });
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
+
   it("The confirmation dialog assigns the selected user and grants required view Permissions", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -133,6 +134,7 @@ describe("Subproject Assignee", function() {
       revokeViewPermissions(permissionsBeforeTesting, projectId, subprojectId, assigneeId);
     });
   });
+
   it("Canceling the confirmation dialog doesn't assign nor grant view permissions", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -146,10 +148,13 @@ describe("Subproject Assignee", function() {
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
-
     assertViewPermissions(permissionsBeforeTesting, projectId, subprojectId, false);
   });
+
   it("Assigning without project permission to grant view permissions is not possible", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
+
     // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser);
@@ -159,11 +164,18 @@ describe("Subproject Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=confirmation-warning]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
+
+    cy.wait("@listSubProjectPermissions");
+    // Permission required Dialog should be open
+    cy.get("[data-test='confirmation-dialog']")
+      .find("h2")
+      .should("be.visible")
+      .should("contain", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-cancel]")
       .should("be.visible")
       .click();
+
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
@@ -171,7 +183,11 @@ describe("Subproject Assignee", function() {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
+
   it("Assigning without subproject permission to grant view permissions is not possible", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
+
     // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
@@ -182,11 +198,19 @@ describe("Subproject Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=confirmation-warning]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
+
+    cy.wait("@listSubProjectPermissions");
+
+    // Permission required Dialog should be open
+    cy.get("[data-test='confirmation-dialog']")
+      .find("h2")
+      .should("be.visible")
+      .should("contain", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-cancel]")
       .should("be.visible")
       .click();
+
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
@@ -194,7 +218,11 @@ describe("Subproject Assignee", function() {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
+
   it("Assigning without project nor subproject permission to grant view permissions is not possible", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
+
     // Grant project/subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
@@ -207,11 +235,19 @@ describe("Subproject Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=confirmation-warning]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
+
+    cy.wait("@listSubProjectPermissions");
+
+    // Permission required Dialog should be open
+    cy.get("[data-test='confirmation-dialog']")
+      .find("h2")
+      .should("be.visible")
+      .should("contain", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-cancel]")
       .should("be.visible")
       .click();
+
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
@@ -220,6 +256,7 @@ describe("Subproject Assignee", function() {
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
   });
+
   it("Assigning without project 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.revokeProjectPermission(projectId, "project.intent.listPermissions", executingUser);
 
@@ -242,6 +279,7 @@ describe("Subproject Assignee", function() {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
+
   it("Assigning without subproject 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
 
@@ -264,6 +302,7 @@ describe("Subproject Assignee", function() {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
   });
+
   it("Assigning without project nor subproject 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.revokeProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
@@ -277,6 +316,7 @@ describe("Subproject Assignee", function() {
     cy.get("[data-test=confirmation-dialog-title]")
       .should("be.visible")
       .should("have.text", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-close]")
       .should("be.visible")
       .click();
@@ -288,6 +328,7 @@ describe("Subproject Assignee", function() {
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", executingUser);
   });
+
   it("All required project/subproject action are shown", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -310,6 +351,7 @@ describe("Subproject Assignee", function() {
         .should("have.length", 1);
     });
   });
+
   it("All missing project permissions are shown", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", assigneeId);
@@ -335,6 +377,7 @@ describe("Subproject Assignee", function() {
       cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", assigneeId);
     });
   });
+
   it("All missing subproject permissions are shown", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.viewSummary", assigneeId);
@@ -361,6 +404,7 @@ describe("Subproject Assignee", function() {
       cy.revokeProjectPermission(projectId, "project.viewDetails", assigneeId);
     });
   });
+
   it("No missing actions are shown if there aren't any", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.viewSummary", assigneeId);
