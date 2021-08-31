@@ -350,7 +350,10 @@ const fr = {
     grant_and_assign: "Accorder & Assigner",
     list_permissions_required_text:
       "Assurez-vous que vous avez la liste des autorisations requises pour toutes les ressources impliquées",
-    no_permission_warning: "Avertissement: Vous n'êtes pas autorisé à exécuter toutes les actions répertoriées!",
+    no_permission_warning:
+      "Vous devez disposer des autorisations suivantes pour pouvoir exécuter toutes les actions demandées :",
+    no_permission_help:
+      "Les utilisateurs suivants sont autorisés à vous accorder des permissions sur les ressources nécessaires :",
     original_actions: "Vous avez demandé les actions suivantes:",
     permissions_required: "Autorisations requises",
     permissions_text: `{0} a besoin d'autorisations supplémentaires pour voir {1} "{2}".`,

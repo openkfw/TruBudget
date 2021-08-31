@@ -319,7 +319,6 @@ const pt = {
     workflowitem_type_restricted:
       "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização.",
     workflow_reject_reason: "Rejeitar a razão"
-
   },
 
   snackbar: {
@@ -353,7 +352,9 @@ const pt = {
     grant_and_assign: "Grant & Assign",
     list_permissions_required_text:
       "Verifique se você tem permissões de lista necessárias para todos os recursos envolvidos",
-    no_permission_warning: "Aviso: você não tem permissão para executar todas as ações listadas!",
+    no_permission_warning: "Necessita das seguintes permissões para executar todas as acções solicitadas:",
+    no_permission_help:
+      "Os Utilizadores seguintes estão autorizados a conceder-lhe permissões sobre os Recursos necessários:",
     original_actions: "Solicitou as seguintes acções:",
     permissions_required: "Permissões necessárias",
     permissions_text: `{0} precisa de permissões adicionais para visualizar {1} "{2}".`,

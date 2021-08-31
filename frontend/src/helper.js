@@ -226,3 +226,5 @@ export const getGroupsOfUser = (user, groups) => {
 export const isUserOrGroupPermitted = (user, groupsOfUser, permittedUsersAndGroups = []) => {
   return permittedUsersAndGroups.some(id => id === user || groupsOfUser.find(group => group.groupId === id));
 };
+
+export const capitalize = string => string.replace(/^\w/, c => c.toUpperCase());

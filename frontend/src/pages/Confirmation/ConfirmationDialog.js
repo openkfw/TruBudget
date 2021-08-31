@@ -5,13 +5,10 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
-import { formatString, hasUserAssignments, isEmptyDeep, isUserOrGroupPermitted } from "../../helper";
+import { getGroupsOfUser, hasUserAssignments, isEmptyDeep, isUserOrGroupPermitted } from "../../helper";
 import strings from "../../localizeStrings";
-import { createCloseTexts, createContent, createToggleUserContent } from "./confirmationDialogContentCreator";
-import DialogButtons from "./DialogButtons";
-import ErrorTypography from "./ErrorTypography";
 
-
+import { ConfirmationDialogCreator } from "./confirmationDialogCreator";
 
 const styles = {
   paperRoot: {
@@ -45,33 +42,14 @@ const ConfirmationDialog = props => {
     permissions,
     confirmingUser,
     groups,
-    executedAdditionalActions,
     additionalActions,
-    originalActions,
     requestedPermissions,
     onCancel,
     isListPermissionsRequiredFromApi,
     isFetchingPermissions,
-    enabledUsers,
-    disabledUsers,
-    fetchUserAssignments,
-    cleanUserAssignments,
     userAssignments,
-    postActions,
     failedAction,
-    additionalActionsExecuted,
-    executingAdditionalActions,
-    failedPostAction,
-    postActionsExecuted,
-    executingPostActions,
-    executedPostActions,
-    executeAllActions,
-    executedOriginalActions,
-    executingOriginalActions,
-    originalActionsExecuted,
-    failedOriginalAction,
-    storeRejectReason,
-    rejectReason
+    ...restProps
   } = props;
 
   const [hasAssignments, setHasAssignments] = useState(true);
@@ -91,113 +69,31 @@ const ConfirmationDialog = props => {
     );
   }
 
-  let title = strings.confirmation.confirmation_required;
-  let content = null;
-  let confirmButtonText = strings.common.confirm;
+  const resourcesToCheck = getResourcesToCheck(additionalActions);
+  const permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, resourcesToCheck);
 
-  const permittedToGrant = isPermittedToGrant(confirmingUser, groups, permissions, additionalActions);
-  const marginTop = additionalActionsExist(additionalActions) ? { marginTop: "28px" } : {};
-  const actionTableData = {
-    originalActions,
-    executedOriginalActions,
-    executingOriginalActions,
-    additionalActions,
-    executedAdditionalActions,
-    executingAdditionalActions,
-    postActions,
-    executingPostActions,
-    executedPostActions,
-    failedAction,
-    failedPostAction,
-    failedOriginalAction,
-    enabledUsers,
-    groups
-  };
+  const confirmationDialogCreator = new ConfirmationDialogCreator(
+    {
+      ...restProps,
+      groups,
+      failedAction,
+      additionalActions,
+      hasAssignments,
+      userAssignments,
+      requestedPermissions,
+      permittedToGrant
+    },
+    classes.paperRoot,
+    open,
+    onCancel
+  );
 
-  for(const originalAction of originalActions){
-    const intent = originalAction.intent;
-    content = null;
-
-    // Payload is defined by the saga which triggers the CONFIRM_INTENT-action
-    switch (intent) {
-      case "project.assign":
-      case "subproject.assign":
-      case "workflowitem.assign":
-      case "project.createSubproject":
-      case "subproject.createWorkflowitem":
-      case "project.intent.grantPermission":
-      case "project.intent.revokePermission":
-      case "subproject.intent.grantPermission":
-      case "subproject.intent.revokePermission":
-      case "workflowitem.intent.grantPermission":
-      case "workflowitem.intent.revokePermission": {
-        const { createdContent, createdConfirmButtonText} = createContent(actionTableData, originalAction, marginTop);
-
-        confirmButtonText = createdConfirmButtonText ? createdConfirmButtonText : confirmButtonText;
-        content = createdContent;
-
-        break;
-      }
-
-      case "project.close":
-      case "subproject.close":
-      case "workflowitem.close":
-        const textContainer = createCloseTexts(originalAction,storeRejectReason);
-
-        title = textContainer.closeTitle;
-        content = textContainer.closeContent;
-        confirmButtonText = textContainer.closeConfirmButtonText;
-
-        break;
-
-      case "global.enableUser":
-      case "global.disableUser": {
-
-        const toggleUserActionTableData = {
-          ...actionTableData,
-          enabledUsers: [...enabledUsers, ...disabledUsers],
-          userAssignments,
-          fetchUserAssignments,
-          cleanUserAssignments
-        };
-
-        const { createdContent, createdTitle, createdConfirmButtonText} =
-          createToggleUserContent(toggleUserActionTableData, originalAction, marginTop);
-
-        content = createdContent;
-        title = createdTitle;
-        confirmButtonText = createdConfirmButtonText;
-
-        break;
-      }
-
-
-      default:
-        title = "Not implemented confirmation";
-        content = "Confirmation Dialog for " + intent + " is not implemented yet";
-        break;
-    }
+  if (hasSufficientPermission(permittedToGrant, additionalActions)) {
+    return confirmationDialogCreator.createActionsTableDialog();
   }
 
-  return (
-    <Dialog classes={{ paper: classes.paperRoot }} open={open} data-test="confirmation-dialog">
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>{content}</DialogContent>
-      {renderErrorInformation(permittedToGrant, additionalActions, failedAction)}
-      <DialogButtons
-        confirmButtonText={confirmButtonText}
-        onConfirm={executeAllActions}
-        onCancel={requestedPermissions ? () => onCancel(requestedPermissions) : onCancel}
-        confirmDisabled={(!permittedToGrant && additionalActionsExist(additionalActions)) || hasAssignments|| ( rejectReason.length === 0 && isWorkflowItemReject(originalActions)) }
-        additionalActions={additionalActions}
-        originalActions={originalActions}
-        postActions={postActions}
-        executedActions={[...executedAdditionalActions, ...executedOriginalActions, ...executedPostActions]}
-        actionsAreExecuted={additionalActionsExecuted || originalActionsExecuted || postActionsExecuted}
-        executingActions={executingAdditionalActions || executingOriginalActions || executingPostActions}
-        failedAction={failedAction}
-      />
-    </Dialog>
+  return confirmationDialogCreator.createPermissionRequiredDialog(
+    getGrantPermissionUserMap(confirmingUser, getGroupsOfUser(confirmingUser, groups), permissions, resourcesToCheck)
   );
 };
 
@@ -242,43 +138,48 @@ function buildDialogWithLoadingIndicator(
   );
 }
 
-const isWorkflowItemReject = (originalActions) =>  originalActions.some(action => action.intent === "workflowitem.close") && originalActions.some(action => action.payload.isRejectDialog === true);
-
-
 function additionalActionsExist(additionalActions) {
   return !_isEmpty(additionalActions);
 }
 
-function renderErrorInformation(permittedToGrant, additionalActions, failedAction) {
-  if (!permittedToGrant && additionalActionsExist(additionalActions))
-    return <ErrorTypography type="warning" showWarningIcon={true} text={strings.confirmation.no_permission_warning} />;
-  if (!_isEmpty(failedAction)) {
-    return (
-      <ErrorTypography
-        type="error"
-        text={formatString(strings.confirmation.failed_action_error, failedAction.permission, failedAction.identity)}
-      />
-    );
-  }
-  return null;
+function hasSufficientPermission(permittedToGrant, additionalActions) {
+  return permittedToGrant || !additionalActionsExist(additionalActions);
 }
 
-function isPermittedToGrant(username, groups, permissions, actions) {
+function isPermittedToGrant(username, groups, permissions, resourcesToCheck) {
   if (isEmptyDeep(permissions)) return true;
-
-  const resourcesToCheck = actions.reduce((resourcesToCheck, action) => {
-    const resource = action.intent.split(".")[0];
-    if (!resourcesToCheck.includes(resource)) {
-      resourcesToCheck.push(resource);
-    }
-    return resourcesToCheck;
-  }, []);
 
   const groupsOfUser = groups.filter(item => item.users.includes(username));
 
   return resourcesToCheck.every(resource =>
     isUserOrGroupPermitted(username, groupsOfUser, permissions[resource][`${resource}.intent.grantPermission`])
   );
+}
+
+function getResourcesToCheck(actions) {
+  return actions.reduce((resourcesToCheck, action) => {
+    const resource = action.intent.split(".")[0];
+
+    if (!resourcesToCheck.includes(resource)) {
+      resourcesToCheck.push(resource);
+    }
+
+    return resourcesToCheck;
+  }, []);
+}
+
+function getGrantPermissionUserMap(username, groups, permissions, resourcesToCheck) {
+  return resourcesToCheck.reduce((result, resource) => {
+    const permittedUsers = permissions[resource][`${resource}.intent.grantPermission`];
+
+    const permittedUser = permittedUsers[0];
+
+    if (!isUserOrGroupPermitted(username, groups, permittedUsers)) {
+      result.push({ permittedUser, resource });
+    }
+
+    return result;
+  }, []);
 }
 
 export default withStyles(styles)(ConfirmationDialog);
