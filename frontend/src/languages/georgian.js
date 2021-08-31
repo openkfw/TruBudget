@@ -187,7 +187,8 @@ const ka = {
     declined_by: "უარი თქვა",
     connection_status: "კავშირის სტატუსი",
     last_seen: "ბოლო ნახვა",
-    admin_description: "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
+    admin_description:
+      "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
   },
 
   login: {
@@ -288,6 +289,7 @@ const ka = {
     workflow_documents: "დოკუმენტები",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
+    workflow_document_not_available: "დოკუმენტი მიუწვდომელია",
     workflow_name: "დასახელება",
     workflow_next_step: "შემდეგი ნაბიჯი",
     workflow_no_actions: "ქმედების განხორციელება არ არის საჭირო",

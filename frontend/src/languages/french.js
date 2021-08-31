@@ -87,7 +87,7 @@ const fr = {
     not_assigned: "Non engagé",
     not_disbursed: "Non payé",
     not_ok: "Pas OK",
-    ok:"Ok",
+    ok: "Ok",
     not_projected: "Non estimé",
     open: "Ouvert",
     organization: "Organisation",
@@ -99,8 +99,8 @@ const fr = {
     redacted: "Expurgé",
     reset: "Réinitialiser",
     revoke: "Révoquer",
-    reject:"Rejette",
-    rejected:" Rejeté",
+    reject: "Rejette",
+    rejected: " Rejeté",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",
     status: "Statut",
@@ -225,6 +225,7 @@ const fr = {
     workflow_fingerprint: "Empreinte digitale",
     workflow_name: "Nom de l’étape de workflow",
     workflow_next_step: "Prochaine étape",
+    workflow_document_not_available: "Document non disponible",
     workflow_no_actions: "Pas d'action",
     workflow_no_documents: "Pas de document",
     workflow_none: "blub",
@@ -247,8 +248,8 @@ const fr = {
     workflowitem_type_general: "Créer une étape de workflow de type général.",
     workflowitem_type_restricted:
       "Lors de l'attribution d'un workflow restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation",
-    workflow_reject_reason:"Motif de rejet"
-    },
+    workflow_reject_reason: "Motif de rejet"
+  },
 
   snackbar: {
     update_succeed_message: "{0} modifiée",
@@ -320,8 +321,8 @@ const fr = {
     declined_by: "Refusé par",
     connection_status: "Statut de connexion",
     last_seen: "Vu pour la dernière fois",
-    admin_description: "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
-
+    admin_description:
+      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
   },
 
   preview: {
@@ -358,7 +359,7 @@ const fr = {
     workflowitem_close: "Fermer l’étape de workflow ",
     workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",
     workflowitem_create: "créer des étapes de workflow",
-    workflowitem_close_reject:"Rejet avec commentaire",
+    workflowitem_close_reject: "Rejet avec commentaire",
     workflowitem_close_accept: "Acceptez"
   },
 

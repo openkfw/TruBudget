@@ -276,7 +276,8 @@ const editWorkflow = (
   );
 };
 
-const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
+const getInfoButton = (classes, props, status, workflowSortEnabled, workflow) => {
+  const { openWorkflowDetails, projectId, subProjectId } = props;
   const showBadge = status === "open" && isDateReached(workflow.dueDate) && !workflowSortEnabled;
   return (
     <div>
@@ -291,7 +292,7 @@ const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEna
         <IconButton
           disabled={workflowSortEnabled}
           className={`${getButtonClass(classes, workflowSortEnabled, status)}`}
-          onClick={() => openWorkflowDetails(workflow.id)}
+          onClick={() => openWorkflowDetails(projectId, subProjectId, workflow.id)}
           data-test={`workflowitem-info-button-${workflow.id}`}
         >
           <InfoIcon />
@@ -304,15 +305,18 @@ const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEna
 const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
   const { documents } = workflow;
   const showAttachFileBadge = documents && documents.length > 0;
-  const showToolTip = documents && documents.length > 0 && documents.some((doc) => doc.fileName !== undefined);
+  const showToolTip = documents && documents.length > 0 && documents.some(doc => doc.fileName !== undefined);
   const attachmentFileTooltip = () =>
-    showAttachFileBadge && showToolTip && (
+    showAttachFileBadge &&
+    showToolTip && (
       <ul className={classes.tooltip}>
-        {documents.map((item, index) => item.fileName ? (
-          <li key={`${item.fileName}_${index}`} className={classes.tooltipItem}>
-            {item.fileName}
-          </li>
-        ) : null)}
+        {documents.map((item, index) =>
+          item.fileName ? (
+            <li key={`${item.fileName}_${index}`} className={classes.tooltipItem}>
+              {item.fileName}
+            </li>
+          ) : null
+        )}
       </ul>
     );
 
@@ -386,8 +390,8 @@ const getCardStyle = (classes, workflowSortEnabled, status, rejected) => {
   if (status === "closed" && !rejected) {
     style = { background: green[50] };
   }
-  if(status === "closed" && rejected)
-    style = { background: red[50]  };
+  if (status === "closed" && rejected)
+    style = { background: red[50] };
   return style;
 };
 
@@ -450,49 +454,49 @@ const renderActionButtons = (
           data-test="edit-workflowitem"
           iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
         />
-        { workflowSortEnabled || permissionsDisabled ? null : (
+        {workflowSortEnabled || permissionsDisabled ? null : (
           <ActionButton
-          notVisible={workflowSortEnabled || permissionsDisabled}
-          onClick={permissionsDisabled ? undefined : showPerm}
-          icon={<PermissionIcon />}
-          title={permissionsDisabled ? "" : strings.common.show_permissions}
-          workflowSortEnabled={workflowSortEnabled}
-          status={status}
-          data-test="show-workflowitem-permissions"
-          iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-        />
+            notVisible={workflowSortEnabled || permissionsDisabled}
+            onClick={permissionsDisabled ? undefined : showPerm}
+            icon={<PermissionIcon />}
+            title={permissionsDisabled ? "" : strings.common.show_permissions}
+            workflowSortEnabled={workflowSortEnabled}
+            status={status}
+            data-test="show-workflowitem-permissions"
+            iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+          />
         )
 
         }
 
         {
-         statusIsClosed ? null :(
-         <>
-           <ActionButton
-            onClick={closeDisabled ? undefined : reject}
-            icon={<CloseIcon />}
-            title={closeDisabled ? "" : strings.common.reject}
-            workflowSortEnabled={workflowSortEnabled}
-            status={status}
-            iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-            data-test="reject-workflowitem"
-          />
+          statusIsClosed ? null : (
+            <>
+              <ActionButton
+                onClick={closeDisabled ? undefined : reject}
+                icon={<CloseIcon />}
+                title={closeDisabled ? "" : strings.common.reject}
+                workflowSortEnabled={workflowSortEnabled}
+                status={status}
+                iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+                data-test="reject-workflowitem"
+              />
 
-          <ActionButton
-            onClick={closeDisabled ? undefined : close}
-            icon={<DoneIcon />}
-            title={closeDisabled ? "" : strings.common.close}
-            workflowSortEnabled={workflowSortEnabled}
-            status={status}
-            iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-            data-test="close-workflowitem"
-          />
-        </>
-        )}
+              <ActionButton
+                onClick={closeDisabled ? undefined : close}
+                icon={<DoneIcon />}
+                title={closeDisabled ? "" : strings.common.close}
+                workflowSortEnabled={workflowSortEnabled}
+                status={status}
+                iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+                data-test="close-workflowitem"
+              />
+            </>
+          )}
         <ActionButton
-          notVisible={ status !== "closed" || !rejectReason }
+          notVisible={status !== "closed" || !rejectReason}
           onClick={rejectReason ? showReasonDialog : undefined}
-          icon={<ErrorOutlineIcon/> }
+          icon={<ErrorOutlineIcon />}
           title={strings.common.rejected}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
@@ -543,7 +547,6 @@ export const WorkflowItem = withTheme(
         const canCloseWorkflowitem = currentUser === assignee;
         const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";
 
-
         return (
           <div className={classes.container} data-test={`workflowitem-container-${id}`}>
             {createLine(classes, mapIndex === 0, workflowSelectable)}
@@ -562,7 +565,7 @@ export const WorkflowItem = withTheme(
               elevation={workflowSelectable ? 1 : 0}
               key={mapIndex}
               className={`${getCardClass(classes, workflowSortEnabled, status)} ${classes.card}`}
-              style={getCardStyle(classes, workflowSortEnabled, status,rejectReason)}
+              style={getCardStyle(classes, workflowSortEnabled, status, rejectReason)}
             >
               <div className={classes.workflowContent} data-test={`workflowitem-${id}`}>
                 <div className={classes.infoCell}>{infoButton}</div>

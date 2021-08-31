@@ -221,6 +221,7 @@ const de = {
     workflow_documents: "Documents",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "German: Fingerprint",
+    workflow_document_not_available: "Dokument ist nicht verfügbar",
     workflow_name: "Name",
     workflow_next_step: "Next step",
     workflow_no_actions: "No actions required",

@@ -513,6 +513,14 @@ class Api {
     return instance.get(path);
   };
 
+  getWorkflowItem = (projectId, subprojectId, workflowitemId) => {
+    return instance.get(
+      removeEmptyQueryParams(
+        `/workflowitem.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
+      )
+    );
+  };
+
   downloadDocument = (projectId, subprojectId, workflowitemId, documentId) =>
     instance
       .get(

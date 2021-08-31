@@ -23,6 +23,7 @@ import {
   enableWorkflowEdit,
   fetchAllSubprojectDetails,
   hideReasonDialog,
+  fetchWorkflowitem,
   hideWorkflowDetails,
   hideWorkflowDialog,
   hideWorkflowitemAdditionalData,
@@ -35,7 +36,6 @@ import {
   showEditDialog,
   showReasonDialog,
   showSubProjectAssignee,
-  showWorkflowDetails,
   showWorkflowitemAdditionalData,
   showWorkflowItemPermissions,
   storeWorkflowItemsSelected,
@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     openHistory: () => {
       dispatch(openHistory());
     },
-    openWorkflowDetails: id => dispatch(showWorkflowDetails(id)),
+    openWorkflowDetails: (pId, sId, id) => dispatch(fetchWorkflowitem(pId, sId, id)),
     hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
     closeWorkflowitemDetailsDialog: () => dispatch(closeWorkflowitemDetailsDialog()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
@@ -234,7 +234,7 @@ const mapStateToProps = state => {
     parentProject: state.getIn(["workflow", "parentProject"]),
     subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
     showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
-    showDetailsItemId: state.getIn(["workflow", "showDetailsItemId"]),
+    showDetailsItem: state.getIn(["workflow", "showDetailsItem"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"]),
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),

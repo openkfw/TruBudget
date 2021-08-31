@@ -289,6 +289,7 @@ const pt = {
     workflow_documents: "Documentos",
     workflow_enable_sort: "Ordenar",
     workflow_fingerprint: "Miniatura",
+    workflow_document_not_available: "Documento não disponível",
     workflow_name: "Nome",
     workflow_next_step: "Próxima etapa",
     workflow_no_actions: "Nenhuma ação necessária",

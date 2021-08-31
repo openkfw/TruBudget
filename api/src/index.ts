@@ -98,6 +98,7 @@ import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_doc
 import * as WorkflowitemGetService from "./service/workflowitem_get";
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
+import * as WorkflowitemGetDetailsService from "./service/workflowitem_get_details";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
@@ -133,6 +134,7 @@ import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
 import * as WorkflowitemListAPI from "./workflowitem_list";
+import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
@@ -647,6 +649,19 @@ SubprojectUpdateAPI.addHttpHandler(server, URL_PREFIX, {
 WorkflowitemListAPI.addHttpHandler(server, URL_PREFIX, {
   listWorkflowitems: (ctx, user, projectId, subprojectId) =>
     WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
+});
+
+WorkflowitemViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
+  getWorkflowitemDetails: (ctx, user, projectId, subprojectId, workflowitemId) =>
+    WorkflowitemGetDetailsService.getWorkflowitemDetails(
+      db,
+      storageServiceClient,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+    ),
 });
 
 WorkflowitemViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {

@@ -63,18 +63,6 @@ const styles = theme => {
   };
 };
 
-const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) => {
-  let workflowItem = {
-    key: "",
-    data: []
-  };
-
-  if (showWorkflowDetails) {
-    workflowItem = workflowItems.find(workflow => workflow.data.id === showDetailsItemId);
-  }
-
-  return workflowItem;
-};
 const removeNewLines = text => {
   let formattedText = "";
   if (!_isEmpty(text)) {
@@ -195,9 +183,8 @@ function Documents({
 
 function WorkflowDetails({
   classes,
-  workflowItems,
+  workflowitem,
   showWorkflowDetails,
-  showDetailsItemId,
   hideWorkflowDetails,
   closeWorkflowitemDetailsDialog,
   users,
@@ -213,9 +200,8 @@ function WorkflowDetails({
     }
   }, [showWorkflowDetails]);
 
-  const workflowitem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-
   let content;
+
   if (selectedTab === 0) {
     content = <Overview {...{ classes, users, workflowitem }} />;
   } else if (selectedTab === 1) {
