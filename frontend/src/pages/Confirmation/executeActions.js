@@ -207,7 +207,8 @@ export function executeActions(
         const project = action.payload.project;
         const subproject = action.payload.subproject;
         const workflowitem = action.payload.workflowitem;
-        closeWorkflowItem(project.id, subproject.id, workflowitem.id);
+        const isRejectDialog = action.payload.isRejectDialog;
+        closeWorkflowItem(project.id, subproject.id, workflowitem.id, isRejectDialog);
         break;
       }
       case "global.disableUser": {

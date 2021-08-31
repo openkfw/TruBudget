@@ -3,6 +3,7 @@ interface MinioConfig {
   secretKey: string;
   host: string;
   port: number;
+  bucketName: string;
 }
 interface Config {
   host: string;
@@ -20,6 +21,7 @@ const config: Config = {
     secretKey: process.env.MINIO_SECRET_KEY || "minio123",
     host: process.env.MINIO_HOST || "localhost",
     port: Number(process.env.MINIO_PORT) || 9000,
+    bucketName: process.env.MINIO_BUCKET_NAME || "trubudget",
   },
 };
 

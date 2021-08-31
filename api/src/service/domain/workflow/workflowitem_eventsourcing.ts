@@ -1,9 +1,9 @@
 import { VError } from "verror";
-
 import { Ctx } from "../../../lib/ctx";
 import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+import * as DocumentValidated from "../document/document_validated";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemAssigned from "./workflowitem_assigned";
@@ -13,7 +13,7 @@ import * as WorkflowitemPermissionGranted from "./workflowitem_permission_grante
 import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoked";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import * as DocumentValidated from "../document/document_validated";
+import { mapOldDocToNewDoc, StoredDocument } from "../document/document";
 
 export function sourceWorkflowitems(
   ctx: Ctx,
@@ -95,6 +95,19 @@ function sourceEvent(
     if (Result.isErr(workflowitem)) {
       return new VError(workflowitem, "could not create workflowitem from event");
     }
+    //TODO: remove with TB v2.0, old document structure should not be allowed anymore
+    const mappedDocuments: StoredDocument[] = [];
+    for (const doc of workflowitem.documents) {
+      const mappedDocument = mapOldDocToNewDoc(doc);
+      if (Result.isErr(mappedDocument)) {
+        return new VError(
+          mappedDocument,
+          "Could not map old workflowitem documents structure to new structure",
+        );
+      }
+      mappedDocuments.push(mappedDocument);
+    }
+    workflowitem.documents = mappedDocuments;
   }
 
   return workflowitem;

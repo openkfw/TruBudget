@@ -50,6 +50,7 @@ const pt = {
     finish: "Finalizar",
     global: "global",
     grant: "Conceder",
+    hash: "Hash",
     history_end: "Fim do histórico",
     history: "Histórico",
     workflowitem_history: "História do item de workflow",
@@ -75,6 +76,9 @@ const pt = {
     no_groups_text: "Crie um novo grupo pressionando o botão mais.",
     no_history: "Sem histórico",
     no_items_text: "Você pode criar um, pressionando o botão mais.",
+    no_documents: "Nenhum documento encontrado",
+    no_documents_upload_text: "Você pode adicionar um pressionando o botão de upload",
+    no_documents_info_text: "Você pode editar o item de workflow de trabalho para adicionar documentos",
     no_nodes: "Nenhum pedido de nós aditonais encontrado",
     no_notifications: "Nenhuma notificação encontrada",
     no_organizations: "Nenhum pedido de novas organizações foi encontrado",
@@ -87,6 +91,7 @@ const pt = {
     not_assigned: "Não atribuído",
     not_disbursed: "Não pago",
     not_ok: "Não OK",
+    ok: "Ok",
     not_projected: "Não projetado",
     open: "Aberto",
     organization: "Organização",
@@ -98,6 +103,8 @@ const pt = {
     redacted: "Redigido",
     reset: "Redefinir",
     revoke: "Revogar",
+    reject: "Rejeitar",
+    rejected: "Rejeitado",
     search: "Procurar",
     show_permissions: "Mostrar permissões",
     status: "Status",
@@ -286,6 +293,7 @@ const pt = {
     workflow_documents: "Documentos",
     workflow_enable_sort: "Ordenar",
     workflow_fingerprint: "Miniatura",
+    workflow_document_not_available: "Documento não disponível",
     workflow_name: "Nome",
     workflow_next_step: "Próxima etapa",
     workflow_no_actions: "Nenhuma ação necessária",
@@ -309,7 +317,8 @@ const pt = {
     workflowitem_type: "Categoria do item de workflow",
     workflowitem_type_general: "Criar un item de workflow do tipo general.",
     workflowitem_type_restricted:
-      "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização."
+      "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização.",
+    workflow_reject_reason: "Rejeitar a razão"
   },
 
   snackbar: {
@@ -343,7 +352,9 @@ const pt = {
     grant_and_assign: "Grant & Assign",
     list_permissions_required_text:
       "Verifique se você tem permissões de lista necessárias para todos os recursos envolvidos",
-    no_permission_warning: "Aviso: você não tem permissão para executar todas as ações listadas!",
+    no_permission_warning: "Necessita das seguintes permissões para executar todas as acções solicitadas:",
+    no_permission_help:
+      "Os Utilizadores seguintes estão autorizados a conceder-lhe permissões sobre os Recursos necessários:",
     original_actions: "Solicitou as seguintes acções:",
     permissions_required: "Permissões necessárias",
     permissions_text: `{0} precisa de permissões adicionais para visualizar {1} "{2}".`,
@@ -355,7 +366,9 @@ const pt = {
     user_group: "Usuários/Grupo",
     workflowitem_close: "Fechar item de workflow",
     workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?",
-    workflowitem_create: "Criar item de fluxo de trabalho"
+    workflowitem_create: "Criar item de fluxo de trabalho",
+    workflowitem_close_accept: "Aceitar",
+    workflowitem_close_reject: "Rejeitar com comentários"
   },
 
   intents: {
@@ -621,7 +634,11 @@ const pt = {
     service: "Service",
     slow: "lento",
     version: "versão",
-    very_slow: "muito lento"
+    very_slow: "muito lento",
+    error: "Erro",
+    warning: "Advertência",
+    done: "feito",
+    toBeDone: "A fazer"
   },
 
   language: {

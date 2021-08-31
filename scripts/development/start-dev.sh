@@ -1,6 +1,5 @@
 #!/bin/bash
-# export COMPOSE_HTTP_TIMEOUT=300
-# sh scripts/development/start-dev.sh
+# bash start-dev.sh --slim
 
 
 Help()
@@ -13,16 +12,16 @@ Help()
     echo "The Multichain data is NOT persisted and will be lost after a restart."
     echo "The environmental variables are set automatically."
     echo
-    echo "Hint: Make sure you are in the root directory of TruBudget."
     echo
-    echo "Syntax: sh scripts/development/start-dev.sh [options]"
-    echo "Example: sh scripts/development/start-dev.sh --full --build"
+    echo "Syntax: bash start-dev.sh [options]"
+    echo "Example: bash start-dev.sh --full --build"
     echo
     echo "options:"
     echo "      --slim                  Starts a TruBudget instance with master-node, master-api, provisioning and frontend."
     echo "      --full                  Starts a TruBudget instance with master-node, emaildb, minio, master-api, email-service,"
     echo "                              provisioning, excel-export-service, storage and frontend."
     echo "      --build                 Force docker-compose built"
+    echo "      --no-provisioning       Do not start the provisioning"
     echo "-h  | --help                  Print the help section"
     echo
     echo "Default option: full TruBudget instance with all services in debug mode"
@@ -53,6 +52,11 @@ while [ "$1" != "" ]; do
             shift # past argument
         ;;
         
+        --no-provisioning)
+            IS_NO_PROVISONING=true
+            shift # past argument
+        ;;
+        
         -h|--help)
             Help
             exit 1
@@ -68,20 +72,22 @@ while [ "$1" != "" ]; do
 done
 
 
-CURRENT_DIR=$(pwd)
-echo "INFO: Current working directory: $CURRENT_DIR"
+# Get the relative path of the script directory
+SCRIPT_DIR=$(dirname -- $0)
+echo "INFO: Current script directory: $SCRIPT_DIR"
 
 if [ "$IS_SLIM" = true ]; then
-    echo "INFO: Copy $CURRENT_DIR/scripts/development/.env_example_slim to $CURRENT_DIR/.env"
-    cp $CURRENT_DIR/scripts/development/.env_example_slim $CURRENT_DIR/.env
+    # Slim setup
+    echo "INFO: Copy $SCRIPT_DIR/.env_example_slim to $SCRIPT_DIR/.env"
+    cp $SCRIPT_DIR/.env_example_slim $SCRIPT_DIR/.env
 else
     # Full setup
-    echo "INFO: Copy $CURRENT_DIR/scripts/development/.env_example_full to $CURRENT_DIR/.env"
-    cp $CURRENT_DIR/scripts/development/.env_example_full $CURRENT_DIR/.env
+    echo "INFO: Copy $SCRIPT_DIR/.env_example_full to $SCRIPT_DIR/.env"
+    cp $SCRIPT_DIR/.env_example_full $SCRIPT_DIR/.env
 fi
 
 
-COMPOSE="docker-compose -f docker-compose/development/docker-compose.yml -p trubudget-dev --env-file $CURRENT_DIR/.env"
+COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-dev --env-file $SCRIPT_DIR/.env"
 $COMPOSE down
 
 if [ "$IS_BUILD" = true ]; then
@@ -94,13 +100,21 @@ fi
 
 
 if [ "$IS_SLIM" = true ]; then
-    echo "INFO: Setup slim TruBudget environment ..."
-    $COMPOSE up  --no-deps master-node master-api provisioning frontend
-    
+    if [ "$IS_NO_PROVISONING" = true ]; then
+        echo "INFO: Setup slim TruBudget environment without provisioning ..."
+        $COMPOSE up master-node master-api frontend
+    else
+        echo "INFO: Setup slim TruBudget environment with provisioning ..."
+        $COMPOSE up master-node master-api provisioning frontend
+    fi
 else
-    echo "INFO: Setup full TruBudget environment ..."
-    # Start all services
-    $COMPOSE up
+    if [ "$IS_NO_PROVISONING" = true ]; then
+        echo "INFO: Setup full TruBudget environment without provisioning ..."
+        $COMPOSE up master-node emaildb minio master-api email-service excel-export-service storage-service frontend
+    else
+        echo "INFO: Setup full TruBudget environment with provisioning ..."
+        $COMPOSE up
+    fi
 fi
 
 

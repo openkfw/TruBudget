@@ -428,12 +428,21 @@ class Api {
       subprojectId
     });
 
-  closeWorkflowItem = (projectId, subprojectId, workflowitemId) =>
-    instance.post(`/workflowitem.close`, {
+  closeWorkflowItem = (projectId, subprojectId, workflowitemId, rejectReason) => {
+    if(rejectReason === "")
+      return instance.post(`/workflowitem.close`, {
+        projectId,
+        subprojectId,
+        workflowitemId
+      });
+    else
+    return instance.post(`/workflowitem.close`, {
       projectId,
       subprojectId,
-      workflowitemId
+      workflowitemId,
+      rejectReason
     });
+  }
 
   fetchNotifications = (offset, limit) => {
     let url = removeEmptyQueryParams(`/notification.list?offset=${offset}&limit=${limit}`);
@@ -502,6 +511,14 @@ class Api {
   getEmailAddress = id => {
     const path = this.getEmailServiceUrl(`user.getEmailAddress?id=${id}`);
     return instance.get(path);
+  };
+
+  getWorkflowItem = (projectId, subprojectId, workflowitemId) => {
+    return instance.get(
+      removeEmptyQueryParams(
+        `/workflowitem.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
+      )
+    );
   };
 
   downloadDocument = (projectId, subprojectId, workflowitemId, documentId) =>

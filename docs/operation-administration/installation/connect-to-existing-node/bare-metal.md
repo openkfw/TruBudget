@@ -1,6 +1,7 @@
 # Connect to an Existing Network on Bare Metal
 
-This guide describes how to connect to an existing network without the use of Docker, Docker-Compose or Kubernetes. Before starting the network make sure to [install the necessary software on your machine.](./../create-new-network/bare-metal.md)
+This guide describes how to connect to an existing network without the use of Docker, Docker-Compose or Kubernetes.
+Before starting make sure to have `node`,`npm` and the [latest release of MultiChain](https://www.multichain.com/download-community/) available on your machine.
 
 ## Table of Contents
 

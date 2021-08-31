@@ -50,6 +50,7 @@ const en = {
     finish: "Finish",
     global: "global",
     grant: "grant",
+    hash: "Hash",
     history_end: "Last event reached",
     history: "History",
     workflowitem_history: "Workflowitem history",
@@ -74,6 +75,9 @@ const en = {
     no_groups_text: "Create a new group by pressing the plus button.",
     no_history: "No events",
     no_items_text: "You can create one by pressing the plus button.",
+    no_documents: "No documents found",
+    no_documents_upload_text: "You can add one by pressing the upload button",
+    no_documents_info_text: "You can edit the workflowitem to add documents",
     no_nodes: "No requests for additonal nodes found",
     no_notifications: "No notifications found",
     no_organizations: "No requests for new organizations found",
@@ -86,6 +90,7 @@ const en = {
     not_assigned: "Not assigned",
     not_disbursed: "Not paid",
     not_ok: "Not OK",
+    ok: "Ok",
     not_projected: "Not projected",
     open: "Open",
     organization: "Organization",
@@ -97,6 +102,8 @@ const en = {
     redacted: "Redacted",
     reset: "Reset",
     revoke: "revoke",
+    reject: "Reject",
+    rejected: "Rejected",
     search: "Search",
     show_permissions: "Show Permissions",
     status: "Status",
@@ -183,7 +190,8 @@ const en = {
     declined_by: "Declined by",
     connection_status: "Connection status",
     last_seen: "Last seen",
-    admin_description: "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
+    admin_description:
+      "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
   },
 
   login: {
@@ -275,6 +283,7 @@ const en = {
     workflow_disable_sort: "Save",
     workflow_document_changed: "Changed",
     workflow_document_description: "Add name of document",
+    workflow_document_not_available: "Document is not available",
     workflow_document_name: "Document Name",
     workflow_document_validate: "Validate",
     workflow_document_validated: "Validated",
@@ -306,7 +315,8 @@ const en = {
     workflowitem_type: "Workflowitem type",
     workflowitem_type_general: "Create a workflowitem of type general.",
     workflowitem_type_restricted:
-      "When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions."
+      "When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
+    workflow_reject_reason: "Reject reason"
   },
 
   snackbar: {
@@ -339,7 +349,8 @@ const en = {
       "Error: Grant {0} to {1} failed. All actions that would have been executed after the error occured including the original actions are cancelled.",
     grant_and_assign: "Grant & Assign",
     list_permissions_required_text: "Make sure you have required list Permissions for all resources involved",
-    no_permission_warning: "Warning: You don't have permission to execute all listed actions!",
+    no_permission_warning: "You need following permissions in order to execute all requested actions:",
+    no_permission_help: "Following Users are permitted to grant you permissions on the needed Resources:",
     original_actions: "You requested the following actions:",
     permissions_required: "Permissions required",
     permissions_text: `{0} needs additional permissions to view {1} "{2}".`,
@@ -350,8 +361,10 @@ const en = {
     subproject_close_text: "Are you sure, you want to close this subproject?",
     user_group: "User/Group",
     workflowitem_close: "Close workflowitem",
-    workflowitem_close_text: "Are you sure, you want to close this workflowitem?",
-    workflowitem_create: "Create workflowitem"
+    workflowitem_close_text: "Do you want to accept and close this workflowitem?",
+    workflowitem_close_reject: "Reject with comment",
+    workflowitem_create: "Create workflowitem",
+    workflowitem_close_accept: "Accept"
   },
 
   intents: {
@@ -617,7 +630,11 @@ const en = {
     service: "Service",
     slow: "slow",
     version: "Version",
-    very_slow: "very slow"
+    very_slow: "very slow",
+    error: "Error",
+    warning: "Warning",
+    done: "Done",
+    toBeDone: "To Be Done"
   },
 
   language: {

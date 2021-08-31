@@ -2,29 +2,31 @@ import Card from "@material-ui/core/Card";
 import Checkbox from "@material-ui/core/Checkbox";
 import Chip from "@material-ui/core/Chip";
 import green from "@material-ui/core/colors/lightGreen";
+import red from "@material-ui/core/colors/red";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import DoneIcon from "@material-ui/icons/Check";
-import EditIcon from "@material-ui/icons/Edit";
-import InfoIcon from "@material-ui/icons/InfoOutlined";
 import AttachmentIcon from "@material-ui/icons/Attachment";
+import DoneIcon from "@material-ui/icons/Check";
+import RejectedIcon from "@material-ui/icons/Block";
+import EditIcon from "@material-ui/icons/Edit";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 import PermissionIcon from "@material-ui/icons/LockOpen";
 import MoreIcon from "@material-ui/icons/MoreHoriz";
 import OpenIcon from "@material-ui/icons/Remove";
 import SwapIcon from "@material-ui/icons/SwapCalls";
 import HiddenIcon from "@material-ui/icons/VisibilityOff";
-import { withStyles, withTheme } from "@material-ui/core/styles";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
-import ActionButton from "../Common/ActionButton";
-import StyledBadge from "../Common/StyledBadge";
-
-import { amountTypes, fromAmountString, toAmountString, isDateReached } from "../../helper.js";
+import { amountTypes, fromAmountString, isDateReached, toAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import { canAssignWorkflowItem, canUpdateWorkflowItem, canViewWorkflowItemPermissions } from "../../permissions.js";
+import ActionButton from "../Common/ActionButton";
+import StyledBadge from "../Common/StyledBadge";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
 const styles = theme => {
@@ -273,7 +275,8 @@ const editWorkflow = (
   );
 };
 
-const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
+const getInfoButton = (classes, props, status, workflowSortEnabled, workflow) => {
+  const { openWorkflowDetails, projectId, subProjectId } = props;
   const showBadge = status === "open" && isDateReached(workflow.dueDate) && !workflowSortEnabled;
   return (
     <div>
@@ -288,7 +291,7 @@ const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEna
         <IconButton
           disabled={workflowSortEnabled}
           className={`${getButtonClass(classes, workflowSortEnabled, status)}`}
-          onClick={() => openWorkflowDetails(workflow.id)}
+          onClick={() => openWorkflowDetails(projectId, subProjectId, workflow.id)}
           data-test={`workflowitem-info-button-${workflow.id}`}
         >
           <InfoIcon />
@@ -301,15 +304,18 @@ const getInfoButton = (classes, { openWorkflowDetails }, status, workflowSortEna
 const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
   const { documents } = workflow;
   const showAttachFileBadge = documents && documents.length > 0;
-  const showToolTip = documents && documents.length > 0 && documents.some((doc) => doc.fileName !== undefined);
+  const showToolTip = documents && documents.length > 0 && documents.some(doc => doc.fileName !== undefined);
   const attachmentFileTooltip = () =>
-    showAttachFileBadge && showToolTip && (
+    showAttachFileBadge &&
+    showToolTip && (
       <ul className={classes.tooltip}>
-        {documents.map((item, index) => item.fileName ? (
-          <li key={`${item.fileName}_${index}`} className={classes.tooltipItem}>
-            {item.fileName}
-          </li>
-        ) : null)}
+        {documents.map((item, index) =>
+          item.fileName ? (
+            <li key={`${item.fileName}_${index}`} className={classes.tooltipItem}>
+              {item.fileName}
+            </li>
+          ) : null
+        )}
       </ul>
     );
 
@@ -378,10 +384,13 @@ const getButtonClass = (classes, workflowSortEnabled, status) => {
   return {};
 };
 
-const getCardStyle = (classes, workflowSortEnabled, status) => {
+const getCardStyle = (classes, workflowSortEnabled, status, rejected) => {
   let style = {};
-  if (status === "closed") {
+  if (status === "closed" && !rejected) {
     style = { background: green[50] };
+  }
+  if (status === "closed" && rejected) {
+    style = { background: red[50] };
   }
   return style;
 };
@@ -410,12 +419,16 @@ const renderActionButtons = (
   showAdditionalData,
   additionalData,
   idsPermissionsUnassigned,
-  id
+  id,
+  rejectReason,
+  showReasonDialog,
+  reject
 ) => {
   const additionalDataDisabled = _isEmpty(additionalData) || workflowSortEnabled;
   const editDisabled = !canEditWorkflow || workflowSortEnabled;
   const permissionsDisabled = !canListWorkflowPermissions || workflowSortEnabled;
   const closeDisabled = !canCloseWorkflow || workflowSortEnabled;
+  const statusIsClosed = workflowSortEnabled || status === "closed" || closeDisabled;
   return (
     <div className={classes.actionCell}>
       <div className={classes.actions}>
@@ -439,25 +452,52 @@ const renderActionButtons = (
           data-test="edit-workflowitem"
           iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
         />
+        {workflowSortEnabled || permissionsDisabled ? null : (
+          <ActionButton
+            notVisible={workflowSortEnabled || permissionsDisabled}
+            onClick={permissionsDisabled ? undefined : showPerm}
+            icon={<PermissionIcon />}
+            title={permissionsDisabled ? "" : strings.common.show_permissions}
+            workflowSortEnabled={workflowSortEnabled}
+            status={status}
+            data-test="show-workflowitem-permissions"
+            iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+          />
+        )}
+
+        {statusIsClosed ? null : (
+          <>
+            <ActionButton
+              onClick={closeDisabled ? undefined : reject}
+              icon={<RejectedIcon />}
+              title={closeDisabled ? "" : strings.common.reject}
+              workflowSortEnabled={workflowSortEnabled}
+              status={status}
+              iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+              data-test="reject-workflowitem"
+            />
+
+            <ActionButton
+              onClick={closeDisabled ? undefined : close}
+              icon={<DoneIcon />}
+              title={closeDisabled ? "" : strings.common.close}
+              workflowSortEnabled={workflowSortEnabled}
+              status={status}
+              iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
+              data-test="close-workflowitem"
+            />
+          </>
+        )}
+
         <ActionButton
-          notVisible={workflowSortEnabled || permissionsDisabled}
-          onClick={permissionsDisabled ? undefined : showPerm}
-          icon={<PermissionIcon />}
-          title={permissionsDisabled ? "" : strings.common.show_permissions}
+          notVisible={status !== "closed" || !rejectReason}
+          onClick={rejectReason ? showReasonDialog : undefined}
+          icon={<ErrorOutlineIcon />}
+          title={strings.common.rejected}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
-          data-test="show-workflowitem-permissions"
           iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-        />
-        <ActionButton
-          notVisible={workflowSortEnabled || status === "closed" || closeDisabled}
-          onClick={closeDisabled ? undefined : close}
-          icon={<DoneIcon />}
-          title={closeDisabled ? "" : strings.common.close}
-          workflowSortEnabled={workflowSortEnabled}
-          status={status}
-          iconButtonClassName={getButtonClass(workflowSortEnabled, status)}
-          data-test="close-workflowitem"
+          data-test="closed-workflowitem-reject-reason"
         />
       </div>
     </div>
@@ -490,6 +530,7 @@ export const WorkflowItem = withTheme(
           assignee,
           exchangeRate,
           currency: sourceCurrency,
+          rejectReason,
           additionalData
         } = workflow.data;
         const allowedIntents = workflow.allowedIntents;
@@ -520,7 +561,7 @@ export const WorkflowItem = withTheme(
               elevation={workflowSelectable ? 1 : 0}
               key={mapIndex}
               className={`${getCardClass(classes, workflowSortEnabled, status)} ${classes.card}`}
-              style={getCardStyle(classes, workflowSortEnabled, status)}
+              style={getCardStyle(classes, workflowSortEnabled, status, rejectReason)}
             >
               <div className={classes.workflowContent} data-test={`workflowitem-${id}`}>
                 <div className={classes.infoCell}>{infoButton}</div>
@@ -566,7 +607,10 @@ export const WorkflowItem = withTheme(
                   () => props.showWorkflowitemAdditionalData(id),
                   additionalData,
                   idsPermissionsUnassigned,
-                  id
+                  id,
+                  rejectReason,
+                  () => props.showReasonDialog(rejectReason),
+                  () => props.rejectWorkflowItem(id)
                 )}
               </div>
             </Card>

@@ -20,22 +20,31 @@ export async function closeWorkflowitem(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
+  rejectReason?: string,
 ): Promise<Result.Type<void>> {
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
-    WorkflowitemClose.closeWorkflowitem(ctx, serviceUser, projectId, subprojectId, workflowitemId, {
-      getWorkflowitems: async (pId, spId) => {
-        return cache.getWorkflowitems(pId, spId);
+    WorkflowitemClose.closeWorkflowitem(
+      ctx,
+      serviceUser,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      {
+        getWorkflowitems: async (pId, spId) => {
+          return cache.getWorkflowitems(pId, spId);
+        },
+        getSubproject: async (pId, spId) => {
+          return cache.getSubproject(pId, spId);
+        },
+        getUsersForIdentity: async (identity) => {
+          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
+        },
+        applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
+          return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
+        },
       },
-      getSubproject: async (pId, spId) => {
-        return cache.getSubproject(pId, spId);
-      },
-      getUsersForIdentity: async (identity) => {
-        return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
-      },
-      applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
-        return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
-      },
-    }),
+      rejectReason,
+    ),
   );
 
   if (Result.isErr(newEventsResult)) {

@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.25.0] - 2021-08-31
+
+### Added
+
+- Add a bash script for a quick and easy TruBudget setup [#905](https://github.com/openkfw/TruBudget/issues/905)
+- Add possibility to reject a workflowitem [#845](https://github.com/openkfw/TruBudget/issues/845)
+- Add Permission Required dialog [#933](https://github.com/openkfw/TruBudget/issues/933)
+- Disable download option for documents that are not available anymore [#944](https://github.com/openkfw/TruBudget/issues/944)
+
+### Fixed
+
+- Fixed group permissions were not considered when checking permissions for an action [#907](https://github.com/openkfw/TruBudget/issues/907)
+- Fixed exception when revoking and adding permissions in one step [#922](https://github.com/openkfw/TruBudget/issues/922)
+
 ## [1.24.0] - 2021-08-05
 
 ### Added
@@ -649,7 +663,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.23.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.25.0...master
+[1.25.0]: https://github.com/openkfw/TruBudget/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/openkfw/TruBudget/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/openkfw/TruBudget/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/openkfw/TruBudget/compare/v1.21.0...v1.22.0

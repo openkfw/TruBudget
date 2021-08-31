@@ -37,6 +37,7 @@ const fr = {
     id: "ID de l'étape de workflow",
     name: "Nom de l'étape de workflow",
     type: "Type de l'étape de workflow",
+    rejectReason: "Motif de refus",
     subproject_currency: "Devise de la composante",
     allocated: "Engagé",
     disbursed: "Payé",

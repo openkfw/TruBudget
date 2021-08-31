@@ -3,7 +3,9 @@ import _cloneDeep from "lodash/cloneDeep";
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
 const testUser = { id: "thouse", displayname: "Tom House", password: "test" };
 const testUser2 = { id: "jxavier", displayname: "Jane Xavier", password: "test" };
+const testUser3 = { id: "pkleffmann", displayname: "Piet Kleffmann"};
 const testGroup = { id: "admins", displayname: "Admins" };
+const testGroup2 = { id: "reviewers", displayname: "Reviewers"}
 let projectId, subprojectId, permissionsBeforeTesting, baseUrl, apiRoute;
 const subprojectDisplayname = "subproject assign test";
 const rootSecret = Cypress.env("ROOT_SECRET");
@@ -71,9 +73,6 @@ describe("Subproject Permissions", function() {
     });
   }
 
-  /**
-   * @param {boolean} listPermIncluded    If set to true subproject.intent.listPermissions is also added
-   */
   function addViewPermissions(permissions, identity) {
     const permissionsCopy = _cloneDeep(permissions);
     addPermission(permissionsCopy.project, "project.viewSummary", identity);
@@ -688,5 +687,91 @@ describe("Subproject Permissions", function() {
       .then(() => {
         assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId);
       });
+  });
+
+  it("Users of group with Permission have minimum the same permission as the group", function() {
+    Cypress.Promise.all([
+      // grant permissions to testgroup
+      cy.grantProjectPermission(projectId, "project.viewSummary", testGroup2.id),
+      cy.grantProjectPermission(projectId, "project.viewDetails", testGroup2.id),
+      cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroup2.id),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroup2.id),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroup2.id),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.createWorkflowitem", testGroup2.id),
+      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroup2.id),
+    ]).then(() => {
+
+    // Create WorkflowItem with user as creator and assignee
+    // After provisioning testUser3 is part of testGroup2 and should automatically have the groups permissions
+    cy.login(testUser3.id, "test");
+    cy.visit(`/projects/${projectId}/${subprojectId}`);
+
+    cy.get("[data-test=createWorkflowitem]").click();
+    cy.get("[data-test=nameinput]").type("Test");
+
+    cy.get("[data-test=next]").click();
+    cy.get("[data-test=submit]").click();
+
+    cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
+
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+
+    // Check if assignee has been set
+    cy.get("[data-test^=workflowitem-]")
+      .last()
+      .find(`[data-test=single-select]`)
+      .should("contain", testUser3.displayname);
+    });
+  });
+
+  it("It is possible to revoke and grant a permission in one step", function() {
+    // Grant Permission Beforehand so it can be revoked during the test
+    cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id).then(() => {
+
+    // Edit Sub Project Permissions
+    cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
+    cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
+      .should("be.visible")
+      .click();
+
+    // Edit View Summary Permissions
+    cy.wait("@listSubprojectPermissions")
+      .get("[data-test='permission-select-subproject.viewSummary']")
+      .click();
+
+    // Revoke Permission from Test-User
+    cy.get("[data-test='permission-list']")
+      .find(`li[value*='${testUser.id}']`)
+      .scrollIntoView()
+      .click();
+
+    // Grant Permission to Test-User 2
+    cy.get("[data-test='permission-list']")
+      .find(`li[value*='${testUser2.id}']`)
+      .scrollIntoView()
+      .click();
+
+    cy.get("[data-test=permission-search] input").type("{esc}");
+
+    // Submit selection
+    cy.wait("@viewDetailsProject")
+      .get("[data-test=permission-selection-popup]")
+      .should("not.be.visible");
+
+    cy.get("[data-test=permission-submit]")
+      .click();
+    });
+
+    // Confirms the Actions and waits for Screen to Load
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+
+    cy.wait("@viewDetailsProject");
+
+    // Assert that the Page did not Crash and Sub-Project is still visible
+    cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
   });
 });

@@ -30,14 +30,15 @@ This document describes how to set up your environment to start developing and d
 
   - [Development Setup](#development-setup)
 
-    - [Dockerized Application](#dockerized-application)
-    - [Blockchain](#blockchain)
-    - [API](#api)
-    - [Frontend](#frontend)
-    - [Provisioning (Optional)](#provisioning-optional)
-    - [Excel-Export (Optional)](#excel-export-optional)
-    - [Email-Notification (Optional)](#email-notification-optional)
-    - [Storage-Service (Optional)](#storage-service-optional)
+    - [Dockerized Application (recommended)](#dockerized-application-recommended)
+    - [TruBudget Services](#trubudget-services)
+      - [Blockchain](#blockchain)
+      - [API](#api)
+      - [Frontend](#frontend)
+      - [Provisioning (Optional)](#provisioning-optional)
+      - [Excel-Export (Optional)](#excel-export-optional)
+      - [Email-Notification (Optional)](#email-notification-optional)
+      - [Storage-Service (Optional)](#storage-service-optional)
 
   - [Tests](#tests)
 
@@ -89,31 +90,35 @@ git clone https://github.com/openkfw/TruBudget.git
 git clone https://github.com/openkfw/TruBudget.git
 ```
 
-### IDE
+### IDE
 
-For coding, we recommend the use of Visual Studio Code, which you can find [here](https://code.visualstudio.com/).
+For coding, we recommend the use of Visual Studio Code, which you can find [here](https://code.visualstudio.com/).
 
-To ensure that the code is formatted properly we recommend following extensions for VS Code:
+To ensure that the code is formatted properly we recommend following extensions for VS Code:
 
-- aaron-bond.better-comments
+- aaron-bond.better-comments
 
-- CoenraadS.bracket-pair-colorizer
+- CoenraadS.bracket-pair-colorizer
 
-- dbaeumer.vscode-eslint
+- dbaeumer.vscode-eslint †
 
-- EditorConfig.EditorConfig
+- EditorConfig.EditorConfig
 
-- eg2.tslint
+- esbenp.prettier-vscode
 
-- esbenp.prettier-vscode
+- pmneo.tsimporter
 
-- pmneo.tsimporter
+- rbbit.typescript-hero
 
-- rbbit.typescript-hero
+- xabikos.JavaScriptSnippets
 
-- xabikos.JavaScriptSnippets
+- esbenp.prettier-vscode
 
-- ZeroDragon.prettylintednode
+:::note
+
+† Have a look [here](https://thesoreon.com/blog/how-to-set-up-eslint-with-typescript-in-vs-code) to learn more about how to set up es-lint for validating TypeScript in VSCode
+
+:::
 
 ### Chrome Developer Tools
 
@@ -147,33 +152,30 @@ Setup git-secrets by execute the shell script in the .githooks folder
 
 ```bash
 cd .githooks
-sh setupGitSecrets.sh
+bash setupGitSecrets.sh
 ```
 
 ### Environment variables
 
 All projects in TruBudget (blockchain, api, frontend, etc) have a docker-compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env_example` in each project directory. To use these environemnt variables, simply copy the `.env.example` file and rename it to `.env`.
-:::note
+
+:::caution
 Do **NOT** use other additional ways to set environment variables like inline env-variables or env-variables defined by 'export'. Why? - Because these env-variables will overwrite each which makes it very hard to find mistakes.
 :::
-
-### Docker Environment
-
-There is a folder called `docker-compose` in the root project directory. Running the project from these files is also possible, however check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/docker-compose/README.md) for more details.
 
 ## Development Setup
 
 If you want to start developing on Trubudget, you need to setup the application locally. This guide tells you how to start the blockchain, start the API, load up some test data and start the frontend.
 
-### Dockerized Application
+### Dockerized Application (recommended)
 
-This is the fastes way you can run all services needed for development. Everything is run in one command:
+This is the fastest way you can run **all services** needed for development. Everything is started in one command:
 
-1.  in root directory execute: `sh scripts/development/start-dev.sh --full` or `sh scripts/development/start-dev.sh --slim`
+1.  in root directory execute: `bash scripts/development/start-dev.sh --slim` or `bash scripts/development/start-dev.sh --full`
 
-This script sets the `.env` - file in the root directory automatically. No further step needed.
+This script sets the `.env` - file in the development directory automatically. No further steps needed.
 
-Following services are dockerized:
+Following services are dockerized with hot-reloading:
 
 - Blockchain (master node)
 - API (master API)
@@ -186,7 +188,7 @@ Following services are dockerized:
 - Minio Database (external document storage)
 
 If the script is started with `--slim`, only the Blockchain, API, Provisioning and Frontend will be started.
-For further details how to use the script, print out its help section with `sh scripts/development/start-dev.sh -h`.
+For further details how to use the script, print out its help section with `bash scripts/development/start-dev.sh --help`.
 
 It takes some time to build and run at the first launch. After that, source codes of all services are live reloaded. That means any change in `./src` folder is reflected in respective container automatically.
 
@@ -194,13 +196,15 @@ The frontend should be availaible as usual at http://localhost:3000
 
 Docker Compose ensures that services are communicating and have correct environment variables set. Docker Compose puts all services in the same network and exposes needed ports.
 
-You can inspect each container individually: `docker logs --follow CONTAINER`. Where _CONTAINER_ represents selected value of NAMES column container in output of `docker ps` command.
+You can inspect each container individually: `docker logs --follow CONTAINER`. Where _CONTAINER_ represents name of the service that can be found in the `.yml` file.
 
 :::note
 Hot reloading with docker requires a lot of processing power (due to docker volumes). If you experience huge delays while hot-reloading, you should start the services you need by yourself without docker.
 :::
 
-### Blockchain
+### TruBudget Services
+
+#### Blockchain
 
 The blockchain works as data layer for the Trubudget application. We suggest reading the [README.md](https://github.com/openkfw/TruBudget/tree/master/blockchain/README.md) file in the `/blockchain` to have a better idea on how the blockchain layer works in TruBudget. Also, take a look at the [multichain] website to see how the multichain works.
 
@@ -225,14 +229,14 @@ npm install
 4. Create a blockchain instance
 
 ```bash
-sh startDev.sh
+bash startDev.sh
 ```
 
-#### Developing on Windows:
+##### Developing on Windows:
 
 If you are developing on Windows, we recommend using the Git Bash to run the `startDev.sh` script.
 
-### API
+#### API
 
 The API takes care of the communication between the blockchain and the frontend and basically serves as backend.
 The API is developed using [Node.js], with [Fastify], [Axios], [Joi]
@@ -302,11 +306,11 @@ to start the api.
 
 The API-Documentation should then be available at http://localhost:8080/api/documentation/index.html
 
-#### Using Postman
+##### Using Postman
 
 One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/openkfw/TruBudget/blob/master/api/postman/TruBudget.postman_collection.json) ready to be imported into Postman.
 
-### Frontend
+#### Frontend
 
 After initializing the blockchain and api, we can now start the frontend to visualize the data. For developing the frontend we use [React], along with the [Redux-Saga] library and the [Material-UI] framework. You can check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/frontend/README.md) for more details about the frontend.
 
@@ -349,11 +353,11 @@ You do not need to run every project separately if you are developing on a singl
 
 1. go to a desired folder (e.g. _/api_)
 2. copy `.env.example` file and rename it to `.env`
-3. run `sh startDev.sh` in the folder to start dependent project(s)
+3. run `bash startDev.sh` in the folder to start dependent project(s)
 
 :::
 
-### Provisioning (Optional)
+#### Provisioning (Optional)
 
 This part will initiate the blockchain with test user and project data. The environment variables for this step differ slightly from the ones for the API, so please set them accordingly. You can skip this part if you don't want to have initial test data on your blockchain. Check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/provisioning/README.md) for more details.
 
@@ -383,7 +387,7 @@ npm install
 npm start
 ```
 
-### Excel-Export (Optional)
+#### Excel-Export (Optional)
 
 There is a service that exports TruBudget data into an Excel sheet. For exporting we use the npm package [exceljs].
 The service is a node package and needs to be started separately. More details regarding the excel-export service can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/excel-export-service/README.md).
@@ -428,13 +432,13 @@ in order to access the excel export service from the UI, you should start the fr
 Another way to start the excel export service is in a docker container. Using the docker-compose file in the excel-export folder will build the whole application including api, blockchain, frontend and excel-export service at the same time.
 :::
 
-### Email-Notification (Optional)
+#### Email-Notification (Optional)
 
 The email notification service is responsible for saving/deleting email adresses per Trubudget user in a connected database. These email addresses are used to send configurable notifications to a connected SMTP server.
 
 If you want to start this service or simply see more details regarding this feature you can check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/email-notification-service/README.md) file.
 
-### Storage-Service (Optional)
+#### Storage-Service (Optional)
 
 The storage service is responsible for saving/accessing documents to Minio, an external storage server.
 
@@ -444,36 +448,21 @@ More details and how to enable the storage service with an external storage can 
 
 ### End-to-end Tests
 
-Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. If you want to start all e2e-tests to check if your changes are not breaking any stuff we recommend the [Docker Compose Setup](#docker-compose-setup). More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
-
-#### Docker-Compose Setup
-
-One way to start the all end-to-end tests is starting the e2e-test script. To start them execute following commands from root directory to make sure e2e-test will work:
-
-```bash
-cp .env_example .env
-sed -i 's/ORGANIZATION=.*/ORGANIZATION=KfW/g' .env
-sh scripts/testing/start-all-e2e-tests.sh
-```
-
-:::note
-The organization has to be "KfW" because the e2e-test's Organization is still hardcoded.
-:::
-
-More information about the docker compose setup can be found in the e2e-test [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
+Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. If you want to start all e2e-tests to check if your changes are not breaking any stuff we recommend the [Docker Compose Setup](#docker-compose-setup). More details regarding the environment variables can be found in the [README.md](../../e2e-test/README.md) file.
 
 #### Prerequisits
 
-Before running the tests you should make sure that the application is started (including the [excel export service](#excel-export-optional)) and that you first run the [provisioning](#provisioning-optional). In order for the backup_spec tests to pass you should also start the project with the same configurations (Organization and RPC Password). When running the e2e-tests locally, you have to make sure that the password used for authentication as root user in the test matches the one used in the project that is currently running, otherwise some tests can fail because of an "Authentication failed" error.
+Before running the tests you should make sure that the application is started (including the [excel export service](#excel-export-optional) if needed) and that you first run the [provisioning](#provisioning-optional). In order for the backup_spec tests to pass you should also start the project with the same configurations (Organization and RPC Password). When running the e2e-tests locally, you have to make sure that the password used for authentication as root user in the test matches the one used in the project that is currently running, otherwise some tests can fail because of an "Authentication failed" error.
 
 #### Setup
 
+To setup a new TruBudget instance with Docker-Compose, run following command (recommended):
+
 ```bash
-cd frontend
-npm install
+bash scripts/development/start-dev.sh --slim
 ```
 
-You can either run the tests throught the Cypress Frontend or automatically in the shell. Before that you need to switch into the end to end test folder.
+If you do not want to use Docker, you can setup all service by yourself with `npm start`.
 
 ```bash
 cd e2e-test
@@ -494,7 +483,7 @@ npm run e2etest
 
 or through the Cypress frontend under settings.
 
-For further information see the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) of /e2e-test
+For further information see the [README.md](../../e2e-test/README.md) of /e2e-test
 
 :::note
 The .env file is needed.

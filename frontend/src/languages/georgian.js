@@ -50,6 +50,7 @@ const ka = {
     finish: "დასრულება",
     global: "გლობალური",
     grant: "მინიჭება",
+    hash: "ჰაში",
     history_end: "Last event reached",
     history: "ისტორია",
     workflowitem_history: "Workflowitem ისტორია",
@@ -74,6 +75,9 @@ const ka = {
     no_groups_text: "შექმენით ახალი ჯგუფი plus ღილაკის დაჭერით.",
     no_history: "არანაირი მოვლენა",
     no_items_text: "თქვენ შეგიძლიათ შექმნათ პლიუსის ღილაკის დაჭერით.",
+    no_documents: "დოკუმენტები არ მოიძებნა",
+    no_documents_upload_text: "თქვენ შეგიძლიათ დაამატოთ ერთი ატვირთვის ღილაკზე დაჭერით",
+    no_documents_info_text: "თქვენ შეგიძლიათ შეცვალოთ სამუშაო ნაკრები დოკუმენტების დასამატებლად",
     no_nodes: "დამატებითი კვანძების მოთხოვნა ვერ მოიძებნა",
     no_notifications: "შეტყობინებები ვერ მოიძებნა",
     no_organizations: "ახალი ორგანიზაციების მოთხოვნა ვერ მოიძებნა",
@@ -86,6 +90,7 @@ const ka = {
     not_assigned: "არ არის გამოყოფილი",
     not_disbursed: "გადაუხდელი",
     not_ok: "Not OK",
+    ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
     open: "Open",
     organization: "ორგანიზაცია",
@@ -97,6 +102,8 @@ const ka = {
     redacted: "Redacted",
     reset: "გადატვირთვა",
     revoke: "გაუქმება",
+    reject: "Უარყოს",
+    rejected: "უარყოფილი",
     search: "ძიება",
     show_permissions: "მაჩვენე ნებართვები",
     status: "სტატუსი",
@@ -184,7 +191,8 @@ const ka = {
     declined_by: "უარი თქვა",
     connection_status: "კავშირის სტატუსი",
     last_seen: "ბოლო ნახვა",
-    admin_description: "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
+    admin_description:
+      "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
   },
 
   login: {
@@ -285,6 +293,7 @@ const ka = {
     workflow_documents: "დოკუმენტები",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
+    workflow_document_not_available: "დოკუმენტი მიუწვდომელია",
     workflow_name: "დასახელება",
     workflow_next_step: "შემდეგი ნაბიჯი",
     workflow_no_actions: "ქმედების განხორციელება არ არის საჭირო",
@@ -308,7 +317,8 @@ const ka = {
     workflowitem_type: "Workflowitem ტიპი",
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
-      "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას."
+      "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას.",
+    workflow_reject_reason: "უარყავი მიზეზი"
   },
 
   snackbar: {
@@ -341,7 +351,8 @@ const ka = {
       "Error: Grant {0} to {1} failed. All actions that would have been executed after the error occured including the original actions are cancelled.",
     grant_and_assign: "Grant & Assign",
     list_permissions_required_text: "Make sure you have required list Permissions for all resources involved",
-    no_permission_warning: "გაფრთხილება: თქვენ არ შეგიძლიათ აღნიშნული ქმედების განხორციელება!",
+    no_permission_warning: "თქვენ გჭირდებათ შემდეგი ნებართვები ყველა მოთხოვნილი მოქმედების შესასრულებლად:",
+    no_permission_help: "შემდეგ მომხმარებლებს უფლება აქვთ მოგაწოდონ ნებართვები საჭირო რესურსებზე:",
     original_actions: "თქვენ მოითხოვეთ შემდეგი ქმედებები:",
     permissions_required: "აუცილებელია ნებართვა",
     permissions_text: `{0} ესაჭიროება დამატებითი ნებართვა რათა იხილოს {1} "{2}".`,
@@ -353,7 +364,9 @@ const ka = {
     user_group: "მომხმარებელი/ჯგუფი",
     workflowitem_close: "სამუშაო ნაკადის დახურვა",
     workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?",
-    workflowitem_create: "სამუშაო პროცესის შექმნა"
+    workflowitem_create: "სამუშაო პროცესის შექმნა",
+    workflowitem_close_reject: "უარი თქვით კომენტარით",
+    workflowitem_close_accept: "მიღება"
   },
 
   intents: {
@@ -619,7 +632,11 @@ const ka = {
     service: "მომსახურება",
     slow: "ნელი",
     version: "ვერსია",
-    very_slow: "ძალიან ნელი"
+    very_slow: "ძალიან ნელი",
+    error: "შეცდომა",
+    warning: "გაფრთხილება",
+    done: "შესრულებულია",
+    toBeDone: "უნდა გაკეთდეს"
   },
 
   language: {

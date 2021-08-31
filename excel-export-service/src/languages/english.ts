@@ -37,6 +37,7 @@ const en = {
     id: "Workflowitem ID",
     name: "Workflowitem Name",
     type: "Workflowitem Type",
+    rejectReason: "Reject reason",
     subproject_currency: "Subproject Currency",
     allocated: "Assigned",
     disbursed: "Paid",

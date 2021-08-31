@@ -126,7 +126,7 @@ async function getOrganizations(
   const organizations: string[] = [];
 
   // check if grantee is user, get the user's organization
-  if (repository.userExists(grantee)) {
+  if (await repository.userExists(grantee)) {
     const user = await repository.getUser(grantee);
     if (Result.isErr(user)) {
       return new VError(user, "failed to get user");
@@ -135,7 +135,7 @@ async function getOrganizations(
     organizations.push(organization);
 
     // check if grantee is group, get the organizations of all group members
-  } else if (repository.groupExists(grantee)) {
+  } else if (await repository.groupExists(grantee)) {
     const group = await repository.getGroup(grantee);
     if (Result.isErr(group)) {
       return new VError(group, "failed to get group");

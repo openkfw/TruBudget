@@ -1,5 +1,4 @@
 import { assert } from "chai";
-
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -20,6 +19,7 @@ const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charli
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy";
+const comment = "rejected. no capacity.";
 
 const baseSubproject: Subproject = {
   id: subprojectId,
@@ -73,6 +73,7 @@ describe("Closing a workflowitem", () => {
         getSubproject: () => Promise.resolve(baseSubproject),
         applyWorkflowitemType: () => [],
       },
+      comment,
     );
     assert.isTrue(Result.isErr(newEventsResult));
     assert.instanceOf(newEventsResult, NotFound);
@@ -97,6 +98,7 @@ describe("Closing a workflowitem", () => {
         getSubproject: () => Promise.resolve(baseSubproject),
         applyWorkflowitemType: () => [],
       },
+      comment,
     );
     assert.isTrue(Result.isOk(newEventsResult));
   });
@@ -120,6 +122,7 @@ describe("Closing a workflowitem", () => {
         getSubproject: () => Promise.resolve(baseSubproject),
         applyWorkflowitemType: () => [],
       },
+      comment,
     );
     assert.isTrue(Result.isErr(newEventsResult));
     assert.instanceOf(newEventsResult, PreconditionError);

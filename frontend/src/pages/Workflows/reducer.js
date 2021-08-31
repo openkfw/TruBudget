@@ -3,13 +3,13 @@ import Immutable, { fromJS } from "immutable";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
+import { DISABLE_ALL_LIVE_UPDATES, ENABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
 import { FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
 import { FETCH_SUBPROJECT_PERMISSIONS, FETCH_SUBPROJECT_PERMISSIONS_SUCCESS } from "../SubProjects/actions";
 import {
   ADD_TEMPORARY_WORKFLOWITEM_PERMISSION,
-  ASSIGN_WORKFLOWITEM_SUCCESS,
-  CREATE_WORKFLOW_SUCCESS,
+  ASSIGN_WORKFLOWITEM_SUCCESS, CLEAR_REJECT_REASON, CREATE_WORKFLOW_SUCCESS,
   DEFAULT_WORKFLOW_EXCHANGERATE,
   DISABLE_LIVE_UPDATES_SUBPROJECT,
   DISABLE_WORKFLOW_EDIT,
@@ -22,10 +22,10 @@ import {
   FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_FIRST_SUBPROJECT_HISTORY_PAGE,
   FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS,
+  FETCH_WORKFLOWITEM_SUCCESS,
   FETCH_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
-  GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
-  HIDE_SUBPROJECT_ASSIGNEES,
+  GRANT_WORKFLOWITEM_PERMISSION_SUCCESS, HIDE_REASON_DIALOG, HIDE_SUBPROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_CONFIRMATION_DIALOG,
   HIDE_WORKFLOWITEM_ADDITIONAL_DATA,
   HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG,
@@ -39,38 +39,28 @@ import {
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   SAVE_WORKFLOW_ITEM_BEFORE_SORT,
   SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
-  SET_WORKFLOW_DRAWER_PERMISSIONS,
-  SHOW_SUBPROJECT_ASSIGNEES,
+  SET_WORKFLOW_DRAWER_PERMISSIONS, SHOW_REASON_DIALOG, SHOW_SUBPROJECT_ASSIGNEES,
   SHOW_SUBPROJECT_CONFIRMATION_DIALOG,
   SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
   SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
   SHOW_WORKFLOWITEM_PERMISSIONS,
   SHOW_WORKFLOW_CREATE,
-  SHOW_WORKFLOW_DETAILS,
   SHOW_WORKFLOW_EDIT,
-  SHOW_WORKFLOW_PREVIEW,
-  STORE_WORKFLOWACTIONS,
+  SHOW_WORKFLOW_PREVIEW, STORE_REJECT_REASON, STORE_WORKFLOWACTIONS,
   STORE_WORKFLOW_BATCH_ASSIGNEE,
   SUBMIT_BATCH_FOR_WORKFLOW,
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
-  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
-  TRIGGER_SUBPROJECT_APPLY_ACTIONS,
+  SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS, TRIGGER_SUBPROJECT_APPLY_ACTIONS,
   UPDATE_WORKFLOW_ORDER,
   WORKFLOWITEMS_SELECTED,
   WORKFLOWITEM_TYPE,
   WORKFLOW_AMOUNT,
-  WORKFLOW_AMOUNT_TYPE,
-  WORKFLOW_CREATION_STEP,
-  WORKFLOW_CURRENCY,
-  WORKFLOW_DUEDATE,
-  WORKFLOW_DOCUMENT,
-  WORKFLOW_EXCHANGERATE,
+  WORKFLOW_AMOUNT_TYPE, WORKFLOW_ASSIGNEE, WORKFLOW_CREATION_STEP,
+  WORKFLOW_CURRENCY, WORKFLOW_DOCUMENT, WORKFLOW_DUEDATE, WORKFLOW_EXCHANGERATE,
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
-  WORKFLOW_STATUS,
-  WORKFLOW_ASSIGNEE
+  WORKFLOW_STATUS
 } from "./actions";
-import { ENABLE_ALL_LIVE_UPDATES, DISABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 
 const historyPageSize = 50;
 
@@ -109,7 +99,7 @@ const defaultState = fromJS({
   temporaryPermissions: {},
   creationDialogShown: false,
   showDetails: false,
-  showDetailsItemId: "",
+  showDetailsItem: {},
   showHistory: false,
   currentStep: 0,
   workflowSortEnabled: false,
@@ -160,7 +150,9 @@ const defaultState = fromJS({
   subprojectValidator: "",
   hasSubprojectValidator: false,
   fixedWorkflowitemType: "",
-  hasFixedWorkflowitemType: false
+  hasFixedWorkflowitemType: false,
+  rejectReason:"",
+  isRejectReasonDialogShown: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -183,6 +175,17 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowItems: fromJS(workflowitems),
         parentProject: fromJS(parentProject),
         projectedBudgets: fromJS(subproject.data.projectedBudgets)
+      });
+    case FETCH_WORKFLOWITEM_SUCCESS: {
+      return state.merge({
+        showDetails: true,
+        showDetailsItem: action.workflowitem
+      });
+    }
+    case HIDE_WORKFLOW_DETAILS:
+      return state.merge({
+        showDetails: false,
+        showDetailsItem: defaultState.getIn("showDetailsItem")
       });
     case SHOW_WORKFLOW_EDIT:
       return state.merge({
@@ -305,10 +308,7 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["workflowToAdd", "status"], action.status);
     case WORKFLOW_DOCUMENT:
       return state.updateIn(["workflowToAdd", "documents"], documents =>
-        Immutable.List([
-          ...documents,
-          Immutable.Map({ base64: action.base64, fileName: action.fileName })
-        ])
+        Immutable.List([...documents, Immutable.Map({ base64: action.base64, fileName: action.fileName })])
       );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
@@ -322,16 +322,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("tempDrawerPermissions", fromJS(action.permissions));
     case SAVE_WORKFLOW_ITEM_BEFORE_SORT:
       return state.set("workflowItemsBeforeSort", fromJS(action.workflowItems));
-    case SHOW_WORKFLOW_DETAILS:
-      return state.merge({
-        showDetails: true,
-        showDetailsItemId: action.id
-      });
-    case HIDE_WORKFLOW_DETAILS:
-      return state.merge({
-        showDetails: false,
-        showDetailsItemId: defaultState.getIn("showDetailsItemId")
-      });
     case ENABLE_WORKFLOW_EDIT:
       return state.merge({
         workflowSortEnabled: true,
@@ -478,6 +468,20 @@ export default function detailviewReducer(state = defaultState, action) {
     case ENABLE_ALL_LIVE_UPDATES:
     case ENABLE_LIVE_UPDATES_SUBPROJECT:
       return state.set("isLiveUpdatesSubprojectEnabled", true);
+    case STORE_REJECT_REASON:
+      return state.set("rejectReason", action.rejectReason);
+    case CLEAR_REJECT_REASON:
+      return state.set("rejectReason", "");
+    case SHOW_REASON_DIALOG:
+     return state.merge({
+        isRejectReasonDialogShown: true,
+        rejectReason: action.rejectReason
+      });
+    case HIDE_REASON_DIALOG:
+      return state.merge({
+        isRejectReasonDialogShown: false,
+        rejectReason: ""
+      });
     default:
       return state;
   }

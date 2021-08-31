@@ -6,19 +6,18 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemText from "@material-ui/core/ListItemText";
+import { withStyles, withTheme } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
+import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
 import AmountIcon from "@material-ui/icons/AccountBalance";
 import AssigneeIcon from "@material-ui/icons/Group";
-import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
-import { withStyles, withTheme } from "@material-ui/core/styles";
+import dayjs from "dayjs";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
-import { dateFormat, isDateReached } from "../../helper";
-import { statusIconMapping, statusMapping, toAmountString } from "../../helper";
+import { dateFormat, isDateReached, statusIconMapping, statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
 import DocumentOverviewContainer from "../Documents/DocumentOverviewContainer";
 import WorkflowitemHistoryTab from "./WorkflowitemHistoryTab/WorkflowHistoryTab";
@@ -64,18 +63,6 @@ const styles = theme => {
   };
 };
 
-const getWorkflowItem = (workflowItems, showWorkflowDetails, showDetailsItemId) => {
-  let workflowItem = {
-    key: "",
-    data: []
-  };
-
-  if (showWorkflowDetails) {
-    workflowItem = workflowItems.find(workflow => workflow.data.id === showDetailsItemId);
-  }
-
-  return workflowItem;
-};
 const removeNewLines = text => {
   let formattedText = "";
   if (!_isEmpty(text)) {
@@ -89,13 +76,14 @@ function Overview({ classes, users, workflowitem }) {
     displayName,
     description,
     amountType,
-    status,
     assignee,
     amount,
     currency,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    rejectReason
   } = workflowitem.data;
+  const status = rejectReason ? "rejected" : workflowitem.data.status;
   const trimmedComment = removeNewLines(description);
   const assignedUser = users.find(user => user.id === assignee);
 
@@ -185,7 +173,6 @@ function Documents({
       documents={documents}
       validateDocument={validateDocument}
       validatedDocuments={validatedDocuments}
-      validationActive={showWorkflowDetails}
       projectId={projectId}
       subprojectId={subprojectId}
       workflowitemId={workflowitemId}
@@ -195,9 +182,8 @@ function Documents({
 
 function WorkflowDetails({
   classes,
-  workflowItems,
+  workflowitem,
   showWorkflowDetails,
-  showDetailsItemId,
   hideWorkflowDetails,
   closeWorkflowitemDetailsDialog,
   users,
@@ -213,9 +199,8 @@ function WorkflowDetails({
     }
   }, [showWorkflowDetails]);
 
-  const workflowitem = getWorkflowItem(workflowItems, showWorkflowDetails, showDetailsItemId);
-
   let content;
+
   if (selectedTab === 0) {
     content = <Overview {...{ classes, users, workflowitem }} />;
   } else if (selectedTab === 1) {

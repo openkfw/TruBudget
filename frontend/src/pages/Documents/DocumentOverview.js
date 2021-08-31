@@ -16,14 +16,15 @@ import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import withInitialLoading from "../Loading/withInitialLoading";
-import { withStyles } from "@material-ui/core";
+import { TableHead, withStyles } from "@material-ui/core";
 import OverflowTooltip from "../Common/OverflowTooltip";
+import { DocumentEmptyState } from "./DocumentEmptyStates";
 
 const styles = {
-  uploadButtonNotValidated: {
+  validationButtonNotValidated: {
     whiteSpace: "nowrap"
   },
-  uploadInput: {
+  validationInput: {
     position: "absolute",
     top: 0,
     bottom: 0,
@@ -50,10 +51,11 @@ class DocumentOverview extends Component {
     super();
     this.input = {};
   }
-  getPropsForUploadButton = validated => {
+  getPropsForValidationButton = (validated, available) => {
     let style = {};
     let label = "";
     let color = "default";
+    const disabled = !available;
     if (_isUndefined(validated)) {
       label = strings.workflow.workflow_document_validate;
     } else if (validated === true) {
@@ -62,12 +64,12 @@ class DocumentOverview extends Component {
     } else {
       label = strings.workflow.workflow_document_changed + "!";
       style = {
-        ...styles.uploadButtonNotValidated
+        ...styles.validationButtonNotValidated
       };
       color = "secondary";
     }
 
-    return { style, label, color };
+    return { style, label, color, disabled };
   };
 
   getValidationText = validated => {
@@ -80,30 +82,34 @@ class DocumentOverview extends Component {
     }
   };
 
-  generateUploadButton = (hash, validated, id, projectId, subprojectId, workflowitemId) => (
-    <Button {...this.getPropsForUploadButton(validated)}>
-      <ValidationIcon />
-      {this.getValidationText(validated)}
-      <Input
-        id="docvalidation"
-        type="file"
-        style={styles.uploadInput}
-        onChange={event => {
-          if (event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onloadend = e => {
-              if (e.target.result !== undefined) {
-                const dataUrl = e.target.result.split(";base64,")[1];
-                this.props.validateDocument(hash, dataUrl, id, projectId, subprojectId, workflowitemId);
-              }
-            };
-            reader.readAsDataURL(file);
-          }
-        }}
-      />
-    </Button>
-  );
+  generateValidationButton = (validated, projectId, subprojectId, workflowitemId, document) => {
+    const { hash, id, available } = document;
+
+    return (
+      <Button {...this.getPropsForValidationButton(validated, available)}>
+        <ValidationIcon />
+        {this.getValidationText(validated)}
+        <Input
+          id="docvalidation"
+          type="file"
+          style={styles.validationInput}
+          onChange={event => {
+            if (event.target.files[0]) {
+              const file = event.target.files[0];
+              const reader = new FileReader();
+              reader.onloadend = e => {
+                if (e.target.result !== undefined) {
+                  const dataUrl = e.target.result.split(";base64,")[1];
+                  this.props.validateDocument(hash, dataUrl, id, projectId, subprojectId, workflowitemId);
+                }
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+        />
+      </Button>
+    );
+  };
 
   generateDocumentList = props => {
     const {
@@ -112,84 +118,77 @@ class DocumentOverview extends Component {
       projectId,
       subprojectId,
       documents,
-      validationActive,
       validatedDocuments,
       downloadDocument
     } = this.props;
-    const header = this.generateDocumentListHeader(validationActive);
+    const header = this.generateDocumentListHeader();
     const rows = documents.map((document, index) => {
       let validated = undefined;
       const { id, fileName, hash } = document;
-      if (validationActive) {
-        validated = validatedDocuments[id];
-      }
+      validated = validatedDocuments[id];
+
       return (
         <TableRow key={index + "document"}>
-          {validationActive ? (
-            <TableCell className={classes.noHorizontalPadding}>
-              <FingerPrint />
-            </TableCell>
-          ) : null}
-          <TableCell data-test="workflowitemDocumentId" className={classes.noHorizontalPadding}>
-            {fileName ? <OverflowTooltip text={fileName} maxWidth="200px" /> : null}
+          <TableCell data-test="workflowitemDocumentFileName">
+            <OverflowTooltip text={fileName} maxWidth="200px" />
           </TableCell>
-          {validationActive && hash ? (
-            <TableCell>
+          <TableCell>
+            <div style={{ display: "flex" }}>
+              <FingerPrint style={{ paddingRight: "10px", paddingBottom: "0px" }} />
               <OverflowTooltip text={hash} maxWidth="70px" />
-            </TableCell>
-          ) : null}
-          {validationActive ? (
-            <TableCell className={classes.noHorizontalPadding}>
-              <div className={classes.actionContainer}>
-                {this.generateUploadButton(hash, validated, id, projectId, subprojectId, workflowitemId)}
-                {document.id
-                  ? this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)
-                  : null}
-              </div>
-            </TableCell>
-          ) : null}
+            </div>
+          </TableCell>
+          <TableCell>
+            <div className={classes.actionContainer}>
+              {this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
+              {document.id
+                ? this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)
+                : null}
+            </div>
+          </TableCell>
         </TableRow>
       );
     });
     return (
-      <TableBody>
+      <>
         {header}
-        {rows}
-      </TableBody>
+        < TableBody >
+          {rows}
+        </TableBody >
+
+      </>
     );
   };
 
-  generateDocumentListHeader = validationActive => {
+  generateDocumentListHeader = () => {
     return (
-      <TableRow key={"documentlistheader"} style={styles.documentListHeader}>
-        {validationActive ? <TableCell /> : null}
-        <TableCell>
-          <Typography variant="body1">{strings.common.name}</Typography>
-        </TableCell>
-        {validationActive ? <TableCell /> : null}
-        {validationActive ? (
+      <TableHead key={"documentlistheader"}>
+        <TableRow key={"documentlistheaderrow"}>
           <TableCell>
-            <Typography style={{ paddingLeft: "0px" }} variant="body2">
+            <Typography>{strings.common.name}</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>{strings.common.hash}</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>
               {strings.common.actions}
             </Typography>
           </TableCell>
-        ) : null}
-      </TableRow>
+        </TableRow>
+      </TableHead>
     );
   };
 
   generateEmptyList = () => (
-    <TableBody>
-      <TableRow>
-        <TableCell>{strings.workflow.workflow_no_documents}</TableCell>
-      </TableRow>
-    </TableBody>
+    <div style={{ backgroundColor: "#f3f3f3" }}>
+      <DocumentEmptyState captionText={strings.common.no_documents_info_text} />
+    </div>
   );
 
   render = () => {
     const {
       documents,
-      validationActive,
       validatedDocuments,
       workflowitemId,
       projectId,
@@ -197,7 +196,7 @@ class DocumentOverview extends Component {
       downloadDocument
     } = this.props;
     return (
-      <Table style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+      <Table>
         {_isEmpty(documents)
           ? this.generateEmptyList()
           : this.generateDocumentList({
@@ -205,7 +204,6 @@ class DocumentOverview extends Component {
             projectId,
             subprojectId,
             documents,
-            validationActive,
             validatedDocuments,
             downloadDocument
           })}
@@ -217,9 +215,10 @@ class DocumentOverview extends Component {
     return (
       <Button
         color="default"
-        aria-label="upload picture"
+        aria-label="Validation picture"
         data-test="download-document"
         component="span"
+        disabled={!document.available}
         onClick={() => downloadDocument(projectId, subprojectId, workflowitemId, document.id)}
       >
         <DownloadIcon />

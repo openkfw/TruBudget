@@ -10,15 +10,16 @@ To ensure all necessary environment variables are set correctly this section des
 
 ### Storage-Service
 
-| Env Variable                | Default Value | Description                          |
-| --------------------------- | ------------- | ------------------------------------ |
-| STORAGE_HOST                | localhost     | IP address of storage service        |
-| STORAGE_PORT                | 8090          | Port of storage service              |
-| ACCESS_CONTROL_ALLOW_ORIGIN | "\*"          | CORS configuration                   |
-| MINIO_ACCESS_KEY            | minio         | Access key for Minio server          |
-| MINIO_SECRET_KEY            | minio123      | Secret (Password) for Minio server   |
-| MINIO_PORT                  | 9000          | Port of connected Minio              |
-| MINIO_HOST                  | localhost     | IP address of connected Minio server |
+| Env Variable                | Default Value | Description                               |
+| --------------------------- | ------------- | ----------------------------------------- |
+| STORAGE_HOST                | localhost     | IP address of storage service             |
+| STORAGE_PORT                | 8090          | Port of storage service                   |
+| ACCESS_CONTROL_ALLOW_ORIGIN | "\*"          | CORS configuration                        |
+| MINIO_ACCESS_KEY            | minio         | Access key for Minio server               |
+| MINIO_SECRET_KEY            | minio123      | Secret (Password) for Minio server        |
+| MINIO_PORT                  | 9000          | Port of connected Minio                   |
+| MINIO_HOST                  | localhost     | IP address of connected Minio server      |
+| MINIO_BUCKET_NAME           | trubudget     | Bucket name of the connected Minio server |
 
 ## Getting Started
 
@@ -30,7 +31,7 @@ Follow these steps to start the environment using docker:
 ```
 cd storage-service
 cp .env_example .env
-sh startDev.sh
+bash startDev.sh
 ```
 
 The pre-set cluster contains:

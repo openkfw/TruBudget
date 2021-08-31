@@ -5,6 +5,7 @@ import { withStyles } from "@material-ui/core/styles";
 import ErrorIcon from "@material-ui/icons/Close";
 import DoneIcon from "@material-ui/icons/Done";
 import TBDIcon from "@material-ui/icons/Remove";
+import WarningIcon from "@material-ui/icons/Warning";
 import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
 import React from "react";
@@ -54,7 +55,7 @@ const styles = {
 
     fontSize: "14px",
     borderBottom: "unset",
-    padding: "0px 3px 4px 8px",
+    padding: "0px 8px 4px 8px",
     alignSelf: "center",
     flex: 1,
     overflow: "hidden",
@@ -69,7 +70,7 @@ const styles = {
   tableCell: {
     fontSize: "14px",
     borderBottom: "unset",
-    padding: "0px 3px 4px 8px",
+    padding: "0px 8px 4px 8px",
     alignSelf: "center",
     flex: 1,
     overflow: "hidden",
@@ -78,46 +79,48 @@ const styles = {
   }
 };
 
-function generateHeader(classes, status, actionTableColumns) {
+const generateHeader = (classes, status, actionTableColumns) => {
   return (
     <TableRow className={classes.headerRow} key={"header"}>
       <TableCell key={"header-type"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-        {strings.common.type}
+      <OverflowTooltip text={strings.common.type} />
       </TableCell>
       {actionTableColumns.nameColumn ? (
         <TableCell key={"header-displayName"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-          {strings.common.name}
+          <OverflowTooltip text={strings.common.name} />
         </TableCell>
       ) : null}
       {actionTableColumns.permissionColumn ? (
         <TableCell key={"header-permission"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-          {strings.common.permission}
+          <OverflowTooltip text={strings.common.permission} />
         </TableCell>
       ) : null}
       {actionTableColumns.actionColumn ? (
         <TableCell key={"header-action"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-          {strings.common.actions}
+          <OverflowTooltip text={strings.common.actions} />
         </TableCell>
       ) : null}
       {actionTableColumns.userOrGroupColumn ? (
         <TableCell key={"header-identity"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-          {strings.confirmation.user_group}
+          <OverflowTooltip text={strings.confirmation.user_group} />
         </TableCell>
       ) : null}
       {status ? (
         <TableCell key={"header-status"} className={classes.columnHeaderCell} style={{ textAlign: "right", flex: 1 }}>
-          {strings.common.status}
+          <OverflowTooltip text={strings.common.status} />
         </TableCell>
       ) : null}
     </TableRow>
   );
-}
+};
 
-function generateActions(classes, actions, executedActions, failedAction, userList, status, actionTableColumns) {
+const generateActions = (classes, actions, executedActions, failedAction, users, groups, status, actionTableColumns) => {
   const actionsTable = [];
+
   actions.forEach((action, index) => {
+
     const type = strings.common[action.intent.split(".")[0]];
-    const user = userList.find(user => user.id === action.identity);
+    const userOrGroup = users.find(user => user.id === action.identity) || groups.find(group => group.groupId === action.identity);
 
     actionsTable.push(
       <TableRow className={classes.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
@@ -141,15 +144,16 @@ function generateActions(classes, actions, executedActions, failedAction, userLi
         ) : null}
         {actionTableColumns.userOrGroupColumn ? (
           <TableCell key={index + "-userName"} className={classes.tableCell} style={{ flex: 3 }}>
-            <OverflowTooltip text={user ? user.displayName : ""} />
+            <OverflowTooltip text={userOrGroup ? userOrGroup.displayName : ""} />
           </TableCell>
         ) : null}
         {status ? (
           <TableCell
             key={index + "-status"}
             className={classes.tableCell}
-            style={{ textAlign: "right", position: "relative", bottom: "4px", flex: 1 }}
+            style={{ textAlign: "right", position: "relative", flex: 1 }}
           >
+
             {getStatusIcon(executedActions, failedAction, action)}
           </TableCell>
         ) : null}
@@ -157,19 +161,24 @@ function generateActions(classes, actions, executedActions, failedAction, userLi
     );
   });
   return actionsTable;
-}
+};
 
-function getStatusIcon(executedActions, failedAction, action) {
+const getStatusIcon = (executedActions, failedAction, action) => {
   if (executedActions === undefined || _isEqual(action, failedAction)) {
-    return <ErrorIcon />;
-  } else {
-    if (actionExecuted(executedActions, action)) {
-      return <DoneIcon />;
-    } else {
-      return <TBDIcon />;
-    }
+    return <ErrorIcon titleAccess={strings.status.error}/>;
   }
-}
+
+  if(action.isUserPermitted !== undefined && !action.isUserPermitted) {
+    return <WarningIcon titleAccess={strings.status.warning}/>;
+  }
+
+  if (actionExecuted(executedActions, action)) {
+    return <DoneIcon titleAccess={strings.status.done}/>;
+  }
+
+  return <TBDIcon titleAccess={strings.status.toBeDone}/>;
+};
+
 
 const actionExecuted = (executedActions, action) => {
   return executedActions.some(item => {
@@ -177,10 +186,10 @@ const actionExecuted = (executedActions, action) => {
   });
 };
 
-function makeReadable(intent) {
-  const splittedString = intent.split(".");
+const makeReadable = (intent) => {
+  const splittedString = intent ? intent.split(".") : "";
   return strings.intents[splittedString[splittedString.length - 1]] || splittedString[splittedString.length - 1];
-}
+};
 
 const ActionsTable = props => {
   const {
@@ -189,8 +198,9 @@ const ActionsTable = props => {
     executedActions,
     executingActions,
     failedAction,
-    userList,
+    users,
     status = true,
+    groups,
     // eslint-disable-next-line no-useless-computed-key
     ["data-test"]: dataTest
   } = props;
@@ -221,7 +231,7 @@ const ActionsTable = props => {
               {generateHeader(classes, status, actionTableColumns)}
             </TableHead>
             <TableBody data-test="actions-table-body" className={classes.tableBody}>
-              {generateActions(classes, actions, executedActions, failedAction, userList, status, actionTableColumns)}
+              {generateActions(classes, actions, executedActions, failedAction, users, groups, status, actionTableColumns)}
             </TableBody>
           </Table>
         </TableContainer>

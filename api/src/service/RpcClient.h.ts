@@ -33,3 +33,22 @@ export interface ConnectionSettings {
    */
   readonly password: string;
 }
+
+export interface StreamItem {
+  publishers: string[];
+  keys: string[];
+  data: any; //encrypted, decrypted, unreadable
+  confirmations: number;
+  blocktime: number;
+  txid: string;
+  v?: number;
+  offchain?: boolean;
+  available?: boolean;
+}
+export interface ItemToPublish {
+  json: object;
+}
+
+export interface EncryptedItemToPublish {
+  json: string;
+}

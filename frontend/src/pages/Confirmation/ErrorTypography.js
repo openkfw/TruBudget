@@ -1,5 +1,6 @@
 import { Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import WarningIcon from "@material-ui/icons/Warning";
 import React from "react";
 
 const styles = {
@@ -10,7 +11,9 @@ const styles = {
     borderRadius: "4px",
     borderColor: "orange",
     padding: "2px",
-    textAlign: "center"
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   },
   error: {
     backgroundColor: "rgb(255, 0, 0, 0.7)",
@@ -19,16 +22,21 @@ const styles = {
     borderRadius: "4px",
     borderColor: "red",
     padding: "2px",
-    textAlign: "center"
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
   }
 };
 
 class ErrorTypography extends React.Component {
   render() {
-    const { type } = this.props;
+    const { type, showWarningIcon } = this.props;
+    const icon = showWarningIcon ? <WarningIcon titleAccess="Warning" style={{marginLeft: "4px"}}/> : '';
+
     return (
       <Typography data-test={`confirmation-${type}`} style={styles[type]}>
         {this.props.text}
+        {icon}
       </Typography>
     );
   }

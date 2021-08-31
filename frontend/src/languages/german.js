@@ -51,6 +51,7 @@ const de = {
     finish: "Finish",
     global: "Global",
     grant: "German: grant",
+    hash: "Hash",
     history: "History",
     workflowitem_history: "Workflowitem History",
     subproject_history: "Subprojekt History",
@@ -68,6 +69,9 @@ const de = {
     no_groups: "Keine Gruppen gefunden",
     no_groups_text: "Erstellen Sie eine neue Gruppe, indem Sie auf das Plus drücken.",
     no_items_text: "Sie können einen neuen Eintrag erstellen, indem Sie auf das Plus drücken.",
+    no_documents: "Keine Dokumente gefunden",
+    no_documents_upload_text: "Sie können einen hinzufügen, indem Sie auf den Upload Button klicken",
+    no_documents_info_text: "Sie können das Workflow-Item bearbeiten, um Dokumente hinzuzufügen",
     no_nodes: "Keine Anfragen für zusätzliche Nodes gefunden",
     no_notifications: "Keine Benachrichtigungen gefunden",
     no_organizations: "Keine Anfragen für neue Organisationen gefunden",
@@ -81,6 +85,7 @@ const de = {
     not_projected: "Nicht projiziert",
     not_disbursed: "Nicht ausgezahlt",
     not_ok: "NOK",
+    ok: "Ok",
     open: "Open",
     organization: "Organisation",
     password: "Passwort",
@@ -91,6 +96,8 @@ const de = {
     redacted: "Redigiert",
     reset: "Zurücksetzen",
     revoke: "German: revoke",
+    reject: " Ablehnen",
+    rejected: "Abgelehnt",
     search: "German: Search",
     show_permissions: "German: Show Permissions",
     status: "Status",
@@ -218,6 +225,7 @@ const de = {
     workflow_documents: "Documents",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "German: Fingerprint",
+    workflow_document_not_available: "Dokument ist nicht verfügbar",
     workflow_name: "Name",
     workflow_next_step: "Next step",
     workflow_no_actions: "No actions required",
@@ -241,7 +249,8 @@ const de = {
     workflowitem_type: "Workflowitem Typ",
     workflowitem_type_general: "Legen Sie ein Workflow-Item vom Typ 'general' an.",
     workflowitem_type_restricted:
-      "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte."
+      "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
+    workflow_reject_reason: "Ablehnungsgrund"
   },
 
   snackbar: {
@@ -343,7 +352,9 @@ const de = {
     grant_and_assign: "Gewähren & Zuweisen",
     list_permissions_required_text:
       "Stellen Sie sicher, dass Sie Leseberechtigungen für Berechtigungen der beteiligten Ressourcen besitzen",
-    no_permission_warning: "Warnung: Sie haben nicht die Berechtigung, alle aufgelisteten Aktionen auszuführen!",
+    no_permission_warning: "Sie benötigen folgende Berechtigungen, um alle angeforderten Aktionen ausführen zu können:",
+    no_permission_help:
+      "Folgende Benutzer sind berechtigt, Ihnen Berechtigungen für die benötigten Ressourcen zu geben:",
     original_actions: "Sie haben folgende Aktionen angefordert:",
     permissions_required: "Berechtigungen erforderlich",
     permissions_text: `{0} benötigt zusätzliche Berechtigungen um {1} "{2}" sehen zu können.`,
@@ -355,7 +366,9 @@ const de = {
     user_group: "Benutzer/Gruppe",
     workflowitem_close: "Workflowitem schliessen",
     workflowitem_close_text: "Sind Sie sicher, dass Sie dieses Workflow-Item schließen wollen?",
-    workflowitem_create: "Erstelle Workflowitem"
+    workflowitem_create: "Erstelle Workflowitem",
+    workflowitem_close_reject: "Mit Bemerkung ablehnen",
+    workflowitem_close_accept: "Ablehnen"
   },
 
   intents: {
@@ -621,7 +634,11 @@ const de = {
     service: "Service",
     slow: "langsam",
     version: "Version",
-    very_slow: "sehr langsam"
+    very_slow: "sehr langsam",
+    error: "Fehler",
+    warning: "Warnung",
+    done: "Fertig",
+    toBeDone: "Ist noch offen"
   },
 
   language: {

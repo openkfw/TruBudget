@@ -50,6 +50,7 @@ const fr = {
     finish: "Terminer",
     global: "global",
     grant: "Accorder",
+    hash: "Hachage",
     history_end: "Dernier évènement atteint",
     history: "Historique",
     workflowitem_history: "Historique des étapes de workflow",
@@ -75,6 +76,9 @@ const fr = {
     no_groups_text: "Créez un nouveau groupe en appuyant sur la touche plus.",
     no_history: "Aucun évènement",
     no_items_text: "Vous pouvez en créer un en appuyant sur la touche « plus ».",
+    no_documents: "Aucun document trouvé",
+    no_documents_upload_text: "Vous pouvez en ajouter un en appuyant sur le bouton de téléchargement",
+    no_documents_info_text: "Vous pouvez modifier l'étape de workflow pour ajouter des documents",
     no_nodes: "Aucune demande de nœuds supplémentaires n'a été trouvée",
     no_notifications: "Aucune notification trouvée",
     no_organizations: "Aucune demande de nouvelles organisations n'a été trouvée",
@@ -87,6 +91,7 @@ const fr = {
     not_assigned: "Non engagé",
     not_disbursed: "Non payé",
     not_ok: "Pas OK",
+    ok: "Ok",
     not_projected: "Non estimé",
     open: "Ouvert",
     organization: "Organisation",
@@ -98,6 +103,8 @@ const fr = {
     redacted: "Expurgé",
     reset: "Réinitialiser",
     revoke: "Révoquer",
+    reject: "Rejette",
+    rejected: " Rejeté",
     search: "Chercher",
     show_permissions: "Afficher les autorisations",
     status: "Statut",
@@ -222,6 +229,7 @@ const fr = {
     workflow_fingerprint: "Empreinte digitale",
     workflow_name: "Nom de l’étape de workflow",
     workflow_next_step: "Prochaine étape",
+    workflow_document_not_available: "Document non disponible",
     workflow_no_actions: "Pas d'action",
     workflow_no_documents: "Pas de document",
     workflow_none: "blub",
@@ -243,7 +251,8 @@ const fr = {
     workflowitem_type: "Type de l’étape de workflow",
     workflowitem_type_general: "Créer une étape de workflow de type général.",
     workflowitem_type_restricted:
-      "Lors de l'attribution d'un workflow restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation"
+      "Lors de l'attribution d'un workflow restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation",
+    workflow_reject_reason: "Motif de rejet"
   },
 
   snackbar: {
@@ -316,8 +325,8 @@ const fr = {
     declined_by: "Refusé par",
     connection_status: "Statut de connexion",
     last_seen: "Vu pour la dernière fois",
-    admin_description: "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
-
+    admin_description:
+      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
   },
 
   preview: {
@@ -341,7 +350,10 @@ const fr = {
     grant_and_assign: "Accorder & Assigner",
     list_permissions_required_text:
       "Assurez-vous que vous avez la liste des autorisations requises pour toutes les ressources impliquées",
-    no_permission_warning: "Avertissement: Vous n'êtes pas autorisé à exécuter toutes les actions répertoriées!",
+    no_permission_warning:
+      "Vous devez disposer des autorisations suivantes pour pouvoir exécuter toutes les actions demandées :",
+    no_permission_help:
+      "Les utilisateurs suivants sont autorisés à vous accorder des permissions sur les ressources nécessaires :",
     original_actions: "Vous avez demandé les actions suivantes:",
     permissions_required: "Autorisations requises",
     permissions_text: `{0} a besoin d'autorisations supplémentaires pour voir {1} "{2}".`,
@@ -353,7 +365,9 @@ const fr = {
     user_group: "Utilisateur/Groupe",
     workflowitem_close: "Fermer l’étape de workflow ",
     workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",
-    workflowitem_create: "créer des étapes de workflow"
+    workflowitem_create: "créer des étapes de workflow",
+    workflowitem_close_reject: "Rejet avec commentaire",
+    workflowitem_close_accept: "Acceptez"
   },
 
   intents: {
@@ -623,7 +637,11 @@ const fr = {
     service: "Service",
     slow: "lent",
     version: "Version",
-    very_slow: "très lent"
+    very_slow: "très lent",
+    error: "erreur",
+    warning: "avertissement",
+    done: "fait",
+    toBeDone: "A faire"
   },
 
   language: {

@@ -1,19 +1,18 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
-
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
+import { StoredDocument } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
-import { StoredDocument } from "./service/domain/document/document";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -61,6 +60,7 @@ function mkSwaggerSchema(server: FastifyInstance) {
                           id: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
                           creationUnixTs: { type: "string", example: "1536154645775" },
                           status: { type: "string", example: "open" },
+                          rejectReason: { type: "string", example: "i do not like the price" },
                           amountType: { type: "string", example: "disbursed" },
                           displayName: { type: "string", example: "classroom" },
                           description: { type: "string", example: "build a classroom" },
@@ -114,6 +114,7 @@ interface ExposedWorkflowitem {
     id: string;
     creationUnixTs: string;
     status: "open" | "closed";
+    rejectReason?: string;
     amountType: "N/A" | "disbursed" | "allocated" | null;
     displayName: string | null;
     description: string | null;
@@ -186,7 +187,6 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           const workflowitems = workflowitemsResult;
 
           return workflowitems.map((workflowitem) => {
-            const d = workflowitem.documents;
             const exposedWorkflowitem: ExposedWorkflowitem = {
               allowedIntents: workflowitem.isRedacted
                 ? []
@@ -195,6 +195,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
                 id: workflowitem.id,
                 creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),
                 status: workflowitem.status,
+                rejectReason: workflowitem.rejectReason,
                 amountType: workflowitem.amountType,
                 displayName: workflowitem.displayName,
                 description: workflowitem.description,

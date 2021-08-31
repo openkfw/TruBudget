@@ -1,6 +1,5 @@
 import Joi = require("joi");
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
@@ -18,6 +17,7 @@ export interface Event {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   workflowitemId: Workflowitem.Id;
+  rejectReason?: string;
 }
 
 export const schema = Joi.object({
@@ -28,6 +28,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
+  rejectReason: Joi.string().optional(),
 });
 
 export function createEvent(
@@ -37,6 +38,7 @@ export function createEvent(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
   time: string = new Date().toISOString(),
+  rejectReason?: string,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -46,6 +48,7 @@ export function createEvent(
     projectId,
     subprojectId,
     workflowitemId,
+    rejectReason,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
@@ -81,4 +84,5 @@ export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): R
   }
 
   workflowitem.status = "closed";
+  if (event.rejectReason) workflowitem.rejectReason = event.rejectReason;
 }

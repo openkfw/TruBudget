@@ -1,7 +1,6 @@
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../helper";
 import { fetchProjectPermissions, grantProjectPermission, revokeProjectPermission } from "../Overview/actions";
 import {
@@ -12,7 +11,7 @@ import {
   grantSubProjectPermission,
   revokeSubProjectPermission
 } from "../SubProjects/actions";
-import { fetchGroups, disableUser, enableUser, fetchUserAssignments, cleanUserAssignments } from "../Users/actions";
+import { cleanUserAssignments, disableUser, enableUser, fetchGroups, fetchUserAssignments } from "../Users/actions";
 import {
   assignSubproject,
   assignWorkflowItem,
@@ -21,18 +20,19 @@ import {
   createWorkflowItem,
   fetchWorkflowItemPermissions,
   grantWorkflowItemPermission,
-  revokeWorkflowItemPermission
+  revokeWorkflowItemPermission,
+  storeRejectReason
 } from "../Workflows/actions";
 import {
   additionalActionUpdateRequired,
   cancelConfirmation,
-  confirmConfirmation,
   closeConfirmation,
+  confirmConfirmation,
   executeConfirmedActions,
+  showValidationErrorMessage,
   storeAdditionalActions,
   storePostActions,
-  storeRequestedPermissions,
-  showValidationErrorMessage
+  storeRequestedPermissions
 } from "./actions";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { applyOriginalActions, createAdditionalActions } from "./createAdditionalActions";
@@ -56,7 +56,6 @@ class ConfirmationContainer extends React.Component {
       this.props.fetchGroups();
       this.fetchPermissions(this.props.project, this.props.subproject, this.props.workflowitem);
     }
-
     if (prevProps.originalActions.length < this.props.originalActions.length) {
       this.props.additionalActionUpdateRequired(true);
     }
@@ -67,7 +66,8 @@ class ConfirmationContainer extends React.Component {
         this.props.permissions,
         this.props.project,
         this.props.subproject,
-        this.props.confirmingUser
+        this.props.confirmingUser,
+        this.props.groups
       );
 
       this.props.storeAdditionalActions(additionalActions);
@@ -156,8 +156,8 @@ class ConfirmationContainer extends React.Component {
       isListPermissionsRequiredFromApi,
       failedAction,
       requestedPermissions,
-      enabledUserList,
-      disabledUserList,
+      enabledUsers,
+      disabledUsers,
       fetchUserAssignments,
       cleanUserAssignments,
       userAssignments,
@@ -170,7 +170,9 @@ class ConfirmationContainer extends React.Component {
       executedOriginalActions,
       executingOriginalActions,
       originalActionsExecuted,
-      failedOriginalAction
+      failedOriginalAction,
+      storeRejectReason,
+      rejectReason
     } = this.props;
 
     if (confirmationDialogOpen) {
@@ -194,8 +196,8 @@ class ConfirmationContainer extends React.Component {
           isListPermissionsRequiredFromApi={isListPermissionsRequiredFromApi}
           failedAction={failedAction}
           requestedPermissions={requestedPermissions}
-          enabledUserList={enabledUserList}
-          disabledUserList={disabledUserList}
+          enabledUsers={enabledUsers}
+          disabledUsers={disabledUsers}
           fetchUserAssignments={fetchUserAssignments}
           cleanUserAssignments={cleanUserAssignments}
           userAssignments={userAssignments}
@@ -209,6 +211,8 @@ class ConfirmationContainer extends React.Component {
           executingOriginalActions={executingOriginalActions}
           originalActionsExecuted={originalActionsExecuted}
           failedOriginalAction={failedOriginalAction}
+          storeRejectReason={storeRejectReason}
+          rejectReason={rejectReason}
         />
       );
     } else {
@@ -296,11 +300,12 @@ const mapDispatchToProps = dispatch => {
     additionalActionUpdateRequired: required => dispatch(additionalActionUpdateRequired(required)),
     closeProject: pId => dispatch(closeProject(pId, true)),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
-    closeWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true)),
+    closeWorkflowItem: (pId, sId, wId, isRejected) => dispatch(closeWorkflowItem(pId, sId, wId, isRejected, true)),
     disableUser: userId => dispatch(disableUser(userId)),
     enableUser: userId => dispatch(enableUser(userId)),
     fetchUserAssignments: userId => dispatch(fetchUserAssignments(userId)),
-    cleanUserAssignments: () => dispatch(cleanUserAssignments())
+    cleanUserAssignments: () => dispatch(cleanUserAssignments()),
+    storeRejectReason: reason => dispatch(storeRejectReason(reason))
   };
 };
 
@@ -315,8 +320,8 @@ const mapStateToProps = state => {
     confirmDisabled: state.getIn(["confirmation", "disabled"]),
     permissions: state.getIn(["confirmation", "permissions"]),
     confirmingUser: state.getIn(["login", "id"]),
-    enabledUserList: state.getIn(["login", "enabledUsers"]),
-    disabledUserList: state.getIn(["login", "disabledUsers"]),
+    enabledUsers: state.getIn(["login", "enabledUsers"]),
+    disabledUsers: state.getIn(["login", "disabledUsers"]),
     isFetchingProjectPermissions: state.getIn(["confirmation", "isFetchingProjectPermissions"]),
     isFetchingSubprojectPermissions: state.getIn(["confirmation", "isFetchingSubprojectPermissions"]),
     isFetchingWorkflowitemPermissions: state.getIn(["confirmation", "isFetchingWorkflowitemPermissions"]),
@@ -339,7 +344,8 @@ const mapStateToProps = state => {
     requestedPermissions: state.getIn(["confirmation", "requestedPermissions"]),
     isPayloadValidationFailed: state.getIn(["confirmation", "isPayloadValidationFailed"]),
     groups: state.getIn(["users", "groups"]),
-    userAssignments: state.getIn(["users", "userAssignments"])
+    userAssignments: state.getIn(["users", "userAssignments"]),
+    rejectReason: state.getIn(["workflow", "rejectReason"])
   };
 };
 

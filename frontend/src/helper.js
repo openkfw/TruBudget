@@ -1,15 +1,16 @@
 import DoneIcon from "@material-ui/icons/Check";
 import OpenIcon from "@material-ui/icons/Remove";
+import RejectedIcon from "@material-ui/icons/Block";
 import accounting from "accounting";
 import dayjs from "dayjs";
 import { Iterable } from "immutable";
 import _cloneDeep from "lodash/cloneDeep";
+import _every from "lodash/every";
 import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
+import _isObject from "lodash/isObject";
 import _isString from "lodash/isString";
 import _isUndefined from "lodash/isUndefined";
-import _isObject from "lodash/isObject";
-import _every from "lodash/every";
 import _map from "lodash/map";
 import React from "react";
 import currencies from "./currency";
@@ -109,6 +110,8 @@ export const statusMapping = status => {
   switch (status) {
     case "closed":
       return strings.common.closed;
+    case "rejected":
+      return strings.common.rejected;
     case "open":
       return strings.common.open;
     default:
@@ -131,6 +134,7 @@ export const amountTypes = amountType => {
 
 export const statusIconMapping = {
   closed: <DoneIcon />,
+  rejected: <RejectedIcon />,
   open: <OpenIcon />
 };
 
@@ -184,7 +188,7 @@ export const convertToSearchBarString = urlQueryString => {
   return urlQueryString.replace(/[=]/g, ":").replace(/[&]/g, " ");
 };
 
-export function hasUserAssignments(assignments) {
+export const hasUserAssignments = assignments => {
   const hasHiddenAssignments =
     assignments.hiddenAssignments !== undefined &&
     (assignments.hiddenAssignments.hasHiddenProjects === true ||
@@ -197,15 +201,15 @@ export function hasUserAssignments(assignments) {
     !_isEmpty(assignments.workflowitems) ||
     hasHiddenAssignments
   );
-}
+};
 
 /*
  * isEmptyDeep(obj) checks all nested properties of the object.
- * If every property is empty, it return true, otherwise false
+ * If every property is empty, it returns true, otherwise false
  * A property can be an object or array
  * If property values are falsy (0, false), it is not considered as empty
  */
-export function isEmptyDeep(obj) {
+export const isEmptyDeep = obj => {
   if (_isObject(obj)) {
     if (Object.keys(obj).length === 0) return true;
     return _every(_map(obj, v => isEmptyDeep(v)));
@@ -213,4 +217,14 @@ export function isEmptyDeep(obj) {
     return !obj.length;
   }
   return false;
-}
+};
+
+export const getGroupsOfUser = (user, groups) => {
+  return groups.filter(group => group.users.includes(user));
+};
+
+export const isUserOrGroupPermitted = (user, groupsOfUser, permittedUsersAndGroups = []) => {
+  return permittedUsersAndGroups.some(id => id === user || groupsOfUser.find(group => group.groupId === id));
+};
+
+export const capitalize = string => string.replace(/^\w/, c => c.toUpperCase());

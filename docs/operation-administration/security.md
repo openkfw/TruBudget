@@ -101,7 +101,7 @@ TruBudget scales horizontally and is therefore easily scalable by adding multipl
 
 TruBudget uses in-memory caching strategies in order to ensure low latency for read operations.
 
-### How Fork problems are managed at TruBudget level?
+### How are Fork problems managed at TruBudget level?
 
 The longer chain wins: Transactions in the shorter branch re-enter the memory pool of nodes, which leaves them in the regular situation of waiting for confirmation, but being visible to all nodes. The only exception is if some of those transactions conflict with transactions which are already confirmed on the longer branch, or already in the memory pool, in which case they are discarded.
 
@@ -134,3 +134,7 @@ TruBudget versions are backwards compatible, which means different versions of T
 ### The params.dat configuration file containing all the multichain TruBudget configuration. What protection measures are implemented to prevent the multichain parameters and permissions contained in this file from being modified for malicious purposes?
 
 Access to production infrastructure needs to be secured by the operation team. The security relevant configurations like consensus requirements can’t be changed after the first block was mined.
+
+### How secure is TruBudget against malicious attacks? Has TruBudget been penetration tested?
+
+TruBudget has been penetration tested using the [OWASP Zed Attack Proxy (ZAP)](https://www.zaproxy.org/), which is a very popular open-source penetration testing tool maintained under the umbrella of the Open Web Application Security Project (OWASP). Our system underwent analysis and attacks from simulated malicious attackers. The tool acted as a “man-in-the-middle proxy” between the browser and the web application and tested if the application is vulnerable to attacks such as SQL Injection, Cross-Site Scripting, Path Traversal, Format String errors and many others. The results of the tests helped us discover vulnerabilities and allowed us to improve the security of the applicaiton and strengthen our defenses against such attacks, by implementing different security measures, checks and validations.

@@ -35,7 +35,7 @@ const minioClient: any = new Minio.Client({
   secretKey: config.storage.secretKey,
 });
 
-const bucketName: string = "trubudget";
+const bucketName: string = config.storage.bucketName;
 
 const makeBucket = (bucket: string, cb: Function) => {
   minioClient.bucketExists(bucket, (err: any, exists: any) => {
@@ -57,7 +57,7 @@ const makeBucket = (bucket: string, cb: Function) => {
   });
 };
 
-export const makeBucketAsPromised = (bucket: string) => {
+const makeBucketAsPromised = (bucket: string) => {
   return new Promise((resolve, reject) => {
     makeBucket(bucket, (err) => {
       if (err) return reject(err);
@@ -74,7 +74,7 @@ const upload = (
   cb: Function,
 ) => {
   const s = new Readable();
-  s._read = () => {};
+  s._read = () => { };
   s.push(content);
   s.push(null);
 
@@ -103,11 +103,12 @@ const upload = (
  * @param metaData
  * @returns {string} document secret
  */
-export const uploadAsPromised = (
+export const uploadAsPromised = async (
   file: string,
   content: string,
   metaData: Metadata = { fileName: "default", docId: "123" },
 ): Promise<string> => {
+  await verifyMinioBucket();
   return new Promise((resolve, reject) => {
     const secret = v4();
     upload(file, content, { ...metaData, secret }, (err) => {
@@ -140,7 +141,8 @@ const download = (file: string, cb: Function) => {
   });
 };
 
-export const downloadAsPromised = (file: string): Promise<FileWithMeta> => {
+export const downloadAsPromised = async (file: string): Promise<FileWithMeta> => {
+  await verifyMinioBucket();
   return new Promise((resolve, reject) => {
     download(file, (err, fileContent: FileWithMeta) => {
       if (err) return reject(err);
@@ -160,7 +162,7 @@ const getMetadata = (fileHash: string, cb: Function) => {
   });
 };
 
-export const getMetadataAsPromised = (
+const getMetadataAsPromised = (
   fileHash: string,
 ): Promise<MetadataWithName> => {
   return new Promise((resolve, reject) => {
@@ -199,16 +201,23 @@ const establishConnection = async () => {
     }
   }
 };
-export const getReadiness = async () => {
-  minioClient.listBuckets(function (err, buckets) {
-    if (err) return console.log(err);
+
+export const verifyMinioBucket = (): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    minioClient.listBuckets(async function (err, buckets) {
+      if (err) {
+        console.log(err);
+        reject(err);
+      }
+      if (buckets.length === 0) {
+        await establishConnection();
+      }
+      resolve(true);
+    });
   });
 };
 
-if (config.storage.host) {
-  establishConnection();
-} else {
-  console.log("MINIO_ENDPOINT not set. Defaulting to chain storage.");
-}
+
+
 
 export default minioClient;

@@ -26,14 +26,14 @@ The test type can be changed in the provided script (`api/loadtest/runTests.sh`)
 :::
 
 # Getting started
- 1) Navigate to `api/loadtest`
- 2) Configure the test as described above and add execution rights to `runTests.sh`
- 3) Run `./runTests.sh` 
 
+1.  Navigate to `api/loadtest`
+2.  Configure the test as described above and add execution rights to `runTests.sh`
+3.  Run `./runTests.sh`
 
 # Visualizing
 
-To visualize the generate data from the tests via Grafana:
+To visualize the generated data from the tests via Grafana:
 
 - Open Grafana
 - Navigate to Dashboard
@@ -47,48 +47,70 @@ To visualize the generate data from the tests via Grafana:
 Grafana has a bunch of pre-configured dashboards for `k6` we recommend using one of the two predefined dashboards (2587 or 11837) mentioned above. However, if you want to browse the available dashboards, you can do it [here](https://grafana.com/grafana/dashboards?search=k6). Also, feel free to contribute to the Grafana community by creating your own dashboard and publishing it to the Grafana Hub.
 :::
 
-
-
 # Minimum requirements
 
-TruBudget load and stress tests are run against the minimum and recommend system requirements defied as follows:
+TruBudget can be deployed in different ways. To give your users the best experience, we tested TruBudget with different configurations. The minimum requirements aim to provide a working environment with 50 to 100 parallel user. The recommended environment is capable of handling 100 - 400 parallel user (using Kubernetes).
+
+If you plan to deploy TruBudget on a single VM with following services: Blockchain, API and Frontend, we recommend the following for minimum setup:
+| | Minimum |
+| ------- | ------- |
+| CPU† | 2 vCPU |
+| RAM | 8 GB |
+| Storage | 10 GB |
+
+If you plan to have more than 100 parallel users, we strongly recommend using Kubernetes. TruBudget load and stress tests are run against the minimum and recommend system requirements in a Kubernetes environment to ensure the correctness of the data below.
 
 **Blockchain**:
 
-|         | Minimum   | Recommended |
-| ------- | --------- | ----------- |
-| CPU†    | 1 vCPU    | 2 vCPU      |
-| RAM     | 4 GB      | 8 GB        |
-| Storage | 50 GB     | 100 GB      |
-| Network | U/D 1GB/s | U/D 10GB/s  |
+|         | Minimum | Recommended |
+| ------- | ------- | ----------- |
+| CPU†    | 1 vCPU  | 2 vCPU      |
+| RAM     | 4 GB    | 8 GB        |
+| Storage | 1 GB    | 1\* GB      |
+
+**Frontend**:
+
+|         | Minimum  | Recommended |
+| ------- | -------- | ----------- |
+| CPU†    | 0.5 vCPU | 1 vCPU      |
+| RAM     | 1 GB     | 2 GB        |
+| Storage | 1 GB     | 1 GB        |
 
 **API**:
 
-|         | Minimum   | Recommended |
-| ------- | --------- | ----------- |
-| CPU†    | 0.5 vCPU  | 1 vCPU      |
-| RAM     | 2 GB      | 6 GB        |
-| Storage | 1 GB      | 5 GB        |
-| Network | U/D 1GB/s | U/D 10GB/s  |
+|         | Minimum  | Recommended |
+| ------- | -------- | ----------- |
+| CPU†    | 0.5 vCPU | 1 vCPU      |
+| RAM     | 2 GB     | 8 GB        |
+| Storage | 1 GB     | 1 GB        |
 
 **Export-Service**:
 
-|         | Minimum   | Recommended |
-| ------- | --------- | ----------- |
-| CPU†    | 1 vCPU    | 2 vCPU      |
-| RAM     | 3 GB      | 5 GB        |
-| Storage | 50 GB     | 100 GB      |
-| Network | U/D 1GB/s | U/D 10GB/s  |
+|         | Minimum  | Recommended |
+| ------- | -------- | ----------- |
+| CPU†    | 0.5 vCPU | 0.5 vCPU    |
+| RAM     | 1 GB     | 1 GB        |
+| Storage | 1 GB     | 1 GB        |
+
+**Email-Service**:
+
+|         | Minimum  | Recommended |
+| ------- | -------- | ----------- |
+| CPU†    | 0.5 vCPU | 0.5 vCPU    |
+| RAM     | 1 GB     | 1 GB        |
+| Storage | 1 GB     | 1 GB        |
 
 **Storage-Service**:
 
-|         | Minimum   | Recommended |
-| ------- | --------- | ----------- |
-| CPU†    | 1 vCPU    | 2 vCPU      |
-| RAM     | 3 GB      | 5 GB        |
-| Storage | 50 GB     | 100 GB      |
-| Network | U/D 1GB/s | U/D 10GB/s  |
+|         | Minimum | Recommended |
+| ------- | ------- | ----------- |
+| CPU†    | 1 vCPU  | 2 vCPU      |
+| RAM     | 1 GB    | 2 GB        |
+| Storage | 1 GB    | 50\* GB     |
 
 :::note
 † Depending on your or your provider's infrastructure, the strength of one virtual CPU might vary. The above values are based on the Intel® Xeon® Platinum 8272CL processor (second generation Intel® Xeon® Scalable processors), Intel® Xeon® 8171M 2.1GHz (Skylake), Intel® Xeon® E5-2673 v4 2.3 GHz (Broadwell), or the Intel® Xeon® E5-2673 v3 2.4 GHz (Haswell) processors.
+
+\* Assuming you are using off-chain-storage.
+
 :::

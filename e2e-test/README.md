@@ -2,7 +2,7 @@
 
 This folder contains end-to-end tests which test the whole functionality of the application.
 
-For the setup of the e2e-tests please visit the [Developer-Setup](https://github.com/openkfw/TruBudget/blob/master/doc/installation/Developer-Setup.md#tests)
+For the setup of the e2e-tests please visit the [Developer Setup](../docs/developer/developer-setup.md#tests)
 
 ## Environment Variables
 
@@ -18,7 +18,7 @@ CYPRESS_baseUrl=http://localhost:3000
 CYPRESS_BASE_URL=http://localhost:3000
 ```
 
-Those variables can be set in `.env` file also. `.env_example` file is prepared for easy creation (see Developer guide: [Environment variables](../doc/installation/Developer-Setup.md#environment-variables)). Thanks _cypress-dotenv_ module they can be available in the code. They have the same meaning like its Run Command Arguments conterparts.
+Those variables can be set in `.env` file also. `.env_example` file is prepared for easy creation (see Developer guide: [Environment variables](../docs/developer/developer-setup.md#environment-variables)). Thanks _cypress-dotenv_ module they can be available in the code. They have the same meaning like its Run Command Arguments conterparts.
 
 | Env Variable Name               | Default Value         | Description                                       |
 | ------------------------------- | --------------------- | ------------------------------------------------- |
@@ -33,7 +33,7 @@ Note: Do NOT use other additional ways to set environment variables like inline 
 
 The evaluation priority of a variable is determined by the on place of its definition:
 
-1. `.env` file (**Recommended** - see Developer guide: [Environment variables](../doc/installation/Developer-Setup.md#environment-variables))
+1. `.env` file (**Recommended** - see Developer guide: [Environment variables](../docs/developer/developer-setup.md#environment-variables))
 2. Arguments of the `npm run cypress` or `npm run e2etest` command
 3. Operating system environment (defined e.g. with `export` command)
 4. Values from the configuration file - `cypress.json` (if exists)
@@ -57,34 +57,16 @@ Note: The only difference between those two commands is `npm run cypress` opens 
 
 This section describes how we can run and debug the tests locally with Cypress.
 
-### Run Cypress with Dockerized Application in one Command
-
-Pull, build and run entire application with Cypress end-to-end tests:
-
-```bash
-sh scripts/testing/start-all-e2e-tests.sh
-```
-
-Run built application with minimal required container along with all Cypress tests. Cypress tests are defined in own service. Tests can be rerun.
-
-Note: .env* file is not needed because every environment variables are set in Docker Compose. Moreover, its content will override environment variables set for the \_e2etest* service.
-
-Restart Docker container with E2E tests (after exiting):
-
-```bash
-docker start trubudget_e2etest_1
-```
-
-### Run Cypress GUI with Dockerized Application
+### Run Cypress GUI with Dockerized Application (recommended)
 
 To start the cypress GUI to select specific tests, simply start a TruBudget setup and after that, start cypress.
 
-You can run application in many ways: pull built images, each service in separated terminal or in development mode. See [Developer Setup](https://github.com/openkfw/TruBudget/blob/master/doc/installation/Developer-Setup.md) for more details.
+You can run application in many ways: pull built images, each service in separated terminal or in development mode. See [Developer Setup](../docs/developer/developer-setup.md) for more details.
 
 One example is to start this docker-compose setup
 
 ```bash
-sh scripts/multi/start-dev-multi-node.sh
+bash scripts/development/start-dev.sh --slim
 ```
 
 and after the docker-compose setup has builded and started successfully, start cypress:
