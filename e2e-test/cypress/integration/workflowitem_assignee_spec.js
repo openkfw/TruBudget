@@ -190,6 +190,9 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("Assigning without project permission to grant view permissions is not possible", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+
     // Grant project/subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser);
@@ -199,11 +202,18 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=confirmation-warning]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
+
+    cy.wait("@listWorkflowitemPermissions");
+    // Permission required Dialog should be open
+    cy.get("[data-test='confirmation-dialog']")
+      .find("h2")
+      .should("be.visible")
+      .should("contain", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-cancel]")
       .should("be.visible")
       .click();
+
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
@@ -213,6 +223,9 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("Assigning without subproject permission to grant view permissions is not possible", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+
     // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser);
@@ -223,8 +236,14 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=confirmation-warning]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
+
+    cy.wait("@listWorkflowitemPermissions");
+    // Permission required Dialog should be open
+    cy.get("[data-test='confirmation-dialog']")
+      .find("h2")
+      .should("be.visible")
+      .should("contain", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-cancel]")
       .should("be.visible")
       .click();
@@ -237,6 +256,9 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("Assigning without workflowitem permission to grant view permissions is not possible", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+
     // Grant workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantWorkflowitemPermission(
       projectId,
@@ -259,8 +281,14 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=confirmation-warning]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
+
+    cy.wait("@listWorkflowitemPermissions");
+    // Permission required Dialog should be open
+    cy.get("[data-test='confirmation-dialog']")
+      .find("h2")
+      .should("be.visible")
+      .should("contain", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-cancel]")
       .should("be.visible")
       .click();
@@ -279,6 +307,9 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("Assigning without project nor subproject nor workflowitem permission to grant view permissions is not possible", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+
     // Grant project/subproject/workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
@@ -305,11 +336,18 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=confirmation-warning]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.disabled");
+
+    cy.wait("@listWorkflowitemPermissions");
+    // Permission required Dialog should be open
+    cy.get("[data-test='confirmation-dialog']")
+      .find("h2")
+      .should("be.visible")
+      .should("contain", "Permissions required");
+
     cy.get("[data-test=confirmation-dialog-cancel]")
       .should("be.visible")
       .click();
+
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
