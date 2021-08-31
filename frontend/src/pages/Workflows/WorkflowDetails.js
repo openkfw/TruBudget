@@ -173,7 +173,6 @@ function Documents({
       documents={documents}
       validateDocument={validateDocument}
       validatedDocuments={validatedDocuments}
-      validationActive={showWorkflowDetails}
       projectId={projectId}
       subprojectId={subprojectId}
       workflowitemId={workflowitemId}

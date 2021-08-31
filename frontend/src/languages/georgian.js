@@ -50,6 +50,7 @@ const ka = {
     finish: "დასრულება",
     global: "გლობალური",
     grant: "მინიჭება",
+    hash: "ჰაში",
     history_end: "Last event reached",
     history: "ისტორია",
     workflowitem_history: "Workflowitem ისტორია",
@@ -74,6 +75,9 @@ const ka = {
     no_groups_text: "შექმენით ახალი ჯგუფი plus ღილაკის დაჭერით.",
     no_history: "არანაირი მოვლენა",
     no_items_text: "თქვენ შეგიძლიათ შექმნათ პლიუსის ღილაკის დაჭერით.",
+    no_documents: "დოკუმენტები არ მოიძებნა",
+    no_documents_upload_text: "თქვენ შეგიძლიათ დაამატოთ ერთი ატვირთვის ღილაკზე დაჭერით",
+    no_documents_info_text: "თქვენ შეგიძლიათ შეცვალოთ სამუშაო ნაკრები დოკუმენტების დასამატებლად",
     no_nodes: "დამატებითი კვანძების მოთხოვნა ვერ მოიძებნა",
     no_notifications: "შეტყობინებები ვერ მოიძებნა",
     no_organizations: "ახალი ორგანიზაციების მოთხოვნა ვერ მოიძებნა",
@@ -98,8 +102,8 @@ const ka = {
     redacted: "Redacted",
     reset: "გადატვირთვა",
     revoke: "გაუქმება",
-    reject:"Უარყოს",
-    rejected:"უარყოფილი",
+    reject: "Უარყოს",
+    rejected: "უარყოფილი",
     search: "ძიება",
     show_permissions: "მაჩვენე ნებართვები",
     status: "სტატუსი",
@@ -314,7 +318,7 @@ const ka = {
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
       "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას.",
-    workflow_reject_reason:"უარყავი მიზეზი"
+    workflow_reject_reason: "უარყავი მიზეზი"
   },
 
   snackbar: {
