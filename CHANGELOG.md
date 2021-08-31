@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Add a bash script for a quick and easy TruBudget setup [#905](https://github.com/openkfw/TruBudget/issues/905)
 - Add possibility to reject a workflowitem [#845](https://github.com/openkfw/TruBudget/issues/845)
+- Add Permission Required dialog [#933](https://github.com/openkfw/TruBudget/issues/933)
 - Disable download option for documents that are not available anymore [#944](https://github.com/openkfw/TruBudget/issues/944)
 
 <!-- ### Changed -->
