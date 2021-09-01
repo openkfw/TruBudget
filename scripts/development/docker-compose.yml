@@ -87,7 +87,7 @@ services:
       DB_NAME: ${DB_NAME}
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${LOG_LEVEL}
-      MODE: DEBUG
+      AUTHENTICATION: ${AUTHENTICATION}
     # volume for hot reloading
     volumes:
       - "../../email-notification-service/src:/home/node/src:delegated"

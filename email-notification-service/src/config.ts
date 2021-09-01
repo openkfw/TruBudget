@@ -12,7 +12,7 @@ interface DatabaseConfig {
   schema: string;
 }
 interface Config {
-  mode: string;
+  authentication: string;
   http: { port: number };
   dbType: DatabaseType;
   db: DatabaseConfig;
@@ -29,7 +29,7 @@ interface Config {
 }
 
 const config: Config = {
-  mode: process.env.MODE || "PROD",
+  authentication: process.env.AUTHENTICATION?.toLowerCase() || "jwt",
   http: {
     port: Number(process.env.EMAIL_PORT) || 8890,
   },
