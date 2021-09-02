@@ -31,8 +31,7 @@ describe("Subproject creation", function() {
   it("Check confirmation dialog without a selected default assignee", function() {
     cy.login();
     cy.visit(`/projects/${projectId}`);
-    cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
     //Create a subproject
     cy.wait("@loadPage")
       .get("[data-test=subproject-create-button]")
@@ -48,8 +47,8 @@ describe("Subproject creation", function() {
         .children()
         .should("have.length", 1);
     });
-    cy.get("[data-test=additional-actions]").should("not.be.visible");
-    cy.get("[data-test=post-actions]").should("not.be.visible");
+    cy.get("[data-test=additional-actions]").should("not.exist");
+    cy.get("[data-test=post-actions]").should("not.exist");
     // actions counter displays correct amount of actions
     cy.get("[data-test=actions-counter]")
       .scrollIntoView()
@@ -59,8 +58,7 @@ describe("Subproject creation", function() {
   it("Check additional, original and post actions when creating a subproject with validator", function() {
     cy.login();
     cy.visit(`/projects/${projectId}`);
-    cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
     //Create a subproject
     cy.wait("@loadPage")
       .get("[data-test=subproject-create-button]")

@@ -155,6 +155,7 @@ describe("Project's history", function() {
   });
 
   it("Search with multiple values and reset search panel after clicking reset", function() {
+    // Set multiple values including project-closed eventtype which should not exist
     cy.get("[data-test=project-history-button]").click();
     cy.get("[data-test=search-history]").click();
     cy.get("[data-test=dropdown-filter-publisher-click]").click();
@@ -165,12 +166,11 @@ describe("Project's history", function() {
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .should("have.length", 0);
-    // Reset
+    // Reset filter
     cy.get("[data-test=reset]").click();
-    // value in dropdown should not exist
-    cy.get("[data-test=dropdown-filter-publisher-click]")
-      .find("input")
-      .should("not.have.attr", "data-value");
+    // All history items should be shown again
+    // project_create event and project_changed (previous test)
+    cy.get("input[id=filter-publisher]").should("be.empty");
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .should("have.length", 2);

@@ -28,12 +28,11 @@ describe("Users/Groups Dashboard", function() {
   });
 
   it("Grant and revoke permission to user works", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/user.list*").as("userlist");
-    cy.route("GET", apiRoute + "/group.list*").as("grouplist");
-    cy.route("GET", apiRoute + "/global.listPermissions*").as("listPermissions");
-    cy.route("POST", apiRoute + "/global.grantPermission*").as("grantPermission");
-    cy.route("POST", apiRoute + "/global.revokePermission*").as("revokePermission");
+    cy.intercept(apiRoute + "/user.list*").as("userlist");
+    cy.intercept(apiRoute + "/group.list*").as("grouplist");
+    cy.intercept(apiRoute + "/global.listPermissions*").as("listPermissions");
+    cy.intercept(apiRoute + "/global.grantPermission*").as("grantPermission");
+    cy.intercept(apiRoute + "/global.revokePermission*").as("revokePermission");
     cy.visit("/users");
     cy.wait("@userlist")
       .wait("@grouplist")
@@ -69,10 +68,9 @@ describe("Users/Groups Dashboard", function() {
   });
 
   it("After clicking 'cancel', the selection is not adopted", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/user.list*").as("userlist");
-    cy.route("GET", apiRoute + "/group.list*").as("grouplist");
-    cy.route("GET", apiRoute + "/global.listPermissions*").as("listPermissions");
+    cy.intercept(apiRoute + "/user.list*").as("userlist");
+    cy.intercept(apiRoute + "/group.list*").as("grouplist");
+    cy.intercept(apiRoute + "/global.listPermissions*").as("listPermissions");
     cy.visit("/users");
     cy.wait("@userlist")
       .wait("@grouplist")

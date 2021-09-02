@@ -6,13 +6,13 @@ describe("Workflowitem's history", function() {
 
   const yesterday = Cypress.moment()
     .add(-1, "days")
-    .format("DD/MM/YYYY");;
+    .format("DD/MM/YYYY");
   const tomorrow = Cypress.moment()
     .add(1, "days")
-    .format("DD/MM/YYYY");;
+    .format("DD/MM/YYYY");
   const afterTomorrow = Cypress.moment()
     .add(2, "days")
-    .format("DD/MM/YYYY");;
+    .format("DD/MM/YYYY");
 
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
@@ -35,8 +35,7 @@ describe("Workflowitem's history", function() {
   });
 
   it("The history contains only the creation event after creation.", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
+    cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
     cy.get(`[data-test=workflowitem-${workflowitemId}]`).should("be.visible");
     cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
@@ -62,9 +61,8 @@ describe("Workflowitem's history", function() {
   });
 
   it("The history is sorted from new to old", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
+    cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
 
     // Update workflowitem to create new history event
     cy.get(`[data-test=workflowitem-${workflowitemId}]`).should("be.visible");
@@ -97,8 +95,7 @@ describe("Workflowitem's history", function() {
   });
 
   it("When changing the tab, the history is fetched correctly", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
+    cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
     // Open info dialog
     cy.get(`[data-test=workflowitem-${workflowitemId}]`).should("be.visible");
@@ -122,8 +119,7 @@ describe("Workflowitem's history", function() {
   });
 
   it("All different types of history events are shown", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
+    cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
       workflowitemId = id;
@@ -162,8 +158,7 @@ describe("Workflowitem's history", function() {
   });
 
   it("All history search filter are working correctly", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
+    cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
       workflowitemId = id;
@@ -256,8 +251,7 @@ describe("Workflowitem's history", function() {
   });
 
   it("Search with multiple values and reset search panel after closing history panel", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
+    cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
       workflowitemId = id;

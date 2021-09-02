@@ -10,9 +10,8 @@ describe("Workflowitem budget test", function() {
 
   beforeEach(function() {
     cy.login();
-    cy.server();
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetailsSubroject");
-    cy.route("POST", apiRoute + "/workflowitem.update").as("updateWorkflowitem");
+    cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetailsSubroject");
+    cy.intercept(apiRoute + "/workflowitem.update").as("updateWorkflowitem");
   });
 
   it("Edit workflowitem dialog: The exchange rate is set to 1 if the subproject and worklfowitem currency are the same", function() {
@@ -60,10 +59,10 @@ describe("Workflowitem budget test", function() {
           cy.get("[data-test=amount-type-na]")
             .should("be.visible")
             .click();
-          cy.get("[data-test=dropdown-currencies]").should("not.be.visible");
-          cy.get("[data-test=amountinput]").should("not.be.visible");
-          cy.get("[data-test=rateinput]").should("not.be.visible");
-          cy.get("[data-test=calculated-result]").should("not.be.visible");
+          cy.get("[data-test=dropdown-currencies]").should("not.exist");
+          cy.get("[data-test=amountinput]").should("not.exist");
+          cy.get("[data-test=rateinput]").should("not.exist");
+          cy.get("[data-test=calculated-result]").should("not.exist");
         });
       });
     });

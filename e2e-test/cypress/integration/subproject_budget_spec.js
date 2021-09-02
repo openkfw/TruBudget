@@ -42,14 +42,13 @@ describe("Subproject budget test", function() {
 
   beforeEach(() => {
     cy.login();
-    cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("viewDetailsProject");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetailsSubproject");
-    cy.route("GET", apiRoute + "/project.list*").as("listProjects");
-    cy.route("POST", apiRoute + "/global.createProject").as("createProject");
-    cy.route("POST", apiRoute + "/project.createSubproject").as("createSubproject");
-    cy.route("POST", apiRoute + "/subproject.budget.deleteProjected").as("deleteBudget");
-    cy.route("POST", apiRoute + "/subproject.budget.updateProjected").as("updateBudget");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("viewDetailsProject");
+    cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetailsSubproject");
+    cy.intercept(apiRoute + "/project.list*").as("listProjects");
+    cy.intercept(apiRoute + "/global.createProject").as("createProject");
+    cy.intercept(apiRoute + "/project.createSubproject").as("createSubproject");
+    cy.intercept(apiRoute + "/subproject.budget.deleteProjected").as("deleteBudget");
+    cy.intercept(apiRoute + "/subproject.budget.updateProjected").as("updateBudget");
   });
 
   it("When creating a subproject, only the organizations from the parent project can be selected", function() {

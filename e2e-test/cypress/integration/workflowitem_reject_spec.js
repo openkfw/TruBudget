@@ -33,10 +33,9 @@ describe("Workflowitem reject", function() {
 
   it("When rejecting a workflow item, a reason must be provided", function() {
     // testUser may not reject the workflowitem
-    cy.server();
     cy.login(testUser.id, testUser.password);
     cy.visit(`/projects/${projectId}/${subprojectId}`);
-    cy.get("[data-test=reject-workflowitem]").should("not.be.visible");
+    cy.get("[data-test=reject-workflowitem]").should("not.exist");
 
     // the assignee may reject the workflowitem
     cy.login();
@@ -48,9 +47,7 @@ describe("Workflowitem reject", function() {
   });
 
   it("The workflowitem can be rejected by the assignee only", function() {
-    cy.server();
-
-    cy.route("POST", apiRoute + `/workflowitem.close`).as("workflowitemClose");
+    cy.intercept(apiRoute + `/workflowitem.close`).as("workflowitemClose");
 
     // the assignee may reject the workflowitem
     cy.login();

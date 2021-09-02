@@ -171,12 +171,11 @@ describe("Subproject's history", function() {
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .should("have.length", 0);
-    // Reset
+    // Reset filter
     cy.get("[data-test=reset]").click();
-    // value in dropdown should not exist
-    cy.get("[data-test=dropdown-filter-publisher-click]")
-      .find("input")
-      .should("not.have.attr", "data-value");
+    // All history items should be shown again
+    // subproject_create event and subproject_changed (previous test)
+    cy.get("input[id=filter-publisher]").should("be.empty");
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .should("have.length", 2);

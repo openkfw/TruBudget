@@ -20,8 +20,7 @@ describe("Backup Feature", function() {
     }
 
     // a backup will be downloaded
-    cy.server();
-    cy.route("GET", apiRoute + "/system.createBackup*").as("create");
+    cy.intercept(apiRoute + "/system.createBackup*").as("create");
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
@@ -44,8 +43,7 @@ describe("Backup Feature", function() {
     //restore the backup to the original state
     cy.task("checkFileExists", { file: pathToFile, timeout: 500 });
 
-    cy.server();
-    cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
+    cy.intercept(apiRoute + "/system.restoreBackup*").as("restore");
 
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
@@ -62,8 +60,8 @@ describe("Backup Feature", function() {
     cy.task("deleteFile", pathToFile).then(success => {
       expect(success).to.eq(true);
     });
-    cy.wait("@restore").should(xhr => {
-      expect(xhr.status).to.eq(200);
+    cy.wait("@restore").should(interception => {
+      expect(interception.response.statusCode).to.eq(200);
       cy.task("awaitApiReady", baseUrl).then(() => {
         cy.url().should("include", "/login");
       });
@@ -87,8 +85,7 @@ describe("Backup Feature", function() {
       expect(success).to.eq(true);
     });
 
-    cy.server();
-    cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
+    cy.intercept(apiRoute + "/system.restoreBackup*").as("restore");
 
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
@@ -103,8 +100,8 @@ describe("Backup Feature", function() {
         { subjectType: "input" }
       );
       cy.wait("@restore")
-        .should(xhr => {
-          expect(xhr.status).to.eq(500);
+        .should(interception => {
+          expect(interception.response.statusCode).to.eq(500);
         })
         .then(() => {
           cy.task("deleteFile", `cypress/fixtures/${invalidBackupFile}`).then(success => {
@@ -127,8 +124,7 @@ describe("Backup Feature", function() {
   it("Tests the restore of a backup with the wrong organisation", function() {
     const wrongOrgaFile = "backup_orga_test.gz";
 
-    cy.server();
-    cy.route("POST", apiRoute + "/system.restoreBackup*").as("restore");
+    cy.intercept(apiRoute + "/system.restoreBackup*").as("restore");
     //Open side navigation
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
@@ -143,8 +139,8 @@ describe("Backup Feature", function() {
         { subjectType: "input" }
       );
       cy.wait("@restore")
-        .should(xhr => {
-          expect(xhr.status).to.eq(500);
+        .should(interception => {
+          expect(interception.response.statusCode).to.eq(500);
         })
         .then(() => {
           cy.get("[data-test=client-snackbar]")

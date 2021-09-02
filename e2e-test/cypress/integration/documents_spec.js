@@ -6,11 +6,10 @@ let workflowitemId;
 let baseUrl, apiRoute;
 let isExternalStorageEnabled = false;
 
-
 // Actual file in fixture folder
 const fileName = "documents_test.json";
 
-describe("Attaching a document to a workflowitem.", function () {
+describe("Attaching a document to a workflowitem.", function() {
   before(() => {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
@@ -35,12 +34,12 @@ describe("Attaching a document to a workflowitem.", function () {
       });
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  const uploadDocument = (fileName) => {
+  const uploadDocument = fileName => {
     // open edit dialog:
     cy.get("div[title=Edit] > button")
       .should("be.visible")
@@ -51,7 +50,6 @@ describe("Attaching a document to a workflowitem.", function () {
       .should("be.visible")
       .click();
 
-
     // "upload" the file:
     cy.fixture(fileName).then(fileContent => {
       cy.get("#docupload").attachFile(
@@ -59,14 +57,13 @@ describe("Attaching a document to a workflowitem.", function () {
         { subjectType: "input" }
       );
     });
-    return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName)
+    return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
   };
 
-  it("A document can be validated.", function () {
-    cy.server();
-    cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
-    cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
+  it("A document can be validated.", function() {
+    cy.intercept(apiRoute + "/workflowitem.update*").as("update");
+    cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");
 
     uploadDocument(fileName);
     // submit and close the dialog:
@@ -100,11 +97,10 @@ describe("Attaching a document to a workflowitem.", function () {
       .should("contain", "Identical");
   });
 
-  it("Validation of wrong document fails.", function () {
-    cy.server();
-    cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
-    cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
+  it("Validation of wrong document fails.", function() {
+    cy.intercept(apiRoute + "/workflowitem.update*").as("update");
+    cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");
 
     uploadDocument(fileName);
     // submit and close the dialog:
@@ -139,11 +135,10 @@ describe("Attaching a document to a workflowitem.", function () {
       .should("contain", "Different");
   });
 
-  it("The filename and document name are shown correctly", function () {
-    cy.server();
-    cy.route("POST", apiRoute + "/workflowitem.update*").as("update");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
-    cy.route("POST", apiRoute + "/workflowitem.validate*").as("validate");
+  it("The filename and document name are shown correctly", function() {
+    cy.intercept(apiRoute + "/workflowitem.update*").as("update");
+    cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");
 
     uploadDocument(fileName);
     // submit and close the dialog:

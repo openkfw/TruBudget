@@ -22,9 +22,8 @@ describe("Subproject Edit", function() {
   });
 
   it("Editing the title is possible", function() {
-    cy.server();
-    cy.route("POST", apiRoute + "/subproject.update*").as("update");
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("viewDetails");
+    cy.intercept(apiRoute + "/subproject.update*").as("update");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("viewDetails");
 
     // Open edit dialog
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=subproject-edit-button]").click();

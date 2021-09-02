@@ -20,8 +20,7 @@ describe("Describe Currencies", function() {
 
   beforeEach(function() {
     cy.login();
-    cy.server();
-    cy.route("GET", apiRoute + "/project.list*").as("listProjects");
+    cy.intercept(apiRoute + "/project.list*").as("listProjects");
     cy.visit(`/projects`);
   });
 

@@ -25,8 +25,7 @@ describe("Project Tags", function() {
       .should("contain", "test");
 
     // Submit the project
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createProject").as("create");
+    cy.intercept(apiRoute + "/global.createProject").as("create");
     cy.get("[data-test=submit]").click();
     cy.wait("@create")
       .then(data => {
@@ -53,8 +52,7 @@ describe("Project Tags", function() {
     cy.get("[data-test=tageditor-tag]")
       .first()
       .should("contain", "test");
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createProject").as("create");
+    cy.intercept(apiRoute + "/global.createProject").as("create");
     cy.get("[data-test=submit]").click();
     cy.wait("@create")
       .then(data => {
@@ -100,8 +98,7 @@ describe("Project Tags", function() {
     cy.get("[data-test=tageditor-tag]")
       .first()
       .should("contain", "test");
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createProject").as("create");
+    cy.intercept(apiRoute + "/global.createProject").as("create");
     cy.get("[data-test=submit]").click();
     cy.wait("@create")
       .then(data => {
@@ -178,8 +175,7 @@ describe("Project Tags", function() {
       .should("contain", "çéâêôûàèìòùäöãõ");
 
     // Submit the project
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createProject").as("create");
+    cy.intercept(apiRoute + "/global.createProject").as("create");
     cy.get("[data-test=submit]").click();
     cy.wait("@create")
       .then(data => {
@@ -211,8 +207,7 @@ describe("Project Tags", function() {
       .should("contain", "TestTAG");
 
     // Submit the project
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createProject").as("create");
+    cy.intercept(apiRoute + "/global.createProject").as("create");
     cy.get("[data-test=submit]").click();
     cy.wait("@create")
       .then(data => {

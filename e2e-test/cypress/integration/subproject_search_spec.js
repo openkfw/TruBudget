@@ -59,7 +59,7 @@ describe("Subproject Search", function() {
     cy.get("[data-test=highlighted-displayname]").contains(projectWithTag.subprojectTitle);
     //Only one element should should be in the list
     cy.get("[data-test=subproject-title-0]").should("be.visible");
-    cy.get("[data-test=subproject-title-1]").should("not.be.visible");
+    cy.get("[data-test=subproject-title-1]").should("not.exist");
   });
 
   it("Filter subprojects by prefix 'name' and 'status'", function() {
@@ -74,7 +74,7 @@ describe("Subproject Search", function() {
     cy.get("[data-test=highlighted-displayname]").contains(projectWithTag.subprojectTitle);
     //Only one element should should be in the list
     cy.get("[data-test=subproject-title-0]").should("be.visible");
-    cy.get("[data-test=subproject-title-1]").should("not.be.visible");
+    cy.get("[data-test=subproject-title-1]").should("not.exist");
 
     cy.get("[data-test=sub-projects]")
       .find("[data-test=search-bar]")
@@ -87,7 +87,7 @@ describe("Subproject Search", function() {
     cy.get("[data-test=ssp-table]").contains("Open");
     //Only one element should should be in the list
     cy.get("[data-test=subproject-title-0]").should("be.visible");
-    cy.get("[data-test=subproject-title-1]").should("not.be.visible");
+    cy.get("[data-test=subproject-title-1]").should("not.exist");
   });
 
   it("Search bar is empty when viewing subproject details", function() {
@@ -170,6 +170,6 @@ describe("Subproject Search", function() {
       .should("have.value", "name:" + projectWithTag.subprojectTitle);
     //Only one element should should be in the list
     cy.get("[data-test=subproject-title-0]").should("be.visible");
-    cy.get("[data-test=subproject-title-1]").should("not.be.visible");
+    cy.get("[data-test=subproject-title-1]").should("not.exist");
   });
 });

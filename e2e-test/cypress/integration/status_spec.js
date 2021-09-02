@@ -16,8 +16,7 @@ describe("Component Versions", function() {
   });
 
   it("Shows connection of export-service", function() {
-    cy.server();
-    cy.route("GET", exportUrl + "/readiness*").as("isExportReady");
+    cy.intercept(exportUrl + "/readiness*").as("isExportReady");
     cy.visit("/");
     cy.wait("@isExportReady").then(() => loginUi());
     cy.visit(`/status`);
@@ -27,8 +26,7 @@ describe("Component Versions", function() {
   });
 
   it("Shows versions of basic services (frontend,api,blockchain,multichain) correctly", function() {
-    cy.server();
-    cy.route("GET", apiUrl + "/version").as("fetchVersions");
+    cy.intercept(apiUrl + "/version").as("fetchVersions");
     cy.login();
     cy.visit(`/status`);
     cy.get("[data-test=status-table-body]")

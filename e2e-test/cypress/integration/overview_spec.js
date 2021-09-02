@@ -25,7 +25,7 @@ describe("Overview Page", function() {
         ).to.contains.text("AR$ 32,000,000.00");
         expect(
           $card
-            .find("[data-test=project-creation]")
+            .find("[data-test=project-creation-date]")
             .children()
             .first()
         ).not.to.have.text("Jan 01, 1970");
