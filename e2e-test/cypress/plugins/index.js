@@ -150,7 +150,11 @@ module.exports = (on, config) => {
     readExcelSheet: readExcelSheet,
     deleteFile: deleteFile,
     checkFileExists: checkFileExists,
-    modifyHash: modifyHash
+    modifyHash: modifyHash,
+    log(message) {
+      console.log(message);
+      return null;
+    }
   });
   on("before:browser:launch", (browser, options) => {
     const downloadDirectory = path.join(__dirname, "..", "fixtures");

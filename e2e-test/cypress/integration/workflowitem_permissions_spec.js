@@ -439,39 +439,40 @@ describe("Workflowitem Permissions", function() {
       // Make sure cypress waits for future listPermissions calls
       cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
       cy.get("[data-test=confirmation-dialog-confirm]").click();
-      cy.wait("@listWorkflowitemPermissions", { timeout: 30000 });
       // Reset permissions of testgroup
-      Cypress.Promise.all([
-        cy.login("mstein", "test"),
-        cy.revokeProjectPermission(projectId, "project.viewSummary", testGroupId),
-        cy.revokeProjectPermission(projectId, "project.viewDetails", testGroupId),
-        cy.revokeProjectPermission(projectId, "project.intent.listPermissions", testGroupId),
-        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroupId),
-        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
-        cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroupId),
-        cy.revokeWorkflowitemPermission(
-          projectId,
-          subprojectId,
-          workflowitemId,
-          "workflowitem.intent.listPermissions",
-          testGroupId
-        ),
-        cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", testGroupId),
-        cy.revokeWorkflowitemPermission(
-          projectId,
-          subprojectId,
-          workflowitemId,
-          "workflowitem.intent.revokePermission",
-          groupToGivePermissions
-        )
-      ]).then(() => {
-        assertUnchangedPermissions(
-          addViewPermissions(permissionsBeforeTesting, groupToGivePermissions),
-          projectId,
-          subprojectId,
-          workflowitemId
-        );
-      });
+      cy.wait("@listWorkflowitemPermissions")
+        .Promise.all([
+          cy.login("mstein", "test"),
+          cy.revokeProjectPermission(projectId, "project.viewSummary", testGroupId),
+          cy.revokeProjectPermission(projectId, "project.viewDetails", testGroupId),
+          cy.revokeProjectPermission(projectId, "project.intent.listPermissions", testGroupId),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testGroupId),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
+          cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroupId),
+          cy.revokeWorkflowitemPermission(
+            projectId,
+            subprojectId,
+            workflowitemId,
+            "workflowitem.intent.listPermissions",
+            testGroupId
+          ),
+          cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", testGroupId),
+          cy.revokeWorkflowitemPermission(
+            projectId,
+            subprojectId,
+            workflowitemId,
+            "workflowitem.intent.revokePermission",
+            groupToGivePermissions
+          )
+        ])
+        .then(() => {
+          assertUnchangedPermissions(
+            addViewPermissions(permissionsBeforeTesting, groupToGivePermissions),
+            projectId,
+            subprojectId,
+            workflowitemId
+          );
+        });
     });
   });
 

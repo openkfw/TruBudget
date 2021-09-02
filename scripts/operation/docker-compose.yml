@@ -139,10 +139,7 @@ services:
       - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
 
   frontend:
-    # ToDo: Replace local build with image from dockerhub
-    # image: trubudget/frontend:${TAG}
-    build:
-      context: ../../frontend
+    image: trubudget/frontend:${TAG}
     environment:
       NODE_ENV: ${NODE_ENV}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}

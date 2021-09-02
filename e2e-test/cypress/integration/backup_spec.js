@@ -52,14 +52,13 @@ describe("Backup Feature", function() {
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
     //Upload file
-    cy.fixture(fileName, "binary")
-      .then(fileContent => Cypress.Blob.binaryStringToBlob(fileContent))
-      .then(fileContent => {
-        cy.get("#uploadBackup").attachFile(
-          { fileContent: fileContent, fileName, mimeType: "application/gzip", encoding: "utf-8" },
-          { subjectType: "input" }
-        );
-      });
+    cy.fixture(fileName, "binary").then(fileContent => {
+      const blob = Cypress.Blob.binaryStringToBlob(fileContent);
+      cy.get("#uploadBackup").attachFile(
+        { fileContent: blob, fileName, mimeType: "application/gzip", encoding: "utf-8" },
+        { subjectType: "input" }
+      );
+    });
     cy.task("deleteFile", pathToFile).then(success => {
       expect(success).to.eq(true);
     });
@@ -97,33 +96,32 @@ describe("Backup Feature", function() {
     cy.get("[data-test=side-navigation]");
 
     //Upload file
-    cy.fixture(invalidBackupFile, "binary")
-      .then(fileContent => Cypress.Blob.binaryStringToBlob(fileContent))
-      .then(fileContent => {
-        cy.get("#uploadBackup").attachFile(
-          { fileContent: fileContent, fileName: invalidBackupFile, mimeType: "application/gzip", encoding: "utf-8" },
-          { subjectType: "input" }
-        );
-        cy.wait("@restore")
-          .should(xhr => {
-            expect(xhr.status).to.eq(500);
-          })
-          .then(() => {
-            cy.task("deleteFile", `cypress/fixtures/${invalidBackupFile}`).then(success => {
-              expect(success).to.eq(true);
-            });
-            cy.get("[data-test=client-snackbar]")
-              .contains("Not a valid TruBudget backup")
-              .should("be.visible");
-            cy.url()
-              .should("include", "/projects")
-              .then(() => {
-                cy.get("[data-test=project-title] span")
-                  .invoke("text")
-                  .should("not.include", "Backup Successful");
-              });
+    cy.fixture(invalidBackupFile, "binary").then(fileContent => {
+      const blob = Cypress.Blob.binaryStringToBlob(fileContent);
+      cy.get("#uploadBackup").attachFile(
+        { fileContent: blob, fileName: invalidBackupFile, mimeType: "application/gzip", encoding: "utf-8" },
+        { subjectType: "input" }
+      );
+      cy.wait("@restore")
+        .should(xhr => {
+          expect(xhr.status).to.eq(500);
+        })
+        .then(() => {
+          cy.task("deleteFile", `cypress/fixtures/${invalidBackupFile}`).then(success => {
+            expect(success).to.eq(true);
           });
-      });
+          cy.get("[data-test=client-snackbar]")
+            .contains("Not a valid TruBudget backup")
+            .should("be.visible");
+          cy.url()
+            .should("include", "/projects")
+            .then(() => {
+              cy.get("[data-test=project-title] span")
+                .invoke("text")
+                .should("not.include", "Backup Successful");
+            });
+        });
+    });
   });
 
   it("Tests the restore of a backup with the wrong organisation", function() {
@@ -138,29 +136,28 @@ describe("Backup Feature", function() {
     cy.get("[data-test=side-navigation]");
 
     //Upload file
-    cy.fixture(wrongOrgaFile, "binary")
-      .then(fileContent => Cypress.Blob.binaryStringToBlob(fileContent))
-      .then(fileContent => {
-        cy.get("#uploadBackup").attachFile(
-          { fileContent: fileContent, fileName: wrongOrgaFile, mimeType: "application/gzip", encoding: "utf-8" },
-          { subjectType: "input" }
-        );
-        cy.wait("@restore")
-          .should(xhr => {
-            expect(xhr.status).to.eq(500);
-          })
-          .then(() => {
-            cy.get("[data-test=client-snackbar]")
-              .contains("Backup with these configurations is not permitted")
-              .should("be.visible");
-            cy.url()
-              .should("include", "/projects")
-              .then(() => {
-                cy.get("[data-test=project-title] span")
-                  .invoke("text")
-                  .should("not.include", "Backup Successful");
-              });
-          });
-      });
+    cy.fixture(wrongOrgaFile, "binary").then(fileContent => {
+      const blob = Cypress.Blob.binaryStringToBlob(fileContent);
+      cy.get("#uploadBackup").attachFile(
+        { fileContent: blob, fileName: wrongOrgaFile, mimeType: "application/gzip", encoding: "utf-8" },
+        { subjectType: "input" }
+      );
+      cy.wait("@restore")
+        .should(xhr => {
+          expect(xhr.status).to.eq(500);
+        })
+        .then(() => {
+          cy.get("[data-test=client-snackbar]")
+            .contains("Backup with these configurations is not permitted")
+            .should("be.visible");
+          cy.url()
+            .should("include", "/projects")
+            .then(() => {
+              cy.get("[data-test=project-title] span")
+                .invoke("text")
+                .should("not.include", "Backup Successful");
+            });
+        });
+    });
   });
 });
