@@ -1,13 +1,16 @@
+import dayjs from "dayjs";
+
 describe("Project's history", function() {
   let projectId;
-  const yesterday = Cypress.moment()
-    .add(-1, "days")
+
+  const yesterday = dayjs()
+    .add(-1, "day")
     .format("DD/MM/YYYY");
-  const tomorrow = Cypress.moment()
-    .add(1, "days")
+  const tomorrow = dayjs()
+    .add(1, "day")
     .format("DD/MM/YYYY");
-  const afterTomorrow = Cypress.moment()
-    .add(2, "days")
+  const afterTomorrow = dayjs()
+    .add(2, "day")
     .format("DD/MM/YYYY");
 
   before(() => {

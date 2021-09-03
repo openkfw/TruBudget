@@ -438,8 +438,8 @@ describe("Workflowitem Permissions", function() {
       cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
       cy.get("[data-test=confirmation-dialog-confirm]").click();
       // Reset permissions of testgroup
-      cy.wait("@listWorkflowitemPermissions")
-        .Promise.all([
+      cy.wait("@listWorkflowitemPermissions").then(() => {
+        Cypress.Promise.all([
           cy.login("mstein", "test"),
           cy.revokeProjectPermission(projectId, "project.viewSummary", testGroupId),
           cy.revokeProjectPermission(projectId, "project.viewDetails", testGroupId),
@@ -462,8 +462,7 @@ describe("Workflowitem Permissions", function() {
             "workflowitem.intent.revokePermission",
             groupToGivePermissions
           )
-        ])
-        .then(() => {
+        ]).then(() => {
           assertUnchangedPermissions(
             addViewPermissions(permissionsBeforeTesting, groupToGivePermissions),
             projectId,
@@ -471,6 +470,7 @@ describe("Workflowitem Permissions", function() {
             workflowitemId
           );
         });
+      });
     });
   });
 

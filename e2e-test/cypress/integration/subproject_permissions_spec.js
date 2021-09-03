@@ -37,6 +37,8 @@ describe("Subproject Permissions", function() {
     cy.intercept(apiRoute + "/project.viewDetails*").as("viewDetailsProject");
     cy.intercept(apiRoute + "/project.intent.grantPermission").as("grantProjectPermission");
     cy.intercept(apiRoute + "/subproject.intent.grantPermission").as("grantSubprojectPermission");
+    // cy.intercept(apiRoute + "/user.list").as("listUsers");
+    // cy.intercept(apiRoute + "/group.list").as("listGroups");
   });
 
   function alphabeticalSort(a, b) {
@@ -601,36 +603,44 @@ describe("Subproject Permissions", function() {
     });
     // Close permission search popup
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.wait("@viewDetailsProject");
-    cy.get("[data-test=permission-selection-popup]").should("not.exist");
+    cy.wait("@viewDetailsProject")
+      .get("[data-test=permission-selection-popup]")
+      .should("not.exist");
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
-    cy.get("[data-test=additional-actions]").within(() => {
-      cy.get("[data-test=actions-table-body]")
-        .scrollIntoView({ offset: { top: 150, left: 0 } })
-        .should("be.visible")
-        .children()
-        // 6 permissions per user/group granted
-        .should("have.length", 6 * 3);
-    });
+    cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"])
+      .get("[data-test=additional-actions]")
+      .within(() => {
+        cy.get("[data-test=actions-table-body]")
+          .scrollIntoView({ offset: { top: 150, left: 0 } })
+          .should("be.visible")
+          .children()
+          // 6 permissions per user/group granted
+          .should("have.length", 6 * 3);
+      });
     // Confirm additional actions
-    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .click()
+      // Intercepting after the confirmation makes sure it's the next viewDetails fetch including all changes
+      .intercept(apiRoute + "/project.viewDetails*")
+      .as("ChangesFromAdditionalActionsApplied");
 
     // Check permissions has changed
-    cy.wait("@listSubprojectPermissions", { timeout: 30000 });
-    cy.visit(`/projects/${projectId}`);
+    cy.wait("@ChangesFromAdditionalActionsApplied").visit(`/projects/${projectId}`);
     cy.get("[data-test=subproject-" + subprojectId + "]")
       .should("be.visible")
       .within(() => {
+        cy.intercept(apiRoute + "/user.list")
+          .as("listUsers")
+          .intercept(apiRoute + "/group.list")
+          .as("listGroups");
         cy.get("[data-test*=spp-button]")
           .should("be.visible")
           .click();
       });
-    cy.wait("@listSubprojectPermissions", { timeout: 30000 });
-    cy.wait("@viewDetailsProject", { timeout: 30000 });
     // Permissions before testing equal the previous permissions + additional actions
-    cy.wrap(testIds)
+    cy.wait(["@listUsers", "@listGroups"])
+      .wrap(testIds)
       .each(id => {
         permissionsBeforeTesting.subproject["subproject.createWorkflowitem"].push(id);
         permissionsBeforeTesting = addViewPermissions(permissionsBeforeTesting, id);

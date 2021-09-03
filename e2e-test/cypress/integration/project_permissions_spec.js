@@ -364,47 +364,6 @@ describe("Project Permissions", function() {
     });
   });
 
-  it("Executing additional actions grant permissions correctly", function() {
-    cy.intercept(apiRoute + "/project.intent.listPermissions*").as("listPermissions");
-    cy.intercept(apiRoute + "/project.intent.grantPermission").as("grantPermission");
-    cy.get(`[data-test=project-card-${projectId}]`)
-      .find("button[data-test^='pp-button']")
-      .click();
-    // Add permission
-    changePermissionInGui("project.intent.revokePermission", testUser.id);
-    cy.get("[data-test=permission-submit]").click();
-    // Confirmation opens
-    // 3 additional actions
-    cy.get("[data-test=additional-actions]").within(() => {
-      cy.get("[data-test=actions-table-body]")
-        .should("be.visible")
-        .children()
-        .should("have.length", 3);
-    });
-    // 1 original actions
-    cy.get("[data-test=original-actions]").within(() => {
-      cy.get("[data-test=actions-table-body]")
-        .should("be.visible")
-        .children()
-        .should("have.length", 1);
-    });
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .should("be.visible")
-      .click();
-    cy.wait("@listPermissions");
-
-    // Remove project.intent.revokePermission permission
-    cy.get(`[data-test=project-card-${projectId}]`)
-      .find("button[data-test^='pp-button']")
-      .click();
-    changePermissionInGui("project.intent.revokePermission", testUser.id);
-    cy.get("[data-test=permission-submit]").click();
-    cy.get("[data-test=confirmation-dialog-confirm]").click();
-    cy.wait("@listPermissions");
-    // compare Permissions to check if additional permission are granted successfully
-    assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId);
-  });
-
   it("Granting assign/grant/revoke permissions additionally generates an action to grant 'list permissions'-permissions", function() {
     // Check assign
     cy.get(`[data-test=project-card-${projectId}]`)
@@ -536,5 +495,46 @@ describe("Project Permissions", function() {
       .should("be.visible")
       .click();
     cy.get("[data-test='permission-list']").should("not.exist");
+  });
+
+  it("Executing additional actions grant permissions correctly", function() {
+    cy.intercept(apiRoute + "/project.intent.listPermissions*").as("listPermissions");
+    cy.intercept(apiRoute + "/project.intent.grantPermission").as("grantPermission");
+    cy.get(`[data-test=project-card-${projectId}]`)
+      .find("button[data-test^='pp-button']")
+      .click();
+    // Add permission
+    changePermissionInGui("project.intent.revokePermission", testUser.id);
+    cy.get("[data-test=permission-submit]").click();
+    // Confirmation opens
+    // 3 additional actions
+    cy.get("[data-test=additional-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 3);
+    });
+    // 1 original actions
+    cy.get("[data-test=original-actions]").within(() => {
+      cy.get("[data-test=actions-table-body]")
+        .should("be.visible")
+        .children()
+        .should("have.length", 1);
+    });
+    cy.get("[data-test=confirmation-dialog-confirm]")
+      .should("be.visible")
+      .click();
+    cy.wait("@listPermissions");
+
+    // Remove project.intent.revokePermission permission
+    cy.get(`[data-test=project-card-${projectId}]`)
+      .find("button[data-test^='pp-button']")
+      .click();
+    changePermissionInGui("project.intent.revokePermission", testUser.id);
+    cy.get("[data-test=permission-submit]").click();
+    cy.get("[data-test=confirmation-dialog-confirm]").click();
+    cy.wait("@listPermissions");
+    // compare Permissions to check if additional permission are granted successfully
+    assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId);
   });
 });

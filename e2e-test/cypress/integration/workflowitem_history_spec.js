@@ -1,17 +1,19 @@
+import dayjs from "dayjs";
+
 describe("Workflowitem's history", function() {
   let projectId;
   let subprojectId;
   let workflowitemId;
   let baseUrl, apiRoute;
 
-  const yesterday = Cypress.moment()
-    .add(-1, "days")
+  const yesterday = dayjs()
+    .add(-1, "day")
     .format("DD/MM/YYYY");
-  const tomorrow = Cypress.moment()
-    .add(1, "days")
+  const tomorrow = dayjs()
+    .add(1, "day")
     .format("DD/MM/YYYY");
-  const afterTomorrow = Cypress.moment()
-    .add(2, "days")
+  const afterTomorrow = dayjs()
+    .add(2, "day")
     .format("DD/MM/YYYY");
 
   before(() => {
