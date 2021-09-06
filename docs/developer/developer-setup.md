@@ -456,6 +456,10 @@ Before running the tests you should make sure that the application is started (i
 
 #### Setup
 
+:::note
+If you are using WSL on Windows check out [this setup](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) to run cypress in WSL.
+:::
+
 To setup a new TruBudget instance with Docker-Compose, run following command (recommended):
 
 ```bash

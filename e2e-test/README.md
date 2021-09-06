@@ -73,6 +73,10 @@ apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 lib
 unset DISPLAY
 ```
 
+:::note
+If you are using WSL on Windows check out [this setup](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) to run cypress in WSL.
+:::
+
 Navigate to the `e2e-test` folder and generate the `.env` file. If needed modify the .env file.
 
 ```bash
