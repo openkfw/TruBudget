@@ -14,7 +14,3 @@
 // ***********************************************************
 
 import "./commands";
-
-const baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-
-before(() => cy.task("awaitApiReady", baseUrl));

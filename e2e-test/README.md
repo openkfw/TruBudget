@@ -63,7 +63,7 @@ Setup a provisioned Trubudget node including the excel-export service. Check out
 The easiest way to start a provisioned Trubudget node is to start it via developer script
 
 ```bash
-bash scripts/development/start-dev.sh --slim
+bash scripts/development/start-dev.sh --full
 ```
 
 Install all required libraries and unset DISPLAY env var (necessary for ubuntu/WSL2)
