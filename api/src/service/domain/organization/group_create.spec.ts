@@ -33,7 +33,7 @@ const requestData: RequestData = {
 const baseRepository = {
   getGlobalPermissions: () => Promise.resolve(noPermissions),
   groupExists: () => Promise.resolve(false),
-
+  userExists: () => Promise.resolve(false),
 };
 
 describe("Create a new group: authorization", () => {
@@ -44,11 +44,10 @@ describe("Create a new group: authorization", () => {
   });
 
   it("With the global.createGroup permission, a user can create a new group", async () => {
-    const result = await createGroup(ctx, alice, requestData,
-      {
-        ...baseRepository,
-        getGlobalPermissions: () => Promise.resolve(grantPermissions),
-      });
+    const result = await createGroup(ctx, alice, requestData, {
+      ...baseRepository,
+      getGlobalPermissions: () => Promise.resolve(grantPermissions),
+    });
     assert.isTrue(Result.isOk(result));
   });
 
@@ -62,7 +61,16 @@ describe("Create a new group: conditions", () => {
   it("Group that already exists cannot be created", async () => {
     const result = await createGroup(ctx, root, requestData, {
       ...baseRepository,
-      groupExists: groupId => Promise.resolve(true),
+      groupExists: (groupId) => Promise.resolve(true),
+    });
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, AlreadyExists);
+  });
+
+  it("Group cannot be created if user with that id already exists", async () => {
+    const result = await createGroup(ctx, root, requestData, {
+      ...baseRepository,
+      userExists: (groupId) => Promise.resolve(true),
     });
     assert.isTrue(Result.isErr(result));
     assert.instanceOf(result, AlreadyExists);

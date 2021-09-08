@@ -35,6 +35,7 @@ const dummyKeyPair = {
 const baseRepository = {
   getGlobalPermissions: () => Promise.resolve(noPermissions),
   userExists: (userId) => Promise.resolve(false),
+  groupExists: (userId) => Promise.resolve(false),
   organizationExists: (organization) => Promise.resolve(true),
   createKeyPair: () => Promise.resolve(dummyKeyPair),
   hash: (plaintext) => Promise.resolve("dummyHash"),
@@ -64,6 +65,15 @@ describe("Create a new user: conditions", () => {
     const result = await createUser(ctx, root, requestData, {
       ...baseRepository,
       userExists: (userId) => Promise.resolve(true),
+    });
+    assert.isTrue(Result.isErr(result));
+    assert.instanceOf(result, AlreadyExists);
+  });
+
+  it("User cannot be created if group with that id exists", async () => {
+    const result = await createUser(ctx, root, requestData, {
+      ...baseRepository,
+      groupExists: (userId) => Promise.resolve(true),
     });
     assert.isTrue(Result.isErr(result));
     assert.instanceOf(result, AlreadyExists);
