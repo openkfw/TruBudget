@@ -61,6 +61,7 @@ services:
       ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
       ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
@@ -121,6 +122,8 @@ services:
       TEST_API_HOST: master-api
       TEST_API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      MODE: DEBUG
     command: ["npm", "run", "watch"]
     # volume for hot reloading
     volumes:
