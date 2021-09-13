@@ -76,9 +76,9 @@ export async function revokeSubprojectPermission(
   // Prevent revoking grant permission of last user
   const intents: Intent[] = ["subproject.intent.grantPermission"];
   if (
+    intent &&
     intents.includes(intent) &&
-    subproject.permissions[`${intent}`] !== undefined &&
-    subproject.permissions[`${intent}`].length === 1
+    subproject?.permissions[intent]?.length === 1
   ) {
     return new PreconditionError(
       ctx,
