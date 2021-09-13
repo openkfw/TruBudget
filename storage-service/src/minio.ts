@@ -57,7 +57,7 @@ const makeBucket = (bucket: string, cb: Function) => {
   });
 };
 
-const makeBucketAsPromised = (bucket: string) => {
+export const makeBucketAsPromised = (bucket: string) => {
   return new Promise((resolve, reject) => {
     makeBucket(bucket, (err) => {
       if (err) return reject(err);
@@ -103,12 +103,11 @@ const upload = (
  * @param metaData
  * @returns {string} document secret
  */
-export const uploadAsPromised = async (
+export const uploadAsPromised = (
   file: string,
   content: string,
   metaData: Metadata = { fileName: "default", docId: "123" },
 ): Promise<string> => {
-  await verifyMinioBucket();
   return new Promise((resolve, reject) => {
     const secret = v4();
     upload(file, content, { ...metaData, secret }, (err) => {
@@ -141,8 +140,7 @@ const download = (file: string, cb: Function) => {
   });
 };
 
-export const downloadAsPromised = async (file: string): Promise<FileWithMeta> => {
-  await verifyMinioBucket();
+export const downloadAsPromised = (file: string): Promise<FileWithMeta> => {
   return new Promise((resolve, reject) => {
     download(file, (err, fileContent: FileWithMeta) => {
       if (err) return reject(err);
@@ -162,7 +160,7 @@ const getMetadata = (fileHash: string, cb: Function) => {
   });
 };
 
-const getMetadataAsPromised = (
+export const getMetadataAsPromised = (
   fileHash: string,
 ): Promise<MetadataWithName> => {
   return new Promise((resolve, reject) => {
@@ -171,6 +169,12 @@ const getMetadataAsPromised = (
 
       resolve(metaData);
     });
+  });
+};
+
+export const getReadiness = async () => {
+  minioClient.listBuckets(function (err, buckets) {
+    if (err) return console.log(err);
   });
 };
 
@@ -202,22 +206,6 @@ const establishConnection = async () => {
   }
 };
 
-export const verifyMinioBucket = (): Promise<boolean> => {
-  return new Promise((resolve, reject) => {
-    minioClient.listBuckets(async function (err, buckets) {
-      if (err) {
-        console.log(err);
-        reject(err);
-      }
-      if (buckets.length === 0) {
-        await establishConnection();
-      }
-      resolve(true);
-    });
-  });
-};
-
-
-
+establishConnection();
 
 export default minioClient;
