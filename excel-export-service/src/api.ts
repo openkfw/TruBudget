@@ -127,3 +127,9 @@ export async function getWorkflowitems(
   const workflowitemList: Workflowitem[] = response.data.data.workflowitems.map((i) => i.data);
   return workflowitemList;
 }
+
+export async function getApiReadiness(axios: AxiosInstance, base: string): Promise<string> {
+  const response: AxiosResponse<string> = await axios.get(`${base}/readiness`);
+
+  return response.data;
+}
