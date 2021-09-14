@@ -68,10 +68,10 @@ emailService.use(cors());
 emailService.use(bodyParser.json());
 
 // JWT secret
-if (config.mode !== "DEBUG") {
+if (config.authentication === "jwt") {
   configureJWT();
 } else {
-  logger.info("DEBUG mode active");
+  logger.info("No authentication method configured");
 }
 
 // Routes
@@ -233,7 +233,7 @@ emailService.post("/notification.send", (req: NotificationRequest, res: express.
   }
   const id: string = req.body.data.user.id;
   // authenticate
-  if (config.mode !== "DEBUG") {
+  if (config.authentication !== "none") {
     // Only the notification watcher of the Trubudget blockchain may send notifications
     if (res.locals.id !== "notification-watcher") {
       res.status(401).send({
@@ -255,7 +255,7 @@ emailService.post("/notification.send", (req: NotificationRequest, res: express.
       };
       res.status(200).send(body);
     } else {
-      logger.debug("Email address" + emailAddress + "not found");
+      logger.debug("Email address" + emailAddress + " not found");
       body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
       res.status(404).send(body);
     }
@@ -270,7 +270,7 @@ emailService.listen(config.http.port, () => {
 });
 
 function isAllowed(requestedUserId: string, res: express.Response): boolean {
-  if (config.mode === "DEBUG") {
+  if (config.authentication === "none") {
     return true;
   }
   const requestor: string = res.locals.userId;
@@ -284,6 +284,7 @@ function isAllowed(requestedUserId: string, res: express.Response): boolean {
 }
 
 function configureJWT() {
+  logger.info("Configure with JWT authentication ...");
   if (!process.env.JWT_SECRET) {
     logger.error(
       "The 'JWT_SECRET' env variable is not set. Without the JWT secret of the token providing Trubudget API the server cannot identify the user.",

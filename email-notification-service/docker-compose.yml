@@ -32,7 +32,7 @@ services:
       DB_NAME: ${DB_NAME}
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${LOG_LEVEL}
-      # MODE: DEBUG
+      # AUTHENTICATION: none
     links:
       - emaildb
     ports:

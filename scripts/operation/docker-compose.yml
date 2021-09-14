@@ -88,8 +88,7 @@ services:
       DB_NAME: ${DB_NAME}
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${LOG_LEVEL}
-      MODE: DEBUG
-      # MODE: PROD
+      AUTHENTICATION: ${AUTHENTICATION}
     depends_on:
       - emaildb
       - master-api
