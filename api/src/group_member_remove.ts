@@ -8,6 +8,7 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
+import { safeIdSchema } from "./lib/joiValidation";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -20,8 +21,8 @@ interface RequestBodyV1 {
 const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
-    groupId: Joi.string().required(),
-    userId: Joi.string().required(),
+    groupId: safeIdSchema.required(),
+    userId: safeIdSchema.required(),
   }).required(),
 });
 

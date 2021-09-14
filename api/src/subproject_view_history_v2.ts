@@ -15,13 +15,14 @@ import * as History from "./service/domain/workflow/historyFilter";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
+import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 
 const requestBodySchema = Joi.array().items({
-  entityId: Joi.string().required(),
+  entityId: safeIdSchema.required(),
   entityType: Joi.valid("subproject").required(),
   businessEvent: businessEventSchema.required(),
   snapshot: Joi.object({
-    displayName: Joi.string().required(),
+    displayName: safeStringSchema.required(),
   }).required(),
 });
 

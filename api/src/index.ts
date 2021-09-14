@@ -160,6 +160,7 @@ const {
   documentFeatureEnabled,
   encryptionPassword,
   signingMethod,
+  accessControlAllowOrigin,
 } = getValidConfig();
 
 /*
@@ -211,7 +212,13 @@ if (documentFeatureEnabled) {
 }
 const storageServiceClient = new StorageServiceClient(storageServiceSettings);
 
-const server = createBasicApp(jwtSecret, URL_PREFIX, port, swaggerBasepath);
+const server = createBasicApp(
+  jwtSecret,
+  URL_PREFIX,
+  port,
+  swaggerBasepath,
+  accessControlAllowOrigin,
+);
 
 /*
  * Run the app:

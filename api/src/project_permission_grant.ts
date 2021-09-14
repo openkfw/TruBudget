@@ -9,6 +9,7 @@ import * as Result from "./result";
 import { Identity } from "./service/domain/organization/identity";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
+import { safeIdSchema } from "./lib/joiValidation";
 import Joi = require("joi");
 
 interface RequestBodyV1 {
@@ -24,7 +25,7 @@ const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
     projectId: Project.idSchema.required(),
-    identity: Joi.string().required(),
+    identity: safeIdSchema.required(),
     intent: Joi.valid(projectIntents).required(),
   }).required(),
 });
