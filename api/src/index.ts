@@ -159,6 +159,7 @@ const {
   storageService,
   documentFeatureEnabled,
   encryptionPassword,
+  signingMethod,
 } = getValidConfig();
 
 /*
@@ -185,6 +186,9 @@ if (encryptionPassword) {
     "All data that is send to the MultiChain node and external storage will be symmetrically encrypted by the ENCRYPTION_PASSWORD",
   );
 }
+logger.info(
+  `All data published to the chain will be signed using the ${signingMethod} signing method`,
+);
 
 const db = Multichain.init(rpcSettings);
 const { multichainClient } = db;

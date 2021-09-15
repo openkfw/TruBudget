@@ -101,22 +101,97 @@ export class RpcClient {
     });
   }
 
+  private generateRequest = (
+    stream: String,
+    keys: String | String[],
+    streamitem: ItemToPublish,
+    address?: String,
+    offchain?: Boolean,
+  ): Result.Type<any> => {
+    let params = [stream, keys, streamitem];
+    let method: string;
+    if (config.signingMethod === "user" && address) {
+      method = "publishfrom";
+      params = offchain ? [address, ...params, "offchain"] : [address, ...params];
+    } else if (config.signingMethod === "node" || (config.signingMethod === "user" && !address)) {
+      method = "publish";
+      params = offchain ? [...params, "offchain"] : params;
+    } else {
+      logger.error(`Failed to publish event. Invalid signing method: ${config.signingMethod}`);
+      return new RpcError(
+        500,
+        `Failed to publish data to the chain. Invalid signing method: ${config.signingMethod}`,
+        {},
+        "",
+      );
+    }
+    return { method, params };
+  };
+
+  /**
+   * Used to publish a stream item on the chain
+   *
+   * @param stream name of the stream where the item should be published
+   * @param keys keys of the stremitem
+   * @param item the item itself
+   * @param address the address to publish the event from. is optional and is only used if the env var SIGNING_METHOD is used
+   * @param offchain a boolean indicating whether the item should be saved offchain or not
+   */
+  public invokePublish(
+    stream: String,
+    keys: String[] | String,
+    item: ItemToPublish | any,
+    address?: String,
+    offchain?: Boolean,
+  ): any {
+    const startTime = process.hrtime();
+
+    // Decide if the item should be encrypted first
+    const streamitem = config.encryptionPassword ? this.encryptItem(item) : item;
+
+    const requestResult = this.generateRequest(stream, keys, streamitem, address, offchain);
+    if (Result.isErr(requestResult)) {
+      return Promise.reject(requestResult);
+    }
+    const { method, params } = requestResult;
+
+    logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
+    const request: RpcRequest = {
+      method,
+      params,
+    };
+    return new Promise<any>(async (resolve, reject) => {
+      this.instance
+        .post("/", JSON.stringify(request))
+        .then(async (resp) => {
+          logger.trace({ data: resp.data }, "Received valid response.");
+
+          if (logger.levelVal >= logger.levels.values.debug) {
+            const countKey = `${method}(${params.map((x) => JSON.stringify(x)).join(", ")})`;
+            const hrtimeDiff = process.hrtime(startTime);
+            const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
+            durations.set(countKey, (durations.get(countKey) || 0) + elapsedMilliseconds);
+            count.set(countKey, (count.get(countKey) || 0) + 1);
+          }
+          let responseData = resp.data.result;
+          resolve(responseData);
+        })
+        .catch((error: AxiosError | Error) => {
+          let response: RpcError = this.handleError(error, method);
+          reject(response);
+        });
+    });
+  }
+
+  /**
+   * Used to invoke MultiChain RPC-Commands. For publishing an event to the chain the invokePublish function should be used
+   *
+   * @param method the RPC-command to be invoked
+   * @param params the parameters, depend on the specific method, can be stream name, keys, or others
+   * @returns return value also depends on the speicific method, can be listitems, permissions, or others
+   */
   public invoke(method: string, ...params: any[]): any {
     const startTime = process.hrtime();
-    if (config.encryptionPassword && method === "publish") {
-      const convertedParams = this.rebuildParamsWithEncryptedItems(params);
-      if (Result.isErr(convertedParams)) {
-        logger.error(`Error during invoke of ${method}`, convertedParams.message);
-        return Promise.reject(
-          new RpcError(
-            500,
-            `Error while saving data on the chain: ${convertedParams.message}`,
-            {},
-            "",
-          ),
-        );
-      } else params = convertedParams;
-    }
 
     logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
     const request: RpcRequest = {
@@ -155,86 +230,47 @@ export class RpcClient {
           }
         })
         .catch((error: AxiosError | Error) => {
-          let response: RpcError;
-          if (axios.isAxiosError(error)) {
-            if (error.response && error.response.data.error !== null) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx and WITH multichain errors:
-              response = error.response.data.error;
-              reject(response);
-              logger.trace(
-                { response },
-                `Error during invoke of ${method}. Multichain errors occured.`,
-              );
-              return;
-            }
-
-            if (error.response) {
-              // non 2xx answer but no multichain data
-              logger.error(
-                { error: error.response },
-                `Error during invoke of ${method}. No multichain data.`,
-              );
-              response = new RpcError(
-                Number(error.response.status),
-                String(error.response.statusText),
-                error.response.headers,
-                error.response.data,
-              );
-              reject(response);
-            } else if (error.request) {
-              // The request was made but no response was received
-              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-              // http.ClientRequest in node.js
-              // console.error(error.request);
-              logger.error({ error: error.message }, "No response from multichain received.");
-              response = new RpcError(500, "No Response from Multichain", {}, error.message);
-              reject(response);
-            }
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            logger.error(error);
-            response = new RpcError(500, `other error: ${error}`, {}, "");
-            reject(response);
-          }
+          let response: RpcError = this.handleError(error, method);
+          reject(response);
         });
     });
   }
 
-  private rebuildParamsWithEncryptedItems = (params: any[]): Result.Type<ItemToPublish[]> => {
-    const items = this.getItemsFromParams(params);
-    if (Result.isErr(items)) {
-      logger.error({ error: items.message }, "Error getting items while encrypting", items.message);
-      return items;
-    }
-    const encryptedItems: EncryptedItemToPublish[] = items.map((item) => this.encryptItem(item));
-    return this.rebuildParams(params, encryptedItems);
-  };
-
-  private getItemsFromParams = (params: any[]): Result.Type<ItemToPublish[]> => {
-    const items: ItemToPublish[] = [];
-    const streamName: string = params[0];
-    const keys: string[] = params[1];
-    params.forEach((param) => {
-      if (param !== streamName && param !== keys && param !== "offchain") {
-        items.push(param); //select only items from params
+  private handleError = (error, method) => {
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data.error !== null) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and WITH multichain errors:
+        const response = error.response.data.error;
+        logger.trace({ response }, `Error during invoke of ${method}. Multichain errors occured.`);
+        return response;
       }
-    });
-    if (!items.length) {
-      logger.error({ error: "No items to get items from params" }, "Error: Failed to publish data");
-      return new RpcError(500, "Failed to publish data", {}, "No items to publish found");
-    }
-    return items;
-  };
 
-  private rebuildParams = (params: any, encryptedItems: EncryptedItemToPublish[]): any[] => {
-    const streamName: string = params[0];
-    const keys: string[] = params[1];
-    const offchain: string = params.includes("offchain");
-    if (offchain) {
-      return [streamName, keys, ...encryptedItems, "offchain"];
+      if (error.response) {
+        // non 2xx answer but no multichain data
+        logger.error(
+          { error: error.response },
+          `Error during invoke of ${method}. No multichain data.`,
+        );
+        return new RpcError(
+          Number(error.response.status),
+          String(error.response.statusText),
+          error.response.headers,
+          error.response.data,
+        );
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        // console.error(error.request);
+        logger.error({ error: error.message }, "No response from multichain received.");
+        return new RpcError(500, "No Response from Multichain", {}, error.message);
+      }
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      logger.error(error);
+      return new RpcError(500, `other error: ${error}`, {}, "");
     }
-    return [streamName, keys, ...encryptedItems];
   };
 
   private encryptItem = (item: ItemToPublish): EncryptedItemToPublish => {
