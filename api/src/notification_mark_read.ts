@@ -36,9 +36,9 @@ function mkSwaggerSchema(server: FastifyInstance) {
   return {
     preValidation: [(server as any).authenticate],
     schema: {
-      description: "Mark a set of notifications as \"read\".",
+      description: 'Mark a set of notifications as "read".',
       tags: ["notification"],
-      summary: "Mark a set of notifications as \"read\".",
+      summary: 'Mark a set of notifications as "read".',
       security: [{ bearerToken: [] }],
       body: {
         type: "object",
@@ -94,6 +94,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const user: ServiceUser = {
         id: (request as AuthenticatedRequest).user.userId,
         groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
       };
 
       const bodyResult = validateRequestBody(request.body);

@@ -91,6 +91,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     const issuer: ServiceUser = {
       id: (request as AuthenticatedRequest).user.userId,
       groups: (request as AuthenticatedRequest).user.groups,
+      address: (request as AuthenticatedRequest).user.address,
     };
     const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
     const bodyResult = validateRequestBody(request.body);
