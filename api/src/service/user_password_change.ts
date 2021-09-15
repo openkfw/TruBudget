@@ -31,6 +31,6 @@ export async function changeUserPassword(
   const newEvents = newEventsResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 }

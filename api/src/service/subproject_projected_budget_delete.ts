@@ -44,7 +44,7 @@ export async function deleteProjectedBudget(
   }
   const { newEvents, projectedBudgets } = deleteProjectedBudgetResult;
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 
   return projectedBudgets;

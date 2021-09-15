@@ -22,5 +22,5 @@ export async function setProvisioningStartFlag(
 
   const provisioningStartEvent = provisioningStartEventResult;
 
-  await store(conn, ctx, provisioningStartEvent);
+  await store(conn, ctx, provisioningStartEvent, serviceUser.address);
 }

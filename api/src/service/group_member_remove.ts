@@ -15,7 +15,7 @@ export async function removeMember(
   groupId: Group.Id,
   newMember: Group.Member,
 ): Promise<Result.Type<void>> {
-  const memberRemoveResult = await Cache.withCache(conn, ctx, cache =>
+  const memberRemoveResult = await Cache.withCache(conn, ctx, (cache) =>
     GroupMemberRemove.removeMember(ctx, serviceUser, groupId, newMember, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
@@ -23,8 +23,9 @@ export async function removeMember(
     }),
   );
 
-  if (Result.isErr(memberRemoveResult)) return new VError(memberRemoveResult, "failed to remove group member");
+  if (Result.isErr(memberRemoveResult))
+    return new VError(memberRemoveResult, "failed to remove group member");
   const memberAddEvent = memberRemoveResult;
 
-  await store(conn, ctx, memberAddEvent);
+  await store(conn, ctx, memberAddEvent, serviceUser.address);
 }

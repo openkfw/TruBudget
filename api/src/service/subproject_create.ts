@@ -35,7 +35,7 @@ export async function createSubproject(
   }
   const createEvent = createEventResult;
 
-  await store(conn, ctx, createEvent);
+  await store(conn, ctx, createEvent, serviceUser.address);
 
   const resourceIds: ResourceMap = {
     project: { id: createEvent.projectId },

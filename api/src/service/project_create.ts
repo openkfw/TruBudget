@@ -31,7 +31,7 @@ export async function createProject(
   }
   const creationEvent = creationEventResult;
 
-  await store(conn, ctx, creationEvent);
+  await store(conn, ctx, creationEvent, serviceUser.address);
 
   const resourceIds: ResourceMap = {
     project: { id: creationEvent.project.id },

@@ -17,9 +17,7 @@ import * as UserQuery from "./user_query";
 import * as UserRecord from "./domain/organization/user_record";
 import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
 import { config } from "../config";
-
-// Use root as the service user to ensure we see all the data:
-const rootUser = { id: "root", groups: [] };
+import { getselfaddress } from "./getselfaddress";
 
 export interface UserLoginResponse {
   id: string;
@@ -105,6 +103,10 @@ async function authenticateUser(
   userId: string,
   password: string,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
+  // Use root as the service user to ensure we see all the data:
+  const nodeAddress = await getselfaddress(conn.multichainClient);
+  const rootUser = { id: "root", groups: [], address: nodeAddress };
+
   const userRecord = await UserQuery.getUser(conn, ctx, rootUser, userId);
   if (Result.isErr(userRecord)) {
     return new AuthenticationFailed({ ctx, organization, userId }, userRecord);
@@ -131,9 +133,9 @@ async function authenticateUser(
     );
     return new AuthenticationFailed({ ctx, organization, userId }, cause);
   }
-  const userAddressPermissions: string[] = ["send"];
   await importprivkey(conn.multichainClient, privkey, userRecord.id);
   if (config.signingMethod === "user") {
+    const userAddressPermissions: string[] = ["send"];
     await grantpermissiontoaddress(
       conn.multichainClient,
       userRecord.address,

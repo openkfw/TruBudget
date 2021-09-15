@@ -97,7 +97,7 @@ export async function createWorkflowitem(
   let document: Document;
   const documents: Document[] = [];
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
     switch (event.type) {
       case "workflowitem_created":
         const workflowitemEvent: WorkflowitemCreated.Event = event;

@@ -11,6 +11,7 @@ import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
 import { getPublicKey } from "../service/public_key_get";
 import { publishPublicKey } from "../service/public_key_publish";
+import { getselfaddress } from "../service/getselfaddress";
 
 type PublicKey = string;
 type Organization = string;
@@ -58,7 +59,9 @@ export default async function ensurePublicKeyPublished(
   organization: Organization,
 ): Promise<Result.Type<PublicKey>> {
   const ctx: Ctx = { requestId: "system", source: "internal" };
-  const serviceUser: ServiceUser = { id: "system", groups: [] };
+
+  const nodeAddress = await getselfaddress(conn.multichainClient);
+  const serviceUser: ServiceUser = { id: "system", groups: [], address: nodeAddress };
 
   // check if public key exists else return
   let organizationPublicKeyResult = await getPublicKey(conn, ctx, organization);

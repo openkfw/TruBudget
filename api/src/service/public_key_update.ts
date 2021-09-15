@@ -33,7 +33,7 @@ export async function updatePublicKey(
     return new VError(publicKeyUpdateResult, "update public key failed");
   const newEvent = publicKeyUpdateResult;
 
-  await store(conn, ctx, newEvent);
+  await store(conn, ctx, newEvent, serviceUser.address);
 
   const { keysByOrganization } = sourcePublicKeys(ctx, [newEvent]);
   const publicKeyBase64 = keysByOrganization.get(requestData.organization);

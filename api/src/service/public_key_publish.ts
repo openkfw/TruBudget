@@ -43,7 +43,7 @@ export async function publishPublicKey(
     );
   }
 
-  await store(conn, ctx, newEvent);
+  await store(conn, ctx, newEvent, serviceUser.address);
   logger.info("Public key published successfully.");
 
   const newPublicKey: PublicKey = {

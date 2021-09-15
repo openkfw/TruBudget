@@ -11,17 +11,17 @@ import { VError } from "verror";
 export async function enableUser(
   conn: ConnToken,
   ctx: Ctx,
-  issuer: ServiceUser,
+  serviceUser: ServiceUser,
   issuerOrganization: string,
   revokee: UserEnable.RequestData,
 ): Promise<Result.Type<void>> {
-  const newEventsResult = await UserEnable.enableUser(ctx, issuer, issuerOrganization, revokee, {
-    getUser: () => UserQuery.getUser(conn, ctx, issuer, revokee.userId),
-    getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, issuer),
+  const newEventsResult = await UserEnable.enableUser(ctx, serviceUser, issuerOrganization, revokee, {
+    getUser: () => UserQuery.getUser(conn, ctx, serviceUser, revokee.userId),
+    getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
   });
   if (Result.isErr(newEventsResult)) return new VError(newEventsResult, "failed to enable user");
   const newEvents = newEventsResult;
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 }
