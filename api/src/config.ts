@@ -56,6 +56,7 @@ interface Config {
     externalUrl: string;
   };
   encryptionPassword: string | undefined;
+  signingMethod: string;
 }
 
 const requiredEnvVars = ["ORGANIZATION", "ORGANIZATION_VAULT_SECRET"];
@@ -95,6 +96,7 @@ export const config: Config = {
   },
   encryptionPassword:
     process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,
+  signingMethod: process.env.SIGNING_METHOD || "node",
 };
 
 function exitIfMissing(requiredEnvVars) {
