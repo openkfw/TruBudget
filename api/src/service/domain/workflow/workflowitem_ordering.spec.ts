@@ -15,7 +15,11 @@ const OPEN = "open" as "open";
 const CLOSED = "closed" as "closed";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
+const alice: ServiceUser = {
+  id: "alice",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address: "address",
+};
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";

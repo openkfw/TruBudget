@@ -10,8 +10,9 @@ import { Subproject } from "./subproject";
 import { getSubprojectPermissions } from "./subproject_permissions_list";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const bob: ServiceUser = { id: "bob", groups: [] };
-const root: ServiceUser = { id: "root", groups: [] };
+const address = "address";
+const bob: ServiceUser = { id: "bob", groups: [], address };
+const root: ServiceUser = { id: "root", groups: [], address };
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const subprojectName = "dummy";

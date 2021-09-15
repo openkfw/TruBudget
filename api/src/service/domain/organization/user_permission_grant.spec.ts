@@ -9,10 +9,18 @@ import { grantUserPermission } from "./user_permission_grant";
 import { UserRecord } from "./user_record";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const bob: ServiceUser = { id: "bob", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charlie"] };
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const alice: ServiceUser = {
+  id: "alice",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
+const bob: ServiceUser = {
+  id: "bob",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
 
 const grantIntent = "user.intent.grantPermission";
 const userId = "dummy";
@@ -78,13 +86,13 @@ describe("Granting user permissions: updates", () => {
     // Bob now has the permission
     assert.isTrue(
       userAfterGrantingPermission.permissions["user.intent.grantPermission"]!.some(
-        x => x === bob.id,
+        (x) => x === bob.id,
       ),
     );
     // Alice still has the permission
     assert.isTrue(
       userAfterGrantingPermission.permissions["user.intent.grantPermission"]!.some(
-        x => x === alice.id,
+        (x) => x === alice.id,
       ),
     );
   });
@@ -122,7 +130,7 @@ describe("Granting user permissions: updates", () => {
     // Alice still has the permission
     assert.isTrue(
       userAfterGrantingPermission.permissions["user.intent.grantPermission"]!.some(
-        x => x === alice.id,
+        (x) => x === alice.id,
       ),
     );
   });

@@ -13,8 +13,8 @@ const ctx: Ctx = {
   source: "test",
 };
 
-const alice: ServiceUser = { id: "alice", groups: ["alice"] };
-const root: ServiceUser = { id: "root", groups: ["root"] };
+const alice: ServiceUser = { id: "alice", groups: ["alice"], address: "address" };
+const root: ServiceUser = { id: "root", groups: ["root"], address: "address" };
 const fileName = "dummyFile";
 const id = "dummyId";
 

@@ -32,7 +32,9 @@ describe("Decline Node", () => {
 
     const stubInvoke = stub();
     stubInvoke.withArgs("listpermissions").returns([]);
-    stubInvoke.withArgs("publish").returns(
+    const stubInvokePublish = stub();
+
+    stubInvokePublish.returns(
       new Promise((resolve) => {
         resolve(listItemDeclined.data.json);
       }),
@@ -40,6 +42,7 @@ describe("Decline Node", () => {
 
     const stubRpcClient: RpcClient = (createStubInstance(RpcClient, {
       invoke: stubInvoke,
+      invokePublish: stubInvokePublish,
     }) as any) as RpcClient;
 
     stubMultichain.isValidAddress.returns(

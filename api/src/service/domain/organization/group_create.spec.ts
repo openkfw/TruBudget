@@ -8,9 +8,17 @@ import { createGroup, RequestData } from "./group_create";
 import { ServiceUser } from "./service_user";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const bob: ServiceUser = { id: "bob", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
+const root: ServiceUser = { id: "root", groups: [], address: "address" };
+const alice: ServiceUser = {
+  id: "alice",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address: "address",
+};
+const bob: ServiceUser = {
+  id: "bob",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address: "address",
+};
 const groupId = "group-id";
 const dummy = "dummy";
 

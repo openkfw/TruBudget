@@ -8,9 +8,10 @@ import { UserRecord } from "./user_record";
 import * as GlobalPermissions from "../workflow/global_permissions";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const admin: ServiceUser = { id: "admin", groups: [] };
-const member: ServiceUser = { id: "member", groups: [] };
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const admin: ServiceUser = { id: "admin", groups: [], address };
+const member: ServiceUser = { id: "member", groups: [], address };
 const orgaA = "orgaA";
 const otherOrganization = "otherOrganization";
 

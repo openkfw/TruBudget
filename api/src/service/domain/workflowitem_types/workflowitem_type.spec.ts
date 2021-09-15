@@ -9,8 +9,9 @@ import * as WorkflowitemAssigned from "../workflow/workflowitem_assigned";
 import { applyWorkflowitemType } from "./apply_workflowitem_type";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const alice: ServiceUser = { id: "alice", groups: [] };
-const bob: ServiceUser = { id: "bob", groups: [] };
+const address = "address";
+const alice: ServiceUser = { id: "alice", groups: [], address };
+const bob: ServiceUser = { id: "bob", groups: [], address };
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy";

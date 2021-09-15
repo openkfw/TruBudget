@@ -13,8 +13,9 @@ import { getHistory } from "./subproject_history_get";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: [] };
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const alice: ServiceUser = { id: "alice", groups: [], address };
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const subprojectName = "dummy-Name";

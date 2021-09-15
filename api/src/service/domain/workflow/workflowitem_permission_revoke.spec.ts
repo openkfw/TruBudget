@@ -11,8 +11,9 @@ import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemPermissionRevoke from "./workflowitem_permission_revoke";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const executingUser: ServiceUser = { id: "mstein", groups: [] };
-const testUser: ServiceUser = { id: "testUser", groups: [] };
+const address = "address";
+const executingUser: ServiceUser = { id: "mstein", groups: [], address };
+const testUser: ServiceUser = { id: "testUser", groups: [], address };
 const projectId = "testProject";
 
 const permissions: Permissions = {

@@ -10,8 +10,9 @@ import { Project } from "./project";
 import { getProject } from "./project_get";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: [] };
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const alice: ServiceUser = { id: "alice", groups: [], address };
 const projectId = "dummy-project";
 const projectName = "dummy-Name";
 
@@ -49,8 +50,7 @@ describe("get project: authorization", () => {
       ...baseProject,
       permissions: {},
     };
-    const result = await getProject(ctx, alice, projectId,
-      {
+    const result = await getProject(ctx, alice, projectId, {
       ...baseRepository,
       getProject: async () => notPermittedProject,
     });

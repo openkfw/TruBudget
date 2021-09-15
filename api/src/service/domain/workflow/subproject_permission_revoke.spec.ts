@@ -11,8 +11,9 @@ import * as Subproject from "./subproject";
 import * as SubprojectPermissionRevoke from "./subproject_permission_revoke";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const executingUser: ServiceUser = { id: "mstein", groups: [] };
-const testUser: ServiceUser = { id: "testUser", groups: [] };
+const address = "address";
+const executingUser: ServiceUser = { id: "mstein", groups: [], address };
+const testUser: ServiceUser = { id: "testUser", groups: [], address };
 
 const permissions: Permissions = {
   "subproject.viewSummary": ["testUser"],

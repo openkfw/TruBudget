@@ -8,8 +8,9 @@ import { Subproject } from "./subproject";
 import * as WorkflowitemCreate from "./workflowitem_create";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: [] };
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const alice: ServiceUser = { id: "alice", groups: [], address };
 
 const baseSubproject: Subproject = {
   id: "dummy-subproject",

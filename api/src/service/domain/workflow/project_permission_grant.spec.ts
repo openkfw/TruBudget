@@ -10,8 +10,10 @@ import * as Project from "./project";
 import * as ProjectPermissionGrant from "./project_permission_grant";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const executingUser: ServiceUser = { id: "mstein", groups: [] };
-const testUser: ServiceUser = { id: "testUser", groups: [] };
+const address = "address";
+
+const executingUser: ServiceUser = { id: "mstein", groups: [], address };
+const testUser: ServiceUser = { id: "testUser", groups: [], address };
 
 const permissions: Permissions = {
   "project.viewSummary": ["testUser"],

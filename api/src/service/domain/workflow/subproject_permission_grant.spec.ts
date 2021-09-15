@@ -4,16 +4,15 @@ import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
-import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import * as Subproject from "./subproject";
 import * as SubprojectPermissionGrant from "./subproject_permission_grant";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const executingUser: ServiceUser = { id: "mstein", groups: [] };
-const testUser: ServiceUser = { id: "testUser", groups: [] };
-
+const address = "address";
+const executingUser: ServiceUser = { id: "mstein", groups: [], address };
+const testUser: ServiceUser = { id: "testUser", groups: [], address };
 const permissions: Permissions = {
   "subproject.viewSummary": ["testUser"],
   "subproject.viewDetails": [],
