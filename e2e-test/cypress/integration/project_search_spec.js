@@ -49,7 +49,7 @@ describe("Project Search", function() {
       .click();
     cy.get("[data-test=search-bar]")
       .find("[data-test=search-input]")
-      .should("be.not.visible");
+      .should("not.exist");
     //  Open search bar
     cy.get("[data-test=search-bar]")
       .find("[data-test=toggle-searchbar]")
@@ -74,7 +74,7 @@ describe("Project Search", function() {
       .find("[data-test=search-input] input")
       .type(projectNoTag.displayName);
     // Only show project without tag
-    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.exist");
     cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("be.visible");
   });
 
@@ -90,7 +90,7 @@ describe("Project Search", function() {
       .find("[data-test=search-input] input")
       .type("name:" + projectNoTag.displayName);
     // Only show project without tag
-    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.exist");
     cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("be.visible");
   });
 
@@ -106,7 +106,7 @@ describe("Project Search", function() {
       .find("[data-test=search-input] input")
       .type("name:" + projectWithTag.displayName + " " + "tag:" + testTag + " " + "status:open");
     // Only show project with tag
-    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("not.exist");
     cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("be.visible");
   });
 
@@ -114,7 +114,7 @@ describe("Project Search", function() {
     // Click tag
     cy.get("[data-test=search-bar]")
       .find("[data-test=search-input]")
-      .should("not.be.visible");
+      .should("not.exist");
     cy.get(`[data-test=project-card-${projectWithTag.id}]`)
       .find("[data-test=overview-tag]")
       .should("have.length", 1)
@@ -146,7 +146,7 @@ describe("Project Search", function() {
       .click();
     cy.get("[data-test=navigation-bar]")
       .find("[data-test=search-bar]")
-      .should("not.be.visible");
+      .should("not.exist");
     // Navigate to overview page
     cy.visit("/projects");
     // Search field should be empty
@@ -169,12 +169,12 @@ describe("Project Search", function() {
     cy.get("[data-test=search-bar]")
       .find("[data-test=search-input] input")
       .type(projectNoTag.displayName);
-    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.exist");
     // Navigate via Main breadcrumb
     cy.get("[data-test=breadcrumb-Main]").click();
     cy.get("[data-test=search-bar]")
       .find("[data-test=search-input]")
-      .should("not.be.visible");
+      .should("not.exist");
     cy.get("[data-test=search-bar]")
       .find("[data-test=toggle-searchbar]")
       .should("be.enabled");
@@ -201,7 +201,7 @@ describe("Project Search", function() {
     cy.get("[data-test=search-bar]")
       .find("[data-test=search-input] input")
       .type(projectNoTag.displayName);
-    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("not.exist");
     // Go to project
     cy.get("[data-test*=project-view-button]")
       .first()
@@ -210,7 +210,7 @@ describe("Project Search", function() {
     cy.get("[data-test=breadcrumb-Projects]").click();
     cy.get("[data-test=search-bar]")
       .find("[data-test=search-input]")
-      .should("not.be.visible");
+      .should("not.exist");
     cy.get("[data-test=toggle-searchbar]").should("be.enabled");
     // All projects are visible
     cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("be.visible");
@@ -262,7 +262,7 @@ describe("Project Search", function() {
       .find("[data-test=search-input] input")
       .should("have.value", "name:" + projectWithTag.displayName + " " + "status:open tag:" + testTag);
     // Only show project with tag
-    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("not.be.visible");
+    cy.get(`[data-test=project-card-${projectNoTag.id}]`).should("not.exist");
     cy.get(`[data-test=project-card-${projectWithTag.id}]`).should("be.visible");
   });
 });

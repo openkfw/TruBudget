@@ -152,8 +152,7 @@ describe("Subproject Assignee", function() {
   });
 
   it("Assigning without project permission to grant view permissions is not possible", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
+    cy.intercept(apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
 
     // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
@@ -185,8 +184,7 @@ describe("Subproject Assignee", function() {
   });
 
   it("Assigning without subproject permission to grant view permissions is not possible", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
+    cy.intercept(apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
 
     // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
@@ -220,8 +218,7 @@ describe("Subproject Assignee", function() {
   });
 
   it("Assigning without project nor subproject permission to grant view permissions is not possible", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
+    cy.intercept(apiRoute + "/subproject.intent.listPermissions*").as("listSubProjectPermissions");
 
     // Grant project/subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
@@ -420,7 +417,7 @@ describe("Subproject Assignee", function() {
         .check();
     });
 
-    cy.get("[data-test=additional-actions]").should("not.be.visible");
+    cy.get("[data-test=additional-actions]").should("not.exist");
     cy.get("[data-test=original-actions]").should("be.visible");
 
     // reset Permissions

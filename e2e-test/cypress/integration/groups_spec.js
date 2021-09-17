@@ -9,8 +9,7 @@ describe("User/Groups Dashboard", function() {
     cy.login();
     cy.visit("/users");
     cy.get("[aria-label=groupsTab]").click();
-    cy.server();
-    cy.route("POST", apiRoute + "/global.createGroup").as("createGroup");
+    cy.intercept(apiRoute + "/global.createGroup").as("createGroup");
   });
 
   function createGroup(testGroup) {
@@ -65,7 +64,7 @@ describe("User/Groups Dashboard", function() {
       .click();
     // Remove user Tom House
     cy.get("[data-test=user-chip-thouse] > .MuiSvgIcon-root").click();
-    cy.get("[data-test=user-chip-thouse]").should("not.be.visible");
+    cy.get("[data-test=user-chip-thouse]").should("not.exist");
     cy.get("[data-test=add-user-selection]").click();
     // Add user Dana Violin
     cy.get("[data-test=search-user-input]")

@@ -29,12 +29,12 @@ describe("Language", function() {
 
       // Check if last selected language is now preselected
       cy.get("[data-test=loginpage]").should("be.visible");
-      cy.get("[data-test=dropdown-language_selection]").should("be.visible");
-      cy.get("[data-test=dropdown-language_selection]")
+      cy.get("[data-test=dropdown-language_selection-click]")
+        .should("be.visible")
         .click()
         .focused()
         .click();
-      cy.get("[data-test=dropdown_selectList]").should("be.visible");
+      cy.get("[data-test=dropdown_selectList]").should("not.be.visible");
       // Old language should have been preselected already ([tabindex=0] means preselected)
       cy.get("[data-test=dropdown_selectList] > [tabindex='0']")
         .invoke("attr", "data-value")

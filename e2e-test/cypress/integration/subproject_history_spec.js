@@ -1,15 +1,17 @@
+import dayjs from "dayjs";
+
 describe("Subproject's history", function() {
   let projectId;
   let subprojectId;
 
-  const yesterday = Cypress.moment()
-    .add(-1, "days")
+  const yesterday = dayjs()
+    .add(-1, "day")
     .format("DD/MM/YYYY");
-  const tomorrow = Cypress.moment()
-    .add(1, "days")
+  const tomorrow = dayjs()
+    .add(1, "day")
     .format("DD/MM/YYYY");
-  const afterTomorrow = Cypress.moment()
-    .add(2, "days")
+  const afterTomorrow = dayjs()
+    .add(2, "day")
     .format("DD/MM/YYYY");
 
   before(() => {
@@ -171,12 +173,11 @@ describe("Subproject's history", function() {
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .should("have.length", 0);
-    // Reset
+    // Reset filter
     cy.get("[data-test=reset]").click();
-    // value in dropdown should not exist
-    cy.get("[data-test=dropdown-filter-publisher-click]")
-      .find("input")
-      .should("not.have.attr", "data-value");
+    // All history items should be shown again
+    // subproject_create event and subproject_changed (previous test)
+    cy.get("input[id=filter-publisher]").should("be.empty");
     cy.get("[data-test=history-list]")
       .find("li.history-item")
       .should("have.length", 2);

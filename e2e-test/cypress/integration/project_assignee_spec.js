@@ -125,8 +125,7 @@ describe("Project Assignee", function() {
   });
 
   it("Assigning without project permission to grant view permissions is not possible", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
+    cy.intercept(apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
 
     // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
@@ -213,7 +212,7 @@ describe("Project Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=additional-actions]").should("not.be.visible");
+    cy.get("[data-test=additional-actions]").should("not.exist");
     cy.get("[data-test=original-actions]").should("be.visible");
     // reset Permissions
     cy.get("@assigneeId").then(assigneeId => {

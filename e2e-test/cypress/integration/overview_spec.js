@@ -17,18 +17,8 @@ describe("Overview Page", function() {
       .then($card => {
         expect($card.find("[data-test=project-header] span").eq(0)).to.contains.text(this.data.displayName);
         expect($card.find("[data-test=project-header] span").eq(2)).to.have.text("Status: Open");
-        expect(
-          $card
-            .find("[data-test=project-budget]")
-            .children()
-            .first()
-        ).to.contains.text("AR$ 32,000,000.00");
-        expect(
-          $card
-            .find("[data-test=project-creation]")
-            .children()
-            .first()
-        ).not.to.have.text("Jan 01, 1970");
+        expect($card.find("[data-test=project-budget]")).to.contains.text("AR$ 32,000,000.00");
+        expect($card.find("[data-test=project-creation-date]")).not.to.contains.text("Jan 01, 1970");
 
         expect($card.find("button")).to.not.have.attr("disabled");
       });

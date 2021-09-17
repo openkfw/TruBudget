@@ -117,7 +117,7 @@ describe("Workflowitem create", function() {
       let workflowitemId = id;
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
-      cy.get("[data-test=due-date]").should("not.be.visible");
+      cy.get("[data-test=due-date]").should("not.exist");
     });
   });
 
@@ -127,7 +127,7 @@ describe("Workflowitem create", function() {
       let workflowitemId = id;
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get(`[data-test^='workflowitem-info-button-${workflowitemId}']`).click();
-      cy.get("[data-test=due-date]").should("not.be.visible");
+      cy.get("[data-test=due-date]").should("not.exist");
     });
   });
 
@@ -166,7 +166,7 @@ describe("Workflowitem create", function() {
       let workflowitemId = id;
       // Check if info icon badge is NOT displayed
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
-      cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.be.visible");
+      cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.exist");
     });
   });
 
@@ -179,7 +179,7 @@ describe("Workflowitem create", function() {
       let workflowitemId = id;
       // Check if info icon badge is NOT displayed
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
-      cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.be.visible");
+      cy.get(`[data-test^='info-warning-badge-enabled-${workflowitemId}']`).should("not.exist");
     });
   });
 
@@ -240,9 +240,8 @@ describe("Workflowitem create", function() {
   });
 
   it("When the subproject type is general, the workflowitem type is also fixed to general", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
-    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
     cy.visit(`/projects/${projectId}`);
 
     //Create a subproject
@@ -260,8 +259,8 @@ describe("Workflowitem create", function() {
       .should("be.visible")
       .click();
 
-    cy.wait("@subprojectCreated").then(xhr => {
-      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+    cy.wait("@subprojectCreated").should(interception => {
+      cy.visit(`/projects/${projectId}/${interception.response.body.data.subproject.id}`);
 
       //test type in workflowitem creation
       cy.get("[data-test=createWorkflowitem]").click();
@@ -273,10 +272,9 @@ describe("Workflowitem create", function() {
   });
 
   it("When the subproject type is any, the workflowitem type is not fixed", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
-    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.route("POST", apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.intercept(apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
 
     //Create a subproject
     cy.visit(`/projects/${projectId}`);
@@ -291,8 +289,8 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=confirmation-dialog-confirm]")
       .should("be.visible")
       .click();
-    cy.wait("@subprojectCreated").then(xhr => {
-      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+    cy.wait("@subprojectCreated").should(interception => {
+      cy.visit(`/projects/${projectId}/${interception.response.body.data.subproject.id}`);
 
       //test type in workflowitem creation
       cy.get("[data-test=createWorkflowitem]").click();
@@ -312,17 +310,16 @@ describe("Workflowitem create", function() {
         .should("be.visible")
         .click();
 
-      cy.wait("@workflowitemCreated").then(xhr => {
-        expect(xhr.status).to.eq(200);
+      cy.wait("@workflowitemCreated").should(interception => {
+        expect(interception.response.statusCode).to.eq(200);
       });
     });
   });
 
   it("When the subproject validator is set, the workflowitem assignee is fixed and the field is disabled", function() {
     const assignee = { id: "jdoe", name: "John Doe" };
-    cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
-    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
 
     // create a subproject
     cy.visit(`/projects/${projectId}`);
@@ -347,8 +344,8 @@ describe("Workflowitem create", function() {
       .should("be.visible")
       .click();
 
-    cy.wait("@subprojectCreated").then(xhr => {
-      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+    cy.wait("@subprojectCreated").should(interception => {
+      cy.visit(`/projects/${projectId}/${interception.response.body.data.subproject.id}`);
 
       // test assignee field in workflowitem creation
       cy.get("[data-test=createWorkflowitem]").click();
@@ -359,10 +356,9 @@ describe("Workflowitem create", function() {
   });
 
   it("When no validator is set in a subproject, the workflowitem assignee can be changed", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
-    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.route("POST", apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.intercept(apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
 
     //Create a subproject
     cy.visit(`/projects/${projectId}`);
@@ -377,8 +373,8 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=confirmation-dialog-confirm]")
       .should("be.visible")
       .click();
-    cy.wait("@subprojectCreated").then(xhr => {
-      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+    cy.wait("@subprojectCreated").should(interception => {
+      cy.visit(`/projects/${projectId}/${interception.response.body.data.subproject.id}`);
       // test assignee field in workflowitem creation
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=creation-dialog]").should("be.visible");
@@ -396,17 +392,16 @@ describe("Workflowitem create", function() {
         .should("be.visible")
         .click();
 
-      cy.wait("@workflowitemCreated").then(xhr => {
-        expect(xhr.status).to.eq(200);
+      cy.wait("@workflowitemCreated").should(interception => {
+        expect(interception.response.statusCode).to.eq(200);
       });
     });
   });
 
   it("When the workflowitem type is restricted, there are no post actions", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("loadPage");
-    cy.route("POST", apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.route("POST", apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
+    cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
+    cy.intercept(apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
 
     //Create a subproject
     cy.visit(`/projects/${projectId}`);
@@ -423,8 +418,8 @@ describe("Workflowitem create", function() {
     cy.get("[data-test=submit]").click();
     cy.get("[data-test=confirmation-dialog-confirm]").click();
 
-    cy.wait("@subprojectCreated").then(xhr => {
-      cy.visit(`/projects/${projectId}/${xhr.responseBody.data.subproject.id}`);
+    cy.wait("@subprojectCreated").should(interception => {
+      cy.visit(`/projects/${projectId}/${interception.response.body.data.subproject.id}`);
       // test assignee field in workflowitem creation
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=creation-dialog]").should("be.visible");
@@ -457,7 +452,7 @@ describe("Workflowitem create", function() {
             .should("have.length", 1);
         });
       // No post actions
-      cy.get("[data-test=post-actions]").should("not.be.visible");
+      cy.get("[data-test=post-actions]").should("not.exist");
       // actions counter displays correct amount of actions
       cy.get("[data-test=actions-counter]")
         .scrollIntoView()
@@ -466,8 +461,8 @@ describe("Workflowitem create", function() {
       cy.get("[data-test=confirmation-dialog-confirm]")
         .should("be.visible")
         .click();
-      cy.wait("@workflowitemCreated").then(xhr => {
-        expect(xhr.status).to.eq(200);
+      cy.wait("@workflowitemCreated").should(interception => {
+        expect(interception.response.statusCode).to.eq(200);
       });
     });
   });

@@ -147,7 +147,7 @@ describe("Subproject Analytics", function() {
       .should("be.visible")
       .click({ force: true });
 
-    cy.get("[data-test=number-chart-total-budget]").should("not.be.visible");
+    cy.get("[data-test=number-chart-total-budget]").should("not.exist");
     cy.get("[data-test=projected-budget-table]").should("be.visible");
     cy.get("[data-test=redacted-warning]").should("be.visible");
 

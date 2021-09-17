@@ -7,13 +7,12 @@ describe("Subproject Close", function() {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
-    cy.createProject("sp-close", "Project for test of suproject closing")
-      .then(({ id }) => {
-        projectId = id;
-        cy.createSubproject(projectId, "Subproject no. 1").then(({ id }) => {
-          subprojectId = id;
-        });
+    cy.createProject("sp-close", "Project for test of suproject closing").then(({ id }) => {
+      projectId = id;
+      cy.createSubproject(projectId, "Subproject no. 1").then(({ id }) => {
+        subprojectId = id;
       });
+    });
   });
 
   beforeEach(function() {
@@ -28,14 +27,14 @@ describe("Subproject Close", function() {
     cy.get("[data-test=spc-button]").click();
     cy.get("[data-test=confirmation-dialog]").should("be.visible");
     cy.get("[data-test=confirmation-dialog-cancel]").click();
-    cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
+    cy.get("[data-test=confirmation-dialog]").should("not.exist");
 
     // Close subproject
     cy.get("[data-test=spc-button]").click();
     cy.get("[data-test=confirmation-dialog]").should("be.visible");
     cy.get("[data-test=confirmation-dialog-confirm]").click();
-    cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
-    cy.get("[data-test=spc-button]").should("not.be.visible");
+    cy.get("[data-test=confirmation-dialog]").should("not.exist");
+    cy.get("[data-test=spc-button]").should("not.exist");
 
     // Go to superior project
     cy.visit(`/projects/${projectId}`);
@@ -48,9 +47,8 @@ describe("Subproject Close", function() {
       cy.createWorkflowitem(projectId, subprojectId, "Contract with Ministry of foreign affairs").then(({ id }) => {
         let workflowitemId = id;
 
-        cy.server();
-        cy.route("POST", apiRoute + `/workflowitem.close`).as("workflowitemClose");
-        cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+        cy.intercept(apiRoute + `/workflowitem.close`).as("workflowitemClose");
+        cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
 
         cy.visit(`/projects/${projectId}`);
         cy.get("[data-test=pc-button]").should("be.disabled");
@@ -75,17 +73,19 @@ describe("Subproject Close", function() {
           .click();
 
         // Cancel closing the subproject
-        cy.get("[data-test=spc-button]").scrollIntoView().click();
+        cy.get("[data-test=spc-button]")
+          .scrollIntoView()
+          .click();
         cy.get("[data-test=confirmation-dialog]").should("be.visible");
         cy.get("[data-test=confirmation-dialog-cancel]").click();
-        cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
+        cy.get("[data-test=confirmation-dialog]").should("not.exist");
 
         // Close subproject
         cy.get("[data-test=spc-button]").click();
         cy.get("[data-test=confirmation-dialog]").should("be.visible");
         cy.get("[data-test=confirmation-dialog-confirm]").click();
-        cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
-        cy.get("[data-test=spc-button]").should("not.be.visible");
+        cy.get("[data-test=confirmation-dialog]").should("not.exist");
+        cy.get("[data-test=spc-button]").should("not.exist");
       });
     });
   });

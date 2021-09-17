@@ -31,14 +31,13 @@ describe("Workflowitem close", function() {
   });
 
   it("The workflowitem can be closed by the assignee only", function() {
-    cy.server();
-    cy.route("POST", apiRoute + `/workflowitem.close`).as("workflowitemClose");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.intercept(apiRoute + `/workflowitem.close`).as("workflowitemClose");
+    cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
 
     // testUser may not close the workflowitem
     cy.login(testUser.id, testUser.password);
     cy.visit(`/projects/${projectId}/${subprojectId}`);
-    cy.get("[data-test=close-workflowitem]").should("not.be.visible");
+    cy.get("[data-test=close-workflowitem]").should("not.exist");
 
     // the assignee my close the workflowitem
     cy.login();

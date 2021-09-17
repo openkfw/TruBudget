@@ -17,28 +17,11 @@ describe("Project Close", function() {
   it("When closing the project, a dialog pops up", function() {
     cy.get("[data-test=pc-button]").should("be.visible");
 
-    // // Close subproject
-    // cy.get("[data-test=spc-button]").click();
-    // cy.get("[data-test=confirmation-dialog]").should("be.visible");
-    // cy.get("[data-test=confirmation-dialog-confirm]").click();
-    // cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
-    // cy.get("[data-test=spc-button]").should("not.be.visible");
-
-    // cy.visit(`/projects/${projectId}`);
-    // cy.get("[data-test=pc-button]").should("be.enabled");
-
     // Cancel closing the project
     cy.get("[data-test=pc-button]").click();
     cy.get("[data-test=confirmation-dialog]").should("be.visible");
     cy.get("[data-test=confirmation-dialog-cancel]").click();
-    cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
-
-    // // Close project
-    // cy.get("[data-test=pc-button]").click();
-    // cy.get("[data-test=confirmation-dialog]").should("be.visible");
-    // cy.get("[data-test=confirmation-dialog-confirm]").click();
-    // cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
-    // cy.get("[data-test=pc-button]").should("not.be.visible");
+    cy.get("[data-test=confirmation-dialog]").should("not.exist");
   });
 
   it("Closing a project with open subprojects is not possible", function() {
@@ -61,8 +44,8 @@ describe("Project Close", function() {
         cy.get("[data-test=spc-button]").click();
         cy.get("[data-test=confirmation-dialog]").should("be.visible");
         cy.get("[data-test=confirmation-dialog-confirm]").click();
-        cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
-        cy.get("[data-test=spc-button]").should("not.be.visible");
+        cy.get("[data-test=confirmation-dialog]").should("not.exist");
+        cy.get("[data-test=spc-button]").should("not.exist");
 
         cy.visit(`/projects/${projectId}`);
         cy.get("[data-test=pc-button]").should("be.enabled");
@@ -71,14 +54,14 @@ describe("Project Close", function() {
         cy.get("[data-test=pc-button]").click();
         cy.get("[data-test=confirmation-dialog]").should("be.visible");
         cy.get("[data-test=confirmation-dialog-cancel]").click();
-        cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
+        cy.get("[data-test=confirmation-dialog]").should("not.exist");
 
         // Close project
         cy.get("[data-test=pc-button]").click();
         cy.get("[data-test=confirmation-dialog]").should("be.visible");
         cy.get("[data-test=confirmation-dialog-confirm]").click();
-        cy.get("[data-test=confirmation-dialog]").should("not.be.visible");
-        cy.get("[data-test=pc-button]").should("not.be.visible");
+        cy.get("[data-test=confirmation-dialog]").should("not.exist");
+        cy.get("[data-test=pc-button]").should("not.exist");
       });
     });
   });

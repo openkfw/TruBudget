@@ -28,7 +28,7 @@ describe("Attachment icon", function() {
     }).then(({ id }) => {
       let workflowitemId = id;
       // Check if attach file icon badge is NOT displayed
-      cy.get(`[data-test^='attachment-file-badge-show-${workflowitemId}']`).should("not.be.visible");
+      cy.get(`[data-test^='attachment-file-badge-show-${workflowitemId}']`).should("not.exist");
     });
   });
 
