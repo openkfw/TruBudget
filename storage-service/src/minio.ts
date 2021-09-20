@@ -54,6 +54,7 @@ const makeBucket = (bucket: string, cb: Function) => {
         return cb(null, true);
       });
     }
+    return cb(null, true);
   });
 };
 
@@ -74,7 +75,7 @@ const upload = (
   cb: Function,
 ) => {
   const s = new Readable();
-  s._read = () => { };
+  s._read = () => {};
   s.push(content);
   s.push(null);
 
@@ -184,7 +185,7 @@ const sleep = (ms) => {
   });
 };
 
-const establishConnection = async () => {
+export const establishConnection = async () => {
   const retries = 20;
   for (let i = 0; i <= retries; i++) {
     try {
@@ -205,7 +206,5 @@ const establishConnection = async () => {
     }
   }
 };
-
-establishConnection();
 
 export default minioClient;

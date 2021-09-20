@@ -1,5 +1,9 @@
 import * as URL from "url";
-import { uploadAsPromised, downloadAsPromised } from "./minio";
+import {
+  uploadAsPromised,
+  downloadAsPromised,
+  establishConnection,
+} from "./minio";
 import config from "./config";
 import * as express from "express";
 import * as cors from "cors";
@@ -98,7 +102,9 @@ app.post(
       res.send({ docId, secret: result }).end();
     })().catch((error) => {
       if (error.code === "NoSuchBucket") {
-        console.log("ERROR: NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio")
+        console.log(
+          "ERROR: NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio",
+        );
       }
       res.status(500).send(error).end();
     });
@@ -133,13 +139,16 @@ app.get(
       }
     })().catch((error) => {
       if (error.code === "NoSuchBucket") {
-        console.log("ERROR: NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio")
+        console.log(
+          "ERROR: NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio",
+        );
       }
       res.status(404).end();
     });
   },
 );
 
-app.listen(config.port, () => {
+app.listen(config.port, async () => {
   console.log(`Starting TruBudget storage server on ${config.port}`);
+  await establishConnection();
 });
