@@ -31,7 +31,7 @@ TruBudget can be installed in different ways. See [README.md](./docs/operation-a
 
 ## Documentation
 
-Check out our [**Trubudget-Wiki**](./doc/README.md) to find out how Trubudget works.
+Check out our documentation on the [**Trubudget-Website**](https://openkfw.github.io/trubudget-website/docs/README) to find out how Trubudget works.
 
 ## Contributing
 
@@ -43,14 +43,17 @@ Main reasons for open sourcing Trubudget are
 
 Read below to learn how you can take part in improving Trubudget.
 
-Code of Conduct
-KfW has adopted a Code of Conduct that we expect project participants to adhere to. Please read the full text so that you can understand what actions will and will not be tolerated.
+### Code of Conduct
 
-Contributing Guide
-Read our contributing guide to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Trubudget.
+KfW has adopted a [Code of Conduct](./CODE_OF_CONDUCT.md) that we expect project participants to adhere to. Please read the full text so that you can understand what actions will and will not be tolerated.
 
-Good First Issues
-To help you get started as a contributor, we have a list of good first issues that contain bugs which have a relatively limited scope.
+### Contributing Guide
+
+Read our [Contributing Guide](./.github/CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Trubudget.
+
+### Good First Issues
+
+To help you get started as a contributor, we have a [list](https://github.com/openkfw/TruBudget/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) of good first issues that contain bugs which have a relatively limited scope.
 
 ## Frequently Asked Questions
 
