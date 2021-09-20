@@ -1,6 +1,6 @@
 # TruBudget Operation Setup
 
-This setup helps operation teams to setup TruBudget in a easy way, with a pre-configured `.env` file.
+This setup helps operation teams to setup TruBudget in an easy way, with a pre-configured `.env` file.
 
 ## Getting started
 

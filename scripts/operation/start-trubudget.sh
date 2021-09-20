@@ -123,6 +123,15 @@ echo "INFO: Current script directory: $SCRIPT_DIR"
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then
     echo "${red}ERROR: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
+    echo "${orange}WARNING: Do you want to create and copy .env_example into .env now to continue the setup? (y/N)${colorReset}"
+    read answer
+    if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+        echo "INFO: Copy $SCRIPT_DIR/.env_example to $SCRIPT_DIR/.env"
+        cp $SCRIPT_DIR/.env_example $SCRIPT_DIR/.env
+    else
+        echo "INFO: No .env file, exiting ..."
+        exit 1;
+    fi
 fi
 
 # Set service enabling/disabling env vars
@@ -205,7 +214,9 @@ $COMPOSE down
 echo "INFO: Pull images from https://hub.docker.com/ ..."
 $COMPOSE pull
 
+#ToDo only use images, do not build
 echo "INFO: Since images are used, building is not necessary and will be skipped."
+echo "INFO: Building frontend locally ..."
 $COMPOSE build
 
 # Start docker containers

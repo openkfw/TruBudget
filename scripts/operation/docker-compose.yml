@@ -69,7 +69,6 @@ services:
       ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      SWAGGER_BASEPATH: /test
     depends_on:
       - master-node
     ports:
@@ -101,25 +100,23 @@ services:
     environment:
       API_HOST: master-api
       API_PORT: ${API_PORT}
-      ENVIRONMENT_TYPE: TEST
-      #Other provisioning data:
-      #ENVIRONMENT_TYPE: PROD
+      PROVISIONING_TYPE: ${PROVISIONING_TYPE}
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
     depends_on:
       - master-api
 
   excel-export-service:
-    image: trubudget/excel-export:${TAG}
+    # ToDo: Replace local build with image from dockerhub. Local image must be used because of new/renamed env vars (API_HOST, API_PORT)
+    # image: trubudget/excel-export:${TAG}
+    build:
+      context: ../../excel-export-service
     environment:
-      PROD_API_HOST: master-api
-      PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: master-api
-      TEST_API_PORT: ${API_PORT}
+      API_HOST: master-api
+      API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
-     # - "9231:9229"
     depends_on:
       - master-api
 
@@ -139,15 +136,17 @@ services:
       - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
 
   frontend:
-    image: trubudget/frontend:${TAG}
+    # image: trubudget/frontend:${TAG}
+    # ToDo: Replace local build with image from dockerhub. Local image must be used because of new/renamed env vars (API_HOST, API_PORT)
+    # image: trubudget/frontend:${TAG}
+    build:
+      context: ../../frontend
     environment:
       NODE_ENV: ${NODE_ENV}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
       REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
-      PROD_API_HOST: master-api
-      PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: master-api
-      TEST_API_PORT: ${API_PORT}
+      API_HOST: master-api
+      API_PORT: ${API_PORT}
       EXPORT_HOST: ${EXPORT_HOST}
       EXPORT_PORT: ${EXPORT_PORT}
       EMAIL_HOST: ${EMAIL_HOST}
@@ -159,6 +158,7 @@ services:
     ports:
       - "3000:80" # map nginx port 80 to localhost:3000
 
+  # Slave node only works on Mac, does not work on Windows + WSL2. This is because a nodeJS child process is strangely terminated
   # slave-node:
   #   # image: trubudget/blockchain:latest
   #   image: trubudget/blockchain:${TAG}

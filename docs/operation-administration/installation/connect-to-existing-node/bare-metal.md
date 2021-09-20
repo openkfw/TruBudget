@@ -211,10 +211,8 @@ The following environment variables need to be set:
 - Terminal Mac/Git Bash
 
 ```bash
-export PROD_API_HOST=127.0.0.1
-export TEST_API_HOST=127.0.0.1
-export PROD_API_PORT=8080
-export TEST_API_PORT=8081
+export API_HOST=127.0.0.1
+export API_PORT=8080
 export PORT=8888
 export ACCESS_CONTROL_ALLOW_ORIGIN="*"
 ```
@@ -222,10 +220,8 @@ export ACCESS_CONTROL_ALLOW_ORIGIN="*"
 - Terminal Windows/Command Shell
 
 ```bash
-SET PROD_API_HOST=127.0.0.1
-SET TEST_API_HOST=127.0.0.1
-SET PROD_API_PORT=8080
-SET TEST_API_PORT=8081
+SET API_HOST=127.0.0.1
+SET API_PORT=8080
 SET PORT=8888
 SET ACCESS_CONTROL_ALLOW_ORIGIN="*"
 ```
@@ -251,10 +247,8 @@ The first step to deploy the frontend is to **adapt** and set the environment pa
 ```bash
 cd ../frontend
 
-export PROD_API_HOST=127.0.0.1
-export PROD_API_PORT=8080
-export TEST_API_HOST=127.0.0.1
-export TEST_API_PORT=8080
+export API_HOST=127.0.0.1
+export API_PORT=8080
 ```
 
 Navigate into the `frontend` directory and copy the nginx.conf into the designated nginx directory with:
