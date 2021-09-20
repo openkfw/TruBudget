@@ -5,12 +5,11 @@ import * as URL from "url";
 import { writeXLSX } from "./excel";
 import strings, { languages } from "./localizeStrings";
 
-const apiHost: string = process.env.PROD_API_HOST || "localhost";
+//TODO remove process.env.TEST_API_HOST and process.env.TEST_API_PORT when pipeline has new env vars
+const apiHost: string = process.env.API_HOST || process.env.TEST_API_HOST || "localhost";
 const apiPort: number =
-  (process.env.PROD_API_PORT && parseInt(process.env.PROD_API_PORT, 10)) || 8080;
-const testApiHost: string = process.env.TEST_API_HOST || "localhost";
-const testApiPort: number =
-  (process.env.TEST_API_PORT && parseInt(process.env.TEST_API_PORT, 10)) || 8080;
+  (process.env.API_PORT && parseInt(process.env.API_PORT, 10)) || (process.env.TEST_API_PORT && parseInt(process.env.TEST_API_PORT, 10)) || 8080;
+
 const serverPort: number = (process.env.PORT && parseInt(process.env.PORT, 10)) || 8888;
 const accessControlAllowOrigin: string = process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*";
 
@@ -85,17 +84,12 @@ const server = createServer(async (req: IncomingMessage, res: ServerResponse) =>
     return res.end();
   }
 
-  const isTest = /^\/test/.test(String(req.url));
-  const isProd = /^\/prod/.test(String(req.url));
-
-  if ((isTest || isProd) && endpoint.includes("download")) {
+  if (endpoint.includes("download")) {
     setExcelLanguage(req.url);
 
     // create export
     try {
-      const base = isTest
-        ? `http://${testApiHost}:${testApiPort}/api`
-        : `http://${apiHost}:${apiPort}/api`;
+      const base = `http://${apiHost}:${apiPort}/api`;
 
       res.setHeader(
         "Content-Type",

@@ -2,15 +2,11 @@ describe("Workflowitem close", function() {
   let projectId;
   let subprojectId;
   let workflowitemId;
-  let baseUrl, apiRoute;
-
+  const apiRoute = "/api";
   const testUser = { id: "jdoe", password: "test" };
 
-  before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
+  before(() => { 
     cy.login();
-
     cy.createProject("workflowitem close test project", "workflowitem close test").then(({ id }) => {
       projectId = id;
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id);

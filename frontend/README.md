@@ -10,10 +10,8 @@ This is the frontend, which consumes the exposed Trubudget API.
 | ----------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | NODE_ENV          | -             | If set to `development` search Trubudget's external services (Email-/Excel-Export-Service) on localhost. <br>If set to `production` disable Redux devtools extension |
 | REACT_APP_VERSION | -             | Injected version via `$npm_package_version` in`.env` file to ensure the version is shown in the frontend                                                             |
-| PROD_API_HOST     | -             | IP address of the api with production environment. This is only required if nginx proxy is used <br>**Hint:** When deployed locally the host is set to localhost     |
-| PROD_API_PORT     | 8080          | Port of the api with production environment. This is only required if nginx proxy is used                                                                            |
-| TEST_API_HOST     | -             | IP address of the api with test environment. This is only required if nginx proxy is used. <br>**Hint:** When deployed locally the host is set to localhost          |
-| TEST_API_PORT     | 8080          | Port of the api with test environment. This is only required if nginx proxy is used                                                                                  |
+| API_HOST          | -             | IP address of the api. This is only required if nginx proxy is used. <br>**Hint:** When deployed locally the host is set to localhost                                |
+| API_PORT          | 8080          | Port of the api. This is only required if nginx proxy is used                                                                                                        |
 
 ### Email-Service
 
@@ -119,12 +117,10 @@ The solution is to proxy the calls to the designated API's (e.g. API or Test-API
 
 If you take a look at the NGINX config `nginx.conf` you will see that the proxy is not configured. Thats because we run a script to configure the API locations dynamically when the Dockerfile is running (see `configureServer.sh`).
 
-The Proxy Paths are defined through 4 environment variables of the container:
+The Proxy Paths are defined through 2 environment variables of the container:
 
-- PROD_API_HOST (default: `localhost`)
-- PROD_API_PORT (default: `8080`)
-- TEST_API_HOST (default: `localhost`)
-- TEST_API_PORT (default: `8080`)
+- API_HOST (default: `localhost`)
+- API_PORT (default: `8080`)
 
 That means, running the following docker commands
 
@@ -132,10 +128,8 @@ That means, running the following docker commands
 docker build -t trubudget-frontend .
 docker run \
   -p 80:80 \
-  -e PROD_API_HOST=127.0.0.1 \
-  -e PROD_API_PORT=8081 \
-  -e TEST_API_HOST=127.0.0.2 \
-  -e TEST_API_PORT=8082 \
+  -e API_HOST=127.0.0.1 \
+  -e API_PORT=8080 \
   -it trubudget-frontend
 ```
 
@@ -144,9 +138,6 @@ will result in the following `nginx.conf` file.
 ```Nginx
 location ^~ /api/ {
   proxy_pass http://api:8080/;
-}
-location ^~ /test/ {
-  proxy_pass http://testapi:8080/;
 }
 ```
 

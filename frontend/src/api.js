@@ -9,7 +9,7 @@ const PORT_EXPORT_SVC = process.env.EXPORT_PORT || "8888";
 const PORT_EMAIL_SVC = process.env.EMAIL_PORT || "8890";
 
 // eslint-disable-next-line no-console
-console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`);
+console.log(`API is running in ${devMode ? "development" : "production"} mode (API Version ${API_VERSION})`);
 
 class Api {
   constructor() {
@@ -31,14 +31,14 @@ class Api {
       ...instance.defaults.transformRequest
     ];
 
-    instance.interceptors.request.use(request => {
+    instance.interceptors.request.use((request) => {
       if (request.url.includes("/version")) {
         this.timeStamp = performance.now();
       }
       return request;
     });
 
-    instance.interceptors.response.use(response => {
+    instance.interceptors.response.use((response) => {
       if (response.config.url.includes("/version")) {
         response.data.ping = performance.now() - this.timeStamp;
       }
@@ -46,16 +46,12 @@ class Api {
     });
   }
 
-  setAuthorizationHeader = token => {
+  setAuthorizationHeader = (token) => {
     instance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
   };
 
-  setBaseUrl = url => {
-    if (!devMode) {
-      instance.defaults.baseURL = `${url}/api`;
-    } else {
-      instance.defaults.baseURL = `/api`;
-    }
+  setBaseUrl = () => {
+    instance.defaults.baseURL = `/api`;
   };
 
   /**
@@ -74,7 +70,7 @@ class Api {
    * Returns URL for calling Email service
    * @param {*} urlSlug tail segment of the URL
    */
-  getEmailServiceUrl = urlSlug => `${devMode ? `http://localhost:${PORT_EMAIL_SVC}` : "/email"}/${urlSlug}`;
+  getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${PORT_EMAIL_SVC}` : "/email"}/${urlSlug}`;
 
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
@@ -84,12 +80,12 @@ class Api {
       }
     });
 
-  disableUser = userId =>
+  disableUser = (userId) =>
     instance.post(`/global.disableUser`, {
       userId
     });
 
-  enableUser = userId =>
+  enableUser = (userId) =>
     instance.post(`/global.enableUser`, {
       userId
     });
@@ -106,7 +102,7 @@ class Api {
       }
     });
 
-  grantAllUserPermissions = userId =>
+  grantAllUserPermissions = (userId) =>
     instance.post(`global.grantAllPermissions`, {
       identity: userId
     });
@@ -124,7 +120,7 @@ class Api {
       newPassword
     });
 
-  listUserAssignments = userId => instance.get(removeEmptyQueryParams(`/global.listAssignments?userId=${userId}`));
+  listUserAssignments = (userId) => instance.get(removeEmptyQueryParams(`/global.listAssignments?userId=${userId}`));
 
   createGroup = (groupId, displayName, users) =>
     instance.post(`/global.createGroup`, {
@@ -147,20 +143,20 @@ class Api {
   listGroup = () => instance.get(`/group.list`);
   listNodes = () => instance.get(`/network.list`);
   listActiveNodes = () => instance.get(`/network.listActive`);
-  approveNewOrganization = organization =>
+  approveNewOrganization = (organization) =>
     instance.post(`/network.approveNewOrganization`, {
       organization
     });
-  approveNewNodeForOrganization = address =>
+  approveNewNodeForOrganization = (address) =>
     instance.post(`/network.approveNewNodeForExistingOrganization`, {
       address
     });
-  declineNode = node =>
+  declineNode = (node) =>
     instance.post(`/network.declineNode`, {
       node
     });
   listProjects = () => instance.get(`/project.list`);
-  listSubprojects = projectId => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
+  listSubprojects = (projectId) => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
 
   createProject = (displayName, description, thumbnail, projectedBudgets, tags) =>
     instance.post(`/global.createProject`, {
@@ -179,7 +175,8 @@ class Api {
       ...changes
     });
 
-  viewProjectDetails = projectId => instance.get(removeEmptyQueryParams(`/project.viewDetails?projectId=${projectId}`));
+  viewProjectDetails = (projectId) =>
+    instance.get(removeEmptyQueryParams(`/project.viewDetails?projectId=${projectId}`));
   viewProjectHistory = (projectId, offset, limit, filter) => {
     let url = removeEmptyQueryParams(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
 
@@ -192,7 +189,7 @@ class Api {
     return instance.get(url);
   };
 
-  listProjectIntents = projectId =>
+  listProjectIntents = (projectId) =>
     instance.get(removeEmptyQueryParams(`/project.intent.listPermissions?projectId=${projectId}`));
 
   grantProjectPermissions = (projectId, intent, identity) =>
@@ -301,7 +298,7 @@ class Api {
       currencyCode
     });
 
-  createWorkflowItem = payload => {
+  createWorkflowItem = (payload) => {
     const { currency, amount, exchangeRate, ...minimalPayload } = payload;
     const payloadToSend =
       payload.amountType === "N/A"
@@ -417,7 +414,7 @@ class Api {
       identity
     });
 
-  closeProject = projectId =>
+  closeProject = (projectId) =>
     instance.post(`/project.close`, {
       projectId
     });
@@ -429,20 +426,20 @@ class Api {
     });
 
   closeWorkflowItem = (projectId, subprojectId, workflowitemId, rejectReason) => {
-    if(rejectReason === "")
+    if (rejectReason === "")
       return instance.post(`/workflowitem.close`, {
         projectId,
         subprojectId,
         workflowitemId
       });
     else
-    return instance.post(`/workflowitem.close`, {
-      projectId,
-      subprojectId,
-      workflowitemId,
-      rejectReason
-    });
-  }
+      return instance.post(`/workflowitem.close`, {
+        projectId,
+        subprojectId,
+        workflowitemId,
+        rejectReason
+      });
+  };
 
   fetchNotifications = (offset, limit) => {
     let url = removeEmptyQueryParams(`/notification.list?offset=${offset}&limit=${limit}`);
@@ -453,22 +450,18 @@ class Api {
     return instance.get(`/notification.count`);
   };
 
-  markNotificationAsRead = notificationId =>
+  markNotificationAsRead = (notificationId) =>
     instance.post(`/notification.markRead`, {
       notifications: [notificationId]
     });
-  markMultipleNotificationsAsRead = notificationIds =>
+  markMultipleNotificationsAsRead = (notificationIds) =>
     instance.post(`/notification.markRead`, { notifications: notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
-  restoreFromBackup = (envPrefix, token, data) => {
-    let apiPrefix = "/api";
-    if (!devMode) {
-      apiPrefix = `${envPrefix}${apiPrefix}`;
-    }
+  restoreFromBackup = (token, data) => {
     const binaryInstance = axios.create();
     binaryInstance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
-    const response = binaryInstance.post(`${apiPrefix}/system.restoreBackup`, data, {
+    const response = binaryInstance.post(`/api/system.restoreBackup`, data, {
       headers: { "Content-Type": "application/gzip" }
     });
     return response;
@@ -508,7 +501,7 @@ class Api {
     const path = this.getEmailServiceUrl("user.delete");
     return instance.post(path, data);
   };
-  getEmailAddress = id => {
+  getEmailAddress = (id) => {
     const path = this.getEmailServiceUrl(`user.getEmailAddress?id=${id}`);
     return instance.get(path);
   };
@@ -529,7 +522,7 @@ class Api {
         ),
         { responseType: "blob" }
       )
-      .then(response => {
+      .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -556,7 +549,7 @@ class Api {
       });
 }
 
-const hasAttachment = response => {
+const hasAttachment = (response) => {
   const dispositionHeader = response.headers["content-disposition"];
   return dispositionHeader && dispositionHeader.indexOf("attachment") !== -1;
 };
@@ -567,7 +560,7 @@ const hasAttachment = response => {
  * @returns the url without empty or undefined parameters
 
  */
-const removeEmptyQueryParams = url => {
+const removeEmptyQueryParams = (url) => {
   return url
     .replace(/[^=&]+=(&|$)/g, "") // removes a parameter if the '=' is followed by a '&' or if it's the end of the line
     .replace(/[^=&]+=(undefined|$)/g, "") // removes a parameter if the '=' is followed by 'undefined'

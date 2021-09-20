@@ -1,11 +1,10 @@
 describe("Subproject Assignee", function() {
   const executingUser = "mstein";
   const testUser = "jdoe";
-  let projectId, subprojectId, permissionsBeforeTesting, baseUrl, apiRoute;
+  let projectId, subprojectId, permissionsBeforeTesting;
+  const apiRoute = "/api";
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
     cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
       projectId = id;

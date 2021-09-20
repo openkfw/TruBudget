@@ -5,12 +5,10 @@ describe("Workflowitem Assignee", function() {
   let subprojectId;
   let workflowitemId;
   let permissionsBeforeTesting;
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
 
   before(() => {
     cy.login();
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.createProject("p-subp-assign", "workflowitem assign test").then(({ id }) => {
       projectId = id;
       cy.createSubproject(projectId, "workflowitem assign test").then(({ id }) => {

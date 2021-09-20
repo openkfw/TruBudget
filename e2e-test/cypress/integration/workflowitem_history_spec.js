@@ -4,7 +4,7 @@ describe("Workflowitem's history", function() {
   let projectId;
   let subprojectId;
   let workflowitemId;
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
 
   const yesterday = dayjs()
     .add(-1, "day")
@@ -17,8 +17,6 @@ describe("Workflowitem's history", function() {
     .format("DD/MM/YYYY");
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
     cy.createProject("p-subp-assign", "workflowitem assign test").then(({ id }) => {
       projectId = id;

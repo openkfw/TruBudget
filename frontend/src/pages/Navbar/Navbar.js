@@ -24,7 +24,6 @@ const Navbar = ({
   history,
   route,
   logout,
-  productionActive,
   displayName,
   organization,
   avatar,
@@ -32,7 +31,6 @@ const Navbar = ({
   currentProject,
   currentSubProject,
   allowedIntents,
-  environment,
   groups,
   userId,
   createBackup,
@@ -54,12 +52,10 @@ const Navbar = ({
         <Toolbar id="back-to-top">
           <LeftNavbarNavigation toggleSidebar={toggleSidebar} />
           <MainNavbarNavigation
-            productionActive={productionActive}
             history={history}
             route={route}
             currentProject={currentProject}
             currentSubProject={currentSubProject}
-            environment={environment}
             storeSearchBarDisplayed={storeSearchBarDisplayed}
             storeSearchTerm={storeSearchTerm}
           />

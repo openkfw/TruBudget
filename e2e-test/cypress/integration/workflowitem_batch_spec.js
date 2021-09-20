@@ -12,14 +12,11 @@ describe("Workflowitem batch test", function() {
     workflowitem2Closed,
     workflowitem3Closed,
     workflowitem4Closed,
-    workflowitem5Closed,
-    apiRoute,
-    baseUrl;
+    workflowitem5Closed;
+    const apiRoute = "/api";
 
   before(() => {
     cy.login();
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.createProject("p-subp-batch", "workflowitem batch test").then(({ id }) => {
       projectId = id;
       cy.createSubproject(projectId, "workflowitem batch test").then(({ id }) => {

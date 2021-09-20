@@ -1,9 +1,5 @@
 describe("User/Groups Dashboard", function() {
-  let baseUrl, apiRoute;
-  before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
+  const apiRoute = "/api";
 
   beforeEach(() => {
     cy.login();

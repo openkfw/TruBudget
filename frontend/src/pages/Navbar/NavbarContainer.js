@@ -86,7 +86,6 @@ const mapStateToProps = state => {
     userId: state.getIn(["login", "id"]),
     organization: state.getIn(["login", "organization"]),
     avatar: state.getIn(["login", "avatar"]),
-    environment: state.getIn(["login", "environment"]),
     avatarBackground: state.getIn(["login", "avatarBackground"]),
     currentProject: state.getIn(["navbar", "currentProject"]),
     currentSubProject: state.getIn(["navbar", "currentSubProject"]),

@@ -6,14 +6,13 @@ The excel export service is responsible for exporting multichain's data to a hum
 
 ### Excel-Export
 
-| Env Variable                | Default Value | Description                                                                                                                                                                                                                                                   |
-| --------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PORT                        | 8888          | The port used to expose the excel-export service.                                                                                                                                                                                                             |
-| PROD_API_HOST               | localhost     | Ip address of the api production environment                                                                                                                                                                                                                  |
-| PROD_API_PORT               | 8080          | Port of the api production environment                                                                                                                                                                                                                        |
-| TEST_API_HOST               | localhost     | Ip address of the api test environment                                                                                                                                                                                                                        |
-| TEST_API_PORT               | 8080          | Port of the api test environment                                                                                                                                                                                                                              |
-| ACCESS_CONTROL_ALLOW_ORIGIN | "\*"          | Since the export service uses CORS, the domain by which it can be called needs to be set. Setting this value to `"*"` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |
+| Env Variable | Default Value | Description                                       |
+| ------------ | ------------- | ------------------------------------------------- |
+| PORT         | 8888          | The port used to expose the excel-export service. |
+| API_HOST     | localhost     | Ip address of the api environment                 |
+| API_PORT     | 8080          | Port of the api environment                       |
+
+| ACCESS_CONTROL_ALLOW_ORIGIN | "\*" | Since the export service uses CORS, the domain by which it can be called needs to be set. Setting this value to `"*"` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |
 
 ### Frontend
 
@@ -33,10 +32,9 @@ To check what is configurable regarding excel-export service check out the [envi
 
 ### Endpoints
 
-| Method | Endpoint       | Query Parameters | Description                                                                                                                                                        |
-| ------ | -------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| GET    | /health        |                  | Checks if excel service is up                                                                                                                                      |
-| GET    | /readiness     |                  | Checks if excel service is ready                                                                                                                                   |
-| GET    | /version       |                  | Get the current version of the service                                                                                                                             |
-| GET    | /test/download | lang             | Get excel file of api configured via `TEST_API_HOST` and `TEST_API_PORT` in the language specified in the query parameter (must be an existing TruBudget language) |
-| GET    | /prod/download | lang             | Get excel file of api configured via `PROD_API_HOST` and `PROD_API_PORT` in the language specified in the query parameter (must be an existing TruBudget language) |
+| Method | Endpoint       | Query Parameters | Description                                                                                                                                              |
+| ------ | -------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | /health        |                  | Checks if excel service is up                                                                                                                            |
+| GET    | /readiness     |                  | Checks if excel service is ready                                                                                                                         |
+| GET    | /version       |                  | Get the current version of the service                                                                                                                   |
+| GET    | /prod/download | lang             | Get excel file of api configured via `API_HOST` and `API_PORT` in the language specified in the query parameter (must be an existing TruBudget language) |

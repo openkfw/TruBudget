@@ -7,16 +7,14 @@ const testUser3 = { id: "auditUser", displayname: "Romina Checker" };
 const testUser4 = { id: "pkleffmann", displayname: "Piet Kleffmann" };
 const testGroupId = "admins";
 const groupToGivePermissions = "reviewers";
-let projectId, subprojectId, workflowitemId, workflowitemId2, permissionsBeforeTesting, baseUrl, apiRoute;
+let projectId, subprojectId, workflowitemId, workflowitemId2, permissionsBeforeTesting;
+const apiRoute = "/api";
 const projectDisplayname = "p-witem-assign";
 const subprojectDisplayname = "subp-witem-assign";
 const workflowitemDisplayname = "witem-witem-assign";
 
 describe("Workflowitem Permissions", function() {
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-
     cy.login();
     cy.createProject(projectDisplayname, "workflowitem assign test").then(({ id }) => {
       projectId = id;

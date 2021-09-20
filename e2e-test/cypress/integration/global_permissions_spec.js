@@ -1,11 +1,9 @@
 const testUserName = "globalPermissionTestUser";
 const testUserNamePassword = "test1234";
-let baseUrl, apiRoute;
+const apiRoute = "/api";
 
 describe("Users/Groups Dashboard", function() {
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.getUserList().then(userList => {
       const userIds = userList.map(user => user.id);

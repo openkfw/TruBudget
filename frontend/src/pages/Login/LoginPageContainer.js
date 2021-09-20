@@ -3,12 +3,10 @@ import { connect } from "react-redux";
 import {
   checkEmailService,
   checkExportService,
-  getEnvironment,
   initLanguage,
   loginWithCredentials,
   logout,
   setLanguage,
-  storeEnvironment,
   storePassword,
   storeUsername
 } from "./actions";
@@ -17,7 +15,6 @@ import LoginPage from "./LoginPage";
 class LoginPageContainer extends Component {
   componentDidMount() {
     this.props.initLanguage();
-    this.props.getEnvironment();
     this.checkIfRedirect();
     // window.injectedEnv exists when deploying via docker and nginx
     // process.env exists when using node.js
@@ -51,27 +48,24 @@ class LoginPageContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     initLanguage: () => dispatch(initLanguage()),
-    storeUsername: username => dispatch(storeUsername(username)),
-    storePassword: password => dispatch(storePassword(password)),
+    storeUsername: (username) => dispatch(storeUsername(username)),
+    storePassword: (password) => dispatch(storePassword(password)),
     logout: () => dispatch(logout()),
     loginWithCredentials: (username, password) => dispatch(loginWithCredentials(username, password)),
-    storeEnvironment: environment => dispatch(storeEnvironment(environment)),
-    getEnvironment: () => dispatch(getEnvironment()),
-    setLanguage: language => dispatch(setLanguage(language)),
+    setLanguage: (language) => dispatch(setLanguage(language)),
     checkEmailService: () => dispatch(checkEmailService(false)),
     checkExportService: () => dispatch(checkExportService(false))
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     username: state.getIn(["login", "username"]),
     jwt: state.getIn(["login", "jwt"]),
     password: state.getIn(["login", "password"]),
-    environment: state.getIn(["login", "environment"]),
     language: state.getIn(["login", "language"]),
     loginError: state.getIn(["login", "loginError"])
   };

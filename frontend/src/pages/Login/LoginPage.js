@@ -21,8 +21,6 @@ const LoginPage = ({
   password,
   loginWithCredentials,
   loginError,
-  environment,
-  storeEnvironment,
   language,
   setLanguage
 }) => {
@@ -56,17 +54,6 @@ const LoginPage = ({
         >
           <div style={{ width: "70%" }}>
             <CardHeader title={strings.login.frontend_name} subheader={strings.login.frontend_description} />
-          </div>
-          <div style={{ width: "30%", marginRight: "8px" }}>
-            <Dropdown
-              onChange={storeEnvironment}
-              floatingLabel={strings.login.environment}
-              value={environment}
-              id="environment_selection"
-            >
-              <MenuItem value="Test">{strings.login.test_env}</MenuItem>
-              <MenuItem value="Prod">{strings.login.production_env}</MenuItem>
-            </Dropdown>
           </div>
         </div>
         <Divider />

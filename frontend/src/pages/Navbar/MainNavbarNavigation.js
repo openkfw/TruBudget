@@ -111,21 +111,18 @@ const createBreadcrumb = (
 };
 
 const MainNavbarNavigation = ({
-  toggleSidebar,
   history,
   route,
-  environment,
   currentProject,
   currentSubProject,
   storeSearchTerm,
   storeSearchBarDisplayed
 }) => {
-  const productionActive = environment === "Prod";
-  const navbarTitle = productionActive ? strings.login.frontend_name : strings.login.frontend_name + " (Test)";
+
   return (
     <div style={styles.container}>
-      <Typography variant="button" color={productionActive ? "primary" : "secondary"}>
-        {navbarTitle}
+      <Typography variant="button" color={ "primary" }>
+        {strings.login.frontend_name}
       </Typography>
       <div style={styles.breadcrumbs}>
         {createBreadcrumb(route, history, currentProject, currentSubProject, storeSearchTerm, storeSearchBarDisplayed)}

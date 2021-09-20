@@ -1,5 +1,6 @@
 describe("Subproject budget test", function() {
-  let projectId, subprojectId, baseUrl, apiRoute;
+  const apiRoute = "/api";
+  let projectId, subprojectId;
   const organization1 = "ACME Corp";
   const organization2 = "Organization 2";
   const projectProjectedBudget = {
@@ -34,11 +35,6 @@ describe("Subproject budget test", function() {
       }
     ]
   };
-
-  before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
 
   beforeEach(() => {
     cy.login();

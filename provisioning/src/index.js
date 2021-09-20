@@ -622,7 +622,7 @@ async function checkProvisionState(axios) {
 const provisionBlockchain = async (host, port, rootSecret, organization) => {
   try {
     const folder =
-      process.env.ENVIRONMENT_TYPE === "PROD"
+      process.env.PROVISIONING_TYPE === "PROD"
         ? "./src/data/prod/"
         : "./src/data/test/";
 
@@ -651,9 +651,8 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
         await provisionFromData(project);
       }
     }
-    if (process.env.ENVIRONMENT_TYPE !== "PROD") {
-      await runIntegrationTests(rootSecret, folder);
-    }
+
+    await runIntegrationTests(rootSecret, folder);
 
     currentUser.id = "root";
     currentUser.password = rootSecret;

@@ -1,19 +1,16 @@
 import _cloneDeep from "lodash/cloneDeep";
 
+const apiRoute = "/api";
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
 const testUser = { id: "thouse", displayname: "Tom House" };
 const testUser2 = { id: "jdoe", displayname: "John Doe" };
-let projectId, permissionsBeforeTesting, baseUrl, apiRoute;
+let projectId, permissionsBeforeTesting;
 const groupToGivePermissions = "reviewers";
 const testGroupId = "admins";
 
 describe("Project Permissions", function() {
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-
     cy.login();
-
     cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
       projectId = id;
     });

@@ -1,5 +1,5 @@
 describe("Disable and enable users", function() {
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
   let testUserId;
 
   // Generate random IDs since every ID can only exists once in the multichain
@@ -25,11 +25,6 @@ describe("Disable and enable users", function() {
       .get("#loginbutton")
       .click();
   }
-
-  before(function() {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
 
   beforeEach(function() {
     cy.login();
