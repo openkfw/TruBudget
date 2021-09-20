@@ -97,6 +97,9 @@ app.post(
       });
       res.send({ docId, secret: result }).end();
     })().catch((error) => {
+      if (error.code === "NoSuchBucket") {
+        console.log("ERROR: NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio")
+      }
       res.status(500).send(error).end();
     });
   },
@@ -129,6 +132,9 @@ app.get(
         res.send(result).end();
       }
     })().catch((error) => {
+      if (error.code === "NoSuchBucket") {
+        console.log("ERROR: NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio")
+      }
       res.status(404).end();
     });
   },
