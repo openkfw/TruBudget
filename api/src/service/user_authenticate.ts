@@ -83,11 +83,15 @@ async function authenticateRoot(
     return new AuthenticationFailed({ ctx, organization, userId: "root" });
   }
   const organizationAddress = organizationAddressResult;
+  const rootAddress =
+    config.signingMethod === "user"
+      ? await getselfaddress(conn.multichainClient)
+      : organizationAddress;
 
   return {
     userId: "root",
     displayName: "root",
-    address: organizationAddress,
+    address: rootAddress,
     groups: [],
     organization,
     organizationAddress,

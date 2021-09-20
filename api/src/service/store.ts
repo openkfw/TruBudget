@@ -309,7 +309,7 @@ async function ensureStreamExists(conn: ConnToken, ctx: Ctx, name: string, kind:
   const customFields = { kind };
   await conn.multichainClient
     .getRpcClient()
-    .invoke("create", "stream", name, isPublic, customFields) //TODO decide if stream is also created by node or user
+    .invoke("create", "stream", name, isPublic, customFields)
     .then(() => logger.debug({ ctx }, `New ${kind} stream created: ${name}`))
     .catch((err) => {
       if (err && err.code === -705) {
