@@ -213,10 +213,6 @@ $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
 $COMPOSE pull
-
-#ToDo only use images, do not build
-echo "INFO: Since images are used, building is not necessary and will be skipped."
-echo "INFO: Building frontend locally ..."
 $COMPOSE build
 
 # Start docker containers

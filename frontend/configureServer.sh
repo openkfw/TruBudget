@@ -75,10 +75,8 @@ proxy_pass http://$api_host:$api_port;" /etc/nginx/conf.d/default.conf
 if [ "$REACT_APP_EXPORT_SERVICE_ENABLED" = true ]; then
     echo "Excel export has been enabled"
     # echo "http://$export_host:$export_port/test/"
-    sed -i -e "/# pathToProdExcelExport/i\\
+    sed -i -e "/# pathToExcelExport/i\\
     proxy_pass http://$export_host:$export_port;" /etc/nginx/conf.d/default.conf
-    # sed -i -e "/# pathToTestExcelExport/i\\
-    # proxy_pass http://$export_host:$export_port/test/;" /etc/nginx/conf.d/default.conf
 fi
 
 if [ "$REACT_APP_EMAIL_SERVICE_ENABLED" = true ]; then
