@@ -1,6 +1,18 @@
-# Updateing TruBudget
+# Updating TruBudget
 
 This guide shows three different possibilities how to safely update your Trubudget without any loss of data. Especially the wallet address and the node's private keys need to be remembered, so that the node can be identified within the network and doesn't need to ask for connect permissions again after the update. The wallet address and private keys are stored in the `wallet.dat` file located in the root folder of a multichain node.
+
+## Table of Contents
+
+- [Updating TruBudget](#updating-trubudget)
+  - [Full state backup](#full-state-backup)
+  - [Full state backup via backup endpoint](#full-state-backup-via-backup-endpoint)
+  - [Wallet backup](#wallet-backup)
+    - [wallet.dat](#walletdat)
+    - [params.dat](#paramsdat)
+    - [multichain.conf](#multichainconf)
+  - [Hints and Pitfalls](#hints-and-pitfalls)
+  - [Updating to TruBudget 1.26.0](#updating-to-trubudget-1260)
 
 ## Full state backup
 
@@ -94,4 +106,24 @@ If this error occurs and you are certain that the `backup.gz` compressed folder 
 
 :::note
 If your filename contains a blank space (e.g. `backup (1).gz`), you should use quotation marks when entering the path, so it will be recognized as one argument and not two separate ones.
+:::
+
+## Updating to TruBudget 1.26.0 or higher
+
+In TruBudget 1.26.0, the Test and Prod Environment has been removed in [#954](https://github.com/openkfw/TruBudget/issues/954). This means the DropDown menu to select Prod and Test at the Loginpage is removed and the frontend and excel-export-service is only connected to one API and one Blockchain. If you want to update TruBudget 1.26.0 or higher from version 1.25.0 or older, you must re-set some new `env` vars for your setup. If you want to use 2 Environments, you need to setup an additional Frontend with another URL and connect it to another API.
+
+| Removed `env` vars | Description                              |
+| ------------------ | ---------------------------------------- |
+| API_TEST_HOST      | Host address of API for Test environment |
+| API_TEST_PORT      | Port of API for Test environment         |
+| API_PROD_HOST      | Host address of API for Prod environment |
+| API_PROD_PORT      | Port of API for Prod environment         |
+
+| New `env` vars | Description                             |
+| -------------- | --------------------------------------- |
+| API_HOST       | Host address of API that should be used |
+| API_PORT       | Port of API that should be used         |
+
+:::note
+If you want keep Prod and Test environment, you need to setup an additional Frontend with another URL and connect one to Test-API and one to Prod-API.
 :::

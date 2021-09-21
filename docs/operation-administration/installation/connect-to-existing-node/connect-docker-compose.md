@@ -1,3 +1,6 @@
+**This guide is outdated an will not work. See [#932](https://github.com/openkfw/TruBudget/issues/932).**
+**There is an issue with docker and connecting slave-nodes to master-nodes. See [Segmentation fault on Windows 10 (but not on Mac)](https://www.multichain.com/qa/39583/segmentation-fault-on-windows-10-but-not-on-mac)**
+
 # Connect to an Existing Network using Docker
 
 This guide describes how to connect a node to an existing TruBudget network. The steps are the same for new organizations and new nodes for an existing organizations. For new nodes of existing organizations, make sure to use the same `ORGANIZATION_VAULT_SECRET` as all the other nodes of this organization.
@@ -78,14 +81,10 @@ ORGANIZATION=TheNewOrganization
 ORGANIZATION_VAULT_SECRET=secret
 TAG=master
 ROOT_SECRET=root-secret
-P2P_TEST_HOST=52.52.52.52
-P2P_TEST_PORT=7448
-API_TEST_HOST=52.52.52.52
-API_TEST_PORT=8081
-P2P_PROD_HOST=52.52.52.52
-P2P_PROD_PORT=52.52.52.52
-API_PROD_HOST=52.52.52.52
-API_PROD_PORT=8080
+P2P_HOST=52.52.52.52
+P2P_PORT=7448
+API_HOST=52.52.52.52
+API_PORT=8080
 LOG_LEVEL=INFO
 PRETTY_PRINT=true
 RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j

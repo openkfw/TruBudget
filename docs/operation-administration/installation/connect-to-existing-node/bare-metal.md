@@ -48,15 +48,11 @@ export RPC_USER="multichainrpc";
 export RPC_PASSWORD="password";
 export RPC_ALLOW_IP="0.0.0.0/0";
 export MULTICHAIN_DIR="/root"
-export EXTERNAL_IP = [external IP here];
-export P2P_PROD_HOST = [IP of prod instance of seed node];
-export P2P_PROD_PORT = [MultiChain port of prod instance of seed node];
-export P2P_TEST_HOST = [IP of test instance of seed node];
-export P2P_TEST_PORT = [MultiChain port of test instance of seed node];
-export API_PROD_HOST=[IP of seed API (prod)];
-export API_PROD_PORT=[port of seed API (prod)];
-export API_TEST_HOST=[IP of seed API (test)];
-export API_TEST_PORT=[port of seed API (test)];
+export EXTERNAL_IP=[external IP here];
+export P2P_HOST=[IP address of seed node];
+export P2P_PORT=[MultiChain port of seed node];
+export API_HOST=[IP of seed API];
+export API_PORT=[port of seed API];
 ```
 
 Navigate into the `blockchain` directory and install the node packages defined in the `package.json` and start the Blockchain with:
@@ -242,7 +238,7 @@ npm start
 
 ## Frontend
 
-The first step to deploy the frontend is to **adapt** and set the environment parameters. If you plan to deploy only one API set PROD and TEST parameters, so that it points to the single API.
+The first step to deploy the frontend is to **adapt** and set the environment parameters. If you plan to deploy a PROD and TEST environment, you need to setup two Frontend services with different API_HOST and API_PORT.
 
 ```bash
 cd ../frontend
