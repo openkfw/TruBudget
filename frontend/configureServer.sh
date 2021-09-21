@@ -14,20 +14,23 @@ storage_service_host=localhost
 storage_service_port=8090
 
 # Check if the required env variables are set otherwise localhost will be used.
-## TODO: Remove these lines when Pipeline is configured with new API env vars
-if [ -n "$PROD_API_HOST" ]; then
-    api_host=$PROD_API_HOST
-fi
-if [ -n "$PROD_API_PORT" ]; then
-    api_port=$PROD_API_PORT
-fi
+
 if [ -n "$TEST_API_HOST" ]; then
+    echo "TEST_API_HOST is deprecated. Use API_HOST instead."
     api_host=$TEST_API_HOST
 fi
 if [ -n "$TEST_API_PORT" ]; then
+    echo "TEST_API_PORT is deprecated. Use API_PORT instead."
     api_port=$TEST_API_PORT
 fi
-### TODO end
+if [ -n "$PROD_API_HOST" ]; then
+    echo "PROD_API_HOST is deprecated. Use API_HOST instead."
+    api_host=$PROD_API_HOST
+fi
+if [ -n "$PROD_API_PORT" ]; then
+    echo "PROD_API_PORT is deprecated. Use API_PORT instead."
+    api_port=$PROD_API_PORT
+fi
 if [ -n "$API_HOST" ]; then
     api_host=$API_HOST
 fi
@@ -74,7 +77,7 @@ proxy_pass http://$api_host:$api_port;" /etc/nginx/conf.d/default.conf
 
 if [ "$REACT_APP_EXPORT_SERVICE_ENABLED" = true ]; then
     echo "Excel export has been enabled"
-    # echo "http://$export_host:$export_port/test/"
+    echo "http://$export_host:$export_port/"
     sed -i -e "/# pathToExcelExport/i\\
     proxy_pass http://$export_host:$export_port;" /etc/nginx/conf.d/default.conf
 fi
