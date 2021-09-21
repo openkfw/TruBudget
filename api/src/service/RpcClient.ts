@@ -153,13 +153,12 @@ export class RpcClient {
     if (Result.isErr(requestResult)) {
       return Promise.reject(requestResult);
     }
-    const { method, params } = requestResult;
-
-    logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
     const request: RpcRequest = {
-      method,
-      params,
+      method: requestResult.method,
+      params: requestResult.params,
     };
+
+    logger.trace({ parameters: request }, `Invoking method ${request.method}`);
     return new Promise<any>(async (resolve, reject) => {
       this.instance
         .post("/", JSON.stringify(request))
@@ -167,7 +166,9 @@ export class RpcClient {
           logger.trace({ data: resp.data }, "Received valid response.");
 
           if (logger.levelVal >= logger.levels.values.debug) {
-            const countKey = `${method}(${params.map((x) => JSON.stringify(x)).join(", ")})`;
+            const countKey = `${request.method}(${request.params
+              .map((x) => JSON.stringify(x))
+              .join(", ")})`;
             const hrtimeDiff = process.hrtime(startTime);
             const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
             durations.set(countKey, (durations.get(countKey) || 0) + elapsedMilliseconds);
@@ -177,7 +178,7 @@ export class RpcClient {
           resolve(responseData);
         })
         .catch((error: AxiosError | Error) => {
-          let response: RpcError = this.handleError(error, method);
+          let response: RpcError = this.handleError(error, request.method);
           reject(response);
         });
     });
@@ -193,11 +194,11 @@ export class RpcClient {
   public invoke(method: string, ...params: any[]): any {
     const startTime = process.hrtime();
 
-    logger.trace({ parameters: { method, params } }, `Invoking method ${method}`);
     const request: RpcRequest = {
       method,
       params,
     };
+    logger.trace({ parameters: request }, `Invoking method ${method}`);
 
     return new Promise<any>(async (resolve, reject) => {
       this.instance
