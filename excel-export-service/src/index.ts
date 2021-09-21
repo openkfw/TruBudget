@@ -9,7 +9,8 @@ import { config } from "./config";
 import { getApiReadiness } from "./api";
 
 const DEFAULT_API_VERSION = "1.0";
-const API_BASE = `http://${config.apiHost}:${config.apiPort}/api`;
+const API_BASE_PROD = `http://${config.apiHost}:${config.apiPort}/api`;
+const API_BASE_TEST = `http://${config.testApiHost}:${config.testApiPort}/api`;
 
 const transformRequest: AxiosTransformer = (data) => {
   if (typeof data === "object") {
@@ -31,9 +32,16 @@ excelService.use((req: express.Request, res: express.Response, next) => {
   next();
 });
 
+// This can be removed once prod and test env option will be removed https://github.com/openkfw/TruBudget/issues/954
+excelService.use((req: express.Request, res: express.Response, next) => {
+  res.apiBase = req.url.includes("/test") ? API_BASE_TEST : API_BASE_PROD;
+  req.url = req.url.replace("/test", "").replace("/prod", "");
+  next();
+});
+
 excelService.get("/readiness", async (req: express.Request, res: express.Response) => {
   try {
-    const ready = await getApiReadiness(axios, API_BASE);
+    const ready = await getApiReadiness(axios, res.apiBase);
     res.status(200).send(ready);
   } catch (error) {
     console.error("API readiness call failed", error);
@@ -73,7 +81,7 @@ excelService.get("/download", async (req: express.Request, res: express.Response
     res.setHeader("Content-Disposition", "attachment; filename=TruBudget_Export.xlsx");
     res.setHeader("Transfer-Encoding", "chunked");
 
-    await writeXLSX(axios, req.headers.authorization, res, API_BASE);
+    await writeXLSX(axios, req.headers.authorization, res, res.apiBase);
   } catch (error) {
     console.error(error.message);
     res.end();
