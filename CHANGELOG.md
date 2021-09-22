@@ -15,7 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Fixed a bug where it was possible to create users and groups with the same id. This will not be allowed in the future. However, if a user and a group with the same id already exist in the same network the permission system will not work correctly, so the user should be disabled by the admin [#943](https://github.com/openkfw/TruBudget/issues/943).
 
 ## [1.25.0] - 2021-08-31
 
