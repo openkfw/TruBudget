@@ -162,8 +162,8 @@ jobs:
       GITHUB_HEAD_REF: ${{ github.head_ref}}
       GITHUB_PR_NUMBER: ${{ github.event.number}}
       WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
-      WEBHOOK_REF_MIGRATION: ${{ secrets.WEBHOOK_REF_MIGRATION }}
-      WEBHOOK_URL_MIGRATION: ${{ secrets.WEBHOOK_URL_MIGRATION }}
+      WEBHOOK_REF: ${{ secrets.WEBHOOK_REF }}
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/workflows/notification
