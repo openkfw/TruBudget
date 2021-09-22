@@ -22,7 +22,7 @@ runs:
         -F "variables[GITHUB_HEAD_BRANCH]=$GITHUB_HEAD_BRANCH"
         -F "variables[GITHUB_BASE_BRANCH]=$GITHUB_BASE_BRANCH"
         -F "variables[GITHUB_RUN_ID]=$GITHUB_RUN_ID"
-        -F "variables[GITHUB_EVENT_NAME]=$GITHUB_EVENT_NAME"
+        -F "variables[GITHUB_EVENT_NAME]=$GITHUB_EVENT_NAME-$GITHUB_BASE_BRANCH"
         -F "variables[GITHUB_PULL_REQUEST]=$GITHUB_PR_NUMBER"
         -F "variables[GITHUB_REPOSITORY]=$GITHUB_REPOSITORY"
         $WEBHOOK_URL > /dev/null
