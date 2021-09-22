@@ -42,6 +42,7 @@ export function validate(input: any): Result.Type<RequestData> {
 interface Repository {
   getGlobalPermissions(): Promise<Result.Type<GlobalPermissions>>;
   groupExists(groupId: string): Promise<Result.Type<boolean>>;
+  userExists(groupId: string): Promise<Result.Type<boolean>>;
 }
 
 export async function createGroup(
@@ -64,12 +65,19 @@ export async function createGroup(
     return new VError(createEvent, "failed to create group created event");
   }
 
+  // Check group already exists:
   const groupExistsResult = await repository.groupExists(createEvent.group.id);
   if (Result.isErr(groupExistsResult)) {
     return new VError(groupExistsResult, "groupExists check failed");
   }
   const groupExists = groupExistsResult;
-  if (groupExists) {
+  // Check user already exists:
+  const userExistsResult = await repository.userExists(createEvent.group.id);
+  if (Result.isErr(userExistsResult)) {
+    return new VError(userExistsResult, "user exists check failed");
+  }
+  const userExists = userExistsResult;
+  if (groupExists || userExists) {
     return new AlreadyExists(ctx, createEvent, createEvent.group.id);
   }
 

@@ -46,6 +46,7 @@ interface Repository {
   createKeyPair(): Promise<KeyPair>;
   hash(plaintext: string): Promise<string>;
   encrypt(plaintext: string): Promise<string>;
+  groupExists(userId: string): Promise<Result.Type<boolean>>;
 }
 
 export async function createUser(
@@ -83,7 +84,14 @@ export async function createUser(
     return new VError(userExistsResult, "user exists check failed");
   }
   const userExists = userExistsResult;
-  if (userExists) {
+
+  // Check group already exists:
+  const groupExistsResult = await repository.groupExists(createEvent.user.id);
+  if (Result.isErr(groupExistsResult)) {
+    return new VError(groupExistsResult, "group exists check failed");
+  }
+  const groupExists = groupExistsResult;
+  if (userExists || groupExists) {
     return new AlreadyExists(ctx, createEvent, createEvent.user.id);
   }
 
@@ -129,7 +137,12 @@ export async function createUser(
   // Create events that'll grant default permissions to the user:
   const defaultPermissionGrantedEvents: Result.Type<GlobalPermissionGranted.Event[]> = [];
   for (const intent of userDefaultIntents) {
-    const createEventResult = GlobalPermissionGranted.createEvent(ctx.source, publisher, intent, createEvent.user.id);
+    const createEventResult = GlobalPermissionGranted.createEvent(
+      ctx.source,
+      publisher,
+      intent,
+      createEvent.user.id,
+    );
     if (Result.isErr(createEventResult)) {
       return new VError(createEventResult, "failed to create permission grant event");
     }
