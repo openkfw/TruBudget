@@ -1,4 +1,11 @@
 version: "3"
+
+networks:
+  mynetwork:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
 services:
   master-node:
     build: ../../blockchain
@@ -14,6 +21,9 @@ services:
     # volume for persisting data from multichain
     # volumes:
     #   - /masterVolume:/root/.multichain
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.11
     ports:
       - ${RPC_PORT}:${RPC_PORT}
       - "8085:8085"
@@ -28,6 +38,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.2
     ports:
       - 5432:5432
 
@@ -44,6 +57,9 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.3
 
   master-api:
     build: ../../api
@@ -72,6 +88,9 @@ services:
     volumes:
       - "../../api/src:/home/node/src:delegated"
       - ../../api/dist:/home/node/dist
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.4
     ports:
       - ${API_PORT}:${API_PORT}
       - "9230:9229"
@@ -96,6 +115,9 @@ services:
     # volume for hot reloading
     volumes:
       - "../../email-notification-service/src:/home/node/src:delegated"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.5
     depends_on:
       - emaildb
       - master-api
@@ -117,6 +139,9 @@ services:
       LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
     # volumes:
     #   - "../../provisioning/src:/usr/src/app/src:delegated"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.6
     depends_on:
       - master-api
 
@@ -135,9 +160,11 @@ services:
     # volume for hot reloading
     volumes:
       - "../../excel-export-service/src:/home/node/src:delegated"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.7
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
-      - "9231:9229"
     depends_on:
       - master-api
 
@@ -158,6 +185,9 @@ services:
     # volume for hot reloading
     volumes:
       - "../../storage-service/src:/home/node/src:delegated"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.8
     ports:
       - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
 
@@ -184,28 +214,33 @@ services:
     volumes:
       - "../../frontend/src:/app/src"
       - "/app/node_modules"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.9
     ports:
       - "3000:3000"
     stdin_open: true
 
-  # slave-node:
-  #   # image: trubudget/blockchain:latest
-  #   build:
-  #     context: ../../blockchain
-  #   environment:
-  #     RPC_PORT: ${RPC_PORT}
-  #     RPC_PASSWORD: ${RPC_PASSWORD}
-  #     ORGANIZATION: ${ORGANIZATION}
-  #     P2P_HOST: master-node
-  #     P2P_PORT: 7447
-  #     API_PROTO: http
-  #     API_HOST: master-api
-  #     API_PORT: ${API_PORT}
-  #     EXTERNAL_IP: master-node
-  #   depends_on:
-  #     - master-node
-  #   links:
-  #     - master-node
-  #     - master-api
-  #   ports:
-  #     - "7448:7447" # SLAVE_P2P_PORT
+  slave-node:
+    # image: trubudget/blockchain:latest
+    build:
+      context: ../../blockchain
+    environment:
+      RPC_PORT: ${RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      ORGANIZATION: ${ORGANIZATION}
+      # P2P_HOST must be a valid IP-Address. If you pass a domain like "master-node", the windows kernel will shutdown the process because of a segmentation fault
+      P2P_HOST: 172.20.0.11
+      P2P_PORT: 7447
+      API_PROTO: http
+      API_HOST: master-api
+      API_PORT: ${API_PORT}
+    depends_on:
+      - master-node
+      - master-api
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.12
+    ports:
+      - "7448:7447" # slave-node port is 7748 on host
+    privileged: true

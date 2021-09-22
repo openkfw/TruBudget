@@ -20,7 +20,8 @@ Help()
     echo "      --slim                  Starts a TruBudget instance with master-node, master-api, provisioning and frontend."
     echo "      --full                  Starts a TruBudget instance with master-node, emaildb, minio, master-api, email-service,"
     echo "                              provisioning, excel-export-service, storage and frontend."
-    echo "      --build                 Force docker-compose built"
+    echo "      --add-slave             Add a slave-node that trys to connect to master-node"
+    echo "      --build                 Force docker-compose build"
     echo "      --no-provisioning       Do not start the provisioning"
     echo "-h  | --help                  Print the help section"
     echo
@@ -30,6 +31,7 @@ Help()
 
 orange=`tput setaf 214`
 colorReset=`tput sgr0`
+EXTRA_SERVICES=""
 
 echo "INFO: Building, Starting and Provisioning TruBudget for Development"
 
@@ -44,6 +46,11 @@ while [ "$1" != "" ]; do
         --full)
             IS_FULL=true
             if [ "$IS_SLIM" = true ]; then echo "Either --slim or --full"; exit 1; fi;
+            shift # past argument
+        ;;
+        
+        --add-slave)
+            EXTRA_SERVICES="slave-node"
             shift # past argument
         ;;
         
@@ -102,18 +109,18 @@ fi
 if [ "$IS_SLIM" = true ]; then
     if [ "$IS_NO_PROVISONING" = true ]; then
         echo "INFO: Setup slim TruBudget environment without provisioning ..."
-        $COMPOSE up master-node master-api frontend
+        $COMPOSE up master-node master-api frontend $EXTRA_SERVICES
     else
         echo "INFO: Setup slim TruBudget environment with provisioning ..."
-        $COMPOSE up master-node master-api provisioning frontend
+        $COMPOSE up master-node master-api provisioning frontend $EXTRA_SERVICES
     fi
 else
     if [ "$IS_NO_PROVISONING" = true ]; then
         echo "INFO: Setup full TruBudget environment without provisioning ..."
-        $COMPOSE up master-node emaildb minio master-api email-service excel-export-service storage-service frontend
+        $COMPOSE up master-node emaildb minio master-api email-service excel-export-service storage-service frontend $EXTRA_SERVICES
     else
         echo "INFO: Setup full TruBudget environment with provisioning ..."
-        $COMPOSE up
+        $COMPOSE up master-node emaildb minio master-api email-service excel-export-service storage-service provisioning frontend $EXTRA_SERVICES
     fi
 fi
 

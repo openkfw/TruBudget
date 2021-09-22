@@ -26,6 +26,7 @@ Help()
     echo "                                  Available services: email-service, excel-export-service, storage-service"
     echo "  --no-log                        Disable logs of all docker-containers"
     echo "  --provision                     Start the provisioning"
+    echo "  --add-slave                     Add a slave-node that trys to connect to master-node"
     echo "  --prune                         Delete the multichain, document storage and email database (docker volume)"
     echo "  --help                          Print the help section"
     echo
@@ -69,6 +70,12 @@ while [ "$1" != "" ]; do
             shift # past argument
         ;;
         
+        --add-slave)
+            ENABLED_SERVICES="${ENABLED_SERVICES} slave-node"
+            echo "INFO: slave-node enabled"
+            shift # past argument
+        ;;
+        
         --provision)
             WITH_PROVISIONING=true
             shift # past argument
@@ -108,6 +115,7 @@ if [ "$PRUNE_DATA" = true ]; then
     read answer
     if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
         sudo rm -r /masterVolume
+        sudo rm -r /slave1Volume
         sudo rm -r /minioVolume
         sudo rm -r /emaildbVolume
     else
@@ -186,7 +194,7 @@ if [ "$IS_FULL" = true ]; then
     else
         echo "INFO: Setup full TruBudget environment with provisioning ..."
         # Empty means all containers
-        COMPOSE_SERVICES=""
+        COMPOSE_SERVICES="master-node emaildb minio master-api email-service excel-export-service storage-service provisioning frontend"
     fi
 else
     if [ "$WITH_PROVISIONING" = false ]; then
@@ -206,7 +214,7 @@ echo "INFO: Pull images from https://hub.docker.com/ ..."
 $COMPOSE pull
 
 echo "INFO: Since images are used, building is not necessary and will be skipped."
-$COMPOSE build
+#$COMPOSE build
 
 # Start docker containers
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES"

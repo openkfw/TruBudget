@@ -1,6 +1,6 @@
 # TruBudget Operation Setup
 
-This setup helps operation teams to setup TruBudget in a easy way, with a pre-configured `.env` file.
+This setup helps operation teams to setup TruBudget in an easy way with a pre-configured `.env` file.
 
 ## Getting started
 
@@ -13,6 +13,11 @@ To start the slim setup (only blockchain, api, frontend), run `bash start-trubud
 To start the full setup, run `bash start-trubudget.sh --full`.
 
 For further information, run `bash start-trubudget.sh --help`.
+
+When the setup has completed, you can open these URLs in the browser:
+
+Frontend: http://localhost:3000/
+API: http://localhost:8080/api/documentation/static/index.html
 
 ### Environment Variables
 
