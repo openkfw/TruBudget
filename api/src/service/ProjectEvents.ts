@@ -89,7 +89,7 @@ export async function createProjectOnChain(
     logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
     return conn.multichainClient
       .getRpcClient()
-      .invoke("publish", streamName, streamItemKey, streamItem)
+      .invokePublish(streamName, streamItemKey, streamItem)
       .then(() => event);
   };
 
@@ -121,7 +121,7 @@ export async function writeProjectAssignedToChain(
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
   return conn.multichainClient
     .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
+    .invokePublish(streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 
@@ -156,7 +156,7 @@ export async function updateProject(
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
   return conn.multichainClient
     .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
+    .invokePublish(streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 
@@ -211,7 +211,7 @@ export async function grantProjectPermission(
   logger.debug(`Publishing ${grantIntent} to ${streamName}/${streamItemKey}`);
   return conn.multichainClient
     .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
+    .invokePublish(streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 

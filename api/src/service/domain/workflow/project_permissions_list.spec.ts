@@ -10,7 +10,8 @@ import * as Project from "./project";
 import { getProjectPermissions } from "./project_permissions_list";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const bob: ServiceUser = { id: "bob", groups: [] };
+const address = "address";
+const bob: ServiceUser = { id: "bob", groups: [], address };
 const projectId = "unitTestId";
 const permissions: Permissions = {
   "project.intent.listPermissions": ["bob"],

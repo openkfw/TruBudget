@@ -10,46 +10,45 @@ import { Subproject } from "./subproject";
 import { getSubproject } from "./subproject_get";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: [] };
+const address = "address";
+const alice: ServiceUser = { id: "alice", groups: [], address };
 const subprojectId = "dummy-subproject";
 const subprojectName = "dummy-Name";
 
 const permissions: Permissions = {
-    "subproject.viewSummary": ["alice"],
-    "subproject.viewDetails": ["alice"],
-  };
+  "subproject.viewSummary": ["alice"],
+  "subproject.viewDetails": ["alice"],
+};
 
 const baseSubproject: Subproject = {
-    id: subprojectId,
-    projectId: subprojectId,
-    createdAt: new Date().toISOString(),
-    status: "open",
-    displayName: subprojectName,
-    description: subprojectName,
-    assignee: alice.id,
-    currency: "EUR",
-    projectedBudgets: [],
-    permissions,
-    log: [],
-    workflowitemOrdering: [],
-    additionalData: {},
-  };
+  id: subprojectId,
+  projectId: subprojectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  displayName: subprojectName,
+  description: subprojectName,
+  assignee: alice.id,
+  currency: "EUR",
+  projectedBudgets: [],
+  permissions,
+  log: [],
+  workflowitemOrdering: [],
+  additionalData: {},
+};
 
 const baseRepository = {
-    getSubproject: async () => baseSubproject,
+  getSubproject: async () => baseSubproject,
 };
 
 describe("get subproject: authorization", () => {
   it("Without the required permissions, a user cannot get a subproject.", async () => {
     const notPermittedSubroject: Subproject = {
-   ...baseSubproject,
-    permissions: {},
-      };
-    const result = await getSubproject(ctx, alice, subprojectId,
-        {
-        ...baseRepository,
-        getSubproject: async () => notPermittedSubroject,
+      ...baseSubproject,
+      permissions: {},
+    };
+    const result = await getSubproject(ctx, alice, subprojectId, {
+      ...baseRepository,
+      getSubproject: async () => notPermittedSubroject,
     });
     assert.instanceOf(result, NotAuthorized);
   });
@@ -71,11 +70,10 @@ describe("get subproject: authorization", () => {
 });
 describe("get subproject: preconditions", () => {
   it("Getting a subproject fails if the subproject cannot be found", async () => {
-    const result = await getSubproject(ctx, alice, subprojectId,
-      {
+    const result = await getSubproject(ctx, alice, subprojectId, {
       ...baseRepository,
       getSubproject: async () => new Error("some error"),
-  });
+    });
     assert.isTrue(Result.isErr(result));
     assert.instanceOf(result, NotFound);
   });

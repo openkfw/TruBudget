@@ -13,21 +13,21 @@ import { VError } from "verror";
 export async function disableUser(
   conn: ConnToken,
   ctx: Ctx,
-  issuer: ServiceUser,
+  serviceUser: ServiceUser,
   issuerOrganization: string,
   revokee: UserDisable.RequestData,
 ): Promise<Result.Type<void>> {
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
-    UserDisable.disableUser(ctx, issuer, issuerOrganization, revokee, {
-      getUser: () => UserQuery.getUser(conn, ctx, issuer, revokee.userId),
-      getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, issuer),
+    UserDisable.disableUser(ctx, serviceUser, issuerOrganization, revokee, {
+      getUser: () => UserQuery.getUser(conn, ctx, serviceUser, revokee.userId),
+      getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
       getUserAssignments: async () =>
-        getUserAssignments(conn, ctx, issuer, issuerOrganization, revokee),
+        getUserAssignments(conn, ctx, serviceUser, issuerOrganization, revokee),
     }),
   );
   if (Result.isErr(newEventsResult)) return new VError(newEventsResult, "failed to disable user");
   const newEvents = newEventsResult;
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 }

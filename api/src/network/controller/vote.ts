@@ -12,6 +12,7 @@ import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as GlobalPermissionsGet from "../../service/global_permissions_get";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
+import { config } from "../../config";
 
 export async function voteForNetworkPermission(
   conn: ConnToken,
@@ -98,6 +99,11 @@ function computeWhatToDo(
 ): ["grant" | "revoke" | "no action", Nodes.NetworkPermission[]] {
   // Makes it easier to read:
   const allPermissions = AccessVote.adminPermissions;
+  let basicPermissions = AccessVote.basicPermissions;
+
+  if (config.signingMethod === "user") {
+    basicPermissions = [...basicPermissions, "activate"];
+  }
 
   if (current === "admin") {
     if (next === "admin") return ["no action", []];
@@ -109,7 +115,7 @@ function computeWhatToDo(
     if (next === "none") return ["revoke", allPermissions];
   } else if (current === "none") {
     if (next === "admin") return ["grant", allPermissions];
-    if (next === "basic") return ["grant", AccessVote.basicPermissions];
+    if (next === "basic") return ["grant", basicPermissions];
     if (next === "none") return ["no action", []];
   }
 

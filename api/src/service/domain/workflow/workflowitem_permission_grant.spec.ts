@@ -13,8 +13,9 @@ import * as UserRecord from "../organization/user_record";
 import * as Group from "../organization/group";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const executingUser: ServiceUser = { id: "mstein", groups: [] };
-const testUser: ServiceUser = { id: "testUser", groups: [] };
+const address = "address";
+const executingUser: ServiceUser = { id: "mstein", groups: [], address };
+const testUser: ServiceUser = { id: "testUser", groups: [], address };
 const projectId = "testProject";
 
 const permissions: Permissions = {

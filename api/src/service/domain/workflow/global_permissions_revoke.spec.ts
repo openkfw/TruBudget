@@ -11,9 +11,14 @@ import { revokeGlobalPermission } from "./global_permission_revoke";
 import * as GlobalPermissions from "./global_permissions";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const bob: ServiceUser = { id: "bob", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charlie"] };
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const bob: ServiceUser = {
+  id: "bob",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
+const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charlie"], address };
 const orgaA = "orgaA";
 const orgaB = "orgaB";
 const revokeIntent: Intent = "global.revokePermission";

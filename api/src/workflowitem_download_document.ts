@@ -63,7 +63,7 @@ interface Service {
     subprojectId: string,
     workflowitemId: string,
     documentId: string,
-  ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>; 
+  ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>;
 }
 
 function sendErrorIfEmpty(reply, resourceParameter) {
@@ -99,6 +99,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const user: ServiceUser = {
         id: (request as AuthenticatedRequest).user.userId,
         groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
       };
 
       const { projectId, subprojectId, workflowitemId, documentId } = request.query;

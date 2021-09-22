@@ -121,7 +121,7 @@ export class RpcMultichainClient implements MultichainClient {
     object: any,
   ): Promise<TxId> {
     const data = objectToHex(object);
-    return await this.rpcClient.invoke("publish", streamId, key, data);
+    return await this.rpcClient.invokePublish(streamId, key, data);
   }
 
   public async isValidAddress(address: string): Promise<boolean> {
@@ -215,7 +215,7 @@ export class RpcMultichainClient implements MultichainClient {
 
   public async setValue(streamName: StreamName, streamkey: StreamKey, object: any): Promise<void> {
     const data = objectToHex(object);
-    return this.rpcClient.invoke("publish", streamName, streamkey, data);
+    return this.rpcClient.invokePublish(streamName, streamkey, data);
   }
 
   public async updateValue(

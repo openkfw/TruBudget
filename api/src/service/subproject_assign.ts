@@ -36,6 +36,6 @@ export async function assignSubproject(
   const { newEvents } = assignSubprojectResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 }

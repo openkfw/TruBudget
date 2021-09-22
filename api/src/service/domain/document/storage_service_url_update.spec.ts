@@ -9,7 +9,7 @@ const ctx: Ctx = {
     source: "test",
 };
 
-const alice: ServiceUser = { id: "alice", groups: ["alice"] };
+const alice: ServiceUser = { id: "alice", groups: ["alice"], address: "address" };
 
 
 describe("Storage service URL update/publish", () => {

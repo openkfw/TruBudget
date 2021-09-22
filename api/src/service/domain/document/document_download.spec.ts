@@ -14,11 +14,19 @@ const ctx: Ctx = {
   source: "test",
 };
 
-const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const bob: ServiceUser = { id: "bob", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charlie"] };
-const root: ServiceUser = { id: "root", groups: [] };
-const projectId = "dummy-project";
+const address = "address";
+
+const alice: ServiceUser = {
+  id: "alice",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
+const bob: ServiceUser = {
+  id: "bob",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
+
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
 

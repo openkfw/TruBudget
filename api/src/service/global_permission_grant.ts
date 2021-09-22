@@ -38,6 +38,6 @@ export async function grantGlobalPermission(
   }
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 }

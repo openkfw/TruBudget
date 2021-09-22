@@ -210,7 +210,7 @@ export function addHttpHandler(
 
       const groupsResult = await service.getGroupsForUser(
         ctx,
-        { id: token.userId, groups: token.groups },
+        { id: token.userId, groups: token.groups, address: token.address },
         token.userId,
       );
       if (Result.isErr(groupsResult)) {

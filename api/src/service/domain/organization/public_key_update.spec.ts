@@ -14,7 +14,8 @@ const ctx: Ctx = {
   source: "test",
 };
 
-const alice: ServiceUser = { id: "alice", groups: ["alice"] };
+const address = "address";
+const alice: ServiceUser = { id: "alice", groups: ["alice"], address };
 const publicKey = "public_key";
 const repository = {
   getPublicKey: (organization) => Promise.resolve(publicKey),

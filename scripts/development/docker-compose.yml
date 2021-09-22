@@ -62,6 +62,7 @@ services:
       ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+      SIGNING_METHOD: ${SIGNING_METHOD}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:

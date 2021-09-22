@@ -15,10 +15,9 @@ import { hashPassword, isPasswordMatch } from "./password";
 import logger from "../lib/logger";
 import * as UserQuery from "./user_query";
 import * as UserRecord from "./domain/organization/user_record";
-
-
-// Use root as the service user to ensure we see all the data:
-const rootUser = { id: "root", groups: [] };
+import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
+import { config } from "../config";
+import { getselfaddress } from "./getselfaddress";
 
 export interface UserLoginResponse {
   id: string;
@@ -67,7 +66,10 @@ async function authenticateRoot(
 ): Promise<Result.Type<AuthToken.AuthToken>> {
   if (typeof conn.multichainClient === "undefined") {
     logger.error("Received request, but MultiChain connection/permissions not ready yet.");
-    return new AuthenticationFailed({ ctx, organization, userId: "root" }, "Received request, but MultiChain connection/permissions not ready yet.");
+    return new AuthenticationFailed(
+      { ctx, organization, userId: "root" },
+      "Received request, but MultiChain connection/permissions not ready yet.",
+    );
   }
   // Prevent timing attacks by using the constant-time compare function
   // instead of simple string comparison:
@@ -81,11 +83,15 @@ async function authenticateRoot(
     return new AuthenticationFailed({ ctx, organization, userId: "root" });
   }
   const organizationAddress = organizationAddressResult;
+  const rootAddress =
+    config.signingMethod === "user"
+      ? await getselfaddress(conn.multichainClient)
+      : organizationAddress;
 
   return {
     userId: "root",
     displayName: "root",
-    address: organizationAddress,
+    address: rootAddress,
     groups: [],
     organization,
     organizationAddress,
@@ -101,6 +107,10 @@ async function authenticateUser(
   userId: string,
   password: string,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
+  // Use root as the service user to ensure we see all the data:
+  const nodeAddress = await getselfaddress(conn.multichainClient);
+  const rootUser = { id: "root", groups: [], address: nodeAddress };
+
   const userRecord = await UserQuery.getUser(conn, ctx, rootUser, userId);
   if (Result.isErr(userRecord)) {
     return new AuthenticationFailed({ ctx, organization, userId }, userRecord);
@@ -123,12 +133,19 @@ async function authenticateUser(
     const cause = new VError(
       privkey,
       "failed to decrypt the user's private key with the given organization secret " +
-      `(does "${userId}" belong to "${organization}"?)`,
+        `(does "${userId}" belong to "${organization}"?)`,
     );
     return new AuthenticationFailed({ ctx, organization, userId }, cause);
   }
   await importprivkey(conn.multichainClient, privkey, userRecord.id);
-
+  if (config.signingMethod === "user") {
+    const userAddressPermissions: string[] = ["send"];
+    await grantpermissiontoaddress(
+      conn.multichainClient,
+      userRecord.address,
+      userAddressPermissions,
+    );
+  }
   const authTokenResult = AuthToken.fromUserRecord(userRecord, {
     getGroupsForUser: async (id) => {
       const groupsResult = await getGroupsForUser(conn, ctx, rootUser, id);

@@ -15,15 +15,16 @@ export async function addMember(
   groupId: Group.Id,
   newMember: Group.Member,
 ): Promise<Result.Type<void>> {
-  const memberAddResult = await Cache.withCache(conn, ctx, cache =>
+  const memberAddResult = await Cache.withCache(conn, ctx, (cache) =>
     GroupMemberAdd.addMember(ctx, serviceUser, groupId, newMember, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
       },
     }),
   );
-  if (Result.isErr(memberAddResult)) return new VError(memberAddResult, "failed to add group member");
+  if (Result.isErr(memberAddResult))
+    return new VError(memberAddResult, "failed to add group member");
   const memberAddEvent = memberAddResult;
 
-  await store(conn, ctx, memberAddEvent);
+  await store(conn, ctx, memberAddEvent, serviceUser.address);
 }

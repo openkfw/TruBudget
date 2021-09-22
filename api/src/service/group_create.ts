@@ -31,7 +31,7 @@ export async function createGroup(
   const newEvents = groupCreateResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 
   const { groups } = sourceGroups(ctx, newEvents);

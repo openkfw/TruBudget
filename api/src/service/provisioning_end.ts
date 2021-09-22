@@ -23,6 +23,6 @@ export async function setProvisioningEndFlag(
   const provisioningEndEvent = provisioningEndEventResult;
 
   for (const event of provisioningEndEvent) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 }

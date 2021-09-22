@@ -8,10 +8,13 @@ import { ServiceUser } from "./service_user";
 import { createUser, RequestData } from "./user_create";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const bob: ServiceUser = { id: "bob", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const alice: ServiceUser = {
+  id: "alice",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
 const dummy = "dummy";
 
 const noPermissions = {
