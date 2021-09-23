@@ -73,9 +73,10 @@ export function createBackup() {
     type: CREATE_BACKUP
   };
 }
-export function exportData() {
+export function exportData(devModeEnvironment) {
   return {
-    type: EXPORT_DATA
+    type: EXPORT_DATA,
+    devModeEnvironment
   };
 }
 
