@@ -1,6 +1,6 @@
 {
   "name": "storage-service",
-"version": "1.25.0",
+  "version": "1.26.0",
   "private": true,
   "description": "Handles the TruBudget object storage",
   "main": "src/index.js",
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/openkfw/TruBudget#readme",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.11.1",
