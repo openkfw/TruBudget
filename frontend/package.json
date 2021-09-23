@@ -1,6 +1,6 @@
 {
   "name": "trubudget-frontend",
-"version": "1.25.0",
+  "version": "1.25.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -75,7 +75,7 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "react-app-rewired start | printf '\n\nThe Prod/Test environements will be removed in the next major release of TruBudget. That means /prod/api and /test/api will be routed to /api.\nFor further information see https://github.com/openkfw/TruBudget/pull/971\n\n\n'",
     "build": "react-app-rewired build",
     "test": "npm run check-translations",
     "eject": "react-scripts eject",
