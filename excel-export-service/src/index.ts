@@ -6,7 +6,7 @@ import * as URL from "url";
 import { writeXLSX } from "./excel";
 import strings, { languages } from "./localizeStrings";
 import { config } from "./config";
-import { getApiReadiness } from "./api";
+import { getApiReadiness, getApiVersion } from "./api";
 
 const DEFAULT_API_VERSION = "1.0";
 const API_BASE_PROD = `http://${config.apiHost}:${config.apiPort}/api`;
@@ -70,6 +70,20 @@ excelService.get("/download", async (req: express.Request, res: express.Response
     res.status(401).send("Please provide authorization token");
   }
 
+  try {
+    await getApiVersion(axios, token, res.apiBase);
+  } catch (error) {
+    if (error.response?.status == 401) {
+      console.log("Invalid Token:", error.response.data);
+      res.status(error.response.status).send({ message: error.response.data });
+    } else {
+      console.log(`Error validating token: ${error.response} `);
+      res
+        .status(error.response.status)
+        .send({ message: `Error validating token: ${error.response} ` });
+    }
+  }
+
   setExcelLanguage(req.url);
 
   // create export
@@ -83,8 +97,9 @@ excelService.get("/download", async (req: express.Request, res: express.Response
 
     await writeXLSX(axios, req.headers.authorization, res, res.apiBase);
   } catch (error) {
-    console.error(error.message);
-    res.end();
+    if (error.response) {
+      res.status(error.response.status).send({ message: error.response.data });
+    }
   }
 });
 

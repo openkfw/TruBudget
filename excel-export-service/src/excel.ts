@@ -221,7 +221,7 @@ export async function writeXLSX(
     }
     await workbook.commit();
   } catch (error) {
-    error.status && res.status(error.status).send({ message: error.message });
-    throw new Error(`Error making request to TruBudget: ${error.message} -> ${error.config.url}`);
+    console.error(error.message);
+    throw new Error(`Error making request to TruBudget: ${error.message}`);
   }
 }

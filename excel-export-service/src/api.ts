@@ -91,10 +91,11 @@ export async function getProjects(
   token: string,
   base: string,
 ): Promise<Project[]> {
-  const response: AxiosResponse<ProjectResponse> = await axios.get(
-    `${base}/project.list`,
-    getAuthHeader(token),
-  );
+  const response: AxiosResponse<ProjectResponse> = await axios
+    .get(`${base}/project.list`, getAuthHeader(token))
+    .catch(function (error) {
+      throw error;
+    });
   const projectList: Project[] = response.data.data.items.map((i) => i.data);
   return projectList;
 }
@@ -105,10 +106,11 @@ export async function getSubprojects(
   token: string,
   base: string,
 ): Promise<Subproject[]> {
-  const response: AxiosResponse<SubprojectResponse> = await axios.get(
-    `${base}/subproject.list?projectId=${projectId}`,
-    getAuthHeader(token),
-  );
+  const response: AxiosResponse<SubprojectResponse> = await axios
+    .get(`${base}/subproject.list?projectId=${projectId}`, getAuthHeader(token))
+    .catch(function (error) {
+      throw error;
+    });
   const subprojectList: Subproject[] = response.data.data.items.map((i) => i.data);
   return subprojectList;
 }
@@ -120,16 +122,28 @@ export async function getWorkflowitems(
   token: string,
   base: string,
 ): Promise<Workflowitem[]> {
-  const response: AxiosResponse<WorkflowitemResponse> = await axios.get(
-    `${base}/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`,
-    getAuthHeader(token),
-  );
+  const response: AxiosResponse<WorkflowitemResponse> = await axios
+    .get(
+      `${base}/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`,
+      getAuthHeader(token),
+    )
+    .catch(function (error) {
+      throw error;
+    });
   const workflowitemList: Workflowitem[] = response.data.data.workflowitems.map((i) => i.data);
   return workflowitemList;
 }
 
 export async function getApiReadiness(axios: AxiosInstance, base: string): Promise<string> {
   const response: AxiosResponse<string> = await axios.get(`${base}/readiness`);
+  return response.data;
+}
 
+export async function getApiVersion(
+  axios: AxiosInstance,
+  token: string,
+  base: string,
+): Promise<string> {
+  const response: AxiosResponse<string> = await axios.get(`${base}/version`, getAuthHeader(token));
   return response.data;
 }
