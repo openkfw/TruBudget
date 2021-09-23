@@ -10,6 +10,7 @@ import { CurrencyCode, currencyCodeSchema } from "./service/domain/workflow/mone
 import * as Project from "./service/domain/workflow/project";
 import { ProjectedBudget } from "./service/domain/workflow/projected_budget";
 import Joi = require("joi");
+import { safeStringSchema } from "./lib/joiValidation";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -24,7 +25,7 @@ const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
     projectId: Project.idSchema.required(),
-    organization: Joi.string().required(),
+    organization: safeStringSchema.required(),
     currencyCode: currencyCodeSchema.required(),
   }).required(),
 });

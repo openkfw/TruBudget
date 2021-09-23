@@ -1,71 +1,26 @@
-import bodyParser from "body-parser";
-import cors from "cors";
 import express from "express";
+import cors from "cors";
+import { body, query } from "express-validator";
 import config from "./config";
 import DbConnector from "./db";
 import logger from "./logger";
 import * as Middleware from "./middleware";
 import sendMail from "./sendMail";
+import {
+  UserEditRequest,
+  User,
+  UserEditResponseBody,
+  UserGetEmailAddressRequest,
+  NotificationRequest,
+  NotificationResponseBody,
+} from "./types";
 import isBodyValid from "./validation";
-
-interface User {
-  id: string;
-  emailAddress: string;
-}
-
-interface Request {
-  body: {
-    data: any;
-  };
-}
-
-type Status = "updated" | "inserted" | "deleted" | "sent" | "not found" | "already exists";
-
-interface UserEditResponseBody {
-  user: {
-    id: string;
-    status: Status;
-    emailAddress: string;
-  };
-}
-interface UserGetEmailAddressResponseBody {
-  user: User;
-}
-
-interface UserEditRequest extends express.Request {
-  body: {
-    data: {
-      user: User;
-    };
-  };
-}
-interface NotificationRequest extends express.Request {
-  body: {
-    data: {
-      user: {
-        id: string;
-      };
-    };
-  };
-}
-interface NotificationResponseBody {
-  notification: {
-    recipient: string;
-    emailAddress: string;
-    status: Status;
-  };
-}
-interface UserGetEmailAddressRequest extends express.Request {
-  query: {
-    id: string;
-  };
-}
 
 // Setup
 const db = new DbConnector();
 const emailService = express();
-emailService.use(cors());
-emailService.use(bodyParser.json());
+emailService.use(express.json());
+emailService.use(cors({ origin: config.allowOrigin }));
 
 // JWT secret
 if (config.authentication === "jwt") {
@@ -87,106 +42,119 @@ emailService.get("/version", (_req: express.Request, res: express.Response) => {
   });
 });
 
-emailService.post("/user.insert", (req: UserEditRequest, res: express.Response) => {
-  const isDataValid = isBodyValid("/user.insert", req.body.data);
-  if (!isDataValid) {
-    res.status(400).send({
-      message: `The request body validation failed`,
-    });
-    return;
-  }
-  const user: User = req.body.data.user;
-  if (!isAllowed(user.id, res)) {
-    res.status(401).send({
-      message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
-    });
-    return;
-  }
-
-  (async () => {
-    const emailAddress: string = await db.getEmailAddress(user.id);
-    if (emailAddress.length > 0) {
-      res
-        .status(400)
-        .send({ user: { id: user.id, status: "already exists", emailAddress: user.emailAddress } });
-    } else {
-      await db.insertUser(user.id, user.emailAddress);
-      res.status(200).send({
-        user: { id: user.id, status: "inserted", emailAddress: user.emailAddress },
+emailService.post(
+  "/user.insert",
+  body("data.user.id").escape(),
+  (req: UserEditRequest, res: express.Response) => {
+    const isDataValid = isBodyValid("/user.insert", req.body.data);
+    if (!isDataValid) {
+      res.status(400).send({
+        message: `The request body validation failed`,
       });
+      return;
     }
-  })().catch((error) => {
-    logger.error(error);
-    res.status(500).send(error);
-  });
-});
+    const user: User = req.body.data.user;
+    if (!isAllowed(user.id, res)) {
+      res.status(401).send({
+        message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
+      });
+      return;
+    }
 
-emailService.post("/user.update", (req: UserEditRequest, res: express.Response) => {
-  const isDataValid = isBodyValid("/user.update", req.body.data);
-  if (!isDataValid) {
-    res.status(400).send({
-      message: `The request body validation failed`,
+    (async () => {
+      const emailAddress: string = await db.getEmailAddress(user.id);
+      if (emailAddress.length > 0) {
+        res.status(400).send({
+          user: { id: user.id, status: "already exists", emailAddress: user.emailAddress },
+        });
+      } else {
+        await db.insertUser(user.id, user.emailAddress);
+        res.status(200).send({
+          user: { id: user.id, status: "inserted", emailAddress: user.emailAddress },
+        });
+      }
+    })().catch((error) => {
+      logger.error(error);
+      res.status(500).send(error);
     });
-    return;
-  }
-  const user: User = req.body.data.user;
-  if (!isAllowed(user.id, res)) {
-    res.status(401).send({
-      message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
-    });
-    return;
-  }
+  },
+);
 
-  (async () => {
-    const emailAddress: string = await db.getEmailAddress(user.id);
-    let body: UserEditResponseBody;
-    if (emailAddress.length > 0) {
-      body = { user: { id: user.id, status: "updated", emailAddress: user.emailAddress } };
-      await db.updateUser(user.id, user.emailAddress);
-      res.status(200);
-    } else {
-      body = {
-        user: { id: user.id, emailAddress: user.emailAddress, status: "not found" },
+emailService.post(
+  "/user.update",
+  body("data.user.id").escape(),
+  (req: UserEditRequest, res: express.Response) => {
+    const isDataValid = isBodyValid("/user.update", req.body.data);
+    if (!isDataValid) {
+      res.status(400).send({
+        message: `The request body validation failed`,
+      });
+      return;
+    }
+    const user: User = req.body.data.user;
+    if (!isAllowed(user.id, res)) {
+      res.status(401).send({
+        message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
+      });
+      return;
+    }
+
+    (async () => {
+      const emailAddress: string = await db.getEmailAddress(user.id);
+      let body: UserEditResponseBody;
+      if (emailAddress.length > 0) {
+        body = { user: { id: user.id, status: "updated", emailAddress: user.emailAddress } };
+        await db.updateUser(user.id, user.emailAddress);
+        res.status(200);
+      } else {
+        body = {
+          user: { id: user.id, emailAddress: user.emailAddress, status: "not found" },
+        };
+        res.status(404);
+      }
+      res.send(body);
+    })().catch((error) => {
+      logger.error(error);
+      res.status(500).send(error);
+    });
+  },
+);
+
+emailService.post(
+  "/user.delete",
+  body("data.user.id").escape(),
+  (req: UserEditRequest, res: express.Response) => {
+    const isDataValid = isBodyValid("/user.delete", req.body.data);
+    if (!isDataValid) {
+      res.status(400).send({
+        message: `The request body validation failed`,
+      });
+      return;
+    }
+    const user: User = req.body.data.user;
+    if (!isAllowed(user.id, res)) {
+      res.status(401).send({
+        message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
+      });
+      return;
+    }
+
+    (async () => {
+      await db.deleteUser(user.id, user.emailAddress);
+      const body: UserEditResponseBody = {
+        user: { id: user.id, status: "deleted", emailAddress: user.emailAddress },
       };
-      res.status(404);
-    }
-    res.send(body);
-  })().catch((error) => {
-    logger.error(error);
-    res.status(500).send(error);
-  });
-});
-
-emailService.post("/user.delete", (req: UserEditRequest, res: express.Response) => {
-  const isDataValid = isBodyValid("/user.delete", req.body.data);
-  if (!isDataValid) {
-    res.status(400).send({
-      message: `The request body validation failed`,
+      res.status(200).send(body);
+    })().catch((error) => {
+      logger.error(error);
+      res.status(500).send(error);
     });
-    return;
-  }
-  const user: User = req.body.data.user;
-  if (!isAllowed(user.id, res)) {
-    res.status(401).send({
-      message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
-    });
-    return;
-  }
-
-  (async () => {
-    await db.deleteUser(user.id, user.emailAddress);
-    const body: UserEditResponseBody = {
-      user: { id: user.id, status: "deleted", emailAddress: user.emailAddress },
-    };
-    res.status(200).send(body);
-  })().catch((error) => {
-    logger.error(error);
-    res.status(500).send(error);
-  });
-});
+  },
+);
 
 emailService.get(
   "/user.getEmailAddress",
+  query("id").escape(),
   (req: UserGetEmailAddressRequest, res: express.Response) => {
     const isDataValid = isBodyValid("/user.getEmailAddress", req.query);
     if (!isDataValid) {
@@ -223,47 +191,51 @@ emailService.get(
   },
 );
 
-emailService.post("/notification.send", (req: NotificationRequest, res: express.Response) => {
-  const isDataValid = isBodyValid("/notification.send", req.body.data);
-  if (!isDataValid) {
-    res.status(400).send({
-      message: `The request body validation failed`,
-    });
-    return;
-  }
-  const id: string = req.body.data.user.id;
-  // authenticate
-  if (config.authentication !== "none") {
-    // Only the notification watcher of the Trubudget blockchain may send notifications
-    if (res.locals.id !== "notification-watcher") {
-      res.status(401).send({
-        message: `${res.locals.id} is not allowed to send a notification to ${id}`,
+emailService.post(
+  "/notification.send",
+  body("data.user.id").escape(),
+  (req: NotificationRequest, res: express.Response) => {
+    const isDataValid = isBodyValid("/notification.send", req.body.data);
+    if (!isDataValid) {
+      res.status(400).send({
+        message: `The request body validation failed`,
       });
       return;
     }
-  }
-
-  let emailAddress: string;
-  (async () => {
-    emailAddress = await db.getEmailAddress(id);
-    let body: NotificationResponseBody;
-    if (emailAddress.length > 0) {
-      await sendMail(emailAddress);
-      logger.debug("Notification sent to " + emailAddress);
-      body = {
-        notification: { recipient: id, status: "sent", emailAddress },
-      };
-      res.status(200).send(body);
-    } else {
-      logger.debug("Email address" + emailAddress + " not found");
-      body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
-      res.status(404).send(body);
+    const id: string = req.body.data.user.id;
+    // authenticate
+    if (config.authentication !== "none") {
+      // Only the notification watcher of the Trubudget blockchain may send notifications
+      if (res.locals.id !== "notification-watcher") {
+        res.status(401).send({
+          message: `${res.locals.id} is not allowed to send a notification to ${id}`,
+        });
+        return;
+      }
     }
-  })().catch((error) => () => {
-    logger.error(error);
-    res.status(500).send(error);
-  });
-});
+
+    let emailAddress: string;
+    (async () => {
+      emailAddress = await db.getEmailAddress(id);
+      let body: NotificationResponseBody;
+      if (emailAddress.length > 0) {
+        await sendMail(emailAddress);
+        logger.debug("Notification sent to " + emailAddress);
+        body = {
+          notification: { recipient: id, status: "sent", emailAddress },
+        };
+        res.status(200).send(body);
+      } else {
+        logger.debug("Email address" + emailAddress + "not found");
+        body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
+        res.status(404).send(body);
+      }
+    })().catch((error) => () => {
+      logger.error(error);
+      res.status(500).send(error);
+    });
+  },
+);
 
 emailService.listen(config.http.port, () => {
   logger.info(`App listening on ${config.http.port}`);

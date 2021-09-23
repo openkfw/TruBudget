@@ -63,9 +63,9 @@ class Api {
    * @param {*} urlSlug tail segment of the URL
    * @param {*} devModePrefix prefixes urlSlug with additional string, if needed
    */
-  getExportServiceUrl = (urlSlug, devModePrefix = "") => {
+  getExportServiceUrl = (urlSlug, devModeEnvironment = "") => {
     const baseURL = devMode
-      ? `http://localhost:${PORT_EXPORT_SVC}${!devModePrefix.length ? "" : `/${devModePrefix}`}`
+      ? `http://localhost:${PORT_EXPORT_SVC}${!devModeEnvironment.length ? "" : `/${devModeEnvironment.toLowerCase()}`}`
       : "/export/xlsx";
     return `${baseURL}/${urlSlug}`;
   };
@@ -307,11 +307,11 @@ class Api {
       payload.amountType === "N/A"
         ? minimalPayload
         : {
-            ...minimalPayload,
-            currency,
-            amount,
-            exchangeRate: exchangeRate.toString()
-          };
+          ...minimalPayload,
+          currency,
+          amount,
+          exchangeRate: exchangeRate.toString()
+        };
     return instance.post(`/subproject.createWorkflowitem`, {
       ...payloadToSend
     });
@@ -345,11 +345,11 @@ class Api {
       changes.amountType === "N/A"
         ? minimalChanges
         : {
-            ...minimalChanges,
-            currency,
-            amount,
-            exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
-          };
+          ...minimalChanges,
+          currency,
+          amount,
+          exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
+        };
     return instance.post(`/workflowitem.update`, {
       projectId,
       subprojectId,
@@ -429,19 +429,19 @@ class Api {
     });
 
   closeWorkflowItem = (projectId, subprojectId, workflowitemId, rejectReason) => {
-    if(rejectReason === "")
+    if (rejectReason === "")
       return instance.post(`/workflowitem.close`, {
         projectId,
         subprojectId,
         workflowitemId
       });
     else
-    return instance.post(`/workflowitem.close`, {
-      projectId,
-      subprojectId,
-      workflowitemId,
-      rejectReason
-    });
+      return instance.post(`/workflowitem.close`, {
+        projectId,
+        subprojectId,
+        workflowitemId,
+        rejectReason
+      });
   }
 
   fetchNotifications = (offset, limit) => {
@@ -473,8 +473,8 @@ class Api {
     });
     return response;
   };
-  export = () => {
-    const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, "test/api/export/xlsx");
+  export = (devModeEnvironment) => {
+    const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, devModeEnvironment);
     return instance.get(path, { responseType: "blob" });
   };
   fetchExportServiceVersion = () => {

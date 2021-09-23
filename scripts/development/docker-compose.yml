@@ -63,6 +63,8 @@ services:
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       SIGNING_METHOD: ${SIGNING_METHOD}
+      NODE_ENV: ${NODE_ENV}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
@@ -172,6 +174,7 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       EXPORT_PORT: ${EXPORT_PORT}
       EXPORT_HOST: ${EXPORT_HOST}
+      INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
     # volume for hot reloading
     volumes:
       - "../../frontend/src:/app/src"

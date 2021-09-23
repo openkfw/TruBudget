@@ -29,7 +29,7 @@ export const verifyUserJWT = (req: Request, res, next, secret: string) => {
       res.locals.userId = decodedToken.userId;
       next();
     })
-    .catch(err => {
+    .catch((err) => {
       const body: InvalidJWTResponseBody = { message: "Invalid JWT token provided." };
       res.status(400).json(body);
     });
@@ -42,7 +42,7 @@ export const verifyNotificationJWT = (req: Request, res, next, secret: string) =
       res.locals.id = decodedToken.id;
       next();
     })
-    .catch(err => {
+    .catch((err) => {
       const body: InvalidJWTResponseBody = { message: "Invalid JWT token provided." };
       res.status(400).json(body);
     });
@@ -62,6 +62,7 @@ const verifyJWTToken = (
     });
   });
 };
+
 function getJWTToken(req: Request): string {
   let token: string = (req.headers["x-access-token"] as string) || req.headers.authorization || "";
   logger.debug(`Provided JWT-TOKEN: ${token}`);

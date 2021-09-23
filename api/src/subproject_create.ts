@@ -11,11 +11,14 @@ import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
-import * as Subproject from "./service/domain/workflow/subproject";
 import WorkflowitemType, {
   workflowitemTypeSchema,
 } from "./service/domain/workflowitem_types/types";
 import * as SubprojectCreate from "./service/subproject_create";
+import { idSchema as projectIdSchema } from "./service/domain/workflow/project";
+import { idSchema as subProjectIdSchema } from "./service/domain/workflow/subproject";
+import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
+import { currencyCodeSchema } from "./service/domain/workflow/money";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -43,16 +46,16 @@ interface RequestBodyV1 {
 const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
-    projectId: Joi.string().required(),
+    projectId: projectIdSchema.required(),
     subproject: Joi.object({
-      id: Subproject.idSchema,
+      id: subProjectIdSchema,
       status: Joi.valid("open"),
-      displayName: Joi.string().required(),
-      description: Joi.string().allow(""),
-      assignee: Joi.string(),
-      validator: Joi.string(),
+      displayName: safeStringSchema.required(),
+      description: safeStringSchema.allow(""),
+      assignee: safeIdSchema,
+      validator: safeIdSchema,
       workflowitemType: workflowitemTypeSchema,
-      currency: Joi.string().required(),
+      currency: currencyCodeSchema.required(),
       projectedBudgets: projectedBudgetListSchema,
       additionalData: AdditionalData.schema,
     }).required(),

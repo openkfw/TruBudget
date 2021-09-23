@@ -92,6 +92,7 @@ const Navbar = ({
         createBackup={createBackup}
         restoreBackup={restoreBackup}
         exportData={exportData}
+        environment={environment}
         showUserProfile={showUserProfile}
         fetchEmailAddress={fetchEmailAddress}
         {...props}

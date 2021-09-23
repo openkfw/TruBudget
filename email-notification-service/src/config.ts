@@ -26,6 +26,7 @@ interface Config {
     password: string;
   };
   email: Mail.Options;
+  allowOrigin: string;
 }
 
 const config: Config = {
@@ -58,6 +59,7 @@ const config: Config = {
     subject: process.env.EMAIL_SUBJECT || "Trubudget Notificaiton",
     text: process.env.EMAIL_TEXT || "You have received a notification.",
   },
+  allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
 };
 
 export default config;

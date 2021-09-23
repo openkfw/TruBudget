@@ -9,6 +9,7 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
+import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -24,8 +25,8 @@ const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
     user: Joi.object({
-      id: Joi.string().required(),
-      password: Joi.string().required(),
+      id: safeIdSchema.required(),
+      password: safeStringSchema.required(),
     }).required(),
   }).required(),
 });
@@ -179,7 +180,6 @@ export function addHttpHandler(
 ) {
   server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
-
     const bodyResult = validateRequestBody(request.body);
 
     if (Result.isErr(bodyResult)) {

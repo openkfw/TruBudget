@@ -9,6 +9,7 @@ import * as Result from "./result";
 import * as GroupCreate from "./service/domain/organization/group_create";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
+import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 
 interface Group {
   id: string;
@@ -27,9 +28,9 @@ const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
     group: Joi.object({
-      id: Joi.string().required(),
-      displayName: Joi.string().required(),
-      users: Joi.array().required().items(Joi.string()),
+      id: safeIdSchema.required(),
+      displayName: safeStringSchema.required(),
+      users: Joi.array().required().items(safeStringSchema),
     }).required(),
   }).required(),
 });

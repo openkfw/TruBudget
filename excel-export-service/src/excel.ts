@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { ServerResponse } from "http";
+import { Response } from "express";
 import * as jwtDecode from "jwt-decode";
 import {
   getProjects,
@@ -21,7 +21,7 @@ const largeWidth = 60;
 export async function writeXLSX(
   axios: AxiosInstance,
   token: string,
-  res: ServerResponse,
+  res: Response,
   base: string,
 ): Promise<void> {
   try {
@@ -221,6 +221,7 @@ export async function writeXLSX(
     }
     await workbook.commit();
   } catch (error) {
-    throw new Error(`Error making request to TruBudget: ${error.message} -> ${error.config.url}`);
+    console.error(error.message);
+    throw new Error(`Error making request to TruBudget: ${error.message}`);
   }
 }

@@ -25,7 +25,7 @@ services:
       RPC_PASSWORD: ${RPC_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
     ports:
-        - "8080:${API_PORT}"
+      - "8080:${API_PORT}"
     links:
       - blockchain
 
@@ -70,6 +70,8 @@ services:
       TEST_API_PORT: ${TEST_API_PORT}
       PORT: ${EXPORT_PORT}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+      JWT_SECRET: ${JWT_SECRET}
+      MODE: DEBUG
     depends_on:
       - api
     ports:

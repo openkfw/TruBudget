@@ -1,32 +1,16 @@
+import * as express from "express";
+import * as cors from "cors";
 import axios, { AxiosTransformer } from "axios";
-import { createServer, IncomingMessage, ServerResponse } from "http";
 import * as URL from "url";
 
 import { writeXLSX } from "./excel";
 import strings, { languages } from "./localizeStrings";
-
-const apiHost: string = process.env.PROD_API_HOST || "localhost";
-const apiPort: number =
-  (process.env.PROD_API_PORT && parseInt(process.env.PROD_API_PORT, 10)) || 8080;
-const testApiHost: string = process.env.TEST_API_HOST || "localhost";
-const testApiPort: number =
-  (process.env.TEST_API_PORT && parseInt(process.env.TEST_API_PORT, 10)) || 8080;
-const serverPort: number = (process.env.PORT && parseInt(process.env.PORT, 10)) || 8888;
-const accessControlAllowOrigin: string = process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*";
+import { config } from "./config";
+import { getApiReadiness, getApiVersion } from "./api";
 
 const DEFAULT_API_VERSION = "1.0";
-
-const setExcelLanguage = (url: string) => {
-  const queryData = URL.parse(url, true).query;
-
-  if (queryData.lang) {
-    languages.map((language) => {
-      if (queryData.lang === language) {
-        strings.setLanguage(queryData.lang);
-      }
-    });
-  } else strings.setLanguage("en");
-};
+const API_BASE_PROD = `http://${config.apiHost}:${config.apiPort}/api`;
+const API_BASE_TEST = `http://${config.testApiHost}:${config.testApiPort}/api`;
 
 const transformRequest: AxiosTransformer = (data) => {
   if (typeof data === "object") {
@@ -38,84 +22,103 @@ const transformRequest: AxiosTransformer = (data) => {
     return data;
   }
 };
-
 axios.defaults.transformRequest = [transformRequest];
 
-const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
-  // enable cors
-  res.setHeader("Access-Control-Allow-Origin", accessControlAllowOrigin);
-  res.setHeader("Access-Control-Allow-Headers", "Authorization");
-  if (req.method === "OPTIONS") {
-    return res.end();
+const excelService = express();
+excelService.use(express.json());
+excelService.use(cors({ origin: config.accessControlAllowOrigin }));
+excelService.use((req: express.Request, res: express.Response, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self'");
+  next();
+});
+
+// This can be removed once prod and test env option will be removed https://github.com/openkfw/TruBudget/issues/954
+excelService.use((req: express.Request, res: express.Response, next) => {
+  res.apiBase = req.url.includes("/test") ? API_BASE_TEST : API_BASE_PROD;
+  req.url = req.url.replace("/test", "").replace("/prod", "");
+  next();
+});
+
+excelService.get("/readiness", async (req: express.Request, res: express.Response) => {
+  try {
+    const ready = await getApiReadiness(axios, res.apiBase);
+    res.status(200).send(ready);
+  } catch (error) {
+    console.error("API readiness call failed", error);
+    res.end();
   }
-  if (!req.url) {
-    res.statusCode = 404;
-    return res.end();
-  }
-  const splittedUrl: string[] = req.url.split("/");
-  const endpoint = splittedUrl[splittedUrl.length - 1];
-  // readiness and health endpoint
-  if (endpoint === "health") {
-    return res.end();
-  }
+});
 
-  if (endpoint === "readiness") {
-    // TODO: check readiness of api
-    return res.end();
-  }
-
-  if (endpoint === "version") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.statusCode = 200;
-    res.write(
-      JSON.stringify({
-        release: process.env.npm_package_version,
-        commit: process.env.CI_COMMIT_SHA || "",
-        buildTimeStamp: process.env.BUILDTIMESTAMP || "",
-      }),
-    );
-    return res.end();
-  }
-
-  // check if token is provided
-  const token = req.headers.authorization;
-  if (!token) {
-    res.statusCode = 401;
-    res.write("Please provide authorization token");
-    return res.end();
-  }
-
-  const isTest = /^\/test/.test(String(req.url));
-  const isProd = /^\/prod/.test(String(req.url));
-
-  if ((isTest || isProd) && endpoint.includes("download")) {
-    setExcelLanguage(req.url);
-
-    // create export
-    try {
-      const base = isTest
-        ? `http://${testApiHost}:${testApiPort}/api`
-        : `http://${apiHost}:${apiPort}/api`;
-
-      res.setHeader(
-        "Content-Type",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      );
-      res.setHeader("Content-Disposition", "attachment; filename=TruBudget_Export.xlsx");
-      res.setHeader("Transfer-Encoding", "chunked");
-
-      await writeXLSX(axios, token, res, base);
-    } catch (error) {
-      console.error(error.message);
-    }
-  } else {
-    // Unexpected request
-    res.statusCode = 404;
-    return res.end();
-  }
+excelService.get("/health", (req: express.Request, res: express.Response) => {
   res.end();
 });
 
-console.log(`Starting TruBudget export server on ${serverPort}`);
+excelService.get("/version", (req: express.Request, res: express.Response) => {
+  res.status(200).send(
+    JSON.stringify({
+      release: process.env.npm_package_version,
+      commit: process.env.CI_COMMIT_SHA || "",
+      buildTimeStamp: process.env.BUILDTIMESTAMP || "",
+    }),
+  );
+});
 
-server.listen(serverPort);
+excelService.get("/download", async (req: express.Request, res: express.Response) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    res.status(401).send("Please provide authorization token");
+  }
+
+  try {
+    await getApiVersion(axios, token, res.apiBase);
+  } catch (error) {
+    if (error.response?.status == 401) {
+      console.log("Invalid Token:", error.response.data);
+      res.status(error.response.status).send({ message: error.response.data });
+    } else {
+      console.log(`Error validating token: ${error.response} `);
+      res
+        .status(error.response.status)
+        .send({ message: `Error validating token: ${error.response} ` });
+    }
+  }
+
+  setExcelLanguage(req.url);
+
+  // create export
+  try {
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=TruBudget_Export.xlsx");
+    res.setHeader("Transfer-Encoding", "chunked");
+
+    await writeXLSX(axios, req.headers.authorization, res, res.apiBase);
+  } catch (error) {
+    if (error.response) {
+      res.status(error.response.status).send({ message: error.response.data });
+    }
+  }
+});
+
+excelService.listen(config.serverPort, () => console.info(`App listening on ${config.serverPort}`));
+
+// Enable useful traces of unhandled-promise warnings:
+process.on("unhandledRejection", (err) => {
+  console.error({ err }, "UNHANDLED PROMISE REJECTION");
+  process.exit(1);
+});
+
+function setExcelLanguage(url: string): void {
+  const queryData = URL.parse(url, true).query;
+
+  if (queryData.lang) {
+    languages.map((language) => {
+      if (queryData.lang === language) {
+        strings.setLanguage(queryData.lang);
+      }
+    });
+  } else strings.setLanguage("en");
+}

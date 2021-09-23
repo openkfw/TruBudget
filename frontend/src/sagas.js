@@ -2927,10 +2927,10 @@ export function* getExchangeRatesSaga({ baseCurrency, showLoading = true }) {
   }, showLoading);
 }
 
-function* exportDataSaga() {
+function* exportDataSaga({ devModeEnvironment }) {
   yield execute(
     function* () {
-      const data = yield callApi(api.export);
+      const data = yield callApi(api.export, devModeEnvironment);
       saveAs(data, strings.login.frontend_name + "_Export.xlsx");
       yield put({
         type: EXPORT_DATA_SUCCESS

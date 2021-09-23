@@ -14,13 +14,14 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as History from "./service/domain/workflow/historyFilter";
 import * as Project from "./service/domain/workflow/project";
 import { ProjectTraceEvent } from "./service/domain/workflow/project_trace_event";
+import { safeStringSchema } from "./lib/joiValidation";
 
 const requestBodySchema = Joi.array().items({
   entityId: Joi.string().required(),
   entityType: Joi.valid("project").required(),
   businessEvent: businessEventSchema.required(),
   snapshot: Joi.object({
-    displayName: Joi.string().required(),
+    displayName: safeStringSchema.required(),
   }).required(),
 });
 

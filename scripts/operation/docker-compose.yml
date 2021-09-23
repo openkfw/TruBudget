@@ -71,6 +71,9 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       SIGNING_METHOD: ${SIGNING_METHOD}
       SWAGGER_BASEPATH: /test
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: ${NODE_ENV}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
     depends_on:
       - master-node
     ports:
@@ -118,6 +121,8 @@ services:
       TEST_API_HOST: master-api
       TEST_API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      MODE: DEBUG
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
      # - "9231:9229"
@@ -155,6 +160,7 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       EXPORT_PORT: ${EXPORT_PORT}
       EXPORT_HOST: ${EXPORT_HOST}
+      INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
     depends_on:
       - master-api
     ports:
