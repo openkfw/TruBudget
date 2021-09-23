@@ -9,10 +9,18 @@ import { revokeUserPermission } from "./user_permission_revoke";
 import { UserRecord } from "./user_record";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const bob: ServiceUser = { id: "bob", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
-const charlie: ServiceUser = { id: "charlie", groups: ["alice_and_bob_and_charlie"] };
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const alice: ServiceUser = {
+  id: "alice",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
+const bob: ServiceUser = {
+  id: "bob",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
 
 const grantIntent = "user.intent.grantPermission";
 const userId = "dummy";
@@ -88,7 +96,7 @@ describe("Revoking user permissions: updates", () => {
     // Alice still has the permission to revoke permissions
     assert.isTrue(
       userAfterRevokingPermission.permissions["user.intent.revokePermission"]!.some(
-        x => x === alice.id,
+        (x) => x === alice.id,
       ),
     );
   });
@@ -121,7 +129,7 @@ describe("Revoking user permissions: updates", () => {
     // Alice still has the permission to revoke permissions
     assert.isTrue(
       userAfterRevokingPermission.permissions["user.intent.revokePermission"]!.some(
-        x => x === alice.id,
+        (x) => x === alice.id,
       ),
     );
   });

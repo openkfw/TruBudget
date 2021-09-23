@@ -17,6 +17,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.26.0] - 2021-09-23
+
+- Optional blockchain network configuration so user can sign transactions with their own address [#943](https://github.com/openkfw/TruBudget/issues/955).
+
+### Changed
+
+- The email-notificaiton-service environment variable MODE changed to AUTHENTICATION. The values are `jwt` for JWT-authentication and `none` to ignore authentication [#928](https://github.com/openkfw/TruBudget/issues/928).
+
+### Fixed
+
+- Fixed a bug where it was possible to create users and groups with the same id. This will not be allowed in the future. However, if a user and a group with the same id already exist in the same network the permission system will not work correctly, so the user should be disabled by the admin [#943](https://github.com/openkfw/TruBudget/issues/943).
+- Fixed penetration-test results [#943](https://github.com/openkfw/TruBudget/pull/973).
+
 ## [1.25.0] - 2021-08-31
 
 ### Added
@@ -663,7 +676,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.25.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.26.0...master
+[1.26.0]: https://github.com/openkfw/TruBudget/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/openkfw/TruBudget/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/openkfw/TruBudget/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/openkfw/TruBudget/compare/v1.22.0...v1.23.0

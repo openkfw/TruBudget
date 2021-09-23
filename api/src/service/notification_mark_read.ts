@@ -13,14 +13,14 @@ import { store } from "./store";
 export async function markRead(
   conn: ConnToken,
   ctx: Ctx,
-  user: ServiceUser,
+  serviceUser: ServiceUser,
   notificationIds: Notification.Id[],
 ): Promise<Result.Type<void>> {
   try {
     let newEvents: BusinessEvent[] = [];
     for (const id of notificationIds) {
       const newEventResult = await Cache.withCache(conn, ctx, (cache) =>
-        NotificationMarkRead.markRead(ctx, user, id, {
+        NotificationMarkRead.markRead(ctx, serviceUser, id, {
           getUserNotificationEvents: async (userId: UserRecord.Id) => {
             return cache.getNotificationEvents(userId);
           },
@@ -33,7 +33,7 @@ export async function markRead(
     }
 
     for (const newEvent of newEvents) {
-      await store(conn, ctx, newEvent);
+      await store(conn, ctx, newEvent, serviceUser.address);
     }
   } catch (error) {
     return error;

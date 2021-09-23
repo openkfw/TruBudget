@@ -37,6 +37,6 @@ export async function setWorkflowitemOrdering(
   const newEvents = reorderWorkflowitemsResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 }

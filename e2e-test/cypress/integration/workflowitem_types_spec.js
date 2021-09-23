@@ -46,11 +46,10 @@ describe("Workflowitem types", function() {
 
   it("A workflowitem of type restricted grants and revokes permissions when it's assigned", function() {
     const assignee = { name: "Tom House", id: "thouse" };
-    cy.server();
-    cy.route("GET", apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
-    cy.route("GET", apiRoute + "/subproject.intent.listPermissions*").as("listSubprojectPermissions");
-    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
-    cy.route("POST", apiRoute + "/workflowitem.assign*").as("assign");
+    cy.intercept(apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
+    cy.intercept(apiRoute + "/subproject.intent.listPermissions*").as("listSubprojectPermissions");
+    cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+    cy.intercept(apiRoute + "/workflowitem.assign*").as("assign");
 
     cy.createWorkflowitem(projectId, subprojectId, "workflowitemTypeTest", {
       workflowitemType: "restricted",
@@ -71,12 +70,8 @@ describe("Workflowitem types", function() {
       cy.get(`[data-test=single-select-name-${assignee.id}]`).click();
       cy.get("[data-test=confirmation-dialog-confirm]").click();
 
-      cy.wait("@listProjectPermissions", { timeout: 30000 });
-      cy.wait("@listSubprojectPermissions", { timeout: 30000 });
-      cy.wait("@listWorkflowitemPermissions", { timeout: 30000 });
-      cy.wait("@assign", { timeout: 30000 });
-
-      cy.get(`[data-test=workflowitem-${workflowitemId}]`)
+      cy.wait(["@listProjectPermissions", "@listSubprojectPermissions", "@listWorkflowitemPermissions", "@assign"])
+        .get(`[data-test=workflowitem-${workflowitemId}]`)
         .should("be.visible")
         .within(() => {
           // api revokes permissions for mstein, mstein has only view permissions

@@ -9,7 +9,7 @@ describe("Email Service test", function() {
     // Open user profile
     cy.get("[data-test=show-user-profile]").click();
     cy.get("[data-test=user-profile-dialog").should("be.visible");
-    cy.get("[data-test=email-address-input").should("not.be.visible");
+    cy.get("[data-test=email-address-input").should("not.exist");
 
     // Close
     cy.get("[data-test=close-user-profile]").click();

@@ -61,6 +61,10 @@ services:
       ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
       ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SIGNING_METHOD: ${SIGNING_METHOD}
+      NODE_ENV: ${NODE_ENV}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
@@ -86,7 +90,7 @@ services:
       DB_NAME: ${DB_NAME}
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${LOG_LEVEL}
-      MODE: DEBUG
+      AUTHENTICATION: ${AUTHENTICATION}
     # volume for hot reloading
     volumes:
       - "../../email-notification-service/src:/home/node/src:delegated"
@@ -121,6 +125,8 @@ services:
       TEST_API_HOST: master-api
       TEST_API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      MODE: DEBUG
     command: ["npm", "run", "watch"]
     # volume for hot reloading
     volumes:
@@ -168,6 +174,7 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       EXPORT_PORT: ${EXPORT_PORT}
       EXPORT_HOST: ${EXPORT_HOST}
+      INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
     # volume for hot reloading
     volumes:
       - "../../frontend/src:/app/src"

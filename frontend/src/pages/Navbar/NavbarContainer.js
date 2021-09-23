@@ -54,23 +54,25 @@ class NavbarContainer extends Component {
   }
 }
 
-const mapDispatchToProps = {
-  toggleSidebar,
-  logout,
-  fetchActivePeers,
-  createBackup,
-  restoreBackup,
-  exportData,
-  storeSearchTerm,
-  storeSearchBarDisplayed,
-  setIsRoot,
-  showUserProfile,
-  fetchEmailAddress,
-  saveEmailAddress,
-  storeTempEmailAddress,
-  setValidEmailAddressInput,
-  enableUserProfileEdit,
-  hideUserProfile
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleSidebar: () => dispatch(toggleSidebar()),
+    logout: () => dispatch(logout()),
+    fetchActivePeers: () => dispatch(fetchActivePeers()),
+    createBackup: () => dispatch(createBackup()),
+    restoreBackup: (file) => dispatch(restoreBackup(file)),
+    exportData: (devModeEnvironment) => dispatch(exportData(devModeEnvironment)),
+    storeSearchTerm: (searchTerm) => dispatch(storeSearchTerm(searchTerm)),
+    storeSearchBarDisplayed: (searchBarDisplayed) => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
+    setIsRoot: (isRoot) => dispatch(setIsRoot(isRoot)),
+    showUserProfile: () => dispatch(showUserProfile()),
+    fetchEmailAddress: () => dispatch(fetchEmailAddress()),
+    saveEmailAddress: (emailAddress) => dispatch(saveEmailAddress(emailAddress)),
+    storeTempEmailAddress: (emailAddress) => dispatch(storeTempEmailAddress(emailAddress)),
+    setValidEmailAddressInput: (valid) => dispatch(setValidEmailAddressInput(valid)),
+    enableUserProfileEdit: () => dispatch(enableUserProfileEdit()),
+    hideUserProfile: () => dispatch(hideUserProfile())
+  };
 };
 
 const mapStateToProps = state => {

@@ -205,9 +205,8 @@ $COMPOSE down
 echo "INFO: Pull images from https://hub.docker.com/ ..."
 $COMPOSE pull
 
-#ToDo: Only use Images from Dockerhub
 echo "INFO: Since images are used, building is not necessary and will be skipped."
-#$COMPOSE build
+$COMPOSE build
 
 # Start docker containers
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES"

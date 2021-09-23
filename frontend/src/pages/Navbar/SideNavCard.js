@@ -33,7 +33,8 @@ const SideNavCard = ({
   exportData,
   showUserProfile,
   fetchEmailAddress,
-  exportServiceAvailable
+  exportServiceAvailable,
+  environment
 }) => {
   const openUserProfile = () => {
     fetchEmailAddress();
@@ -118,7 +119,7 @@ const SideNavCard = ({
           </ListItem>
         ) : null}
         {exportServiceAvailable ? (
-          <ListItem button onClick={exportData} data-test="side-navigation-export">
+          <ListItem button onClick={() => exportData(environment)} data-test="side-navigation-export">
             <ListItemIcon>
               <ExportIcon />
             </ListItemIcon>

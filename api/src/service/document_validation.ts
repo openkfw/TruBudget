@@ -1,4 +1,3 @@
-
 import * as crypto from "crypto";
 import VError = require("verror");
 import { ConnToken } from "./conn";
@@ -13,7 +12,6 @@ import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as GroupQuery from "./group_query";
 import { store } from "./store";
 
-
 /**
  * Returns true if the given hash matches the given document.
  *
@@ -26,12 +24,11 @@ export async function isSameDocument(
   documentId: string,
   conn: ConnToken,
   ctx: Ctx,
-  issuer: ServiceUser,
+  serviceUser: ServiceUser,
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
 ): Promise<Result.Type<boolean>> {
-
   let isDocumentValid: boolean = false;
   try {
     const hash = crypto.createHash("sha256");
@@ -47,7 +44,7 @@ export async function isSameDocument(
       isDocumentValid,
       documentId,
       ctx,
-      issuer,
+      serviceUser,
       projectId,
       subprojectId,
       workflowitemId,
@@ -56,7 +53,7 @@ export async function isSameDocument(
           return cache.getWorkflowitem(projectId, subprojectId, id);
         },
         getUsersForIdentity: async (identity) => {
-          return GroupQuery.resolveUsers(conn, ctx, issuer, identity);
+          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
         },
         getDocumentsEvents: async () => {
           return cache.getDocumentUploadedEvents();
@@ -74,7 +71,7 @@ export async function isSameDocument(
   const { newEvents } = documentValidationResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 
   return isDocumentValid;

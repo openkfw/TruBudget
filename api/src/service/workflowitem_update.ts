@@ -100,7 +100,7 @@ export async function updateWorkflowitem(
   const { newEvents } = updateWorkflowitemResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
   const workflowitem = await Cache.withCache(conn, ctx, async (cache) =>
     cache.getWorkflowitem(projectId, subprojectId, workflowitemId),

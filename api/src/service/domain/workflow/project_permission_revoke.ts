@@ -61,9 +61,9 @@ export async function revokeProjectPermission(
   // Prevent revoking grant permission of last user
   const intents: Intent[] = ["project.intent.grantPermission"];
   if (
+    intent &&
     intents.includes(intent) &&
-    project.permissions[`${intent}`] !== undefined &&
-    project.permissions[`${intent}`].length === 1
+    project?.permissions[intent]?.length === 1
   ) {
     return new PreconditionError(
       ctx,

@@ -15,9 +15,8 @@ describe("open notifications", function() {
   });
 
   beforeEach(() => {
-    cy.server();
-    cy.route("GET", apiRoute + "/notification.count*").as("countNotification");
-    cy.route("GET", apiRoute + "/notification.list*").as("listNotifications");
+    cy.intercept(apiRoute + "/notification.count*").as("countNotification");
+    cy.intercept(apiRoute + "/notification.list*").as("listNotifications");
     cy.login(assignee);
     cy.visit("/notifications")
       .wait("@countNotification")

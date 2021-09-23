@@ -51,7 +51,7 @@ export async function documentUpload(
   const newEvents = uploadedDocumentResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 
   const { documents } = sourceDocuments(ctx, newEvents);

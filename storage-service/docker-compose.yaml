@@ -28,6 +28,7 @@ services:
       STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
       ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
       ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
     command: ["npm", "start"]
     # volumes:
     #   - "../api/src:/home/node/src:delegated"

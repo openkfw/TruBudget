@@ -11,8 +11,9 @@ import { getWorkflowitemDetails } from "./workflowitem_get_details";
 import { StoredDocument, UploadedDocument } from "../document/document";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const root: ServiceUser = { id: "root", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: [] };
+const address = "address";
+const root: ServiceUser = { id: "root", groups: [], address };
+const alice: ServiceUser = { id: "alice", groups: [], address };
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
 

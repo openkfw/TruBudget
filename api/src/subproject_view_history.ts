@@ -153,6 +153,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const user: ServiceUser = {
         id: (request as AuthenticatedRequest).user.userId,
         groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
       };
 
       const projectId = request.query.projectId;

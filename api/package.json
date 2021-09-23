@@ -1,6 +1,6 @@
 {
   "name": "trubudget-api",
-"version": "1.25.0",
+  "version": "1.26.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -69,9 +69,11 @@
   },
   "keywords": [],
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bcryptjs": "^2.4.3",
     "fastify": "^3.11.0",
+    "fastify-cors": "^6.0.2",
+    "fastify-helmet": "^5.3.2",
     "fastify-jwt": "^2.3.0",
     "fastify-metrics": "^6.0.3",
     "fastify-swagger": "^3.3.0",

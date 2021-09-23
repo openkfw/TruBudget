@@ -12,6 +12,7 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Joi = require("joi");
+import { safeIdSchema } from "./lib/joiValidation";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -30,7 +31,7 @@ const requestBodyV1Schema = Joi.object({
     projectId: Project.idSchema.required(),
     subprojectId: Subproject.idSchema.required(),
     workflowitemId: Workflowitem.idSchema.required(),
-    identity: Joi.string().required(),
+    identity: safeIdSchema.required(),
     intent: Joi.valid(workflowitemIntents).required(),
   }).required(),
 });
@@ -114,6 +115,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const user: ServiceUser = {
         id: (request as AuthenticatedRequest).user.userId,
         groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
       };
 
       const bodyResult = validateRequestBody(request.body);

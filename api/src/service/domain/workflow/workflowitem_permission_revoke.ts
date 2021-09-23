@@ -81,9 +81,9 @@ export async function revokeWorkflowitemPermission(
   // Prevent revoking grant permission of last user
   const intents: Intent[] = ["workflowitem.intent.grantPermission"];
   if (
+    intent &&
     intents.includes(intent) &&
-    workflowitem.permissions[`${intent}`] !== undefined &&
-    workflowitem.permissions[`${intent}`].length === 1
+    workflowitem?.permissions[intent]?.length === 1
   ) {
     return new PreconditionError(
       ctx,

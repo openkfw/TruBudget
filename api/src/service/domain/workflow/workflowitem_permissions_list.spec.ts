@@ -10,8 +10,13 @@ import { Workflowitem } from "./workflowitem";
 import { getAll } from "./workflowitem_permissions_list";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const bob: ServiceUser = { id: "bob", groups: [] };
-const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
+const address = "address";
+const bob: ServiceUser = { id: "bob", groups: [], address };
+const alice: ServiceUser = {
+  id: "alice",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address,
+};
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const subprojectName = "dummy";

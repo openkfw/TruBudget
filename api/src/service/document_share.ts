@@ -63,7 +63,7 @@ export async function documentShare(
   const newEvent = sharedDocumentResult;
 
   if (newEvent) {
-    await store(conn, ctx, newEvent);
+    await store(conn, ctx, newEvent, serviceUser.address);
 
     const { secrets } = sourceSecrets(ctx, [newEvent]);
     const newSecret = secrets.find(

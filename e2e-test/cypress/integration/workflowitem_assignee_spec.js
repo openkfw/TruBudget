@@ -141,9 +141,8 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("The confirmation dialog assigns the selected user and grants required view Permissions", function() {
-    cy.server();
-    cy.route("POST", apiRoute + "/workflowitem.assign*").as("assign");
-    cy.route("GET", apiRoute + "/subproject.viewDetails*").as("viewDetails");
+    cy.intercept(apiRoute + "/workflowitem.assign*").as("assign");
+    cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get("@assigneeId").then(assigneeId => {
@@ -190,8 +189,7 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("Assigning without project permission to grant view permissions is not possible", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+    cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
 
     // Grant project/subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
@@ -223,8 +221,7 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("Assigning without subproject permission to grant view permissions is not possible", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+    cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
 
     // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser);
@@ -256,8 +253,7 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("Assigning without workflowitem permission to grant view permissions is not possible", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+    cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
 
     // Grant workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantWorkflowitemPermission(
@@ -307,8 +303,7 @@ describe("Workflowitem Assignee", function() {
   });
 
   it("Assigning without project nor subproject nor workflowitem permission to grant view permissions is not possible", function() {
-    cy.server();
-    cy.route("GET", apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
+    cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
 
     // Grant project/subproject/workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
@@ -577,7 +572,7 @@ describe("Workflowitem Assignee", function() {
         .should("not.be.checked")
         .check();
     });
-    cy.get("[data-test=additional-actions]").should("not.be.visible");
+    cy.get("[data-test=additional-actions]").should("not.exist");
 
     // reset Permissions
     cy.get("@assigneeId").then(assigneeId => {

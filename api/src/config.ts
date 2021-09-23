@@ -56,6 +56,9 @@ interface Config {
     externalUrl: string;
   };
   encryptionPassword: string | undefined;
+  signingMethod: string;
+  nodeEnv: string | undefined;
+  accessControlAllowOrigin: string;
 }
 
 const requiredEnvVars = ["ORGANIZATION", "ORGANIZATION_VAULT_SECRET"];
@@ -95,6 +98,9 @@ export const config: Config = {
   },
   encryptionPassword:
     process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,
+  signingMethod: process.env.SIGNING_METHOD || "node",
+  nodeEnv: process.env.NODE_ENV || "production",
+  accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
 };
 
 function exitIfMissing(requiredEnvVars) {
@@ -150,6 +156,8 @@ const getValidConfig = (): Config => {
 
   return config;
 };
+
+export const isProductionEnvironment = () => config.nodeEnv === "production";
 
 declare global {
   namespace NodeJS {

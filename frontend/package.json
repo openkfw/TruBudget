@@ -1,6 +1,6 @@
 {
   "name": "trubudget-frontend",
-"version": "1.25.0",
+"version": "1.26.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
     "@material-ui/pickers": "^3.2.10",
     "accounting": "^0.4.1",
     "array-move": "^2.2.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "chart.js": "^2.9.3",
     "connected-react-router": "^6.6.1",
     "date-fns": "^2.16.1",
@@ -75,7 +75,7 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "react-app-rewired start | printf '\n\nThe Prod/Test environements will be removed in the next major release of TruBudget. That means /prod/api and /test/api will be routed to /api.\nFor further information see https://github.com/openkfw/TruBudget/pull/971\n\n\n'",
     "build": "react-app-rewired build",
     "test": "npm run check-translations",
     "eject": "react-scripts eject",

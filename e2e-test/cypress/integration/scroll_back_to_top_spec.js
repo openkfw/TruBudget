@@ -10,7 +10,7 @@ describe("Scroll Back To Top", () => {
 
   it("On scroll, the button back to top should be visible ", () => {
     cy.scrollTo(0, 520);
-    cy.get("[data-test=backToTop-button]").should("visible");
+    cy.get("[data-test=backToTop-button]").should("be.visible");
   });
 
   it("On button click, scroll back to top ", () => {

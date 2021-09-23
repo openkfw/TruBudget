@@ -94,7 +94,7 @@ export async function grantGlobalPermission(
   const publishEvent = () => {
     return conn.multichainClient
       .getRpcClient()
-      .invoke("publish", streamName, streamItemKey, streamItem)
+      .invokePublish(streamName, streamItemKey, streamItem)
       .then(() => event);
   };
 
@@ -145,7 +145,7 @@ export async function revokeGlobalPermission(
   const publishEvent = () => {
     return conn.multichainClient
       .getRpcClient()
-      .invoke("publish", streamName, streamItemKey, streamItem)
+      .invokePublish(streamName, streamItemKey, streamItem)
       .then(() => event);
   };
 
@@ -193,7 +193,7 @@ export async function issueNotification(
   const streamName = "notifications";
   const publishEvent = () => {
     logger.debug(`Publishing ${intent} to ${streamName}/${recipient}`);
-    return conn.multichainClient.getRpcClient().invoke("publish", streamName, recipient, {
+    return conn.multichainClient.getRpcClient().invokePublish(streamName, recipient, {
       json: event,
     });
   };
@@ -370,7 +370,7 @@ export function closeWorkflowitem(
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
   return conn.multichainClient
     .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
+    .invokePublish(streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 
@@ -400,7 +400,7 @@ export function updateWorkflowitem(
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
   return conn.multichainClient
     .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
+    .invokePublish(streamName, streamItemKey, streamItem)
     .then(() => event);
 }
 
@@ -432,6 +432,6 @@ export function assignWorkflowitem(
   logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
   return conn.multichainClient
     .getRpcClient()
-    .invoke("publish", streamName, streamItemKey, streamItem)
+    .invokePublish(streamName, streamItemKey, streamItem)
     .then(() => event);
 }

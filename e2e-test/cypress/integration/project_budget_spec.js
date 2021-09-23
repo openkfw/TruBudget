@@ -34,13 +34,12 @@ describe("Project budget test", function() {
   beforeEach(() => {
     cy.login();
     cy.visit("/projects");
-    cy.server();
-    cy.route("GET", apiRoute + "/project.list*").as("listProjects");
-    cy.route("GET", apiRoute + "/project.viewDetails*").as("viewDetailsProject");
-    cy.route("POST", apiRoute + "/global.createProject").as("createProject");
-    cy.route("POST", apiRoute + "/project.createSubproject").as("createSubproject");
-    cy.route("POST", apiRoute + "/project.budget.deleteProjected").as("deleteBudget");
-    cy.route("POST", apiRoute + "/project.budget.updateProjected").as("updateBudget");
+    cy.intercept(apiRoute + "/project.list*").as("listProjects");
+    cy.intercept(apiRoute + "/project.viewDetails*").as("viewDetailsProject");
+    cy.intercept(apiRoute + "/global.createProject").as("createProject");
+    cy.intercept(apiRoute + "/project.createSubproject").as("createSubproject");
+    cy.intercept(apiRoute + "/project.budget.deleteProjected").as("deleteBudget");
+    cy.intercept(apiRoute + "/project.budget.updateProjected").as("updateBudget");
   });
 
   it("When creating a project, different organizations can be set", function() {

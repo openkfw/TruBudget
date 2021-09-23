@@ -14,9 +14,10 @@ const ctx: Ctx = {
   source: "test",
 };
 
-const alice: ServiceUser = { id: "alice", groups: ["alice"] };
-const bob: ServiceUser = { id: "bob", groups: ["bob"] };
-const root: ServiceUser = { id: "root", groups: ["root"] };
+const address = "address";
+const alice: ServiceUser = { id: "alice", groups: ["alice"], address };
+const bob: ServiceUser = { id: "bob", groups: ["bob"], address };
+const root: ServiceUser = { id: "root", groups: ["root"], address };
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";

@@ -9,7 +9,8 @@ import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserCreate from "./service/domain/organization/user_create";
-import Joi = require("joi");
+import * as Joi from "joi";
+import { safeStringSchema, safeIdSchema, safePasswordSchema } from "./lib/joiValidation";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -27,10 +28,10 @@ const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
     user: Joi.object({
-      id: Joi.string().required(),
-      displayName: Joi.string().required(),
-      organization: Joi.string().required(),
-      password: Joi.string().required(),
+      id: safeIdSchema.required(),
+      displayName: safeStringSchema.required(),
+      organization: safeStringSchema.required(),
+      password: safePasswordSchema.required(),
     }).required(),
   }).required(),
 });
@@ -145,6 +146,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     const serviceUser: ServiceUser = {
       id: (request as AuthenticatedRequest).user.userId,
       groups: (request as AuthenticatedRequest).user.groups,
+      address: (request as AuthenticatedRequest).user.address,
     };
 
     const bodyResult = validateRequestBody(request.body);

@@ -50,7 +50,7 @@ const publishEvent = (multichain: MultichainClient, { stream, keys, event }: any
   const streamItem = { json: event };
   return multichain
     .getRpcClient()
-    .invoke("publish", stream, keys, streamItem)
+    .invokePublish(stream, keys, streamItem)
     .then(() => event)
     .catch((err) => {
       logger.error(err);

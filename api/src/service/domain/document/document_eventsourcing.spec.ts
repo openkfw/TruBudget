@@ -7,7 +7,11 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as DocumentUploaded from "./document_uploaded";
 
-const alice: ServiceUser = { id: "alice", groups: ["alice_and_bob", "alice_and_bob_and_charlie"] };
+const alice: ServiceUser = {
+  id: "alice",
+  groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
+  address: "address",
+};
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy";

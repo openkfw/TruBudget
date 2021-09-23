@@ -1,15 +1,9 @@
 describe("Component Versions", function() {
-  let exportBaseUrl, exportUrl, apiBaseUrl, apiUrl;
+  let exportUrl, apiBaseUrl, apiUrl;
   before(() => {
     apiBaseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiUrl = apiBaseUrl + "/api";
-    if (Cypress.env("EXPORT_SERVICE_BASE_URL")) {
-      exportBaseUrl = Cypress.env("EXPORT_SERVICE_BASE_URL");
-      exportUrl = exportBaseUrl;
-    } else {
-      exportBaseUrl = `${Cypress.config("baseUrl")}/test`;
-      exportUrl = exportBaseUrl + "/api/export/xlsx";
-    }
+    exportUrl = Cypress.env("EXPORT_SERVICE_BASE_URL") || `${Cypress.config("baseUrl")}/test/api/export/xlsx`;
   });
 
   it("Shows status list", function() {
@@ -22,19 +16,17 @@ describe("Component Versions", function() {
   });
 
   it("Shows connection of export-service", function() {
-    cy.server();
-    cy.route("GET", exportUrl + "/readiness*").as("isExportReady");
+    cy.intercept(exportUrl + "/readiness*").as("isExportReady");
     cy.visit("/");
-    loginUi();
-    cy.wait("@isExportReady").visit(`/status`);
+    cy.wait("@isExportReady").then(() => loginUi());
+    cy.visit(`/status`);
     cy.get("[data-test=status-table-body] ")
       .contains("td", "exportService")
       .should("be.visible");
   });
 
   it("Shows versions of basic services (frontend,api,blockchain,multichain) correctly", function() {
-    cy.server();
-    cy.route("GET", apiUrl + "/version").as("fetchVersions");
+    cy.intercept(apiUrl + "/version").as("fetchVersions");
     cy.login();
     cy.visit(`/status`);
     cy.get("[data-test=status-table-body]")

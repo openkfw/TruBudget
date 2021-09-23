@@ -8,12 +8,17 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
 import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
-import { conversionRateSchema, moneyAmountSchema } from "./service/domain/workflow/money";
+import {
+  conversionRateSchema,
+  moneyAmountSchema,
+  amountTypeSchema,
+} from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_types/types";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 import Joi = require("joi");
+import { safeStringSchema } from "./lib/joiValidation";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -42,13 +47,13 @@ const requestBodyV1Schema = Joi.object({
     projectId: Project.idSchema,
     subprojectId: Subproject.idSchema,
     status: Joi.valid("open"),
-    displayName: Joi.string().required(),
-    description: Joi.string().allow(""),
-    assignee: Joi.string(),
-    currency: Joi.string(),
+    displayName: safeStringSchema.required(),
+    description: safeStringSchema.allow(""),
+    assignee: safeStringSchema,
+    currency: safeStringSchema,
     amount: moneyAmountSchema,
-    amountType: Joi.string().required(),
-    billingDate: Joi.string(),
+    amountType: amountTypeSchema.required(),
+    billingDate: safeStringSchema,
     dueDate: Joi.string().allow(""),
     exchangeRate: conversionRateSchema,
     documents: Joi.array().items(uploadedDocumentSchema),
@@ -182,6 +187,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const user: ServiceUser = {
         id: (request as AuthenticatedRequest).user.userId,
         groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
       };
 
       const bodyResult = validateRequestBody(request.body);

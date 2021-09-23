@@ -60,8 +60,7 @@ describe("Login", function() {
   });
 
   it("Reject wrong inputs", function() {
-    cy.server();
-    cy.route("POST", apiRoute + "/user.authenticate").as("login");
+    cy.intercept(apiRoute + "/user.authenticate").as("login");
     cy.get("#loginpage").should("be.visible");
     cy.get("#username")
       .should("be.visible")
@@ -80,8 +79,7 @@ describe("Login", function() {
   });
 
   it("Reject empty inputs", function() {
-    cy.server();
-    cy.route("POST", apiRoute + "/user.authenticate").as("login");
+    cy.intercept(apiRoute + "/user.authenticate").as("login");
     cy.get("#loginpage").should("be.visible");
     cy.get("#loginbutton").click();
     cy.wait("@login").then(xhr => {

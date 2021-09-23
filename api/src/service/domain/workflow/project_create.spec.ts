@@ -6,7 +6,7 @@ import { ServiceUser } from "../organization/service_user";
 import * as ProjectCreate from "./project_create";
 
 const ctx: Ctx = { requestId: "", source: "test" };
-const user: ServiceUser = { id: "test", groups: [] };
+const user: ServiceUser = { id: "test", groups: [], address: "address" };
 
 describe("create project & projected budgets", () => {
   it("allows more than one projected budget for the same currency if the organizations are different.", async () => {

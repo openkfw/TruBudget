@@ -22,8 +22,7 @@ before(() => {
 
 describe("Excel Export feature", function() {
   it("Tests the export of an excel file in english", function() {
-    cy.server();
-    cy.route("GET", exportUrl + "/download?lang=en*").as("export");
+    cy.intercept(exportUrl + "/download?lang=en*").as("export");
 
     //login
     cy.visit("/");
@@ -38,9 +37,11 @@ describe("Excel Export feature", function() {
       .click();
 
     // test exported file
-    cy.wait("@export").should(xhr => {
-      expect(xhr.status).to.eq(200);
-      expect(xhr.responseBody.type).to.include("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    cy.wait("@export").should(interception => {
+      expect(interception.response.statusCode).to.eq(200);
+      expect(interception.response.headers["content-type"]).to.include(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
 
       //wait for file to be available
       cy.task("checkFileExists", { file, timeout: 500 });
@@ -62,8 +63,7 @@ describe("Excel Export feature", function() {
   });
 
   it("Tests the export of an excel file in french", function() {
-    cy.server();
-    cy.route("GET", exportUrl + "/download?lang=fr*").as("export");
+    cy.intercept(exportUrl + "/download?lang=fr*").as("export");
 
     //login
     cy.visit("/");
@@ -78,9 +78,11 @@ describe("Excel Export feature", function() {
       .click();
 
     //test the exported file
-    cy.wait("@export").should(xhr => {
-      expect(xhr.status).to.eq(200);
-      expect(xhr.responseBody.type).to.include("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    cy.wait("@export").should(interception => {
+      expect(interception.response.statusCode).to.eq(200);
+      expect(interception.response.headers["content-type"]).to.include(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
 
       //wait for file to be available
       cy.task("checkFileExists", { file, timeout: 500 });

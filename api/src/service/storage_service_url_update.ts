@@ -10,15 +10,15 @@ import { ServiceUser } from "./domain/organization/service_user";
 export async function storageServiceUrlPublish(
   conn: ConnToken,
   ctx: Ctx,
-  issuer: ServiceUser,
+  serviceUser: ServiceUser,
   requestData: PublishStorageServiceUrl.RequestData,
 ): Promise<Result.Type<void>> {
   const updateOrganizationUrlResult = await Cache.withCache(conn, ctx, async (cache) => {
-    return PublishStorageServiceUrl.storageServiceUrlPublish(ctx, issuer, requestData);
+    return PublishStorageServiceUrl.storageServiceUrlPublish(ctx, serviceUser, requestData);
   });
 
   if (Result.isErr(updateOrganizationUrlResult))
     return new VError(updateOrganizationUrlResult, "organization url update document failed");
 
-  await store(conn, ctx, updateOrganizationUrlResult);
+  await store(conn, ctx, updateOrganizationUrlResult, serviceUser.address);
 }

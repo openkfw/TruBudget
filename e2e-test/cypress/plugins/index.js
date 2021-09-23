@@ -21,7 +21,7 @@ const yaml = require("js-yaml");
 const shell = require("shelljs");
 const dotenvPlugin = require("cypress-dotenv");
 
-function reportsReadiness(baseUrl) {
+function apiReportsReadiness(baseUrl) {
   return axios
     .get(`${baseUrl}/api/readiness`)
     .then(() => {
@@ -34,44 +34,98 @@ function reportsReadiness(baseUrl) {
     });
 }
 
-function hasLoginReady(baseUrl) {
+function excelExportReportsReadiness(exportServiceBaseUrl) {
+  return axios
+    .get(`${exportServiceBaseUrl}/readiness`)
+    .then(response => {
+      if (response.statusText === "OK") {
+        console.log("Excel-Export-Service reports readiness!");
+        return true;
+      } else {
+        console.log(`Excel-Export-Service is not ready yet and responded with: ${JSON.stringify(response)}`);
+        return false;
+      }
+    })
+    .catch(err => {
+      console.log(`Excel-Export-Service is not ready yet: ${err}`);
+      return false;
+    });
+}
+
+function isProvisioned(baseUrl) {
   return axios
     .post(`${baseUrl}/api/user.authenticate`, {
       apiVersion: "1.0",
       data: {
         user: {
-          id: "mstein",
-          password: "test"
+          id: "root",
+          password: process.env.CYPRESS_ROOT_SECRET
         }
       }
     })
-    .then(() => {
-      console.log("Login successful!");
-      return true;
+    .then(response => {
+      const JWTtoken = response.data.data.user.token;
+      return axios
+        .get(`${baseUrl}/api/provisioned`, {
+          headers: {
+            Authorization: "Bearer " + JWTtoken
+          }
+        })
+        .then(response => {
+          if (response.data.data.isProvisioned) {
+            console.log("Trubudget is provisioned.");
+            return true;
+          } else {
+            console.log(`Trubudget is not provisioned: ${response.data.data.message}`);
+            return false;
+          }
+        })
+        .catch(err => {
+          console.error(`Failed to GET ${baseUrl}/api/provisioned: ${err}`);
+          return false;
+        });
     })
     .catch(err => {
-      console.log(`Authentication failed - likely provisioning is still ongoing; err: ${err}`);
+      console.log(`Authentication failed err: ${err}`);
       return false;
     });
 }
 
 const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
-async function awaitApiReady(baseUrl) {
-  let nRetries = 10;
-  while (nRetries > 0 && !(await reportsReadiness(baseUrl))) {
+async function awaitApiReady(baseUrl, retries = 10, timeout = 2000) {
+  let nRetries = retries;
+  while (nRetries > 0 && !(await apiReportsReadiness(baseUrl))) {
     --nRetries;
     await sleep(2000);
   }
-  if (nRetries === 0) throw Error("/api/readiness was not OK");
-
-  nRetries = 20;
-  while (nRetries > 0 && !(await hasLoginReady(baseUrl))) {
-    --nRetries;
-    await sleep(5000);
+  if (nRetries === 0) {
+    throw Error(`API is not ready/connected after ${retries} retries with ${timeout / 1000} seconds timeout`);
   }
-  if (nRetries === 0) throw Error("user login was not OK");
+  return null;
+}
 
+async function awaitExcelExportReady(exportServiceBaseUrl, retries = 10, timeout = 2000) {
+  let nRetries = retries;
+  while (nRetries > 0 && !(await excelExportReportsReadiness(exportServiceBaseUrl))) {
+    --nRetries;
+    await sleep(timeout);
+  }
+  if (nRetries === 0) {
+    throw Error(`Excel Export is not ready/connected after ${retries} retries with ${timeout / 1000} seconds timeout`);
+  }
+  return null;
+}
+
+async function awaitProvisioning(baseUrl, retries = 10, timeout = 20000) {
+  let nRetries = retries;
+  while (nRetries > 0 && !(await isProvisioned(baseUrl))) {
+    --nRetries;
+    await sleep(timeout);
+  }
+  if (nRetries === 0) {
+    throw Error(`Provisioning is not ready after ${retries} retries with ${timeout / 1000} seconds timeout`);
+  }
   return null;
 }
 
@@ -147,10 +201,16 @@ const updateMetadataFile = async (config, newHash, metadataPath) => {
 module.exports = (on, config) => {
   on("task", {
     awaitApiReady: awaitApiReady,
+    awaitExcelExportReady: awaitExcelExportReady,
+    awaitProvisioning: awaitProvisioning,
     readExcelSheet: readExcelSheet,
     deleteFile: deleteFile,
     checkFileExists: checkFileExists,
-    modifyHash: modifyHash
+    modifyHash: modifyHash,
+    log(message) {
+      console.log(message);
+      return null;
+    }
   });
   on("before:browser:launch", (browser, options) => {
     const downloadDirectory = path.join(__dirname, "..", "fixtures");

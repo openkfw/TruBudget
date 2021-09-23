@@ -30,6 +30,7 @@ export async function createUser(
     createKeyPair: async () => createkeypairs(conn.multichainClient),
     hash: async (plaintext) => hashPassword(plaintext),
     encrypt: async (plaintext) => encrypt(organizationSecret, plaintext),
+    groupExists: async (userId) => GroupQuery.groupExists(conn, ctx, serviceUser, userId),
   });
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "failed to create user");
@@ -37,7 +38,7 @@ export async function createUser(
   const newEvents = newEventsResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 
   const { users } = sourceUserRecords(ctx, newEvents);

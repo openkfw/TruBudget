@@ -11,6 +11,7 @@ import { ResourceMap } from "./service/domain/ResourceMap";
 import * as Project from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as ProjectCreate from "./service/project_create";
+import { safeStringSchema, safeIdSchema } from "./lib/joiValidation";
 import Joi = require("joi");
 
 interface RequestBodyV1 {
@@ -40,13 +41,13 @@ const requestBodyV1Schema = Joi.object({
     project: Joi.object({
       id: Project.idSchema,
       status: Joi.valid("open"),
-      displayName: Joi.string().required(),
-      description: Joi.string().allow(""),
-      assignee: Joi.string(),
-      thumbnail: Joi.string(),
+      displayName: safeStringSchema.required(),
+      description: safeStringSchema.allow(""),
+      assignee: safeIdSchema,
+      thumbnail: safeStringSchema,
       projectedBudgets: projectedBudgetListSchema,
       additionalData: AdditionalData.schema,
-      tags: Joi.array().items(Joi.string()),
+      tags: Joi.array().items(safeStringSchema),
     }).required(),
   }).required(),
 });
@@ -59,7 +60,7 @@ function validateRequestBody(body: any): Result.Type<RequestBody> {
   return !error ? value : error;
 }
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: FastifyInstance): Object {
   return {
     preValidation: [(server as any).authenticate],
     schema: {
@@ -148,6 +149,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     const user: ServiceUser = {
       id: (request as AuthenticatedRequest).user.userId,
       groups: (request as AuthenticatedRequest).user.groups,
+      address: (request as AuthenticatedRequest).user.address,
     };
 
     const bodyResult = validateRequestBody(request.body);

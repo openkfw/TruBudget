@@ -113,7 +113,7 @@ export async function publishPrivateKey(
     };
     const streamItem = { json: privateKeyItem };
     logger.trace(`Publishing private key to ${streamName}/${streamItemKey}`);
-    await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
+    await multichain.getRpcClient().invokePublish(streamName, streamItemKey, streamItem);
     return privateKeyItem;
   } else {
     // Non expected error
@@ -174,7 +174,7 @@ async function ensureOrganizationAddress(
     };
     const streamItem = { json: orgaAddressItem };
     logger.trace(`Publishing wallet address to ${streamName}/${streamItemKey}`);
-    await multichain.getRpcClient().invoke("publish", streamName, streamItemKey, streamItem);
+    await multichain.getRpcClient().invokePublish(streamName, streamItemKey, streamItem);
     organizationAddress = addressFromWallet;
   }
   logger.info(`Organization address ${organizationAddress} is ready to be used in transactions.`);

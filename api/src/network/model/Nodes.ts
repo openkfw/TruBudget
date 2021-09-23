@@ -97,7 +97,7 @@ export async function publish(
     logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
     return multichain
       .getRpcClient()
-      .invoke("publish", streamName, streamItemKey, streamItem)
+      .invokePublish(streamName, streamItemKey, streamItem)
       .then(() => event);
   };
 

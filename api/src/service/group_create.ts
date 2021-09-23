@@ -8,6 +8,7 @@ import { ServiceUser } from "./domain/organization/service_user";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { groupExists } from "./group_query";
 import { store } from "./store";
+import { userExists } from "./user_query";
 
 interface Group {
   id: string;
@@ -24,12 +25,13 @@ export async function createGroup(
   const groupCreateResult = await GroupCreate.createGroup(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
     groupExists: async (groupId) => groupExists(conn, ctx, serviceUser, groupId),
+    userExists: async (groupId) => userExists(conn, ctx, serviceUser, groupId),
   });
   if (Result.isErr(groupCreateResult)) return new VError(groupCreateResult, "create group failed");
   const newEvents = groupCreateResult;
 
   for (const event of newEvents) {
-    await store(conn, ctx, event);
+    await store(conn, ctx, event, serviceUser.address);
   }
 
   const { groups } = sourceGroups(ctx, newEvents);

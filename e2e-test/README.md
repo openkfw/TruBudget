@@ -57,45 +57,64 @@ Note: The only difference between those two commands is `npm run cypress` opens 
 
 This section describes how we can run and debug the tests locally with Cypress.
 
-### Run Cypress GUI with Dockerized Application (recommended)
+### Prerequisits
 
-To start the cypress GUI to select specific tests, simply start a TruBudget setup and after that, start cypress.
-
-You can run application in many ways: pull built images, each service in separated terminal or in development mode. See [Developer Setup](../docs/developer/developer-setup.md) for more details.
-
-One example is to start this docker-compose setup
+Setup a provisioned Trubudget node including the excel-export service. Check out the [Developer Setup](../docs/developer/developer-setup.md) for more details.
+The easiest way to start a provisioned Trubudget node is to start it via developer script
 
 ```bash
-bash scripts/development/start-dev.sh --slim
+bash scripts/development/start-dev.sh --full
 ```
 
-and after the docker-compose setup has builded and started successfully, start cypress:
+Install all required libraries and unset DISPLAY env var (necessary for ubuntu/WSL2)
 
-Navigate to the /e2e-test folder
+```bash
+apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+unset DISPLAY
+```
+
+:::note
+If you are using WSL on Windows check out [this setup](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) to run cypress in WSL.
+:::
+
+Navigate to the `e2e-test` folder and generate the `.env` file. If needed modify the .env file.
 
 ```bash
 cd e2e-test
+cp .env_example .env
 ```
 
-and start the Cypress GUI (recommended):
+### Start E2E-Tests via Cypress
+
+After a provisioned trubudget node is setup and cypress is working as expected the e2e-tests can be started.
+
+:::info
+Make sure following commands are executed from the `e2e-test` directory.
+:::
+
+#### Cypress GUI
+
+Start the `Cypress GUI` to list and be able to execute and follow each test individually.
 
 ```bash
 npm run cypress
 ```
 
-OR start all e2e-tests immediately:
+#### Command-line
+
+Start and follow all e2e-tests on `command line`.
 
 ```bash
 npm run e2etest
 ```
 
-OR start a specific test immediately:
+#### Specific tests via command-line
+
+Start a specific test immediately:
 
 ```bash
 npm run e2etest -- --spec **/currencies_spec.js
 ```
-
-Note: .env\* file is needed. If you have not .env\* file, create one and copy the content from .env_example\* to .env\*.
 
 ### Run Cypress GUI in Docker
 

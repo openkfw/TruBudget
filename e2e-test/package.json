@@ -1,6 +1,6 @@
 {
   "name": "trubudget-e2e-test",
-"version": "1.25.0",
+  "version": "1.26.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "main": "index.js",
   "devDependencies": {
     "accounting": "^0.4.1",
-    "cypress": "^4.12.1",
+    "cypress": "^8.4.0",
     "cypress-dotenv": "^1.2.2",
     "cypress-file-upload": "^4.1.1",
     "dotenv": "^8.2.0",
@@ -31,12 +31,14 @@
   },
   "scripts": {
     "cypress": "cypress open",
+    "cypress-clear": "cypress cache clear",
+    "cypress-verify": "cypress verify",
     "e2etest": "cypress run",
     "e2etest:here": "node ./runTest.js"
   },
   "dependencies": {
     "async-each": "^1.0.3",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "exceljs": "^4.2.0",
     "fs": "0.0.1-security",
     "md5-file": "^5.0.0",
