@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import NameIcon from "@material-ui/icons/AssignmentInd";
 import InfoIcon from "@material-ui/icons/Info";
 import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import strings from "../../localizeStrings";
 import Password from "../Common/Password";
@@ -13,8 +13,9 @@ import Username from "../Common/Username";
 const styles = {
   textInputContainer: {
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: "column",
+    justifyContent: "center",
+    flexWrap: "wrap",
     marginTop: "30px"
   },
   textInput: {
@@ -47,9 +48,12 @@ const UserDialogContent = ({
   setUsername,
   setPassword,
   organization,
-  usernameInvalid
+  usernameInvalid,
+  setConfirmPassword,
+  hasNewPasswordFailed
 }) => {
   const { displayName, password, username } = user;
+
   return (
     <div className={classes.container}>
       <span className={classes.info}>
@@ -57,15 +61,6 @@ const UserDialogContent = ({
         <Typography variant="body2">{strings.users.privacy_notice}</Typography>
       </span>
       <div className={classes.textInputContainer}>
-        <TextInputWithIcon
-          className={classes.textInput}
-          label={strings.users.account_name}
-          value={displayName}
-          error={false}
-          icon={<NameIcon />}
-          data-test="accountname"
-          onChange={event => setDisplayName(event.target.value)}
-        />
         <TextInputWithIcon
           className={classes.textInput}
           label={strings.common.organization}
@@ -76,8 +71,15 @@ const UserDialogContent = ({
           icon={<OrgaIcon />}
           onChange={event => setOrganization(event.target.value)}
         />
-      </div>
-      <div className={classes.textInputContainer}>
+        <TextInputWithIcon
+          className={classes.textInput}
+          label={strings.users.account_name}
+          value={displayName}
+          error={false}
+          icon={<NameIcon />}
+          data-test="accountname"
+          onChange={event => setDisplayName(event.target.value)}
+        />
         <Username
           username={username}
           storeUsername={setUsername}
@@ -91,8 +93,17 @@ const UserDialogContent = ({
           iconDisplayed={true}
           setPassword={setPassword}
           storePassword={setPassword}
-          failed={false}
-          data-test="password"
+          failed={hasNewPasswordFailed}
+          data-test="password-new-user"
+        />
+        <Password
+          iconDisplayed={true}
+          setPassword={setConfirmPassword}
+          storePassword={setConfirmPassword}
+          label={strings.users.new_user_password_confirmation}
+          failed={hasNewPasswordFailed}
+          data-test="password-new-user-confirm"
+          failedText={strings.users.no_password_match}
         />
       </div>
     </div>
