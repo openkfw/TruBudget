@@ -27,6 +27,8 @@ Help()
     echo "  --no-log                        Disable logs of all docker-containers"
     echo "  --provision                     Start the provisioning"
     echo "  --add-slave                     Add a slave-node that trys to connect to master-node"
+    echo "  --add-organization              Add a slave-node, slave-api, slave-frontend from a new Organization."
+    echo "                                  Needs to be approved by master-node"
     echo "  --prune                         Delete the multichain, document storage and email database (docker volume)"
     echo "  --help                          Print the help section"
     echo
@@ -47,7 +49,10 @@ IS_LOG_ENABLED=true
 WITH_PROVISIONING=false
 PRUNE_DATA=false
 COMPOSE_SERVICES=""
+ENABLED_SERVICES=""
+SLAVE_SERVICES=""
 IS_FULL=false
+HAS_SLAVE=false
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -71,11 +76,20 @@ while [ "$1" != "" ]; do
         ;;
         
         --add-slave)
-            ENABLED_SERVICES="${ENABLED_SERVICES} slave-node"
+            if [ "$HAS_SLAVE" = true ]; then echo "Either --add-slave or --add-organization"; exit 1; fi;
+            SLAVE_SERVICES="${SLAVE_SERVICES} slave-node"
+            HAS_SLAVE=true
             echo "INFO: slave-node enabled"
             shift # past argument
         ;;
         
+        --add-organization)
+            if [ "$HAS_SLAVE" = true ]; then echo "Either --add-slave or --add-organization"; exit 1; fi;
+            SLAVE_SERVICES="${SLAVE_SERVICES} slave-node slave-api slave-frontend"
+            echo "INFO: slave-node, slave-api, slave-frontend enabled"
+            HAS_SLAVE=true
+            shift # past argument
+        ;;
         --provision)
             WITH_PROVISIONING=true
             shift # past argument
@@ -193,7 +207,6 @@ if [ "$IS_FULL" = true ]; then
         COMPOSE_SERVICES="master-node emaildb minio master-api email-service excel-export-service storage-service frontend"
     else
         echo "INFO: Setup full TruBudget environment with provisioning ..."
-        # Empty means all containers
         COMPOSE_SERVICES="master-node emaildb minio master-api email-service excel-export-service storage-service provisioning frontend"
     fi
 else
@@ -217,8 +230,8 @@ echo "INFO: Since images are used, building is not necessary and will be skipped
 #$COMPOSE build
 
 # Start docker containers
-echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES"
-$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES
+echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $SLAVE_SERVICES"
+$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $SLAVE_SERVICES
 
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"

@@ -26,7 +26,7 @@ services:
         ipv4_address: 172.20.0.11
     ports:
       - ${RPC_PORT}:${RPC_PORT}
-      - "8085:8085"
+      - "8085:8085" # port for backup
       - "7447:7447"
 
   emaildb:
@@ -93,7 +93,6 @@ services:
         ipv4_address: 172.20.0.4
     ports:
       - ${API_PORT}:${API_PORT}
-      - "9230:9229"
     depends_on:
       - master-node
 
@@ -199,7 +198,6 @@ services:
         API_HOST: master-api
         API_PORT: ${API_PORT}
     environment:
-      PORT: 3000
       NODE_ENV: ${NODE_ENV}
       CHOKIDAR_USEPOLLING: "true" # for hot reloading of source files
       REACT_APP_VERSION: ${REACT_APP_VERSION}
@@ -220,20 +218,21 @@ services:
     ports:
       - "3000:3000"
     stdin_open: true
+    restart: always
 
   slave-node:
     # image: trubudget/blockchain:latest
     build:
       context: ../../blockchain
     environment:
-      RPC_PORT: ${RPC_PORT}
+      RPC_PORT: ${SLAVE_RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
-      ORGANIZATION: ${ORGANIZATION}
+      ORGANIZATION: ${SLAVE_ORGANIZATION}
       # P2P_HOST must be a valid IP-Address. If you pass a domain like "master-node", the windows kernel will shutdown the process because of a segmentation fault
-      P2P_HOST: 172.20.0.11
+      P2P_HOST: 172.20.0.11 # IP of master-node
       P2P_PORT: 7447
       API_PROTO: http
-      API_HOST: master-api
+      API_HOST: master-api # API to send register request
       API_PORT: ${API_PORT}
     depends_on:
       - master-node
@@ -242,5 +241,61 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.12
     ports:
-      - "7448:7447" # slave-node port is 7748 on host
+      - ${SLAVE_RPC_PORT}:${SLAVE_RPC_PORT}
+      - "7448:7447" # slave-node port is 7448 on host
     privileged: true
+
+  slave-api:
+    build: ../../api
+    environment:
+      PORT: ${SLAVE_API_PORT}
+      ORGANIZATION: ${SLAVE_ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${SLAVE_ORGANIZATION_VAULT_SECRET}
+      RPC_HOST: slave-node
+      RPC_PORT: ${SLAVE_RPC_PORT}
+      ROOT_SECRET: ${ROOT_SECRET}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
+      STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
+      STORAGE_SERVICE_HOST: storage-service
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
+      ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
+      ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
+      ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SIGNING_METHOD: ${SIGNING_METHOD}
+      NODE_ENV: ${NODE_ENV}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+    command: ["npm", "run", "watch"] # npm run watch: hot reloading
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.44
+    ports:
+      - ${SLAVE_API_PORT}:${SLAVE_API_PORT}
+    depends_on:
+      - slave-node
+
+  slave-frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile.dev
+      args:
+        API_HOST: slave-api
+        API_PORT: ${SLAVE_API_PORT}
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      REACT_APP_VERSION: ${REACT_APP_VERSION}
+      REACT_APP_EXPORT_SERVICE_ENABLED: "false"
+      REACT_APP_EMAIL_SERVICE_ENABLED: "false"
+      INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
+    # # volume for hot reloading
+    # volumes:
+    #   - "../../frontend/src:/app/src"
+    #   - "/app/node_modules"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.92
+    ports:
+      - "3005:3000"
+    stdin_open: true
+    restart: always

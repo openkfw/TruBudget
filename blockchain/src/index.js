@@ -46,8 +46,6 @@ const P2P_PORT = process.env.P2P_PORT || 7447;
 const API_PROTO = process.env.API_PROTO || "http";
 const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
-const MASTER_API_HOST = process.env.MASTER_API_HOST || API_HOST;
-const MASTER_API_PORT = process.env.MASTER_API_PORT || API_PORT;
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 
 // Email Service
@@ -159,13 +157,7 @@ function initMultichain() {
       ),
     );
     setTimeout(
-      () =>
-        registerNodeAtMaster(
-          ORGANIZATION,
-          API_PROTO,
-          MASTER_API_HOST,
-          MASTER_API_PORT,
-        ),
+      () => registerNodeAtMaster(ORGANIZATION, API_PROTO, API_HOST, API_PORT),
       5000,
     );
   }

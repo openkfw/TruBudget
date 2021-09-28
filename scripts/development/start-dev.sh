@@ -21,6 +21,8 @@ Help()
     echo "      --full                  Starts a TruBudget instance with master-node, emaildb, minio, master-api, email-service,"
     echo "                              provisioning, excel-export-service, storage and frontend."
     echo "      --add-slave             Add a slave-node that trys to connect to master-node"
+    echo "      --add-organization      Add a slave-node, slave-api, slave-frontend from a new Organization."
+    echo "                              Needs to be approved by master-node"
     echo "      --build                 Force docker-compose build"
     echo "      --no-provisioning       Do not start the provisioning"
     echo "-h  | --help                  Print the help section"
@@ -31,26 +33,40 @@ Help()
 
 orange=`tput setaf 214`
 colorReset=`tput sgr0`
+SETUP_MODE="slim"
+SETUP_MODE_SELECTED=false
 EXTRA_SERVICES=""
+HAS_SLAVE=false
 
 echo "INFO: Building, Starting and Provisioning TruBudget for Development"
 
 while [ "$1" != "" ]; do
     case $1 in
         --slim)
-            IS_SLIM=true
-            if [ "$IS_FULL" = true ]; then echo "Either --slim or --full"; exit 1; fi;
+            if [ "$SETUP_MODE_SELECTED" = true ]; then echo "Either --slim or --full"; exit 1; fi;
+            SETUP_MODE="slim"
+            SETUP_MODE_SELECTED=true
             shift # past argument
         ;;
         
         --full)
-            IS_FULL=true
-            if [ "$IS_SLIM" = true ]; then echo "Either --slim or --full"; exit 1; fi;
+            if [ "$SETUP_MODE_SELECTED" = true ]; then echo "Either --slim or --full"; exit 1; fi;
+            SETUP_MODE="full"
+            SETUP_MODE_SELECTED=true
             shift # past argument
         ;;
         
         --add-slave)
+            if [ "$HAS_SLAVE" = true ]; then echo "Either --add-slave or --add-organization"; exit 1; fi;
             EXTRA_SERVICES="slave-node"
+            HAS_SLAVE=true
+            shift # past argument
+        ;;
+        
+        --add-organization)
+            if [ "$HAS_SLAVE" = true ]; then echo "Either --add-slave or --add-organization"; exit 1; fi;
+            EXTRA_SERVICES="slave-node slave-api slave-frontend"
+            HAS_SLAVE=true
             shift # past argument
         ;;
         
@@ -83,7 +99,7 @@ done
 SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
-if [ "$IS_SLIM" = true ]; then
+if [ "$SETUP_MODE" = "slim" ]; then
     # Slim setup
     echo "INFO: Copy $SCRIPT_DIR/.env_example_slim to $SCRIPT_DIR/.env"
     cp $SCRIPT_DIR/.env_example_slim $SCRIPT_DIR/.env
@@ -106,12 +122,13 @@ else
 fi
 
 
-if [ "$IS_SLIM" = true ]; then
+if [ "$SETUP_MODE" = "slim" ]; then
     if [ "$IS_NO_PROVISONING" = true ]; then
         echo "INFO: Setup slim TruBudget environment without provisioning ..."
         $COMPOSE up master-node master-api frontend $EXTRA_SERVICES
     else
         echo "INFO: Setup slim TruBudget environment with provisioning ..."
+        echo "bash start-dev.sh --slim"
         $COMPOSE up master-node master-api provisioning frontend $EXTRA_SERVICES
     fi
 else
