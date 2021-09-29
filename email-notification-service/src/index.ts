@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { body, query } from "express-validator";
+import { createPinoExpressLogger } from "trubudget-logging-service";
 import config from "./config";
 import DbConnector from "./db";
-import logger from "./logger";
 import * as Middleware from "./middleware";
 import sendMail from "./sendMail";
 import {
@@ -15,10 +15,12 @@ import {
   NotificationResponseBody,
 } from "./types";
 import isBodyValid from "./validation";
+import logger from "./logger";
 
 // Setup
 const db = new DbConnector();
 const emailService = express();
+emailService.use(createPinoExpressLogger(logger));
 emailService.use(express.json());
 emailService.use(cors({ origin: config.allowOrigin }));
 

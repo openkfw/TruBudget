@@ -38,8 +38,7 @@
     "knex": "^0.95.11",
     "nodemailer": "^6.4.2",
     "pg": "^8.6.0",
-    "pino": "^5.8.0",
-    "pino-pretty": "^2.2.3"
+    "trubudget-logging-service": "^1.0.14"
   },
   "devDependencies": {
     "@types/express": "^4.17.2",
