@@ -120,15 +120,22 @@ export const createBasicApp = (
   server.setValidatorCompiler(({ schema, method, url, httpPart }) => ajv.compile(schema));
   server.register(metricsPlugin, { endpoint: "/metrics" });
   server.register(fastifyCors, { origin: accessControlAllowOrigin });
-  server.register(helmet, {
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-      },
-    },
-  });
 
   registerSwagger(server, urlPrefix, apiPort, swaggerBasePath);
+
+  // It is important that swagger is registered first in order for a swaggerSCP object to exist on the instance
+  server.register(require("fastify-helmet"), (instance) => {
+    return {
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          imgSrc: ["'self'", "data:", "validator.swagger.io"],
+          scriptSrc: ["'self'"].concat(instance.swaggerCSP.script),
+          styleSrc: ["'self'", "https:"].concat(instance.swaggerCSP.style),
+        },
+      },
+    };
+  });
 
   addTokenHandling(server, jwtSecret);
   addLogging(server);
