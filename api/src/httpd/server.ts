@@ -4,7 +4,6 @@ import * as metricsPlugin from "fastify-metrics";
 import fastifyCors from "fastify-cors";
 import helmet from "fastify-helmet";
 import { IncomingMessage, Server, ServerResponse } from "http";
-
 import logger from "../lib/logger";
 
 const DEFAULT_API_VERSION = "1.0";
@@ -28,7 +27,7 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
     try {
       await request.jwtVerify();
     } catch (err) {
-      logger.debug({ error: err }, "Authentication error");
+      request.log.debug(err, "Authentication error");
       reply.status(401).send({
         apiVersion: DEFAULT_API_VERSION,
         error: { code: 401, message: "A valid JWT auth bearer token is required for this route." },
@@ -39,7 +38,7 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
 
 const addLogging = (server: FastifyInstance) => {
   server.addHook("preHandler", (req, _reply, done) => {
-    logger.debug({
+    req.log.debug({
       id: req.id,
       url: req.raw.url,
       params: req.params,
@@ -47,7 +46,7 @@ const addLogging = (server: FastifyInstance) => {
     done();
   });
   server.addHook("onSend", (req, reply, payload, done) => {
-    logger.debug({
+    req.log.debug({
       id: req.id,
       status: reply.raw.statusCode,
       message: reply.raw.statusMessage,
@@ -113,7 +112,7 @@ export const createBasicApp = (
   accessControlAllowOrigin: string,
 ) => {
   const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
-    logger: false,
+    logger,
     bodyLimit: 104857600,
   });
 

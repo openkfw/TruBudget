@@ -7,7 +7,7 @@ import { MultichainClient } from "../../service/Client.h";
 import * as Nodes from "../model/Nodes";
 
 export async function registerNode(multichain: MultichainClient, req): Promise<HttpResponse> {
-  const input = value("data", req.body.data, x => x !== undefined);
+  const input = value("data", req.body.data, (x) => x !== undefined);
 
   const address: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
 
@@ -28,7 +28,7 @@ export async function registerNode(multichain: MultichainClient, req): Promise<H
   };
   const nodes = await Nodes.get(multichain);
   const nodeExists = nodes.find(
-    node => node.address.address === address && node.address.organization === organization,
+    (node) => node.address.address === address && node.address.organization === organization,
   );
   if (nodeExists) {
     const message = "Node already registered";

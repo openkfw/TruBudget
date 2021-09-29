@@ -18,7 +18,10 @@
  *    }
  *    ```
  */
+
+import logger from "./logger";
+
 export function assertUnreachable(x: never): never {
-  console.trace();
+  logger.trace();
   throw new Error("Didn't expect to get here");
 }

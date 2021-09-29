@@ -852,7 +852,7 @@ ProvisioningStatusAPI.addHttpHandler(server, URL_PREFIX, {
 server.listen(port, "0.0.0.0", async (err) => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
-    console.trace();
+    logger.trace();
     process.exit(1);
   }
 
