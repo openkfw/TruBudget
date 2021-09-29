@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
 import { Response } from "express";
 import * as jwtDecode from "jwt-decode";
+import { Logger } from "pino";
 import {
   getProjects,
   getSubprojects,
@@ -22,7 +23,7 @@ export async function writeXLSX(
   axios: AxiosInstance,
   token: string,
   res: Response,
-  base: string,
+  log: Logger,
 ): Promise<void> {
   try {
     const options = {
@@ -126,7 +127,7 @@ export async function writeXLSX(
       { header: strings.common.currency, key: "currencyCode", width: smallWidth },
       { header: strings.common.amount, key: "value", width: mediumWidth },
     ];
-
+    const base = res.apiBase;
     const projects: Project[] = await getProjects(axios, token, base);
 
     for (const project of projects) {
@@ -220,8 +221,8 @@ export async function writeXLSX(
       }
     }
     await workbook.commit();
-  } catch (error) {
-    console.error(error.message);
-    throw new Error(`Error making request to TruBudget: ${error.message}`);
+  } catch (err) {
+    log.error({ err }, "Error making request to TruBudget:");
+    throw new Error(`Error making request to TruBudget: ${err.message}`);
   }
 }
