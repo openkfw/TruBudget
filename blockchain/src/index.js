@@ -8,6 +8,8 @@ const yaml = require("js-yaml");
 const k8s = require("@kubernetes/client-node");
 const os = require("os");
 const KubernetesClient = require("./kubernetesClient");
+const log = require("./logger");
+const logService = require("trubudget-logging-service");
 
 const {
   startEmailNotificationWatcher,
@@ -65,7 +67,7 @@ const EMAIL_SERVICE_ENABLED =
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
 const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
-const isMaster = !P2P_HOST ? true : false;
+const isMaster = P2P_HOST ? false : true;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
   ? `-blocknotify=${blockNotifyArg}`
   : "";
@@ -75,11 +77,13 @@ const NAMESPACE = process.env.KUBE_NAMESPACE || "";
 const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
 
 if (EMAIL_SERVICE_ENABLED && !emailAuthSecret) {
-  console.log(
-    "Error: Env variable 'JWT_SECRET' not set. Please set the same secret as in the trubudget email-service.",
+  log.error(
+    "Env variable 'JWT_SECRET' not set. Please set the same secret as in the trubudget email-service.",
   );
   os.exit(1);
 }
+
+app.use(logService.createPinoExpressLogger(log));
 
 app.use(
   bodyParser.raw({
@@ -97,16 +101,17 @@ let mcproc;
 const spawnProcess = (startProcess) => {
   mcproc = startProcess();
   isRunning = true;
-  mcproc.on("close", async (code) => {
+  mcproc.on("close", async (code, signal) => {
     isRunning = false;
     if (!autostart) {
-      console.log(
-        `>>> multichaind stopped with exit code ${code} and autorestart is disabled`,
+      log.info(
+        `multichaind stopped with exit code ${code} and signal ${signal}. Autorestart is disabled`,
       );
     } else {
       const retryIntervalMs = 10000;
-      console.log(
-        `>>> Multichain stopped. Retry in ${retryIntervalMs / 1000} Seconds...`,
+      log.info(
+        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${retryIntervalMs /
+          1000} Seconds...`,
       );
       await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));
       spawnProcess(startProcess);
@@ -184,7 +189,7 @@ if (EXPOSE_MC) {
   const kubernetesClient = new KubernetesClient(k8sApi);
 
   kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then((response) => {
-    console.log(`externalIp: ${response}`);
+    log.info(`externalIp: ${response}`);
     if (response) {
       externalIpArg = `-externalip=${response}`;
     }
@@ -221,12 +226,12 @@ const stopMultichain = async (mcproc) => {
     const retryInMs = 3000;
     await new Promise((resolve) => setTimeout(resolve, retryInMs));
   }
-  console.log("Multichain process killed...");
+  log.info("Multichain process killed");
 };
 
 app.get("/chain-sha256", async (req, res) => {
   try {
-    console.log("Start packaging");
+    log.info("Start packaging");
     autostart = false;
     await stopMultichain(mcproc);
     await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
@@ -238,7 +243,7 @@ app.get("/chain-sha256", async (req, res) => {
     tar
       .pack(`${multichainDir}/${CHAINNAME}`, {
         finish: () => {
-          console.log("Restarting multichain...");
+          log.info("Restarting multichain");
           spawnProcess(() =>
             startMultichainDaemon(
               CHAINNAME,
@@ -253,7 +258,7 @@ app.get("/chain-sha256", async (req, res) => {
       })
       .pipe(res);
   } catch (err) {
-    console.log(err);
+    log.error({ err }, "Error while packaging");
     res.status(500).send("INTERNAL SERVER ERROR");
   }
 });
@@ -280,7 +285,7 @@ app.post("/chain", async (req, res) => {
   try {
     const unTARer = rawTar.extract();
     unTARer.on("error", (err) => {
-      console.log(err.message);
+      log.error({ err }, "Error while extracting rawTar: ");
       unTARer.destroy();
       res.status(400).send(err.message);
     });
@@ -325,13 +330,11 @@ app.post("/chain", async (req, res) => {
             autostart = true;
             res.send("OK");
           } else {
-            console.log("Not a valid trubudget backup....");
+            log.warn("Request did not contain a valid trubudget backup");
             res.status(400).send("Not a valid TruBudget backup");
           }
         } else {
-          console.log(
-            "You can't restore a backup with these configurations....",
-          );
+          log.warn("Tried to Backup with invalid configuration");
           res
             .status(400)
             .send("Backup with these configurations is not permitted");
@@ -341,11 +344,11 @@ app.post("/chain", async (req, res) => {
       }
     });
   } catch (err) {
-    console.log(err);
+    log.error({ err }, "Error while trying to get backup: ");
     res.status(500).send(err.message);
   }
 });
 
-app.listen(port, function () {
-  console.log(`App listening on ${port}`);
+app.listen(port, function() {
+  log.info(`App listening on ${port}`);
 });
