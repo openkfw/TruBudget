@@ -124,6 +124,7 @@ services:
       PORT: ${EXPORT_PORT}
       JWT_SECRET: ${JWT_SECRET}
       MODE: DEBUG
+      LOG_LEVEL: ${EXCEL_LOG_LEVEL}
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
      # - "9231:9229"
