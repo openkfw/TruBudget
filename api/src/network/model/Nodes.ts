@@ -111,7 +111,7 @@ export async function publish(
         .getOrCreateStream({ kind: "nodes", name: streamName })
         .then(() => publishEvent());
     } else {
-      logger.error({ error: err }, `Publishing ${intent} failed.`);
+      logger.error({ err }, `Publishing ${intent} failed.`);
       throw err;
     }
   });
@@ -152,7 +152,7 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
         logger.debug(`The stream ${streamName} does not exist yet.`);
         return [];
       } else {
-        logger.error({ error: err }, "Getting stream items failed.");
+        logger.error({ err }, "Getting stream items failed.");
         throw err;
       }
     });

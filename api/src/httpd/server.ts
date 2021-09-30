@@ -63,7 +63,6 @@ const registerSwagger = (
   swaggerBasePath: string,
 ) => {
   server.register(require("fastify-swagger"), {
-    // logLevel: "info",
     routePrefix: `${urlPrefix}/documentation`,
     swagger: {
       info: {

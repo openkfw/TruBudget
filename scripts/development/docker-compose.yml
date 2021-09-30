@@ -65,6 +65,7 @@ services:
       SIGNING_METHOD: ${SIGNING_METHOD}
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+      LOG_LEVEL: ${API_LOG_LEVEL}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:

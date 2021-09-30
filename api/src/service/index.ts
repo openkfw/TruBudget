@@ -57,7 +57,7 @@ export async function getGlobalPermissionList(conn: ConnToken): Promise<Permissi
       logger.debug("Global permissions not found. Happens at startup.");
       return {};
     } else {
-      logger.error({ error: err }, "Error while retrieving global permissions");
+      logger.error({ err }, "Error while retrieving global permissions");
       throw err;
     }
   }
@@ -207,7 +207,7 @@ export async function issueNotification(
         .getOrCreateStream({ kind: "notifications", name: streamName })
         .then(() => publishEvent());
     } else {
-      logger.error({ error: err }, `Publishing ${intent} failed.`);
+      logger.error({ err }, `Publishing ${intent} failed.`);
       throw err;
     }
   });

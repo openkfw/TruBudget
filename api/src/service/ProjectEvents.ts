@@ -414,7 +414,7 @@ export async function issueNotification(
   //       .getOrCreateStream({ kind: "notifications", name: streamName })
   //       .then(() => publishEvent());
   //   } else {
-  //     logger.error({ error: err }, `Publishing ${intent} failed.`);
+  //     logger.error({ err }, `Publishing ${intent} failed.`);
   //     throw err;
   //   }
   // });

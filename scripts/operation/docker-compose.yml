@@ -74,7 +74,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
-    depends_on:
+      LOG_LEVEL: ${API_LOG_LEVEL}
       - master-node
     ports:
       - ${API_PORT}:${API_PORT}
