@@ -10,6 +10,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
+      LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
     # volume for persisting data from multichain
     # volumes:
     #   - /masterVolume:/root/.multichain

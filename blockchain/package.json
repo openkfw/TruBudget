@@ -49,7 +49,7 @@
     "sinon": "^7.2.2",
     "streamifier": "^0.1.1",
     "tar-fs": "^2.1.0",
-    "trubudget-logging-service": "^1.0.14"
+    "trubudget-logging-service": "^1.1.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
