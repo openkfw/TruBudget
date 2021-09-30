@@ -93,6 +93,7 @@ services:
       DB_NAME: ${DB_NAME}
       EMAIL_PORT: ${EMAIL_PORT}
       AUTHENTICATION: ${AUTHENTICATION}
+      LOG_LEVEL: ${EMAIL_LOG_LEVEL}
     depends_on:
       - emaildb
       - master-api
