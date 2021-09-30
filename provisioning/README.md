@@ -11,6 +11,7 @@ The provisioning project creates a bunch of test data via api requests.
 | API_PORT         | 8080          | Port of the api                                                                                                                                                                                                                                                               |
 | ROOT_SECRET      | root-secret   | The root secret is the password for the root user. If you start with an empty blockchain, the root user is needed to add other users, approve new nodes,.. If you don't set a value via the environment variable, the API generates one randomly and prints it to the console |
 | ORGANIZATION     | -             | In the blockchain network, each node is represented by its organization name. This environment variable sets this organization name. It is used to create the organization stream on the blockchain and is also displayed in the frontend's top right corner.                 |
+| LOG_LEVEL        | INFO          | Sets the lowest level to the pino logger that is printed to `STDOUT` with varying levels ranging from `trace` to `fatal`.                                                                                                                                                     |
 
 ## Setup
 

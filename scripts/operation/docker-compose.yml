@@ -111,6 +111,7 @@ services:
       #ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+      LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
     depends_on:
       - master-api
 

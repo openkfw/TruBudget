@@ -25,6 +25,7 @@ const {
   setProvisionStartFlag,
   setProvisionEndFlag,
 } = require("./api");
+const log = require("./logger");
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -63,7 +64,7 @@ axios.interceptors.response.use(
     }
     if (error.response.status === 401) {
       // JWT Token is expired / invalid / not existing => refresh JWT Token
-      console.log("Refresh of JWT Token needed");
+      log.info("Refresh of JWT Token needed");
       impersonate(currentUser);
     }
     return Promise.reject(error.response);
@@ -72,7 +73,7 @@ axios.interceptors.response.use(
 
 const impersonate = async (user) => {
   const token = await authenticate(axios, user.id, user.password);
-  console.log(`Now logged in as ${user.id}`);
+  log.info(`Now logged in as ${user.id}`);
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 
@@ -95,7 +96,7 @@ const provisionWorkflowitem = async (
     workflowitemTemplate
   );
   if (workflowitem) {
-    console.log(
+    log.info(
       `Workflowitem "${workflowitemTemplate.displayName}" already exists `
     );
   } else {
@@ -122,14 +123,14 @@ const provisionWorkflowitem = async (
       subproject,
       workflowitemTemplate
     );
-    console.log(
+    log.info(
       `Workflowitem ${fmtList([project, subproject, workflowitem])} created.`
     );
   }
 
   // Testing updates:
   if (workflowitem.data.status === "open") {
-    console.log(`Updating workflowitem "${workflowitemTemplate.displayName}"`);
+    log.info(`Updating workflowitem "${workflowitemTemplate.displayName}"`);
     await updateWorkflowitem(
       axios,
       project.data.id,
@@ -145,7 +146,7 @@ const provisionWorkflowitem = async (
       workflowitem.data.id
     );
     if (isToBeClosed) {
-      console.log(`Closing workflowitem "${workflowitemTemplate.displayName}"`);
+      log.info(`Closing workflowitem "${workflowitemTemplate.displayName}"`);
       // Only assigned user are allowed to close the workflowitem
       await assignWorkflowitem(
         axios,
@@ -169,16 +170,14 @@ const provisionSubproject = async (project, subprojectTemplate) => {
   let subproject = await findSubproject(axios, project, subprojectTemplate);
   try {
     if (subproject) {
-      console.log(
-        `Subproject already exists ${subprojectTemplate.displayName}`
-      );
+      log.info(`Subproject already exists ${subprojectTemplate.displayName}`);
     } else {
       await createSubproject(axios, project, subprojectTemplate);
 
       subproject = await findSubproject(axios, project, subprojectTemplate);
     }
   } catch (err) {
-    console.log(err);
+    log.error({ err }, "Create Subproject call resulted in error");
   }
   await grantPermissions(
     axios,
@@ -199,7 +198,7 @@ const provisionSubproject = async (project, subprojectTemplate) => {
   }
 
   for (const workflowitemTemplate of subprojectTemplate.workflows) {
-    console.log(
+    log.info(
       `Provisioning workflowitem "${workflowitemTemplate.displayName}" ....`
     );
     await provisionWorkflowitem(project, subproject, workflowitemTemplate);
@@ -215,28 +214,28 @@ const provisionSubproject = async (project, subprojectTemplate) => {
     await closeSubproject(axios, project.data.id, subproject.data.id);
   }
 
-  console.log(`Subproject ${fmtList([project, subproject])} created.`);
+  log.info(`Subproject ${fmtList([project, subproject])} created.`);
 };
 
 const provisionFromData = async (projectTemplate) => {
-  console.log(`Start provisioning project ${projectTemplate.displayName}....`);
+  log.info(`Start provisioning project ${projectTemplate.displayName}....`);
   try {
     const projectExists = await findProject(axios, projectTemplate).then(
       (existingProject) => existingProject !== undefined
     );
     if (projectExists) {
-      console.log(`${projectTemplate.displayName} project already exists.`);
+      log.info(`${projectTemplate.displayName} project already exists.`);
     } else {
       await createProject(axios, projectTemplate);
     }
 
-    console.log("Create subprojects....");
+    log.info("Create subprojects....");
     const isToBeClosed = projectTemplate.status === "closed";
 
     const project = await findProject(axios, projectTemplate);
 
     if (projectTemplate.permissions !== undefined) {
-      console.log("Granting permissions..");
+      log.info("Granting permissions..");
       await grantPermissions(
         axios,
         projectTemplate.permissions,
@@ -248,12 +247,12 @@ const provisionFromData = async (projectTemplate) => {
       projectTemplate.description !== undefined &&
       project.status === "open"
     ) {
-      console.log("Testing project update..");
+      log.info("Testing project update..");
       await updateProject(axios, project.data.id, projectTemplate.description);
     }
 
     for (const subprojectTemplate of projectTemplate.subprojects) {
-      console.log(`Provision Subproject ${subprojectTemplate.displayName}`);
+      log.info(`Provision Subproject ${subprojectTemplate.displayName}`);
       await provisionSubproject(project, subprojectTemplate);
     }
 
@@ -262,10 +261,10 @@ const provisionFromData = async (projectTemplate) => {
       await closeProject(axios, project);
     }
 
-    console.log(`Project ${fmtList([project])} created.`);
+    log.info(`Project ${fmtList([project])} created.`);
   } catch (err) {
     if (err.code && err.code === "MAX_RETRIES") {
-      console.log(
+      log.info(
         `Failed to provision project ${projectTemplate.displayName} , max retries exceeded`
       );
     }
@@ -284,7 +283,7 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
 
   const project = await findProject(axios, closeProjectTest);
   if (project.data.status === "closed") {
-    console.log(
+    log.info(
       "skipped: test project close only works if all subprojects are closed"
     );
     return;
@@ -417,7 +416,7 @@ async function testWorkflowitemUpdate(folder) {
 
   if (workflowitem.data.documents.length !== 0) {
     // throw new Error(
-    console.log(
+    log.info(
       `workflowitem ${workflowitem.data.id} is not expected to already have documents attached. No further documents will be attached.`
     );
   } else {
@@ -452,8 +451,14 @@ async function testWorkflowitemUpdate(folder) {
       !Array.isArray(itemWithDocuments.data.documents) ||
       itemWithDocuments.data.documents.length !== 2
     ) {
-      console.log(itemWithDocuments.data.documents.length);
-      console.log(Array.isArray(itemWithDocuments.data.documents));
+      log.warn(
+        { documentsCount: itemWithDocuments.data.documents.length },
+        "Number of documents"
+      );
+      log.warn(
+        { isArray: Array.isArray(itemWithDocuments.data.documents) },
+        "Is Documents object actually an array?"
+      );
       throw Error("Adding documents to a workflowitem failed :(");
     }
   }
@@ -599,7 +604,7 @@ async function testWorkflowitemReordering(folder) {
 }
 
 async function testApiDocIsAvailable() {
-  queryApiDoc(axios).then(() => console.log("api/documentation OK"));
+  queryApiDoc(axios).then(() => log.info("api/documentation OK"));
 }
 
 async function runIntegrationTests(rootSecret, folder) {
@@ -607,14 +612,14 @@ async function runIntegrationTests(rootSecret, folder) {
   await testWorkflowitemUpdate(folder);
   await testWorkflowitemReordering(folder);
   await testApiDocIsAvailable();
-  console.log("Integration tests complete.");
+  log.info("Integration tests complete.");
 }
 
 async function checkProvisionState(axios) {
   const { isProvisioned, message } = await queryProvisionState(axios);
-  console.log(message);
+  log.info(message);
   if (isProvisioned) {
-    console.log("The blockchain is already provisioned, skip provisioning ...");
+    log.info("The blockchain is already provisioned, skip provisioning ...");
     process.exit(0);
   }
 }
@@ -627,7 +632,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
         : "./src/data/test/";
 
     axios.defaults.baseURL = `http://${host}:${port}/api`;
-    console.log("Axios baseURL is set to " + axios.defaults.baseURL);
+    log.info("Axios baseURL is set to " + axios.defaults.baseURL);
     axios.defaults.timeout = 10000;
 
     currentUser.id = "root";
@@ -636,13 +641,13 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
 
     await checkProvisionState(axios);
 
-    console.log("Start to provision users");
-    console.log("Set provision_started flag on multichain");
+    log.info("Start to provision users");
+    log.info("Set provision_started flag on multichain");
     await setProvisionStartFlag(axios);
     await provisionUsers(axios, folder, organization);
     await provisionGroups(axios, folder);
 
-    console.log("Starting to provision projects");
+    log.info("Starting to provision projects");
     await impersonate(serviceUser);
     const files = readDirectory(folder);
     for (const fileName of files) {
@@ -658,13 +663,11 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     currentUser.id = "root";
     currentUser.password = rootSecret;
     await impersonate(currentUser);
-    console.log("Set provision_ended flag on multichain");
+    log.info("Set provision_ended flag on multichain");
     await setProvisionEndFlag(axios);
   } catch (err) {
-    console.log(err);
+    log.warn({ err }, "Provisioning failed");
     if (err.code && err.code === "MAX_RETRIES") {
-      console.log(err.message);
-      console.log("Provisioning failed....");
       process.exit(1);
     }
   }
@@ -677,11 +680,11 @@ const organization = process.env.ORGANIZATION;
 let currentUser = { id: "root", password: rootSecret };
 
 if (!organization) {
-  console.log("ORGANIZATION not set");
+  log.info("ORGANIZATION not set");
   process.exit(1);
 }
 
 provisionBlockchain(host, port, rootSecret, organization).then(() => {
-  console.log("\x1b[32m%s\x1b[0m", "Successfully provisioned Trubudget!");
+  log.info("\x1b[32m%s\x1b[0m", "Successfully provisioned Trubudget!");
   process.exit(0);
 });

@@ -1,3 +1,5 @@
+const log = require("./logger");
+
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -16,7 +18,7 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       // Only print error but don't stop provisioning
       // 409 - Already exists
       // 412 - Precondition error
-      console.log("The request had no effect: ", err.data.error.message);
+      log.error({ err: err.data.error.message }, "The request had no effect");
     } else if (
       // Stop provisioning but retry same request
       (err.status >= 400 && err.status < 500) ||
@@ -24,7 +26,7 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       (!err.response && err.code === "ECONNABORTED") ||
       (!err.response && err.code === "ECONNRESET")
     ) {
-      console.log(
+      log.warn(
         `Server Error with status code ${err.status} (${
           err.data.error.message
         }), retry in ${timeoutMs / 1000} seconds`
@@ -33,7 +35,7 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       return await withRetry(cb, --maxTimes);
     } else {
       // In case of other error codes including 500 stop provisioning immediatly
-      console.error(err.data);
+      log.error({ err }, "Other Error, aborting provisioning");
       process.exit(1);
     }
   }

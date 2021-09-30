@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "axios": "^0.21.4",
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "trubudget-logging-service": "^1.1.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",

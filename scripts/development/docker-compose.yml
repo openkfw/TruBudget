@@ -114,6 +114,7 @@ services:
       #ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+      LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
     # volumes:
     #   - "../../provisioning/src:/usr/src/app/src:delegated"
     depends_on:
