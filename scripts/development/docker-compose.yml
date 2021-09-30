@@ -150,6 +150,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
+      LOG_LEVEL: ${STORAGE_LOG_LEVEL}
     depends_on:
       - master-api
     command: ["npm", "run", "watch"]
