@@ -1,9 +1,10 @@
 const os = require("os");
 const pino = require("pino");
 
+const logLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
+
 const createPinoLogger = (name) => {
   // Log Parameters
-  const logLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
   const prettyPrintOptions = ["false", "off", "0", "no", "n"];
 
   const base = { hostname: os.hostname() };
@@ -20,11 +21,8 @@ const createPinoLogger = (name) => {
         crlf: false,
       };
 
-  const levelInput = process.env.LOG_LEVEL || "info";
-  const levelInputLowerCase = levelInput.toLowerCase();
-  const level = logLevels.includes(levelInputLowerCase)
-    ? levelInputLowerCase
-    : "info";
+  const logLevelEnvironment = process.env.LOG_LEVEL || "info";
+  const level = getLevel(logLevelEnvironment);
 
   const redact = {
     paths: [
@@ -60,6 +58,15 @@ const createPinoExpressLogger = (pino) => {
   });
 
   return logger;
+};
+
+const getLevel = (levelInput = "") => {
+  const levelInputLowerCase = levelInput.toLowerCase();
+  const level = logLevels.includes(levelInputLowerCase)
+    ? levelInputLowerCase
+    : undefined;
+
+  return level;
 };
 
 module.exports = { createPinoLogger, createPinoExpressLogger };

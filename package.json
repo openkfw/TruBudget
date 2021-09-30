@@ -5,7 +5,8 @@
   },
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "danger": "danger"
+    "danger": "danger",
+    "update-logging": "(cd provisioning && npm i trubudget-logging-service@latest --save); (cd blockchain && npm i trubudget-logging-service@latest --save); (cd api && npm i trubudget-logging-service@latest --save); (cd email-notification-service && npm i trubudget-logging-service@latest --save); (cd excel-export-service && npm i trubudget-logging-service@latest --save); (cd storage-service && npm i trubudget-logging-service@latest --save)"
   },
   "devDependencies": {
     "danger": "^10.6.6",

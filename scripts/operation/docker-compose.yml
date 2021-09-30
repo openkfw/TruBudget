@@ -91,7 +91,6 @@ services:
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       EMAIL_PORT: ${EMAIL_PORT}
-      LOG_LEVEL: ${LOG_LEVEL}
       AUTHENTICATION: ${AUTHENTICATION}
     depends_on:
       - emaildb
