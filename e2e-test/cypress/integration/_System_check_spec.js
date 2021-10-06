@@ -6,6 +6,9 @@ describe("Check if Trubudget Environment is ready", () => {
   it("API is connected and ready", function() {
     cy.task("awaitApiReady", apiBaseUrl, 12, 30000);
   });
+  it("Swagger documentation of API is accessible", function() {
+    cy.visit(`${apiBaseUrl}/api/documentation/static/index.html`).contains("h2", "TruBudget API documentation");
+  });
   it("Excel Export Service is connected and ready", function() {
     cy.task("awaitExcelExportReady", exportServiceBaseUrl, 10, 20000);
   });

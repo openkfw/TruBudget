@@ -76,7 +76,7 @@
     "fastify-helmet": "^5.3.2",
     "fastify-jwt": "^2.3.0",
     "fastify-metrics": "^6.0.3",
-    "fastify-swagger": "^3.3.0",
+    "fastify-swagger": "^4.12.4",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.0",
     "lodash.isequal": "^4.5.0",
