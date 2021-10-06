@@ -70,7 +70,7 @@ Yes, every change is stored in an immutable transaction and can’t be deleted. 
 
 ### What are the constraints or requirements for deploying the TruBudget Multichain Blockchain: network interconnection technology between nodes, speed, bandwidth, platforms (Windows, Linux, MacOS), resources (Processor, memory, hard disk space)?
 
-The requirements can be found in the [installation guide](./installation/create-new-network/bare-metal.md).
+The requirements can be found in the [minimum requirements](../developer/load-tests.md#minimum-requirements).
 
 ### What is the maximum number of nodes that TruBudget can support?
 
@@ -83,7 +83,7 @@ There are two ways Nodes can join the TruBudget network:
 - A node of a new organization wants to join
 - A node of an existing organization wants to join
 
-In both cases a certain number of organizations in the network has to approve the new node. The difference is that a new organization needs 51% of all organizations in the network and a new node of an existing organization only needs one approval. More about how to connect a new node to an existing network can be found in the [documentation](./installation/connect-to-existing-node/connect-docker-compose.md).
+In both cases a certain number of organizations in the network has to approve the new node. The difference is that a new organization needs 51% of all organizations in the network and a new node of an existing organization only needs one approval. More about how to connect a new node to an existing network can be found in the documentation of [Connect to an existing network](./installation/create-new-network/create-new-docker-compose.md#connect-to-an-existing-blockchain-network).
 
 ### Given that third party organizations who manage blockchain nodes are required to comply with the same security standards, what is the security policy or security measures applicable to the nodes to be integrated into TruBudget in terms of security governance (governance model, node control process), regulatory requirements, prevention (data protection, application protection, identity protection, infrastructure protection), resilience?
 
