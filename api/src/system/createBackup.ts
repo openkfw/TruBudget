@@ -15,11 +15,10 @@ export const createBackup = async (
         responseType: "stream",
       });
       return response.data;
-    } catch (e) {
-      console.log("bc response error", e);
-      throw e;
+    } catch (err) {
+      req.log.error({ err }, "bc response error");
+      throw err;
     }
-
   } else {
     throw { kind: "AuthenticationError", userId };
   }

@@ -10,6 +10,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
+      LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
     # volume for persisting data from multichain
     # volumes:
     #   - /masterVolume:/root/.multichain
@@ -65,6 +66,7 @@ services:
       SIGNING_METHOD: ${SIGNING_METHOD}
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+      LOG_LEVEL: ${API_LOG_LEVEL}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
@@ -89,8 +91,8 @@ services:
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       EMAIL_PORT: ${EMAIL_PORT}
-      LOG_LEVEL: ${LOG_LEVEL}
       AUTHENTICATION: ${AUTHENTICATION}
+      LOG_LEVEL: ${EMAIL_LOG_LEVEL}
     # volume for hot reloading
     volumes:
       - "../../email-notification-service/src:/home/node/src:delegated"
@@ -112,6 +114,7 @@ services:
       #ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+      LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
     # volumes:
     #   - "../../provisioning/src:/usr/src/app/src:delegated"
     depends_on:
@@ -127,6 +130,7 @@ services:
       PORT: ${EXPORT_PORT}
       JWT_SECRET: ${JWT_SECRET}
       MODE: DEBUG
+      LOG_LEVEL: ${EXCEL_LOG_LEVEL}
     command: ["npm", "run", "watch"]
     # volume for hot reloading
     volumes:
@@ -147,6 +151,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
+      LOG_LEVEL: ${STORAGE_LOG_LEVEL}
     depends_on:
       - master-api
     command: ["npm", "run", "watch"]

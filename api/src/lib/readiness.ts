@@ -7,8 +7,8 @@ export async function isReady(multichain: MultichainClient): Promise<boolean> {
 
     const addressList = await rpcClient.invoke("listaddresses");
     const addressCsv = addressList
-      .filter(x => x.ismine)
-      .map(x => x.address)
+      .filter((x) => x.ismine)
+      .map((x) => x.address)
       .join(",");
 
     const result = await rpcClient.invoke("listpermissions", "send", addressCsv);

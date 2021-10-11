@@ -26,6 +26,8 @@
 | NODE_ENV                      | no       | production    | If set to `development` api will allow any string as password. If set to `production` passwords must satisfy safePasswordSchema, see lib/joiValidation-.ts & -.spec.ts files                                                                                                                                                                                                      |
 | ACCESS_CONTROL_ALLOW_ORIGIN   | no       | "\*"          | Since the service uses CORS, the domain by which it can be called needs to be set. Setting this value to `"*"` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).                                                                                                                            |
 
+|
+
 ## Setup
 
 ### Development

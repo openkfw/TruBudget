@@ -15,14 +15,14 @@ export async function approveNewOrganization(
 ): Promise<HttpResponse> {
   const multichain = conn.multichainClient;
 
-  const input = value("data", req.body.data, x => x !== undefined);
+  const input = value("data", req.body.data, (x) => x !== undefined);
   const organization: string = value("organization", input.organization, isNonemptyString);
 
-  const futureOrganizationAddress = await Nodes.get(multichain).then(infos =>
+  const futureOrganizationAddress = await Nodes.get(multichain).then((infos) =>
     infos
-      .filter(x => x.address.organization === organization)
-      .map(x => x.address.address)
-      .find(_ => true),
+      .filter((x) => x.address.organization === organization)
+      .map((x) => x.address.address)
+      .find((_) => true),
   );
 
   if (!futureOrganizationAddress) {

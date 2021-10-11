@@ -1,4 +1,3 @@
-import * as URL from "url";
 import {
   uploadAsPromised,
   downloadAsPromised,
@@ -8,6 +7,11 @@ import config from "./config";
 import * as express from "express";
 import * as cors from "cors";
 import { query, body, validationResult } from "express-validator";
+import { Logger } from "pino";
+import {
+  createPinoLogger,
+  createPinoExpressLogger,
+} from "trubudget-logging-service";
 
 interface DocumentUploadRequest extends express.Request {
   query: {
@@ -17,12 +21,14 @@ interface DocumentUploadRequest extends express.Request {
     fileName: string;
     content: string;
   };
+  log: Logger;
 }
 interface DocumentDownloadRequest extends express.Request {
   query: {
     docId: string;
     secret: string;
   };
+  log: Logger;
 }
 
 interface DocumentUploadResponseBody extends express.Response {
@@ -32,9 +38,12 @@ interface DocumentUploadResponseBody extends express.Response {
   };
 }
 
+export const log = createPinoLogger("Storage-Service");
+
 // Setup
 const app = express();
 app.use(cors());
+app.use(createPinoExpressLogger(log));
 app.options(config.allowOrigin, cors());
 
 const allowOrigins = config.allowOrigin.split(",");
@@ -100,13 +109,14 @@ app.post(
         docId,
       });
       res.send({ docId, secret: result }).end();
-    })().catch((error) => {
-      if (error.code === "NoSuchBucket") {
-        console.log(
-          "ERROR: NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio",
+    })().catch((err) => {
+      if (err.code === "NoSuchBucket") {
+        req.log.error(
+          err,
+          "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio",
         );
       }
-      res.status(500).send(error).end();
+      res.status(500).send(err).end();
     });
   },
 );
@@ -137,10 +147,11 @@ app.get(
       } else {
         res.send(result).end();
       }
-    })().catch((error) => {
-      if (error.code === "NoSuchBucket") {
-        console.log(
-          "ERROR: NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio",
+    })().catch((err) => {
+      if (err.code === "NoSuchBucket") {
+        req.log.error(
+          err,
+          "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio",
         );
       }
       res.status(404).end();
@@ -149,6 +160,6 @@ app.get(
 );
 
 app.listen(config.port, async () => {
-  console.log(`Starting TruBudget storage server on ${config.port}`);
+  log.info(`Starting TruBudget storage server on ${config.port}`);
   await establishConnection();
 });

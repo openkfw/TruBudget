@@ -67,7 +67,7 @@ export class RpcMultichainClient implements MultichainClient {
           );
           return options.name;
         }
-        logger.error({ error: err }, "Stream could not be created.");
+        logger.error({ err }, "Stream could not be created.");
         throw err;
       });
 

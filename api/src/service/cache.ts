@@ -54,7 +54,7 @@ async function invalidateProjectStreamsCache(cache: Cache): Promise<void> {
 
 async function grabWriteLock(cache: Cache) {
   while (cache.isWriteLocked) {
-    await new Promise(res => setTimeout(res, 1));
+    await new Promise((res) => setTimeout(res, 1));
   }
   cache.isWriteLocked = true;
 }
@@ -161,7 +161,7 @@ async function getProjectStreams(conn: ConnToken, projectId?: string): Promise<S
   const isStreamCacheEnabled = PROJECT_STREAMS_MILLISECONDS_TO_LIVE > 0;
   if (projectId !== undefined) {
     if (isStreamCacheEnabled && cache.projectStreams !== undefined) {
-      return cache.projectStreams.filter(x => x.name === projectId);
+      return cache.projectStreams.filter((x) => x.name === projectId);
     } else {
       // liststreams also gives us streams from the mempool (with confirmed=0).
       return await multichainClient.streams(projectId);
@@ -176,7 +176,7 @@ async function getProjectStreams(conn: ConnToken, projectId?: string): Promise<S
       const streams = await conn.multichainClient.streams();
 
       // We only cache projects, so we reject all other streams:
-      cache.projectStreams = streams.filter(x => x.details.kind === "project");
+      cache.projectStreams = streams.filter((x) => x.details.kind === "project");
 
       // Invalidate the cached data eventually:
       setTimeout(() => invalidateProjectStreamsCache(cache), PROJECT_STREAMS_MILLISECONDS_TO_LIVE);
@@ -199,7 +199,7 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
   for (const { name: streamName, items: nStreamItems } of projectStreams) {
     if (nStreamItems === 0) {
       if (logger.levelVal >= logger.levels.values.debug) {
-        const stream = projectStreams.find(x => x.name === streamName);
+        const stream = projectStreams.find((x) => x.name === streamName);
         logger.debug({ stream }, `Found empty stream ${streamName}`);
       }
       continue;
@@ -283,8 +283,7 @@ async function updateCache(conn: ConnToken, maybeOnlySpecificProject?: string): 
     const elapsedMilliseconds = (hrtimeDiff[0] * 1e9 + hrtimeDiff[1]) / 1e6;
     logger.debug(
       cache.streamState,
-      `Stream cache updated in ${elapsedMilliseconds} ms: ${projectStreams.length
-      } projects (${nUpdatedProjects} updated, ${nRebuiltProjects} rebuilt)`,
+      `Stream cache updated in ${elapsedMilliseconds} ms: ${projectStreams.length} projects (${nUpdatedProjects} updated, ${nRebuiltProjects} rebuilt)`,
     );
   }
 }

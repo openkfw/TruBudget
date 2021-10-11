@@ -6,7 +6,7 @@ import { People, Permissions } from "./types";
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
 
-const intersection = (groups1, groups2) => groups1.filter(g1 => groups2.indexOf(g1) !== -1);
+const intersection = (groups1, groups2) => groups1.filter((g1) => groups2.indexOf(g1) !== -1);
 
 export const hasIntersection = (actualGroups, allowedGroups) =>
   intersection(actualGroups, allowedGroups).length > 0;
@@ -22,7 +22,7 @@ export const getAllowedIntents = (
   if (userAndGroups.includes("root")) {
     return allIntents;
   }
-  const allowedIntents = Object.keys(resourcePermissions as any).filter(intent =>
+  const allowedIntents = Object.keys(resourcePermissions as any).filter((intent) =>
     hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
   return allowedIntents;

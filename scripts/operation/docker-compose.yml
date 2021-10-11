@@ -11,6 +11,7 @@ services:
       EMAIL_SERVICE: ${EMAIL_SERVICE}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
+      LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
     # volume for persisting data from multichain
     volumes:
       - /masterVolume:/root/.multichain
@@ -74,7 +75,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
-    depends_on:
+      LOG_LEVEL: ${API_LOG_LEVEL}
       - master-node
     ports:
       - ${API_PORT}:${API_PORT}
@@ -91,8 +92,8 @@ services:
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       EMAIL_PORT: ${EMAIL_PORT}
-      LOG_LEVEL: ${LOG_LEVEL}
       AUTHENTICATION: ${AUTHENTICATION}
+      LOG_LEVEL: ${EMAIL_LOG_LEVEL}
     depends_on:
       - emaildb
       - master-api
@@ -110,6 +111,7 @@ services:
       #ENVIRONMENT_TYPE: PROD
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
+      LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
     depends_on:
       - master-api
 
@@ -123,6 +125,7 @@ services:
       PORT: ${EXPORT_PORT}
       JWT_SECRET: ${JWT_SECRET}
       MODE: DEBUG
+      LOG_LEVEL: ${EXCEL_LOG_LEVEL}
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
      # - "9231:9229"
@@ -138,6 +141,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
+      LOG_LEVEL: ${STORAGE_LOG_LEVEL}
     depends_on:
       - minio
       - master-api

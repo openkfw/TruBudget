@@ -32,17 +32,13 @@ export async function ensureOrganizationStream(
   multichain: MultichainClient,
   organization: Organization,
   organizationVaultSecret: string,
-): Promise<void> {
+): Promise<string> {
   await multichain.getOrCreateStream({
     kind: "organization",
     name: organizationStreamName(organization),
   });
 
-  const organizationAddress = await ensureOrganizationAddress(
-    multichain,
-    organization,
-    organizationVaultSecret,
-  );
+  return ensureOrganizationAddress(multichain, organization, organizationVaultSecret);
 }
 
 async function getPrivateKeyItem(

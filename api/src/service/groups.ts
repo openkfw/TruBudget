@@ -13,8 +13,8 @@ import * as Liststreamkeyitems from "./liststreamkeyitems";
 export function getUsers(conn: ConnToken, groupId: string): Promise<string[]> {
   if (isEmpty(groupId)) return Promise.resolve([]);
   return getGroup(conn.multichainClient, groupId)
-    .then(group => group.users)
-    .catch(_ => []);
+    .then((group) => group.users)
+    .catch((_) => []);
 }
 
 export async function addUser(

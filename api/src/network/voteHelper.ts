@@ -59,9 +59,9 @@ async function getCurrentAccess(
   const permissions = await Nodes.getNetworkPermissions(multichain, address);
 
   const hasAdminPermissions = permissions
-    .filter(x => x.permission === "admin")
-    .map(x => x.isEffective)
-    .find(_ => true);
+    .filter((x) => x.permission === "admin")
+    .map((x) => x.isEffective)
+    .find((_) => true);
 
   if (hasAdminPermissions) {
     logger.debug("Node has admin permissions");
@@ -69,9 +69,9 @@ async function getCurrentAccess(
   }
 
   const hasBasicPermissions = permissions
-    .filter(x => x.permission === "connect")
-    .map(x => x.isEffective)
-    .find(_ => true);
+    .filter((x) => x.permission === "connect")
+    .map((x) => x.isEffective)
+    .find((_) => true);
 
   if (hasBasicPermissions) {
     logger.debug("Node has basic permissions");

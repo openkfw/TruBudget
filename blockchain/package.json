@@ -44,13 +44,12 @@
     "js-yaml": "^3.13.1",
     "jsonwebtoken": "^8.5.1",
     "md5-file": "^4.0.0",
-    "pino": "^5.17.0",
-    "pino-pretty": "^3.6.0",
     "sha256-file": "^1.0.0",
-    "shelljs": "^0.8.2",
+    "shelljs": "^0.8.4",
     "sinon": "^7.2.2",
     "streamifier": "^0.1.1",
-    "tar-fs": "^2.1.0"
+    "tar-fs": "^2.1.0",
+    "trubudget-logging-service": "^1.1.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",

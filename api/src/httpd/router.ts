@@ -43,7 +43,7 @@ const handleError = (req, res, err: any) => {
     }
     case "AddressIsInvalid": {
       const message = "The address is invalid.";
-      logger.error({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         400,
         {
@@ -56,7 +56,7 @@ const handleError = (req, res, err: any) => {
 
     case "IdentityAlreadyExists": {
       const message = `ID ${err.targetId} already exists.`;
-      logger.error({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         409,
         {
@@ -151,7 +151,7 @@ const handleError = (req, res, err: any) => {
 
     case "CorruptFileError": {
       const message = "File corrupt.";
-      logger.error({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         400,
         {
