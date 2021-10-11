@@ -17,12 +17,12 @@ describe("Subproject Permissions", function() {
   });
 
   beforeEach(function() {
+    permissionsBeforeTesting = { project: {}, subproject: {} };
     cy.login();
     cy.createProject("p-subp-permissions", "subproject permissions test").then(({ id }) => {
       projectId = id;
       cy.createSubproject(projectId, subprojectDisplayname).then(({ id }) => {
         subprojectId = id;
-        permissionsBeforeTesting = { project: {}, subproject: {} };
         cy.listProjectPermissions(projectId).then(permissions => {
           permissionsBeforeTesting.project = permissions;
         });
@@ -37,8 +37,6 @@ describe("Subproject Permissions", function() {
     cy.intercept(apiRoute + "/project.viewDetails*").as("viewDetailsProject");
     cy.intercept(apiRoute + "/project.intent.grantPermission").as("grantProjectPermission");
     cy.intercept(apiRoute + "/subproject.intent.grantPermission").as("grantSubprojectPermission");
-    // cy.intercept(apiRoute + "/user.list").as("listUsers");
-    // cy.intercept(apiRoute + "/group.list").as("listGroups");
   });
 
   function alphabeticalSort(a, b) {
@@ -623,10 +621,14 @@ describe("Subproject Permissions", function() {
       .click()
       // Intercepting after the confirmation makes sure it's the next viewDetails fetch including all changes
       .intercept(apiRoute + "/project.viewDetails*")
-      .as("ChangesFromAdditionalActionsApplied");
+      .as("viewDetailsProjectAfterSubmit");
 
     // Check permissions has changed
-    cy.wait("@ChangesFromAdditionalActionsApplied").visit(`/projects/${projectId}`);
+    // Due to liveUpdate, viewDetailsProjectAfterSubmit has to be waited for 3 times
+    cy.wait("@viewDetailsProjectAfterSubmit")
+      .wait("@viewDetailsProjectAfterSubmit")
+      .wait("@viewDetailsProjectAfterSubmit")
+      .visit(`/projects/${projectId}`);
     cy.get("[data-test=subproject-" + subprojectId + "]")
       .should("be.visible")
       .within(() => {
