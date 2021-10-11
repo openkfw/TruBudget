@@ -1,5 +1,5 @@
 import _isEmpty from "lodash/isEmpty";
-import React from "react";
+import React, { useState } from "react";
 
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
@@ -54,32 +54,57 @@ const Dialog = props => {
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
   let title = "";
 
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [hasNewPasswordFailed, setHasNewPasswordFailed] = useState(false);
+
   const { groupId, name: groupName, groupUsers } = groupToAdd;
   let steps, handleSubmitFunc;
+
+  const handleAddUser = () => {
+    if (username === "root") {
+      setUsernameInvalid(true);
+      return;
+    }
+
+    if (confirmPassword !== password) {
+      setHasNewPasswordFailed(true);
+      return;
+    }
+
+    setHasNewPasswordFailed(false);
+    setUsernameInvalid(false);
+
+    createUser(displayName, userOrganization, username, password);
+
+    if (hasAdminPermissions) {
+      grantAllUserPermissions(username);
+    }
+
+    hideDashboardDialog();
+
+    storeSnackbarMessage(strings.users.user_created);
+    showSnackbar();
+  };
+
   switch (dialogType) {
     case "addUser":
       steps = [
         {
           title: strings.users.add_user,
-          content: <UserDialogContent {...props} user={userToAdd} />,
-          nextDisabled: _isEmpty(username) || _isEmpty(password) || _isEmpty(displayName)
+          content: (
+            <UserDialogContent
+              {...props}
+              user={userToAdd}
+              setConfirmPassword={setConfirmPassword}
+              hasNewPasswordFailed={hasNewPasswordFailed}
+            />
+          ),
+          nextDisabled: _isEmpty(username) || _isEmpty(password) || _isEmpty(confirmPassword) || _isEmpty(displayName)
         }
       ];
-      handleSubmitFunc = () => {
-        if (username !== "root") {
-          setUsernameInvalid(false);
-          createUser(displayName, userOrganization, username, password);
-          if (hasAdminPermissions) {
-            grantAllUserPermissions(username);
-          }
-          hideDashboardDialog();
-          storeSnackbarMessage(strings.users.user_created);
-          showSnackbar();
-        } else {
-          setUsernameInvalid(true);
-        }
-      };
+      handleSubmitFunc = handleAddUser;
       break;
+
     case "addGroup":
       steps = [
         {
@@ -95,6 +120,7 @@ const Dialog = props => {
         showSnackbar();
       };
       break;
+
     case "editUserPermissions":
       const userToEditPermissions = users.find(user => user.id === editId);
       steps = [
@@ -131,8 +157,8 @@ const Dialog = props => {
         });
         hideDashboardDialog();
       };
-
       break;
+
     case "editGroup":
       const group = groups.find(group => group.groupId === editId);
       const groupToEdit = {
@@ -158,10 +184,7 @@ const Dialog = props => {
           submitButtonText: strings.common.done
         }
       ];
-      handleSubmitFunc = () => {
-        hideDashboardDialog();
-      };
-
+      handleSubmitFunc = hideDashboardDialog;
       break;
 
     default:
@@ -176,7 +199,7 @@ const Dialog = props => {
       numberOfSteps={steps.length}
       onDialogCancel={props.hideDashboardDialog}
       dialogShown={dashboardDialogShown}
-      handleSubmit={() => handleSubmitFunc()}
+      handleSubmit={handleSubmitFunc}
       {...props}
     />
   );

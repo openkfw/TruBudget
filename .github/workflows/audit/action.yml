@@ -3,5 +3,5 @@ runs:
   using: "composite"
   steps:
     - name: Audit project ${{ matrix.project }}
-      run: cd ${{ matrix.project }} && npm install && npm audit --production
+      run: cd ${{ matrix.project }} && npm install --no-audit && npm audit --production
       shell: bash

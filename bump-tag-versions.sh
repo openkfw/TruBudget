@@ -14,6 +14,8 @@ do
     eval "cd $project"
     echo "Bumping $project ..."
     eval "sed -i '/\"version\": \"/c\"version\": \"$trubudget_version\",' ./package.json"
-    eval "npm install"
+    eval "npm install --no-audit"
+    echo "Auditing only production dependencies ..."
+    eval "npm audit --production"
     eval "cd .."
 done

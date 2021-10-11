@@ -86,7 +86,10 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test=username] input")
       .type("testuser")
       .should("have.value", "testuser");
-    cy.get("[data-test=password] input")
+    cy.get("[data-test=password-new-user] input")
+      .type("test")
+      .should("have.value", "test");
+    cy.get("[data-test=password-new-user-confirm] input")
       .type("test")
       .should("have.value", "test");
     cy.get("[data-test=submit]").click();
@@ -109,11 +112,32 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test=username] input")
       .type("root")
       .should("have.value", "root");
-    cy.get("[data-test=password] input")
+    cy.get("[data-test=password-new-user] input")
+      .type("test")
+      .should("have.value", "test");
+    cy.get("[data-test=password-new-user-confirm] input")
       .type("test")
       .should("have.value", "test");
     cy.get("[data-test=submit]").click();
     cy.get("#username-helper-text").contains("Invalid login ID");
     cy.get("[data-test=cancel]").click();
+  });
+
+  it("An info is shown if the password and confirmation-password are not equal", function() {
+    cy.get("[data-test=create]").click();
+    cy.get("[data-test=accountname] input")
+      .type("newUser")
+      .should("have.value", "newUser");
+    cy.get("[data-test=username] input")
+      .type("newUser")
+      .should("have.value", "newUser");
+    cy.get("[data-test=password-new-user] input")
+      .type("password")
+      .should("have.value", "password");
+    cy.get("[data-test=password-new-user-confirm] input")
+      .type("differentPassword")
+      .should("have.value", "differentPassword");
+    cy.get("[data-test=submit]").click();
+    cy.get("[data-test=password-new-user-confirm]").contains("Passwords don't match");
   });
 });
