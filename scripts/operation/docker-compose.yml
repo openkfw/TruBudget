@@ -1,4 +1,11 @@
 version: "3"
+
+networks:
+  mynetwork:
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+
 services:
   master-node:
     image: trubudget/blockchain:${TAG}
@@ -12,6 +19,9 @@ services:
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.11
     # volume for persisting data from multichain
     volumes:
       - /masterVolume:/root/.multichain
@@ -32,6 +42,9 @@ services:
       # volume for persisting data
     volumes:
       - /emaildbVolume:/var/lib/postgresql/data
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.2
     ports:
       - 5432:5432
 
@@ -51,6 +64,9 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.3
 
   master-api:
     image: trubudget/api:${TAG}
@@ -76,7 +92,11 @@ services:
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
       LOG_LEVEL: ${API_LOG_LEVEL}
+    depends_on:
       - master-node
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.4
     ports:
       - ${API_PORT}:${API_PORT}
       #- "9230:9229"
@@ -94,6 +114,9 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       AUTHENTICATION: ${AUTHENTICATION}
       LOG_LEVEL: ${EMAIL_LOG_LEVEL}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.5
     depends_on:
       - emaildb
       - master-api
@@ -112,6 +135,9 @@ services:
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
       LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.6
     depends_on:
       - master-api
 
@@ -128,7 +154,9 @@ services:
       LOG_LEVEL: ${EXCEL_LOG_LEVEL}
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
-     # - "9231:9229"
+    networks:
+     mynetwork:
+       ipv4_address: 172.21.0.7
     depends_on:
       - master-api
 
@@ -142,6 +170,9 @@ services:
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
       LOG_LEVEL: ${STORAGE_LOG_LEVEL}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.8
     depends_on:
       - minio
       - master-api
@@ -150,6 +181,7 @@ services:
 
   frontend:
     image: trubudget/frontend:${TAG}
+    restart: always
     environment:
       NODE_ENV: ${NODE_ENV}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
@@ -165,28 +197,84 @@ services:
       EXPORT_PORT: ${EXPORT_PORT}
       EXPORT_HOST: ${EXPORT_HOST}
       INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.91
     depends_on:
       - master-api
     ports:
       - "3000:80" # map nginx port 80 to localhost:3000
 
-  # slave-node:
-  #   # image: trubudget/blockchain:latest
-  #   image: trubudget/blockchain:${TAG}
-  #   environment:
-  #     RPC_PORT: ${RPC_PORT}
-  #     RPC_PASSWORD: ${RPC_PASSWORD}
-  #     ORGANIZATION: ${ORGANIZATION}
-  #     P2P_HOST: master-node
-  #     P2P_PORT: 7447
-  #     API_PROTO: http
-  #     API_HOST: master-api
-  #     API_PORT: ${API_PORT}
-  #     EXTERNAL_IP: master-node
-  #   depends_on:
-  #     - master-node
-  #   links:
-  #     - master-node
-  #     - master-api
-  #   ports:
-  #     - "7448:7447" # SLAVE_P2P_PORT
+  slave-node:
+    image: trubudget/blockchain:latest
+    environment:
+      RPC_PORT: ${SLAVE_RPC_PORT}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      ORGANIZATION: ${SLAVE_ORGANIZATION}
+      # P2P_HOST must be a valid IP-Address. If you pass a domain like "master-node", the windows kernel will shutdown the process because of a segmentation fault
+      P2P_HOST: 172.21.0.11 # IP of master-node
+      P2P_PORT: 7447
+      API_PROTO: http
+      API_HOST: master-api # API to send register request
+      API_PORT: ${API_PORT}
+    volumes:
+      - /slave1Volume:/root/.multichain
+    depends_on:
+      - master-node
+      - master-api
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.12
+    ports:
+      - ${SLAVE_RPC_PORT}:${SLAVE_RPC_PORT}
+      - "7448:7447" # slave-node port is 7448 on host  
+    privileged: true  
+
+  slave-api:
+    image: trubudget/api:${TAG}
+    environment:
+      PORT: ${SLAVE_API_PORT}
+      ORGANIZATION: ${SLAVE_ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${SLAVE_ORGANIZATION_VAULT_SECRET}
+      RPC_HOST: slave-node
+      RPC_PORT: ${SLAVE_RPC_PORT}
+      ROOT_SECRET: ${ROOT_SECRET}
+      RPC_PASSWORD: ${RPC_PASSWORD}
+      DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
+      STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
+      STORAGE_SERVICE_HOST: storage-service
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
+      ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
+      ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
+      ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SIGNING_METHOD: ${SIGNING_METHOD}
+      NODE_ENV: ${NODE_ENV}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.44
+    ports:
+      - ${SLAVE_API_PORT}:${SLAVE_API_PORT}
+    depends_on:
+      - slave-node
+
+  slave-frontend:
+    image: trubudget/frontend:${TAG}
+    restart: always
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      REACT_APP_EXPORT_SERVICE_ENABLED: "false"
+      REACT_APP_EMAIL_SERVICE_ENABLED: "false"
+      PROD_API_HOST: slave-api
+      PROD_API_PORT: ${SLAVE_API_PORT}
+      TEST_API_HOST: slave-api
+      TEST_API_PORT: ${SLAVE_API_PORT}
+      INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.92
+    depends_on:
+      - master-api
+    ports:
+      - "3005:80" # map nginx port 80 to localhost:3005

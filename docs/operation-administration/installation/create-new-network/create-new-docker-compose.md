@@ -19,24 +19,26 @@ The deployments are abstracted through shell scripts. We expect you to have a UN
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
     - [Docker & Docker Compose](#docker--docker-compose)
-    - [Ports](#ports)
-    - [Verify version](#verify-version)
+    - [Ports and IP Addresses for TruBudget](#ports-and-ip-addresses-for-trubudget)
+    - [Verify version](#verify-version-of-trubudget)
     - [Clean installation](#clean-installation)
   - [Create a new Blockchain network](#create-a-new-blockchain-network)
+  - [Connect to an existing Blockchain network](#connect-to-an-existing-blockchain-network)
 
 ## Prerequisites
 
 ### Docker & Docker Compose
 
-The whole deployment is based on Docker and Docker Compose, therefore please follow the instructions on how to setup [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/#install-compose) (find an Ubuntu-related guide [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04)).
+The whole deployment is based on Docker and Docker Compose, therefore you need to install [Docker](https://www.docker.com/community-edition#/download) (version 20.10.7 or higher) and [Docker Compose](https://docs.docker.com/compose/install/) (version 1.29.2 or higher).
 
-You need at least docker engine version 17.06.
+### Ports and IP Addresses for TruBudget
 
-### Ports
+Make sure that the following ports are not blocked by other processes: `3000`, `8080`, `8090`, `9000`, `8081`, `7447`, `7448`.
+Also make sure that IPv4 subnet mask `172.21.0.0/24` is free to use on your computer.
 
-Make sure that the following ports are not blocked by other processes: `80`, `8080`, `8081`, `7447`, `7448`
+If the subnet mask or some ports are already used by other proccesses or programs, you can easily change the port in the `.env` file that is located in `/scripts/operations/`.
 
-### Verify version
+### Verify version of TruBudget
 
 Start with checking out the repository:
 
@@ -45,22 +47,24 @@ git clone https://github.com/openkfw/TruBudget
 cd TruBudget
 ```
 
-This will create a local copy of the source code in a folder called `TruBudget` (= your local checkout).
+This will create a local copy of the latest source code in a folder called `TruBudget` (= your local checkout).
 
 If you work with an existing checkout, make sure you have the latest changes:
 
 ```bash
+git checkout master
 git pull
 ```
-
-In order to pull the images from the Docker Hub, you need to be logged in with your Docker credentials.
 
 ### Clean installation
 
 If you have previously started a TruBudget instance and want to start a new Blockchain network without previously stored data, remove the Docker volumes with:
 
 ```bash
-rm -r /tmp/bc*
+sudo rm -r /masterVolume
+sudo rm -r /slave1Volume
+sudo rm -r /minioVolume
+sudo rm -r /emaildbVolume
 ```
 
 If this is either your first time starting TruBudget or you want to resume where you left off, skip this step.
@@ -68,96 +72,53 @@ If this is either your first time starting TruBudget or you want to resume where
 ## Create a new Blockchain network
 
 Each Blockchain container comes with its own volume that persists the data of the Blockchain.
-To modify the host path, meaning the path where the data will be persisted on your local machine, navigate to the docker-compose file:
-
-```
-docker-compose/master/master-node.yml
-```
-
-If you want to run the network with your local sources, update the volume in the following file:
-
-```bash
-docker-compose/local/master-node.yml
-```
-
-Currently both Blockchain containers store their data in `/tmp/bc*` directories. This works fine for testing, but _should not be used in productive environments_ since the `/tmp/` folder is emptied after reboot on most Unix-like systems.
-
-Adapt the paths to your needs - you can change them in the respective docker-compose file, where you will find them under `volumes`:
-
-```yaml
-volumes:
-  - /tmp/bcMasterVolume:/root/.multichain
-```
+To modify the host path, meaning the path where the data will be persisted on your local machine (docker volume), you can change it in the docker-compose file `scripts/operation/docker-compose.yml`.
 
 The next step is to set all required environment properties, otherwise Docker will not receive the required parameters to start the deployment.
-If you want to start with the standard configuration we reccomend copying the `.env_example` file and rename it to `.env` in the `TruBudget` base folder:
+If you want to start with the standard configuration we recommend copying the `.env_example` file and rename it to `.env` in the `TruBudget` base folder:
 
 ```bash
+cd scripts/operation/
 cp .env_example .env
 ```
 
-The `.env` file to create a new Blockchain network should consist of the following parameters:
-
-```bash
-API_PORT=8080
-RPC_PORT=8000
-ORGANIZATION=TheOrganization
-ORGANIZATION_VAULT_SECRET=secret
-TAG=master
-ROOT_SECRET=root-secret
-LOG_LEVEL=INFO
-PRETTY_PRINT=true
-RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
-MULTICHAIN_DIR="/root"
-EXTERNAL_IP=
-```
+The `.env` in scripts/operation/ can be edited directly to fit your needs.
 
 :::note
-For detailed explenations of the environment variables, see the [Enviroment Variables](./../../../enviroment-variables.md)
+For detailed explenations of the environment variables, see the [Environment Variables](./../../../environment-variables.md)
 :::
-To deploy the **current codebase** of the repository with an empty blockchain, run the following command:
+
+To start the TruBudget in an easy way, use the bash script `start-trubudget.sh`.
+
+If you want to start a setup with one blockain, frontend, API and provisioning (for test data), run:
 
 ```bash
-scripts/local/start-master-node.sh
+cd scripts/operation/
+bash start-trubudget.sh --slim
 ```
 
-Deploy images **of the Docker registry** with an empty blockchain with:
+If you want to add an additional blockchain node, email-notification-service, excel-export-service or storage-service, please take a look at the [README.md of operation setup](./../../../../scripts/operation/README.md)
+
+The **frontend** should be accessible via port 3000 on the server that it is running on: http://localhost:3000/
+
+The **API Swagger documentation** should be accessible via port 8080 on the server that it is running on: http://localhost:8080/api/documentation/static/index.html
+
+## Connect to an existing Blockchain network
+
+The docker-compose file in `scripts/operation/` comes with one additional blockchain node (slave-node) that trys to connect to the master node after starting.
+Each Blockchain container comes with its own volume that persists the data of the Blockchain.
+
+To start TruBudget with two organizations (master and slave), run:
 
 ```bash
-scripts/master/start-master-node.sh
+bash start-trubudget.sh --slim --add-organization
 ```
 
-If you want to start with a fixed set of projects, subprojects, workflowitems and users, you can start a so called 'provisioned blockchain' for master development with:
+This will create the blockchain, API and frontend for each of both organizations.
+You can access the frontend of the slave-node with http://localhost:3005/ and the for the master-node with http://localhost:3000/. This is defined in the `docker-compose.yml` file.
+The slave-node must be approved by the master-node. This can be done with the root user in the master frontend at the page http://localhost:3000/nodes.
+The name of both organization and other configurations are defined in the `.env` file (in the directory `scripts/operation/`).
 
-```bash
-scripts/master/start-and-provision-master-node.sh
-```
-
-or for local development with:
-
-```bash
-scripts/local/start-and-provision-master-node.sh
-```
-
-Once all components are up and running, the information after provisioning in the log should look similar to:
-
-```bash
-testapi_1         | POST /api/workflowitem.intent.grantPermission [user=mstein body={"apiVersion":"1.0","data":{"projectId":"2ac3cfed87f243c7ef05f8d3aff3e656","subprojectId":"b829cb0de28d621435ed5e66fe16255f","workflowitemId":"1d734c6c12f1d5e2cd112856ea39ae1e","intent":"workflowitem.update","identity":"rfinance"}}]
-testapi_1         | Publishing workflowitem.intent.grantPermission to 2ac3cfed87f243c7ef05f8d3aff3e656/["b829cb0de28d621435ed5e66fe16255f_workflows","1d734c6c12f1d5e2cd112856ea39ae1e"]
-testapi_1         |
-testapi_1         | POST /api/workflowitem.intent.grantPermission [user=mstein body={"apiVersion":"1.0","data":{"projectId":"2ac3cfed87f243c7ef05f8d3aff3e656","subprojectId":"b829cb0de28d621435ed5e66fe16255f","workflowitemId":"1d734c6c12f1d5e2cd112856ea39ae1e","intent":"workflowitem.intent.listPermissions","identity":"atutelle"}}]
-testapi_1         | Publishing workflowitem.intent.grantPermission to 2ac3cfed87f243c7ef05f8d3aff3e656/["b829cb0de28d621435ed5e66fe16255f_workflows","1d734c6c12f1d5e2cd112856ea39ae1e"]
-testapi_1         |
-testapi_1         | POST /api/workflowitem.intent.grantPermission [user=mstein body={"apiVersion":"1.0","data":{"projectId":"2ac3cfed87f243c7ef05f8d3aff3e656","subprojectId":"b829cb0de28d621435ed5e66fe16255f","workflowitemId":"1d734c6c12f1d5e2cd112856ea39ae1e","intent":"workflowitem.intent.grantPermission","identity":"atutelle"}}]
-testapi_1         | Publishing workflowitem.intent.grantPermission to 2ac3cfed87f243c7ef05f8d3aff3e656/["b829cb0de28d621435ed5e66fe16255f_workflows","1d734c6c12f1d5e2cd112856ea39ae1e"]
-testapi_1         |
-testapi_1         | POST /api/workflowitem.intent.grantPermission [user=mstein body={"apiVersion":"1.0","data":{"projectId":"2ac3cfed87f243c7ef05f8d3aff3e656","subprojectId":"b829cb0de28d621435ed5e66fe16255f","workflowitemId":"1d734c6c12f1d5e2cd112856ea39ae1e","intent":"workflowitem.intent.revokePermission","identity":"atutelle"}}]
-testapi_1         | Publishing workflowitem.intent.grantPermission to 2ac3cfed87f243c7ef05f8d3aff3e656/["b829cb0de28d621435ed5e66fe16255f_workflows","1d734c6c12f1d5e2cd112856ea39ae1e"]
-provision-test_1  | Subproject "Primary School" > "Equipment" created.
-provision-test_1  | Project "Primary School" created.
-trubudget_provision-test_1 exited with code 0
-```
-
-No need to worry regarding the provisioning container. Both provisioning containers (provision-test, provision-prod) will exit with **error code 0** once the network was successfully provisioned.
-
-The **frontend** should be accessible via port 80 on the server that it is running on.
+:::note
+If you need more slave-nodes, you have to change the `docker-compose.yml` file and `start-trubudget.sh` in the directory `scripts/operation/` by yourself.
+:::

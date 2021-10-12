@@ -19,17 +19,17 @@ This is the frontend, which consumes the exposed Trubudget API.
 
 | Env Variable                    | Default Value | Description                                                                                                                                                    |
 | ------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| REACT_APP_EMAIL_SERVICE_ENABLED | -             | When enabled, the frontend requests a email-service readiness call when entering the login screen.<br>If true the email section in the user-profile is enabled |
+| REACT_APP_EMAIL_SERVICE_ENABLED | false         | When enabled, the frontend requests a email-service readiness call when entering the login screen.<br>If true the email section in the user-profile is enabled |
 | EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                   |
-| EMAIL_PORT                      | -             | Port of the email notification service                                                                                                                         |
+| EMAIL_PORT                      | 8890          | Port of the email notification service                                                                                                                         |
 
 ### Excel-Export-Service
 
 | Env Variable                     | Default Value | Description                                                                                                                                        |
 | -------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| REACT_APP_EXPORT_SERVICE_ENABLED | -             | If true the frontend requests a export-service readiness call when entering the login screen and <br>the export button is shown at the side navbar |
+| REACT_APP_EXPORT_SERVICE_ENABLED | false         | If true the frontend requests a export-service readiness call when entering the login screen and <br>the export button is shown at the side navbar |
 | EXPORT_HOST                      | -             | IP address of the excel export service                                                                                                             |
-| EXPORT_PORT                      | -             | Port of the excel export service                                                                                                                   |
+| EXPORT_PORT                      | 8888          | Port of the excel export service                                                                                                                   |
 
 ## Peer dependencies
 
