@@ -13,7 +13,7 @@ In the following you can find all the environment variables used in the TruBudge
 | Email notification service | email    |
 | Docker-compose             | scripts  |
 
-If you need a `.env-example` file as a template, use the `.env-example` file in `/scripts/operation`. This file has all values pre-filled.
+If you need a `.env_example` file as a template, use the `.env_example` file in `/scripts/operation`. This file has all values pre-filled.
 
 | Env Variable                     | Required | Default Value                     | Used by              | Description                                                                                                                                                                                                                                                                                                                                                                                     |
 | -------------------------------- | -------- | --------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

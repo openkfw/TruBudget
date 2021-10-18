@@ -13,8 +13,8 @@ services:
       RPC_PORT: ${RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
-      EMAIL_SERVICE: ${EMAIL_SERVICE}
       JWT_SECRET: ${JWT_SECRET}
+      EMAIL_SERVICE: ${EMAIL_SERVICE}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
@@ -25,9 +25,9 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.11
     ports:
-      - ${RPC_PORT}:${RPC_PORT}
+      - ${RPC_PORT}:${RPC_PORT} # port for connecting API
       - "8085:8085" # port for backup
-      - "7447:7447"
+      - "7447:7447" # port for connecting slaves (P2P)
 
   emaildb:
     image: postgres
@@ -38,6 +38,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_DB: ${POSTGRES_DB}
+      # volume for persisting data
+      # volumes:
+      #   - /emaildbVolume:/var/lib/postgresql/data
+      # networks:
     networks:
       mynetwork:
         ipv4_address: 172.20.0.2
@@ -52,6 +56,9 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     command: server /data
+    # volume for persisting data
+    # volumes:
+    #   - /minioVolume:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -88,13 +95,13 @@ services:
     volumes:
       - "../../api/src:/home/node/src:delegated"
       - ../../api/dist:/home/node/dist
+    depends_on:
+      - master-node
     networks:
       mynetwork:
         ipv4_address: 172.20.0.4
     ports:
       - ${API_PORT}:${API_PORT}
-    depends_on:
-      - master-node
 
   email-service:
     build:
@@ -187,10 +194,15 @@ services:
     networks:
       mynetwork:
         ipv4_address: 172.20.0.8
+    depends_on:
+      - minio
+      - master-api
     ports:
       - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
 
   frontend:
+    stdin_open: true
+    restart: always
     build:
       context: ../../frontend
       dockerfile: Dockerfile.dev
@@ -203,6 +215,10 @@ services:
       REACT_APP_VERSION: ${REACT_APP_VERSION}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
       REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
+      PROD_API_HOST: master-api
+      PROD_API_PORT: ${API_PORT}
+      TEST_API_HOST: master-api
+      TEST_API_PORT: ${API_PORT}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
       EXPORT_PORT: ${EXPORT_PORT}
@@ -214,14 +230,13 @@ services:
       - "/app/node_modules"
     networks:
       mynetwork:
-        ipv4_address: 172.20.0.9
+        ipv4_address: 172.20.0.91
     ports:
       - "3000:3000"
-    stdin_open: true
-    restart: always
+    depends_on:
+      - master-api
 
   slave-node:
-    # image: trubudget/blockchain:latest
     build:
       context: ../../blockchain
     environment:
@@ -240,6 +255,9 @@ services:
     networks:
       mynetwork:
         ipv4_address: 172.20.0.12
+    # volume for persisting data from multichain
+    # volumes:
+    #   - /slave1Volume:/root/.multichain
     ports:
       - ${SLAVE_RPC_PORT}:${SLAVE_RPC_PORT}
       - "7448:7447" # slave-node port is 7448 on host
@@ -276,6 +294,8 @@ services:
       - slave-node
 
   slave-frontend:
+    restart: always
+    stdin_open: true 
     build:
       context: ../../frontend
       dockerfile: Dockerfile.dev
@@ -295,7 +315,8 @@ services:
     networks:
       mynetwork:
         ipv4_address: 172.20.0.92
+    depends_on:
+      - master-api
     ports:
       - "3005:3000"
-    stdin_open: true
-    restart: always
+    

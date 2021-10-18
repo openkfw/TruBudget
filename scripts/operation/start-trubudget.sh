@@ -1,9 +1,8 @@
 #!/bin/bash
 # bash start-trubudget.sh
+# use vsc extension shell-format to format this file
 
-
-Help()
-{
+Help() {
     # Display Help
     echo
     echo "Help"
@@ -30,15 +29,16 @@ Help()
     echo "  --add-organization              Add a slave-node, slave-api, slave-frontend from a new Organization."
     echo "                                  Needs to be approved by master-node"
     echo "  --prune                         Delete the multichain, document storage and email database (docker volume)"
+    echo "  --down                          Shutdown all docker containers"
     echo "  --help                          Print the help section"
     echo
     echo "Default option: slim TruBudget instance without provisioning"
     echo "Recommended docker-compose version: >1.29.2"
 }
 
-orange=`tput setaf 214`
-red=`tput setaf 196`
-colorReset=`tput sgr0`
+orange=$(tput setaf 214)
+red=$(tput setaf 196)
+colorReset=$(tput sgr0)
 
 echo "INFO: Building, Starting TruBudget for Operation"
 
@@ -56,70 +56,91 @@ HAS_SLAVE=false
 
 while [ "$1" != "" ]; do
     case $1 in
-        --slim)
-            IS_SLIM=true
-            if [ "$IS_FULL" = true ]; then echo "Either --slim or --full"; exit 1; fi;
-            shift # past argument
-        ;;
-        
-        --full)
-            IS_FULL=true
-            if [ "$IS_SLIM" = true ]; then echo "Either --slim or --full"; exit 1; fi;
-            shift # past argument
-        ;;
-        
-        --no-log)
-            # -d means the containers start in detached mode -> no logging
-            LOG_OPTION="-d"
-            IS_LOG_ENABLED=false
-            shift # past argument
-        ;;
-        
-        --add-slave)
-            if [ "$HAS_SLAVE" = true ]; then echo "Either --add-slave or --add-organization"; exit 1; fi;
-            SLAVE_SERVICES="${SLAVE_SERVICES} slave-node"
-            HAS_SLAVE=true
-            echo "INFO: slave-node enabled"
-            shift # past argument
-        ;;
-        
-        --add-organization)
-            if [ "$HAS_SLAVE" = true ]; then echo "Either --add-slave or --add-organization"; exit 1; fi;
-            SLAVE_SERVICES="${SLAVE_SERVICES} slave-node slave-api slave-frontend"
-            echo "INFO: slave-node, slave-api, slave-frontend enabled"
-            HAS_SLAVE=true
-            shift # past argument
-        ;;
-        --provision)
-            WITH_PROVISIONING=true
-            shift # past argument
-        ;;
-        
-        --prune)
-            PRUNE_DATA=true
-            shift # past argument
-        ;;
-        
-        -h|--help)
-            Help
+    --slim)
+        IS_SLIM=true
+        if [ "$IS_FULL" = true ]; then
+            echo "Either --slim or --full"
             exit 1
+        fi
+        shift # past argument
         ;;
-        
-        --enable-service)
-            if [ "$IS_FULL" = true ]; then echo "You already enabled all services by using --full! Exiting ..."; exit 1; fi;
-            HAS_ENABLED_SERVICES=true
-            shift # past argument --enable-service
-            # --enable-service must be the last argument if used
-            # save all words right from option --enable-service
-            ENABLED_SERVICES=$@
-            break
-        ;;
-        
-        *)  # unknown option
-            echo "unknown argument: " $1
-            echo "Exiting ..."
+
+    --full)
+        IS_FULL=true
+        if [ "$IS_SLIM" = true ]; then
+            echo "Either --slim or --full"
             exit 1
-            shift # past argument
+        fi
+        shift # past argument
+        ;;
+
+    --no-log)
+        # -d means the containers start in detached mode -> no logging
+        LOG_OPTION="-d"
+        IS_LOG_ENABLED=false
+        shift # past argument
+        ;;
+
+    --add-slave)
+        if [ "$HAS_SLAVE" = true ]; then
+            echo "Either --add-slave or --add-organization"
+            exit 1
+        fi
+        SLAVE_SERVICES="${SLAVE_SERVICES} slave-node"
+        HAS_SLAVE=true
+        echo "INFO: slave-node enabled"
+        shift # past argument
+        ;;
+
+    --add-organization)
+        if [ "$HAS_SLAVE" = true ]; then
+            echo "Either --add-slave or --add-organization"
+            exit 1
+        fi
+        SLAVE_SERVICES="${SLAVE_SERVICES} slave-node slave-api slave-frontend"
+        echo "INFO: slave-node, slave-api, slave-frontend enabled"
+        HAS_SLAVE=true
+        shift # past argument
+        ;;
+
+    --provision)
+        WITH_PROVISIONING=true
+        shift # past argument
+        ;;
+
+    --prune)
+        PRUNE_DATA=true
+        shift # past argument
+        ;;
+
+    --down)
+        docker-compose -p trubudget-operation down
+        exit 1
+        ;;
+
+    -h | --help)
+        Help
+        exit 1
+        ;;
+
+    --enable-service)
+        if [ "$IS_FULL" = true ]; then
+            echo "You already enabled all services by using --full! Exiting ..."
+            exit 1
+        fi
+        HAS_ENABLED_SERVICES=true
+        shift # past argument --enable-service
+        # --enable-service must be the last argument if used
+        # save all words right from option --enable-service
+        ENABLED_SERVICES=$@
+        break
+        ;;
+
+    *) # unknown option
+        echo "unknown argument: " $1
+        echo "Exiting ..."
+        exit 1
+        shift # past argument
         ;;
     esac
 done
@@ -134,7 +155,7 @@ if [ "$PRUNE_DATA" = true ]; then
         sudo rm -r /emaildbVolume
     else
         echo "INFO: Nothing deleted, script will exit ..."
-        exit 1;
+        exit 1
     fi
 fi
 
@@ -144,7 +165,15 @@ echo "INFO: Current script directory: $SCRIPT_DIR"
 
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then
-    echo "${red}ERROR: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
+    echo "${orange}WARNING: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
+    echo -n "${orange}WARNING: Do you want to create .env and copy the .env_example file to .env now? (y/N)${colorReset}"
+    read answer
+    if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+        cp ${SCRIPT_DIR}/.env_example ${SCRIPT_DIR}/.env
+    else
+        echo "${red}ERROR: No .env file in directory ${SCRIPT_DIR} found, script will exit ... ${colorReset}"
+        exit 1
+    fi
 fi
 
 # Set service enabling/disabling env vars
@@ -160,10 +189,9 @@ fi
 
 if [ "$HAS_ENABLED_SERVICES" = true ]; then
     # Add services to slim version
-    selectedServices=`echo $ENABLED_SERVICES | awk -F ' ' '{ s = $1; for (i = 2; i <= NF; i++) s = s "\n"$i; print s; }'`
+    selectedServices=$(echo $ENABLED_SERVICES | awk -F ' ' '{ s = $1; for (i = 2; i <= NF; i++) s = s "\n"$i; print s; }')
     # sed command syntax:  sed -i 's/regexToReplace/SomethingToPutInInstead/g' /Some/Path/To/File.txt
-    for word in ${selectedServices}
-    do
+    for word in ${selectedServices}; do
         if [ "$word" = "email-service" ]; then
             # Enable Services
             sed -i 's/EMAIL_SERVICE=.*/EMAIL_SERVICE=ENABLED/g' ${SCRIPT_DIR}/.env
@@ -171,16 +199,16 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
             sed -i 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} emaildb"
             echo "INFO: email-service enabled"
-            
-            elif [ "$word" = "excel-export-service" ]; then
+
+        elif [ "$word" = "excel-export-service" ]; then
             sed -i 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             echo "INFO: excel-export-service enabled"
-            
-            elif [ "$word" = "storage-service" ]; then
+
+        elif [ "$word" = "storage-service" ]; then
             sed -i 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} minio"
             echo "INFO: storage-service enabled"
-            
+
         else
             echo "${red}ERROR: Unknown service $word${colorReset}"
             echo "${red}Only these services can be added with --enable-service: email-service, excel-export-service, storage-service${colorReset}"
@@ -198,8 +226,6 @@ if [ "$IS_FULL" = true ]; then
     sed -i 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
     sed -i 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
 fi
-
-
 
 if [ "$IS_FULL" = true ]; then
     if [ "$WITH_PROVISIONING" = false ]; then

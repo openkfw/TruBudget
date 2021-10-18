@@ -28,7 +28,7 @@ To learn how to setup TruBudget with multiple organizations and how tho connect 
 
 ### Environment Variables
 
-The environmental variables are located in the file `.env` (in the directory `scripts/operation/`). You can change them directly.
+The environmental variables are located in the file `.env` (in the directory `scripts/operation/`). You can change them directly. If you do not have an `.env` file, you can copy the `.env_example` file.
 
 ### Options for Setup
 
@@ -42,4 +42,5 @@ The environmental variables are located in the file `.env` (in the directory `sc
 | --add-slave                    | Add a slave-node that trys to connect to master-node                                                                                               |
 | --add-organization             | Add a slave-node, slave-api, slave-frontend from a new Organization. Needs to be approved by master-node                                           |
 | --prune                        | Delete the multichain, document storage and email database (docker volume)                                                                         |
+| --down                         | Shutdown all docker containers                                                                                                                     |
 | --help                         | Print the help section                                                                                                                             |
