@@ -1,21 +1,21 @@
-import express from "express";
 import cors from "cors";
+import express from "express";
 import { body, query } from "express-validator";
 import { createPinoExpressLogger } from "trubudget-logging-service";
 import config from "./config";
 import DbConnector from "./db";
+import logger from "./logger";
 import * as Middleware from "./middleware";
 import sendMail from "./sendMail";
 import {
-  UserEditRequest,
-  User,
-  UserEditResponseBody,
-  UserGetEmailAddressRequest,
   NotificationRequest,
   NotificationResponseBody,
+  User,
+  UserEditRequest,
+  UserEditResponseBody,
+  UserGetEmailAddressRequest,
 } from "./types";
 import isBodyValid from "./validation";
-import logger from "./logger";
 
 // Setup
 const db = new DbConnector();
@@ -48,8 +48,11 @@ emailService.post(
   "/user.insert",
   body("data.user.id").escape(),
   (req: UserEditRequest, res: express.Response) => {
+    logger.trace("Validating data");
+
     const isDataValid = isBodyValid("/user.insert", req.body.data);
     if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
       res.status(400).send({
         message: `The request body validation failed`,
       });
@@ -57,26 +60,31 @@ emailService.post(
     }
     const user: User = req.body.data.user;
     if (!isAllowed(user.id, res)) {
+      const message = `JWT-Token is not valid to insert an email address of user ${user.id}`;
+      logger.error(message);
       res.status(401).send({
-        message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
+        message,
       });
       return;
     }
 
     (async () => {
+      logger.trace("Fetching email address for user: ", user.id);
       const emailAddress: string = await db.getEmailAddress(user.id);
       if (emailAddress.length > 0) {
+        logger.error({ user }, "User already exists");
         res.status(400).send({
           user: { id: user.id, status: "already exists", emailAddress: user.emailAddress },
         });
       } else {
+        logger.trace("Inserted user");
         await db.insertUser(user.id, user.emailAddress);
         res.status(200).send({
           user: { id: user.id, status: "inserted", emailAddress: user.emailAddress },
         });
       }
     })().catch((error) => {
-      logger.error(error);
+      logger.error({ err: error }, "Error while inserting user");
       res.status(500).send(error);
     });
   },
@@ -88,35 +96,41 @@ emailService.post(
   (req: UserEditRequest, res: express.Response) => {
     const isDataValid = isBodyValid("/user.update", req.body.data);
     if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
       res.status(400).send({
-        message: `The request body validation failed`,
+        message: "The request body validation failed",
       });
       return;
     }
     const user: User = req.body.data.user;
     if (!isAllowed(user.id, res)) {
+      const message = `JWT-Token is not valid to insert an email address of user ${user.id}`;
+      logger.error(message);
       res.status(401).send({
-        message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
+        message,
       });
       return;
     }
 
     (async () => {
       const emailAddress: string = await db.getEmailAddress(user.id);
+      logger.trace("Fetching email address for user: ", user.id);
       let body: UserEditResponseBody;
       if (emailAddress.length > 0) {
         body = { user: { id: user.id, status: "updated", emailAddress: user.emailAddress } };
+        logger.trace("Updateing user ", user.id, user.emailAddress);
         await db.updateUser(user.id, user.emailAddress);
         res.status(200);
       } else {
         body = {
           user: { id: user.id, emailAddress: user.emailAddress, status: "not found" },
         };
+        logger.error({ error: body }, "User not found");
         res.status(404);
       }
       res.send(body);
     })().catch((error) => {
-      logger.error(error);
+      logger.error({ err: error }, "Error while updating user");
       res.status(500).send(error);
     });
   },
@@ -127,7 +141,10 @@ emailService.post(
   body("data.user.id").escape(),
   (req: UserEditRequest, res: express.Response) => {
     const isDataValid = isBodyValid("/user.delete", req.body.data);
+    logger.trace("Validating data");
+
     if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
       res.status(400).send({
         message: `The request body validation failed`,
       });
@@ -135,6 +152,7 @@ emailService.post(
     }
     const user: User = req.body.data.user;
     if (!isAllowed(user.id, res)) {
+      logger.error(`JWT-Token is not valid to insert an email address of user ${user.id}`);
       res.status(401).send({
         message: `JWT-Token is not valid to insert an email address of user ${user.id}`,
       });
@@ -146,9 +164,10 @@ emailService.post(
       const body: UserEditResponseBody = {
         user: { id: user.id, status: "deleted", emailAddress: user.emailAddress },
       };
+      logger.trace("Deleted user", user.id, user.emailAddress);
       res.status(200).send(body);
     })().catch((error) => {
-      logger.error(error);
+      logger.error({ err: error }, "Error while deleting user");
       res.status(500).send(error);
     });
   },
@@ -159,15 +178,20 @@ emailService.get(
   query("id").escape(),
   (req: UserGetEmailAddressRequest, res: express.Response) => {
     const isDataValid = isBodyValid("/user.getEmailAddress", req.query);
+    logger.trace("Validating data");
+
     if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
       res.status(400).send({
         message: `The request body validation failed`,
       });
       return;
     }
     if (!isAllowed(req.query.id, res)) {
+      const message = `JWT-Token is not valid to insert an email address of user ${req.query.id}`;
+      logger.error(message);
       res.status(401).send({
-        message: `JWT-Token is not valid to insert an email address of user ${req.query.id}`,
+        message,
       });
       return;
     }
@@ -176,18 +200,18 @@ emailService.get(
     (async () => {
       const emailAddress = await db.getEmailAddress(id);
       if (emailAddress.length > 0) {
-        logger.debug("GET email address " + emailAddress + " for user " + id);
+        logger.trace("GET email address " + emailAddress + " for user " + id);
         res.send({
           user: { id, emailAddress },
         });
       } else {
-        logger.debug("Email address" + emailAddress + " not found");
+        logger.trace("Email address" + emailAddress + " not found");
         res.status(404).send({
           user: { id, emailAddress: "Not Found" },
         });
       }
     })().catch((error) => {
-      logger.error(error);
+      logger.error({ err: error }, "Error while getting email adress");
       res.status(500).send(error);
     });
   },
@@ -197,8 +221,10 @@ emailService.post(
   "/notification.send",
   body("data.user.id").escape(),
   (req: NotificationRequest, res: express.Response) => {
+    logger.trace("Validating data");
     const isDataValid = isBodyValid("/notification.send", req.body.data);
     if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
       res.status(400).send({
         message: `The request body validation failed`,
       });
@@ -209,8 +235,10 @@ emailService.post(
     if (config.authentication !== "none") {
       // Only the notification watcher of the Trubudget blockchain may send notifications
       if (res.locals.id !== "notification-watcher") {
+        const message = `${res.locals.id} is not allowed to send a notification to ${id}`;
+        logger.error(message);
         res.status(401).send({
-          message: `${res.locals.id} is not allowed to send a notification to ${id}`,
+          message,
         });
         return;
       }
@@ -222,18 +250,18 @@ emailService.post(
       let body: NotificationResponseBody;
       if (emailAddress.length > 0) {
         await sendMail(emailAddress);
-        logger.debug("Notification sent to " + emailAddress);
+        logger.trace("Notification sent to " + emailAddress);
         body = {
           notification: { recipient: id, status: "sent", emailAddress },
         };
         res.status(200).send(body);
       } else {
-        logger.debug("Email address" + emailAddress + "not found");
+        logger.trace("Email address" + emailAddress + "not found");
         body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
         res.status(404).send(body);
       }
     })().catch((error) => () => {
-      logger.error(error);
+      logger.error({ err: error }, "Error while send notification");
       res.status(500).send(error);
     });
   },
@@ -249,11 +277,9 @@ function isAllowed(requestedUserId: string, res: express.Response): boolean {
   }
   const requestor: string = res.locals.userId;
   const allowed: boolean = requestor === "root" || requestor === requestedUserId;
-  if (!allowed) {
-    logger.debug(
-      "Requestor '" + requestor + "' and passed userId '" + requestedUserId + "' are not equal",
-    );
-  }
+
+  logger.debug({ requestor, allowed }, "Checking if requestor is allowed");
+
   return allowed;
 }
 
