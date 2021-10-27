@@ -3,7 +3,7 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": "Loki",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -30,7 +30,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "Loki",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -43,7 +43,7 @@
       "type": "row"
     },
     {
-      "datasource": null,
+      "datasource": "Loki",
       "description": "Total Count of logs in namespace $namespace",
       "fieldConfig": {
         "defaults": {
@@ -114,7 +114,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "Loki",
       "description": "Logs with errors in namespace $namespace",
       "fieldConfig": {
         "defaults": {
@@ -185,7 +185,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "Loki",
       "description": "Error Percentage in $namespace",
       "fieldConfig": {
         "defaults": {
@@ -258,7 +258,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "Loki",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -271,7 +271,7 @@
       "type": "row"
     },
     {
-      "datasource": null,
+      "datasource": "Loki",
       "description": "Total Count of logs in namespace $namespace and pod $pod",
       "fieldConfig": {
         "defaults": {
@@ -343,7 +343,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "Loki",
       "description": "Logs with errors in namespace $namespace and pod $pod",
       "fieldConfig": {
         "defaults": {
@@ -414,7 +414,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "Loki",
       "description": "Error Percentage in $namespace and $pod",
       "fieldConfig": {
         "defaults": {
@@ -486,7 +486,7 @@
       "type": "gauge"
     },
     {
-      "datasource": null,
+      "datasource": "Loki",
       "description": "Percentage of logs containing \"$searchable_pattern\"",
       "fieldConfig": {
         "defaults": {
@@ -551,7 +551,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "Loki",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -564,7 +564,7 @@
       "type": "row"
     },
     {
-      "datasource": null,
+      "datasource": "Loki",
       "description": "Logs for namespace $namespace and pod $pod, containing pattern $searchable_pattern",
       "gridPos": {
         "h": 13,
@@ -610,7 +610,7 @@
           "text": "",
           "value": ""
         },
-        "datasource": null,
+        "datasource": "Loki",
         "definition": "label_values(namespace)",
         "description": null,
         "error": null,
@@ -634,7 +634,7 @@
           "text": "",
           "value": ""
         },
-        "datasource": null,
+        "datasource": "Loki",
         "definition": "label_values({namespace=\"$namespace\"}, pod)",
         "description": null,
         "error": null,
