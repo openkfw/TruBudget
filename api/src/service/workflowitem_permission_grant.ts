@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { config } from "../config";
@@ -32,6 +33,11 @@ export async function grantWorkflowitemPermission(
   grantee: Identity,
   intent: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug(
+    { grantee, intent, projectId, subprojectId, workflowitemId },
+    "Granting workflowitem permission",
+  );
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemPermissionGrant.grantWorkflowitemPermission(
       ctx,
@@ -93,9 +99,11 @@ export async function grantWorkflowitemPermission(
       },
     ),
   );
+
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "permission grant failed");
   }
+
   const newEvents = newEventsResult;
 
   for (const event of newEvents) {

@@ -7,19 +7,30 @@ import { getGlobalPermissions } from "./global_permissions_get";
 import { store } from "./store";
 import * as UserQuery from "./user_query";
 import { VError } from "verror";
+import logger from "lib/logger";
 
 export async function enableUser(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
   issuerOrganization: string,
-  revokee: UserEnable.RequestData,
+  grantee: UserEnable.RequestData,
 ): Promise<Result.Type<void>> {
-  const newEventsResult = await UserEnable.enableUser(ctx, serviceUser, issuerOrganization, revokee, {
-    getUser: () => UserQuery.getUser(conn, ctx, serviceUser, revokee.userId),
-    getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-  });
+  logger.debug({ grantee }, "Enable user");
+
+  const newEventsResult = await UserEnable.enableUser(
+    ctx,
+    serviceUser,
+    issuerOrganization,
+    grantee,
+    {
+      getUser: () => UserQuery.getUser(conn, ctx, serviceUser, grantee.userId),
+      getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
+    },
+  );
+
   if (Result.isErr(newEventsResult)) return new VError(newEventsResult, "failed to enable user");
+
   const newEvents = newEventsResult;
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);

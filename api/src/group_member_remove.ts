@@ -103,6 +103,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const { code, body } = toHttpError(
         new VError(bodyResult, "failed to remove user from group"),
       );
+      request.log.error({ err: bodyResult }, "Invalid request body");
       reply.status(code).send(body);
       return;
     }
@@ -131,6 +132,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while removing user from group");
         reply.status(code).send(body);
       });
   });

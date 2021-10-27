@@ -131,6 +131,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const bodyResult = validateRequestBody(request.body);
       if (Result.isErr(bodyResult)) {
         const { code, body } = toHttpError(new VError(bodyResult, "invalid request"));
+        request.log.error({ err: bodyResult }, "Invalid request body");
         reply.status(code).send(body);
         return;
       }
@@ -177,6 +178,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         })
         .catch((err) => {
           const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while validating workflowitem document");
           reply.status(code).send(body);
         });
     },

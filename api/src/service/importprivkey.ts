@@ -7,5 +7,6 @@ export function importprivkey(
 ): Promise<void> {
   const label = userId;
   const doRescan = false;
+
   return multichain.getRpcClient().invoke("importprivkey", privkey, label, doRescan);
 }

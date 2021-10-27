@@ -1,4 +1,5 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotFound } from "../errors/not_found";
@@ -16,11 +17,12 @@ export async function getOneGroup(
   groupId: Group.Id,
   repository: Repository,
 ): Promise<Result.Type<Group.Group>> {
+  logger.trace({ groupId }, "Getting group by id");
   const allEvents = await repository.getGroupEvents();
   // Errors are ignored here:
   const { groups } = sourceGroups(ctx, allEvents);
 
-  const group = groups.find(x => x.id === groupId);
+  const group = groups.find((x) => x.id === groupId);
   if (group === undefined) {
     return Promise.reject(new NotFound(ctx, "group", groupId));
   }
@@ -36,6 +38,8 @@ export async function getAllGroups(
   user: ServiceUser,
   repository: Repository,
 ): Promise<Group.Group[]> {
+  logger.trace("Fetching all group events *NOTE* errors are ignored in this procedure!");
+
   const allEvents = await repository.getGroupEvents();
   // Errors are ignored here:
   const { groups } = sourceGroups(ctx, allEvents);

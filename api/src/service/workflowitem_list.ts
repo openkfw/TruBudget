@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -14,6 +15,8 @@ export async function listWorkflowitems(
   projectId: string,
   subprojectId: string,
 ): Promise<Result.Type<Workflowitem.ScrubbedWorkflowitem[]>> {
+  logger.debug({ projectId, subprojectId }, "Getting all workflowitems");
+
   const workflowitemsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemList.getAllVisible(ctx, serviceUser, projectId, subprojectId, {
       getWorkflowitems: async (pId, spId) => {

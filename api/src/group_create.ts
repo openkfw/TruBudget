@@ -145,7 +145,9 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     if (Result.isErr(bodyResult)) {
       const { code, body } = toHttpError(new VError(bodyResult, "failed to create group"));
+
       reply.status(code).send(body);
+      request.log.error({ err: bodyResult }, "Invalid request body");
       return;
     }
 
@@ -157,6 +159,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         break;
       }
       default:
+        request.log.error({ err: bodyResult }, "Invalid Api Version specified");
         // Joi validates only existing apiVersions
         assertUnreachable(bodyResult.apiVersion);
     }
@@ -176,7 +179,9 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+
         reply.status(code).send(body);
+        request.log.error({ err }, "Error while creating group");
       });
   });
 }

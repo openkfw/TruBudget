@@ -1,4 +1,5 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -31,6 +32,7 @@ export async function getAll(
   }
   const workflowitem: Workflowitem.Workflowitem = result;
 
+  logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
     const intent = "workflowitem.intent.listPermissions";
     if (!Workflowitem.permits(workflowitem, user, [intent])) {

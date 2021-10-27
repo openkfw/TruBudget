@@ -1,7 +1,8 @@
 import Joi = require("joi");
 
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
@@ -27,6 +28,7 @@ export async function storageServiceUrlPublish(
   requestData: RequestData,
 ): Promise<Result.Type<BusinessEvent>> {
   const { organization, organizationUrl } = requestData;
+  logger.trace("Createing event: offchain_documents");
 
   // create Event: "offchain_documents" stream - create storage_service_url_published event (organization, url)
   const newUrlUpdatedEvent = StorageServiceUrlUpdated.createEvent(

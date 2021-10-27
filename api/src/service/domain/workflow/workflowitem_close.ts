@@ -1,5 +1,5 @@
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -16,6 +16,7 @@ import { Id } from "./workflowitem";
 import * as WorkflowitemClosed from "./workflowitem_closed";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import { sortWorkflowitems } from "./workflowitem_ordering";
+import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitems(
@@ -67,6 +68,10 @@ export async function closeWorkflowitem(
     return [];
   }
 
+  logger.trace(
+    { closingUser, projectId, subprojectId, workflowitemId },
+    "Creating workflowitem_closed event",
+  );
   const publisher = closingUser.id;
   const closeEvent = WorkflowitemClosed.createEvent(
     ctx.source,
@@ -92,7 +97,7 @@ export async function closeWorkflowitem(
   }
   const assignedIdentities = assignedIdentitiesResult;
 
-  // Check if user is allowed to close the workflowitem
+  logger.trace({ closingUser }, "Checking user authorizaion");
   if (closingUser.id !== "root") {
     if (subproject.validator !== undefined && subproject.validator !== closingUser.id) {
       return new PreconditionError(
@@ -109,7 +114,7 @@ export async function closeWorkflowitem(
     }
   }
 
-  // Make sure all previous items (wrt. the ordering) are already closed:
+  logger.trace("Making sure all previous workflowitems were already closed");
   for (const item of sortedWorkflowitems) {
     if (item.id === workflowitemId) {
       break;
@@ -119,7 +124,7 @@ export async function closeWorkflowitem(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: closeEvent }, "Checking event validity");
   const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
     ctx,
     workflowitemToClose,
@@ -129,7 +134,7 @@ export async function closeWorkflowitem(
     return new InvalidCommand(ctx, closeEvent, [result]);
   }
 
-  // Create notification events:
+  logger.trace("Creating notification events");
   const notifications: Result.Type<NotificationCreated.Event[]> = assignedIdentities.reduce(
     (notifications, recipient) => {
       // The issuer doesn't receive a notification:

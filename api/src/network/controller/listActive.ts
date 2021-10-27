@@ -1,8 +1,9 @@
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { AuthenticatedRequest, HttpResponse } from "../../httpd/lib";
-import { Ctx } from "../../lib/ctx";
 import * as Result from "../../result";
 import { ConnToken } from "../../service";
 import { ServiceUser } from "../../service/domain/organization/service_user";
@@ -25,6 +26,7 @@ export async function getActiveNodes(
     issuer,
   );
   if (Result.isErr(globalPermissionsResult)) {
+    logger.trace("global.grantPermission failed", globalPermissionsResult);
     throw new VError(globalPermissionsResult, "global.grantPermission failed");
   }
   const globalPermissions = globalPermissionsResult.permissions;

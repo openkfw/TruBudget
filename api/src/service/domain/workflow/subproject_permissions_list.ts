@@ -1,4 +1,5 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -21,6 +22,8 @@ export async function getSubprojectPermissions(
   subprojectId: Subproject.Id,
   repository: Repository,
 ): Promise<Result.Type<Permissions>> {
+  logger.trace("Fetching subproject ...");
+
   const subprojectResult = await repository.getSubproject(projectId, subprojectId);
 
   if (Result.isErr(subprojectResult)) {
@@ -29,6 +32,7 @@ export async function getSubprojectPermissions(
 
   const subproject: Subproject.Subproject = subprojectResult;
 
+  logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
     const intent = "subproject.intent.listPermissions";
     if (!Subproject.permits(subproject, user, [intent])) {

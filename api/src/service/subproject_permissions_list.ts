@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -16,6 +17,8 @@ export async function listSubprojectPermissions(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
 ): Promise<Result.Type<Permissions>> {
+  logger.debug({ projectId, subprojectId }, "Getting subproject permissions");
+
   const subprojectPermissionsResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectPermissionsList.getSubprojectPermissions(ctx, serviceUser, projectId, subprojectId, {
       getSubproject: async (pId, spId) => {

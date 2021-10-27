@@ -1,6 +1,6 @@
 import { isEqual } from "lodash";
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -14,6 +14,7 @@ import * as Project from "./project";
 import { ProjectedBudget } from "./projected_budget";
 import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updated";
+import logger from "lib/logger";
 
 interface Repository {
   getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
@@ -37,7 +38,10 @@ export async function updateProjectedBudget(
     return new NotFound(ctx, "project", projectId);
   }
 
-  // Create the new event:
+  logger.trace(
+    { issuer, organization, projectId },
+    "Creating project_projected_budget_updated event",
+  );
   const budgetUpdated = ProjectProjectedBudgetUpdated.createEvent(
     ctx.source,
     issuer.id,
@@ -50,7 +54,7 @@ export async function updateProjectedBudget(
     return new VError(budgetUpdated, "failed to create projected budget updated event");
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const intent = "project.budget.updateProjected";
     if (!Project.permits(project, issuer, [intent])) {
@@ -58,7 +62,7 @@ export async function updateProjectedBudget(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: budgetUpdated }, "Checking event validity");
   const result = ProjectEventSourcing.newProjectFromEvent(ctx, project, budgetUpdated);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, budgetUpdated, [result]);
@@ -67,37 +71,40 @@ export async function updateProjectedBudget(
   // Only emit the event if it causes any changes:
   if (isEqual(project.projectedBudgets, result.projectedBudgets)) {
     return { newEvents: [], projectedBudgets: result.projectedBudgets };
-  } else {
-    // Create notification events:
-    const recipientsResult = project.assignee
-      ? await repository.getUsersForIdentity(project.assignee)
-      : [];
-    if (Result.isErr(recipientsResult)) {
-      return new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
-    }
-    const notifications = recipientsResult.reduce((notifications, recipient) => {
-      // The issuer doesn't receive a notification:
-      if (recipient !== issuer.id) {
-        const notification = NotificationCreated.createEvent(
-          ctx.source,
-          issuer.id,
-          recipient,
-          budgetUpdated,
-          projectId,
-        );
-        if (Result.isErr(notification)) {
-          return new VError(notification, "failed to create  event");
-        }
-        notifications.push(notification);
-      }
-      return notifications;
-    }, [] as NotificationCreated.Event[]);
-    if (Result.isErr(notifications)) {
-      return new VError(notifications, "failed to create notification events");
-    }
-    return {
-      newEvents: [budgetUpdated, ...notifications],
-      projectedBudgets: result.projectedBudgets,
-    };
   }
+
+  logger.trace("Creating notification events");
+  const recipientsResult = project.assignee
+    ? await repository.getUsersForIdentity(project.assignee)
+    : [];
+  if (Result.isErr(recipientsResult)) {
+    return new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
+  }
+
+  const notifications = recipientsResult.reduce((notifications, recipient) => {
+    // The issuer doesn't receive a notification:
+    if (recipient !== issuer.id) {
+      const notification = NotificationCreated.createEvent(
+        ctx.source,
+        issuer.id,
+        recipient,
+        budgetUpdated,
+        projectId,
+      );
+      if (Result.isErr(notification)) {
+        return new VError(notification, "failed to create  event");
+      }
+      notifications.push(notification);
+    }
+    return notifications;
+  }, [] as NotificationCreated.Event[]);
+
+  if (Result.isErr(notifications)) {
+    return new VError(notifications, "failed to create notification events");
+  }
+
+  return {
+    newEvents: [budgetUpdated, ...notifications],
+    projectedBudgets: result.projectedBudgets,
+  };
 }

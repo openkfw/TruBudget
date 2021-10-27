@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -18,6 +19,8 @@ export async function setWorkflowitemOrdering(
   subprojectId: Subproject.Id,
   ordering: WorkflowitemOrdering,
 ): Promise<Result.Type<void>> {
+  logger.debug({ ordering, projectId, subprojectId }, "Setting workflowitem ordering");
+
   const reorderWorkflowitemsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemsReorder.setWorkflowitemOrdering(
       ctx,

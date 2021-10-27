@@ -107,6 +107,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         new VError(bodyResult, "failed to grant global permission"),
       );
       reply.status(code).send(body);
+      request.log.error({ err: bodyResult }, "Invalid request body");
       return;
     }
 
@@ -126,6 +127,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
+        request.log.error({ err }, "Error while granting global permission");
       });
   });
 }

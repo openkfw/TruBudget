@@ -5,6 +5,7 @@ import fastifyCors from "fastify-cors";
 import helmet from "fastify-helmet";
 import { IncomingMessage, Server, ServerResponse } from "http";
 import logger from "../lib/logger";
+import { AuthenticatedRequest } from "./lib";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -42,6 +43,7 @@ const addLogging = (server: FastifyInstance) => {
       id: req.id,
       url: req.raw.url,
       params: req.params,
+      user: (req as AuthenticatedRequest).user,
     });
     done();
   });

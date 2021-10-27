@@ -184,6 +184,7 @@ export function addHttpHandler(
 
     if (Result.isErr(bodyResult)) {
       const { code, body } = toHttpError(new VError(bodyResult, "authentication failed"));
+      request.log.error({ err: bodyResult }, "Invalid request body");
       reply.status(code).send(body);
       return;
     }
@@ -197,6 +198,7 @@ export function addHttpHandler(
       }
       default:
         // Joi validates only existing apiVersions
+        request.log.error({ err: bodyResult }, "Wrong api version specified");
         assertUnreachable(bodyResult.apiVersion);
     }
 
@@ -235,6 +237,7 @@ export function addHttpHandler(
       reply.status(200).send(body);
     } catch (err) {
       const { code, body } = toHttpError(err);
+      request.log.error({ err }, "Error while user authenticate");
       reply.status(code).send(body);
     }
   });

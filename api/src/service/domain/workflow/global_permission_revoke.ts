@@ -1,6 +1,7 @@
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -32,9 +33,11 @@ export async function revokeGlobalPermission(
     intent,
     revokee,
   );
+
   if (Result.isErr(globalPermissionRevoked)) {
     return new VError(globalPermissionRevoked, "failed to create global permission revoked event");
   }
+
   const revokeIntent = "global.revokePermission";
   const currentGlobalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(currentGlobalPermissionsResult)) {
@@ -42,38 +45,41 @@ export async function revokeGlobalPermission(
   }
   const currentGlobalPermissions = currentGlobalPermissionsResult;
 
-  // Check if revokee is group
   const isGroupResult = await repository.isGroup(revokee);
   if (Result.isErr(isGroupResult)) {
     return new VError(isGroupResult, "isGroup check failed");
   }
   const isGroup = isGroupResult;
 
-  // If revokee is group, return an error because global permissions cannot be granted to groups
+  logger.trace({ revokee }, "Checking if revokee is a group");
   if (isGroup) {
     return new PreconditionError(
       ctx,
       globalPermissionRevoked,
       "Cannot assign global permissions to groups",
     );
-  } else {
-    // If the revokee is not a group, he/she is a user
-    const userResult = await repository.getUser(revokee);
-    if (Result.isErr(userResult)) {
-      return new PreconditionError(ctx, globalPermissionRevoked, userResult.message);
-    }
-    // Check if revokee and issuer belong to the same organization
-    if (userResult.organization !== issuerOrganization) {
-      return new NotAuthorized({
-        ctx,
-        userId: issuer.id,
-        intent: revokeIntent,
-        target: currentGlobalPermissions,
-      });
-    }
   }
 
-  // Check authorization (if not root):
+  // If the revokee is not a group, he/she is a user
+  const userResult = await repository.getUser(revokee);
+  if (Result.isErr(userResult)) {
+    return new PreconditionError(ctx, globalPermissionRevoked, userResult.message);
+  }
+
+  logger.trace(
+    { revokee: userResult, organization: issuerOrganization },
+    "Checking if revokee and issuer belong to the same organization",
+  );
+  if (userResult.organization !== issuerOrganization) {
+    return new NotAuthorized({
+      ctx,
+      userId: issuer.id,
+      intent: revokeIntent,
+      target: currentGlobalPermissions,
+    });
+  }
+
+  logger.trace({ issuer }, "Checking if user is root");
   if (issuer.id !== "root") {
     if (!GlobalPermissions.permits(currentGlobalPermissions, issuer, [revokeIntent])) {
       return new NotAuthorized({

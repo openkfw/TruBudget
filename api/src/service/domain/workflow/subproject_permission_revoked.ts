@@ -1,6 +1,5 @@
 import Joi = require("joi");
 import { VError } from "verror";
-
 import Intent, { subprojectIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";

@@ -1,6 +1,5 @@
 import { AssertionError } from "assert";
 import * as Workflowitem from "./workflowitem";
-import * as WorkflowitemClosed from "./workflowitem_closed";
 
 export type WorkflowitemOrdering = Workflowitem.Id[];
 
@@ -10,8 +9,8 @@ interface ItemAndIndex {
 }
 
 export function sortWorkflowitems<
-  T extends Workflowitem.ScrubbedWorkflowitem | Workflowitem.Workflowitem,
->(workflowitems: T[], ordering: string[]): T[] {
+  T extends Workflowitem.ScrubbedWorkflowitem 
+  | Workflowitem.Workflowitem>(workflowitems: T[], ordering: string[]): T[] {
   // The index is needed to enable stable sorting:
   const items = workflowitems.map((workflowitem, index) => ({ index, workflowitem }));
 
@@ -19,7 +18,7 @@ export function sortWorkflowitems<
   items.sort((a, b) => byOrderingCriteria(a, b, ordering));
 
   // Return the sorted items:
-  return items.map(item => item.workflowitem);
+  return items.map((item) => item.workflowitem);
 }
 
 /**
@@ -71,7 +70,7 @@ function isClosed(item: Workflowitem.ScrubbedWorkflowitem): boolean {
 }
 
 function closedAt(item: Workflowitem.ScrubbedWorkflowitem): any {
-  const traceEvent = item.log.find(e => e.businessEvent.type === "workflowitem_closed");
+  const traceEvent = item.log.find((e) => e.businessEvent.type === "workflowitem_closed");
 
   if (traceEvent === undefined || traceEvent.businessEvent.type !== "workflowitem_closed") {
     return new AssertionError({ message: `Expected close event for workflowitem ${item.id}` });

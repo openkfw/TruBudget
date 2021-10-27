@@ -2,7 +2,7 @@ import { isArray } from "util";
 import { VError } from "verror";
 
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 
 interface Info {
   ctx: Ctx;

@@ -1,6 +1,6 @@
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -15,8 +15,8 @@ import * as Subproject from "../workflow/subproject";
 import * as DocumentValidated from "./document_validated";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
-import { GenericDocument } from "./document";
 import { getAllDocuments } from "./document_get";
+import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
@@ -35,22 +35,23 @@ export async function documentValidate(
   workflowitemId: Workflowitem.Id,
   repository: Repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; workflowitem: Workflowitem.Workflowitem }>> {
+  logger.trace({ documentId }, "Validating document with id");
   const workflowitem = await repository.getWorkflowitem(workflowitemId);
   if (Result.isErr(workflowitem)) {
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  // Check if document exists
+  logger.trace("Checking if document exists");
   const allDocumentIds = await getAllDocuments(ctx, repository);
   if (Result.isErr(allDocumentIds)) {
     return new VError(allDocumentIds, "failed to fetch all documents");
   }
-  const hasDocument = allDocumentIds.find(doc => doc.id === documentId);
+
+  const hasDocument = allDocumentIds.find((doc) => doc.id === documentId);
   if (!hasDocument) {
     return new NotFound(ctx, "document", documentId);
   }
 
-  // Create the new event:
   const documentValidatedEvent = DocumentValidated.createEvent(
     isDocumentValid,
     documentId,
@@ -64,12 +65,15 @@ export async function documentValidate(
     return new VError(documentValidatedEvent, "failed to create event in domain");
   }
 
-  // Root user cannot validate a document
   if (issuer.id === "root") {
-    return new PreconditionError(ctx, documentValidatedEvent, "'root' user cannot validate a document");
+    return new PreconditionError(
+      ctx,
+      documentValidatedEvent,
+      "'root' user cannot validate a document",
+    );
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace("Checking if document is valid");
   const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
     ctx,
     workflowitem,
@@ -79,33 +83,38 @@ export async function documentValidate(
     return new InvalidCommand(ctx, documentValidatedEvent, [result]);
   }
 
-  // Create notification events:
   let notifications: Result.Type<NotificationCreated.Event[]> = [];
-  if (workflowitem.assignee !== undefined) {
-    const recipientsResult = await repository.getUsersForIdentity(workflowitem.assignee);
-    if (Result.isErr(recipientsResult)) {
-      return new VError(recipientsResult, `fetch users for ${workflowitem.assignee} failed`);
-    }
-    notifications = recipientsResult.reduce((notifications, recipient) => {
-      // The issuer doesn't receive a notification:
-      if (recipient !== issuer.id) {
-        const notification = NotificationCreated.createEvent(
-          ctx.source,
-          issuer.id,
-          recipient,
-          documentValidatedEvent,
-          projectId,
-        );
-        if (Result.isErr(notification)) {
-          return new VError(notification, "failed to create notification event");
-        }
-        notifications.push(notification);
-      }
-      return notifications;
-    }, [] as NotificationCreated.Event[]);
+  if (!workflowitem.assignee) {
+    return { newEvents: [documentValidatedEvent], workflowitem };
   }
+
+  logger.trace({ assignee: workflowitem.assignee }, "Creating notification events for assignee");
+  const recipientsResult = await repository.getUsersForIdentity(workflowitem.assignee);
+  if (Result.isErr(recipientsResult)) {
+    return new VError(recipientsResult, `fetch users for ${workflowitem.assignee} failed`);
+  }
+
+  notifications = recipientsResult.reduce((notifications, recipient) => {
+    // The issuer doesn't receive a notification:
+    if (recipient !== issuer.id) {
+      const notification = NotificationCreated.createEvent(
+        ctx.source,
+        issuer.id,
+        recipient,
+        documentValidatedEvent,
+        projectId,
+      );
+      if (Result.isErr(notification)) {
+        return new VError(notification, "failed to create notification event");
+      }
+      notifications.push(notification);
+    }
+    return notifications;
+  }, [] as NotificationCreated.Event[]);
+
   if (Result.isErr(notifications)) {
     return new VError(notifications, "failed to create notification events");
   }
+
   return { newEvents: [documentValidatedEvent, ...notifications], workflowitem };
 }

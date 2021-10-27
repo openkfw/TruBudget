@@ -1,10 +1,11 @@
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { isNonemptyString, value } from "lib/validation";
 import { VError } from "verror";
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
+import { config } from "../../config";
 import { HttpResponse } from "../../httpd/lib";
-import { Ctx } from "../../lib/ctx";
-import logger from "../../lib/logger";
-import { isNonemptyString, value } from "../../lib/validation";
 import * as Result from "../../result";
 import { ConnToken } from "../../service";
 import { MultichainClient } from "../../service/Client.h";
@@ -12,7 +13,6 @@ import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as GlobalPermissionsGet from "../../service/global_permissions_get";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
-import { config } from "../../config";
 
 export async function voteForNetworkPermission(
   conn: ConnToken,
@@ -30,6 +30,7 @@ export async function voteForNetworkPermission(
     issuer,
   );
   if (Result.isErr(globalPermissionsResult)) {
+    logger.trace("global.grantPermission failed", globalPermissionsResult);
     throw new VError(globalPermissionsResult, "global.grantPermission failed");
   }
   const globalPermissions = globalPermissionsResult.permissions;

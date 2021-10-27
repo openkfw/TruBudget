@@ -1,5 +1,5 @@
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
@@ -8,6 +8,7 @@ import * as DocumentShared from "./document_shared";
 import * as DocumentUploaded from "./document_uploaded";
 import * as UserRecord from "../organization/user_record";
 import { PreconditionError } from "../errors/precondition_error";
+import logger from "lib/logger";
 
 export interface RequestData {
   id: string;
@@ -43,53 +44,59 @@ export async function uploadDocument(
 ): Promise<Result.Type<BusinessEvent[]>> {
   const { id, documentBase64, fileName } = requestData;
 
+  logger.trace("Getting all documents from repository");
   const existingDocuments = await repository.getAllDocuments();
   if (Result.isErr(existingDocuments)) {
     return new VError(existingDocuments, "cannot get documents");
   }
 
+  logger.trace({ docId: id }, "Checking if document with id already exists");
   if (docIdAlreadyExists(existingDocuments, id)) {
     return new VError(id, "failed to upload document, a document with this id already exists");
   }
 
-  // check if document is empty string
   if (documentBase64 === "") {
     return new VError(documentBase64, "an emtpy document is not allowed");
   }
 
-  // store base64 of document in external storage
+  logger.trace("Storing document hash in storage");
   const documentStorageServiceResponseResult = await repository.storeDocument(
     id,
     fileName,
     documentBase64,
   );
+
   if (Result.isErr(documentStorageServiceResponseResult)) {
     return new VError(documentStorageServiceResponseResult, "failed to store document");
   }
+
   const { secret } = documentStorageServiceResponseResult;
   if (!secret || Result.isErr(secret)) {
     return new VError("Failed to get the secret for this document");
   }
 
-  // fetch issuer organization
+  logger.trace({ issuer }, "Getting organization of issuer");
   const userResult = await repository.getUser(issuer.id);
   if (Result.isErr(userResult)) {
     return new VError(issuer.id, "Error getting user");
   }
+
   const user = userResult;
   const organization = user.organization;
   const publicKeyBase64 = await repository.getPublicKey(organization);
+
   if (Result.isErr(publicKeyBase64)) {
     return new VError(publicKeyBase64, "failed to get public key");
   }
+
   const publicBuff = Buffer.from(publicKeyBase64, "base64");
   const publicKey = publicBuff.toString("utf8");
   const encryptedSecret = await repository.encryptWithKey(secret, publicKey);
+
   if (Result.isErr(encryptedSecret)) {
     return new VError(encryptedSecret, "failed to encrypt secret");
   }
 
-  // create doc Event: "offchain_documents" stream - create document_upload event (docId, filename, orga)
   const newDocumentUploadedEvent = DocumentUploaded.createEvent(
     ctx.source,
     issuer.id,
@@ -100,8 +107,8 @@ export async function uploadDocument(
   if (Result.isErr(newDocumentUploadedEvent)) {
     return new VError(newDocumentUploadedEvent, "cannot update workflowitem");
   }
-  // create secrets events: Check orga access -> check orga public keys (own public key included) -> encrypt secrets with key and generate event per orga on document_secrets stream (docId, orga, encrypted secret)
-  // create secret event
+
+  logger.trace("Creating document_shared event with secret");
   const newSecretPublishedEvent = DocumentShared.createEvent(
     ctx.source,
     issuer.id,

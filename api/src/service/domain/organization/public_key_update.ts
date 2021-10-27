@@ -1,7 +1,7 @@
 import Joi = require("joi");
 
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -9,6 +9,7 @@ import { Organization, PublicKeyBase64 } from "./public_key";
 import { sourcePublicKeys } from "./public_key_eventsourcing";
 import * as PublicKeyPublished from "./public_key_published";
 import { ServiceUser } from "./service_user";
+import logger from "lib/logger";
 
 export interface RequestData {
   organization: Organization;
@@ -36,11 +37,13 @@ export async function updatePublicKey(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent>> {
   const { organization, publicKey } = requestData;
-  // Check if public key exists
+
+  logger.trace("Checking if public key already exists");
   const publicKeyBase64Result = await repository.getPublicKey(organization);
   if (Result.isErr(publicKeyBase64Result)) {
     return new VError(publicKeyBase64Result, "couldn't get public key");
   }
+
   if (publicKey === publicKeyBase64Result) {
     return new Error(`the same public key is already stored for ${organization}`);
   }

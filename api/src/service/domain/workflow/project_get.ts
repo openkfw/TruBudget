@@ -1,5 +1,5 @@
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -48,22 +48,31 @@ function dropHiddenHistoryEvents(
   project: Project.Project,
   actingUser: ServiceUser,
 ): Project.Project {
-  const isEventVisible =
-    actingUser.id === "root"
-      ? () => true
-      : (event: ProjectTraceEvent) => {
-          const allowed = requiredPermissions.get(event.businessEvent.type);
-          if (!allowed) return false;
-          for (const intent of allowed) {
-            for (const identity of project.permissions[intent] || []) {
-              if (canAssumeIdentity(actingUser, identity)) return true;
-            }
-          }
-          return false;
-        };
+  const isEventVisible = getIsEventVisibleFunction(actingUser, project);
 
   return {
     ...project,
     log: (project.log || []).filter(isEventVisible),
+  };
+}
+
+function getIsEventVisibleFunction(
+  actingUser: ServiceUser,
+  project: Project.Project,
+): (event?: ProjectTraceEvent) => boolean {
+  if (actingUser.id === "root") {
+    return () => true;
+  }
+
+  return (event: ProjectTraceEvent) => {
+    const allowed = requiredPermissions.get(event.businessEvent.type);
+    if (!allowed) return false;
+
+    for (const intent of allowed) {
+      for (const identity of project.permissions[intent] || []) {
+        if (canAssumeIdentity(actingUser, identity)) return true;
+      }
+    }
+    return false;
   };
 }

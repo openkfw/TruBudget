@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -20,6 +21,8 @@ export async function grantProjectPermission(
   grantee: Identity,
   intent: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug({ projectId, grantee, intent }, "Granting project permission");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectPermissionGrant.grantProjectPermission(ctx, serviceUser, projectId, grantee, intent, {
       getProject: async (id) => {
@@ -27,9 +30,11 @@ export async function grantProjectPermission(
       },
     }),
   );
+
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "grant project permission failed");
   }
+
   const newEvents = newEventsResult;
 
   for (const event of newEvents) {

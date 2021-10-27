@@ -1,8 +1,10 @@
+import { Ctx } from "lib/ctx";
+import deepcopy from "lib/deepcopy";
+import logger from "lib/logger";
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
-import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+import { mapOldDocToNewDoc, StoredDocument } from "../document/document";
 import * as DocumentValidated from "../document/document_validated";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as Workflowitem from "./workflowitem";
@@ -13,7 +15,6 @@ import * as WorkflowitemPermissionGranted from "./workflowitem_permission_grante
 import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoked";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import { mapOldDocToNewDoc, StoredDocument } from "../document/document";
 
 export function sourceWorkflowitems(
   ctx: Ctx,
@@ -27,6 +28,7 @@ export function sourceWorkflowitems(
   const errors: Error[] = [];
 
   for (const event of events) {
+    logger.trace({ event }, "Validating workflowitem event by applying it");
     if (!event.type.startsWith("workflowitem_")) {
       continue;
     }

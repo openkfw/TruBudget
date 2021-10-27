@@ -1,4 +1,4 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import { BusinessEvent } from "../business_event";
 
 export class InvalidEvent extends Error {
@@ -8,7 +8,9 @@ export class InvalidEvent extends Error {
     private readonly validationErrors: Error[],
   ) {
     super(
-      `Failed to apply ${businessEvent.type}: ${validationErrors.map(e => e.message).join("; ")}.`,
+      `Failed to apply ${businessEvent.type}: ${validationErrors
+        .map((e) => e.message)
+        .join("; ")}.`,
     );
 
     // Maintains proper stack trace for where our error was thrown (only available on V8):

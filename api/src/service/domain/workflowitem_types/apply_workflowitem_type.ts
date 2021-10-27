@@ -1,4 +1,4 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
@@ -18,7 +18,12 @@ export const applyWorkflowitemType = (
       workflowitemTypeEvents = [];
       break;
     case "restricted":
-      workflowitemTypeEvents = RestrictedWorkflowitem.createEvents(originEvent, ctx, publisher, workflowitem);
+      workflowitemTypeEvents = RestrictedWorkflowitem.createEvents(
+        originEvent,
+        ctx,
+        publisher,
+        workflowitem,
+      );
       break;
     default:
       workflowitemTypeEvents = [];

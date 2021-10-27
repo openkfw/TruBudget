@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -19,6 +20,7 @@ export async function grantGlobalPermission(
   grantee: Identity,
   permission: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug({ permission, grantee }, "Grantig global permission");
   const result = await GlobalPermissionsGrant.grantGlobalPermission(
     ctx,
     serviceUser,

@@ -2,7 +2,7 @@ import Joi = require("joi");
 import { VError } from "verror";
 
 import Intent, { subprojectIntents } from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
@@ -20,6 +20,7 @@ import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import * as Subproject from "./subproject";
 import * as SubprojectCreated from "./subproject_created";
+import logger from "lib/logger";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -69,6 +70,8 @@ export async function createSubproject(
 
   const projectId = reqData.projectId;
   const subprojectId = reqData.subprojectId || randomString();
+
+  logger.trace({ req: reqData }, "Trying to create 'SubprojectCreated' Event from request data");
   const createEvent = SubprojectCreated.createEvent(ctx.source, publisher, projectId, {
     id: subprojectId,
     status: reqData.status || "open",
@@ -87,6 +90,7 @@ export async function createSubproject(
   }
 
   // Make sure for each organization and currency there is only one entry:
+  logger.trace({ event: createEvent }, "Checking if entry is unique per organization and currency");
   const badEntry = findDuplicateBudgetEntry(createEvent.subproject.projectedBudgets);
   if (badEntry !== undefined) {
     return new AlreadyExists(
@@ -113,6 +117,7 @@ export async function createSubproject(
   }
 
   // Check authorization (if not root):
+  logger.trace({ user: creatingUser }, "Checking authorization of user");
   const projectPermissions = await repository.projectPermissions(projectId);
   if (Result.isErr(projectPermissions)) {
     return new NotFound(ctx, "project", projectId);
@@ -137,6 +142,7 @@ export async function createSubproject(
   }
 
   // Check that the event is valid:
+  logger.trace({ event: createEvent }, "Checking if Event is valid");
   const result = SubprojectCreated.createFrom(ctx, createEvent);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, createEvent, [result]);

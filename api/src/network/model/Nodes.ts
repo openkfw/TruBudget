@@ -1,5 +1,5 @@
 import Intent from "../../authz/intents";
-import logger from "../../lib/logger";
+import logger from "lib/logger";
 import * as Result from "../../result";
 import { MultichainClient, PeerInfo } from "../../service/Client.h";
 import * as NodeRegistered from "../../service/domain/network/node_registered";

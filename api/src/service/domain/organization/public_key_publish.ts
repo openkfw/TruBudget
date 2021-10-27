@@ -1,7 +1,7 @@
 import Joi = require("joi");
 
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { AlreadyExists } from "../errors/already_exists";
@@ -10,6 +10,7 @@ import { Organization, PublicKeyBase64 } from "./public_key";
 import { sourcePublicKeys } from "./public_key_eventsourcing";
 import * as PublicKeyPublished from "./public_key_published";
 import { ServiceUser } from "./service_user";
+import logger from "lib/logger";
 
 export interface RequestData {
   organization: Organization;
@@ -46,15 +47,17 @@ export async function publishPublicKey(
     organization,
     publicKeyBase64,
   );
+
+  logger.trace({ createEvent }, "event to publish public key created");
   if (Result.isErr(createEvent)) {
     return new VError(createEvent, "failed to create publish public key event");
   }
 
-  // Check if public key already exists
   const publicKeyExistsResult = await repository.publicKeyAlreadyExists(organization);
   if (Result.isErr(publicKeyExistsResult)) {
     return new VError(publicKeyExistsResult, "public key exists check failed");
   }
+
   const publicKeyExists = publicKeyExistsResult;
   if (publicKeyExists) {
     return new AlreadyExists(ctx, createEvent, createEvent.publicKey);

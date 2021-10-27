@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -13,10 +14,12 @@ export async function removeMember(
   ctx: Ctx,
   serviceUser: ServiceUser,
   groupId: Group.Id,
-  newMember: Group.Member,
+  userId: Group.Member,
 ): Promise<Result.Type<void>> {
+  logger.debug({ userId }, "Removing user from group");
+
   const memberRemoveResult = await Cache.withCache(conn, ctx, (cache) =>
-    GroupMemberRemove.removeMember(ctx, serviceUser, groupId, newMember, {
+    GroupMemberRemove.removeMember(ctx, serviceUser, groupId, userId, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
       },

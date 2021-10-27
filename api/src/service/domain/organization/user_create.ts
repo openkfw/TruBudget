@@ -1,8 +1,9 @@
 import Joi = require("joi");
 
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
 import { userDefaultIntents, userIntents } from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
@@ -69,6 +70,7 @@ export async function createUser(
     }, {}),
     additionalData: data.additionalData || {},
   };
+  logger.trace("Creating user ", data);
 
   const createEvent = UserCreated.createEvent(source, publisher, eventTemplate);
   if (Result.isErr(createEvent)) {
@@ -121,7 +123,10 @@ export async function createUser(
     }
   }
 
+  logger.trace("User creation is legit - setting-up user account!");
+
   eventTemplate.passwordHash = await repository.hash(data.passwordPlaintext);
+  logger.trace("Creating key-pair for new user...");
 
   // Every user gets her own address:
   const keyPair = await repository.createKeyPair();
@@ -133,6 +138,7 @@ export async function createUser(
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, createEvent, [result]);
   }
+  logger.trace("Granting default permissions to new user ...");
 
   // Create events that'll grant default permissions to the user:
   const defaultPermissionGrantedEvents: Result.Type<GlobalPermissionGranted.Event[]> = [];

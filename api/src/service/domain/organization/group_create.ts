@@ -2,7 +2,7 @@ import Joi = require("joi");
 
 import { VError } from "verror";
 import Intent, { groupIntents } from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
@@ -17,6 +17,7 @@ import * as GroupCreated from "./group_created";
 import { sourceGroups } from "./group_eventsourcing";
 import { Identity } from "./identity";
 import { ServiceUser } from "./service_user";
+import logger from "lib/logger";
 
 export interface RequestData {
   id: string;
@@ -53,6 +54,8 @@ export async function createGroup(
 ): Promise<Result.Type<BusinessEvent[]>> {
   const source = ctx.source;
   const publisher = creatingUser.id;
+
+  logger.trace({ req: data }, "Trying to create 'GroupCreated' Event from request data");
   const createEvent = GroupCreated.createEvent(source, publisher, {
     id: data.id,
     displayName: data.displayName,
@@ -61,17 +64,21 @@ export async function createGroup(
     permissions: newDefaultPermissionsFor(creatingUser),
     additionalData: data.additionalData || {},
   });
+
   if (Result.isErr(createEvent)) {
     return new VError(createEvent, "failed to create group created event");
   }
 
   // Check group already exists:
+  logger.trace({ event: createEvent }, "Checking if group alredy exists");
   const groupExistsResult = await repository.groupExists(createEvent.group.id);
   if (Result.isErr(groupExistsResult)) {
     return new VError(groupExistsResult, "groupExists check failed");
   }
+
   const groupExists = groupExistsResult;
   // Check user already exists:
+  logger.trace({ event: createEvent }, "Checking if user with name of the group alredy exists");
   const userExistsResult = await repository.userExists(createEvent.group.id);
   if (Result.isErr(userExistsResult)) {
     return new VError(userExistsResult, "user exists check failed");
@@ -82,12 +89,15 @@ export async function createGroup(
   }
 
   // Check authorization (if not root):
+  logger.trace({ user: creatingUser }, "Checking if user is root-user");
   if (creatingUser.id !== "root") {
     const intent = "global.createGroup";
     const globalPermissionsResult = await repository.getGlobalPermissions();
+
     if (Result.isErr(globalPermissionsResult)) {
       return new VError(globalPermissionsResult, "get global permissions failed");
     }
+
     const globalPermissions = globalPermissionsResult;
     const isAuthorized = identitiesAuthorizedFor(globalPermissions, intent).some((identity) =>
       canAssumeIdentity(creatingUser, identity),

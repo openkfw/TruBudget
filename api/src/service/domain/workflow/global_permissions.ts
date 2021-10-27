@@ -19,9 +19,7 @@ export interface GlobalPermissions {
 
 const schema = Joi.object({
   permissions: Permissions.permissionsSchema.required(),
-  log: Joi.array()
-    .required()
-    .items(globalPermissionsTraceEventSchema),
+  log: Joi.array().required().items(globalPermissionsTraceEventSchema),
   additionalData: AdditionalData.schema,
 });
 
@@ -46,8 +44,10 @@ export function permits(
     const eligibles = globalPermissions.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
+
   return hasPermission;
 }

@@ -1,5 +1,5 @@
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -12,6 +12,7 @@ import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as ProjectAssigned from "./project_assigned";
 import * as ProjectEventSourcing from "./project_eventsourcing";
+import logger from "lib/logger";
 
 interface Repository {
   getProject(): Promise<Result.Type<Project.Project>>;
@@ -35,19 +36,19 @@ export async function assignProject(
     return { newEvents: [], project };
   }
 
-  // Create the new event:
+  logger.trace({ issuer, assignee, projectId }, "Createing new project_assign event");
   const projectAssigned = ProjectAssigned.createEvent(ctx.source, issuer.id, projectId, assignee);
   if (Result.isErr(projectAssigned)) {
     return new VError(projectAssigned, "failed to create event");
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking authorization of issuer");
   const intent = "project.assign";
   if (issuer.id !== "root" && !Project.permits(project, issuer, [intent])) {
     return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: projectAssigned }, "Checking if project_assigned event is valid");
   const result = ProjectEventSourcing.newProjectFromEvent(ctx, project, projectAssigned);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, projectAssigned, [result]);
@@ -61,21 +62,25 @@ export async function assignProject(
   }
   const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
-    if (recipient !== issuer.id) {
-      const notification = NotificationCreated.createEvent(
-        ctx.source,
-        issuer.id,
-        recipient,
-        projectAssigned,
-        projectId,
-      );
-      if (Result.isErr(notification)) {
-        return new VError(notification, "failed to create notification event");
-      }
-      notifications.push(notification);
+    if (recipient === issuer.id) {
+      return notifications;
     }
+
+    const notification = NotificationCreated.createEvent(
+      ctx.source,
+      issuer.id,
+      recipient,
+      projectAssigned,
+      projectId,
+    );
+    if (Result.isErr(notification)) {
+      return new VError(notification, "failed to create notification event");
+    }
+    notifications.push(notification);
+
     return notifications;
   }, [] as NotificationCreated.Event[]);
+
   if (Result.isErr(notifications)) {
     return new VError(notifications, "failed to create notification events");
   }

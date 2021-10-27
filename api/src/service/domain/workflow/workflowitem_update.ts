@@ -1,6 +1,6 @@
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -24,6 +24,7 @@ import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
 import uuid = require("uuid");
+import logger from "lib/logger";
 
 export interface RequestData {
   displayName?: string;
@@ -61,7 +62,7 @@ function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
 }
 
 function generateUniqueDocId(allDocuments: GenericDocument[]): string {
-  // Generate a new document id
+  logger.trace("Generation unique document id");
   while (true) {
     const docId = uuid.v4();
     if (!docIdAlreadyExists(allDocuments, docId)) {
@@ -93,6 +94,7 @@ export async function updateWorkflowitem(
       return new VError(existingDocuments, "cannot get documents");
     }
 
+    logger.trace("Preparing workflowitem_updated event");
     // preparation for workflowitem_updated event
     for (const doc of modification.documents || []) {
       doc.id = generateUniqueDocId(existingDocuments);
@@ -176,7 +178,7 @@ export async function updateWorkflowitem(
     return new VError(newEvent, "cannot update workflowitem");
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const intent = "workflowitem.update";
     if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
@@ -184,7 +186,7 @@ export async function updateWorkflowitem(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: newEvent }, "Checking event validity");
   const updatedWorkflowitemResult = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
     ctx,
     workflowitem,
@@ -200,7 +202,7 @@ export async function updateWorkflowitem(
     return { newEvents: [], workflowitem };
   }
 
-  // Create notification events:
+  logger.trace("Creating notification events");
   let notifications: Result.Type<NotificationCreated.Event[]> = [];
   if (workflowitem.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(workflowitem.assignee);

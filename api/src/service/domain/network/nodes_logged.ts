@@ -1,4 +1,5 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 
@@ -20,11 +21,13 @@ export const schema = Joi.object({
 }).options({ stripUnknown: true });
 
 export function createEvent(type: EventTypeType, date: string, peers: any[]): Result.Type<Event> {
+  logger.trace("Creating node logged event");
   const event = {
     type: eventType,
     date,
     peers,
   };
+
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${eventType} event`);

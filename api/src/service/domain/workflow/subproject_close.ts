@@ -1,6 +1,6 @@
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -15,6 +15,7 @@ import * as Subproject from "./subproject";
 import * as SubprojectClosed from "./subproject_closed";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as Workflowitem from "./workflowitem";
+import logger from "lib/logger";
 
 interface Repository {
   getSubproject(
@@ -45,7 +46,7 @@ export async function closeSubproject(
     return { newEvents: [], subproject };
   }
 
-  // Create the new event:
+  logger.trace({ issuer, projectId, subprojectId }, "Creating subproject_closed event");
   const subprojectClosed = SubprojectClosed.createEvent(
     ctx.source,
     issuer.id,
@@ -70,7 +71,10 @@ export async function closeSubproject(
     );
   }
 
-  // Make sure all workflowitems are already closed:
+  logger.trace(
+    { projectId, subprojectId },
+    "Making sure all workflowitems of subproject are already closed",
+  );
   const workflowitems = await repository.getWorkflowitems(projectId, subprojectId);
   if (Result.isErr(workflowitems)) {
     return new PreconditionError(
@@ -87,14 +91,14 @@ export async function closeSubproject(
     );
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: subprojectClosed }, "Checking event validity");
   const result = SubprojectEventSourcing.newSubprojectFromEvent(ctx, subproject, subprojectClosed);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, subprojectClosed, [result]);
   }
   subproject = result;
 
-  // Create notification events:
+  logger.trace("Creating notification events");
   const notifications: Result.Type<NotificationCreated.Event[]> = assignedIdentities.reduce(
     (notifications, recipient) => {
       // The issuer doesn't receive a notification:
@@ -115,8 +119,10 @@ export async function closeSubproject(
     },
     [] as NotificationCreated.Event[],
   );
+
   if (Result.isErr(notifications)) {
     return new VError(notifications, "failed to create notification events");
   }
+
   return { newEvents: [subprojectClosed, ...notifications], subproject };
 }

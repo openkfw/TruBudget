@@ -11,20 +11,19 @@ export function isNonemptyString(x: any): boolean {
 export async function isUserOrUndefined(conn: ConnToken, ctx: Ctx, issuer: ServiceUser, input) {
   if (input === undefined) {
     return true;
-  } else {
-    if (isNonemptyString(input)) {
-      const user = await UserQuery.getUser(conn, ctx, issuer, input).catch((err) => {
-        if (err.kind === "NotFound") {
-          return undefined;
-        } else {
-          throw err;
-        }
-      });
-      return user !== undefined;
-    } else {
-      return false;
-    }
   }
+  if (isNonemptyString(input)) {
+    const user = await UserQuery.getUser(conn, ctx, issuer, input).catch((err) => {
+      if (err.kind === "NotFound") {
+        return undefined;
+      } else {
+        throw err;
+      }
+    });
+    return user !== undefined;
+  }
+
+  return false;
 }
 
 export function findBadKeysInObject(

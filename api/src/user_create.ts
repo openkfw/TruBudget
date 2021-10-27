@@ -153,6 +153,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     if (Result.isErr(bodyResult)) {
       const { code, body } = toHttpError(new VError(bodyResult, "failed to create user"));
+      request.log.error({ err: bodyResult }, "Invalid request body");
       reply.status(code).send(body);
       return;
     }
@@ -171,6 +172,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       }
       default:
         // Joi validates only existing apiVersions
+        request.log.error({ err: bodyResult }, "Wrong api version specified");
         assertUnreachable(bodyResult.apiVersion);
     }
 
@@ -197,6 +199,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while creating user");
         reply.status(code).send(body);
       });
   });

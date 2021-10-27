@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -20,6 +21,8 @@ export async function revokeProjectPermission(
   revokee: Identity,
   intent: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug({ projectId, revokee, intent }, "Revoking project permission");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectPermissionRevoke.revokeProjectPermission(ctx, serviceUser, projectId, revokee, intent, {
       getProject: async (id) => {
@@ -31,7 +34,9 @@ export async function revokeProjectPermission(
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "revoke project permission failed");
   }
+
   const newEvents = newEventsResult;
+
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);
   }

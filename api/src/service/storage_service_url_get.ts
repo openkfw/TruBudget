@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -10,6 +11,8 @@ export async function storageServiceUrlGet(
   ctx: Ctx,
   organization: string,
 ): Promise<Result.Type<string | undefined>> {
+  logger.debug("Getting storage service url");
+
   const storageServiceUrlResult = await Cache.withCache(conn, ctx, async (cache) => {
     return GetStorageServiceUrl.getStorageServiceUrl(organization, {
       getStorageServiceUrlPublishedEvents: async () => {

@@ -177,13 +177,17 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       const projectId = request.query.projectId;
       if (!isNonemptyString(projectId)) {
+        const message =
+          "required query parameter `projectId` not present (must be non-empty string)";
         reply.status(404).send({
           apiVersion: "1.0",
           error: {
             code: 404,
-            message: "required query parameter `projectId` not present (must be non-empty string)",
+            message,
           },
         });
+
+        request.log.error({ err: message }, "Invalid request body");
         return;
       }
 
@@ -246,6 +250,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while getting project details");
         reply.status(code).send(body);
       }
     },

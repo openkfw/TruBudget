@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import VError = require("verror");
 
 import { Ctx } from "../lib/ctx";
@@ -17,6 +18,8 @@ export async function getProjectHistory(
   projectId: Project.Id,
   filter?: History.Filter,
 ): Promise<Result.Type<ProjectTraceEvent[]>> {
+  logger.debug({ projectId, filter }, "Getting history of project");
+
   const projectHistoryResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectHistory.getHistory(
       ctx,
@@ -30,6 +33,7 @@ export async function getProjectHistory(
       filter,
     ),
   );
+
   return Result.mapErr(
     projectHistoryResult,
     (err) => new VError(err, `could not get history of project with id ${projectId}`),

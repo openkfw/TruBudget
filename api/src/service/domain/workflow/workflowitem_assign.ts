@@ -1,5 +1,5 @@
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -14,6 +14,7 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemAssigned from "./workflowitem_assigned";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
+import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitem(workflowitemId: string): Promise<Result.Type<Workflowitem.Workflowitem>>;
@@ -43,6 +44,10 @@ export async function assignWorkflowitem(
     return { newEvents: [], workflowitem };
   }
 
+  logger.trace(
+    { publisher, assignee, projectId, subprojectId, workflowitemId },
+    "Creating workflowitem_assigned event",
+  );
   const assignEvent = WorkflowitemAssigned.createEvent(
     ctx.source,
     publisher.id,
@@ -56,7 +61,7 @@ export async function assignWorkflowitem(
     return new VError(assignEvent, "failed to create event");
   }
 
-  // Check authorization:
+  logger.trace({ publisher }, "Checking user authorization");
   if (publisher.id !== "root") {
     const assignIntent = "workflowitem.assign";
     if (!Workflowitem.permits(workflowitem, publisher, [assignIntent])) {
@@ -69,13 +74,13 @@ export async function assignWorkflowitem(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: assignEvent }, "Checking event validity");
   const result = WorkflowitemEventSourcing.newWorkflowitemFromEvent(ctx, workflowitem, assignEvent);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, assignEvent, [result]);
   }
 
-  // Create notification events:
+  logger.trace("Creating notification events");
   const recipientsResult = await repository.getUsersForIdentity(assignee);
   if (Result.isErr(recipientsResult)) {
     return new VError(recipientsResult, `fetch users for ${assignee} failed`);

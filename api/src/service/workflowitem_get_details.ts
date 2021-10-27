@@ -11,6 +11,7 @@ import * as WorkflowitemGetDetails from "./domain/workflow/workflowitem_get_deta
 import * as WorkflowitemGet from "./domain/workflow/workflowitem_get";
 import * as WorkflowitemDocumentDownloadService from "./workflowitem_document_download";
 import { StorageServiceClientI } from "./Client_storage_service.h";
+import logger from "lib/logger";
 
 export async function getWorkflowitemDetails(
   conn: ConnToken,
@@ -21,6 +22,8 @@ export async function getWorkflowitemDetails(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
 ): Promise<Result.Type<Workflowitem.Workflowitem>> {
+  logger.debug({ projectId, subprojectId, workflowitemId }, "Getting workflowitem details");
+
   const workflowitemResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemGetDetails.getWorkflowitemDetails(ctx, serviceUser, workflowitemId, {
       getWorkflowitem: async () => {

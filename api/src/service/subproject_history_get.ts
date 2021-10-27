@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import VError = require("verror");
 
 import { Ctx } from "../lib/ctx";
@@ -19,6 +20,8 @@ export async function getSubprojectHistory(
   subprojectId: Subproject.Id,
   filter?: History.Filter,
 ): Promise<Result.Type<SubprojectTraceEvent[]>> {
+  logger.debug({ projectId, subprojectId, filter }, "Getting subproject history");
+
   const subprojectHistoryResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectHistory.getHistory(
       ctx,

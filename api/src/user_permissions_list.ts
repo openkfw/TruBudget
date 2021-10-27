@@ -80,13 +80,15 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       const userId = request.query.userId;
       if (!isNonemptyString(userId)) {
+        const message = "required query parameter `userId` not present (must be non-empty string)";
         reply.status(404).send({
           apiVersion: "1.0",
           error: {
             code: 404,
-            message: "required query parameter `userId` not present (must be non-empty string)",
+            message,
           },
         });
+        request.log.error({ err: message }, "Invalid request body");
         return;
       }
 
@@ -105,6 +107,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while listing user permissions");
         reply.status(code).send(body);
       }
     },

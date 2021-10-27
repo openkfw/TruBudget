@@ -1,5 +1,5 @@
 import { assert, expect } from "chai";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "./service_user";
 import { publishPublicKey } from "./public_key_publish";

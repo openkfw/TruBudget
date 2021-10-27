@@ -1,8 +1,8 @@
 import Intent from "../../authz/intents";
 import { AddressIsInvalidError, NotFoundError, PreconditionError } from "../../error";
 import { HttpResponse } from "../../httpd/lib";
-import logger from "../../lib/logger";
-import { isNonemptyString, value } from "../../lib/validation";
+import logger from "lib/logger";
+import { isNonemptyString, value } from "lib/validation";
 import { MultichainClient } from "../../service/Client.h";
 import * as Nodes from "../model/Nodes";
 
