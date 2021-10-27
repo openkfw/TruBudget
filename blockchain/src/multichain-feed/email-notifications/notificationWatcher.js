@@ -1,7 +1,7 @@
 const fork = require("child_process").fork;
 const fs = require("fs");
 
-const log = require("./../../logger");
+const log = require("./../../log/logger");
 
 const startEmailNotificationWatcher = (
   path,

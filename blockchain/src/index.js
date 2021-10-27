@@ -8,7 +8,7 @@ const yaml = require("js-yaml");
 const k8s = require("@kubernetes/client-node");
 const os = require("os");
 const KubernetesClient = require("./kubernetesClient");
-const log = require("./logger");
+const log = require("./log/logger");
 const logService = require("trubudget-logging-service");
 
 const {
@@ -75,7 +75,7 @@ const NAMESPACE = process.env.KUBE_NAMESPACE || "";
 const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
 
 if (EMAIL_SERVICE_ENABLED && !emailAuthSecret) {
-  log.error(
+  log.fatal(
     "Env variable 'JWT_SECRET' not set. Please set the same secret as in the trubudget email-service.",
   );
   os.exit(1);

@@ -1,8 +1,11 @@
 const axios = require("axios");
 const spawn = require("child_process").spawn;
 const fs = require("fs");
-const log = require("./logger");
-
+const log = require("./log/logger");
+const mdLog = require("trubudget-logging-service").createPinoLogger(
+  "Multichain-Slave",
+);
+const getDeamonArguments = require("./log/logArguments");
 // global:
 let address;
 
@@ -49,7 +52,7 @@ function startSlave(
     },
     "Start slave nodes with params",
   );
-  const args = [
+  const args = getDeamonArguments([
     "-txindex",
     `-port=${p2pPort}`,
     "-autosubscribe=streams",
@@ -57,7 +60,7 @@ function startSlave(
     connectArgs,
     blockNotifyArg,
     externalIpArg,
-  ];
+  ]);
   log.info(args, "Chain Arguments: ");
 
   if (fs.existsSync(chainConfigPath)) {
@@ -82,10 +85,12 @@ function startSlave(
     }
   }
 
+  log.debug({ args }, "Starting multichain deamon with arguments");
+
   const mc = spawn(prog, args);
 
   mc.stdout.on("data", (data) => {
-    log.info(`${prog}  | ${data.toString()}`);
+    mdLog.info(`${data}`);
     const regex = new RegExp("[0-9a-zA-Z]{30,40}");
     const match = regex.exec(data);
     if (match) address = match[0];
@@ -94,7 +99,7 @@ function startSlave(
   mc.stderr.on("data", (err) => log.error({ err }, "Error in Slave"));
 
   mc.on("close", (code, signal) =>
-    log.info(
+    mdLog.warn(
       `Multichaind (slave node) closed with exit code ${code} and signal ${signal}.`,
     ),
   );
@@ -120,6 +125,7 @@ async function registerNodeAtMaster(organization, proto, host, port) {
     while (!address) {
       await relax(5000);
     }
+
     log.info(`Registering ${organization} node address ${address}`);
     await askMasterForPermissions(address, organization, proto, host, port);
     log.info("Node address registered successfully (approval pending).");
@@ -132,6 +138,7 @@ async function registerNodeAtMaster(organization, proto, host, port) {
     await registerNodeAtMaster(organization, proto, host, port);
   }
 }
+
 module.exports = {
   startSlave,
   registerNodeAtMaster,

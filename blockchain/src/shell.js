@@ -3,7 +3,8 @@ const fs = require("fs");
 
 const { md5Dir } = require("./md5");
 const { sha256Dir } = require("./sha256");
-const log = require("./logger");
+const log = require("./log/logger");
+const logger = require("./log/logger");
 
 const verifyHash = async (backupDirectoryHash, extractPath) =>
   (await md5Dir(extractPath)) === backupDirectoryHash;
@@ -37,18 +38,20 @@ const verifyHashSha256 = async (backupDirectoryHash, extractPath) => {
   return dirHash === backupDirectoryHash;
 };
 
-const createCurrentChainBackupDir = currentChainBackupDir => {
+const createCurrentChainBackupDir = (currentChainBackupDir) => {
+  logger.trace({ dir: currentChainBackupDir }, "Creating backup directory");
   if (fs.existsSync(currentChainBackupDir)) {
     shell.rm("-rf", currentChainBackupDir);
   }
   shell.mkdir(currentChainBackupDir);
 };
 
-const removeFile = path => {
+const removeFile = (path) => {
   shell.rm(path);
 };
 
 const moveBackup = async (multichainDir, extractPath, chainName) => {
+  logger.debug("Moving backup");
   const targetDir = `${multichainDir}/${chainName}`;
   const currentChainBackupDir = "/root/bcBackup";
   createCurrentChainBackupDir(currentChainBackupDir);

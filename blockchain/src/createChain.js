@@ -1,9 +1,10 @@
 const spawn = require("child_process").spawn;
 const shell = require("shelljs");
-const log = require("./logger");
+const log = require("./log/logger");
 const mdLog = require("trubudget-logging-service").createPinoLogger(
   "Multichain-Deamon",
 );
+const getDeamonArguments = require("./log/logArguments");
 
 const configureChain = (
   isMaster,
@@ -66,7 +67,7 @@ const startMultichainDaemon = (
   multichainDir,
   connectArg = "",
 ) => {
-  const mcproc = spawn("multichaind", [
+  const args = getDeamonArguments([
     "-txindex",
     `${chainName}`,
     `${externalIpArg}`,
@@ -76,12 +77,15 @@ const startMultichainDaemon = (
     "-autosubscribe=streams",
     `${connectArg}`,
     `-datadir=${multichainDir}`,
-    "-debug=mcapi",
   ]);
-  mcproc.stdout.on("data", data => {
+  log.debug({ args }, "Starting multichain deamon with arguments");
+  const mcproc = spawn("multichaind", args);
+
+  mcproc.stdout.on("data", (data) => {
     mdLog.info(`${data}`);
   });
-  mcproc.stderr.on("data", data => {
+
+  mcproc.stderr.on("data", (data) => {
     if (data.includes("multichain-feed")) {
       mdLog.info({ feed: data }, "multichain-feed ");
     } else {
