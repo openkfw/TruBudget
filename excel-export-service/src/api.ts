@@ -1,4 +1,5 @@
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import logger from "./logger";
 
 interface ProjectResponse {
   apiVersion: string;
@@ -79,6 +80,7 @@ export interface Workflowitem {
 }
 
 function getAuthHeader(token: string): AxiosRequestConfig {
+  logger.trace("Fetching Auth Header ...");
   return {
     headers: {
       Authorization: token,
@@ -91,9 +93,11 @@ export async function getProjects(
   token: string,
   base: string,
 ): Promise<Project[]> {
+  logger.trace("Fetching projects ...");
   const response: AxiosResponse<ProjectResponse> = await axios
     .get(`${base}/project.list`, getAuthHeader(token))
     .catch(function (error) {
+      logger.error(error);
       throw error;
     });
   const projectList: Project[] = response.data.data.items.map((i) => i.data);
@@ -106,9 +110,11 @@ export async function getSubprojects(
   token: string,
   base: string,
 ): Promise<Subproject[]> {
+  logger.trace("Fetching subprojects ...");
   const response: AxiosResponse<SubprojectResponse> = await axios
     .get(`${base}/subproject.list?projectId=${projectId}`, getAuthHeader(token))
     .catch(function (error) {
+      logger.error(error);
       throw error;
     });
   const subprojectList: Subproject[] = response.data.data.items.map((i) => i.data);
@@ -122,12 +128,14 @@ export async function getWorkflowitems(
   token: string,
   base: string,
 ): Promise<Workflowitem[]> {
+  logger.trace("Fetching workflowitems ...");
   const response: AxiosResponse<WorkflowitemResponse> = await axios
     .get(
       `${base}/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}`,
       getAuthHeader(token),
     )
     .catch(function (error) {
+      logger.error(error);
       throw error;
     });
   const workflowitemList: Workflowitem[] = response.data.data.workflowitems.map((i) => i.data);
@@ -135,6 +143,7 @@ export async function getWorkflowitems(
 }
 
 export async function getApiReadiness(axios: AxiosInstance, base: string): Promise<string> {
+  logger.trace("Fetching readiness ...");
   const response: AxiosResponse<string> = await axios.get(`${base}/readiness`);
   return response.data;
 }
@@ -144,6 +153,7 @@ export async function getApiVersion(
   token: string,
   base: string,
 ): Promise<string> {
+  logger.trace("Fetching api version ...");
   const response: AxiosResponse<string> = await axios.get(`${base}/version`, getAuthHeader(token));
   return response.data;
 }
