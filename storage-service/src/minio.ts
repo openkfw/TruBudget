@@ -127,6 +127,7 @@ const download = (file: string, cb: Function) => {
       log.error({ err }, "Error during getting file object");
       cb(err);
     } else {
+      log.trace("Fetching data from stream");
       dataStream.on("data", (chunk: string) => {
         fileContent += chunk;
       });
@@ -196,7 +197,7 @@ export const establishConnection = async () => {
       break;
     } catch (err) {
       log.error(
-        err,
+        { err },
         "Problem with establishing connection to min.io and creating bucket.",
       );
 
