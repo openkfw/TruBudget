@@ -9,6 +9,8 @@ RUN npm ci
 COPY src src/
 COPY tsconfig.json .
 
+RUN npm run build
+
 ARG BUILDTIMESTAMP=''
 ARG CI_COMMIT_SHA=''
 

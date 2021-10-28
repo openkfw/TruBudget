@@ -34,7 +34,8 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node --transpile-only -r tsconfig-paths/register src/index.ts",
+    "start": "node dist/",
+    "build": "rimraf dist && tsc",
     "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
     "watch": "ts-node-dev -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
     "test": "nyc mocha --require ts-node/register -r tsconfig-paths/register \"src/**/*.spec.ts\"",
@@ -79,13 +80,12 @@
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.0",
     "lodash.isequal": "^4.5.0",
+    "module-alias": "^2.2.2",
     "raw-body": "^2.3.3",
     "sodium-native": "^3.2.0",
     "trubudget-logging-service": "^1.1.2",
     "uuid": "^3.2.1",
-    "verror": "^1.10.0",
-    "ts-node": "^10.3.0",
-    "tsconfig-paths": "^3.11.0"
+    "verror": "^1.10.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.1",
@@ -117,8 +117,13 @@
     "sinon": "^9.2.4",
     "supertest": "^4.0.2",
     "swagger-to-joi": "^1.2.4",
+    "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^3.11.0",
     "tslint": "*",
     "typescript": "^4.0.2"
+  },
+  "_moduleAliases": {
+    "lib": "dist/lib"
   }
 }
