@@ -9,7 +9,7 @@
     "update-logging": "(cd provisioning && npm i trubudget-logging-service@latest --save); (cd blockchain && npm i trubudget-logging-service@latest --save); (cd api && npm i trubudget-logging-service@latest --save); (cd email-notification-service && npm i trubudget-logging-service@latest --save); (cd excel-export-service && npm i trubudget-logging-service@latest --save); (cd storage-service && npm i trubudget-logging-service@latest --save)"
   },
   "devDependencies": {
-    "danger": "^10.6.6",
+    "danger": "^10.7.0",
     "husky": "^5.0.4",
     "lodash": "^4.17.19"
   },
