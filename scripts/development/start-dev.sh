@@ -190,32 +190,32 @@ fi
 
 if [ "$IS_FULL" = false ]; then
     # Slim version without --enable-service option: disable all services
-    sed -i 's/EMAIL_SERVICE=.*/EMAIL_SERVICE=DISABLED/g' ${SCRIPT_DIR}/.env
-    sed -i 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED=DISABLED/g' ${SCRIPT_DIR}/.env
-    sed -i 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
-    sed -i 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
-    sed -i 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=false/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/EMAIL_SERVICE=.*/EMAIL_SERVICE=DISABLED/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED=DISABLED/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=false/g' ${SCRIPT_DIR}/.env
 fi
 
 if [ "$HAS_ENABLED_SERVICES" = true ]; then
     # Add services to slim version
     selectedServices=$(echo $ENABLED_SERVICES | awk -F ' ' '{ s = $1; for (i = 2; i <= NF; i++) s = s "\n"$i; print s; }')
-    # sed command syntax:  sed -i 's/regexToReplace/SomethingToPutInInstead/g' /Some/Path/To/File.txt
+    # perl command syntax:  perl -pi -e 's/regexToReplace/SomethingToPutInInstead/g' /Some/Path/To/File.txt
     for word in ${selectedServices}; do
         if [ "$word" = "email-service" ]; then
             # Enable Services
-            sed -i 's/EMAIL_SERVICE=.*/EMAIL_SERVICE=ENABLED/g' ${SCRIPT_DIR}/.env
-            sed -i 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED=ENABLED/g' ${SCRIPT_DIR}/.env
-            sed -i 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
+            perl -pi -e 's/EMAIL_SERVICE=.*/EMAIL_SERVICE=ENABLED/g' ${SCRIPT_DIR}/.env
+            perl -pi -e 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED=ENABLED/g' ${SCRIPT_DIR}/.env
+            perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} emaildb"
             echo "INFO: email-service enabled"
 
         elif [ "$word" = "excel-export-service" ]; then
-            sed -i 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
+            perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             echo "INFO: excel-export-service enabled"
 
         elif [ "$word" = "storage-service" ]; then
-            sed -i 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
+            perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} minio"
             echo "INFO: storage-service enabled"
 
@@ -230,11 +230,11 @@ fi
 
 if [ "$IS_FULL" = true ]; then
     # Full version: enable all services
-    sed -i 's/EMAIL_SERVICE=.*/EMAIL_SERVICE=ENABLED/g' ${SCRIPT_DIR}/.env
-    sed -i 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED=ENABLED/g' ${SCRIPT_DIR}/.env
-    sed -i 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
-    sed -i 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
-    sed -i 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/EMAIL_SERVICE=.*/EMAIL_SERVICE=ENABLED/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED=ENABLED/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
 fi
 
 if [ "$IS_FULL" = true ]; then
