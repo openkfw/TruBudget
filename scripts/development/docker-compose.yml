@@ -18,6 +18,7 @@ services:
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
     # volume for persisting data from multichain
     # volumes:
     #   - /masterVolume:/root/.multichain
@@ -90,6 +91,7 @@ services:
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
       LOG_LEVEL: ${API_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
@@ -118,6 +120,7 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       AUTHENTICATION: ${AUTHENTICATION}
       LOG_LEVEL: ${EMAIL_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
     # volume for hot reloading
     volumes:
       - "../../email-notification-service/src:/home/node/src:delegated"
@@ -143,6 +146,7 @@ services:
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
       LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
     # volumes:
     #   - "../../provisioning/src:/usr/src/app/src:delegated"
     networks:
@@ -162,6 +166,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       MODE: DEBUG
       LOG_LEVEL: ${EXCEL_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
     command: ["npm", "run", "watch"]
     # volume for hot reloading
     volumes:
@@ -185,6 +190,7 @@ services:
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
       LOG_LEVEL: ${STORAGE_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
     depends_on:
       - master-api
     command: ["npm", "run", "watch"]
@@ -224,6 +230,12 @@ services:
       EXPORT_PORT: ${EXPORT_PORT}
       EXPORT_HOST: ${EXPORT_HOST}
       INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
+      REACT_APP_LOGGING: ${REACT_APP_LOGGING}
+      REACT_APP_LOG_LEVEL: ${REACT_APP_LOG_LEVEL}
+      REACT_APP_LOGGING_SERVICE_HOST: ${REACT_APP_LOGGING_SERVICE_HOST}
+      REACT_APP_LOGGING_SERVICE_PORT: ${REACT_APP_LOGGING_SERVICE_PORT}
+      REACT_APP_LOGGING_SERVICE_HOST_SSL: ${REACT_APP_LOGGING_SERVICE_HOST_SSL}
+      REACT_APP_LOGGING_PUSH_INTERVAL: ${REACT_APP_LOGGING_PUSH_INTERVAL}
     # volume for hot reloading
     volumes:
       - "../../frontend/src:/app/src"
@@ -263,6 +275,23 @@ services:
       - "7448:7447" # slave-node port is 7448 on host
     privileged: true
 
+  logging-service:
+    build:
+      context: ../../logging-service
+    environment:
+      LOGGER_PORT: ${LOGGER_PORT}
+      API_HOST: master-api
+      API_PORT: ${API_PORT}
+      LOG_LEVEL: ${LOG_LEVEL}
+      LOGGING_SERVICE_CACHE_DURATION: ${LOGGING_SERVICE_CACHE_DURATION}
+      NODE_ENV: ${LOGGING_SERVICE_NODE_ENV}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    networks:
+        mynetwork:
+          ipv4_address: 172.20.0.13
+    ports:
+      - "${LOGGER_PORT}:${LOGGER_PORT}"
+
   slave-api:
     build: ../../api
     environment:
@@ -284,6 +313,7 @@ services:
       SIGNING_METHOD: ${SIGNING_METHOD}
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+      PRETTY_PRINT: ${PRETTY_PRINT}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     networks:
       mynetwork:

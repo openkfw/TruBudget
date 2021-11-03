@@ -1,25 +1,23 @@
+import amber from "@material-ui/core/colors/amber";
+import red from "@material-ui/core/colors/deepOrange";
+import grey from "@material-ui/core/colors/grey";
+import blue from "@material-ui/core/colors/indigo";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { ConnectedRouter } from "connected-react-router/immutable";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { createBrowserHistory } from "history";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { ConnectedRouter } from "connected-react-router/immutable";
 import { Route, Switch, withRouter } from "react-router";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { createBrowserHistory } from "history";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-
-import red from "@material-ui/core/colors/deepOrange";
-import blue from "@material-ui/core/colors/indigo";
-import grey from "@material-ui/core/colors/grey";
-import amber from "@material-ui/core/colors/amber";
-
-import Main from "./pages/Main/Main";
+import "./logging/console";
+import withInitialLoading from "./pages/Loading/withInitialLoading";
 import LoginPageContainer from "./pages/Login/LoginPageContainer";
 import PrivateRoute from "./pages/Login/PrivateRoute";
+import Main from "./pages/Main/Main";
 import LiveNotificationContainer from "./pages/Notifications/LiveNotificationContainer";
-
 import configureStore from "./store";
-import withInitialLoading from "./pages/Loading/withInitialLoading";
 
 // setup dayjs
 // if you need to add time to your charts you have to add a dayjs adapter
@@ -28,7 +26,7 @@ dayjs.extend(relativeTime);
 
 const history = createBrowserHistory();
 
-const store = configureStore(history);
+export const store = configureStore(history);
 
 const muiTheme = createMuiTheme({
   palette: {

@@ -53,6 +53,7 @@ ENABLED_SERVICES=""
 SLAVE_SERVICES=""
 IS_FULL=false
 HAS_SLAVE=false
+HAS_FRONTEND_LOGGING=false
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -100,6 +101,11 @@ while [ "$1" != "" ]; do
         SLAVE_SERVICES="${SLAVE_SERVICES} slave-node slave-api slave-frontend"
         echo "INFO: slave-node, slave-api, slave-frontend enabled"
         HAS_SLAVE=true
+        shift # past argument
+        ;;
+
+    --with-frontend-logging)
+        HAS_FRONTEND_LOGGING=true
         shift # past argument
         ;;
 
@@ -244,6 +250,11 @@ else
         echo "INFO: Setup slim TruBudget environment with provisioning ..."
         COMPOSE_SERVICES="master-node master-api provisioning frontend"
     fi
+fi
+
+if [ "$HAS_FRONTEND_LOGGING" = true ]; then
+    perl -pi -e 's/REACT_APP_LOGGING=.*/REACT_APP_LOGGING=true/g' ${SCRIPT_DIR}/.env
+    COMPOSE_SERVICES="${COMPOSE_SERVICES} logging-service"
 fi
 
 COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
