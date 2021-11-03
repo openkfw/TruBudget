@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import Intent, { projectIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
@@ -37,6 +37,8 @@ export function createEvent(
   revokee: Identity,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating project_premission_revoked event");
+
   const event = {
     type: eventType,
     source,
@@ -69,6 +71,7 @@ export function validate(input: any): Result.Type<Event> {
  * `project_eventsourcing.ts`:`newProjectFromEvent`.
  */
 export function mutate(project: Project.Project, event: Event): Result.Type<void> {
+  logger.trace({ event, project }, "Applying event to the given project");
   if (event.type !== "project_permission_revoked") {
     return new VError(`illegal event type: ${event.type}`);
   }

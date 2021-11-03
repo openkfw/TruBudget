@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -11,6 +12,7 @@ export async function getGlobalPermissions(
   ctx: Ctx,
   serviceUser: ServiceUser,
 ): Promise<Result.Type<GlobalPermissions.GlobalPermissions>> {
+  logger.debug("Getting Global Permissions");
   return Cache.withCache(
     conn,
     ctx,

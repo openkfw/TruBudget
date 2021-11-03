@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { Identity } from "./identity";
 
@@ -40,6 +40,8 @@ export function createEvent(
     publicKey,
     time,
   };
+  logger.trace("Creating public_key_publish event...");
+
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${eventType} event`);

@@ -67,6 +67,7 @@ export async function getPrivateKey(
   organization: Organization,
   organizationVaultSecret: string,
 ): Promise<Result.Type<Base64String>> {
+  logger.trace("Fetching organisation address item...");
   const privateKeyItemResult = await getPrivateKeyItem(multichain, organization);
   if (Result.isErr(privateKeyItemResult)) {
     if (VError.hasCauseWithName(privateKeyItemResult, "NotFound")) {
@@ -74,6 +75,8 @@ export async function getPrivateKey(
     }
     return new Error("cannot get organization address item");
   }
+  logger.trace("Decrypting organisation address item...");
+
   const decryptedPrivateKeyResult = SymmetricCrypto.decrypt(
     organizationVaultSecret,
     privateKeyItemResult.privateKey,
@@ -92,6 +95,7 @@ export async function publishPrivateKey(
   privateKey: string,
   organizationVaultSecret: string,
 ): Promise<Result.Type<PrivateKeyItem>> {
+  logger.trace("Publish organisation privat key...");
   const privateKeyItemResult = await getPrivateKeyItem(multichain, organization);
   if (Result.isOk(privateKeyItemResult)) {
     logger.info("Private Key already published.");
@@ -113,6 +117,8 @@ export async function publishPrivateKey(
     return privateKeyItem;
   } else {
     // Non expected error
+    logger.trace("Publish organisation address ended with an unexpected error!");
+
     return new VError(privateKeyItemResult, "cannot publish private key");
   }
 }
@@ -122,6 +128,8 @@ async function ensureOrganizationAddress(
   organization: Organization,
   organizationVaultSecret: string,
 ): Promise<string> {
+  logger.trace("Ensuring organisation address...");
+
   const addressFromStream = await getOrganizationAddressItem(multichain, organization);
   let organizationAddress: string | undefined;
   if (addressFromStream) {

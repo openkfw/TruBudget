@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -17,6 +18,8 @@ export async function createProject(
   serviceUser: ServiceUser,
   requestData: ProjectCreate.RequestData,
 ): Promise<Result.Type<ResourceMap>> {
+  logger.debug({ req: requestData }, "Creating project");
+
   const creationEventResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectCreate.createProject(ctx, serviceUser, requestData, {
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),

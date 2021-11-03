@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import * as UserRecord from "../organization/user_record";
 import { Identity } from "./identity";
@@ -38,6 +38,8 @@ export function createEvent(
   user: InitialData,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating user_disable event");
+
   const event = {
     type: eventType,
     source,

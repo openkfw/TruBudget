@@ -1,10 +1,10 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
-import { Identity } from "../organization/identity";
 import { StoredDocument, storedDocumentSchema } from "../document/document";
+import { Identity } from "../organization/identity";
 import { conversionRateSchema, moneyAmountSchema } from "./money";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -70,6 +70,8 @@ export function createEvent(
   update: Modification,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating workflowitem_updated event");
+
   const event = {
     type: eventType,
     source,

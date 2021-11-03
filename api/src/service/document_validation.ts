@@ -11,6 +11,7 @@ import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as GroupQuery from "./group_query";
 import { store } from "./store";
+import logger from "lib/logger";
 
 /**
  * Returns true if the given hash matches the given document.
@@ -29,6 +30,8 @@ export async function isSameDocument(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
 ): Promise<Result.Type<boolean>> {
+  logger.debug(`Validating wether passed hash matches document "${documentId}"`);
+
   let isDocumentValid: boolean = false;
   try {
     const hash = crypto.createHash("sha256");

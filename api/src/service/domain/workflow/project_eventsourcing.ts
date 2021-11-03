@@ -1,7 +1,7 @@
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
-import deepcopy from "../../../lib/deepcopy";
+import { Ctx } from "lib/ctx";
+import deepcopy from "lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -15,6 +15,7 @@ import * as ProjectProjectedBudgetDeleted from "./project_projected_budget_delet
 import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updated";
 import { ProjectTraceEvent } from "./project_trace_event";
 import * as ProjectUpdated from "./project_updated";
+import logger from "lib/logger";
 
 export function sourceProjects(
   ctx: Ctx,
@@ -28,6 +29,7 @@ export function sourceProjects(
   const errors: Error[] = [];
 
   for (const event of events) {
+    logger.trace({ event }, "Validating project Event by applying it");
     if (!event.type.startsWith("project_")) {
       continue;
     }

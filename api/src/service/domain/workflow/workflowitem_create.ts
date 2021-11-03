@@ -1,11 +1,21 @@
 import Joi = require("joi");
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent, { workflowitemIntents } from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { config } from "../../../config";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
+import {
+  GenericDocument,
+  hashDocument,
+  StoredDocument,
+  UploadedDocument,
+  uploadedDocumentSchema,
+} from "../document/document";
+import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document_uploaded";
 import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -13,19 +23,10 @@ import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
-import { config } from "../../../config";
-import {
-  hashDocument,
-  StoredDocument,
-  UploadedDocument,
-  uploadedDocumentSchema,
-} from "../document/document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
-import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document_uploaded";
-import { GenericDocument } from "../document/document";
 import uuid = require("uuid");
 
 export interface RequestData {
@@ -119,6 +120,10 @@ export async function createWorkflowitem(
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (reqData.documents) {
+    logger.trace(
+      { req: reqData },
+      "Trying to hash documents in preparation for workflowitem_created event",
+    );
     const existingDocuments = await repository.getAllDocuments();
     if (Result.isErr(existingDocuments)) {
       return new VError(existingDocuments, "cannot get documents");
@@ -137,8 +142,13 @@ export async function createWorkflowitem(
       // upload documents to storage service
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
-        reqData.documents.map(async (d) => {
-          return repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+        reqData.documents.map(async (document) => {
+          logger.trace({ document }, "Trying to upload document to storage service");
+          return repository.uploadDocumentToStorageService(
+            document.fileName || "",
+            document.base64,
+            document.id,
+          );
         }),
       );
       for (const result of documentUploadedEventsResults) {
@@ -161,6 +171,10 @@ export async function createWorkflowitem(
           id: d.id,
         };
 
+        logger.trace(
+          { req: reqData },
+          "Trying to create 'WorkflowitemDocumentUploaded' Event from request data",
+        );
         const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
           ctx.source,
           publisher,
@@ -189,6 +203,7 @@ export async function createWorkflowitem(
     }
   }
 
+  logger.trace({ req: reqData }, "Trying to create 'WorkflowitemCreated' Event from request data");
   const workflowitemCreated = WorkflowitemCreated.createEvent(
     ctx.source,
     publisher,
@@ -216,7 +231,7 @@ export async function createWorkflowitem(
     return new VError(workflowitemCreated, "failed to create workflowitem created event");
   }
 
-  // Check if workflowitemId already exists
+  logger.trace({ req: reqData }, "Check if Workflowitem exists");
   if (
     await repository.workflowitemExists(
       reqData.projectId,
@@ -233,7 +248,7 @@ export async function createWorkflowitem(
   }
   const subproject = subprojectResult;
 
-  // Check authorization
+  logger.trace({ user: creatingUser }, "Checking if user is authorized");
   if (creatingUser.id === "root") {
     return new PreconditionError(
       ctx,
@@ -246,13 +261,13 @@ export async function createWorkflowitem(
     return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });
   }
 
-  // Check that the event is valid:
+  logger.trace({ event: workflowitemCreated }, "Checking if Event is valid");
   const result = WorkflowitemCreated.createFrom(ctx, workflowitemCreated);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, workflowitemCreated, [result]);
   }
 
-  // Check the workflowitem type
+  logger.trace({ subproject }, "Checking the workflowitem type");
   if (
     subproject.workflowitemType !== undefined &&
     workflowitemCreated.workflowitem.workflowitemType !== subproject.workflowitemType

@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { Identity } from "./identity";
 
@@ -32,6 +32,8 @@ export function createEvent(
   publicKey: string,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating public_key_update event...");
+
   const event = {
     type: eventType,
     source,

@@ -1,7 +1,7 @@
 import Joi = require("joi");
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -15,6 +15,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as SubprojectUpdated from "./subproject_updated";
+import logger from "lib/logger";
 
 export type RequestData = SubprojectUpdated.UpdatedData;
 export const requestDataSchema = SubprojectUpdated.updatedDataSchema;
@@ -46,7 +47,7 @@ export async function updateSubproject(
     return new NotFound(ctx, "subproject", subprojectId);
   }
 
-  // Create the new event:
+  logger.trace({ issuer, data }, "Creating subproject_updated event");
   const subprojectUpdatedResult = SubprojectUpdated.createEvent(
     ctx.source,
     issuer.id,
@@ -59,7 +60,7 @@ export async function updateSubproject(
   }
   const subprojectUpdated = subprojectUpdatedResult;
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const intent = "subproject.update";
     if (!Subproject.permits(subproject, issuer, [intent])) {
@@ -67,7 +68,7 @@ export async function updateSubproject(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: subprojectUpdated }, "Checking event validity");
   const result = SubprojectEventSourcing.newSubprojectFromEvent(ctx, subproject, subprojectUpdated);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, subprojectUpdated, [result]);
@@ -78,7 +79,7 @@ export async function updateSubproject(
     return [];
   }
 
-  // Create notification events:
+  logger.trace("Creating notification events");
   let notifications: Result.Type<NotificationCreated.Event[]> = [];
   if (subproject.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(subproject.assignee);
@@ -103,9 +104,11 @@ export async function updateSubproject(
       return notifications;
     }, [] as NotificationCreated.Event[]);
   }
+
   if (Result.isErr(notifications)) {
     return new VError(notifications, "failed to create notification events");
   }
+
   return [subprojectUpdated, ...notifications];
 }
 

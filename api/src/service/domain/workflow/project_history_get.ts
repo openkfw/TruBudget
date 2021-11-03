@@ -1,5 +1,5 @@
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -7,6 +7,7 @@ import { ServiceUser } from "../organization/service_user";
 import { Filter, filterTraceEvents } from "./historyFilter";
 import * as Project from "./project";
 import { ProjectTraceEvent } from "./project_trace_event";
+import logger from "lib/logger";
 
 interface Repository {
   getProject(projectId): Promise<Result.Type<Project.Project>>;
@@ -25,10 +26,14 @@ export const getHistory = async (
     return new NotFound(ctx, "project", projectId);
   }
 
+  logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
     const intents: Intent[] = ["project.viewDetails", "project.viewHistory"];
-    if (!(Project.permits(project, user, [intents[0]]) ||
-    Project.permits(project, user, [intents[1]]))) {
+    if (
+      !(
+        Project.permits(project, user, [intents[0]]) || Project.permits(project, user, [intents[1]])
+      )
+    ) {
       return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: project });
     }
   }

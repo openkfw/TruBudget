@@ -1,5 +1,6 @@
-import { Ctx } from "../../../lib/ctx";
-import deepcopy from "../../../lib/deepcopy";
+import { Ctx } from "lib/ctx";
+import deepcopy from "lib/deepcopy";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -18,6 +19,7 @@ export function sourceGroups(
   const groups = new Map<Group.Id, Group.Group>();
   const errors: EventSourcingError[] = [];
   for (const event of events) {
+    logger.trace({ event }, "Validating group Event by applying it");
     apply(ctx, groups, event, errors);
   }
   return { groups: [...groups.values()], errors };
@@ -89,6 +91,8 @@ function applyMemberAdded(
   memberAdded: GroupMemberAdded.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace("Adding member to group...");
+
   const group = deepcopy(groups.get(memberAdded.groupId));
   if (group === undefined) return;
 
@@ -123,12 +127,14 @@ function applyMemberRemoved(
   memberRemoved: GroupMemberRemoved.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace("Remove member from group...");
+
   const group = deepcopy(groups.get(memberRemoved.groupId));
   if (group === undefined) return;
 
   const memberIdx = group.members.indexOf(memberRemoved.member);
   if (memberIdx === -1) {
-    // The "member" already doesn't belong to this group, so there's nothing left to do.
+    logger.trace("The member to remove does not belong to this group => all good!");
     return;
   }
   // Remove the user from the array:
@@ -139,6 +145,7 @@ function applyMemberRemoved(
     errors.push(new EventSourcingError({ ctx, event: memberRemoved }, result));
     return;
   }
+  logger.trace("Publishing member removal ...");
 
   const traceEvent: GroupTraceEvent = {
     entityId: memberRemoved.groupId,
@@ -159,6 +166,8 @@ function applyPermissionGranted(
   permissionGranted: GroupPermissionGranted.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace("Applying group permissions ...");
+
   const group = deepcopy(groups.get(permissionGranted.groupId));
   if (group === undefined) return;
 
@@ -173,6 +182,7 @@ function applyPermissionGranted(
     errors.push(new EventSourcingError({ ctx, event: permissionGranted }, result));
     return;
   }
+  logger.trace("Publishing group permissions ...");
 
   const traceEvent: GroupTraceEvent = {
     entityId: permissionGranted.groupId,
@@ -193,6 +203,8 @@ function applyPermissionRevoked(
   permissionRevoked: GroupPermissionRevoked.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace("Applying group permissions revoke ...");
+
   const group = deepcopy(groups.get(permissionRevoked.groupId));
   if (group === undefined) return;
 
@@ -211,6 +223,7 @@ function applyPermissionRevoked(
     errors.push(new EventSourcingError({ ctx, event: permissionRevoked }, result));
     return;
   }
+  logger.trace("Publishing group permissions revoke...");
 
   const traceEvent: GroupTraceEvent = {
     entityId: permissionRevoked.groupId,

@@ -1,6 +1,6 @@
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import { BusinessEvent } from "../business_event";
 
 interface Info {

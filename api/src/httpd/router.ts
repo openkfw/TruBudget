@@ -28,7 +28,7 @@ const handleError = (req, res, err: any) => {
   switch (err.kind) {
     case "NotAuthorized": {
       const message = `User ${err.token.userId} is not authorized.`;
-      logger.debug({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         403,
         {
@@ -68,7 +68,7 @@ const handleError = (req, res, err: any) => {
     }
     case "ProjectIdAlreadyExists": {
       const message = `The project id ${err.projectId} already exists.`;
-      logger.warn({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         409,
         {
@@ -80,7 +80,7 @@ const handleError = (req, res, err: any) => {
     }
     case "SubprojectIdAlreadyExists": {
       const message = `The subproject id ${err.subprojectId} already exists.`;
-      logger.warn({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         409,
         {
@@ -98,21 +98,21 @@ const handleError = (req, res, err: any) => {
       } else {
         message = `Missing keys: ${err.badKeys.join(", ")}`;
       }
-      logger.debug({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [400, { apiVersion: "1.0", error: { code: 400, message } }]);
       break;
     }
 
     case "PreconditionError": {
       const { message } = err;
-      logger.warn({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [412, { apiVersion: "1.0", error: { code: 412, message } }]);
       break;
     }
 
     case "AuthenticationError": {
       const message = "Authentication failed";
-      logger.debug({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         401,
         {
@@ -125,7 +125,7 @@ const handleError = (req, res, err: any) => {
 
     case "NotFound": {
       const message = "Not found.";
-      logger.debug({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         404,
         {
@@ -138,7 +138,7 @@ const handleError = (req, res, err: any) => {
 
     case "FileNotFound": {
       const message = "File not found.";
-      logger.debug({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         404,
         {
@@ -164,7 +164,7 @@ const handleError = (req, res, err: any) => {
 
     case "UnsupportedMediaType": {
       const message = `Unsupported media type: ${err.contentType}.`;
-      logger.debug({ error: err }, message);
+      logger.error({ err }, message);
       send(res, [
         415,
         {
@@ -179,7 +179,7 @@ const handleError = (req, res, err: any) => {
       // handle RPC errors, too:
       if (err.code === -708) {
         const message = "Not found.";
-        logger.debug({ error: err }, message);
+        logger.error({ err }, message);
         send(res, [
           404,
           {

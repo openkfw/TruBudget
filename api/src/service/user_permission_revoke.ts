@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -21,6 +22,8 @@ export async function revokeUserPermission(
   revokee: Identity,
   intent: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug({ revokee, intent, userId }, "Revoking user permission");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     UserPermissionRevoke.revokeUserPermission(ctx, serviceUser, userId, revokee, intent, {
       getTargetUser: (id) => UserQuery.getUser(conn, ctx, serviceUser, id),

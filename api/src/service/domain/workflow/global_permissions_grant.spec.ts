@@ -1,7 +1,7 @@
 import { assert } from "chai";
 
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { Identity } from "../organization/identity";

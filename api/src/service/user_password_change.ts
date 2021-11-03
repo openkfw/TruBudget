@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -15,6 +16,8 @@ export async function changeUserPassword(
   issuerOrganization: string,
   requestData: UserPasswordChange.RequestData,
 ): Promise<Result.Type<void>> {
+  logger.debug({ req: requestData }, "Changing user password");
+
   const newEventsResult = await UserPasswordChange.changeUserPassword(
     ctx,
     serviceUser,
@@ -25,6 +28,7 @@ export async function changeUserPassword(
       hash: (passwordPlainText) => hashPassword(passwordPlainText),
     },
   );
+
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "failed to change password");
   }

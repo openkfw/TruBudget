@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import * as UserRecord from "../organization/user_record";
 import { Identity } from "./identity";
@@ -47,6 +47,8 @@ export function createEvent(
     time,
     user,
   };
+  logger.trace("Creating user_password_changed event");
+
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${eventType} event`);

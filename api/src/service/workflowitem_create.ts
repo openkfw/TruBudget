@@ -1,6 +1,6 @@
 import { VError } from "verror";
-import { encryptWithKey } from "../lib/asymmetricCrypto";
-import { Ctx } from "../lib/ctx";
+import { encryptWithKey } from "lib/asymmetricCrypto";
+import { Ctx } from "lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
 import { StorageServiceClientI } from "./Client_storage_service.h";
@@ -19,6 +19,7 @@ import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type
 import * as PublicKeyGet from "./public_key_get";
 import * as UserQuery from "./user_query";
 import { store } from "./store";
+import logger from "lib/logger";
 
 export { RequestData } from "./domain/workflow/workflowitem_create";
 
@@ -29,6 +30,7 @@ export async function createWorkflowitem(
   serviceUser: ServiceUser,
   requestData: WorkflowitemCreate.RequestData,
 ): Promise<Result.Type<ResourceMap>> {
+  logger.debug({ req: requestData }, "Creating workflowitem");
   const newEventResult = await Cache.withCache(conn, ctx, (cache) => {
     return WorkflowitemCreate.createWorkflowitem(ctx, serviceUser, requestData, {
       workflowitemExists: async (

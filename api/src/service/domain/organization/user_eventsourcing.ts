@@ -1,13 +1,13 @@
+import { Ctx } from "lib/ctx";
+import deepcopy from "lib/deepcopy";
+import logger from "lib/logger";
 import { VError } from "verror";
-
-import { Ctx } from "../../../lib/ctx";
-import deepcopy from "../../../lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as UserCreated from "./user_created";
-import * as UserEnabled from "./user_enabled";
 import * as UserDisabled from "./user_disabled";
+import * as UserEnabled from "./user_enabled";
 import * as UserPasswordChanged from "./user_password_changed";
 import * as UserPermissionGranted from "./user_permission_granted";
 import * as UserPermissionRevoked from "./user_permission_revoked";
@@ -30,6 +30,7 @@ export function sourceUserRecords(
       continue;
     }
 
+    logger.trace({ event }, "sourcing user related event");
     const user = sourceEvent(ctx, event, users);
     if (Result.isErr(user)) {
       errors.push(user);
@@ -63,6 +64,7 @@ function sourceEvent(
   if (Result.isOk(userId)) {
     // The event refers to an existing user, so
     // the user should have been initialized already.
+    logger.trace("Sourcing user event ...");
 
     user = get(users, userId);
     if (Result.isErr(user)) {
@@ -95,6 +97,8 @@ function get(
   users: Map<UserRecord.Id, UserRecord.UserRecord>,
   userId: UserRecord.Id,
 ): Result.Type<UserRecord.UserRecord> {
+  logger.trace("Fetching user: ", userId);
+
   const user = users.get(userId);
   if (user === undefined) {
     return new VError(`user ${userId} not yet initialized`);
@@ -143,6 +147,7 @@ export function newUserFromEvent(
   user: UserRecord.UserRecord,
   event: BusinessEvent,
 ): Result.Type<UserRecord.UserRecord> {
+  logger.trace({ event }, "Creating new use from event");
   const eventModule = getEventModule(event);
   if (Result.isErr(eventModule)) {
     return eventModule;

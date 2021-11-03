@@ -1,4 +1,5 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import uuid = require("uuid");
 import { VError } from "verror";
 
@@ -29,12 +30,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   notificationId: Notification.idSchema.required(),
   recipient: UserRecord.idSchema,
@@ -55,6 +52,7 @@ export function createEvent(
   workflowitemId?: Workflowitem.Id,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace({ recipient, publisher, businessEvent }, "Creating notification created event");
   const event = {
     type: eventType,
     source,

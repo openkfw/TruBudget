@@ -3,6 +3,7 @@ import Joi = require("joi");
 import uuid = require("uuid");
 import * as Result from "../../../result";
 import VError = require("verror");
+import logger from "lib/logger";
 
 export interface StoredDocument {
   id: string;
@@ -54,6 +55,7 @@ export const uploadedDocumentSchema = Joi.object({
 export async function hashDocument(
   document: UploadedDocument,
 ): Promise<Result.Type<StoredDocument>> {
+  logger.trace({ document: document.fileName }, "Hashing document");
   return hashBase64String(document.base64).then((hashValue) => ({
     id: document.id,
     hash: hashValue,

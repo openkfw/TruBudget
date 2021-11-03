@@ -1,6 +1,6 @@
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -14,6 +14,7 @@ import * as Project from "./project";
 import * as ProjectClosed from "./project_closed";
 import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as Subproject from "./subproject";
+import logger from "lib/logger";
 
 interface Repository {
   getProject(): Promise<Result.Type<Project.Project>>;
@@ -37,12 +38,13 @@ export async function closeProject(
     return { newEvents: [], project };
   }
 
-  // Create the new event:
+  logger.trace({ issuer, projectId }, "Creating new project_closed event");
   const projectClosed = ProjectClosed.createEvent(ctx.source, issuer.id, projectId);
   if (Result.isErr(projectClosed)) {
     return new VError(projectClosed, "failed to create event");
   }
 
+  logger.trace({ issuer }, "Checking authorization of issuer");
   const assignedIdentitiesResult = await repository.getUsersForIdentity(project.assignee);
   if (Result.isErr(assignedIdentitiesResult)) {
     return new VError(assignedIdentitiesResult, `fetch users for ${project.assignee} failed`);
@@ -57,6 +59,7 @@ export async function closeProject(
     );
   }
 
+  logger.trace({ projectId }, "Checking if all subprojects of this project are already closed");
   // Make sure all subprojects are already closed (we rely on closeSubproject doing a
   // similar check with respect to the subproject's workflowitems):
   const subprojects = await repository.getSubprojects(projectId);
@@ -67,11 +70,12 @@ export async function closeProject(
       `could not find subprojects for project ${projectId}`,
     );
   }
+
   if (subprojects.some((x) => x.status !== "closed")) {
     return new PreconditionError(ctx, projectClosed, "at least one subproject is not closed yet");
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: projectClosed }, "Checking validity of project_closed event");
   const validationResult = ProjectEventSourcing.newProjectFromEvent(ctx, project, projectClosed);
   if (Result.isErr(validationResult)) {
     return new InvalidCommand(ctx, projectClosed, [validationResult]);

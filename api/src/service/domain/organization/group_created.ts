@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
@@ -23,9 +23,7 @@ interface InitialData {
 const initialDataSchema = Joi.object({
   id: Group.idSchema.required(),
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
+  description: Joi.string().allow("").required(),
   members: Group.membersSchema.required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
@@ -41,12 +39,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   group: initialDataSchema.required(),
 });
@@ -57,6 +51,8 @@ export function createEvent(
   group: InitialData,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating group created event...");
+
   const event = {
     type: eventType,
     source,

@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -12,6 +13,8 @@ export async function setProvisioningEndFlag(
   ctx: Ctx,
   serviceUser: ServiceUser,
 ): Promise<Result.Type<void>> {
+  logger.debug("Setting flag to signal end of provisioning");
+
   const provisioningEndEventResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProvisioningEnd.setProvisioningEndFlag(ctx, serviceUser),
   );

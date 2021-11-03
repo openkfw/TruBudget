@@ -66,18 +66,20 @@ interface Service {
   ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>;
 }
 
-function sendErrorIfEmpty(reply, resourceParameter) {
+function sendErrorIfEmpty(reply, resourceParameter): string | undefined {
   if (!isNonemptyString(resourceParameter)) {
+    const message = `required query parameter ${resourceParameter} not present (must be non-empty string)`;
     reply.status(400).send({
       apiVersion: "1.0",
       error: {
         code: 400,
-        message: `required query parameter ${resourceParameter} not present (must be non-empty string)`,
+        message,
       },
     });
-    return true;
+
+    return message;
   }
-  return false;
+  return;
 }
 
 interface Request extends RequestGenericInterface {
@@ -103,13 +105,14 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       };
 
       const { projectId, subprojectId, workflowitemId, documentId } = request.query;
-
-      if (
+      const message =
         sendErrorIfEmpty(reply, projectId) ||
         sendErrorIfEmpty(reply, subprojectId) ||
         sendErrorIfEmpty(reply, workflowitemId) ||
-        sendErrorIfEmpty(reply, documentId)
-      ) {
+        sendErrorIfEmpty(reply, documentId);
+
+      if (message) {
+        request.log.error({ err: message }, "Invalid request body");
         return;
       }
 
@@ -136,6 +139,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(Buffer.from(documentResult.base64, "base64"));
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while downloading workflowitem document");
         reply.status(code).send(body);
       }
     },

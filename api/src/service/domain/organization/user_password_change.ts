@@ -2,7 +2,7 @@ import Joi = require("joi");
 
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -12,6 +12,8 @@ import { ServiceUser } from "./service_user";
 import * as UserEventSourcing from "./user_eventsourcing";
 import * as UserPasswordChanged from "./user_password_changed";
 import * as UserRecord from "./user_record";
+import { safePasswordSchema } from "lib/joiValidation";
+import logger from "lib/logger";
 
 export interface RequestData {
   userId: string;
@@ -20,11 +22,7 @@ export interface RequestData {
 
 const requestDataSchema = Joi.object({
   userId: UserRecord.idSchema.required(),
-  newPassword: Joi.string()
-    .min(8)
-    .regex(/[a-zA-z]/)
-    .regex(/[0-9]/)
-    .required(),
+  newPassword: safePasswordSchema.required(),
 });
 
 export function validate(input: any): Result.Type<RequestData> {
@@ -52,9 +50,12 @@ export async function changeUserPassword(
     id: data.userId,
     passwordHash: await repository.hash(data.newPassword),
   });
+
+  logger.trace({ event: passwordChanged }, "Checking validity of password changed event");
   if (Result.isErr(passwordChanged)) {
     return new VError(passwordChanged, "failed to create user password changed event");
   }
+
   if (Result.isErr(validationResult)) {
     return new PreconditionError(ctx, passwordChanged, validationResult.message);
   }
@@ -65,12 +66,12 @@ export async function changeUserPassword(
   }
   const user = userResult;
 
-  // Check if revokee and issuer belong to the same organization
+  logger.trace({ issuer }, "Checking if issuer and revokee belong to the same organization");
   if (userResult.organization !== issuerOrganization) {
     return new NotAuthorized({ ctx, userId: issuer.id, intent });
   }
 
-  // Check authorization (if not root):
+  logger.trace("Check if user is root");
   if (issuer.id !== "root") {
     const isAuthorized = UserRecord.permits(user, issuer, [intent]);
     if (!isAuthorized) {

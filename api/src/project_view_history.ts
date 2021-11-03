@@ -147,13 +147,18 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       const projectId = request.query.projectId;
       if (!isNonemptyString(projectId)) {
+        const message =
+          "required query parameter `projectId` not present (must be non-empty string)";
+
         reply.status(404).send({
           apiVersion: "1.0",
           error: {
             code: 404,
-            message: "required query parameter `projectId` not present (must be non-empty string)",
+            message,
           },
         });
+
+        request.log.error({ err: message }, "Invalid request body");
         return;
       }
 
@@ -162,13 +167,17 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       if (request.query.offset !== undefined) {
         offset = parseInt(request.query.offset, 10);
         if (isNaN(offset)) {
+          const message = "if present, the query parameter `offset` must be an integer";
+
           reply.status(400).send({
             apiVersion: "1.0",
             error: {
               code: 400,
-              message: "if present, the query parameter `offset` must be an integer",
+              message,
             },
           });
+
+          request.log.error({ err: message }, "Invalid request body");
           return;
         }
       }
@@ -178,13 +187,17 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       if (request.query.limit !== undefined) {
         limit = parseInt(request.query.limit, 10);
         if (isNaN(limit) || limit <= 0) {
+          const message = "if present, the query parameter `limit` must be a positive integer";
+
           reply.status(400).send({
             apiVersion: "1.0",
             error: {
               code: 400,
-              message: "if present, the query parameter `limit` must be a positive integer",
+              message,
             },
           });
+
+          request.log.error({ err: message }, "Invalid request body");
           return;
         }
       }
@@ -226,6 +239,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while viewing project history");
         reply.status(code).send(body);
       }
     },

@@ -2,7 +2,7 @@ import Joi = require("joi");
 import { VError } from "verror";
 import isEqual = require("lodash.isequal");
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -13,6 +13,7 @@ import * as UserEventSourcing from "./user_eventsourcing";
 import * as UserEnabled from "./user_enabled";
 import * as UserRecord from "./user_record";
 import * as GlobalPermissions from "../workflow/global_permissions";
+import logger from "lib/logger";
 
 export interface RequestData {
   userId: string;
@@ -50,6 +51,7 @@ export async function enableUser(
   const globalPermissions = globalPermissionsResult;
 
   // Create the new event:
+  logger.trace("Creating userEnabled event");
   const userEnabled = UserEnabled.createEvent(source, publisher, {
     id: data.userId,
   });
@@ -77,7 +79,7 @@ export async function enableUser(
     });
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking if user is root");
   if (issuer.id !== "root") {
     const isAuthorized = GlobalPermissions.permits(globalPermissions, issuer, [intent]);
     if (!isAuthorized) {

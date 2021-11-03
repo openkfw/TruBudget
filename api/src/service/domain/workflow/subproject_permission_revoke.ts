@@ -2,7 +2,7 @@ import isEqual = require("lodash.isequal");
 
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -15,6 +15,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as SubprojectPermissionRevoked from "./subproject_permission_revoked";
+import logger from "lib/logger";
 
 interface Repository {
   getSubproject(
@@ -38,7 +39,10 @@ export async function revokeSubprojectPermission(
     return new NotFound(ctx, "subproject", subprojectId);
   }
 
-  // Create the new event:
+  logger.trace(
+    { issuer, revokee, intent, projectId, subprojectId },
+    "Creating subproject_permission_revoked event",
+  );
   const permissionRevoked = SubprojectPermissionRevoked.createEvent(
     ctx.source,
     issuer.id,
@@ -50,7 +54,8 @@ export async function revokeSubprojectPermission(
   if (Result.isErr(permissionRevoked)) {
     return new VError(permissionRevoked, "failed to create permission revoked event");
   }
-  // Check authorization (if not root):
+
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const revokeIntent = "subproject.intent.revokePermission";
     if (!Subproject.permits(subproject, issuer, [revokeIntent])) {
@@ -63,7 +68,7 @@ export async function revokeSubprojectPermission(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: permissionRevoked }, "Checking event validity");
   const updatedSubproject = SubprojectEventSourcing.newSubprojectFromEvent(
     ctx,
     subproject,
@@ -73,13 +78,9 @@ export async function revokeSubprojectPermission(
     return new InvalidCommand(ctx, permissionRevoked, [updatedSubproject]);
   }
 
-  // Prevent revoking grant permission of last user
+  logger.trace("Prevent revoke grant permission on last user");
   const intents: Intent[] = ["subproject.intent.grantPermission"];
-  if (
-    intent &&
-    intents.includes(intent) &&
-    subproject?.permissions[intent]?.length === 1
-  ) {
+  if (intent && intents.includes(intent) && subproject?.permissions[intent]?.length === 1) {
     return new PreconditionError(
       ctx,
       permissionRevoked,
@@ -90,7 +91,7 @@ export async function revokeSubprojectPermission(
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(subproject.permissions, updatedSubproject.permissions)) {
     return [];
-  } else {
-    return [permissionRevoked];
   }
+
+  return [permissionRevoked];
 }

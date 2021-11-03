@@ -1,7 +1,7 @@
 import isEqual = require("lodash.isequal");
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -13,6 +13,7 @@ import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectPermissionRevoked from "./project_permission_revoked";
+import logger from "lib/logger";
 
 interface Repository {
   getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
@@ -44,7 +45,7 @@ export async function revokeProjectPermission(
     return new VError(permissionRevoked, "failed to create permission revoked event");
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const revokeIntent = "project.intent.revokePermission";
     if (!Project.permits(project, issuer, [revokeIntent])) {
@@ -52,19 +53,15 @@ export async function revokeProjectPermission(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: permissionRevoked }, "Checking event validity");
   const updatedProject = ProjectEventSourcing.newProjectFromEvent(ctx, project, permissionRevoked);
   if (Result.isErr(updatedProject)) {
     return new InvalidCommand(ctx, permissionRevoked, [updatedProject]);
   }
 
-  // Prevent revoking grant permission of last user
+  logger.trace("Prevent revoking grant permission of last user");
   const intents: Intent[] = ["project.intent.grantPermission"];
-  if (
-    intent &&
-    intents.includes(intent) &&
-    project?.permissions[intent]?.length === 1
-  ) {
+  if (intent && intents.includes(intent) && project?.permissions[intent]?.length === 1) {
     return new PreconditionError(
       ctx,
       permissionRevoked,
@@ -75,7 +72,7 @@ export async function revokeProjectPermission(
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(project.permissions, updatedProject.permissions)) {
     return [];
-  } else {
-    return [permissionRevoked];
   }
+
+  return [permissionRevoked];
 }

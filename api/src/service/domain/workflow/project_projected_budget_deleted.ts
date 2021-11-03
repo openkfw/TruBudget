@@ -1,6 +1,5 @@
 import Joi = require("joi");
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import { CurrencyCode, currencyCodeSchema } from "./money";

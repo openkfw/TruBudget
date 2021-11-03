@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -15,6 +16,8 @@ export async function addMember(
   groupId: Group.Id,
   newMember: Group.Member,
 ): Promise<Result.Type<void>> {
+  logger.debug({ newMember }, `Adding member to group "${groupId}"`);
+
   const memberAddResult = await Cache.withCache(conn, ctx, (cache) =>
     GroupMemberAdd.addMember(ctx, serviceUser, groupId, newMember, {
       getGroupEvents: async () => {

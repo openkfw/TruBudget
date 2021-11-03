@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as UserRecord from "../organization/user_record";
@@ -22,12 +22,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   notificationId: Notification.idSchema.required(),
   recipient: UserRecord.idSchema,
@@ -48,6 +44,7 @@ export function createEvent(
     notificationId,
     recipient,
   };
+  logger.trace("Creating notification_mark_read event");
 
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

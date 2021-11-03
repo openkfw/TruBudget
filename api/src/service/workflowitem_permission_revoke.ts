@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -24,6 +25,11 @@ export async function revokeWorkflowitemPermission(
   revokee: Identity,
   intent: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug(
+    { revokee, intent, projectId, subprojectId, workflowitemId },
+    "Revoking workflowitem permission",
+  );
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemPermissionRevoke.revokeWorkflowitemPermission(
       ctx,
@@ -40,9 +46,11 @@ export async function revokeWorkflowitemPermission(
       },
     ),
   );
+
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "close project failed");
   }
+
   const newEvents = newEventsResult;
 
   for (const event of newEvents) {

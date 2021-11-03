@@ -1,3 +1,4 @@
+import "module-alias/register";
 import { AxiosRequestConfig } from "axios";
 import getValidConfig from "./config";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";

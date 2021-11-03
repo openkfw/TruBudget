@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -21,6 +22,8 @@ export async function deleteProjectedBudget(
   organization: string,
   currencyCode: CurrencyCode,
 ): Promise<Result.Type<ProjectedBudget[]>> {
+  logger.debug({ projectId, subprojectId, organization, currencyCode }, "Deleting project budget");
+
   const deleteProjectedBudgetResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectProjectedBudgetDelete.deleteProjectedBudget(
       ctx,
