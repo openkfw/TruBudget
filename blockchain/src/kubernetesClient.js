@@ -1,7 +1,7 @@
-const log = require("./logger");
+const log = require("./log/logger");
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 class KubernetesClient {
   constructor(k8sApi) {
