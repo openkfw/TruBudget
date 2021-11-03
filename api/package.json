@@ -82,7 +82,7 @@
     "jsonwebtoken": "^8.5.0",
     "lodash.isequal": "^4.5.0",
     "raw-body": "^2.3.3",
-    "sodium-native": "^3.2.0",
+    "sodium-native": "^3.3.0",
     "trubudget-logging-service": "^1.1.2",
     "uuid": "^3.2.1",
     "verror": "^1.10.0"

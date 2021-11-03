@@ -9,11 +9,10 @@ if [ -z ${trubudget_version} ]; then
 fi
 trubudget_projects=('frontend' 'api' 'blockchain' 'e2e-test' 'provisioning' 'excel-export-service' 'email-notification-service' 'storage-service')
 
-for project in "${trubudget_projects[@]}"
-do
+for project in "${trubudget_projects[@]}"; do
     eval "cd $project"
     echo "Bumping $project ..."
-    eval "sed -i '/\"version\": \"/c\"version\": \"$trubudget_version\",' ./package.json"
+    eval "perl -pi -e '/\"version\": \"/c\"version\": \"$trubudget_version\",' ./package.json"
     eval "npm install --no-audit"
     echo "Auditing only production dependencies ..."
     eval "npm audit --production"
