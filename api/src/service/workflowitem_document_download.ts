@@ -16,6 +16,7 @@ import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import VError = require("verror");
+import logger from "lib/logger";
 
 export async function getDocument(
   conn: ConnToken,
@@ -27,6 +28,8 @@ export async function getDocument(
   workflowitemId: Workflowitem.Id,
   documentId: string,
 ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>> {
+  logger.debug({ projectId, subprojectId, workflowitemId, documentId }, "Getting document");
+
   const documentResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemDocumentDownload.getDocument(ctx, serviceUser, workflowitemId, documentId, {
       getWorkflowitem: async () => {

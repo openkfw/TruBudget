@@ -1,7 +1,7 @@
 import { HttpResponse } from "../../httpd/lib";
-import { Ctx } from "../../lib/ctx";
-import logger from "../../lib/logger";
-import { isNonemptyString, value } from "../../lib/validation";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { isNonemptyString, value } from "lib/validation";
 import { ConnToken } from "../../service/conn";
 import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as Nodes from "../model/Nodes";
@@ -27,7 +27,7 @@ export async function approveNewOrganization(
 
   if (!futureOrganizationAddress) {
     const message = `No node registered for organization '${organization}'`;
-    logger.debug({ error: { organization, multichain, input } }, message);
+    logger.error({ err: { organization, multichain, input } }, message);
     throw Error(message);
   }
 

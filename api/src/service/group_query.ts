@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
@@ -19,6 +20,8 @@ export async function getGroups(
   ctx: Ctx,
   serviceUser: ServiceUser,
 ): Promise<Result.Type<Group.Group[]>> {
+  logger.debug("Getting all groups");
+
   try {
     const groups = await Cache.withCache(conn, ctx, (cache) =>
       GroupGet.getAllGroups(ctx, serviceUser, {
@@ -39,13 +42,19 @@ export async function getGroup(
   serviceUser: ServiceUser,
   groupId: Group.Id,
 ): Promise<Result.Type<Group.Group>> {
+  logger.debug(`Getting group with id "${groupId}"`);
+
   const groupsResult = await getGroups(conn, ctx, serviceUser);
+
   if (Result.isErr(groupsResult)) return groupsResult;
+
   const groups = groupsResult;
   const group = groups.find((x) => x.id === groupId);
+
   if (group === undefined) {
     return new NotFound(ctx, "group", groupId);
   }
+
   return group;
 }
 
@@ -55,9 +64,14 @@ export async function getGroupsForUser(
   serviceUser: ServiceUser,
   targetUserId: Identity,
 ): Promise<Result.Type<Group.Group[]>> {
+  logger.debug({ user: targetUserId }, "Get groups for user");
+
   const groupsResult = await getGroups(conn, ctx, serviceUser);
+
   if (Result.isErr(groupsResult)) return groupsResult;
+
   const groups = groupsResult;
+
   return groups.filter((group) => group.members.includes(targetUserId));
 }
 
@@ -67,8 +81,11 @@ export async function groupExists(
   serviceUser: ServiceUser,
   groupId: Group.Id,
 ): Promise<Result.Type<boolean>> {
+  logger.debug({ groupId }, "Checking if group exists");
   const groupsResult = await getGroups(conn, ctx, serviceUser);
+
   if (Result.isErr(groupsResult)) return groupsResult;
+
   const groups = groupsResult;
   return groups.find((x) => x.id === groupId) !== undefined;
 }
@@ -87,17 +104,21 @@ export async function resolveUsers(
   getUserFn: typeof getUser = getUser,
   groupSet: Set<Group.Id> = new Set(),
 ): Promise<Result.Type<UserRecord.Id[]>> {
+  logger.debug({ identity }, "Getting all users of group");
   const groupResult = await getGroupFn(conn, ctx, serviceUser, identity);
 
   // if assignee is not a group, it is probably a user
   if (Result.isErr(groupResult)) {
     //check if assignee does exist
+    logger.debug({ identity }, "Identity is not a group, checking if it is a user");
+
     const userResult = await getUserFn(conn, ctx, serviceUser, identity);
     if (Result.isErr(userResult)) {
       return new NotFound(ctx, "user", identity);
-    } else {
-      return [identity];
     }
+
+    logger.debug({ user: userResult }, "Identity is a user");
+    return [identity];
   }
 
   const users: UserRecord.Id[] = [];

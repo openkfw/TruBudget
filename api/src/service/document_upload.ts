@@ -13,6 +13,7 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as PublicKeyGet from "./public_key_get";
 import * as UserQuery from "./user_query";
 import { store } from "./store";
+import logger from "lib/logger";
 
 export async function documentUpload(
   conn: ConnToken,
@@ -21,6 +22,7 @@ export async function documentUpload(
   serviceUser: ServiceUser,
   requestData: DocumentUpload.RequestData,
 ): Promise<Result.Type<Document>> {
+  logger.debug({ req: requestData }, "Uploading document");
   const uploadedDocumentResult = await Cache.withCache(conn, ctx, async (cache) => {
     return DocumentUpload.uploadDocument(ctx, serviceUser, requestData, {
       getAllDocuments: async () => {

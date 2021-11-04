@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent, { globalIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
@@ -35,21 +36,27 @@ export async function fromUserRecord(
   user: UserRecord.UserRecord,
   repository: Repository,
 ): Promise<Result.Type<AuthToken>> {
+  logger.trace({ user }, "Getting groups of user by userrecord");
   const groupsResult = await repository.getGroupsForUser(user.id);
   if (Result.isErr(groupsResult)) {
     return new VError(groupsResult, `fetch groups for user ${user.id} failed`);
   }
-  const groups = groupsResult;
 
+  logger.trace({ organization: user.organization }, "Getting organization address");
+  const groups = groupsResult;
   const organizationAddressResult = await repository.getOrganizationAddress(user.organization);
   if (Result.isErr(organizationAddressResult)) {
     return new VError(organizationAddressResult, "get organization address failed");
   }
+
+  logger.trace("Getting global permissions");
   const organizationAddress = organizationAddressResult;
   const globalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(globalPermissionsResult)) {
     return new VError(globalPermissionsResult, "get global permissions failed");
   }
+
+  logger.trace("Getting allowed Intents");
   const globalPermissions = globalPermissionsResult;
   const allowedIntents = globalIntents.filter((intent) => {
     const eligibleIdentities = identitiesAuthorizedFor(globalPermissions, intent);
@@ -57,6 +64,7 @@ export async function fromUserRecord(
       canAssumeIdentity({ id: user.id, groups }, identity),
     );
   });
+
   return {
     userId: user.id,
     displayName: user.displayName,

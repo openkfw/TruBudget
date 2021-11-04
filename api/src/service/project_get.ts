@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
@@ -14,15 +15,18 @@ export async function getProject(
   serviceUser: ServiceUser,
   projectId: Project.Id,
 ): Promise<Result.Type<Project.Project>> {
-  const projectResult = await Cache.withCache(conn, ctx, async cache =>
+  logger.debug({ projectId }, "Getting Project");
+
+  const projectResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectGet.getProject(ctx, serviceUser, projectId, {
-      getProject: async pId => {
+      getProject: async (pId) => {
         return cache.getProject(pId);
       },
     }),
   );
+
   return Result.mapErr(
     projectResult,
-    err => new VError(err, `could not fetch project ${projectId}`),
+    (err) => new VError(err, `could not fetch project ${projectId}`),
   );
 }

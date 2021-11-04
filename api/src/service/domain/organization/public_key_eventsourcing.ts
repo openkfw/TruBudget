@@ -1,4 +1,5 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -39,6 +40,7 @@ function handleCreate(
   publicKeyPublished: PublicKeyCreated.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace({ event: publicKeyPublished }, "Handling public_key_published event");
   let publicKeyBase64 = keyByOrganization.get(publicKeyPublished.organization);
   if (publicKeyBase64 !== undefined) {
     errors.push(
@@ -70,6 +72,7 @@ function handleUpdate(
   publicKeyPublished: PublicKeyUpdated.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace({ event: publicKeyPublished }, "Handling public_key_updated event");
   let publicKeyBase64 = keyByOrganization.get(publicKeyPublished.organization);
   if (publicKeyBase64 === undefined) {
     errors.push(

@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -22,11 +23,14 @@ export async function createGroup(
   serviceUser: ServiceUser,
   requestData: GroupCreate.RequestData,
 ): Promise<Result.Type<Group>> {
+  logger.debug({ req: requestData }, "Creating Group");
+
   const groupCreateResult = await GroupCreate.createGroup(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
     groupExists: async (groupId) => groupExists(conn, ctx, serviceUser, groupId),
     userExists: async (groupId) => userExists(conn, ctx, serviceUser, groupId),
   });
+
   if (Result.isErr(groupCreateResult)) return new VError(groupCreateResult, "create group failed");
   const newEvents = groupCreateResult;
 

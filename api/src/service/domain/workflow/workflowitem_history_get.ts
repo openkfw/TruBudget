@@ -1,5 +1,6 @@
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -25,17 +26,24 @@ export const getHistory = async (
   repository: Repository,
   filter?: Filter,
 ): Promise<Result.Type<WorkflowitemTraceEvent[]>> => {
+  logger.trace("Fetching workflowitem history ...");
+
   const workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
 
   if (Result.isErr(workflowitem)) {
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
+  logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
-    const intents: Intent[] = ["workflowitem.view", "workflowitem.viewHistory" ];
-    if (!(Workflowitem.permits(workflowitem, user, [intents[0]]) ||
-     Workflowitem.permits(workflowitem, user, [intents[1] ])) ) {
-       return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: workflowitem });
+    const intents: Intent[] = ["workflowitem.view", "workflowitem.viewHistory"];
+    if (
+      !(
+        Workflowitem.permits(workflowitem, user, [intents[0]]) ||
+        Workflowitem.permits(workflowitem, user, [intents[1]])
+      )
+    ) {
+      return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: workflowitem });
     }
   }
 

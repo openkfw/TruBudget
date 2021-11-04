@@ -1,4 +1,5 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
 
 import Intent, { globalIntents } from "../../../authz/intents";
@@ -19,12 +20,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   permission: Joi.valid(globalIntents).required(),
   grantee: Joi.string().required(),
@@ -37,6 +34,7 @@ export function createEvent(
   grantee: Identity,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace({ grantee, permission }, "Creating global permission granted event");
   const event = {
     type: eventType,
     source,

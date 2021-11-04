@@ -146,6 +146,12 @@ while [ "$1" != "" ]; do
         break
         ;;
 
+    --with-frontend-logging)
+        HAS_ENABLED_SERVICES=true
+        ENABLED_SERVICES="${ENABLED_SERVICES} logging-service"
+        shift # past argument
+        ;;
+
     *) # unknown option
         echo "unknown argument: " $1
         echo "Exiting ..."
@@ -209,7 +215,7 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
             perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} emaildb"
             echo "INFO: email-service enabled"
-
+        
         elif [ "$word" = "excel-export-service" ]; then
             perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             echo "INFO: excel-export-service enabled"
@@ -218,6 +224,10 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
             perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} minio"
             echo "INFO: storage-service enabled"
+
+        elif [ "$word" = "logging-service" ]; then
+            perl -pi -e 's/REACT_APP_LOGGING=.*/REACT_APP_LOGGING=true/g' ${SCRIPT_DIR}/.env
+            echo "INFO: logging-service enabled"
 
         else
             echo "${red}ERROR: Unknown service $word${colorReset}"

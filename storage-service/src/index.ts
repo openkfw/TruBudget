@@ -58,6 +58,7 @@ app.use(
         var msg =
           "The CORS policy for this site does not " +
           "allow access from the specified Origin.";
+        log.debug(msg);
         return callback(new Error(msg), false);
       }
       return callback(null, true);
@@ -97,6 +98,7 @@ app.post(
   (req: DocumentUploadRequest, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      log.error({ err: errors }, "Error while validating request");
       return res.status(400).json({ errors: errors.array() }).end();
     }
 
@@ -104,6 +106,7 @@ app.post(
     const { content, fileName } = req.body;
 
     (async () => {
+      log.debug({ req }, "Uploading document");
       const result = await uploadAsPromised(docId, content, {
         fileName,
         docId,
@@ -112,7 +115,7 @@ app.post(
     })().catch((err) => {
       if (err.code === "NoSuchBucket") {
         req.log.error(
-          err,
+          { err },
           "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio",
         );
       }
@@ -127,6 +130,7 @@ app.get(
   (req: DocumentDownloadRequest, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      req.log.error({err: errors}, "Error while validating request");
       return res.status(404).end();
     }
     const docId: string = req.query.docId;
@@ -139,6 +143,7 @@ app.get(
 
     // first get document
     (async () => {
+      req.log.debug({req}, "Downloading document");
       const result = await downloadAsPromised(docId);
 
       //check if the given secret matches the one form the metadata
@@ -150,7 +155,7 @@ app.get(
     })().catch((err) => {
       if (err.code === "NoSuchBucket") {
         req.log.error(
-          err,
+          {err},
           "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio",
         );
       }

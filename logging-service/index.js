@@ -5,21 +5,23 @@ const logLevels = ["trace", "debug", "info", "warn", "error", "fatal"];
 
 const createPinoLogger = (name) => {
   // Log Parameters
-  const prettyPrintOptions = ["false", "off", "0", "no", "n"];
+  const prettyPrintOptions = ["true", "on", "1", "yes", "y"];
 
   const base = { hostname: os.hostname() };
   const prettyPrintInput = process.env.PRETTY_PRINT || "";
-  const prettyPrint = prettyPrintOptions.includes(
+  const activatePrettyPrint = prettyPrintOptions.includes(
     prettyPrintInput.toLowerCase()
-  )
-    ? false
-    : {
+  );
+
+  const prettyPrint = activatePrettyPrint
+    ? {
         colorize: true,
         levelFirst: false,
         messageKey: "message",
         translateTime: true,
         crlf: false,
-      };
+      }
+    : false;
 
   const logLevelEnvironment = process.env.LOG_LEVEL || "info";
   const level = getLevel(logLevelEnvironment);
@@ -35,11 +37,6 @@ const createPinoLogger = (name) => {
     ],
   };
   const messageKey = "message";
-  const formatters = {
-    level: (label) => {
-      return { level: label };
-    },
-  };
 
   return pino({
     name,
@@ -48,7 +45,6 @@ const createPinoLogger = (name) => {
     prettyPrint,
     redact,
     messageKey,
-    formatters,
   });
 };
 

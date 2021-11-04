@@ -97,7 +97,7 @@ where `err` is the object containing information on the root cause of the error.
 
 There are two settings of the Pino logger that are set via environment variables.
 
-- Set `PRETTY_PRINT` to "false" to disable pretty printing
+- Set `PRETTY_PRINT` to "true" to enable pretty printing
 - Set the log level via `LOG_LEVEL`. This will setting will be used for every service by default.
   The possible values are: "trace", "debug", "info", "warn", "error" and "fatal".
 

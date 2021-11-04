@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import { encrypt } from "../lib/symmetricCrypto";
@@ -22,6 +23,8 @@ export async function createUser(
   serviceUser: ServiceUser,
   requestData: UserCreate.RequestData,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
+  logger.debug({ req: requestData }, "Creating user");
+
   const newEventsResult = await UserCreate.createUser(ctx, serviceUser, requestData, {
     getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
     userExists: async (userId) => userExists(conn, ctx, serviceUser, userId),
@@ -32,6 +35,7 @@ export async function createUser(
     encrypt: async (plaintext) => encrypt(organizationSecret, plaintext),
     groupExists: async (userId) => GroupQuery.groupExists(conn, ctx, serviceUser, userId),
   });
+
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "failed to create user");
   }

@@ -1,19 +1,17 @@
-import * as express from "express";
-import * as cors from "cors";
 import axios, { AxiosTransformer } from "axios";
+import * as cors from "cors";
+import * as express from "express";
+import { createPinoExpressLogger } from "trubudget-logging-service";
 import * as URL from "url";
-
+import { getApiReadiness, getApiVersion } from "./api";
+import { config } from "./config";
 import { writeXLSX } from "./excel";
 import strings, { languages } from "./localizeStrings";
-import { config } from "./config";
-import { getApiReadiness, getApiVersion } from "./api";
-import { createPinoExpressLogger, createPinoLogger } from "trubudget-logging-service";
+import logger from "./logger";
 
 const DEFAULT_API_VERSION = "1.0";
 const API_BASE_PROD = `http://${config.apiHost}:${config.apiPort}/api`;
 const API_BASE_TEST = `http://${config.testApiHost}:${config.testApiPort}/api`;
-
-const log = createPinoLogger("Excel-Export-Service");
 
 const transformRequest: AxiosTransformer = (data) => {
   if (typeof data === "object") {
@@ -28,7 +26,7 @@ const transformRequest: AxiosTransformer = (data) => {
 axios.defaults.transformRequest = [transformRequest];
 
 const excelService = express();
-excelService.use(createPinoExpressLogger(log));
+excelService.use(createPinoExpressLogger(logger));
 excelService.use(express.json());
 excelService.use(cors({ origin: config.accessControlAllowOrigin }));
 excelService.use((req: express.Request, res: express.Response, next) => {
@@ -48,7 +46,7 @@ excelService.get("/readiness", async (req: express.Request, res: express.Respons
     const ready = await getApiReadiness(axios, res.apiBase);
     res.status(200).send(ready);
   } catch (err) {
-    req.log.error({ err }, "API readiness call failed");
+    logger.error({ err }, "API readiness call failed");
     res.end();
   }
 });
@@ -70,6 +68,7 @@ excelService.get("/version", (req: express.Request, res: express.Response) => {
 excelService.get("/download", async (req: express.Request, res: express.Response) => {
   const token = req.headers.authorization;
   if (!token) {
+    req.log.error("No authorization token was provided");
     res.status(401).send("Please provide authorization token");
   }
 
@@ -77,10 +76,10 @@ excelService.get("/download", async (req: express.Request, res: express.Response
     await getApiVersion(axios, token, res.apiBase);
   } catch (err) {
     if (err.response?.status == 401) {
-      req.log.error({ err }, "Invalid Token:");
+      logger.error({ err }, "Invalid Token:");
       res.status(err.response.status).send({ message: err.response.data });
     } else {
-      req.log.error({ err }, "Error validating token");
+      logger.error({ err }, "Error validating token");
       res.status(err.response.status).send({ message: `Error validating token: ${err.response} ` });
     }
   }
@@ -96,23 +95,25 @@ excelService.get("/download", async (req: express.Request, res: express.Response
     res.setHeader("Content-Disposition", "attachment; filename=TruBudget_Export.xlsx");
     res.setHeader("Transfer-Encoding", "chunked");
 
-    await writeXLSX(axios, req.headers.authorization, res, req.log);
+    await writeXLSX(axios, req.headers.authorization, res);
   } catch (error) {
+    req.log.error({ err: error }, "Error while creating excel export");
     if (error.response) {
       res.status(error.response.status).send({ message: error.response.data });
     }
   }
 });
 
-excelService.listen(config.serverPort, () => log.info(`App listening on ${config.serverPort}`));
+excelService.listen(config.serverPort, () => logger.info(`App listening on ${config.serverPort}`));
 
 // Enable useful traces of unhandled-promise warnings:
 process.on("unhandledRejection", (err) => {
-  log.error({ err }, "UNHANDLED PROMISE REJECTION");
+  logger.fatal({ err }, "UNHANDLED PROMISE REJECTION");
   process.exit(1);
 });
 
 function setExcelLanguage(url: string): void {
+  logger.debug({ url }, "Set excel language based on url");
   const queryData = URL.parse(url, true).query;
 
   if (queryData.lang) {

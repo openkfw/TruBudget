@@ -1,23 +1,23 @@
 import { VError } from "verror";
 import { ConnToken } from ".";
 import { globalIntents } from "../authz/intents";
+import { config } from "../config";
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { getOrganizationAddress } from "../organization/organization";
 import * as Result from "../result";
-import * as AuthToken from "./domain/organization/auth_token";
-import { AuthenticationFailed } from "./errors/authentication_failed";
 import { NotAuthorized } from "./domain/errors/not_authorized";
+import * as AuthToken from "./domain/organization/auth_token";
+import * as UserRecord from "./domain/organization/user_record";
+import { AuthenticationFailed } from "./errors/authentication_failed";
+import { getselfaddress } from "./getselfaddress";
 import { getGlobalPermissions } from "./global_permissions_get";
+import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
 import { getGroupsForUser } from "./group_query";
 import { importprivkey } from "./importprivkey";
 import { hashPassword, isPasswordMatch } from "./password";
-import logger from "../lib/logger";
 import * as UserQuery from "./user_query";
-import * as UserRecord from "./domain/organization/user_record";
-import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
-import { config } from "../config";
-import { getselfaddress } from "./getselfaddress";
 
 export interface UserLoginResponse {
   id: string;
@@ -37,6 +37,7 @@ export async function authenticate(
   userId: string,
   password: string,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
+  logger.debug({ userId, organization }, "Authenticating user");
   // The special "root" user is not on the chain:
   if (userId === "root") {
     const tokenResult = await authenticateRoot(conn, ctx, organization, rootSecret, password);
@@ -64,6 +65,8 @@ async function authenticateRoot(
   rootSecret: string,
   password: string,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
+  logger.debug("Authenticating Root user");
+
   if (typeof conn.multichainClient === "undefined") {
     logger.error("Received request, but MultiChain connection/permissions not ready yet.");
     return new AuthenticationFailed(

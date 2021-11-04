@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -18,6 +19,8 @@ export async function updateSubproject(
   subprojectId: Subproject.Id,
   requestData: SubprojectUpdate.RequestData,
 ): Promise<Result.Type<void>> {
+  logger.debug({ req: requestData }, "Updating subproject");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectUpdate.updateSubproject(ctx, serviceUser, projectId, subprojectId, requestData, {
       getSubproject: async (pId, spId) => {
@@ -28,6 +31,7 @@ export async function updateSubproject(
       },
     }),
   );
+
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "close project failed");
   }

@@ -61,7 +61,6 @@ import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url
 import { Item } from "./liststreamitems";
 import * as ProvisioningStarted from "./domain/system_information/provisioning_started";
 import * as ProvisioningEnded from "./domain/system_information/provisioning_ended";
-import { RpcClient } from "./RpcClient";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -147,24 +146,30 @@ interface CacheInstance {
 export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
   return {
     getGlobalEvents: (): BusinessEvent[] => {
+      logger.trace("Getting global Events from cache");
       return cache.eventsByStream.get("global") || [];
     },
     //system_information
     getSystemEvents: (): BusinessEvent[] => {
+      logger.trace("Getting system Events from cache");
       return cache.eventsByStream.get("system_information") || [];
     },
 
     getUserEvents: (_userId?: string): BusinessEvent[] => {
+      logger.trace("Getting user events from cache");
       // userId currently not leveraged
       return cache.eventsByStream.get("users") || [];
     },
 
     getGroupEvents: (_groupId?: string): BusinessEvent[] => {
+      logger.trace("Getting group events from cache");
       // groupId currently not leveraged
       return cache.eventsByStream.get("groups") || [];
     },
 
     getNotificationEvents: (userId: string): Result.Type<BusinessEvent[]> => {
+      logger.trace("Getting Notification Events from cache");
+
       const userFilter = (event) => {
         if (!event.type.startsWith("notification_")) {
           logger.debug(`Unexpected event type in "notifications" stream: ${event.type}`);
@@ -185,9 +190,11 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
 
     getPublicKeyEvents: (): Result.Type<BusinessEvent[]> => {
+      logger.trace("Getting public key events from cache");
       return cache.eventsByStream.get("public_keys") || [];
     },
     getOffchainDocumentsEvents: (): Result.Type<BusinessEvent[]> => {
+      logger.trace("Getting offchain document events from cache");
       const documentFilter = (event) => {
         switch (event.type) {
           case "workflowitem_document_uploaded":
@@ -199,6 +206,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       return cache.eventsByStream.get("offchain_documents") || [].filter(documentFilter);
     },
     getDocumentUploadedEvents: (): Result.Type<BusinessEvent[]> => {
+      logger.trace("Getting document uploaded events");
       const documentFilter = (event) => {
         switch (event.type) {
           case "document_uploaded":
@@ -212,6 +220,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       return cache.eventsByStream.get("offchain_documents") || [].filter(documentFilter);
     },
     getStorageServiceUrlPublishedEvents: (): Result.Type<BusinessEvent[]> => {
+      logger.trace("Getting storageserviceurl-published events from cache");
       const storageServiceUrlFilter = (event) => {
         switch (event.type) {
           case "storage_service_url_published":
@@ -223,6 +232,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       return cache.eventsByStream.get("offchain_documents") || [].filter(storageServiceUrlFilter);
     },
     getSecretPublishedEvents: (): Result.Type<BusinessEvent[]> => {
+      logger.trace("Getting Secret published events from cache");
       const secretPhublishedFilter = (event) => {
         switch (event.type) {
           case "secret_published":
@@ -235,10 +245,12 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
 
     getProjects: async (): Promise<Project.Project[]> => {
+      logger.trace("Getting projects from cache");
       return [...cache.cachedProjects.values()];
     },
 
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
+      logger.trace(`Getting Project with id "${projectId}" from cache`);
       const projects = [...cache.cachedProjects.values()];
       const project = projects.find((x) => x.id === projectId);
       if (project === undefined) {
@@ -248,6 +260,8 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
 
     getSubprojects: async (projectId: string): Promise<Result.Type<Subproject.Subproject[]>> => {
+      logger.trace("Getting subprojects from cache");
+
       // Look up subproject ids
       const subprojectIDs = cache.cachedSubprojectLookup.get(projectId);
       if (subprojectIDs === undefined) {
@@ -271,6 +285,9 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       _projectId: string,
       subprojectId: string,
     ): Result.Type<Subproject.Subproject> => {
+      logger.trace(
+        `Getting Subproject from project ${_projectId} with id "${subprojectId}" from cache`,
+      );
       const subproject = cache.cachedSubprojects.get(subprojectId);
       if (subproject === undefined) {
         return new NotFound(ctx, "subproject", subprojectId);
@@ -282,6 +299,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       _projectId: string,
       subprojectId: string,
     ): Promise<Result.Type<Workflowitem.Workflowitem[]>> => {
+      logger.trace("Getting workflowitems from cache");
       const workflowitemIDs = cache.cachedWorkflowitemLookup.get(subprojectId);
       const workflowitems: Workflowitem.Workflowitem[] = [];
       if (workflowitemIDs === undefined) {
@@ -305,6 +323,10 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       _subprojectId: string,
       workflowitemId: string,
     ): Promise<Result.Type<Workflowitem.Workflowitem>> => {
+      logger.trace(
+        `Getting Workflowitem from project ${_projectId} and ${_subprojectId} with id "${workflowitemId}" from cache`,
+      );
+
       const workflowitem = cache.cachedWorkflowItems.get(workflowitemId);
       if (workflowitem === undefined) {
         return new NotFound(ctx, "workflowitem", workflowitemId);
@@ -515,7 +537,7 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
 
 export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
   const { projects, errors: pErrors = [] } = sourceProjects(ctx, newEvents, cache.cachedProjects);
-  if (!isEmpty(pErrors)) logger.debug("sourceProject caused error: ", pErrors);
+  if (!isEmpty(pErrors)) logger.error({ err: pErrors }, "sourceProject caused error");
 
   for (const project of projects) {
     cache.cachedProjects.set(project.id, project);
@@ -526,7 +548,7 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
     newEvents,
     cache.cachedSubprojects,
   );
-  if (!isEmpty(spErrors)) logger.debug("sourceSubproject caused error: ", spErrors);
+  if (!isEmpty(spErrors)) logger.error({ err: spErrors }, "sourceSubproject caused error: ");
 
   for (const subproject of subprojects) {
     cache.cachedSubprojects.set(subproject.id, subproject);
@@ -544,7 +566,7 @@ export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEve
     newEvents,
     cache.cachedWorkflowItems,
   );
-  if (!isEmpty(wErrors)) logger.debug("sourceWorkflowitems caused error: ", wErrors);
+  if (!isEmpty(wErrors)) logger.error({ err: wErrors }, "sourceWorkflowitems caused error: ");
 
   for (const workflowitem of workflowitems) {
     cache.cachedWorkflowItems.set(workflowitem.id, workflowitem);
@@ -616,13 +638,11 @@ export function parseBusinessEvents(
     .map((item) => {
       const event = item.data.json;
       if (!event) {
-        logger.info(
-          `cache2: ignoring event no item.data.json property found ${JSON.stringify(item)}`,
-        );
+        logger.warn(`ignoring event no item.data.json property found ${JSON.stringify(item)}`);
         return;
       }
       if (event.intent) {
-        logger.debug(`cache2: ignoring event of intent ${event.intent}`);
+        logger.warn(`ignoring event of intent ${event.intent}`);
         return;
       }
       const parser = EVENT_PARSER_MAP[event.type];

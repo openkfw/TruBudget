@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -15,6 +16,8 @@ export async function getSubproject(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
 ): Promise<Result.Type<Subproject.Subproject>> {
+  logger.debug({ projectId, subprojectId }, "Getting subproject");
+
   const subprojectResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectGet.getSubproject(ctx, serviceUser, subprojectId, {
       getSubproject: async () => {

@@ -1,4 +1,5 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotFound } from "../errors/not_found";
@@ -16,6 +17,11 @@ export async function getOneUser(
   userId: string,
   repository: Repository,
 ): Promise<Result.Type<UserRecord.UserRecord>> {
+  logger.trace(
+    "Fetching user by id. *NOTE* errors are ignored in this procedure. UserId is:",
+    userId,
+  );
+
   const allEvents = await repository.getUserEvents();
 
   // Errors are ignored here:
@@ -37,6 +43,7 @@ export async function getAllUsers(
   serviceUser: ServiceUser,
   repository: Repository,
 ): Promise<Result.Type<UserRecord.UserRecord[]>> {
+  logger.trace("Fetching all users. *NOTE* errors are ignored in this procedure.");
   const allEvents = await repository.getUserEvents();
   // Errors are ignored here:
   const { users } = sourceUserRecords(ctx, allEvents);

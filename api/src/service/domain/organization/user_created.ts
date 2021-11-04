@@ -1,7 +1,7 @@
 import Joi = require("joi");
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
-
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -45,12 +45,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   user: initialDataSchema.required(),
 });
@@ -61,6 +57,8 @@ export function createEvent(
   user: InitialData,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating user_create event...");
+
   const event = {
     type: eventType,
     source,
@@ -98,6 +96,6 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<UserRecord.UserR
 
   return Result.mapErr(
     UserRecord.validate(user),
-    error => new EventSourcingError({ ctx, event, target: user }, error),
+    (error) => new EventSourcingError({ ctx, event, target: user }, error),
   );
 }

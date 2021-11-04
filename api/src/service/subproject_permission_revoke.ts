@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -22,6 +23,8 @@ export async function revokeSubprojectPermission(
   revokee: Identity,
   intent: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug({ revokee, intent, projectId, subprojectId }, "Revoking subproject permission");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectPermissionRevoke.revokeSubprojectPermission(
       ctx,
@@ -37,9 +40,11 @@ export async function revokeSubprojectPermission(
       },
     ),
   );
+
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "close project failed");
   }
+
   const newEvents = newEventsResult;
 
   for (const event of newEvents) {

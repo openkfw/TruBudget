@@ -1,4 +1,5 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
@@ -25,6 +26,8 @@ export function createEvent(
   publisher: Identity,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating provisioning_start event");
+
   const event = {
     type: eventType,
     source,

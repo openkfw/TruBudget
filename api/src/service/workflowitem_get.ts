@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -17,6 +18,8 @@ export async function getWorkflowitem(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
 ): Promise<Result.Type<Workflowitem.Workflowitem>> {
+  logger.debug({ projectId, subprojectId, workflowitemId }, "Getting workflowitem");
+
   const workflowitemResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemGet.getWorkflowitem(ctx, serviceUser, workflowitemId, {
       getWorkflowitem: async () => {
@@ -24,6 +27,7 @@ export async function getWorkflowitem(
       },
     }),
   );
+
   return Result.mapErr(
     workflowitemResult,
     (err) => new VError(err, `could not fetch workflowitem ${workflowitemId}`),

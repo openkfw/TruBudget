@@ -139,18 +139,19 @@ interface Service {
   ): Promise<Result.Type<Workflowitem.ScrubbedWorkflowitem[]>>;
 }
 
-function sendErrorIfEmpty(reply, resourceId) {
+function sendErrorIfEmpty(reply, resourceId): string | undefined {
   if (!isNonemptyString(resourceId)) {
+    const message = `required query parameter ${resourceId} not present (must be non-empty string)`;
     reply.status(400).send({
       apiVersion: "1.0",
       error: {
         code: 400,
-        message: `required query parameter ${resourceId} not present (must be non-empty string)`,
+        message,
       },
     });
-    return true;
+    return message;
   }
-  return false;
+  return;
 }
 
 interface Request extends RequestGenericInterface {
@@ -175,7 +176,9 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       const projectId = request.query.projectId;
       const subprojectId = request.query.subprojectId;
-      if (sendErrorIfEmpty(reply, projectId) || sendErrorIfEmpty(reply, subprojectId)) {
+      const message = sendErrorIfEmpty(reply, projectId) || sendErrorIfEmpty(reply, subprojectId);
+      if (message) {
+        request.log.error({ err: message }, "Invalid request body");
         return;
       }
 
@@ -187,6 +190,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           }
           const workflowitems = workflowitemsResult;
 
+          request.log.debug("Mapping workflowitmes to exposedworkflowitems");
           return workflowitems.map((workflowitem) => {
             const exposedWorkflowitem: ExposedWorkflowitem = {
               allowedIntents: workflowitem.isRedacted
@@ -226,6 +230,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         })
         .catch((err) => {
           const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while listing workflowitems");
           reply.status(code).send(body);
         });
     },

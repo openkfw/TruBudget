@@ -1,26 +1,18 @@
-import uuid = require("uuid");
-
 import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
-import deepcopy from "../lib/deepcopy";
 import logger from "../lib/logger";
 import * as Cache from "./cache";
 import * as Cache2 from "./cache2";
-import { asMapKey } from "./Client";
 import { RpcMultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import { Issuer } from "./issuer";
 import { ConnectionSettings } from "./RpcClient.h";
-import * as MultichainWorkflowitem from "./Workflowitem";
+import VError from "verror";
 
-export * from "./cache";
 export * from "./event";
-export * from "./Workflowitem";
-export * from "./SubprojectEvents";
 export * from "./issuer";
 export * from "./ProjectEvents";
-export * from "./SubprojectEvents";
 export { ConnToken } from "./conn";
 
 const workflowitemsGroupKey = (subprojectId) => `${subprojectId}_workflows`;
@@ -29,38 +21,33 @@ const globalSelfKey = "self";
 
 type ResourceType = "project" | "subproject" | "workflowitem";
 
-interface NotificationResourceDescription {
+interface Update {
+  displayName?: string;
+  amount?: string;
+  currency?: string;
+  amountType?: "N/A" | "disbursed" | "allocated";
+  description?: string;
+  documents?: Document[];
+  exchangeRate?: string;
+  billingDate?: string;
+  dueDate?: string;
+}
+interface Document {
   id: string;
-  type: ResourceType;
+  hash: string;
+  fileName?: string;
 }
 
 export function init(rpcSettings: ConnectionSettings): ConnToken {
+  logger.debug({ rpcSettings }, "Initialising RpcMultichainClient with rpcSettings");
+
   const multichainClient = new RpcMultichainClient(rpcSettings);
+
   return {
     multichainClient,
     cache: Cache.initCache(),
     cache2: Cache2.initCache(),
   };
-}
-
-export async function getGlobalPermissionList(conn: ConnToken): Promise<Permissions> {
-  try {
-    const streamItems = await conn.multichainClient.v2_readStreamItems("global", globalSelfKey, 1);
-    if (streamItems.length < 1) {
-      return {};
-    }
-    const event: Event = streamItems[0].data.json;
-    return event.data.permissions;
-  } catch (err) {
-    if (err.kind === "NotFound") {
-      // Happens at startup, no need to worry...
-      logger.debug("Global permissions not found. Happens at startup.");
-      return {};
-    } else {
-      logger.error({ err }, "Error while retrieving global permissions");
-      throw err;
-    }
-  }
 }
 
 export async function grantGlobalPermission(
@@ -71,6 +58,7 @@ export async function grantGlobalPermission(
 ): Promise<void> {
   const permissions = await getGlobalPermissionList(conn);
   const permissionsForIntent: People = permissions[intent] || [];
+
   permissionsForIntent.push(grantee);
   permissions[intent] = permissionsForIntent;
 
@@ -116,10 +104,13 @@ export async function revokeGlobalPermission(
   recipient: string,
   intent: Intent,
 ): Promise<void> {
+  logger.debug({ intent, recipient }, "Revoking global permission");
   const permissions = await getGlobalPermissionList(conn);
+
   if (permissions === {}) {
-    return;
+    throw new VError("No global permissions found, escaping");
   }
+
   const permissionsForIntent: People = permissions[intent] || [];
   const userIndex = permissionsForIntent.indexOf(recipient);
   permissionsForIntent.splice(userIndex, 1);
@@ -159,156 +150,26 @@ export async function revokeGlobalPermission(
   });
 }
 
-export async function issueNotification(
-  conn: ConnToken,
-  issuer: Issuer,
-  message: Event,
-  recipient: string,
-  resources: NotificationResourceDescription[],
-): Promise<void> {
-  const notificationId = uuid();
-  // TODO message.key is working for projects
-  // TODO but we need to access projectId subprojectid and workflowitemid and build data.resources
-  // const projectId = message.key;
-  // const resources: NotificationResourceDescription[] = [
-  //   {
-  //     id: projectId,
-  //     type: notificationTypeFromIntent(message.intent),
-  //   },
-  // ];
-  const intent = "notification.create";
-  const event: Event = {
-    key: recipient,
-    intent,
-    createdBy: issuer.name,
-    createdAt: new Date().toISOString(),
-    dataVersion: 1,
-    data: {
-      notificationId,
-      resources,
-      isRead: false,
-      originalEvent: message,
-    },
-  };
-  const streamName = "notifications";
-  const publishEvent = () => {
-    logger.debug(`Publishing ${intent} to ${streamName}/${recipient}`);
-    return conn.multichainClient.getRpcClient().invokePublish(streamName, recipient, {
-      json: event,
-    });
-  };
-  return publishEvent().catch((err) => {
-    if (err.code === -708) {
-      logger.debug(
-        `The stream ${streamName} does not exist yet. Creating the stream and trying again.`,
-      );
-      // The stream does not exist yet. Create the stream and try again:
-      return conn.multichainClient
-        .getOrCreateStream({ kind: "notifications", name: streamName })
-        .then(() => publishEvent());
-    } else {
-      logger.error({ err }, `Publishing ${intent} failed.`);
-      throw err;
-    }
-  });
-}
+async function getGlobalPermissionList(conn: ConnToken): Promise<Permissions> {
+  try {
+    const streamItems = await conn.multichainClient.v2_readStreamItems("global", globalSelfKey, 1);
 
-function notificationTypeFromIntent(intent: Intent): ResourceType {
-  if (intent.startsWith("project.") || intent === "global.createProject") {
-    return "project";
-  } else if (intent.startsWith("subproject.") || intent === "project.createSubproject") {
-    return "subproject";
-  } else if (intent.startsWith("workflowitem.") || intent === "subproject.createWorkflowitem") {
-    return "workflowitem";
-  } else {
-    throw Error(`Unknown ResourceType for intent ${intent}`);
-  }
-}
-
-export function generateResources(
-  projectId: string,
-  subprojectId?: string,
-  workflowitemId?: string,
-): NotificationResourceDescription[] {
-  const notificationResource: NotificationResourceDescription[] = [];
-  if (!projectId) {
-    throw { kind: "PreconditionError", message: "No project ID provided" };
-  }
-  notificationResource.push({
-    id: projectId,
-    type: "project",
-  });
-  if (subprojectId) {
-    notificationResource.push({
-      id: subprojectId,
-      type: "subproject",
-    });
-  }
-  if (workflowitemId) {
-    notificationResource.push({
-      id: workflowitemId,
-      type: "workflowitem",
-    });
-  }
-
-  return notificationResource;
-}
-
-export async function getWorkflowitemList(
-  conn: ConnToken,
-  projectId: string,
-  subprojectId: string,
-): Promise<MultichainWorkflowitem.Workflowitem[]> {
-  const queryKey = workflowitemsGroupKey(subprojectId);
-
-  const streamItems = await conn.multichainClient.v2_readStreamItems(projectId, queryKey);
-  const workflowitemsMap = new Map<string, MultichainWorkflowitem.Workflowitem>();
-
-  for (const item of streamItems) {
-    const event = item.data.json as Event;
-
-    // Events look differently for different intents!
-    let workflowitem = workflowitemsMap.get(asMapKey(item));
-
-    if (workflowitem === undefined) {
-      // If we didn't encounter the workflowitem while looping we just need to create
-      // a workflowitem with no data in it
-      workflowitem = MultichainWorkflowitem.handleCreate(event);
-
-      if (workflowitem === undefined) {
-        throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
-      }
-    } else {
-      // We've already encountered this workflowitem, so we can apply operations on it.
-      const hasProcessedEvent =
-        MultichainWorkflowitem.applyUpdate(event, workflowitem) ||
-        MultichainWorkflowitem.applyAssign(event, workflowitem) ||
-        MultichainWorkflowitem.applyClose(event, workflowitem) ||
-        MultichainWorkflowitem.applyGrantPermission(event, workflowitem) ||
-        MultichainWorkflowitem.applyRevokePermission(event, workflowitem);
-      if (!hasProcessedEvent) {
-        const message = "Unexpected event occured";
-        throw Error(`${message}: ${JSON.stringify(event)}.`);
-      }
+    if (streamItems.length < 1) {
+      return {};
     }
 
-    if (workflowitem !== undefined) {
-      // Save all events to the log for now; we'll filter them once we
-      // know the final workflowitem permissions.
-      workflowitem.log.push({
-        ...event,
-        snapshot: {
-          displayName: deepcopy(workflowitem.displayName),
-          amount: deepcopy(workflowitem.amount)!,
-          currency: deepcopy(workflowitem.currency)!,
-          amountType: deepcopy(workflowitem.amountType),
-        },
-      });
-      workflowitemsMap.set(asMapKey(item), workflowitem);
+    const event: Event = streamItems[0].data.json;
+    return event.data.permissions;
+  } catch (err) {
+    if (err.kind === "NotFound") {
+      // Happens at startup, no need to worry...
+      logger.debug("Global permissions not found. Happens at startup.");
+      return {};
     }
-  }
 
-  return [...workflowitemsMap.values()];
+    logger.error({ err }, "Error while retrieving global permissions");
+    throw err;
+  }
 }
 
 export async function getWorkflowitemOrdering(
@@ -316,6 +177,7 @@ export async function getWorkflowitemOrdering(
   projectId: string,
   subprojectId: string,
 ): Promise<string[]> {
+  logger.debug({ projectId, subprojectId }, "Getting order of workflowitems");
   // Currently, the workflowitem ordering is stored in full; therefore, we only
   // need to retrieve the latest item(see`publishWorkflowitemOrdering`).
   const expectedDataVersion = 1;
@@ -328,15 +190,18 @@ export async function getWorkflowitemOrdering(
       else throw { kind: "NotFound", what: workflowitemOrderingKey(subprojectId) };
     })
     .catch((err) => {
+      logger.error({ err }, "Error while getting order of workflowitems");
+
       if (err.kind === "NotFound") {
         return [{ data: { json: { dataVersion: 1, data: [] } } }];
-      } else {
-        throw err;
       }
+
+      throw err;
     });
 
   const item = streamItems[0];
   const event = item.data.json as Event;
+
   if (event.dataVersion !== expectedDataVersion) {
     throwUnsupportedEventVersion(event);
   }
@@ -380,7 +245,7 @@ export function updateWorkflowitem(
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
-  data: MultichainWorkflowitem.Update,
+  data: Update,
 ): Promise<void> {
   const intent: Intent = "workflowitem.update";
 

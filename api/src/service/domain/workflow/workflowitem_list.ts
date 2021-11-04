@@ -1,7 +1,7 @@
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotFound } from "../errors/not_found";
 import { canAssumeIdentity } from "../organization/auth_token";
@@ -42,17 +42,19 @@ export async function getAllVisible(
     );
   }
 
+  logger.trace("Sorting workflowitems ...");
   const sortedWorkflowitems = sortWorkflowitems(workflowitems, workflowitemOrdering);
 
+  logger.trace("Redact workflowitems the user is not authorized to see");
   const visibleWorkflowitems = sortedWorkflowitems
     // Redact workflowitems the user is not entitled to see:
-    .map(item =>
+    .map((item) =>
       user.id === "root" || Workflowitem.permits(item, user, ["workflowitem.view"])
         ? item
         : Workflowitem.redact(item),
     )
     // Only keep history event the user may see and remove all others:
-    .map(item => (item.isRedacted ? item : { ...item, log: traceEventsVisibleTo(item, user) }));
+    .map((item) => (item.isRedacted ? item : { ...item, log: traceEventsVisibleTo(item, user) }));
 
   return visibleWorkflowitems;
 }
@@ -70,7 +72,7 @@ const requiredPermissions = new Map<EventType, Intent[]>([
 
 function traceEventsVisibleTo(workflowitem: Workflowitem.Workflowitem, user: ServiceUser) {
   const traceEvents = workflowitem.log;
-  return traceEvents.filter(traceEvent => {
+  return traceEvents.filter((traceEvent) => {
     if (user.id === "root") {
       return true;
     }
@@ -87,6 +89,6 @@ function traceEventsVisibleTo(workflowitem: Workflowitem.Workflowitem, user: Ser
       ),
     );
 
-    return [...eligibleIdentities.values()].some(identity => canAssumeIdentity(user, identity));
+    return [...eligibleIdentities.values()].some((identity) => canAssumeIdentity(user, identity));
   });
 }

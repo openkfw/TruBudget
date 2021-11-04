@@ -1,9 +1,10 @@
 const spawn = require("child_process").spawn;
 const shell = require("shelljs");
-const log = require("./logger");
+const log = require("./log/logger");
 const mdLog = require("trubudget-logging-service").createPinoLogger(
   "Multichain-Deamon",
 );
+const includeLoggingParamsToArgs = require("./log/logArguments");
 
 const configureChain = (
   isMaster,
@@ -21,10 +22,7 @@ const configureChain = (
   if (isMaster) {
     log.info("Provisioning MultiChain");
 
-    const {
-      stdout,
-      stderr,
-    } = shell.exec(
+    const { stdout, stderr } = shell.exec(
       `multichain-util create ${chainName} -datadir=${multichainDir} -anyone-can-connect=false -anyone-can-send=false -anyone-can-receive=true -anyone-can-receive-empty=true -anyone-can-create=false -anyone-can-issue=false -anyone-can-admin=false -anyone-can-mine=false -anyone-can-activate=false-mining-diversity=0.3 -mine-empty-rounds=1 -protocol-version=20005 -admin-consensus-upgrade=.51 -admin-consensus-admin=.51 -admin-consensus-activate=.51 -admin-consensus-mine=.51 -admin-consensus-create=0 -admin-consensus-issue=0 -root-stream-open=false -maximum-block-size=83886080`,
       { silent: true },
     );
@@ -66,7 +64,7 @@ const startMultichainDaemon = (
   multichainDir,
   connectArg = "",
 ) => {
-  const mcproc = spawn("multichaind", [
+  const args = includeLoggingParamsToArgs([
     "-txindex",
     `${chainName}`,
     `${externalIpArg}`,
@@ -76,12 +74,15 @@ const startMultichainDaemon = (
     "-autosubscribe=streams",
     `${connectArg}`,
     `-datadir=${multichainDir}`,
-    "-debug=mcapi",
   ]);
-  mcproc.stdout.on("data", data => {
+  log.debug({ args }, "Starting multichain deamon with arguments");
+  const mcproc = spawn("multichaind", args);
+
+  mcproc.stdout.on("data", (data) => {
     mdLog.info(`${data}`);
   });
-  mcproc.stderr.on("data", data => {
+
+  mcproc.stderr.on("data", (data) => {
     if (data.includes("multichain-feed")) {
       mdLog.info({ feed: data }, "multichain-feed ");
     } else {

@@ -36,9 +36,9 @@
   "scripts": {
     "start": "node dist/",
     "build": "rimraf dist && tsc",
-    "dev": "rimraf dist && tsc && concurrently \"tsc -w --preserveWatchOutput\" \"nodemon -q dist/index.js -- --inspect=0.0.0.0:9229\"",
-    "watch": "tsc && concurrently \"tsc -w --preserveWatchOutput\" \"nodemon -q dist/index.js -- --inspect=0.0.0.0:9229\"",
-    "test": "nyc mocha --require ts-node/register \"src/**/*.spec.ts\"",
+    "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
+    "watch": "ts-node-dev -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
+    "test": "nyc mocha --require ts-node/register -r tsconfig-paths/register \"src/**/*.spec.ts\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
@@ -71,7 +71,6 @@
   "dependencies": {
     "axios": "^0.21.4",
     "bcryptjs": "^2.4.3",
-    "concurrently": "^6.2.2",
     "fastify": "^3.11.0",
     "fastify-cors": "^6.0.2",
     "fastify-helmet": "^5.3.2",
@@ -81,9 +80,10 @@
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.0",
     "lodash.isequal": "^4.5.0",
+    "module-alias": "^2.2.2",
     "raw-body": "^2.3.3",
     "sodium-native": "^3.3.0",
-    "trubudget-logging-service": "^1.1.2",
+    "trubudget-logging-service": "^1.1.3",
     "uuid": "^3.2.1",
     "verror": "^1.10.0"
   },
@@ -112,15 +112,18 @@
     "lodash.isempty": "^4.4.0",
     "mocha": "^9.1.2",
     "mocha-lcov-reporter": "^1.3.0",
-    "nodemon": "^2.0.3",
     "nyc": "^15.1.0",
     "openapi-typescript": "^2.4.2",
-    "rimraf": "*",
     "sinon": "^9.2.4",
     "supertest": "^4.0.2",
     "swagger-to-joi": "^1.2.4",
-    "ts-node": "^8.0.3",
+    "ts-node": "^10.4.0",
+    "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^3.11.0",
     "tslint": "*",
     "typescript": "^4.0.2"
+  },
+  "_moduleAliases": {
+    "lib": "dist/lib"
   }
 }

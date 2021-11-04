@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -22,6 +23,8 @@ export async function grantSubprojectPermission(
   grantee: Identity,
   intent: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug({ grantee, intent, projectId, subprojectId }, "Granting subproject permission");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectPermissionGrant.grantSubprojectPermission(
       ctx,

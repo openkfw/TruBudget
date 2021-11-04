@@ -46,6 +46,7 @@ schemes
   );
 
 const isBodyValid = (request, payload) => {
+  logger.debug({ request, payload }, "Checking request validity");
   const schema = schemes.get(request);
   if (!schema) {
     throw new Error(`Validation schema for request ${request} not implemented yet`);

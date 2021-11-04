@@ -70,6 +70,7 @@ export class RpcClient {
   private timeStamp;
 
   constructor(settings: ConnectionSettings) {
+    logger.debug("Setting up RpcClient");
     const protocol = `${settings.protocol || "http"}`;
     const host = settings.host || "localhost";
     const port = settings.port || 8570;
@@ -198,7 +199,7 @@ export class RpcClient {
       method,
       params,
     };
-    logger.trace({ parameters: request }, `Invoking method ${method}`);
+    logger.trace({ parameters: request }, `Invoking method ${method} on multichain`);
 
     return new Promise<any>(async (resolve, reject) => {
       this.instance

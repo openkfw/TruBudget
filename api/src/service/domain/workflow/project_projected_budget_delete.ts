@@ -1,6 +1,6 @@
 import { isEqual } from "lodash";
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -14,6 +14,7 @@ import * as Project from "./project";
 import { ProjectedBudget } from "./projected_budget";
 import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectProjectedBudgetDeleted from "./project_projected_budget_deleted";
+import logger from "lib/logger";
 
 interface Repository {
   getProject(projectId: Project.Id): Promise<Result.Type<Project.Project>>;
@@ -36,7 +37,10 @@ export async function deleteProjectedBudget(
     return new NotFound(ctx, "project", projectId);
   }
 
-  // Create the new event:
+  logger.trace(
+    { issuer, organization, projectId },
+    "Creating project_projected_budget_deleted event",
+  );
   const budgetDeleted = ProjectProjectedBudgetDeleted.createEvent(
     ctx.source,
     issuer.id,
@@ -48,7 +52,7 @@ export async function deleteProjectedBudget(
     return new VError(budgetDeleted, "failed to create projected budget deleted event");
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const intent = "project.budget.deleteProjected";
     if (!Project.permits(project, issuer, [intent])) {
@@ -56,7 +60,7 @@ export async function deleteProjectedBudget(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: budgetDeleted }, "Checking event validity");
   const result = ProjectEventSourcing.newProjectFromEvent(ctx, project, budgetDeleted);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, budgetDeleted, [result]);
@@ -65,17 +69,18 @@ export async function deleteProjectedBudget(
   // Only emit the event if it causes any changes:
   if (isEqual(project.projectedBudgets, result.projectedBudgets)) {
     return { newEvents: [], projectedBudgets: result.projectedBudgets };
-  } else {
-    // Create notification events:
-    const recipientsResult = project.assignee
-      ? await repository.getUsersForIdentity(project.assignee)
-      : [];
-    if (Result.isErr(recipientsResult)) {
-      return new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
-    }
-    const notifications = recipientsResult.reduce((notifications, recipient) => {
-      // The issuer doesn't receive a notification:
-      if (recipient !== issuer.id) {
+  }
+
+  const recipientsResult = project.assignee
+    ? await repository.getUsersForIdentity(project.assignee)
+    : [];
+  if (Result.isErr(recipientsResult)) {
+    return new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
+  }
+
+  const notifications = recipientsResult.reduce((notifications, recipient) => {
+    // The issuer doesn't receive a notification:
+    if (recipient !== issuer.id) {
       const notification = NotificationCreated.createEvent(
         ctx.source,
         issuer.id,
@@ -87,15 +92,16 @@ export async function deleteProjectedBudget(
         return new VError(notification, "failed to create  event");
       }
       notifications.push(notification);
-      }
-      return notifications;
-    }, [] as NotificationCreated.Event[]);
-    if (Result.isErr(notifications)) {
-      return new VError(notifications, "failed to create notification events");
     }
-    return {
-      newEvents: [budgetDeleted, ...notifications],
-      projectedBudgets: result.projectedBudgets,
-    };
+    return notifications;
+  }, [] as NotificationCreated.Event[]);
+
+  if (Result.isErr(notifications)) {
+    return new VError(notifications, "failed to create notification events");
   }
+
+  return {
+    newEvents: [budgetDeleted, ...notifications],
+    projectedBudgets: result.projectedBudgets,
+  };
 }

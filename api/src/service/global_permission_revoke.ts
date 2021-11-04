@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -19,6 +20,7 @@ export async function revokeGlobalPermission(
   revokee: Identity,
   permission: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug({ permission, revokee }, "Revoking global permission");
   const result = await GlobalPermissionsRevoke.revokeGlobalPermission(
     ctx,
     serviceUser,

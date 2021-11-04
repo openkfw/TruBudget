@@ -1,8 +1,9 @@
 import Joi = require("joi");
 
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent, { projectIntents } from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
@@ -66,6 +67,7 @@ export async function createProject(
   const source = ctx.source;
   const publisher = creatingUser.id;
 
+  logger.trace({ req: data }, "Trying to create 'ProjectCreated' Event from request data");
   const createEvent = ProjectCreated.createEvent(source, publisher, {
     id: data.id || randomString(),
     status: data.status || "open",
@@ -82,7 +84,7 @@ export async function createProject(
     return new VError(createEvent, "failed to create project created event");
   }
 
-  // Make sure for each organization and currency there is only one entry:
+  logger.trace({ event: createEvent }, "Checking if entry is unique per organization and currency");
   const badEntry = findDuplicateBudgetEntry(createEvent.project.projectedBudgets);
   if (badEntry !== undefined) {
     return new AlreadyExists(
@@ -103,7 +105,7 @@ export async function createProject(
     return new PreconditionError(ctx, createEvent, "user 'root' is not allowed to create projects");
   }
 
-  // Check authorization
+  logger.trace({ user: creatingUser }, "Check for user is permitted globally");
   const intent = "global.createProject";
   const globalPermissionsResult = await repository.getGlobalPermissions();
   if (Result.isErr(globalPermissionsResult)) {
@@ -114,7 +116,7 @@ export async function createProject(
     return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: globalPermissions });
   }
 
-  // Check that the event is valid
+  logger.trace({ event: createEvent }, "Checking if Event is valid");
   const result = ProjectCreated.createFrom(ctx, createEvent);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, createEvent, [result]);

@@ -99,6 +99,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     if (Result.isErr(bodyResult)) {
       const { code, body } = toHttpError(new VError(bodyResult, "failed to disable an user"));
+      request.log.error({ err: bodyResult }, "Invalid request body");
       reply.status(code).send(body);
       return;
     }
@@ -120,6 +121,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while disabling user");
         reply.status(code).send(body);
       });
   });

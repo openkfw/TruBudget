@@ -22,6 +22,7 @@ interface AuthNotificationToken {
 }
 
 export const verifyUserJWT = (req: Request, res, next, secret: string) => {
+  logger.trace("Verifying User-JWT ...");
   const token: string = getJWTToken(req);
 
   verifyJWTToken(token, secret)
@@ -30,11 +31,13 @@ export const verifyUserJWT = (req: Request, res, next, secret: string) => {
       next();
     })
     .catch((err) => {
+      logger.trace({ err, token }, "User-JWT invalid");
       const body: InvalidJWTResponseBody = { message: "Invalid JWT token provided." };
       res.status(400).json(body);
     });
 };
 export const verifyNotificationJWT = (req: Request, res, next, secret: string) => {
+  logger.trace("Verifying Notification-JWT ...");
   const token: string = getJWTToken(req);
 
   verifyJWTToken(token, secret)
@@ -43,6 +46,7 @@ export const verifyNotificationJWT = (req: Request, res, next, secret: string) =
       next();
     })
     .catch((err) => {
+      logger.trace({ err, token }, "Notification-JWT invalid");
       const body: InvalidJWTResponseBody = { message: "Invalid JWT token provided." };
       res.status(400).json(body);
     });

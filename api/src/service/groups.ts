@@ -6,12 +6,10 @@ import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import * as Liststreamkeyitems from "./liststreamkeyitems";
 
-//
-// public
-//
-
 export function getUsers(conn: ConnToken, groupId: string): Promise<string[]> {
   if (isEmpty(groupId)) return Promise.resolve([]);
+
+  logger.debug({ groupId }, "Getting users of group");
   return getGroup(conn.multichainClient, groupId)
     .then((group) => group.users)
     .catch((_) => []);
@@ -33,10 +31,6 @@ export async function removeUser(
   throw Error("not implemented");
 }
 
-//
-// private
-//
-
 interface Group {
   groupId: string;
   displayName: string;
@@ -44,13 +38,19 @@ interface Group {
 }
 
 async function getGroup(multichain: MultichainClient, groupId: string): Promise<Group> {
+  logger.debug({ groupId }, "Getting group from multichain");
+
   await ensureStreamExists(multichain);
+
   const groupEvents = await multichain.v2_readStreamItems("groups", groupId);
   const resourceMap = mapItems(groupEvents);
+
   return resourceMap.values().next().value;
 }
 
 function ensureStreamExists(multichain: MultichainClient): Promise<void> {
+  logger.trace("Checking if group stream exists on multichain");
+
   return multichain.getOrCreateStream({
     kind: "groups",
     name: "groups",
@@ -63,14 +63,20 @@ function asMapKey(keys: string[]): string {
 
 function mapItems(streamItems: Liststreamkeyitems.Item[]): Map<string, Group> {
   const resourceMap = new Map<string, Group>();
+
   for (const item of streamItems) {
     const event = item.data.json as Multichain.Event;
     let resource = resourceMap.get(asMapKey(item.keys));
+
+    logger.trace({ event, resource }, "Mapping and applying events for user in group");
+
     if (resource === undefined) {
       const result = applyCreate(event);
+
       if (result === undefined) {
         throw Error(`Failed to initialize resource: ${JSON.stringify(event)}.`);
       }
+
       resource = result.resource;
       resourceMap.set(asMapKey(item.keys), resource);
     } else {
@@ -81,6 +87,7 @@ function mapItems(streamItems: Liststreamkeyitems.Item[]): Map<string, Group> {
       }
     }
   }
+
   return resourceMap;
 }
 
@@ -88,6 +95,7 @@ function applyCreate(event: Multichain.Event): { resource: Group } | undefined {
   if (event.intent !== "global.createGroup") {
     return undefined;
   }
+
   switch (event.dataVersion) {
     case 1: {
       const { group } = event.data;
@@ -98,6 +106,7 @@ function applyCreate(event: Multichain.Event): { resource: Group } | undefined {
       };
     }
   }
+
   Multichain.throwUnsupportedEventVersion(event);
 }
 
@@ -105,6 +114,7 @@ function applyAddUser(event: Multichain.Event, resource: Group): true | undefine
   if (event.intent !== "group.addUser") {
     return;
   }
+
   switch (event.dataVersion) {
     case 1: {
       logger.trace(
@@ -114,6 +124,7 @@ function applyAddUser(event: Multichain.Event, resource: Group): true | undefine
       return true;
     }
   }
+
   Multichain.throwUnsupportedEventVersion(event);
 }
 
@@ -121,6 +132,7 @@ function applyRemoveUser(event: Multichain.Event, resource: Group): true | undef
   if (event.intent !== "group.removeUser") {
     return;
   }
+
   switch (event.dataVersion) {
     case 1: {
       const index = resource.users.indexOf(event.data.userId);
@@ -133,5 +145,6 @@ function applyRemoveUser(event: Multichain.Event, resource: Group): true | undef
       return true;
     }
   }
+
   Multichain.throwUnsupportedEventVersion(event);
 }

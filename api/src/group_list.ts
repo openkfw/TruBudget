@@ -101,6 +101,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while fetching all groups");
         reply.status(code).send(body);
       });
   });

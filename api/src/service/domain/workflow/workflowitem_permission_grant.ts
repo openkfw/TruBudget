@@ -2,7 +2,7 @@ import isEqual = require("lodash.isequal");
 
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -18,6 +18,7 @@ import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemPermissionGranted from "./workflowitem_permission_granted";
 import { config } from "../../../config";
+import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitem(
@@ -47,7 +48,10 @@ export async function grantWorkflowitemPermission(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  // Create the new event:
+  logger.trace(
+    { issuer, grantee, intent, projectId, subprojectId, workflowitemId },
+    "Creating workflowitem_permission_grantet event",
+  );
   const permissionGrantedEventResult = WorkflowitemPermissionGranted.createEvent(
     ctx.source,
     issuer.id,
@@ -62,6 +66,7 @@ export async function grantWorkflowitemPermission(
   }
   const permissionGrantedEvent = permissionGrantedEventResult;
 
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const grantIntent = "workflowitem.intent.grantPermission";
     if (!Workflowitem.permits(workflowitem, issuer, [grantIntent])) {
@@ -74,7 +79,7 @@ export async function grantWorkflowitemPermission(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: permissionGrantedEvent }, "Checking event validity");
   const updatedWorkflowitem = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
     ctx,
     workflowitem,
@@ -84,7 +89,7 @@ export async function grantWorkflowitemPermission(
     return new InvalidCommand(ctx, permissionGrantedEvent, [updatedWorkflowitem]);
   }
 
-  // Check document access for users of new organizations
+  logger.trace("Check document access for users of new organizations");
   const { documents } = workflowitem;
   const documentEvents: BusinessEvent[] = [];
 
@@ -94,7 +99,7 @@ export async function grantWorkflowitemPermission(
       return new VError(organizations, "failed to get organization for sharing documents");
     }
 
-    // share all documents with all organizations
+    logger.trace("Share all documents with all organizations");
     for (const organization of organizations) {
       for (const doc of documents) {
         const shareDocumentEventResult = await repository.shareDocument(doc.id, organization);
@@ -114,9 +119,9 @@ export async function grantWorkflowitemPermission(
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(workflowitem.permissions, updatedWorkflowitem.permissions)) {
     return [];
-  } else {
-    return [permissionGrantedEvent, ...documentEvents];
   }
+
+  return [permissionGrantedEvent, ...documentEvents];
 }
 
 async function getOrganizations(

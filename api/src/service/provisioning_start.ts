@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -12,6 +13,8 @@ export async function setProvisioningStartFlag(
   ctx: Ctx,
   serviceUser: ServiceUser,
 ): Promise<Result.Type<void>> {
+  logger.debug("Set Flag to signal start of provisioning");
+
   const provisioningStartEventResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProvisioningStart.setProvisioningStartFlag(ctx, serviceUser),
   );

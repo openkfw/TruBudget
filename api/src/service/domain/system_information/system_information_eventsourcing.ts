@@ -1,4 +1,5 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -21,6 +22,7 @@ export function sourceSystemInformation(
   };
   const errors: EventSourcingError[] = [];
   for (const event of events) {
+    logger.trace({ event }, "Applying system information event");
     apply(ctx, systemInformation, event, errors);
   }
   return { systemInformation, errors };

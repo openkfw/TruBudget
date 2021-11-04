@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { AlreadyExists } from "../errors/already_exists";
 import { ServiceUser } from "../organization/service_user";

@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Group from "./group";
@@ -19,12 +19,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   groupId: Group.idSchema.required(),
   member: Group.memberSchema.required(),
@@ -45,6 +41,8 @@ export function createEvent(
     member,
     time,
   };
+  logger.trace("Creating group_member_remove event...");
+
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${eventType} event`);

@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -16,6 +17,8 @@ export async function createSubproject(
   serviceUser: ServiceUser,
   requestData: Subproject.RequestData,
 ): Promise<Result.Type<ResourceMap>> {
+  logger.debug({ req: requestData }, "Creating Subproject");
+
   const createEventResult = await Cache.withCache(conn, ctx, (cache) => {
     return Subproject.createSubproject(ctx, serviceUser, requestData, {
       subprojectExists: async (projectId, subprojectId) => {

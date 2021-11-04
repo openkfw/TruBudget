@@ -191,6 +191,13 @@ services:
       EXPORT_PORT: ${EXPORT_PORT}
       EXPORT_HOST: ${EXPORT_HOST}
       INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
+      REACT_APP_LOGGING: ${REACT_APP_LOGGING}
+      REACT_APP_LOG_LEVEL: ${REACT_APP_LOG_LEVEL}
+      REACT_APP_LOGGING_SERVICE_HOST: ${REACT_APP_LOGGING_SERVICE_HOST}
+      REACT_APP_LOGGING_SERVICE_PORT: ${REACT_APP_LOGGING_SERVICE_PORT}
+      REACT_APP_LOGGING_SERVICE_HOST_SSL: ${REACT_APP_LOGGING_SERVICE_HOST_SSL}
+      REACT_APP_LOGGING_PUSH_INTERVAL: ${REACT_APP_LOGGING_PUSH_INTERVAL}
+
     networks:
       mynetwork:
         ipv4_address: 172.21.0.91
@@ -223,6 +230,22 @@ services:
       - ${SLAVE_RPC_PORT}:${SLAVE_RPC_PORT}
       - "7448:7447" # slave-node port is 7448 on host
     privileged: true
+
+  logging-service:
+    build:
+      context: ../../logging-service
+    environment:
+      LOGGER_PORT: ${LOGGER_PORT}
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
+      LOG_LEVEL: ${LOG_LEVEL}
+      LOGGING_SERVICE_CACHE_DURATION: ${LOGGING_SERVICE_CACHE_DURATION}
+      NODE_ENV: ${LOGGING_SERVICE_NODE_ENV}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.13
+    ports:
+      - "${LOGGER_PORT}:${LOGGER_PORT}"
 
   slave-api:
     image: trubudget/api:${TAG}

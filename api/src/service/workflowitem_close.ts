@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -22,6 +23,8 @@ export async function closeWorkflowitem(
   workflowitemId: Workflowitem.Id,
   rejectReason?: string,
 ): Promise<Result.Type<void>> {
+  logger.debug({ projectId, subprojectId, workflowitemId, rejectReason }, "Closing workflowitem");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemClose.closeWorkflowitem(
       ctx,
