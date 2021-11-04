@@ -20,13 +20,11 @@
   },
   "description": "",
   "editable": true,
-  "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1634633220925,
+  "id": 28,
+  "iteration": 1636035310024,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
@@ -103,14 +101,14 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.1.5",
       "targets": [
         {
           "expr": "sum(count_over_time({namespace=\"$namespace\"}[$__interval]))",
           "refId": "A"
         }
       ],
-      "title": "Total Count of Logs",
+      "title": "Total Count of Logs in namespace",
       "type": "stat"
     },
     {
@@ -174,14 +172,14 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.1.5",
       "targets": [
         {
-          "expr": "sum(count_over_time(({namespace=\"$namespace\"} |= \"error\")[$__interval]))",
+          "expr": "sum(count_over_time(({namespace=\"$namespace\"} | json | level=\"50\")[$__interval]))",
           "refId": "A"
         }
       ],
-      "title": "Total Count of Error Logs",
+      "title": "Total Count of Error Logs in namespace",
       "type": "stat"
     },
     {
@@ -246,14 +244,14 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.1.5",
       "targets": [
         {
-          "expr": "sum(count_over_time(({namespace=\"$namespace\"} |~ \"error\")[$__interval])) * 100 / sum(count_over_time(({namespace=\"$namespace\"})[$__interval]))",
+          "expr": "sum(count_over_time(({namespace=\"$namespace\"} | json | level=\"50\")[$__interval])) * 100 / sum(count_over_time(({namespace=\"$namespace\"})[$__interval]))",
           "refId": "A"
         }
       ],
-      "title": "Error Percentage",
+      "title": "Error Percentage in namespace",
       "type": "gauge"
     },
     {
@@ -313,7 +311,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 11,
+        "w": 7,
         "x": 0,
         "y": 6
       },
@@ -331,7 +329,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.1.5",
       "targets": [
         {
           "expr": "sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"})[$__interval]))",
@@ -340,77 +338,6 @@
         }
       ],
       "title": "Total Count of Logs",
-      "type": "stat"
-    },
-    {
-      "datasource": "Loki",
-      "description": "Logs with errors in namespace $namespace and pod $pod",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "color": "dark-red",
-                  "index": 0,
-                  "text": "0"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "dark-red",
-                "value": 10
-              },
-              {
-                "color": "dark-red",
-                "value": 50
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 11,
-        "x": 11,
-        "y": 6
-      },
-      "id": 9,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": ["sum"],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "8.2.1",
-      "targets": [
-        {
-          "expr": "sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"} |= \"error\")[$__interval]))",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Count of Error Logs",
       "type": "stat"
     },
     {
@@ -460,8 +387,8 @@
       "gridPos": {
         "h": 4,
         "w": 7,
-        "x": 0,
-        "y": 10
+        "x": 7,
+        "y": 6
       },
       "id": 20,
       "options": {
@@ -475,10 +402,10 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.1.5",
       "targets": [
         {
-          "expr": "sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"} |~ \"error\")[$__interval])) * 100 / sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"})[$__interval]))",
+          "expr": "sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"} | json | level=\"50\")[$__interval])) * 100 / sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"})[$__interval]))",
           "refId": "A"
         }
       ],
@@ -524,8 +451,8 @@
       "gridPos": {
         "h": 4,
         "w": 7,
-        "x": 7,
-        "y": 10
+        "x": 14,
+        "y": 6
       },
       "id": 21,
       "options": {
@@ -539,7 +466,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.2.1",
+      "pluginVersion": "8.1.5",
       "targets": [
         {
           "expr": "sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"} |~ \"(?i)$searchable_pattern\")[$__interval])) * 100 / sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"})[$__interval]))",
@@ -548,6 +475,107 @@
       ],
       "title": "\"$searchable_pattern\" Percentage",
       "type": "gauge"
+    },
+    {
+      "datasource": "Loki",
+      "description": "Logs with errors in namespace $namespace and pod $pod",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "color": "dark-red",
+                  "index": 0,
+                  "text": "0"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": 10
+              },
+              {
+                "color": "dark-red",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 7,
+        "x": 0,
+        "y": 10
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.1.5",
+      "targets": [
+        {
+          "expr": "sum(count_over_time(({namespace=\"$namespace\", pod=\"$pod\"} | json | level=\"50\")[$__interval]))",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Count of Error Logs",
+      "type": "stat"
+    },
+    {
+      "datasource": "Loki",
+      "description": "Logs with errors in namespace $namespace and pod $pod",
+      "gridPos": {
+        "h": 4,
+        "w": 14,
+        "x": 7,
+        "y": 10
+      },
+      "id": 24,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "8.1.5",
+      "targets": [
+        {
+          "expr": "{namespace=\"$namespace\", pod=\"$pod\"} | json | level>=50",
+          "refId": "A"
+        }
+      ],
+      "title": "Error Logs",
+      "type": "logs"
     },
     {
       "collapsed": false,
@@ -568,7 +596,7 @@
       "description": "Logs for namespace $namespace and pod $pod, containing pattern $searchable_pattern",
       "gridPos": {
         "h": 13,
-        "w": 24,
+        "w": 21,
         "x": 0,
         "y": 15
       },
@@ -585,7 +613,7 @@
       },
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", pod=\"$pod\"} |~ \"(?i)$searchable_pattern\" ",
+          "expr": "{namespace=\"$namespace\", pod=\"$pod\"} |~ \"(?i)$searchable_pattern\" | json | level>=$logLevel",
           "instant": false,
           "legendFormat": "Logs for namespace $namespace and pod $pod",
           "maxLines": null,
@@ -598,7 +626,7 @@
     }
   ],
   "refresh": "",
-  "schemaVersion": 31,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": ["logging", "loki", "trubudget"],
   "templating": {
@@ -606,7 +634,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -630,7 +658,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -652,8 +680,64 @@
         "type": "query"
       },
       {
+        "allValue": "0",
         "current": {
-          "selected": false,
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "log level",
+        "multi": false,
+        "name": "logLevel",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "http",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "debug",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "info",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "warn",
+            "value": "40"
+          },
+          {
+            "selected": false,
+            "text": "error",
+            "value": "50"
+          },
+          {
+            "selected": false,
+            "text": "fatal",
+            "value": "60"
+          }
+        ],
+        "query": "http : 10,  debug : 20,info : 30,warn : 40,error : 50,fatal : 60,",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -676,12 +760,12 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "TruBudget Logging Dashboard",
   "uid": "59Jan5dnk",
-  "version": 13
+  "version": 3
 }
