@@ -137,7 +137,7 @@ jobs:
           - project: storage-service
             image_name: trubudget/storage-service
           - project: logging-service
-            image_name: logging-service
+            image_name: trubudget/logging-service
     defaults:
       run:
         working-directory: ${{ matrix.project }}
