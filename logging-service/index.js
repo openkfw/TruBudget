@@ -13,15 +13,16 @@ const createPinoLogger = (name) => {
     prettyPrintInput.toLowerCase()
   );
 
-  const prettyPrint = activatePrettyPrint
-    ? {
-        colorize: true,
-        levelFirst: false,
-        messageKey: "message",
-        translateTime: true,
-        crlf: false,
-      }
-    : false;
+  const prettyPrint =
+    activatePrettyPrint == "true"
+      ? {
+          colorize: true,
+          levelFirst: false,
+          messageKey: "message",
+          translateTime: true,
+          crlf: false,
+        }
+      : false;
 
   const logLevelEnvironment = process.env.LOG_LEVEL || "info";
   const level = getLevel(logLevelEnvironment);
