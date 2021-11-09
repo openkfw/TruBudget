@@ -1,5 +1,5 @@
 const multiChainDebugParameter =
-  "-debug:mcapi,mchn, mccoin, mcatxo, mcminer, mcblock";
+  "-debug=mcapi,mchn,mccoin,mcatxo,mcminer,mcblock";
 
 const printToConsole = "-printtoconsole";
 

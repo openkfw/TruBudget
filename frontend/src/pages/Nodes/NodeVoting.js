@@ -9,10 +9,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
-
 import strings from "../../localizeStrings";
 import { canApproveNode } from "../../permissions";
-import { NewOrganizationsEmptyState, ExistingNodesEmptyState } from "./NodesEmptyStates";
+import { ExistingNodesEmptyState, NewOrganizationsEmptyState } from "./NodesEmptyStates";
 
 const styles = theme => ({
   container: {
@@ -163,6 +162,7 @@ const getListEntries = (nodes, canApprove, classes, declineNode, approveNode) =>
 const NodeVoting = ({
   nodes,
   approveNewNodeForExistingOrganization,
+  approveNewOrganization,
   allowedIntents,
   classes,
   isDataLoading,
@@ -175,7 +175,7 @@ const NodeVoting = ({
   const [, newOrgaNodes, existingOrgaNodes] = splitNodes(visibleNodes);
 
   const newOrgaNodesListEntries = getListEntries(newOrgaNodes, canApprove, classes, declineNode, ({ address }) =>
-    approveNewNodeForExistingOrganization(address)
+    approveNewOrganization(address)
   );
   const existingOrgaNodesListEntries = getListEntries(
     existingOrgaNodes,
