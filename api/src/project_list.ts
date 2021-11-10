@@ -167,6 +167,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           throw new VError(result, "project.list failed");
         }
         const projects = result;
+        request.log.debug("Mapping intents and timestamp of projects");
         return projects.map((project) => {
           return {
             log: project.log,
@@ -198,6 +199,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while listing projects");
         reply.status(code).send(body);
       });
   });

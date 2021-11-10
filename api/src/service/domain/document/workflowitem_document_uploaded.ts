@@ -6,7 +6,7 @@ import * as WorkflowitemDocument from "./document";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 
 type EventTypeType = "workflowitem_document_uploaded";

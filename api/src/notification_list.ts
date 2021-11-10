@@ -314,13 +314,17 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       if (request.query.offset !== undefined) {
         offset = parseInt(request.query.offset, 10);
         if (isNaN(offset)) {
+          const message = "if present, the query parameter `offset` must be an integer";
+
           reply.status(400).send({
             apiVersion: "1.0",
             error: {
               code: 400,
-              message: "if present, the query parameter `offset` must be an integer",
+              message,
             },
           });
+          request.log.error({ err: message }, "Invalid request body");
+
           return;
         }
       }
@@ -330,13 +334,16 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       if (request.query.limit !== undefined) {
         limit = parseInt(request.query.limit, 10);
         if (isNaN(limit) || limit <= 0) {
+          const message = "if present, the query parameter `limit` must be a positive integer";
           reply.status(400).send({
             apiVersion: "1.0",
             error: {
               code: 400,
-              message: "if present, the query parameter `limit` must be a positive integer",
+              message,
             },
           });
+          request.log.error({ err: message }, "Invalid request body");
+
           return;
         }
       }
@@ -355,6 +362,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
           limit === undefined ? undefined : offsetIndex + limit,
         );
 
+        request.log.debug("Getting exposed Notifcations");
         const exposedNotifications: ExposedNotification[] = [];
         for (const notification of slice) {
           const metadata = await getMetadata(ctx, user, notification, service);
@@ -381,6 +389,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while getting Notifications");
         reply.status(code).send(body);
       }
     },

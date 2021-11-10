@@ -14,6 +14,7 @@ The excel export service is responsible for exporting multichain's data to a hum
 | TEST_API_HOST               | localhost     | Ip address of the api test environment                                                                                                                                                                                                                        |
 | TEST_API_PORT               | 8080          | Port of the api test environment                                                                                                                                                                                                                              |
 | ACCESS_CONTROL_ALLOW_ORIGIN | "\*"          | Since the export service uses CORS, the domain by which it can be called needs to be set. Setting this value to `"*"` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |
+| LOG_LEVEL                   | info          | Defines the log output. Supported levels are `trace`, `debug`, `info`, `warn`, `error`, `fatal`                                                                                                                                                               |
 
 ### Frontend
 

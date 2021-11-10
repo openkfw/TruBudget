@@ -16,6 +16,8 @@ try {
 }
 
 function encrypt(organizationSecret, plaintext) {
+  logger.trace("Encrypting organization secret ...");
+
   const plaintextBuffer = Buffer.from(plaintext);
 
   // The nonce/salt will be prepended to the ciphertext:
@@ -44,6 +46,8 @@ function encrypt(organizationSecret, plaintext) {
 
 function decrypt(organizationSecret, hexEncodedCiphertext) {
   // The nonce/salt is prepended to the actual ciphertext:
+  logger.trace("Decreypting organization secret ...");
+
   const dataBuffer = Buffer.from(hexEncodedCiphertext, "hex");
   const nonceBuffer = dataBuffer.slice(0, sodium.crypto_secretbox_NONCEBYTES);
   const cipherBuffer = dataBuffer.slice(sodium.crypto_secretbox_NONCEBYTES);
@@ -60,6 +64,7 @@ function decrypt(organizationSecret, hexEncodedCiphertext) {
       keyBuffer,
     )
   ) {
+    logger.trace("Encrypting organization secret failed!");
     return new Error("decryption failed");
   }
 

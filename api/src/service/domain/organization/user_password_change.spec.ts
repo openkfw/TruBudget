@@ -1,6 +1,6 @@
 import { assert } from "chai";
 
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { hashPassword, isPasswordMatch } from "../../password";
 import { NotAuthorized } from "../errors/not_authorized";

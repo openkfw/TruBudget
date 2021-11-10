@@ -119,6 +119,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const { code, body } = toHttpError(
           new VError(bodyResult, "failed to grant user permission"),
         );
+        request.log.error({ err: bodyResult }, "Invalid request body");
         reply.status(code).send(body);
         return;
       }
@@ -140,6 +141,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         })
         .catch((err) => {
           const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while granting user permission");
           reply.status(code).send(body);
         });
     },

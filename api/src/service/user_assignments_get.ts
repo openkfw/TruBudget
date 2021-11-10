@@ -7,6 +7,7 @@ import * as UserAssignmentsGet from "./domain/workflow/user_assignments_get";
 import * as UserAssignments from "./domain/workflow/user_assignments";
 import * as UserQuery from "./user_query";
 import { ServiceUser } from "./domain/organization/service_user";
+import logger from "lib/logger";
 
 export async function getUserAssignments(
   conn: ConnToken,
@@ -15,6 +16,8 @@ export async function getUserAssignments(
   issuerOrganization: string,
   requestData: UserAssignmentsGet.RequestData,
 ): Promise<Result.Type<UserAssignments.UserAssignments>> {
+  logger.debug({ req: requestData }, "Get user assignments");
+
   const userAssignmentResult = await Cache.withCache(
     conn,
     ctx,

@@ -21,6 +21,8 @@ export async function publishPublicKey(
   serviceUser: ServiceUser,
   requestData: PublicKeyPublish.RequestData,
 ): Promise<Result.Type<PublicKey>> {
+  logger.debug({ req: requestData }, "Publishing public key");
+
   const publicKeyPublishResult = await Cache.withCache(conn, ctx, async (cache) =>
     PublicKeyPublish.publishPublicKey(ctx, serviceUser, requestData, {
       publicKeyAlreadyExists: async (organization) =>

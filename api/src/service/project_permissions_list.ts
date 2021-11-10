@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -13,13 +14,16 @@ export async function getProjectPermissions(
   serviceUser: ServiceUser,
   projectId: Project.Id,
 ): Promise<Result.Type<Permissions>> {
-  const projectPermissionsResult = await Cache.withCache(conn, ctx, async cache =>
+  logger.debug({ projectId }, "Get project permissions");
+
+  const projectPermissionsResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectPermissionsList.getProjectPermissions(ctx, serviceUser, projectId, {
-      getProject: async pId => {
+      getProject: async (pId) => {
         return cache.getProject(pId);
       },
     }),
   );
+
   if (Result.isErr(projectPermissionsResult)) {
     projectPermissionsResult.message = `could not fetch project permissions: ${projectPermissionsResult.message}`;
     return projectPermissionsResult;

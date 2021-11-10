@@ -1,6 +1,5 @@
 import Joi = require("joi");
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
@@ -55,7 +54,7 @@ export function createEvent(
   projectId: Project.Id,
   modification: Modification,
   time: string = new Date().toISOString(),
-): Result.Type<Event>  {
+): Result.Type<Event> {
   const event = {
     type: eventType,
     source,
@@ -64,7 +63,9 @@ export function createEvent(
     projectId,
     update: modification,
   };
+
   const validationResult = validate(event);
+
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${eventType} event`);
   }

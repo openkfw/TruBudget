@@ -1,5 +1,6 @@
-import { Ctx } from "../../../lib/ctx";
-import deepcopy from "../../../lib/deepcopy";
+import { Ctx } from "lib/ctx";
+import deepcopy from "lib/deepcopy";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -17,9 +18,11 @@ export function sourceNotifications(
 ): { notificationsById: NotificationsById; errors: EventSourcingError[] } {
   const notificationsById = new Map<UserRecord.Id, Notification.Notification>();
   const errors: EventSourcingError[] = [];
+
   for (const event of events) {
     apply(ctx, notificationsById, event, errors);
   }
+
   return { notificationsById, errors };
 }
 
@@ -42,6 +45,8 @@ function handleCreate(
   notificationCreated: NotificationCreated.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace({ event: notificationCreated }, "Applying notification_created event");
+
   let notification = notificationsById.get(notificationCreated.notificationId);
   if (notification !== undefined) {
     errors.push(
@@ -85,6 +90,7 @@ function applyRead(
   notificationRead: NotificationMarkedRead.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace({ event: notificationRead }, "Applying notification_mark_read event");
   const notification = deepcopy(notificationsById.get(notificationRead.notificationId));
   if (notification === undefined) {
     errors.push(new EventSourcingError({ ctx, event: notificationRead }, "notification not found"));

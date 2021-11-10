@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - 1.x.x-release
   pull_request:
   release:
     types: [published]
@@ -54,6 +55,7 @@ jobs:
             excel-export-service,
             email-notification-service,
             storage-service,
+            logging-service
           ]
 
     defaults:
@@ -115,6 +117,7 @@ jobs:
             excel-export-service,
             email-notification-service,
             storage-service,
+            logging-service
           ]
         include:
           - project: frontend
@@ -133,6 +136,8 @@ jobs:
             image_name: trubudget/email-notification
           - project: storage-service
             image_name: trubudget/storage-service
+          - project: logging-service
+            image_name: trubudget/logging-service
     defaults:
       run:
         working-directory: ${{ matrix.project }}

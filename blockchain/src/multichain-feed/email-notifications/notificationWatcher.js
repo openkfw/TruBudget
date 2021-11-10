@@ -1,6 +1,8 @@
 const fork = require("child_process").fork;
 const fs = require("fs");
 
+const log = require("./../../log/logger");
+
 const startEmailNotificationWatcher = (
   path,
   emailServiceSocketAddress,
@@ -11,9 +13,9 @@ const startEmailNotificationWatcher = (
 ) => {
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path);
-    console.log("Folder 'notifications' created");
+    log.info("Folder 'notifications' created");
   }
-  console.log("Starting email notification watcher process...");
+  log.info("Starting email notification watcher process");
   const emailproc = fork(
     `${__dirname}/sendNotifications.js`,
     [

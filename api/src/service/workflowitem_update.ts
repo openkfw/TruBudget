@@ -21,6 +21,7 @@ import * as DocumentShare from "./document_share";
 
 import { config } from "../config";
 import { store } from "./store";
+import logger from "lib/logger";
 
 export type RequestData = WorkflowitemUpdate.RequestData;
 
@@ -35,6 +36,10 @@ export async function updateWorkflowitem(
   modification: WorkflowitemUpdate.RequestData,
 ): Promise<Result.Type<void>> {
   const updateWorkflowitemResult = await Cache.withCache(conn, ctx, async (cache) => {
+    logger.debug(
+      { projectId, subprojectId, workflowitemId, modification },
+      "Updating workflowitem",
+    );
     return WorkflowitemUpdate.updateWorkflowitem(
       ctx,
       serviceUser,
@@ -102,12 +107,15 @@ export async function updateWorkflowitem(
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);
   }
+
   const workflowitem = await Cache.withCache(conn, ctx, async (cache) =>
     cache.getWorkflowitem(projectId, subprojectId, workflowitemId),
   );
+
   if (Result.isErr(workflowitem)) {
     return new VError(workflowitem, `failed to get workflowitem ${workflowitemId}`);
   }
+
   if (
     config.documentFeatureEnabled &&
     modification.documents &&
@@ -117,9 +125,11 @@ export async function updateWorkflowitem(
       const users = workflowitem.permissions["workflowitem.view"];
       if (users) {
         const organizations = await getOrganizations(users);
+
         if (Result.isErr(organizations)) {
           return new VError(organizations, "failed to get organizations");
         }
+
         for (const organization of organizations) {
           const event = await DocumentShare.documentShare(conn, ctx, serviceUser, {
             organization,
@@ -135,15 +145,19 @@ export async function updateWorkflowitem(
       }
     }
   }
-  async function getOrganizations(users: string[]): Promise<Result.Type<string[]>> {
-    const organizations: string[] = [];
 
+  async function getOrganizations(users: string[]): Promise<Result.Type<string[]>> {
+    logger.debug("Gathering Organizatinos based on users");
+
+    const organizations: string[] = [];
     for (const userId of users) {
       const user = await UserQuery.getUser(conn, ctx, serviceUser, userId);
       if (Result.isErr(user)) {
         return new VError(user, "failed to get user");
       }
+
       const { organization } = user;
+
       if (!organizations.includes(organization)) {
         organizations.push(organization);
       }

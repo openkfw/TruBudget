@@ -5,7 +5,6 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import logger from "./lib/logger";
 import * as Result from "./result";
 import { Identity } from "./service/domain/organization/identity";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -112,6 +111,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const { code, body } = toHttpError(
           new VError(bodyResult, "failed to grant all global permissions"),
         );
+        request.log.error({ err: bodyResult }, "Invalid request body");
         reply.status(code).send(body);
         return;
       }
@@ -139,7 +139,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             intent,
           );
           if (Result.isErr(result)) throw new VError(result, "global.grantAllPermissions failed");
-          logger.debug({ grantee, intent }, "permission granted");
+          request.log.debug({ grantee, intent }, "permission granted");
         }
 
         const code = 200;
@@ -150,6 +150,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while granting all global permissions");
         reply.status(code).send(body);
       }
     },

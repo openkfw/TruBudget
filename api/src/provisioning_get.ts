@@ -83,6 +83,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while getting provisioning status");
         reply.status(code).send(body);
       });
   });

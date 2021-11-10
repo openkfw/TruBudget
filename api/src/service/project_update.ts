@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -16,6 +17,8 @@ export async function updateProject(
   projectId: Project.Id,
   requestData: ProjectUpdate.RequestData,
 ): Promise<Result.Type<void>> {
+  logger.debug({ req: requestData }, "Updating project");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectUpdate.updateProject(ctx, serviceUser, projectId, requestData, {
       getProject: async (pId) => {
@@ -26,9 +29,11 @@ export async function updateProject(
       },
     }),
   );
+
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, "grant project permission failed");
   }
+
   const newEvents = newEventsResult;
 
   for (const event of newEvents) {

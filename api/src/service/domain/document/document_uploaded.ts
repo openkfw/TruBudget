@@ -2,10 +2,11 @@ import Joi = require("joi");
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { GenericDocument } from "./document";
 import { config } from "../../../config";
+import logger from "lib/logger";
 
 type DocumentEventTypeType = "document_uploaded";
 const documentEventType: DocumentEventTypeType = "document_uploaded";
@@ -58,6 +59,8 @@ export function createEvent(
     fileName,
     organization,
   };
+
+  logger.trace({ event }, "Created document_uploaded event");
 
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

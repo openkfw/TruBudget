@@ -17,6 +17,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.27.0] - 2021-11-10
+
+### Added
+
+- Add an option to setup two organizations (two 2 nodes) with the operation and developer docker setup [#932](https://github.com/openkfw/TruBudget/issues/932).
+- Add Logging for Frontend: Log messages can now be displayed in backend [#1000](https://github.com/openkfw/TruBudget/pull/1000).
+
+### Changed
+
+- Require a password confirmation on user creation [#984](https://github.com/openkfw/TruBudget/issues/984).
+
 ## [1.26.0] - 2021-09-23
 
 - Optional blockchain network configuration so user can sign transactions with their own address [#943](https://github.com/openkfw/TruBudget/issues/955).
@@ -676,7 +687,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.26.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.27.0...master
+[1.27.0]: https://github.com/openkfw/TruBudget/compare/v1.26.0...v1.27.0
 [1.26.0]: https://github.com/openkfw/TruBudget/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/openkfw/TruBudget/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/openkfw/TruBudget/compare/v1.23.0...v1.24.0

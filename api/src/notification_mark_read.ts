@@ -101,6 +101,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       if (Result.isErr(bodyResult)) {
         const { code, body } = toHttpError(new VError(bodyResult, "failed to mark notification"));
+        request.log.error({ err: bodyResult }, "Invalid request body");
         reply.status(code).send(body);
         return;
       }
@@ -120,6 +121,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while marking notification as read");
         reply.status(code).send(body);
       }
     },

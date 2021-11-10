@@ -54,8 +54,7 @@ const config: Config = {
     password: process.env.SMTP_PASSWORD || "test",
   },
   email: {
-    from:
-      process.env.EMAIL_FROM || '"Trubudget Notification Service👻" <trubudget@notification.com>',
+    from: process.env.EMAIL_FROM || '"Trubudget Notification Service" <trubudget@notification.com>',
     subject: process.env.EMAIL_SUBJECT || "Trubudget Notificaiton",
     text: process.env.EMAIL_TEXT || "You have received a notification.",
   },

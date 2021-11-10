@@ -1,7 +1,7 @@
 import Joi = require("joi");
 import { isEqual } from "lodash";
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -14,6 +14,7 @@ import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectUpdated from "./project_updated";
+import logger from "lib/logger";
 
 export type RequestData = ProjectUpdated.Modification;
 export const requestDataSchema = ProjectUpdated.modificationSchema;
@@ -41,14 +42,14 @@ export async function updateProject(
     return new NotFound(ctx, "project", projectId);
   }
 
-  // Create the new event:
+  logger.trace({ issuer, data, projectId }, "Creating project_updated event");
   const projectUpdatedResult = ProjectUpdated.createEvent(ctx.source, issuer.id, projectId, data);
   if (Result.isErr(projectUpdatedResult)) {
     return new VError(projectUpdatedResult, "create update-event failed");
   }
   const projectUpdated = projectUpdatedResult;
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const intent = "project.update";
     if (!Project.permits(project, issuer, [intent])) {
@@ -56,7 +57,7 @@ export async function updateProject(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: projectUpdated }, "Checking event validity");
   const result = ProjectEventSourcing.newProjectFromEvent(ctx, project, projectUpdated);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, projectUpdated, [result]);
@@ -67,13 +68,15 @@ export async function updateProject(
     return [];
   }
 
-  // Create notification events:
+  logger.trace("Creating notification events");
   let notifications: Result.Type<NotificationCreated.Event[]> = [];
   if (project.assignee !== undefined) {
     const recipientsResult = await repository.getUsersForIdentity(project.assignee);
+
     if (Result.isErr(recipientsResult)) {
       return new VError(recipientsResult, `fetch users for ${project.assignee} failed`);
     }
+
     notifications = recipientsResult.reduce((notifications, recipient) => {
       // The issuer doesn't receive a notification:
       if (recipient !== issuer.id) {
@@ -91,6 +94,7 @@ export async function updateProject(
       }
       return notifications;
     }, [] as NotificationCreated.Event[]);
+
     if (Result.isErr(notifications)) {
       return new VError(notifications, "failed to create notification created events");
     }

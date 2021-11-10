@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -17,6 +18,8 @@ export async function assignProject(
   projectId: Project.Id,
   assignee: Identity,
 ): Promise<Result.Type<void>> {
+  logger.debug({ projectId, assignee }, "Assigning project to user");
+
   const assignProjectresult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectAssign.assignProject(ctx, serviceUser, projectId, assignee, {
       getProject: async () => {
@@ -31,6 +34,7 @@ export async function assignProject(
   if (Result.isErr(assignProjectresult)) {
     return new VError(assignProjectresult, `assign ${assignee} to project failed`);
   }
+
   const { newEvents } = assignProjectresult;
 
   for (const event of newEvents) {

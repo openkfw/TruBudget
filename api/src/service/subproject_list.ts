@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -14,6 +15,8 @@ export async function listSubprojects(
   serviceUser: ServiceUser,
   projectId: Project.Id,
 ): Promise<Result.Type<Subproject.Subproject[]>> {
+  logger.debug({ projectId }, "Listing subprojects");
+
   const visibleSubprojectsResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectList.getAllVisible(ctx, serviceUser, {
       getAllSubprojects: async () => {

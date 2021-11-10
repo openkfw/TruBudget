@@ -1,11 +1,12 @@
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocument from "../document/document";
+import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitem(): Promise<Result.Type<Workflowitem.Workflowitem>>;
@@ -24,6 +25,7 @@ export async function getWorkflowitemDetails(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
+  logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
     const intent = "workflowitem.view";
     if (!Workflowitem.permits(workflowitem, user, [intent])) {

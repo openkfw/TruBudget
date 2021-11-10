@@ -1,8 +1,10 @@
-const logger = require("./logger");
 const axios = require("axios");
 const fs = require("fs");
 const util = require("util");
 const { createJWT } = require("./createAuthToken");
+const { createPinoLogger } = require("trubudget-logging-service");
+
+const log = createPinoLogger("Notification Watcher");
 
 const getRecipientFromFile = async (path, file) => {
   try {
@@ -34,7 +36,7 @@ const sendNotifications = async (
   try {
     files = await readdir(path);
   } catch (error) {
-    return logger.error("Unable to scan directory: " + error);
+    return log.error("Unable to scan directory: " + error);
   }
 
   for (let i = 0; i < (await files.length); i++) {
@@ -44,14 +46,14 @@ const sendNotifications = async (
 
     try {
       recipient = await getRecipientFromFile(path, file);
-      logger.debug(`Recipient of file ${path}/${file}: ${recipient}`);
+      log.debug(`Recipient of file ${path}/${file}: ${recipient}`);
     } catch (error) {
-      logger.error(error);
+      log.error(error, "Error while getting recipient from file");
       continue;
     }
 
     try {
-      logger.debug(
+      log.debug(
         `Sending post request to ${proto}://${emailServiceSocketAddress}/notification.send with recipient ${recipient}`,
       );
       const config = {
@@ -70,10 +72,10 @@ const sendNotifications = async (
         config,
       );
       if (
-        response.data.notification
-        && response.data.notification.status === "sent"
+        response.data.notification &&
+        response.data.notification.status === "sent"
       ) {
-        logger.debug("Delete file " + path + "/" + file);
+        log.debug("Delete file " + path + "/" + file);
         await fs.unlinkSync(path + "/" + file);
       }
     } catch (error) {
@@ -94,15 +96,15 @@ const sendNotifications = async (
         case 404:
           // If no email address is found in the database delete the notification file
           if (error.response.data.notification.emailAddress === "Not Found") {
-            logger.debug("Delete file " + path + "/" + file);
+            log.debug("Delete file " + path + "/" + file);
             await fs.unlinkSync(path + "/" + file);
           } else {
-            logger.error(error);
+            log.error(error, "Path not found");
           }
           break;
 
         default:
-          logger.error(error);
+          log.error(error, "Other Http Error");
           break;
       }
     }
@@ -113,7 +115,7 @@ const sendNotifications = async (
 const deleteFilesOlderThan = async (time, path) => {
   fs.readdir(path, async (err, files) => {
     if (err) {
-      return logger.error("Unable to scan directory: " + err);
+      return log.error("Unable to scan directory: " + err);
     }
 
     for (let i = 0; i < files.length; i++) {
@@ -124,10 +126,10 @@ const deleteFilesOlderThan = async (time, path) => {
         const fileAgeInHours = (Date.now() - stat.mtime) / 3.6e6;
         if (fileAgeInHours >= time) {
           try {
-            logger.debug("Delete file " + filePath);
+            log.debug("Delete file " + filePath);
             await fs.unlinkSync(filePath);
           } catch (err) {
-            logger.error(err);
+            log.error({ err }, "Error while deleting file " + filePath);
           }
         }
       });
@@ -142,11 +144,9 @@ function sleep(s) {
 }
 
 const args = process.argv.slice(2);
-logger.debug(
-  `${process.argv[0]} is executed with following arguments: ${args}`,
-);
+log.debug(`${process.argv[0]} is executed with following arguments: ${args}`);
 if (args.length !== 6) {
-  logger.error("Wrong amount of arguments");
+  log.error("Wrong amount of arguments");
   return;
 }
 const [
@@ -175,9 +175,9 @@ let token = "";
       // If Bearer Token expired
       if (error.name === "ExpiredTokenException") {
         token = createJWT(secret, "notification-watcher");
-        logger.info("New JWT-Token created due to expiration.");
+        log.info("New JWT-Token created due to expiration.");
       } else {
-        logger.error(error);
+        log.error(error, "Error while creating new jwt token");
       }
     }
     await sleep(loopIntervalSeconds);

@@ -1,7 +1,7 @@
 import Joi = require("joi");
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
-
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -62,6 +62,8 @@ export function createEvent(
   project: InitialData,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating project_created event");
+
   const event = {
     type: eventType,
     source,

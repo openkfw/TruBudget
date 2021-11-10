@@ -1,5 +1,5 @@
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -7,6 +7,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import * as Subproject from "./subproject";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
+import logger from "lib/logger";
 
 interface Repository {
   getSubproject(): Promise<Result.Type<Subproject.Subproject>>;
@@ -24,6 +25,7 @@ export async function getSubproject(
     return new NotFound(ctx, "subproject", subprojectId);
   }
 
+  logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
     const intents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
     if (!Subproject.permits(subproject, user, intents)) {

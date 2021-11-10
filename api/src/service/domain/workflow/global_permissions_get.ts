@@ -1,5 +1,6 @@
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
 import { BusinessEvent } from "../business_event";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
@@ -28,7 +29,9 @@ export async function getGlobalPermissions(
 function filterPermissions(
   globalPermissions: GlobalPermissions.GlobalPermissions,
   user: ServiceUser,
-) {
+): void {
+  logger.trace("Flitering permissions for: ", user);
+
   if (user.id === "root") {
     // root always sees all permissions
     return;
@@ -48,8 +51,9 @@ function filterPermissions(
     const uservVisibleIdentities = identitiesAuthorizedFor(
       globalPermissions,
       intent as Intent,
-    ).filter(identity => canAssumeIdentity(user, identity));
+    ).filter((identity) => canAssumeIdentity(user, identity));
     userVisiblePermissions[intent] = uservVisibleIdentities;
   }
+
   globalPermissions.permissions = userVisiblePermissions;
 }

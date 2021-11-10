@@ -85,10 +85,10 @@ Pino supports several log levels (from `trace` to `fatal`). To make sure that th
 
 #### Error
 
-The call of the "error" level should always contain data of the situation as an "error" object. Example:
+The call of the "error" level should always contain data of the situation as an "err" object. Example:
 
 ```bash
-logger.error({ error: err }, "Stream not found.");
+logger.error({ err }, "Stream not found.");
 ```
 
 where `err` is the object containing information on the root cause of the error.
@@ -97,5 +97,14 @@ where `err` is the object containing information on the root cause of the error.
 
 There are two settings of the Pino logger that are set via environment variables.
 
-- Set `PRETTY_PRINT` to "false" to disable pretty printing
-- Set the log level via `LOG_LEVEL`. The possible values are: "trace", "debug", "info", "warn", "error" and "fatal".
+- Set `PRETTY_PRINT` to "true" to enable pretty printing
+- Set the log level via `LOG_LEVEL`. This will setting will be used for every service by default.
+  The possible values are: "trace", "debug", "info", "warn", "error" and "fatal".
+
+- The developer and operation startup scripts control the log level for each service specifically (see .env_example files in scripts folder). Following Variables can be modified there:
+  - Set the log level via `API_LOG_LEVEL`. Controls Log Level for API.
+  - Set the log level via `BLOCKCHAIN_LOG_LEVEL`. Controls Log Level for the Blockchain
+  - Set the log level via `EXCEL_LOG_LEVEL`. Controls Log Level for Excel Service
+  - Set the log level via `EMAIL_LOG_LEVEL`. Controls Log Level for Email Service
+  - Set the log level via `PROVISIONING_LOG_LEVEL`. Controls Log Level for Provisioning
+  - Set the log level via `STORAGE_LOG_LEVEL`. Controls Log Level for Storage Service

@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -12,6 +13,8 @@ export async function getProvisionStatus(
   ctx: Ctx,
   serviceUser: ServiceUser,
 ): Promise<Result.Type<SystemInformation.ProvisioningStatus>> {
+  logger.debug("Getting provisioning status");
+
   const provisionedResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProvisionedGet.getProvisionStatus(ctx, serviceUser, {
       getSystemInformationEvents: async () => {
@@ -19,6 +22,7 @@ export async function getProvisionStatus(
       },
     }),
   );
+
   return Result.mapErr(
     provisionedResult,
     (err) => new VError(err, "get provisioned status failed"),

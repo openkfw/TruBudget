@@ -3,7 +3,7 @@ import config from "./config";
 import logger from "./logger";
 
 const sendMail = async (emailAddresses: string | string[]) => {
-  const transporter = nodemailer.createTransport({
+  const transportOptions = {
     host: config.smtpServer.host,
     port: config.smtpServer.port,
     secure: config.smtpServer.secure,
@@ -11,7 +11,9 @@ const sendMail = async (emailAddresses: string | string[]) => {
       user: config.smtpServer.user,
       pass: config.smtpServer.password,
     },
-  });
+  };
+  logger.trace({ transportOptions }, "Sending email with transport options");
+  const transporter = nodemailer.createTransport(transportOptions);
 
   const info: SentMessageInfo = await transporter.sendMail({
     from: config.email.from,

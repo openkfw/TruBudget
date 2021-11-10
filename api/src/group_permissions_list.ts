@@ -80,13 +80,15 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       const groupId = request.query.groupId;
       if (!isNonemptyString(groupId)) {
+        const message = "required query parameter `groupId` not present (must be non-empty string)";
         reply.status(404).send({
           apiVersion: "1.0",
           error: {
             code: 404,
-            message: "required query parameter `groupId` not present (must be non-empty string)",
+            message,
           },
         });
+        request.log.error({ err: message }, "Invalid request body");
         return;
       }
 
@@ -105,6 +107,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while fetching permissions of group");
         reply.status(code).send(body);
       }
     },

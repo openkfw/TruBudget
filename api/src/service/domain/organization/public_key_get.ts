@@ -1,10 +1,11 @@
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { KeysByOrganization, sourcePublicKeys } from "./public_key_eventsourcing";
-import { Organization, PublicKeyBase64 } from "./public_key";
 import { NotFound } from "../errors/not_found";
+import { Organization, PublicKeyBase64 } from "./public_key";
+import { KeysByOrganization, sourcePublicKeys } from "./public_key_eventsourcing";
 
 interface Repository {
   getPublicKeysEvents(): Promise<Result.Type<BusinessEvent[]>>;
@@ -34,11 +35,13 @@ export async function getPublicKey(
 ): Promise<Result.Type<PublicKeyBase64>> {
   // No permission checked since every user should be able
   // to list all public keys
+  logger.trace("Fetching public key...");
 
   const keysByOrganization = await getAllPublicKeys(ctx, repository);
   if (Result.isErr(keysByOrganization)) {
     return new VError(keysByOrganization, "get all public keys failed");
   }
+
   const publicKey = keysByOrganization.get(organization);
   if (!publicKey) {
     return new VError(
@@ -56,7 +59,7 @@ export async function publicKeyAlreadyExists(
 ): Promise<Result.Type<boolean>> {
   // No permission checked since every user should be able
   // to list all public keys
-
+  logger.trace({ organization }, "Checking if public key already exists");
   const keysByOrganization = await getAllPublicKeys(ctx, repository);
   if (Result.isErr(keysByOrganization)) {
     return new VError(keysByOrganization, "get all public keys failed");

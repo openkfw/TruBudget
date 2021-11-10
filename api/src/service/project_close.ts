@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -15,6 +16,8 @@ export async function closeProject(
   serviceUser: ServiceUser,
   projectId: Project.Id,
 ): Promise<Result.Type<void>> {
+  logger.debug({ projectId }, "Closing project");
+
   const closeProjectResult = await Cache.withCache(conn, ctx, async (cache) =>
     ProjectClose.closeProject(ctx, serviceUser, projectId, {
       getProject: async () => {

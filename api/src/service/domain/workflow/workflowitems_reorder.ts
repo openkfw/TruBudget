@@ -1,7 +1,7 @@
 import isEqual = require("lodash.isequal");
 
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -13,6 +13,7 @@ import * as Subproject from "./subproject";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as WorkflowitemOrdering from "./workflowitem_ordering";
 import * as WorkflowitemsReordered from "./workflowitems_reordered";
+import logger from "lib/logger";
 
 interface Repository {
   getSubproject(
@@ -40,6 +41,10 @@ export async function setWorkflowitemOrdering(
     return [];
   }
 
+  logger.trace(
+    { issuer, projectId, subprojectId, ordering },
+    "Creating workflowitems_reordered event",
+  );
   const reorderEvent = WorkflowitemsReordered.createEvent(
     ctx.source,
     issuer.id,
@@ -51,7 +56,7 @@ export async function setWorkflowitemOrdering(
     return new VError(reorderEvent, "failed to create reorder event");
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const intent = "subproject.reorderWorkflowitems";
     if (!Subproject.permits(subproject, issuer, [intent])) {
@@ -59,7 +64,7 @@ export async function setWorkflowitemOrdering(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: reorderEvent }, "Checking event validity");
   const result = SubprojectEventSourcing.newSubprojectFromEvent(ctx, subproject, reorderEvent);
   if (Result.isErr(result)) {
     return new InvalidCommand(ctx, reorderEvent, [result]);
@@ -68,7 +73,7 @@ export async function setWorkflowitemOrdering(
   // Only emit the event if it causes any changes:
   if (isEqual(subproject.workflowitemOrdering, result.workflowitemOrdering)) {
     return [];
-  } else {
-    return [reorderEvent];
   }
+
+  return [reorderEvent];
 }

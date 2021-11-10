@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import Intent, { userIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
@@ -37,6 +37,8 @@ export function createEvent(
   revokee: Identity,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
+  logger.trace("Creating user_permission_reviked event");
+
   const event = {
     type: eventType,
     source,

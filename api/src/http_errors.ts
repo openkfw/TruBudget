@@ -25,7 +25,7 @@ function convertError(error: any): { code: number; message: string } {
     return handleError(error);
   } else {
     logger.fatal({ error }, "BUG: Caught a non-Error type");
-    console.trace();
+    logger.trace();
     return { code: 500, message: "Sorry, something went wrong :(" };
   }
 }

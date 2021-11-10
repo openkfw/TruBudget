@@ -1,3 +1,4 @@
+import "module-alias/register";
 import { AxiosRequestConfig } from "axios";
 import getValidConfig from "./config";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
@@ -852,7 +853,7 @@ ProvisioningStatusAPI.addHttpHandler(server, URL_PREFIX, {
 server.listen(port, "0.0.0.0", async (err) => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
-    console.trace();
+    logger.trace();
     process.exit(1);
   }
 
@@ -867,13 +868,18 @@ server.listen(port, "0.0.0.0", async (err) => {
 
   while (
     !(await ensureOrganizationStream(multichainClient, organization!, organizationVaultSecret!)
-      .then(() => true)
-      .catch(() => false))
+      .then((adr) => {
+        logger.debug({ adr }, "Ensured Organisation Address");
+        return true;
+      })
+      .catch((err) => {
+        logger.warn(
+          { err, multichainClient, organization },
+          `Failed to create organization stream. Trying again in ${retryIntervalMs / 1000}s`,
+        );
+        return false;
+      }))
   ) {
-    logger.info(
-      { multichainClient, organization },
-      `Failed to create organization stream. Trying again in ${retryIntervalMs / 1000}s`,
-    );
     await timeout(retryIntervalMs);
   }
   logger.debug({ multichainClient, organization }, "Organization stream present");

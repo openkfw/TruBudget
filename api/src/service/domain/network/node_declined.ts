@@ -1,6 +1,6 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 
@@ -48,6 +48,8 @@ export function createEvent(
     declinerOrganization,
     time,
   };
+  logger.trace("Creating node declinded event");
+
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${eventType} event`);

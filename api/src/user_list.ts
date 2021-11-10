@@ -115,6 +115,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       reply.status(code).send(body);
     } catch (err) {
       const { code, body } = toHttpError(err);
+      request.log.error({ err }, "Error while listing users");
       reply.status(code).send(body);
     }
   });

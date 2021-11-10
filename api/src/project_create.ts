@@ -157,6 +157,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
     if (Result.isErr(bodyResult)) {
       const { code, body } = toHttpError(new VError(bodyResult, "failed to create project"));
       reply.status(code).send(body);
+      request.log.error({ err: bodyResult }, "Invalid Request body");
       return;
     }
 
@@ -181,6 +182,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       .catch((err) => {
         const { code, body } = toHttpError(err);
         reply.status(code).send(body);
+        request.log.error(err, "Error while creating Project");
       });
   });
 }

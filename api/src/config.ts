@@ -13,8 +13,6 @@ interface ProcessEnvVars {
   RPC_PASSWORD: string;
   BACKUP_API_PORT: string;
   JWT_SECRET: string;
-  LOG_LEVEL: string;
-  PRETTY_PRINT: string;
   CI_COMMIT_SHA: string;
   BUILDTIMESTAMP: string;
   DOCUMENT_FEATURE_ENABLED: string;
@@ -42,8 +40,6 @@ interface Config {
     port: number;
   };
   jwtSecret: string;
-  logLevel: string;
-  prettyPrint: boolean;
   version: string;
   // Continues Integration
   commit: string;
@@ -82,8 +78,6 @@ export const config: Config = {
     port: Number(process.env.BACKUP_API_PORT) || 8085,
   },
   jwtSecret: process.env.JWT_SECRET || randomString(32),
-  logLevel: process.env.LOG_LEVEL || "info",
-  prettyPrint: process.env.PRETTY_PRINT === "true" ? true : false,
   version: process.env.npm_package_version || "",
   // Continues Integration
   commit: process.env.CI_COMMIT_SHA || "",

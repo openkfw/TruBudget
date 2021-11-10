@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import VError = require("verror");
 
 import { Ctx } from "../lib/ctx";
@@ -21,6 +22,8 @@ export async function getWorkflowitemHistory(
   workflowitemId: Workflowitem.Id,
   filter?: History.Filter,
 ): Promise<Result.Type<WorkflowitemTraceEvent[]>> {
+  logger.debug({ projectId, subprojectId, workflowitemId, filter }, "Getting workflowitem history");
+
   const workflowitemHistoryResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemHistory.getHistory(
       ctx,
@@ -36,6 +39,7 @@ export async function getWorkflowitemHistory(
       filter,
     ),
   );
+
   return Result.mapErr(
     workflowitemHistoryResult,
     (err) => new VError(err, `could not get history of workflowitem with id ${workflowitemId}`),

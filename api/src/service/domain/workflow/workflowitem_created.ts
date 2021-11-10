@@ -1,7 +1,7 @@
 import Joi = require("joi");
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";

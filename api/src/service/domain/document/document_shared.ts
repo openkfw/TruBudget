@@ -1,4 +1,5 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
@@ -55,6 +56,7 @@ export function createEvent(
     encryptedSecret,
   };
 
+  logger.trace({ event }, "Creating and validating secret_published event");
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${secretPublishedEventType} event`);

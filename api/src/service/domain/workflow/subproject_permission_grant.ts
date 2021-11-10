@@ -2,7 +2,7 @@ import isEqual = require("lodash.isequal");
 
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -14,6 +14,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as SubprojectPermissionGranted from "./subproject_permission_granted";
+import logger from "lib/logger";
 
 interface Repository {
   getSubproject(
@@ -37,7 +38,10 @@ export async function grantSubprojectPermission(
     return new NotFound(ctx, "subproject", subprojectId);
   }
 
-  // Create the new event:
+  logger.trace(
+    { issuer, grantee, intent, projectId, subprojectId },
+    "Creating subproject_permission_granted event",
+  );
   const permissionGranted = SubprojectPermissionGranted.createEvent(
     ctx.source,
     issuer.id,
@@ -49,7 +53,8 @@ export async function grantSubprojectPermission(
   if (Result.isErr(permissionGranted)) {
     return new VError(permissionGranted, "failed to create permission granted event");
   }
-  // Check authorization (if not root):
+
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const grantIntent = "subproject.intent.grantPermission";
     if (!Subproject.permits(subproject, issuer, [grantIntent])) {
@@ -57,7 +62,7 @@ export async function grantSubprojectPermission(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: permissionGranted }, "Checking event validity");
   const updatedSubproject = SubprojectEventSourcing.newSubprojectFromEvent(
     ctx,
     subproject,
@@ -70,7 +75,7 @@ export async function grantSubprojectPermission(
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(subproject.permissions, updatedSubproject.permissions)) {
     return [];
-  } else {
-    return [permissionGranted];
   }
+
+  return [permissionGranted];
 }

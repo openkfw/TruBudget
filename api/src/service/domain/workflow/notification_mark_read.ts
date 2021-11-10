@@ -1,5 +1,5 @@
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -10,6 +10,7 @@ import * as UserRecord from "../organization/user_record";
 import * as Notification from "./notification";
 import { sourceNotifications } from "./notification_eventsourcing";
 import * as NotificationMarkedRead from "./notification_marked_read";
+import logger from "lib/logger";
 
 interface Repository {
   getUserNotificationEvents(userId: UserRecord.Id): Promise<Result.Type<BusinessEvent[]>>;
@@ -22,8 +23,10 @@ export async function markRead(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const notificationEventsResult = await repository.getUserNotificationEvents(user.id);
+
   if (Result.isErr(notificationEventsResult))
     return new VError(notificationEventsResult, "could not get notification events");
+
   const notificationEvents = notificationEventsResult;
   const { notificationsById } = sourceNotifications(ctx, notificationEventsResult);
 
@@ -32,7 +35,7 @@ export async function markRead(
     return new NotFound(ctx, "notification", notificationId);
   }
 
-  // Create the new event:
+  logger.trace({ user, notificationId }, "Creating notification_mark_read event");
   const markedRead = NotificationMarkedRead.createEvent(
     ctx.source,
     user.id,
@@ -50,7 +53,7 @@ export async function markRead(
   // No permission checked since every user should be able
   // to mark their own notifications as read
 
-  // Check that the new event is indeed valid:
+  logger.trace({ markedRead }, "Checking if markedRead event is valid");
   const { errors } = sourceNotifications(ctx, notificationEvents.concat([markedRead]));
   if (errors.length > 0) {
     return new InvalidCommand(ctx, markedRead, errors);

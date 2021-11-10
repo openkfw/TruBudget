@@ -2,7 +2,7 @@ import isEqual = require("lodash.isequal");
 
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -13,6 +13,7 @@ import { ServiceUser } from "../organization/service_user";
 import * as UserEventSourcing from "./user_eventsourcing";
 import * as UserPermissionRevoked from "./user_permission_revoked";
 import * as UserRecord from "./user_record";
+import logger from "lib/logger";
 
 interface Repository {
   getTargetUser(userId: UserRecord.Id): Promise<Result.Type<UserRecord.UserRecord>>;
@@ -44,7 +45,7 @@ export async function revokeUserPermission(
     return new VError(permissionRevoked, "failed to create permission revoked event");
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking if user is root");
   if (issuer.id !== "root") {
     const revokeIntent = "user.intent.revokePermission";
     if (!UserRecord.permits(user, issuer, [revokeIntent])) {
@@ -52,7 +53,7 @@ export async function revokeUserPermission(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: permissionRevoked }, "Checking event validity");
   const updatedUser = UserEventSourcing.newUserFromEvent(ctx, user, permissionRevoked);
   if (Result.isErr(updatedUser)) {
     return new InvalidCommand(ctx, permissionRevoked, [updatedUser]);
@@ -61,7 +62,7 @@ export async function revokeUserPermission(
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(user.permissions, updatedUser.permissions)) {
     return [];
-  } else {
-    return [permissionRevoked];
   }
+
+  return [permissionRevoked];
 }

@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
@@ -12,6 +13,8 @@ export async function getNotificationsForUser(
   ctx: Ctx,
   user: ServiceUser,
 ): Promise<Result.Type<Notification.Notification[]>> {
+  logger.debug({ user }, "Getting notifications for user");
+
   return await Cache.withCache(conn, ctx, (cache) =>
     NotificationList.getUserNotifications(ctx, user, {
       getUserNotificationEvents: async (userId: UserRecord.Id) => {

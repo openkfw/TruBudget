@@ -1,4 +1,5 @@
 const { withRetry } = require("./lib");
+const log = require("./logger");
 
 const authenticate = async (axios, userId, password) => {
   const response = await withRetry(() =>
@@ -223,7 +224,7 @@ const findProject = async (axios, projectTemplate) =>
         projects.find((p) => p.data.displayName === projectTemplate.displayName)
       )
       .catch((err) => {
-        console.error(err);
+        log.error({ err }, "Error while fetching project list");
         process.exit(1);
       })
   );
@@ -291,7 +292,7 @@ const grantPermissions = async (
     throw Error("not even projectId is given..");
   }
 
-  console.log("... check permissions before granting");
+  log.info("... check permissions before granting");
   for (const [intent, users] of Object.entries(permissions)) {
     for (const userId of users) {
       await withRetry(() =>

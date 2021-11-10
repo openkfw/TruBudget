@@ -1,6 +1,7 @@
 import * as Minio from "minio";
 import { v4 } from "uuid";
 import config from "./config";
+import { log } from "./index";
 
 const Readable = require("stream").Readable;
 
@@ -40,17 +41,17 @@ const bucketName: string = config.storage.bucketName;
 const makeBucket = (bucket: string, cb: Function) => {
   minioClient.bucketExists(bucket, (err: any, exists: any) => {
     if (err) {
-      console.error("Error during searching for bucket", err);
+      log.error({ err }, "Error during searching for bucket");
       return cb(err);
     }
 
     if (!exists) {
       minioClient.makeBucket(bucket, "us-east-1", (err) => {
         if (err) {
-          console.error("Error creating bucket.", err);
+          log.error({ err }, "Error creating bucket.");
           return cb(err);
         }
-        console.log(`Minio: Bucket ${bucket} created.`);
+        log.info(`Minio: Bucket ${bucket} created.`);
         return cb(null, true);
       });
     }
@@ -88,7 +89,7 @@ const upload = (
     metaDataWithName,
     (err: any, etag: any) => {
       if (err) {
-        console.error("minioClient.putObject", err);
+        log.error({ err }, "minioClient.putObject");
         return cb(err);
       }
 
@@ -123,9 +124,10 @@ const download = (file: string, cb: Function) => {
   let fileContent: string = "";
   minioClient.getObject(bucketName, file, (err, dataStream) => {
     if (err || !dataStream) {
-      console.error("Error during getting file object", err);
+      log.error({ err }, "Error during getting file object");
       cb(err);
     } else {
+      log.trace("Fetching data from stream");
       dataStream.on("data", (chunk: string) => {
         fileContent += chunk;
       });
@@ -135,7 +137,7 @@ const download = (file: string, cb: Function) => {
         cb(null, { data: fileContent, meta });
       });
       dataStream.on("error", function (err) {
-        console.error("Error during getting file object datastream", err);
+        log.error({ err }, "Error during getting file object datastream");
       });
     }
   });
@@ -154,7 +156,7 @@ export const downloadAsPromised = (file: string): Promise<FileWithMeta> => {
 const getMetadata = (fileHash: string, cb: Function) => {
   minioClient.statObject(bucketName, fileHash, (err, stat: FullStat) => {
     if (err) {
-      console.error(err);
+      log.error({ err }, "Error while getting Metadata");
       return cb(err);
     }
     cb(null, stat.metaData);
@@ -175,7 +177,7 @@ export const getMetadataAsPromised = (
 
 export const getReadiness = async () => {
   minioClient.listBuckets(function (err, buckets) {
-    if (err) return console.log(err);
+    if (err) return log.error(err);
   });
 };
 
@@ -191,15 +193,16 @@ export const establishConnection = async () => {
     try {
       await makeBucketAsPromised(bucketName);
 
-      console.log("Connection with min.io established.");
+      log.info("Connection with min.io established.");
       break;
-    } catch (e) {
-      console.error(
+    } catch (err) {
+      log.error(
+        { err },
         "Problem with establishing connection to min.io and creating bucket.",
       );
 
       if (i === retries) {
-        console.error("Unable to connect with min.io. EXITING!");
+        log.error("Unable to connect with min.io. EXITING!");
         process.exit(1);
       }
       await sleep(20000);

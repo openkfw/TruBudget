@@ -2,7 +2,7 @@ import isEqual = require("lodash.isequal");
 
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -16,6 +16,7 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoked";
+import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitem(
@@ -41,7 +42,10 @@ export async function revokeWorkflowitemPermission(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  // Create the new event:
+  logger.trace(
+    { issuer, revokee, intent, projectId, subprojectId, workflowitemId },
+    "Creating workflowitem_permission_revoked event",
+  );
   const permissionRevoked = WorkflowitemPermissionRevoked.createEvent(
     ctx.source,
     issuer.id,
@@ -55,7 +59,7 @@ export async function revokeWorkflowitemPermission(
     return new VError(permissionRevoked, "failed to create permission revoked event");
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking user authorization");
   if (issuer.id !== "root") {
     const revokeIntent = "workflowitem.intent.revokePermission";
     if (!Workflowitem.permits(workflowitem, issuer, [revokeIntent])) {
@@ -68,7 +72,7 @@ export async function revokeWorkflowitemPermission(
     }
   }
 
-  // Check that the new event is indeed valid:
+  logger.trace({ event: permissionRevoked }, "Checking event validity");
   const updatedWorkflowitem = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
     ctx,
     workflowitem,
@@ -78,13 +82,9 @@ export async function revokeWorkflowitemPermission(
     return new InvalidCommand(ctx, permissionRevoked, [updatedWorkflowitem]);
   }
 
-  // Prevent revoking grant permission of last user
+  logger.trace("Prevent revoke grant permission on last user");
   const intents: Intent[] = ["workflowitem.intent.grantPermission"];
-  if (
-    intent &&
-    intents.includes(intent) &&
-    workflowitem?.permissions[intent]?.length === 1
-  ) {
+  if (intent && intents.includes(intent) && workflowitem?.permissions[intent]?.length === 1) {
     return new PreconditionError(
       ctx,
       permissionRevoked,
@@ -95,7 +95,7 @@ export async function revokeWorkflowitemPermission(
   // Only emit the event if it causes any changes to the permissions:
   if (isEqual(workflowitem.permissions, updatedWorkflowitem.permissions)) {
     return [];
-  } else {
-    return [permissionRevoked];
   }
+
+  return [permissionRevoked];
 }

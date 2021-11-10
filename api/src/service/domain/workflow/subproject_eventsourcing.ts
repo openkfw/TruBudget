@@ -1,7 +1,7 @@
 import { VError } from "verror";
 
-import { Ctx } from "../../../lib/ctx";
-import deepcopy from "../../../lib/deepcopy";
+import { Ctx } from "lib/ctx";
+import deepcopy from "lib/deepcopy";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -16,6 +16,7 @@ import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 import * as SubprojectUpdated from "./subproject_updated";
 import * as WorkflowitemsReordered from "./workflowitems_reordered";
+import logger from "lib/logger";
 
 export function sourceSubprojects(
   ctx: Ctx,
@@ -29,6 +30,7 @@ export function sourceSubprojects(
   const errors: Error[] = [];
 
   for (const event of events) {
+    logger.trace({ event }, "Validating subproject Event by applying it");
     if (!event.type.startsWith("subproject_") && event.type !== "workflowitems_reordered") {
       continue;
     }

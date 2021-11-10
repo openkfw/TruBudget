@@ -2,7 +2,7 @@ import Joi = require("joi");
 import { VError } from "verror";
 import isEqual = require("lodash.isequal");
 import Intent from "../../../authz/intents";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -15,6 +15,7 @@ import * as UserRecord from "./user_record";
 import * as GlobalPermissions from "../workflow/global_permissions";
 import * as UserAssignments from "../workflow/user_assignments";
 import * as UserAssignmentsGet from "../workflow/user_assignments_get";
+import logger from "lib/logger";
 
 export interface RequestData {
   userId: string;
@@ -82,7 +83,7 @@ export async function disableUser(
     });
   }
 
-  // Check authorization (if not root):
+  logger.trace({ issuer }, "Checking if user is root");
   if (issuer.id !== "root") {
     const isAuthorized = GlobalPermissions.permits(globalPermissions, issuer, [intent]);
     if (!isAuthorized) {

@@ -1,4 +1,5 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -24,11 +25,13 @@ export async function getProjectPermissions(
 
   const project: Project.Project = projectResult;
 
+  logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
     const intent = "project.intent.listPermissions";
     if (!Project.permits(project, user, [intent])) {
       return new NotAuthorized({ ctx, userId: user.id, intent, target: project });
     }
   }
+
   return project.permissions;
 }

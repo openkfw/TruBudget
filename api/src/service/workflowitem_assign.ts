@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -23,6 +24,11 @@ export async function assignWorkflowitem(
   workflowitemId: Workflowitem.Id,
   assignee: Identity,
 ): Promise<Result.Type<void>> {
+  logger.debug(
+    { assignee, projectId, subprojectId, workflowitemId },
+    "Assigning workflowitem to user",
+  );
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) => {
     return WorkflowitemAssign.assignWorkflowitem(
       ctx,

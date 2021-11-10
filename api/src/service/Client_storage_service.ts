@@ -10,6 +10,7 @@ import {
 } from "./Client_storage_service.h";
 import { config } from "../config";
 import { encrypt, decrypt } from "../lib/symmetricCrypto";
+import logger from "lib/logger";
 
 interface UploadRequest {
   fileName: string;
@@ -22,6 +23,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
   private timeStamp: number = 0;
 
   constructor(settings: AxiosRequestConfig) {
+    logger.debug("Setting up StorageServiceClient");
     this.axiosInstance = axios.create(settings);
     this.axiosInstance.interceptors.request.use((request) => {
       if (request.url?.includes("/version")) {
@@ -67,6 +69,8 @@ export default class StorageServiceClient implements StorageServiceClientI {
     name: string,
     data: string,
   ): Promise<Result.Type<UploadResponse>> {
+    logger.debug(`Uploading Object "${name}"`);
+
     let requestData: UploadRequest = {
       fileName: name,
       content: data,
@@ -84,6 +88,8 @@ export default class StorageServiceClient implements StorageServiceClientI {
   }
 
   public async downloadObject(id: string, secret: string): Promise<Result.Type<StorageObject>> {
+    logger.debug(`Downloading Object with id: "${id}"`);
+
     const url = `/download?docId=${id}`;
     const axiosConfig = {
       headers: {
@@ -102,6 +108,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
     };
 
     if (config.encryptionPassword) {
+      logger.debug("Decrypting file with encryptionPassword");
       const fileName = decrypt(config.encryptionPassword, documentObject.fileName);
       const base64 = decrypt(config.encryptionPassword, documentObject.base64);
       if (Result.isErr(fileName)) {

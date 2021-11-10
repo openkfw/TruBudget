@@ -11,6 +11,7 @@ import {
 } from "./api";
 import { amountTypesMapping, statusMapping, workflowItemTypeMapping } from "./helper";
 import strings from "./localizeStrings";
+import logger from "./logger";
 
 var Excel = require("exceljs");
 
@@ -18,12 +19,8 @@ const smallWidth = 20;
 const mediumWidth = 40;
 const largeWidth = 60;
 
-export async function writeXLSX(
-  axios: AxiosInstance,
-  token: string,
-  res: Response,
-  base: string,
-): Promise<void> {
+export async function writeXLSX(axios: AxiosInstance, token: string, res: Response): Promise<void> {
+  logger.debug("Creating excel sheet");
   try {
     const options = {
       stream: res,
@@ -35,7 +32,7 @@ export async function writeXLSX(
     workbook.creator = userId ? userId : "Unknown TruBudget User";
     workbook.created = new Date();
 
-    // Prepare sheets
+    logger.trace("Preparing excel sheets");
     const projectSheet = workbook.addWorksheet(strings.project.title);
     const subprojectSheet = workbook.addWorksheet(strings.subproject.title);
     const workflowitemSheet = workbook.addWorksheet(strings.workflowitem.title);
@@ -126,10 +123,12 @@ export async function writeXLSX(
       { header: strings.common.currency, key: "currencyCode", width: smallWidth },
       { header: strings.common.amount, key: "value", width: mediumWidth },
     ];
-
+    const base = res.apiBase;
     const projects: Project[] = await getProjects(axios, token, base);
+    logger.trace("Adding projects to sheet... ");
 
     for (const project of projects) {
+      logger.trace({ project }, "Adding row for project");
       projectSheet
         .addRow({
           ...project,
@@ -148,9 +147,12 @@ export async function writeXLSX(
           })
           .commit();
       });
+      logger.trace("Adding subprojects to sheet... ");
 
       const subprojects: Subproject[] = await getSubprojects(axios, project.id, token, base);
       for (const subproject of subprojects) {
+        logger.trace({ subproject }, "adding row for subproject");
+
         subprojectSheet
           .addRow({
             ...subproject,
@@ -174,6 +176,7 @@ export async function writeXLSX(
             })
             .commit();
         });
+        logger.trace("Adding workflowitems to sheet... ");
 
         const workflowitems: Workflowitem[] = await getWorkflowitems(
           axios,
@@ -183,6 +186,7 @@ export async function writeXLSX(
           base,
         );
         for (const workflowitem of workflowitems) {
+          logger.trace({ workflowitem }, "Creating row for workflowitem");
           workflowitemSheet
             .addRow({
               ...workflowitem,
@@ -219,9 +223,10 @@ export async function writeXLSX(
         }
       }
     }
+    logger.trace("Saving sheet... ");
     await workbook.commit();
-  } catch (error) {
-    console.error(error.message);
-    throw new Error(`Error making request to TruBudget: ${error.message}`);
+  } catch (err) {
+    logger.error({ err }, "Error making request to TruBudget:");
+    throw new Error(`Error making request to TruBudget: ${err.message}`);
   }
 }

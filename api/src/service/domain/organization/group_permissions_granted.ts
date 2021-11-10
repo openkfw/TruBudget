@@ -1,4 +1,5 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
 
 import Intent, { groupIntents } from "../../../authz/intents";
@@ -21,12 +22,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   groupId: Group.idSchema.required(),
   permission: Joi.valid(groupIntents).required(),
@@ -50,10 +47,13 @@ export function createEvent(
     permission,
     grantee,
   };
+
+  logger.trace({ event }, "Checking validity of event");
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${eventType} event`);
   }
+
   return event;
 }
 

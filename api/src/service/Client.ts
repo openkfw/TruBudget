@@ -67,7 +67,7 @@ export class RpcMultichainClient implements MultichainClient {
           );
           return options.name;
         }
-        logger.error({ error: err }, "Stream could not be created.");
+        logger.error({ err }, "Stream could not be created.");
         throw err;
       });
 
@@ -202,6 +202,7 @@ export class RpcMultichainClient implements MultichainClient {
   }
 
   public async getValue(streamName: StreamName, key: string): Promise<StreamItemPair> {
+    logger.trace(`Getting Value "${key}" from stream "${streamName}"`);
     const result = await this.getValues(streamName, key, 1);
     if (result.length !== 1) {
       const message = `Expected a single value, got: ${result || "nothing"}`;
@@ -223,6 +224,8 @@ export class RpcMultichainClient implements MultichainClient {
     key: string,
     updateCallback: (_: Resource) => Resource,
   ): Promise<void> {
+    logger.trace(`Updating Value "${key}" from stream "${streamName}"`);
+
     while (this.hasWriteLock) {
       await sleep(1);
     }

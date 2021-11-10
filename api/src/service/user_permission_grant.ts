@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
@@ -20,6 +21,8 @@ export async function grantUserPermission(
   grantee: Identity,
   intent: Intent,
 ): Promise<Result.Type<void>> {
+  logger.debug({ grantee, intent, userId }, "Granting user permission");
+
   const newEventsResult = await UserPermissionGrant.grantUserPermission(
     ctx,
     serviceUser,

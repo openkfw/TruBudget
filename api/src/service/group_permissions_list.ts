@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
@@ -15,6 +16,8 @@ export async function getGroupPermissions(
   serviceUser: ServiceUser,
   groupId: Group.Id,
 ): Promise<Result.Type<Permissions>> {
+  logger.debug({ groupId }, "Get group permissions");
+
   const groupResult = await Cache.withCache(conn, ctx, async (cache) =>
     GroupGet.getOneGroup(ctx, serviceUser, groupId, {
       getGroupEvents: async () => cache.getGroupEvents(groupId),

@@ -1,4 +1,4 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -7,6 +7,7 @@ import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded"
 import * as DocumentShared from "./document_shared";
 import { UploadedDocument } from "./document";
 import { applyStorageServiceUrls as applyStorageServiceUrl } from "./storage_service_url_eventsourcing";
+import logger from "lib/logger";
 
 export function sourceDocuments(
   ctx: Ctx,
@@ -19,12 +20,15 @@ export function sourceDocuments(
   for (const event of events) {
     apply(ctx, documents, urls, event, errors);
   }
+
   for (const doc of documents) {
     const url = urls.get(doc.organization);
+
     if (url) {
       doc.organizationUrl = url;
     }
   }
+
   return { documents, errors };
 }
 
@@ -35,6 +39,7 @@ function apply(
   event: BusinessEvent,
   errors: EventSourcingError[],
 ) {
+  logger.trace({ event }, "Applying document event");
   if (event.type === "document_uploaded") {
     newDocumentFromEvent(ctx, documents, event, errors);
   } else if (event.type === "storage_service_url_published") {
@@ -60,6 +65,7 @@ function newDocumentFromEvent(
     errors.push(new EventSourcingError({ ctx, event }, result));
     return;
   }
+
   documents.push(result);
 }
 
@@ -78,6 +84,7 @@ export function sourceOffchainDocuments(
 
   return { documents, errors };
 }
+
 function newOffchainDocumentFromEvent(
   ctx: Ctx,
   documents: UploadedDocument[],
@@ -101,6 +108,8 @@ export function sourceSecrets(
   const errors: EventSourcingError[] = [];
 
   for (const event of events) {
+    logger.trace({ event }, "Creating new secret from event");
+
     if (event.type === "secret_published") {
       newSecretFromEvent(ctx, secrets, event, errors);
     }

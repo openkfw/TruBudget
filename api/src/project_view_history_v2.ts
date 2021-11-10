@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyReply, RequestGenericInterface } from "fastify";
+import { FastifyInstance, FastifyReply, RequestGenericInterface, FastifyRequest } from "fastify";
 import Joi = require("joi");
 import VError = require("verror");
 
@@ -32,25 +32,24 @@ function validateRequestBody(body: any): Result.Type<ProjectTraceEvent[]> {
 /**
  * If no filter option is provided the return value is undefined
  */
-const createFilter = (
-  reply: FastifyReply,
-  publisher?: Identity,
-  startAt?: string,
-  endAt?: string,
-  eventType?: string,
-): History.Filter | undefined => {
+const createFilter = (reply: FastifyReply, request: FastifyRequest): History.Filter | undefined => {
+  const { publisher, startAt, endAt, eventType } = request.query as Querystring;
   const noFilterSet = !publisher && !startAt && !endAt && !eventType;
+
   if (noFilterSet) return;
 
   if (publisher !== undefined) {
     if (!isNonemptyString(publisher)) {
+      const message = "if present, the query parameter `publisher` must be non-empty string";
+
       reply.status(400).send({
         apiVersion: "1.0",
         error: {
           code: 400,
-          message: "if present, the query parameter `publisher` must be non-empty string",
+          message,
         },
       });
+      request.log.error({ err: message }, "Invalid request body");
     }
   }
 
@@ -58,40 +57,50 @@ const createFilter = (
   if (startAt !== undefined) {
     const startAtDate = new Date(startAt);
     if (isNaN(startAtDate.getTime())) {
+      const message = "if present, the query parameter `startAt` must be a valid ISO timestamp";
+
       reply.status(400).send({
         apiVersion: "1.0",
         error: {
           code: 400,
-          message: "if present, the query parameter `startAt` must be a valid ISO timestamp",
+          message,
         },
       });
+      request.log.error({ err: message }, "Invalid request body");
     }
   }
 
   if (endAt !== undefined) {
     const endAtDate = new Date(endAt);
     if (isNaN(endAtDate.getTime())) {
+      const message = "if present, the query parameter `endAt` must be a valid ISO timestamp";
+
       reply.status(400).send({
         apiVersion: "1.0",
         error: {
           code: 400,
-          message: "if present, the query parameter `endAt` must be a valid ISO timestamp",
+          message,
         },
       });
+      request.log.error({ err: message }, "Invalid request body");
     }
   }
 
   if (eventType !== undefined) {
     if (!isNonemptyString(eventType)) {
+      const message = "if present, the query parameter `eventType` must be non-empty string";
+
       reply.status(400).send({
         apiVersion: "1.0",
         error: {
           code: 400,
-          message: "if present, the query parameter `eventType` must be non-empty string",
+          message,
         },
       });
+      request.log.error({ err: message }, "Invalid request body");
     }
   }
+
   return {
     publisher,
     startAt,
@@ -242,28 +251,36 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
       const projectId = request.query.projectId;
       if (!isNonemptyString(projectId)) {
+        const message =
+          "required query parameter `projectId` not present (must be non-empty string)";
+
         reply.status(404).send({
           apiVersion: "1.0",
           error: {
             code: 404,
-            message: "required query parameter `projectId` not present (must be non-empty string)",
+            message,
           },
         });
+
+        request.log.error({ err: message }, "Invalid request body");
         return;
       }
 
       // Default: last created history event
       let offset: number = 0;
       if (request.query.offset !== undefined) {
+        const message = "if present, the query parameter `offset` must be an integer";
         offset = parseInt(request.query.offset, 10);
         if (isNaN(offset)) {
           reply.status(400).send({
             apiVersion: "1.0",
             error: {
               code: 400,
-              message: "if present, the query parameter `offset` must be an integer",
+              message,
             },
           });
+
+          request.log.error({ err: message }, "Invalid request body");
           return;
         }
       }
@@ -273,24 +290,21 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       if (request.query.limit !== undefined) {
         limit = parseInt(request.query.limit, 10);
         if (isNaN(limit) || limit <= 0) {
+          const message = "if present, the query parameter `limit` must be a positive integer";
           reply.status(400).send({
             apiVersion: "1.0",
             error: {
               code: 400,
-              message: "if present, the query parameter `limit` must be a positive integer",
+              message,
             },
           });
+
+          request.log.error({ err: message }, "Invalid request body");
           return;
         }
       }
 
-      const filter = createFilter(
-        reply,
-        request.query.publisher,
-        request.query.startAt,
-        request.query.endAt,
-        request.query.eventType,
-      );
+      const filter = createFilter(reply, request);
 
       try {
         // Get all Events in project stream
@@ -322,6 +336,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         reply.status(code).send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while viewing project history");
         reply.status(code).send(body);
       }
     },

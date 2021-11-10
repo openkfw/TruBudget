@@ -12,7 +12,6 @@ import * as SecretGet from "./domain/document/secret_get";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as PublicKeyGet from "./public_key_get";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
 
 export async function documentShare(
   conn: ConnToken,

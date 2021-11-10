@@ -1,10 +1,11 @@
 import { VError } from "verror";
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { sourceSecrets } from "./document_eventsourcing";
 import * as DocumentShared from "./document_shared";
 import { NotFound } from "../errors/not_found";
+import logger from "lib/logger";
 
 interface Repository {
   getSecretPublishedEvents(): Promise<Result.Type<BusinessEvent[]>>;
@@ -14,6 +15,7 @@ export async function getAllSecrets(
   ctx: Ctx,
   repository: Repository,
 ): Promise<Result.Type<DocumentShared.SecretPublished[]>> {
+  logger.trace("Getting all secrets");
   const secretEvents = await repository.getSecretPublishedEvents();
   if (Result.isErr(secretEvents)) {
     return new VError(secretEvents, "fetch secrets_published events failed");

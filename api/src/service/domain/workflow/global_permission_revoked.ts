@@ -1,4 +1,5 @@
 import Joi = require("joi");
+import logger from "lib/logger";
 import { VError } from "verror";
 
 import Intent, { globalIntents } from "../../../authz/intents";
@@ -19,12 +20,8 @@ export interface Event {
 
 export const schema = Joi.object({
   type: Joi.valid(eventType).required(),
-  source: Joi.string()
-    .allow("")
-    .required(),
-  time: Joi.date()
-    .iso()
-    .required(),
+  source: Joi.string().allow("").required(),
+  time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   permission: Joi.valid(globalIntents).required(),
   revokee: Joi.string().required(),
@@ -36,7 +33,8 @@ export function createEvent(
   permission: Intent,
   revokee: Identity,
   time: string = new Date().toISOString(),
-): Result.Type<Event>  {
+): Result.Type<Event> {
+  logger.trace({ revokee, permission, publisher }, "Creating event from request");
   const event = {
     type: eventType,
     source,
@@ -45,7 +43,9 @@ export function createEvent(
     permission,
     revokee,
   };
+
   const validationResult = validate(event);
+
   if (Result.isErr(validationResult)) {
     return new VError(validationResult, `not a valid ${eventType} event`);
   }

@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -20,6 +21,8 @@ export async function updatePublicKey(
   serviceUser: ServiceUser,
   requestData: PublicKeyUpdate.RequestData,
 ): Promise<Result.Type<PublicKey>> {
+  logger.debug({ req: requestData }, "Updating public key");
+
   const publicKeyUpdateResult = await Cache.withCache(conn, ctx, async (cache) =>
     PublicKeyUpdate.updatePublicKey(ctx, serviceUser, requestData, {
       getPublicKey: async (organization) =>

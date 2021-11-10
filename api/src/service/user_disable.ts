@@ -9,6 +9,7 @@ import { getUserAssignments } from "./user_assignments_get";
 import { store } from "./store";
 import * as UserQuery from "./user_query";
 import { VError } from "verror";
+import logger from "lib/logger";
 
 export async function disableUser(
   conn: ConnToken,
@@ -17,6 +18,8 @@ export async function disableUser(
   issuerOrganization: string,
   revokee: UserDisable.RequestData,
 ): Promise<Result.Type<void>> {
+  logger.debug({ revokee }, "Disabling user");
+
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
     UserDisable.disableUser(ctx, serviceUser, issuerOrganization, revokee, {
       getUser: () => UserQuery.getUser(conn, ctx, serviceUser, revokee.userId),
@@ -25,6 +28,7 @@ export async function disableUser(
         getUserAssignments(conn, ctx, serviceUser, issuerOrganization, revokee),
     }),
   );
+
   if (Result.isErr(newEventsResult)) return new VError(newEventsResult, "failed to disable user");
   const newEvents = newEventsResult;
   for (const event of newEvents) {

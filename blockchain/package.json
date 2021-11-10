@@ -1,6 +1,6 @@
 {
   "name": "trubudget-blockchain",
-  "version": "1.26.0",
+  "version": "1.27.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -44,26 +44,24 @@
     "js-yaml": "^3.13.1",
     "jsonwebtoken": "^8.5.1",
     "md5-file": "^4.0.0",
-    "pino": "^5.17.0",
-    "pino-pretty": "^3.6.0",
     "sha256-file": "^1.0.0",
-    "shelljs": "^0.8.2",
+    "shelljs": "^0.8.4",
     "sinon": "^7.2.2",
     "streamifier": "^0.1.1",
-    "tar-fs": "^2.1.0"
+    "tar-fs": "^2.1.0",
+    "trubudget-logging-service": "^1.1.3"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "coveralls": "^3.0.3",
-    "eslint": "^6.8.0",
+    "eslint": "^7.12.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^6.4.0",
     "eslint-plugin-import": "^2.22.1",
     "jshint": "^2.9.7",
-    "mocha": "^7.1.2",
-    "mocha-lcov-reporter": "^1.3.0",
+    "mocha": "^9.1.3",
     "nodemon": "^2.0.7",
-    "nyc": "^14.1.0",
+    "nyc": "^15.1.0",
     "prettier": "1.19.1"
   }
 }

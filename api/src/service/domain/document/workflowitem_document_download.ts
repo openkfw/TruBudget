@@ -1,15 +1,16 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { config } from "../../../config";
 import * as Result from "../../../result";
+import * as DocumentUploaded from "../document/document_uploaded";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
+import { UploadedDocument } from "./document";
 import * as DocumentShared from "./document_shared";
-import { config } from "../../../config";
-import * as DocumentUploaded from "../document/document_uploaded";
 
 import VError = require("verror");
-import { UploadedDocument } from "./document";
 
 type Base64String = string;
 interface DocumentStorageServiceResponse {
@@ -40,6 +41,8 @@ async function getDocumentFromInternalOrExternalStorage(
   workflowitem,
 ): Promise<Result.Type<DocumentStorageServiceResponse>> {
   // Get all events from one document
+  logger.trace("Fetching document: ", documentId, " from internal *or* external storage ...");
+
   const documentInfo = await repository.getDocumentInfo(documentId);
 
   if (!documentInfo || Result.isErr(documentInfo)) {
@@ -50,6 +53,7 @@ async function getDocumentFromInternalOrExternalStorage(
   }
 
   //get secret from stream
+  logger.trace("Fetching secret from stream for document: ", documentId);
   const encryptedSecret = await repository.getSecret(documentId, config.organization);
   if (!encryptedSecret || Result.isErr(encryptedSecret)) {
     return new VError(
@@ -59,6 +63,8 @@ async function getDocumentFromInternalOrExternalStorage(
   }
 
   // decrypt secret with own private key
+  logger.trace("Decrypting document: ", documentId);
+
   const privateKeyBase64Result = await repository.getPrivateKey(config.organization);
   if (Result.isErr(privateKeyBase64Result)) {
     return new VError(privateKeyBase64Result, "cannot get private key");
@@ -103,6 +109,8 @@ export async function getDocument(
   documentId: string,
   repository: Repository,
 ): Promise<Result.Type<any>> {
+  logger.trace("Fetching document: ", documentId, "...");
+
   // check for permissions etc
   const workflowitem = await repository.getWorkflowitem(workflowitemId);
   if (Result.isErr(workflowitem)) {
@@ -121,6 +129,8 @@ export async function getDocument(
       `workfowitem ${workflowitem.displayName} has no link to document`,
     );
   }
+  logger.trace("Trying to find document: ", documentId, "offchain ...");
+
   // Try to get event from offchain storage
   const offchainDocument = await repository.getOffchainDocument(documentId);
   if (Result.isErr(offchainDocument)) {
@@ -131,6 +141,8 @@ export async function getDocument(
   }
 
   if (!offchainDocument) {
+    logger.trace("Trying to find document: ", documentId, "via storage service ...");
+
     // Try to get document from storage service
     const documentFromStorage = await getDocumentFromInternalOrExternalStorage(
       ctx,

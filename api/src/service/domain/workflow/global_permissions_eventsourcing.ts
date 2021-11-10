@@ -1,4 +1,4 @@
-import { Ctx } from "../../../lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -6,6 +6,7 @@ import * as GlobalPermissionGranted from "./global_permission_granted";
 import * as GlobalPermissionRevoked from "./global_permission_revoked";
 import * as GlobalPermissions from "./global_permissions";
 import { GlobalPermissionsTraceEvent } from "./global_permissions_trace_event";
+import logger from "lib/logger";
 
 export function sourceGlobalPermissions(
   ctx: Ctx,
@@ -39,10 +40,13 @@ function applyGrantPermission(
   permissionGranted: GlobalPermissionGranted.Event,
   errors: EventSourcingError[],
 ) {
+  logger.trace({ event: permissionGranted }, "Applying grant permission event");
+
   const eligibleIdentities = globalPerms.permissions[permissionGranted.permission] || [];
   if (!eligibleIdentities.includes(permissionGranted.grantee)) {
     eligibleIdentities.push(permissionGranted.grantee);
   }
+
   globalPerms.permissions[permissionGranted.permission] = eligibleIdentities;
 
   const result = GlobalPermissions.validate(globalPerms);
@@ -65,8 +69,7 @@ function applyRevokePermission(
   permissionRevoked: GlobalPermissionRevoked.Event,
   errors: EventSourcingError[],
 ) {
-  const permissionsObject = globalPerms.permissions;
-
+  logger.trace({ event: permissionRevoked }, "Applying permission revoked event");
   const eligibleIdentities = globalPerms.permissions[permissionRevoked.permission];
   if (eligibleIdentities !== undefined) {
     const foundIndex = eligibleIdentities.indexOf(permissionRevoked.revokee);

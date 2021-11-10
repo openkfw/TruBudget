@@ -104,6 +104,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const { code, body } = toHttpError(
         new VError(bodyResult, "failed to change user's password"),
       );
+      request.log.error({ err: bodyResult }, "Invalid request body");
       reply.status(code).send(body);
       return;
     }
@@ -129,6 +130,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while chaning user password");
         reply.status(code).send(body);
       });
   });

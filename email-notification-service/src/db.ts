@@ -1,4 +1,4 @@
-import knex from "knex";
+import { Knex, knex } from "knex";
 import config from "./config";
 import logger from "./logger";
 
@@ -7,12 +7,12 @@ interface EmailAddress {
 }
 
 class DbConnector {
-  private pool: knex;
+  private pool: Knex;
   private idTableName = "id";
   private emailAddressTableName = "email_address";
 
   public executeQuery = async (
-    query: knex.QueryBuilder,
+    query: Knex.QueryBuilder,
     errorMessage = "Failed to execute database operation\n",
   ) => {
     try {
@@ -22,11 +22,13 @@ class DbConnector {
     }
   };
 
-  public getDb = async (): Promise<knex> => {
+  public getDb = async (): Promise<Knex> => {
     if (!this.pool) {
+      logger.trace("Initializing DB connection(s) ...");
       this.pool = this.initializeConnection();
     }
     if (!(await this.pool.schema.hasTable(config.userTable))) {
+      logger.trace("No tables found - creating them now!");
       await this.createTable();
     }
     return this.pool;
@@ -35,15 +37,18 @@ class DbConnector {
   public disconnect = async () => {
     if (this.pool) {
       await this.pool.destroy();
+      logger.trace("Disconnected form DB");
     }
   };
 
   public healthCheck = async (): Promise<void> => {
+    logger.debug("Starting health check");
     const client = await this.getDb();
     const tablesToCheck: string[] = [config.userTable];
-    const tablePromises: Promise<string[]> = Promise.all(
+    const tablePromises: Promise<Knex.QueryBuilder[]> = Promise.all(
       tablesToCheck.map((table) => {
-        const query: knex.QueryBuilder<any, any> = client.select().from(table).whereRaw("1=0");
+        logger.trace({ table }, "Checking table");
+        const query: Knex.QueryBuilder = client.select().from(table).whereRaw("1=0");
         return this.executeQuery(query, `The table ${table} does not exist.`);
       }),
     );
@@ -100,6 +105,7 @@ class DbConnector {
   };
 
   public getAllEmails = async (): Promise<string[]> => {
+    logger.trace("Getting all emails");
     const client = await this.getDb();
     return (await client(config.userTable).select(this.emailAddressTableName)).reduce(
       (emailAddresses: string[], emailAddress: EmailAddress) => {
@@ -113,6 +119,7 @@ class DbConnector {
   public getEmailAddress = async (id: string): Promise<string> => {
     try {
       const client = await this.getDb();
+      logger.trace({ id }, "Getting email address from user by id");
       const emailAddresses: EmailAddress[] = await client(config.userTable)
         .select(this.emailAddressTableName)
         .where({ [`${this.idTableName}`]: `${id}` });
@@ -126,10 +133,10 @@ class DbConnector {
     return "";
   };
 
-  private initializeConnection = (): knex => {
+  private initializeConnection = (): Knex => {
     logger.info("Initialize database connection");
     logger.info(config);
-    const knexConfig: knex.Config = {
+    const knexConfig: Knex.Config = {
       client: config.dbType,
       debug: config.sqlDebug,
       connection: config.db,
@@ -141,6 +148,7 @@ class DbConnector {
   };
 
   private createTable = async (): Promise<void> => {
+    logger.debug("Creating user table");
     await this.pool.schema.createTable(config.userTable, (table) => {
       table.string(this.idTableName).notNullable().unique();
       table.string(this.emailAddressTableName).notNullable();

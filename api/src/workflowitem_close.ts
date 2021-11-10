@@ -112,6 +112,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
 
     if (Result.isErr(bodyResult)) {
       const { code, body } = toHttpError(new VError(bodyResult, "failed to close worfklowitem"));
+      request.log.error({ err: bodyResult }, "Invalid request body");
       reply.status(code).send(body);
       return;
     }
@@ -133,6 +134,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       })
       .catch((err) => {
         const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while closing workflowitem");
         reply.status(code).send(body);
       });
   });

@@ -146,18 +146,19 @@ interface Request extends RequestGenericInterface {
   };
 }
 
-function sendErrorIfEmpty(reply, resourceId) {
+function sendErrorIfEmpty(reply, resourceId): string | undefined {
   if (!isNonemptyString(resourceId)) {
+    const message = `required query parameter ${resourceId} not present (must be non-empty string)`;
     reply.status(400).send({
       apiVersion: "1.0",
       error: {
         code: 400,
-        message: `required query parameter ${resourceId} not present (must be non-empty string)`,
+        message,
       },
     });
-    return true;
+    return message;
   }
-  return false;
+  return;
 }
 
 export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
@@ -177,11 +178,13 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const subprojectId = request.query.subprojectId;
       const workflowitemId = request.query.workflowitemId;
 
-      if (
+      const message =
         sendErrorIfEmpty(reply, projectId) ||
         sendErrorIfEmpty(reply, subprojectId) ||
-        sendErrorIfEmpty(reply, workflowitemId)
-      ) {
+        sendErrorIfEmpty(reply, workflowitemId);
+
+      if (message) {
+        request.log.error({ err: message }, "Invalid request body");
         return;
       }
 
@@ -231,6 +234,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         })
         .catch((err) => {
           const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while getting workflowitem details");
           reply.status(code).send(body);
         });
     },

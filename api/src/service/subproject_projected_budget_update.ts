@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -22,6 +23,11 @@ export async function updateProjectedBudget(
   value: MoneyAmount,
   currencyCode: CurrencyCode,
 ): Promise<Result.Type<ProjectedBudget[]>> {
+  logger.debug(
+    { projectId, subprojectId, organization, value, currencyCode },
+    "Updating project budget",
+  );
+
   const updateProjectedBudgetResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectProjectedBudgetUpdate.updateProjectedBudget(
       ctx,
@@ -41,10 +47,13 @@ export async function updateProjectedBudget(
       },
     ),
   );
+
   if (Result.isErr(updateProjectedBudgetResult)) {
     return new VError(updateProjectedBudgetResult, "delete projected budget of subproject failed");
   }
+
   const { newEvents, projectedBudgets } = updateProjectedBudgetResult;
+
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);
   }
