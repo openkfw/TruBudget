@@ -174,8 +174,8 @@ const NodeVoting = ({
 
   const [, newOrgaNodes, existingOrgaNodes] = splitNodes(visibleNodes);
 
-  const newOrgaNodesListEntries = getListEntries(newOrgaNodes, canApprove, classes, declineNode, ({ address }) =>
-    approveNewOrganization(address)
+  const newOrgaNodesListEntries = getListEntries(newOrgaNodes, canApprove, classes, declineNode, ({ organization }) =>
+    approveNewOrganization(organization)
   );
   const existingOrgaNodesListEntries = getListEntries(
     existingOrgaNodes,

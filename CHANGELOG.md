@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Add a password confirmation field to the user creation dialog [#984](https://github.com/openkfw/TruBudget/issues/984).
 - Add an option to setup two organizations (two 2 node) with the operation and developer docker setup [#932](https://github.com/openkfw/TruBudget/issues/932).
-
+- Add Logging for Frontend: Log messages can now be displayed in backend [#1000](https://github.com/openkfw/TruBudget/pull/1000).
 <!-- ### Changed -->
 
 <!-- ### Deprecated -->
