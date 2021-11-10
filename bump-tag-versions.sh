@@ -12,7 +12,7 @@ trubudget_projects=('frontend' 'api' 'blockchain' 'e2e-test' 'provisioning' 'exc
 for project in "${trubudget_projects[@]}"; do
     eval "cd $project"
     echo "Bumping $project ..."
-    eval "perl -pi -e '/\"version\": \"/c\"version\": \"$trubudget_version\",' ./package.json"
+    eval "perl -pi -e 's/\"version\": .*/\"version\": \"$trubudget_version\",/' ./package.json"
     eval "npm install --no-audit"
     echo "Auditing only production dependencies ..."
     eval "npm audit --production"
