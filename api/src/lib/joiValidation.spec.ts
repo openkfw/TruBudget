@@ -67,6 +67,15 @@ describe("JoiValidation: safe String", () => {
     expect(error.message).to.contain("fails to match the required pattern:");
   });
 
+  it("Accept a string including apostrophes", async () => {
+    const text = "Test '1234' it`s an \"example\"";
+
+    const { value, error } = Joi.validate(text, safeStringSchema);
+
+    expect(value).to.equal(text);
+    expect(error).to.equal(null);
+  });
+
   it("Accept a safe Id", async () => {
     const text = "Test1234";
     const controlValue = "Test1234";
