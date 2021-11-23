@@ -648,11 +648,8 @@ export function parseBusinessEvents(
       const parser = EVENT_PARSER_MAP[event.type];
       if (parser === undefined) {
         const eventType = event && event.type ? event.type : JSON.stringify(event);
-        logger.fatal(
-          { streamName, item },
-          "Cache: Event type not implemented. Please file an issue and include this log entry - thank you.",
-        );
-        process.exit(1);
+        logger.fatal({ streamName, item }, `Cache: Event type "${eventType}"" not implemented.`);
+        return;
       }
       return parser(event);
     })
