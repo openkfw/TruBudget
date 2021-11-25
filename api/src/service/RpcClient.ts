@@ -343,7 +343,11 @@ export class RpcClient {
             "Reached max data size of streamitem so it has to be fetched with the extra command 'gettxoutdata'. To increase this size use the runtime variable 'maxshowndata' of the multichain" +
               "with command: 'setruntimeparam maxshowndata <value>'.",
           );
-          readableData = await this.invoke("gettxoutdata", item.data.txid, item.data.vout);
+          try {
+            readableData = await this.invoke("gettxoutdata", item.data.txid, item.data.vout);
+          } catch (error) {
+            return new VError(error, "method gettxoutdata failed");
+          }
         }
         return this.getOrDecryptItemData({ ...item, data: readableData });
       }),
