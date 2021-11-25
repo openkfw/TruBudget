@@ -15,6 +15,6 @@ for project in "${trubudget_projects[@]}"; do
     eval "perl -pi -e 's/\"version\": .*/\"version\": \"$trubudget_version\",/' ./package.json"
     eval "npm install --no-audit"
     echo "Auditing only production dependencies ..."
-    eval "npm audit --production"
+    eval "npm run audit -- --production"
     eval "cd .."
 done

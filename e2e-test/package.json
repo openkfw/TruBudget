@@ -31,6 +31,7 @@
   },
   "scripts": {
     "cypress": "cypress open",
+    "audit": "better-npm-audit audit",
     "cypress-clear": "cypress cache clear",
     "cypress-verify": "cypress verify",
     "e2etest": "cypress run",
@@ -39,6 +40,7 @@
   "dependencies": {
     "async-each": "^1.0.3",
     "axios": "^0.21.4",
+    "better-npm-audit": "^3.4.0",
     "exceljs": "^4.2.0",
     "fs": "0.0.1-security",
     "md5-file": "^5.0.0",
