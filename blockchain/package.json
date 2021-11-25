@@ -19,6 +19,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
+    "audit": "better-npm-audit audit",
     "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\"",
     "watch": "nodemon src",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
@@ -38,6 +39,7 @@
     "@kubernetes/client-node": "0.10.2",
     "async-each": "^1.0.1",
     "axios": "^0.21.4",
+    "better-npm-audit": "^3.4.0",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "express": "^4.16.3",

@@ -15,6 +15,7 @@
   "homepage": "https://github.com/openkfw/TruBudget#readme",
   "scripts": {
     "start": "node ./serve.js",
+    "audit": "better-npm-audit audit",
     "dev": "nodemon ./serve.js"
   },
   "devDependencies": {
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "axios": "^0.23.0",
+    "better-npm-audit": "^3.4.0",
     "fastify": "^3.22.1",
     "fastify-cors": "^6.0.2",
     "pino": "^6.13.2",

@@ -29,7 +29,11 @@ export function sourceWorkflowitems(
 
   for (const event of events) {
     logger.trace({ event }, "Validating workflowitem event by applying it");
-    if (!event.type.startsWith("workflowitem_")) {
+    // TODO: Remove workflowitem_document_uploaded events from cache
+    if (
+      !event.type.startsWith("workflowitem_") ||
+      event.type === "workflowitem_document_uploaded"
+    ) {
       continue;
     }
 
