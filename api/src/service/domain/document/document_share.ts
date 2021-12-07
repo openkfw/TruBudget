@@ -39,7 +39,7 @@ export async function shareDocument(
   issuer: ServiceUser,
   requestData: RequestData,
   repository: Repository,
-): Promise<Result.Type<BusinessEvent>> {
+): Promise<Result.Type<BusinessEvent | undefined>> {
   logger.trace({ req: requestData }, "Sharing document");
   const { organization, docId, projectId, subprojectId, workflowitemId } = requestData;
   const publisherOrganization = config.organization;
@@ -47,7 +47,7 @@ export async function shareDocument(
   logger.trace("Checking if secret for this document and organization is already published");
   const alreadyPublished = await repository.secretAlreadyExists(docId, organization);
   if (alreadyPublished) {
-    return new VError("Secret already published for this document");
+    return undefined;
   }
 
   logger.trace(
