@@ -15,14 +15,19 @@ import * as Subproject from "../workflow/subproject";
 import * as DocumentValidated from "./document_validated";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
-import { getAllDocuments } from "./document_get";
+import { getAllDocumentReferences } from "./document_get";
 import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
   getDocumentsEvents(): Promise<Result.Type<BusinessEvent[]>>;
-  getOffchainDocumentsEvents(): Promise<Result.Type<BusinessEvent[]>>;
+  getAllProjects(): Promise<Project.Project[]>;
+  getAllSubprojects(projectId: Project.Id): Promise<Result.Type<Subproject.Subproject[]>>;
+  getAllWorkflowitems(
+    projectId: Project.Id,
+    subprojectId: Subproject.Id,
+  ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
 }
 
 export async function documentValidate(
@@ -42,12 +47,12 @@ export async function documentValidate(
   }
 
   logger.trace("Checking if document exists");
-  const allDocumentIds = await getAllDocuments(ctx, repository);
-  if (Result.isErr(allDocumentIds)) {
-    return new VError(allDocumentIds, "failed to fetch all documents");
+  const allDocumentReferences = await getAllDocumentReferences(repository);
+  if (Result.isErr(allDocumentReferences)) {
+    return new VError(allDocumentReferences, "failed to fetch all documents");
   }
 
-  const hasDocument = allDocumentIds.find((doc) => doc.id === documentId);
+  const hasDocument = allDocumentReferences.find((doc) => doc.id === documentId);
   if (!hasDocument) {
     return new NotFound(ctx, "document", documentId);
   }

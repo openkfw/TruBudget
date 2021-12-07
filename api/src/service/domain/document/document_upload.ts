@@ -25,7 +25,7 @@ interface DocumentStorageServiceResponse {
 }
 
 interface Repository {
-  getAllDocuments(): Promise<Result.Type<GenericDocument[]>>;
+  getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
   storeDocument(id, name, hash): Promise<Result.Type<DocumentStorageServiceResponse>>;
   encryptWithKey(secret, publicKey): Promise<Result.Type<string>>;
   getPublicKey(organization): Promise<Result.Type<Base64String>>;
@@ -45,7 +45,7 @@ export async function uploadDocument(
   const { id, documentBase64, fileName } = requestData;
 
   logger.trace("Getting all documents from repository");
-  const existingDocuments = await repository.getAllDocuments();
+  const existingDocuments = await repository.getAllDocumentReferences();
   if (Result.isErr(existingDocuments)) {
     return new VError(existingDocuments, "cannot get documents");
   }

@@ -3,15 +3,12 @@ import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
+import { Project } from "../workflow/project";
+import { Subproject } from "../workflow/subproject";
+import { Workflowitem } from "../workflow/workflowitem";
 
-import { UploadedDocument } from "./document";
-import {
-  getAllDocumentInfos,
-  getAllDocuments,
-  getAllDocumentsFromOffchainStorage,
-  getDocumentInfo,
-  getOffchainDocument,
-} from "./document_get";
+import { StoredDocument, UploadedDocument } from "./document";
+import { getAllDocumentInfos, getDocumentInfo, getAllDocumentReferences } from "./document_get";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -23,25 +20,14 @@ const alice: ServiceUser = {
   groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
   address: "address",
 };
+
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy";
-
 const uploadedDocument: UploadedDocument = {
   id: "1",
   base64: "lakjflaksdjf",
   fileName: "dummyFile",
-};
-
-const uploadEventOffchain: BusinessEvent = {
-  type: "workflowitem_document_uploaded",
-  source: "",
-  time: "", // ISO timestamp
-  publisher: alice.id, //identity
-  projectId: projectId,
-  subprojectId: subprojectId,
-  workflowitemId: workflowitemId,
-  document: uploadedDocument,
 };
 
 const uploadEvent: BusinessEvent = {
@@ -53,41 +39,69 @@ const uploadEvent: BusinessEvent = {
   fileName: uploadedDocument.fileName,
   organization: "organization",
 };
+const storedDocuments: StoredDocument[] = [
+  {
+    id: uploadEvent.docId,
+    hash: "hash1",
+    fileName: uploadedDocument.fileName,
+  },
+];
+
+const baseProject: Project = {
+  id: projectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  assignee: alice.id,
+  displayName: "dummy",
+  description: "dummy",
+  projectedBudgets: [],
+  permissions: {},
+  log: [],
+  additionalData: {},
+  tags: [],
+};
+
+const baseSubproject: Subproject = {
+  id: subprojectId,
+  projectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  assignee: "alice",
+  displayName: "dummy",
+  description: "dummy",
+  currency: "EUR",
+  projectedBudgets: [],
+  workflowitemOrdering: [],
+  permissions: {},
+  log: [],
+  additionalData: {},
+};
+
+const baseWorkflowitem: Workflowitem = {
+  isRedacted: false,
+  id: workflowitemId,
+  subprojectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  assignee: alice.id,
+  displayName: "dummy",
+  description: "dummy",
+  amountType: "N/A",
+  documents: storedDocuments,
+  permissions: { "workflowitem.view": ["alice"] },
+  log: [],
+  additionalData: {},
+  workflowitemType: "general",
+};
 
 const repository = {
-  getOffchainDocumentsEvents: () => Promise.resolve([uploadEventOffchain]),
   getDocumentsEvents: () => Promise.resolve([]),
+  getAllProjects: () => Promise.resolve([]),
+  getAllSubprojects: () => Promise.resolve([]),
+  getAllWorkflowitems: () => Promise.resolve([]),
 };
 
 describe("Documents from offchain or external storage", () => {
-  it("Offchain: All existing documents can be fetched", async () => {
-    const result = await getAllDocumentsFromOffchainStorage(ctx, {
-      ...repository,
-      getOffchainDocumentsEvents: () => Promise.resolve([uploadEventOffchain]),
-    });
-    assert.isTrue(Result.isOk(result));
-    // eql() checks if the content is equal (NOT the reference)
-    expect(result[0]).to.eql(uploadedDocument);
-  });
-
-  it("Offchain: An existing document can be fetched", async () => {
-    const result = await getOffchainDocument(ctx, uploadedDocument.id, {
-      ...repository,
-      getOffchainDocumentsEvents: () => Promise.resolve([uploadEventOffchain]),
-    });
-    assert.isTrue(Result.isOk(result));
-    expect(result).to.eql(uploadedDocument);
-  });
-
-  it("Offchain: A non existing document can not be fetched", async () => {
-    const result = await getOffchainDocument(ctx, "-1", {
-      ...repository,
-      getOffchainDocumentsEvents: () => Promise.resolve([uploadEventOffchain]),
-    });
-    assert.isTrue(Result.isOk(result));
-    expect(result).to.eql(undefined);
-  });
-
   it("External storage: All existing documents can be fetched", async () => {
     const result = await getAllDocumentInfos(ctx, {
       ...repository,
@@ -119,16 +133,16 @@ describe("Documents from offchain or external storage", () => {
     expect(result).to.eql(undefined);
   });
 
-  it("Offchain and external storage: All existing documents can be fetched", async () => {
-    const repository = {
-      getDocumentsEvents: () => Promise.resolve([uploadEvent]),
-      getOffchainDocumentsEvents: () => Promise.resolve([uploadEventOffchain]),
-    };
-    const result = await getAllDocuments(ctx, repository);
+  it("Offchain and external storage: All existing documents references can be fetched", async () => {
+    const result = await getAllDocumentReferences({
+      ...repository,
+      getAllProjects: () => Promise.resolve([baseProject]),
+      getAllSubprojects: () => Promise.resolve([baseSubproject]),
+      getAllWorkflowitems: () => Promise.resolve([baseWorkflowitem]),
+    });
 
     assert.isTrue(Result.isOk(result));
-    expect(result[0].fileName).to.eql(uploadEvent.fileName);
-    expect(result[0].organization).to.eql(uploadEvent.organization);
-    expect(result[1]).to.eql(uploadEventOffchain.document);
+    expect(result[0].fileName).to.eql(uploadedDocument.fileName);
+    expect(result[0].id).to.eql(uploadedDocument.id);
   });
 });

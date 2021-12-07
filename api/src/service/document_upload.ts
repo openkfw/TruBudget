@@ -25,13 +25,19 @@ export async function documentUpload(
   logger.debug({ req: requestData }, "Uploading document");
   const uploadedDocumentResult = await Cache.withCache(conn, ctx, async (cache) => {
     return DocumentUpload.uploadDocument(ctx, serviceUser, requestData, {
-      getAllDocuments: async () => {
-        return await DocumentGet.getAllDocuments(ctx, {
+      getAllDocumentReferences: async () => {
+        return DocumentGet.getAllDocumentReferences({
           getDocumentsEvents: async () => {
             return cache.getDocumentUploadedEvents();
           },
-          getOffchainDocumentsEvents: async () => {
-            return cache.getOffchainDocumentsEvents();
+          getAllProjects: async () => {
+            return cache.getProjects();
+          },
+          getAllSubprojects: async (projectId) => {
+            return cache.getSubprojects(projectId);
+          },
+          getAllWorkflowitems: async (projectId, subprojectId) => {
+            return cache.getWorkflowitems(projectId, subprojectId);
           },
         });
       },
