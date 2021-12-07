@@ -45,6 +45,7 @@ export async function shareDocument(
   const publisherOrganization = config.organization;
 
   logger.trace("Checking if secret for this document and organization is already published");
+  // if secret is already published for this document and organization no event is created
   const alreadyPublished = await repository.secretAlreadyExists(docId, organization);
   if (alreadyPublished) {
     return undefined;
@@ -67,7 +68,8 @@ export async function shareDocument(
   const privateBuff = Buffer.from(privateKeyBase64Result, "base64");
   const privateKey = privateBuff.toString("utf8");
 
-  logger.trace("decrypt secret with private key");
+  logger.trace("decrypt secret with own private key");
+  // decrypt secret with own private key
   const decryptedSecret = await repository.decryptWithKey(secret.encryptedSecret, privateKey);
   if (Result.isErr(decryptedSecret)) {
     return new VError(decryptedSecret, "failed to decrypt secret");
@@ -82,7 +84,10 @@ export async function shareDocument(
   const publicBuff = Buffer.from(publicKeyBase64, "base64");
   const publicKey = publicBuff.toString("utf8");
 
-  logger.trace("Encrypting secret with organization key");
+  logger.trace(
+    "Encrypting secret with the public key of the organization the document is shared with",
+  );
+  // encrypt secret with public key of the organization the document is shared with
   const encryptedSecret = await repository.encryptWithKey(decryptedSecret, publicKey);
   if (Result.isErr(encryptedSecret)) {
     return new VError(encryptedSecret, "failed to encrypt secret");
