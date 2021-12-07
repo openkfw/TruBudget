@@ -7,7 +7,7 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
-import { UploadedDocument } from "./document";
+import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 import * as DocumentShared from "./document_shared";
 
 import VError = require("verror");
@@ -21,7 +21,9 @@ interface DocumentStorageServiceResponse {
 
 interface Repository {
   getWorkflowitem(workflowitemId): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getOffchainDocument(docId: string): Promise<Result.Type<UploadedDocument | undefined>>;
+  getOffchainDocumentEvent(
+    docId: string,
+  ): Promise<Result.Type<WorkflowitemDocumentUploaded.Event | undefined>>;
   getDocumentInfo(docId: string): Promise<Result.Type<DocumentUploaded.Document | undefined>>;
   getSecret(docId, organization): Promise<Result.Type<DocumentShared.SecretPublished>>;
   decryptWithKey(secret, privateKey): Promise<Result.Type<string>>;
@@ -132,15 +134,15 @@ export async function getDocument(
   logger.trace("Trying to find document: ", documentId, "offchain ...");
 
   // Try to get event from offchain storage
-  const offchainDocument = await repository.getOffchainDocument(documentId);
-  if (Result.isErr(offchainDocument)) {
+  const offchainDocumentEvent = await repository.getOffchainDocumentEvent(documentId);
+  if (Result.isErr(offchainDocumentEvent)) {
     return new VError(
       new NotFound(ctx, "document", documentId),
-      `couldn't get document events from ${workflowitem.displayName}`,
+      `couldn't get document events from ${workflowitem.displayName}. ${offchainDocumentEvent.message}`,
     );
   }
 
-  if (!offchainDocument) {
+  if (!offchainDocumentEvent) {
     logger.trace("Trying to find document: ", documentId, "via storage service ...");
 
     // Try to get document from storage service
@@ -165,6 +167,13 @@ export async function getDocument(
       return documentFromStorage;
     }
   } else {
-    return offchainDocument;
+    const document = WorkflowitemDocumentUploaded.createFrom(ctx, offchainDocumentEvent);
+    if (Result.isErr(document)) {
+      return new VError(
+        document,
+        `Error while getting document from offchain storage for workflowitem ${workflowitem.id}`,
+      );
+    }
+    return document;
   }
 }

@@ -19,7 +19,6 @@ import * as Liststreamkeyitems from "./liststreamkeyitems";
 import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import VError = require("verror");
 import logger from "lib/logger";
-import { sourceOffchainDocuments } from "./domain/document/document_eventsourcing";
 
 export async function getDocument(
   conn: ConnToken,
@@ -38,7 +37,7 @@ export async function getDocument(
       getWorkflowitem: async () => {
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
       },
-      getOffchainDocument: async (docId) => {
+      getOffchainDocumentEvent: async (docId) => {
         const items: Liststreamkeyitems.Item[] = await conn.multichainClient.v2_readStreamItems(
           "offchain_documents",
           docId,
@@ -46,13 +45,13 @@ export async function getDocument(
         );
 
         const documentEvents: WorkflowitemDocumentUploaded.Event[] = items.map((i) => i.data.json);
-        const { documents, errors } = sourceOffchainDocuments(ctx, documentEvents);
-        if (errors.length > 0) {
+        if (documentEvents.length > 1) {
+          logger.warn("Duplicate document with this id");
           return new VError(
-            `Could not source offchain document ${documentId} of workflowitem ${workflowitemId}`,
+            `could not get document ${documentId} of workflowitem ${workflowitemId}. Duplicate document with this id`,
           );
         }
-        return documents[0];
+        return documentEvents[0];
       },
       getDocumentInfo: async (docId) => {
         return DocumentGet.getDocumentInfo(ctx, docId, {
