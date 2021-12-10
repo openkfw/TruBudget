@@ -15,6 +15,8 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
+import * as Liststreamkeyitems from "./liststreamkeyitems";
+import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import VError = require("verror");
 import logger from "lib/logger";
 
@@ -35,23 +37,35 @@ export async function getDocument(
       getWorkflowitem: async () => {
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
       },
-      getOffchainDocument: async (docId) => {
-        return DocumentGet.getOffchainDocument(ctx, docId, {
-          getDocumentsEvents: async () => {
-            return cache.getDocumentUploadedEvents();
-          },
-          getOffchainDocumentsEvents: async () => {
-            return cache.getOffchainDocumentsEvents();
-          },
-        });
+      getOffchainDocumentEvent: async (docId) => {
+        const items: Liststreamkeyitems.Item[] = await conn.multichainClient.v2_readStreamItems(
+          "offchain_documents",
+          docId,
+          1,
+        );
+
+        const documentEvents: WorkflowitemDocumentUploaded.Event[] = items.map((i) => i.data.json);
+        if (documentEvents.length > 1) {
+          logger.warn("Duplicate document with this id");
+          return new VError(
+            `could not get document ${documentId} of workflowitem ${workflowitemId}. Duplicate document with this id`,
+          );
+        }
+        return documentEvents[0];
       },
       getDocumentInfo: async (docId) => {
         return DocumentGet.getDocumentInfo(ctx, docId, {
           getDocumentsEvents: async () => {
             return cache.getDocumentUploadedEvents();
           },
-          getOffchainDocumentsEvents: async () => {
-            return cache.getOffchainDocumentsEvents();
+          getAllProjects: async () => {
+            return cache.getProjects();
+          },
+          getAllSubprojects: async (projectId) => {
+            return cache.getSubprojects(projectId);
+          },
+          getAllWorkflowitems: async (projectId, subprojectId) => {
+            return cache.getWorkflowitems(projectId, subprojectId);
           },
         });
       },

@@ -91,7 +91,7 @@ interface Repository {
     documentBase64: string,
     docId: string,
   ): Promise<Result.Type<BusinessEvent[]>>;
-  getAllDocuments(): Promise<Result.Type<GenericDocument[]>>;
+  getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
 }
 
 function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
@@ -124,7 +124,7 @@ export async function createWorkflowitem(
       { req: reqData },
       "Trying to hash documents in preparation for workflowitem_created event",
     );
-    const existingDocuments = await repository.getAllDocuments();
+    const existingDocuments = await repository.getAllDocumentReferences();
     if (Result.isErr(existingDocuments)) {
       return new VError(existingDocuments, "cannot get documents");
     }

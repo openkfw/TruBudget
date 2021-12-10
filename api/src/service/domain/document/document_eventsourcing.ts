@@ -3,9 +3,7 @@ import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as DocumentUploaded from "./document_uploaded";
-import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 import * as DocumentShared from "./document_shared";
-import { UploadedDocument } from "./document";
 import { applyStorageServiceUrls as applyStorageServiceUrl } from "./storage_service_url_eventsourcing";
 import logger from "lib/logger";
 
@@ -67,37 +65,6 @@ function newDocumentFromEvent(
   }
 
   documents.push(result);
-}
-
-export function sourceOffchainDocuments(
-  ctx: Ctx,
-  events: BusinessEvent[],
-): { documents: UploadedDocument[]; errors: Error[] } {
-  const documents: UploadedDocument[] = [];
-  const errors: EventSourcingError[] = [];
-
-  for (const event of events) {
-    if (event.type === "workflowitem_document_uploaded") {
-      newOffchainDocumentFromEvent(ctx, documents, event, errors);
-    }
-  }
-
-  return { documents, errors };
-}
-
-function newOffchainDocumentFromEvent(
-  ctx: Ctx,
-  documents: UploadedDocument[],
-  event: WorkflowitemDocumentUploaded.Event,
-  errors: EventSourcingError[],
-) {
-  const document = WorkflowitemDocumentUploaded.createFrom(ctx, event);
-  if (Result.isErr(document)) {
-    errors.push(new EventSourcingError({ ctx, event }, document));
-    return;
-  }
-
-  documents.push(document);
 }
 
 export function sourceSecrets(

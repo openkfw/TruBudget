@@ -2,33 +2,22 @@ import { VError } from "verror";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { GenericDocument, UploadedDocument } from "./document";
-import { sourceDocuments, sourceOffchainDocuments } from "./document_eventsourcing";
+import { StoredDocument } from "./document";
+import { sourceDocuments } from "./document_eventsourcing";
 import * as DocumentUploaded from "./document_uploaded";
+import * as Project from "../workflow/project";
+import * as Subproject from "../workflow/subproject";
+import * as Workflowitem from "../workflow/workflowitem";
 import logger from "lib/logger";
 
 interface Repository {
   getDocumentsEvents(): Promise<Result.Type<BusinessEvent[]>>;
-  getOffchainDocumentsEvents(): Promise<Result.Type<BusinessEvent[]>>;
-}
-
-export async function getAllDocuments(
-  ctx: Ctx,
-  repository: Repository,
-): Promise<Result.Type<GenericDocument[]>> {
-  logger.trace("Getting all documents from storage");
-  const documentsFromStorage = await getAllDocumentInfos(ctx, repository);
-
-  if (Result.isErr(documentsFromStorage)) {
-    return new VError(documentsFromStorage, "get all documents from storage failed");
-  }
-
-  const offchainDocuments = await getAllDocumentsFromOffchainStorage(ctx, repository);
-  if (Result.isErr(offchainDocuments)) {
-    return new VError(offchainDocuments, "get all offchain documents failed");
-  }
-
-  return [...documentsFromStorage, ...offchainDocuments];
+  getAllProjects(): Promise<Project.Project[]>;
+  getAllSubprojects(projectId: Project.Id): Promise<Result.Type<Subproject.Subproject[]>>;
+  getAllWorkflowitems(
+    projectId: Project.Id,
+    subprojectId: Subproject.Id,
+  ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
 }
 
 export async function getAllDocumentInfos(
@@ -62,36 +51,27 @@ export async function getDocumentInfo(
   return document;
 }
 
-export async function getAllDocumentsFromOffchainStorage(
-  ctx: Ctx,
+export async function getAllDocumentReferences(
   repository: Repository,
-): Promise<Result.Type<UploadedDocument[]>> {
-  logger.trace("Getting all documents from offchain storage");
-  const documentEvents = await repository.getOffchainDocumentsEvents();
+): Promise<Result.Type<StoredDocument[]>> {
+  const projects: Project.Project[] = await repository.getAllProjects();
+  let documentReferences: StoredDocument[] = [];
+  for (const project of projects) {
+    const allSubprojectsResult = await repository.getAllSubprojects(project.id);
 
-  if (Result.isErr(documentEvents)) {
-    return new VError(documentEvents, "fetch offchain_documents events failed");
+    if (Result.isErr(allSubprojectsResult)) {
+      return new VError(allSubprojectsResult, "couldn't get all subprojects");
+    }
+    const allSubprojects = allSubprojectsResult;
+    for (const subproject of allSubprojects) {
+      const workflowitems = await repository.getAllWorkflowitems(project.id, subproject.id);
+      if (Result.isErr(workflowitems)) {
+        return new VError(workflowitems, "couldn't get all workflowitems");
+      }
+      for (const workflowitem of workflowitems) {
+        documentReferences.push(...workflowitem.documents);
+      }
+    }
   }
-
-  const { documents } = sourceOffchainDocuments(ctx, documentEvents);
-  return documents;
-}
-
-export async function getOffchainDocument(
-  ctx: Ctx,
-  docId: string,
-  repository: Repository,
-): Promise<Result.Type<UploadedDocument | undefined>> {
-  logger.trace({ docId }, "Getting document from offchain storage by id");
-  const offchainDocuments = await getAllDocumentsFromOffchainStorage(ctx, repository);
-
-  if (Result.isErr(offchainDocuments)) {
-    return new VError(offchainDocuments, "get all offchain documents failed");
-  }
-
-  const isErr = offchainDocuments.find((d) => Result.isErr(d));
-  if (isErr) return new VError("get all offchain documents failed");
-
-  const offchainDocument = offchainDocuments.find((doc) => doc.id === docId);
-  return offchainDocument;
+  return documentReferences;
 }

@@ -61,7 +61,7 @@ const baseRepository = {
     throw Error(`unexpected identity: ${identity}`);
   },
   uploadDocumentToStorageService: () => Promise.resolve([]),
-  getAllDocuments: async () => [],
+  getAllDocumentReferences: async () => [],
 };
 
 describe("update workflowitem: authorization", () => {
