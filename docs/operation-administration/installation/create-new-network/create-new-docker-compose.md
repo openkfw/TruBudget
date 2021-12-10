@@ -97,7 +97,7 @@ cd scripts/operation/
 bash start-trubudget.sh --slim
 ```
 
-If you want to add an additional blockchain node, email-notification-service, excel-export-service or storage-service, please take a look at the [README.md of operation setup](./../../../../scripts/operation/README.md)
+If you want to add an additional blockchain node, email-notification-service, excel-export-service or storage-service, please take a look at the [README.md of operation setup](https://github.com/openkfw/TruBudget/blob/master/scripts/operation/README.md#trubudget-operation-setup)
 
 The **frontend** should be accessible via port 3000 on the server that it is running on: http://localhost:3000/
 
