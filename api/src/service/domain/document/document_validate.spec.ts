@@ -3,9 +3,10 @@ import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
+import { Project } from "../workflow/project";
 import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
-import { UploadedDocument } from "./document";
+import { StoredDocument, UploadedDocument } from "./document";
 import { documentValidate } from "./document_validate";
 
 const ctx: Ctx = {
@@ -34,6 +35,19 @@ const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy";
 
+const baseProject: Project = {
+  id: projectId,
+  createdAt: new Date().toISOString(),
+  status: "open",
+  assignee: alice.id,
+  displayName: "dummy",
+  description: "dummy",
+  projectedBudgets: [],
+  permissions: {},
+  log: [],
+  additionalData: {},
+  tags: [],
+};
 const baseSubproject: Subproject = {
   id: subprojectId,
   projectId,
@@ -68,12 +82,20 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const uploadedDocumentId = "1";
+const uploadedDocumentFileName = "1";
 
 const uploadedDocument: UploadedDocument = {
   id: uploadedDocumentId,
   base64: "lakjflaksdjf",
-  fileName: "dummyFile",
+  fileName: uploadedDocumentFileName,
 };
+const storedDocuments: StoredDocument[] = [
+  {
+    id: uploadedDocumentId,
+    hash: "hash1",
+    fileName: uploadedDocumentFileName,
+  },
+];
 
 const uploadEventOffchain: BusinessEvent = {
   type: "workflowitem_document_uploaded",
@@ -93,8 +115,10 @@ const repository = {
     if (identity === "bob") return ["bob"];
     return Error(`unexpected identity: ${identity}`);
   },
-  getOffchainDocumentsEvents: () => Promise.resolve([uploadEventOffchain]),
   getDocumentsEvents: () => Promise.resolve([] as any),
+  getAllProjects: () => Promise.resolve([]),
+  getAllSubprojects: () => Promise.resolve([]),
+  getAllWorkflowitems: () => Promise.resolve([]),
 };
 
 describe("Validating uploaded document in workflowitem", () => {
@@ -110,7 +134,13 @@ describe("Validating uploaded document in workflowitem", () => {
       baseSubproject.projectId,
       baseSubproject.id,
       baseWorkflowitem.id,
-      repository,
+      {
+        ...repository,
+        getAllProjects: () => Promise.resolve([baseProject]),
+        getAllSubprojects: () => Promise.resolve([baseSubproject]),
+        getAllWorkflowitems: () =>
+          Promise.resolve([{ ...baseWorkflowitem, documents: storedDocuments }]),
+      },
     );
     assert.isTrue(Result.isOk(newEventsResult));
   });

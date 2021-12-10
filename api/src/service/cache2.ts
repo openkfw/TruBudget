@@ -137,7 +137,6 @@ interface CacheInstance {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getOffchainDocumentsEvents(): Result.Type<BusinessEvent[]>;
   getDocumentUploadedEvents(): Result.Type<BusinessEvent[]>;
   getStorageServiceUrlPublishedEvents(): Result.Type<BusinessEvent[]>;
   getSecretPublishedEvents(): Result.Type<BusinessEvent[]>;
@@ -192,18 +191,6 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     getPublicKeyEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting public key events from cache");
       return cache.eventsByStream.get("public_keys") || [];
-    },
-    getOffchainDocumentsEvents: (): Result.Type<BusinessEvent[]> => {
-      logger.trace("Getting offchain document events from cache");
-      const documentFilter = (event) => {
-        switch (event.type) {
-          case "workflowitem_document_uploaded":
-            return true;
-          default:
-            return false;
-        }
-      };
-      return cache.eventsByStream.get("offchain_documents") || [].filter(documentFilter);
     },
     getDocumentUploadedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting document uploaded events");
@@ -648,11 +635,8 @@ export function parseBusinessEvents(
       const parser = EVENT_PARSER_MAP[event.type];
       if (parser === undefined) {
         const eventType = event && event.type ? event.type : JSON.stringify(event);
-        logger.fatal(
-          { streamName, item },
-          "Cache: Event type not implemented. Please file an issue and include this log entry - thank you.",
-        );
-        process.exit(1);
+        logger.fatal({ streamName, item }, `Cache: Event type "${eventType}"" not implemented.`);
+        return;
       }
       return parser(event);
     })

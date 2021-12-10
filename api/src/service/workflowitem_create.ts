@@ -52,13 +52,19 @@ export async function createWorkflowitem(
           serviceUser,
           { fileName, documentBase64, id },
           {
-            getAllDocuments: async () => {
-              return await DocumentGet.getAllDocuments(ctx, {
+            getAllDocumentReferences: async () => {
+              return DocumentGet.getAllDocumentReferences({
                 getDocumentsEvents: async () => {
                   return cache.getDocumentUploadedEvents();
                 },
-                getOffchainDocumentsEvents: async () => {
-                  return cache.getOffchainDocumentsEvents();
+                getAllProjects: async () => {
+                  return cache.getProjects();
+                },
+                getAllSubprojects: async (projectId) => {
+                  return cache.getSubprojects(projectId);
+                },
+                getAllWorkflowitems: async (projectId, subprojectId) => {
+                  return cache.getWorkflowitems(projectId, subprojectId);
                 },
               });
             },
@@ -75,13 +81,19 @@ export async function createWorkflowitem(
           },
         );
       },
-      getAllDocuments: async () => {
-        return await DocumentGet.getAllDocuments(ctx, {
+      getAllDocumentReferences: async () => {
+        return DocumentGet.getAllDocumentReferences({
           getDocumentsEvents: async () => {
             return cache.getDocumentUploadedEvents();
           },
-          getOffchainDocumentsEvents: async () => {
-            return cache.getOffchainDocumentsEvents();
+          getAllProjects: async () => {
+            return cache.getProjects();
+          },
+          getAllSubprojects: async (projectId) => {
+            return cache.getSubprojects(projectId);
+          },
+          getAllWorkflowitems: async (projectId, subprojectId) => {
+            return cache.getWorkflowitems(projectId, subprojectId);
           },
         });
       },

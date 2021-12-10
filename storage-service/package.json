@@ -1,12 +1,13 @@
 {
   "name": "storage-service",
-  "version": "1.27.0",
+  "version": "1.28.0",
   "private": true,
   "description": "Handles the TruBudget object storage",
   "main": "src/index.js",
   "scripts": {
-    "build": "tsc",
     "start": "node dist/index.js",
+    "audit": "better-npm-audit audit",
+    "build": "tsc",
     "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)",
     "watch": "tsc --watch & (sleep 30 && nodemon --inspect=0.0.0.0:9229 dist)"
   },
@@ -22,6 +23,7 @@
   "homepage": "https://github.com/openkfw/TruBudget#readme",
   "dependencies": {
     "axios": "^0.21.4",
+    "better-npm-audit": "^3.4.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.11.1",

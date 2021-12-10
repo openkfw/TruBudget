@@ -1,6 +1,6 @@
 {
   "name": "trubudget-provisioning",
-  "version": "1.27.0",
+  "version": "1.28.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
+    "audit": "better-npm-audit audit",
     "wait": "sleep 30 && node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node src/index.js --inspect",
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "axios": "^0.21.4",
+    "better-npm-audit": "^3.4.0",
     "nodemon": "^2.0.3",
     "trubudget-logging-service": "^1.1.3"
   },

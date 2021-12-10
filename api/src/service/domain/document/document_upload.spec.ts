@@ -17,6 +17,7 @@ const alice: ServiceUser = { id: "alice", groups: ["alice"], address: "address" 
 const root: ServiceUser = { id: "root", groups: ["root"], address: "address" };
 const fileName = "dummyFile";
 const id = "dummyId";
+const docId = "1";
 
 const aliceUserRecord: UserRecord = {
   id: alice.id,
@@ -33,12 +34,13 @@ const aliceUserRecord: UserRecord = {
 
 const existingDocuments = [
   {
-    id: "1",
+    id: docId,
     fileName,
     organization: "organization",
     organizationUrl: "",
   },
 ];
+const documentReferences = [{ id: docId, fileName, hash: "hash" }];
 
 const requestData = {
   id,
@@ -47,7 +49,8 @@ const requestData = {
 };
 
 const repository = {
-  getAllDocuments: () => Promise.resolve(existingDocuments),
+  getAllDocumentInfos: () => Promise.resolve(existingDocuments),
+  getAllDocumentReferences: () => Promise.resolve(documentReferences),
   storeDocument: (id, name, hash) =>
     Promise.resolve({
       id: "1",

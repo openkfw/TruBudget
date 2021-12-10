@@ -2,7 +2,7 @@ import * as Joi from "joi";
 import { isProductionEnvironment } from "../config";
 
 export const safeStringSchema = Joi.string()
-  .regex(/^([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ]*)$/)
+  .regex(/^([A-Za-zÀ-ÿ0-9-_!?@#$&*,"`´'.:/()[\] ]*)$/)
   .max(250);
 export const safeIdSchema = Joi.string()
   .regex(/^([A-Za-zÀ-ÿ0-9-_]*)$/)

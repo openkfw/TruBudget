@@ -6,6 +6,7 @@ import { Workflowitem } from "../workflow/workflowitem";
 import { StoredDocument, UploadedDocument } from "./document";
 import * as DocumentUploaded from "./document_uploaded";
 import * as DocumentShared from "./document_shared";
+import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 import { getDocument } from "./workflowitem_document_download";
 import VError from "verror";
 
@@ -27,6 +28,7 @@ const bob: ServiceUser = {
   address,
 };
 
+const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
 
@@ -35,10 +37,19 @@ const documentIdStorage = "2";
 const documentIdExternalStorage = "3";
 const hash = "hash";
 
-const uploadedOffChainDocument: UploadedDocument = {
-  id: documentIdOffchain,
-  base64: "lakjflaksdjf",
-  fileName: "offchainFile",
+const uploadedOffChainDocumentEvent: WorkflowitemDocumentUploaded.Event = {
+  type: "workflowitem_document_uploaded",
+  source: "",
+  time: "", // ISO timestamp
+  publisher: alice.id,
+  projectId,
+  subprojectId,
+  workflowitemId,
+  document: {
+    id: documentIdOffchain,
+    base64: "lakjflaksdjf",
+    fileName: "offchainFile",
+  },
 };
 const uploadedStorageDocument: UploadedDocument = {
   id: documentIdStorage,
@@ -85,7 +96,7 @@ const storedDocuments: StoredDocument[] = [
   {
     id: documentIdOffchain,
     hash,
-    fileName: uploadedOffChainDocument.fileName,
+    fileName: uploadedOffChainDocumentEvent.document.fileName,
   },
   {
     id: documentIdExternalStorage,
@@ -96,7 +107,7 @@ const storedDocuments: StoredDocument[] = [
 
 const baseWorkflowitem: Workflowitem = {
   isRedacted: false,
-  id: workflowitemId,
+  id: projectId,
   subprojectId,
   createdAt: new Date().toISOString(),
   status: "open",
@@ -147,9 +158,9 @@ const repository = {
 
 describe("Download documents attached to a workflowitem", () => {
   it("Offchain: Downloading existing documents works", async () => {
-    const result = await getDocument(ctx, alice, workflowitemId, documentIdOffchain, {
+    const result = await getDocument(ctx, alice, projectId, documentIdOffchain, {
       ...repository,
-      getOffchainDocument: () => Promise.resolve(uploadedOffChainDocument),
+      getOffchainDocumentEvent: () => Promise.resolve(uploadedOffChainDocumentEvent),
       getDocumentInfo: () => Promise.resolve(undefined),
     });
 
@@ -158,9 +169,9 @@ describe("Download documents attached to a workflowitem", () => {
   });
 
   it("Internal Storage: Downloading existing documents works", async () => {
-    const result = await getDocument(ctx, alice, workflowitemId, documentIdStorage, {
+    const result = await getDocument(ctx, alice, projectId, documentIdStorage, {
       ...repository,
-      getOffchainDocument: () => Promise.resolve(undefined),
+      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromStorage: () => Promise.resolve(uploadedStorageDocument),
       getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoStorage),
@@ -171,9 +182,9 @@ describe("Download documents attached to a workflowitem", () => {
   });
 
   it("External Storage: Downloading existing documents works", async () => {
-    const result = await getDocument(ctx, alice, workflowitemId, documentIdExternalStorage, {
+    const result = await getDocument(ctx, alice, projectId, documentIdExternalStorage, {
       ...repository,
-      getOffchainDocument: () => Promise.resolve(undefined),
+      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoExternalStorage),
     });
@@ -182,25 +193,25 @@ describe("Download documents attached to a workflowitem", () => {
   });
 
   it("Downloading existing documents does not work without workflowitem.view permission", async () => {
-    const offchainResult = await getDocument(ctx, bob, workflowitemId, documentIdOffchain, {
+    const offchainResult = await getDocument(ctx, bob, projectId, documentIdOffchain, {
       ...repository,
-      getOffchainDocument: () => Promise.resolve(uploadedOffChainDocument),
+      getOffchainDocumentEvent: () => Promise.resolve(uploadedOffChainDocumentEvent),
       getDocumentInfo: () => Promise.resolve(undefined),
     });
-    const storageResult = await getDocument(ctx, bob, workflowitemId, documentIdStorage, {
+    const storageResult = await getDocument(ctx, bob, projectId, documentIdStorage, {
       ...repository,
-      getOffchainDocument: () => Promise.resolve(undefined),
+      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromStorage: () => Promise.resolve(uploadedStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoStorage),
     });
     const externalStorageResult = await getDocument(
       ctx,
       bob,
-      workflowitemId,
+      projectId,
       documentIdExternalStorage,
       {
         ...repository,
-        getOffchainDocument: () => Promise.resolve(undefined),
+        getOffchainDocumentEvent: () => Promise.resolve(undefined),
         getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
         getDocumentInfo: () => Promise.resolve(documentInfoExternalStorage),
       },
@@ -213,29 +224,23 @@ describe("Download documents attached to a workflowitem", () => {
 
   it("Downloading non existing document does not work", async () => {
     const notExistingDocumentId = "not_existing_id";
-    const offchainResult = await getDocument(ctx, alice, workflowitemId, notExistingDocumentId, {
+    const offchainResult = await getDocument(ctx, alice, projectId, notExistingDocumentId, {
       ...repository,
-      getOffchainDocument: () => Promise.resolve(uploadedOffChainDocument),
+      getOffchainDocumentEvent: () => Promise.resolve(uploadedOffChainDocumentEvent),
       getDocumentInfo: () => Promise.resolve(undefined),
     });
-    const storageResult = await getDocument(ctx, alice, workflowitemId, notExistingDocumentId, {
+    const storageResult = await getDocument(ctx, alice, projectId, notExistingDocumentId, {
       ...repository,
-      getOffchainDocument: () => Promise.resolve(undefined),
+      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromStorage: () => Promise.resolve(uploadedStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoStorage),
     });
-    const externalStorageResult = await getDocument(
-      ctx,
-      alice,
-      workflowitemId,
-      notExistingDocumentId,
-      {
-        ...repository,
-        getOffchainDocument: () => Promise.resolve(undefined),
-        getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
-        getDocumentInfo: () => Promise.resolve(documentInfoExternalStorage),
-      },
-    );
+    const externalStorageResult = await getDocument(ctx, alice, projectId, notExistingDocumentId, {
+      ...repository,
+      getOffchainDocumentEvent: () => Promise.resolve(undefined),
+      getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
+      getDocumentInfo: () => Promise.resolve(documentInfoExternalStorage),
+    });
 
     assert.isTrue(Result.isErr(offchainResult));
     assert.isTrue(Result.isErr(storageResult));

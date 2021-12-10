@@ -61,8 +61,14 @@ export async function isSameDocument(
         getDocumentsEvents: async () => {
           return cache.getDocumentUploadedEvents();
         },
-        getOffchainDocumentsEvents: async () => {
-          return cache.getOffchainDocumentsEvents();
+        getAllProjects: async () => {
+          return cache.getProjects();
+        },
+        getAllSubprojects: async (projectId) => {
+          return cache.getSubprojects(projectId);
+        },
+        getAllWorkflowitems: async (projectId, subprojectId) => {
+          return cache.getWorkflowitems(projectId, subprojectId);
         },
       },
     );

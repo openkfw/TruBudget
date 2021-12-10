@@ -220,11 +220,16 @@ export class RpcClient {
             method === "liststreamkeyitems" ||
             method === "liststreamblockitems"
           ) {
-            const items = await this.convertToReadableItems(responseData);
-            const error = items.find((item) => Result.isErr(item));
-            if (Result.isErr(error)) {
-              throw new VError(error, "Error converting streamitems to readable items.");
-            }
+            const itemResults = await this.convertToReadableItems(responseData);
+            // Log errors occured while converting and skip items
+            const items = itemResults.reduce((items, item) => {
+              if (Result.isOk(item)) {
+                items.push(item);
+              } else {
+                this.handleError(item, method);
+              }
+              return items;
+            }, [] as StreamItem[]);
             responseData = items;
             resolve(responseData);
           } else {
@@ -232,6 +237,11 @@ export class RpcClient {
           }
         })
         .catch((error: AxiosError | Error) => {
+          logger.trace(
+            `Caught error during invoke of ${method} with params ${params}. Handling error ${JSON.stringify(
+              error,
+            )}`,
+          );
           let response: RpcError = this.handleError(error, method);
           reject(response);
         });
@@ -244,7 +254,8 @@ export class RpcClient {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx and WITH multichain errors:
         const response = error.response.data.error;
-        logger.trace({ response }, `Error during invoke of ${method}. Multichain errors occured.`);
+        const err = JSON.stringify(response);
+        logger.error(`Error during invoke of ${method}. Multichain errors occured. ${err}`);
         return response;
       }
 
@@ -270,8 +281,8 @@ export class RpcClient {
       }
     } else {
       // Something happened in setting up the request that triggered an Error
-      logger.error(error);
-      return new RpcError(500, `other error: ${error}`, {}, "");
+      logger.error(`Error during invoke of ${method}. ${error.message}`);
+      return new RpcError(500, `other error: ${error}`, error, "");
     }
   };
 
@@ -311,7 +322,7 @@ export class RpcClient {
         if (typeof plainStringToDecrypt === "string") {
           return new RpcError(
             500,
-            "Failed to retrieve events: expected an event, but got a string instead. This error usually occurs when you don't set the ENCRYPTION_PASSWORD at an encrypted blockchain. To resolve this error, set the env var ENCRYPTION_PASSWORD.",
+            `Failed to retrieve events: expected an event, but got a string instead: "${plainStringToDecrypt}". Is your blockchain network encrypted using ENCRYPTION_PASSWORD?`,
             {},
             "",
           );
@@ -334,12 +345,19 @@ export class RpcClient {
       items.map(async (item: StreamItem) => {
         let readableData = item.data;
         if (item.data && item.data.hasOwnProperty("vout") && item.data.hasOwnProperty("txid")) {
-          logger.warn(
-            "Reached max data size. Maybe you should increase the runtime variable 'maxshowndata' of the multichain" +
+          logger.debug(
+            "Reached max data size of streamitem so it has to be fetched with the extra command 'gettxoutdata'. To increase this size use the runtime variable 'maxshowndata' of the multichain" +
               "with command: 'setruntimeparam maxshowndata <value>'.",
           );
-          readableData = await this.invoke("gettxoutdata", item.data.txid, item.data.vout);
-          logger.debug({ item: item.data }, "Received items.");
+          readableData = await this.invoke("gettxoutdata", item.data.txid, item.data.vout).catch(
+            (error) => {
+              // invoke does not support Results yet so we have to catch errors and return them
+              return new VError(
+                error,
+                `Error during invoking gettxoutdata for txid ${item.data.txid}`,
+              );
+            },
+          );
         }
         return this.getOrDecryptItemData({ ...item, data: readableData });
       }),

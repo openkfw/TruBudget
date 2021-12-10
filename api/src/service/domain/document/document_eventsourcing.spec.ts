@@ -2,7 +2,7 @@ import { assert, expect } from "chai";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
 import { UploadedDocument } from "./document";
-import { sourceDocuments, sourceOffchainDocuments, sourceSecrets } from "./document_eventsourcing";
+import { sourceDocuments, sourceSecrets } from "./document_eventsourcing";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import * as DocumentUploaded from "./document_uploaded";
@@ -80,14 +80,6 @@ const secretPublishedEvent: BusinessEvent = {
 };
 
 describe("Document eventsourcing", () => {
-  it("Workflowitem Document Uploaded: source documents stored offchain", async () => {
-    const result = await sourceOffchainDocuments(ctx, [offchainDocumentEvent]);
-    assert.isTrue(Result.isOk(result));
-    const { documents } = result;
-    assert.isTrue(Result.isOk(documents));
-    expect(documents[0]).to.eql(offchainDocument);
-  });
-
   it("Document Uploaded: source documents from storage service", async () => {
     const result = await sourceDocuments(ctx, [uploadedDocumentEvent, storageServiceEvent]);
     assert.isTrue(Result.isOk(result));
