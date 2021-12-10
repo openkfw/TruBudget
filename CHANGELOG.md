@@ -17,6 +17,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.28.0] - 2021-12-10
+
+### Changed
+
+- Allow all apostrophe types for Trubudget fields [#1019](https://github.com/openkfw/TruBudget/pull/1019).
+
+### Fixed
+
+- Documents saved via Trubudget's default storage (offchain multichain) are not cached anymore [#1022](https://github.com/openkfw/TruBudget/issues/1022).
+- Trubudget ignores not known Events or bad formatted Events instead of exiting [#1017](https://github.com/openkfw/TruBudget/issues/1017).
+
 ## [1.27.0] - 2021-11-10
 
 ### Added
@@ -687,7 +698,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.27.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.28.0...master
+[1.27.0]: https://github.com/openkfw/TruBudget/compare/v1.27.0...v1.28.0
 [1.27.0]: https://github.com/openkfw/TruBudget/compare/v1.26.0...v1.27.0
 [1.26.0]: https://github.com/openkfw/TruBudget/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/openkfw/TruBudget/compare/v1.24.0...v1.25.0
