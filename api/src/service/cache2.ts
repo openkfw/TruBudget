@@ -204,7 +204,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
             return false;
         }
       };
-      return cache.eventsByStream.get("offchain_documents") || [].filter(documentFilter);
+      return (cache.eventsByStream.get("offchain_documents") || []).filter(documentFilter);
     },
     getStorageServiceUrlPublishedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting storageserviceurl-published events from cache");
@@ -216,7 +216,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
             return false;
         }
       };
-      return cache.eventsByStream.get("offchain_documents") || [].filter(storageServiceUrlFilter);
+      return (cache.eventsByStream.get("offchain_documents") || []).filter(storageServiceUrlFilter);
     },
     getSecretPublishedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting Secret published events from cache");
@@ -228,7 +228,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
             return false;
         }
       };
-      return cache.eventsByStream.get("offchain_documents") || [].filter(secretPhublishedFilter);
+      return (cache.eventsByStream.get("offchain_documents") || []).filter(secretPhublishedFilter);
     },
 
     getProjects: async (): Promise<Project.Project[]> => {
