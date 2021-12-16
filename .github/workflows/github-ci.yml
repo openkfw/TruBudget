@@ -45,10 +45,11 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        project: [
+        project:
+          [
             frontend,
             api,
-            # blockchain,
+            blockchain,
             provisioning,
             e2e-test,
             excel-export-service,
