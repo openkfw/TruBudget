@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.28.1] - 2021-12-16
+
+### Fixed
+
+- Validation issues for special chars in input fields [#1027](https://github.com/openkfw/TruBudget/issues/1027).
+- Fixed document download for files not present in the cache [#1022](https://github.com/openkfw/TruBudget/issues/1022).
+
 ## [1.28.0] - 2021-12-10
 
 ### Changed
@@ -699,7 +706,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
 [unreleased]: https://github.com/openkfw/TruBudget/compare/v1.28.0...master
-[1.27.0]: https://github.com/openkfw/TruBudget/compare/v1.27.0...v1.28.0
+[1.28.1]: https://github.com/openkfw/TruBudget/compare/v1.28.0...v1.28.1
+[1.28.0]: https://github.com/openkfw/TruBudget/compare/v1.27.0...v1.28.0
 [1.27.0]: https://github.com/openkfw/TruBudget/compare/v1.26.0...v1.27.0
 [1.26.0]: https://github.com/openkfw/TruBudget/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/openkfw/TruBudget/compare/v1.24.0...v1.25.0
