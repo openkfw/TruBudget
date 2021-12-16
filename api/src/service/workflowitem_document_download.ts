@@ -44,7 +44,9 @@ export async function getDocument(
           1,
         );
 
-        const documentEvents: WorkflowitemDocumentUploaded.Event[] = items.map((i) => i.data.json);
+        const documentEvents: WorkflowitemDocumentUploaded.Event[] = items
+          .filter((i) => i.data.json.type === "workflowitem_document_uploaded")
+          .map((i) => i.data.json);
         if (documentEvents.length > 1) {
           logger.warn("Duplicate document with this id");
           return new VError(
