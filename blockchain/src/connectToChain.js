@@ -1,6 +1,10 @@
 const axios = require("axios");
 const spawn = require("child_process").spawn;
 const fs = require("fs");
+
+// BurkinaFaso
+const https = require("https");
+
 const log = require("./log/logger");
 const mdLog = require("trubudget-logging-service").createPinoLogger(
   "Multichain-Slave",
@@ -32,6 +36,12 @@ function startSlave(
   externalIpArg,
   multichainDir,
 ) {
+
+  // BurkinaFaso
+  // Accepter self signed certificats
+  NODE_TLS_REJECT_UNAUTHORIZED = 0
+
+
   const prog = "multichaind";
 
   const serverConfigPath = multichainDir + "/multichain.conf";
@@ -109,7 +119,7 @@ function startSlave(
 }
 
 function askMasterForPermissions(address, organization, proto, host, port) {
-  const url = `${proto}://${host}:${port}/api/network.registerNode`;
+  /*const url = `${proto}://${host}:${port}/api/network.registerNode`;
   log.info("Registration URL: " + url);
   return axios.post(url, {
     apiVersion: "1.0",
@@ -118,6 +128,24 @@ function askMasterForPermissions(address, organization, proto, host, port) {
       organization,
     },
   });
+  */
+
+  // BurkinaFaso
+  // Traitement si SSL
+  let httpsAgent = new https.Agent({
+    cert: fs.readFileSync(`${__dirname}/multichain-feed/backend-synchronization/ssl/certSIGFE.crt`),
+    rejectUnauthorized: false,
+  });
+  const url = `https://${host}:${port}/api/network.registerNode`;
+  console.log(`>>> Registration URL: ${url}`);
+  return axios.post(url, {
+    apiVersion: "1.0",
+    data: {
+      address,
+      organization,
+    },
+  }, { httpsAgent });
+
 }
 
 async function registerNodeAtMaster(organization, proto, host, port) {
@@ -132,8 +160,7 @@ async function registerNodeAtMaster(organization, proto, host, port) {
     log.info("Node address registered successfully (approval pending).");
   } catch (error) {
     log.error(
-      `Could not register (${error}). Retry in ${
-        retryIntervalMs / 1000
+      `Could not register (${error}). Retry in ${retryIntervalMs / 1000
       } seconds ...`,
     );
     await relax(retryIntervalMs);
