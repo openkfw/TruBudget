@@ -33,6 +33,10 @@ export interface Project {
   creationUnixTs: string;
   status: "open" | "closed";
   displayName: string;
+  // BurkinaFaso
+  // Project : add new property "responsible organization"
+  respOrganization: string;
+  // BurkinaFaso
   assignee?: string;
   description: string;
   projectedBudgets: ProjectedBudget[];
