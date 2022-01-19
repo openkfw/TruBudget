@@ -54,6 +54,10 @@ function mkSwaggerSchema(server: FastifyInstance) {
                         creationUnixTs: { type: "string", example: "1536154645775" },
                         status: { type: "string", example: "open" },
                         displayName: { type: "string", example: "Build a town-project" },
+                        // BurkinaFaso
+                        // Project : add new property "responsible organization"
+                        respOrganization: { type: "string", example: "Ministère de la Santé" },
+                        // BurkinaFaso
                         description: { type: "string", example: "A town should be built" },
                         assignee: { type: "string", example: "aSmith" },
                         validator: { type: "string", example: "aSmith" },
@@ -108,6 +112,10 @@ interface ExposedProject {
     creationUnixTs: string;
     status: "open" | "closed";
     displayName: string;
+    // BurkinaFaso
+    // Project : add new property "responsible organization"
+    respOrganization?: string;
+    // BurkinaFaso
     description: string;
     assignee?: string;
     thumbnail?: string;
@@ -205,6 +213,10 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
             creationUnixTs: toUnixTimestampStr(project.createdAt),
             status: project.status,
             displayName: project.displayName,
+            // BurkinaFaso
+            // Project : add new property "responsible organization"
+            respOrganization: project.respOrganization,
+            // BurkinaFaso
             assignee: project.assignee,
             description: project.description,
             thumbnail: project.thumbnail,

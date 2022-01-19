@@ -22,6 +22,10 @@ interface RequestBodyV1 {
       status?: "open" | "closed";
       displayName: string;
       description?: string;
+      // BurkinaFaso
+      // Project : add new property "responsible organization"
+      respOrganization: string;
+
       assignee?: string;
       thumbnail?: string;
       projectedBudgets?: Array<{
@@ -42,6 +46,10 @@ const requestBodyV1Schema = Joi.object({
       id: Project.idSchema,
       status: Joi.valid("open"),
       displayName: safeStringSchema.required(),
+      // Burkina Faso
+      // Project : add new property "responsible organization"
+      respOrganization: safeStringSchema.required(),
+      // Burkina faso
       description: safeStringSchema.allow(""),
       assignee: safeIdSchema,
       thumbnail: safeStringSchema,
@@ -85,11 +93,18 @@ function mkSwaggerSchema(server: FastifyInstance): Object {
             properties: {
               project: {
                 type: "object",
-                required: ["displayName"],
+                // BurkinaFaso
+                // The responsible organization is required at creation
+                required: ["displayName", "respOrganization"],
+                // BurkinaFaso
                 properties: {
                   id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
                   status: { type: "string", example: "open" },
                   displayName: { type: "string", example: "Build a town-project" },
+                  // BurkinaFaso
+                  // Project : add new property "responsible organization"
+                  respOrganization: { type: "string", example: "Ministère de la Santé" },
+                  // BurkinaFaso
                   description: { type: "string", example: "A town should be built" },
                   assignee: { type: "string", example: "aSmith" },
                   thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
