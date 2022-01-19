@@ -92,13 +92,15 @@ function startSlave(
   const mc = spawn(prog, args);
 
   mc.stdout.on("data", (data) => {
-    mdLog.info(`${data}`);
+    mdLog.debug(`${data}`);
     const regex = new RegExp("[0-9a-zA-Z]{30,40}");
     const match = regex.exec(data);
     if (match) address = match[0];
   });
 
-  mc.stderr.on("data", (err) => log.error({ err }, "Error in Slave"));
+  mc.stderr.on("data", (err) =>
+    log.error(Buffer.from(err).toString(), "Error in Slave"),
+  );
 
   mc.on("close", (code, signal) =>
     mdLog.warn(
