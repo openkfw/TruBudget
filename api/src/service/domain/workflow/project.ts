@@ -22,6 +22,10 @@ export interface Project {
   createdAt: string; // ISO timestamp
   status: "open" | "closed";
   displayName: string;
+  // BurkinaFaso
+  // Project : add new property "responsible organization"
+  respOrganization?: string;
+  // BurkinaFaso
   description: string;
   assignee: string;
   thumbnail?: string;
@@ -39,6 +43,10 @@ const schema = Joi.object({
   status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
   description: Joi.string().allow("").required(),
+  // BurkinaFaso
+  // Project : add new property "responsible organization"
+  respOrganization: Joi.string().optional(),
+  // BurkinaFaso
   assignee: Joi.string(),
   thumbnail: Joi.string().allow(""),
   projectedBudgets: projectedBudgetListSchema.required(),

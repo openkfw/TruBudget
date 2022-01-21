@@ -12,6 +12,9 @@ describe("create project & projected budgets", () => {
   it("allows more than one projected budget for the same currency if the organizations are different.", async () => {
     const data: ProjectCreate.RequestData = {
       displayName: "test",
+      // BurkinaFaso
+      respOrganization: "exempleMinistry",
+      // BurkinaFaso
       projectedBudgets: [
         { organization: "orga1", currencyCode: "EUR", value: "1" },
         { organization: "orga2", currencyCode: "EUR", value: "2" },
@@ -32,6 +35,9 @@ describe("create project & projected budgets", () => {
   it("allows more than one projected budget for the same organization if the currencies are different.", async () => {
     const data: ProjectCreate.RequestData = {
       displayName: "test",
+      // BurkinaFaso
+      respOrganization: "exempleMinistry",
+      // BurkinaFaso
       projectedBudgets: [
         { organization: "orga", currencyCode: "EUR", value: "1" },
         { organization: "orga", currencyCode: "USD", value: "2" },
@@ -52,6 +58,9 @@ describe("create project & projected budgets", () => {
   it("rejects more than one projected budgets for the same organization if the currencies are the same.", async () => {
     const data: ProjectCreate.RequestData = {
       displayName: "test",
+      // BurkinaFaso
+      respOrganization: "exempleMinistry",
+      // BurkinaFaso
       projectedBudgets: [
         { organization: "orga", currencyCode: "EUR", value: "1" },
         { organization: "orga", currencyCode: "EUR", value: "2" },

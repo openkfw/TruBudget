@@ -30,6 +30,9 @@ const baseProject: Project = {
   status: "open",
   assignee: alice.id,
   displayName: "dummy",
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: "dummy",
   projectedBudgets: [],
   permissions: {},
@@ -146,7 +149,7 @@ describe("close project: notifications", () => {
 
   it(
     "If a project is assigned to a group when closing it, " +
-      "each member, except for the user that closes it, receives a notificaton.",
+    "each member, except for the user that closes it, receives a notificaton.",
     async () => {
       const group = "alice_and_bob_and_charlie";
       const result = await closeProject(ctx, alice, projectId, {

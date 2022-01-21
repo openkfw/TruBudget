@@ -30,6 +30,9 @@ const baseProject: Project = {
   status: "open",
   assignee: alice.id,
   displayName: dummy,
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: dummy,
   projectedBudgets: [],
   permissions: { "project.assign": [alice, bob, charlie].map((x) => x.id) },
@@ -222,7 +225,7 @@ describe("assign project: notifications", () => {
 
   it(
     "If a project gets assigned to a group, " +
-      "each member, except for the assigner, receives a notificaton.",
+    "each member, except for the assigner, receives a notificaton.",
     async () => {
       const assigner = alice;
       const assignedGroup = "alice_and_bob_and_charlie";
