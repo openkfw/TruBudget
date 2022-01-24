@@ -22,6 +22,9 @@ const baseProject: Project.Project = {
   status: "open",
   assignee: bob.id,
   displayName: "unitTestName",
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: "",
   projectedBudgets: [],
   permissions,

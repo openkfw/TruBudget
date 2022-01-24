@@ -32,6 +32,9 @@ const baseProject: Project = {
   createdAt: new Date().toISOString(),
   status: "open",
   displayName: projectName,
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: projectName,
   assignee: alice.id,
   projectedBudgets: [],
@@ -125,7 +128,7 @@ describe("update project: how modifications are applied", () => {
 
   it(
     "An empty update is not allowed, as it must contain at least one of " +
-      "displayName, description, thumbnail, additionalData, tags",
+    "displayName, description, thumbnail, additionalData, tags",
     async () => {
       const modification: Modification = {};
       const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
@@ -233,7 +236,7 @@ describe("update project: notifications", () => {
 
   it(
     "When a user updates a project that is assigned to a group, " +
-      "each member, except for the user that invoked the update, receives a notification",
+    "each member, except for the user that invoked the update, receives a notification",
     async () => {
       const modification: Modification = {
         description: "New description.",

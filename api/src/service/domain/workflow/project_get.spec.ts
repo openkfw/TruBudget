@@ -26,6 +26,9 @@ const baseProject: Project = {
   createdAt: new Date().toISOString(),
   status: "open",
   displayName: projectName,
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: projectName,
   assignee: alice.id,
   projectedBudgets: [],

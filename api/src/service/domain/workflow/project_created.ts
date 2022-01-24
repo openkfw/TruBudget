@@ -17,6 +17,10 @@ interface InitialData {
   id: Project.Id;
   status: "open" | "closed";
   displayName: string;
+  // BurkinaFaso
+  // Project : add new property "responsible organization"
+  respOrganization?: string;
+  // BurkinaFaso
   description: string;
   assignee: Identity;
   thumbnail?: string;
@@ -31,6 +35,10 @@ const initialDataSchema = Joi.object({
   id: Project.idSchema.required(),
   status: Joi.string().valid("open", "closed").required(),
   displayName: Joi.string().required(),
+  // BurkinaFaso
+  // Add "responsible organization"
+  respOrganization: Joi.string().optional(),
+  // BurkinaFaso
   description: Joi.string().allow("").required(),
   assignee: Joi.string(),
   thumbnail: Joi.string().allow(""),
@@ -91,6 +99,10 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Project.Project>
     createdAt: event.time,
     status: initialData.status,
     displayName: initialData.displayName,
+    // BurkinaFaso
+    // Project : add new property "responsible organization"
+    respOrganization: initialData.respOrganization,  // BurkinaFaso
+    // BurkinaFaso
     description: initialData.description,
     assignee: initialData.assignee,
     thumbnail: initialData.thumbnail,

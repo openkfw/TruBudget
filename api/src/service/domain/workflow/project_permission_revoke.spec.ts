@@ -28,6 +28,9 @@ const testProject: Project.Project = {
   status: "open",
   assignee: executingUser.id,
   displayName: "unitTestName",
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: "",
   projectedBudgets: [],
   permissions,
@@ -73,6 +76,9 @@ describe("revoke project permissions", () => {
       status: "open",
       assignee: executingUser.id,
       displayName: "unitTestName",
+      // BurkinaFaso
+      respOrganization: "exempleMinistry",
+      // BurkinaFaso
       description: "",
       projectedBudgets: [],
       permissions: { "project.intent.revokePermission": [] },

@@ -45,6 +45,9 @@ const event: ProjectTraceEvent = {
       status: "open",
       assignee: alice.id,
       displayName: "project",
+      // BurkinaFaso
+      respOrganization: "exempleMinistry",
+      // BurkinaFaso
       description: "some description",
       projectedBudgets: [],
       permissions: {},
@@ -60,6 +63,9 @@ const baseProject: Project = {
   createdAt: new Date().toISOString(),
   status: "open",
   displayName: projectName,
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: projectName,
   assignee: alice.id,
   projectedBudgets: [],

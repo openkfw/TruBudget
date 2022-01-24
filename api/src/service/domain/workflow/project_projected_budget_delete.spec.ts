@@ -30,6 +30,9 @@ const baseProject: Project = {
   status: "open",
   assignee: alice.id,
   displayName: "dummy",
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: "dummy",
   projectedBudgets: [],
   permissions: {
@@ -206,7 +209,7 @@ describe("Deleting Projected Budgets: notifications", () => {
 
   it(
     "If the user that deletes a projected budget is assigned to the " +
-      "project herself,no notifications are issued.",
+    "project herself,no notifications are issued.",
     async () => {
       const result = await deleteProjectedBudget(ctx, alice, projectId, "Testcorp", "EUR", {
         ...baseRepository,
@@ -238,7 +241,7 @@ describe("Deleting Projected Budgets: notifications", () => {
 
   it(
     "If a project is assigned to a group when deleting a projected budget, " +
-      "each member, except for the user that deletes the projected budget, receives a notificaton.",
+    "each member, except for the user that deletes the projected budget, receives a notificaton.",
     async () => {
       const group = "alice_and_bob_and_charlie";
       const result = await deleteProjectedBudget(ctx, alice, projectId, "Testcorp", "EUR", {

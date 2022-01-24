@@ -48,6 +48,9 @@ const baseProject: Project.Project = {
   createdAt: new Date().toISOString(),
   status: "open",
   displayName: "baseUser",
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: "baseUser",
   projectedBudgets: [],
   permissions: {},

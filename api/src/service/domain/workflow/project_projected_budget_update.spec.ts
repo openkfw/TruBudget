@@ -30,6 +30,9 @@ const baseProject: Project = {
   status: "open",
   assignee: alice.id,
   displayName: "dummy",
+  // BurkinaFaso
+  respOrganization: "exempleMinistry",
+  // BurkinaFaso
   description: "dummy",
   projectedBudgets: [],
   permissions: {
@@ -186,7 +189,7 @@ describe("Update Projected Budgets: notifications", () => {
 
   it(
     "If the user that updates a projected budget is assigned " +
-      "to the project herself,no notifications are issued.",
+    "to the project herself,no notifications are issued.",
     async () => {
       const result = await updateProjectedBudget(ctx, alice, projectId, "Testcorp", "9999", "EUR", {
         ...baseRepository,
@@ -218,7 +221,7 @@ describe("Update Projected Budgets: notifications", () => {
 
   it(
     "If a project is assigned to a group when updating a projected budget, " +
-      "each member, except for the user that updates it, receives a notificaton.",
+    "each member, except for the user that updates it, receives a notificaton.",
     async () => {
       const group = "alice_and_bob_and_charlie";
       const result = await updateProjectedBudget(ctx, alice, projectId, "Testcorp", "999", "EUR", {
