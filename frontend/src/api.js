@@ -162,11 +162,15 @@ class Api {
   listProjects = () => instance.get(`/project.list`);
   listSubprojects = projectId => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
 
-  createProject = (displayName, description, thumbnail, projectedBudgets, tags) =>
+  //BurkinaFaso - added respOrganization
+  createProject = (displayName, description, respOrganization, thumbnail, projectedBudgets, tags) =>
     instance.post(`/global.createProject`, {
       project: {
         displayName,
         description,
+        //BurkinaFaso
+        respOrganization,
+        //BurkinaFaso
         thumbnail,
         projectedBudgets,
         tags

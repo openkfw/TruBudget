@@ -30,6 +30,17 @@ class Identifier extends Component {
           multiline={true}
           data-test={this.props.commentId || "commentinput"}
         />
+
+        {/* BurkinaFaso */}
+        <TextInput
+          label={this.props.respOrganizationLabel}
+          value={this.props.respOrganization}
+          onChange={this.props.respOrganizationOnChange}
+          multiline={true}
+          data-test={this.props.respOrganizationId || "respOrganization input"}
+        />
+        {/* BurkinaFaso */}
+
       </div>
     );
   }

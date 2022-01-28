@@ -503,6 +503,9 @@ export function* createProjectSaga(action) {
       api.createProject,
       action.name,
       action.comment,
+      //BurkinaFaso
+      action.respOrganization,
+      //BurkinaFaso
       action.thumbnail,
       action.projectedBudgets,
       action.tags

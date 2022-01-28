@@ -11,6 +11,9 @@ import {
   setCurrentStep,
   storeProjectComment,
   storeProjectName,
+  //BurkinaFaso
+  storeProjectRespOrganisation,
+  //BurkinaFaso
   storeProjectThumbnail,
   addProjectProjectedBudget,
   editProjectProjectedBudgetAmount,
@@ -40,11 +43,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createProject: (name, comment, thumbnail, projectedBudgets, tags) =>
-      dispatch(createProject(name, comment, thumbnail, projectedBudgets, tags)),
+    //BurkinaFaso : Added argument for respOrganization
+    createProject: (name, respOrganization, comment, thumbnail, projectedBudgets, tags) =>
+      dispatch(createProject(name, respOrganization, comment, thumbnail, projectedBudgets, tags)),
+    //BurkinaFaso : Added argument for respOrganization
     editProject: (id, changes, deletedProjectedBudgets) => dispatch(editProject(id, changes, deletedProjectedBudgets)),
     hideProjectDialog: () => dispatch(hideProjectDialog()),
     storeProjectName: name => dispatch(storeProjectName(name)),
+    //BurkinaFaso
+    storeProjectRespOrganisation: respOrganization => dispatch(storeProjectRespOrganisation(respOrganization)),
+    //BurkinaFaso
     storeProjectComment: comment => dispatch(storeProjectComment(comment)),
     setCurrentStep: step => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),

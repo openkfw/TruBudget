@@ -28,6 +28,10 @@ export interface RequestData {
   id?: string;
   status?: "open" | "closed";
   displayName: string;
+  // BurkinaFaso
+  // Project : add new property "responsible organization"
+  respOrganization?: string;
+  // BurkinaFaso
   description?: string;
   assignee?: string;
   thumbnail?: string;
@@ -40,6 +44,10 @@ const requestDataSchema = Joi.object({
   id: Project.idSchema,
   status: Joi.string().valid("open", "closed"),
   displayName: Joi.string().required(),
+  // BurkinaFaso
+  // Project : add new property "responsible organization"
+  respOrganization: Joi.string().optional(),
+  // BurkinaFaso
   description: Joi.string().allow(""),
   assignee: Joi.string(),
   thumbnail: Joi.string().allow(""),
@@ -72,6 +80,10 @@ export async function createProject(
     id: data.id || randomString(),
     status: data.status || "open",
     displayName: data.displayName,
+    // BurkinaFaso
+    // Project : add new property "responsible organization"
+    respOrganization: data.respOrganization,
+    // BurkinaFaso
     description: data.description || "",
     assignee: data.assignee || creatingUser.id,
     thumbnail: data.thumbnail || "",

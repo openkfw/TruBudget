@@ -32,6 +32,9 @@ const en = {
     close: "Close",
     closed: "Closed",
     comment_description: "Add some comments",
+    //BurkinaFaso
+    respOrganization: "Responsible organisation",
+    //BurkinaFaso
     comment: "Comment",
     completion: "Completion",
     confirm: "Confirm",
@@ -216,6 +219,9 @@ const en = {
     project_budget: "Budget",
     project_close_info: "At least one subproject item has not been closed yet.",
     project_comment: "Comment",
+    //BurkinaFaso
+    project_respOrganization: "Responsible organization",
+    //BurkinaFaso
     project_currency: "Project currency",
     project_details: "Details",
     project_disbursement_authority_role_description: "The authorities enabled to approve financial transactions",

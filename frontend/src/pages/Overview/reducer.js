@@ -13,6 +13,9 @@ import {
   HIDE_PROJECT_DIALOG,
   HIDE_PROJECT_PERMISSIONS,
   PROJECT_COMMENT,
+  //BurkinaFaso
+  PROJECT_RESPORGANISATION,
+  //BurkinaFaso
   PROJECT_CREATION_STEP,
   PROJECT_DELETED_PROJECTED_BUDGET,
   PROJECT_NAME,
@@ -39,6 +42,9 @@ const defaultState = fromJS({
     id: "",
     displayName: "",
     description: "",
+    //BurkinaFaso
+    respOrganization: "",
+    //BurkinaFaso
     thumbnail: "/Thumbnail_0001.jpg",
     projectedBudgets: [],
     deletedProjectedBudgets: [],
@@ -102,7 +108,7 @@ export default function overviewReducer(state = defaultState, action) {
     case SHOW_PROJECT_ADDITIONAL_DATA:
       return state.merge({
         idForInfo: fromJS(action.id),
-        isProjectAdditionalDataShown: true
+        isProjectCommentAdditionalDataShown: true
       });
     case HIDE_PROJECT_ADDITIONAL_DATA:
       return state.set("isProjectAdditionalDataShown", false);
@@ -160,6 +166,10 @@ export default function overviewReducer(state = defaultState, action) {
       return newState;
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
+    //BurkinaFaso
+    case PROJECT_RESPORGANISATION:
+      return state.setIn(["projectToAdd", "respOrganization"], action.respOrganization);
+    //BurkinaFaso
     case ADD_PROJECT_TAG: {
       const tags = state.getIn(["projectToAdd", "tags"]) || [];
       if (!tags.some(tag => tag === action.tag)) {

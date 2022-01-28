@@ -8,10 +8,15 @@ import ProjectDialogContent from "./ProjectDialogContent";
 
 const handleCreate = props => {
   const { createProject, onDialogCancel, projectToAdd, storeSnackbarMessage } = props;
-  const { displayName, description, thumbnail, projectedBudgets, tags } = projectToAdd;
+  //BurkinaFaso added respOrganization
+  const { displayName, description, respOrganization, thumbnail, projectedBudgets, tags } = projectToAdd;
+  //BurkinaFaso
   createProject(
     displayName,
     description,
+    // BurkinaFaso
+    respOrganization,
+    // BurkinaFaso
     thumbnail,
     projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) })),
     tags
@@ -34,6 +39,9 @@ const handleEdit = props => {
       {
         displayName: changes.displayName,
         description: changes.description,
+        //BurkinaFaso
+        respOrganization: changes.respOrganization,
+        //BurkinaFaso
         thumbnail: changes.thumbnail,
         projectedBudgets: changes.projectedBudgets,
         additionalData: changes.additionalData,
@@ -56,13 +64,13 @@ const ProjectDialog = props => {
 
   const specificProps = props.editDialogShown
     ? {
-        handleSubmit: handleEdit,
-        dialogShown: editDialogShown
-      }
+      handleSubmit: handleEdit,
+      dialogShown: editDialogShown
+    }
     : {
-        handleSubmit: handleCreate,
-        dialogShown: creationDialogShown
-      };
+      handleSubmit: handleCreate,
+      dialogShown: creationDialogShown
+    };
 
   const steps = [
     {

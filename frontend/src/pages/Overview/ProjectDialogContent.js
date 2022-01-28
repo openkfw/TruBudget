@@ -1,4 +1,5 @@
 import Divider from "@material-ui/core/Divider";
+import { getThemeProps } from "@material-ui/styles";
 import React from "react";
 
 import strings from "../../localizeStrings";
@@ -21,6 +22,12 @@ const ProjectDialogContent = props => {
           commentHintText={strings.common.comment_description}
           comment={props.projectToAdd.description}
           commentOnChange={props.storeProjectComment}
+          //BurkinaFaso
+          respOrganizationLabel={strings.project.project_respOrganization}
+          respOrganizationHintText={strings.common.respOrganization}
+          respOrganization={props.projectToAdd.respOrganization}
+          respOrganizationOnChange={props.storeProjectRespOrganisation}
+        //BurkinaFaso
         />
       </div>
       <Divider />

@@ -18,6 +18,9 @@ export const ADD_PROJECT_PROJECTED_BUDGET = "ADD_PROJECT_PROJECTED_BUDGET";
 export const EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT = "EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT";
 export const PROJECT_DELETED_PROJECTED_BUDGET = "PROJECT_DELETED_PROJECTED_BUDGET";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
+//BurkinaFaso
+export const PROJECT_RESPORGANISATION = "PROJECT_RESPORGANISATION";
+//BurkinaFaso
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
 
@@ -57,12 +60,15 @@ export function fetchAllProjects(showLoading = false) {
     showLoading
   };
 }
-
-export function createProject(name, comment, thumbnail, projectedBudgets, tags) {
+//Burkina Faso: adding argument for responsible organisation
+export function createProject(name, comment, respOrganization, thumbnail, projectedBudgets, tags) {
   return {
     type: CREATE_PROJECT,
     name,
     comment,
+    //Burkina Faso
+    respOrganization,
+    //Burkina Faso
     thumbnail,
     projectedBudgets,
     tags
@@ -171,6 +177,15 @@ export function storeProjectComment(comment) {
     comment: comment
   };
 }
+
+//BurkinaFaso
+export function storeProjectRespOrganisation(respOrganization) {
+  return {
+    type: PROJECT_RESPORGANISATION,
+    respOrganization: respOrganization
+  };
+}
+//BurkinaFaso
 
 export function storeProjectThumbnail(thumbnail) {
   return {
