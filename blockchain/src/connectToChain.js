@@ -1,3 +1,4 @@
+const https = require("https");
 const axios = require("axios");
 const spawn = require("child_process").spawn;
 const fs = require("fs");
@@ -108,9 +109,48 @@ function startSlave(
   return mc;
 }
 
-function askMasterForPermissions(address, organization, proto, host, port) {
+function askMasterForPermissions(
+  address,
+  organization,
+  proto,
+  host,
+  port,
+  certPath,
+  certCaPath,
+  certKeyPath,
+) {
   const url = `${proto}://${host}:${port}/api/network.registerNode`;
-  log.info("Registration URL: " + url);
+  if (certPath) {
+    log.debug(
+      `Connecting with master node using certificate ${certPath}, ca ${certCaPath},key ${certKeyPath} ...`,
+    );
+
+    const httpsAgent = new https.Agent(
+      certCaPath && certKeyPath
+        ? {
+            cert: fs.readFileSync(certPath),
+            ca: fs.readFileSync(certCaPath),
+            key: fs.readFileSync(certKeyPath),
+            rejectUnauthorized: process.env.NODE_ENV !== "production",
+          }
+        : {
+            cert: fs.readFileSync(certPath),
+            rejectUnauthorized: process.env.NODE_ENV !== "production",
+          },
+    );
+    return axios.post(
+      url,
+      {
+        apiVersion: "1.0",
+        data: {
+          address,
+          organization,
+        },
+      },
+      { httpsAgent },
+    );
+  }
+  log.debug("Connecting with master node without certificate ...");
   return axios.post(url, {
     apiVersion: "1.0",
     data: {
@@ -120,7 +160,15 @@ function askMasterForPermissions(address, organization, proto, host, port) {
   });
 }
 
-async function registerNodeAtMaster(organization, proto, host, port) {
+async function registerNodeAtMaster(
+  organization,
+  proto,
+  host,
+  port,
+  certPath,
+  certCaPath,
+  certKeyPath,
+) {
   const retryIntervalMs = 10000;
   try {
     while (!address) {
@@ -128,16 +176,24 @@ async function registerNodeAtMaster(organization, proto, host, port) {
     }
 
     log.info(`Registering ${organization} node address ${address}`);
-    await askMasterForPermissions(address, organization, proto, host, port);
+    await askMasterForPermissions(
+      address,
+      organization,
+      proto,
+      host,
+      port,
+      certPath,
+      certCaPath,
+      certKeyPath,
+    );
     log.info("Node address registered successfully (approval pending).");
   } catch (error) {
     log.error(
-      `Could not register (${error}). Retry in ${
-        retryIntervalMs / 1000
-      } seconds ...`,
+      `Could not register (${error}). Retry in ${retryIntervalMs /
+        1000} seconds ...`,
     );
     await relax(retryIntervalMs);
-    await registerNodeAtMaster(organization, proto, host, port);
+    await registerNodeAtMaster(organization, proto, host, port, certPath);
   }
 }
 

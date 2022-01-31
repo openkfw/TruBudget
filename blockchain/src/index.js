@@ -35,6 +35,9 @@ const RPC_USER = process.env.RPC_USER || "multichainrpc";
 const RPC_PASSWORD =
   process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
 const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
+const CERT_PATH = process.env.CERT_PATH || undefined;
+const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
+const CERT_KEY_PATH = process.env.CERT_KEY_PATH || undefined;
 
 let autostart = true;
 let isRunning = true;
@@ -157,7 +160,16 @@ function initMultichain() {
       ),
     );
     setTimeout(
-      () => registerNodeAtMaster(ORGANIZATION, API_PROTO, API_HOST, API_PORT),
+      () =>
+        registerNodeAtMaster(
+          ORGANIZATION,
+          API_PROTO,
+          API_HOST,
+          API_PORT,
+          CERT_PATH,
+          CERT_CA_PATH,
+          CERT_KEY_PATH,
+        ),
       5000,
     );
   }
