@@ -18,6 +18,11 @@ services:
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
+      NODE_ENV: ${NODE_ENV}
+      CERT_PATH: ${CERT_PATH}
+      CERT_CA_PATH: ${CERT_CA_PATH}
+      CERT_KEY_PATH: ${CERT_KEY_PATH}
+
     networks:
       mynetwork:
         ipv4_address: 172.21.0.11

@@ -19,6 +19,11 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
+      NODE_ENV: ${NODE_ENV}
+      CERT_PATH: ${CERT_PATH}
+      CERT_CA_PATH: ${CERT_CA_PATH}
+      CERT_KEY_PATH: ${CERT_KEY_PATH}
+
     # volume for persisting data from multichain
     # volumes:
     #   - ~/masterVolume:/root/.multichain
