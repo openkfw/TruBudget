@@ -189,6 +189,10 @@ const mapStateToProps = state => {
     projectStatus: state.getIn(["detailview", "projectStatus"]),
     projectAssignee: state.getIn(["detailview", "projectAssignee"]),
     projectTS: state.getIn(["detailview", "projectTS"]),
+    // BurkinaFaso
+    // Add respOrganization to project detail
+    respOrganization: state.getIn(["detailview", "respOrganization"]),
+    // BurkinaFaso
     projectProjectedBudgets: state.getIn(["detailview", "projectProjectedBudgets"]),
     projectTags: state.getIn(["detailview", "projectTags"]),
     subProjects: state.getIn(["detailview", "subProjects"]),

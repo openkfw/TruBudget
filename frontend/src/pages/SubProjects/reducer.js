@@ -55,6 +55,10 @@ const defaultState = fromJS({
   projectStatus: "open",
   projectProjectedBudgets: [],
   projectTS: 0,
+  // BukinaFaso
+  // Add resposible organization
+  respOrganization: "Default responsible organization",
+  // BurkinaFaso
   subProjects: [],
   filteredSubProjects: [],
   subprojectToAdd: {
@@ -111,6 +115,10 @@ export default function detailviewReducer(state = defaultState, action) {
         projectComment: action.project.data.description,
         projectStatus: action.project.data.status,
         projectTS: action.project.data.creationUnixTs,
+        // BukinaFaso
+        // Add resposible organization
+        respOrganization: action.project.data.respOrganization,
+        // BurkinaFaso
         projectAssignee: action.project.data.assignee,
         projectProjectedBudgets: fromJS(action.project.data.projectedBudgets),
         projectAdditionalData: fromJS(action.project.data.additionalData),

@@ -21,7 +21,10 @@ import AssigneeIcon from "@material-ui/icons/Group";
 import LabelIcon from "@material-ui/icons/Label";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
-
+// BurkinaFaso
+// Import icon for respOrganization
+import OrganizationIcon from "@material-ui/icons/LocationCity";
+// BurkinaFaso
 import { formattedTag, statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import ProjectAnalyticsDialog from "../Analytics/ProjectAnalyticsDialog";
@@ -99,6 +102,10 @@ const ProjectDetails = props => {
     projectStatus,
     projectTS,
     projectAssignee,
+    // BurkinaFaso
+    // Add responsible organization to project details
+    respOrganization,
+    // BurkinaFaso
     users,
     canAssignProject,
     closeProject,
@@ -223,6 +230,19 @@ const ProjectDetails = props => {
               }
               secondary={strings.project.assignee}
             />
+          </ListItem>
+          {/*BurkinaFaso*/}
+          {/*Add respOrganization*/}
+          <ListItem>
+            {projectName ? (
+              <ListItemAvatar>
+                <Avatar>
+                  <OrganizationIcon />
+                </Avatar>
+              </ListItemAvatar>
+            ) : null}
+            <ListItemText primary={respOrganization} secondary={strings.common.respOrganization} />
+            {/*BurkinaFaso*/}
           </ListItem>
         </List>
       </Card>
