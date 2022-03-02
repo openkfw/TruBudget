@@ -17,6 +17,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.29.0] - 2022-03-02
+
+### Added
+
+- Possibility to pass SSL certificate for blockchain network request [#1038](https://github.com/openkfw/TruBudget/pull/1038).
+
+### Fixed
+
+- Fixed the error log output of multichain errors which were not displayed in a readable format [#1037](https://github.com/openkfw/TruBudget/pull/1037)
+- Fixed too strict input restrictions which led to unexpected errors [#1027](https://github.com/openkfw/TruBudget/issues/1027)
+
 ## [1.28.1] - 2021-12-16
 
 ### Fixed
@@ -705,7 +716,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.28.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.29.0...master
+[1.29.0]: https://github.com/openkfw/TruBudget/compare/v1.28.1...v1.29.0
 [1.28.1]: https://github.com/openkfw/TruBudget/compare/v1.28.0...v1.28.1
 [1.28.0]: https://github.com/openkfw/TruBudget/compare/v1.27.0...v1.28.0
 [1.27.0]: https://github.com/openkfw/TruBudget/compare/v1.26.0...v1.27.0
