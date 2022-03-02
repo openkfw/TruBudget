@@ -7,13 +7,14 @@ if [ -z ${trubudget_version} ]; then
     echo "Example: bash bump-tag-versions.sh 1.0.0"
     exit 0
 fi
-trubudget_projects=('frontend' 'api' 'blockchain' 'e2e-test' 'provisioning' 'excel-export-service' 'email-notification-service' 'storage-service')
+trubudget_projects=('frontend' 'api' 'blockchain' 'e2e-test' 'provisioning' 'excel-export-service' 'email-notification-service' 'storage-service' 'logging-service')
 
 for project in "${trubudget_projects[@]}"; do
     eval "cd $project"
     echo "Bumping $project ..."
     eval "perl -pi -e 's/\"version\": .*/\"version\": \"$trubudget_version\",/' ./package.json"
     eval "npm install --no-audit"
+    eval "npm audit fix"
     if [ $project == frontend ]; then
         echo "Auditing only production dependencies ..."
         eval "npm run audit -- --production"
@@ -25,5 +26,6 @@ for project in "${trubudget_projects[@]}"; do
 done
 
 eval "npm install --no-audit"
+eval "npm audit fix"
 echo "Auditing dependencies ..."
 eval "npm run audit"
