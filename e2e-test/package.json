@@ -1,6 +1,6 @@
 {
   "name": "trubudget-e2e-test",
-  "version": "1.28.1",
+  "version": "1.29.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -45,7 +45,7 @@
     "fs": "0.0.1-security",
     "md5-file": "^5.0.0",
     "path": "^0.12.7",
-    "shelljs": "0.8.2",
+    "shelljs": "^0.8.5",
     "tar-fs": "^2.1.0",
     "tar-stream": "^2.1.4"
   }
