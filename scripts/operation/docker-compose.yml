@@ -85,9 +85,7 @@ services:
       DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
       STORAGE_SERVICE_HOST: storage-service
-      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
-      ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
-      ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT} 
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
       SIGNING_METHOD: ${SIGNING_METHOD}
       JWT_SECRET: ${JWT_SECRET}
@@ -211,6 +209,24 @@ services:
     ports:
       - "3000:80" # map nginx port 80 to localhost:3000
 
+
+  logging-service:
+    build:
+      context: ../../logging-service
+    environment:
+      LOGGER_PORT: ${LOGGER_PORT}
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
+      LOG_LEVEL: ${LOG_LEVEL}
+      LOGGING_SERVICE_CACHE_DURATION: ${LOGGING_SERVICE_CACHE_DURATION}
+      NODE_ENV: ${LOGGING_SERVICE_NODE_ENV}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.13
+    ports:
+      - "${LOGGER_PORT}:${LOGGER_PORT}"
+
+
   slave-node:
     image: trubudget/blockchain:latest
     environment:
@@ -236,21 +252,6 @@ services:
       - "7448:7447" # slave-node port is 7448 on host
     privileged: true
 
-  logging-service:
-    build:
-      context: ../../logging-service
-    environment:
-      LOGGER_PORT: ${LOGGER_PORT}
-      API_HOST: ${API_HOST}
-      API_PORT: ${API_PORT}
-      LOG_LEVEL: ${LOG_LEVEL}
-      LOGGING_SERVICE_CACHE_DURATION: ${LOGGING_SERVICE_CACHE_DURATION}
-      NODE_ENV: ${LOGGING_SERVICE_NODE_ENV}
-    networks:
-      mynetwork:
-        ipv4_address: 172.21.0.13
-    ports:
-      - "${LOGGER_PORT}:${LOGGER_PORT}"
 
   slave-api:
     image: trubudget/api:${TAG}
@@ -265,9 +266,7 @@ services:
       DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
       STORAGE_SERVICE_HOST: storage-service
-      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
-      ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
-      ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT} 
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       SIGNING_METHOD: ${SIGNING_METHOD}

@@ -14,7 +14,7 @@ const createPinoLogger = (name) => {
   );
 
   const prettyPrint =
-    activatePrettyPrint == "true"
+    activatePrettyPrint === true
       ? {
           colorize: true,
           levelFirst: false,

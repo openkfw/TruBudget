@@ -178,7 +178,7 @@ export class RpcClient {
           resolve(responseData);
         })
         .catch((error: AxiosError | Error) => {
-          let response: RpcError = this.handleError(error, request.method);
+          let response: RpcError = this.handleError(error, request.method, request.params);
           reject(response);
         });
     });
@@ -225,7 +225,7 @@ export class RpcClient {
               if (Result.isOk(item)) {
                 items.push(item);
               } else {
-                this.handleError(item, method);
+                this.handleError(item, method, params);
               }
               return items;
             }, [] as StreamItem[]);
@@ -241,20 +241,22 @@ export class RpcClient {
               error,
             )}`,
           );
-          let response: RpcError = this.handleError(error, method);
+          let response: RpcError = this.handleError(error, method, params);
           reject(response);
         });
     });
   }
 
-  private handleError = (error, method) => {
+  private handleError = (error, method, params) => {
     if (axios.isAxiosError(error)) {
       if (error.response && error.response.data.error !== null) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx and WITH multichain errors:
         const response = error.response.data.error;
         const err = JSON.stringify(response);
-        logger.error(`Error during invoke of ${method}. Multichain errors occured. ${err}`);
+        logger.error(
+          `Error during invoke of ${method} with params ${params}. Multichain errors occured. ${err}`,
+        );
         return response;
       }
 
@@ -262,7 +264,7 @@ export class RpcClient {
         // non 2xx answer but no multichain data
         logger.error(
           { error: error.response },
-          `Error during invoke of ${method}. No multichain data.`,
+          `Error during invoke of ${method} with params ${params}. No multichain data.`,
         );
         return new RpcError(
           Number(error.response.status),
@@ -280,7 +282,7 @@ export class RpcClient {
       }
     } else {
       // Something happened in setting up the request that triggered an Error
-      logger.error(`Error during invoke of ${method}. ${error.message}`);
+      logger.error(`Error during invoke of ${method} with params ${params}. ${error.message}`);
       return new RpcError(500, `other error: ${error}`, error, "");
     }
   };

@@ -1,4 +1,4 @@
-# Create a New Network with Docker-Compose
+# Create a new Network with Docker-Compose
 
 This guide describes how to start a new instance of Trubudget using docker-compose.
 
@@ -15,15 +15,16 @@ The deployments are abstracted through shell scripts. We expect you to have a UN
 
 ## Table of Contents
 
-- [Create a New Network with Docker-Compose](#create-a-new-network-with-docker-compose)
+- [Create a new Network with Docker-Compose](#create-a-new-network-with-docker-compose)
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
     - [Docker & Docker Compose](#docker--docker-compose)
     - [Ports and IP Addresses for TruBudget](#ports-and-ip-addresses-for-trubudget)
-    - [Verify version](#verify-version-of-trubudget)
+    - [Verify version of TruBudget](#verify-version-of-trubudget)
     - [Clean installation](#clean-installation)
   - [Create a new Blockchain network](#create-a-new-blockchain-network)
-  - [Connect to an existing Blockchain network](#connect-to-an-existing-blockchain-network)
+  - [Create a new Blockchain network with two organization](#create-a-new-blockchain-network-with-two-organization)
+    - [Example](#example)
 
 ## Prerequisites
 
@@ -36,7 +37,7 @@ The whole deployment is based on Docker and Docker Compose, therefore you need t
 Make sure that the following ports are not blocked by other processes: `3000`, `8080`, `8090`, `9000`, `8081`, `7447`, `7448`.
 Also make sure that IPv4 subnet mask `172.21.0.0/24` is free to use on your computer.
 
-If the subnet mask or some ports are already used by other proccesses or programs, you can easily change the port in the `.env` file that is located in `/scripts/operations/`.
+If the subnet mask or some ports are already used by other processes or programs, you can easily change the port in the `.env` file that is located in `/scripts/operations/`.
 
 ### Verify version of TruBudget
 
@@ -85,12 +86,12 @@ cp .env_example .env
 The `.env` in scripts/operation/ can be edited directly to fit your needs.
 
 :::note
-For detailed explenations of the environment variables, see the [Environment Variables](./../../../environment-variables.md)
+For detailed explanations of the environment variables, see the [Environmental variables](https://github.com/openkfw/TruBudget/blob/master/blockchain/README.md#environment-variables)
 :::
 
 To start the TruBudget in an easy way, use the bash script `start-trubudget.sh`.
 
-If you want to start a setup with one blockain, frontend, API and provisioning (for test data), run:
+If you want to start a setup with one blockchain, frontend, API and provisioning (for test data), run:
 
 ```bash
 cd scripts/operation/
@@ -103,12 +104,23 @@ The **frontend** should be accessible via port 3000 on the server that it is run
 
 The **API Swagger documentation** should be accessible via port 8080 on the server that it is running on: http://localhost:8080/api/documentation/static/index.html
 
-## Connect to an existing Blockchain network
+## Create a new Blockchain network with two organization
+
+To connect two blockchains, you need to define exactly one master node and one or more slave nodes. The define a slave node, you must set the correct [Environmental variables](https://github.com/openkfw/TruBudget/blob/master/blockchain/README.md#environment-variables) in a blockchain node in order to
+
+1. start a slave node with correct environmental variables
+1. send access requests to the master node
+
+To understand how to set the environment variables correctly, read [How to connect to a master node](https://github.com/openkfw/TruBudget/blob/master/docs/operation-administration/installation/connect-to-an-existing-network/how-to-connect-to-a-master-node.md).
+
+If you want to know what exactly happens when blockchain nodes are connecting, read the description of the [Lifecycle](https://github.com/openkfw/TruBudget/blob/master/blockchain/README.md#Lifecycle).
+
+### Example
 
 The docker-compose file in `scripts/operation/` comes with one additional blockchain node (slave-node) that trys to connect to the master node after starting.
 Each Blockchain container comes with its own volume that persists the data of the Blockchain.
 
-To start TruBudget with two organizations (master and slave), run:
+To start TruBudget with two separate blockchains (master and slave, two different organizations), run:
 
 ```bash
 bash start-trubudget.sh --slim --add-organization
