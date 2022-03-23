@@ -13,14 +13,12 @@ import {
   CHECK_EMAIL_SERVICE_SUCCESS,
   FETCH_ADMIN_USER_SUCCESS,
   FETCH_EMAIL_ADDRESS_SUCCESS,
-  FETCH_ENVIRONMENT_SUCCESS,
   FETCH_USER_SUCCESS,
   INIT_LANGUAGE,
   LOGIN_SUCCESS,
   LOGIN_ERROR,
   LOGOUT_SUCCESS,
   SET_LANGUAGE,
-  STORE_ENVIRONMENT_SUCCESS,
   STORE_PASSWORD,
   STORE_USERNAME,
   CHECK_EXPORT_SERVICE_SUCCESS,
@@ -38,7 +36,6 @@ export const defaultState = fromJS({
   groups: [],
   avatarBackground: "/avatar_back.jpeg",
   avatar: "/lego_avatar_female2.jpg",
-  environment: "Test",
   jwt: "",
   adminLoginFailed: false,
   language: "en-gb",
@@ -52,7 +49,7 @@ export const defaultState = fromJS({
   loginError: false
 });
 
-const setTimeLocale = language => {
+const setTimeLocale = (language) => {
   switch (language) {
     // daysjs excpects en instead of en-gb.
     // Changing the language preset would break existing clients because it it saved in the clients local storage
@@ -65,7 +62,7 @@ const setTimeLocale = language => {
   }
 };
 
-export const changeLanguage = state => {
+export const changeLanguage = (state) => {
   const language = state.get("language");
   setTimeLocale(language);
   strings.setLanguage(language);
@@ -94,7 +91,7 @@ export default function loginReducer(state = defaultState, action) {
       const enabledUsers = [];
       const disabledUsers = [];
       const groupList = [];
-      action.user.forEach(user => {
+      action.user.forEach((user) => {
         userDisplayNameMap[user.id] = user.displayName;
         if (!user.isGroup) {
           user.permissions["user.authenticate"].includes(user.id) ? enabledUsers.push(user) : disabledUsers.push(user);
@@ -134,12 +131,6 @@ export default function loginReducer(state = defaultState, action) {
       });
     case LOGIN_ERROR:
       return state.set("loginError", true);
-    case STORE_ENVIRONMENT_SUCCESS:
-    case FETCH_ENVIRONMENT_SUCCESS:
-      return state.merge({
-        environment: action.environment,
-        productionActive: action.productionActive
-      });
     case INIT_LANGUAGE:
       changeLanguage(state);
       return state;

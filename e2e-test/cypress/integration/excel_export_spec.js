@@ -1,9 +1,9 @@
-let exportBaseUrl = `${Cypress.config("baseUrl")}`;
+let exportBaseUrl = Cypress.config("baseUrl");
 
 if (Cypress.env("EXPORT_SERVICE_BASE_URL")) {
   exportBaseUrl = Cypress.env("EXPORT_SERVICE_BASE_URL");
 }
-let exportUrl = `${exportBaseUrl}/test/api/export/xlsx`;
+let exportUrl = `${exportBaseUrl}/api/export/xlsx`;
 
 let file = "cypress/fixtures/TruBudget_Export.xlsx";
 

@@ -1,11 +1,6 @@
 describe("Project Tags", function() {
-  let projectId, baseUrl, apiRoute;
-  before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-    cy.login();
-    cy.visit("/projects/");
-  });
+  let projectId;
+  const apiRoute = "/api";
 
   beforeEach(function() {
     cy.login();

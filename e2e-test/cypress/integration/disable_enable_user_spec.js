@@ -1,5 +1,5 @@
-describe("Disable and enable users", function () {
-  let baseUrl, apiRoute;
+describe("Disable and enable users", function() {
+  const apiRoute = "/api";
   let testUserId;
 
   // Generate random IDs since every ID can only exists once in the multichain
@@ -26,12 +26,7 @@ describe("Disable and enable users", function () {
       .click();
   }
 
-  before(function () {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
-
-  beforeEach(function () {
+  beforeEach(function() {
     cy.login();
     cy.intercept(apiRoute + "/user.list").as("userList");
     cy.intercept(apiRoute + "/group.list").as("groupList");
@@ -52,11 +47,11 @@ describe("Disable and enable users", function () {
       .wait("@globalPermissionsList");
   });
 
-  it("The logged-in user cannot disable himself", function () {
+  it("The logged-in user cannot disable himself", function() {
     cy.get(`[data-test=disable-user-mstein]`).should("be.disabled");
   });
 
-  it("When the user has been disabled successfully, he/she is moved to the disabled-user list", function () {
+  it("When the user has been disabled successfully, he/she is moved to the disabled-user list", function() {
     cy.intercept(apiRoute + "/global.disableUser").as("disableUser");
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
     // Disable user
@@ -79,7 +74,7 @@ describe("Disable and enable users", function () {
       .should("be.visible");
   });
 
-  it("When the user has been enabled successfully, he/she is moved to the user list", function () {
+  it("When the user has been enabled successfully, he/she is moved to the user list", function() {
     // Disable user
     cy.get(`[data-test=disable-user-${testUserId}]`)
       .should("be.visible")
@@ -96,7 +91,7 @@ describe("Disable and enable users", function () {
       .click();
     cy.get(`[data-test=enable-user-${testUserId}]`)
       .should("be.visible")
-      .click({force: true});
+      .click({ force: true });
     cy.get(`[data-test=confirmation-dialog-confirm]`)
       .should("be.visible")
       .click();
@@ -115,7 +110,7 @@ describe("Disable and enable users", function () {
       .should("not.exist");
   });
 
-  it("Disabled user has to use correct password to see that he has been disabled", function () {
+  it("Disabled user has to use correct password to see that he has been disabled", function() {
     // Disable user
     cy.get(`[data-test=disable-user-${testUserId}]`)
       .should("be.visible")
@@ -147,7 +142,7 @@ describe("Disable and enable users", function () {
       .should("be.visible");
   });
 
-  it("An enabled user is able to login", function () {
+  it("An enabled user is able to login", function() {
     cy.intercept(apiRoute + "/global.disableUser").as("disableUser");
     cy.intercept(apiRoute + "/global.enableUser").as("enableUser");
     cy.intercept(apiRoute + "/user.authenticate").as("login");
@@ -166,7 +161,7 @@ describe("Disable and enable users", function () {
       .click()
       .get(`[data-test=enable-user-${testUserId}]`)
       .should("be.visible")
-      .click({force: true});
+      .click({ force: true });
     cy.get(`[data-test=confirmation-dialog-confirm]`)
       .should("be.visible")
       .click();
@@ -189,7 +184,7 @@ describe("Disable and enable users", function () {
     cy.get("#logoutbutton").should("be.visible");
   });
 
-  it("Disabling user is rejected if the user is still assigned to a project", function () {
+  it("Disabling user is rejected if the user is still assigned to a project", function() {
     cy.intercept(apiRoute + "/global.disableUser").as("disableUser");
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
 
@@ -206,14 +201,14 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("Disabling a user is rejected if the user is still assigned to a subproject", function () {
+  it("Disabling a user is rejected if the user is still assigned to a subproject", function() {
     cy.intercept(apiRoute + "/global.disableUser").as("disableUser");
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
 
     // Create subproject including testUser as assignee
-    cy.createProject("user-disable-test-project", "user disable test project").then(({id}) => {
+    cy.createProject("user-disable-test-project", "user disable test project").then(({ id }) => {
       const projectId = id;
-      cy.createSubproject(projectId, "user disable test subproject", undefined, {assignee: testUserId}).then(() => {
+      cy.createSubproject(projectId, "user disable test subproject", undefined, { assignee: testUserId }).then(() => {
         // Open disable dialog
         cy.get(`[data-test=disable-user-${testUserId}]`)
           .should("be.visible")
@@ -224,16 +219,16 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("Disabling a user is rejected if the user is still assigned to a workflowitem", function () {
+  it("Disabling a user is rejected if the user is still assigned to a workflowitem", function() {
     cy.intercept(apiRoute + "/global.disableUser").as("disableUser");
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
 
     // Create workflowitem including testUser as assignee
-    cy.createProject("user-disable-test-project", "user disable test project").then(({id}) => {
+    cy.createProject("user-disable-test-project", "user disable test project").then(({ id }) => {
       const projectId = id;
-      cy.createSubproject(projectId, "user disable test subproject").then(({id}) => {
+      cy.createSubproject(projectId, "user disable test subproject").then(({ id }) => {
         const subprojectId = id;
-        cy.createWorkflowitem(projectId, subprojectId, "user disable test workflowitem", {assignee: testUserId}).then(
+        cy.createWorkflowitem(projectId, subprojectId, "user disable test workflowitem", { assignee: testUserId }).then(
           () => {
             // Open disable dialog
             cy.get(`[data-test=disable-user-${testUserId}]`)
@@ -247,14 +242,14 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("The refresh button fetches the current user assignments correctly", function () {
+  it("The refresh button fetches the current user assignments correctly", function() {
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
     // Create workflowitem including testUser as assignee
-    cy.createProject("user-disable-test-project", "user disable test project").then(({id}) => {
+    cy.createProject("user-disable-test-project", "user disable test project").then(({ id }) => {
       const projectId = id;
-      cy.createSubproject(projectId, "user disable test subproject").then(({id}) => {
+      cy.createSubproject(projectId, "user disable test subproject").then(({ id }) => {
         const subprojectId = id;
-        cy.createWorkflowitem(projectId, subprojectId, "user disable test workflowitem", {assignee: testUserId}).then(
+        cy.createWorkflowitem(projectId, subprojectId, "user disable test workflowitem", { assignee: testUserId }).then(
           () => {
             // Open disable dialog
             cy.get(`[data-test=disable-user-${testUserId}]`)
@@ -274,12 +269,12 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("When the user is still assigned to a project, the assignment table shows shows a reference link", function () {
+  it("When the user is still assigned to a project, the assignment table shows shows a reference link", function() {
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
     // Create project including testUser as assignee
     cy.createProject("user-disable-test-project", "user disable test project", [], undefined, {
       assignee: testUserId
-    }).then(({id}) => {
+    }).then(({ id }) => {
       const projectId = id;
       // Open disable dialog
       cy.get(`[data-test=disable-user-${testUserId}]`)
@@ -302,12 +297,12 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("When the user is still assigned to a subproject, the assignment table shows shows a reference link", function () {
+  it("When the user is still assigned to a subproject, the assignment table shows shows a reference link", function() {
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
     // Create subproject including testUser as assignee
-    cy.createProject("user-disable-test-project", "user disable test project").then(({id}) => {
+    cy.createProject("user-disable-test-project", "user disable test project").then(({ id }) => {
       const projectId = id;
-      cy.createSubproject(projectId, "user disable test subproject", undefined, {assignee: testUserId}).then(() => {
+      cy.createSubproject(projectId, "user disable test subproject", undefined, { assignee: testUserId }).then(() => {
         const subprojectId = id;
         // Open disable dialog
         cy.get(`[data-test=disable-user-${testUserId}]`)
@@ -331,15 +326,15 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("When the user is still assigned to a workflowitem, the assignment table shows shows a reference link", function () {
+  it("When the user is still assigned to a workflowitem, the assignment table shows shows a reference link", function() {
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
     // Create worklfowitem including testUser as assignee
-    cy.createProject("user-disable-test-project", "user disable test project").then(({id}) => {
+    cy.createProject("user-disable-test-project", "user disable test project").then(({ id }) => {
       const projectId = id;
-      cy.createSubproject(projectId, "user disable test subproject").then(({id}) => {
+      cy.createSubproject(projectId, "user disable test subproject").then(({ id }) => {
         const subprojectId = id;
-        cy.createWorkflowitem(projectId, subprojectId, "user disable test workflowitem", {assignee: testUserId}).then(
-          ({id}) => {
+        cy.createWorkflowitem(projectId, subprojectId, "user disable test workflowitem", { assignee: testUserId }).then(
+          ({ id }) => {
             const workflowitemId = id;
             // Open disable dialog
             cy.get(`[data-test=disable-user-${testUserId}]`)
@@ -365,12 +360,12 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("When the user does not have permission to view a project where the user to disable is assigned to, it shows an info message", function () {
+  it("When the user does not have permission to view a project where the user to disable is assigned to, it shows an info message", function() {
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
     // Create project including testUser as assignee
     cy.createProject("user-disable-test-project", "user disable test project", [], undefined, {
       assignee: testUserId
-    }).then(({id}) => {
+    }).then(({ id }) => {
       const projectId = id;
       // Remove view - permissions for current user (mstein)
       cy.revokeProjectPermission(projectId, "project.viewDetails", "mstein");
@@ -386,13 +381,13 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("When the user does not have permission to view a subproject where the user to disable is assigned to, it shows an info message", function () {
+  it("When the user does not have permission to view a subproject where the user to disable is assigned to, it shows an info message", function() {
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
     // Create subproject including testUser as assignee
-    cy.createProject("user-disable-test-project", "user disable test project").then(({id}) => {
+    cy.createProject("user-disable-test-project", "user disable test project").then(({ id }) => {
       const projectId = id;
-      cy.createSubproject(projectId, "user disable test subproject", undefined, {assignee: testUserId}).then(
-        ({id}) => {
+      cy.createSubproject(projectId, "user disable test subproject", undefined, { assignee: testUserId }).then(
+        ({ id }) => {
           const subprojectId = id;
           // Remove view - permissions for current user (mstein)
           cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", "mstein");
@@ -410,15 +405,15 @@ describe("Disable and enable users", function () {
     });
   });
 
-  it("When the user does not have permission to view a workflowitem where the user to disable is assigned to, it shows an info message", function () {
+  it("When the user does not have permission to view a workflowitem where the user to disable is assigned to, it shows an info message", function() {
     cy.get(`[data-test=user-${testUserId}]`).should("be.visible");
     // Create worklfowitem including testUser as assignee
-    cy.createProject("user-disable-test-project", "user disable test project").then(({id}) => {
+    cy.createProject("user-disable-test-project", "user disable test project").then(({ id }) => {
       const projectId = id;
-      cy.createSubproject(projectId, "user disable test subproject").then(({id}) => {
+      cy.createSubproject(projectId, "user disable test subproject").then(({ id }) => {
         const subprojectId = id;
-        cy.createWorkflowitem(projectId, subprojectId, "user disable test workflowitem", {assignee: testUserId}).then(
-          ({id}) => {
+        cy.createWorkflowitem(projectId, subprojectId, "user disable test workflowitem", { assignee: testUserId }).then(
+          ({ id }) => {
             const workflowitemId = id;
             // Remove view - permissions for current user (mstein)
             cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", "mstein");

@@ -2,13 +2,10 @@ describe("Workflowitem edit", function() {
   let projectId;
   let subprojectId;
   let workflowitemId;
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
-
     cy.createProject("workflowitem edit test project", "workflowitem edit test").then(({ id }) => {
       projectId = id;
       cy.createSubproject(projectId, "workflowitem edit test", "EUR").then(({ id }) => {

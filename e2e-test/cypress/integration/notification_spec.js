@@ -1,11 +1,9 @@
 describe("open notifications", function() {
-  let projectId, baseUrl, apiRoute;
+  let projectId;
+  const apiRoute = "/api";
   const assignee = "jxavier";
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-
     cy.login("mstein");
     cy.createProject("notification.test", "notifications test", []).then(({ id }) => {
       projectId = id;

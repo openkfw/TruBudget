@@ -1,11 +1,9 @@
 describe("Subproject Close", function() {
   let projectId;
   let subprojectId;
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
     cy.createProject("sp-close", "Project for test of suproject closing").then(({ id }) => {
       projectId = id;

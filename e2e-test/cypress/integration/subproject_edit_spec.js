@@ -2,12 +2,9 @@ describe("Subproject Edit", function() {
   const otherUser = "jxavier";
   let projectId;
   let subprojectId;
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-
     cy.login();
     cy.createProject("p-subp-edit", "subproject edit test").then(({ id }) => {
       projectId = id;
