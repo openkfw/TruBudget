@@ -403,10 +403,8 @@ cd ../excel-export-service
 - Rename the .env_example file to .env and set following environment variables accordingly.
 
 ```bash
-PROD_API_PORT=8080
-TEST_API_PORT=8080
-PROD_API_HOST="localhost"
-TEST_API_HOST="localhost"
+API_HOST="localhost"
+API_PORT=8080
 PORT=8888
 ```
 

@@ -3,15 +3,13 @@ import "cypress-file-upload";
 let projectId;
 let subprojectId;
 let workflowitemId;
-let baseUrl, apiRoute;
+const apiRoute = "/api";
 
 // Actual file in fixture folder
 const fileName = "documents_test.json";
 
-describe("Attaching a document to a workflowitem.", function () {
+describe("Attaching a document to a workflowitem.", function() {
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
     cy.createProject("documents test project", "workflowitem documents test", [])
       .then(({ id }) => {
@@ -28,7 +26,7 @@ describe("Attaching a document to a workflowitem.", function () {
       });
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
@@ -54,7 +52,7 @@ describe("Attaching a document to a workflowitem.", function () {
     return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
   };
 
-  it("A document can be validated.", function () {
+  it("A document can be validated.", function() {
     cy.intercept(apiRoute + "/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");
@@ -91,7 +89,7 @@ describe("Attaching a document to a workflowitem.", function () {
       .should("contain", "Identical");
   });
 
-  it("Validation of wrong document fails.", function () {
+  it("Validation of wrong document fails.", function() {
     cy.intercept(apiRoute + "/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");
@@ -129,7 +127,7 @@ describe("Attaching a document to a workflowitem.", function () {
       .should("contain", "Different");
   });
 
-  it("The filename and document name are shown correctly", function () {
+  it("The filename and document name are shown correctly", function() {
     cy.intercept(apiRoute + "/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");

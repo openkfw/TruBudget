@@ -2,14 +2,12 @@ describe("Workflowitem reject", function () {
   let projectId;
   let subprojectId;
   let workflowitemId;
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
 
   const testUser = {id: "jdoe", password: "test"};
   const rejectReason = "Reject reason";
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
 
     cy.createProject("workflowitem reject test project", "workflowitem reject test").then(({id}) => {

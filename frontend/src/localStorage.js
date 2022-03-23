@@ -7,7 +7,6 @@ import {
   LOGOUT_SUCCESS,
   ADMIN_LOGOUT_SUCCESS,
   LOGIN_SUCCESS,
-  STORE_ENVIRONMENT_SUCCESS,
   SET_LANGUAGE
 } from "./pages/Login/actions";
 
@@ -18,8 +17,6 @@ const parseActions = state => state.getIn(["actions", "lastAction"]);
 const parseFromState = state => ({
   login: {
     jwt: state.getIn(["login", "jwt"]),
-    environment: state.getIn(["login", "environment"]),
-    productionActive: state.getIn(["login", "productionActive"]),
     language: state.getIn(["login", "language"]),
     id: state.getIn(["login", "id"]),
     displayName: state.getIn(["login", "displayName"]),
@@ -56,7 +53,6 @@ export const persistState = state => {
   try {
     switch (action) {
       case LOGIN_SUCCESS:
-      case STORE_ENVIRONMENT_SUCCESS:
       case SET_LANGUAGE:
       case LOGOUT_SUCCESS:
       case ADMIN_LOGOUT_SUCCESS:

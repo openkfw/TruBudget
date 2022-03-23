@@ -10,7 +10,7 @@ const PORT_EXPORT_SVC = process.env.EXPORT_PORT || "8888";
 const PORT_EMAIL_SVC = process.env.EMAIL_PORT || "8890";
 
 // eslint-disable-next-line no-console
-console.log(`API is running in ${devMode ? "development" : "production"} mode (Version ${API_VERSION})`);
+console.log(`API is running in ${devMode ? "development" : "production"} mode (API Version ${API_VERSION})`);
 
 class Api {
   constructor() {
@@ -51,12 +51,8 @@ class Api {
     instance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
   };
 
-  setBaseUrl = url => {
-    if (!devMode) {
-      instance.defaults.baseURL = `${url}/api`;
-    } else {
-      instance.defaults.baseURL = `/api`;
-    }
+  setBaseUrl = () => {
+    instance.defaults.baseURL = `/api`;
   };
 
   /**
@@ -112,9 +108,9 @@ class Api {
       identity: userId
     });
 
-  grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, {identity, intent});
+  grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, { identity, intent });
 
-  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, {identity, intent});
+  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity, intent });
   listGlobalPermissions = () => instance.get(`global.listPermissions`);
 
   listUser = () => instance.get(`/user.list`);
@@ -303,16 +299,16 @@ class Api {
     });
 
   createWorkflowItem = payload => {
-    const {currency, amount, exchangeRate, ...minimalPayload} = payload;
+    const { currency, amount, exchangeRate, ...minimalPayload } = payload;
     const payloadToSend =
       payload.amountType === "N/A"
         ? minimalPayload
         : {
-          ...minimalPayload,
-          currency,
-          amount,
-          exchangeRate: exchangeRate.toString()
-        };
+            ...minimalPayload,
+            currency,
+            amount,
+            exchangeRate: exchangeRate.toString()
+          };
     return instance.post(`/subproject.createWorkflowitem`, {
       ...payloadToSend
     });
@@ -340,17 +336,17 @@ class Api {
     });
 
   editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) => {
-    const {currency, amount, exchangeRate, ...minimalChanges} = changes;
+    const { currency, amount, exchangeRate, ...minimalChanges } = changes;
 
     const changesToSend =
       changes.amountType === "N/A"
         ? minimalChanges
         : {
-          ...minimalChanges,
-          currency,
-          amount,
-          exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
-        };
+            ...minimalChanges,
+            currency,
+            amount,
+            exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
+          };
     return instance.post(`/workflowitem.update`, {
       projectId,
       subprojectId,
@@ -360,7 +356,7 @@ class Api {
   };
 
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
-    instance.post(`/subproject.reorderWorkflowitems`, {projectId, subprojectId, ordering});
+    instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
 
   validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) =>
     instance.post(`/workflowitem.validateDocument`, {
@@ -443,7 +439,7 @@ class Api {
         workflowitemId,
         rejectReason
       });
-  }
+  };
 
   fetchNotifications = (offset, limit) => {
     let url = removeEmptyQueryParams(`/notification.list?offset=${offset}&limit=${limit}`);
@@ -459,24 +455,20 @@ class Api {
       notifications: [notificationId]
     });
   markMultipleNotificationsAsRead = notificationIds =>
-    instance.post(`/notification.markRead`, {notifications: notificationIds});
+    instance.post(`/notification.markRead`, { notifications: notificationIds });
 
-  createBackup = () => instance.get(`/system.createBackup`, {responseType: "blob"});
-  restoreFromBackup = (envPrefix, token, data) => {
-    let apiPrefix = "/api";
-    if (!devMode) {
-      apiPrefix = `${envPrefix}${apiPrefix}`;
-    }
+  createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
+  restoreFromBackup = (token, data) => {
     const binaryInstance = axios.create();
     binaryInstance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
-    const response = binaryInstance.post(`${apiPrefix}/system.restoreBackup`, data, {
-      headers: {"Content-Type": "application/gzip"}
+    const response = binaryInstance.post(`/api/system.restoreBackup`, data, {
+      headers: { "Content-Type": "application/gzip" }
     });
     return response;
   };
-  export = (devModeEnvironment) => {
+  export = devModeEnvironment => {
     const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, devModeEnvironment);
-    return instance.get(path, {responseType: "blob"});
+    return instance.get(path, { responseType: "blob" });
   };
   fetchExportServiceVersion = () => {
     const path = this.getExportServiceUrl("version");
@@ -495,17 +487,17 @@ class Api {
     return instance.get(path);
   };
   insertEmailAddress = (id, emailAddress) => {
-    const data = {user: {id, emailAddress}};
+    const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.insert");
     return instance.post(path, data);
   };
   updateEmailAddress = (id, emailAddress) => {
-    const data = {user: {id, emailAddress}};
+    const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.update");
     return instance.post(path, data);
   };
   deleteEmailAddress = (id, emailAddress) => {
-    const data = {user: {id, emailAddress}};
+    const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.delete");
     return instance.post(path, data);
   };
@@ -528,21 +520,20 @@ class Api {
         removeEmptyQueryParams(
           `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
         ),
-        {responseType: "blob"}
+        { responseType: "blob" }
       )
       .then(response => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        const {attachment, filename} = contentDispositionAttachment.parse(response.headers["content-disposition"]);
+        const { attachment, filename } = contentDispositionAttachment.parse(response.headers["content-disposition"]);
         if (attachment) {
           link.download = filename;
           document.body.appendChild(link);
           link.click();
           link.remove();
-          return Promise.resolve({data: {}});
+          return Promise.resolve({ data: {} });
         }
-
       });
 }
 

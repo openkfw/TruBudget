@@ -1,12 +1,9 @@
 describe("Workflowitem budget test", function() {
-  let projectId, subprojectId, baseUrl, apiRoute;
+  const apiRoute = "/api";
+  let projectId, subprojectId;
   const exchangeRate = "0.5";
   const newExchangeRate = "0.8";
-  before(() => {
-    cy.login();
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
+
 
   beforeEach(function() {
     cy.login();

@@ -47,17 +47,13 @@ import {
   FETCH_EMAIL_ADDRESS,
   FETCH_EMAIL_ADDRESS_FAILURE,
   FETCH_EMAIL_ADDRESS_SUCCESS,
-  FETCH_ENVIRONMENT,
-  FETCH_ENVIRONMENT_SUCCESS,
   FETCH_USER,
   FETCH_USER_SUCCESS,
   LOGIN,
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
-  LOGOUT_SUCCESS,
-  STORE_ENVIRONMENT,
-  STORE_ENVIRONMENT_SUCCESS
+  LOGOUT_SUCCESS
 } from "./pages/Login/actions";
 import {
   CREATE_BACKUP,
@@ -247,14 +243,10 @@ const getSelfId = state => {
 const getEmailAddress = state => {
   return state.getIn(["login", "emailAddress"]);
 };
-const getJwt = state => state.toJS().login.jwt;
-const getEnvironment = state => {
-  const env = state.getIn(["login", "environment"]);
-  if (env) {
-    return env;
-  }
-  return "Test";
+const getJwt = state => {
+  return state.getIn(["login", "jwt"]);
 };
+
 const getProjectHistoryState = state => {
   return {
     currentHistoryPage: state.getIn(["detailview", "currentHistoryPage"]),
@@ -377,10 +369,7 @@ const getNotificationState = state => {
 function* callApi(func, ...args) {
   const token = yield select(getJwt);
   yield call(api.setAuthorizationHeader, token);
-  const env = yield select(getEnvironment);
-  // TODO dont set the environment on each call
-  const prefix = env === "Test" ? "/test" : "/prod";
-  yield call(api.setBaseUrl, prefix);
+  yield call(api.setBaseUrl);
   const { data = {} } = yield call(func, ...args);
   return data;
 }
@@ -884,30 +873,6 @@ export function* validateDocumentSaga({ base64String, hash, id, projectId, subpr
       isIdentical: data.isIdentical
     });
   }, false);
-}
-
-export function* setEnvironmentSaga(action) {
-  yield execute(function* () {
-    yield put({
-      type: STORE_ENVIRONMENT_SUCCESS,
-      environment: action.environment,
-      productionActive: action.productionActive
-    });
-    yield put({
-      type: FETCH_ENVIRONMENT
-    });
-  });
-}
-
-export function* getEnvironmentSaga() {
-  yield execute(function* () {
-    const env = yield select(getEnvironment);
-    yield put({
-      type: FETCH_ENVIRONMENT_SUCCESS,
-      environment: env,
-      productionActive: env === "Test" ? false : true
-    });
-  });
 }
 
 export function* executeConfirmedAdditionalActionsSaga({
@@ -2774,10 +2739,8 @@ export function* restoreBackupSaga({ file, showLoading = true }) {
     type: DISABLE_ALL_LIVE_UPDATES
   });
   yield execute(function* () {
-    const env = yield select(getEnvironment);
     const token = yield select(getJwt);
-    const prefix = env === "Test" ? "/test" : "/prod";
-    yield call(api.restoreFromBackup, prefix, token, file);
+    yield call(api.restoreFromBackup, token, file);
     yield put({
       type: RESTORE_BACKUP_SUCCESS
     });
@@ -3137,8 +3100,6 @@ export default function* rootSaga() {
       yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga),
       yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga),
       yield takeEvery(DECLINE_NODE, declineNode),
-      yield takeLatest(STORE_ENVIRONMENT, setEnvironmentSaga),
-      yield takeLatest(FETCH_ENVIRONMENT, getEnvironmentSaga),
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
       yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),
       yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga),

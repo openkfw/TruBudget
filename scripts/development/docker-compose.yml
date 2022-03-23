@@ -144,9 +144,7 @@ services:
     environment:
       API_HOST: alpha-api
       API_PORT: ${API_PORT}
-      ENVIRONMENT_TYPE: TEST
-      #Other provisioning data:
-      #ENVIRONMENT_TYPE: PROD
+      PROVISIONING_TYPE: ${PROVISIONING_TYPE}
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
       LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
@@ -162,10 +160,8 @@ services:
   excel-export-service:
     build: ../../excel-export-service
     environment:
-      PROD_API_HOST: alpha-api
-      PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: alpha-api
-      TEST_API_PORT: ${API_PORT}
+      API_HOST: alpha-api
+      API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
       JWT_SECRET: ${JWT_SECRET}
       MODE: DEBUG

@@ -9,10 +9,6 @@ export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 
 export const STORE_USERNAME = "STORE_USERNAME";
 export const STORE_PASSWORD = "STORE_PASSWORD";
-export const STORE_ENVIRONMENT = "STORE_ENVIRONMENT";
-export const STORE_ENVIRONMENT_SUCCESS = "STORE_ENVIRONMENT_SUCCESS";
-export const FETCH_ENVIRONMENT = "FETCH_ENVIRONMENT";
-export const FETCH_ENVIRONMENT_SUCCESS = "FETCH_ENVIRONMENT_SUCCESS";
 
 export const INIT_LANGUAGE = "INIT_LANGUAGE";
 export const SET_LANGUAGE = "SET_LANGUAGE";
@@ -86,21 +82,6 @@ export function loginAdmin(user) {
 export function logoutAdmin() {
   return {
     type: ADMIN_LOGOUT
-  };
-}
-
-export function storeEnvironment(environment) {
-  const active = environment === "Prod" ? true : false;
-  return {
-    type: STORE_ENVIRONMENT,
-    environment,
-    active
-  };
-}
-
-export function getEnvironment() {
-  return {
-    type: FETCH_ENVIRONMENT
   };
 }
 

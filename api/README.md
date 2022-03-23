@@ -63,17 +63,3 @@ docker build .
 ### API documentation
 
 The documentation is hosted by the API itself. Assuming it's running on your local machine on port 8080, you should see it at [localhost:8080/api/documentation](http://localhost:8080/api/documentation).
-
-If Trubudget is running in test or production an additional environment variable has to be set to ensure that the api documentation is working correctly.
-
-In case of production the variable has to be set to "/prod":
-
-```bash
-export SWAGGER_BASEPATH = "/prod"
-```
-
-In case of test the variable has to be set to "/test":
-
-```bash
-export SWAGGER_BASEPATH = "/test"
-```

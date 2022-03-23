@@ -614,7 +614,7 @@ async function checkProvisionState(axios) {
 const provisionBlockchain = async (host, port, rootSecret, organization) => {
     try {
         const folder =
-            process.env.ENVIRONMENT_TYPE === "PROD"
+            process.env.PROVISIONING_TYPE === "PROD"
                 ? "./src/data/prod/"
                 : "./src/data/test/";
 
@@ -646,7 +646,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
                 await provisionFromData(project);
             }
         }
-        if (process.env.ENVIRONMENT_TYPE !== "PROD") {
+        if (process.env.PROVISIONING_TYPE !== "PROD") {
             await runIntegrationTests(rootSecret, folder);
         }
 
@@ -656,7 +656,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
         log.info("Set provision_ended flag on multichain");
         await setProvisionEndFlag(axios);
     } catch (err) {
-        log.error({ err }, "Provisioning failed");
+        log.warn({ err }, "Provisioning failed");
         process.exit(1);
     }
 };

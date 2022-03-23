@@ -1,13 +1,11 @@
 import "cypress-file-upload";
-
-let baseUrl, apiRoute;
-baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
+const apiRoute = "/api";
+const baseUrl = Cypress.env("API_BASE_URL") || Cypress.config("baseUrl");
 let fileName = "backup.gz";
 
 let pathToFile = `cypress/fixtures/${fileName}`;
 
-describe("Backup Feature", function () {
+describe("Backup Feature", function() {
   before(() => {
     //download directly to fixture folder, without pop-ups
     if (Cypress.browser.name !== "firefox") {
@@ -70,19 +68,17 @@ describe("Backup Feature", function () {
     });
   });
 
-  it("Tests the download of a backup.gz file", function () {
+  it("Tests the download of a backup.gz file", function() {
     cy.login("root", Cypress.env("ROOT_SECRET"));
-    cy.createBackup()
-      .then(headers => {
-        expect(headers).to.include({
-          "content-type": "application/gzip",
-          "content-disposition": 'attachment; filename="backup.gz"'
-        });
+    cy.createBackup().then(headers => {
+      expect(headers).to.include({
+        "content-type": "application/gzip",
+        "content-disposition": 'attachment; filename="backup.gz"'
       });
-
+    });
   });
 
-  it("Tests the restore of an invalid backup", function () {
+  it("Tests the restore of an invalid backup", function() {
     const invalidBackupFile = "backup_invalidHash.gz";
 
     cy.task("modifyHash", { pathToFile, newHash: "wrongHash", newBackup: invalidBackupFile }).then(success => {
@@ -125,7 +121,7 @@ describe("Backup Feature", function () {
     });
   });
 
-  it("Tests the restore of a backup with the wrong organisation", function () {
+  it("Tests the restore of a backup with the wrong organisation", function() {
     const wrongOrgaFile = "backup_orga_test.gz";
 
     cy.intercept(apiRoute + "/system.restoreBackup*").as("restore");

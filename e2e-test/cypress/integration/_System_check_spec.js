@@ -1,7 +1,7 @@
 describe("Check if Trubudget Environment is ready", () => {
-  const apiBaseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+  const apiBaseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}`;
   const exportServiceBaseUrl =
-    Cypress.env("EXPORT_SERVICE_BASE_URL") || `${Cypress.config("baseUrl")}/test/api/export/xlsx`;
+    Cypress.env("EXPORT_SERVICE_BASE_URL") || `${Cypress.config("baseUrl")}/api/export/xlsx`;
 
   it("API is connected and ready", function() {
     cy.task("awaitApiReady", apiBaseUrl, 12, 30000);

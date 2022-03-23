@@ -2,13 +2,12 @@ describe("Project Assignee", function () {
   const executingUser = "mstein";
   const testUser = "jdoe";
   let projectId;
-  let permissionsBeforeTesting, baseUrl, apiRoute;
+  let permissionsBeforeTesting;
+  const apiRoute = "/api";
   const longUserId = `long_test_user_${Math.floor(Math.random() * 1000000)}`;
-  const longUserName = "Z22-Testuser-with-a-very-very-very-very-very-very-long-name";
+  const longUserName = "Testuser-with-a-very-very-very-very-very-very-long-name";
 
   before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
     cy.createProject("p-assign", "project assign test").then(({id}) => {
       projectId = id;
