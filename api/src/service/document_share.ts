@@ -8,6 +8,7 @@ import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { sourceSecrets } from "./domain/document/document_eventsourcing";
 import * as DocumentShare from "./domain/document/document_share";
+import * as DocumentGet from "./domain/document/document_get";
 import * as SecretGet from "./domain/document/secret_get";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as PublicKeyGet from "./public_key_get";
@@ -53,6 +54,22 @@ export async function documentShare(
       },
       getWorkflowitem: async (projectId, subprojectId, workflowitemId) => {
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
+      },
+      getDocumentInfo: async (docId) => {
+        return DocumentGet.getDocumentInfo(ctx, docId, {
+          getDocumentsEvents: async () => {
+            return cache.getDocumentUploadedEvents();
+          },
+          getAllProjects: async () => {
+            return cache.getProjects();
+          },
+          getAllSubprojects: async (projectId) => {
+            return cache.getSubprojects(projectId);
+          },
+          getAllWorkflowitems: async (projectId, subprojectId) => {
+            return cache.getWorkflowitems(projectId, subprojectId);
+          },
+        });
       },
     });
   });
