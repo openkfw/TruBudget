@@ -12,7 +12,7 @@ This guide shows three different possibilities how to safely update your Trubudg
     - [params.dat](#paramsdat)
     - [multichain.conf](#multichainconf)
   - [Hints and Pitfalls](#hints-and-pitfalls)
-  - [Updating to TruBudget 1.26.0](#updating-to-trubudget-1260)
+  - [Updating to TruBudget 2.0.0](#updating-to-trubudget-1260)
 
 ## Full state backup
 
@@ -108,9 +108,9 @@ If this error occurs and you are certain that the `backup.gz` compressed folder 
 If your filename contains a blank space (e.g. `backup (1).gz`), you should use quotation marks when entering the path, so it will be recognized as one argument and not two separate ones.
 :::
 
-## Updating to TruBudget 1.26.0 or higher
+## Updating to TruBudget 2.0.0 or higher
 
-In TruBudget 1.26.0, the Test and Prod Environment has been removed in [#954](https://github.com/openkfw/TruBudget/issues/954). This means the DropDown menu to select Prod and Test at the Loginpage is removed and the frontend and excel-export-service is only connected to one API and one Blockchain. If you want to update TruBudget 1.26.0 or higher from version 1.25.0 or older, you must re-set some new `env` vars for your setup. If you want to use 2 Environments, you need to setup an additional Frontend with another URL and connect it to another API.
+In TruBudget 2.0.0, the Test and Prod Environment has been removed in [#954](https://github.com/openkfw/TruBudget/issues/954). This means the DropDown menu to select Prod and Test at the Login-page is removed and the frontend and excel-export-service is only connected to one API and one Blockchain. If you want to update TruBudget 2.0.0 or higher from version 1.25.0 or older, you must re-set some new `env` vars for your setup. If you want to use 2 Environments, you need to setup an additional Frontend with another URL and connect it to another API.
 
 | Removed `env` vars | Description                              |
 | ------------------ | ---------------------------------------- |
