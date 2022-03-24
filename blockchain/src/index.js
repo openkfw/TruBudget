@@ -18,6 +18,12 @@ const {
 const { startBeta, registerNodeAtAlpha } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
 const { isMultichainReady } = require("./readiness");
+const {
+  adaptMultichianParams,
+  importWallet,
+  listAvailableWallets,
+  backupWallet,
+} = require("./wallet-backup");
 
 const {
   moveBackup,
@@ -40,9 +46,9 @@ const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 const CERT_PATH = process.env.CERT_PATH || undefined;
 const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
 const CERT_KEY_PATH = process.env.CERT_KEY_PATH || undefined;
+let AUTOSTART = process.env.AUTOSTART === "true";
 
-let autostart = true;
-let isRunning = true;
+let isRunning = AUTOSTART ? true : false;
 
 const EXTERNAL_IP = process.env.EXTERNAL_IP;
 const P2P_HOST = process.env.P2P_HOST;
@@ -68,6 +74,8 @@ const MULTICHAIN_FEED_ENABLED =
   process.env.MULTICHAIN_FEED_ENABLED === "true" ? true : false;
 const isMultichainFeedEnabled =
   EMAIL_SERVICE_ENABLED || MULTICHAIN_FEED_ENABLED;
+
+const ENV = process.env.NODE_ENV || "production";
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
@@ -123,7 +131,7 @@ const spawnProcess = (startProcess) => {
   isRunning = true;
   mcproc.on("close", async (code, signal) => {
     isRunning = false;
-    if (!autostart) {
+    if (!AUTOSTART) {
       log.info(
         `multichaind stopped with exit code ${code} and signal ${signal}. Autorestart is disabled`,
       );
@@ -154,6 +162,13 @@ configureChain(
 );
 
 function initMultichain() {
+  if (!AUTOSTART) {
+    isRunning = false;
+    log.info(
+      "Multichain not started since autostart is disabled. Make sure to set the env variable AUTOSTART to true.",
+    );
+    return;
+  }
   if (isAlpha) {
     spawnProcess(() =>
       startMultichainDaemon(
@@ -257,7 +272,8 @@ const stopMultichain = async (mcproc) => {
 app.get("/chain-sha256", async (req, res) => {
   try {
     log.info("Start packaging");
-    autostart = false;
+    await backupWallet(CHAINNAME, `${multichainDir}/${CHAINNAME}/wallet.txt`);
+    AUTOSTART = false;
     await stopMultichain(mcproc);
     await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
     res.setHeader("Content-Type", "application/gzip");
@@ -278,7 +294,7 @@ app.get("/chain-sha256", async (req, res) => {
               multichainDir,
             ),
           );
-          autostart = true;
+          AUTOSTART = true;
         },
       })
       .pipe(res);
@@ -334,6 +350,80 @@ const loadConfig = (path) => {
   return config;
 };
 
+app.post("/multichainEnabled", async (req, res) => {
+  if (!ENV === "development") {
+    return res.status(401).send();
+  }
+  const multichainEnabled = req.query.multichainEnabled;
+  if (multichainEnabled === "true" || multichainEnabled === "false") {
+    if (multichainEnabled === "false" && isRunning) {
+      log.info("Multichain stopping multichain deamon...");
+      AUTOSTART = false;
+      await stopMultichain(mcproc);
+    } else if (multichainEnabled === "true" && !isRunning) {
+      log.info("Multichain starting multichain deamon...");
+      await spawnProcess(() =>
+        startMultichainDaemon(
+          CHAINNAME,
+          externalIpArg,
+          blockNotifyArg,
+          P2P_PORT,
+          multichainDir,
+        ),
+      );
+      AUTOSTART = true;
+    }
+    return res.status(200).send("Ok.");
+  }
+  return res.status(404).send();
+});
+
+app.post("/restoreWallet", (req, res) => {
+  if (!ENV === "development") {
+    return res.status(401).send();
+  }
+
+  const extractPath = `/tmp/backup${Date.now()}`;
+  try {
+    const unTARer = rawTar.extract();
+    unTARer.on("error", (err) => {
+      log.error({ err }, "Error while extracting rawTar: ");
+      unTARer.destroy();
+      res.status(400).send(err.message);
+    });
+    const extract = tar.extract(extractPath, { extract: unTARer });
+    const file = streamifier.createReadStream(req.body);
+    const stream = file.pipe(extract);
+    stream.on("finish", async () => {
+      AUTOSTART = false;
+      if (isRunning) await stopMultichain(mcproc);
+      await adaptMultichianParams(
+        `${multichainDir}/${CHAINNAME}/params.dat`,
+        `${extractPath}/params.dat`,
+      );
+      await spawnProcess(() =>
+        startMultichainDaemon(
+          CHAINNAME,
+          externalIpArg,
+          blockNotifyArg,
+          P2P_PORT,
+          multichainDir,
+        ),
+      );
+      AUTOSTART = true;
+      //TODO this is nasty why is startDeamon not waiting?
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await importWallet(`${extractPath}/wallet.txt`, CHAINNAME);
+      const availableWallets = await listAvailableWallets(CHAINNAME);
+
+      res.json(`Ok. Aviable wallets are: ${JSON.stringify(availableWallets)}`);
+    });
+  } catch (err) {
+    log.error({ err }, "Error while trying to restore wallet: ");
+    res.status(500).send(err.message);
+  }
+});
+
 app.post("/chain", async (req, res) => {
   const extractPath = `/tmp/backup${Date.now()}`;
   const metadataPath = `${extractPath}/metadata.yml`;
@@ -369,7 +459,7 @@ app.post("/chain", async (req, res) => {
 
         if (correctConfig && compatibleVersions) {
           if (validSha256) {
-            autostart = false;
+            AUTOSTART = false;
             await stopMultichain(mcproc);
             await moveBackup(multichainDir, extractPath, CHAINNAME);
             spawnProcess(() =>
@@ -381,7 +471,7 @@ app.post("/chain", async (req, res) => {
                 multichainDir,
               ),
             );
-            autostart = true;
+            AUTOSTART = true;
             res.send("OK");
           } else {
             log.warn("Request did not contain a valid trubudget backup");
