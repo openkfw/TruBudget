@@ -5,18 +5,26 @@ const shell = require("shelljs");
 
 const importWallet = async (walletPath, chainName) => {
   console.log("importing params ...");
-  shell.mv(`${walletPath}/params.dat`, `/root/.multichain/${chainName}/params.dat`);
-  shell.mv(`${walletPath}/params.dat.bak`, `/root/.multichain/${chainName}/params.dat.bak`);
+  shell.mv(
+    `${walletPath}/params.dat`,
+    `/root/.multichain/${chainName}/params.dat`,
+  );
+  shell.mv(
+    `${walletPath}/params.dat.bak`,
+    `/root/.multichain/${chainName}/params.dat.bak`,
+  );
 
   console.log("importing wallet...");
   shell.mv(`${walletPath}/wallet`, `/root/.multichain/${chainName}/wallet`);
-  shell.mv(`${walletPath}/wallet.dat`, `/root/.multichain/${chainName}/wallet.dat`);
-
+  shell.mv(
+    `${walletPath}/wallet.dat`,
+    `/root/.multichain/${chainName}/wallet.dat`,
+  );
 };
 
 const listAvailableWallets = async (chainName) => {
-  const {stdout} = await exec(`multichain-cli ${chainName} getaddresses`);
-  log.debug({message: "Available wallets:", stdout});
+  const { stdout } = await exec(`multichain-cli ${chainName} getaddresses`);
+  log.debug({ message: "Available wallets:", stdout });
 
   return stdout;
 };
