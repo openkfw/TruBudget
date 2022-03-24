@@ -22,7 +22,7 @@ services:
       CERT_PATH: ${CERT_PATH}
       CERT_CA_PATH: ${CERT_CA_PATH}
       CERT_KEY_PATH: ${CERT_KEY_PATH}
-
+      AUTOSTART: ${AUTOSTART}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.11
@@ -223,6 +223,8 @@ services:
       API_PROTO: http
       API_HOST: master-api # API to send register request
       API_PORT: ${API_PORT}
+      AUTOSTART: ${AUTOSTART}
+      NODE_ENV: ${NODE_ENV}
     volumes:
       - /slave1Volume:/root/.multichain
     depends_on:

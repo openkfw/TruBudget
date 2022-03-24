@@ -23,6 +23,7 @@ services:
       CERT_PATH: ${CERT_PATH}
       CERT_CA_PATH: ${CERT_CA_PATH}
       CERT_KEY_PATH: ${CERT_KEY_PATH}
+      AUTOSTART: ${AUTOSTART}
 
     # volume for persisting data from multichain
     # volumes:
@@ -264,6 +265,8 @@ services:
       API_PROTO: http
       API_HOST: master-api # API to send register request
       API_PORT: ${API_PORT}
+      NODE_ENV: ${NODE_ENV}
+      AUTOSTART: ${AUTOSTART}
     depends_on:
       - master-node
       - master-api
