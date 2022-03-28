@@ -1,11 +1,13 @@
 import { assert } from "chai";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
+import { NotFound } from "../errors/not_found";
+import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Project } from "../workflow/project";
 import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
-import { StoredDocument } from "./document";
+import { DocumentReference, UploadedDocument } from "./document";
 import { documentValidate } from "./document_validate";
 
 const ctx: Ctx = {
@@ -83,7 +85,12 @@ const baseWorkflowitem: Workflowitem = {
 const uploadedDocumentId = "1";
 const uploadedDocumentFileName = "1";
 
-const storedDocuments: StoredDocument[] = [
+const uploadedDocument: UploadedDocument = {
+  id: uploadedDocumentId,
+  base64: "lakjflaksdjf",
+  fileName: uploadedDocumentFileName,
+};
+const documentReference: DocumentReference[] = [
   {
     id: uploadedDocumentId,
     hash: "hash1",
@@ -122,7 +129,7 @@ describe("Validating uploaded document in workflowitem", () => {
         getAllProjects: () => Promise.resolve([baseProject]),
         getAllSubprojects: () => Promise.resolve([baseSubproject]),
         getAllWorkflowitems: () =>
-          Promise.resolve([{ ...baseWorkflowitem, documents: storedDocuments }]),
+          Promise.resolve([{ ...baseWorkflowitem, documents: documentReference }]),
       },
     );
     assert.isTrue(Result.isOk(newEventsResult));
@@ -143,6 +150,7 @@ describe("Validating uploaded document in workflowitem", () => {
       repository,
     );
     assert.isTrue(Result.isErr(newEventsResult));
+    assert.instanceOf(newEventsResult, NotFound);
   });
 
   it("Root user cannot validate an existing document", async () => {
@@ -157,8 +165,15 @@ describe("Validating uploaded document in workflowitem", () => {
       baseSubproject.projectId,
       baseSubproject.id,
       baseWorkflowitem.id,
-      repository,
+      {
+        ...repository,
+        getAllProjects: () => Promise.resolve([baseProject]),
+        getAllSubprojects: () => Promise.resolve([baseSubproject]),
+        getAllWorkflowitems: () =>
+          Promise.resolve([{ ...baseWorkflowitem, documents: documentReference }]),
+      },
     );
     assert.isTrue(Result.isErr(newEventsResult));
+    assert.instanceOf(newEventsResult, PreconditionError);
   });
 });
