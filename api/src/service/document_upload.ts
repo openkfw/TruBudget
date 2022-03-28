@@ -8,12 +8,12 @@ import { ConnToken } from "./conn";
 import { sourceDocuments } from "./domain/document/document_eventsourcing";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
-import { Document } from "./domain/document/document_uploaded";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as PublicKeyGet from "./public_key_get";
 import * as UserQuery from "./user_query";
 import { store } from "./store";
 import logger from "lib/logger";
+import { StoredDocument } from "./domain/document/document";
 
 export async function documentUpload(
   conn: ConnToken,
@@ -21,7 +21,7 @@ export async function documentUpload(
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: DocumentUpload.RequestData,
-): Promise<Result.Type<Document>> {
+): Promise<Result.Type<StoredDocument>> {
   logger.debug({ req: requestData }, "Uploading document");
   const uploadedDocumentResult = await Cache.withCache(conn, ctx, async (cache) => {
     return DocumentUpload.uploadDocument(ctx, serviceUser, requestData, {
@@ -69,7 +69,7 @@ export async function documentUpload(
     return new Error("A document with this name was not uploaded");
   }
 
-  const documentUploaded: Document = {
+  const documentUploaded: StoredDocument = {
     id: newDocument.id,
     fileName: newDocument.fileName,
     organization: newDocument.organization,
