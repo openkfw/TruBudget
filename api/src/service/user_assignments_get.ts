@@ -18,28 +18,19 @@ export async function getUserAssignments(
 ): Promise<Result.Type<UserAssignments.UserAssignments>> {
   logger.debug({ req: requestData }, "Get user assignments");
 
-  const userAssignmentResult = await Cache.withCache(
-    conn,
-    ctx,
-    async (cache) =>
-      await UserAssignmentsGet.getUserAssignments(
-        ctx,
-        requestData.userId,
-        issuer,
-        issuerOrganization,
-        {
-          getAllProjects: async () => {
-            return cache.getProjects();
-          },
-          getSubprojects: async (pId) => {
-            return cache.getSubprojects(pId);
-          },
-          getWorkflowitems: async (pId, spId) => {
-            return cache.getWorkflowitems(pId, spId);
-          },
-          getUser: () => UserQuery.getUser(conn, ctx, issuer, requestData.userId),
-        },
-      ),
+  const userAssignmentResult = await Cache.withCache(conn, ctx, async (cache) =>
+    UserAssignmentsGet.getUserAssignments(ctx, requestData.userId, issuer, issuerOrganization, {
+      getAllProjects: async () => {
+        return cache.getProjects();
+      },
+      getSubprojects: async (pId) => {
+        return cache.getSubprojects(pId);
+      },
+      getWorkflowitems: async (pId, spId) => {
+        return cache.getWorkflowitems(pId, spId);
+      },
+      getUser: () => UserQuery.getUser(conn, ctx, issuer, requestData.userId),
+    }),
   );
   return Result.mapErr(
     userAssignmentResult,

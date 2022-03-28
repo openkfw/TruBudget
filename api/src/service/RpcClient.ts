@@ -334,7 +334,7 @@ export class RpcClient {
 
   public async retrieveItems(streamName: string, start: number, count: number): Promise<Item[]> {
     const verbose: boolean = false;
-    return await this.invoke("liststreamitems", streamName, verbose, count, start);
+    return this.invoke("liststreamitems", streamName, verbose, count, start);
   }
 
   private async convertToReadableItems(items: StreamItem[]): Promise<Result.Type<StreamItem>[]> {

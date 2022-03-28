@@ -13,14 +13,11 @@ export async function getGlobalPermissions(
   serviceUser: ServiceUser,
 ): Promise<Result.Type<GlobalPermissions.GlobalPermissions>> {
   logger.debug("Getting Global Permissions");
-  return Cache.withCache(
-    conn,
-    ctx,
-    async (cache) =>
-      await GlobalPermissionsGet.getGlobalPermissions(ctx, serviceUser, {
-        getGlobalPermissionsEvents: async () => {
-          return cache.getGlobalEvents();
-        },
-      }),
+  return Cache.withCache(conn, ctx, async (cache) =>
+    GlobalPermissionsGet.getGlobalPermissions(ctx, serviceUser, {
+      getGlobalPermissionsEvents: async () => {
+        return cache.getGlobalEvents();
+      },
+    }),
   );
 }

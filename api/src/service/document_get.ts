@@ -9,7 +9,7 @@ export async function getDocuments(
   conn: ConnToken,
   ctx: Ctx,
 ): Promise<Result.Type<DocumentUploaded.Document[]>> {
-  return await Cache.withCache(conn, ctx, async (cache) =>
+  return Cache.withCache(conn, ctx, async (cache) =>
     DocumentGet.getAllDocumentInfos(ctx, {
       getDocumentsEvents: async () => {
         return cache.getDocumentUploadedEvents();

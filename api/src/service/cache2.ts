@@ -346,6 +346,7 @@ export async function withCache<T>(
       await updateCache(ctx, conn);
     }
 
+    // eslint-disable-next-line @typescript-eslint/return-await
     return transaction(cacheInstance);
   } finally {
     releaseWriteLock(cache);
