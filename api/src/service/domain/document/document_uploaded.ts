@@ -4,18 +4,12 @@ import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import { Ctx } from "lib/ctx";
 import { EventSourcingError } from "../errors/event_sourcing_error";
-import { GenericDocument } from "./document";
+import { StoredDocument } from "./document";
 import { config } from "../../../config";
 import logger from "lib/logger";
 
 type DocumentEventTypeType = "document_uploaded";
 const documentEventType: DocumentEventTypeType = "document_uploaded";
-export interface Document extends GenericDocument {
-  id: string;
-  fileName: string;
-  organization: string;
-  organizationUrl: string;
-}
 
 export interface Event {
   type: DocumentEventTypeType;
@@ -77,19 +71,19 @@ const documentSchema = Joi.object().keys({
   organizationUrl: Joi.string().allow("").required(),
 });
 
-export function validateDocument(input: any): Result.Type<Document> {
+export function validateDocument(input: any): Result.Type<StoredDocument> {
   const { error } = Joi.validate(input, documentSchema);
-  return error === null ? (input as Document) : error;
+  return error === null ? (input as StoredDocument) : error;
 }
 
-export function createFrom(ctx: Ctx, event: Event): Result.Type<Document> {
+export function createFrom(ctx: Ctx, event: Event): Result.Type<StoredDocument> {
   const initialData = {
     id: event.docId,
     fileName: event.fileName,
     organization: event.organization,
   };
 
-  const documentInfo: Document = {
+  const documentInfo: StoredDocument = {
     id: initialData.id,
     fileName: initialData.fileName,
     organization: initialData.organization,

@@ -56,10 +56,10 @@ export async function uploadDocument(
   }
 
   if (documentBase64 === "") {
-    return new VError(documentBase64, "an emtpy document is not allowed");
+    return new VError(documentBase64, "an empty document is not allowed");
   }
 
-  logger.trace("Storing document hash in storage");
+  logger.trace("Storing document in storage");
   const documentStorageServiceResponseResult = await repository.storeDocument(
     id,
     fileName,

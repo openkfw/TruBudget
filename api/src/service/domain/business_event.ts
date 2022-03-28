@@ -41,7 +41,6 @@ import * as WorkflowitemsReordered from "./workflow/workflowitems_reordered";
 import * as WorkflowitemAssigned from "./workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./workflow/workflowitem_created";
-import * as WorkflowitemDocumentUploaded from "./document/workflowitem_document_uploaded";
 import * as WorkflowitemPermissionGranted from "./workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionRevoked from "./workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./workflow/workflowitem_updated";
@@ -87,7 +86,6 @@ export type BusinessEvent =
   | WorkflowitemPermissionGranted.Event
   | WorkflowitemPermissionRevoked.Event
   | WorkflowitemUpdated.Event
-  | WorkflowitemDocumentUploaded.Event
   | DocumentValidated.Event
   | PublicKeyPublished.Event
   | PublicKeyUpdated.Event

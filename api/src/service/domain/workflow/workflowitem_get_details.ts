@@ -7,6 +7,7 @@ import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocument from "../document/document";
 import logger from "lib/logger";
+import { DocumentReference } from "../document/document";
 
 interface Repository {
   getWorkflowitem(): Promise<Result.Type<Workflowitem.Workflowitem>>;
@@ -41,10 +42,10 @@ export async function getWorkflowitemDetails(
 }
 
 async function setDocumentAvailability(
-  documents: WorkflowitemDocument.StoredDocument[],
+  documents: DocumentReference[],
   repository: Repository,
-): Promise<WorkflowitemDocument.StoredDocument[]> {
-  const docsWithAvailability: WorkflowitemDocument.StoredDocument[] = [];
+): Promise<DocumentReference[]> {
+  const docsWithAvailability: DocumentReference[] = [];
 
   for (const doc of documents) {
     const result = await repository.downloadDocument(doc.id);

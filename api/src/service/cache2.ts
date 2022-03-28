@@ -50,7 +50,6 @@ import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reorder
 import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
-import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
 import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
@@ -610,7 +609,6 @@ const EVENT_PARSER_MAP = {
   workflowitem_permission_granted: WorkflowitemPermissionsGranted.validate,
   workflowitem_permission_revoked: WorkflowitemPermissionsRevoked.validate,
   workflowitem_updated: WorkflowitemUpdated.validate,
-  workflowitem_document_uploaded: WorkflowitemDocumentUploaded.validate,
   workflowitem_document_validated: DocumentValidated.validate,
   peerinfo_saved: NodesLogged.validate,
   provisioning_started: ProvisioningStarted.validate,

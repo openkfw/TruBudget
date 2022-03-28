@@ -3,7 +3,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
-import { StoredDocument, storedDocumentSchema } from "../document/document";
+import { DocumentReference, documentReferenceSchema } from "../document/document";
 import { Identity } from "../organization/identity";
 import { conversionRateSchema, moneyAmountSchema } from "./money";
 import * as Project from "./project";
@@ -22,7 +22,7 @@ export interface Modification {
   exchangeRate?: string;
   billingDate?: string;
   dueDate?: string;
-  documents?: StoredDocument[];
+  documents?: DocumentReference[];
   additionalData?: object;
 }
 
@@ -35,7 +35,7 @@ export const modificationSchema = Joi.object({
   currency: Joi.string(),
   amountType: Joi.valid("N/A", "disbursed", "allocated"),
   dueDate: Joi.date().iso().allow(""),
-  documents: Joi.array().items(storedDocumentSchema),
+  documents: Joi.array().items(documentReferenceSchema),
   additionalData: AdditionalData.schema,
 });
 
@@ -160,7 +160,7 @@ function updateAdditionalData(workflowitem: Workflowitem.Workflowitem, additiona
 
 function updateDocuments(
   workflowitem: Workflowitem.Workflowitem,
-  documents?: StoredDocument[],
+  documents?: DocumentReference[],
 ): Result.Type<void> {
   if (documents === undefined) {
     return;

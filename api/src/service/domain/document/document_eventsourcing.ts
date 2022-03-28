@@ -6,12 +6,13 @@ import * as DocumentUploaded from "./document_uploaded";
 import * as DocumentShared from "./document_shared";
 import { applyStorageServiceUrls as applyStorageServiceUrl } from "./storage_service_url_eventsourcing";
 import logger from "lib/logger";
+import { StoredDocument } from "./document";
 
 export function sourceDocuments(
   ctx: Ctx,
   events: BusinessEvent[],
-): { documents: DocumentUploaded.Document[]; errors: Error[] } {
-  const documents: DocumentUploaded.Document[] = [];
+): { documents: StoredDocument[]; errors: Error[] } {
+  const documents: StoredDocument[] = [];
   const errors: EventSourcingError[] = [];
   const urls = new Map<string, string>();
 
@@ -32,7 +33,7 @@ export function sourceDocuments(
 
 function apply(
   ctx: Ctx,
-  documents: DocumentUploaded.Document[],
+  documents: StoredDocument[],
   urls: Map<string, string>,
   event: BusinessEvent,
   errors: EventSourcingError[],
@@ -47,11 +48,11 @@ function apply(
 
 function newDocumentFromEvent(
   ctx: Ctx,
-  documents: DocumentUploaded.Document[],
+  documents: StoredDocument[],
   event: DocumentUploaded.Event,
   errors: EventSourcingError[],
 ) {
-  const document: DocumentUploaded.Document = {
+  const document: StoredDocument = {
     id: event.docId,
     fileName: event.fileName,
     organization: event.organization,
