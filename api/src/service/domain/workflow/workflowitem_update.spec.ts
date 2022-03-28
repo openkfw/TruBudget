@@ -6,7 +6,7 @@ import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
-import { hashDocument, StoredDocument } from "../document/document";
+import { DocumentReference, hashDocument } from "../document/document";
 import { Workflowitem } from "./workflowitem";
 import { updateWorkflowitem } from "./workflowitem_update";
 
@@ -45,7 +45,7 @@ const baseWorkflowitem: Workflowitem = {
   workflowitemType: "general",
 };
 
-const stripOutDocumentId = (docs: StoredDocument[]) => {
+const stripOutDocumentId = (docs: DocumentReference[]) => {
   return docs.map((d) => ({ hash: d.hash }));
 };
 
@@ -364,67 +364,6 @@ describe("update workflowitem: how modifications are applied", () => {
     assert.isTrue(Result.isOk(result), (result as Error).message);
     const { workflowitem } = Result.unwrap(result);
     assert.deepEqual(workflowitem.documents, [{ id: "a", hash: "hashA", fileName: "abc" }]);
-  });
-
-  it("An update to documents adds new documents", async () => {
-    const modification = {
-      documents: [
-        { id: "B", base64: "abc", fileName: "test.pdf" },
-        { id: "C", base64: "cde", fileName: "test.pdf" },
-      ],
-    };
-
-    const expectedHashForB = Result.unwrap(await hashDocument(modification.documents[0])).hash;
-    const expectedHashForC = Result.unwrap(await hashDocument(modification.documents[1])).hash;
-    const result = await updateWorkflowitem(
-      ctx,
-      alice,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      modification,
-      {
-        ...baseRepository,
-        getWorkflowitem: async (_workflowitemId) => ({
-          ...baseWorkflowitem,
-          documents: [{ id: "A", hash: "hash for A", fileName: "abc" }],
-        }),
-      },
-    );
-
-    assert.isTrue(Result.isOk(result), (result as Error).message);
-    const { workflowitem } = Result.unwrap(result);
-    assert.sameDeepMembers(
-      stripOutDocumentId(workflowitem.documents),
-      stripOutDocumentId([
-        { id: "A", hash: "hash for A", fileName: "abc1" },
-        { id: "B", hash: expectedHashForB, fileName: "test.pdf" },
-        { id: "C", hash: expectedHashForC, fileName: "test.pdf" },
-      ]),
-    );
-  });
-
-  it("An update to existing documents fails if the update would change the documents' hashes", async () => {
-    const modification = {
-      documents: [{ id: "A", base64: "", fileName: "test.pdf" }],
-    };
-    const result = await updateWorkflowitem(
-      ctx,
-      alice,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      modification,
-      {
-        ...baseRepository,
-        getWorkflowitem: async (_workflowitemId) => ({
-          ...baseWorkflowitem,
-          documents: [{ id: "A", hash: "old hash for A", fileName: "abc" }],
-        }),
-      },
-    );
-
-    assert.isTrue(Result.isErr(result));
   });
 
   it("An update to additional data adds new items and replaces existing ones", async () => {

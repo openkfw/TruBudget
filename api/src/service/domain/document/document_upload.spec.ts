@@ -122,7 +122,7 @@ describe("Storage Service: Upload a document", async () => {
     assert.isTrue(Result.isErr(result));
   });
 
-  it("Uploading document fails if no secret is retured from storage service", async () => {
+  it("Uploading document fails if no secret is returned from storage service", async () => {
     const result = await uploadDocument(ctx, alice, requestData, {
       ...repository,
       storeDocument: (id, name, hash) => Promise.resolve({ id, secret: undefined } as any),

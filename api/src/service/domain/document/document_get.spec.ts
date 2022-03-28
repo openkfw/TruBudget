@@ -7,7 +7,7 @@ import { Project } from "../workflow/project";
 import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
 
-import { StoredDocument, UploadedDocument } from "./document";
+import { DocumentReference, UploadedDocument } from "./document";
 import { getAllDocumentInfos, getDocumentInfo, getAllDocumentReferences } from "./document_get";
 
 const ctx: Ctx = {
@@ -39,7 +39,7 @@ const uploadEvent: BusinessEvent = {
   fileName: uploadedDocument.fileName,
   organization: "organization",
 };
-const storedDocuments: StoredDocument[] = [
+const documentReference: DocumentReference[] = [
   {
     id: uploadEvent.docId,
     hash: "hash1",
@@ -87,7 +87,7 @@ const baseWorkflowitem: Workflowitem = {
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
-  documents: storedDocuments,
+  documents: documentReference,
   permissions: { "workflowitem.view": ["alice"] },
   log: [],
   additionalData: {},
@@ -101,8 +101,8 @@ const repository = {
   getAllWorkflowitems: () => Promise.resolve([]),
 };
 
-describe("Documents from offchain or external storage", () => {
-  it("External storage: All existing documents can be fetched", async () => {
+describe("Documents from storage service", () => {
+  it("All existing documents can be fetched", async () => {
     const result = await getAllDocumentInfos(ctx, {
       ...repository,
       getDocumentsEvents: () => Promise.resolve([uploadEvent]),
@@ -112,7 +112,7 @@ describe("Documents from offchain or external storage", () => {
     expect(result[0].organization).to.eql(uploadEvent.organization);
   });
 
-  it("External storage: An existing document can be fetched by ID", async () => {
+  it("An existing document can be fetched by ID", async () => {
     const result = await getDocumentInfo(ctx, uploadedDocument.id, {
       ...repository,
       getDocumentsEvents: () => Promise.resolve([uploadEvent]),
@@ -124,7 +124,7 @@ describe("Documents from offchain or external storage", () => {
     }
   });
 
-  it("External storage: A non existing document can not be fetched", async () => {
+  it("A non existing document can not be fetched", async () => {
     const result = await getDocumentInfo(ctx, "-1", {
       ...repository,
       getDocumentsEvents: () => Promise.resolve([uploadEvent]),
@@ -133,7 +133,7 @@ describe("Documents from offchain or external storage", () => {
     expect(result).to.eql(undefined);
   });
 
-  it("Offchain and external storage: All existing documents references can be fetched", async () => {
+  it("All existing documents references can be fetched", async () => {
     const result = await getAllDocumentReferences({
       ...repository,
       getAllProjects: () => Promise.resolve([baseProject]),

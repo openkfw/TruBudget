@@ -48,8 +48,8 @@ describe("Get secrets for storage-service", async () => {
   });
 
   it("Get a non-existing secret fails", async () => {
-    const nonExtistingDocument = "non-existing";
-    const result = await getSecret(ctx, nonExtistingDocument, existingOrganization, repository);
+    const nonExistingDocument = "non-existing";
+    const result = await getSecret(ctx, nonExistingDocument, existingOrganization, repository);
 
     assert.isTrue(Result.isErr(result));
   });
@@ -67,10 +67,10 @@ describe("Get secrets for storage-service", async () => {
   });
 
   it("Check if a non-existing documents exists", async () => {
-    const nonExtistingDocument = "non-existing";
+    const nonExistingDocument = "non-existing";
     const result = await secretAlreadyExists(
       ctx,
-      nonExtistingDocument,
+      nonExistingDocument,
       existingOrganization,
       repository,
     );
