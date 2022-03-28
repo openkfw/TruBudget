@@ -26,7 +26,7 @@ export async function listWorkflowitemPermissions(
   const permissionsResult = await Cache.withCache(conn, ctx, async (cache) =>
     WorkflowitemPermissionsList.getAll(ctx, serviceUser, projectId, subprojectId, workflowitemId, {
       getWorkflowitem: async (pId, spId, wId) => {
-        return await cache.getWorkflowitem(pId, spId, wId);
+        return cache.getWorkflowitem(pId, spId, wId);
       },
     }),
   );

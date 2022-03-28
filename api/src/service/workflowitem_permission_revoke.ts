@@ -41,7 +41,7 @@ export async function revokeWorkflowitemPermission(
       intent,
       {
         getWorkflowitem: async (pId, spId, wId) => {
-          return await cache.getWorkflowitem(pId, spId, wId);
+          return cache.getWorkflowitem(pId, spId, wId);
         },
       },
     ),

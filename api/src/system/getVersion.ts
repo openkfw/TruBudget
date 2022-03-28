@@ -42,7 +42,7 @@ const multichainVersionMetaData = async (
 
 const storageServiceMetaData = async (
   storageServiceClient: StorageServiceClient,
-): Promise<Version> => await storageServiceClient.getVersion();
+): Promise<Version> => storageServiceClient.getVersion();
 
 export const getVersion = async (
   multichainHost: string,

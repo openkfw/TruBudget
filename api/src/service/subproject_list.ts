@@ -20,7 +20,7 @@ export async function listSubprojects(
   const visibleSubprojectsResult = await Cache.withCache(conn, ctx, async (cache) =>
     SubprojectList.getAllVisible(ctx, serviceUser, {
       getAllSubprojects: async () => {
-        return await cache.getSubprojects(projectId);
+        return cache.getSubprojects(projectId);
       },
     }),
   );

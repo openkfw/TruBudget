@@ -29,8 +29,8 @@ export async function revokeGlobalPermission(
     permission,
     {
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-      isGroup: async (revokeeId) => await GroupQuery.groupExists(conn, ctx, serviceUser, revokeeId),
-      getUser: async (userId) => await UserQuery.getUser(conn, ctx, serviceUser, userId),
+      isGroup: async (revokeeId) => GroupQuery.groupExists(conn, ctx, serviceUser, revokeeId),
+      getUser: async (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
     },
   );
   if (Result.isErr(result)) return new VError(result, "failed to revoke global permission");

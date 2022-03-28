@@ -81,6 +81,7 @@
     "fastify-swagger": "^4.12.4",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.0",
+    "lodash": "^4.17.21",
     "lodash.isequal": "^4.5.0",
     "module-alias": "^2.2.2",
     "raw-body": "^2.3.3",
@@ -100,8 +101,8 @@
     "@types/pino": "^6.3.11",
     "@types/uuid": "^3.4.3",
     "@types/verror": "^1.10.3",
-    "@typescript-eslint/eslint-plugin": "4.28.5",
-    "@typescript-eslint/parser": "4.28.5",
+    "@typescript-eslint/eslint-plugin": "5.16.0",
+    "@typescript-eslint/parser": "5.16.0",
     "chai": "^4.1.2",
     "colors": "^1.4.0",
     "coveralls": "^3.0.3",
@@ -123,7 +124,7 @@
     "ts-node-dev": "^1.1.8",
     "tsconfig-paths": "^3.11.0",
     "tslint": "*",
-    "typescript": "^4.0.2"
+    "typescript": "^4.6.2"
   },
   "_moduleAliases": {
     "lib": "dist/lib"
