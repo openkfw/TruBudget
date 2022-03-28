@@ -3,10 +3,9 @@ import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
 import { Workflowitem } from "../workflow/workflowitem";
-import { StoredDocument, UploadedDocument } from "./document";
+import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
 import * as DocumentUploaded from "./document_uploaded";
 import * as DocumentShared from "./document_shared";
-import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 import { getDocument } from "./workflowitem_document_download";
 import VError from "verror";
 
@@ -37,20 +36,6 @@ const documentIdStorage = "2";
 const documentIdExternalStorage = "3";
 const hash = "hash";
 
-const uploadedOffChainDocumentEvent: WorkflowitemDocumentUploaded.Event = {
-  type: "workflowitem_document_uploaded",
-  source: "",
-  time: "", // ISO timestamp
-  publisher: alice.id,
-  projectId,
-  subprojectId,
-  workflowitemId,
-  document: {
-    id: documentIdOffchain,
-    base64: "lakjflaksdjf",
-    fileName: "offchainFile",
-  },
-};
 const uploadedStorageDocument: UploadedDocument = {
   id: documentIdStorage,
   base64: "lakjflaksdjf",
@@ -62,41 +47,34 @@ const uploadedExternalStorageDocument: UploadedDocument = {
   fileName: "externalStorageFile",
 };
 
-const documentInfoStorage: DocumentUploaded.Document = {
+const documentInfoStorage: StoredDocument = {
   id: documentIdStorage,
   fileName: uploadedStorageDocument.fileName,
   organization: "organization",
   organizationUrl: "",
 };
-const documentInfoExternalStorage: DocumentUploaded.Document = {
+const documentInfoExternalStorage: StoredDocument = {
   id: documentIdExternalStorage,
   fileName: uploadedExternalStorageDocument.fileName,
   organization: "organization",
   organizationUrl: "organizationUrl",
 };
 
-const storedDocuments: StoredDocument[] = [
+const documentReferences: DocumentReference[] = [
   {
     id: "guid1",
     hash,
+    fileName: uploadedStorageDocument.fileName,
   },
   {
     id: documentIdStorage,
     hash,
     fileName: uploadedStorageDocument.fileName,
-    organization: "organization",
   },
   {
     id: "guid3",
     hash,
     fileName: uploadedExternalStorageDocument.fileName,
-    organization: "organization",
-    organizationUrl: "organizationUrl",
-  },
-  {
-    id: documentIdOffchain,
-    hash,
-    fileName: uploadedOffChainDocumentEvent.document.fileName,
   },
   {
     id: documentIdExternalStorage,
@@ -115,7 +93,7 @@ const baseWorkflowitem: Workflowitem = {
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
-  documents: storedDocuments,
+  documents: documentReferences,
   permissions: { "workflowitem.view": ["alice"] },
   log: [],
   additionalData: {},
@@ -133,9 +111,6 @@ const privateKey: string = "privateKey";
 
 const repository = {
   getWorkflowitem: () => Promise.resolve(baseWorkflowitem),
-  getOffchainDocument: (docId) => {
-    return Promise.resolve(undefined);
-  },
   getDocumentFromStorage: (id, secret) => {
     throw new VError();
   },
@@ -151,27 +126,15 @@ const repository = {
 };
 
 // These tests will work even if the Storage-Service is not enabled.
-// Thats because the data from the storage servive (internal and external)
+// Thats because the data from the storage service (internal and external)
 // are injected by the getDocumentInfo() method.
 // Enabling the storage service in tests is not possible, since it is enabled by
 // env variables in config.ts
 
 describe("Download documents attached to a workflowitem", () => {
-  it("Offchain: Downloading existing documents works", async () => {
-    const result = await getDocument(ctx, alice, projectId, documentIdOffchain, {
-      ...repository,
-      getOffchainDocumentEvent: () => Promise.resolve(uploadedOffChainDocumentEvent),
-      getDocumentInfo: () => Promise.resolve(undefined),
-    });
-
-    assert.isTrue(Result.isOk(result));
-    expect(result).to.include({ fileName: "offchainFile" });
-  });
-
   it("Internal Storage: Downloading existing documents works", async () => {
     const result = await getDocument(ctx, alice, projectId, documentIdStorage, {
       ...repository,
-      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromStorage: () => Promise.resolve(uploadedStorageDocument),
       getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoStorage),
@@ -184,7 +147,6 @@ describe("Download documents attached to a workflowitem", () => {
   it("External Storage: Downloading existing documents works", async () => {
     const result = await getDocument(ctx, alice, projectId, documentIdExternalStorage, {
       ...repository,
-      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoExternalStorage),
     });
@@ -193,14 +155,8 @@ describe("Download documents attached to a workflowitem", () => {
   });
 
   it("Downloading existing documents does not work without workflowitem.view permission", async () => {
-    const offchainResult = await getDocument(ctx, bob, projectId, documentIdOffchain, {
-      ...repository,
-      getOffchainDocumentEvent: () => Promise.resolve(uploadedOffChainDocumentEvent),
-      getDocumentInfo: () => Promise.resolve(undefined),
-    });
     const storageResult = await getDocument(ctx, bob, projectId, documentIdStorage, {
       ...repository,
-      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromStorage: () => Promise.resolve(uploadedStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoStorage),
     });
@@ -211,38 +167,28 @@ describe("Download documents attached to a workflowitem", () => {
       documentIdExternalStorage,
       {
         ...repository,
-        getOffchainDocumentEvent: () => Promise.resolve(undefined),
         getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
         getDocumentInfo: () => Promise.resolve(documentInfoExternalStorage),
       },
     );
 
-    assert.isTrue(Result.isErr(offchainResult));
     assert.isTrue(Result.isErr(storageResult));
     assert.isTrue(Result.isErr(externalStorageResult));
   });
 
   it("Downloading non existing document does not work", async () => {
     const notExistingDocumentId = "not_existing_id";
-    const offchainResult = await getDocument(ctx, alice, projectId, notExistingDocumentId, {
-      ...repository,
-      getOffchainDocumentEvent: () => Promise.resolve(uploadedOffChainDocumentEvent),
-      getDocumentInfo: () => Promise.resolve(undefined),
-    });
     const storageResult = await getDocument(ctx, alice, projectId, notExistingDocumentId, {
       ...repository,
-      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromStorage: () => Promise.resolve(uploadedStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoStorage),
     });
     const externalStorageResult = await getDocument(ctx, alice, projectId, notExistingDocumentId, {
       ...repository,
-      getOffchainDocumentEvent: () => Promise.resolve(undefined),
       getDocumentFromExternalStorage: () => Promise.resolve(uploadedExternalStorageDocument),
       getDocumentInfo: () => Promise.resolve(documentInfoExternalStorage),
     });
 
-    assert.isTrue(Result.isErr(offchainResult));
     assert.isTrue(Result.isErr(storageResult));
     assert.isTrue(Result.isErr(externalStorageResult));
   });

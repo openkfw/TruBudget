@@ -1,13 +1,14 @@
 import { assert } from "chai";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
 import { Project } from "../workflow/project";
 import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
-import { StoredDocument, UploadedDocument } from "./document";
+import { DocumentReference, UploadedDocument } from "./document";
 import { documentValidate } from "./document_validate";
+import { PreconditionError } from "../errors/precondition_error";
+import { NotFound } from "../errors/not_found";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -89,24 +90,13 @@ const uploadedDocument: UploadedDocument = {
   base64: "lakjflaksdjf",
   fileName: uploadedDocumentFileName,
 };
-const storedDocuments: StoredDocument[] = [
+const documentReference: DocumentReference[] = [
   {
     id: uploadedDocumentId,
     hash: "hash1",
     fileName: uploadedDocumentFileName,
   },
 ];
-
-const uploadEventOffchain: BusinessEvent = {
-  type: "workflowitem_document_uploaded",
-  source: "",
-  time: "", // ISO timestamp
-  publisher: alice.id, //identity
-  projectId: projectId,
-  subprojectId: subprojectId,
-  workflowitemId: workflowitemId,
-  document: uploadedDocument,
-};
 
 const repository = {
   getWorkflowitem: () => Promise.resolve(baseWorkflowitem),
@@ -139,7 +129,7 @@ describe("Validating uploaded document in workflowitem", () => {
         getAllProjects: () => Promise.resolve([baseProject]),
         getAllSubprojects: () => Promise.resolve([baseSubproject]),
         getAllWorkflowitems: () =>
-          Promise.resolve([{ ...baseWorkflowitem, documents: storedDocuments }]),
+          Promise.resolve([{ ...baseWorkflowitem, documents: documentReference }]),
       },
     );
     assert.isTrue(Result.isOk(newEventsResult));
@@ -160,6 +150,7 @@ describe("Validating uploaded document in workflowitem", () => {
       repository,
     );
     assert.isTrue(Result.isErr(newEventsResult));
+    assert.instanceOf(newEventsResult, NotFound);
   });
 
   it("Root user cannot validate an existing document", async () => {
@@ -174,8 +165,15 @@ describe("Validating uploaded document in workflowitem", () => {
       baseSubproject.projectId,
       baseSubproject.id,
       baseWorkflowitem.id,
-      repository,
+      {
+        ...repository,
+        getAllProjects: () => Promise.resolve([baseProject]),
+        getAllSubprojects: () => Promise.resolve([baseSubproject]),
+        getAllWorkflowitems: () =>
+          Promise.resolve([{ ...baseWorkflowitem, documents: documentReference }]),
+      },
     );
     assert.isTrue(Result.isErr(newEventsResult));
+    assert.instanceOf(newEventsResult, PreconditionError);
   });
 });

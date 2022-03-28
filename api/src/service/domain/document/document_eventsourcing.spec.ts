@@ -1,48 +1,27 @@
 import { assert, expect } from "chai";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
-import { UploadedDocument } from "./document";
+import { StoredDocument, UploadedDocument } from "./document";
 import { sourceDocuments, sourceSecrets } from "./document_eventsourcing";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import * as DocumentUploaded from "./document_uploaded";
 
 const alice: ServiceUser = {
   id: "alice",
   groups: ["alice_and_bob", "alice_and_bob_and_charlie"],
   address: "address",
 };
-const projectId = "dummy-project";
-const subprojectId = "dummy-subproject";
-const workflowitemId = "dummy";
 
 const ctx: Ctx = {
   requestId: "test",
   source: "test",
 };
 
-const offchainDocument: UploadedDocument = {
-  id: "1",
-  base64: "lakjflaksdjf",
-  fileName: "dummyFile",
-};
-
-const uploadedDocument: DocumentUploaded.Document = {
+const uploadedDocument: StoredDocument = {
   id: "1",
   fileName: "dummyFile",
   organization: "dummyOrganization",
   organizationUrl: "dummyUrl",
-};
-
-const offchainDocumentEvent: BusinessEvent = {
-  type: "workflowitem_document_uploaded",
-  source: "",
-  time: "", // ISO timestamp
-  publisher: alice.id, //identity
-  projectId: projectId,
-  subprojectId: subprojectId,
-  workflowitemId: workflowitemId,
-  document: offchainDocument,
 };
 
 const uploadedDocumentEvent: BusinessEvent = {

@@ -8,7 +8,7 @@ import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { Workflowitem } from "./workflowitem";
 import { getWorkflowitemDetails } from "./workflowitem_get_details";
-import { StoredDocument, UploadedDocument } from "../document/document";
+import { DocumentReference, UploadedDocument } from "../document/document";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";
@@ -39,7 +39,7 @@ const baseWorkflowitem: Workflowitem = {
   workflowitemType: "general",
 };
 
-const documentStoredInWorkflowitem: StoredDocument = {
+const documentStoredInWorkflowitem: DocumentReference = {
   id: "documentIdOffchain",
   hash: "lakjflaksdjf",
   fileName: "offchainFile",
