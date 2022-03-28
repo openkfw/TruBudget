@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import _isEmpty from "lodash/isEmpty";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
@@ -250,7 +250,11 @@ const WorkflowDialog = props => {
     storeWorkflowitemType,
     hasFixedWorkflowitemType,
     fixedWorkflowitemType,
-    workflowitemType
+    workflowitemType,
+    fetchVersions,
+    versions,
+    setStorageServiceAvailable,
+    storageServiceAvailable
   } = props;
 
   useEffect(() => {
@@ -271,19 +275,44 @@ const WorkflowDialog = props => {
     props.workflowToAdd.workflowitemType
   ]);
 
-  const specifcProps = editDialogShown
+  useEffect(() => {
+    fetchVersions();
+  }, [fetchVersions]);
+
+  useEffect(() => {
+    if (versions["storage"] && versions["storage"].ping) {
+      setStorageServiceAvailable(true);
+    }
+    return () => {
+      setStorageServiceAvailable(false);
+    };
+  }, [setStorageServiceAvailable, versions]);
+
+
+  const specificProps = editDialogShown
     ? {
-        handleSubmit: handleEdit,
-        dialogShown: editDialogShown
-      }
+      handleSubmit: handleEdit,
+      dialogShown: editDialogShown
+    }
     : {
-        handleSubmit: handleCreate,
-        dialogShown: creationDialogShown
-      };
+      handleSubmit: handleCreate,
+      dialogShown: creationDialogShown
+    };
   const { displayName, amountType, amount } = workflowToAdd;
   const exchangeRate = fromAmountString(workflowToAdd.exchangeRate);
   const changes = compareObjects(workflowItems, workflowToAdd);
   delete changes.assignee;
+  const documentStep = {
+    title: strings.workflow.workflow_documents,
+    content: (
+      <DocumentUpload storeWorkflowDocument={storeWorkflowDocument} workflowDocuments={workflowToAdd.documents} {...props} />
+    ),
+    nextDisabled:
+      workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
+        ? Object.keys(changes).length === 2 && changes.hasOwnProperty("currency") && changes.hasOwnProperty("amount")
+        : _isEmpty(changes)
+  };
+
   const steps = [
     {
       title: strings.workflow.workflow_name,
@@ -296,19 +325,11 @@ const WorkflowDialog = props => {
           <Content {...props} />
         </div>
       )
-    },
-
-    {
-      title: strings.workflow.workflow_documents,
-      content: (
-        <DocumentUpload storeWorkflowDocument={storeWorkflowDocument} workflowDocuments={workflowToAdd.documents} />
-      ),
-      nextDisabled:
-        workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
-          ? Object.keys(changes).length === 2 && changes.hasOwnProperty("currency") && changes.hasOwnProperty("amount")
-          : _isEmpty(changes)
     }
   ];
+  if (storageServiceAvailable) {
+    steps.push(documentStep);
+  }
   const { classes, ...propsWithoutClasses } = props;
   return (
     <CreationDialog
@@ -316,7 +337,7 @@ const WorkflowDialog = props => {
       onDialogCancel={props.hideWorkflowDialog}
       steps={steps}
       numberOfSteps={steps.length}
-      {...specifcProps}
+      {...specificProps}
       {...propsWithoutClasses}
     />
   );

@@ -9,6 +9,7 @@ export const FETCH_EMAIL_SERVICE_VERSION_SUCCESS = "FETCH_EMAIL_SERVICE_VERSION_
 export const FETCH_EXPORT_SERVICE_VERSION = "FETCH_EXPORT_SERVICE_VERSION";
 export const FETCH_EXPORT_SERVICE_VERSION_FAILURE = "FETCH_EXPORT_SERVICE_VERSION_FAILURE";
 export const FETCH_EXPORT_SERVICE_VERSION_SUCCESS = "FETCH_EXPORT_SERVICE_VERSION_SUCCESS";
+export const SET_STORAGE_SERVICE_AVAILABLE = "SET_STORAGE_SERVICE_AVAILABLE";
 
 export function fetchVersions() {
   return {
@@ -23,5 +24,12 @@ export function fetchEmailServiceVersion() {
 export function fetchExportServiceVersion() {
   return {
     type: FETCH_EXPORT_SERVICE_VERSION
+  };
+}
+
+export function setStorageServiceAvailable(isAvailable) {
+  return {
+    type: SET_STORAGE_SERVICE_AVAILABLE,
+    isAvailable
   };
 }

@@ -24,6 +24,7 @@ import {
   storeWorkflowAssignee,
   assignWorkflowItem
 } from "./actions";
+import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
 import WorkflowDialog from "./WorkflowDialog";
 
 const styles = {};
@@ -98,7 +99,9 @@ const mapStateToProps = state => {
     subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
     hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
     fixedWorkflowitemType: state.getIn(["workflow", "fixedWorkflowitemType"]),
-    hasFixedWorkflowitemType: state.getIn(["workflow", "hasFixedWorkflowitemType"])
+    hasFixedWorkflowitemType: state.getIn(["workflow", "hasFixedWorkflowitemType"]),
+    versions: state.getIn(["status", "versions"]),
+    storageServiceAvailable: state.getIn(["status", "storageServiceAvailable"])
   };
 };
 
@@ -142,7 +145,9 @@ const mapDispatchToProps = dispatch => {
           assigneeId,
           assigneeDisplayName
         )
-      )
+      ),
+    fetchVersions: () => dispatch(fetchVersions()),
+    setStorageServiceAvailable: (isAvailable) => dispatch(setStorageServiceAvailable(isAvailable))
   };
 };
 

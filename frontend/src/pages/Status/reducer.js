@@ -8,7 +8,8 @@ import {
   FETCH_EXPORT_SERVICE_VERSION_SUCCESS,
   FETCH_VERSIONS,
   FETCH_VERSIONS_FAILURE,
-  FETCH_VERSIONS_SUCCESS
+  FETCH_VERSIONS_SUCCESS,
+  SET_STORAGE_SERVICE_AVAILABLE
 } from "./actions";
 
 const defaultState = fromJS({
@@ -18,11 +19,13 @@ const defaultState = fromJS({
     blockchain: {},
     multichain: {},
     emailService: {},
-    exportService: {}
+    exportService: {},
+    storage: {}
   },
   isFetchingVersions: false,
   isFetchingEmailVersion: false,
-  isFetchingExportVersion: false
+  isFetchingExportVersion: false,
+  storageServiceAvailable: false
 });
 
 export default function nodeDashboardReducer(state = defaultState, action) {
@@ -57,6 +60,8 @@ export default function nodeDashboardReducer(state = defaultState, action) {
         .set("isFetchingExportVersion", false);
     case FETCH_EXPORT_SERVICE_VERSION_FAILURE:
       return state.set("isFetchingExportVersion", false);
+    case SET_STORAGE_SERVICE_AVAILABLE:
+      return state.set("storageServiceAvailable", action.isAvailable);
     default:
       return state;
   }
