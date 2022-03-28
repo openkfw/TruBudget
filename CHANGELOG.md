@@ -55,6 +55,20 @@ Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14
   characters or accents [#1054](https://github.com/openkfw/TruBudget/issues/1054)
 - Updated bare-metal documentation [#1156](https://github.com/openkfw/TruBudget/issues/1156)
 
+## [2.0.0] -
+
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+### Removed
+
+- Removed the option to upload documents to the MultiChain offchain storage [#1042](https://github.com/openkfw/TruBudget/issues/1042)
+
+<!-- ### Fixed -->
+
 ## [1.29.0] - 2022-03-02
 
 ### Added
