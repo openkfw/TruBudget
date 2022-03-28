@@ -46,6 +46,20 @@ Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14
 
 - Fixed a bug where it was not possible to upload documents to a workflowitem if the file name contained special characters or accents [#1079](https://github.com/openkfw/TruBudget/pull/1079)
 
+## [2.0.0] -
+
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+### Removed
+
+- Removed the option to upload documents to the MultiChain offchain storage [#1042](https://github.com/openkfw/TruBudget/issues/1042)
+
+<!-- ### Fixed -->
+
 ## [1.29.0] - 2022-03-02
 
 ### Added
