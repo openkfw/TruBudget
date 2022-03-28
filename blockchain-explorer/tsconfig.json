@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "commonjs",
+    "outDir": "dist",
+    "rootDir": "src",
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "src",
+    "paths": {
+      "lib/*": ["lib/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.spec.ts"],
+  "exclude": ["node_modules", "coverage"]
+}
