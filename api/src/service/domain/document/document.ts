@@ -6,35 +6,31 @@ import VError = require("verror");
 
 export interface StoredDocument {
   id: string;
-  documentId?: string;
-  hash: string;
-  // new document feature properties
-  fileName?: string;
-  available?: boolean;
-  organization?: string;
-  organizationUrl?: string;
-}
-
-export const storedDocumentSchema = Joi.object({
-  id: Joi.string().required(),
-  documentId: Joi.string(),
-  hash: Joi.string().allow("").required(),
-  fileName: Joi.string(),
-  available: Joi.boolean(),
-  organization: Joi.string(),
-  organizationUrl: Joi.string(),
-});
-
-export interface DocumentInfo extends GenericDocument {
-  id: string;
   fileName: string;
   organization: string;
   organizationUrl: string;
 }
 
-export interface GenericDocument {
+export const storedDocumentSchema = Joi.object({
+  id: Joi.string().required(),
+  fileName: Joi.string().required(),
+  organization: Joi.string().required(),
+  organizationUrl: Joi.string().required(),
+});
+
+export interface DocumentReference {
   id: string;
+  fileName: string;
+  hash: string;
+  available?: boolean;
 }
+
+export const documentReferenceSchema = Joi.object({
+  id: Joi.string().required(),
+  fileName: Joi.string().required(),
+  hash: Joi.string().required(),
+  available: Joi.boolean(),
+});
 
 export interface UploadedDocument extends GenericDocument {
   id: string;
@@ -51,9 +47,13 @@ export const uploadedDocumentSchema = Joi.object({
   fileName: Joi.string(),
 });
 
+export interface GenericDocument {
+  id: string;
+}
+
 export async function hashDocument(
   document: UploadedDocument,
-): Promise<Result.Type<StoredDocument>> {
+): Promise<Result.Type<DocumentReference>> {
   logger.trace({ document: document.fileName }, "Hashing document");
   return hashBase64String(document.base64).then((hashValue) => ({
     id: document.id,
@@ -64,16 +64,16 @@ export async function hashDocument(
 
 export async function hashDocuments(
   documents: UploadedDocument[],
-): Promise<Result.Type<StoredDocument[]>> {
-  const documentHashes: StoredDocument[] = [];
+): Promise<Result.Type<DocumentReference[]>> {
+  const documentReference: DocumentReference[] = [];
   for (const doc of documents || []) {
     const hashedDocumentResult = await hashDocument(doc);
     if (Result.isErr(hashedDocumentResult)) {
       return new VError(hashedDocumentResult, `failed to hash document ${doc.id}`);
     }
-    documentHashes.push(hashedDocumentResult);
+    documentReference.push(hashedDocumentResult);
   }
-  return documentHashes;
+  return documentReference;
 }
 
 async function hashBase64String(base64String: string): Promise<string> {
@@ -87,14 +87,4 @@ async function hashBase64String(base64String: string): Promise<string> {
 export function validate(input): Result.Type<UploadedDocument> {
   const { error, value } = Joi.validate(input, uploadedDocumentSchema);
   return !error ? value : error;
-}
-
-export function mapOldDocToNewDoc(document: StoredDocument): Result.Type<StoredDocument> {
-  return document.documentId
-    ? {
-        id: document.documentId,
-        hash: document.hash,
-        fileName: document.id,
-      }
-    : document;
 }

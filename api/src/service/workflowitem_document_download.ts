@@ -15,8 +15,6 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
-import * as Liststreamkeyitems from "./liststreamkeyitems";
-import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import VError = require("verror");
 import logger from "lib/logger";
 
@@ -36,24 +34,6 @@ export async function getDocument(
     WorkflowitemDocumentDownload.getDocument(ctx, serviceUser, workflowitemId, documentId, {
       getWorkflowitem: async () => {
         return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
-      },
-      getOffchainDocumentEvent: async (docId) => {
-        const items: Liststreamkeyitems.Item[] = await conn.multichainClient.v2_readStreamItems(
-          "offchain_documents",
-          docId,
-          1,
-        );
-
-        const documentEvents: WorkflowitemDocumentUploaded.Event[] = items
-          .filter((i) => i.data.json.type === "workflowitem_document_uploaded")
-          .map((i) => i.data.json);
-        if (documentEvents.length > 1) {
-          logger.warn("Duplicate document with this id");
-          return new VError(
-            `could not get document ${documentId} of workflowitem ${workflowitemId}. Duplicate document with this id`,
-          );
-        }
-        return documentEvents[0];
       },
       getDocumentInfo: async (docId) => {
         return DocumentGet.getDocumentInfo(ctx, docId, {

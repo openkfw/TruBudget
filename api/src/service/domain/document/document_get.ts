@@ -2,9 +2,8 @@ import { VError } from "verror";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { StoredDocument } from "./document";
+import { DocumentReference, StoredDocument } from "./document";
 import { sourceDocuments } from "./document_eventsourcing";
-import * as DocumentUploaded from "./document_uploaded";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
@@ -23,7 +22,7 @@ interface Repository {
 export async function getAllDocumentInfos(
   ctx: Ctx,
   repository: Repository,
-): Promise<Result.Type<DocumentUploaded.Document[]>> {
+): Promise<Result.Type<StoredDocument[]>> {
   logger.trace("Getting all document infos");
   const documentEvents = await repository.getDocumentsEvents();
 
@@ -39,7 +38,7 @@ export async function getDocumentInfo(
   ctx: Ctx,
   docId: string,
   repository: Repository,
-): Promise<Result.Type<DocumentUploaded.Document | undefined>> {
+): Promise<Result.Type<StoredDocument | undefined>> {
   logger.trace({ docId }, "Getting infos of document by id");
   const documentInfos = await getAllDocumentInfos(ctx, repository);
 
@@ -53,9 +52,9 @@ export async function getDocumentInfo(
 
 export async function getAllDocumentReferences(
   repository: Repository,
-): Promise<Result.Type<StoredDocument[]>> {
+): Promise<Result.Type<DocumentReference[]>> {
   const projects: Project.Project[] = await repository.getAllProjects();
-  let documentReferences: StoredDocument[] = [];
+  let documentReferences: DocumentReference[] = [];
   for (const project of projects) {
     const allSubprojectsResult = await repository.getAllSubprojects(project.id);
 

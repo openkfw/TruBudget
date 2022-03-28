@@ -3,7 +3,7 @@ import { Ctx } from "lib/ctx";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
-import { StoredDocument, storedDocumentSchema } from "../document/document";
+import { DocumentReference, documentReferenceSchema } from "../document/document";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
@@ -27,7 +27,7 @@ interface InitialData {
   exchangeRate?: string;
   billingDate?: string;
   dueDate?: string;
-  documents: StoredDocument[];
+  documents: DocumentReference[];
   permissions: Permissions;
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
@@ -46,7 +46,7 @@ const initialDataSchema = Joi.object({
   exchangeRate: Joi.string(),
   billingDate: Joi.date().iso(),
   dueDate: Joi.date().iso().allow(""),
-  documents: Joi.array().items(storedDocumentSchema).required(),
+  documents: Joi.array().items(documentReferenceSchema).required(),
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
   workflowitemType: workflowitemTypeSchema,

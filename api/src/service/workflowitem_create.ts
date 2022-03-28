@@ -10,7 +10,6 @@ import { BusinessEvent } from "./domain/business_event";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
-import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserQuery from "./domain/organization/user_query";
 import { Document, ResourceMap } from "./domain/ResourceMap";
@@ -125,15 +124,6 @@ export async function createWorkflowitem(
         document = {
           fileName: documentUploadedEvent.fileName,
           id: documentUploadedEvent.docId,
-        };
-        documents.push(document);
-        break;
-
-      case "workflowitem_document_uploaded":
-        const offChainDocumentUploadedEvent: WorkflowitemDocumentUploaded.Event = event;
-        document = {
-          fileName: offChainDocumentUploadedEvent.document.fileName,
-          id: offChainDocumentUploadedEvent.document.id,
         };
         documents.push(document);
         break;

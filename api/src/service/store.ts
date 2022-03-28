@@ -172,21 +172,6 @@ export async function store(
         publisherAddress,
       );
 
-    case "workflowitem_document_uploaded":
-      await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
-      return writeTo(
-        conn,
-        ctx,
-        {
-          stream: "offchain_documents",
-          keys: [event.document.id],
-          event,
-        },
-        publisherAddress,
-        true,
-      );
-      break;
-
     case "document_uploaded":
       await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
       return writeTo(

@@ -4,7 +4,6 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { mapOldDocToNewDoc, StoredDocument } from "../document/document";
 import * as DocumentValidated from "../document/document_validated";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as Workflowitem from "./workflowitem";
@@ -97,18 +96,6 @@ function sourceEvent(
     if (Result.isErr(workflowitem)) {
       return new VError(workflowitem, "could not create workflowitem from event");
     }
-    const mappedDocuments: StoredDocument[] = [];
-    for (const doc of workflowitem.documents) {
-      const mappedDocument = mapOldDocToNewDoc(doc);
-      if (Result.isErr(mappedDocument)) {
-        return new VError(
-          mappedDocument,
-          "Could not map old workflowitem documents structure to new structure",
-        );
-      }
-      mappedDocuments.push(mappedDocument);
-    }
-    workflowitem.documents = mappedDocuments;
   }
 
   return workflowitem;

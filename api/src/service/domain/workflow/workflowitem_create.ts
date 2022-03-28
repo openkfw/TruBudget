@@ -9,13 +9,12 @@ import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import {
+  DocumentReference,
   GenericDocument,
   hashDocument,
-  StoredDocument,
   UploadedDocument,
   uploadedDocumentSchema,
 } from "../document/document";
-import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document_uploaded";
 import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -117,29 +116,28 @@ export async function createWorkflowitem(
 ): Promise<Result.Type<BusinessEvent[]>> {
   const publisher = creatingUser.id;
   const workflowitemId = reqData.workflowitemId || randomString();
-  const documents: StoredDocument[] = [];
+  const documents: DocumentReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (reqData.documents) {
-    logger.trace(
-      { req: reqData },
-      "Trying to hash documents in preparation for workflowitem_created event",
-    );
-    const existingDocuments = await repository.getAllDocumentReferences();
-    if (Result.isErr(existingDocuments)) {
-      return new VError(existingDocuments, "cannot get documents");
-    }
-    // preparation for workflowitem_created event
-    for (const doc of reqData.documents || []) {
-      doc.id = generateUniqueDocId(existingDocuments);
-      const hashedDocumentResult = await hashDocument(doc);
-      if (Result.isErr(hashedDocumentResult)) {
-        return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
-      }
-      documents.push(hashedDocumentResult);
-    }
-
     if (config.documentFeatureEnabled) {
+      logger.trace(
+        { req: reqData },
+        "Trying to hash documents in preparation for workflowitem_created event",
+      );
+      const existingDocuments = await repository.getAllDocumentReferences();
+      if (Result.isErr(existingDocuments)) {
+        return new VError(existingDocuments, "cannot get documents");
+      }
+      // preparation for workflowitem_created event
+      for (const doc of reqData.documents || []) {
+        doc.id = generateUniqueDocId(existingDocuments);
+        const hashedDocumentResult = await hashDocument(doc);
+        if (Result.isErr(hashedDocumentResult)) {
+          return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+        }
+        documents.push(hashedDocumentResult);
+      }
       // upload documents to storage service
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
@@ -154,53 +152,13 @@ export async function createWorkflowitem(
       );
       for (const result of documentUploadedEventsResults) {
         if (Result.isErr(result)) {
-          // Only returns the first error occured
+          // Only returns the first error occurred
           return result;
         }
         documentUploadedEvents.push(...result);
       }
     } else {
-      // upload documents to offchain storage service
-      // generate workflowitem_document_uploaded event
-      const documentUploadedEventsResults: Result.Type<BusinessEvent>[] = documents.map((d, i) => {
-        const docToUpload: UploadedDocument = {
-          base64: reqData.documents ? reqData.documents[i].base64 : "",
-          fileName:
-            reqData.documents && reqData.documents[i].fileName
-              ? reqData.documents[i].fileName
-              : "uploaded_file.pdf",
-          id: d.id,
-        };
-
-        logger.trace(
-          { req: reqData },
-          "Trying to create 'WorkflowitemDocumentUploaded' Event from request data",
-        );
-        const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
-          ctx.source,
-          publisher,
-          reqData.projectId,
-          reqData.subprojectId,
-          workflowitemId,
-          docToUpload,
-        );
-        if (Result.isErr(workflowitemEvent)) {
-          return new VError(workflowitemEvent, "failed to create event");
-        }
-
-        // Check that the event is valid:
-        const result = WorkflowitemDocumentUploaded.createFrom(ctx, workflowitemEvent);
-        if (Result.isErr(result)) {
-          return new InvalidCommand(ctx, workflowitemEvent, [result]);
-        }
-        return workflowitemEvent;
-      });
-      for (const result of documentUploadedEventsResults) {
-        if (Result.isErr(result)) {
-          return result;
-        }
-        documentUploadedEvents.push(result);
-      }
+      return new VError("Cannot upload documents, the document feature is not enabled");
     }
   }
 

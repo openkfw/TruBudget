@@ -6,13 +6,11 @@ import { config } from "../../../config";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import {
+  DocumentReference,
   GenericDocument,
   hashDocument,
-  StoredDocument,
   UploadedDocument,
 } from "../document/document";
-import * as WorkflowitemDocumentUploaded from "../document/workflowitem_document_uploaded";
-import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
@@ -52,7 +50,7 @@ interface Repository {
   uploadDocumentToStorageService(
     fileName: string,
     documentBase64: string,
-    docId: string,
+    id: string,
   ): Promise<Result.Type<BusinessEvent[]>>;
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
 }
@@ -86,26 +84,26 @@ export async function updateWorkflowitem(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  const documents: StoredDocument[] = [];
+  const documents: DocumentReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (modification.documents && modification.documents.length > 0) {
-    const existingDocuments = await repository.getAllDocumentReferences();
-    if (Result.isErr(existingDocuments)) {
-      return new VError(existingDocuments, "cannot get documents");
-    }
-
-    logger.trace("Preparing workflowitem_updated event");
-    // preparation for workflowitem_updated event
-    for (const doc of modification.documents || []) {
-      doc.id = generateUniqueDocId(existingDocuments);
-      const hashedDocumentResult = await hashDocument(doc);
-      if (Result.isErr(hashedDocumentResult)) {
-        return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
-      }
-      documents.push(hashedDocumentResult);
-    }
     if (config.documentFeatureEnabled) {
+      const existingDocuments = await repository.getAllDocumentReferences();
+      if (Result.isErr(existingDocuments)) {
+        return new VError(existingDocuments, "cannot get documents");
+      }
+
+      logger.trace("Preparing workflowitem_updated event");
+      // preparation for workflowitem_updated event
+      for (const doc of modification.documents || []) {
+        doc.id = generateUniqueDocId(existingDocuments);
+        const hashedDocumentResult = await hashDocument(doc);
+        if (Result.isErr(hashedDocumentResult)) {
+          return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+        }
+        documents.push(hashedDocumentResult);
+      }
       // upload documents to storage service
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
@@ -115,52 +113,13 @@ export async function updateWorkflowitem(
       );
       for (const result of documentUploadedEventsResults) {
         if (Result.isErr(result)) {
-          // Only returns the first error occured
+          // Only returns the first error occurred
           return result;
         }
         documentUploadedEvents.push(...result);
       }
     } else {
-      // upload documents to offchain storage service
-      // generate workflowitem_document_uploaded event
-      const modDocuments = modification.documents;
-      const newDocumentUploadedEventsResult: Result.Type<BusinessEvent>[] = modDocuments.map(
-        (d, i) => {
-          const docToUpload: UploadedDocument = {
-            base64: modDocuments[i].base64,
-            fileName: modDocuments[i].fileName ? modDocuments[i].fileName : "unknown-file.pdf",
-            id: d.id,
-          };
-
-          const workflowitemEvent = WorkflowitemDocumentUploaded.createEvent(
-            ctx.source,
-            issuer.id,
-            projectId,
-            subprojectId,
-            workflowitemId,
-            docToUpload,
-          );
-          if (Result.isErr(workflowitemEvent)) {
-            return new VError(workflowitemEvent, "failed to create event");
-          }
-
-          // Check that the event is valid:
-          const uploadedDocumentResult = WorkflowitemDocumentUploaded.createFrom(
-            ctx,
-            workflowitemEvent,
-          );
-          if (Result.isErr(uploadedDocumentResult)) {
-            return new InvalidCommand(ctx, workflowitemEvent, [uploadedDocumentResult]);
-          }
-          return workflowitemEvent;
-        },
-      );
-      for (const result of newDocumentUploadedEventsResult) {
-        if (Result.isErr(result)) {
-          return result;
-        }
-        documentUploadedEvents.push(result);
-      }
+      return new VError("Cannot upload documents, the document feature is not enabled");
     }
   }
   const modificationWithStoredDocuments: EventData = {
@@ -192,7 +151,7 @@ export async function updateWorkflowitem(
     newEvent,
   );
   if (Result.isErr(updatedWorkflowitemResult)) {
-    return new VError(updatedWorkflowitemResult, "new event valditation failed");
+    return new VError(updatedWorkflowitemResult, "new event validation failed");
   }
   const updatedWorkflowitem = updatedWorkflowitemResult;
 

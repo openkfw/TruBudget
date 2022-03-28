@@ -4,7 +4,7 @@ import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
-import { StoredDocument, storedDocumentSchema } from "../document/document";
+import { DocumentReference, documentReferenceSchema } from "../document/document";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
@@ -34,7 +34,7 @@ export interface Workflowitem {
   status: "open" | "closed";
   rejectReason?: string;
   assignee: string;
-  documents: StoredDocument[];
+  documents: DocumentReference[];
   permissions: Permissions;
   log: WorkflowitemTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
@@ -121,7 +121,7 @@ const schema = Joi.object().keys({
   status: Joi.string().valid("open", "closed").required(),
   rejectReason: Joi.string().optional(),
   assignee: Joi.string(),
-  documents: Joi.array().required().items(storedDocumentSchema),
+  documents: Joi.array().required().items(documentReferenceSchema),
   permissions: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).required(),
   log: Joi.array().required().items(workflowitemTraceEventSchema),
   additionalData: AdditionalData.schema.required(),

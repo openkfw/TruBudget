@@ -612,7 +612,6 @@ const EVENT_PARSER_MAP = {
   workflowitem_permission_granted: WorkflowitemPermissionsGranted.validate,
   workflowitem_permission_revoked: WorkflowitemPermissionsRevoked.validate,
   workflowitem_updated: WorkflowitemUpdated.validate,
-  workflowitem_document_uploaded: WorkflowitemDocumentUploaded.validate,
   workflowitem_document_validated: DocumentValidated.validate,
   peerinfo_saved: NodesLogged.validate,
   provisioning_started: ProvisioningStarted.validate,
