@@ -3,11 +3,12 @@ import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
-import { UploadedDocument } from "./document";
+import { StoredDocument, UploadedDocument } from "./document";
 import { RequestData, shareDocument } from "./document_share";
 import { Workflowitem } from "../workflow/workflowitem";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
+import * as DocumentUploaded from "./document_uploaded";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -54,6 +55,26 @@ const requestData: RequestData = {
   subprojectId,
   workflowitemId,
 };
+
+const documentId = "1";
+const documentHash = "hash";
+const documentFileName = "name";
+const organization = "organization";
+const organizationUrl = "url";
+
+const documents: StoredDocument[] = [
+  {
+    id: documentId,
+    hash: documentHash,
+    fileName: documentFileName,
+  },
+];
+const documentInfo: DocumentUploaded.Document = {
+  id: documentId,
+  fileName: documentFileName,
+  organization,
+  organizationUrl,
+};
 const baseWorkflowitem: Workflowitem = {
   isRedacted: false,
   id: workflowitemId,
@@ -64,7 +85,7 @@ const baseWorkflowitem: Workflowitem = {
   displayName: "dummy",
   description: "dummy",
   amountType: "N/A",
-  documents: [],
+  documents,
   permissions: { "workflowitem.intent.grantPermission": ["alice"] },
   log: [],
   additionalData: {},
@@ -79,6 +100,7 @@ const repository = {
   getSecret: (docId, organization) => Promise.resolve(secret),
   secretAlreadyExists: (docId, organization) => Promise.resolve(false),
   getWorkflowitem: (projectId, subprojectId, workflowitemId) => Promise.resolve(baseWorkflowitem),
+  getDocumentInfo: (docId) => Promise.resolve(documentInfo),
 };
 
 describe("Share a document", async () => {
@@ -104,6 +126,8 @@ describe("Share a document", async () => {
       { ...requestData, docId: "-1" },
       {
         ...repository,
+        getWorkflowitem: (projectId, subprojectId, workflowitemId) =>
+          Promise.resolve({ ...baseWorkflowitem, documents: [] }),
         getSecret: (docId, organization) => Promise.resolve(new Error("Could not find")),
       },
     );
