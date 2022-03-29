@@ -9,6 +9,7 @@ import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import * as DocumentShare from "./domain/document/document_share";
+import * as DocumentGet from "./domain/document/document_get";
 import * as SecretGet from "./domain/document/secret_get";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
@@ -91,6 +92,22 @@ export async function grantWorkflowitemPermission(
               },
               getWorkflowitem: async (projectId, subprojectId, workflowitemId) => {
                 return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
+              },
+              getDocumentInfo: async (docId) => {
+                return DocumentGet.getDocumentInfo(ctx, docId, {
+                  getDocumentsEvents: async () => {
+                    return cache.getDocumentUploadedEvents();
+                  },
+                  getAllProjects: async () => {
+                    return cache.getProjects();
+                  },
+                  getAllSubprojects: async (projectId) => {
+                    return cache.getSubprojects(projectId);
+                  },
+                  getAllWorkflowitems: async (projectId, subprojectId) => {
+                    return cache.getWorkflowitems(projectId, subprojectId);
+                  },
+                });
               },
             },
           ),
