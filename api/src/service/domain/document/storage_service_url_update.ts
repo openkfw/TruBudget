@@ -28,9 +28,11 @@ export async function storageServiceUrlPublish(
   requestData: RequestData,
 ): Promise<Result.Type<BusinessEvent>> {
   const { organization, organizationUrl } = requestData;
-  logger.trace("Creating event: offchain_documents");
+  logger.trace(
+    "Creating event in the documents stream: storage_service_url_published event (organization, url)",
+  );
 
-  // create Event: "offchain_documents" stream - create storage_service_url_published event (organization, url)
+  // create Event: "documents" stream - create storage_service_url_published event (organization, url)
   const newUrlUpdatedEvent = StorageServiceUrlUpdated.createEvent(
     ctx.source,
     issuer.id,
