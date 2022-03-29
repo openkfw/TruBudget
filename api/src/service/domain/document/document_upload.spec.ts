@@ -62,8 +62,6 @@ const repository = {
   getUser: async () => aliceUserRecord,
 };
 
-// These tests are only for the storage service document upload
-// Offchain document upload is tested in workflowitem_update.spec.ts
 describe("Storage Service: Upload a document", async () => {
   it("Uploading a document works", async () => {
     const result = await uploadDocument(ctx, alice, requestData, repository);

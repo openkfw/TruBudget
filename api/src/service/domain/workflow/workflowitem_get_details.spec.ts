@@ -39,9 +39,9 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const documentStoredInWorkflowitem: DocumentReference = {
-  id: "documentIdOffchain",
+  id: "documentId",
   hash: "lakjflaksdjf",
-  fileName: "offchainFile",
+  fileName: "file",
 };
 const uploadedDocument: UploadedDocument = {
   id: "documentIdStorage",

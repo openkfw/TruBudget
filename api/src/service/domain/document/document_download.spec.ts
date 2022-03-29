@@ -28,9 +28,7 @@ const bob: ServiceUser = {
 
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
-const workflowitemId = "dummy-workflowitem";
 
-const documentIdOffchain = "1";
 const documentIdStorage = "2";
 const documentIdExternalStorage = "3";
 const hash = "hash";
