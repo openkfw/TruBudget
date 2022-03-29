@@ -3,7 +3,6 @@
     "target": "ES2017",
     "module": "commonjs",
     "outDir": "dist",
-    "rootDir": "src",
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true,
@@ -13,7 +12,10 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
     "paths": {
-      "lib/*": ["lib/*"]
+      "lib/*": ["lib/*"],
+      "infrastructure/*": ["infrastructure/*"],
+      "domain/*": ["domain/*"],
+      "service/*": ["service/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.spec.ts"],

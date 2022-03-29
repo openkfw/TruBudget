@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.workingDirectories": [
+    "src",
+    "src/infrastructure",
+    "src/domain",
+    "src/domain/examples"
+  ]
+}

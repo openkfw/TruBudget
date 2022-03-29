@@ -1,0 +1,63 @@
+// {
+//     "version":"2.1.2",
+//     "nodeversion":20102901,
+//     "edition":"Community",
+//     "protocolversion":20005,
+//     "chainname":"TrubudgetChain",
+//     "description":"MultiChain TrubudgetChain",
+//     "protocol":"multichain",
+//     "port":7447,
+//     "setupblocks":60,
+//     "nodeaddress":"TrubudgetChain@172.19.0.2:7447",
+//     "burnaddress":"1XXXXXXWpXXXXXXXxbXXXXXXWTXXXXXXWsxEUc",
+//     "incomingpaused":false,
+//     "miningpaused":false,
+//     "offchainpaused":false,
+//     "walletversion":60000,
+//     "balance":0,
+//     "walletdbversion":3,
+//     "reindex":false,
+//     "blocks":2,
+//     "timeoffset":0,
+//     "connections":0,
+//     "proxy":"",
+//     "difficulty":5.96046447753906e-8,
+//     "testnet":false,
+//     "keypoololdest":1648567176,
+//     "keypoolsize":2,
+//     "paytxfee":0,
+//     "relayfee":0,
+//     "errors":""
+//  }
+
+export interface MultichainInformation {
+  version: string;
+  nodeversion: number;
+  edition: string;
+  protocolversion: number;
+  chainname: string;
+  description: string;
+  protocol: string;
+  port: number;
+  setupblocks: number;
+  nodeaddress: string;
+  burnaddress: string;
+  incomingpaused: boolean;
+  miningpaused: boolean;
+  offchainpaused: boolean;
+  walletversion: number;
+  balance: number;
+  walletdbversion: number;
+  reindex: boolean;
+  blocks: number;
+  timeoffset: number;
+  connections: number;
+  proxy: string;
+  difficulty: number;
+  testnet: boolean;
+  keypoololdest: number;
+  keypoolsize: number;
+  paytxfee: number;
+  relayfee: number;
+  errors: string;
+}

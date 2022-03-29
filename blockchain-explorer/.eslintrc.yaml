@@ -9,7 +9,9 @@ env:
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 6
-  project: "./tsconfig.json"
+  # project: "tsconfig.json"
+  project: "**/tsconfig.json"
+  # tsconfigRootDir: __dirname
   sourceType: module
 rules:
 

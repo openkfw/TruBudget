@@ -1,4 +1,4 @@
-let projects_transactions = [
+let projectsTransactions = [
   {
     publishers: ["1AtGLhKJZXvPJrWbEbLPNrBjRGqiLtEMTdcemb"],
     keys: ["self"],
