@@ -173,12 +173,12 @@ export async function store(
       );
 
     case "document_uploaded":
-      await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
+      await ensureStreamExists(conn, ctx, "documents", "documents");
       return writeTo(
         conn,
         ctx,
         {
-          stream: "offchain_documents",
+          stream: "documents",
           keys: [event.docId],
           event,
         },
@@ -186,12 +186,12 @@ export async function store(
       );
       break;
     case "storage_service_url_published":
-      await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
+      await ensureStreamExists(conn, ctx, "documents", "documents");
       return writeTo(
         conn,
         ctx,
         {
-          stream: "offchain_documents",
+          stream: "documents",
           keys: [event.organization],
           event,
         },
@@ -200,12 +200,12 @@ export async function store(
       break;
 
     case "secret_published":
-      await ensureStreamExists(conn, ctx, "offchain_documents", "offchain_documents");
+      await ensureStreamExists(conn, ctx, "documents", "documents");
       return writeTo(
         conn,
         ctx,
         {
-          stream: "offchain_documents",
+          stream: "documents",
           keys: [event.docId, event.organization],
           event,
         },
