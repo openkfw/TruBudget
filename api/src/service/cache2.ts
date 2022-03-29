@@ -204,7 +204,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
             return false;
         }
       };
-      return (cache.eventsByStream.get("offchain_documents") || []).filter(documentFilter);
+      return (cache.eventsByStream.get("documents") || []).filter(documentFilter);
     },
     getStorageServiceUrlPublishedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting storageserviceurl-published events from cache");
@@ -216,7 +216,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
             return false;
         }
       };
-      return (cache.eventsByStream.get("offchain_documents") || []).filter(storageServiceUrlFilter);
+      return (cache.eventsByStream.get("documents") || []).filter(storageServiceUrlFilter);
     },
     getSecretPublishedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting Secret published events from cache");
@@ -228,7 +228,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
             return false;
         }
       };
-      return (cache.eventsByStream.get("offchain_documents") || []).filter(secretPhublishedFilter);
+      return (cache.eventsByStream.get("documents") || []).filter(secretPhublishedFilter);
     },
 
     getProjects: async (): Promise<Project.Project[]> => {
@@ -512,7 +512,7 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
     case "groups":
     case "notifications":
     case "public_keys":
-    case "offchain_documents":
+    case "documents":
     case "system_information":
       const eventsSoFar = cache.eventsByStream.get(streamName) || [];
       cache.eventsByStream.set(streamName, eventsSoFar.concat(newEvents));
