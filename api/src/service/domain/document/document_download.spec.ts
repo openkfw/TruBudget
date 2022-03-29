@@ -4,7 +4,6 @@ import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
 import { Workflowitem } from "../workflow/workflowitem";
 import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
-import * as DocumentUploaded from "./document_uploaded";
 import * as DocumentShared from "./document_shared";
 import { getDocument } from "./workflowitem_document_download";
 import VError from "verror";
@@ -29,9 +28,7 @@ const bob: ServiceUser = {
 
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
-const workflowitemId = "dummy-workflowitem";
 
-const documentIdOffchain = "1";
 const documentIdStorage = "2";
 const documentIdExternalStorage = "3";
 const hash = "hash";
