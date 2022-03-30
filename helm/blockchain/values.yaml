@@ -9,7 +9,7 @@ global:
   imageCredentials:
     name: regsecret
   env:
-    ENVIRONMENT_TYPE: TEST
+    PROVISIONING_TYPE: TEST
     STORAGE_TYPE: LOCAL
 
 image:

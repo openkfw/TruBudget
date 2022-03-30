@@ -6,7 +6,7 @@ global:
     tag: main
   fqdn: my-trubudget-url.com
   env:
-    ENVIRONMENT_TYPE: DEV
+    PROVISIONING_TYPE: TEST
     EXPOSE_MC: false
     STORAGE_TYPE: LOCAL
 
@@ -132,7 +132,6 @@ api-test-1:
       MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
       ORGANIZATION_VAULT_SECRET: secret
-      SWAGGER_BASEPATH: /test
 
 api-test-2:
   service:
@@ -145,7 +144,6 @@ api-test-2:
       MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
       ORGANIZATION_VAULT_SECRET: secret
-      SWAGGER_BASEPATH: /test
 
 frontend-1:
   initContainer: "false"
@@ -174,7 +172,7 @@ frontend-1:
     env:
       API_HOST: api-prod-1
       API_PORT: 8080
-      ENVIRONMENT_TYPE: PROD
+      PROVISIONING_TYPE: PROD
       ROOT_SECRET: "root-secret"
       ORGANIZATION: ACMECorp
   provisioningTest:
@@ -184,7 +182,7 @@ frontend-1:
     env:
       API_HOST: api-test-1
       API_PORT: 8080
-      ENVIRONMENT_TYPE: PROD
+      PROVISIONING_TYPE: PROD
       ROOT_SECRET: "root-secret"
       ORGANIZATION: ACMECorp
 

@@ -68,8 +68,8 @@ The following table lists the most important configurable parameters of the TruB
 | `global.image.tag`                   | `trubudget` image tag                                                                                                        | `main`                               |
 | `global.fqdn`                        | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
 | `global.fqdn`                        | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
-| `global.env.ENVIRONMENT_TYPE=PROD`   | if set to `PROD`, the blockchain resource will be set deployed as `statefulset`and persist its data on a PV                  | `DEV`                                  |
-| `global.env.ENVIRONMENT_TYPE=TEST`   | if set to `TEST`, same as `DEV`, except that blockchain service account will be excluded from chart                          | `DEV`                                  |
+| `global.env.PROVISIONING_TYPE=PROD`  | if set to `PROD`, the blockchain resource will be set deployed as `statefulset`and persist its data on a PV                  | `DEV`                                  |
+| `global.env.PROVISIONING_TYPE=TEST`  | if set to `TEST`, except that blockchain service account will be excluded from chart                                         | `DEV`                                  |
 | `global.env.STORAGE_TYPE=LOCAL`      | if set to `LOCAL`, data is stored in the pod itself                                                                          | `LOCAL`                                |
 | `global.env.STORAGE_TYPE=AZURE_DISK` | if set to `AZURE_DISK`, data is stored on a dynamically created azure disk                                                   | `LOCAL`                                |
 | `global.env.STORAGE_TYPE=AZURE_FILE` | if set to `AZURE_FILE`, data is stored on a dynamically created azure file                                                   | `LOCAL`                                |

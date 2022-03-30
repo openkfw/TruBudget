@@ -43,7 +43,7 @@ provisioningProd:
   env:
     API_HOST: api
     API_PORT: 8080
-    ENVIRONMENT_TYPE: TEST
+    PROVISIONING_TYPE: TEST
     ROOT_SECRET: "root-secret"
     ORGANIZATION: ACMECorp
 
@@ -53,6 +53,6 @@ provisioningTest:
   env:
     API_HOST: api
     API_PORT: 8080
-    ENVIRONMENT_TYPE: TEST
+    PROVISIONING_TYPE: TEST
     ROOT_SECRET: "root-secret"
     ORGANIZATION: ACMECorp
