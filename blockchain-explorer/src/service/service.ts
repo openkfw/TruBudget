@@ -5,3 +5,5 @@ export async function getInformation(
 ): Promise<MultichainInformation> {
   return rpcClient.getInfo();
 }
+
+export default {};
