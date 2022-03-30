@@ -11,6 +11,7 @@ const subprojectDisplayname = "subproject assign test";
 const apiRoute = "/api";
 
 describe("Subproject Permissions", function() {
+  permissionsBeforeTesting = { project: {}, subproject: {} };
   beforeEach(function() {
     cy.login();
     cy.createProject("p-subp-permissions", "subproject permissions test").then(({ id }) => {
@@ -47,7 +48,7 @@ describe("Subproject Permissions", function() {
 
   function sortPermissionsObject(permissions) {
     for (const intent in permissions) {
-      if (permissions.hasOwnProperty(intent)) {
+      if (Object.prototype.hasOwnProperty.call(permissions, intent)) {
         const identities = permissions[intent];
         permissions[intent] = identities.sort(alphabeticalSort);
       }
@@ -714,7 +715,6 @@ describe("Subproject Permissions", function() {
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=nameinput]").type("Test");
 
-      cy.get("[data-test=next]").click();
       cy.get("[data-test=submit]").click();
 
       cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);

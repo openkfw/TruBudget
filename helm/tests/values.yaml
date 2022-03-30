@@ -5,7 +5,7 @@ global:
   image:
     tag: main
   env:
-    ENVIRONMENT_TYPE: TEST
+    PROVISIONING_TYPE: TEST
 
 blockchain-prod:
   service:
@@ -40,7 +40,7 @@ frontend:
     env:
       API_HOST: api-prod
       API_PORT: 8080
-      ENVIRONMENT_TYPE: TEST
+      PROVISIONING_TYPE: TEST
       ROOT_SECRET: "root-secret"
       ORGANIZATION: ACMECorp
   provisioningTest:
@@ -50,7 +50,7 @@ frontend:
     env:
       API_HOST: api-test
       API_PORT: 8080
-      ENVIRONMENT_TYPE: TEST
+      PROVISIONING_TYPE: TEST
       ROOT_SECRET: "root-secret"
       ORGANIZATION: ACMECorp
   service:

@@ -23,11 +23,12 @@ First, install the dependencies:
 npm install
 ```
 
-Then run the script. You need to supply the `ORGANIZATION` and the `ROOT_SECRET` as configured with the API. Using the `test` environment:
+Then run the script. You need to supply the `ORGANIZATION` and the `ROOT_SECRET` as configured with the API. Using the `test` data:
 
 ```bash
 export ORGANIZATION=myorga
 export ROOT_SECRET=my-secret
+export PROVISIONING_TYPE=TEST
 npm start
 ```
 

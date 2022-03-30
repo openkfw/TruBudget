@@ -32,13 +32,6 @@ excelService.use((req: express.Request, res: express.Response, next) => {
   next();
 });
 
-// This can be removed once prod and test env option will be removed https://github.com/openkfw/TruBudget/issues/954
-// excelService.use((req: express.Request, res: express.Response, next) => {
-//   res.apiBase = req.url.includes("/test") ? API_BASE_TEST : API_BASE;
-//   req.url = req.url.replace("/test", "").replace("/prod", "");
-//   next();
-// });
-
 excelService.get("/readiness", async (req: express.Request, res: express.Response) => {
   try {
     const ready = await getApiReadiness(axios, res.apiBase);

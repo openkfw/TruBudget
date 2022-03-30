@@ -7,7 +7,7 @@ Deploys all components of TruBudget.
 - [Table of Contents](#table-of-contents)
 - [Good to Know](#good-to-know)
   - [Tags](#tags)
-  - [Env: ENVIRONMENT_TYPE](#env-environmenttype)
+  - [Env: PROVISIONING_TYPE](#env-environmenttype)
 
 # Good to Know
 
@@ -23,7 +23,7 @@ Following `tags` can be set, to controll the dependencies of the helm chart:
 - frontendSecond - include resources for a second instance of frontend
 - main - include all of the above
 
-## Env: ENVIRONMENT_TYPE
+## Env: PROVISIONING_TYPE
 
 Can be set to `PROD`, `TEST` or `DEV`
 
