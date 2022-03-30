@@ -1,6 +1,8 @@
 import * as express from "express";
 import { getInformation } from "./service/getInformation";
 import { RpcClient } from "./infrastructure/RpcClient";
+import { toHttpError } from "./service/http_errors";
+import { MultichainInformation } from "domain/multichainInformation";
 
 const app: express.Application = express();
 
@@ -21,9 +23,16 @@ app.get("/readiness", (_req: express.Request, res: express.Response) => {
 });
 
 app.get("/info", async (_req: express.Request, res: express.Response) => {
-  const info: any = await getInformation(rpcClient);
-  res.send("OKayyyy lets get the infos: " + JSON.stringify(info));
-  // console.log(info);
+  getInformation(rpcClient)
+    .then((result: MultichainInformation) => {
+      res.status(200).send(result);
+      // .send(" 2 OKayyyy lets get the infos: " + JSON.stringify(result));
+    })
+    .catch((err) => {
+      const { code, body } = toHttpError(err);
+      console.log("ERROR CAUGHT: " + code + " -- " + body);
+      res.status(code).send(body);
+    });
 });
 
 app.get("/streams", (_req: express.Request, res: express.Response) => {

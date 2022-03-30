@@ -23,7 +23,8 @@ export async function getInformation(
   } catch (error: any) {
     console.log("service error: " + error);
     // data = error as MultichainError;
-    return error;
+    throw error;
+    // return error;
   }
   return data;
 }
