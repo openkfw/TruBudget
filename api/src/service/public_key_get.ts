@@ -13,7 +13,7 @@ export async function getPublicKey(
 ): Promise<Result.Type<PublicKeyBase64>> {
   logger.debug("Getting public key");
 
-  return await Cache.withCache(conn, ctx, async (cache) =>
+  return Cache.withCache(conn, ctx, async (cache) =>
     PublicKeyGet.getPublicKey(ctx, organization, {
       getPublicKeysEvents: async () => cache.getPublicKeyEvents(),
     }),

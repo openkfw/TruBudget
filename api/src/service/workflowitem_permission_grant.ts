@@ -50,7 +50,7 @@ export async function grantWorkflowitemPermission(
       intent,
       {
         getWorkflowitem: async (pId, spId, wId) => {
-          return await cache.getWorkflowitem(pId, spId, wId);
+          return cache.getWorkflowitem(pId, spId, wId);
         },
         userExists: async (user) => UserQuery.userExists(conn, ctx, serviceUser, user),
         getUser: async (user) => UserQuery.getUser(conn, ctx, serviceUser, user),

@@ -4,6 +4,13 @@ FROM node:13.12.0-alpine
 ARG API_HOST=localhost
 ARG API_PORT=8080
 
+# Try to make sure auto reload is enabled on code change
+ARG CHOKIDAR_USEPOLLING=true
+ARG CHOKIDAR_INTERVAL=2000
+
+# If you have low performing Hardware, enable this for hot reload without fast refresh:
+#ARG FAST_REFRESH=false
+
 # set working directory
 WORKDIR /app
 

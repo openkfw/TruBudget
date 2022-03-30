@@ -29,8 +29,8 @@ export async function grantGlobalPermission(
     permission,
     {
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-      isGroup: async (granteeId) => await GroupQuery.groupExists(conn, ctx, serviceUser, granteeId),
-      getUser: async (userId) => await UserQuery.getUser(conn, ctx, serviceUser, userId),
+      isGroup: async (granteeId) => GroupQuery.groupExists(conn, ctx, serviceUser, granteeId),
+      getUser: async (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
     },
   );
   if (Result.isErr(result)) return new VError(result, "failed to grant global permission");
