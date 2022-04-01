@@ -8,23 +8,24 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/",
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon ./src/index.ts",
     "build": "rimraf dist && tsc",
     "tsc": "tsc",
     "lint": "eslint src --ext ts"
   },
   "dependencies": {
     "express": "^4.17.3",
+    "express-validator": "^6.12.1",
+    "lodash": "^4.17.21",
     "multichain-node": "^2.2.0-version1.0.4",
-    "verror": "^1.10.0",
-    "lodash": "^4.17.21"
+    "verror": "^1.10.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.23",
+    "@types/verror": "^1.10.3",
     "@typescript-eslint/eslint-plugin": "5.16.0",
     "@typescript-eslint/parser": "5.16.0",
-    "@types/verror": "^1.10.3",
     "eslint": "^7.12.1",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^6.15.0",

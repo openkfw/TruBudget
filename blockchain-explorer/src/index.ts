@@ -1,8 +1,11 @@
 import * as express from "express";
+import { body, query } from "express-validator";
 import * as service from "./service/service";
 import { RpcClient } from "./infrastructure/RpcClient";
 import { toHttpError } from "./service/http_errors";
 import { MultichainInformation } from "domain/multichainInformation";
+// eslint-disable-next-line no-var
+var Lodash = require("lodash");
 
 const app: express.Application = express();
 
@@ -47,8 +50,42 @@ app.get("/info", async (_req: express.Request, res: express.Response) => {
 });
 
 app.get("/streams", (_req: express.Request, res: express.Response) => {
-  res.status(200).send("OKayyyy lets get the streams");
+  service
+    .getStreams(rpcClient)
+    .then((result: any) => {
+      res.status(200).send(result);
+    })
+    .catch((err) => {
+      const { code, body } = toHttpError(err);
+      res.status(code).send(body);
+    });
 });
+
+app.get(
+  "/stream.getNumberOfTx",
+  query("id").escape(),
+  (req: express.Request, res: express.Response) => {
+    service
+      .getNumberOfTx(rpcClient, Lodash.toString(req.query.id))
+      .then((result: any) => {
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        const { code, body } = toHttpError(err);
+        res.status(code).send(body);
+      });
+  },
+);
+
+// TruBudget routes
+
+app.get(
+  "/trubudget/metadata",
+  (_req: express.Request, res: express.Response) => {
+    // Number of users, projects, slave nodes, ...
+    res.status(200).send("metadata");
+  },
+);
 
 app.listen(PORT, () =>
   console.log(`Blockchain-Explorer running on Port ${PORT} ...`),

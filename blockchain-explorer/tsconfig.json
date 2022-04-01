@@ -18,6 +18,5 @@
       "service/*": ["service/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.spec.ts"],
   "exclude": ["node_modules", "coverage"]
 }

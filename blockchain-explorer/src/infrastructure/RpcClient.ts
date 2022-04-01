@@ -1,5 +1,6 @@
 import { Stream, StreamKey } from "domain/stream";
 import { StreamItem } from "domain/streamItem";
+import { MultichainInformation } from "domain/multichainInformation";
 
 export interface ConnectionSettings {
   host?: string;
@@ -7,8 +8,11 @@ export interface ConnectionSettings {
   user?: string;
   rpcPassword?: string;
 }
+
+// No type provides by the npm package
+export type MultichainClient = any;
 export class RpcClient {
-  private multichain: any;
+  private multichain: MultichainClient;
 
   constructor(settings: ConnectionSettings) {
     console.debug("Setting up RpcClient");
@@ -22,11 +26,11 @@ export class RpcClient {
   }
 
   /**
-   * getInfo
+   * @returns Multichain information object
    */
-  public async getInfo() {
+  public async getInfo(): Promise<MultichainInformation> {
     return new Promise((resolve, reject) => {
-      this.multichain.getInfo((err: any, info: any) => {
+      this.multichain.getInfo((err: any, info: MultichainInformation) => {
         if (err) {
           reject(err);
         }
@@ -34,18 +38,41 @@ export class RpcClient {
       });
     });
   }
-}
 
-export const listStreams = (multichain: any): Promise<Stream[]> => {
-  return new Promise((resolve, reject) => {
-    multichain.listStreams((err: any, stream: any) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(stream);
+  /**
+   * @returns all streams from Multichain
+   */
+  public listStreams(): Promise<Stream[]> {
+    return new Promise((resolve, reject) => {
+      this.multichain.listStreams((err: any, streams: Stream[]) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(streams);
+      });
     });
-  });
-};
+  }
+
+  /**
+   * @returns XYZ
+   */
+  public getStreamItemsLength(streamId: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.multichain.liststreamkeys(
+        {
+          streamId,
+          // key
+        },
+        (err: any, streamKeys: any) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(streamKeys);
+        },
+      );
+    });
+  }
+}
 
 export const listStreamItems = (
   multichain: any,
@@ -180,7 +207,7 @@ export const listStreamKeyItems = (
   });
 };
 
-export const getItemByTx = (
+export const getItemByTxId = (
   multichain: any,
   stream: string,
   txid: string,
@@ -191,11 +218,11 @@ export const getItemByTx = (
         stream,
         txid,
       },
-      (err: any, items: any) => {
+      (err: any, item: any) => {
         if (err) {
           reject(err);
         }
-        resolve(items);
+        resolve(item);
       },
     );
   });
