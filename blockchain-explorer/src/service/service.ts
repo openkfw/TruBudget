@@ -15,9 +15,25 @@ export async function getStreams(
 }
 export async function getNumberOfTx(
   rpcClient: MultichainClient,
-  streamId: string,
-): Promise<number> {
-  return rpcClient.getStreamItemsLength(streamId);
+  streamName: string,
+): Promise<Object> {
+  const streams: Stream[] = await rpcClient.listStreams();
+  const amountOfStreamsWithThisName = streams.filter(
+    (s) => s.name === streamName,
+  ).length;
+  if (amountOfStreamsWithThisName === 0) {
+    console.log("error 1");
+    throw new Error();
+  }
+  if (amountOfStreamsWithThisName > 1) {
+    console.log("error 2");
+    throw new Error();
+  }
+  const stream: Stream | undefined = streams.find((s) => s.name === streamName);
+
+  return {
+    numberOfTx: stream?.items ?? 0,
+  };
 }
 
 export default {};

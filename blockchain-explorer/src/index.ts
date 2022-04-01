@@ -63,10 +63,10 @@ app.get("/streams", (_req: express.Request, res: express.Response) => {
 
 app.get(
   "/stream.getNumberOfTx",
-  query("id").escape(),
+  query("name").escape(),
   (req: express.Request, res: express.Response) => {
     service
-      .getNumberOfTx(rpcClient, Lodash.toString(req.query.id))
+      .getNumberOfTx(rpcClient, Lodash.toString(req.query.name))
       .then((result: any) => {
         res.status(200).send(result);
       })

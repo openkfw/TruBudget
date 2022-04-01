@@ -56,12 +56,12 @@ export class RpcClient {
   /**
    * @returns XYZ
    */
-  public getStreamItemsLength(streamId: string): Promise<any> {
+  public async getStreamKeys(id: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.multichain.liststreamkeys(
+      return this.multichain.listStreamKeys(
         {
-          streamId,
-          // key
+          // createtxid of the stream
+          stream: id,
         },
         (err: any, streamKeys: any) => {
           if (err) {

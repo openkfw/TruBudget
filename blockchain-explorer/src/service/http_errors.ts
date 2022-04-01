@@ -12,6 +12,7 @@ export function toHttpError(error: any | any[]): {
   code: number;
   body: ErrorBody;
 } {
+  console.log("toHttpError << " + error);
   const errors = error instanceof Array ? error : [error];
   const httpErrors = errors.map(convertError);
   const httpError = httpErrors.reduce((acc, err) => ({
