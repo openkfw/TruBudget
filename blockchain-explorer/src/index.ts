@@ -62,11 +62,42 @@ app.get("/streams", (_req: express.Request, res: express.Response) => {
 });
 
 app.get(
+  "/stream.getAllStreamItems",
+  query("name").escape(),
+  (req: express.Request, res: express.Response) => {
+    service
+      .getAllStreamItems(rpcClient, Lodash.toString(req.query.name))
+      .then((result: any) => {
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        const { code, body } = toHttpError(err);
+        res.status(code).send(body);
+      });
+  },
+);
+app.get(
   "/stream.getNumberOfTx",
   query("name").escape(),
   (req: express.Request, res: express.Response) => {
     service
       .getNumberOfTx(rpcClient, Lodash.toString(req.query.name))
+      .then((result: any) => {
+        res.status(200).send(result);
+      })
+      .catch((err) => {
+        const { code, body } = toHttpError(err);
+        res.status(code).send(body);
+      });
+  },
+);
+
+app.get(
+  "/stream.getTxDetails",
+  query("txid").escape(),
+  (req: express.Request, res: express.Response) => {
+    service
+      .getTxDetails(rpcClient, Lodash.toString(req.query.txid))
       .then((result: any) => {
         res.status(200).send(result);
       })

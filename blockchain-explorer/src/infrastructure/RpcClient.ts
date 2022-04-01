@@ -72,6 +72,47 @@ export class RpcClient {
       );
     });
   }
+
+  /**
+   * getRawTransaction
+   */
+  public getRawTransaction(txid: string) {
+    return new Promise((resolve, reject) => {
+      return this.multichain.getRawTransaction(
+        {
+          // Transaction ID
+          txid: txid,
+        },
+        (err: any, tx: any) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(tx);
+        },
+      );
+    });
+  }
+
+  /**
+   * listStreamItems
+   */
+  public listStreamItems(streamId: string): Promise<StreamItem[]> {
+    return new Promise((resolve, reject) => {
+      this.multichain.listStreamItems(
+        {
+          stream: streamId,
+          verbose: true,
+          count: 1000,
+        },
+        (err: any, items: any) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(items);
+        },
+      );
+    });
+  }
 }
 
 export const listStreamItems = (
