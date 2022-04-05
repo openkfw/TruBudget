@@ -74,20 +74,20 @@ export class RpcClient {
   }
 
   /**
-   * getRawTransaction
+   * getStreamItem
    */
-  public getRawTransaction(txid: string) {
+  public getStreamItem(stream: string, txid: string) {
     return new Promise((resolve, reject) => {
-      return this.multichain.getRawTransaction(
+      this.multichain.getStreamItem(
         {
-          // Transaction ID
-          txid: txid,
+          stream: "users",
+          txid,
         },
-        (err: any, tx: any) => {
+        (err: any, res: any) => {
           if (err) {
             reject(err);
           }
-          resolve(tx);
+          resolve(res);
         },
       );
     });
@@ -115,156 +115,156 @@ export class RpcClient {
   }
 }
 
-export const listStreamItems = (
-  multichain: any,
-  stream: string,
-): Promise<StreamItem[]> => {
-  return new Promise((resolve, reject) => {
-    multichain.listStreamItems(
-      {
-        stream,
-        verbose: true,
-        count: 1000,
-      },
-      (err: any, items: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(items);
-      },
-    );
-  });
-};
+// export const listStreamItems = (
+//   multichain: any,
+//   stream: string,
+// ): Promise<StreamItem[]> => {
+//   return new Promise((resolve, reject) => {
+//     multichain.listStreamItems(
+//       {
+//         stream,
+//         verbose: true,
+//         count: 1000,
+//       },
+//       (err: any, items: any) => {
+//         if (err) {
+//           reject(err);
+//         }
+//         resolve(items);
+//       },
+//     );
+//   });
+// };
 
-export const streamItem = (
-  multichain: any,
-  stream: string,
-  tx: string,
-): Promise<StreamItem> => {
-  return new Promise((resolve, reject) => {
-    multichain.getStreamItem(
-      {
-        stream,
-        txid: tx,
-        verbose: true,
-      },
-      (err: any, items: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(items);
-      },
-    );
-  });
-};
+// export const streamItem = (
+//   multichain: any,
+//   stream: string,
+//   tx: string,
+// ): Promise<StreamItem> => {
+//   return new Promise((resolve, reject) => {
+//     multichain.getStreamItem(
+//       {
+//         stream,
+//         txid: tx,
+//         verbose: true,
+//       },
+//       (err: any, items: any) => {
+//         if (err) {
+//           reject(err);
+//         }
+//         resolve(items);
+//       },
+//     );
+//   });
+// };
 
-export const createStreamItem = (
-  multichain: any,
-  stream: string,
-  key: any,
-  item: any,
-): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    multichain.publish(
-      {
-        stream,
-        verbose: true,
-        key,
-        data: { json: item.data.json },
-      },
-      (err: any, items: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(items);
-      },
-    );
-  });
-};
+// export const createStreamItem = (
+//   multichain: any,
+//   stream: string,
+//   key: any,
+//   item: any,
+// ): Promise<string> => {
+//   return new Promise((resolve, reject) => {
+//     multichain.publish(
+//       {
+//         stream,
+//         verbose: true,
+//         key,
+//         data: { json: item.data.json },
+//       },
+//       (err: any, items: any) => {
+//         if (err) {
+//           reject(err);
+//         }
+//         resolve(items);
+//       },
+//     );
+//   });
+// };
 
-export const createStream = (
-  multichain: any,
-  type: string,
-  name: string,
-  details: any,
-) => {
-  return new Promise((resolve, reject) => {
-    multichain.create(
-      {
-        type,
-        name,
-        open: true,
-        details,
-      },
-      (err: any, items: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(items);
-      },
-    );
-  });
-};
+// export const createStream = (
+//   multichain: any,
+//   type: string,
+//   name: string,
+//   details: any,
+// ) => {
+//   return new Promise((resolve, reject) => {
+//     multichain.create(
+//       {
+//         type,
+//         name,
+//         open: true,
+//         details,
+//       },
+//       (err: any, items: any) => {
+//         if (err) {
+//           reject(err);
+//         }
+//         resolve(items);
+//       },
+//     );
+//   });
+// };
 
-export const listStreamKeys = (
-  multichain: any,
-  stream: string,
-): Promise<StreamKey[]> => {
-  return new Promise((resolve, reject) => {
-    multichain.listStreamKeys(
-      {
-        stream,
-        count: 1000000,
-      },
-      (err: any, items: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(items);
-      },
-    );
-  });
-};
+// export const listStreamKeys = (
+//   multichain: any,
+//   stream: string,
+// ): Promise<StreamKey[]> => {
+//   return new Promise((resolve, reject) => {
+//     multichain.listStreamKeys(
+//       {
+//         stream,
+//         count: 1000000,
+//       },
+//       (err: any, items: any) => {
+//         if (err) {
+//           reject(err);
+//         }
+//         resolve(items);
+//       },
+//     );
+//   });
+// };
 
-export const listStreamKeyItems = (
-  multichain: any,
-  stream: string,
-  key: string,
-): Promise<StreamItem[]> => {
-  return new Promise((resolve, reject) => {
-    multichain.listStreamKeyItems(
-      {
-        stream,
-        key,
-        count: 1000000,
-      },
-      (err: any, items: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(items);
-      },
-    );
-  });
-};
+// export const listStreamKeyItems = (
+//   multichain: any,
+//   stream: string,
+//   key: string,
+// ): Promise<StreamItem[]> => {
+//   return new Promise((resolve, reject) => {
+//     multichain.listStreamKeyItems(
+//       {
+//         stream,
+//         key,
+//         count: 1000000,
+//       },
+//       (err: any, items: any) => {
+//         if (err) {
+//           reject(err);
+//         }
+//         resolve(items);
+//       },
+//     );
+//   });
+// };
 
-export const getItemByTxId = (
-  multichain: any,
-  stream: string,
-  txid: string,
-): Promise<StreamItem> => {
-  return new Promise((resolve, reject) => {
-    multichain.getStreamItem(
-      {
-        stream,
-        txid,
-      },
-      (err: any, item: any) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(item);
-      },
-    );
-  });
-};
+// export const getItemByTxId = (
+//   multichain: any,
+//   stream: string,
+//   txid: string,
+// ): Promise<StreamItem> => {
+//   return new Promise((resolve, reject) => {
+//     multichain.getStreamItem(
+//       {
+//         stream,
+//         txid,
+//       },
+//       (err: any, item: any) => {
+//         if (err) {
+//           reject(err);
+//         }
+//         resolve(item);
+//       },
+//     );
+//   });
+// };

@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "66694675-fce3-4a0f-9a64-b625599ef0ac",
+		"name": "Blockchain-explorer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "readiness",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/readiness",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"readiness"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/info",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "streams",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/streams",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"streams"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stream.getNumberOfTx",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/stream.getNumberOfTx?name=notifications",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"stream.getNumberOfTx"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "08e2c6fe203ea098cc5d4e2aa3b97453",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "0407e2323e307cdbbff4ef31f03ddd98baa1add5a05f357d23641c454337d819",
+							"disabled": true
+						},
+						{
+							"key": "name",
+							"value": "notifications"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stream.getAllStreamItems",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/stream.getAllStreamItems?name=users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"stream.getAllStreamItems"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "users"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stream.getTxDetails",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/stream.getTxDetails?streamName=users&txid=634fb6cd38c7ef4befb47fc6b335b539769e6de923f219cefa410874323e6ae3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"stream.getTxDetails"
+					],
+					"query": [
+						{
+							"key": "streamName",
+							"value": "users"
+						},
+						{
+							"key": "txid",
+							"value": "634fb6cd38c7ef4befb47fc6b335b539769e6de923f219cefa410874323e6ae3"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

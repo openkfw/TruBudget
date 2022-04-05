@@ -4,8 +4,8 @@ import * as service from "./service/service";
 import { RpcClient } from "./infrastructure/RpcClient";
 import { toHttpError } from "./service/http_errors";
 import { MultichainInformation } from "domain/multichainInformation";
-// eslint-disable-next-line no-var
-var Lodash = require("lodash");
+
+let Lodash = require("lodash");
 
 const app: express.Application = express();
 
@@ -94,10 +94,14 @@ app.get(
 
 app.get(
   "/stream.getTxDetails",
-  query("txid").escape(),
+  query("streamName", "txid").escape(),
   (req: express.Request, res: express.Response) => {
     service
-      .getTxDetails(rpcClient, Lodash.toString(req.query.txid))
+      .getTxDetails(
+        rpcClient,
+        Lodash.toString(req.query.streamName),
+        Lodash.toString(req.query.txid),
+      )
       .then((result: any) => {
         res.status(200).send(result);
       })

@@ -30,9 +30,11 @@ export async function getAllStreamItems(
 
 export async function getTxDetails(
   rpcClient: MultichainClient,
+  streamName: string,
   txid: string,
 ): Promise<StreamItem> {
-  return rpcClient.getRawTransaction(rpcClient, txid);
+  const tx = await rpcClient.getStreamItem(streamName, txid);
+  return tx;
 }
 
 export async function getNumberOfTx(
@@ -40,18 +42,6 @@ export async function getNumberOfTx(
   streamName: string,
 ): Promise<Object> {
   const streams: Stream[] = await rpcClient.listStreams();
-  // const amountOfStreamsWithThisName = streams.filter(
-  //   (s) => s.name === streamName,
-  // ).length;
-
-  // if (amountOfStreamsWithThisName === 0) {
-  //   console.log("error 1");
-  //   throw new Error("No streams found");
-  // }
-  // if (amountOfStreamsWithThisName > 1) {
-  //   console.log("error 2");
-  //   throw new Error("More than one stream found with this name");
-  // }
 
   const stream: Stream | undefined = streams.find((s) => s.name === streamName);
 
