@@ -1,20 +1,20 @@
 import React from "react";
 
-import { withStyles } from "@material-ui/core/styles";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import IconButton from "@material-ui/core/IconButton";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import Collapse from "@material-ui/core/Collapse";
-import Box from "@material-ui/core/Box";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
+import { withStyles } from "@mui/styles";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import IconButton from "@mui/material/IconButton";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Collapse from "@mui/material/Collapse";
+import Box from "@mui/material/Box";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
 import strings from "../../localizeStrings";
-import TableBody from "@material-ui/core/TableBody";
-import Tooltip from "@material-ui/core/Tooltip";
+import TableBody from "@mui/material/TableBody";
+import Tooltip from "@mui/material/Tooltip";
 import dayjs from "dayjs";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const styles = () => ({
   shapeCircle: {

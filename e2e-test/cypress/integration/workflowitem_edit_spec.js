@@ -50,10 +50,9 @@ describe("Workflowitem edit", function() {
         .get("[data-test=workflowitem-amount]")
         .last()
         .should("contain", "€");
-      cy.get("[data-test=amount-explanation]")
-        .last()
-        .should("have.attr", "title")
-        .should("contain", "$");
+
+      cy.get("[data-test=amount-explanation-USD]").should("be.visible");
+
       // Open edit workflow item dialog
       cy.get("[data-test=edit-workflowitem]")
         .last()

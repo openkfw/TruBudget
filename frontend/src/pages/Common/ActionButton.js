@@ -1,5 +1,5 @@
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 
 const styles = {
@@ -40,6 +40,7 @@ const ActionButton = ({
             disabled={disabled}
             data-test={dataTest}
             id={id}
+            size="large"
           >
             {icon}
           </IconButton>

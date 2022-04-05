@@ -1,6 +1,6 @@
-import AppBar from "@material-ui/core/AppBar";
-import { withStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
+import AppBar from "@mui/material/AppBar";
+import { withStyles } from "@mui/styles";
+import Toolbar from "@mui/material/Toolbar";
 import React from "react";
 
 import LeftNavbarNavigation from "./LeftNavbarNavigation";

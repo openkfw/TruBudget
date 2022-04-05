@@ -1,14 +1,6 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  withStyles
-} from "@material-ui/core";
-import Card from "@material-ui/core/Card";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import Card from "@mui/material/Card";
 import React from "react";
 import { capitalize } from "../../helper";
 import strings from "../../localizeStrings";

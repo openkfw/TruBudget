@@ -15,7 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Fixed date picker for setting dates in another timezone [#1082](https://github.com/openkfw/TruBudget/issues/1082)
+- Fixed date picker to type a date with keyboard [#1081](https://github.com/openkfw/TruBudget/issues/1081)
 
 ## [1.29.1] - 2022-03-02
 

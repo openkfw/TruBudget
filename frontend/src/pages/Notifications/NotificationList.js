@@ -1,9 +1,9 @@
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import List from "@material-ui/core/List";
-import { withStyles } from "@material-ui/core/styles";
-import TablePagination from "@material-ui/core/TablePagination";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import List from "@mui/material/List";
+import { withStyles } from "@mui/styles";
+import TablePagination from "@mui/material/TablePagination";
 import React from "react";
 
 import strings from "../../localizeStrings";
@@ -95,7 +95,7 @@ const NotificationList = props => {
           component="div"
           rowsPerPageOptions={rowsPerPageOptions}
           rowsPerPage={notificationsPerPage}
-          onChangeRowsPerPage={event =>
+          onRowsPerPageChange={event =>
             onChangeRowsPerPage(
               event.target.value,
               setNotifcationsPerPage,
@@ -106,7 +106,7 @@ const NotificationList = props => {
           }
           count={notificationCount}
           page={currentPage}
-          onChangePage={(_, nextPage) => fetchNotifications(nextPage)}
+          onPageChange={(_, nextPage) => fetchNotifications(nextPage)}
           backIconButtonText={strings.notification.previous_page}
           nextIconButtonText={strings.notification.next_page}
           labelRowsPerPage={strings.notification.rows_per_page}

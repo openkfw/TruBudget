@@ -1,78 +1,45 @@
+import { Alert as MuiAlert, Snackbar as MuiSnackbar } from "@mui/material";
 import React from "react";
-import Snackbar from "@material-ui/core/Snackbar";
-import SnackbarContent from "@material-ui/core/SnackbarContent";
-import IconButton from "@material-ui/core/IconButton";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import ErrorIcon from "@material-ui/icons/Error";
-import WarningRoundedIcon from "@material-ui/icons/WarningRounded";
-import { withStyles } from "@material-ui/core/styles";
-import CloseIcon from "@material-ui/icons/Close";
 
-const variantIcon = {
-  success: CheckCircleIcon,
-  error: ErrorIcon,
-  warning: WarningRoundedIcon
-};
-
-const styles = theme => ({
-  success: {
-    backgroundColor: theme.palette.primary.main
-  },
-  error: {
-    backgroundColor: theme.palette.error.main
-  },
-  warning: {
-    backgroundColor: theme.palette.warning.main
-  },
-
-  icon: {
-    fontSize: 20
-  },
-  iconVariant: {
-    opacity: 0.9,
-    marginRight: theme.spacing(1)
-  },
-  message: {
-    display: "flex",
-    alignItems: "center",
-    maxWidth: "100%"
-  }
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const ContentWrapper = props => {
-  const { classes, className, message, variant, onClose } = props;
-  const Icon = variantIcon[variant];
-  return (
-    <SnackbarContent
-      className={`${classes[variant]} ${className}`}
-      aria-describedby="client-snackbar"
-      message={
-        <span id="client-snackbar" data-test="client-snackbar" className={classes.message}>
-          <Icon className={`${classes.icon} ${classes.iconVariant}`} />
-          {message}
-        </span>
-      }
-      action={[
-        <IconButton key="close" aria-label="Close" color="inherit" className={classes.close} onClick={onClose}>
-          <CloseIcon className={classes.icon} />
-        </IconButton>
-      ]}
-    />
-  );
-};
-
-const SnackbarContentWrapper = withStyles(styles)(ContentWrapper);
-
 const NotificationsSnackbar = props => {
-  let snackbarVariant = "error";
-  if (!props.snackbarError) {
-    snackbarVariant = props.snackbarWarning ? "warning" : "success";
+  const { showSnackbar, closeSnackbar, snackbarMessage, snackbarError, snackbarWarning } = props;
+
+  let variant = "info";
+  if (snackbarWarning) {
+    variant = "warning";
+  }
+  if (snackbarError) {
+    variant = "error";
   }
 
+  const handleClose = (_event, reason) => {
+    if (reason === "clickaway") {
+      // Do not hide when click some where: Instead, wait the autoHideDuration
+      return;
+    }
+    closeSnackbar();
+  };
+
   return (
-    <Snackbar open={props.showSnackbar} autoHideDuration={4000} onClose={props.closeSnackbar}>
-      <SnackbarContentWrapper variant={snackbarVariant} message={props.snackbarMessage} onClose={props.closeSnackbar} />
-    </Snackbar>
+    <>
+      <MuiSnackbar
+        open={showSnackbar}
+        onClose={handleClose}
+        autoHideDuration={6000}
+        message={snackbarMessage}
+        data-test="client-snackbar"
+        sx={{ maxWidth: "100rem" }}
+      >
+        <Alert severity={variant} onClose={() => closeSnackbar()}>
+          {snackbarMessage}
+        </Alert>
+      </MuiSnackbar>
+    </>
   );
 };
-export default withStyles(styles)(NotificationsSnackbar);
+
+export default NotificationsSnackbar;

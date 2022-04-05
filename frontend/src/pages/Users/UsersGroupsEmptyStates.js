@@ -1,6 +1,6 @@
-import Paper from "@material-ui/core/Paper";
-import { withStyles, withTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import Paper from "@mui/material/Paper";
+import { withStyles, withTheme } from "@mui/styles";
+import Typography from "@mui/material/Typography";
 import React from "react";
 import strings from "../../localizeStrings";
 

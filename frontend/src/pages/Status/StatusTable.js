@@ -1,14 +1,5 @@
-import {
-  CircularProgress,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  withStyles
-} from "@material-ui/core";
+import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React from "react";
 
 import strings from "../../localizeStrings";

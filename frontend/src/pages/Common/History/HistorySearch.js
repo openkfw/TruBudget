@@ -1,5 +1,6 @@
-import { withStyles, MenuItem } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+import { MenuItem } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import Button from "@mui/material/Button";
 import React from "react";
 import strings from "../../../localizeStrings";
 import DatePicker from "../../Common/DatePicker";

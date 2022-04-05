@@ -1,4 +1,4 @@
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";

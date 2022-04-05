@@ -1,6 +1,6 @@
-import { Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import WarningIcon from "@material-ui/icons/Warning";
+import { Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import WarningIcon from "@mui/icons-material/Warning";
 import React from "react";
 
 const styles = {
@@ -31,7 +31,7 @@ const styles = {
 class ErrorTypography extends React.Component {
   render() {
     const { type, showWarningIcon } = this.props;
-    const icon = showWarningIcon ? <WarningIcon titleAccess="Warning" style={{marginLeft: "4px"}}/> : '';
+    const icon = showWarningIcon ? <WarningIcon titleAccess="Warning" style={{ marginLeft: "4px" }} /> : "";
 
     return (
       <Typography data-test={`confirmation-${type}`} style={styles[type]}>

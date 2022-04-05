@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import MenuItem from "@material-ui/core/MenuItem";
-import DropwDown from "../Common/NewDropdown";
-import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import MenuItem from "@mui/material/MenuItem";
+import DropDown from "../Common/NewDropdown";
+import TextField from "@mui/material/TextField";
 import strings from "../../localizeStrings";
 import _isEmpty from "lodash/isEmpty";
 import {
@@ -15,7 +15,7 @@ import {
   validateLanguagePattern,
   numberSignsRegex
 } from "../../helper";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 
 const styles = {
   container: {
@@ -134,7 +134,7 @@ const showAmountInputFields = (
         justifyContent: "center"
       }}
     >
-      <DropwDown
+      <DropDown
         style={{ minWidth: 160 }}
         floatingLabel={strings.common.currency}
         value={workflowCurrency}
@@ -147,8 +147,9 @@ const showAmountInputFields = (
         id="currencies"
       >
         {getMenuItems(currencies)}
-      </DropwDown>
+      </DropDown>
       <TextField
+        variant="standard"
         label={floatingLabelText}
         value={workflowAmount}
         onChange={v => {
@@ -170,6 +171,7 @@ const showAmountInputFields = (
       />
       <Typography style={{ alignSelf: "center", marginRight: "16px" }}>x</Typography>
       <TextField
+        variant="standard"
         label={strings.workflow.exchange_rate}
         value={exchangeRate}
         onChange={v => {

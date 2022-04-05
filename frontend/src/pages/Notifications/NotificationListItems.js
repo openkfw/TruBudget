@@ -1,13 +1,13 @@
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import { withStyles } from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
-import Unread from "@material-ui/icons/Email";
-import Read from "@material-ui/icons/MailOutline";
-import LaunchIcon from "@material-ui/icons/ZoomIn";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import { withStyles } from "@mui/styles";
+import Tooltip from "@mui/material/Tooltip";
+import Unread from "@mui/icons-material/Email";
+import Read from "@mui/icons-material/MailOutline";
+import LaunchIcon from "@mui/icons-material/ZoomIn";
 import dayjs from "dayjs";
 import React from "react";
 import { intentMapping, parseURI, getParentData, isAllowedToSee } from "./helper";
@@ -104,7 +104,7 @@ const NotificationListItems = ({
             {isAllowedToSee(notification) ? (
               <Tooltip id="tooltip-inspect" title={strings.common.view}>
                 <div>
-                  <IconButton onClick={() => history.push(redirectUri)}>
+                  <IconButton onClick={() => history.push(redirectUri)} size="large">
                     <LaunchIcon />
                   </IconButton>
                 </div>

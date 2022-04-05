@@ -1,24 +1,24 @@
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import Chip from "@material-ui/core/Chip";
-import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import BarChartIcon from "@material-ui/icons/BarChart";
-import DoneIcon from "@material-ui/icons/Check";
-import DateIcon from "@material-ui/icons/DateRange";
-import AssigneeIcon from "@material-ui/icons/Group";
-import LabelIcon from "@material-ui/icons/Label";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import DoneIcon from "@mui/icons-material/Check";
+import DateIcon from "@mui/icons-material/DateRange";
+import AssigneeIcon from "@mui/icons-material/Group";
+import LabelIcon from "@mui/icons-material/Label";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 
@@ -204,7 +204,12 @@ const ProjectDetails = props => {
                 title={closeDisabled ? strings.project.project_close_info : strings.common.close}
               >
                 <div>
-                  <IconButton color="primary" data-test="pc-button" disabled={closeDisabled} onClick={closeProject}>
+                  <IconButton
+                    color="primary"
+                    data-test="pc-button"
+                    disabled={closeDisabled}
+                    onClick={closeProject}
+                    size="large">
                     <DoneIcon />
                   </IconButton>
                 </div>

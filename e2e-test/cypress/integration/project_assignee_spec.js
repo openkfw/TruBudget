@@ -61,19 +61,19 @@ describe("Project Assignee", function() {
     cy.get("[data-test=single-select]").click();
     cy.get("[data-test=single-select-list]")
       .should("exist")
+      .find("[data-test=not-selected-item]")
+      .first()
+      .invoke("attr", "value")
+      .as("assigneeId");
+
+    cy.get("[data-test=single-select-list]")
+      .should("exist")
       .then($list => {
-        const firstUncheckedRadioButton = $list.find("input:not(:checked)").first();
         cy.wrap($list.find("input:not(:checked)").first()).as("firstUncheckedRadioButton");
-        cy.wrap(
-          firstUncheckedRadioButton
-            .parent()
-            .parent()
-            .parent()
-        )
-          .invoke("attr", "value")
-          .as("assigneeId");
       });
+
     cy.get("@assigneeId").then(assigneeId => {
+      cy.log(assigneeId);
       revokeViewPermissions(permissionsBeforeTesting, projectId, assigneeId);
     });
   }

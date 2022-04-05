@@ -1,10 +1,10 @@
-import Avatar from "@material-ui/core/Avatar";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import { withStyles } from "@material-ui/core/styles";
+import Avatar from "@mui/material/Avatar";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListSubheader from "@mui/material/ListSubheader";
+import { withStyles } from "@mui/styles";
 import dayjs from "dayjs";
 import React from "react";
 import { dateFormat } from "../../../helper";

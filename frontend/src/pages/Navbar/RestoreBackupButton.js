@@ -1,7 +1,7 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import Upload from "@material-ui/icons/CloudUpload";
-import { withStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import Upload from "@mui/icons-material/CloudUpload";
+import { withStyles } from "@mui/styles";
 import strings from "../../localizeStrings";
 
 const styles = theme => ({

@@ -1,12 +1,12 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import _isEmpty from "lodash/isEmpty";
 
 import ActionsTable from "./ActionsTable";
 import DialogButtons from "./DialogButtons";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import ErrorTypography from "./ErrorTypography";
 import DisableUserDialogContent from "../Users/DisableUserDialogContent";
 import EnableUserDialogContent from "../Users/EnableUserDialogContent";
