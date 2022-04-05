@@ -1,0 +1,42 @@
+{
+  "name": "material-kit-react",
+  "author": "Devias IO",
+  "licence": "MIT",
+  "version": "2.0.0",
+  "private": false,
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export",
+    "lint": "next lint",
+    "lint-fix": "next lint --fix"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.5.0",
+    "@emotion/react": "^11.5.0",
+    "@emotion/server": "^11.4.0",
+    "@emotion/styled": "^11.3.0",
+    "@mui/icons-material": "^5.0.5",
+    "@mui/lab": "^5.0.0-alpha.53",
+    "@mui/material": "^5.0.6",
+    "@mui/styles": "^5.0.2",
+    "chart.js": "^3.5.1",
+    "date-fns": "^2.25.0",
+    "formik": "^2.1.5",
+    "history": "^5.0.0",
+    "next": "^12.0.3-canary.7",
+    "nprogress": "^0.2.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-chartjs-2": "^3.0.4",
+    "react-dom": "^17.0.2",
+    "react-perfect-scrollbar": "^1.5.8",
+    "uuid": "^8.3.0",
+    "yup": "^0.32.9"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-next": "12.0.3-canary.7"
+  }
+}
