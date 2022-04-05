@@ -30,7 +30,10 @@ function convertError(error: any): { code: number; message: string } {
   } else {
     // logger.fatal({ error }, "BUG: Caught a non-Error type");
     // logger.trace();
-    return { code: 500, message: "Sorry, something went wrong :(" };
+    return {
+      code: 500,
+      message: "Other error detected: " + JSON.stringify(error),
+    };
   }
 }
 
@@ -56,7 +59,7 @@ function handleError(error: Error): { code: number; message: string } {
       return { code: 412, message: error.message };
 
     default:
-      return { code: 500, message: error.message };
+      return { code: 500, message: JSON.stringify(error) };
   }
 }
 

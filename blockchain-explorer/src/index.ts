@@ -76,6 +76,7 @@ app.get(
       });
   },
 );
+
 app.get(
   "/stream.getNumberOfTx",
   query("name").escape(),
