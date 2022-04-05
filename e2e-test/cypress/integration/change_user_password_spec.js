@@ -1,7 +1,7 @@
-const testUserName = "passwordChangeUser";
-const testUserNamePassword = "test1234";
-
 describe("Users/Groups Dashboard", function() {
+  // Generate random IDs since every ID can only exists once in the multichain
+  const testUserName = `passwordChangeUser_${Math.floor(Math.random() * 1000000)}`;
+  const testUserNamePassword = "test1234";
   before(() => {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.getUserList().then(userList => {
@@ -96,7 +96,7 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test=password-change-submit]").click();
 
     // A success snackbar is displayed
-    cy.get("#client-snackbar")
+    cy.get("[data-test=client-snackbar]")
       .should("be.visible")
       .contains("Password successfully changed");
 
@@ -123,7 +123,7 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test=password-change-submit]").click();
 
     // A success snackbar is displayed
-    cy.get("#client-snackbar")
+    cy.get("[data-test=client-snackbar]")
       .should("be.visible")
       .contains("Password successfully changed");
   });

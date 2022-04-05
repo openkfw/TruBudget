@@ -1,14 +1,14 @@
-import AppBar from "@material-ui/core/AppBar";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import Dialog from "@material-ui/core/Dialog";
-import IconButton from "@material-ui/core/IconButton";
-import Slide from "@material-ui/core/Slide";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import CloseIcon from "@material-ui/icons/Close";
+import AppBar from "@mui/material/AppBar";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Dialog from "@mui/material/Dialog";
+import IconButton from "@mui/material/IconButton";
+import Slide from "@mui/material/Slide";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import CloseIcon from "@mui/icons-material/Close";
 import React, { forwardRef } from "react";
 import { connect } from "react-redux";
 
@@ -71,6 +71,7 @@ const SubProjectAnalyticsDialog = ({
           color="inherit"
           onClick={closeAnalyticsDialog}
           aria-label="Close"
+          size="large"
         >
           <CloseIcon />
         </IconButton>
@@ -80,6 +81,7 @@ const SubProjectAnalyticsDialog = ({
         <form autoComplete="off" style={styles.dropdown}>
           <FormControl>
             <Select
+              variant="standard"
               value={displayCurrency || "EUR"}
               onChange={e => {
                 storeDisplayCurrency(e.target.value);

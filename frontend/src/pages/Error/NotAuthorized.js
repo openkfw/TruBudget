@@ -1,7 +1,7 @@
 import React from "react";
 
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 import globalStyles from "../../styles";
 

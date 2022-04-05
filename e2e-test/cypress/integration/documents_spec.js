@@ -35,7 +35,7 @@ describe("Attaching a document to a workflowitem.", function() {
 
   const uploadDocument = fileName => {
     // open edit dialog:
-    cy.get("div[title=Edit] > button")
+    cy.get("[data-test=edit-workflowitem]")
       .should("be.visible")
       .click();
 
@@ -87,7 +87,7 @@ describe("Attaching a document to a workflowitem.", function() {
 
     // make sure the validation was successful:
     cy.wait("@validate")
-      .get(`button[label="Validated!"] > span`)
+      .get(`[data-test=validation-button]`)
       .should("contain", "Identical");
   });
 
@@ -125,7 +125,7 @@ describe("Attaching a document to a workflowitem.", function() {
 
     // make sure the validation was not successful:
     cy.wait("@validate")
-      .get(`button[label="Changed!"] > span`)
+      .get(`[data-test=validation-button]`)
       .should("contain", "Different");
   });
 

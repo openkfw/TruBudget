@@ -1,5 +1,5 @@
 import React from "react";
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@mui/styles";
 import Searchbar from "../Common/Searchbar";
 import strings from "../../localizeStrings";
 

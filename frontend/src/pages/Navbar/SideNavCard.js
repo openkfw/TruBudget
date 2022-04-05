@@ -1,19 +1,19 @@
-import { IconButton } from "@material-ui/core";
-import Avatar from "@material-ui/core/Avatar";
-import Divider from "@material-ui/core/Divider";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Subheader from "@material-ui/core/ListSubheader";
-import ProjectIcon from "@material-ui/icons/Business";
-import NodesIcon from "@material-ui/icons/DesktopWindows";
-import ExportIcon from "@material-ui/icons/ListAlt";
-import SocialNotificationIcon from "@material-ui/icons/NotificationsActive";
-import UsersIcon from "@material-ui/icons/PeopleOutline";
-import SettingsIcon from "@material-ui/icons/Settings";
-import StatusIcon from "@material-ui/icons/Build";
+import { IconButton } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Subheader from "@mui/material/ListSubheader";
+import ProjectIcon from "@mui/icons-material/Business";
+import NodesIcon from "@mui/icons-material/DesktopWindows";
+import ExportIcon from "@mui/icons-material/ListAlt";
+import SocialNotificationIcon from "@mui/icons-material/NotificationsActive";
+import UsersIcon from "@mui/icons-material/PeopleOutline";
+import SettingsIcon from "@mui/icons-material/Settings";
+import StatusIcon from "@mui/icons-material/Build";
 import React from "react";
 import strings from "../../localizeStrings";
 import DownloadBackupButton from "./DownloadBackupButton";
@@ -77,14 +77,17 @@ const SideNavCard = ({
                     <Avatar size={60} src={avatar} />
                   </ListItemAvatar>
                 }
-              />
+                size="large" />
             </ListItemIcon>
             <ListItemText
               style={{ padding: "0px" }}
               primary={<span>{displayName}</span>}
               secondary={<span>{organization}</span>}
             />
-            <IconButton data-test="show-user-profile" onClick={() => openUserProfile()}>
+            <IconButton
+              data-test="show-user-profile"
+              onClick={() => openUserProfile()}
+              size="large">
               <SettingsIcon />
             </IconButton>
           </ListItem>

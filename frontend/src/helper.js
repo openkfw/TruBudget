@@ -1,6 +1,6 @@
-import DoneIcon from "@material-ui/icons/Check";
-import OpenIcon from "@material-ui/icons/Remove";
-import RejectedIcon from "@material-ui/icons/Block";
+import DoneIcon from "@mui/icons-material/Check";
+import OpenIcon from "@mui/icons-material/Remove";
+import RejectedIcon from "@mui/icons-material/Block";
 import accounting from "accounting";
 import dayjs from "dayjs";
 import { Iterable } from "immutable";

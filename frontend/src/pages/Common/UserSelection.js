@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { withStyles } from "@material-ui/core/styles";
-import MenuItem from "@material-ui/core/MenuItem";
-import Chip from "@material-ui/core/Chip";
-import UserIcon from "@material-ui/icons/Person";
-import CloseIcon from "@material-ui/icons/Close";
+import { withStyles } from "@mui/styles";
+import MenuItem from "@mui/material/MenuItem";
+import Chip from "@mui/material/Chip";
+import UserIcon from "@mui/icons-material/Person";
+import CloseIcon from "@mui/icons-material/Close";
 import strings from "../../localizeStrings";
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
 import ActionButton from "./ActionButton";
-import Select from "@material-ui/core/Select";
-import Checkbox from "@material-ui/core/Checkbox";
-import ListItemText from "@material-ui/core/ListItemText";
-import Paper from "@material-ui/core/Paper";
-import List from "@material-ui/core/List";
+import Select from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
+import ListItemText from "@mui/material/ListItemText";
+import Paper from "@mui/material/Paper";
+import List from "@mui/material/List";
 import OverflowTooltip from "./OverflowTooltip";
 
 const styles = theme => ({
@@ -27,7 +27,7 @@ const styles = theme => ({
     marginBottom: "5px"
   },
   chip: {
-    margin: `${theme.spacing(0.5)}px ${theme.spacing(0.25)}px`
+    margin: `${theme.spacing(0.5)} ${theme.spacing(0.25)}`
   },
   chipSelection: {
     width: "100%",
@@ -50,7 +50,7 @@ const styles = theme => ({
     overflow: "hidden",
     textOverflow: "ellipsis"
   },
-  itemContainer: { maxHeight: "70vh", overflow: "auto", maxWidth: "300px", minWidth: "300px", boxShadow: 'none'  }
+  itemContainer: { maxHeight: "70vh", overflow: "auto", maxWidth: "300px", minWidth: "300px", boxShadow: "none" }
 });
 
 function UserSelection(props) {
@@ -117,6 +117,7 @@ function UserSelection(props) {
             {selectedItems.length + " " + strings.users.selected_users}
           </InputLabel>
           <Select
+            variant="standard"
             data-test="add-user-selection"
             value={[""]}
             multiple

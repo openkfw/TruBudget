@@ -1,13 +1,13 @@
 import React from "react";
 
-import Badge from "@material-ui/core/Badge";
-import BubbleIcon from "@material-ui/icons/DeviceHub";
-import { withStyles } from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
+import Badge from "@mui/material/Badge";
+import BubbleIcon from "@mui/icons-material/DeviceHub";
+import { withStyles } from "@mui/styles";
+import Tooltip from "@mui/material/Tooltip";
 
 import strings from "../../localizeStrings";
-import green from "@material-ui/core/colors/green";
-import red from "@material-ui/core/colors/red";
+import green from "@mui/material/colors/green";
+import red from "@mui/material/colors/red";
 
 const styles = theme => ({
   connected: {

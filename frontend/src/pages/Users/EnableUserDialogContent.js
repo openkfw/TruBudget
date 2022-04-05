@@ -1,6 +1,6 @@
-import { Typography } from "@material-ui/core";
-import InfoIcon from "@material-ui/icons/Info";
-import { withStyles } from "@material-ui/core/styles";
+import { Typography } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import { withStyles } from "@mui/styles";
 import React from "react";
 import { formatString } from "../../helper";
 import strings from "../../localizeStrings";

@@ -1,13 +1,13 @@
 import React from "react";
 
-import FilledStar from "@material-ui/icons/Star";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-import GridListTileBar from "@material-ui/core/GridListTileBar";
-import IconButton from "@material-ui/core/IconButton";
-import NotFilledStar from "@material-ui/icons/StarBorder";
-import Subheader from "@material-ui/core/ListSubheader";
-import { withStyles } from "@material-ui/core/styles";
+import FilledStar from "@mui/icons-material/Star";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
+import ImageListItemBar from "@mui/material/ImageListItemBar";
+import IconButton from "@mui/material/IconButton";
+import NotFilledStar from "@mui/icons-material/StarBorder";
+import Subheader from "@mui/material/ListSubheader";
+import { withStyles } from "@mui/styles";
 
 import strings from "../../localizeStrings";
 import { images } from "./images";
@@ -44,13 +44,13 @@ const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
   return (
     <div style={styles.root}>
       <Subheader style={styles.subHeader}>{strings.common.thumbnail}</Subheader>
-      <GridList cellHeight={150} style={styles.gridList}>
+      <ImageList cellHeight={150} style={styles.gridList}>
         {images.map(image => (
-          <GridListTile onClick={() => onTouchTap(image.src)} key={image.src}>
+          <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src}>
             <img alt={image.src} src={image.src} />
-            <GridListTileBar
+            <ImageListItemBar
               actionIcon={
-                <IconButton>
+                <IconButton size="large">
                   {selectedImage === image.src ? <FilledStar color="primary" /> : <NotFilledStar color="primary" />}
                 </IconButton>
               }
@@ -60,9 +60,9 @@ const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
               titlePosition="top"
               titlebackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
             />
-          </GridListTile>
+          </ImageListItem>
         ))}
-      </GridList>
+      </ImageList>
     </div>
   );
 };

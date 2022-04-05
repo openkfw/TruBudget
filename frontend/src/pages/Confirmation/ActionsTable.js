@@ -1,11 +1,11 @@
-import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
-import Card from "@material-ui/core/Card";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import { withStyles } from "@material-ui/core/styles";
-import ErrorIcon from "@material-ui/icons/Close";
-import DoneIcon from "@material-ui/icons/Done";
-import TBDIcon from "@material-ui/icons/Remove";
-import WarningIcon from "@material-ui/icons/Warning";
+import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import Card from "@mui/material/Card";
+import LinearProgress from "@mui/material/LinearProgress";
+import { withStyles } from "@mui/styles";
+import ErrorIcon from "@mui/icons-material/Close";
+import DoneIcon from "@mui/icons-material/Done";
+import TBDIcon from "@mui/icons-material/Remove";
+import WarningIcon from "@mui/icons-material/Warning";
 import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
 import React from "react";
@@ -83,7 +83,7 @@ const generateHeader = (classes, status, actionTableColumns) => {
   return (
     <TableRow className={classes.headerRow} key={"header"}>
       <TableCell key={"header-type"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
-      <OverflowTooltip text={strings.common.type} />
+        <OverflowTooltip text={strings.common.type} />
       </TableCell>
       {actionTableColumns.nameColumn ? (
         <TableCell key={"header-displayName"} className={classes.columnHeaderCell} style={{ flex: 3 }}>
@@ -114,13 +114,22 @@ const generateHeader = (classes, status, actionTableColumns) => {
   );
 };
 
-const generateActions = (classes, actions, executedActions, failedAction, users, groups, status, actionTableColumns) => {
+const generateActions = (
+  classes,
+  actions,
+  executedActions,
+  failedAction,
+  users,
+  groups,
+  status,
+  actionTableColumns
+) => {
   const actionsTable = [];
 
   actions.forEach((action, index) => {
-
     const type = strings.common[action.intent.split(".")[0]];
-    const userOrGroup = users.find(user => user.id === action.identity) || groups.find(group => group.groupId === action.identity);
+    const userOrGroup =
+      users.find(user => user.id === action.identity) || groups.find(group => group.groupId === action.identity);
 
     actionsTable.push(
       <TableRow className={classes.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
@@ -153,7 +162,6 @@ const generateActions = (classes, actions, executedActions, failedAction, users,
             className={classes.tableCell}
             style={{ textAlign: "right", position: "relative", flex: 1 }}
           >
-
             {getStatusIcon(executedActions, failedAction, action)}
           </TableCell>
         ) : null}
@@ -165,20 +173,19 @@ const generateActions = (classes, actions, executedActions, failedAction, users,
 
 const getStatusIcon = (executedActions, failedAction, action) => {
   if (executedActions === undefined || _isEqual(action, failedAction)) {
-    return <ErrorIcon titleAccess={strings.status.error}/>;
+    return <ErrorIcon titleAccess={strings.status.error} />;
   }
 
-  if(action.isUserPermitted !== undefined && !action.isUserPermitted) {
-    return <WarningIcon titleAccess={strings.status.warning}/>;
+  if (action.isUserPermitted !== undefined && !action.isUserPermitted) {
+    return <WarningIcon titleAccess={strings.status.warning} />;
   }
 
   if (actionExecuted(executedActions, action)) {
-    return <DoneIcon titleAccess={strings.status.done}/>;
+    return <DoneIcon titleAccess={strings.status.done} />;
   }
 
-  return <TBDIcon titleAccess={strings.status.toBeDone}/>;
+  return <TBDIcon titleAccess={strings.status.toBeDone} />;
 };
-
 
 const actionExecuted = (executedActions, action) => {
   return executedActions.some(item => {
@@ -186,7 +193,7 @@ const actionExecuted = (executedActions, action) => {
   });
 };
 
-const makeReadable = (intent) => {
+const makeReadable = intent => {
   const splittedString = intent ? intent.split(".") : "";
   return strings.intents[splittedString[splittedString.length - 1]] || splittedString[splittedString.length - 1];
 };
@@ -231,7 +238,16 @@ const ActionsTable = props => {
               {generateHeader(classes, status, actionTableColumns)}
             </TableHead>
             <TableBody data-test="actions-table-body" className={classes.tableBody}>
-              {generateActions(classes, actions, executedActions, failedAction, users, groups, status, actionTableColumns)}
+              {generateActions(
+                classes,
+                actions,
+                executedActions,
+                failedAction,
+                users,
+                groups,
+                status,
+                actionTableColumns
+              )}
             </TableBody>
           </Table>
         </TableContainer>

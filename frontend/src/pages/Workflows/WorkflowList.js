@@ -1,12 +1,11 @@
-import Fab from "@material-ui/core/Fab";
-import DoneIcon from "@material-ui/icons/Check";
-import EditIcon from "@material-ui/icons/Edit";
+import Fab from "@mui/material/Fab";
+import DoneIcon from "@mui/icons-material/Check";
+import EditIcon from "@mui/icons-material/Edit";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableContainer } from "react-sortable-hoc";
 import { canReorderWorkflowItems } from "../../permissions.js";
 import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
-
 
 const styles = {
   editButtonContainer: {
@@ -27,7 +26,6 @@ const styles = {
     border: "1px solid #EFEFEF",
     borderRadius: 3
   }
-
 };
 
 const renderSortButton = props => (

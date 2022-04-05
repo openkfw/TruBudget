@@ -1,10 +1,10 @@
 import React from "react";
 
-import Badge from "@material-ui/core/Badge";
-import BubbleIcon from "@material-ui/icons/ChatBubbleOutline";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
+import Badge from "@mui/material/Badge";
+import BubbleIcon from "@mui/icons-material/ChatBubbleOutline";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import { withStyles } from "@mui/styles";
 
 import strings from "../../localizeStrings";
 
@@ -39,6 +39,7 @@ const NotificationIcon = ({ unreadNotificationCount, history, classes }) => {
           data-test="navbar-notification-button"
           tooltip={strings.navigation.unread_notifications}
           onClick={() => history.push("/notifications")}
+          size="large"
         >
           <BubbleIcon color="primary" />
         </IconButton>
@@ -50,6 +51,7 @@ const NotificationIcon = ({ unreadNotificationCount, history, classes }) => {
         data-test="navbar-notification-button"
         tooltip={strings.navigation.unread_notifications}
         onClick={() => history.push("/notifications")}
+        size="large"
       >
         <BubbleIcon color="primary" />
       </IconButton>

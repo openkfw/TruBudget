@@ -1,7 +1,7 @@
-import { IconButton } from "@material-ui/core";
-import Divider from "@material-ui/core/Divider";
-import MenuItem from "@material-ui/core/MenuItem";
-import CancelIcon from "@material-ui/icons/Cancel";
+import { IconButton } from "@mui/material";
+import Divider from "@mui/material/Divider";
+import MenuItem from "@mui/material/MenuItem";
+import CancelIcon from "@mui/icons-material/Cancel";
 import React from "react";
 
 import { getCurrencies } from "../../helper";
@@ -109,7 +109,7 @@ const SubprojectDialogContent = props => {
                     data-test={"clear-workflowitem-type"}
                     style={styles.clearButton}
                     onClick={() => props.storeFixedWorkflowitemType("")}
-                  >
+                    size="large">
                     <CancelIcon color="action" style={{ fontSize: "x-large" }} />
                   </IconButton>
                 ) : null}

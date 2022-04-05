@@ -1,18 +1,18 @@
-import { Checkbox, IconButton } from "@material-ui/core";
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import List from "@material-ui/core/List";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import MenuItem from "@material-ui/core/MenuItem";
-import Paper from "@material-ui/core/Paper";
-import Radio from "@material-ui/core/Radio";
-import Select from "@material-ui/core/Select";
-import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import CancelIcon from "@material-ui/icons/Cancel";
-import CloseIcon from "@material-ui/icons/Close";
+import { Checkbox, IconButton } from "@mui/material";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
+import List from "@mui/material/List";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import Radio from "@mui/material/Radio";
+import Select from "@mui/material/Select";
+import { withStyles } from "@mui/styles";
+import Typography from "@mui/material/Typography";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CloseIcon from "@mui/icons-material/Close";
 import React, { Component } from "react";
 
 import strings from "../../localizeStrings";
@@ -77,13 +77,15 @@ class SingleSelection extends Component {
     const { classes } = this.props;
     return selectableItems.map(u => {
       const { id, displayName } = u;
+      const isChecked = id === selectId;
       return (
         <MenuItem
           key={id}
           value={id}
+          data-test={isChecked ? "selected-item" : "not-selected-item"}
           onClick={() => (id !== selectId ? this.props.onSelect(id, displayName) : undefined)}
         >
-          <Radio className={classes.radioButton} disabled={disabled} checked={id === selectId} />
+          <Radio className={classes.radioButton} disabled={disabled} checked={isChecked} />
           <ListItemText data-test={`single-select-name-${id}`} className={classes.nameContainer}>
             <OverflowTooltip text={displayName} />
           </ListItemText>
@@ -186,6 +188,7 @@ class SingleSelection extends Component {
           <InputLabel htmlFor={selectId}>{floatingLabel}</InputLabel>
           <Select
             data-test={"single-select" + (disabled ? "-disabled" : "")}
+            variant="standard"
             classes={{
               ...getSortClasses()
             }}
@@ -235,7 +238,7 @@ class SingleSelection extends Component {
           </Select>
         </FormControl>
         {onClearItem && selectedItem ? (
-          <IconButton data-test={"clear-validator"} style={styles.clearButton} onClick={onClearItem}>
+          <IconButton data-test={"clear-validator"} style={styles.clearButton} onClick={onClearItem} size="large">
             <CancelIcon color="action" style={{ fontSize: "x-large" }} />
           </IconButton>
         ) : null}

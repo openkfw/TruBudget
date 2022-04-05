@@ -1,14 +1,15 @@
-import amber from "@material-ui/core/colors/amber";
-import red from "@material-ui/core/colors/deepOrange";
-import grey from "@material-ui/core/colors/grey";
-import blue from "@material-ui/core/colors/indigo";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import amber from "@mui/material/colors/amber";
+import red from "@mui/material/colors/deepOrange";
+import grey from "@mui/material/colors/grey";
+import blue from "@mui/material/colors/indigo";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import { ConnectedRouter } from "connected-react-router/immutable";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { createBrowserHistory } from "history";
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { Route, Switch, withRouter } from "react-router";
 import "./logging/console";
@@ -28,7 +29,7 @@ const history = createBrowserHistory();
 
 export const store = configureStore(history);
 
-const muiTheme = createMuiTheme({
+const muiTheme = createTheme({
   palette: {
     primary: {
       main: blue[500]
@@ -46,7 +47,24 @@ const muiTheme = createMuiTheme({
     },
     tonalOffset: 0.6
   },
-  typography: {}
+  typography: {},
+  components: {
+    MuiTextField: {
+      defaultProps: {
+        variant: "standard"
+      }
+    },
+    MuiSelect: {
+      defaultProps: {
+        variant: "standard"
+      }
+    },
+    MuiInputLabel: {
+      defaultProps: {
+        variant: "standard"
+      }
+    }
+  }
 });
 
 class Root extends Component {
@@ -54,17 +72,22 @@ class Root extends Component {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <MuiThemeProvider theme={muiTheme}>
-            <Route component={LiveNotificationContainer} />
-            <Switch>
-              <Route key={1} exact path="/login" render={withRouter(withInitialLoading(LoginPageContainer))} />
-              <PrivateRoute component={Main} />
-            </Switch>
-          </MuiThemeProvider>
+          <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={muiTheme}>
+              <Route component={LiveNotificationContainer} />
+              <Switch>
+                <Route key={1} exact path="/login" render={withRouter(withInitialLoading(LoginPageContainer))} />
+                <PrivateRoute component={Main} />
+              </Switch>
+            </ThemeProvider>
+          </StyledEngineProvider>
         </ConnectedRouter>
       </Provider>
     );
   }
 }
 
-ReactDOM.render(<Root />, document.getElementById("root"));
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(<Root />);

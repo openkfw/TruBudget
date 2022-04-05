@@ -1,7 +1,7 @@
-import { CardContent } from "@material-ui/core";
-import List from "@material-ui/core/List";
-import { withStyles, withTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import { CardContent } from "@mui/material";
+import List from "@mui/material/List";
+import { withStyles, withTheme } from "@mui/styles";
+import Typography from "@mui/material/Typography";
 import React from "react";
 
 import strings from "../../localizeStrings";

@@ -1,14 +1,14 @@
-import ButtonBase from "@material-ui/core/ButtonBase";
-import FormControl from "@material-ui/core/FormControl";
-import IconButton from "@material-ui/core/IconButton";
-import Paper from "@material-ui/core/Paper";
-import Tooltip from "@material-ui/core/Tooltip";
-import CancelIcon from "@material-ui/icons/Cancel";
-import SearchIcon from "@material-ui/icons/Search";
+import ButtonBase from "@mui/material/ButtonBase";
+import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import Tooltip from "@mui/material/Tooltip";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
-import { withStyles } from "@material-ui/core";
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import { withStyles } from "@mui/styles";
+import Input from "@mui/material/Input";
+import InputAdornment from "@mui/material/InputAdornment";
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -102,6 +102,7 @@ const Searchbar = ({
                 }}
                 disabled={searchDisabled}
                 data-test="toggle-searchbar"
+                size="large"
               >
                 <SearchIcon />
               </IconButton>

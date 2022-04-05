@@ -1,24 +1,24 @@
-import Card from "@material-ui/core/Card";
-import Checkbox from "@material-ui/core/Checkbox";
-import Chip from "@material-ui/core/Chip";
-import green from "@material-ui/core/colors/lightGreen";
-import red from "@material-ui/core/colors/red";
-import IconButton from "@material-ui/core/IconButton";
-import Paper from "@material-ui/core/Paper";
-import { withStyles, withTheme } from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import AttachmentIcon from "@material-ui/icons/Attachment";
-import DoneIcon from "@material-ui/icons/Check";
-import RejectedIcon from "@material-ui/icons/Block";
-import EditIcon from "@material-ui/icons/Edit";
-import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
-import InfoIcon from "@material-ui/icons/InfoOutlined";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-import MoreIcon from "@material-ui/icons/MoreHoriz";
-import OpenIcon from "@material-ui/icons/Remove";
-import SwapIcon from "@material-ui/icons/SwapCalls";
-import HiddenIcon from "@material-ui/icons/VisibilityOff";
+import Card from "@mui/material/Card";
+import Checkbox from "@mui/material/Checkbox";
+import Chip from "@mui/material/Chip";
+import green from "@mui/material/colors/lightGreen";
+import red from "@mui/material/colors/red";
+import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
+import { withStyles, withTheme } from "@mui/styles";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import DoneIcon from "@mui/icons-material/Check";
+import RejectedIcon from "@mui/icons-material/Block";
+import EditIcon from "@mui/icons-material/Edit";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import InfoIcon from "@mui/icons-material/InfoOutlined";
+import PermissionIcon from "@mui/icons-material/LockOpen";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
+import OpenIcon from "@mui/icons-material/Remove";
+import SwapIcon from "@mui/icons-material/SwapCalls";
+import HiddenIcon from "@mui/icons-material/VisibilityOff";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableElement } from "react-sortable-hoc";
@@ -293,6 +293,7 @@ const getInfoButton = (classes, props, status, workflowSortEnabled, workflow) =>
           className={`${getButtonClass(classes, workflowSortEnabled, status)}`}
           onClick={() => openWorkflowDetails(projectId, subProjectId, workflow.id)}
           data-test={`workflowitem-info-button-${workflow.id}`}
+          size="large"
         >
           <InfoIcon />
         </IconButton>
@@ -333,7 +334,11 @@ const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowS
             data-test={`attachment-file-badge-show-${workflow.id}`}
             className={classes.buttonStyle}
           >
-            <IconButton style={{ cursor: "default" }} data-test={`workflowitem-attachment-file-button-${workflow.id}`}>
+            <IconButton
+              style={{ cursor: "default" }}
+              data-test={`workflowitem-attachment-file-button-${workflow.id}`}
+              size="large"
+            >
               <AttachmentIcon />
             </IconButton>
           </StyledBadge>
@@ -353,7 +358,7 @@ const getAmountField = (classes, amount, type, exchangeRate, sourceCurrency, tar
 
   const amountExplanationTitle = toAmountString(amount, sourceCurrency) + " x " + exchangeRate;
   const amountExplaination = (
-    <Tooltip data-test="amount-explanation" title={amountExplanationTitle}>
+    <Tooltip data-test={"amount-explanation-" + sourceCurrency} title={amountExplanationTitle}>
       <SwapIcon />
     </Tooltip>
   );
@@ -650,7 +655,7 @@ export const RedactedWorkflowItem = withTheme(
             >
               <div className={classes.workflowContent}>
                 <div style={{ flex: 1 }}>
-                  <IconButton className={classes.buttonStyle}>
+                  <IconButton className={classes.buttonStyle} size="large">
                     <HiddenIcon />
                   </IconButton>
                 </div>

@@ -1,8 +1,8 @@
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import strings from "../../../localizeStrings";
@@ -25,10 +25,10 @@ const createActions = (permissions, temporayPermissions) => {
   return actions;
 };
 
-const onSubmit = (submitProps) => {
-  const { hidePermissionDialog, permissions, temporaryPermissions, ...actionFunctions} = submitProps;
+const onSubmit = submitProps => {
+  const { hidePermissionDialog, permissions, temporaryPermissions, ...actionFunctions } = submitProps;
 
-  if (_isEmpty(permissions) || (JSON.stringify(temporaryPermissions) === JSON.stringify(permissions))) {
+  if (_isEmpty(permissions) || JSON.stringify(temporaryPermissions) === JSON.stringify(permissions)) {
     hidePermissionDialog();
     return;
   }
@@ -39,7 +39,7 @@ const onSubmit = (submitProps) => {
 };
 
 const executeAction = (action, actionFunctions) => {
-  const {grant, revoke} = actionFunctions;
+  const { grant, revoke } = actionFunctions;
 
   if (action.type === "grant") {
     action.userIds.forEach(user => grant(action.permission, user));

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
+import { withStyles } from "@mui/styles";
+import AppBar from "@mui/material/AppBar";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import ApprovedNodesTable from "./ApprovedNodesTable";
 import DeclinedNodesTable from "./DeclinedNodesTable";
 

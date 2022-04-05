@@ -1,7 +1,7 @@
-import Fab from "@material-ui/core/Fab";
-import Add from "@material-ui/icons/Add";
+import Fab from "@mui/material/Fab";
+import Add from "@mui/icons-material/Add";
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
 
 const styles = {
   createButtonContainer: {
