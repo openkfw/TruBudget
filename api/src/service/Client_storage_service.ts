@@ -72,7 +72,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
     logger.debug(`Uploading Object "${name}"`);
 
     let requestData: UploadRequest = {
-      fileName: name,
+      fileName: encodeURIComponent(name),
       content: data,
     };
     if (config.encryptionPassword) {
@@ -103,7 +103,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
 
     let documentObject: StorageObject = {
       id: DownloadResponseResult.data.meta.docid,
-      fileName: DownloadResponseResult.data.meta.filename,
+      fileName: decodeURIComponent(DownloadResponseResult.data.meta.filename),
       base64: DownloadResponseResult.data.data,
     };
 

@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [1.29.1] - 2022-03-02
+
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+### Fixed
+
+- Fixed a bug where it was not possible to upload documents to a workflowitem if the file name contained special characters or accents [#1079](https://github.com/openkfw/TruBudget/pull/1079)
+
 ## [1.29.0] - 2022-03-02
 
 ### Added

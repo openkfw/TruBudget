@@ -1,5 +1,6 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
+import * as contentDisposition from "content-disposition";
 
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
@@ -133,7 +134,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         reply.headers({
           "Content-Type": "application/octet-stream",
-          "Content-Disposition": `attachment; filename="${documentResult.fileName}"`,
+          "Content-Disposition": contentDisposition(documentResult.fileName),
         });
 
         reply.status(code).send(Buffer.from(documentResult.base64, "base64"));
