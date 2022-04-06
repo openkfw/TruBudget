@@ -8,6 +8,12 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import axios from "axios";
+import dynamic from "next/dynamic";
+const DynamicJSONEditor = dynamic(() => import("./JSONEditor"), {
+  // Disable server side rendering (ssr):
+  ssr: false,
+  loading: () => <p>...</p>,
+});
 
 const columns = [
   { id: "txid", label: "TXID", minWidth: 170 },
@@ -146,7 +152,8 @@ export const DataTable = (props) => {
                       align={"left"}
                       style={{ minWidth: "100px" }}
                     >
-                      {JSON.stringify(row.data)}
+                      {/* {JSON.stringify(row.data)} */}
+                      <DynamicJSONEditor json={row.data} />
                     </TableCell>
                   </TableRow>
                 );

@@ -26,6 +26,7 @@
     "date-fns": "^2.25.0",
     "formik": "^2.1.5",
     "history": "^5.0.0",
+    "jsoneditor": "^9.7.4",
     "next": "^12.0.3-canary.7",
     "nprogress": "^0.2.0",
     "prop-types": "^15.7.2",
