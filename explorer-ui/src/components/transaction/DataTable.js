@@ -106,14 +106,14 @@ export const DataTable = (props) => {
                 TXID
               </TableCell>
               <TableCell
-                key={"txid"}
+                key={"date"}
                 align={"left"}
                 style={{ minWidth: "100px" }}
               >
                 Date
               </TableCell>
               <TableCell
-                key={"txid"}
+                key={"data"}
                 align={"left"}
                 style={{ minWidth: "100px" }}
               >

@@ -9,10 +9,15 @@ const baseUrlToExplorerApi = "http://localhost:8081";
 
 export const StreamSelect = () => {
   const [streams, setStreams] = React.useState([]);
+  const [selected, setSelected] = React.useState("");
 
   React.useEffect(() => {
     fetchStreams();
   }, []);
+
+  React.useEffect(() => {
+    console.log(selected);
+  }, [selected]);
 
   React.useEffect(() => {
     console.log(streams);
@@ -38,7 +43,13 @@ export const StreamSelect = () => {
       <Box sx={{ m: "10px" }}>
         {streams?.map((s) => {
           return (
-            <SeverityPill key={s.name} sx={{ m: "5px" }}>
+            <SeverityPill
+              key={s.name}
+              name={s.name}
+              isSelected={selected === s.name}
+              setSelected={setSelected}
+              sx={{ m: "5px" }}
+            >
               {s.name}
             </SeverityPill>
           );
