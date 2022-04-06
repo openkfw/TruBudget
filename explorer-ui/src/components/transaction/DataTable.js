@@ -17,7 +17,7 @@ const columns = [
     label: "Data",
     minWidth: 170,
     align: "right",
-    format: (value) => Json.stringify("value"),
+    // format: (value) => Json.stringify("value"),
   },
 ];
 
@@ -93,38 +93,61 @@ export const DataTable = (props) => {
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      {JSON.stringify(streamItems)}
+      {/* {JSON.stringify(streamItems)} */}
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
+              <TableCell
+                key={"txid"}
+                align={"left"}
+                style={{ minWidth: "100px" }}
+              >
+                TXID
+              </TableCell>
+              <TableCell
+                key={"txid"}
+                align={"left"}
+                style={{ minWidth: "100px" }}
+              >
+                Date
+              </TableCell>
+              <TableCell
+                key={"txid"}
+                align={"left"}
+                style={{ minWidth: "100px" }}
+              >
+                Data object
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {streamItems
               //   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === "number"
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
+                    <TableCell
+                      key={"txid-2"}
+                      align={"left"}
+                      style={{ minWidth: "100px" }}
+                    >
+                      {row.txid}
+                    </TableCell>
+                    <TableCell
+                      key={"date-2"}
+                      align={"left"}
+                      style={{ minWidth: "100px" }}
+                    >
+                      {row.time}
+                    </TableCell>
+                    <TableCell
+                      key={"data-2"}
+                      align={"left"}
+                      style={{ minWidth: "100px" }}
+                    >
+                      {JSON.stringify(row.data)}
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -134,7 +157,7 @@ export const DataTable = (props) => {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={streamItems.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
