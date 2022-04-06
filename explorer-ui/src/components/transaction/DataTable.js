@@ -55,7 +55,7 @@ export const DataTable = (props) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const [streamItems, setStreamItems] = React.useState({});
+  const [streamItems, setStreamItems] = React.useState([]);
 
   React.useEffect(() => {
     fetchStreamItems();
@@ -63,6 +63,10 @@ export const DataTable = (props) => {
 
   React.useEffect(() => {
     console.log(streamItems);
+    false &&
+      streamItems.map((s) => {
+        console.log(s);
+      });
   }, [streamItems]);
 
   async function fetchStreamItems() {
@@ -89,8 +93,7 @@ export const DataTable = (props) => {
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      {JSON.stringify(streamItems)}
-      {/* <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -107,7 +110,7 @@ export const DataTable = (props) => {
           </TableHead>
           <TableBody>
             {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              //   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
@@ -135,7 +138,7 @@ export const DataTable = (props) => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
+      />
     </Paper>
   );
 };

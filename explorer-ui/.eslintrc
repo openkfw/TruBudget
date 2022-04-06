@@ -1,0 +1,51 @@
+{
+  "extends": ["react-app", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+
+  "plugins": [
+    "react",
+    "react-hooks"
+  ],
+
+    "env": {
+    "es6": true,
+    "node": true
+  },
+
+  "rules": {
+    "react/jsx-no-bind": ["error", {
+      "allowArrowFunctions": true,
+      "allowBind": false,
+      "ignoreRefs": true
+    }],
+    "react/no-did-update-set-state": "error",
+    "react/no-unknown-property": "error",
+    "react/no-unused-prop-types": "error",
+    "react/react-in-jsx-scope": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "no-var": 1,
+    "no-console": 1,
+    "import/named": 2,
+    "semi-style": ["error", "last"],
+    "semi": [2, "always"],
+    "space-before-function-paren": ["error", {
+      "anonymous": "always",
+      "named": "never",
+      "asyncArrow": "always"
+    }],
+    "comma-dangle": ["error", "never"]
+  }
+}
