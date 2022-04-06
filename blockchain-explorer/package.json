@@ -14,6 +14,7 @@
     "lint": "eslint src --ext ts"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-validator": "^6.12.1",
     "lodash": "^4.17.21",

@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as cors from "cors";
 import { body, query } from "express-validator";
 import * as service from "./service/service";
 import { RpcClient } from "./infrastructure/RpcClient";
@@ -8,6 +9,8 @@ import { MultichainInformation } from "domain/multichainInformation";
 let Lodash = require("lodash");
 
 const app: express.Application = express();
+app.use(express.json());
+app.use(cors({ credentials: true, origin: true }));
 
 const rpcClient = new RpcClient({});
 
