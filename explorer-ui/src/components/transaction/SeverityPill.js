@@ -6,7 +6,7 @@ const SeverityPillRoot = styled("span")(
   ({ theme, ownerState, isSelected = false, sx }) => {
     const backgroundColor = isSelected
       ? theme.palette.primary.main
-      : theme.palette.secondary.main;
+      : theme.palette.neutral[400];
     const color = theme.palette[ownerState.color].contrastText;
 
     return {

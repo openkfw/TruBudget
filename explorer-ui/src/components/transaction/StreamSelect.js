@@ -26,7 +26,7 @@ export const StreamSelect = () => {
   async function fetchStreams() {
     await axios.get(baseUrlToExplorerApi + "/streams").then((response) => {
       console.log(response);
-      setStreams(response?.data);
+      setStreams(response?.data?.sort((a, b) => a.length - b.length));
     });
   }
 

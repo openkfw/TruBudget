@@ -7,6 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import Divider from "@mui/material/Divider";
 import axios from "axios";
 import dynamic from "next/dynamic";
 const DynamicJSONEditor = dynamic(() => import("./JSONEditor"), {
@@ -98,9 +99,9 @@ export const DataTable = (props) => {
   };
 
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+    <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
       {/* {JSON.stringify(streamItems)} */}
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer sx={{ maxHeight: "3000px" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -132,30 +133,38 @@ export const DataTable = (props) => {
               //   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    <TableCell
-                      key={"txid-2"}
-                      align={"left"}
-                      style={{ minWidth: "100px" }}
+                  <>
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.code}
                     >
-                      {row.txid}
-                    </TableCell>
-                    <TableCell
-                      key={"date-2"}
-                      align={"left"}
-                      style={{ minWidth: "100px" }}
-                    >
-                      {row.time}
-                    </TableCell>
-                    <TableCell
-                      key={"data-2"}
-                      align={"left"}
-                      style={{ minWidth: "100px" }}
-                    >
-                      {/* {JSON.stringify(row.data)} */}
-                      <DynamicJSONEditor json={row.data} />
-                    </TableCell>
-                  </TableRow>
+                      <TableCell
+                        key={"txid-2"}
+                        align={"left"}
+                        style={{ minWidth: "100px" }}
+                      >
+                        {row.txid}
+                      </TableCell>
+                      <TableCell
+                        key={"date-2"}
+                        align={"left"}
+                        style={{ minWidth: "100px" }}
+                      >
+                        {row.time}
+                      </TableCell>
+                      <TableCell
+                        key={"data-2"}
+                        align={"left"}
+                        style={{ minWidth: "100px" }}
+                      >
+                        {/* {JSON.stringify(row.data)} */}
+                        <DynamicJSONEditor json={row.data} />
+                      </TableCell>
+                    </TableRow>
+                    <Divider />
+                  </>
                 );
               })}
           </TableBody>
