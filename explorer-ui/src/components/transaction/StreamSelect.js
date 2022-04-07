@@ -2,6 +2,8 @@ import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { Divider } from "@mui/material";
 import axios from "axios";
 import { SeverityPill } from "./SeverityPill";
 
@@ -31,7 +33,14 @@ export const StreamSelect = (props) => {
   }
 
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+    <Paper sx={{ width: "100%", overflow: "auto" }}>
+      <Typography variant="h6" sx={{ margin: "20px" }}>
+        Stream List
+      </Typography>
+      <Typography variant="body2" sx={{ margin: "20px" }}>
+        Select a stream to view its transactions
+      </Typography>
+      <Divider />
       <Button
         size="small"
         variant="outlined"

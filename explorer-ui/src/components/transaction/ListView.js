@@ -3,11 +3,11 @@ import Paper from "@mui/material/Paper";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { JsonView } from "./JsonView";
 import axios from "axios";
 import dayjs from "dayjs";
+import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
 
 const convertUnixEpochToDate = (epoch) => {
@@ -47,8 +47,8 @@ export const ListView = (props) => {
   }
 
   return (
-    <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-      <Typography variant="h6" sx={{ margin: "5px" }}>
+    <Paper sx={{ width: "100%", height: "100%", overflow: "auto" }}>
+      <Typography variant="h6" sx={{ margin: "20px" }}>
         Transactions of stream {selectedStream}
       </Typography>
       <Divider />
