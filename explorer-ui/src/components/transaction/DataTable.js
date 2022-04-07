@@ -10,50 +10,13 @@ import TableRow from "@mui/material/TableRow";
 import Divider from "@mui/material/Divider";
 import { JsonView } from "./JsonView";
 import axios from "axios";
-import parse from "html-react-parser";
+import config from "../../config";
 import dynamic from "next/dynamic";
 const DynamicJSONEditor = dynamic(() => import("./JSONEditor"), {
   // Disable server side rendering (ssr):
   ssr: false,
   loading: () => <p>...</p>,
 });
-
-const columns = [
-  { id: "txid", label: "TXID", minWidth: 170 },
-  { id: "time", label: "Time", minWidth: 100 },
-  {
-    id: "data",
-    label: "Data",
-    minWidth: 170,
-    align: "right",
-    // format: (value) => Json.stringify("value"),
-  },
-];
-
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
-
-const rows = [
-  createData("India", "IN", 1324171354, 3287263),
-  createData("China", "CN", 1403500365, 9596961),
-  createData("Italy", "IT", 60483973, 301340),
-  createData("United States", "US", 327167434, 9833520),
-  createData("Canada", "CA", 37602103, 9984670),
-  createData("Australia", "AU", 25475400, 7692024),
-  createData("Germany", "DE", 83019200, 357578),
-  createData("Ireland", "IE", 4857000, 70273),
-  createData("Mexico", "MX", 126577691, 1972550),
-  createData("Japan", "JP", 126317000, 377973),
-  createData("France", "FR", 67022000, 640679),
-  createData("United Kingdom", "GB", 67545757, 242495),
-  createData("Russia", "RU", 146793744, 17098246),
-  createData("Nigeria", "NG", 200962417, 923768),
-  createData("Brazil", "BR", 210147125, 8515767),
-];
-
-const baseUrlToExplorerApi = "http://localhost:8081";
 
 export const DataTable = (props) => {
   const { selectedStream } = props;
@@ -80,7 +43,7 @@ export const DataTable = (props) => {
     }
     await axios
       .get(
-        baseUrlToExplorerApi +
+        config.baseUrlToExplorerApi +
           `/stream.getAllStreamItems?name=${selectedStream}`
       )
       .then((response) => {

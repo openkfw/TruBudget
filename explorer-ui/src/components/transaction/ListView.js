@@ -9,12 +9,11 @@ import axios from "axios";
 import dayjs from "dayjs";
 import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
+import config from "../../config";
 
 const convertUnixEpochToDate = (epoch) => {
   return dayjs.unix(epoch).format("DD.MM.YYYY HH:mm:ss");
 };
-
-const baseUrlToExplorerApi = "http://localhost:8081";
 
 export const ListView = (props) => {
   const { selectedStream = "users" } = props;
@@ -35,7 +34,7 @@ export const ListView = (props) => {
     }
     await axios
       .get(
-        baseUrlToExplorerApi +
+        config.baseUrlToExplorerApi +
           `/stream.getAllStreamItems?name=${selectedStream}`
       )
       .then((response) => {

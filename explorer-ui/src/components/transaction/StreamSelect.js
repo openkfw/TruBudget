@@ -6,8 +6,7 @@ import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
 import axios from "axios";
 import { SeverityPill } from "./SeverityPill";
-
-const baseUrlToExplorerApi = "http://localhost:8081";
+import config from "../../config";
 
 export const StreamSelect = (props) => {
   const [streams, setStreams] = React.useState([]);
@@ -26,10 +25,12 @@ export const StreamSelect = (props) => {
   }, [streams]);
 
   async function fetchStreams() {
-    await axios.get(baseUrlToExplorerApi + "/streams").then((response) => {
-      console.log(response);
-      setStreams(response?.data?.sort((a, b) => a.length - b.length));
-    });
+    await axios
+      .get(config.baseUrlToExplorerApi + "/streams")
+      .then((response) => {
+        console.log(response);
+        setStreams(response?.data?.sort((a, b) => a.length - b.length));
+      });
   }
 
   return (
