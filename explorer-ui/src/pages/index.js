@@ -10,6 +10,7 @@ import { TotalProfit } from "../components/dashboard/total-profit";
 import { TrafficByDevice } from "../components/dashboard/traffic-by-device";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { DataTable } from "../components/transaction/DataTable";
+import { ListView } from "../components/transaction/ListView";
 import { StreamSelect } from "../components/transaction/StreamSelect";
 
 const Dashboard = () => (
@@ -28,6 +29,9 @@ const Dashboard = () => (
         <Grid container spacing={3}>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <StreamSelect />
+          </Grid>
+          <Grid item lg={12} md={12} xl={12} xs={12}>
+            <ListView />
           </Grid>
           <Grid item lg={12} md={12} xl={12} xs={12}>
             <DataTable />

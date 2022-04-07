@@ -35,12 +35,12 @@ export const StreamSelect = () => {
       <Button
         size="small"
         variant="outlined"
-        sx={{ m: "10px" }}
+        sx={{ margin: "10px" }}
         onClick={fetchStreams}
       >
         Fetch Streams
       </Button>
-      <Box sx={{ m: "10px" }}>
+      <Box sx={{ margin: "10px" }}>
         {streams?.map((s) => {
           return (
             <SeverityPill
@@ -48,7 +48,7 @@ export const StreamSelect = () => {
               name={s.name}
               isSelected={selected === s.name}
               setSelected={setSelected}
-              sx={{ m: "5px" }}
+              sx={{ margin: "5px" }}
             >
               {s.name}
             </SeverityPill>

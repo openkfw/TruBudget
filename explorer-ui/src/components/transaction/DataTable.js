@@ -8,7 +8,9 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Divider from "@mui/material/Divider";
+import { JsonView } from "./JsonView";
 import axios from "axios";
+import parse from "html-react-parser";
 import dynamic from "next/dynamic";
 const DynamicJSONEditor = dynamic(() => import("./JSONEditor"), {
   // Disable server side rendering (ssr):
@@ -54,6 +56,32 @@ const rows = [
 const convertUnixEpochToDate = (epoch) => {
   return new Date(epoch * 1000);
 };
+
+function syntaxHighlight(obj) {
+  let json = JSON.stringify(obj, undefined, 4);
+  json = json
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  return json.replace(
+    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+    function (match) {
+      var cls = "number";
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = "key";
+        } else {
+          cls = "string";
+        }
+      } else if (/true|false/.test(match)) {
+        cls = "boolean";
+      } else if (/null/.test(match)) {
+        cls = "null";
+      }
+      return '<span class="' + cls + '">' + match + "</span>";
+    }
+  );
+}
 
 const baseUrlToExplorerApi = "http://localhost:8081";
 
@@ -130,7 +158,7 @@ export const DataTable = (props) => {
           </TableHead>
           <TableBody>
             {streamItems
-              //   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
                   <>
@@ -159,8 +187,11 @@ export const DataTable = (props) => {
                         align={"left"}
                         style={{ minWidth: "100px" }}
                       >
-                        {/* {JSON.stringify(row.data)} */}
-                        <DynamicJSONEditor json={row.data} />
+                        {/* {parse(syntaxHighlight(row.data))} */}
+                        {/* {JSON.stringify(row.data, null, "\t")} */}
+                        {/* <DynamicJSONEditor json={row.data} /> */}
+                        {/* <br></br> */}
+                        <JsonView data={row.data}></JsonView>
                       </TableCell>
                     </TableRow>
                     <Divider />
