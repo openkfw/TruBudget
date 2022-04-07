@@ -75,6 +75,9 @@ export const DataTable = (props) => {
   }, [streamItems]);
 
   async function fetchStreamItems() {
+    if (selectedStream === "") {
+      return;
+    }
     await axios
       .get(
         baseUrlToExplorerApi +

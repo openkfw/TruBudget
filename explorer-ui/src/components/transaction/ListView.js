@@ -30,6 +30,9 @@ export const ListView = (props) => {
   }, [streamItems]);
 
   async function fetchStreamItems() {
+    if (selectedStream === "") {
+      return;
+    }
     await axios
       .get(
         baseUrlToExplorerApi +

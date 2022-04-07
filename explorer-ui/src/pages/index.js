@@ -7,7 +7,7 @@ import { ListView } from "../components/transaction/ListView";
 import { StreamSelect } from "../components/transaction/StreamSelect";
 
 const Dashboard = () => {
-  const [selectedStream, setSelectedStream] = React.useState("users");
+  const [selectedStream, setSelectedStream] = React.useState("");
   return (
     <>
       <Head>
