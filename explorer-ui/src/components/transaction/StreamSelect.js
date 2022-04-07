@@ -7,17 +7,17 @@ import { SeverityPill } from "./SeverityPill";
 
 const baseUrlToExplorerApi = "http://localhost:8081";
 
-export const StreamSelect = () => {
+export const StreamSelect = (props) => {
   const [streams, setStreams] = React.useState([]);
-  const [selected, setSelected] = React.useState("");
+  const { selectedStream, setSelectedStream } = props;
 
   React.useEffect(() => {
     fetchStreams();
   }, []);
 
   React.useEffect(() => {
-    console.log(selected);
-  }, [selected]);
+    console.log(selectedStream);
+  }, [selectedStream]);
 
   React.useEffect(() => {
     console.log(streams);
@@ -46,8 +46,8 @@ export const StreamSelect = () => {
             <SeverityPill
               key={s.name}
               name={s.name}
-              isSelected={selected === s.name}
-              setSelected={setSelected}
+              isSelected={selectedStream === s.name}
+              setSelected={setSelectedStream}
               sx={{ margin: "5px" }}
             >
               {s.name}

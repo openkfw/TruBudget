@@ -17,13 +17,13 @@ const convertUnixEpochToDate = (epoch) => {
 const baseUrlToExplorerApi = "http://localhost:8081";
 
 export const ListView = (props) => {
-  const { streamName = "users" } = props;
+  const { selectedStream = "users" } = props;
 
   const [streamItems, setStreamItems] = React.useState([]);
 
   React.useEffect(() => {
     fetchStreamItems();
-  }, []);
+  }, [selectedStream]);
 
   React.useEffect(() => {
     console.log(streamItems);
@@ -32,7 +32,8 @@ export const ListView = (props) => {
   async function fetchStreamItems() {
     await axios
       .get(
-        baseUrlToExplorerApi + `/stream.getAllStreamItems?name=${streamName}`
+        baseUrlToExplorerApi +
+          `/stream.getAllStreamItems?name=${selectedStream}`
       )
       .then((response) => {
         if (response.status === 200) {
@@ -45,7 +46,7 @@ export const ListView = (props) => {
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
       <Typography variant="h6" sx={{ margin: "5px" }}>
-        Transactions of stream {streamName}
+        Transactions of stream {selectedStream}
       </Typography>
       <Divider />
       {streamItems?.map((item, index) => {
@@ -56,7 +57,7 @@ export const ListView = (props) => {
               aria-controls="panel1a-content"
               id="item-header"
             >
-              <Typography>Transaction number {index}: </Typography>
+              <Typography>Transaction number {index + 1}: </Typography>
               <Typography sx={{ mx: "20px" }}>{item.txid}</Typography>
             </AccordionSummary>
             <AccordionDetails>

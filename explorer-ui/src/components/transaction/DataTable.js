@@ -53,40 +53,10 @@ const rows = [
   createData("Brazil", "BR", 210147125, 8515767),
 ];
 
-const convertUnixEpochToDate = (epoch) => {
-  return new Date(epoch * 1000);
-};
-
-function syntaxHighlight(obj) {
-  let json = JSON.stringify(obj, undefined, 4);
-  json = json
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-  return json.replace(
-    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-    function (match) {
-      var cls = "number";
-      if (/^"/.test(match)) {
-        if (/:$/.test(match)) {
-          cls = "key";
-        } else {
-          cls = "string";
-        }
-      } else if (/true|false/.test(match)) {
-        cls = "boolean";
-      } else if (/null/.test(match)) {
-        cls = "null";
-      }
-      return '<span class="' + cls + '">' + match + "</span>";
-    }
-  );
-}
-
 const baseUrlToExplorerApi = "http://localhost:8081";
 
 export const DataTable = (props) => {
-  const { streamName = "users" } = props;
+  const { selectedStream } = props;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -94,7 +64,7 @@ export const DataTable = (props) => {
 
   React.useEffect(() => {
     fetchStreamItems();
-  }, []);
+  }, [selectedStream]);
 
   React.useEffect(() => {
     console.log(streamItems);
@@ -107,7 +77,8 @@ export const DataTable = (props) => {
   async function fetchStreamItems() {
     await axios
       .get(
-        baseUrlToExplorerApi + `/stream.getAllStreamItems?name=${streamName}`
+        baseUrlToExplorerApi +
+          `/stream.getAllStreamItems?name=${selectedStream}`
       )
       .then((response) => {
         if (response.status === 200) {
@@ -128,7 +99,6 @@ export const DataTable = (props) => {
 
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "hidden" }}>
-      {/* {JSON.stringify(streamItems)} */}
       <TableContainer sx={{ maxHeight: "3000px" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -187,10 +157,6 @@ export const DataTable = (props) => {
                         align={"left"}
                         style={{ minWidth: "100px" }}
                       >
-                        {/* {parse(syntaxHighlight(row.data))} */}
-                        {/* {JSON.stringify(row.data, null, "\t")} */}
-                        {/* <DynamicJSONEditor json={row.data} /> */}
-                        {/* <br></br> */}
                         <JsonView data={row.data}></JsonView>
                       </TableCell>
                     </TableRow>
