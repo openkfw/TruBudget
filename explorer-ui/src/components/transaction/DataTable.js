@@ -17,9 +17,9 @@ const DynamicJSONEditor = dynamic(() => import("./JSONEditor"), {
   ssr: false,
   loading: () => <p>...</p>,
 });
-
+// user vs expert View
 export const DataTable = (props) => {
-  const { selectedStream } = props;
+  const { selectedStream = "" } = props;
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 

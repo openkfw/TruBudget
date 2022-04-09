@@ -16,11 +16,12 @@ const convertUnixEpochToDate = (epoch) => {
 };
 
 export const ListView = (props) => {
-  const { selectedStream = "users" } = props;
+  const { selectedStream = "" } = props;
 
   const [streamItems, setStreamItems] = React.useState([]);
 
   React.useEffect(() => {
+    setStreamItems([]);
     fetchStreamItems();
   }, [selectedStream]);
 
