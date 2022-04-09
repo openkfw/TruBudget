@@ -1,8 +1,0 @@
-{
-  "video": false,
-  "defaultCommandTimeout": 20000,
-  "requestTimeout": 20000,
-  "numTestsKeptInMemory": 0,
-  "projectId": "r4dcjk",
-  "retries": 2
-}
