@@ -25,5 +25,10 @@ ARG CI_COMMIT_SHA=''
 ENV BUILDTIMESTAMP ${BUILDTIMESTAMP}
 ENV CI_COMMIT_SHA ${CI_COMMIT_SHA}
 
+# Import Example data from TruBudget
+COPY ./example_data/ /root/.multichain
+# RUN chmod +x /root/.multichain
+
+
 # Run Chain
 CMD ["npm", "start"]
