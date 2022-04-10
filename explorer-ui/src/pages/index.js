@@ -3,6 +3,7 @@ import { Box, Container, Grid } from "@mui/material";
 import * as React from "react";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { DataTable } from "../components/transaction/DataTable";
+import { DataTree } from "../components/transaction/DataTree";
 import { ListView } from "../components/transaction/ListView";
 import { StreamSelect } from "../components/transaction/StreamSelect";
 
@@ -29,11 +30,14 @@ const Dashboard = () => {
               />
             </Grid>
             <Grid item lg={12} md={12} xl={12} xs={12}>
+              <DataTree selectedStream={selectedStream} />
+            </Grid>
+            {/* <Grid item lg={12} md={12} xl={12} xs={12}>
               <ListView selectedStream={selectedStream} />
             </Grid>
             <Grid item lg={12} md={12} xl={12} xs={12}>
               <DataTable selectedStream={selectedStream} />
-            </Grid>
+            </Grid> */}
           </Grid>
         </Container>
       </Box>

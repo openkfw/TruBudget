@@ -19,6 +19,7 @@
     "express-validator": "^6.12.1",
     "lodash": "^4.17.21",
     "multichain-node": "^2.2.0-version1.0.4",
+    "react-tree-graph": "^7.0.3",
     "verror": "^1.10.0"
   },
   "devDependencies": {

@@ -29,7 +29,9 @@ export const StreamSelect = (props) => {
       .get(config.baseUrlToExplorerApi + "/streams")
       .then((response) => {
         console.log(response);
-        setStreams(response?.data?.sort((a, b) => a.length - b.length));
+        setStreams(
+          response?.data?.sort((a, b) => a.name.length - b.name.length)
+        );
       });
   }
 
