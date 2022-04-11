@@ -3,7 +3,7 @@ import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
-import { StoredDocument, UploadedDocument } from "./document";
+import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
 import { RequestData, shareDocument } from "./document_share";
 import { Workflowitem } from "../workflow/workflowitem";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -62,14 +62,14 @@ const documentFileName = "name";
 const organization = "organization";
 const organizationUrl = "url";
 
-const documents: StoredDocument[] = [
+const documents: DocumentReference[] = [
   {
     id: documentId,
     hash: documentHash,
     fileName: documentFileName,
   },
 ];
-const documentInfo: DocumentUploaded.Document = {
+const documentInfo: StoredDocument = {
   id: documentId,
   fileName: documentFileName,
   organization,

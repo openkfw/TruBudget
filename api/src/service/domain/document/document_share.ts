@@ -9,7 +9,7 @@ import * as Workflowitem from "../workflow/workflowitem";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import logger from "lib/logger";
-import * as DocumentUploaded from "../document/document_uploaded";
+import { StoredDocument } from "./document";
 
 type Base64String = string;
 
@@ -33,7 +33,7 @@ interface Repository {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getDocumentInfo(docId: string): Promise<Result.Type<DocumentUploaded.Document | undefined>>;
+  getDocumentInfo(docId: string): Promise<Result.Type<StoredDocument | undefined>>;
 }
 
 export async function shareDocument(
