@@ -1,6 +1,6 @@
 # Email-Notification-Service
 
-The email notification service is responsible for saving/deleting email adresses per Trubudget user in a connected database. These email addresses are used to send configurable notifications to a connected SMTP server. If database and SMTP server are connected the notification.send endpoint can be used to send a user id. The database is checked if a email address is linked to the passed user id. If so a notificaiton is sent. It is recommended to start at the [Getting Started section](#getting-started)
+The email notification service is responsible for saving/deleting email addresses per Trubudget user in a connected database. These email addresses are used to send configurable notifications to a connected SMTP server. If database and SMTP server are connected the notification.send endpoint can be used to send a user id. The database is checked if a email address is linked to the passed user id. If so a notification is sent. It is recommended to start at the [Getting Started section](#getting-started)
 
 ## Database Configuration
 
@@ -45,7 +45,7 @@ To ensure all necessary environment variables are set correctly this section des
 | SMTP_SSL                    | false                             | If true the external SMTP-Server connection is using the SSL protocol                                                                                                                                                                                  |
 | SQL_DEBUG                   | false                             | The SQL Debug option is forwarded to the knex configuration                                                                                                                                                                                            |
 | EMAIL_FROM                  | Trubudget Notification Service    | This is injected into the `from` field of the email notification                                                                                                                                                                                       |
-| EMAIL_SUBJECT               | Trubudget Notificaiton            | This is injected into the `subject` field of the email notification                                                                                                                                                                                    |
+| EMAIL_SUBJECT               | Trubudget Notification            | This is injected into the `subject` field of the email notification                                                                                                                                                                                    |
 | EMAIL_TEXT                  | You have received a notification. | This is injected into the `body` of the email notification                                                                                                                                                                                             |
 | LOG_LEVEL                   | info                              | Defines the log output. Supported levels are `trace`, `debug`, `info`, `warn`, `error`, `fatal`                                                                                                                                                        |
 | PRETTY_PRINT                | false                             | Decides whether the logs printed by the email service are pretty printed or not.                                                                                                                                                                       |
@@ -63,7 +63,7 @@ For details see [Blockchain environment variables](../frontend/README.md#email-s
 
 #### JWT_SECRET
 
-The JWT_SECRET is shared between Trubudget's blockchain api and email-service. The endpoints of the email-service can only be used by providing a valid JWT_TOKEN signed with this JWT_SECRET. Since the blockchain is using the notificaiton endpoints and the ui is using the user endpoints the secret has to be shared.
+The JWT_SECRET is shared between Trubudget's blockchain api and email-service. The endpoints of the email-service can only be used by providing a valid JWT_TOKEN signed with this JWT_SECRET. Since the blockchain is using the notification endpoints and the ui is using the user endpoints the secret has to be shared.
 
 ## Architecture
 
@@ -81,9 +81,9 @@ Subscribing/unsubscribing to the email notification service can be handled by th
 The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole TruBudget application including all email components (that means you need to install [Docker](https://www.docker.com/community-edition#/download)).
 The pre-set cluster contains:
 
-- 1 Master-Node
-- 1 Master API connected to Master-Node
-- 1 Frontend connected to Master-API
+- 1 Alpha-Node
+- 1 Alpha API connected to Alpha-Node
+- 1 Frontend connected to Alpha-API
 - 1 Email-Service
 - 1 Email-Database (Postgres)
 

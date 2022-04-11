@@ -130,7 +130,7 @@
                 {
                   "key": "",
                   "type": "file",
-                  "src": "/C:/github/backup-fix/master.gz"
+                  "src": "/C:/github/backup-fix/alpha.gz"
                 }
               ]
             },
@@ -1076,7 +1076,7 @@
                 "body": {
                   "mode": "file",
                   "file": {
-                    "src": "/C:/github/backup-fix/master.gz"
+                    "src": "/C:/github/backup-fix/alpha.gz"
                   }
                 },
                 "url": {

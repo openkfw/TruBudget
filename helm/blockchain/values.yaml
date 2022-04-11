@@ -17,7 +17,7 @@ image:
   pullPolicy: Always
 
 bc:
-  isMaster: false
+  isAlpha: false
   env:
     CHAINNAME: TrubudgetChain
     RPC_PORT: 8000

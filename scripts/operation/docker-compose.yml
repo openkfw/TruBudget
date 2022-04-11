@@ -7,7 +7,7 @@ networks:
         - subnet: 172.21.0.0/24
 
 services:
-  master-node:
+  alpha-node:
     image: trubudget/blockchain:${TAG}
     environment:
       RPC_PORT: ${RPC_PORT}
@@ -28,11 +28,11 @@ services:
         ipv4_address: 172.21.0.11
     # volume for persisting data from multichain
     volumes:
-      - /masterVolume:/root/.multichain
+      - /alphaVolume:/root/.multichain
     ports:
       - ${RPC_PORT}:${RPC_PORT} # port for connecting API
       - "8085:8085" # port for backup
-      - "7447:7447" # port for connecting slaves (P2P)
+      - "7447:7447" # port for connecting betas (P2P)
 
   emaildb:
     image: postgres
@@ -72,13 +72,13 @@ services:
       mynetwork:
         ipv4_address: 172.21.0.3
 
-  master-api:
+  alpha-api:
     image: trubudget/api:${TAG}
     environment:
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
-      RPC_HOST: master-node
+      RPC_HOST: alpha-node
       RPC_PORT: ${RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: ${RPC_PASSWORD}
@@ -93,7 +93,7 @@ services:
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
       LOG_LEVEL: ${API_LOG_LEVEL}
     depends_on:
-      - master-node
+      - alpha-node
     networks:
       mynetwork:
         ipv4_address: 172.21.0.4
@@ -118,7 +118,7 @@ services:
         ipv4_address: 172.21.0.5
     depends_on:
       - emaildb
-      - master-api
+      - alpha-api
     ports:
       - "8890:8890"
 
@@ -126,7 +126,7 @@ services:
     image: trubudget/provisioning:${TAG}
     command: ["npm", "start"]
     environment:
-      API_HOST: master-api
+      API_HOST: alpha-api
       API_PORT: ${API_PORT}
       ENVIRONMENT_TYPE: TEST
       #Other provisioning data:
@@ -138,14 +138,14 @@ services:
       mynetwork:
         ipv4_address: 172.21.0.6
     depends_on:
-      - master-api
+      - alpha-api
 
   excel-export-service:
     image: trubudget/excel-export:${TAG}
     environment:
-      PROD_API_HOST: master-api
+      PROD_API_HOST: alpha-api
       PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: master-api
+      TEST_API_HOST: alpha-api
       TEST_API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
       JWT_SECRET: ${JWT_SECRET}
@@ -157,7 +157,7 @@ services:
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
     depends_on:
-      - master-api
+      - alpha-api
 
   storage-service:
     image: trubudget/storage-service:${TAG}
@@ -174,7 +174,7 @@ services:
         ipv4_address: 172.21.0.8
     depends_on:
       - minio
-      - master-api
+      - alpha-api
     ports:
       - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
 
@@ -185,9 +185,9 @@ services:
       NODE_ENV: ${NODE_ENV}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
       REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
-      PROD_API_HOST: master-api
+      PROD_API_HOST: alpha-api
       PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: master-api
+      TEST_API_HOST: alpha-api
       TEST_API_PORT: ${API_PORT}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
@@ -205,10 +205,9 @@ services:
       mynetwork:
         ipv4_address: 172.21.0.91
     depends_on:
-      - master-api
+      - alpha-api
     ports:
       - "3000:80" # map nginx port 80 to localhost:3000
-
 
   logging-service:
     build:
@@ -226,41 +225,40 @@ services:
     ports:
       - "${LOGGER_PORT}:${LOGGER_PORT}"
 
-
-  slave-node:
+  beta-node:
     image: trubudget/blockchain:latest
     environment:
-      RPC_PORT: ${SLAVE_RPC_PORT}
+      RPC_PORT: ${BETA_RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
-      ORGANIZATION: ${SLAVE_ORGANIZATION}
-      # P2P_HOST must be a valid IP-Address. If you pass a domain like "master-node", the windows kernel will shutdown the process because of a segmentation fault
-      P2P_HOST: 172.21.0.11 # IP of master-node
+      ORGANIZATION: ${BETA_ORGANIZATION}
+      # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
+      P2P_HOST: 172.21.0.11 # IP of alpha-node
       P2P_PORT: 7447
       API_PROTO: http
-      API_HOST: master-api # API to send register request
+      API_HOST: alpha-api # API to send register request
       API_PORT: ${API_PORT}
     volumes:
-      - /slave1Volume:/root/.multichain
+      - /beta1Volume:/root/.multichain
     depends_on:
-      - master-node
-      - master-api
+      - alpha-node
+      - alpha-api
     networks:
       mynetwork:
         ipv4_address: 172.21.0.12
     ports:
-      - ${SLAVE_RPC_PORT}:${SLAVE_RPC_PORT}
-      - "7448:7447" # slave-node port is 7448 on host
+      - ${BETA_RPC_PORT}:${BETA_RPC_PORT}
+      - "7448:7447" # beta-node port is 7448 on host
     privileged: true
 
 
-  slave-api:
+  beta-api:
     image: trubudget/api:${TAG}
     environment:
-      PORT: ${SLAVE_API_PORT}
-      ORGANIZATION: ${SLAVE_ORGANIZATION}
-      ORGANIZATION_VAULT_SECRET: ${SLAVE_ORGANIZATION_VAULT_SECRET}
-      RPC_HOST: slave-node
-      RPC_PORT: ${SLAVE_RPC_PORT}
+      PORT: ${BETA_API_PORT}
+      ORGANIZATION: ${BETA_ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${BETA_ORGANIZATION_VAULT_SECRET}
+      RPC_HOST: beta-node
+      RPC_PORT: ${BETA_RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: ${RPC_PASSWORD}
       DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
@@ -276,26 +274,26 @@ services:
       mynetwork:
         ipv4_address: 172.21.0.44
     ports:
-      - ${SLAVE_API_PORT}:${SLAVE_API_PORT}
+      - ${BETA_API_PORT}:${BETA_API_PORT}
     depends_on:
-      - slave-node
+      - beta-node
 
-  slave-frontend:
+  beta-frontend:
     image: trubudget/frontend:${TAG}
     restart: always
     environment:
       NODE_ENV: ${NODE_ENV}
       REACT_APP_EXPORT_SERVICE_ENABLED: "false"
       REACT_APP_EMAIL_SERVICE_ENABLED: "false"
-      PROD_API_HOST: slave-api
-      PROD_API_PORT: ${SLAVE_API_PORT}
-      TEST_API_HOST: slave-api
-      TEST_API_PORT: ${SLAVE_API_PORT}
+      PROD_API_HOST: beta-api
+      PROD_API_PORT: ${BETA_API_PORT}
+      TEST_API_HOST: beta-api
+      TEST_API_PORT: ${BETA_API_PORT}
       INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.92
     depends_on:
-      - master-api
+      - alpha-api
     ports:
       - "3005:80" # map nginx port 80 to localhost:3005
