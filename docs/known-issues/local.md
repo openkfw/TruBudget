@@ -71,7 +71,7 @@ ps aux | grep nginx
 which will produce an output similar to this one:
 
 ```bash
-root     23979  0.0  0.1 116656  8660 pts/1    S    14:04   0:00 nginx: master process nginx -g daemon off;
+root     23979  0.0  0.1 116656  8660 pts/1    S    14:04   0:00 nginx: main process nginx -g daemon off;
 www-data 23981  0.0  0.0 116984  2980 pts/1    S    14:04   0:00 nginx: worker process
 www-data 23982  0.0  0.0 116984  3020 pts/1    S    14:04   0:00 nginx: worker process
 ```

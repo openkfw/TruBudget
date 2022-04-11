@@ -80,14 +80,14 @@ When creating a new branch, you should consider the following guidelines regardi
 To get an idea about the workflow used in our project you should read this [how to / git].
 So when working on a feature branch make sure to:
 
-1. Checkout the master branch and pull the recent changes
+1. Checkout the main branch and pull the recent changes
 2. Create a new feature branch respecting the guidelines mentioned above
 3. Try to keep the commits separate and respect the guidelines mentioned above. Don't squash the commits into a single one especially if you changed a lot of files
 4. Push to the remote repository and open a pull request respecting the guidelines mentioned above
 5. Make sure the pipelines are passing
 6. Wait for a review. If you need a specific team member to review the PR you can request a review from them and assign them to the PR
-7. When your feature is ready make sure you have the latest changes by running `$ git pull --rebase origin master` on your feature branch and push the changes
-8. Merge the pull request into master
+7. When your feature is ready make sure you have the latest changes by running `$ git pull --rebase origin main` on your feature branch and push the changes
+8. Merge the pull request into main
 
 ## Architecture Decisions
 
@@ -105,14 +105,14 @@ Best practices and layout is documented in README files next to the source files
 describe. For example, take a look at [api/src/](api/src/) to get started.
 
 [github issue]: https://github.com/openkfw/TruBudget/issues
-[code of conduct]: https://github.com/openkfw/TruBudget/blob/master/CODE_OF_CONDUCT.md
+[code of conduct]: https://github.com/openkfw/TruBudget/blob/main/CODE_OF_CONDUCT.md
 [jure zakotnik]: https://github.com/jzakotnik
 [gitter]: https://gitter.im/Tru-Community/community
 [architecture decision records (adr)]: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
 [doc/architecture/decisions]: doc/architecture/decisions/
-[developer setup]: https://github.com/openkfw/TruBudget/blob/master/docs/developer/developer-setup.md#developer-setup/
+[developer setup]: https://github.com/openkfw/TruBudget/blob/main/docs/developer/developer-setup.md#developer-setup/
 [guidelines]: https://keepachangelog.com/en/1.0.0/
 [git commit guidelines]: https://chris.beams.io/posts/git-commit/
 [open a pull request]: https://github.com/openkfw/TruBudget/pulls
 [how to / git]: https://gist.github.com/robertpataki/1b70e22d14ef92e1be1338314809b46e
-[documentation]: https://github.com/openkfw/TruBudget/tree/master/doc
+[documentation]: https://github.com/openkfw/TruBudget/tree/main/doc

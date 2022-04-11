@@ -8,7 +8,7 @@
 
 ## Prerequisites
 
-Make sure to have [Helm](https://github.com/helm/helm/blob/master/docs/install.md) installed on the Kubernetes cluster.
+Make sure to have [Helm](https://github.com/helm/helm/blob/main/docs/install.md) installed on the Kubernetes cluster.
 
 ```bash
 helm init
@@ -56,7 +56,7 @@ The following table lists configurable parameters of the E2E chart and their def
 
 | Parameter          | Description                        | Default  |
 | ------------------ | ---------------------------------- | -------- |
-| `global.image.tag` | `trubudget/provisioning` image tag | `master` |
+| `global.image.tag` | `trubudget/provisioning` image tag | `main` |
 
 _Tip_: Edit the default [values.yaml](values.yaml) file that specifies the values for the above parameters, before executing the helm command.
 

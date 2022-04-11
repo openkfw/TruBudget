@@ -1,11 +1,11 @@
 # Multichain-Feed
 
-This project provides a script that can be passed to multichain's runtime variable `walletnotify` in the [blockchain project](https://github.com/openkfw/TruBudget/tree/master/blockchain) of Trubudget. The script is executed when a transaction is done. More information how `walletnotify` works can be found in the [runtime-parameter-list](https://www.multichain.com/developers/runtime-parameters/) of multichain.
+This project provides a script that can be passed to multichain's runtime variable `walletnotify` in the [blockchain project](https://github.com/openkfw/TruBudget/tree/main/blockchain) of Trubudget. The script is executed when a transaction is done. More information how `walletnotify` works can be found in the [runtime-parameter-list](https://www.multichain.com/developers/runtime-parameters/) of multichain.
 The script checks the transaction type and executes sideEffects programmed for each recognized type.
 
 ## Transaction Types
 
-All of Trubudget's events have a certain type. For each event a transaction is created on the blockchain. The multichain feed can perform side effects for specific transactions. An Example for a side effect is the notification_created transaction. On each notification_created transaction a file is saved locally. The different types can be found in Trubudget's [api project](https://github.com/openkfw/TruBudget/tree/master/api). In the [domain layer](https://github.com/openkfw/TruBudget/tree/master/api/src/service/domain#events) of the api all events which create transactions can be found.
+All of Trubudget's events have a certain type. For each event a transaction is created on the blockchain. The multichain feed can perform side effects for specific transactions. An Example for a side effect is the notification_created transaction. On each notification_created transaction a file is saved locally. The different types can be found in Trubudget's [api project](https://github.com/openkfw/TruBudget/tree/main/api). In the [domain layer](https://github.com/openkfw/TruBudget/tree/main/api/src/service/domain#events) of the api all events which create transactions can be found.
 
 The following list shows all recognized transactions with implemented side effects:
 
@@ -17,7 +17,7 @@ This type of event/transaction defines the creation of one notification. The not
 
 #### Side Effect of notification_created
 
-Saves the transactions as json file locally. Notification transactions are saved locally into the notifications directory as json files. The files have a timestamp as name. Details about all environment variables can be found in the [configuration section](https://github.com/openkfw/TruBudget/tree/master/blockchain#configuration) of the blockchain project.
+Saves the transactions as json file locally. Notification transactions are saved locally into the notifications directory as json files. The files have a timestamp as name. Details about all environment variables can be found in the [configuration section](https://github.com/openkfw/TruBudget/tree/main/blockchain#configuration) of the blockchain project.
 
 ## Add a new transaction type
 
@@ -47,7 +47,7 @@ go build .
 5. Now copy the multichain-feed binary script into the docker container using following commands. The docker container name can be found with `docker ps`. A restart or rebuild is not required. You need to be in the multichain-feed directory (/multichain-feed).
 
 ```bash
-docker cp multichain-feed blockchain_master-node_1:/home/node/src/multichain-feed/multichain-feed
+docker cp multichain-feed blockchain_main-node_1:/home/node/src/multichain-feed/multichain-feed
 ```
 
 ## Testing

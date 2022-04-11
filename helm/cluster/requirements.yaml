@@ -6,7 +6,7 @@ dependencies:
     repository: file://../blockchain
     tags:
       - blockchain
-      - master
+      - main
       - minimal
   - alias: blockchain-prod-2
     name: blockchain
@@ -14,14 +14,14 @@ dependencies:
     repository: file://../blockchain
     tags:
       - blockchainSecond
-      - master
+      - main
   - alias: blockchain-test-1
     name: blockchain
     version: "0.1.0"
     repository: file://../blockchain
     tags:
       - blockchain
-      - master
+      - main
       - minimal
   - alias: blockchain-test-2
     name: blockchain
@@ -29,14 +29,14 @@ dependencies:
     repository: file://../blockchain
     tags:
       - blockchainSecond
-      - master
+      - main
   - alias: api-prod-1
     name: api
     version: "0.1.0"
     repository: file://../api
     tags:
       - api
-      - master
+      - main
       - minimal
   - alias: api-prod-2
     name: api
@@ -44,14 +44,14 @@ dependencies:
     repository: file://../api
     tags:
       - apiSecond
-      - master
+      - main
   - alias: api-test-1
     name: api
     version: "0.1.0"
     repository: file://../api
     tags:
       - api
-      - master
+      - main
       - minimal
   - alias: api-test-2
     name: api
@@ -59,14 +59,14 @@ dependencies:
     repository: file://../api
     tags:
       - apiSecond
-      - master
+      - main
   - alias: frontend-1
     name: frontend
     version: "0.1.0"
     repository: file://../frontend
     tags:
       - frontend
-      - master
+      - main
       - minimal
   - alias: frontend-2
     name: frontend
@@ -74,12 +74,12 @@ dependencies:
     repository: file://../frontend
     tags:
       - frontendSecond
-      - master
+      - main
   - alias: excel-export-1
     name: excel-export
     version: "0.1.0"
     repository: file://../excel-export
     tags:
       - excel-export
-      - master
+      - main
       - minimal

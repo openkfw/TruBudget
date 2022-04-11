@@ -10,7 +10,7 @@
 
 ## Prerequisites
 
-Make sure to have [Helm](https://github.com/helm/helm/blob/master/docs/install.md) installed on the Kubernetes cluster.
+Make sure to have [Helm](https://github.com/helm/helm/blob/main/docs/install.md) installed on the Kubernetes cluster.
 
 ```bash
 helm init
@@ -65,7 +65,7 @@ The following table lists the most important configurable parameters of the TruB
 | `tags.blockchain`                    | Includes blockchain-prod-1 and blockchain-test1 components in deployed chart                                                 | `false`                                |
 | `tags.api`                           | Includes api-prod-1 and api-test1 components in deployed chart                                                               | `false`                                |
 | `tags.frontend`                      | Includes frontend-1 components in deployed chart                                                                             | `false`                                |
-| `global.image.tag`                   | `trubudget` image tag                                                                                                        | `master`                               |
+| `global.image.tag`                   | `trubudget` image tag                                                                                                        | `main`                               |
 | `global.fqdn`                        | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
 | `global.fqdn`                        | ingress host                                                                                                                 | `my-trubudget-url.com`                 |
 | `global.env.ENVIRONMENT_TYPE=PROD`   | if set to `PROD`, the blockchain resource will be set deployed as `statefulset`and persist its data on a PV                  | `DEV`                                  |

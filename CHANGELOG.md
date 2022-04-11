@@ -761,7 +761,7 @@ Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.29.0...master
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.29.0...main
 [1.29.0]: https://github.com/openkfw/TruBudget/compare/v1.28.1...v1.29.0
 [1.28.1]: https://github.com/openkfw/TruBudget/compare/v1.28.0...v1.28.1
 [1.28.0]: https://github.com/openkfw/TruBudget/compare/v1.27.0...v1.28.0

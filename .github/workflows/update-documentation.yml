@@ -33,7 +33,7 @@ jobs:
           cd trubudget-website
           git remote update
           git checkout next
-          git merge master
+          git merge main
           cd ./../TruBudget/docs/
           cp -Rf ./* ./../../trubudget-website/docs
           cd ./../../

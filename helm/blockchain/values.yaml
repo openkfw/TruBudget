@@ -3,8 +3,8 @@
 replicaCount: 1
 global:
   image:
-    tag: master
-  branch: master
+    tag: main
+  branch: main
   exposeType: NodePort
   imageCredentials:
     name: regsecret
