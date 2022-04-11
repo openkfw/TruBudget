@@ -9,6 +9,7 @@ import {
   Drawer,
   Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Logo } from "./logo";
@@ -34,6 +35,7 @@ const items = [
 ];
 
 export const DashboardSidebar = (props) => {
+  const theme = useTheme();
   const { open, onClose } = props;
   const router = useRouter();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"), {
@@ -67,32 +69,23 @@ export const DashboardSidebar = (props) => {
         <div>
           <Box sx={{ p: 3 }}>
             <NextLink href="/" passHref>
-              <a>
-                <Typography
-                  variant="h6"
-                  sx={{ margin: "5px" }}
-                  color="primary.light"
+              <Box sx={{}}>
+                <Box
+                  sx={{
+                    alignItems: "center",
+                    backgroundColor: theme.palette.primary.main,
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    px: 3,
+                    py: "11px",
+                    borderRadius: 1,
+                  }}
                 >
                   Blockchain explorer UI
-                </Typography>
-              </a>
+                </Box>
+              </Box>
             </NextLink>
-          </Box>
-          <Box sx={{ px: 2 }}>
-            <Box
-              sx={{
-                alignItems: "center",
-                backgroundColor: "rgba(255, 255, 255, 0.04)",
-                cursor: "pointer",
-                display: "flex",
-                justifyContent: "space-between",
-                px: 3,
-                py: "11px",
-                borderRadius: 1,
-              }}
-            >
-              asasas
-            </Box>
           </Box>
         </div>
         <Divider
