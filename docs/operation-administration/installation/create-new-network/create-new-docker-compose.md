@@ -5,10 +5,10 @@ This guide describes how to start a new instance of Trubudget using docker-compo
 We distinguish between two types of deployments:
 
 - The **local** deployment type which will create images from the code you have on your local machine and includes any changes you might have done
-- The **master** deployment type that will deploy Docker images out of the Docker Hub
+- The **alpha** deployment type that will deploy Docker images out of the Docker Hub
 
 :::note
-For the master deployment, you can use tags to specify the version you want to use
+For the alpha deployment, you can use tags to specify the version you want to use
 :::
 
 The deployments are abstracted through shell scripts. We expect you to have a UNIX-like operating system which can execute shell scripts, e.g. Ubuntu. If not, take a look at the scripts and port them according to your operating system.
@@ -36,7 +36,7 @@ The whole deployment is based on Docker and Docker Compose, therefore you need t
 Make sure that the following ports are not blocked by other processes: `3000`, `8080`, `8090`, `9000`, `8081`, `7447`, `7448`.
 Also make sure that IPv4 subnet mask `172.21.0.0/24` is free to use on your computer.
 
-If the subnet mask or some ports are already used by other proccesses or programs, you can easily change the port in the `.env` file that is located in `/scripts/operations/`.
+If the subnet mask or some ports are already used by other processes or programs, you can easily change the port in the `.env` file that is located in `/scripts/operations/`.
 
 ### Verify version of TruBudget
 
@@ -61,8 +61,8 @@ git pull
 If you have previously started a TruBudget instance and want to start a new Blockchain network without previously stored data, remove the Docker volumes with:
 
 ```bash
-sudo rm -r /masterVolume
-sudo rm -r /slave1Volume
+sudo rm -r /alphaVolume
+sudo rm -r /beta1Volume
 sudo rm -r /minioVolume
 sudo rm -r /emaildbVolume
 ```
@@ -105,20 +105,20 @@ The **API Swagger documentation** should be accessible via port 8080 on the serv
 
 ## Connect to an existing Blockchain network
 
-The docker-compose file in `scripts/operation/` comes with one additional blockchain node (slave-node) that trys to connect to the master node after starting.
+The docker-compose file in `scripts/operation/` comes with one additional blockchain node (beta-node) that trys to connect to the alpha node after starting.
 Each Blockchain container comes with its own volume that persists the data of the Blockchain.
 
-To start TruBudget with two organizations (master and slave), run:
+To start TruBudget with two organizations (alpha and beta), run:
 
 ```bash
 bash start-trubudget.sh --slim --add-organization
 ```
 
 This will create the blockchain, API and frontend for each of both organizations.
-You can access the frontend of the slave-node with http://localhost:3005/ and the for the master-node with http://localhost:3000/. This is defined in the `docker-compose.yml` file.
-The slave-node must be approved by the master-node. This can be done with the root user in the master frontend at the page http://localhost:3000/nodes.
+You can access the frontend of the beta-node with http://localhost:3005/ and the for the alpha-node with http://localhost:3000/. This is defined in the `docker-compose.yml` file.
+The beta-node must be approved by the alpha-node. This can be done with the root user in the alpha frontend at the page http://localhost:3000/nodes.
 The name of both organization and other configurations are defined in the `.env` file (in the directory `scripts/operation/`).
 
 :::note
-If you need more slave-nodes, you have to change the `docker-compose.yml` file and `start-trubudget.sh` in the directory `scripts/operation/` by yourself.
+If you need more beta-nodes, you have to change the `docker-compose.yml` file and `start-trubudget.sh` in the directory `scripts/operation/` by yourself.
 :::

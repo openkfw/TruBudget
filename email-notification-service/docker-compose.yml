@@ -1,6 +1,6 @@
 version: "3.2"
 services:
-  master-node:
+  alpha-node:
     build:
       context: ../blockchain
     environment:
@@ -52,7 +52,7 @@ services:
     ports:
       - 5432:5432
 
-  master-api:
+  alpha-api:
     build:
       context: ../api
     environment:
@@ -68,7 +68,7 @@ services:
     ports:
       - 8080:8080
     links:
-      - master-node
+      - alpha-node
 
   provisioning:
     image: trubudget/provisioning:latest
@@ -82,10 +82,10 @@ services:
       DEFAULT_LOG_LEVEL: ${DEFAULT_LOG_LEVEL}
       PROVISIONING_LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
     links:
-      - master-api
+      - alpha-api
     depends_on:
-      - master-api
-      - master-node
+      - alpha-api
+      - alpha-node
 
   frontend:
     build:
@@ -101,7 +101,7 @@ services:
     ports:
       - "81:80" # Mapping the nginx port
     links:
-      - master-api
+      - alpha-api
     depends_on:
-      - master-api
-      - master-node
+      - alpha-api
+      - alpha-node

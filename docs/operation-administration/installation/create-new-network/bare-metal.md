@@ -336,7 +336,7 @@ As soon as the step above is done, the frontend should be available on port 80. 
 
 ## Connect to an existing Blockchain network
 
-This section describes how you can setup a slave node on another server that will try to connect to the master node. You cannot run the slave node on the same server where the master node is located because the port `7447` is already used by master node. If you want also want to setup an API and Frontend, follow the instructions from [Frontend](#frontend) and [API](#api).
+This section describes how you can setup a beta node on another server that will try to connect to the alpha node. You cannot run the beta node on the same server where the alpha node is located because the port `7447` is already used by alpha node. If you want also want to setup an API and Frontend, follow the instructions from [Frontend](#frontend) and [API](#api).
 
 To connect to an already existing Blockchain network **adapt** and set the following environment parameters:
 
@@ -366,7 +366,7 @@ npm install
 npm start > startup.log 2>&1 &
 ```
 
-Since you are trying to connect to an already existing Blockchain network the node has to be approved by a master node.
+Since you are trying to connect to an already existing Blockchain network the node has to be approved by an alpha node.
 Before the approval, the `startup.log` should look similar to:
 
 ```bash
@@ -386,7 +386,7 @@ MultiChain 2.0 alpha 2 Daemon (latest protocol 20002)
 >>> Multichain stopped. Retry in 10 Seconds...
 ```
 
-After the node was approved by the master node, the `startup.log` should update to this:
+After the node was approved by the alpha node, the `startup.log` should update to this:
 
 ```bash
 >> MULTICHAIN_DIR/.multichain/multichain.conf rpcport=8000

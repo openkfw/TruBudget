@@ -177,8 +177,8 @@ This script sets the `.env` - file in the development directory automatically. N
 
 Following services are dockerized with hot-reloading:
 
-- Blockchain (master node)
-- API (master API)
+- Blockchain (alpha node)
+- API (alpha API)
 - Provisioning (feeds application with dummy data)
 - Frontend
 - Excel export
