@@ -23,7 +23,8 @@ Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14
 
 ### Changed
 
-- Replaced master and slave terminology with alpha and beta [#1098](hhttps://github.com/openkfw/TruBudget/issues/1068)
+- Replaced the master branch name and image tag with main [#1098](https://github.com/openkfw/TruBudget/pull/1098)
+- Replaced master and slave terminology with alpha and beta [#1098](https://github.com/openkfw/TruBudget/issues/1068)
 
 <!-- ### Deprecated -->
 
