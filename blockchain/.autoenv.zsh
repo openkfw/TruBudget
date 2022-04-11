@@ -10,11 +10,11 @@ export HOST_IP="$(ifconfig en0 inet | grep 'inet ' | awk '{ print $2 }')"
 [[ -r my-docker-compose.yml ]] \
   && set_alias Dc='docker-compose -f my-docker-compose.yml'
 
-set_alias multichain-cli="Dc exec master-node multichain-cli $chainname"
-set_alias slave-multichain-cli="Dc exec slave-node multichain-cli $chainname"
+set_alias multichain-cli="Dc exec alpha-node multichain-cli $chainname"
+set_alias beta-multichain-cli="Dc exec beta-node multichain-cli $chainname"
 
-set_alias exec-master='Dc exec master-node bash'
-set_alias exec-slave='Dc exec slave-node bash'
+set_alias exec-alpha='Dc exec alpha-node bash'
+set_alias exec-beta='Dc exec beta-node bash'
 
 echo function grant
 function grant() {
