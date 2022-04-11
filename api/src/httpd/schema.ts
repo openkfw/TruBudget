@@ -2974,7 +2974,7 @@ const schemas = {
   },
   registerNode: {
     schema: {
-      description: "Used by non-master MultiChain nodes to register their wallet address.",
+      description: "Used by non-alpha MultiChain nodes to register their wallet address.",
       tags: ["network"],
       summary: "Register a node",
       body: {
