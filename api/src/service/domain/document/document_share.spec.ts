@@ -6,9 +6,8 @@ import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
 import { Workflowitem } from "../workflow/workflowitem";
-import { StoredDocument, UploadedDocument } from "./document";
+import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
 import { RequestData, shareDocument } from "./document_share";
-import * as DocumentUploaded from "./document_uploaded";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -62,14 +61,14 @@ const documentFileName = "name";
 const organization = "organization";
 const organizationUrl = "url";
 
-const documents: StoredDocument[] = [
+const documents: DocumentReference[] = [
   {
     id: documentId,
     hash: documentHash,
     fileName: documentFileName,
   },
 ];
-const documentInfo: DocumentUploaded.Document = {
+const documentInfo: StoredDocument = {
   id: documentId,
   fileName: documentFileName,
   organization,
