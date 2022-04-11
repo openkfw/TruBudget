@@ -1,6 +1,6 @@
 # Blockchain explorer
 
-This is a simple API to fetch the streams and stream items from a multichain node.
+This is a simple expressJS API to fetch the streams and stream items from a multichain node.
 
 ## Getting started
 
@@ -24,3 +24,13 @@ https://www.multichain.com/developers/json-rpc-api/
 | name | Description                     |
 | ---- | ------------------------------- |
 | PORT | Port of the blockchain explorer |
+
+### Environment Variables
+
+| Env Variable | Required | Default Value                                | Description                                                                                               |
+| ------------ | -------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| PORT         | no       | 8081                                         | Port of the blockchain explorer API                                                                       |
+| RPC_USER     | no       | multichainrpc                                | The user used to connect to the multichain daemon.                                                        |
+| RPC_PORT     | no       | 8000                                         | Port to the Multichain RPC                                                                                |
+| RPC_HOST     | no       | 127.0.0.1                                    | Host to the Multichain RPC                                                                                |
+| RPC_PASSWORD | no       | s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j | Password used by the API to connect to the blockchain. The password is set by the origin node upon start. |

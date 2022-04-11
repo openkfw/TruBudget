@@ -4,43 +4,13 @@ services:
   master-node:
     build: ../blockchain
     environment:
-      RPC_PORT: ${RPC_PORT}
-      RPC_PASSWORD: ${RPC_PASSWORD}
-      ORGANIZATION: ${ORGANIZATION}
-      JWT_SECRET: ${JWT_SECRET}
-      LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
-      PRETTY_PRINT: ${PRETTY_PRINT}
-      NODE_ENV: ${NODE_ENV}
+      RPC_PORT: 8000
+      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      ORGANIZATION: KfW 
+      NODE_ENV: development
     ports:
-      - ${RPC_PORT}:${RPC_PORT} # port for connecting API
+      - "8000:8000" # port for connecting API
       - "8085:8085" # port for backup
       - "7447:7447" # port for connecting slaves (P2P)
 
-  master-api:
-    build: ../api
-    environment:
-      PORT: ${API_PORT}
-      ORGANIZATION: ${ORGANIZATION}
-      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
-      RPC_HOST: master-node
-      RPC_PORT: ${RPC_PORT}
-      ROOT_SECRET: ${ROOT_SECRET}
-      RPC_PASSWORD: ${RPC_PASSWORD} 
-      ORGANIZATION_PUBLIC_KEY: ${ORGANIZATION_PUBLIC_KEY}
-      ORGANIZATION_PRIVATE_KEY: ${ORGANIZATION_PRIVATE_KEY}
-      ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
-      SIGNING_METHOD: ${SIGNING_METHOD}
-      NODE_ENV: ${NODE_ENV}
-      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
-      LOG_LEVEL: ${API_LOG_LEVEL}
-      PRETTY_PRINT: ${PRETTY_PRINT}
-    command: ["npm", "run", "watch"] # npm run watch: hot reloading
-    # volume to track code changes
-    volumes:
-      - "../api/src:/home/node/src:delegated"
-      - ../api/dist:/home/node/dist
-    depends_on:
-      - master-node
-    ports:
-      - ${API_PORT}:${API_PORT}
+

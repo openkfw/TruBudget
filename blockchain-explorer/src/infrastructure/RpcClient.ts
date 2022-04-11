@@ -3,10 +3,10 @@ import { StreamItem } from "domain/streamItem";
 import { MultichainInformation } from "domain/multichainInformation";
 
 export interface ConnectionSettings {
-  host?: string;
-  port?: number;
-  user?: string;
-  rpcPassword?: string;
+  host: string;
+  port: number;
+  user: string;
+  rpcPassword: string;
 }
 
 // No type provides by the npm package
@@ -54,7 +54,7 @@ export class RpcClient {
   }
 
   /**
-   * @returns XYZ
+   * @returns metadata of a stream
    */
   public async getStreamKeys(id: string): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -74,7 +74,7 @@ export class RpcClient {
   }
 
   /**
-   * getStreamItem
+   * @returns a single stream item (transaction)
    */
   public getStreamItem(stream: string, txid: string) {
     return new Promise((resolve, reject) => {
@@ -94,7 +94,7 @@ export class RpcClient {
   }
 
   /**
-   * listStreamItems
+   * @returns all stream items (transactions) of a stream
    */
   public listStreamItems(streamId: string): Promise<StreamItem[]> {
     return new Promise((resolve, reject) => {
