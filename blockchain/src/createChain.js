@@ -7,7 +7,7 @@ const mdLog = require("trubudget-logging-service").createPinoLogger(
 const includeLoggingParamsToArgs = require("./log/logArguments");
 
 const configureChain = (
-  isMaster,
+  isAlpha,
   chainName,
   multichainDir,
   RPC_PORT,
@@ -19,7 +19,7 @@ const configureChain = (
   log.info(`Creating chain in directory ${__dirname}`);
   shell.mkdir("-p", multichainDir);
 
-  if (isMaster) {
+  if (isAlpha) {
     log.info("Provisioning MultiChain");
 
     const {
@@ -87,10 +87,10 @@ const startMultichainDaemon = (
 
   mcproc.stderr.on("data", (data) => {
     const error = Buffer.from(data).toString();
-    if (data.includes("multichain-feed")) {
+    if (error.includes("multichain-feed")) {
       mdLog.info({ feed: error }, "multichain-feed ");
     } else {
-      mdLog.error(error, "Failed to start the master node: ");
+      mdLog.error({ err: error }, "Failed to start the alpha node: ");
     }
   });
 
