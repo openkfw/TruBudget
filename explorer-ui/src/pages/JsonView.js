@@ -8,12 +8,11 @@ import { JsonTree } from "../components/transaction/JsonTree";
 import { ListView } from "../components/transaction/ListView";
 import { StreamSelect } from "../components/transaction/StreamSelect";
 
-const Dashboard = () => {
-  const [selectedStream, setSelectedStream] = React.useState("");
+const JsonView = () => {
   return (
     <>
       <Head>
-        <title>Dashboard</title>
+        <title>JsonView</title>
       </Head>
       <Box
         component="main"
@@ -25,13 +24,7 @@ const Dashboard = () => {
         <Container maxWidth={false}>
           <Grid container spacing={3}>
             <Grid item lg={12} md={12} xl={12} xs={12}>
-              <StreamSelect
-                selectedStream={selectedStream}
-                setSelectedStream={setSelectedStream}
-              />
-            </Grid>
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              <ListView selectedStream={selectedStream} />
+              <JsonTree />
             </Grid>
           </Grid>
         </Container>
@@ -40,6 +33,6 @@ const Dashboard = () => {
   );
 };
 
-Dashboard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+JsonView.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default Dashboard;
+export default JsonView;

@@ -7,16 +7,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
 import { JsonView } from "./JsonView";
 import axios from "axios";
 import config from "../../config";
-import dynamic from "next/dynamic";
-const DynamicJSONEditor = dynamic(() => import("./JSONEditor"), {
-  // Disable server side rendering (ssr):
-  ssr: false,
-  loading: () => <p>...</p>,
-});
+
 // user vs expert View
 export const DataTable = (props) => {
   const { selectedStream = "" } = props;
@@ -98,12 +93,7 @@ export const DataTable = (props) => {
               .map((row) => {
                 return (
                   <>
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
+                    <TableRow hover key={row.code}>
                       <TableCell
                         key={"txid-2"}
                         align={"left"}
@@ -118,15 +108,12 @@ export const DataTable = (props) => {
                       >
                         {row.time}
                       </TableCell>
-                      <TableCell
-                        key={"data-2"}
-                        align={"left"}
-                        style={{ minWidth: "100px" }}
-                      >
-                        <JsonView data={row.data}></JsonView>
+                      <TableCell key={"data-2"} align={"left"}>
+                        <Box sx={{ maxHeight: "200px", overflow: "auto" }}>
+                          <JsonView data={row.data}></JsonView>
+                        </Box>
                       </TableCell>
                     </TableRow>
-                    <Divider />
                   </>
                 );
               })}

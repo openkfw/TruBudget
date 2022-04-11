@@ -1,30 +1,15 @@
 import * as React from "react";
 import Paper from "@mui/material/Paper";
-import { Tree } from "react-tree-graph";
 import axios from "axios";
 import config from "../../config";
+import dynamic from "next/dynamic";
+const DynamicJSONEditor = dynamic(() => import("./JSONEditor"), {
+  // Disable server side rendering (ssr):
+  ssr: false,
+  loading: () => <p>...</p>,
+});
 
-let test = {
-  name: "Parent",
-  children: [
-    {
-      name: "Child One",
-      children: [
-        {
-          name: "Grand 1",
-        },
-        {
-          name: "Grand 2",
-        },
-      ],
-    },
-    {
-      name: "Child Two",
-    },
-  ],
-};
-
-export const DataTree = (props) => {
+export const JsonTree = (props) => {
   const [data, setData] = React.useState({});
 
   React.useEffect(() => {
@@ -68,14 +53,12 @@ export const DataTree = (props) => {
           }
         });
     }
-    console.log("THE MULTICHAIN: ");
-    console.log({ multichain });
     setData(multichain);
   }
 
   return (
     <Paper sx={{ width: "100%", height: "100%", overflow: "auto" }}>
-      <Tree data={data} height={1000} width={1500} />
+      <DynamicJSONEditor json={data} />
     </Paper>
   );
 };

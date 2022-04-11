@@ -19,12 +19,17 @@ const items = [
   {
     href: "/",
     icon: <DashboardIcon fontSize="small" />,
-    title: "Dashboard",
+    title: "List view",
   },
   {
-    href: "/customers",
+    href: "/JsonView",
     icon: <DashboardIcon fontSize="small" />,
-    title: "Customers",
+    title: "JSON view",
+  },
+  {
+    href: "/TableView",
+    icon: <DashboardIcon fontSize="small" />,
+    title: "Table view",
   },
 ];
 

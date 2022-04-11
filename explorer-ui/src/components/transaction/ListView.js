@@ -65,6 +65,7 @@ export const ListView = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Typography>{convertUnixEpochToDate(item.time)}</Typography>
+              <br />
               <JsonView data={item.data}></JsonView>
             </AccordionDetails>
           </Accordion>
