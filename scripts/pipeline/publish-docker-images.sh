@@ -9,7 +9,7 @@ Help()
     echo "This script publishes images to our private registry or to docker hub depending on the GITHUB_EVENT_NAME"
     echo "Event names:"
     echo "pull_request: If a pull request is updated images are built and pushed to our private registry"
-    echo "push(master): If a pull request is merged images are built and pushed to private registry (on pull request close) and docker hub (on master push)"
+    echo "push(main): If a pull request is merged images are built and pushed to private registry (on pull request close) and docker hub (on main push)"
     echo "release:      If a release is published images are pushed to docker hub including the :latest and the :[version] tag (e.g. :v1.10.0)"
     echo
     echo "Hint: Make sure you are in the current directory of the Dockerfile"
@@ -82,8 +82,8 @@ then
     docker push "$TAG_BUILD_PRIVATE" >/dev/null 2>&1
 fi
 
-# if master branch is updated
-if [[ "$GITHUB_BRANCH" = "master" ]] && [[ "$GITHUB_EVENT_NAME" = "push" ]];
+# if main branch is updated
+if [[ "$GITHUB_BRANCH" = "main" ]] && [[ "$GITHUB_EVENT_NAME" = "push" ]];
 then
     # log into docker hub
     echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin

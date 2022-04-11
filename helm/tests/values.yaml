@@ -3,7 +3,7 @@
 global:
   branch: my-branch
   image:
-    tag: master
+    tag: main
   env:
     ENVIRONMENT_TYPE: TEST
 

@@ -7,7 +7,7 @@ sidebar_position: 1
 Welcome to the TruBudget documentation! This guide aims to provide you with information about the different parts of TruBudget.
 
 💡 If you want to know more about TrueBudged visit click [here](./usecases.md)
-⚡️ For the **latest release**, the **Getting Started** section or the **FAQ** visit our initial [README.md](https://github.com/openkfw/TruBudget/blob/master/README.md)
+⚡️ For the **latest release**, the **Getting Started** section or the **FAQ** visit our initial [README.md](https://github.com/openkfw/TruBudget/blob/main/README.md)
 
 [Introduction](./operation-administration/introduction.md) - Some basics of TruBudget
 

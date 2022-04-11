@@ -15,4 +15,4 @@ The TruBudget CI-pipelines uses Github Actions. There are 6 steps which
 6. **Notification**: This step triggers the remote deployment.
 
 ### Deployments (CD)
-As of now the both master and relase branch are deployed on a private server. Master and release deployments are acessible here: [master](https://a-trubudget-master.do4.sixmarkets.net/login) | [release](https://a-trubudget-1-x-x-release.do4.sixmarkets.net/login)
+As of now the both main and release branch are deployed on a private server. Main and release deployments are accessible here: [main](https://a-trubudget-main.do4.sixmarkets.net/login) | [release](https://a-trubudget-1-x-x-release.do4.sixmarkets.net/login)

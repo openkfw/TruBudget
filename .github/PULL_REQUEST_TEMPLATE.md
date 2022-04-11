@@ -2,7 +2,7 @@
 
 <!-- [x] instead of [ ] checks the task -->
 
-- [ ] I have followed (at least) the [PR section of the contributing guide](https://github.com/openkfw/TruBudget/blob/master/CONTRIBUTING.md).
+- [ ] I have followed (at least) the [PR section of the contributing guide](https://github.com/openkfw/TruBudget/blob/main/CONTRIBUTING.md).
 - [ ] I fixed all necessary PR warnings
 - [ ] The commit history is clean
 - [ ] The E2E tests are passing

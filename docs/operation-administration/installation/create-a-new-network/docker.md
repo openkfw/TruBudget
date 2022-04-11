@@ -53,7 +53,7 @@ This will create a local copy of the latest source code in a folder called `TruB
 If you work with an existing checkout, make sure you have the latest changes:
 
 ```bash
-git checkout master
+git checkout main
 git pull
 ```
 
@@ -86,7 +86,7 @@ cp .env_example .env
 The `.env` in scripts/operation/ can be edited directly to fit your needs.
 
 :::note
-For detailed explanations of the environment variables, see the [Environmental variables](https://github.com/openkfw/TruBudget/blob/master/blockchain/README.md#environment-variables)
+For detailed explanations of the environment variables, see the [Environment Variables](./../../../environment-variables.md)
 :::
 
 To start the TruBudget in an easy way, use the bash script `start-trubudget.sh`.
@@ -98,7 +98,7 @@ cd scripts/operation/
 bash start-trubudget.sh --slim
 ```
 
-If you want to add an additional blockchain node, email-notification-service, excel-export-service or storage-service, please take a look at the [README.md of operation setup](https://github.com/openkfw/TruBudget/blob/master/scripts/operation/README.md#trubudget-operation-setup)
+If you want to add an additional blockchain node, email-notification-service, excel-export-service or storage-service, please take a look at the [README.md of operation setup](https://github.com/openkfw/TruBudget/blob/main/scripts/operation/README.md#trubudget-operation-setup)
 
 The **frontend** should be accessible via port 3000 on the server that it is running on: http://localhost:3000/
 
@@ -117,7 +117,7 @@ If you want to know what exactly happens when blockchain nodes are connecting, r
 
 ### Example
 
-The docker-compose file in `scripts/operation/` comes with one additional blockchain node (beta-node) that trys to connect to the alpha node after starting.
+The docker-compose file in `scripts/operation/` comes with one additional blockchain node (beta-node) that tries to connect to the alpha node after starting.
 Each Blockchain container comes with its own volume that persists the data of the Blockchain.
 
 To start TruBudget with two organizations (alpha and beta), run:

@@ -51,4 +51,4 @@ The default provisioning data is stored in `provisioning/src/data/test`.
 | dviolin    | Dana Violin    |        | test     |
 | auditUser  | Romina Checker |        | test     |
 
-For more information about the provisioning data, view the JSON objects [here](https://github.com/openkfw/TruBudget/tree/master/provisioning/src/data/test).
+For more information about the provisioning data, view the JSON objects [here](https://github.com/openkfw/TruBudget/tree/main/provisioning/src/data/test).

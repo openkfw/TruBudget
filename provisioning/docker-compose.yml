@@ -1,14 +1,14 @@
 version: "3"
 services:
   blockchain:
-    image: trubudget/blockchain:master
+    image: trubudget/blockchain:main
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION_BC}
     ports:
       - "8000:8000"
   api:
-    image: trubudget/api:master
+    image: trubudget/api:main
     ports:
       - "8080:${API_PORT}"
     environment:

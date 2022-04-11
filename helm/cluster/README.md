@@ -21,7 +21,7 @@ Following `tags` can be set, to controll the dependencies of the helm chart:
 - apiSecond - include resources for a second instance of api
 - frontend - include resources for frontend
 - frontendSecond - include resources for a second instance of frontend
-- master - include all of the above
+- main - include all of the above
 
 ## Env: ENVIRONMENT_TYPE
 

@@ -442,8 +442,8 @@ Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14
 
 - Format currencies and numbers according to the selected language or
   locale [#135](https://github.com/openkfw/TruBudget/issues/135)
-    - History and notification timestamps only display
-      year/month/day [#426](https://github.com/openkfw/TruBudget/issues/426)
+  - History and notification timestamps only display
+    year/month/day [#426](https://github.com/openkfw/TruBudget/issues/426)
 
 ## [1.6.0] - 2019-01-07
 
@@ -860,90 +860,47 @@ Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.30.0...master
-
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.30.0...main
 [1.30.0]: https://github.com/openkfw/TruBudget/compare/v1.29.0...v1.30.0
-
 [1.29.0]: https://github.com/openkfw/TruBudget/compare/v1.28.1...v1.29.0
-
 [1.28.1]: https://github.com/openkfw/TruBudget/compare/v1.28.0...v1.28.1
-
 [1.28.0]: https://github.com/openkfw/TruBudget/compare/v1.27.0...v1.28.0
-
 [1.27.0]: https://github.com/openkfw/TruBudget/compare/v1.26.0...v1.27.0
-
 [1.26.0]: https://github.com/openkfw/TruBudget/compare/v1.25.0...v1.26.0
-
 [1.25.0]: https://github.com/openkfw/TruBudget/compare/v1.24.0...v1.25.0
-
 [1.24.0]: https://github.com/openkfw/TruBudget/compare/v1.23.0...v1.24.0
-
 [1.23.0]: https://github.com/openkfw/TruBudget/compare/v1.22.0...v1.23.0
-
 [1.22.0]: https://github.com/openkfw/TruBudget/compare/v1.21.0...v1.22.0
-
 [1.21.0]: https://github.com/openkfw/TruBudget/compare/v1.20.0...v1.21.0
-
 [1.20.0]: https://github.com/openkfw/TruBudget/compare/v1.19.1...v1.20.0
-
 [1.19.1]: https://github.com/openkfw/TruBudget/compare/v1.19.0...v1.19.1
-
 [1.19.0]: https://github.com/openkfw/TruBudget/compare/v1.18.0...v1.19.0
-
 [1.18.0]: https://github.com/openkfw/TruBudget/compare/v1.17.0...v1.18.0
-
 [1.17.0]: https://github.com/openkfw/TruBudget/compare/v1.16.0...v1.17.0
-
 [1.16.0]: https://github.com/openkfw/TruBudget/compare/v1.15.0...v1.16.0
-
 [1.15.0]: https://github.com/openkfw/TruBudget/compare/v1.14.0...v1.15.0
-
 [1.14.0]: https://github.com/openkfw/TruBudget/compare/v1.13.0...v1.14.0
-
 [1.13.0]: https://github.com/openkfw/TruBudget/compare/v1.12.0...v1.13.0
-
 [1.12.0]: https://github.com/openkfw/TruBudget/compare/v1.11.0...v1.12.0
-
 [1.11.0]: https://github.com/openkfw/TruBudget/compare/v1.10.0...v1.11.0
-
 [1.10.0]: https://github.com/openkfw/TruBudget/compare/v1.9.0...v1.10.0
-
 [1.9.0]: https://github.com/openkfw/TruBudget/compare/v1.8.0...v1.9.0
-
 [1.8.0]: https://github.com/openkfw/TruBudget/compare/v1.7.0...v1.8.0
-
 [1.7.0]: https://github.com/openkfw/TruBudget/compare/v1.6.0...v1.7.0
-
 [1.6.0]: https://github.com/openkfw/TruBudget/compare/v1.5.0...v1.6.0
-
 [1.5.0]: https://github.com/openkfw/TruBudget/compare/v1.4.1...v1.5.0
-
 [1.4.1]: https://github.com/openkfw/TruBudget/compare/v1.4.0...v1.4.1
-
 [1.4.0]: https://github.com/openkfw/TruBudget/compare/v1.3.0...v1.4.0
-
 [1.3.0]: https://github.com/openkfw/TruBudget/compare/v1.2.0...v1.3.0
-
 [1.2.0]: https://github.com/openkfw/TruBudget/compare/v1.1.0...v1.2.0
-
 [1.1.0]: https://github.com/openkfw/TruBudget/compare/v1.0.1...v1.1.0
-
 [1.0.1]: https://github.com/openkfw/TruBudget/compare/v1.0.0...v1.0.1
-
 [1.0.0]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.9...v1.0.0
-
 [1.0.0-beta.9]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.8...v1.0.0-beta.9
-
 [1.0.0-beta.8]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.7...v1.0.0-beta.8
-
 [1.0.0-beta.7]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.6...v1.0.0-beta.7
-
 [1.0.0-beta.6]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.5...v1.0.0-beta.6
-
 [1.0.0-beta.5]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.4...v1.0.0-beta.5
-
 [1.0.0-beta.4]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.3...v1.0.0-beta.4
-
 [1.0.0-beta.3]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.2...v1.0.0-beta.3
-
 [1.0.0-beta.2]: https://github.com/openkfw/TruBudget/compare/v1.0.0-beta.1...v1.0.0-beta.2

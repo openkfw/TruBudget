@@ -3,7 +3,7 @@
 global:
   branch: my-branch
   image:
-    tag: master
+    tag: main
   fqdn: my-trubudget-url.com
   env:
     ENVIRONMENT_TYPE: DEV
