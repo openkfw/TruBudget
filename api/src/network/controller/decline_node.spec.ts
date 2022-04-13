@@ -41,10 +41,10 @@ describe("Decline Node", () => {
       }),
     );
 
-    const stubRpcClient: RpcClient = (createStubInstance(RpcClient, {
+    const stubRpcClient: RpcClient = createStubInstance(RpcClient, {
       invoke: stubInvoke,
       invokePublish: stubInvokePublish,
-    }) as any) as RpcClient;
+    }) as any as RpcClient;
 
     stubMultichain.isValidAddress.returns(
       new Promise((resolve) => {
@@ -86,9 +86,9 @@ describe("Decline Node", () => {
   it("Test decline Node that was already approved", async () => {
     const stubMultichain = createStubInstance(RpcMultichainClient);
 
-    const stubRpcClient: RpcClient = (createStubInstance(RpcClient, {
+    const stubRpcClient: RpcClient = createStubInstance(RpcClient, {
       invoke: stub().withArgs("listpermissions").returns(listPermissionsResultAlreadyApproved),
-    }) as any) as RpcClient;
+    }) as any as RpcClient;
 
     stubMultichain.isValidAddress.returns(
       new Promise((resolve) => {
@@ -116,9 +116,9 @@ describe("Decline Node", () => {
   it("Test decline Node that was already declined", async () => {
     const stubMultichain = createStubInstance(RpcMultichainClient);
 
-    const stubRpcClient: RpcClient = (createStubInstance(RpcClient, {
+    const stubRpcClient: RpcClient = createStubInstance(RpcClient, {
       invoke: stub().withArgs("listpermissions").returns([]),
-    }) as any) as RpcClient;
+    }) as any as RpcClient;
 
     stubMultichain.isValidAddress.returns(
       new Promise((resolve) => {
