@@ -1,6 +1,6 @@
 import axios from "axios";
-import { TruBudgetError } from "../error";
 import { VError } from "verror";
+import { TruBudgetError } from "../error";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 

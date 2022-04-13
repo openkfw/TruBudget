@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TruBudgetError } from "../error";
 import Intent from "../authz/intents";
+import { TruBudgetError } from "../error";
 
 export interface Event {
   key: string; // the resource ID (same for all events that relate to the same resource)

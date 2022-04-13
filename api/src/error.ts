@@ -73,7 +73,6 @@ export type TruBudgetErrorType =
   | UnsupportedMediaType;
 
 // Custom throwables here
-
 export class TruBudgetError extends Error {
   public badKeys = undefined;
 

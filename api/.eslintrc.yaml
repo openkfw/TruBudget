@@ -13,7 +13,6 @@ parserOptions:
   project: "./tsconfig.json"
   sourceType: module
 rules:
-
   "@typescript-eslint/quotes":
     - 2
     - "double"
@@ -60,8 +59,8 @@ rules:
   #   - always
 
   "@typescript-eslint/no-unused-expressions":
-  - 2
-  - allowTernary: true
+    - 2
+    - allowTernary: true
 
   ## TEMPORARY OVERRIDES
   ## most of these are turned on by default and overrides can be deleted
@@ -221,7 +220,6 @@ rules:
   ##   - 2
   ##   - functions: false
   "@typescript-eslint/no-use-before-define": 0
-
 
   ## "@typescript-eslint/no-shadow": 2
   ## should be reviewed on case-by-case bases
