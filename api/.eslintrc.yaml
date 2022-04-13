@@ -241,7 +241,7 @@ rules:
   ##  - ignoreArgsIfArgsAfterAreUsed: true
   ## TODO discussion
   ## ignoreArgsIfArgsAfterAreUsed: false might require additional refactoring in a separate PR
-  "@typescript-eslint/no-unused-vars-experimental": 0
+  "@typescript-eslint/no-unused-vars-experimental": 1
 
   ## Using non-null assertions cancels the benefits of the strict null-checking mode
   ## "@typescript-eslint/no-non-null-assertion": 2 and

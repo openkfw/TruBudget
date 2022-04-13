@@ -1,12 +1,8 @@
-import { assert, expect } from "chai";
+import { assert } from "chai";
 import { Ctx } from "lib/ctx";
-import * as Result from "../../../result";
-import { NotFound } from "../errors/not_found";
-import { ServiceUser } from "../organization/service_user";
-import { PublicKeyBase64 } from "../organization/public_key";
-import { getPublicKey, publicKeyAlreadyExists } from "../organization/public_key_get";
-import { BusinessEvent } from "../business_event";
 import { VError } from "verror";
+import * as Result from "../../../result";
+import { ServiceUser } from "../organization/service_user";
 import { updatePublicKey } from "./public_key_update";
 
 const ctx: Ctx = {
@@ -18,7 +14,7 @@ const address = "address";
 const alice: ServiceUser = { id: "alice", groups: ["alice"], address };
 const publicKey = "public_key";
 const repository = {
-  getPublicKey: (organization) => Promise.resolve(publicKey),
+  getPublicKey: (_organization) => Promise.resolve(publicKey),
 };
 
 const requestData = { organization: "organization", publicKey: "newPublicKey" };

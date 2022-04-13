@@ -1,15 +1,15 @@
+import logger from "lib/logger";
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import { ConnToken } from "./conn";
 import * as Cache from "./cache2";
+import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserDisable from "./domain/organization/user_disable";
 import { getGlobalPermissions } from "./global_permissions_get";
-import { getUserAssignments } from "./user_assignments_get";
 import { store } from "./store";
+import { getUserAssignments } from "./user_assignments_get";
 import * as UserQuery from "./user_query";
-import { VError } from "verror";
-import logger from "lib/logger";
 
 export async function disableUser(
   conn: ConnToken,
@@ -20,7 +20,7 @@ export async function disableUser(
 ): Promise<Result.Type<void>> {
   logger.debug({ revokee }, "Disabling user");
 
-  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
+  const newEventsResult = await Cache.withCache(conn, ctx, async (_cache) =>
     UserDisable.disableUser(ctx, serviceUser, issuerOrganization, revokee, {
       getUser: () => UserQuery.getUser(conn, ctx, serviceUser, revokee.userId),
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),

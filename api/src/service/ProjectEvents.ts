@@ -1,5 +1,3 @@
-import uuid = require("uuid");
-
 import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
@@ -13,14 +11,7 @@ import { Issuer } from "./issuer";
 import * as Liststreamkeyitems from "./liststreamkeyitems";
 import { Item } from "./liststreamkeyitems";
 
-type ResourceType = "project" | "subproject" | "workflowitem";
-
 const projectSelfKey = "self";
-
-interface NotificationResourceDescription {
-  id: string;
-  type: ResourceType;
-}
 
 interface ProjectedBudget {
   organization: string;

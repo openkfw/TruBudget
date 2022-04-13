@@ -1,8 +1,7 @@
 import * as Ajv from "ajv";
 import { fastify, FastifyInstance } from "fastify";
-import * as metricsPlugin from "fastify-metrics";
 import fastifyCors from "fastify-cors";
-import helmet from "fastify-helmet";
+import * as metricsPlugin from "fastify-metrics";
 import { IncomingMessage, Server, ServerResponse } from "http";
 import logger from "../lib/logger";
 import { AuthenticatedRequest } from "./lib";
@@ -61,7 +60,7 @@ const addLogging = (server: FastifyInstance) => {
 const registerSwagger = (
   server: FastifyInstance,
   urlPrefix: string,
-  apiPort: number,
+  _apiPort: number,
   swaggerBasePath: string,
 ) => {
   server.register(require("fastify-swagger"), {
@@ -117,7 +116,7 @@ export const createBasicApp = (
     bodyLimit: 104857600,
   });
 
-  server.setValidatorCompiler(({ schema, method, url, httpPart }) => ajv.compile(schema));
+  server.setValidatorCompiler(({ schema }) => ajv.compile(schema));
   server.register(metricsPlugin, { endpoint: "/metrics" });
   server.register(fastifyCors, { origin: accessControlAllowOrigin });
 

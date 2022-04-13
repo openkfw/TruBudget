@@ -1,9 +1,9 @@
-import Intent from "../../authz/intents";
 import logger from "lib/logger";
+import Intent from "../../authz/intents";
 import * as Result from "../../result";
 import { MultichainClient, PeerInfo } from "../../service/Client.h";
-import * as NodeRegistered from "../../service/domain/network/node_registered";
 import * as NodeDeclined from "../../service/domain/network/node_declined";
+import * as NodeRegistered from "../../service/domain/network/node_registered";
 import { Event } from "../../service/event";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 
@@ -70,7 +70,7 @@ export async function publish(
     data: object;
   },
 ): Promise<Event> {
-  const { intent, createdBy, creationTimestamp, dataVersion, data } = args;
+  const { intent, data } = args;
   let event;
   if (intent === "network.registerNode") {
     event = NodeRegistered.createEvent(
@@ -305,10 +305,6 @@ interface MultichainPermissionsInfo {
 
 interface MultichainGlobalPermissionsInfo extends MultichainPermissionsInfo {
   for: null;
-}
-
-interface MultichainScopedPermissionsInfo extends MultichainPermissionsInfo {
-  for: string;
 }
 
 export async function getNetworkPermissions(

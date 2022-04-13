@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars-experimental */
 import { Ctx } from "lib/ctx";
 import { BusinessEvent } from "../business_event";
 

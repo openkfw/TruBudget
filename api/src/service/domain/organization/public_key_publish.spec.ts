@@ -1,8 +1,8 @@
-import { assert, expect } from "chai";
+import { assert } from "chai";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import { ServiceUser } from "./service_user";
 import { publishPublicKey } from "./public_key_publish";
+import { ServiceUser } from "./service_user";
 
 const ctx: Ctx = {
   requestId: "test",

@@ -1,18 +1,18 @@
-import Intent from "../../../authz/intents";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import Intent from "../../../authz/intents";
+import * as Result from "../../../result";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import { ProjectTraceEvent } from "./project_trace_event";
-import * as Result from "../../../result";
-import logger from "lib/logger";
 
 interface Repository {
   getAllProjects(): Promise<Project.Project[]>;
 }
 
 export async function getAllVisible(
-  ctx: Ctx,
+  _ctx: Ctx,
   user: ServiceUser,
   repository: Repository,
 ): Promise<Result.Type<Project.Project[]>> {

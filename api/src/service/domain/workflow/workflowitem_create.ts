@@ -99,6 +99,7 @@ function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
 
 function generateUniqueDocId(allDocuments: GenericDocument[]): string {
   // Generate a new document id
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const docId = uuid.v4();
     if (!docIdAlreadyExists(allDocuments, docId)) {

@@ -1,15 +1,14 @@
+import * as contentDisposition from "content-disposition";
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
-import * as contentDisposition from "content-disposition";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
-import { ServiceUser } from "./service/domain/organization/service_user";
 import * as WorkflowitemDocument from "./service/domain/document/document";
+import { ServiceUser } from "./service/domain/organization/service_user";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -49,11 +48,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
       },
     },
   };
-}
-
-interface Document {
-  data: string;
-  fileName: string;
 }
 
 interface Service {
