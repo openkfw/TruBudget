@@ -168,7 +168,7 @@ describe("Closing a workflowitem", () => {
     assert.isTrue(Result.isErr(newEventsResult));
     // Make TypeScript happy:
     if (Result.isOk(newEventsResult)) {
-      throw newEventsResult;
+      throw new Error(newEventsResult as any);
     }
     assert.instanceOf(newEventsResult, PreconditionError);
     assert.match(newEventsResult.message, /all previous workflowitems must be closed/);

@@ -1,4 +1,5 @@
 import logger from "../lib/logger";
+import { AuthzError } from "./AuthzError";
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
 import { People, Permissions } from "./types";
@@ -67,7 +68,7 @@ export const authorized = (token: AuthToken, intent: Intent) => async (
 ): Promise<undefined> => {
   const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
   if (!canDo) {
-    throw { kind: "NotAuthorized", token, intent };
+    throw new AuthzError({ kind: "NotAuthorized", token, intent });
   }
   return;
 };

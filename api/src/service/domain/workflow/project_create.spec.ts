@@ -67,7 +67,7 @@ describe("create project & projected budgets", () => {
     assert.isTrue(Result.isErr(createProjectResult));
     // Make TypeScript happy:
     if (Result.isOk(createProjectResult)) {
-      throw createProjectResult;
+      throw new Error(createProjectResult as any);
     }
     assert.instanceOf(createProjectResult, AlreadyExists);
     assert.include(createProjectResult.message, "projected budget");

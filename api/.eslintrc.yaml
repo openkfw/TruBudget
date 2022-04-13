@@ -76,7 +76,6 @@ rules:
     - LabeledStatement
     - WithStatement
 
-  # TODO configure import according TS hero extension rules
   # disallow require globally, allow require for joi inline
   import/first: 0
   import/order: 0
@@ -88,7 +87,6 @@ rules:
   import/no-extraneous-dependencies: 0
 
   ## import/no-duplicates: 2 check
-  ## TODO example api/src/subproject_permission_revoke.ts
   import/no-duplicates: 0
 
   # import/no-cycle: 2 check if possible to fix
@@ -209,7 +207,6 @@ rules:
   ## prefer-arrow-callback: 2
   prefer-arrow-callback: 0
 
-  ## TODO discussion if this rule is beneficial
   ## "@typescript-eslint/explicit-module-boundary-types":
   ##   - 2
   ##   - allowArgumentsExplicitlyTypedAsAny: true
@@ -232,13 +229,12 @@ rules:
   ## TODO discussion
   ## There are 200+ places in code that seem to need any.
   ## strictly enforcing no-explicit-any is beneficial, perhaps override per-file or inline?
-  "@typescript-eslint/no-explicit-any": 0
+  "@typescript-eslint/no-explicit-any": 0 # check effort
 
-  ## TODO discussion
   ## no-throw-literal: 0
   ## "@typescript-eslint/no-throw-literal": 2
   ## using this rule would require rework of error handling in API (using extended Error and not interfaces)
-  "@typescript-eslint/no-throw-literal": 0
+  "@typescript-eslint/no-throw-literal": 2
 
   ## "@typescript-eslint/no-unused-vars-experimental":
   ##  - 2

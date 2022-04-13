@@ -1,4 +1,5 @@
 import { NotAuthorizedError } from "./authz/types";
+import { Event } from "./service/event";
 
 // Thrown on missing keys and invalid values:
 export interface ParseError {
@@ -46,12 +47,35 @@ export interface PreconditionError {
   message: string;
 }
 
+export interface UnsupportedEventVersion {
+  kind: "UnsupportedEventVersion";
+  event: Event;
+}
+
+export interface UnsupportedMediaType {
+  kind: "UnsupportedMediaType";
+  contentType: string;
+}
+
 // For documentation, all custom error types should go in here:
-export type TruBudgetError =
+export type TruBudgetErrorType =
   | AuthenticationError
   | IdentityAlreadyExistsError
   | ProjectIdAlreadyExistsError
   | SubprojectIdAlreadyExistsError
   | NotAuthorizedError
   | ParseError
-  | NotFoundError;
+  | NotFoundError
+  | PreconditionError
+  | AddressIsInvalidError
+  | UnsupportedEventVersion
+  | UnsupportedMediaType;
+
+// Custom Throwables here
+
+export class TruBudgetError extends Error {
+  constructor(msg: TruBudgetErrorType) {
+    const { kind } = msg;
+    super(`An error occured ${kind}, details: ${JSON.stringify(msg)}`);
+  }
+}
