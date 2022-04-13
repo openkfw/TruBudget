@@ -1,5 +1,4 @@
 import { assert } from "chai";
-
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -14,7 +13,6 @@ const address = "address";
 const root: ServiceUser = { id: "root", groups: [], address };
 const alice: ServiceUser = { id: "alice", groups: [], address };
 const subprojectId = "dummy-subproject";
-const projectId = "dummy-project";
 const workflowitemId = "dummy-workflowitem";
 
 const permissions: Permissions = {

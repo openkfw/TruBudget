@@ -1,21 +1,19 @@
-import { FastifyInstance, FastifyReply, RequestGenericInterface, FastifyRequest } from "fastify";
-import Joi = require("joi");
-import VError = require("verror");
-
+import { FastifyInstance, FastifyReply, FastifyRequest, RequestGenericInterface } from "fastify";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
+import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { businessEventSchema } from "./service/domain/business_event";
-import { Identity } from "./service/domain/organization/identity";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as History from "./service/domain/workflow/historyFilter";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
-import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
+import Joi = require("joi");
+import VError = require("verror");
 
 const requestBodySchema = Joi.array().items({
   entityId: safeIdSchema.required(),

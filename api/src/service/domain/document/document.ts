@@ -1,9 +1,8 @@
 import * as crypto from "crypto";
-import Joi = require("joi");
-import uuid = require("uuid");
-import * as Result from "../../../result";
-import VError = require("verror");
 import logger from "lib/logger";
+import * as Result from "../../../result";
+import Joi = require("joi");
+import VError = require("verror");
 
 export interface StoredDocument {
   id: string;

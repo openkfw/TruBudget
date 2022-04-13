@@ -1,13 +1,7 @@
 import { assert, expect } from "chai";
-import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { getAllStorageServiceUrls, getStorageServiceUrl } from "./storage_service_url_get";
-
-const ctx: Ctx = {
-  requestId: "test",
-  source: "test",
-};
 
 const existingOrganization = "organization";
 const existingOrganizationUrl = "organizationUrl";

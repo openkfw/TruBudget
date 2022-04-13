@@ -20,8 +20,6 @@ const workflowitemsGroupKey = (subprojectId) => `${subprojectId}_workflows`;
 const workflowitemOrderingKey = (subprojectId) => `${subprojectId}_workflowitem_ordering`;
 const globalSelfKey = "self";
 
-type ResourceType = "project" | "subproject" | "workflowitem";
-
 interface Update {
   displayName?: string;
   amount?: string;

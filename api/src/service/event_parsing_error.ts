@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars-experimental */
 import { Event } from "./event";
 
 export class EventParsingError extends Error {

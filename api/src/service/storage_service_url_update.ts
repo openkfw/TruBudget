@@ -1,12 +1,12 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
-import { store } from "./store";
 import * as PublishStorageServiceUrl from "./domain/document/storage_service_url_update";
 import { ServiceUser } from "./domain/organization/service_user";
-import logger from "lib/logger";
+import { store } from "./store";
 
 export async function storageServiceUrlPublish(
   conn: ConnToken,
@@ -16,7 +16,7 @@ export async function storageServiceUrlPublish(
 ): Promise<Result.Type<void>> {
   logger.debug({ req: requestData }, "Updating storage service url");
 
-  const updateOrganizationUrlResult = await Cache.withCache(conn, ctx, async (cache) => {
+  const updateOrganizationUrlResult = await Cache.withCache(conn, ctx, async (_cache) => {
     return PublishStorageServiceUrl.storageServiceUrlPublish(ctx, serviceUser, requestData);
   });
 

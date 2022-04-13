@@ -1,10 +1,10 @@
-import { declineNode } from "./declineNode";
 import { assert } from "chai";
 import { createStubInstance, stub } from "sinon";
+import { SuccessResponse } from "../../httpd/lib";
 import { RpcMultichainClient } from "../../service/Client.h";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 import { RpcClient } from "../../service/RpcClient";
-import { ErrorResponse, SuccessResponse } from "../../httpd/lib";
+import { declineNode } from "./declineNode";
 
 const testOrga = "Orga1";
 const testAddress = "1234";

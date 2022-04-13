@@ -14,23 +14,6 @@ export function getUsers(conn: ConnToken, groupId: string): Promise<string[]> {
     .then((group) => group.users)
     .catch((_) => []);
 }
-
-export async function addUser(
-  multichain: MultichainClient,
-  groupId: string,
-  userId: string,
-): Promise<string[]> {
-  throw Error("not implemented");
-}
-
-export async function removeUser(
-  multichain: MultichainClient,
-  groupId: string,
-  userId: string,
-): Promise<string[]> {
-  throw Error("not implemented");
-}
-
 interface Group {
   groupId: string;
   displayName: string;

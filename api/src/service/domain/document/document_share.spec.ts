@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars-experimental */
 import { assert, expect } from "chai";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import { ServiceUser } from "../organization/service_user";
-import { UserRecord } from "../organization/user_record";
-import { StoredDocument, UploadedDocument } from "./document";
-import { RequestData, shareDocument } from "./document_share";
-import { Workflowitem } from "../workflow/workflowitem";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
+import { ServiceUser } from "../organization/service_user";
+import { UserRecord } from "../organization/user_record";
+import { Workflowitem } from "../workflow/workflowitem";
+import { StoredDocument, UploadedDocument } from "./document";
+import { RequestData, shareDocument } from "./document_share";
 import * as DocumentUploaded from "./document_uploaded";
 
 const ctx: Ctx = {
