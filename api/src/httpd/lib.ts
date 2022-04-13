@@ -1,5 +1,5 @@
+import { TruBudgetError } from "error";
 import { FastifyRequest } from "fastify";
-
 import { AuthToken } from "../authz/token";
 import logger from "../lib/logger";
 
@@ -23,7 +23,7 @@ export type HttpStatusCode = number;
 export type HttpResponse = [HttpStatusCode, SuccessResponse | ErrorResponse];
 
 export const throwParseError = (badKeys, message?) => {
-  throw { kind: "ParseError", badKeys, message };
+  throw new TruBudgetError({ kind: "ParseError", badKeys, message });
 };
 
 export const throwParseErrorIfUndefined = (obj, path) => {

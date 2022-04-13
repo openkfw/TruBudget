@@ -1,3 +1,4 @@
+import { TruBudgetError } from "error";
 import logger from "../lib/logger";
 import {
   BlockInfo,
@@ -142,7 +143,7 @@ export class RpcMultichainClient implements MultichainClient {
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch((err) => {
         if (err && err.code === -708) {
-          throw { kind: "NotFound", what: `stream ${streamName}` };
+          throw new TruBudgetError({ kind: "NotFound", what: { stream: `stream ${streamName}` } });
         } else {
           throw err;
         }
@@ -162,7 +163,7 @@ export class RpcMultichainClient implements MultichainClient {
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch((err) => {
         if (err && err.code === -708) {
-          throw { kind: "NotFound", what: `stream ${streamName}` };
+          throw new TruBudgetError({ kind: "NotFound", what: { stream: streamName } });
         } else {
           throw err;
         }
@@ -205,10 +206,10 @@ export class RpcMultichainClient implements MultichainClient {
     const result = await this.getValues(streamName, key, 1);
     if (result.length !== 1) {
       const message = `Expected a single value, got: ${result || "nothing"}`;
-      throw {
+      throw new TruBudgetError({
         kind: "NotFound",
         what: { message, streamName, key },
-      };
+      });
     }
     return result[0];
   }
@@ -268,7 +269,7 @@ export class RpcMultichainClient implements MultichainClient {
       .invoke("liststreamblockitems", streamName, `${from}-${to}`, verbose)
       .catch((err) => {
         if (err && err.code === -708) {
-          throw { kind: "NotFound", what: `stream ${streamName}` };
+          throw new TruBudgetError({ kind: "NotFound", what: { stream: `stream ${streamName}` } });
         } else {
           throw err;
         }
@@ -288,7 +289,7 @@ export class RpcMultichainClient implements MultichainClient {
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch((err) => {
         if (err && err.code === -708) {
-          throw { kind: "NotFound", what: `stream ${streamName}` };
+          throw new TruBudgetError({ kind: "NotFound", what: { stream: `stream ${streamName}` } });
         } else {
           throw err;
         }
