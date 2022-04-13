@@ -1,16 +1,13 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { filterPermissions, Permissions } from "./service/domain/permissions";
-import { Identity } from "./service/domain/organization/identity";
-import Intent, { workflowitemIntents } from "./authz/intents";
+import { getExposablePermissions, Permissions } from "./service/domain/permissions";
 
 function mkSwaggerSchema(server: FastifyInstance) {
   return {
@@ -128,8 +125,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         }
         const permissions = permissionsResult;
 
-        // TODO use an exposedPermissions interface instead of a filter function
-        const filteredPermissions = filterPermissions(permissions, ["workflowitem.close"]);
+        const filteredPermissions = getExposablePermissions(permissions, ["workflowitem.close"]);
 
         const code = 200;
         const body = {
