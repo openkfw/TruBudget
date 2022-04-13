@@ -303,7 +303,6 @@ app.post("/chain", async (req, res) => {
           config.DirectoryHash,
           extractPath,
         );
-        // TODO MD5 hashing is deprecated. Remove it in the future and keep only SHA256
         let validMD5 = false;
         if (!validSha256) {
           validMD5 = await verifyHash(config.DirectoryHash, extractPath);

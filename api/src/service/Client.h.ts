@@ -133,7 +133,6 @@ export interface MultichainClient {
   streamItems(streamId: StreamName | StreamTxId): Promise<StreamItem[]>;
 
   // getinfo Returns general information about this node and blockchain
-  // TODO add return types...although they seem rather flexible
   getInfo(): any;
 
   // Return information about directly connected nodes (peers)

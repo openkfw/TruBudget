@@ -1,10 +1,10 @@
 import logger from "../lib/logger";
 import {
-  PeerInfo,
   BlockInfo,
   BlockListItem,
   CreateStreamOptions,
   MultichainClient,
+  PeerInfo,
   Resource,
   Stream,
   StreamItem,
@@ -183,7 +183,6 @@ export class RpcMultichainClient implements MultichainClient {
         key: x.keys,
         resource: hexToObject(x.data) as Resource,
       }))
-      // TODO: Until we need to be able to re-order things, it's good enough to sort by ctime:
       .sort((a: StreamItemPair, b: StreamItemPair) => {
         const ctimeA = a.resource.data.creationUnixTs;
         const ctimeB = b.resource.data.creationUnixTs;

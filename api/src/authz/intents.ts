@@ -1,3 +1,10 @@
+export type ExposableIntent = Exclude<
+  Intent,
+  "project.close" | "subproject.close" | "workflowitem.close"
+>;
+
+//TODO check if each permission matches an (permission-)endpoint (user.view matches user.list should be user.list) (adapt intends to api)
+
 type Intent =
   | "global.listPermissions"
   | "global.grantPermission"
@@ -20,7 +27,7 @@ type Intent =
   | "project.intent.listPermissions"
   | "project.intent.grantPermission"
   | "project.intent.revokePermission"
-  | "project.viewSummary"
+  | "project.viewSummary" // TODO: rename to project.list on endpoint: rename permission view summary to subproject list
   | "project.viewDetails"
   | "project.viewHistory"
   | "project.assign"
@@ -32,8 +39,7 @@ type Intent =
   | "subproject.intent.listPermissions"
   | "subproject.intent.grantPermission"
   | "subproject.intent.revokePermission"
-  // TODO: rename to subproject.list
-  | "subproject.viewSummary"
+  | "subproject.viewSummary" // TODO: rename to subproject.list on endpoint: rename permission view summary to subproject list
   | "subproject.viewDetails"
   | "subproject.viewHistory"
   | "subproject.assign"
@@ -46,7 +52,7 @@ type Intent =
   | "workflowitem.intent.listPermissions"
   | "workflowitem.intent.grantPermission"
   | "workflowitem.intent.revokePermission"
-  | "workflowitem.view"
+  | "workflowitem.view" // TODO (if possible) split into list and view details
   | "workflowitem.viewHistory"
   | "workflowitem.assign"
   | "workflowitem.update"
