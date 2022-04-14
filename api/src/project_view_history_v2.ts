@@ -1,4 +1,5 @@
-import { FastifyInstance, FastifyReply, FastifyRequest, RequestGenericInterface } from "fastify";
+import { FastifyReply, FastifyRequest, RequestGenericInterface } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
@@ -23,7 +24,7 @@ const requestBodySchema = Joi.array().items({
   }).required(),
 });
 
-function validateRequestBody(body: any): Result.Type<ProjectTraceEvent[]> {
+function validateRequestBody(body): Result.Type<ProjectTraceEvent[]> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
 }
@@ -108,9 +109,9 @@ const createFilter = (reply: FastifyReply, request: FastifyRequest): History.Fil
   } as History.Filter;
 };
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description:
         "View the history of a given project (filtered by what the user is allowed to see).",
@@ -234,7 +235,11 @@ interface Querystring extends RequestGenericInterface {
   eventType?: string;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get<{ Querystring: Querystring }>(
     `${urlPrefix}/project.viewHistory.v2`,
     mkSwaggerSchema(server),

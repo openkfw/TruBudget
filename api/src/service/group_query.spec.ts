@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
 import { ConnToken } from ".";
 import { Ctx } from "../lib/ctx";

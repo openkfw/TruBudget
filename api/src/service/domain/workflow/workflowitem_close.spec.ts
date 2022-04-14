@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";

@@ -45,7 +45,7 @@ export interface HistoryEvent {
   createdBy: string;
   createdAt: string;
   dataVersion: number; // integer
-  data: any;
+  data: unknown;
   snapshot: {
     displayName: string;
   };

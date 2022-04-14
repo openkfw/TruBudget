@@ -5,6 +5,11 @@ import * as Result from "../result";
 import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
+import * as DocumentShared from "./domain/document/document_shared";
+import * as DocumentUploaded from "./domain/document/document_uploaded";
+import * as DocumentValidated from "./domain/document/document_validated";
+import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
+import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import { NotFound } from "./domain/errors/not_found";
 import * as NodesLogged from "./domain/network/nodes_logged";
 import * as NodeDeclined from "./domain/network/node_declined";
@@ -20,7 +25,8 @@ import * as UserEnabled from "./domain/organization/user_enabled";
 import * as UserPasswordChanged from "./domain/organization/user_password_changed";
 import * as UserPermissionsGranted from "./domain/organization/user_permission_granted";
 import * as UserPermissionsRevoked from "./domain/organization/user_permission_revoked";
-import * as DocumentValidated from "./domain/document/document_validated";
+import * as ProvisioningEnded from "./domain/system_information/provisioning_ended";
+import * as ProvisioningStarted from "./domain/system_information/provisioning_started";
 import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as NotificationCreated from "./domain/workflow/notification_created";
@@ -54,12 +60,7 @@ import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcin
 import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
-import * as DocumentUploaded from "./domain/document/document_uploaded";
-import * as DocumentShared from "./domain/document/document_shared";
-import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
 import { Item } from "./liststreamitems";
-import * as ProvisioningStarted from "./domain/system_information/provisioning_started";
-import * as ProvisioningEnded from "./domain/system_information/provisioning_ended";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -410,7 +411,8 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
   // and are not excluded by the STREAM_BLACKLIST:
   const streams = (await conn.multichainClient.streams(onlyStreamName)).filter(
     (stream) =>
-      stream.details.kind !== undefined && !STREAM_BLACKLIST.includes(stream.details.kind as any),
+      stream.details.kind !== undefined &&
+      !STREAM_BLACKLIST.includes(stream.details.kind as string),
   );
 
   for (const { name: streamName, items: nStreamItems } of streams) {

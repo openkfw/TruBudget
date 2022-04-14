@@ -1,5 +1,6 @@
-import "module-alias/register";
 import { AxiosRequestConfig } from "axios";
+import "module-alias/register";
+import { AugmentedFastifyInstance } from "types";
 import getValidConfig from "./config";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
 import * as GlobalPermissionsListAPI from "./global_permissions_list";
@@ -97,9 +98,9 @@ import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
 import * as WorkflowitemGetService from "./service/workflowitem_get";
+import * as WorkflowitemGetDetailsService from "./service/workflowitem_get_details";
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
-import * as WorkflowitemGetDetailsService from "./service/workflowitem_get_details";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
@@ -135,12 +136,12 @@ import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
 import * as WorkflowitemListAPI from "./workflowitem_list";
-import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
+import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 
 const URL_PREFIX = "/api";
@@ -219,7 +220,7 @@ const server = createBasicApp(
   port,
   swaggerBasepath,
   accessControlAllowOrigin,
-);
+) as AugmentedFastifyInstance;
 
 /*
  * Run the app:

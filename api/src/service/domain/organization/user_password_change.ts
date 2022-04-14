@@ -1,8 +1,10 @@
 import Joi = require("joi");
 
+import { Ctx } from "lib/ctx";
+import { safePasswordSchema } from "lib/joiValidation";
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -12,8 +14,6 @@ import { ServiceUser } from "./service_user";
 import * as UserEventSourcing from "./user_eventsourcing";
 import * as UserPasswordChanged from "./user_password_changed";
 import * as UserRecord from "./user_record";
-import { safePasswordSchema } from "lib/joiValidation";
-import logger from "lib/logger";
 
 export interface RequestData {
   userId: string;
@@ -25,7 +25,7 @@ const requestDataSchema = Joi.object({
   newPassword: safePasswordSchema.required(),
 });
 
-export function validate(input: any): Result.Type<RequestData> {
+export function validate(input): Result.Type<RequestData> {
   const { value, error } = Joi.validate(input, requestDataSchema);
   return !error ? value : error;
 }

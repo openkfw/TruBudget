@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
 
 export async function assertIsResolved(promise: Promise<any>, expectedResult?: any): Promise<void> {

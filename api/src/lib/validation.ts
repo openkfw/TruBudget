@@ -4,7 +4,7 @@ import { ServiceUser } from "../service/domain/organization/service_user";
 import * as UserQuery from "../service/user_query";
 import { Ctx } from "./ctx";
 
-export function isNonemptyString(x: any): boolean {
+export function isNonemptyString(x: unknown): boolean {
   return typeof x === "string" && x.length > 0;
 }
 
@@ -28,8 +28,8 @@ export async function isUserOrUndefined(conn: ConnToken, ctx: Ctx, issuer: Servi
 
 export function findBadKeysInObject(
   expectedKeys: string[],
-  isGood: (val: any) => boolean,
-  candidate: any,
+  isGood: (val: unknown) => boolean,
+  candidate,
 ): string[] {
   return expectedKeys.filter((key) => typeof candidate !== "object" || !isGood(candidate[key]));
 }
@@ -38,7 +38,7 @@ export function isDate(date: string) {
   return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
 }
 
-export function isNumber(x: any) {
+export function isNumber(x) {
   return !isNaN(x);
 }
 

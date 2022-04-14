@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
 import { createStubInstance, stub } from "sinon";
 import { SuccessResponse } from "../../httpd/lib";

@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
-
 import * as Result from "../result";
 import { parseBusinessEvents } from "./cache2";
 
@@ -42,13 +42,13 @@ const projectStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToProject = items => {
-  items.forEach(item => {
+const addUnknownPropertyToProject = (items) => {
+  items.forEach((item) => {
     item.data.json.project.additionalUnknownProperty = true;
   });
 };
-const makeProjectItemsInvalid = items => {
-  items.forEach(item => {
+const makeProjectItemsInvalid = (items) => {
+  items.forEach((item) => {
     delete item.data.json.project.id;
   });
 };
@@ -90,13 +90,13 @@ const subprojectStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToSubproject = items => {
-  items.forEach(item => {
+const addUnknownPropertyToSubproject = (items) => {
+  items.forEach((item) => {
     item.data.json.subproject.additionalUnknownProperty = true;
   });
 };
-const makeSubprojectItemsInvalid = items => {
-  items.forEach(item => {
+const makeSubprojectItemsInvalid = (items) => {
+  items.forEach((item) => {
     delete item.data.json.subproject.id;
   });
 };
@@ -168,13 +168,13 @@ const workflowitemStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToWorkflowitem = items => {
-  items.forEach(item => {
+const addUnknownPropertyToWorkflowitem = (items) => {
+  items.forEach((item) => {
     item.data.json.workflowitem.additionalUnknownProperty = true;
   });
 };
-const makeWorkflowitemItemsInvalid = items => {
-  items.forEach(item => {
+const makeWorkflowitemItemsInvalid = (items) => {
+  items.forEach((item) => {
     delete item.data.json.workflowitem.id;
   });
 };
@@ -215,13 +215,13 @@ const userStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToUser = items => {
-  items.forEach(item => {
+const addUnknownPropertyToUser = (items) => {
+  items.forEach((item) => {
     item.data.json.user.additionalUnknownProperty = true;
   });
 };
-const makeUserItemsInvalid = items => {
-  items.forEach(item => {
+const makeUserItemsInvalid = (items) => {
+  items.forEach((item) => {
     delete item.data.json.user.id;
   });
 };
@@ -261,13 +261,13 @@ const groupStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToGroup = items => {
-  items.forEach(item => {
+const addUnknownPropertyToGroup = (items) => {
+  items.forEach((item) => {
     item.data.json.group.additionalUnknownProperty = true;
   });
 };
-const makeGroupItemsInvalid = items => {
-  items.forEach(item => {
+const makeGroupItemsInvalid = (items) => {
+  items.forEach((item) => {
     delete item.data.json.group.id;
   });
 };
@@ -311,13 +311,13 @@ const notificationStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToNotification = items => {
-  items.forEach(item => {
+const addUnknownPropertyToNotification = (items) => {
+  items.forEach((item) => {
     item.data.json.additionalUnknownProperty = true;
   });
 };
-const makeNotificationItemsInvalid = items => {
-  items.forEach(item => {
+const makeNotificationItemsInvalid = (items) => {
+  items.forEach((item) => {
     delete item.data.json.notificationId;
   });
 };
@@ -356,13 +356,13 @@ const globalPermissionStreamItems: any[] = [
     },
   },
 ];
-const addUnknownPropertyToPermission = items => {
-  items.forEach(item => {
+const addUnknownPropertyToPermission = (items) => {
+  items.forEach((item) => {
     item.data.json.additionalUnknownProperty = true;
   });
 };
-const makePermissionItemsInvalid = items => {
-  items.forEach(item => {
+const makePermissionItemsInvalid = (items) => {
+  items.forEach((item) => {
     delete item.data.json.permission;
   });
 };
@@ -389,13 +389,13 @@ const nodeStreamItems: any[] = [
     },
   },
 ];
-const addUnknownPropertyToNode = items => {
-  items.forEach(item => {
+const addUnknownPropertyToNode = (items) => {
+  items.forEach((item) => {
     item.data.json.additionalUnknownProperty = true;
   });
 };
-const makeNodeItemsInvalid = items => {
-  items.forEach(item => {
+const makeNodeItemsInvalid = (items) => {
+  items.forEach((item) => {
     delete item.data.json.organization;
   });
 };
@@ -421,21 +421,21 @@ describe("stream item validation (backwards-compatibility)", () => {
     context("for " + testcase.stream + " stream items", async () => {
       it("validates conformat items", async () => {
         const parsedEvents = parseBusinessEvents(testcase.streamItems, testcase.stream);
-        assert.isOk(parsedEvents.every(result => Result.isOk(result)));
+        assert.isOk(parsedEvents.every((result) => Result.isOk(result)));
       });
       it("validates items with additional unknown property", async () => {
         testcase.addUnknownProperty(testcase.streamItems);
         const parsedEvents = parseBusinessEvents(testcase.streamItems, testcase.stream);
         assert.isOk(
           parsedEvents.every(
-            result => Result.isOk(result) && !result.hasOwnProperty("additionalUnknownProperty"),
+            (result) => Result.isOk(result) && !result.hasOwnProperty("additionalUnknownProperty"),
           ),
         );
       });
       it("doesn't validate invalid items", async () => {
         testcase.makeItemsInvalid(testcase.streamItems);
         const parsedEvents = parseBusinessEvents(testcase.streamItems, testcase.stream);
-        assert.isOk(parsedEvents.every(result => Result.isErr(result)));
+        assert.isOk(parsedEvents.every((result) => Result.isErr(result)));
       });
     });
   }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * JSON-RPC request.
  */
@@ -8,7 +9,7 @@ export default interface RpcRequest {
   readonly method: string;
 
   /**
-   * List of arguments to invoke the method with
+   * List of arguments to invoke the method with - can be anything
    */
   readonly params: any[];
 }

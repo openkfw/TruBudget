@@ -1,4 +1,5 @@
-import { FastifyInstance, RequestGenericInterface } from "fastify";
+import { RequestGenericInterface } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -9,9 +10,9 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { getExposablePermissions, Permissions } from "./service/domain/permissions";
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description: "See the permissions for a given subproject.",
       tags: ["subproject"],
@@ -69,7 +70,11 @@ interface Request extends RequestGenericInterface {
   };
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get<Request>(
     `${urlPrefix}/subproject.intent.listPermissions`,
     mkSwaggerSchema(server),

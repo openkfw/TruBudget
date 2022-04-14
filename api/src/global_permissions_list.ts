@@ -1,4 +1,5 @@
-import { FastifyInstance } from "fastify";
+import { AugmentedFastifyInstance } from "types";
+import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
@@ -6,11 +7,10 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { GlobalPermissions } from "./service/domain/workflow/global_permissions";
-import { VError } from "verror";
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description: "See the current global permissions.",
       tags: ["global"],
@@ -43,7 +43,11 @@ interface Service {
   getGlobalPermissions(ctx: Ctx, user: ServiceUser): Promise<Result.Type<GlobalPermissions>>;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get(
     `${urlPrefix}/global.listPermissions`,
     mkSwaggerSchema(server),

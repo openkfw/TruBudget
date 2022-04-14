@@ -9,7 +9,7 @@ interface ErrorBody {
   };
 }
 
-export function toHttpError(error: any | any[]): { code: number; body: ErrorBody } {
+export function toHttpError(error: unknown | unknown[]): { code: number; body: ErrorBody } {
   const errors = error instanceof Array ? error : [error];
   const httpErrors = errors.map(convertError);
   const httpError = httpErrors.reduce((acc, err) => ({
@@ -19,7 +19,7 @@ export function toHttpError(error: any | any[]): { code: number; body: ErrorBody
   return { code: httpError.code, body: toErrorBody(httpError) };
 }
 
-function convertError(error: any): { code: number; message: string } {
+function convertError(error): { code: number; message: string } {
   if (error instanceof Error) {
     logger.debug({ error }, error.message);
     return handleError(error);
