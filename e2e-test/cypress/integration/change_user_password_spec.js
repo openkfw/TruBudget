@@ -14,7 +14,7 @@ describe("Users/Groups Dashboard", function() {
     cy.visit("/users");
   });
 
-  it("If a user is granted permission to edit another user's password, the edit button appears next to the user", function() {
+  it("If a user is granted permission to edit another user's password (only in the same organization), the edit button appears next to the user", function() {
     // Log in as root and grant the permission
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.grantUserPermissions("dviolin", "user.changePassword", testUserName);

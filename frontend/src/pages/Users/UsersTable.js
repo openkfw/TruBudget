@@ -85,20 +85,25 @@ const renderActionButtons = props => {
     showPasswordDialog,
     disableUser,
     enableUser,
-    isRoot
+    isRoot,
+    organization
   } = props;
 
   const isEnabledUser = displayUser.permissions["user.authenticate"].includes(displayUser.id);
+  const isRootUserOfSameOrga = isRoot && organization === displayUser.organization;
   const canEditPassword =
     // need to check if user permissions exist yet
     // to make sure this is compatible with older versions
     (displayUser.permissions &&
       displayUser.permissions.hasOwnProperty("user.changePassword") &&
-      displayUser.permissions["user.changePassword"].some(x => x === userId)) ||
-    isRoot;
-  const canListUserPermissions = allowedIntents.includes("global.listPermissions") || isRoot;
-  const canEnableUser = (allowedIntents.includes("global.enableUser") || isRoot) && !isEnabledUser;
-  const canDisableUser = (allowedIntents.includes("global.disableUser") || isRoot) && isEnabledUser;
+      displayUser.permissions["user.changePassword"].some(x => x === userId) &&
+      !isRoot) ||
+    isRootUserOfSameOrga;
+  const canListUserPermissions = (allowedIntents.includes("global.listPermissions") && !isRoot) || isRootUserOfSameOrga;
+  const canEnableUser =
+    ((allowedIntents.includes("global.enableUser") && !isRoot) || isRootUserOfSameOrga) && !isEnabledUser;
+  const canDisableUser =
+    ((allowedIntents.includes("global.disableUser") && !isRoot) || isRootUserOfSameOrga) && isEnabledUser;
 
   return (
     <>
