@@ -76,6 +76,7 @@ export async function revokeGlobalPermission(
       userId: issuer.id,
       intent: revokeIntent,
       target: currentGlobalPermissions,
+      isOtherOrganization: true,
     });
   }
 

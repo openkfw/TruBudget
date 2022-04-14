@@ -76,7 +76,7 @@ const baseRepository = {
 describe("close subproject", () => {
   const workflowitem: Workflowitem = { ...baseWorkflowitem, status: "closed" };
   it("Closing a subproject works if all workflowitems are closed.", async () => {
-    const result = await closeSubproject(ctx, root, projectId, subprojectId, {
+    const result = await closeSubproject(ctx, alice, projectId, subprojectId, {
       ...baseRepository,
       getWorkflowitems: async () => [workflowitem, workflowitem],
     });
@@ -84,11 +84,11 @@ describe("close subproject", () => {
     assert.isTrue(Result.isOk(result));
   });
 
-  it("The root user doesn't need permission to close a subproject.", async () => {
+  it("The root user is not allowed to close a subproject.", async () => {
     const result = await closeSubproject(ctx, root, projectId, subprojectId, baseRepository);
 
     // No errors, despite the missing permissions:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 });
 
@@ -101,10 +101,10 @@ describe("close subproject: preconditions", () => {
     assert.instanceOf(result, PreconditionError);
   });
 
-  it("The root user doesn't need to be assigned to close a subproject.", async () => {
+  it("The root user is not allowed to close a subproject.", async () => {
     const result = await closeSubproject(ctx, root, projectId, subprojectId, baseRepository);
 
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 
   it("A subproject may not be closed if there is at least one non-closed workflowitem.", async () => {

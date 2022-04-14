@@ -22,12 +22,14 @@ const bob: ServiceUser = {
   address,
 };
 
+const organizationName = "dummyOrganization";
 const grantIntent = "user.intent.grantPermission";
 const userId = "dummy";
+
 const baseUser: UserRecord = {
   id: userId,
   createdAt: new Date().toISOString(),
-  organization: "dummy",
+  organization: organizationName,
   displayName: "dummy",
   passwordHash: "password",
   permissions: {},
@@ -43,21 +45,37 @@ const baseRepository = {
 
 describe("Granting user permissions: permissions", () => {
   it("Without the user.intent.grantPermission permission, a user cannot grant user permissions", async () => {
-    const result = await grantUserPermission(ctx, alice, userId, bob.id, grantIntent, {
-      ...baseRepository,
-    });
+    const result = await grantUserPermission(
+      ctx,
+      alice,
+      organizationName,
+      userId,
+      bob.id,
+      grantIntent,
+      {
+        ...baseRepository,
+      },
+    );
 
     // NotAuthorized error due to the missing permissions:
     assert.isTrue(Result.isErr(result), "Alice is not authorized to grant this permission");
     assert.instanceOf(result, NotAuthorized, "The error is of the type 'Not Authorized'");
   });
 
-  it("The root user can always grant user permissions", async () => {
-    const result = await grantUserPermission(ctx, root, userId, bob.id, grantIntent, {
-      ...baseRepository,
-    });
+  it("The root user can never grant user permissions", async () => {
+    const result = await grantUserPermission(
+      ctx,
+      root,
+      organizationName,
+      userId,
+      bob.id,
+      grantIntent,
+      {
+        ...baseRepository,
+      },
+    );
 
-    assert.isTrue(Result.isOk(result));
+    assert.isFalse(Result.isOk(result));
   });
 });
 
@@ -67,9 +85,17 @@ describe("Granting user permissions: updates", () => {
       ...baseUser,
       permissions: { "user.intent.grantPermission": [alice.id] },
     };
-    const result = await grantUserPermission(ctx, alice, userId, bob.id, grantIntent, {
-      getTargetUser: async () => Promise.resolve(permissionTestUser),
-    });
+    const result = await grantUserPermission(
+      ctx,
+      alice,
+      organizationName,
+      userId,
+      bob.id,
+      grantIntent,
+      {
+        getTargetUser: async () => Promise.resolve(permissionTestUser),
+      },
+    );
     if (Result.isErr(result)) {
       throw result;
     }
@@ -101,7 +127,7 @@ describe("Granting user permissions: updates", () => {
     const testUser: UserRecord = {
       id: userId,
       createdAt: new Date().toISOString(),
-      organization: "dummy",
+      organization: organizationName,
       displayName: "dummy",
       passwordHash: "password",
       permissions: { "user.intent.grantPermission": [alice.id] },
@@ -110,9 +136,17 @@ describe("Granting user permissions: updates", () => {
       log: [],
       additionalData: {},
     };
-    const result = await grantUserPermission(ctx, alice, userId, alice.id, grantIntent, {
-      getTargetUser: async () => Promise.resolve(testUser),
-    });
+    const result = await grantUserPermission(
+      ctx,
+      alice,
+      organizationName,
+      userId,
+      alice.id,
+      grantIntent,
+      {
+        getTargetUser: async () => Promise.resolve(testUser),
+      },
+    );
     if (Result.isErr(result)) {
       throw result;
     }

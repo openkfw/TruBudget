@@ -366,13 +366,21 @@ UserPasswordChangeAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 UserPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
-  grantUserPermission: (ctx, granter, userId, grantee, intent) =>
-    UserPermissionGrantService.grantUserPermission(db, ctx, granter, userId, grantee, intent),
+  grantUserPermission: (ctx, granter, orga, userId, grantee, intent) =>
+    UserPermissionGrantService.grantUserPermission(db, ctx, granter, orga, userId, grantee, intent),
 });
 
 UserPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
-  revokeUserPermission: (ctx, revoker, userId, revokee, intent) =>
-    UserPermissionRevokeService.revokeUserPermission(db, ctx, revoker, userId, revokee, intent),
+  revokeUserPermission: (ctx, revoker, orga, userId, revokee, intent) =>
+    UserPermissionRevokeService.revokeUserPermission(
+      db,
+      ctx,
+      revoker,
+      orga,
+      userId,
+      revokee,
+      intent,
+    ),
 });
 
 UserPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {

@@ -94,6 +94,7 @@ interface Service {
   revokeUserPermission(
     ctx: Ctx,
     revoker: ServiceUser,
+    revokerOrganization: string,
     userId: UserRecord.Id,
     revokee: Identity,
     intent: Intent,
@@ -112,6 +113,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         groups: (request as AuthenticatedRequest).user.groups,
         address: (request as AuthenticatedRequest).user.address,
       };
+      const revokerOrganization: string = (request as AuthenticatedRequest).user.organization;
 
       const bodyResult = validateRequestBody(request.body);
 
@@ -127,7 +129,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const { userId, identity: revokee, intent } = bodyResult.data;
 
       service
-        .revokeUserPermission(ctx, revoker, userId, revokee, intent)
+        .revokeUserPermission(ctx, revoker, revokerOrganization, userId, revokee, intent)
         .then((result) => {
           if (Result.isErr(result)) {
             throw new VError(result, "user.intent.revokePermission failed");

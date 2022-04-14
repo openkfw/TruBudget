@@ -25,6 +25,7 @@ const eventType: EventTypeType = "user_permission_granted";
 export async function grantUserPermission(
   ctx: Ctx,
   issuer: ServiceUser,
+  issuerOrganization: string,
   userId: UserRecord.Id,
   grantee: Identity,
   intent: Intent,
@@ -47,12 +48,20 @@ export async function grantUserPermission(
     return new VError(permissionGranted, "failed to create user permission granted event");
   }
 
-  logger.trace({ issuer }, "Checking if user is root");
-  if (issuer.id !== "root") {
-    const grantIntent: Intent = "user.intent.grantPermission";
-    if (!UserRecord.permits(user, issuer, [grantIntent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: user });
-    }
+  logger.trace({ issuer }, "Checking if issuer and target belong to the same organization");
+  if (user.organization !== issuerOrganization) {
+    return new NotAuthorized({
+      ctx,
+      userId: issuer.id,
+      intent,
+      isOtherOrganization: true,
+    });
+  }
+
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const grantIntent: Intent = "user.intent.grantPermission";
+  if (!UserRecord.permits(user, issuer, [grantIntent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: user });
   }
 
   logger.trace({ event: permissionGranted }, "Checking validity of event");

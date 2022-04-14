@@ -22,6 +22,7 @@ interface Repository {
 export async function revokeUserPermission(
   ctx: Ctx,
   issuer: ServiceUser,
+  issuerOrganization: string,
   userId: UserRecord.Id,
   revokee: Identity,
   intent: Intent,
@@ -45,12 +46,20 @@ export async function revokeUserPermission(
     return new VError(permissionRevoked, "failed to create permission revoked event");
   }
 
-  logger.trace({ issuer }, "Checking if user is root");
-  if (issuer.id !== "root") {
-    const revokeIntent = "user.intent.revokePermission";
-    if (!UserRecord.permits(user, issuer, [revokeIntent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent: revokeIntent, target: user });
-    }
+  logger.trace({ issuer }, "Checking if issuer and target belong to the same organization");
+  if (user.organization !== issuerOrganization) {
+    return new NotAuthorized({
+      ctx,
+      userId: issuer.id,
+      intent,
+      isOtherOrganization: true,
+    });
+  }
+
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const revokeIntent = "user.intent.revokePermission";
+  if (!UserRecord.permits(user, issuer, [revokeIntent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent: revokeIntent, target: user });
   }
 
   logger.trace({ event: permissionRevoked }, "Checking event validity");

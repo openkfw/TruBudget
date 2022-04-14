@@ -38,7 +38,7 @@ export async function addMember(
     return new VError(memberAdded, "failed to create group added event");
   }
 
-  logger.trace({ issuer }, "Checking if user is root");
+  logger.trace({ issuer }, "Checking if user is root or has permissions");
   if (issuer.id !== "root") {
     const intent = "group.addUser";
     if (!Group.permits(group, issuer, [intent])) {
