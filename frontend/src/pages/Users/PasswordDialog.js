@@ -78,7 +78,8 @@ const PasswordDialog = props => {
     storeSnackbarMessage,
     authenticationFailed,
     checkAndChangeUserPassword,
-    hidePasswordDialog
+    hidePasswordDialog,
+    isRoot
   } = props;
 
   const [userPassword, setUserPassword] = useState("");
@@ -143,7 +144,8 @@ const PasswordDialog = props => {
     </div>
   );
 
-  const submitDisabled = userPassword.length === 0 || newPassword.length === 0 || newPasswordConfirmation.length === 0;
+  const submitDisabled =
+    (!isRoot && userPassword.length === 0) || newPassword.length === 0 || newPasswordConfirmation.length === 0;
 
   return (
     <Dialog
@@ -156,21 +158,24 @@ const PasswordDialog = props => {
       <DialogTitle>{title}</DialogTitle>
       <div style={styles.contentStyle}>
         <div>
-          <Card style={styles.card}>
-            <CardHeader subheader={formatString(strings.users.type_current_password, props.userId)} />
-            <CardContent>
-              <Password
-                iconDisplayed={false}
-                data-test="user-password-textfield"
-                label={strings.users.current_user_password}
-                password={userPassword}
-                setPassword={setUserPassword}
-                failed={authenticationFailed}
-                id="userPassword"
-                failedText={strings.common.incorrect_password}
-              />
-            </CardContent>
-          </Card>
+          {!isRoot ? (
+            <Card style={styles.card}>
+              <CardHeader subheader={formatString(strings.users.type_current_password, props.userId)} />
+              <CardContent>
+                <Password
+                  iconDisplayed={false}
+                  data-test="user-password-textfield"
+                  label={strings.users.current_user_password}
+                  password={userPassword}
+                  setPassword={setUserPassword}
+                  failed={authenticationFailed}
+                  id="userPassword"
+                  failedText={strings.common.incorrect_password}
+                />
+              </CardContent>
+            </Card>
+          ) : null}
+
           <Card style={styles.card}>
             <CardHeader subheader={formatString(strings.users.type_new_password, editId)} />
             <CardContent>
