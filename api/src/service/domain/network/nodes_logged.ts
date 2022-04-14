@@ -9,7 +9,7 @@ const eventType: EventTypeType = "peerinfo_saved";
 export interface Event {
   type: EventTypeType;
   date: string;
-  peers: any[];
+  peers: unknown[];
 }
 
 export const schema = Joi.object({
@@ -18,7 +18,11 @@ export const schema = Joi.object({
   peers: Joi.array().items(Joi.object()),
 }).options({ stripUnknown: true });
 
-export function createEvent(_type: EventTypeType, date: string, peers: any[]): Result.Type<Event> {
+export function createEvent(
+  _type: EventTypeType,
+  date: string,
+  peers: unknown[],
+): Result.Type<Event> {
   logger.trace("Creating node logged event");
   const event = {
     type: eventType,
@@ -33,7 +37,7 @@ export function createEvent(_type: EventTypeType, date: string, peers: any[]): R
   return event;
 }
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

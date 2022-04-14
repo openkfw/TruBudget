@@ -1,10 +1,8 @@
-import { FastifyInstance, FastifyReply, RequestGenericInterface, FastifyRequest } from "fastify";
-import Joi = require("joi");
-import VError = require("verror");
-
+import { FastifyReply, FastifyRequest, RequestGenericInterface } from "fastify";
+import { AugmentedFastifyInstance } from "types";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -15,6 +13,8 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import { WorkflowitemTraceEvent } from "./service/domain/workflow/workflowitem_trace_event";
+import Joi = require("joi");
+import VError = require("verror");
 
 const requestBodySchema = Joi.array().items({
   entityId: Joi.string().required(),
@@ -28,7 +28,7 @@ const requestBodySchema = Joi.array().items({
   }).required(),
 });
 
-function validateRequestBody(body: any): Result.Type<WorkflowitemTraceEvent[]> {
+function validateRequestBody(body): Result.Type<WorkflowitemTraceEvent[]> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
 }
@@ -108,9 +108,9 @@ const createFilter = (reply: FastifyReply, request: FastifyRequest): History.Fil
   } as History.Filter;
 };
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description:
         "View the history of a given workflowitem (filtered by what the user is allowed to see).",
@@ -228,7 +228,11 @@ interface Querystring extends RequestGenericInterface {
   eventType?: string;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get<{ Querystring: Querystring }>(
     `${urlPrefix}/workflowitem.viewHistory`,
     mkSwaggerSchema(server),

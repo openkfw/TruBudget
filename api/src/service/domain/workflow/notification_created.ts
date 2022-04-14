@@ -1,8 +1,6 @@
 import Joi = require("joi");
 import logger from "lib/logger";
-import uuid = require("uuid");
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { BusinessEvent, businessEventSchema } from "../business_event";
 import { Identity } from "../organization/identity";
@@ -11,6 +9,7 @@ import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import uuid = require("uuid");
 
 type EventTypeType = "notification_created";
 const eventType: EventTypeType = "notification_created";
@@ -73,7 +72,7 @@ export function createEvent(
   return event;
 }
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema, { allowUnknown: true });
   return !error ? value : error;
 }

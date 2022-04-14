@@ -3,6 +3,7 @@ import { fastify, FastifyInstance } from "fastify";
 import fastifyCors from "fastify-cors";
 import * as metricsPlugin from "fastify-metrics";
 import { IncomingMessage, Server, ServerResponse } from "http";
+import { AugmentedFastifyInstance } from "types";
 import logger from "../lib/logger";
 import { AuthenticatedRequest } from "./lib";
 
@@ -129,8 +130,10 @@ export const createBasicApp = (
         directives: {
           defaultSrc: ["'self'"],
           imgSrc: ["'self'", "data:", "validator.swagger.io"],
-          scriptSrc: ["'self'"].concat((instance as any).swaggerCSP.script),
-          styleSrc: ["'self'", "https:"].concat((instance as any).swaggerCSP.style),
+          scriptSrc: ["'self'"].concat((instance as AugmentedFastifyInstance).swaggerCSP.script),
+          styleSrc: ["'self'", "https:"].concat(
+            (instance as AugmentedFastifyInstance).swaggerCSP.style,
+          ),
         },
       },
     };

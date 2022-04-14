@@ -67,26 +67,21 @@ export async function publish(
     createdBy: string;
     creationTimestamp: Date;
     dataVersion: number; // integer
-    data: object;
+    data;
   },
 ): Promise<Event> {
   const { intent, data } = args;
   let event;
   if (intent === "network.registerNode") {
-    event = NodeRegistered.createEvent(
-      "system",
-      "system",
-      (data as any).address,
-      (data as any).organization,
-    );
+    event = NodeRegistered.createEvent("system", "system", data.address, data.organization);
   } else if (intent === "network.declineNode") {
     event = NodeDeclined.createEvent(
       "system",
       "system",
-      (data as any).address,
-      (data as any).organization,
-      (data as any).declinerAddress,
-      (data as any).declinerOrganization,
+      data.address,
+      data.organization,
+      data.declinerAddress,
+      data.declinerOrganization,
     );
   }
 
@@ -243,7 +238,7 @@ export async function active(multichain: MultichainClient): Promise<number> {
   return networkInfo.connections;
 }
 
-function handleCreate(input: any): NodeInfo | undefined {
+function handleCreate(input): NodeInfo | undefined {
   const event = NodeRegistered.validate(input);
   if (Result.isErr(event)) {
     return undefined;
@@ -367,6 +362,6 @@ function augmentAddress(
   };
 }
 
-function wtf(thing: any): never {
-  throw Error(`omg what is this: ${JSON.stringify(thing)}`);
+function wtf(thing): never {
+  throw Error(` 🙃 🙃 omg what is this: ${JSON.stringify(thing)}`);
 }

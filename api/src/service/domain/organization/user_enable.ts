@@ -1,19 +1,19 @@
 import Joi = require("joi");
-import { VError } from "verror";
-import isEqual = require("lodash.isequal");
-import Intent from "../../../authz/intents";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { VError } from "verror";
+import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
-import { ServiceUser } from "./service_user";
-import * as UserEventSourcing from "./user_eventsourcing";
-import * as UserEnabled from "./user_enabled";
-import * as UserRecord from "./user_record";
 import * as GlobalPermissions from "../workflow/global_permissions";
-import logger from "lib/logger";
+import { ServiceUser } from "./service_user";
+import * as UserEnabled from "./user_enabled";
+import * as UserEventSourcing from "./user_eventsourcing";
+import * as UserRecord from "./user_record";
+import isEqual = require("lodash.isequal");
 
 export interface RequestData {
   userId: string;
@@ -23,7 +23,7 @@ const requestDataSchema = Joi.object({
   userId: UserRecord.idSchema.required(),
 });
 
-export function validate(input: any): Result.Type<RequestData> {
+export function validate(input): Result.Type<RequestData> {
   const { value, error } = Joi.validate(input, requestDataSchema);
   return !error ? value : error;
 }

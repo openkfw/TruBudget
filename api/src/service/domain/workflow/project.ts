@@ -7,8 +7,8 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions, permissionsSchema } from "../permissions";
-import { ProjectTraceEvent, projectTraceEventSchema } from "./project_trace_event";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+import { ProjectTraceEvent, projectTraceEventSchema } from "./project_trace_event";
 
 export type Id = string;
 
@@ -48,7 +48,7 @@ const schema = Joi.object({
   tags: Joi.array().items(tagsSchema).required().unique().default([]),
 });
 
-export function validate(input: any): Result.Type<Project> {
+export function validate(input): Result.Type<Project> {
   const { error } = Joi.validate(input, schema);
   return error === null ? (input as Project) : error;
 }

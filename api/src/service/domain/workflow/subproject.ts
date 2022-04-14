@@ -56,7 +56,7 @@ const schema = Joi.object({
   additionalData: AdditionalData.schema.required(),
 });
 
-export function validate(input: any): Result.Type<Subproject> {
+export function validate(input): Result.Type<Subproject> {
   const { error } = Joi.validate(input, schema);
   return error === null ? (input as Subproject) : error;
 }

@@ -219,6 +219,7 @@ function copyWorkflowitemExceptLog(
 ): Workflowitem.Workflowitem {
   const { log, ...tmp } = workflowitem;
   const copy = deepcopy(tmp);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (copy as any).log = [];
   return copy as Workflowitem.Workflowitem;
 }

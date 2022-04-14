@@ -7,8 +7,9 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
-import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
+import { UploadedDocument } from "./document";
 import * as DocumentShared from "./document_shared";
+import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
 
 import VError = require("verror");
 
@@ -110,7 +111,7 @@ export async function getDocument(
   workflowitemId: string,
   documentId: string,
   repository: Repository,
-): Promise<Result.Type<any>> {
+): Promise<Result.Type<UploadedDocument>> {
   logger.trace("Fetching document: ", documentId, "...");
 
   // check for permissions etc

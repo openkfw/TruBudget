@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -9,9 +9,9 @@ import * as Group from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description: "List all user groups.",
       tags: ["group"],
@@ -65,7 +65,11 @@ interface Service {
   listGroups(ctx: Ctx, user: ServiceUser): Promise<Result.Type<Group.Group[]>>;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get(`${urlPrefix}/group.list`, mkSwaggerSchema(server), (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
 

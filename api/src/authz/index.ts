@@ -1,5 +1,5 @@
+import { TruBudgetError } from "error";
 import logger from "../lib/logger";
-import { AuthzError } from "./AuthzError";
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
 import { People, Permissions } from "./types";
@@ -23,7 +23,7 @@ export const getAllowedIntents = (
   if (userAndGroups.includes("root")) {
     return allIntents;
   }
-  const allowedIntents = Object.keys(resourcePermissions as any).filter((intent) =>
+  const allowedIntents = Object.keys(resourcePermissions as string).filter((intent) =>
     hasIntersection(userAndGroups, resourcePermissions[intent]),
   ) as Intent[];
   return allowedIntents;
@@ -68,7 +68,7 @@ export const authorized = (token: AuthToken, intent: Intent) => async (
 ): Promise<undefined> => {
   const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
   if (!canDo) {
-    throw new AuthzError({ kind: "NotAuthorized", token, intent });
+    throw new TruBudgetError({ kind: "NotAuthorized", token, intent });
   }
   return;
 };

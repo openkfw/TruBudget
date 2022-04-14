@@ -8,6 +8,7 @@ export interface AuthenticatedRequest extends FastifyRequest {
 }
 export interface SuccessResponse {
   apiVersion: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 }
 

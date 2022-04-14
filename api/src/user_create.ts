@@ -1,16 +1,16 @@
-import { FastifyInstance } from "fastify";
+import * as Joi from "joi";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
+import { safeIdSchema, safePasswordSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserCreate from "./service/domain/organization/user_create";
-import * as Joi from "joi";
-import { safeStringSchema, safeIdSchema, safePasswordSchema } from "./lib/joiValidation";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -39,7 +39,7 @@ const requestBodyV1Schema = Joi.object({
 type RequestBody = RequestBodyV1;
 const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
 
-function validateRequestBody(body: any): Result.Type<RequestBody> {
+function validateRequestBody(body): Result.Type<RequestBody> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
 }
@@ -51,9 +51,9 @@ interface ResponseUserRecord {
   address: string;
 }
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description: "Create a new user.",
       tags: ["global"],
@@ -139,7 +139,11 @@ interface Service {
   ): Promise<Result.Type<AuthToken>>;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.post(`${urlPrefix}/global.createUser`, mkSwaggerSchema(server), (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
 

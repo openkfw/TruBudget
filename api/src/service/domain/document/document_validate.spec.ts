@@ -98,7 +98,7 @@ const repository = {
     if (identity === "bob") return ["bob"];
     return Error(`unexpected identity: ${identity}`);
   },
-  getDocumentsEvents: () => Promise.resolve([] as any),
+  getDocumentsEvents: () => Promise.resolve([]),
   getAllProjects: () => Promise.resolve([]),
   getAllSubprojects: () => Promise.resolve([]),
   getAllWorkflowitems: () => Promise.resolve([]),

@@ -1,15 +1,15 @@
-import { FastifyInstance } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
-import { toHttpError } from "./http_errors";
 import { AuthenticatedRequest } from "./httpd/lib";
+import { toHttpError } from "./http_errors";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as SystemInformation from "./service/domain/system_information/system_information";
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description: "Returns boolean if the multichain was provisioned successfully",
       tags: ["system"],
@@ -52,7 +52,11 @@ interface Service {
   ): Promise<Result.Type<SystemInformation.ProvisioningStatus>>;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get(`${urlPrefix}/provisioned`, mkSwaggerSchema(server), (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
     const user: ServiceUser = {

@@ -1,4 +1,5 @@
-import { FastifyInstance, RequestGenericInterface } from "fastify";
+import { RequestGenericInterface } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
@@ -14,9 +15,9 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description:
         "Retrieve all workflowitems of a given subproject. Those items the " +
@@ -161,7 +162,11 @@ interface Request extends RequestGenericInterface {
   };
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get<Request>(
     `${urlPrefix}/workflowitem.list`,
     mkSwaggerSchema(server),
