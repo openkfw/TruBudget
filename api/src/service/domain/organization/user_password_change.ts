@@ -68,15 +68,18 @@ export async function changeUserPassword(
 
   logger.trace({ issuer }, "Checking if issuer and revokee belong to the same organization");
   if (userResult.organization !== issuerOrganization) {
-    return new NotAuthorized({ ctx, userId: issuer.id, intent });
+    return new NotAuthorized({
+      ctx,
+      userId: issuer.id,
+      intent,
+      isOtherOrganization: true,
+    });
   }
 
-  logger.trace("Check if user is root");
-  if (issuer.id !== "root") {
-    const isAuthorized = UserRecord.permits(user, issuer, [intent]);
-    if (!isAuthorized) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const isAuthorized = UserRecord.permits(user, issuer, [intent]) || issuer.id === "root";
+  if (!isAuthorized) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent });
   }
 
   const result = UserEventSourcing.newUserFromEvent(ctx, user, passwordChanged);

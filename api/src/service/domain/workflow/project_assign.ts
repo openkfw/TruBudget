@@ -42,9 +42,9 @@ export async function assignProject(
     return new VError(projectAssigned, "failed to create event");
   }
 
-  logger.trace({ issuer }, "Checking authorization of issuer");
+  logger.trace({ issuer }, "Checking if user has permissions");
   const intent = "project.assign";
-  if (issuer.id !== "root" && !Project.permits(project, issuer, [intent])) {
+  if (!Project.permits(project, issuer, [intent])) {
     return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
   }
 

@@ -137,12 +137,10 @@ export async function updateWorkflowitem(
     return new VError(newEvent, "cannot update workflowitem");
   }
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const intent = "workflowitem.update";
-    if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: workflowitem });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const intent = "workflowitem.update";
+  if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: workflowitem });
   }
 
   logger.trace({ event: newEvent }, "Checking event validity");

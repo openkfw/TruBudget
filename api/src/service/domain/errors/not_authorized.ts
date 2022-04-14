@@ -1,4 +1,3 @@
-import { isArray } from "util";
 import { VError } from "verror";
 
 import Intent from "../../../authz/intents";
@@ -8,14 +7,15 @@ interface Info {
   ctx: Ctx;
   userId: string;
   intent: Intent | Intent[];
+  isOtherOrganization?: boolean;
   target?: any;
 }
 
 function mkMessage(info: Info): string {
-  const { userId, intent } = info;
+  const { userId, intent, isOtherOrganization = false } = info;
   return `user ${userId} is not authorized for ${
-    isArray(intent) ? `any of ${intent.join(", ")}` : intent
-  }`;
+    Array.isArray(intent) ? `any of ${intent.join(", ")}` : intent
+  }. ${isOtherOrganization ? "The user belongs to another organization." : ""}`;
 }
 
 function mkInfo(info: Info): Info {

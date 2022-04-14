@@ -70,13 +70,11 @@ describe("assign workflowitem: authorization", () => {
     assert.instanceOf(result, NotAuthorized, "The error is due to missing authorization");
   });
 
-  it("The root user doesn't need permission to change a workflowitem's assignee.", async () => {
-    const assigner = root;
-    const assignee = bob;
+  it("The root user can never change a workflowitem's assignee.", async () => {
     const result = await assignWorkflowitem(
       ctx,
-      assigner,
-      assignee.id,
+      root,
+      bob.id,
       projectId,
       subprojectId,
       workflowitemId,
@@ -85,14 +83,14 @@ describe("assign workflowitem: authorization", () => {
         getUsersForIdentity: async (identity) => {
           if (identity === "alice") return ["alice"];
           if (identity === "bob") return ["bob"];
+          if (identity === "root") return ["root"];
           throw Error(`unexpected identity: ${identity}`);
         },
         applyWorkflowitemType: () => [],
       },
     );
 
-    // No errors, despite the missing permissions:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 });
 

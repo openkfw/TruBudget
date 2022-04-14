@@ -70,7 +70,7 @@ describe("update project: authorization", () => {
     assert.instanceOf(result, NotAuthorized);
   });
 
-  it("The root user doesn't need permission to update a project", async () => {
+  it("The root user is not allowed to update a project", async () => {
     const modification: Modification = { displayName: projectName };
     const result = await updateProject(ctx, root, projectId, modification, {
       ...baseRepository,
@@ -79,7 +79,7 @@ describe("update project: authorization", () => {
         permissions: {},
       }),
     });
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 });
 

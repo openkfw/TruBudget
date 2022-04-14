@@ -68,6 +68,7 @@ export async function getUserAssignments(
       ctx,
       userId: issuer.id,
       intent,
+      isOtherOrganization: true,
     });
   }
 

@@ -94,6 +94,7 @@ interface Service {
   grantUserPermission(
     ctx: Ctx,
     granter: ServiceUser,
+    granterOrganization: string,
     userId: UserRecord.Id,
     grantee: Identity,
     intent: Intent,
@@ -112,6 +113,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         groups: (request as AuthenticatedRequest).user.groups,
         address: (request as AuthenticatedRequest).user.address,
       };
+      const granterOrganization: string = (request as AuthenticatedRequest).user.organization;
 
       const bodyResult = validateRequestBody(request.body);
 
@@ -127,7 +129,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
       const { userId, identity: grantee, intent } = bodyResult.data;
 
       service
-        .grantUserPermission(ctx, granter, userId, grantee, intent)
+        .grantUserPermission(ctx, granter, granterOrganization, userId, grantee, intent)
         .then((result) => {
           if (Result.isErr(result)) {
             throw new VError(result, "user.intent.grantPermission failed");

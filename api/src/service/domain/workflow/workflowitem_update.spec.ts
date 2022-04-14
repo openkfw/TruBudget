@@ -85,7 +85,7 @@ describe("update workflowitem: authorization", () => {
     assert.instanceOf(result, NotAuthorized);
   });
 
-  it("The root user doesn't need permission to update a workflowitem", async () => {
+  it("The root user is not allowed to update a workflowitem", async () => {
     const modification = {};
     const result = await updateWorkflowitem(
       ctx,
@@ -102,7 +102,7 @@ describe("update workflowitem: authorization", () => {
         }),
       },
     );
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 });
 

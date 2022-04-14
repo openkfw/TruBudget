@@ -124,7 +124,11 @@ async function authenticateUser(
   }
 
   // Check if user has user.authenticate intent
-  if (!UserRecord.permits(userRecord, rootUser, ["user.authenticate"])) {
+  const canAuthenticate =
+    userRecord?.permissions["user.authenticate"] &&
+    userRecord?.permissions["user.authenticate"].some((id) => id === userId);
+
+  if (!canAuthenticate) {
     return new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
   }
 

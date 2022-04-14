@@ -54,12 +54,10 @@ export async function grantSubprojectPermission(
     return new VError(permissionGranted, "failed to create permission granted event");
   }
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const grantIntent = "subproject.intent.grantPermission";
-    if (!Subproject.permits(subproject, issuer, [grantIntent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: subproject });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const grantIntent = "subproject.intent.grantPermission";
+  if (!Subproject.permits(subproject, issuer, [grantIntent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: subproject });
   }
 
   logger.trace({ event: permissionGranted }, "Checking event validity");

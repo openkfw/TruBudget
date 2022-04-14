@@ -18,6 +18,7 @@ export async function revokeUserPermission(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
+  revokerOrganization: string,
   userId: UserRecord.Id,
   revokee: Identity,
   intent: Intent,
@@ -25,9 +26,17 @@ export async function revokeUserPermission(
   logger.debug({ revokee, intent, userId }, "Revoking user permission");
 
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
-    UserPermissionRevoke.revokeUserPermission(ctx, serviceUser, userId, revokee, intent, {
-      getTargetUser: (id) => UserQuery.getUser(conn, ctx, serviceUser, id),
-    }),
+    UserPermissionRevoke.revokeUserPermission(
+      ctx,
+      serviceUser,
+      revokerOrganization,
+      userId,
+      revokee,
+      intent,
+      {
+        getTargetUser: (id) => UserQuery.getUser(conn, ctx, serviceUser, id),
+      },
+    ),
   );
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, `failed to grant ${intent} to ${revokee}`);

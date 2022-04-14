@@ -77,13 +77,13 @@ describe("close project: preconditions", () => {
     assert.instanceOf(result, PreconditionError);
   });
 
-  it("The root user doesn't need to be assigned to close a project.", async () => {
+  it("The root is not allowed to close a project.", async () => {
     const result = await closeProject(ctx, root, projectId, {
       ...baseRepository,
       getProject: async () => ({ ...baseProject, permissions: {} }),
     });
 
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 
   it("A project may not be closed if there is at least one non-closed subproject.", async () => {
