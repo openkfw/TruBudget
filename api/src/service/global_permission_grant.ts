@@ -4,13 +4,13 @@ import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import { ConnToken } from "./conn";
+import * as GroupQuery from "./domain/organization/group_query";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
+import * as UserQuery from "./domain/organization/user_query";
 import * as GlobalPermissionsGrant from "./domain/workflow/global_permission_grant";
 import { getGlobalPermissions } from "./global_permissions_get";
-import * as GroupQuery from "./group_query";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
 
 export async function grantGlobalPermission(
   conn: ConnToken,

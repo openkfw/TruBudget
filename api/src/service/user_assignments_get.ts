@@ -1,13 +1,13 @@
-import { Ctx } from "../lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
+import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
-import * as Result from "../result";
-import * as UserAssignmentsGet from "./domain/workflow/user_assignments_get";
-import * as UserAssignments from "./domain/workflow/user_assignments";
-import * as UserQuery from "./user_query";
 import { ServiceUser } from "./domain/organization/service_user";
-import logger from "lib/logger";
+import * as UserQuery from "./domain/organization/user_query";
+import * as UserAssignments from "./domain/workflow/user_assignments";
+import * as UserAssignmentsGet from "./domain/workflow/user_assignments_get";
 
 export async function getUserAssignments(
   conn: ConnToken,
