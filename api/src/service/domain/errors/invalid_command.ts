@@ -8,7 +8,7 @@ export class InvalidCommand extends Error {
     private readonly businessEvent: BusinessEvent,
     private readonly validationErrors: Error[],
   ) {
-    // TODO this shouldn't be failed to apply event but failed to execute intent
+    // TODO for 2.x: this shouldn't be failed to apply event but failed to execute intent
     super(
       `Failed to apply ${businessEvent.type}: ${validationErrors
         .map((e) => e.message)
