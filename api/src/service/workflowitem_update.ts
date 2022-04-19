@@ -11,16 +11,16 @@ import * as DocumentShare from "./document_share";
 import { BusinessEvent } from "./domain/business_event";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
+import * as GroupQuery from "./domain/organization/group_query";
 import { ServiceUser } from "./domain/organization/service_user";
+import * as UserQuery from "./domain/organization/user_query";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemUpdate from "./domain/workflow/workflowitem_update";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
-import * as GroupQuery from "./group_query";
 import * as PublicKeyGet from "./public_key_get";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
 
 export type RequestData = WorkflowitemUpdate.RequestData;
 

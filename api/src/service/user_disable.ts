@@ -6,10 +6,10 @@ import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserDisable from "./domain/organization/user_disable";
+import * as UserQuery from "./domain/organization/user_query";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { store } from "./store";
 import { getUserAssignments } from "./user_assignments_get";
-import * as UserQuery from "./user_query";
 
 export async function disableUser(
   conn: ConnToken,

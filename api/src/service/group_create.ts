@@ -5,11 +5,11 @@ import * as Result from "../result";
 import { ConnToken } from "./conn";
 import * as GroupCreate from "./domain/organization/group_create";
 import { sourceGroups } from "./domain/organization/group_eventsourcing";
+import { groupExists } from "./domain/organization/group_query";
 import { ServiceUser } from "./domain/organization/service_user";
+import { userExists } from "./domain/organization/user_query";
 import { getGlobalPermissions } from "./global_permissions_get";
-import { groupExists } from "./group_query";
 import { store } from "./store";
-import { userExists } from "./user_query";
 
 interface Group {
   id: string;
