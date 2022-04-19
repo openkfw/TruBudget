@@ -1,6 +1,7 @@
 # TruBudget <!-- omit in TOC -->
 
-<!-- TODO add some badges -->
+![BuildStatus]https://github.com/openkfw/TruBudget/actions/workflows/github-ci.yml/badge.svg)
+![DocumentationBuildStatus](https://github.com/openkfw/TruBudget/actions/workflows/update-documentation.yml/badge.svg)
 
 # Introduction
 
