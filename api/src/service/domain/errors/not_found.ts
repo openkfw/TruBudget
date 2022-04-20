@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars-experimental */
-
 import { Ctx } from "lib/ctx";
 
 export class NotFound extends Error {

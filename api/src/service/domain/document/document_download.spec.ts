@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars-experimental */
 import { assert, expect } from "chai";
 import { Ctx } from "lib/ctx";
 import VError from "verror";

@@ -1,5 +1,5 @@
+/* eslint-disable no-unreachable */
 import { VError } from "verror";
-
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { ConnToken } from "./conn";

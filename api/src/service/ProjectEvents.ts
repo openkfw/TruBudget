@@ -116,13 +116,6 @@ export async function writeProjectAssignedToChain(
     .then(() => event);
 }
 
-export interface ProjectUpdate {
-  displayName?: string;
-  description?: string;
-  projectedBudgets?: ProjectedBudget[];
-  thumbnail?: string;
-}
-
 export async function updateProject(
   conn: ConnToken,
   issuer: Issuer,
