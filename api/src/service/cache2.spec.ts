@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars-experimental */
 import { assert } from "chai";
 import * as isEmpty from "lodash.isempty";
 import { VError } from "verror";
