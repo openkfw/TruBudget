@@ -1,13 +1,13 @@
 version: "3.2"
 services:
-  master:
+  alpha:
     image: trubudget/blockchain:latest
     environment:
       RPC_PORT: ${RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
       RPC_PASSWORD: ${RPC_PASSWORD}
     volumes:
-      - /tmp/bcMasterVolume:/root/.multichain
+      - /tmp/bcAlphaVolume:/root/.multichain
     ports:
       - "7447:7447"
       - "8000:${RPC_PORT}"
@@ -22,7 +22,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
     links:
-      - master
+      - alpha
     ports:
       - "8080:${API_PORT}"
   provisioning:

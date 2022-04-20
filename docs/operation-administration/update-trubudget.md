@@ -66,7 +66,7 @@ For further information how to back up and restore a node check out the MultiCha
 
 ### wallet.dat
 
-In the wallet.dat file the wallet address and the private key of a node's wallet is stored. Based on a node's address it will be granted access by the master node. The node is then identified and remembered by its wallet address within the network. Since it's a node's identification it has to be kept confidential and should not be shared with any third party.
+In the wallet.dat file the wallet address and the private key of a node's wallet is stored. Based on a node's address it will be granted access by the alpha node. The node is then identified and remembered by its wallet address within the network. Since it's a node's identification it has to be kept confidential and should not be shared with any third party.
 
 ### params.dat
 

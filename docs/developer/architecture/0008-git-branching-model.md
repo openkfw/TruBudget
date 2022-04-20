@@ -21,7 +21,7 @@ Currently, branches are used to draft releases. Going forward, the branching mod
 
 ## Decision
 
-- `master` continues to be the main development branch.
+- `main` continues to be the main development branch.
 
 - Releases are tagged using an [annotated Git tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) (optionally [signing the tag](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)) like this:
 
@@ -45,8 +45,8 @@ The steps required for making a new release are:
 
 1. Increase the version number (see #33).
 1. Update the CHANGELOG.md file to reflect the release.
-1. Tag the commit on the master branch (see above).
-1. Checkout the release branch of the current major version (e.g. `release_1.x.x`) and `git merge master`.
+1. Tag the commit on the main branch (see above).
+1. Checkout the release branch of the current major version (e.g. `release_1.x.x`) and `git merge main`.
 
 As soon as a network is ready to be upgraded to the new version, its branch may be updated:
 
@@ -57,5 +57,5 @@ As soon as a network is ready to be upgraded to the new version, its branch may 
 
 - The Git history shows when a release happened and who released it. Also, there is no
   confusion between releases and branches.
-- The URL stays the same as long as all nodes in the network are compatible with each other. The URL does change, however, for changes that break compatability among nodes in the network, as this warrants a new major version number.
+- The URL stays the same as long as all nodes in the network are compatible with each other. The URL does change, however, for changes that break compatibility among nodes in the network, as this warrants a new major version number.
 - It is straightforward to roll out updates to different networks running the same major version of TruBudget.

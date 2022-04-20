@@ -12,10 +12,10 @@ function unset_alias() {
 set_alias Dc='docker-compose'
 
 unset_alias multichain-cli
-unset_alias slave-multichain-cli
+unset_alias beta-multichain-cli
 
-unset_alias exec-master
-unset_alias exec-slave
+unset_alias exec-alpha
+unset_alias exec-beta
 
 unset -f grant
 unset -f grant_admin

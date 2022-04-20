@@ -37,8 +37,8 @@ bash startDev.sh
 
 The pre-set cluster contains:
 
-- 1 Master-Node (Blockchain)
-- 1 API connected to Master-Node
+- 1 Alpha-Node (Blockchain)
+- 1 API connected to Alpha-Node
 - 1 Frontend connected to API
 - 1 Storage Service connected to API
 - 1 Minio connected to Storage-Service

@@ -1,6 +1,6 @@
 version: "3"
 services:
-  blockchain-master:
+  blockchain-alpha:
     build:
       context: ../blockchain
     environment:

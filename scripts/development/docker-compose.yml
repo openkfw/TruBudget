@@ -7,7 +7,7 @@ networks:
         - subnet: 172.20.0.0/24
 
 services:
-  master-node:
+  alpha-node:
     build: ../../blockchain
     environment:
       RPC_PORT: ${RPC_PORT}
@@ -26,14 +26,14 @@ services:
 
     # volume for persisting data from multichain
     # volumes:
-    #   - ~/masterVolume:/root/.multichain
+    #   - ~/alphaVolume:/root/.multichain
     networks:
       mynetwork:
         ipv4_address: 172.20.0.11
     ports:
       - ${RPC_PORT}:${RPC_PORT} # port for connecting API
       - "8085:8085" # port for backup
-      - "7447:7447" # port for connecting slaves (P2P)
+      - "7447:7447" # port for connecting betas (P2P)
 
   emaildb:
     image: postgres
@@ -74,13 +74,13 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.3
 
-  master-api:
+  alpha-api:
     build: ../../api
     environment:
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
-      RPC_HOST: master-node
+      RPC_HOST: alpha-node
       RPC_PORT: ${RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: ${RPC_PASSWORD}
@@ -103,7 +103,7 @@ services:
       - "../../api/src:/home/node/src:delegated"
       - ../../api/dist:/home/node/dist
     depends_on:
-      - master-node
+      - alpha-node
     networks:
       mynetwork:
         ipv4_address: 172.20.0.4
@@ -134,7 +134,7 @@ services:
         ipv4_address: 172.20.0.5
     depends_on:
       - emaildb
-      - master-api
+      - alpha-api
     ports:
       - "8890:8890"
 
@@ -143,7 +143,7 @@ services:
       context: ../../provisioning
     command: ["npm", "start"]
     environment:
-      API_HOST: master-api
+      API_HOST: alpha-api
       API_PORT: ${API_PORT}
       ENVIRONMENT_TYPE: TEST
       #Other provisioning data:
@@ -158,14 +158,14 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.6
     depends_on:
-      - master-api
+      - alpha-api
 
   excel-export-service:
     build: ../../excel-export-service
     environment:
-      PROD_API_HOST: master-api
+      PROD_API_HOST: alpha-api
       PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: master-api
+      TEST_API_HOST: alpha-api
       TEST_API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
       JWT_SECRET: ${JWT_SECRET}
@@ -182,7 +182,7 @@ services:
     ports:
       - "${EXPORT_PORT}:${EXPORT_PORT}"
     depends_on:
-      - master-api
+      - alpha-api
 
   storage-service:
     build:
@@ -205,7 +205,7 @@ services:
         ipv4_address: 172.20.0.8
     depends_on:
       - minio
-      - master-api
+      - alpha-api
     ports:
       - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
 
@@ -216,7 +216,7 @@ services:
       context: ../../frontend
       dockerfile: Dockerfile.dev
       args:
-        API_HOST: master-api
+        API_HOST: alpha-api
         API_PORT: ${API_PORT}
     environment:
       NODE_ENV: ${NODE_ENV}
@@ -224,9 +224,9 @@ services:
       REACT_APP_VERSION: ${REACT_APP_VERSION}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
       REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
-      PROD_API_HOST: master-api
+      PROD_API_HOST: alpha-api
       PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: master-api
+      TEST_API_HOST: alpha-api
       TEST_API_PORT: ${API_PORT}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
@@ -249,33 +249,33 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - master-api
+      - alpha-api
 
-  slave-node:
+  beta-node:
     build:
       context: ../../blockchain
     environment:
-      RPC_PORT: ${SLAVE_RPC_PORT}
+      RPC_PORT: ${BETA_RPC_PORT}
       RPC_PASSWORD: ${RPC_PASSWORD}
-      ORGANIZATION: ${SLAVE_ORGANIZATION}
-      # P2P_HOST must be a valid IP-Address. If you pass a domain like "master-node", the windows kernel will shutdown the process because of a segmentation fault
-      P2P_HOST: 172.20.0.11 # IP of master-node
+      ORGANIZATION: ${BETA_ORGANIZATION}
+      # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
+      P2P_HOST: 172.20.0.11 # IP of alpha-node
       P2P_PORT: 7447
       API_PROTO: http
-      API_HOST: master-api # API to send register request
+      API_HOST: alpha-api # API to send register request
       API_PORT: ${API_PORT}
     depends_on:
-      - master-node
-      - master-api
+      - alpha-node
+      - alpha-api
     networks:
       mynetwork:
         ipv4_address: 172.20.0.12
     # volume for persisting data from multichain
     # volumes:
-    #   - /slave1Volume:/root/.multichain
+    #   - /beta1Volume:/root/.multichain
     ports:
-      - ${SLAVE_RPC_PORT}:${SLAVE_RPC_PORT}
-      - "7448:7447" # slave-node port is 7448 on host
+      - ${BETA_RPC_PORT}:${BETA_RPC_PORT}
+      - "7448:7447" # beta-node port is 7448 on host
     privileged: true
 
   logging-service:
@@ -283,7 +283,7 @@ services:
       context: ../../logging-service
     environment:
       LOGGER_PORT: ${LOGGER_PORT}
-      API_HOST: master-api
+      API_HOST: alpha-api
       API_PORT: ${API_PORT}
       LOG_LEVEL: ${LOG_LEVEL}
       LOGGING_SERVICE_CACHE_DURATION: ${LOGGING_SERVICE_CACHE_DURATION}
@@ -295,14 +295,14 @@ services:
     ports:
       - "${LOGGER_PORT}:${LOGGER_PORT}"
 
-  slave-api:
+  beta-api:
     build: ../../api
     environment:
-      PORT: ${SLAVE_API_PORT}
-      ORGANIZATION: ${SLAVE_ORGANIZATION}
-      ORGANIZATION_VAULT_SECRET: ${SLAVE_ORGANIZATION_VAULT_SECRET}
-      RPC_HOST: slave-node
-      RPC_PORT: ${SLAVE_RPC_PORT}
+      PORT: ${BETA_API_PORT}
+      ORGANIZATION: ${BETA_ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${BETA_ORGANIZATION_VAULT_SECRET}
+      RPC_HOST: beta-node
+      RPC_PORT: ${BETA_RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       RPC_PASSWORD: ${RPC_PASSWORD}
       DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
@@ -322,19 +322,19 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.44
     ports:
-      - ${SLAVE_API_PORT}:${SLAVE_API_PORT}
+      - ${BETA_API_PORT}:${BETA_API_PORT}
     depends_on:
-      - slave-node
+      - beta-node
 
-  slave-frontend:
+  beta-frontend:
     restart: always
     stdin_open: true 
     build:
       context: ../../frontend
       dockerfile: Dockerfile.dev
       args:
-        API_HOST: slave-api
-        API_PORT: ${SLAVE_API_PORT}
+        API_HOST: beta-api
+        API_PORT: ${BETA_API_PORT}
     environment:
       NODE_ENV: ${NODE_ENV}
       REACT_APP_VERSION: ${REACT_APP_VERSION}
@@ -349,7 +349,7 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.92
     depends_on:
-      - master-api
+      - alpha-api
     ports:
       - "3005:3000"
     

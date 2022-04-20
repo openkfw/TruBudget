@@ -5,7 +5,7 @@
 global:
   branch: my-branch
   image:
-    tag: master
+    tag: main
 
 provisioning:
   enabled: true

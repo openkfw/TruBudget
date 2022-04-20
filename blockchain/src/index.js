@@ -14,7 +14,7 @@ const logService = require("trubudget-logging-service");
 const {
   startEmailNotificationWatcher,
 } = require("./multichain-feed/email-notifications/notificationWatcher");
-const { startSlave, registerNodeAtMaster } = require("./connectToChain");
+const { startBeta, registerNodeAtAlpha } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
 
 const {
@@ -68,7 +68,7 @@ const EMAIL_SERVICE_ENABLED =
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
 const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
-const isMaster = P2P_HOST ? false : true;
+const isAlpha = P2P_HOST ? false : true;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
   ? `-blocknotify=${blockNotifyArg}`
   : "";
@@ -112,7 +112,7 @@ const spawnProcess = (startProcess) => {
       const retryIntervalMs = 10000;
       log.info(
         `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${retryIntervalMs /
-          1000} Seconds...`,
+        1000} Seconds...`,
       );
       await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));
       spawnProcess(startProcess);
@@ -124,7 +124,7 @@ const multichainFeedEnabled =
   process.env.MULTICHAIN_FEED === "ENABLED" || EMAIL_SERVICE_ENABLED;
 
 configureChain(
-  isMaster,
+  isAlpha,
   CHAINNAME,
   multichainDir,
   RPC_PORT,
@@ -135,7 +135,7 @@ configureChain(
 );
 
 function initMultichain() {
-  if (isMaster) {
+  if (isAlpha) {
     spawnProcess(() =>
       startMultichainDaemon(
         CHAINNAME,
@@ -147,7 +147,7 @@ function initMultichain() {
     );
   } else {
     spawnProcess(() =>
-      startSlave(
+      startBeta(
         CHAINNAME,
         API_PROTO,
         API_HOST,
@@ -161,7 +161,7 @@ function initMultichain() {
     );
     setTimeout(
       () =>
-        registerNodeAtMaster(
+        registerNodeAtAlpha(
           ORGANIZATION,
           API_PROTO,
           API_HOST,
@@ -353,6 +353,6 @@ app.post("/chain", async (req, res) => {
   }
 });
 
-app.listen(port, function() {
+app.listen(port, function () {
   log.info(`App listening on ${port}`);
 });

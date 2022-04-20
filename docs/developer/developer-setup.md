@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Setup
 
-This document describes how to set up your environment to start developing and debugging the TruBudget application. If you want to contribute to TruBudget please check out the guidelines in the [CONTRIBUTING.md](https://github.com/openkfw/TruBudget/blob/master/.github/CONTRIBUTING.md).
+This document describes how to set up your environment to start developing and debugging the TruBudget application. If you want to contribute to TruBudget please check out the guidelines in the [CONTRIBUTING.md](https://github.com/openkfw/TruBudget/blob/main/.github/CONTRIBUTING.md).
 
 ## Table of Contents
 
@@ -177,8 +177,8 @@ This script sets the `.env` - file in the development directory automatically. N
 
 Following services are dockerized with hot-reloading:
 
-- Blockchain (master node)
-- API (master API)
+- Blockchain (alpha node)
+- API (alpha API)
 - Provisioning (feeds application with dummy data)
 - Frontend
 - Excel export
@@ -206,7 +206,7 @@ Hot reloading with docker requires a lot of processing power (due to docker volu
 
 #### Blockchain
 
-The blockchain works as data layer for the Trubudget application. We suggest reading the [README.md](https://github.com/openkfw/TruBudget/tree/master/blockchain/README.md) file in the `/blockchain` to have a better idea on how the blockchain layer works in TruBudget. Also, take a look at the [multichain] website to see how the multichain works.
+The blockchain works as data layer for the Trubudget application. We suggest reading the [README.md](https://github.com/openkfw/TruBudget/tree/main/blockchain/README.md) file in the `/blockchain` to have a better idea on how the blockchain layer works in TruBudget. Also, take a look at the [multichain] website to see how the multichain works.
 
 We start by creating an instance of the blockchain.
 
@@ -240,9 +240,9 @@ If you are developing on Windows, we recommend using the Git Bash to run the `st
 
 The API takes care of the communication between the blockchain and the frontend and basically serves as backend.
 The API is developed using [Node.js], with [Fastify], [Axios], [Joi]
-The proper setting of environment variables is important so the API can communicate with the blockchain correctly. Details regarding the environment variables can be found [here](https://github.com/openkfw/TruBudget/blob/master/api/README.md).
+The proper setting of environment variables is important so the API can communicate with the blockchain correctly. Details regarding the environment variables can be found [here](https://github.com/openkfw/TruBudget/blob/main/api/README.md).
 
-The API is structured into layers (application layer, service layer, domain layer) and each of these layers has its own language. There is a README file in each of the layers, where the structure of the API and the current layer is described in detail. You can start by checking out this [link](https://github.com/openkfw/TruBudget/blob/master/api/src/README.md) to get more details.
+The API is structured into layers (application layer, service layer, domain layer) and each of these layers has its own language. There is a README file in each of the layers, where the structure of the API and the current layer is described in detail. You can start by checking out this [link](https://github.com/openkfw/TruBudget/blob/main/api/src/README.md) to get more details.
 
 To start the api open your favorite shell, navigate to your api folder and follow these instructions:
 
@@ -308,11 +308,11 @@ The API-Documentation should then be available at http://localhost:8080/api/docu
 
 ##### Using Postman
 
-One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/openkfw/TruBudget/blob/master/api/postman/TruBudget.postman_collection.json) ready to be imported into Postman.
+One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/openkfw/TruBudget/blob/main/api/postman/TruBudget.postman_collection.json) ready to be imported into Postman.
 
 #### Frontend
 
-After initializing the blockchain and api, we can now start the frontend to visualize the data. For developing the frontend we use [React], along with the [Redux-Saga] library and the [Material-UI] framework. You can check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/frontend/README.md) for more details about the frontend.
+After initializing the blockchain and api, we can now start the frontend to visualize the data. For developing the frontend we use [React], along with the [Redux-Saga] library and the [Material-UI] framework. You can check out the [README.md](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md) for more details about the frontend.
 
 Navigate to the frontend folder:
 
@@ -328,7 +328,7 @@ cd ../frontend
 PORT=3000
 ```
 
-**Additionally** you can connect the frontend to the optional excel export service, by adding the environment variables mentioned in the excel-export section of the [README.md](https://github.com/openkfw/TruBudget/blob/master/frontend/README.md#Excel-Export-Service)
+**Additionally** you can connect the frontend to the optional excel export service, by adding the environment variables mentioned in the excel-export section of the [README.md](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md#Excel-Export-Service)
 
 2. Install node-modules
 
@@ -359,7 +359,7 @@ You do not need to run every project separately if you are developing on a singl
 
 #### Provisioning (Optional)
 
-This part will initiate the blockchain with test user and project data. The environment variables for this step differ slightly from the ones for the API, so please set them accordingly. You can skip this part if you don't want to have initial test data on your blockchain. Check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/provisioning/README.md) for more details.
+This part will initiate the blockchain with test user and project data. The environment variables for this step differ slightly from the ones for the API, so please set them accordingly. You can skip this part if you don't want to have initial test data on your blockchain. Check out the [README.md](https://github.com/openkfw/TruBudget/blob/main/provisioning/README.md) for more details.
 
 ```bash
 cd ../provisioning
@@ -390,7 +390,7 @@ npm start
 #### Excel-Export (Optional)
 
 There is a service that exports TruBudget data into an Excel sheet. For exporting we use the npm package [exceljs].
-The service is a node package and needs to be started separately. More details regarding the excel-export service can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/excel-export-service/README.md).
+The service is a node package and needs to be started separately. More details regarding the excel-export service can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/main/excel-export-service/README.md).
 
 To start the service locally, follow these commands:
 
@@ -425,7 +425,7 @@ npm start
 The service is then available either on the host and port set by the environment variable or `localhost:8888` by default.
 
 :::note
-in order to access the excel export service from the UI, you should start the frontend with some additional environment variables as mentioned in the excel-export section of the [frontend README.md](https://github.com/openkfw/TruBudget/blob/master/frontend/README.md#Excel-Export-Service) file.
+in order to access the excel export service from the UI, you should start the frontend with some additional environment variables as mentioned in the excel-export section of the [frontend README.md](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md#Excel-Export-Service) file.
 :::
 
 :::note
@@ -436,19 +436,19 @@ Another way to start the excel export service is in a docker container. Using th
 
 The email notification service is responsible for saving/deleting email adresses per Trubudget user in a connected database. These email addresses are used to send configurable notifications to a connected SMTP server.
 
-If you want to start this service or simply see more details regarding this feature you can check out the [README.md](https://github.com/openkfw/TruBudget/blob/master/email-notification-service/README.md) file.
+If you want to start this service or simply see more details regarding this feature you can check out the [README.md](https://github.com/openkfw/TruBudget/blob/main/email-notification-service/README.md) file.
 
 #### Storage-Service (Optional)
 
 The storage service is responsible for saving/accessing documents to Minio, an external storage server.
 
-More details and how to enable the storage service with an external storage can be found in [README.md](https://github.com/openkfw/TruBudget/blob/master/storage-service/README.md) file.
+More details and how to enable the storage service with an external storage can be found in [README.md](https://github.com/openkfw/TruBudget/blob/main/storage-service/README.md) file.
 
 ## Tests
 
 ### End-to-end Tests
 
-Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. If you want to start all e2e-tests to check if your changes are not breaking any stuff we recommend the [Docker Compose Setup](#dockerized-application-recommended). More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) file.
+Before checking in, you should always run the end-to-end test which explores / tests the whole functionality of the application. For end-to-end testing we use the testing framework [Cypress]. If you want to start all e2e-tests to check if your changes are not breaking any stuff we recommend the [Docker Compose Setup](#dockerized-application-recommended). More details regarding the environment variables can be found in the [README.md](https://github.com/openkfw/TruBudget/blob/main/e2e-test/README.md) file.
 
 #### Prerequisits
 
@@ -487,7 +487,7 @@ npm run e2etest
 
 or through the Cypress frontend under settings.
 
-For further information see the [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md) of /e2e-test
+For further information see the [README.md](https://github.com/openkfw/TruBudget/blob/main/e2e-test/README.md) of /e2e-test
 
 :::note
 The .env file is needed.
@@ -520,7 +520,7 @@ npm run test:here <folderName> <describeString>
 
 ### CI/CD
 
-The CI/CD is described [here](https://github.com/openkfw/TruBudget/tree/master/.github/workflows/README.md)
+The CI/CD is described [here](https://github.com/openkfw/TruBudget/tree/main/.github/workflows/README.md)
 
 ## Links
 
@@ -528,13 +528,13 @@ Here you can find a summary of all the technologies used in TruBudget with links
 
 ### Blockchain
 
-- [README.md](https://github.com/openkfw/TruBudget/blob/master/blockchain/README.md)
+- [README.md](https://github.com/openkfw/TruBudget/blob/main/blockchain/README.md)
 - [Multichain](https://www.multichain.com/developers/)
-- [Multichain-CLI tutorial](https://github.com/openkfw/TruBudget/blob/master/doc/tutorials/multichain-cli/multichain-cli.md)
+- [Multichain-CLI tutorial](https://github.com/openkfw/TruBudget/blob/main/doc/tutorials/multichain-cli/multichain-cli.md)
 
 ### API
 
-- [README.md](https://github.com/openkfw/TruBudget/blob/master/api/README.md)
+- [README.md](https://github.com/openkfw/TruBudget/blob/main/api/README.md)
 - [Node.js]
 - [Fastify]
 - [Axios]
@@ -542,23 +542,23 @@ Here you can find a summary of all the technologies used in TruBudget with links
 
 ### Frontend
 
-- [README.md](https://github.com/openkfw/TruBudget/blob/master/frontend/README.md)
+- [README.md](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md)
 - [React]
 - [Redux-Saga]
 - [Material-UI]
 
 ### Provisioning
 
-- [README.md](https://github.com/openkfw/TruBudget/blob/master/provisioning/README.md)
+- [README.md](https://github.com/openkfw/TruBudget/blob/main/provisioning/README.md)
 
 ### Excel-Export
 
-- [README.md](https://github.com/openkfw/TruBudget/blob/master/excel-export-service/README.md)
+- [README.md](https://github.com/openkfw/TruBudget/blob/main/excel-export-service/README.md)
 - [Exceljs]
 
 ### E2E-Tests
 
-- [README.md](https://github.com/openkfw/TruBudget/blob/master/e2e-test/README.md)
+- [README.md](https://github.com/openkfw/TruBudget/blob/main/e2e-test/README.md)
 - [Cypress]
 
 ### Unit-Tests
@@ -585,6 +585,6 @@ Here you can find a summary of all the technologies used in TruBudget with links
 <!--
 | Description           | Link                                                                                                              |
 | :-------------------- | :---------------------------------------------------------------------------------------------------------------- |
-| How to run e2e-tests? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#end-to-end-tests |
-| How to run unit-test? | https://github.com/openkfw/TruBudget/blob/master/doc/wiki/Contributor-Guide/Contributor-Guide.md#unit-tests       |
+| How to run e2e-tests? | https://github.com/openkfw/TruBudget/blob/main/doc/wiki/Contributor-Guide/Contributor-Guide.md#end-to-end-tests |
+| How to run unit-test? | https://github.com/openkfw/TruBudget/blob/main/doc/wiki/Contributor-Guide/Contributor-Guide.md#unit-tests       |
 -->

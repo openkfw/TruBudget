@@ -16,17 +16,17 @@ Help() {
     echo "Example: bash start-dev.sh --slim --enable-service excel-export-service storage-service"
     echo
     echo "options:"
-    echo "  --slim                          Starts a TruBudget instance with master-node, master-api, provisioning and frontend."
-    echo "  --full                          Starts a TruBudget instance with master-node, emaildb, minio, master-api, email-service,"
+    echo "  --slim                          Starts a TruBudget instance with alpha-node, alpha-api, provisioning and frontend."
+    echo "  --full                          Starts a TruBudget instance with alpha-node, emaildb, minio, alpha-api, email-service,"
     echo "                                  provisioning, excel-export-service, storage and frontend."
     echo "  --build                         Force building."
     echo "  --enable-service [services...]  Starts additional services to the TruBudget instance."
     echo "                                  Available services: email-service, excel-export-service, storage-service"
     echo "  --no-log                        Disable logs of all docker-containers"
     echo "  --no-provision                  Disable the provisioning"
-    echo "  --add-slave                     Add a slave-node that trys to connect to master-node"
-    echo "  --add-organization              Add a slave-node, slave-api, slave-frontend from a new Organization."
-    echo "                                  Needs to be approved by master-node"
+    echo "  --add-beta                     Add a beta-node that trys to connect to alpha-node"
+    echo "  --add-organization              Add a beta-node, beta-api, beta-frontend from a new Organization."
+    echo "                                  Needs to be approved by alpha-node"
     echo "  --prune                         Delete the multichain, document storage and email database (docker volume)"
     echo "  --down                          Shutdown all docker containers"
     echo "  --help                          Print the help section"
@@ -49,9 +49,9 @@ WITH_PROVISIONING=true
 PRUNE_DATA=false
 COMPOSE_SERVICES=""
 ENABLED_SERVICES=""
-SLAVE_SERVICES=""
+BETA_SERVICES=""
 IS_FULL=false
-HAS_SLAVE=false
+HAS_BETA=false
 IS_REBUILDING=false
 
 while [ "$1" != "" ]; do
@@ -81,25 +81,25 @@ while [ "$1" != "" ]; do
         shift # past argument
         ;;
 
-    --add-slave)
-        if [ "$HAS_SLAVE" = true ]; then
-            echo "Either --add-slave or --add-organization"
+    --add-BETA)
+        if [ "$HAS_BETA" = true ]; then
+            echo "Either --add-beta or --add-organization"
             exit 1
         fi
-        SLAVE_SERVICES="${SLAVE_SERVICES} slave-node"
-        HAS_SLAVE=true
-        echo "INFO: slave-node enabled"
+        BETA_SERVICES="${BETA_SERVICES} beta-node"
+        HAS_BETA=true
+        echo "INFO: beta-node enabled"
         shift # past argument
         ;;
 
     --add-organization)
-        if [ "$HAS_SLAVE" = true ]; then
-            echo "Either --add-slave or --add-organization"
+        if [ "$HAS_BETA" = true ]; then
+            echo "Either --add-beta or --add-organization"
             exit 1
         fi
-        SLAVE_SERVICES="${SLAVE_SERVICES} slave-node slave-api slave-frontend"
-        echo "INFO: slave-node, slave-api, slave-frontend enabled"
-        HAS_SLAVE=true
+        BETA_SERVICES="${BETA_SERVICES} beta-node beta-api beta-frontend"
+        echo "INFO: beta-node, beta-api, beta-frontend enabled"
+        HAS_BETA=true
         shift # past argument
         ;;
 
@@ -165,8 +165,8 @@ if [ "$PRUNE_DATA" = true ]; then
     echo -n "${orange}WARNING: Do you really want to prune the data of multichain, minio and emailDB? This cannot be undone! (y/N)${colorReset}"
     read answer
     if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-        sudo rm -r /masterVolume
-        sudo rm -r /slave1Volume
+        sudo rm -r /alphaVolume
+        sudo rm -r /beta1Volume
         sudo rm -r /minioVolume
         sudo rm -r /emaildbVolume
     else
@@ -250,19 +250,19 @@ fi
 if [ "$IS_FULL" = true ]; then
     if [ "$WITH_PROVISIONING" = false ]; then
         echo "INFO: Setup full TruBudget environment without provisioning ..."
-        COMPOSE_SERVICES="master-node emaildb minio master-api email-service excel-export-service storage-service frontend"
+        COMPOSE_SERVICES="alpha-node emaildb minio alpha-api email-service excel-export-service storage-service frontend"
     else
         echo "INFO: Setup full TruBudget environment with provisioning ..."
-        COMPOSE_SERVICES="master-node emaildb minio master-api email-service excel-export-service storage-service provisioning frontend"
+        COMPOSE_SERVICES="alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend"
     fi
 else
     if [ "$WITH_PROVISIONING" = false ]; then
         # Default Setup here
         echo "INFO: Setup slim TruBudget environment without provisioning ..."
-        COMPOSE_SERVICES="master-node master-api frontend"
+        COMPOSE_SERVICES="alpha-node alpha-api frontend"
     else
         echo "INFO: Setup slim TruBudget environment with provisioning ..."
-        COMPOSE_SERVICES="master-node master-api provisioning frontend"
+        COMPOSE_SERVICES="alpha-node alpha-api provisioning frontend"
     fi
 fi
 
@@ -274,12 +274,12 @@ $COMPOSE pull
 
 if [ "$IS_REBUILDING" = true ]; then
     echo "INFO: Re-build all selected images"
-    $COMPOSE build $COMPOSE_SERVICES $ENABLED_SERVICES $SLAVE_SERVICES
+    $COMPOSE build $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 fi
 
 # Start docker containers
-echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $SLAVE_SERVICES"
-$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $SLAVE_SERVICES
+echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
+$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"

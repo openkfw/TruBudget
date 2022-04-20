@@ -3,7 +3,7 @@
 global:
   branch: my-branch
   image:
-    tag: master
+    tag: main
   fqdn: my-trubudget-url.com
   env:
     ENVIRONMENT_TYPE: DEV
@@ -27,7 +27,7 @@ blockchain-prod-1:
     enabled: true
   replicaCount: 1
   bc:
-    isMaster: true
+    isAlpha: true
     name: blockchain-prod-1
     env:
       ORGANIZATION: ACMECorp
@@ -64,7 +64,7 @@ blockchain-test-1:
     enabled: true
   replicaCount: 1
   bc:
-    isMaster: true
+    isAlpha: true
     name: blockchain-test-1
     env:
       ORGANIZATION: ACMECorp

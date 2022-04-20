@@ -16,7 +16,7 @@ These section describes how to view the status of all components of Trubudget.
 
 - Every component has its own version
 - The api version shows the version of the api where the frontend is connected to.
-- The blockchain version shows the version of the blockchain where the master api is connected to.
+- The blockchain version shows the version of the blockchain where the alpha api is connected to.
 
 :::
 

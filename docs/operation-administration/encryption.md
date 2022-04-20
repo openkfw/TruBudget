@@ -23,7 +23,7 @@ While the SOCKS 5 protocol itself does not provide encryption, the basic idea wo
 A corresponding question in the MultiChain community can be found [here](https://www.multichain.com/qa/36704/socks-5-proxy-for-p2p-connections).
 
 ```
- | Master Node < --- > Proxy 1 |  < --Public Network (via SSL) --> | Proxy 2 < --- > Slave Node |
+ | Alpha Node < --- > Proxy 1 |  < --Public Network (via SSL) --> | Proxy 2 < --- > Beta Node |
  |           Container 1       |                                   |         Container 2        |
 ```
 
