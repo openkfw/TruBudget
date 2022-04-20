@@ -233,10 +233,7 @@ rules:
   ## using this rule would require rework of error handling in API (using extended Error and not interfaces)
   "@typescript-eslint/no-throw-literal": 2
 
-  ## "@typescript-eslint/no-unused-vars-experimental":
-  ##  - 2
-  ##  - ignoreArgsIfArgsAfterAreUsed: true
-  ## ignoreArgsIfArgsAfterAreUsed: false might require additional refactoring in a separate PR
+  #@typescript-eslint/no-unused-vars-experimental": 2
   "@typescript-eslint/no-unused-vars-experimental": 1
 
   ## Using non-null assertions cancels the benefits of the strict null-checking mode
