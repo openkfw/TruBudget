@@ -152,11 +152,12 @@ describe("Project Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
     // Reset permissions
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(testUser, "test");
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
 
   it("Assigning without project 'list permissions'- permissions opens dialog viewing this information", function() {
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -174,7 +175,7 @@ describe("Project Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(testUser, "test");
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
 
