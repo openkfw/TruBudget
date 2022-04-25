@@ -8,7 +8,6 @@ const testGroup = { id: "admins", displayname: "Admins" };
 const testGroup2 = { id: "reviewers", displayname: "Reviewers" };
 let projectId, subprojectId, permissionsBeforeTesting, baseUrl, apiRoute;
 const subprojectDisplayname = "subproject assign test";
-const rootSecret = Cypress.env("ROOT_SECRET");
 
 describe("Subproject Permissions", function() {
   before(() => {
@@ -221,7 +220,7 @@ describe("Subproject Permissions", function() {
   });
 
   it("Submitting the permission dialog without subproject.intent.grantPermission disables the submit button when adding user", function() {
-    cy.login("root", rootSecret);
+    cy.login(executingUser.id, "test");
     // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser2.id);
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", executingUser.id).then(
@@ -250,7 +249,7 @@ describe("Subproject Permissions", function() {
   });
 
   it("Submitting the permission dialog without subproject.intent.revokePermission disables the submit button when removing user", function() {
-    cy.login("root", rootSecret);
+    cy.login(executingUser.id, "test");
     // Grant test User view-permission
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id).then(() => {
       // Revoke revoke-permission from mstein
@@ -284,7 +283,7 @@ describe("Subproject Permissions", function() {
   });
 
   it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function() {
-    cy.login("root", rootSecret);
+    cy.login(executingUser.id, "test");
     // Grant test User view-permission
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewSummary", testUser.id).then(() => {
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id).then(() => {
