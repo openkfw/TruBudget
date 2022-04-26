@@ -209,7 +209,8 @@ const ProjectDetails = props => {
                     data-test="pc-button"
                     disabled={closeDisabled}
                     onClick={closeProject}
-                    size="large">
+                    size="large"
+                  >
                     <DoneIcon />
                   </IconButton>
                 </div>

@@ -16,8 +16,11 @@ import {
   showProjectPermissions,
   storeFilteredProjects,
   storeHighlightingRegex,
-  storeSearchTermArray
+  storeSearchTermArray,
+  setProjectView
 } from "./actions";
+import { fetchUser } from "../Login/actions";
+import { fetchAllProjectDetails } from "../SubProjects/actions";
 import Overview from "./Overview";
 import ProjectDialogContainer from "./ProjectDialogContainer";
 import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
@@ -36,6 +39,7 @@ class OverviewContainer extends Component {
       this.props.storeSearchTermArray(searchTerms);
     });
     this.props.fetchAllProjects(true);
+    this.props.fetchUser();
   }
 
   componentDidUpdate(prevProps) {
@@ -83,7 +87,10 @@ const mapDispatchToProps = dispatch => {
     storeHighlightingRegex: highlightingRegex => dispatch(storeHighlightingRegex(highlightingRegex)),
     storeSearchTermArray: searchTerms => dispatch(storeSearchTermArray(searchTerms)),
     storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
-    showSearchBar: () => dispatch(storeSearchBarDisplayed(true))
+    showSearchBar: () => dispatch(storeSearchBarDisplayed(true)),
+    fetchUser: () => dispatch(fetchUser(true)),
+    fetchAllProjectDetails: projectId => dispatch(fetchAllProjectDetails(projectId, false)),
+    setProjectView: view => dispatch(setProjectView(view))
   };
 };
 
@@ -100,7 +107,10 @@ const mapStateToProps = state => {
     isRoot: state.getIn(["navbar", "isRoot"]),
     permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
     highlightingRegex: state.getIn(["overview", "highlightingRegex"]),
-    searchTermArray: state.getIn(["overview", "searchTerms"])
+    searchTermArray: state.getIn(["overview", "searchTerms"]),
+    users: state.getIn(["login", "enabledUsers"]),
+    subProjects: state.getIn(["detailview", "subProjects"]),
+    projectView: state.getIn(["overview", "projectView"])
   };
 };
 

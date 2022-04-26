@@ -45,6 +45,10 @@ const muiTheme = createTheme({
       main: grey[400],
       dark: grey[600]
     },
+    tag: {
+      main: blue[400],
+      selected: blue[900]
+    },
     tonalOffset: 0.6
   },
   typography: {},
