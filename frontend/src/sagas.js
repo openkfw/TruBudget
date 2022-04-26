@@ -1535,7 +1535,25 @@ export function* logoutSaga() {
 
 export function* fetchAllProjectsSaga({ showLoading }) {
   yield execute(function*() {
-    const { data } = yield callApi(api.listProjects);
+    const [{ data }] = yield all([yield callApi(api.listProjects)]);
+
+    // const projectDetails = yield all(
+    //   data.items.map(project => {
+    //     const projectDetails = call(api.viewProjectDetails, project.data.id);
+    //     return projectDetails;
+    //   })
+    // );
+
+    // const projectsWithDetails = projectDetails.map(x => {
+    //   return x.data.data;
+    // });
+
+    // const projects = data.items.map(p => {
+    //   return {
+    //     ...p,
+    //     data: { ...p.data, subprojects: projectsWithDetails.find(x => x.project.data.id === p.data.id).subprojects }
+    //   };
+    // });
 
     yield put({
       type: FETCH_ALL_PROJECTS_SUCCESS,

@@ -20,7 +20,8 @@ const ActionButton = ({
   // eslint-disable-next-line no-useless-computed-key
   ["data-test"]: dataTest,
   iconButtonStyle,
-  iconButtonClassName
+  iconButtonClassName,
+  alignTooltip = "bottom-end"
 }) => {
   const disabled = notVisible;
   return (
@@ -31,6 +32,7 @@ const ActionButton = ({
         disableFocusListener={disabled}
         disableHoverListener={disabled}
         disableTouchListener={disabled}
+        placement={alignTooltip}
       >
         <div>
           <IconButton
