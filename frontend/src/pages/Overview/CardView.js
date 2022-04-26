@@ -1,9 +1,9 @@
+import ContentAdd from "@mui/icons-material/Add";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
-import { withStyles } from "@mui/styles";
 import Tooltip from "@mui/material/Tooltip";
-import ContentAdd from "@mui/icons-material/Add";
+import { withStyles } from "@mui/styles";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { statusMapping, unixTsToString } from "../../helper";
@@ -14,9 +14,9 @@ import {
   canViewProjectPermissions,
   canViewProjectSummary
 } from "../../permissions";
-import ProjectCard from "./ProjectCard";
-import BudgetsList from "./BudgetsList";
 import SelectablePill from "../Common/SelectablePill";
+import BudgetsList from "./BudgetsList";
+import ProjectCard from "./ProjectCard";
 
 const styles = theme => ({
   card: {

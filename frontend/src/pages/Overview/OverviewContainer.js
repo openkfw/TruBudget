@@ -1,25 +1,23 @@
 import _isEqual from "lodash/isEqual";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import worker from "../Common/filterProjects.worker.js";
 import { toJS } from "../../helper";
 import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import AdditionalInfo from "../Common/AdditionalInfo";
+import worker from "../Common/filterProjects.worker.js";
+import { fetchUser } from "../Login/actions";
 import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
+import { fetchAllProjectDetails } from "../SubProjects/actions";
 import {
   fetchAllProjects,
-  hideProjectAdditionalData,
-  showCreationDialog,
+  hideProjectAdditionalData, setProjectView, showCreationDialog,
   showEditDialog,
   showProjectAdditionalData,
   showProjectPermissions,
   storeFilteredProjects,
-  storeSearchTermArray,
-  setProjectView
+  storeSearchTermArray
 } from "./actions";
-import { fetchUser } from "../Login/actions";
-import { fetchAllProjectDetails } from "../SubProjects/actions";
 import Overview from "./Overview";
 import ProjectDialogContainer from "./ProjectDialogContainer";
 import ProjectPermissionsContainer from "./ProjectPermissionsContainer";

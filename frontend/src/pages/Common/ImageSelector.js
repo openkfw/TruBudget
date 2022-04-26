@@ -67,8 +67,6 @@ const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
                 title=" " // Otherwise the action buttons would not be visible
                 className={classes.tileBar}
                 actionPosition="right"
-                titlePosition="top"
-                titlebackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
               />
             </ImageListItem>
           ))}

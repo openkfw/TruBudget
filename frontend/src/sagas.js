@@ -1531,8 +1531,7 @@ export function* logoutSaga() {
 
 export function* fetchAllProjectsSaga({ showLoading }) {
   yield execute(function* () {
-    const { data } = yield callApi(api.listProjects);
-
+    const [{ data }] = yield all([yield callApi(api.listProjects)]);
     yield put({
       type: FETCH_ALL_PROJECTS_SUCCESS,
       projects: data.items
