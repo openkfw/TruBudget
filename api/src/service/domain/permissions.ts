@@ -10,13 +10,17 @@ export const permissionsSchema = Joi.object().pattern(
   Joi.array().items(Joi.string()),
 );
 
+/**
+ * Removes permissions which should not be returned to the user
+ * @param permissions
+ * @param filter
+ */
 export const getExposablePermissions = (
   permissions: Permissions,
   filter: Array<"project.close" | "subproject.close" | "workflowitem.close">,
 ): ExposablePermissions => {
-  const filterablePermissions = filter as string[];
   return Object.keys(permissions).reduce((filteredPerm, intent) => {
-    if (!filterablePermissions.includes(intent)) {
+    if (!(filter as string[]).includes(intent)) {
       filteredPerm[intent] = permissions[intent];
     }
     return filteredPerm;
