@@ -141,8 +141,8 @@ export async function get(multichain: MultichainClient): Promise<NodeInfo[]> {
   const streamItems: Liststreamkeyitems.Item[] = await multichain
     .v2_readStreamItems(streamName, "*")
     .catch((err) => {
-      if (err.kind === "NotFound" && err.what === "stream nodes") {
-        // The stream does not exist yet, which happens on (freshly installed) systems that
+      if (err.kind === "NotFound" && err.what.stream === "stream nodes") {
+        // The stream does not1 exist yet, which happens on (freshly installed) systems that
         // have not seen any notifications yet.
         logger.debug(`The stream ${streamName} does not exist yet.`);
         return [];
