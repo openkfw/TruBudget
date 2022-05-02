@@ -1,16 +1,16 @@
-import React from "react";
-
 import FilledStar from "@mui/icons-material/Star";
+import NotFilledStar from "@mui/icons-material/StarBorder";
+import IconButton from "@mui/material/IconButton";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
-import IconButton from "@mui/material/IconButton";
-import NotFilledStar from "@mui/icons-material/StarBorder";
 import Subheader from "@mui/material/ListSubheader";
 import { withStyles } from "@mui/styles";
-
+import React from "react";
 import strings from "../../localizeStrings";
 import { images } from "./images";
+
+
 
 const styles = {
   root: {
@@ -67,6 +67,8 @@ const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
                 title=" " // Otherwise the action buttons would not be visible
                 className={classes.tileBar}
                 actionPosition="right"
+                titlePosition="top"
+                titlebackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
               />
             </ImageListItem>
           ))}
