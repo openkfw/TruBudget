@@ -27,6 +27,7 @@ export interface AddressIsInvalidError {
   kind: "AddressIsInvalid";
   address: string;
 }
+
 export interface IdentityAlreadyExistsError {
   kind: "IdentityAlreadyExists";
   targetId: string;
@@ -73,9 +74,48 @@ export type TruBudgetErrorType =
 
 // Custom Throwables here
 
+
+
 export class TruBudgetError extends Error {
-  constructor(msg: TruBudgetErrorType) {
-    const { kind } = msg;
-    super(`An error occured ${kind}, details: ${JSON.stringify(msg)}`);
+  public badKeys = undefined;
+
+  public what = undefined;
+
+  public filePath = undefined;
+
+  public userId = undefined;
+
+  public address = undefined;
+
+  public targetId = undefined;
+
+  public subprojectId = undefined;
+
+  public projectId = undefined;
+
+  public event = undefined;
+
+  public contentType = undefined;
+
+  public kind = undefined;
+
+
+
+  constructor(err: TruBudgetErrorType) {
+    super(`An error occured ${err.kind}, details: ${JSON.stringify(err)}`);
+    Object.setPrototypeOf(this, TruBudgetError.prototype);
+    const property = err as any;
+    this.badKeys = property.badKeys;
+    this.what = property.what;
+    this.filePath = property.filePath;
+    this.userId = property.userId;
+    this.address = property.address;
+    this.targetId = property.targetId;
+    this.subprojectId = property.subprojectId;
+    this.projectId = property.projectId;
+    this.event = property.event;
+    this.contentType = property.contentType;
+    this.kind = property.kind;
+
   }
 }
