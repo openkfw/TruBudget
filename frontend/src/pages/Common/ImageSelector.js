@@ -15,9 +15,8 @@ import { images } from "./images";
 const styles = {
   root: {
     display: "flex",
-    flexWrap: "wrap",
-    marginTop: 10,
-    justifyContent: "space-around"
+    justifyContent: "center",
+    alignContent: "center"
   },
   gridList: {
     display: "flex",
@@ -42,28 +41,40 @@ const styles = {
 
 const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
   return (
-    <div style={styles.root}>
-      <Subheader style={styles.subHeader}>{strings.common.thumbnail}</Subheader>
-      <ImageList cellHeight={150} style={styles.gridList}>
-        {images.map(image => (
-          <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src}>
-            <img alt={image.src} src={image.src} />
-            <ImageListItemBar
-              actionIcon={
-                <IconButton size="large">
-                  {selectedImage === image.src ? <FilledStar color="primary" /> : <NotFilledStar color="primary" />}
-                </IconButton>
-              }
-              title=" " // Otherwise the action buttons would not be visible
-              className={classes.tileBar}
-              actionPosition="right"
-              titlePosition="top"
-              titlebackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
-    </div>
+    <>
+      <div style={styles.root}>
+        <Subheader style={styles.subHeader}>{strings.common.thumbnail}</Subheader>
+      </div>
+      <div style={styles.root}>
+        <ImageList
+          rowHeight={150}
+          sx={{
+            width: "80%",
+            height: 200,
+            // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
+            transform: "translateZ(0)"
+          }}
+        >
+          {images.map(image => (
+            <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src}>
+              <img alt={image.src} src={image.src} />
+              <ImageListItemBar
+                actionIcon={
+                  <IconButton size="large">
+                    {selectedImage === image.src ? <FilledStar color="primary" /> : <NotFilledStar color="primary" />}
+                  </IconButton>
+                }
+                title=" " // Otherwise the action buttons would not be visible
+                className={classes.tileBar}
+                actionPosition="right"
+                titlePosition="top"
+                titlebackground="linear-gradient(to bottom, rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.3) 70%,rgba(0,0,0,0) 100%)"
+              />
+            </ImageListItem>
+          ))}
+        </ImageList>
+      </div>
+    </>
   );
 };
 export default withStyles(styles)(ImageSelector);
