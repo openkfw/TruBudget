@@ -37,8 +37,6 @@ export default function SelectablePill(props) {
     onClick,
     sx,
     isSelected = false,
-
-    // eslint-disable-next-line no-useless-computed-key
     ["data-test"]: dataTest
   } = props;
   const theme = useTheme();
