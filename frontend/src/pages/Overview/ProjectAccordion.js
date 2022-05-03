@@ -47,23 +47,17 @@ export default function ProjectAccordion(props) {
     showProjectPermissions,
     showEditDialog
   } = props;
-  // const [expanded, setExpanded] = React.useState(false);
   const theme = useTheme();
   const dateString = unixTsToString(project.creationUnixTs);
   const owner = users.find(u => u.id === project.assignee);
   const mappedStatus = statusMapping(project.status);
   const statusIcon = statusIconMapping[project.status];
-  // const isUserAllowedToAssign = canAssignProject(allowedIntents);
 
   const isOpen = project.status === "open";
   const canViewPermissions = canViewProjectPermissions(allowedIntents);
   const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
   const viewDisabled = !canViewProjectDetails(allowedIntents);
 
-  // const handleClick = () => {
-  //   history.push("/projects/" + project.id);
-  //   setExpanded(true);
-  // };
 
   return (
     <>
@@ -112,7 +106,6 @@ export default function ProjectAccordion(props) {
                       showSearchBar();
                       storeSearchTerm(`tag:${tag}`);
                     }}
-                    //Should be fixed by better fucntion:
                     isSelected={searchTermArray?.includes(tag) || false}
                   >
                     {tag}
@@ -164,13 +157,6 @@ export default function ProjectAccordion(props) {
             </Box>
           </Box>
         </MuiAccordionSummary>
-        {/*
-        // ToDo Add own API point to show specific Details in open accordion
-        <AccordionDetails>
-          <Box>
-            <Typography sx={{}}>{project.description}</Typography>
-          </Box>
-        </AccordionDetails> */}
       </Accordion>
     </>
   );
