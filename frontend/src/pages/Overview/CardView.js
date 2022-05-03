@@ -128,9 +128,7 @@ const getTableEntries = ({
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
     const displayedTags = displayTags({ classes, tags: tags || [], storeSearchTerm, showSearchBar, searchTermArray });
-    console.log("PROJECT: ");
-    console.log(displayName);
-    console.log(allowedIntents);
+
     if (canViewProjectSummary(allowedIntents)) {
       return (
         <ProjectCard
