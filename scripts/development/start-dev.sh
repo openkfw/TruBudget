@@ -215,7 +215,7 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
             perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} emaildb"
             echo "INFO: email-service enabled"
-        
+
         elif [ "$word" = "excel-export-service" ]; then
             perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             echo "INFO: excel-export-service enabled"
@@ -270,7 +270,7 @@ COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-dev --env
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
-$COMPOSE pull
+$COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $SLAVE_SERVICES
 
 if [ "$IS_REBUILDING" = true ]; then
     echo "INFO: Re-build all selected images"
