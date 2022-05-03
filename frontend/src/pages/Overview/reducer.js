@@ -56,7 +56,6 @@ const defaultState = fromJS({
   nextButtonEnabled: false,
   roles: [],
   loading: false,
-  // logs: [],
   allowedIntents: [],
   dialogTitle: strings.project.add_new_project,
   idForInfo: "",
