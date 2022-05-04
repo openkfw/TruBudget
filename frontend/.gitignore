@@ -21,6 +21,7 @@ cypress/videos
 
 # vscode
 .vscode
+.idea/
 
 # certificates folder
 certificates/*

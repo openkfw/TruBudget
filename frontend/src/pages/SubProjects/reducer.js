@@ -73,7 +73,6 @@ const defaultState = fromJS({
   showHistory: false,
   hasMoreHistory: true,
   roles: [],
-  logs: [],
   historyItems: [],
   isHistoryLoading: false,
   totalHistoryItemCount: 0,
@@ -116,7 +115,6 @@ export default function detailviewReducer(state = defaultState, action) {
         projectAdditionalData: fromJS(action.project.data.additionalData),
         projectTags: fromJS(action.project.data.tags),
         allowedIntents: fromJS(action.project.allowedIntents),
-        logs: fromJS(action.project.log),
         subProjects: fromJS(action.subprojects)
       });
 
