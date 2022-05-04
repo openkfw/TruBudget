@@ -37,7 +37,9 @@ Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14
 
 ## [1.29.1] - 2022-03-02
 
-<!-- ### Added -->
+### Added
+
+- Add a List-View for projects [#1127](https://github.com/openkfw/TruBudget/pull/1127)
 
 <!-- ### Changed -->
 

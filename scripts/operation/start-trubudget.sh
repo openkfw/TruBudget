@@ -261,7 +261,7 @@ COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
-$COMPOSE pull
+$COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 echo "INFO: Since images are used, building is not necessary and will be skipped."
 #$COMPOSE build
