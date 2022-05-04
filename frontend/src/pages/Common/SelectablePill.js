@@ -32,20 +32,14 @@ const SelectionPillRoot = styled("span")(({ theme, sx }) => {
 });
 
 export default function SelectablePill(props) {
-  const {
-    children,
-    onClick,
-    sx,
-    isSelected = false,
-    ["data-test"]: dataTest
-  } = props;
+  // eslint-disable-next-line no-useless-computed-key
+  const { children, onClick, sx, isSelected = false, ["data-test"]: dataTest } = props;
   const theme = useTheme();
 
   const backgroundColor = isSelected ? theme.palette.tag.selected : theme.palette.tag.main;
 
   return (
     <SelectionPillRoot sx={{ ...sx, backgroundColor }}>
-      ["data-test"]: dataTest
       <Box onClick={onClick} sx={{ cursor: "pointer" }} component="span" data-test={dataTest}>
         <span>{children}</span>
       </Box>
