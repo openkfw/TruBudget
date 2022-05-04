@@ -58,7 +58,6 @@ export default function ProjectAccordion(props) {
   const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
   const viewDisabled = !canViewProjectDetails(allowedIntents);
 
-
   return (
     <>
       <Accordion expanded={false} sx={{ maxWidth: "150rem" }}>
@@ -108,7 +107,7 @@ export default function ProjectAccordion(props) {
                     }}
                     isSelected={searchTermArray?.includes(tag) || false}
                   >
-                    {tag}
+                    <Typography>{tag}</Typography>
                   </SelectablePill>
                 ))}
               </Box>
