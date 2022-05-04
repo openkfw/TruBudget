@@ -1,15 +1,12 @@
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
-import Chip from "@mui/material/Chip";
 import Fab from "@mui/material/Fab";
 import { withStyles } from "@mui/styles";
 import Tooltip from "@mui/material/Tooltip";
 import ContentAdd from "@mui/icons-material/Add";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
-import { formattedTag, statusMapping, toAmountString, unixTsToString } from "../../helper";
+import { statusMapping, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import {
   canCreateProject,
@@ -18,6 +15,8 @@ import {
   canViewProjectSummary
 } from "../../permissions";
 import ProjectCard from "./ProjectCard";
+import BudgetsList from "./BudgetsList";
+import SelectablePill from "../Common/SelectablePill";
 
 const styles = theme => ({
   card: {
@@ -52,9 +51,6 @@ const styles = theme => ({
     paddingTop: "10px",
     overflow: "hidden"
   },
-  budgets: {
-    marginBottom: "8px"
-  },
   addProject: {
     height: "580px",
     margin: "35px",
@@ -80,55 +76,22 @@ const styles = theme => ({
     flex: 1,
     alignItems: "center",
     justifyContent: "center"
-  },
-  tagButton: {
-    margin: "1px",
-    textTransform: "none"
-  },
-  highlightedTagButton: {
-    margin: "1px",
-    backgroundColor: theme.palette.primary.light,
-    textTransform: "none"
   }
 });
 
-const displayProjectBudget = ({ budgets, classes }) => {
-  return (
-    <div>
-      {budgets.map((b, i) => {
-        return (
-          <div key={`projectedBudget-${i}`} className={classes.budgets}>
-            <Tooltip title={b.organization}>
-              <Chip
-                avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
-                label={toAmountString(b.value, b.currencyCode)}
-              />
-            </Tooltip>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
 const displayTags = ({ classes, tags, storeSearchTerm, showSearchBar, searchTermArray }) => {
   return tags.map((tag, i) => (
-    <Button
-      variant="outlined"
+    <SelectablePill
+      key={tag}
+      isSelected={searchTermArray?.includes(tag) || false}
       onClick={() => {
         showSearchBar();
         storeSearchTerm(`tag:${tag}`);
       }}
-      key={`${tag}-${i}`}
-      className={
-        searchTermArray.some(searchTerm => tag.includes(searchTerm)) ? classes.highlightedTagButton : classes.tagButton
-      }
-      component="span"
       data-test="overview-tag"
-      size="small"
     >
-      {`#${formattedTag(tag)}`}
-    </Button>
+      {tag}
+    </SelectablePill>
   ));
 };
 
@@ -156,15 +119,16 @@ const getTableEntries = ({
       additionalData,
       tags
     } = data;
-    const budgets = displayProjectBudget({ budgets: projectedBudgets, classes });
+    const budgets = <BudgetsList budgets={projectedBudgets} />;
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
     const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
     const dateString = unixTsToString(creationUnixTs);
-    const isOpen = status !== "closed";
+    const isOpen = status === "open";
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
     const displayedTags = displayTags({ classes, tags: tags || [], storeSearchTerm, showSearchBar, searchTermArray });
+
     if (canViewProjectSummary(allowedIntents)) {
       return (
         <ProjectCard
@@ -198,7 +162,7 @@ const getTableEntries = ({
   });
 };
 
-const OverviewTable = props => {
+const CardView = props => {
   const { classes, isRoot, allowedIntents, showCreationDialog } = props;
   const tableEntries = getTableEntries(props);
   return (
@@ -228,4 +192,4 @@ const OverviewTable = props => {
   );
 };
 
-export default withStyles(styles)(OverviewTable);
+export default withStyles(styles)(CardView);
