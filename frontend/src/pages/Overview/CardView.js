@@ -17,6 +17,7 @@ import {
 import ProjectCard from "./ProjectCard";
 import BudgetsList from "./BudgetsList";
 import SelectablePill from "../Common/SelectablePill";
+import { Typography } from "@mui/material";
 
 const styles = theme => ({
   card: {
@@ -90,7 +91,7 @@ const displayTags = ({ classes, tags, storeSearchTerm, showSearchBar, searchTerm
       }}
       data-test="overview-tag"
     >
-      {tag}
+      <Typography>{tag}</Typography>
     </SelectablePill>
   ));
 };
