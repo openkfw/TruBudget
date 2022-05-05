@@ -26,6 +26,7 @@ const ProjectSearch = ({
   return (
     <Searchbar
       data-test="project-search"
+      searchDisabled={searchDisabled}
       searchBarDisplayed={searchBarDisplayed}
       searchTerm={searchTerm}
       storeSearchBarDisplayed={storeSearchBarDisplayed}

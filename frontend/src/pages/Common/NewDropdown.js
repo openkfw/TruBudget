@@ -19,7 +19,8 @@ const styles = {
     display: "flex",
     height: "100%",
     alignItems: "flex-end"
-  }
+  },
+  itemContainer: { maxHeight: "35vh", overflow: "auto", boxShadow: "none" }
 };
 
 const Dropdown = props => {
@@ -78,6 +79,12 @@ const Dropdown = props => {
                 />
               </div>
             </div>
+            {/* TODO refactor to this:
+             <Box style={styles.itemContainer}>{children}</Box>
+
+             This way, the DropDown has a maximal height and the close button is visible.
+             If you do this, every <MenuItem> must have an onClick method to select itself (see PermissionSelection)
+             */}
             {children}
           </Select>
           <FormHelperText>{error ? errorText : ""}</FormHelperText>

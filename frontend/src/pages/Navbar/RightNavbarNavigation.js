@@ -19,7 +19,7 @@ const styles = {
   }
 };
 
-const RightNavbarNavigations = ({
+const RightNavbarNavigation = ({
   peers,
   numberOfActivePeers,
   unreadNotificationCount,
@@ -29,6 +29,7 @@ const RightNavbarNavigations = ({
   storeSearchTerm,
   searchTerm,
   searchBarDisplayed,
+  searchDisabled,
   storeSearchBarDisplayed
 }) => {
   const searchVisible = history.location.pathname === "/projects";
@@ -36,6 +37,7 @@ const RightNavbarNavigations = ({
     <div style={styles.container}>
       {searchVisible ? (
         <ProjectSearch
+          searchDisabled={searchDisabled}
           searchBarDisplayed={searchBarDisplayed}
           searchTerm={searchTerm}
           storeSearchBarDisplayed={storeSearchBarDisplayed}
@@ -56,4 +58,4 @@ const RightNavbarNavigations = ({
   );
 };
 
-export default RightNavbarNavigations;
+export default RightNavbarNavigation;

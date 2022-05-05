@@ -42,7 +42,11 @@ class NavbarContainer extends Component {
   render() {
     return (
       <div data-test="navigation-bar">
-        <Navbar {...this.props} unreadNotifications={this.props.unreadNotificationCount} />
+        <Navbar
+          {...this.props}
+          unreadNotifications={this.props.unreadNotificationCount}
+          searchDisabled={this.props.projectView !== "card"}
+        />
         <FlyInNotifications
           history={this.props.history}
           notifications={this.props.newNotifications}
@@ -54,22 +58,22 @@ class NavbarContainer extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     toggleSidebar: () => dispatch(toggleSidebar()),
     logout: () => dispatch(logout()),
     fetchActivePeers: () => dispatch(fetchActivePeers()),
     createBackup: () => dispatch(createBackup()),
-    restoreBackup: (file) => dispatch(restoreBackup(file)),
-    exportData: (devModeEnvironment) => dispatch(exportData(devModeEnvironment)),
-    storeSearchTerm: (searchTerm) => dispatch(storeSearchTerm(searchTerm)),
-    storeSearchBarDisplayed: (searchBarDisplayed) => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
-    setIsRoot: (isRoot) => dispatch(setIsRoot(isRoot)),
+    restoreBackup: file => dispatch(restoreBackup(file)),
+    exportData: devModeEnvironment => dispatch(exportData(devModeEnvironment)),
+    storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
+    storeSearchBarDisplayed: searchBarDisplayed => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
+    setIsRoot: isRoot => dispatch(setIsRoot(isRoot)),
     showUserProfile: () => dispatch(showUserProfile()),
     fetchEmailAddress: () => dispatch(fetchEmailAddress()),
-    saveEmailAddress: (emailAddress) => dispatch(saveEmailAddress(emailAddress)),
-    storeTempEmailAddress: (emailAddress) => dispatch(storeTempEmailAddress(emailAddress)),
-    setValidEmailAddressInput: (valid) => dispatch(setValidEmailAddressInput(valid)),
+    saveEmailAddress: emailAddress => dispatch(saveEmailAddress(emailAddress)),
+    storeTempEmailAddress: emailAddress => dispatch(storeTempEmailAddress(emailAddress)),
+    setValidEmailAddressInput: valid => dispatch(setValidEmailAddressInput(valid)),
     enableUserProfileEdit: () => dispatch(enableUserProfileEdit()),
     hideUserProfile: () => dispatch(hideUserProfile())
   };
@@ -105,7 +109,8 @@ const mapStateToProps = state => {
     emailAddress: state.getIn(["login", "emailAddress"]),
     emailServiceAvailable: state.getIn(["login", "emailServiceAvailable"]),
     exportServiceAvailable: state.getIn(["login", "exportServiceAvailable"]),
-    isEmailAddressInputValid: state.getIn(["navbar", "isEmailAddressInputValid"])
+    isEmailAddressInputValid: state.getIn(["navbar", "isEmailAddressInputValid"]),
+    projectView: state.getIn(["overview", "projectView"])
   };
 };
 

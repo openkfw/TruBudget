@@ -15,7 +15,7 @@ const ActionButton = ({
   notVisible,
   onClick,
   icon,
-  title,
+  title = "",
   id,
   // eslint-disable-next-line no-useless-computed-key
   ["data-test"]: dataTest,
@@ -29,9 +29,9 @@ const ActionButton = ({
       <Tooltip
         id={"tooltip-" + title}
         title={notVisible ? "" : title}
-        disableFocusListener={disabled}
-        disableHoverListener={disabled}
-        disableTouchListener={disabled}
+        disableFocusListener={disabled || title === ""}
+        disableHoverListener={disabled || title === ""}
+        disableTouchListener={disabled || title === ""}
         placement={alignTooltip}
       >
         <div>
