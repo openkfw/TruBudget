@@ -30,7 +30,7 @@ const ProjectSearch = ({
       searchTerm={searchTerm}
       storeSearchBarDisplayed={storeSearchBarDisplayed}
       storeSearchTerm={storeSearchTerm}
-      autoSearch={true}
+      safeOnChange={true}
       previewText={strings.project.project_searchtext}
     />
   );

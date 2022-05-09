@@ -38,7 +38,7 @@ const Searchbar = ({
   searchTerm,
   storeSearchBarDisplayed,
   storeSearchTerm,
-  autoSearch = false,
+  safeOnChange = false,
   previewText,
   isSearchBarDisplayedByDefault = false
 }) => {
@@ -52,7 +52,7 @@ const Searchbar = ({
                 value={searchTerm}
                 placeholder={previewText}
                 autoFocus={!isSearchBarDisplayedByDefault}
-                onChange={autoSearch ? event => storeSearchTerm(event.target.value) : null}
+                onChange={safeOnChange ? event => storeSearchTerm(event.target.value) : null}
                 onKeyDown={e => {
                   if (!isSearchBarDisplayedByDefault && (e.key === "Escape" || e.key === "Esc")) {
                     storeSearchTerm("");
