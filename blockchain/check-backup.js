@@ -3,9 +3,8 @@ const tar = require("tar-fs");
 const rawTar = require("tar-stream");
 const yaml = require("js-yaml");
 const shell = require("shelljs");
-const yargs = require("yargs");
-
-const { md5Dir } = require("./src/md5");
+const { version } = require("./package.json");
+const { sha256Dir } = require("./src/sha256.js");
 
 const printHelp = () => {
   console.log(`
@@ -14,7 +13,7 @@ const printHelp = () => {
     Options:
       -h/--help      prints help
       -f/--fix       creates a new fixed backup file in the same directory
-      
+
     Arguments:
       BACKUP         A Trubudget backup.gz file`);
 };
@@ -67,15 +66,28 @@ stream.on("finish", async () => {
 
     const hash = await createHash(extractPath);
     const isValidMetadataFile = config.DirectoryHash === hash;
+
+    //Check for major version compatibility
+    const incompatibleVersions =
+      config.hasOwnProperty("Version") &&
+      config.Version.split(".")[0] === version.split(".")[0];
+
     if (isValidMetadataFile) {
-      console.log(`The provided backup file is valid\n`);
-      console.log(`No updated backup is created`);
-      process.exit(0);
+      console.log("The provided backup file is valid\n");
+      console.log("No updated backup is created");
+      process.exit(1);
+    } else if (incompatibleVersions) {
+      console.log("The provided backup is from a prior major version.\n");
+      console.log(
+        "Use the migration guide to restore the backup. More information can be found on GitHub.\n",
+      );
+      console.log("No updated backup is created");
+      process.exit(1);
     } else {
-      console.log(`The provided backup file is invalid\n`);
+      console.log("The provided backup file is invalid\n");
     }
     if (fixOption) {
-      console.log(`Create updated backup...\n`);
+      console.log("Create updated backup...\n");
       await updateMetadataFile(config, hash, metadataPath);
       tar
         .pack(extractPath)
@@ -83,7 +95,7 @@ stream.on("finish", async () => {
       console.log(`Saved the fixed backup file in ${filePath}_updated.gz`);
     } else {
       console.log(
-        `No updated backup is created since the --fix option was not provided`,
+        "No updated backup is created since the --fix option was not provided",
       );
     }
   }
@@ -96,7 +108,7 @@ const loadConfig = (path) => {
 };
 
 const createHash = async (extractPath) => {
-  return md5Dir(extractPath);
+  return sha256Dir(extractPath);
 };
 
 const updateMetadataFile = async (config, hash, metadataPath) => {
@@ -108,7 +120,7 @@ const updateMetadataFile = async (config, hash, metadataPath) => {
     : "";
   shell
     .echo(
-      `ChainName: ${config.ChainName}${organisation}\nTimestamp: ${ts}\nDirectoryHash: ${hash}\n`,
+      `ChainName: ${config.ChainName}${organisation}\nTimestamp: ${ts}\nDirectoryHash: ${hash}\n Version: ${version}\n`,
     )
     .to(metadataPath);
   return config;
