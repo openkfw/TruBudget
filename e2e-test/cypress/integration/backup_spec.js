@@ -109,7 +109,7 @@ describe("Backup Feature", function () {
             expect(success).to.eq(true);
           });
           cy.get("[data-test=client-snackbar]")
-            .contains("Not a valid TruBudget backup")
+            .contains("failed to restore backup: Backup with these configurations is not permitted")
             .should("be.visible");
           cy.url()
             .should("include", "/projects")
