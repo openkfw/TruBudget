@@ -100,6 +100,7 @@ async function getDocumentFromInternalOrExternalStorage(
   return documentFromStorage;
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function getDocument(
   ctx: Ctx,
   user: ServiceUser,

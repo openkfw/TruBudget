@@ -1,4 +1,5 @@
 import isEqual = require("lodash.isequal");
+import uuid = require("uuid");
 import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
 import { VError } from "verror";
@@ -22,7 +23,6 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import uuid = require("uuid");
 
 export interface RequestData {
   displayName?: string;

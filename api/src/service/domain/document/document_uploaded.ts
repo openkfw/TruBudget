@@ -32,6 +32,7 @@ export const schema = Joi.object({
   organization: Joi.string().required(),
 });
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function validate(input: any): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
@@ -72,6 +73,7 @@ const documentSchema = Joi.object().keys({
   organizationUrl: Joi.string().allow("").required(),
 });
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function validateDocument(input: any): Result.Type<StoredDocument> {
   const { error } = Joi.validate(input, documentSchema);
   return error === null ? (input as StoredDocument) : error;
