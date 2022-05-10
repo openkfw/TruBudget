@@ -1,13 +1,10 @@
 const shell = require("shelljs");
 const fs = require("fs");
-
-const { md5Dir } = require("./md5");
+const { version } = require("../package.json");
 const { sha256Dir } = require("./sha256");
 
 const logger = require("./log/logger");
 
-const verifyHash = async (backupDirectoryHash, extractPath) =>
-  (await md5Dir(extractPath)) === backupDirectoryHash;
 
 const createMetadataFileSha256 = async (
   chainName,
@@ -27,7 +24,7 @@ const createMetadataFileSha256 = async (
   const ts = Date.now();
   shell
     .echo(
-      `ChainName: ${chainName}\nOrganisation: ${organisation}\nTimestamp: ${ts}\nDirectoryHash: ${dirHash}`,
+      `ChainName: ${chainName}\nOrganisation: ${organisation}\nTimestamp: ${ts}\nDirectoryHash: ${dirHash}\nVersion: ${version}\n`,
     )
     .to(filePath);
 };
@@ -66,7 +63,6 @@ const moveBackup = async (multichainDir, extractPath, chainName) => {
 };
 
 module.exports = {
-  verifyHash,
   createMetadataFileSha256,
   verifyHashSha256,
   moveBackup,

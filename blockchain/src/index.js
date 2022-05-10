@@ -10,6 +10,7 @@ const os = require("os");
 const KubernetesClient = require("./kubernetesClient");
 const log = require("./log/logger");
 const logService = require("trubudget-logging-service");
+const { version } = require("../package.json");
 
 const {
   startEmailNotificationWatcher,
@@ -19,7 +20,6 @@ const { startMultichainDaemon, configureChain } = require("./createChain");
 
 const {
   moveBackup,
-  verifyHash,
   verifyHashSha256,
   removeFile,
   createMetadataFileSha256,
@@ -303,11 +303,6 @@ app.post("/chain", async (req, res) => {
           config.DirectoryHash,
           extractPath,
         );
-        // TODO MD5 hashing is deprecated. Remove it in the future and keep only SHA256
-        let validMD5 = false;
-        if (!validSha256) {
-          validMD5 = await verifyHash(config.DirectoryHash, extractPath);
-        }
         const chainConfig = yaml.safeLoad(
           fs.readFileSync(chainConfigPath, "utf8"),
         );
@@ -317,8 +312,13 @@ app.post("/chain", async (req, res) => {
           const correctOrg = config.Organisation === ORGANIZATION;
           correctConfig = correctConfig && correctOrg;
         }
-        if (correctConfig) {
-          if (validSha256 || validMD5) {
+        //Check for major version compatibility
+        const compatibleVersions =
+          config.hasOwnProperty("Version") &&
+          config.Version.split(".")[0] === version.split(".")[0];
+
+        if (correctConfig && compatibleVersions) {
+          if (validSha256) {
             autostart = false;
             await stopMultichain(mcproc);
             await moveBackup(multichainDir, extractPath, CHAINNAME);
@@ -335,9 +335,19 @@ app.post("/chain", async (req, res) => {
             res.send("OK");
           } else {
             log.warn("Request did not contain a valid trubudget backup");
+            if (!compatibleVersions) {
+              log.warn(
+                "The uploaded backup is not compatible with this version of TruBudget",
+              );
+            }
             res.status(400).send("Not a valid TruBudget backup");
           }
         } else {
+          if (!compatibleVersions) {
+            log.warn(
+              "The uploaded backup is not compatible with this version of TruBudget",
+            );
+          }
           log.warn("Tried to Backup with invalid configuration");
           res
             .status(400)
