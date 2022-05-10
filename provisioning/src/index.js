@@ -275,9 +275,7 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
   rootSecret,
   folder
 ) {
-  currentUser.id = "mstein";
-  currentUser.password = "test";
-  await impersonate(currentUser);
+  await impersonate(serviceUser);
   const closeProjectTest = readJsonFile(folder + "close_test.json");
   await provisionFromData(closeProjectTest);
 
@@ -288,6 +286,7 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
     );
     return;
   }
+
   // This should fail as long as one subproject is still open:
   closeProject(axios, project)
     .then((result) => {
@@ -297,30 +296,20 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
     })
     .catch(() => "expected!");
 
-  // Let's close the subproject (as root, because not visible to mstein):
-  currentUser.id = "root";
-  currentUser.password = rootSecret;
-  await impersonate(currentUser);
+  await impersonate(serviceUser);
   const subprojectTemplate = closeProjectTest.subprojects[1];
   if (subprojectTemplate.status !== "open")
     throw Error("Unexpected test data.");
   const subproject = await findSubproject(axios, project, subprojectTemplate);
   await closeSubproject(axios, project.data.id, subproject.data.id);
 
-  // Now closing the project should work:
-  currentUser.id = "mstein";
-  currentUser.password = "test";
-  await impersonate(currentUser);
+  await impersonate(serviceUser);
   await closeProject(axios, project);
 
   await findProject(axios, closeProjectTest).then((x) => {
     if (x.data.status !== "closed") throw Error("failed");
   });
 
-  // Hide the test project
-  currentUser.id = "root";
-  currentUser.password = rootSecret;
-  await impersonate(currentUser);
   await revokeProjectPermission(
     axios,
     project.data.id,
@@ -490,9 +479,7 @@ async function testWorkflowitemUpdate(folder) {
 }
 
 async function testWorkflowitemReordering(folder) {
-  currentUser.id = "mstein";
-  currentUser.password = "test";
-  await impersonate(currentUser);
+  await impersonate(serviceUser);
   const amazonFundProject = readJsonFile(folder + "amazon_fund.json");
   await provisionFromData(amazonFundProject);
 
@@ -641,10 +628,11 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
 
     await checkProvisionState(axios);
 
-    log.info("Start to provision users");
     log.info("Set provision_started flag on multichain");
     await setProvisionStartFlag(axios);
+    log.info("Start to provision users");
     await provisionUsers(axios, folder, organization);
+    log.info("Start to provision groups");
     await provisionGroups(axios, folder);
 
     log.info("Starting to provision projects");

@@ -17,6 +17,7 @@ export async function grantUserPermission(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
+  granterOrganization: string,
   userId: Project.Id,
   grantee: Identity,
   intent: Intent,
@@ -26,6 +27,7 @@ export async function grantUserPermission(
   const newEventsResult = await UserPermissionGrant.grantUserPermission(
     ctx,
     serviceUser,
+    granterOrganization,
     userId,
     grantee,
     intent,

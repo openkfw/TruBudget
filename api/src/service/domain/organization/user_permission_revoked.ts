@@ -37,7 +37,7 @@ export function createEvent(
   revokee: Identity,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
-  logger.trace("Creating user_permission_reviked event");
+  logger.trace("Creating user_permission_revoked event");
 
   const event = {
     type: eventType,

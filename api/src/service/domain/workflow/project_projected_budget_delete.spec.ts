@@ -64,7 +64,7 @@ describe("Delete project projected budget: permissions", () => {
     assert.instanceOf(result, NotAuthorized);
   });
 
-  it("The root user doesn't need permission to delete a projected budget", async () => {
+  it("The root user is not allowed to delete a projected budget", async () => {
     const projectedBudget = {
       organization: "Testcorp",
       currencyCode: "EUR",
@@ -92,7 +92,7 @@ describe("Delete project projected budget: permissions", () => {
     );
 
     // No errors, despite the missing permissions:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 
   it("Deleting a projected budget fails if the project cannot be found.", async () => {

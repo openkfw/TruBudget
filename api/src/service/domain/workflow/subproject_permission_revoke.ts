@@ -55,17 +55,15 @@ export async function revokeSubprojectPermission(
     return new VError(permissionRevoked, "failed to create permission revoked event");
   }
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const revokeIntent = "subproject.intent.revokePermission";
-    if (!Subproject.permits(subproject, issuer, [revokeIntent])) {
-      return new NotAuthorized({
-        ctx,
-        userId: issuer.id,
-        intent: revokeIntent,
-        target: subproject,
-      });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const revokeIntent = "subproject.intent.revokePermission";
+  if (!Subproject.permits(subproject, issuer, [revokeIntent])) {
+    return new NotAuthorized({
+      ctx,
+      userId: issuer.id,
+      intent: revokeIntent,
+      target: subproject,
+    });
   }
 
   logger.trace({ event: permissionRevoked }, "Checking event validity");

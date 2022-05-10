@@ -76,7 +76,7 @@ describe("Delete subproject projected budget: permissions", () => {
     },
   );
 
-  it("The root user doesn't need permission to delete a projected budget", async () => {
+  it("The root user is not allowed to delete a projected budget", async () => {
     const result = await deleteProjectedBudget(
       ctx,
       root,
@@ -101,7 +101,7 @@ describe("Delete subproject projected budget: permissions", () => {
     );
 
     // No errors, despite the missing permissions:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 
   it("Deleting a projected budget fails if the subproject cannot be found.", async () => {

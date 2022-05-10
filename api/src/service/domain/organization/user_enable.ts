@@ -76,10 +76,11 @@ export async function enableUser(
       userId: issuer.id,
       intent,
       target: globalPermissions,
+      isOtherOrganization: true,
     });
   }
 
-  logger.trace({ issuer }, "Checking if user is root");
+  logger.trace({ issuer }, "Checking if user is root or has permissions");
   if (issuer.id !== "root") {
     const isAuthorized = GlobalPermissions.permits(globalPermissions, issuer, [intent]);
     if (!isAuthorized) {

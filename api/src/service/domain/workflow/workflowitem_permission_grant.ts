@@ -66,17 +66,15 @@ export async function grantWorkflowitemPermission(
   }
   const permissionGrantedEvent = permissionGrantedEventResult;
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const grantIntent = "workflowitem.intent.grantPermission";
-    if (!Workflowitem.permits(workflowitem, issuer, [grantIntent])) {
-      return new NotAuthorized({
-        ctx,
-        userId: issuer.id,
-        intent: grantIntent,
-        target: workflowitem,
-      });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const grantIntent = "workflowitem.intent.grantPermission";
+  if (!Workflowitem.permits(workflowitem, issuer, [grantIntent])) {
+    return new NotAuthorized({
+      ctx,
+      userId: issuer.id,
+      intent: grantIntent,
+      target: workflowitem,
+    });
   }
 
   logger.trace({ event: permissionGrantedEvent }, "Checking event validity");

@@ -75,6 +75,7 @@ export async function grantGlobalPermission(
       userId: issuer.id,
       intent: grantIntent,
       target: currentGlobalPermissions,
+      isOtherOrganization: true,
     });
   }
 

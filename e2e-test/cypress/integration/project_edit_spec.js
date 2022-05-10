@@ -1,15 +1,20 @@
 describe("Project Edit", function() {
   let projectId;
+  const executingUser = "mstein";
+  const otherUser = "jxavier";
 
   before(() => {
-    cy.login();
+    cy.login(executingUser, "test");
     cy.createProject("p-subp-edit", "subproject edit test").then(({ id }) => {
       projectId = id;
+      cy.grantProjectPermission(projectId, "project.viewSummary", otherUser);
+      cy.grantProjectPermission(projectId, "project.viewDetails", otherUser);
+      cy.grantProjectPermission(projectId, "project.intent.revokePermission", otherUser);
     });
   });
 
   beforeEach(function() {
-    cy.login();
+    cy.login(executingUser, "test");
     cy.visit(`/projects`);
   });
 
@@ -61,18 +66,16 @@ describe("Project Edit", function() {
   });
 
   it("The edit button isn't visible without edit permissions", function() {
-    cy.get(`[data-test=project-card-${projectId}]`).within(() => {
-      cy.get(`[data-test=pe-button]`).should("be.enabled");
-    });
-    cy.login("root", Cypress.env("ROOT_SECRET"));
-    cy.revokeProjectPermission(projectId, "project.update", "mstein");
-    cy.login();
+    cy.login(otherUser, "test");
+    cy.visit(`/projects`);
+    cy.revokeProjectPermission(projectId, "project.update", executingUser);
+    cy.login(executingUser, "test");
     cy.visit(`/projects`);
     cy.get(`[data-test=project-card-${projectId}]`).within(() => {
       cy.get("[data-test=pe-button]")
         .should("have.css", "opacity", "0")
         .should("be.disabled");
     });
-    cy.grantProjectPermission(projectId, "project.update", "mstein");
+    cy.grantProjectPermission(projectId, "project.update", executingUser);
   });
 });

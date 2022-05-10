@@ -238,7 +238,7 @@ describe("Workflowitem Permissions", function() {
     cy.get("[data-test=confirmation-dialog-cancel]").should("not.exist");
 
     // Reset permissions
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(testUser2.id, "test");
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, testUser.id);
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, executingUser.id);
   });
@@ -286,7 +286,7 @@ describe("Workflowitem Permissions", function() {
       .find("input")
       .should("be.disabled");
 
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(testUser2.id, "test");
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, grantIntent, executingUser.id);
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, revokeIntent, executingUser.id);
   });
