@@ -1351,7 +1351,9 @@ export function* checkUserPasswordSaga({ username, password }) {
 
 export function* checkAndChangeUserPasswordSaga({ username, actingUser, currentPassword, newPassword }) {
   try {
-    yield checkUserPasswordSaga({ username: actingUser, password: currentPassword });
+    if (actingUser !== "root") {
+      yield checkUserPasswordSaga({ username: actingUser, password: currentPassword });
+    }
     yield changeUserPasswordSaga({ username, newPassword });
   } catch (error) {
     yield handleError(error);

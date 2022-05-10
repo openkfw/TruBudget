@@ -55,12 +55,10 @@ export async function deleteProjectedBudget(
     return new VError(budgetDeleted, "failed to create projected budget deleted event");
   }
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const intent = "subproject.budget.deleteProjected";
-    if (!Subproject.permits(subproject, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const intent = "subproject.budget.deleteProjected";
+  if (!Subproject.permits(subproject, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
   }
 
   logger.trace({ event: budgetDeleted }, "Checking event validity");

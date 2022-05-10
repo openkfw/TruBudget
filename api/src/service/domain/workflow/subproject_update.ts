@@ -60,12 +60,10 @@ export async function updateSubproject(
   }
   const subprojectUpdated = subprojectUpdatedResult;
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const intent = "subproject.update";
-    if (!Subproject.permits(subproject, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const intent = "subproject.update";
+  if (!Subproject.permits(subproject, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
   }
 
   logger.trace({ event: subprojectUpdated }, "Checking event validity");

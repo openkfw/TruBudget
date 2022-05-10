@@ -49,12 +49,10 @@ export async function updateProject(
   }
   const projectUpdated = projectUpdatedResult;
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const intent = "project.update";
-    if (!Project.permits(project, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const intent = "project.update";
+  if (!Project.permits(project, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
   }
 
   logger.trace({ event: projectUpdated }, "Checking event validity");

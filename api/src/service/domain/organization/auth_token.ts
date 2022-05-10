@@ -23,7 +23,7 @@ export function canAssumeIdentity(
   identity: Identity,
 ): boolean {
   // TODO support groups in groups (which makes this function async)
-  return identity === user.id || user.groups.includes(identity) || user.id === "root";
+  return identity === user.id || user.groups.includes(identity);
 }
 
 interface Repository {

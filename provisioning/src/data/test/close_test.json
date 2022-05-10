@@ -3,11 +3,13 @@
   "description": "project.close test data",
   "status": "open",
   "assignee": "mstein",
-  "projectedBudgets": [{
-    "organization": "ACMECorp",
-    "value": "9999",
-    "currencyCode": "EUR"
-  }],
+  "projectedBudgets": [
+    {
+      "organization": "ACMECorp",
+      "value": "9999",
+      "currencyCode": "EUR"
+    }
+  ],
   "permissions": {
     "project.viewDetails": ["mstein"],
     "project.viewSummary": ["mstein"],
@@ -16,16 +18,19 @@
     "project.intent.grantPermission": ["mstein"],
     "project.intent.revokePermission": ["mstein"]
   },
-  "subprojects": [{
+  "subprojects": [
+    {
       "displayName": "Subproject A",
       "description": "No description.",
       "status": "closed",
       "currency": "EUR",
-      "projectedBudgets": [{
-        "organization": "ACMECorp",
-        "value": "1000",
-        "currencyCode": "EUR"
-      }],
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "1000",
+          "currencyCode": "EUR"
+        }
+      ],
       "assignee": "mstein",
       "permissions": {
         "subproject.viewSummary": ["mstein"],
@@ -39,16 +44,18 @@
       "description": "Open and not visible to mstein",
       "status": "open",
       "currency": "EUR",
-      "projectedBudgets": [{
-        "organization": "ACMECorp",
-        "value": "1000",
-        "currencyCode": "EUR"
-      }],
-      "assignee": "jdoe",
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "1000",
+          "currencyCode": "EUR"
+        }
+      ],
+      "assignee": "mstein",
       "permissions": {
-        "subproject.viewSummary": ["jdoe"],
-        "subproject.viewDetails": ["jdoe"],
-        "subproject.close": ["jdoe"]
+        "subproject.viewSummary": ["mstein", "jdoe"],
+        "subproject.viewDetails": ["mstein", "jdoe"],
+        "subproject.close": ["mstein", "jdoe"]
       },
       "workflows": []
     }

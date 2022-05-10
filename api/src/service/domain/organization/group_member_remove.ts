@@ -36,7 +36,7 @@ export async function removeMember(
     return new VError(memberRemoved, "failed to create group member removed event");
   }
 
-  logger.trace("Check if user is root");
+  logger.trace({ issuer }, "Checking if user is root or has permissions");
   if (issuer.id !== "root") {
     const intent = "group.removeUser";
     if (!Group.permits(group, issuer, [intent])) {

@@ -75,15 +75,17 @@ export async function disableUser(
 
   // Check if revokee and issuer belong to the same organization
   if (userResult.organization !== issuerOrganization) {
+    logger.trace({ issuer }, "User does not belong to the right organization");
     return new NotAuthorized({
       ctx,
       userId: issuer.id,
       intent,
       target: globalPermissions,
+      isOtherOrganization: true,
     });
   }
 
-  logger.trace({ issuer }, "Checking if user is root");
+  logger.trace({ issuer }, "Checking if user is root or has permissions");
   if (issuer.id !== "root") {
     const isAuthorized = GlobalPermissions.permits(globalPermissions, issuer, [intent]);
     if (!isAuthorized) {
@@ -100,9 +102,8 @@ export async function disableUser(
     return new PreconditionError(ctx, userDisabled, "Error - You cannot disable yourself");
   }
 
-  const assignments: Result.Type<UserAssignments.UserAssignments> = await repository.getUserAssignments(
-    userToDisable,
-  );
+  const assignments: Result.Type<UserAssignments.UserAssignments> =
+    await repository.getUserAssignments(userToDisable);
   if (Result.isErr(assignments)) {
     return new VError(assignments, "failed to get assignments");
   }

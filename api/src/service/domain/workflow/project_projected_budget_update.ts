@@ -54,12 +54,10 @@ export async function updateProjectedBudget(
     return new VError(budgetUpdated, "failed to create projected budget updated event");
   }
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const intent = "project.budget.updateProjected";
-    if (!Project.permits(project, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const intent = "project.budget.updateProjected";
+  if (!Project.permits(project, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
   }
 
   logger.trace({ event: budgetUpdated }, "Checking event validity");
