@@ -8,6 +8,7 @@ interface Info {
   userId: string;
   intent: Intent | Intent[];
   isOtherOrganization?: boolean;
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   target?: any;
 }
 

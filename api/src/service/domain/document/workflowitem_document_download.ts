@@ -7,9 +7,8 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as DocumentShared from "./document_shared";
-
-import VError = require("verror");
 import { StoredDocument } from "./document";
+import VError = require("verror");
 
 type Base64String = string;
 interface DocumentStorageServiceResponse {
@@ -100,6 +99,7 @@ async function getDocumentFromInternalOrExternalStorage(
   return documentFromStorage;
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function getDocument(
   ctx: Ctx,
   user: ServiceUser,

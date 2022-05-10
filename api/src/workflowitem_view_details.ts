@@ -1,4 +1,4 @@
-import { FastifyInstance, RequestGenericInterface } from "fastify";
+import { RequestGenericInterface } from "fastify";
 import { VError } from "verror";
 
 import { getAllowedIntents } from "./authz";
@@ -14,10 +14,11 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
 import { DocumentReference } from "./service/domain/document/document";
+import { AugmentedFastifyInstance } from "./types";
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description: "Retrieve details about a specific workflowitem",
       tags: ["workflowitem"],
@@ -161,7 +162,11 @@ function sendErrorIfEmpty(reply, resourceId): string | undefined {
   return;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get<Request>(
     `${urlPrefix}/workflowitem.viewDetails`,
     mkSwaggerSchema(server),

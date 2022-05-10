@@ -9,7 +9,6 @@ import * as DocumentShared from "./domain/document/document_shared";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
 import * as DocumentValidated from "./domain/document/document_validated";
 import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
-import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import { NotFound } from "./domain/errors/not_found";
 import * as NodesLogged from "./domain/network/nodes_logged";
 import * as NodeDeclined from "./domain/network/node_declined";

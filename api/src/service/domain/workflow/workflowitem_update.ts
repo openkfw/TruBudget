@@ -1,4 +1,5 @@
 import isEqual = require("lodash.isequal");
+import uuid = require("uuid");
 import { VError } from "verror";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
@@ -10,10 +11,10 @@ import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import { config } from "../../../config";
 import {
+  DocumentReference,
+  GenericDocument,
   hashDocument,
   UploadedDocument,
-  GenericDocument,
-  DocumentReference,
 } from "../document/document";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
@@ -21,7 +22,6 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import uuid = require("uuid");
 import logger from "lib/logger";
 
 export interface RequestData {
@@ -61,6 +61,7 @@ function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
 
 function generateUniqueDocId(allDocuments: GenericDocument[]): string {
   logger.trace("Generation unique document id");
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const docId = uuid.v4();
     if (!docIdAlreadyExists(allDocuments, docId)) {
