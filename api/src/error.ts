@@ -72,9 +72,7 @@ export type TruBudgetErrorType =
   | UnsupportedEventVersion
   | UnsupportedMediaType;
 
-// Custom Throwables here
-
-
+// Custom throwables here
 
 export class TruBudgetError extends Error {
   public badKeys = undefined;
@@ -99,11 +97,10 @@ export class TruBudgetError extends Error {
 
   public kind = undefined;
 
-
-
   constructor(err: TruBudgetErrorType) {
-    super(`An error occured ${err.kind}, details: ${JSON.stringify(err)}`);
+    super(`An error occurred ${err.kind}, details: ${JSON.stringify(err)}`);
     Object.setPrototypeOf(this, TruBudgetError.prototype);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const property = err as any;
     this.badKeys = property.badKeys;
     this.what = property.what;
@@ -116,6 +113,5 @@ export class TruBudgetError extends Error {
     this.event = property.event;
     this.contentType = property.contentType;
     this.kind = property.kind;
-
   }
 }

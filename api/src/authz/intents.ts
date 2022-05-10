@@ -3,7 +3,11 @@ export type ExposableIntent = Exclude<
   "project.close" | "subproject.close" | "workflowitem.close"
 >;
 
-//TODO check if each permission matches an (permission-)endpoint (user.view matches user.list should be user.list) (adapt intends to api)
+/*
+ * TODO For  version 2.x since breaking change
+ * check if each permission matches an (permission-)endpoint (user.view matches user.list should be user.list
+ * intends should be adapted to api endpoints (breaking change))
+ */
 
 type Intent =
   | "global.listPermissions"

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { TruBudgetError } from "error";
+import { TruBudgetError } from "../error";
 import { AuthenticatedRequest } from "../httpd/lib";
 
 export const createBackup = async (

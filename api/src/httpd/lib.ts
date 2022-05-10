@@ -1,4 +1,4 @@
-import { TruBudgetError } from "error";
+import { TruBudgetError } from "../error";
 import { FastifyRequest } from "fastify";
 import { AuthToken } from "../authz/token";
 import logger from "../lib/logger";
@@ -6,6 +6,7 @@ import logger from "../lib/logger";
 export interface AuthenticatedRequest extends FastifyRequest {
   user: AuthToken;
 }
+
 export interface SuccessResponse {
   apiVersion: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

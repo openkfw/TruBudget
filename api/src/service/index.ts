@@ -1,4 +1,4 @@
-import { TruBudgetError } from "error";
+import { TruBudgetError } from "../error";
 import VError from "verror";
 import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";

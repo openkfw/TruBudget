@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TruBudgetError } from "error";
+import { TruBudgetError } from "../error";
 import logger from "../lib/logger";
 import {
   BlockInfo,
@@ -290,7 +290,7 @@ export class RpcMultichainClient implements MultichainClient {
       .invoke("liststreamkeyitems", streamName, key, false, nValues)
       .catch((err) => {
         if (err && err.code === -708) {
-           throw new TruBudgetError({ kind: "NotFound", what: { stream: `stream ${streamName}` } });
+          throw new TruBudgetError({ kind: "NotFound", what: { stream: `stream ${streamName}` } });
         } else {
           throw err;
         }
