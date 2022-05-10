@@ -1,4 +1,4 @@
-import { TruBudgetError } from "error";
+import { TruBudgetError } from "../error";
 import logger from "../lib/logger";
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
@@ -63,15 +63,15 @@ const can = async (
  *
  * @deprecated
  */
-export const authorized = (token: AuthToken, intent: Intent) => async (
-  resourcePermissions: Permissions,
-): Promise<undefined> => {
-  const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
-  if (!canDo) {
-    throw new TruBudgetError({ kind: "NotAuthorized", token, intent });
-  }
-  return;
-};
+export const authorized =
+  (token: AuthToken, intent: Intent) =>
+  async (resourcePermissions: Permissions): Promise<undefined> => {
+    const canDo = await /*loggedC*/ can(token, intent, resourcePermissions);
+    if (!canDo) {
+      throw new TruBudgetError({ kind: "NotAuthorized", token, intent });
+    }
+    return;
+  };
 
 export const throwIfUnauthorized = (
   token: AuthToken,

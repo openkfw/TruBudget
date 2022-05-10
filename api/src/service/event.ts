@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TruBudgetError } from "error";
+import { TruBudgetError } from "../error";
 import Intent from "../authz/intents";
 
 export interface Event {
