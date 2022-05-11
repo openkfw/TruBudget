@@ -10,7 +10,7 @@ import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as PublicKeyGet from "./public_key_get";
-import * as UserQuery from "./user_query";
+import * as UserQuery from "./domain/organization/user_query";
 import { store } from "./store";
 import logger from "lib/logger";
 import { StoredDocument } from "./domain/document/document";

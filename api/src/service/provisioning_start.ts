@@ -15,7 +15,7 @@ export async function setProvisioningStartFlag(
 ): Promise<Result.Type<void>> {
   logger.debug("Set Flag to signal start of provisioning");
 
-  const provisioningStartEventResult = await Cache.withCache(conn, ctx, async (cache) =>
+  const provisioningStartEventResult = await Cache.withCache(conn, ctx, async (_cache) =>
     ProvisioningStart.setProvisioningStartFlag(ctx, serviceUser),
   );
 

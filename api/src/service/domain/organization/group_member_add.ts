@@ -1,5 +1,6 @@
-import { VError } from "verror";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -9,8 +10,6 @@ import { ServiceUser } from "../organization/service_user";
 import * as Group from "./group";
 import { sourceGroups } from "./group_eventsourcing";
 import * as GroupMemberAdded from "./group_member_added";
-import logger from "lib/logger";
-import { trace } from "console";
 
 interface Repository {
   getGroupEvents(): Promise<BusinessEvent[]>;

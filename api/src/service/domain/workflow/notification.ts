@@ -23,9 +23,7 @@ export interface Notification {
 
 const schema = Joi.object({
   id: idSchema.required(),
-  createdAt: Joi.date()
-    .iso()
-    .required(),
+  createdAt: Joi.date().iso().required(),
   recipient: UserRecord.idSchema,
   isRead: Joi.boolean().required(),
   // "object" due to recursiveness of validation:
@@ -33,12 +31,10 @@ const schema = Joi.object({
   projectId: Joi.string().max(32),
   subprojectId: Joi.string().max(32),
   workflowitemId: Joi.string().max(32),
-  log: Joi.array()
-    .required()
-    .items(notificationTraceEventSchema),
+  log: Joi.array().required().items(notificationTraceEventSchema),
 });
 
-export function validate(input: any): Result.Type<Notification> {
+export function validate(input): Result.Type<Notification> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

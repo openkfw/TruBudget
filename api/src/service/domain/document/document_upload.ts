@@ -1,14 +1,14 @@
-import { VError } from "verror";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
+import * as UserRecord from "../organization/user_record";
 import { GenericDocument } from "./document";
 import * as DocumentShared from "./document_shared";
 import * as DocumentUploaded from "./document_uploaded";
-import * as UserRecord from "../organization/user_record";
-import { PreconditionError } from "../errors/precondition_error";
-import logger from "lib/logger";
 
 export interface RequestData {
   id: string;
@@ -17,7 +17,6 @@ export interface RequestData {
 }
 
 type Base64String = string;
-type HashedBase64String = string;
 
 interface DocumentStorageServiceResponse {
   id: string;

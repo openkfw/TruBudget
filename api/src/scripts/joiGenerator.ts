@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-dynamic-require */
-import * as fs from "fs";
-import * as parseSwagger from "swagger-to-joi";
 import * as colors from "colors";
 import * as Diff from "diff";
+import * as fs from "fs";
+import * as parseSwagger from "swagger-to-joi";
 
 const fastifyMock = {
   authenticate: "",

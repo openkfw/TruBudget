@@ -69,6 +69,7 @@ type MaybeHistoryEvent = null | {
   createdBy: string;
   createdAt: string;
   dataVersion: number; // integer
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   snapshot: {
     displayName: string;
@@ -97,6 +98,7 @@ export type WorkflowitemUpdater = (
   projectId: string,
   subprojectId: string,
   workflowitemId: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updatedData: any,
 ) => Promise<void>;
 

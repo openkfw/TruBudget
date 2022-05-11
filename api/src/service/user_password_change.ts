@@ -5,9 +5,9 @@ import * as Result from "../result";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserPasswordChange from "./domain/organization/user_password_change";
+import * as UserQuery from "./domain/organization/user_query";
 import { hashPassword } from "./password";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
 
 export async function changeUserPassword(
   conn: ConnToken,

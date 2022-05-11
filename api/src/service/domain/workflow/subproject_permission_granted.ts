@@ -58,7 +58,7 @@ export function createEvent(
   return event;
 }
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

@@ -22,7 +22,6 @@ export function canAssumeIdentity(
   user: { id: string; groups: string[] },
   identity: Identity,
 ): boolean {
-  // TODO support groups in groups (which makes this function async)
   return identity === user.id || user.groups.includes(identity);
 }
 

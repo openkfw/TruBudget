@@ -1,13 +1,13 @@
+import logger from "lib/logger";
+import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserEnable from "./domain/organization/user_enable";
+import * as UserQuery from "./domain/organization/user_query";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
-import { VError } from "verror";
-import logger from "lib/logger";
 
 export async function enableUser(
   conn: ConnToken,

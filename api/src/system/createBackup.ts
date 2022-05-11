@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { TruBudgetError } from "../error";
 import { AuthenticatedRequest } from "../httpd/lib";
 
 export const createBackup = async (
@@ -20,6 +20,6 @@ export const createBackup = async (
       throw err;
     }
   } else {
-    throw { kind: "AuthenticationError", userId };
+    throw new TruBudgetError({ kind: "AuthenticationError", userId });
   }
 };

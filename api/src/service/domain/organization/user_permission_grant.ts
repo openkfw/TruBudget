@@ -1,8 +1,9 @@
 import isEqual = require("lodash.isequal");
 
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -13,14 +14,10 @@ import { ServiceUser } from "./service_user";
 import * as UserEventSourcing from "./user_eventsourcing";
 import * as UserPermissionGranted from "./user_permission_granted";
 import * as UserRecord from "./user_record";
-import logger from "lib/logger";
 
 interface Repository {
   getTargetUser(userId: UserRecord.Id): Promise<Result.Type<UserRecord.UserRecord>>;
 }
-
-type EventTypeType = "user_permission_granted";
-const eventType: EventTypeType = "user_permission_granted";
 
 export async function grantUserPermission(
   ctx: Ctx,

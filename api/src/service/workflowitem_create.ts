@@ -1,6 +1,7 @@
-import { VError } from "verror";
 import { encryptWithKey } from "lib/asymmetricCrypto";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { VError } from "verror";
 import * as Result from "../result";
 import * as Cache from "./cache2";
 import { StorageServiceClientI } from "./Client_storage_service.h";
@@ -10,21 +11,20 @@ import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
 import { ServiceUser } from "./domain/organization/service_user";
+import * as UserQuery from "./domain/organization/user_query";
 import { Document, ResourceMap } from "./domain/ResourceMap";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemCreate from "./domain/workflow/workflowitem_create";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
 import * as PublicKeyGet from "./public_key_get";
-import * as UserQuery from "./user_query";
 import { store } from "./store";
-import logger from "lib/logger";
 
 export { RequestData } from "./domain/workflow/workflowitem_create";
 
 export async function createWorkflowitem(
   conn: ConnToken,
-  storageServiceClient: StorageServiceClientI, //TODO: make optional
+  storageServiceClient: StorageServiceClientI,
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: WorkflowitemCreate.RequestData,

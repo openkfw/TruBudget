@@ -1,5 +1,4 @@
 import { assert } from "chai";
-
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -131,7 +130,6 @@ describe("update project: how modifications are applied", () => {
       const result = await updateProject(ctx, alice, projectId, modification, baseRepository);
 
       assert.isTrue(Result.isErr(result), (result as Error).message);
-      const error = Result.unwrapErr(result);
     },
   );
 

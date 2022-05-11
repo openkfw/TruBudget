@@ -1,13 +1,15 @@
+import { TruBudgetError } from "../error";
 import { FastifyRequest } from "fastify";
-
 import { AuthToken } from "../authz/token";
 import logger from "../lib/logger";
 
 export interface AuthenticatedRequest extends FastifyRequest {
   user: AuthToken;
 }
+
 export interface SuccessResponse {
   apiVersion: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 }
 
@@ -23,7 +25,7 @@ export type HttpStatusCode = number;
 export type HttpResponse = [HttpStatusCode, SuccessResponse | ErrorResponse];
 
 export const throwParseError = (badKeys, message?) => {
-  throw { kind: "ParseError", badKeys, message };
+  throw new TruBudgetError({ kind: "ParseError", badKeys, message });
 };
 
 export const throwParseErrorIfUndefined = (obj, path) => {

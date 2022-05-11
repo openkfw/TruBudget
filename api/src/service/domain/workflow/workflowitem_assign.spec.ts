@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
-
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -240,7 +240,7 @@ describe("assign workflowitem: preconditions", () => {
     assert.isTrue(Result.isErr(result), "The result returns an error");
     // Make TypeScript happy:
     if (Result.isOk(result)) {
-      throw result;
+      throw new Error(result as any);
     }
 
     assert.match(result.message, /assignee.*\s+.*empty/);

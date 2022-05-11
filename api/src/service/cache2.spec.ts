@@ -1,6 +1,5 @@
 import { assert } from "chai";
 import * as isEmpty from "lodash.isempty";
-
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";

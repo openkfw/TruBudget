@@ -1,5 +1,3 @@
-import uuid = require("uuid");
-
 import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
 import deepcopy from "../lib/deepcopy";
@@ -13,14 +11,7 @@ import { Issuer } from "./issuer";
 import * as Liststreamkeyitems from "./liststreamkeyitems";
 import { Item } from "./liststreamkeyitems";
 
-type ResourceType = "project" | "subproject" | "workflowitem";
-
 const projectSelfKey = "self";
-
-interface NotificationResourceDescription {
-  id: string;
-  type: ResourceType;
-}
 
 interface ProjectedBudget {
   organization: string;
@@ -54,7 +45,7 @@ export interface HistoryEvent {
   createdBy: string;
   createdAt: string;
   dataVersion: number; // integer
-  data: any;
+  data: unknown;
   snapshot: {
     displayName: string;
   };
@@ -123,13 +114,6 @@ export async function writeProjectAssignedToChain(
     .getRpcClient()
     .invokePublish(streamName, streamItemKey, streamItem)
     .then(() => event);
-}
-
-export interface ProjectUpdate {
-  displayName?: string;
-  description?: string;
-  projectedBudgets?: ProjectedBudget[];
-  thumbnail?: string;
 }
 
 export async function updateProject(

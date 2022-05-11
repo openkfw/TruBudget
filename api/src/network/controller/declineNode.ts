@@ -1,8 +1,13 @@
-import Intent from "../../authz/intents";
-import { AddressIsInvalidError, NotFoundError, PreconditionError } from "../../error";
-import { HttpResponse } from "../../httpd/lib";
 import logger from "lib/logger";
 import { isNonemptyString, value } from "lib/validation";
+import Intent from "../../authz/intents";
+import {
+  AddressIsInvalidError,
+  NotFoundError,
+  PreconditionError,
+  TruBudgetError,
+} from "../../error";
+import { HttpResponse } from "../../httpd/lib";
 import { MultichainClient } from "../../service/Client.h";
 import * as Nodes from "../model/Nodes";
 
@@ -11,7 +16,10 @@ export async function declineNode(multichain: MultichainClient, req): Promise<Ht
 
   const address: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
   if (!(await multichain.isValidAddress(address))) {
-    throw { kind: "AddressIsInvalid", address: input.address } as AddressIsInvalidError;
+    throw new TruBudgetError({
+      kind: "AddressIsInvalid",
+      address: input.address,
+    } as AddressIsInvalidError);
   }
 
   const organization: string = value("organization", input.organization, isNonemptyString);
@@ -32,14 +40,17 @@ export async function declineNode(multichain: MultichainClient, req): Promise<Ht
   const node = await Nodes.getNode(multichain, address, organization);
   if (!node) {
     const message = `No node registered for organization '${organization}'`;
-    throw { kind: "NotFound", what: { message: message } } as NotFoundError;
+    throw new TruBudgetError({ kind: "NotFound", what: { message: message } } as NotFoundError);
   }
 
   //check if node was already declined by this organization
   for (const decliner of node.declinedBy) {
     if (decliner.organization === declinerOrganization) {
       const message = `Node is already declined by ${declinerOrganization}`;
-      throw { kind: "PreconditionError", message: message } as PreconditionError;
+      throw new TruBudgetError({
+        kind: "PreconditionError",
+        message: message,
+      } as PreconditionError);
     }
   }
 
@@ -47,7 +58,10 @@ export async function declineNode(multichain: MultichainClient, req): Promise<Ht
   for (const permission of node.networkPermissions) {
     if (permission.permission === "connect") {
       const message = "Node is already approved";
-      throw { kind: "PreconditionError", message: message } as PreconditionError;
+      throw new TruBudgetError({
+        kind: "PreconditionError",
+        message: message,
+      } as PreconditionError);
     }
   }
   // publish new 'declineNode' event on the nodes stream

@@ -24,7 +24,7 @@ const send = (res, httpResponse: HttpResponse) => {
   res.status(code).send(body);
 };
 
-const handleError = (req, res, err: any) => {
+const handleError = (_req, res, err) => {
   switch (err.kind) {
     case "NotAuthorized": {
       const message = `User ${err.token.userId} is not authorized.`;
@@ -195,11 +195,11 @@ const handleError = (req, res, err: any) => {
   }
 };
 
-function ctx(request: any): Ctx {
+function ctx(request): Ctx {
   return { requestId: request.id, source: "http" };
 }
 
-function issuer(request: any): ServiceUser {
+function issuer(request): ServiceUser {
   const req = request as AuthenticatedRequest;
   return { id: req.user.userId, groups: req.user.groups, address: req.user.address };
 }
@@ -222,7 +222,7 @@ export const registerRoutes = (
   server.get(
     `${urlPrefix}/readiness`,
     getSchemaWithoutAuth("readiness"),
-    async (request, reply) => {
+    async (_request, reply) => {
       if (await isReady(multichainClient)) {
         return reply.status(200).send("OK");
       } else {
