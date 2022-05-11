@@ -97,12 +97,7 @@ function applyMembersAdded(
   const group = deepcopy(groups.get(membersAdded.groupId));
   if (group === undefined) return;
 
-  membersAdded.newMembers.forEach((member) => {
-    if (group.members.includes(member)) {
-      return;
-    }
-    newMembers.push(member);
-  });
+  newMembers = membersAdded.newMembers.filter((member) => !group.members.includes(member));
 
   if (newMembers.length === 0) {
     return;
@@ -139,15 +134,8 @@ function applyMemberRemoved(
   const group = deepcopy(groups.get(membersRemoved.groupId));
   if (group === undefined) return;
 
-  membersRemoved.members.forEach((member) => {
-    const memberIdx = group.members.indexOf(member);
-    if (memberIdx === -1) {
-      // The "member" already doesn't belong to this group, so there's nothing left to do.
-      logger.trace("The member to remove does not belong to this group => all good!");
-      return;
-    }
-    // Remove the user from the array:
-    group.members.splice(memberIdx, 1);
+  group.members = group.members.filter((currentGroupMember) => {
+    return !membersRemoved.members.includes(currentGroupMember);
   });
 
   const result = Group.validate(group);
