@@ -1,4 +1,5 @@
-import { FastifyInstance, RequestGenericInterface } from "fastify";
+import { RequestGenericInterface } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
@@ -16,9 +17,9 @@ import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description: "Retrieve details about a specific subproject.",
       tags: ["subproject"],
@@ -185,7 +186,11 @@ interface Request extends RequestGenericInterface {
   };
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get<Request>(
     `${urlPrefix}/subproject.viewDetails`,
     mkSwaggerSchema(server),

@@ -21,7 +21,6 @@ import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
 import * as SubprojectCreated from "./subproject_created";
 
-
 export interface RequestData {
   projectId: Project.Id;
   subprojectId?: Subproject.Id;
@@ -50,7 +49,7 @@ const requestDataSchema = Joi.object({
   additionalData: AdditionalData.schema,
 });
 
-export function validate(input: any): RequestData {
+export function validate(input): RequestData {
   const { value, error } = Joi.validate(input, requestDataSchema);
   return !error ? value : error;
 }

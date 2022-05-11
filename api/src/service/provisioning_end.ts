@@ -15,7 +15,7 @@ export async function setProvisioningEndFlag(
 ): Promise<Result.Type<void>> {
   logger.debug("Setting flag to signal end of provisioning");
 
-  const provisioningEndEventResult = await Cache.withCache(conn, ctx, async (cache) =>
+  const provisioningEndEventResult = await Cache.withCache(conn, ctx, async (_cache) =>
     ProvisioningEnd.setProvisioningEndFlag(ctx, serviceUser),
   );
 

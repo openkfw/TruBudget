@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
-import { ConnToken } from ".";
-import { Ctx } from "../lib/ctx";
-import * as Result from "../result";
-import { NotFound } from "./domain/errors/not_found";
-import * as Group from "./domain/organization/group";
-import { ServiceUser } from "./domain/organization/service_user";
-import { UserRecord } from "./domain/organization/user_record";
+import { ConnToken } from "service/conn";
+import { Ctx } from "../../../lib/ctx";
+import * as Result from "../../../result";
+import { NotFound } from "../errors/not_found";
+import * as Group from "./group";
 import * as GroupQuery from "./group_query";
+import { ServiceUser } from "./service_user";
+import { UserRecord } from "./user_record";
 
 // Globals as test fixture (ignored by the mock'ed code):
 const conn = (null as any) as ConnToken;

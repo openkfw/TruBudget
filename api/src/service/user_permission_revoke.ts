@@ -8,9 +8,9 @@ import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserPermissionRevoke from "./domain/organization/user_permission_revoke";
+import * as UserQuery from "./domain/organization/user_query";
 import * as UserRecord from "./domain/organization/user_record";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
 
 export { RequestData } from "./domain/workflow/project_create";
 

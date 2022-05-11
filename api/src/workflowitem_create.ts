@@ -1,24 +1,24 @@
-import { FastifyInstance } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
+import { safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
+import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
-import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
 import {
+  amountTypeSchema,
   conversionRateSchema,
   moneyAmountSchema,
-  amountTypeSchema,
 } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_types/types";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 import Joi = require("joi");
-import { safeStringSchema } from "./lib/joiValidation";
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -65,14 +65,14 @@ const requestBodyV1Schema = Joi.object({
 type RequestBody = RequestBodyV1;
 const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
 
-function validateRequestBody(body: any): Result.Type<RequestBody> {
+function validateRequestBody(body): Result.Type<RequestBody> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
 }
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description:
         "Create a workflowitem and associate it to the given subproject.\n.\n" +
@@ -177,7 +177,11 @@ interface Service {
   ): Promise<Result.Type<ResourceMap>>;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.post(
     `${urlPrefix}/subproject.createWorkflowitem`,
     mkSwaggerSchema(server),

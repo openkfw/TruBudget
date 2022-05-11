@@ -1,20 +1,14 @@
 import { assert } from "chai";
-
-import Intent from "../../../authz/intents";
 import { Ctx } from "lib/ctx";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
-import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import { getUserAssignments } from "./user_assignments_get";
-import * as GlobalPermissions from "./global_permissions";
-import * as UserAssignments from "../workflow/user_assignments";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
-import { HiddenAssignments } from "./user_assignments";
-import { VError } from "verror";
+import { getUserAssignments } from "./user_assignments_get";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";

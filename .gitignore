@@ -13,3 +13,4 @@ yarn-error.log
 e2e-test/debug.log
 scripts/development/.env
 scripts/operation/.env
+.idea/

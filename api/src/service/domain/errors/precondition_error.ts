@@ -7,7 +7,7 @@ export class PreconditionError extends Error {
     private readonly businessEvent: BusinessEvent,
     message: string,
   ) {
-    // TODO this shouldn't be failed to apply event but failed to execute intent
+    // TODO for 2.x: this shouldn't be failed to apply event but failed to execute intent
     super(`Failed to apply ${businessEvent.type}, a precondition is not fulfilled: ${message}`);
 
     this.name = "PreconditionError";

@@ -1,9 +1,10 @@
-import { FastifyInstance } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
+import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -11,7 +12,6 @@ import { ResourceMap } from "./service/domain/ResourceMap";
 import * as Project from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as ProjectCreate from "./service/project_create";
-import { safeStringSchema, safeIdSchema } from "./lib/joiValidation";
 import Joi = require("joi");
 
 interface RequestBodyV1 {
@@ -55,14 +55,14 @@ const requestBodyV1Schema = Joi.object({
 type RequestBody = RequestBodyV1;
 const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
 
-function validateRequestBody(body: any): Result.Type<RequestBody> {
+function validateRequestBody(body): Result.Type<RequestBody> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
 }
 
-function mkSwaggerSchema(server: FastifyInstance): Object {
+function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description:
         "Create a new project.\n.\n" +
@@ -139,10 +139,14 @@ function mkSwaggerSchema(server: FastifyInstance): Object {
 }
 
 interface Service {
-  createProject(ctx: Ctx, user: ServiceUser, createRequest: any): Promise<Result.Type<ResourceMap>>;
+  createProject(ctx: Ctx, user: ServiceUser, createRequest): Promise<Result.Type<ResourceMap>>;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.post(`${urlPrefix}/global.createProject`, mkSwaggerSchema(server), (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
 

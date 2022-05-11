@@ -1,24 +1,23 @@
-import { FastifyInstance } from "fastify";
-import Joi = require("joi");
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
+import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
+import { currencyCodeSchema } from "./service/domain/workflow/money";
+import { idSchema as projectIdSchema } from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
+import { idSchema as subProjectIdSchema } from "./service/domain/workflow/subproject";
 import WorkflowitemType, {
   workflowitemTypeSchema,
 } from "./service/domain/workflowitem_types/types";
 import * as SubprojectCreate from "./service/subproject_create";
-import { idSchema as projectIdSchema } from "./service/domain/workflow/project";
-import { idSchema as subProjectIdSchema } from "./service/domain/workflow/subproject";
-import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
-import { currencyCodeSchema } from "./service/domain/workflow/money";
+import Joi = require("joi");
 
 interface RequestBodyV1 {
   apiVersion: "1.0";
@@ -65,14 +64,14 @@ const requestBodyV1Schema = Joi.object({
 type RequestBody = RequestBodyV1;
 const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
 
-function validateRequestBody(body: any): Result.Type<RequestBody> {
+function validateRequestBody(body): Result.Type<RequestBody> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
 }
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description:
         "Create a subproject and associate it to the given project.\n.\n" +
@@ -164,7 +163,11 @@ interface Service {
   ): Promise<Result.Type<ResourceMap>>;
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.post(
     `${urlPrefix}/project.createSubproject`,
     mkSwaggerSchema(server),

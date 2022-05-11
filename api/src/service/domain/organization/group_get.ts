@@ -13,7 +13,7 @@ interface Repository {
 
 export async function getOneGroup(
   ctx: Ctx,
-  user: ServiceUser,
+  _user: ServiceUser,
   groupId: Group.Id,
   repository: Repository,
 ): Promise<Result.Type<Group.Group>> {
@@ -35,7 +35,7 @@ export async function getOneGroup(
 
 export async function getAllGroups(
   ctx: Ctx,
-  user: ServiceUser,
+  _user: ServiceUser,
   repository: Repository,
 ): Promise<Group.Group[]> {
   logger.trace("Fetching all group events *NOTE* errors are ignored in this procedure!");

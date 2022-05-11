@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { TruBudgetError } from "../error";
 import Intent from "../authz/intents";
 
 export interface Event {
@@ -10,5 +12,5 @@ export interface Event {
 }
 
 export function throwUnsupportedEventVersion(event: Event): never {
-  throw { kind: "UnsupportedEventVersion", event };
+  throw new TruBudgetError({ kind: "UnsupportedEventVersion", event });
 }

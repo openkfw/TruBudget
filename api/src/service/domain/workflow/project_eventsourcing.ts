@@ -1,7 +1,7 @@
-import { VError } from "verror";
-
 import { Ctx } from "lib/ctx";
 import deepcopy from "lib/deepcopy";
+import logger from "lib/logger";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -15,7 +15,6 @@ import * as ProjectProjectedBudgetDeleted from "./project_projected_budget_delet
 import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updated";
 import { ProjectTraceEvent } from "./project_trace_event";
 import * as ProjectUpdated from "./project_updated";
-import logger from "lib/logger";
 
 export function sourceProjects(
   ctx: Ctx,
@@ -190,6 +189,7 @@ function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
 function copyProjectExceptLog(project: Project.Project): Project.Project {
   const { log, ...tmp } = project;
   const copy = deepcopy(tmp);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (copy as any).log = [];
   return copy as Project.Project;
 }

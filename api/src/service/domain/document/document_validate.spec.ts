@@ -1,12 +1,11 @@
 import { assert } from "chai";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
 import { Project } from "../workflow/project";
 import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
-import { StoredDocument, UploadedDocument } from "./document";
+import { StoredDocument } from "./document";
 import { documentValidate } from "./document_validate";
 
 const ctx: Ctx = {
@@ -84,11 +83,6 @@ const baseWorkflowitem: Workflowitem = {
 const uploadedDocumentId = "1";
 const uploadedDocumentFileName = "1";
 
-const uploadedDocument: UploadedDocument = {
-  id: uploadedDocumentId,
-  base64: "lakjflaksdjf",
-  fileName: uploadedDocumentFileName,
-};
 const storedDocuments: StoredDocument[] = [
   {
     id: uploadedDocumentId,
@@ -97,17 +91,6 @@ const storedDocuments: StoredDocument[] = [
   },
 ];
 
-const uploadEventOffchain: BusinessEvent = {
-  type: "workflowitem_document_uploaded",
-  source: "",
-  time: "", // ISO timestamp
-  publisher: alice.id, //identity
-  projectId: projectId,
-  subprojectId: subprojectId,
-  workflowitemId: workflowitemId,
-  document: uploadedDocument,
-};
-
 const repository = {
   getWorkflowitem: () => Promise.resolve(baseWorkflowitem),
   getUsersForIdentity: async (identity) => {
@@ -115,7 +98,7 @@ const repository = {
     if (identity === "bob") return ["bob"];
     return Error(`unexpected identity: ${identity}`);
   },
-  getDocumentsEvents: () => Promise.resolve([] as any),
+  getDocumentsEvents: () => Promise.resolve([]),
   getAllProjects: () => Promise.resolve([]),
   getAllSubprojects: () => Promise.resolve([]),
   getAllWorkflowitems: () => Promise.resolve([]),

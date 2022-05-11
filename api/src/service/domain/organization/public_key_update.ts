@@ -1,7 +1,8 @@
 import Joi = require("joi");
 
-import { VError } from "verror";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -9,7 +10,6 @@ import { Organization, PublicKeyBase64 } from "./public_key";
 import { sourcePublicKeys } from "./public_key_eventsourcing";
 import * as PublicKeyPublished from "./public_key_published";
 import { ServiceUser } from "./service_user";
-import logger from "lib/logger";
 
 export interface RequestData {
   organization: Organization;
@@ -21,7 +21,7 @@ const requestDataSchema = Joi.object({
   publicKey: Joi.string().base64().required(),
 });
 
-export function validate(input: any): Result.Type<RequestData> {
+export function validate(input): Result.Type<RequestData> {
   const { value, error } = Joi.validate(input, requestDataSchema);
   return !error ? value : error;
 }
