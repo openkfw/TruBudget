@@ -9,17 +9,17 @@ import * as GroupMemberAdd from "./domain/organization/group_member_add";
 import { ServiceUser } from "./domain/organization/service_user";
 import { store } from "./store";
 
-export async function addMember(
+export async function addMembers(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
   groupId: Group.Id,
-  newMember: Group.Member,
+  newMembers: Group.Member[],
 ): Promise<Result.Type<void>> {
-  logger.debug({ newMember }, `Adding member to group "${groupId}"`);
+  logger.debug({ newMembers }, `Adding members to group "${groupId}"`);
 
   const memberAddResult = await Cache.withCache(conn, ctx, (cache) =>
-    GroupMemberAdd.addMember(ctx, serviceUser, groupId, newMember, {
+    GroupMemberAdd.addMembers(ctx, serviceUser, groupId, newMembers, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
       },

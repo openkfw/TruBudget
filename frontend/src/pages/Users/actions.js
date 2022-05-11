@@ -29,11 +29,11 @@ export const REMOVE_INITIAL_USER = "REMOVE_INITIAL_USER";
 export const CREATE_GROUP = "CREATE_GROUP";
 export const CREATE_GROUP_SUCCESS = "CREATE_GROUP_SUCCESS";
 
-export const ADD_USER = "ADD_USER";
-export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
+export const ADD_USERS = "ADD_USERS";
+export const ADD_USERS_SUCCESS = "ADD_USERS_SUCCESS";
 
-export const REMOVE_USER = "REMOVE_USER";
-export const REMOVE_USER_SUCCESS = "REMOVE_USER_SUCCESS";
+export const REMOVE_USERS = "REMOVE_USERS";
+export const REMOVE_USERS_SUCCESS = "REMOVE_USERS_SUCCESS";
 
 export const GRANT_ALL_USER_PERMISSIONS = "GRANT_ALL_USER_PERMISSIONS";
 export const GRANT_ALL_USER_PERMISSIONS_SUCCESS = "GRANT_ALL_USER_PERMISSIONS_SUCCESS";
@@ -120,19 +120,19 @@ export function createUserGroup(groupId, name, users) {
   };
 }
 
-export function addUser(groupId, userId) {
+export function addUsers(groupId, userIds) {
   return {
-    type: ADD_USER,
+    type: ADD_USERS,
     groupId,
-    userId
+    userIds
   };
 }
 
-export function removeUser(groupId, userId) {
+export function removeUsers(groupId, userIds) {
   return {
-    type: REMOVE_USER,
+    type: REMOVE_USERS,
     groupId,
-    userId
+    userIds
   };
 }
 

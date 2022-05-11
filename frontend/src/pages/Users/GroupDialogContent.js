@@ -40,23 +40,17 @@ const styles = {
 
 const GroupDialogContent = ({
   enabledUsers,
-  groupToAdd,
+  group,
   storeGroupId,
   storeGroupName,
   addInitialUserToGroup,
   editMode,
   removeInitialUserFromGroup,
-  removeUserFromGroup,
-  addUser,
+  removeUsers,
+  addUsers,
   classes
 }) => {
-  const { groupId, displayName, groupUsers } = groupToAdd;
-  const addUserToGroup = userId => {
-    addUser(groupId, userId);
-  };
-  const removeUser = userId => {
-    removeUserFromGroup(groupId, userId);
-  };
+  const { groupId, displayName, groupUsers } = group;
   return (
     <div>
       <span className={classes.info}>
@@ -86,9 +80,9 @@ const GroupDialogContent = ({
       <div>
         <UserSelection
           users={enabledUsers}
-          addToSelection={editMode ? addUserToGroup : addInitialUserToGroup}
+          addToSelection={editMode ? addUsers : addInitialUserToGroup}
           selectedItems={groupUsers}
-          handleDelete={editMode ? removeUser : removeInitialUserFromGroup}
+          handleDelete={editMode ? removeUsers : removeInitialUserFromGroup}
         />
       </div>
     </div>

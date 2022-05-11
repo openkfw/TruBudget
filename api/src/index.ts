@@ -402,13 +402,13 @@ GroupListAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 GroupMemberAddAPI.addHttpHandler(server, URL_PREFIX, {
-  addGroupMember: (ctx, issuer, groupId, newMember) =>
-    GroupMemberAddService.addMember(db, ctx, issuer, groupId, newMember),
+  addGroupMembers: (ctx, issuer, groupId, newMembers) =>
+    GroupMemberAddService.addMembers(db, ctx, issuer, groupId, newMembers),
 });
 
 GroupMemberRemoveAPI.addHttpHandler(server, URL_PREFIX, {
-  removeGroupMember: (ctx, issuer, groupId, newMember) =>
-    GroupMemberRemoveService.removeMember(db, ctx, issuer, groupId, newMember),
+  removeGroupMembers: (ctx, issuer, groupId, members) =>
+    GroupMemberRemoveService.removeMembers(db, ctx, issuer, groupId, members),
 });
 
 GroupPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {

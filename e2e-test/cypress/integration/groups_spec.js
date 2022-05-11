@@ -12,6 +12,9 @@ describe("User/Groups Dashboard", function() {
     cy.intercept(apiRoute + "/global.createGroup").as("createGroup");
   });
 
+  function randomId() {
+    return Math.round(Math.random() * 1000000);
+  }
   function createGroup(testGroup) {
     cy.get("[data-test=create]").click();
     cy.get("[data-test=groupid] input")
@@ -43,8 +46,8 @@ describe("User/Groups Dashboard", function() {
 
   it("Create new group and check if new group is visible", function() {
     const testGroup = {
-      id: `test-group-id-${Math.round(Math.random() * 1000000)}`,
-      name: `test-group-name-${Math.round(Math.random() * 1000000)}`
+      id: `test-group-id-${randomId()}`,
+      name: `test-group-name-${randomId()}`
     };
     createGroup(testGroup);
     cy.get(`[data-test=group-${testGroup.id}]`).should("be.visible");
@@ -55,8 +58,8 @@ describe("User/Groups Dashboard", function() {
 
   it("User that created the group should be able to edit it", function() {
     const testGroup = {
-      id: `test-group-id-${Math.round(Math.random() * 1000000)}`,
-      name: `test-group-name-${Math.round(Math.random() * 1000000)}`
+      id: `test-group-id-${randomId()}`,
+      name: `test-group-name-${randomId()}`
     };
     createGroup(testGroup);
     cy.get(`[data-test=edit-group-${testGroup.id}]`)
@@ -77,17 +80,22 @@ describe("User/Groups Dashboard", function() {
     cy.get(`[data-test=edit-group-${testGroup.id}]`).click();
     cy.get("[data-test=user-chip-dviolin]").should("be.visible");
     cy.get("[data-test=submit]").click();
-    // Check if number of user is corret
+    // Check if number of user is correct
     cy.get(`[data-test=group-${testGroup.id}] > [data-test=group-user-length]`).contains(2);
+    // Check if users are shown correctly
+    cy.get(`[data-test=edit-group-${testGroup.id}]`)
+      .should("be.visible")
+      .click();
+    cy.get("[data-test=user-chip-thouse]").should("not.exist");
+    cy.get("[data-test=user-chip-dviolin]").should("be.visible");
   });
 
   it("Users that didn't create the group should not be able to edit it", function() {
     const testGroup = {
-      id: `test-group-id-${Math.round(Math.random() * 1000000)}`,
-      name: `test-group-name-${Math.round(Math.random() * 1000000)}`
+      id: `test-group-id-${randomId()}`,
+      name: `test-group-name-${randomId()}`
     };
     createGroup(testGroup);
-
     cy.get("#logoutbutton")
       .should("be.visible")
       .click();
@@ -95,7 +103,6 @@ describe("User/Groups Dashboard", function() {
     cy.visit("/users");
     cy.get("[aria-label=groupsTab]").click();
     cy.get(`[data-test=edit-group-${testGroup.id}]`).should("be.disabled");
-
     cy.get("#logoutbutton")
       .should("be.visible")
       .click();

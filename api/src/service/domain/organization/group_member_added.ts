@@ -14,7 +14,7 @@ export interface Event {
   time: string; // ISO timestamp
   publisher: Identity;
   groupId: Group.Id;
-  newMember: Group.Member;
+  newMembers: Group.Member[];
 }
 
 export const schema = Joi.object({
@@ -23,14 +23,14 @@ export const schema = Joi.object({
   time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   groupId: Group.idSchema.required(),
-  newMember: Group.memberSchema.required(),
+  newMembers: Joi.array().items(Group.memberSchema.required()).required(),
 });
 
 export function createEvent(
   source: string,
   publisher: Identity,
   groupId: Group.Id,
-  newMember: Group.Member,
+  newMembers: Group.Member[],
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
   const event = {
@@ -38,7 +38,7 @@ export function createEvent(
     source,
     publisher,
     groupId,
-    newMember,
+    newMembers,
     time,
   };
   logger.trace("Creating group_member_add event...");

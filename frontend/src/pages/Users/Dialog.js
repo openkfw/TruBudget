@@ -1,5 +1,5 @@
 import _isEmpty from "lodash/isEmpty";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
@@ -48,8 +48,22 @@ const Dialog = props => {
     allowedIntents,
     grantGlobalPermission,
     revokeGlobalPermission,
-    setUsernameInvalid
+    setUsernameInvalid,
+    addUsers,
+    removeUsers
   } = props;
+
+  const [editGroupAddMembers, setEditGroupAddMembers] = React.useState([]);
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  useEffect(() => {
+    if (dialogType === "editGroup" && !isMounted) {
+      const group = groups.find(group => group.groupId === editId);
+      setEditGroupAddMembers(group.users);
+      setIsMounted(true);
+    }
+  }, [editGroupAddMembers, dialogType, editId, groups, isMounted]);
+
   const users = [...enabledUsers, ...disabledUsers];
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
   let title = "";
@@ -109,7 +123,7 @@ const Dialog = props => {
       steps = [
         {
           title: strings.users.add_group,
-          content: <GroupDialogContent {...props} />,
+          content: <GroupDialogContent group={props.groupToAdd} {...props} />,
           nextDisabled: _isEmpty(groupId) || _isEmpty(groupName) || _isEmpty(groupUsers)
         }
       ];
@@ -164,7 +178,7 @@ const Dialog = props => {
       const groupToEdit = {
         groupId: group.groupId,
         displayName: group.displayName,
-        groupUsers: group.users
+        groupUsers: editGroupAddMembers
       };
       steps = [
         {
@@ -172,11 +186,13 @@ const Dialog = props => {
           content: (
             <GroupDialogContent
               {...props}
-              groupToAdd={groupToEdit}
+              group={groupToEdit}
               editMode={true}
               allowedIntents={allowedIntents}
               globalPermissions={temporaryGlobalPermissions}
               permissionsExpanded={permissionsExpanded}
+              addUsers={id => setEditGroupAddMembers([...editGroupAddMembers, id])}
+              removeUsers={id => setEditGroupAddMembers(editGroupAddMembers.filter(userId => userId !== id))}
             />
           ),
           nextDisabled: false,
@@ -184,7 +200,18 @@ const Dialog = props => {
           submitButtonText: strings.common.done
         }
       ];
-      handleSubmitFunc = hideDashboardDialog;
+      handleSubmitFunc = () => {
+        const currentGroupUsers = group.users || [];
+        const usersToRemove = currentGroupUsers.filter(groupUser => !editGroupAddMembers.includes(groupUser));
+        const usersToAdd = editGroupAddMembers.filter(groupUser => !currentGroupUsers.includes(groupUser));
+        if (usersToAdd?.length !== 0) {
+          addUsers(group.groupId, usersToAdd);
+        }
+        if (usersToRemove?.length !== 0) {
+          removeUsers(group.groupId, usersToRemove);
+        }
+        hideDashboardDialog();
+      };
       break;
 
     default:
