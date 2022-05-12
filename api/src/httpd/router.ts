@@ -208,8 +208,8 @@ export const registerRoutes = (
   server: FastifyInstance,
   conn: ConnToken,
   urlPrefix: string,
-  multichainHost: string,
-  backupApiPort: string,
+  blockchainHost: string,
+  blockchainPort: number,
   storageServiceClient: StorageServiceClient,
   invalidateCache: () => void,
 ) => {
@@ -236,7 +236,7 @@ export const registerRoutes = (
   });
 
   server.get(`${urlPrefix}/version`, getSchema(server, "version"), async (request, reply) => {
-    getVersion(multichainHost, backupApiPort, multichainClient, storageServiceClient)
+    getVersion(blockchainHost, blockchainPort, multichainClient, storageServiceClient)
       .then((response) => {
         send(reply, response);
       })
@@ -322,7 +322,7 @@ export const registerRoutes = (
     `${urlPrefix}/system.createBackup`,
     getSchema(server, "createBackup"),
     (req: AuthenticatedRequest, reply) => {
-      createBackup(multichainHost, backupApiPort, req)
+      createBackup(blockchainHost, blockchainPort, req)
         .then((data) => {
           reply.header("Content-Type", "application/gzip");
           reply.header("Content-Disposition", 'attachment; filename="backup.gz"');
@@ -336,7 +336,7 @@ export const registerRoutes = (
     `${urlPrefix}/system.restoreBackup`,
     getSchema(server, "restoreBackup"),
     async (req: AuthenticatedRequest, reply) => {
-      await restoreBackup(multichainHost, backupApiPort, req)
+      await restoreBackup(blockchainHost, blockchainPort, req)
         .then((response) => send(reply, response))
         .catch((err) => handleError(req, reply, err));
       // Invalidate the cache, regardless of the outcome:

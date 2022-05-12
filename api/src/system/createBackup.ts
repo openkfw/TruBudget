@@ -3,15 +3,15 @@ import { TruBudgetError } from "../error";
 import { AuthenticatedRequest } from "../httpd/lib";
 
 export const createBackup = async (
-  multichainHost: string,
-  backupApiPort: string,
+  blockchainHost: string,
+  blockchainPort: number,
   req: AuthenticatedRequest,
 ) => {
   const { userId } = req.user;
   if (userId === "root") {
     try {
       const response = await axios({
-        url: `http://${multichainHost}:${backupApiPort}/chain-sha256`,
+        url: `http://${blockchainHost}:${blockchainPort}/chain-sha256`,
         responseType: "stream",
       });
       return response.data;
