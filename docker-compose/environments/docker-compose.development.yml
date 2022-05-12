@@ -1,0 +1,9 @@
+version: "3"
+services:
+  excel-export-service:
+    build: ../../excel-export-service
+    environment:
+      MODE: DEBUG
+      LOG_LEVEL: ${EXCEL_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    command: [ "npm", "run", "watch" ]

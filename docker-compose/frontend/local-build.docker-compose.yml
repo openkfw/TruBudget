@@ -1,0 +1,10 @@
+version: "3"
+services:
+  frontend:
+    extends:
+      file: frontend/docker-compose.yml
+      service: frontend
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: docker-compose-frontend:local

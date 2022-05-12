@@ -1,0 +1,8 @@
+version: "3"
+services:
+  api:
+    extends:
+      file: api/docker-compose.yml
+      service: api
+    build: ../api
+    image: docker-compose-api:local

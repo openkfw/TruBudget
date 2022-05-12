@@ -1,0 +1,25 @@
+version: "3"
+services:
+  excel-export-service:
+    build: ../../excel-export-service
+    environment:
+      PROD_API_HOST: master-api
+      PROD_API_PORT: ${API_PORT}
+      TEST_API_HOST: master-api
+      TEST_API_PORT: ${API_PORT}
+      PORT: ${EXPORT_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      MODE: DEBUG
+      LOG_LEVEL: ${EXCEL_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    command: [ "npm", "run", "watch" ]
+    # volume for hot reloading
+    volumes:
+      - "../../excel-export-service/src:/home/node/src:delegated"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.7
+    ports:
+      - "${EXPORT_PORT}:${EXPORT_PORT}"
+    depends_on:
+      - master-api

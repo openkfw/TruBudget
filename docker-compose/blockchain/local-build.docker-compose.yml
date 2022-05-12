@@ -1,0 +1,8 @@
+version: "3"
+services:
+  blockchain:
+    extends:
+      file: blockchain/docker-compose.yml
+      service: blockchain
+    build: ../blockchain
+    image: docker-compose_api:local
