@@ -10,6 +10,12 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { Permissions } from "./service/domain/permissions";
 
+/**
+ * Creates the swagger schema for the `/group.intent.listPermissions` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -51,10 +57,13 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the service that handles granting permissions to a group
+ */
 interface Service {
   getGroupPermissions(
     ctx: Ctx,
-    servcieUser: ServiceUser,
+    serviceUser: ServiceUser,
     groupId: string,
   ): Promise<Result.Type<Permissions>>;
 }
@@ -65,6 +74,13 @@ interface Request extends RequestGenericInterface {
   };
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/group.intent.listPermissions` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

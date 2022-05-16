@@ -1,6 +1,9 @@
 import { VError } from "verror";
 import logger from "./lib/logger";
 
+/**
+ * Represents the body of an error
+ */
 interface ErrorBody {
   apiVersion: "1.0";
   error: {
@@ -9,6 +12,12 @@ interface ErrorBody {
   };
 }
 
+/**
+ * Converts an error object to an appropriate http error
+ *
+ * @param error
+ * @returns an error object containing appropriate status code and an {@link ErrorBody}
+ */
 export function toHttpError(error: unknown | unknown[]): { code: number; body: ErrorBody } {
   const errors = error instanceof Array ? error : [error];
   const httpErrors = errors.map(convertError);
@@ -19,6 +28,12 @@ export function toHttpError(error: unknown | unknown[]): { code: number; body: E
   return { code: httpError.code, body: toErrorBody(httpError) };
 }
 
+/**
+ * Converts an error to an object containing status code and message
+ *
+ * @param error the error to convert
+ * @returns an object containing status code and message
+ */
 function convertError(error): { code: number; message: string } {
   if (error instanceof Error) {
     logger.debug({ error }, error.message);
@@ -30,6 +45,12 @@ function convertError(error): { code: number; message: string } {
   }
 }
 
+/**
+ * Unpacks the error in an object containing just the error code and the message
+ *
+ * @param error the {@link Error} to handle
+ * @returns object containing the error code and error message
+ */
 function handleError(error: Error): { code: number; message: string } {
   // We select the outer-most error that makes sense to turn into a status code:
   const name = selectHighLevelCause(error);
@@ -56,6 +77,12 @@ function handleError(error: Error): { code: number; message: string } {
   }
 }
 
+/**
+ * Recursively returns the highest level cause of the given error
+ *
+ * @param error the error to handle
+ * @returns a string containing the name of the cause of the error
+ */
 function selectHighLevelCause(error: Error): string {
   if (error.name !== "Error" && error.name !== "VError") {
     return error.name;
@@ -68,6 +95,12 @@ function selectHighLevelCause(error: Error): string {
   }
 }
 
+/**
+ * Converts a given code and error message to an {@link ErrorBody}
+ *
+ * @param param0 object containing the code and error message of an error
+ * @returns an {@link ErrorBody} that contains the API version and the actual error
+ */
 function toErrorBody({ code, message }): ErrorBody {
   return {
     apiVersion: "1.0",

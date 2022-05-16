@@ -11,6 +11,9 @@ import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
 
+/**
+ * Represents the request body of the endpoint
+ */
 interface RequestBodyV1 {
   apiVersion: "1.0";
   data: {
@@ -34,6 +37,12 @@ const requestBodyV1Schema = Joi.object({
 type RequestBody = RequestBodyV1;
 const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
 
+/**
+ * Validates the request body of the http request
+ *
+ * @param body the request body
+ * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
+ */
 function validateRequestBody(body): Result.Type<RequestBody> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
@@ -51,6 +60,9 @@ interface LoginResponse {
   token: string; // JWT
 }
 
+/**
+ * The swagger schema for the `/user.authenticate` endpoint
+ */
 const swaggerSchema = {
   preValidation: [],
   schema: {
@@ -163,6 +175,9 @@ const swaggerSchema = {
   },
 };
 
+/**
+ * Represents the service that authenticates a user
+ */
 interface Service {
   authenticate(ctx: Ctx, userId: string, password: string): Promise<Result.Type<AuthToken>>;
   getGroupsForUser(
@@ -172,6 +187,13 @@ interface Service {
   ): Promise<Result.Type<Group[]>>;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/user.authenticate` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: FastifyInstance,
   urlPrefix: string,
@@ -243,6 +265,13 @@ export function addHttpHandler(
   });
 }
 
+/**
+ * Creates a JWT Token containing information about the user
+ *
+ * @param token the current {@link AuthToken} containing information about the user
+ * @param secret a secret to be used to sign the jwt token with
+ * @returns a string containing the encoded JWT token
+ */
 function createJWT(token: AuthToken, secret: string): string {
   return jsonwebtoken.sign(
     {

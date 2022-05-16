@@ -16,6 +16,12 @@ import * as Subproject from "./service/domain/workflow/subproject";
 import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
 
+/**
+ * Creates the swagger schema for the `/subproject.list` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -129,6 +135,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the subproject that will be returned in the response
+ */
 interface ExposedSubproject {
   log: SubprojectTraceEvent[];
   allowedIntents: Intent[];
@@ -151,6 +160,9 @@ interface ExposedSubproject {
   };
 }
 
+/**
+ * Represents the service that lists subprojects
+ */
 interface Service {
   listSubprojects(
     ctx: Ctx,
@@ -166,6 +178,13 @@ interface Request extends RequestGenericInterface {
   };
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/subproject.list` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

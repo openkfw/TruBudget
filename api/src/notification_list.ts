@@ -12,6 +12,12 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 
+/**
+ * Creates the swagger schema for the `/notification.list` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -104,59 +110,103 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents a project without view permissions
+ * @notExported
+ */
 interface ProjectWithoutViewPermissions {
   id: string;
   hasViewPermissions: false;
 }
 
+/**
+ * Represents a project with view permissions
+ * @notExported
+ */
 interface ProjectWithViewPermissions {
   id: string;
   hasViewPermissions: true;
   displayName: string;
 }
 
+/**
+ * Represents a notification with a project as metadata
+ * @notExported
+ */
 interface ProjectNotificationMetadata {
   project: ProjectWithViewPermissions | ProjectWithoutViewPermissions;
 }
 
+/**
+ * Represents a subproject without view permissions
+ * @notExported
+ */
 interface SubprojectWithoutViewPermissions {
   id: string;
   hasViewPermissions: false;
 }
 
+/**
+ * Represents a subproject with view permissions
+ * @notExported
+ */
 interface SubprojectWithViewPermissions {
   id: string;
   hasViewPermissions: true;
   displayName: string;
 }
 
+/**
+ * Represents a notification with a project and a subproject as metadata
+ * @notExported
+ */
 interface SubprojectNotificationMetadata {
   project: ProjectWithViewPermissions | ProjectWithoutViewPermissions;
   subproject: SubprojectWithViewPermissions | SubprojectWithoutViewPermissions;
 }
 
+/**
+ * Represents a workflowitem without view permissions
+ * @notExported
+ */
 interface WorkflowitemWithoutViewPermissions {
   id: string;
   hasViewPermissions: false;
 }
 
+/**
+ * Represents a workflowitem with view permissions
+ * @notExported
+ */
 interface WorkflowitemWithViewPermissions {
   id: string;
   hasViewPermissions: true;
   displayName: string;
 }
 
+/**
+ * Represents a workflowitem with a project, a subproject and a workflowitem as metadata
+ * @notExported
+ */
 interface WorkflowitemNotificationMetadata {
   project: ProjectWithViewPermissions | ProjectWithoutViewPermissions;
   subproject: SubprojectWithViewPermissions | SubprojectWithoutViewPermissions;
   workflowitem: WorkflowitemWithViewPermissions | WorkflowitemWithoutViewPermissions;
 }
 
+/**
+ * Type representing the notification metadata
+ * @notExported
+ */
 type NotificationMetadata =
   | ProjectNotificationMetadata
   | SubprojectNotificationMetadata
   | WorkflowitemNotificationMetadata;
 
+/**
+ * Represents an exposed notification
+ * @notExported
+ */
 interface ExposedNotification {
   id: string;
   isRead: boolean;
@@ -168,6 +218,9 @@ interface ExposedNotification {
   metadata?: NotificationMetadata;
 }
 
+/**
+ * Represents the service that handles listing notifications
+ */
 interface Service {
   getNotificationsForUser(
     ctx: Ctx,
@@ -194,6 +247,16 @@ const TRUE = true as true;
 // eslint-disable-next-line @typescript-eslint/prefer-as-const
 const FALSE = false as false;
 
+/**
+ * Get the metadata of a project to show in the notification
+ *
+ * @param ctx the current context {@link Ctx}
+ * @param user the {@link ServiceUser} performing the request
+ * @param service the {@link Service} object used to offer an interface to the domain logic
+ * @param projectId the id of the project to be returned
+ * @returns a promise containing the metadata visible to a user either with or without permissions
+ * @notExported
+ */
 async function getProjectMetadata(
   ctx: Ctx,
   user: ServiceUser,
@@ -211,6 +274,17 @@ async function getProjectMetadata(
   );
 }
 
+/**
+ * Get the metadata of a subproject to show in the notification
+ *
+ * @param ctx the current context {@link Ctx}
+ * @param user the {@link ServiceUser} performing the request
+ * @param service the {@link Service} object used to offer an interface to the domain logic
+ * @param projectId the id of the project which contains the subproject
+ * @param subprojectId the id of the subproject to be returned
+ * @returns a promise containing the metadata visible to a user either with or without permissions
+ * @notExported
+ */
 async function getSubprojectMetadata(
   ctx: Ctx,
   user: ServiceUser,
@@ -229,6 +303,18 @@ async function getSubprojectMetadata(
   );
 }
 
+/**
+ * Get the metadata of a workflowitem to show in the notification
+ *
+ * @param ctx the current context {@link Ctx}
+ * @param user the {@link ServiceUser} performing the request
+ * @param service the {@link Service} object used to offer an interface to the domain logic
+ * @param projectId the id of the project which contains the workflowitem
+ * @param subprojectId the id of the subproject which contains the workflowitem
+ * @param workflowitemId the id of the workflowitem to be returned
+ * @returns a promise containing the metadata visible to a user either with or without permissions
+ * @notExported
+ */
 async function getWorkflowitemMetadata(
   ctx: Ctx,
   user: ServiceUser,
@@ -254,6 +340,16 @@ async function getWorkflowitemMetadata(
   );
 }
 
+/**
+ * Retrieves the metadata for a specific notification
+ *
+ * @param ctx the current context {@link Ctx}
+ * @param user the {@link ServiceUser} performing the request
+ * @param notification the {@link Notification.Notification} for which the metadata should be retrieved
+ * @param service the {@link Service} object used to offer an interface to the domain logic
+ * @returns the notification metadata as a {@link NotificationMetadata} or undefined if no project and subproject id is provided in the {@link Notification.Notification}
+ * @notExported
+ */
 async function getMetadata(
   ctx: Ctx,
   user: ServiceUser,
@@ -296,6 +392,13 @@ interface Request extends RequestGenericInterface {
   };
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/notification.list` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
@@ -400,6 +503,13 @@ export function addHttpHandler(
   );
 }
 
+/**
+ * Sorts notification by event time
+ *
+ * @param a first notification to check
+ * @param b second notification to check
+ * @returns value mentioning if @param a happens before after or at the same time as @param b
+ */
 function byEventTime(a: Notification.Notification, b: Notification.Notification): -1 | 0 | 1 {
   const timeA = new Date(a.businessEvent.time);
   const timeB = new Date(b.businessEvent.time);

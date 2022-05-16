@@ -11,6 +11,12 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import { UserAssignments } from "./service/domain/workflow/user_assignments";
 import { RequestData } from "./service/domain/workflow/user_assignments_get";
 
+/**
+ * Creates the swagger schema for the `/global.listAssignments` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -52,6 +58,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the service that gets user assignments
+ */
 interface Service {
   getUserAssignments(
     ctx: Ctx,
@@ -67,6 +76,13 @@ interface Request extends RequestGenericInterface {
   };
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/global.listAssignments` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

@@ -25,6 +25,12 @@ const requestBodySchema = Joi.array().items({
   }).required(),
 });
 
+/**
+ * Validates the request body of the http request
+ *
+ * @param body the request body
+ * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
+ */
 function validateRequestBody(body): Result.Type<SubprojectTraceEvent[]> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
@@ -106,6 +112,12 @@ const createFilter = (reply: FastifyReply, request: FastifyRequest): History.Fil
   } as History.Filter;
 };
 
+/**
+ * Creates the swagger schema for the `/subproject.viewHistory` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -196,6 +208,18 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+interface ExposedEvent {
+  entityId: string;
+  entityType: "subproject" | "workflowitem";
+  businessEvent: BusinessEvent;
+  snapshot: {
+    displayName?: string;
+  };
+}
+
+/**
+ * Represents the service that returns the history of a subproject
+ */
 interface Service {
   getSubprojectHistory(
     ctx: Ctx,
@@ -217,6 +241,13 @@ interface Querystring extends RequestGenericInterface {
   eventType?: string;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/subproject.viewHistory` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
@@ -343,4 +374,19 @@ export function addHttpHandler(
       }
     },
   );
+}
+
+/**
+ * Sorts notification by event time
+ *
+ * @param a first notification to check
+ * @param b second notification to check
+ * @returns value mentioning if @param a happens before after or at the same time as @param b
+ */
+function byEventTime(a: ExposedEvent, b: ExposedEvent): -1 | 0 | 1 {
+  const timeA = new Date(a.businessEvent.time);
+  const timeB = new Date(b.businessEvent.time);
+  if (timeA < timeB) return -1;
+  if (timeA > timeB) return 1;
+  return 0;
 }
