@@ -153,6 +153,20 @@ if (
     warn("There are new console logs in the API!");
   }
 
+  if (apiAdditions.some((addition) => addition.includes("function"))) {
+    if (!apiAdditions.some((addition) => addition.includes("*/\nfunction") || addition.includes("*/\nexport function")))
+      warn("A new function was added to the API! Make sure you added code documentation to it as well");
+  }
+  if (apiAdditions.some((addition) => addition.includes("interface"))) {
+    if (!apiAdditions.some((addition) => addition.includes("*/\ninterface") || addition.includes("*/\nexport interface")))
+      warn("A new interface was added to the API! Make sure you added code documentation to it as well");
+  }
+  if (apiAdditions.some((addition) => addition.includes("type"))) {
+    if (!apiAdditions.some((addition) => addition.includes("*/\ntype") || addition.includes("*/\nexport type")))
+      warn("A new type was added to the API! Make sure you added code documentation to it as well");
+  }
+
+
   // Warn if there were only keyword added in the e2e-test
   const e2etestChanges = await getChanges("e2e-test/cypress/integration/*.js");
   const { additions: e2etestAdditions } = getContentByType(e2etestChanges);
@@ -166,7 +180,7 @@ if (
   if (apiResourceHasChanged && !excelExportSources.edited) {
     warn(
       "One of the resource files in the api domain layer (project.ts/subproject.ts/workflowitem.ts) were edited. " +
-        "If a new property was added the excel-export project has to be adapted."
+      "If a new property was added the excel-export project has to be adapted."
     );
   }
 
