@@ -1,64 +1,98 @@
 import { NotAuthorizedError } from "./authz/types";
 import { Event } from "./service/event";
 
-// Thrown on missing keys and invalid values:
+/**
+ * Error type thrown on missing keys and invalid values:
+ */
 export interface ParseError {
   kind: "ParseError";
   badKeys: string[];
   message?: string;
 }
 
+/**
+ * Error type thrown when an entity is not found
+ */
 export interface NotFoundError {
   kind: "NotFound";
   what: object;
 }
 
+/**
+ * Error type thrown when a file is not found
+ */
 export interface FileNotFoundError {
   kind: "FileNotFound";
   filePath: string;
 }
 
+/**
+ * Error type thrown when an error occurred during authentication
+ */
 export interface AuthenticationError {
   kind: "AuthenticationError";
   userId: string;
 }
 
+/**
+ * Error type thrown when an address is invalid
+ */
 export interface AddressIsInvalidError {
   kind: "AddressIsInvalid";
   address: string;
 }
 
+/**
+ * Error type thrown when an identity already exists
+ */
 export interface IdentityAlreadyExistsError {
   kind: "IdentityAlreadyExists";
   targetId: string;
 }
 
+/**
+ * Error type thrown when a subproject id already exists
+ */
 export interface SubprojectIdAlreadyExistsError {
   kind: "SubprojectIdAlreadyExists";
   subprojectId: string;
 }
 
+/**
+ * Error type thrown when a project id already exists
+ */
 export interface ProjectIdAlreadyExistsError {
   kind: "ProjectIdAlreadyExists";
   projectId: string;
 }
 
+/**
+ * Error type thrown when a precondition is not met
+ */
 export interface PreconditionError {
   kind: "PreconditionError";
   message: string;
 }
 
+/**
+ * Error type thrown when an event version is not supported
+ */
 export interface UnsupportedEventVersion {
   kind: "UnsupportedEventVersion";
   event: Event;
 }
 
+/**
+ * Error type thrown when a media type is not supported
+ */
 export interface UnsupportedMediaType {
   kind: "UnsupportedMediaType";
   contentType: string;
 }
 
-// For documentation, all custom error types should go in here:
+/**
+ * Error type representing an internal TruBudget Error
+ */
 export type TruBudgetErrorType =
   | AuthenticationError
   | IdentityAlreadyExistsError
@@ -72,8 +106,9 @@ export type TruBudgetErrorType =
   | UnsupportedEventVersion
   | UnsupportedMediaType;
 
-// Custom throwables here
-
+/**
+ * Class representing a default TruBudget error
+ */
 export class TruBudgetError extends Error {
   public badKeys = undefined;
 

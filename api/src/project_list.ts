@@ -12,6 +12,12 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import { ProjectTraceEvent } from "./service/domain/workflow/project_trace_event";
 
+/**
+ * Creates the swagger schema for the `/project.list` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -146,10 +152,20 @@ interface ExposedProject {
   };
 }
 
+/**
+ * Represents the service that lists projects
+ */
 interface Service {
   listProjects(ctx: Ctx, user: ServiceUser): Promise<Result.Type<Project.Project[]>>;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/project.list` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

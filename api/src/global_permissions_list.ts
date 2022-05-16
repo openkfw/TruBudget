@@ -8,6 +8,12 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { GlobalPermissions } from "./service/domain/workflow/global_permissions";
 
+/**
+ * Creates the swagger schema for the `/global.listPermissions` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -39,10 +45,20 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Interface representing the service that handles listing of global permissions
+ */
 interface Service {
   getGlobalPermissions(ctx: Ctx, user: ServiceUser): Promise<Result.Type<GlobalPermissions>>;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/global.listPermissions` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

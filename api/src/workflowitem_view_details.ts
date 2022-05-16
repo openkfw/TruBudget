@@ -15,6 +15,12 @@ import Type from "./service/domain/workflowitem_types/types";
 import { DocumentReference } from "./service/domain/document/document";
 import { AugmentedFastifyInstance } from "./types";
 
+/**
+ * Creates the swagger schema for the `/workflowitem.viewDetails` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -128,6 +134,9 @@ interface ExposedWorkflowitem {
   };
 }
 
+/**
+ * Represents the service that returns the details of a workflowitem
+ */
 interface Service {
   getWorkflowitemDetails(
     ctx: Ctx,
@@ -161,6 +170,13 @@ function sendErrorIfEmpty(reply, resourceId): string | undefined {
   return;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/workflowitem.viewDetails` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

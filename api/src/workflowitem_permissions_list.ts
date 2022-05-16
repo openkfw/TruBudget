@@ -10,6 +10,12 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { getExposablePermissions, Permissions } from "./service/domain/permissions";
 
+/**
+ * Creates the swagger schema for the `/workflowitem.intent.listPermissions` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -57,6 +63,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the service that lists workflowitem permissions
+ */
 interface Service {
   listWorkflowitemPermissions(
     ctx: Ctx,
@@ -67,6 +76,13 @@ interface Service {
   ): Promise<Result.Type<Permissions>>;
 }
 
+/**
+ * Sends back an error as a reply if the given resourceId is empty
+ *
+ * @param reply the reply to the request
+ * @param resourceId a resourceId as a string to be checked
+ * @returns the message of the error in case an error is returned, undefined otherwise
+ */
 function sendErrorIfEmpty(reply, resourceId): string | undefined {
   if (!isNonemptyString(resourceId)) {
     const message = `required query parameter ${resourceId} not present (must be non-empty string)`;
@@ -90,6 +106,13 @@ interface Request extends RequestGenericInterface {
   };
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/workflowitem.intent.listPermissions` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

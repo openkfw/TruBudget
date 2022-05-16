@@ -9,6 +9,12 @@ import * as Group from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
 
+/**
+ * Creates the swagger schema for the `/group.list` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -55,16 +61,30 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the type of the group that will be returned in a list
+ * @notExported
+ */
 interface ExposedGroup {
   groupId: string;
   displayName: string;
   users: UserRecord.Id[];
 }
 
+/**
+ * Represents the service that handles listing of groups
+ */
 interface Service {
   listGroups(ctx: Ctx, user: ServiceUser): Promise<Result.Type<Group.Group[]>>;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/group.list` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

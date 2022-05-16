@@ -17,6 +17,12 @@ import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
 
+/**
+ * Creates the swagger schema for the `/subproject.viewDetails endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -110,11 +116,17 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the project that will be returned in the response
+ */
 interface ExposedProject {
   id: string;
   displayName: string;
 }
 
+/**
+ * Represents the subproject that will be returned in the response
+ */
 interface ExposedSubproject {
   allowedIntents: Intent[];
   data: {
@@ -136,6 +148,9 @@ interface ExposedSubproject {
   };
 }
 
+/**
+ * Represents the workflowitem that will be returned in the response
+ */
 interface ExposedWorkflowitem {
   data: {
     id: string;
@@ -157,12 +172,18 @@ interface ExposedWorkflowitem {
   allowedIntents: Intent[];
 }
 
+/**
+ * Represents the subproject details that will be returned in the response
+ */
 interface ExposedSubprojectDetails {
   parentProject: ExposedProject;
   subproject: ExposedSubproject;
   workflowitems: ExposedWorkflowitem[];
 }
 
+/**
+ * Represents the service that returns the details of a subproject
+ */
 interface Service {
   getProject(ctx: Ctx, user: ServiceUser, projectId: string): Promise<Result.Type<Project.Project>>;
   getSubproject(
@@ -186,6 +207,13 @@ interface Request extends RequestGenericInterface {
   };
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/subproject.viewDetails` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

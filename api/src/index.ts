@@ -232,6 +232,11 @@ process.on("unhandledRejection", (err) => {
   process.exit(1);
 });
 
+/**
+ * Registers the current node to the blockchain
+ *
+ * @returns a promise containing a boolean value indicating whether the registration was successful
+ */
 function registerSelf(): Promise<boolean> {
   return multichainClient
     .getRpcClient()
@@ -910,6 +915,13 @@ server.listen(port, "0.0.0.0", async (err) => {
   }, DAY_MS);
 });
 
+/**
+ * Gets the current Rpc {@link ConnectionSettings} and strips down the RPC password
+ *
+ * @param settings the current Rpc {@link ConnectionSettings}
+ * @returns a copy of the current Rpc {@link ConnectionSettings} without the RPC password
+ * @notExported
+ */
 function rpcSettingsWithoutPassword(settings) {
   const tmp = deepcopy(settings);
   delete tmp.password;

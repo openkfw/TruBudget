@@ -11,6 +11,12 @@ import * as Result from "./result";
 import * as WorkflowitemDocument from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 
+/**
+ * Creates the swagger schema for the `/workflowitem.downloadDocument` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -51,6 +57,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the service that gets a document from a workflowitem
+ */
 interface Service {
   getDocument(
     ctx: Ctx,
@@ -62,6 +71,13 @@ interface Service {
   ): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>;
 }
 
+/**
+ * Sends back an error as a reply if the given resourceId is empty
+ *
+ * @param reply the reply to the request
+ * @param resourceId a resourceId as a string to be checked
+ * @returns the message of the error in case an error is returned, undefined otherwise
+ */
 function sendErrorIfEmpty(reply, resourceParameter): string | undefined {
   if (!isNonemptyString(resourceParameter)) {
     const message = `required query parameter ${resourceParameter} not present (must be non-empty string)`;
@@ -87,6 +103,13 @@ interface Request extends RequestGenericInterface {
   };
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/workflowitem.downloadDocument` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
