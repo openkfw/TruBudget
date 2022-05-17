@@ -220,8 +220,8 @@ const TableView = props => {
 
   useEffect(() => {
     console.log("WHUT");
-    console.log(searchTermArray);
-  }, [searchTermArray]);
+    console.log(filteredProjects);
+  }, [filteredProjects]);
 
   useEffect(() => {
     // Update Table when new project was created
@@ -248,37 +248,9 @@ const TableView = props => {
       return;
     }
     if (hasSearchTerm) {
-      // Search in Project Name
-      const searchElements = searchTerm.split(" ");
-      //tag is not an array? USE  searchTermArray instead LOL this will work instead of this shit
-      const tags = searchElements.filter(s => s.includes("tag:")).map(tag => tag.replace("tag:", ""));
-      const searchTermWithoutTags = searchElements.filter(s => !s.includes("tag:"));
-
-      const hasTags = tags.length > 0;
-      const hasSearchString = searchTermWithoutTags.length > 0;
+      // Search happens in redux the same way as in CardView
       // Open SearchBar for CardView:
       showNavSearchBar();
-
-      // tags.forEach(tag => {
-      //   console.log("TADA-" + tag);
-      // });
-      // console.log("tags: " + tags);
-      // console.log("  searchElements: " + searchElements);
-      // console.log("searchTermWithoutTags: " + searchTermWithoutTags);
-
-      if (hasSearchString) {
-        const searchStringFound = searchTermWithoutTags.join("");
-        console.log("searchTermFound: " + searchStringFound);
-        filtered = filtered.filter(project =>
-          project.data?.displayName?.toLowerCase().includes(searchStringFound.toLowerCase())
-        );
-      }
-      if (hasTags) {
-        filtered = filtered.filter(project => {
-          const tagsInProject = project.data?.tags.map(t => t.toLowerCase());
-          return tagsInProject.some(t => tags.some(t2 => t === t2.toLowerCase()));
-        });
-      }
     }
     if (hasStartDate) {
       const startUnixTs = stringToUnixTs(startDate);
@@ -308,7 +280,8 @@ const TableView = props => {
     endDate,
     showEditDialog,
     showProjectPermissions,
-    storeSearchTerm
+    storeSearchTerm,
+    showNavSearchBar
   ]);
 
   const handleReset = useCallback(() => {
