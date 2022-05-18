@@ -1,12 +1,12 @@
 import Intent from "../../../authz/intents";
-import {Ctx} from "lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import {NotAuthorized} from "../errors/not_authorized";
-import {NotFound} from "../errors/not_found";
-import {canAssumeIdentity} from "../organization/auth_token";
-import {ServiceUser} from "../organization/service_user";
+import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
+import { canAssumeIdentity } from "../organization/auth_token";
+import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
-import {WorkflowitemTraceEvent} from "./workflowitem_trace_event";
+import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 import logger from "lib/logger";
 
 interface Repository {
@@ -25,11 +25,11 @@ export async function getWorkflowitem(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  logger.trace({user}, "Checking user authorization");
+  logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
     const intent = "workflowitem.list";
     if (!Workflowitem.permits(workflowitem, user, [intent])) {
-      return new NotAuthorized({ctx, userId: user.id, intent, target: workflowitem});
+      return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
     }
   }
 

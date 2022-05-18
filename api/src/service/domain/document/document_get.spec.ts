@@ -1,14 +1,14 @@
-import {assert, expect} from "chai";
-import {Ctx} from "lib/ctx";
+import { assert, expect } from "chai";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import {BusinessEvent} from "../business_event";
-import {ServiceUser} from "../organization/service_user";
-import {Project} from "../workflow/project";
-import {Subproject} from "../workflow/subproject";
-import {Workflowitem} from "../workflow/workflowitem";
+import { BusinessEvent } from "../business_event";
+import { ServiceUser } from "../organization/service_user";
+import { Project } from "../workflow/project";
+import { Subproject } from "../workflow/subproject";
+import { Workflowitem } from "../workflow/workflowitem";
 
-import {DocumentReference, UploadedDocument} from "./document";
-import {getAllDocumentInfos, getAllDocumentReferences, getDocumentInfo} from "./document_get";
+import { DocumentReference, UploadedDocument } from "./document";
+import { getAllDocumentInfos, getAllDocumentReferences, getDocumentInfo } from "./document_get";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -88,7 +88,7 @@ const baseWorkflowitem: Workflowitem = {
   description: "dummy",
   amountType: "N/A",
   documents: documentReference,
-  permissions: {"workflowitem.list": ["alice"]},
+  permissions: { "workflowitem.list": ["alice"] },
   log: [],
   additionalData: {},
   workflowitemType: "general",

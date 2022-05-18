@@ -1,12 +1,12 @@
-import {VError} from "verror";
+import { VError } from "verror";
 
-import {workflowitemIntents} from "../../../authz/intents";
-import {Ctx} from "lib/ctx";
+import { workflowitemIntents } from "../../../authz/intents";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import {BusinessEvent} from "../business_event";
-import {NotAuthorized} from "../errors/not_authorized";
-import {Identity} from "../organization/identity";
-import {ServiceUser} from "../organization/service_user";
+import { BusinessEvent } from "../business_event";
+import { NotAuthorized } from "../errors/not_authorized";
+import { Identity } from "../organization/identity";
+import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as WorkflowitemPermissionGranted from "../workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionRevoked from "../workflow/workflowitem_permission_revoked";

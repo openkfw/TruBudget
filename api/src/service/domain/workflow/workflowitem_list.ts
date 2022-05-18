@@ -1,15 +1,15 @@
-import {Ctx} from "lib/ctx";
+import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
-import {VError} from "verror";
+import { VError } from "verror";
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
-import {NotFound} from "../errors/not_found";
-import {canAssumeIdentity} from "../organization/auth_token";
-import {ServiceUser} from "../organization/service_user";
+import { NotFound } from "../errors/not_found";
+import { canAssumeIdentity } from "../organization/auth_token";
+import { ServiceUser } from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import {sortWorkflowitems} from "./workflowitem_ordering";
+import { sortWorkflowitems } from "./workflowitem_ordering";
 
 interface Repository {
   getWorkflowitems(
@@ -55,7 +55,7 @@ export async function getAllVisible(
         : Workflowitem.redact(item),
     )
     // Only keep history event the user may see and remove all others:
-    .map((item) => (item.isRedacted ? item : {...item, log: traceEventsVisibleTo(item, user)}));
+    .map((item) => (item.isRedacted ? item : { ...item, log: traceEventsVisibleTo(item, user) }));
 
   return visibleWorkflowitems;
 }

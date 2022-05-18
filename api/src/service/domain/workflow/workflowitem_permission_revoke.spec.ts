@@ -1,19 +1,19 @@
-import {assert} from "chai";
-import {Ctx} from "lib/ctx";
+import { assert } from "chai";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import {BusinessEvent} from "../business_event";
-import {NotAuthorized} from "../errors/not_authorized";
-import {NotFound} from "../errors/not_found";
-import {PreconditionError} from "../errors/precondition_error";
-import {ServiceUser} from "../organization/service_user";
-import {Permissions} from "../permissions";
+import { BusinessEvent } from "../business_event";
+import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
+import { PreconditionError } from "../errors/precondition_error";
+import { ServiceUser } from "../organization/service_user";
+import { Permissions } from "../permissions";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemPermissionRevoke from "./workflowitem_permission_revoke";
 
-const ctx: Ctx = {requestId: "", source: "test"};
+const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";
-const executingUser: ServiceUser = {id: "mstein", groups: [], address};
-const testUser: ServiceUser = {id: "testUser", groups: [], address};
+const executingUser: ServiceUser = { id: "mstein", groups: [], address };
+const testUser: ServiceUser = { id: "testUser", groups: [], address };
 const projectId = "testProject";
 
 const permissions: Permissions = {
@@ -86,7 +86,7 @@ describe("revoke workflowitem permissions", () => {
       amountType: "N/A",
       description: "",
       documents: [],
-      permissions: {"workflowitem.intent.revokePermission": []},
+      permissions: { "workflowitem.intent.revokePermission": [] },
       log: [],
       additionalData: {},
     };
