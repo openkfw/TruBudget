@@ -102,7 +102,7 @@ export const validateLanguagePattern = amount => {
 export const numberSignsRegex = /^[0-9,.-]*$/;
 
 export const unixTsToString = ts => {
-  let dateString = dayjs.unix(ts).format("D MMM YYYY");
+  let dateString = dayjs.unix(ts).format("D MMM YYYY HH:mm");
   return dateString;
 };
 
