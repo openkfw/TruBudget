@@ -125,7 +125,10 @@ const fr = {
     dueDate_exceeded: "Date d'échéance dépassée",
     login_disabled: "L'identification de connexion est désactivée",
     login_data_error: "Le champ « Identifiant de connexion » ou « Mot de passe » ne peut pas être vide",
-    refresh_assignments: "Actualiser les affectations"
+    refresh_assignments: "Actualiser les affectations",
+    tags: "Balises",
+    all: "Tous",
+    assignee: "Cessionnaire"
   },
 
   login: {

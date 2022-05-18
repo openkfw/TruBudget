@@ -125,7 +125,10 @@ const de = {
     dueDate_exceeded: "Fälligkeitsdatum überschritten",
     login_disabled: "Login-ID ist deaktiviert",
     login_data_error: "Login-ID oder Passwort kann nicht leer sein",
-    refresh_assignments: "Zuordnungen aktualisieren"
+    refresh_assignments: "Zuordnungen aktualisieren",
+    tags: "Tags",
+    all: "Alle",
+    assignee: "Assignee"
   },
 
   login: {

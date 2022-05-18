@@ -78,7 +78,7 @@ const columns = [
   {
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        Project
+        {strings.common.project}
       </Typography>
     ),
     selector: row => row.data.projectName,
@@ -90,7 +90,7 @@ const columns = [
   {
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        Status
+        {strings.common.status}
       </Typography>
     ),
     selector: row => row.data.projectStatus,
@@ -102,7 +102,7 @@ const columns = [
   {
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        Created
+        {strings.common.created}
       </Typography>
     ),
     selector: row => row.data.creationUnixTs, // time in ms to use the built-in sort
@@ -114,7 +114,7 @@ const columns = [
   {
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        Assignee
+        {strings.common.assignee}
       </Typography>
     ),
     selector: row => row.data.assignee,
@@ -126,7 +126,7 @@ const columns = [
   {
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        Tags
+        {strings.common.tags}
       </Typography>
     ),
     sortable: false,
@@ -138,7 +138,7 @@ const columns = [
   {
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        Actions
+        {strings.common.actions}
       </Typography>
     ),
     sortable: false,

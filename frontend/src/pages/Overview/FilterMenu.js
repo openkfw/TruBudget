@@ -51,13 +51,13 @@ const FilterMenu = props => {
             id="status-select"
           >
             <MenuItem key={"status-all"} value={"all"}>
-              All
+              {strings.common.all}
             </MenuItem>
             <MenuItem key={"status-open"} value={"open"}>
-              Open
+              {strings.common.open}
             </MenuItem>
             <MenuItem key={"status-closed"} value={"closed"}>
-              Closed
+              {strings.common.closed}
             </MenuItem>
           </DropDown>
 
@@ -69,7 +69,7 @@ const FilterMenu = props => {
             id="assignee-select"
           >
             <MenuItem key={"assignee-all"} value={"all"}>
-              All
+              {strings.common.all}
             </MenuItem>
             {users.map(u => {
               return (
