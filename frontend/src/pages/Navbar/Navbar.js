@@ -46,7 +46,7 @@ const Navbar = ({
   searchBarDisplayed,
   showUserProfile,
   fetchEmailAddress,
-  searchDisabled,
+  projectView,
   ...props
 }) => {
   return (
@@ -75,7 +75,7 @@ const Navbar = ({
             storeSearchBarDisplayed={storeSearchBarDisplayed}
             searchTerm={searchTerm}
             searchBarDisplayed={searchBarDisplayed}
-            searchDisabled={searchDisabled}
+            projectView={projectView}
           />
         </Toolbar>
       </AppBar>

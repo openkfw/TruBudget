@@ -29,15 +29,14 @@ const RightNavbarNavigation = ({
   storeSearchTerm,
   searchTerm,
   searchBarDisplayed,
-  searchDisabled,
+  projectView,
   storeSearchBarDisplayed
 }) => {
-  const searchVisible = history.location.pathname === "/projects";
+  const searchVisible = history.location.pathname === "/projects" && projectView === "card";
   return (
     <div style={styles.container}>
       {searchVisible ? (
         <ProjectSearch
-          searchDisabled={searchDisabled}
           searchBarDisplayed={searchBarDisplayed}
           searchTerm={searchTerm}
           storeSearchBarDisplayed={storeSearchBarDisplayed}

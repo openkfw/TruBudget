@@ -201,27 +201,19 @@ const TableView = props => {
     enabledUsers,
     storeSearchTerm,
     searchTerm,
-    searchTermArray, // this shit is for tags
     showNavSearchBar // to open the search bar for CardView in NavBar
   } = props;
 
   const projects = filteredProjects;
 
-  // const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState("all");
   const [assigneeId, setAssigneeId] = useState("all");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [isFiltered, setIsFiltered] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [table, setTable] = useState(
     formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm })
   );
-
-  useEffect(() => {
-    console.log("WHUT");
-    console.log(filteredProjects);
-  }, [filteredProjects]);
 
   useEffect(() => {
     // Update Table when new project was created
@@ -244,7 +236,6 @@ const TableView = props => {
     if (!hasSearchTerm && !hasStartDate && !hasEndDate && !hasStatus && !hasAssignee) {
       // Filtered with no active filter: all projects shown
       setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
-      setIsFiltered(false);
       return;
     }
     if (hasSearchTerm) {
@@ -270,7 +261,6 @@ const TableView = props => {
       filtered = filtered.filter(project => project.data?.assignee === assigneeId);
     }
     setTable(formatTable({ projects: filtered, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
-    setIsFiltered(true);
   }, [
     projects,
     searchTerm,
@@ -290,7 +280,6 @@ const TableView = props => {
     setAssigneeId("all");
     setStartDate(null);
     setEndDate(null);
-    setIsFiltered(false);
     setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
   }, [projects, searchTerm, showEditDialog, showProjectPermissions, storeSearchTerm]);
 

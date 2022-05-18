@@ -45,7 +45,7 @@ class NavbarContainer extends Component {
         <Navbar
           {...this.props}
           unreadNotifications={this.props.unreadNotificationCount}
-          searchDisabled={this.props.projectView !== "card"}
+          projectView={this.props.projectView}
         />
         <FlyInNotifications
           history={this.props.history}
