@@ -38,18 +38,39 @@ excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) =
   next();
 });
 
-excelService.get("/readiness", async (req: CustomExpressRequest, res: CustomExpressResponse) => {
-  try {
-    const ready = await getApiReadiness(axios, res.apiBase);
-    res.status(200).send(ready);
-  } catch (err) {
-    logger.error({ err }, "API readiness call failed");
-    res.end();
-  }
+excelService.get("/liveness", (req, res) => {
+  res
+    .status(200)
+    .header({ "Content-Type": "application/json" })
+    .send(
+      JSON.stringify({
+        uptime: process.uptime(),
+      }),
+    );
 });
 
-excelService.get("/health", (req: CustomExpressRequest, res: CustomExpressResponse) => {
-  res.end();
+excelService.get("/readiness", async (req: CustomExpressRequest, res: CustomExpressResponse) => {
+  let status = 200;
+  let statusText = "Ready";
+  let response;
+
+  try {
+    response = await getApiReadiness(axios, res.apiBase);
+  } catch (error) {
+    logger.error({ error }, "Error during readiness check on API");
+    status = 504;
+    statusText = "Not ready. Waiting for API";
+  }
+
+  if (response.status === 200) {
+    status = 200;
+    statusText = "Ready";
+  } else {
+    status = 504;
+    statusText = "Not ready. Waiting for API";
+  }
+
+  res.status(status).header({ "Content-Type": "application/json" }).send(statusText);
 });
 
 excelService.get("/version", (req: CustomExpressRequest, res: CustomExpressResponse) => {

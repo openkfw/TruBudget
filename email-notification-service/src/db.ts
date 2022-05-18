@@ -55,6 +55,17 @@ class DbConnector {
     await tablePromises;
   };
 
+  public liveness = async () => {
+    try {
+      logger.debug("Starting to check database connection");
+      await this.getDb();
+    } catch (error) {
+      logger.error({ error }, "Error in while checking database connection");
+      return { status: 504, statusText: "Not ready. Waiting for Database" };
+    }
+    return { status: 200, statusText: "Ready" };
+  };
+
   public insertUser = async (id: string, emailAddress: string): Promise<void> => {
     try {
       const client = await this.getDb();

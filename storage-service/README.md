@@ -99,6 +99,16 @@ npm run build
 npm start
 ```
 
+### Endpoints
+
+| Method | Endpoint   | Description                                  |
+| ------ | ---------- | -------------------------------------------- |
+| GET    | /readiness | Checks if storage service and minio is ready |
+| GET    | /liveness  | Checks if storage services is up             |
+| GET    | /version   | Get the current version of the service       |
+| GET    | /download  | Download a document (docId + secret needed)  |
+| POST   | /upload    | Upload a document                            |
+
 ## Architecture
 
 Below you can see two nodes where the left one has the storage-service enabled. For a node with storage-service it is

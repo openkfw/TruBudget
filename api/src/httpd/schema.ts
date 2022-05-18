@@ -51,17 +51,17 @@ const schemas = {
   readiness: {
     schema: {
       description:
-        "Returns '200 OK' if the API is up and the Multichain service is reachable. " +
-        "'503 Service unavailable.' otherwise.",
+        "Returns '200 Ready' if the API is up and the Multichain service is reachable. " +
+        "'504 Gateway Timeout.' otherwise.",
       tags: ["system"],
       summary: "Check if the Multichain is reachable",
       response: {
         200: getSuccessfulSchema(),
         401: getAuthErrorSchema(),
-        503: {
+        504: {
           description: "Blockchain not ready",
           type: "string",
-          example: "Service unavailable.",
+          example: "Not ready. Waiting for multichain.",
         },
       },
     },
@@ -69,7 +69,7 @@ const schemas = {
 
   liveness: {
     schema: {
-      description: "Returns '200 OK' if the API is up.",
+      description: "Returns '200' and uptime in seconds if the API is up.",
       tags: ["system"],
       summary: "Check if the API is up",
       response: {

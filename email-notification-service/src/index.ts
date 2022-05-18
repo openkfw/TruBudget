@@ -32,8 +32,21 @@ if (config.authentication === "jwt") {
 }
 
 // Routes
-emailService.get("/readiness", (_req: express.Request, res: express.Response) => {
-  res.send(true);
+emailService.get("/liveness", (req, res) => {
+  res
+    .status(200)
+    .header({ "Content-Type": "application/json" })
+    .send(
+      JSON.stringify({
+        uptime: process.uptime(),
+      }),
+    );
+});
+
+emailService.get("/readiness", async (_req: express.Request, res: express.Response) => {
+  const { status, statusText } = await db.liveness();
+
+  res.status(status).header({ "Content-Type": "application/json" }).send(statusText);
 });
 
 emailService.get("/version", (_req: express.Request, res: express.Response) => {

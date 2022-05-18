@@ -127,7 +127,8 @@ If disabled the multichain-feed is not applied to the multichain-deamon and noti
 
 | Method | Endpoint           | Description                                                    |
 | ------ | ------------------ | -------------------------------------------------------------- |
-| GET    | /readiness         | Checks if email service is ready                               |
+| GET    | /readiness         | Checks if email service and its database is ready              |
+| GET    | /liveness          | Checks if email service is up                                  |
 | GET    | /version           | Get the current version of the service                         |
 | GET    | /user.getEmail     | Get email address of id if set in connected database           |
 | POST   | /user.insert       | Insert an email address linked to the passed id                |

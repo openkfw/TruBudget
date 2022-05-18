@@ -3,6 +3,7 @@ import * as Minio from "minio";
 import { v4 } from "uuid";
 import config from "./config";
 import { log } from "./index";
+import axios from "axios";
 
 const Readable = require("stream").Readable;
 
@@ -36,6 +37,18 @@ const minioClient: any = new Minio.Client({
   accessKey: config.storage.accessKey,
   secretKey: config.storage.secretKey,
 });
+
+export const getMinioStatus = async () => {
+  try {
+    await axios.get(
+      `http://${config.storage.host}:${config.storage.port}/minio/health/ready`,
+    );
+  } catch (error) {
+    log.error({ error }, "Error during health check on minio-server");
+    return { status: 504, statusText: "Not ready. Waiting for Minio server" };
+  }
+  return { status: 200, statusText: "Ready" };
+};
 
 const bucketName: string = config.storage.bucketName;
 

@@ -231,13 +231,17 @@ export const registerRoutes = (
           return reply.status(504).send("Not ready. Waiting for storage service.");
         }
       } else {
-        return reply.status(503).send("Service unavailable.");
+        return reply.status(504).send("Not ready. Waiting for multichain.");
       }
     },
   );
 
   server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), (_, reply) => {
-    reply.status(200).send("OK");
+    reply.status(200).send(
+      JSON.stringify({
+        uptime: process.uptime(),
+      }),
+    );
   });
 
   server.get(`${urlPrefix}/version`, getSchema(server, "version"), async (request, reply) => {

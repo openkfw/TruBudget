@@ -1,4 +1,5 @@
 import {
+  getMinioStatus,
   uploadAsPromised,
   downloadAsPromised,
   establishConnection,
@@ -66,7 +67,6 @@ app.use(
     },
   }),
 );
-
 app.use(express.json({ limit: "75mb" }));
 app.use(
   express.urlencoded({
@@ -74,8 +74,24 @@ app.use(
   }),
 );
 
-app.get("/readiness", (req, res) => {
-  res.send(true);
+app.get("/liveness", (req, res) => {
+  res
+    .status(200)
+    .header({ "Content-Type": "application/json" })
+    .send(
+      JSON.stringify({
+        uptime: process.uptime(),
+      }),
+    );
+});
+
+app.get("/readiness", async (req, res) => {
+  const { status, statusText } = await getMinioStatus();
+
+  res
+    .status(status)
+    .header({ "Content-Type": "application/json" })
+    .send(statusText);
 });
 
 app.get("/readiness", async (req, res) => {
