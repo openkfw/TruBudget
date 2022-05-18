@@ -182,7 +182,7 @@ class Api {
 
   viewProjectDetails = projectId => instance.get(removeEmptyQueryParams(`/project.viewDetails?projectId=${projectId}`));
   viewProjectHistory = (projectId, offset, limit, filter) => {
-    let url = removeEmptyQueryParams(`/project.viewHistory.v2?projectId=${projectId}&offset=${offset}&limit=${limit}`);
+    let url = removeEmptyQueryParams(`/project.viewHistory?projectId=${projectId}&offset=${offset}&limit=${limit}`);
 
     // filter: startAt|endAt|publisher|eventType
     for (const key in filter) {
