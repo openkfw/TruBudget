@@ -1,4 +1,5 @@
 import {
+  getMinioStatus,
   uploadAsPromised,
   downloadAsPromised,
   establishConnection,
@@ -65,7 +66,6 @@ app.use(
     },
   }),
 );
-
 app.use(express.json({ limit: "75mb" }));
 app.use(
   express.urlencoded({
@@ -73,8 +73,24 @@ app.use(
   }),
 );
 
-app.get("/readiness", (req, res) => {
-  res.send(true);
+app.get("/liveness", (req, res) => {
+  res
+    .status(200)
+    .header({ "Content-Type": "application/json" })
+    .send(
+      JSON.stringify({
+        uptime: process.uptime(),
+      }),
+    );
+});
+
+app.get("/readiness", async (req, res) => {
+  const { status, statusText } = await getMinioStatus();
+
+  res
+    .status(status)
+    .header({ "Content-Type": "application/json" })
+    .send(statusText);
 });
 
 app.get("/version", (req, res) => {
@@ -130,7 +146,7 @@ app.get(
   (req: DocumentDownloadRequest, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      req.log.error({err: errors}, "Error while validating request");
+      req.log.error({ err: errors }, "Error while validating request");
       return res.status(404).end();
     }
     const docId: string = req.query.docId;
@@ -143,7 +159,7 @@ app.get(
 
     // first get document
     (async () => {
-      req.log.debug({req}, "Downloading document");
+      req.log.debug({ req }, "Downloading document");
       const result = await downloadAsPromised(docId);
 
       //check if the given secret matches the one form the metadata
@@ -155,7 +171,7 @@ app.get(
     })().catch((err) => {
       if (err.code === "NoSuchBucket") {
         req.log.error(
-          {err},
+          { err },
           "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio",
         );
       }

@@ -142,10 +142,9 @@ export async function getWorkflowitems(
   return workflowitemList;
 }
 
-export async function getApiReadiness(axios: AxiosInstance, base: string): Promise<string> {
+export async function getApiReadiness(axios: AxiosInstance, base: string) {
   logger.trace("Fetching readiness ...");
-  const response: AxiosResponse<string> = await axios.get(`${base}/readiness`);
-  return response.data;
+  return await axios.get(`${base}/readiness`);
 }
 
 export async function getApiVersion(
