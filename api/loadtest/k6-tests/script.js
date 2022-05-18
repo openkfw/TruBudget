@@ -695,7 +695,7 @@ export default function () {
     });
     sleep(SLEEP_DURATION);
   });
-  group("/api/project.viewHistory.v2", () => {
+  group("/api/project.viewHistory", () => {
     let offset = "0";
     let limit = "100000";
     let publisher = jdoe.identity;
@@ -703,7 +703,7 @@ export default function () {
       createdProjects[Math.floor(Math.random() * createdProjects.length)].id;
     let url =
       BASE_URL +
-      `/api/project.viewHistory.v2?projectId=${projectId}&limit=${limit}&offset=${offset}&publisher=${publisher}`;
+      `/api/project.viewHistory?projectId=${projectId}&limit=${limit}&offset=${offset}&publisher=${publisher}`;
 
     let request = http.get(url, {
       headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
