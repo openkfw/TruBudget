@@ -88,7 +88,11 @@ const ProjectCard = ({
           data-test="project-header"
           className={parentClasses.cardHeader}
           title={
-            <div className={parentClasses.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
+            <div
+              className={parentClasses.cardTitle}
+              id={`project-title-${index}`}
+              data-test={`project-title-${displayName}`}
+            >
               <Highlighter
                 highlightStyle={{ backgroundColor: theme.palette.primary.light }}
                 searchWords={searchTermArray}
@@ -98,6 +102,7 @@ const ProjectCard = ({
           }
           subheader={
             <Highlighter
+              data-test={`project-status-${mappedStatus}`}
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
               searchWords={searchTermArray}
               textToHighlight={mappedStatus}

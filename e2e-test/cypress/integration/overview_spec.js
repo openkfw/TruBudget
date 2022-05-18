@@ -15,8 +15,10 @@ describe("Overview Page", function() {
     cy.get("[data-test*=project-card-]")
       .eq(0)
       .then($card => {
-        expect($card.find("[data-test=project-header] span").eq(0)).to.contains.text(this.data.displayName);
-        expect($card.find("[data-test=project-header] span").eq(2)).to.have.text("Status: Open");
+        expect($card.find(`[data-test^='project-title-${this.data.displayName}']`)).to.contains.text(
+          this.data.displayName
+        );
+        expect($card.find(`[data-test^='project-status-Status: Open']`)).to.have.text("Status: Open");
         expect($card.find("[data-test=project-budget]")).to.contains.text("AR$ 32,000,000.00");
         expect($card.find("[data-test=project-creation-date]")).not.to.contains.text("Jan 01, 1970");
 
