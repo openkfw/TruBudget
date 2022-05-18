@@ -47,7 +47,7 @@
     "tsc": "tsc",
     "test:here": "node ./runTest.js",
     "generate-joi": "node dist/scripts/joiGenerator.js",
-    "build-docs": "typedoc --entryPointStrategy expand ./src"
+    "build-docs": "bash ./buildDocs.sh"
   },
   "nyc": {
     "include": [
