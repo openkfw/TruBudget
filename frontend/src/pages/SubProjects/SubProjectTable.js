@@ -117,7 +117,7 @@ const getTableEntries = ({
   showEditDialog,
   showSubProjectPermissions,
   showSubProjectAdditionalData,
-  highlightingRegex,
+  searchTermArray,
   theme,
   storeSubSearchTerm,
   storeSubSearchBarDisplayed,
@@ -140,7 +140,7 @@ const getTableEntries = ({
             <Highlighter
               data-test="highlighted-displayname"
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
-              searchWords={highlightingRegex}
+              searchWords={searchTermArray}
               textToHighlight={displayName}
             />
           </TableCell>
@@ -148,7 +148,7 @@ const getTableEntries = ({
           <TableCell className={classes.status}>
             <Highlighter
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
-              searchWords={highlightingRegex}
+              searchWords={searchTermArray}
               textToHighlight={statusMapping(status)}
             />
           </TableCell>
@@ -219,7 +219,7 @@ const SubProjectTable = ({
   searchDisabled,
   storeSubSearchBarDisplayed,
   storeSubSearchTerm,
-  highlightingRegex,
+  searchTermArray,
   theme
 }) => {
   const tableEntries = getTableEntries({
@@ -230,7 +230,7 @@ const SubProjectTable = ({
     showEditDialog,
     showSubProjectPermissions,
     showSubProjectAdditionalData,
-    highlightingRegex,
+    searchTermArray,
     theme,
     storeSubSearchTerm,
     storeSubSearchBarDisplayed,

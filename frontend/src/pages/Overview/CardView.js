@@ -105,7 +105,6 @@ const getTableEntries = ({
   showProjectAdditionalData,
   storeSearchTerm,
   showSearchBar,
-  highlightingRegex,
   searchTermArray
 }) => {
   return filteredProjects.map(({ data, allowedIntents }, index) => {
@@ -156,7 +155,7 @@ const getTableEntries = ({
           tags={tags}
           parentClasses={classes}
           imagePath={imagePath}
-          highlightingRegex={highlightingRegex}
+          searchTermArray={searchTermArray}
         />
       );
     } else return null;

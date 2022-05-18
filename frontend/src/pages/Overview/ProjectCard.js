@@ -52,7 +52,7 @@ const ProjectCard = ({
   tags,
   parentClasses,
   imagePath,
-  highlightingRegex,
+  searchTermArray,
   theme
 }) => {
   return (
@@ -91,7 +91,7 @@ const ProjectCard = ({
             <div className={parentClasses.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
               <Highlighter
                 highlightStyle={{ backgroundColor: theme.palette.primary.light }}
-                searchWords={highlightingRegex}
+                searchWords={searchTermArray}
                 textToHighlight={displayName}
               />
             </div>
@@ -99,7 +99,7 @@ const ProjectCard = ({
           subheader={
             <Highlighter
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
-              searchWords={highlightingRegex}
+              searchWords={searchTermArray}
               textToHighlight={mappedStatus}
             />
           }

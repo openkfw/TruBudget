@@ -15,7 +15,6 @@ import {
   showProjectAdditionalData,
   showProjectPermissions,
   storeFilteredProjects,
-  storeHighlightingRegex,
   storeSearchTermArray,
   setProjectView
 } from "./actions";
@@ -32,10 +31,8 @@ class OverviewContainer extends Component {
     // Listen for postmessage from worker
     this.worker.addEventListener("message", event => {
       const filteredProjects = event.data ? event.data.filteredProjects : this.props.projects;
-      const highlightingRegex = event.data.highlightingRegex;
       const searchTerms = event.data.searchTerms;
       this.props.storeFilteredProjects(filteredProjects);
-      this.props.storeHighlightingRegex(highlightingRegex);
       this.props.storeSearchTermArray(searchTerms);
     });
     this.props.fetchAllProjects(true);
@@ -50,7 +47,6 @@ class OverviewContainer extends Component {
     }
     if (!this.props.searchTermString && prevProps.searchTermString) {
       this.props.storeFilteredProjects(this.props.projects);
-      this.props.storeHighlightingRegex([]);
       this.props.storeSearchTermArray([]);
     }
   }
@@ -84,7 +80,6 @@ const mapDispatchToProps = dispatch => {
     showProjectAdditionalData: id => dispatch(showProjectAdditionalData(id)),
     hideProjectAdditionalData: () => dispatch(hideProjectAdditionalData()),
     storeFilteredProjects: filteredProjects => dispatch(storeFilteredProjects(filteredProjects)),
-    storeHighlightingRegex: highlightingRegex => dispatch(storeHighlightingRegex(highlightingRegex)),
     storeSearchTermArray: searchTerms => dispatch(storeSearchTermArray(searchTerms)),
     storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
     showSearchBar: () => dispatch(storeSearchBarDisplayed(true)),
@@ -106,7 +101,6 @@ const mapStateToProps = state => {
     searchTermString: state.getIn(["navbar", "searchTerm"]),
     isRoot: state.getIn(["navbar", "isRoot"]),
     permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
-    highlightingRegex: state.getIn(["overview", "highlightingRegex"]),
     searchTermArray: state.getIn(["overview", "searchTerms"]),
     users: state.getIn(["login", "enabledUsers"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
