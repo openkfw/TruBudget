@@ -60,7 +60,7 @@ const defaultState = fromJS({
   dialogTitle: strings.project.add_new_project,
   idForInfo: "",
   isProjectAdditionalDataShown: false,
-  highlightingRegex: "",
+  highlightingRegex: [],
   searchTerms: [],
   projectView: "card"
 });

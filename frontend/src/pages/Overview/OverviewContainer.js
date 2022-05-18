@@ -50,7 +50,7 @@ class OverviewContainer extends Component {
     }
     if (!this.props.searchTermString && prevProps.searchTermString) {
       this.props.storeFilteredProjects(this.props.projects);
-      this.props.storeHighlightingRegex("");
+      this.props.storeHighlightingRegex([]);
       this.props.storeSearchTermArray([]);
     }
   }

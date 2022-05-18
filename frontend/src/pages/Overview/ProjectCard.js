@@ -18,7 +18,7 @@ import PermissionIcon from "@mui/icons-material/LockOpen";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import ViewIcon from "@mui/icons-material/ZoomIn";
 import React from "react";
-import { Highlight } from "react-highlighter-ts";
+import Highlighter from "react-highlight-words";
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
@@ -89,15 +89,19 @@ const ProjectCard = ({
           className={parentClasses.cardHeader}
           title={
             <div className={parentClasses.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
-              <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
-                {displayName}
-              </Highlight>
+              <Highlighter
+                highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+                searchWords={highlightingRegex}
+                textToHighlight={displayName}
+              />
             </div>
           }
           subheader={
-            <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
-              {mappedStatus}
-            </Highlight>
+            <Highlighter
+              highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+              searchWords={highlightingRegex}
+              textToHighlight={mappedStatus}
+            />
           }
         />
         <List>

@@ -93,7 +93,7 @@ const defaultState = fromJS({
   searchTerm: "",
   searchTerms: [],
   searchBarDisplayed: true,
-  highlightingRegex: "",
+  highlightingRegex: [],
   isLiveUpdatesProjectEnabled: true
 });
 
