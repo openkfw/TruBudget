@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-describe("Workflowitem's history", function() {
+describe("Workflowitem's history", function () {
   let projectId;
   let subprojectId;
   let workflowitemId;
@@ -20,23 +20,23 @@ describe("Workflowitem's history", function() {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
-    cy.createProject("p-subp-assign", "workflowitem assign test").then(({ id }) => {
+    cy.createProject("p-subp-assign", "workflowitem assign test").then(({id}) => {
       projectId = id;
-      cy.createSubproject(projectId, "workflowitem assign test").then(({ id }) => {
+      cy.createSubproject(projectId, "workflowitem assign test").then(({id}) => {
         subprojectId = id;
-        cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
+        cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({id}) => {
           workflowitemId = id;
         });
       });
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("The history contains only the creation event after creation.", function() {
+  it("The history contains only the creation event after creation.", function () {
     cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
     cy.get(`[data-test=workflowitem-${workflowitemId}]`).should("be.visible");
@@ -62,7 +62,7 @@ describe("Workflowitem's history", function() {
       .should("contain", "created workflowitem");
   });
 
-  it("The history is sorted from new to old", function() {
+  it("The history is sorted from new to old", function () {
     cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
 
@@ -96,7 +96,7 @@ describe("Workflowitem's history", function() {
       .should("contain", "changed workflowitem");
   });
 
-  it("When changing the tab, the history is fetched correctly", function() {
+  it("When changing the tab, the history is fetched correctly", function () {
     cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
     // Open info dialog
@@ -120,18 +120,18 @@ describe("Workflowitem's history", function() {
       .should("be.visible");
   });
 
-  it("All different types of history events are shown", function() {
+  it("All different types of history events are shown", function () {
     cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
-    cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
+    cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({id}) => {
       workflowitemId = id;
       // Create 5 additional history events
-      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { displayName: "updated Name" });
-      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { description: "updated Description" });
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
-      cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, {displayName: "updated Name"});
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, {description: "updated Description"});
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", "jxavier");
+      cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", "jxavier");
       // List all workflowitems to get all wfitem-ids
-      cy.listWorkflowitems(projectId, subprojectId).then(({ workflowitems }) => {
+      cy.listWorkflowitems(projectId, subprojectId).then(({workflowitems}) => {
         const ordering = workflowitems.reduce((workflowitemIds, workflowitem) => {
           if (workflowitem.data.id !== workflowitemId) {
             workflowitemIds.push(workflowitem.data.id);
@@ -159,18 +159,18 @@ describe("Workflowitem's history", function() {
     });
   });
 
-  it("All history search filter are working correctly", function() {
+  it("All history search filter are working correctly", function () {
     cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
-    cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
+    cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({id}) => {
       workflowitemId = id;
       // Create 5 additional history events
-      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { displayName: "updated Name" });
-      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { description: "updated Description" });
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
-      cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, {displayName: "updated Name"});
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, {description: "updated Description"});
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", "jxavier");
+      cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", "jxavier");
       // List all workflowitems to get all wfitem-ids
-      cy.listWorkflowitems(projectId, subprojectId).then(({ workflowitems }) => {
+      cy.listWorkflowitems(projectId, subprojectId).then(({workflowitems}) => {
         const ordering = workflowitems.reduce((workflowitemIds, workflowitem) => {
           if (workflowitem.data.id !== workflowitemId) {
             workflowitemIds.push(workflowitem.data.id);
@@ -252,18 +252,18 @@ describe("Workflowitem's history", function() {
     });
   });
 
-  it("Search with multiple values and reset search panel after closing history panel", function() {
+  it("Search with multiple values and reset search panel after closing history panel", function () {
     cy.intercept(apiRoute + "/workflowitem.viewHistory*").as("viewHistory");
 
-    cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({ id }) => {
+    cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test").then(({id}) => {
       workflowitemId = id;
       // Create 5 additional history events
-      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { displayName: "updated Name" });
-      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, { description: "updated Description" });
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
-      cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.view", "jxavier");
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, {displayName: "updated Name"});
+      cy.updateWorkflowitem(projectId, subprojectId, workflowitemId, {description: "updated Description"});
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", "jxavier");
+      cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", "jxavier");
       // List all workflowitems to get all wfitem-ids
-      cy.listWorkflowitems(projectId, subprojectId).then(({ workflowitems }) => {
+      cy.listWorkflowitems(projectId, subprojectId).then(({workflowitems}) => {
         const ordering = workflowitems.reduce((workflowitemIds, workflowitem) => {
           if (workflowitem.data.id !== workflowitemId) {
             workflowitemIds.push(workflowitem.data.id);

@@ -24,7 +24,7 @@ export async function getProject(
     return new NotFound(ctx, "project", projectId);
   }
 
-  const intents: Intent[] = ["project.viewSummary", "project.viewDetails"];
+  const intents: Intent[] = ["project.list", "project.viewDetails"];
   if (user.id !== "root" && !Project.permits(project, user, intents)) {
     return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: project });
   }
@@ -34,12 +34,12 @@ export async function getProject(
 
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
-  ["project_created", ["project.viewSummary", "project.viewDetails"]],
+  ["project_created", ["project.list", "project.viewDetails"]],
   ["project_permission_granted", ["project.intent.listPermissions"]],
   ["project_permission_revoked", ["project.intent.listPermissions"]],
   ["project_assigned", ["project.viewDetails"]],
   ["project_updated", ["project.viewDetails"]],
-  ["project_closed", ["project.viewSummary", "project.viewDetails"]],
+  ["project_closed", ["project.list", "project.viewDetails"]],
   ["project_projected_budget_updated", ["project.viewDetails"]],
   ["project_projected_budget_deleted", ["project.viewDetails"]],
 ]);

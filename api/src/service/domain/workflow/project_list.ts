@@ -23,7 +23,7 @@ export async function getAllVisible(
     user.id === "root"
       ? () => true
       : (project: Project.Project) =>
-          Project.permits(project, user, ["project.viewSummary", "project.viewDetails"]);
+        Project.permits(project, user, ["project.list", "project.viewDetails"]);
 
   const removeNonvisibleHistory = (project: Project.Project) =>
     dropHiddenHistoryEvents(project, user);
@@ -34,12 +34,12 @@ export async function getAllVisible(
 
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
-  ["project_created", ["project.viewSummary", "project.viewDetails"]],
+  ["project_created", ["project.list", "project.viewDetails"]],
   ["project_permission_granted", ["project.intent.listPermissions"]],
   ["project_permission_revoked", ["project.intent.listPermissions"]],
   ["project_assigned", ["project.viewDetails"]],
   ["project_updated", ["project.viewDetails"]],
-  ["project_closed", ["project.viewSummary", "project.viewDetails"]],
+  ["project_closed", ["project.list", "project.viewDetails"]],
   ["project_projected_budget_updated", ["project.viewDetails"]],
   ["project_projected_budget_deleted", ["project.viewDetails"]],
 ]);

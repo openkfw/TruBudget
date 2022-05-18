@@ -1,21 +1,22 @@
-import { Ctx } from "lib/ctx";
+import {Ctx} from "lib/ctx";
 import logger from "lib/logger";
-import { VError } from "verror";
+import {VError} from "verror";
 import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
-import { NotFound } from "../errors/not_found";
-import { canAssumeIdentity } from "../organization/auth_token";
-import { ServiceUser } from "../organization/service_user";
+import {NotFound} from "../errors/not_found";
+import {canAssumeIdentity} from "../organization/auth_token";
+import {ServiceUser} from "../organization/service_user";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import { sortWorkflowitems } from "./workflowitem_ordering";
+import {sortWorkflowitems} from "./workflowitem_ordering";
 
 interface Repository {
   getWorkflowitems(
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
+
   getWorkflowitemOrdering(
     projectId: string,
     subprojectId: string,
@@ -49,25 +50,25 @@ export async function getAllVisible(
   const visibleWorkflowitems = sortedWorkflowitems
     // Redact workflowitems the user is not entitled to see:
     .map((item) =>
-      user.id === "root" || Workflowitem.permits(item, user, ["workflowitem.view"])
+      user.id === "root" || Workflowitem.permits(item, user, ["workflowitem.list"])
         ? item
         : Workflowitem.redact(item),
     )
     // Only keep history event the user may see and remove all others:
-    .map((item) => (item.isRedacted ? item : { ...item, log: traceEventsVisibleTo(item, user) }));
+    .map((item) => (item.isRedacted ? item : {...item, log: traceEventsVisibleTo(item, user)}));
 
   return visibleWorkflowitems;
 }
 
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
-  ["workflowitem_created", ["workflowitem.view"]],
+  ["workflowitem_created", ["workflowitem.list"]],
   ["workflowitem_permission_granted", ["workflowitem.intent.listPermissions"]],
   ["workflowitem_permission_revoked", ["workflowitem.intent.listPermissions"]],
-  ["workflowitem_assigned", ["workflowitem.view"]],
-  ["workflowitem_updated", ["workflowitem.view"]],
-  ["workflowitem_closed", ["workflowitem.view"]],
-  ["workflowitems_reordered", ["workflowitem.view"]],
+  ["workflowitem_assigned", ["workflowitem.list"]],
+  ["workflowitem_updated", ["workflowitem.list"]],
+  ["workflowitem_closed", ["workflowitem.list"]],
+  ["workflowitems_reordered", ["workflowitem.list"]],
 ]);
 
 function traceEventsVisibleTo(workflowitem: Workflowitem.Workflowitem, user: ServiceUser) {

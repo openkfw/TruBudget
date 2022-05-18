@@ -6,7 +6,7 @@
  *
  */
 
-import { check, group, sleep } from "k6";
+import {check, group, sleep} from "k6";
 import http from "k6/http";
 
 const BASE_URL = "http://localhost:8080";
@@ -20,9 +20,9 @@ let ROOT_TOKEN = "";
 //organization name
 const ORGANIZATION = "KfW";
 const apiVersion = "1.0";
-const jdoe = { identity: "jdoe", intent: "global.createProject" };
-const mstein = { identity: "mstein", intent: "global.createProject" };
-const jxavier = { identity: "jxavier", intent: "" };
+const jdoe = {identity: "jdoe", intent: "global.createProject"};
+const mstein = {identity: "mstein", intent: "global.createProject"};
+const jxavier = {identity: "jxavier", intent: ""};
 const createdProjects = [];
 
 const defaultGroup = "reviewers";
@@ -40,7 +40,7 @@ function authenticate() {
       },
     }),
     {
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json"},
     },
   );
 
@@ -58,7 +58,7 @@ function authenticate() {
       },
     }),
     {
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json"},
     },
   );
 
@@ -90,7 +90,7 @@ export default function () {
   group("/api/version", () => {
     let url = BASE_URL + `/api/version`;
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -101,7 +101,7 @@ export default function () {
   group("/api/network.list", () => {
     let url = BASE_URL + `/api/network.list`;
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -111,7 +111,7 @@ export default function () {
   group("/api/network.listActive", () => {
     let url = BASE_URL + `/api/network.listActive`;
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -121,7 +121,7 @@ export default function () {
   group("/api/system.createBackup", () => {
     let url = BASE_URL + `/api/system.createBackup`;
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${ROOT_TOKEN}` },
+      headers: {Authorization: `Bearer ${ROOT_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -153,7 +153,7 @@ export default function () {
     let url = BASE_URL + `/api/global.grantAllPermissions`;
     let body = JSON.stringify({
       apiVersion,
-      data: { identity: jdoe.identity },
+      data: {identity: jdoe.identity},
     });
     let params = {
       headers: {
@@ -190,7 +190,7 @@ export default function () {
   group("/api/global.listPermissions", () => {
     let url = BASE_URL + `/api/global.listPermissions`;
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -211,7 +211,7 @@ export default function () {
         },
       }),
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
       },
     );
     check(request, {
@@ -249,7 +249,7 @@ export default function () {
     let url = BASE_URL + `/api/global.enableUser`;
     let body = JSON.stringify({
       apiVersion,
-      data: { userId: jxavier.identity },
+      data: {userId: jxavier.identity},
     });
     let params = {
       headers: {
@@ -270,7 +270,7 @@ export default function () {
 
     let body = JSON.stringify({
       apiVersion,
-      data: { userId: "dviolin" },
+      data: {userId: "dviolin"},
     });
     let params = {
       headers: {
@@ -291,7 +291,7 @@ export default function () {
     let userId = jdoe.identity;
     let url = BASE_URL + `/api/global.listAssignments?userId=${userId}`;
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -302,7 +302,7 @@ export default function () {
     let url = BASE_URL + `/api/user.list`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -316,7 +316,7 @@ export default function () {
       apiVersion,
       data: {
         identity: jdoe.identity,
-        intent: "user.view",
+        intent: "user.list",
         userId: jdoe.identity,
       },
     });
@@ -341,7 +341,7 @@ export default function () {
       apiVersion,
       data: {
         identity: jdoe.identity,
-        intent: "user.view",
+        intent: "user.list",
         userId: jdoe.identity,
       },
     });
@@ -365,7 +365,7 @@ export default function () {
     let url = BASE_URL + `/api/user.intent.listPermissions?userId=${userId}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
 
     check(request, {
@@ -404,7 +404,7 @@ export default function () {
     let url = BASE_URL + `/api/group.list`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -417,7 +417,7 @@ export default function () {
 
     let body = JSON.stringify({
       apiVersion,
-      data: { groupId: defaultGroup, userId: jdoe.identity },
+      data: {groupId: defaultGroup, userId: jdoe.identity},
     });
     let params = {
       headers: {
@@ -438,7 +438,7 @@ export default function () {
 
     let body = JSON.stringify({
       apiVersion,
-      data: { groupId: defaultGroup, userId: jdoe.identity },
+      data: {groupId: defaultGroup, userId: jdoe.identity},
     });
     let params = {
       headers: {
@@ -457,7 +457,7 @@ export default function () {
     let groupId = defaultGroup;
     let url = BASE_URL + `/api/group.intent.listPermissions?groupId=${groupId}`;
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
 
     check(request, {
@@ -472,7 +472,7 @@ export default function () {
       BASE_URL + `/api/notification.list?limit=${limit}&offset=${offset}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -483,7 +483,7 @@ export default function () {
     let url = BASE_URL + `/api/notification.count`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -493,7 +493,7 @@ export default function () {
 
   group("/api/global.createProject", () => {
     const id = Math.random().toString(36).substring(7);
-    createdProjects.push({ id, subprojects: [] });
+    createdProjects.push({id, subprojects: []});
     let url = BASE_URL + `/api/global.createProject`;
     let body = JSON.stringify({
       apiVersion,
@@ -539,7 +539,7 @@ export default function () {
       createdProjects[Math.floor(Math.random() * createdProjects.length)].id;
     let body = JSON.stringify({
       apiVersion,
-      data: { identity: jdoe.identity, projectId: id },
+      data: {identity: jdoe.identity, projectId: id},
     });
 
     let params = {
@@ -563,8 +563,8 @@ export default function () {
       apiVersion,
       data: {
         projectId:
-          createdProjects[Math.floor(Math.random() * createdProjects.length)]
-            .id,
+        createdProjects[Math.floor(Math.random() * createdProjects.length)]
+          .id,
         displayName: "new name",
         description: "new description",
         thumbnail: "string",
@@ -594,8 +594,8 @@ export default function () {
         identity: jdoe.identity,
         intent: "project.intent.listPermissions",
         projectId:
-          createdProjects[Math.floor(Math.random() * createdProjects.length)]
-            .id,
+        createdProjects[Math.floor(Math.random() * createdProjects.length)]
+          .id,
       },
     });
     let params = {
@@ -620,8 +620,8 @@ export default function () {
         identity: jdoe.identity,
         intent: "project.intent.listPermissions",
         projectId:
-          createdProjects[Math.floor(Math.random() * createdProjects.length)]
-            .id,
+        createdProjects[Math.floor(Math.random() * createdProjects.length)]
+          .id,
       },
     });
     let params = {
@@ -644,7 +644,7 @@ export default function () {
       BASE_URL + `/api/project.intent.listPermissions?projectId=${projectId}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
 
     check(request, {
@@ -657,7 +657,7 @@ export default function () {
     let url = BASE_URL + `/api/project.list`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -671,7 +671,7 @@ export default function () {
     let url = BASE_URL + `/api/project.viewDetails?projectId=${projectId}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -688,7 +688,7 @@ export default function () {
       `/api/project.viewHistory?projectId=${projectId}&limit=${limit}&offset=${offset}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -706,7 +706,7 @@ export default function () {
       `/api/project.viewHistory.v2?projectId=${projectId}&limit=${limit}&offset=${offset}&publisher=${publisher}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -720,8 +720,8 @@ export default function () {
       apiVersion,
       data: {
         projectId:
-          createdProjects[Math.floor(Math.random() * createdProjects.length)]
-            .id,
+        createdProjects[Math.floor(Math.random() * createdProjects.length)]
+          .id,
         organization: ORGANIZATION,
         currencyCode: "EUR",
         value: "1",
@@ -748,8 +748,8 @@ export default function () {
       apiVersion,
       data: {
         projectId:
-          createdProjects[Math.floor(Math.random() * createdProjects.length)]
-            .id,
+        createdProjects[Math.floor(Math.random() * createdProjects.length)]
+          .id,
         organization: ORGANIZATION,
         currencyCode: "EUR",
       },
@@ -824,10 +824,10 @@ export default function () {
     const subId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let body = JSON.stringify({
       apiVersion,
-      data: { identity: mstein.identity, projectId: id, subprojectId: subId },
+      data: {identity: mstein.identity, projectId: id, subprojectId: subId},
     });
     let params = {
       headers: {
@@ -849,7 +849,7 @@ export default function () {
     let url = BASE_URL + `/api/subproject.list?projectId=${projectId}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -863,13 +863,13 @@ export default function () {
     const subprojectId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let url =
       BASE_URL +
       `/api/subproject.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -884,34 +884,13 @@ export default function () {
     const subprojectId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let url =
       BASE_URL +
       `/api/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&limit=${limit}&offset=${offset}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
-    });
-    check(request, {
-      "Default Response": (r) => r.status === 200,
-    });
-    sleep(SLEEP_DURATION);
-  });
-  group("/api/subproject.viewHistory.v2", () => {
-    let offset = "0";
-    let limit = "10000";
-    const pos = Math.floor(Math.random() * createdProjects.length);
-    const projectId = createdProjects[pos].id;
-    const subprojectId =
-      createdProjects[pos].subprojects[
-        Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
-    let url =
-      BASE_URL +
-      `/api/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&limit=${limit}&offset=${offset}`;
-
-    let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -924,13 +903,13 @@ export default function () {
     const subprojectId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let url =
       BASE_URL +
       `/api/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`;
 
     let request = http.get(url, {
-      headers: { Authorization: `Bearer ${MSTEIN_TOKEN}` },
+      headers: {Authorization: `Bearer ${MSTEIN_TOKEN}`},
     });
     check(request, {
       "Default Response": (r) => r.status === 200,
@@ -945,7 +924,7 @@ export default function () {
     const subprojectId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let body = JSON.stringify({
       apiVersion,
       data: {
@@ -976,7 +955,7 @@ export default function () {
     const subprojectId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let body = JSON.stringify({
       apiVersion,
       data: {
@@ -1007,7 +986,7 @@ export default function () {
     const subprojectId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let body = JSON.stringify({
       apiVersion,
       data: {
@@ -1039,7 +1018,7 @@ export default function () {
     const subprojectId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let body = JSON.stringify({
       apiVersion,
       data: {
@@ -1072,7 +1051,7 @@ export default function () {
     const subprojectId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
 
     let body = JSON.stringify({
       apiVersion,
@@ -1104,10 +1083,10 @@ export default function () {
     const subId =
       createdProjects[pos].subprojects[
         Math.floor(Math.random() * createdProjects[pos].subprojects.length)
-      ];
+        ];
     let body = JSON.stringify({
       apiVersion,
-      data: { projectId: id, subprojectId: subId },
+      data: {projectId: id, subprojectId: subId},
     });
     let params = {
       headers: {
@@ -1129,7 +1108,7 @@ export default function () {
 
     let body = JSON.stringify({
       apiVersion,
-      data: { identity: jdoe.identity, projectId: id },
+      data: {identity: jdoe.identity, projectId: id},
     });
     let params = {
       headers: {

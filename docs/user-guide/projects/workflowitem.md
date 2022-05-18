@@ -1,28 +1,30 @@
 # Workflowitems
 
 - [Workflowitems](#workflowitems)
-  - [View workflowitems](#view-workflowitems)
-  - [View workflowitem details](#view-workflowitem-details)
-  - [Create a workflowitem](#create-a-workflowitem)
-  - [Update a workflowitem](#update-a-workflowitem)
-  - [Update multiple workflowitems](#update-multiple-workflowitems)
-  - [Assign an User/Group to a workflowitem](#assign-an-usergroup-to-a-workflowitem)
-  - [Close workflowitem](#close-workflowitem)
-  - [View and filter the history of a workflowitem](#view-and-filter-the-history-of-a-workflowitem)
-  - [Reorder Workflowitems](#reorder-workflowitems)
-  - [Documents in TruBudget](#documents-in-trubudget)
-    - [Add document to workflowitem](#add-document-to-workflowitem)
-    - [Download document from workflowitem (Since Trubudget-v1.10.0)](#download-document-from-workflowitem-since-trubudget-v1100)
-    - [Validate a document](#validate-a-document)
+    - [View workflowitems](#view-workflowitems)
+    - [View workflowitem details](#view-workflowitem-details)
+    - [Create a workflowitem](#create-a-workflowitem)
+    - [Update a workflowitem](#update-a-workflowitem)
+    - [Update multiple workflowitems](#update-multiple-workflowitems)
+    - [Assign an User/Group to a workflowitem](#assign-an-usergroup-to-a-workflowitem)
+    - [Close workflowitem](#close-workflowitem)
+    - [View and filter the history of a workflowitem](#view-and-filter-the-history-of-a-workflowitem)
+    - [Reorder Workflowitems](#reorder-workflowitems)
+    - [Documents in TruBudget](#documents-in-trubudget)
+        - [Add document to workflowitem](#add-document-to-workflowitem)
+        - [Download document from workflowitem (Since Trubudget-v1.10.0)](#download-document-from-workflowitem-since-trubudget-v1100)
+        - [Validate a document](#validate-a-document)
 
-Workflowitems are the lowest level of abstraction in TruBudget. Workflowitems are steps/task that need to be fulfilled to mark a suproject as done, like Budget allocation, Tender publication, Contract signature, Payment final installment,..
+Workflowitems are the lowest level of abstraction in TruBudget. Workflowitems are steps/task that need to be fulfilled
+to mark a suproject as done, like Budget allocation, Tender publication, Contract signature, Payment final
+installment,..
 
 There are some different permissions which affect workflowitems.
 
 - workflowitem.intent.listPermissions
 - workflowitem.intent.grantPermission
 - workflowitem.intent.revokePermission
-- workflowitem.view
+- workflowitem.list
 - workflowitem.assign
 - workflowitem.update
 
@@ -77,7 +79,8 @@ View details like budget or task status of a subproject.
 
 **Description:**
 
-Create a new workflowitem defining title, comment, currency and budget. It is also possible to attach documents to the workflowitem.
+Create a new workflowitem defining title, comment, currency and budget. It is also possible to attach documents to the
+workflowitem.
 
 **Instructions:**
 
@@ -91,23 +94,24 @@ Create a new workflowitem defining title, comment, currency and budget. It is al
 
 6. Fill in the required fields:
 
-   - Workflowitem type: Workflowitems behave differently according to their type
-     - general: A workflowitem of type general will be created
-     - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.
-   - "Workflow Title": Title of the workflowitem
-   - "Comment": A little description or comment refering to the workflowitem
-   - Budget:
-     - Not applicable: The workflowitem does not affect the budget of the subproject
-     - allocated: The workflowitem will affect the budget of the subproject but the budget is not disbursed yet
-     - disbursed: The workflowitem affect the budget of the subproject
-   - "Currency": Currency of the workflowitem
-   - "Workflow budget amount": Assigned budget to the workflowitem
+    - Workflowitem type: Workflowitems behave differently according to their type
+        - general: A workflowitem of type general will be created
+        - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The
+          assigner will only keep the view permissions.
+    - "Workflow Title": Title of the workflowitem
+    - "Comment": A little description or comment refering to the workflowitem
+    - Budget:
+        - Not applicable: The workflowitem does not affect the budget of the subproject
+        - allocated: The workflowitem will affect the budget of the subproject but the budget is not disbursed yet
+        - disbursed: The workflowitem affect the budget of the subproject
+    - "Currency": Currency of the workflowitem
+    - "Workflow budget amount": Assigned budget to the workflowitem
 
 ![create workflowitem](./../img/create_workflowitem_dialog.jpg)
 
 7. [Optional] Click the "Next"-button to switch to the next dialog where documents can be uploaded
 8. [Optional] Fill in the required fields:
-   - "Document Name": A unique name of the document
+    - "Document Name": A unique name of the document
 9. [Optional] Click the "Upload"-button to open the file selector.
 
 ![upload document](./../img/upload_document.jpg)
@@ -129,7 +133,8 @@ Create a new workflowitem defining title, comment, currency and budget. It is al
 
 **Description:**
 
-Update details like title, comment, currency and budget of a workflowitem. It is also possible to attach documents to the workflowitem.
+Update details like title, comment, currency and budget of a workflowitem. It is also possible to attach documents to
+the workflowitem.
 
 **Instructions:**
 
@@ -140,18 +145,18 @@ Update details like title, comment, currency and budget of a workflowitem. It is
 5. Click the pen icon next to the assignee field of the worklfowitem which shall be updated
 6. Fill in the fields that shall be updated:
 
-   - "Workflow Title": Title of the workflowitem
-   - "Comment": A little description or comment refering to the workflowitem
-   - Budget:
-     - Not applicable: The workflowitem does not affect the budget of the subproject
-     - allocated: The workflowitem will affect the budget of the subproject but the budget is not disbursed yet
-     - disbursed: The workflowitem affect the budget of the subproject
-   - "Currency": Currency of the workflowitem
-   - "Workflow budget amount": Assigned budget to the workflowitem
+    - "Workflow Title": Title of the workflowitem
+    - "Comment": A little description or comment refering to the workflowitem
+    - Budget:
+        - Not applicable: The workflowitem does not affect the budget of the subproject
+        - allocated: The workflowitem will affect the budget of the subproject but the budget is not disbursed yet
+        - disbursed: The workflowitem affect the budget of the subproject
+    - "Currency": Currency of the workflowitem
+    - "Workflow budget amount": Assigned budget to the workflowitem
 
 7. [Optional] Click the "Next"-button to switch to the next dialog where documents can be uploaded
 8. [Optional] Fill in the required fields:
-   - "Document Name": A unique name of the document
+    - "Document Name": A unique name of the document
 9. [Optional] Click the "Upload"-button to open thge file selector.
 10. [Optional] Select the document which should be uploaded
 11. [Optional] All documents can now be seen above the input field
@@ -185,7 +190,9 @@ Update assignee or workflowitem-permissions for multiple workflowitems at once.
 7. By selecting one or more workflowitems a side menu opens to the right
 8. [Optional] Click the assignee dropdown field to open a selection where the right user or group can be selected
 9. [Optional] Click on one permission dropdown field to open a selection where the right user or group can be selected
-10. Click the "Update"-button at the top of the side menu to open a preview of all actions the update will trigger. Actions are differientiated between "possible" and "not possible" actions. "Not possible" actions are assign intents on closed workflowitems only.
+10. Click the "Update"-button at the top of the side menu to open a preview of all actions the update will trigger.
+    Actions are differientiated between "possible" and "not possible" actions. "Not possible" actions are assign intents
+    on closed workflowitems only.
 
 ![update selected workflowitems](./../img/update_selected_workflowitems.jpg)
 
@@ -227,7 +234,8 @@ Assign a User or Group to a workflowitem to show which User or Group is responsi
 
 - Assigning a user/group needs project, subproject and workflowitem view permissions.
 - If the assignee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they can be granted if the assigner has grant permissions. (see [confirmation](../confirmation.md) for more Details)
+  On confirm they can be granted if the assigner has grant permissions. (see [confirmation](../confirmation.md) for more
+  Details)
 
 :::
 
@@ -257,12 +265,16 @@ Close a workflowitem when the work is done.
 
 **Description:**
 
-The history for each workflowitem can be found in its details dialog. The history contains a chronological list of changes of the selected workflowitem, starting with the newest.
-The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and a end date, where a timeframe can be determined. By clicking the search button, all values that are specified are used in the filter request.
+The history for each workflowitem can be found in its details dialog. The history contains a chronological list of
+changes of the selected workflowitem, starting with the newest.
+The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and a end date,
+where a timeframe can be determined. By clicking the search button, all values that are specified are used in the filter
+request.
 
 **Instructions:**
 
-1. Click on the "i" (information) button of the workflowitem to [view the workflowitem details](#view-workflowitem-details)
+1. Click on the "i" (information) button of the workflowitem
+   to [view the workflowitem details](#view-workflowitem-details)
    ![view workflowitem details](./../img/view_details_workflowitem.jpg)
 2. Navigate to the "History" tab
    ![view the history tab](./../img/history_tab.jpg)
@@ -287,11 +299,13 @@ If workflowitems are not closed or redacted( user has no view permission) the us
 ![enter "edit"-mode](./../img/enter_edit_mode.jpg)
 
 6. Click and pull a workflowitem to the new position in the workflowitem queue
-7. When finished reordering submit the change and exit "edit"-mode with a click on the "done"-icon at the same position the "edit" button has been before.
+7. When finished reordering submit the change and exit "edit"-mode with a click on the "done"-icon at the same position
+   the "edit" button has been before.
 
 :::note
 
-- If one or more workflowitems between the workflowitems the user want to reorder are redacted the user is not able to reorder.
+- If one or more workflowitems between the workflowitems the user want to reorder are redacted the user is not able to
+  reorder.
 - Do not forget to submit the new order with a click on the "done"-icon above the workflowitems-list
 - In "edit"-mode it is not possible to click a button located on a workflowitem
 - In "edit"-mode workflowitems are selectable in order to update more than one workflowitem at the same time
@@ -302,22 +316,30 @@ If workflowitems are not closed or redacted( user has no view permission) the us
 
 **Description:**
 
-TruBudget features upload/download and validation of documents. If a file (like a contract, invoice, etc.) is part of the general workflow of a subproject, the document can be added to a workflowitem and later be downloaded or validated by another user. Before `Trubudget-v1.10.0` a document is not uploaded itself - instead only a computed fingerprint is stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and compared to the original. Since `Trubdget-v1.10.0` a documents can be uploaded and downloaded.
+TruBudget features upload/download and validation of documents. If a file (like a contract, invoice, etc.) is part of
+the general workflow of a subproject, the document can be added to a workflowitem and later be downloaded or validated
+by another user. Before `Trubudget-v1.10.0` a document is not uploaded itself - instead only a computed fingerprint is
+stored on the blockchain. When another user validates the document, the fingerprint of his/her copy is calculated and
+compared to the original. Since `Trubdget-v1.10.0` a documents can be uploaded and downloaded.
 
 ### Add document to workflowitem
 
 Adding a document to a workflowitem can be done either when adding or when creating the document, in the second screen.
 
-1. Either [create a new workflowitem](#create-a-workflowitem) or [update an existing workflowitem](#update-a-workflowitem)
+1. Either [create a new workflowitem](#create-a-workflowitem)
+   or [update an existing workflowitem](#update-a-workflowitem)
 2. After filling out the fields on the first page, click the "Next" button
-3. In the second screen, enter a name for the document. This name does not have to be the same as the filename! The name should be descriptive of the document that is being uploaded, e.g. "Invoice-Contractor" or "Contract-School". After typing a name, the button "Upload" gets activated
+3. In the second screen, enter a name for the document. This name does not have to be the same as the filename! The name
+   should be descriptive of the document that is being uploaded, e.g. "Invoice-Contractor" or "Contract-School". After
+   typing a name, the button "Upload" gets activated
 4. Click the "Upload" button and select a file from your device
    ![upload document](./../img/upload_document.jpg)
 5. Click the "Submit" button to finish
 
 ### Download document from workflowitem (Since Trubudget-v1.10.0)
 
-1. Click on the "i" (information) button of the workflowitem containing the document to [view the workflowitem details](#view-workflowitem-details)
+1. Click on the "i" (information) button of the workflowitem containing the document
+   to [view the workflowitem details](#view-workflowitem-details)
    ![view workflowitem details](./../img/view_details_workflowitem.jpg)
 2. Navigate to the "Documents" tab
    ![view the documents tab](./../img/documents_tab.jpg)
@@ -326,7 +348,8 @@ Adding a document to a workflowitem can be done either when adding or when creat
 
 ### Validate a document
 
-1. Click on the "i" (information) button of the workflowitem containing the document to [view the workflowitem details](#view-workflowitem-details)
+1. Click on the "i" (information) button of the workflowitem containing the document
+   to [view the workflowitem details](#view-workflowitem-details)
    ![view workflowitem details](./../img/view_details_workflowitem.jpg)
 2. Navigate to the "Documents" tab
    ![view the documents tab](./../img/documents_tab.jpg)
@@ -335,4 +358,5 @@ Adding a document to a workflowitem can be done either when adding or when creat
 4. Select the correct document from your drive
 5. If the documents match, the validation says "OK"
    ![document ok](./../img/document_ok.jpg)
-6. [Optional] If the documents do not match, the label changes to "NOT OK". Click on the "NOT OK" button and choose another document to try again.
+6. [Optional] If the documents do not match, the label changes to "NOT OK". Click on the "NOT OK" button and choose
+   another document to try again.

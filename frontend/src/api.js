@@ -2,6 +2,7 @@ import axios from "axios";
 import _isEmpty from "lodash/isEmpty";
 import strings from "./localizeStrings";
 import contentDispositionAttachment from "content-disposition-attachment";
+
 const devMode = process.env.NODE_ENV === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
@@ -111,9 +112,9 @@ class Api {
       identity: userId
     });
 
-  grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, { identity, intent });
+  grantGlobalPermission = (identity, intent) => instance.post(`global.grantPermission`, {identity, intent});
 
-  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, { identity, intent });
+  revokeGlobalPermission = (identity, intent) => instance.post(`global.revokePermission`, {identity, intent});
   listGlobalPermissions = () => instance.get(`global.listPermissions`);
 
   listUser = () => instance.get(`/user.list`);
@@ -245,7 +246,7 @@ class Api {
 
   viewSubProjectHistory = (projectId, subprojectId, offset, limit, filter) => {
     let url = removeEmptyQueryParams(
-      `/subproject.viewHistory.v2?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
+      `/subproject.viewHistory?projectId=${projectId}&subprojectId=${subprojectId}&offset=${offset}&limit=${limit}`
     );
     // filter: startAt|endAt|publisher|eventType
     for (const key in filter) {
@@ -302,7 +303,7 @@ class Api {
     });
 
   createWorkflowItem = payload => {
-    const { currency, amount, exchangeRate, ...minimalPayload } = payload;
+    const {currency, amount, exchangeRate, ...minimalPayload} = payload;
     const payloadToSend =
       payload.amountType === "N/A"
         ? minimalPayload
@@ -339,7 +340,7 @@ class Api {
     });
 
   editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) => {
-    const { currency, amount, exchangeRate, ...minimalChanges } = changes;
+    const {currency, amount, exchangeRate, ...minimalChanges} = changes;
 
     const changesToSend =
       changes.amountType === "N/A"
@@ -359,7 +360,7 @@ class Api {
   };
 
   reorderWorkflowitems = (projectId, subprojectId, ordering) =>
-    instance.post(`/subproject.reorderWorkflowitems`, { projectId, subprojectId, ordering });
+    instance.post(`/subproject.reorderWorkflowitems`, {projectId, subprojectId, ordering});
 
   validateDocument = (base64String, hash, id, projectId, subprojectId, workflowitemId) =>
     instance.post(`/workflowitem.validateDocument`, {
@@ -458,9 +459,9 @@ class Api {
       notifications: [notificationId]
     });
   markMultipleNotificationsAsRead = notificationIds =>
-    instance.post(`/notification.markRead`, { notifications: notificationIds });
+    instance.post(`/notification.markRead`, {notifications: notificationIds});
 
-  createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
+  createBackup = () => instance.get(`/system.createBackup`, {responseType: "blob"});
   restoreFromBackup = (envPrefix, token, data) => {
     let apiPrefix = "/api";
     if (!devMode) {
@@ -469,13 +470,13 @@ class Api {
     const binaryInstance = axios.create();
     binaryInstance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
     const response = binaryInstance.post(`${apiPrefix}/system.restoreBackup`, data, {
-      headers: { "Content-Type": "application/gzip" }
+      headers: {"Content-Type": "application/gzip"}
     });
     return response;
   };
   export = (devModeEnvironment) => {
     const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, devModeEnvironment);
-    return instance.get(path, { responseType: "blob" });
+    return instance.get(path, {responseType: "blob"});
   };
   fetchExportServiceVersion = () => {
     const path = this.getExportServiceUrl("version");
@@ -494,17 +495,17 @@ class Api {
     return instance.get(path);
   };
   insertEmailAddress = (id, emailAddress) => {
-    const data = { user: { id, emailAddress } };
+    const data = {user: {id, emailAddress}};
     const path = this.getEmailServiceUrl("user.insert");
     return instance.post(path, data);
   };
   updateEmailAddress = (id, emailAddress) => {
-    const data = { user: { id, emailAddress } };
+    const data = {user: {id, emailAddress}};
     const path = this.getEmailServiceUrl("user.update");
     return instance.post(path, data);
   };
   deleteEmailAddress = (id, emailAddress) => {
-    const data = { user: { id, emailAddress } };
+    const data = {user: {id, emailAddress}};
     const path = this.getEmailServiceUrl("user.delete");
     return instance.post(path, data);
   };
@@ -516,7 +517,7 @@ class Api {
   getWorkflowItem = (projectId, subprojectId, workflowitemId) => {
     return instance.get(
       removeEmptyQueryParams(
-        `/workflowitem.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
+        `/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
       )
     );
   };
@@ -527,19 +528,19 @@ class Api {
         removeEmptyQueryParams(
           `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
         ),
-        { responseType: "blob" }
+        {responseType: "blob"}
       )
       .then(response => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        const { attachment, filename } = contentDispositionAttachment.parse(response.headers["content-disposition"]);
+        const {attachment, filename} = contentDispositionAttachment.parse(response.headers["content-disposition"]);
         if (attachment) {
           link.download = filename;
           document.body.appendChild(link);
           link.click();
           link.remove();
-          return Promise.resolve({ data: {} });
+          return Promise.resolve({data: {}});
         }
 
       });

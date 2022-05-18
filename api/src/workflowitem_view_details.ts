@@ -196,7 +196,7 @@ export function addHttpHandler(
         .getWorkflowitemDetails(ctx, user, projectId, subprojectId, workflowitemId)
         .then((workflowitemResult) => {
           if (Result.isErr(workflowitemResult)) {
-            throw new VError(workflowitemResult, "workflowitem.viewDetails failed");
+            throw new VError(workflowitemResult, "workflowitem.list failed");
           }
           const workflowitem = workflowitemResult;
           const allowedIntents = workflowitem.isRedacted

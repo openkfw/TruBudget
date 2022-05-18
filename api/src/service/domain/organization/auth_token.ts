@@ -1,4 +1,4 @@
-import logger from "lib/logger";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import Intent, { globalIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
@@ -27,7 +27,9 @@ export function canAssumeIdentity(
 
 interface Repository {
   getGroupsForUser(userId: UserRecord.Id): Promise<Result.Type<string[]>>;
+
   getOrganizationAddress(organization: string): Promise<Result.Type<string>>;
+
   getGlobalPermissions(): Promise<Result.Type<GlobalPermissions>>;
 }
 

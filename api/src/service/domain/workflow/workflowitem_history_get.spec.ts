@@ -1,21 +1,21 @@
-import { assert } from "chai";
+import {assert} from "chai";
 
-import { Ctx } from "lib/ctx";
+import {Ctx} from "lib/ctx";
 import * as Result from "../../../result";
-import { BusinessEvent } from "../business_event";
-import { NotAuthorized } from "../errors/not_authorized";
-import { NotFound } from "../errors/not_found";
-import { ServiceUser } from "../organization/service_user";
-import { Permissions } from "../permissions";
-import { Filter } from "./historyFilter";
-import { Workflowitem } from "./workflowitem";
-import { getHistory } from "./workflowitem_history_get";
-import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
+import {BusinessEvent} from "../business_event";
+import {NotAuthorized} from "../errors/not_authorized";
+import {NotFound} from "../errors/not_found";
+import {ServiceUser} from "../organization/service_user";
+import {Permissions} from "../permissions";
+import {Filter} from "./historyFilter";
+import {Workflowitem} from "./workflowitem";
+import {getHistory} from "./workflowitem_history_get";
+import {WorkflowitemTraceEvent} from "./workflowitem_trace_event";
 
-const ctx: Ctx = { requestId: "", source: "test" };
+const ctx: Ctx = {requestId: "", source: "test"};
 const address = "address";
-const root: ServiceUser = { id: "root", groups: [], address };
-const alice: ServiceUser = { id: "alice", groups: [], address };
+const root: ServiceUser = {id: "root", groups: [], address};
+const alice: ServiceUser = {id: "alice", groups: [], address};
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
@@ -29,7 +29,7 @@ const filter: Filter = {
 };
 
 const permissions: Permissions = {
-  "workflowitem.view": ["alice"],
+  "workflowitem.list": ["alice"],
   "workflowitem.viewHistory": ["alice"],
 };
 
@@ -114,7 +114,7 @@ describe("get worklfowitem history: authorization", () => {
   it("With only view permissions, a user can still get a worklfowitem's history.", async () => {
     const modifiedWorkflowitem: Workflowitem = {
       ...baseWorkflowitem,
-      permissions: { "workflowitem.view": ["alice"] },
+      permissions: {"workflowitem.list": ["alice"]},
     };
     const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, {
       ...baseRepository,
@@ -126,7 +126,7 @@ describe("get worklfowitem history: authorization", () => {
   it("With only viewHistory permissions, a user can still get a worklfowitem's history.", async () => {
     const modifiedWorkflowitem: Workflowitem = {
       ...baseWorkflowitem,
-      permissions: { "workflowitem.viewHistory": ["alice"] },
+      permissions: {"workflowitem.viewHistory": ["alice"]},
     };
     const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, {
       ...baseRepository,

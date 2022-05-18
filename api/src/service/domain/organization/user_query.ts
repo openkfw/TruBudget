@@ -1,4 +1,4 @@
-import logger from "lib/logger";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";

@@ -22,12 +22,30 @@
     }
   ],
   "permissions": {
-    "project.viewDetails": ["mstein", "ckfwpm"],
-    "project.viewSummary": ["mstein", "ckfwpm"],
-    "project.assign": ["mstein", "ckfwpm"],
-    "project.intent.listPermissions": ["mstein", "ckfwpm"],
-    "project.intent.grantPermission": ["mstein", "ckfwpm"],
-    "project.intent.revokePermission": ["mstein", "ckfwpm"]
+    "project.viewDetails": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.list": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.assign": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.intent.listPermissions": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.intent.grantPermission": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.intent.revokePermission": [
+      "mstein",
+      "ckfwpm"
+    ]
   },
   "subprojects": [
     {
@@ -37,8 +55,12 @@
       "currency": "USD",
       "assignee": "ckfwpm",
       "permissions": {
-        "subproject.viewSummary": ["ckfwpm"],
-        "subproject.viewDetails": ["ckfwpm"]
+        "subproject.list": [
+          "ckfwpm"
+        ],
+        "subproject.viewDetails": [
+          "ckfwpm"
+        ]
       },
       "workflows": [
         {
@@ -46,7 +68,9 @@
           "assignee": "ckfwpm",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["ckfwpm"]
+            "workflowitem.list": [
+              "ckfwpm"
+            ]
           }
         }
       ]
@@ -65,8 +89,12 @@
       ],
       "assignee": "ckfwpm",
       "permissions": {
-        "subproject.viewSummary": ["ckfwpm"],
-        "subproject.viewDetails": ["ckfwpm"]
+        "subproject.list": [
+          "ckfwpm"
+        ],
+        "subproject.viewDetails": [
+          "ckfwpm"
+        ]
       },
       "workflows": [
         {
@@ -74,7 +102,9 @@
           "assignee": "rfoundation",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["rfoundation"]
+            "workflowitem.list": [
+              "rfoundation"
+            ]
           }
         },
         {
@@ -82,7 +112,9 @@
           "assignee": "rfoundation",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["rfoundation"]
+            "workflowitem.list": [
+              "rfoundation"
+            ]
           }
         },
         {
@@ -90,7 +122,9 @@
           "assignee": "rfoundation",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["rfoundation"]
+            "workflowitem.list": [
+              "rfoundation"
+            ]
           }
         },
         {
@@ -98,7 +132,9 @@
           "assignee": "rfoundation",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["rfoundation"]
+            "workflowitem.list": [
+              "rfoundation"
+            ]
           }
         }
       ]
@@ -117,8 +153,12 @@
       ],
       "assignee": "ckfwpm",
       "permissions": {
-        "subproject.viewSummary": ["ckfwpm"],
-        "subproject.viewDetails": ["ckfwpm"]
+        "subproject.list": [
+          "ckfwpm"
+        ],
+        "subproject.viewDetails": [
+          "ckfwpm"
+        ]
       },
       "workflows": [
         {
@@ -126,7 +166,9 @@
           "assignee": "rfoundation",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["rfoundation"]
+            "workflowitem.list": [
+              "rfoundation"
+            ]
           }
         },
         {
@@ -134,7 +176,9 @@
           "assignee": "rfoundation",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["rfoundation"]
+            "workflowitem.list": [
+              "rfoundation"
+            ]
           }
         },
         {
@@ -142,7 +186,9 @@
           "assignee": "rfoundation",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["rfoundation"]
+            "workflowitem.list": [
+              "rfoundation"
+            ]
           }
         },
         {
@@ -150,7 +196,9 @@
           "assignee": "rfoundation",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["rfoundation"]
+            "workflowitem.list": [
+              "rfoundation"
+            ]
           }
         }
       ]

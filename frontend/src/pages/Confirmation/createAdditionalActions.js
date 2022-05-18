@@ -1,6 +1,6 @@
 import _cloneDeep from "lodash/cloneDeep";
 import _isEmpty from "lodash/isEmpty";
-import { getGroupsOfUser, isUserOrGroupPermitted} from "./../../helper.js";
+import {getGroupsOfUser, isUserOrGroupPermitted} from "./../../helper.js";
 
 export function applyOriginalActions(permissions, originalActions, ignoreRevokeActions = false) {
   let permissionsCopy = _cloneDeep(permissions);
@@ -61,17 +61,38 @@ function createAdditionalActionsForResource(
 
   if (resource !== "workflowitem") {
     if (permissions[viewSummary] === undefined || !isUserOrGroupPermitted(identity, groupsOfUser, permissions[viewSummary])) {
-      const action = { intent, id, displayName, permission: viewSummary, identity, isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent]) };
+      const action = {
+        intent,
+        id,
+        displayName,
+        permission: viewSummary,
+        identity,
+        isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent])
+      };
       actions.push(action);
     }
 
     if (permissions[viewDetails] === undefined || !isUserOrGroupPermitted(identity, groupsOfUser, permissions[viewDetails])) {
-      const action = { intent, id, displayName, permission: viewDetails, identity, isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent]) };
+      const action = {
+        intent,
+        id,
+        displayName,
+        permission: viewDetails,
+        identity,
+        isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent])
+      };
       actions.push(action);
     }
   } else {
     if (permissions[viewWorkflowitem] === undefined || !isUserOrGroupPermitted(identity, groupsOfUser, permissions[viewWorkflowitem])) {
-      const action = { intent, id, displayName, permission: viewWorkflowitem, identity, isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent]) };
+      const action = {
+        intent,
+        id,
+        displayName,
+        permission: viewWorkflowitem,
+        identity,
+        isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent])
+      };
       actions.push(action);
     }
 
@@ -81,29 +102,36 @@ function createAdditionalActionsForResource(
     listPermissionIntentNeededFor[resource] &&
     (permissions[listPermissions] === undefined || !isUserOrGroupPermitted(identity, groupsOfUser, permissions[listPermissions]))
   ) {
-    const action = { intent, id, displayName, permission: listPermissions, identity, isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent]) };
+    const action = {
+      intent,
+      id,
+      displayName,
+      permission: listPermissions,
+      identity,
+      isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent])
+    };
     actions.push(action);
   }
   return actions;
 }
 
 function createAdditionalActionsforIntent({
-  permissions,
-  identity,
-  confirmingUser,
-  project,
-  groups = [],
-  subproject = undefined,
-  workflowitem = undefined,
-  isSubprojectValidator = false,
-  isWorkflowitemDefaultAssignee = false
-}) {
+                                            permissions,
+                                            identity,
+                                            confirmingUser,
+                                            project,
+                                            groups = [],
+                                            subproject = undefined,
+                                            workflowitem = undefined,
+                                            isSubprojectValidator = false,
+                                            isWorkflowitemDefaultAssignee = false
+                                          }) {
   const resources = ["project", "subproject", "workflowitem"];
   const additionalActions = [];
   const groupsOfUser = getGroupsOfUser(identity, groups);
 
   // Set additional listpermissions for required intents
-  let listPermissionIntentNeededFor = { project: false, subproject: false, workflowitem: false };
+  let listPermissionIntentNeededFor = {project: false, subproject: false, workflowitem: false};
   if (
     permissions.project &&
     (
@@ -188,7 +216,7 @@ function createAdditionalActionsforIntent({
 
 function createWorkflowitemPostActions(workflowitemDisplayname, assignee) {
   const workflowitemPermissions = [
-    "workflowitem.view",
+    "workflowitem.list",
     "workflowitem.intent.listPermissions",
     "workflowitem.assign",
     "workflowitem.update",
@@ -211,7 +239,7 @@ function createWorkflowitemPostActions(workflowitemDisplayname, assignee) {
 function createSuprojectPostActions(subprojectDisplayname, validator) {
   const subprojectPermissions = [
     "subproject.viewDetails",
-    "subproject.viewSummary",
+    "subproject.list",
     "subproject.intent.listPermissions"
   ];
   let actions = [];
@@ -232,13 +260,13 @@ export function createAdditionalActions(originalActions, permissions, project, s
   let allPostActions = [];
 
   originalActions.forEach((originalAction, index) => {
-    const { intent, payload } = originalAction;
+    const {intent, payload} = originalAction;
     let additionalActions;
     let postActions;
 
     switch (intent) {
       case "project.assign": {
-        const projectPermissions = { project: permissions.project };
+        const projectPermissions = {project: permissions.project};
         additionalActions = createAdditionalActionsforIntent({
           permissions: projectPermissions,
           identity: payload.assignee.id,
@@ -251,7 +279,7 @@ export function createAdditionalActions(originalActions, permissions, project, s
 
       case "project.createSubproject": {
         if (!_isEmpty(payload.validator?.id)) {
-          const projectPermissions = { project: permissions.project };
+          const projectPermissions = {project: permissions.project};
           additionalActions = createAdditionalActionsforIntent({
             permissions: projectPermissions,
             identity: payload.validator.id,
@@ -268,7 +296,7 @@ export function createAdditionalActions(originalActions, permissions, project, s
       }
 
       case "subproject.assign": {
-        const subprojectPermissions = { project: permissions.project, subproject: permissions.subproject };
+        const subprojectPermissions = {project: permissions.project, subproject: permissions.subproject};
 
         additionalActions = createAdditionalActionsforIntent({
           permissions: subprojectPermissions,
@@ -305,7 +333,7 @@ export function createAdditionalActions(originalActions, permissions, project, s
       }
 
       case "subproject.createWorkflowitem": {
-        const subprojectPermissions = { project: permissions.project, subproject: permissions.subproject };
+        const subprojectPermissions = {project: permissions.project, subproject: permissions.subproject};
 
         // Check view permissions on project/subproject for assignee
         additionalActions = createAdditionalActionsforIntent({
@@ -326,10 +354,10 @@ export function createAdditionalActions(originalActions, permissions, project, s
       }
 
       case "project.intent.grantPermission": {
-        let projectPermissions = { project: permissions.project };
+        let projectPermissions = {project: permissions.project};
         const grantee = payload.grantee;
 
-        if (payload.intent !== "project.viewSummary") {
+        if (payload.intent !== "project.list") {
           projectPermissions.project = applyOriginalActions(projectPermissions, originalActions, true);
           additionalActions = createAdditionalActionsforIntent({
             permissions: projectPermissions,
@@ -342,10 +370,10 @@ export function createAdditionalActions(originalActions, permissions, project, s
       }
 
       case "subproject.intent.grantPermission": {
-        let subprojectPermissions = { project: permissions.project, subproject: permissions.subproject };
+        let subprojectPermissions = {project: permissions.project, subproject: permissions.subproject};
         const grantee = payload.grantee;
 
-        if (payload.intent !== "subproject.viewSummary") {
+        if (payload.intent !== "subproject.list") {
           subprojectPermissions.subproject = applyOriginalActions(subprojectPermissions, originalActions, true);
           additionalActions = createAdditionalActionsforIntent({
             permissions: subprojectPermissions,
@@ -358,31 +386,30 @@ export function createAdditionalActions(originalActions, permissions, project, s
         break;
       }
 
-      case "workflowitem.intent.grantPermission":
-        {
-          let wPermissions = {
-            project: permissions.project,
-            subproject: permissions.subproject,
-            workflowitem: permissions.workflowitem
-          };
-          const workflowitem = {
-            id: payload.workflowitem.id,
-            displayName: payload.workflowitem.displayName
-          };
-          const grantee = payload.grantee;
+      case "workflowitem.intent.grantPermission": {
+        let wPermissions = {
+          project: permissions.project,
+          subproject: permissions.subproject,
+          workflowitem: permissions.workflowitem
+        };
+        const workflowitem = {
+          id: payload.workflowitem.id,
+          displayName: payload.workflowitem.displayName
+        };
+        const grantee = payload.grantee;
 
-          if (payload.intent !== "workflowitem.viewSummary") {
-            wPermissions.workflowitem = applyOriginalActions(wPermissions, originalActions, true);
-            additionalActions = createAdditionalActionsforIntent({
-              permissions: wPermissions,
-              identity: grantee.id,
-              confirmingUser,
-              project,
-              subproject,
-              workflowitem
-            });
-          }
+        if (payload.intent !== "workflowitem.viewSummary") {
+          wPermissions.workflowitem = applyOriginalActions(wPermissions, originalActions, true);
+          additionalActions = createAdditionalActionsforIntent({
+            permissions: wPermissions,
+            identity: grantee.id,
+            confirmingUser,
+            project,
+            subproject,
+            workflowitem
+          });
         }
+      }
         break;
 
       default: {

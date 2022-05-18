@@ -1,12 +1,12 @@
-import { hasIntersection } from ".";
+import {hasIntersection} from ".";
 import logger from "../lib/logger";
-import { Event } from "../service/event";
+import {Event} from "../service/event";
 import Intent from "./intents";
 
 const requiredPermissions = new Map<Intent, Intent[]>([
   ["global.grantPermission", ["global.listPermissions"]],
   ["global.revokePermission", ["global.listPermissions"]],
-  ["global.createProject", ["project.viewSummary", "project.viewDetails"]],
+  ["global.createProject", ["project.list", "project.viewDetails"]],
   ["project.intent.grantPermission", ["project.intent.listPermissions"]],
   ["project.intent.revokePermission", ["project.intent.listPermissions"]],
   ["project.assign", ["project.viewDetails"]],
@@ -18,12 +18,12 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["subproject.assign", ["subproject.viewDetails"]],
   ["subproject.update", ["subproject.viewDetails"]],
 
-  ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.view"]],
-  ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.view"]],
+  ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.list"]],
+  ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.list"]],
   ["workflowitem.intent.grantPermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.intent.revokePermission", ["workflowitem.intent.listPermissions"]],
-  ["workflowitem.assign", ["workflowitem.view"]],
-  ["workflowitem.update", ["workflowitem.view"]],
+  ["workflowitem.assign", ["workflowitem.list"]],
+  ["workflowitem.update", ["workflowitem.list"]],
 ]);
 
 export function onlyAllowedData(event: Event, userIntents: Intent[]): Event | null {
@@ -32,7 +32,7 @@ export function onlyAllowedData(event: Event, userIntents: Intent[]): Event | nu
     const allowedIntents = requiredPermissions.get(observedIntent);
     const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
     if (!isAllowedToSee) {
-      logger.info({ params: { event } }, "User is not allowed to see the selected resource");
+      logger.info({params: {event}}, "User is not allowed to see the selected resource");
       return null;
     }
     return redactEvent(event, userIntents);
@@ -97,7 +97,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
     }
   } else {
     // No special handling needed
-    logger.debug({ event }, "No special handling for event needed");
+    logger.debug({event}, "No special handling for event needed");
   }
   return event;
 }

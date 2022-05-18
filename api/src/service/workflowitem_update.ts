@@ -1,18 +1,18 @@
 import logger from "lib/logger";
-import { VError } from "verror";
-import { config } from "../config";
-import { encryptWithKey } from "../lib/asymmetricCrypto";
-import { Ctx } from "../lib/ctx";
+import {VError} from "verror";
+import {config} from "../config";
+import {encryptWithKey} from "../lib/asymmetricCrypto";
+import {Ctx} from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
-import { StorageServiceClientI } from "./Client_storage_service.h";
-import { ConnToken } from "./conn";
+import {StorageServiceClientI} from "./Client_storage_service.h";
+import {ConnToken} from "./conn";
 import * as DocumentShare from "./document_share";
-import { BusinessEvent } from "./domain/business_event";
+import {BusinessEvent} from "./domain/business_event";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import * as GroupQuery from "./domain/organization/group_query";
-import { ServiceUser } from "./domain/organization/service_user";
+import {ServiceUser} from "./domain/organization/service_user";
 import * as UserQuery from "./domain/organization/user_query";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
@@ -20,7 +20,7 @@ import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemUpdate from "./domain/workflow/workflowitem_update";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
 import * as PublicKeyGet from "./public_key_get";
-import { store } from "./store";
+import {store} from "./store";
 
 export type RequestData = WorkflowitemUpdate.RequestData;
 
@@ -36,7 +36,7 @@ export async function updateWorkflowitem(
 ): Promise<Result.Type<void>> {
   const updateWorkflowitemResult = await Cache.withCache(conn, ctx, async (cache) => {
     logger.debug(
-      { projectId, subprojectId, workflowitemId, modification },
+      {projectId, subprojectId, workflowitemId, modification},
       "Updating workflowitem",
     );
     return WorkflowitemUpdate.updateWorkflowitem(
@@ -60,7 +60,7 @@ export async function updateWorkflowitem(
           return DocumentUpload.uploadDocument(
             ctx,
             serviceUser,
-            { fileName, documentBase64, id },
+            {fileName, documentBase64, id},
             {
               getAllDocumentReferences: async () => {
                 return DocumentGet.getAllDocumentReferences({
@@ -113,7 +113,7 @@ export async function updateWorkflowitem(
   if (Result.isErr(updateWorkflowitemResult)) {
     return new VError(updateWorkflowitemResult, "update workflowitem failed");
   }
-  const { newEvents } = updateWorkflowitemResult;
+  const {newEvents} = updateWorkflowitemResult;
 
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);
@@ -133,7 +133,7 @@ export async function updateWorkflowitem(
     modification.documents.length > 0
   ) {
     for (const doc of modification.documents) {
-      const users = workflowitem.permissions["workflowitem.view"];
+      const users = workflowitem.permissions["workflowitem.list"];
       if (users) {
         const organizations = await getOrganizations(users);
 
@@ -167,7 +167,7 @@ export async function updateWorkflowitem(
         return new VError(user, "failed to get user");
       }
 
-      const { organization } = user;
+      const {organization} = user;
 
       if (!organizations.includes(organization)) {
         organizations.push(organization);
