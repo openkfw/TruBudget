@@ -1,6 +1,6 @@
-import {hasIntersection} from ".";
+import { hasIntersection } from ".";
 import logger from "../lib/logger";
-import {Event} from "../service/event";
+import { Event } from "../service/event";
 import Intent from "./intents";
 
 const requiredPermissions = new Map<Intent, Intent[]>([
@@ -32,7 +32,7 @@ export function onlyAllowedData(event: Event, userIntents: Intent[]): Event | nu
     const allowedIntents = requiredPermissions.get(observedIntent);
     const isAllowedToSee = hasIntersection(allowedIntents, userIntents);
     if (!isAllowedToSee) {
-      logger.info({params: {event}}, "User is not allowed to see the selected resource");
+      logger.info({ params: { event } }, "User is not allowed to see the selected resource");
       return null;
     }
     return redactEvent(event, userIntents);
@@ -97,7 +97,7 @@ function redactEvent(event: Event, userIntents: Intent[]): Event {
     }
   } else {
     // No special handling needed
-    logger.debug({event}, "No special handling for event needed");
+    logger.debug({ event }, "No special handling for event needed");
   }
   return event;
 }

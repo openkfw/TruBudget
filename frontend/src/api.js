@@ -517,7 +517,7 @@ class Api {
   getWorkflowItem = (projectId, subprojectId, workflowitemId) => {
     return instance.get(
       removeEmptyQueryParams(
-        `/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
+        `/workflowitem.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
       )
     );
   };

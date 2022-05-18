@@ -1,19 +1,19 @@
-import {assert} from "chai";
+import { assert } from "chai";
 
-import {Ctx} from "lib/ctx";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import {NotAuthorized} from "../errors/not_authorized";
-import {NotFound} from "../errors/not_found";
-import {ServiceUser} from "../organization/service_user";
-import {Permissions} from "../permissions";
-import {Workflowitem} from "./workflowitem";
-import {getWorkflowitemDetails} from "./workflowitem_get_details";
-import {DocumentReference, UploadedDocument} from "../document/document";
+import { NotAuthorized } from "../errors/not_authorized";
+import { NotFound } from "../errors/not_found";
+import { ServiceUser } from "../organization/service_user";
+import { Permissions } from "../permissions";
+import { Workflowitem } from "./workflowitem";
+import { getWorkflowitemDetails } from "./workflowitem_get_details";
+import { DocumentReference, UploadedDocument } from "../document/document";
 
-const ctx: Ctx = {requestId: "", source: "test"};
+const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";
-const root: ServiceUser = {id: "root", groups: [], address};
-const alice: ServiceUser = {id: "alice", groups: [], address};
+const root: ServiceUser = { id: "root", groups: [], address };
+const alice: ServiceUser = { id: "alice", groups: [], address };
 const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
 

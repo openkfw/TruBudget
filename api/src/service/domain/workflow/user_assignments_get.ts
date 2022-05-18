@@ -1,5 +1,5 @@
-import {VError} from "verror";
-import {isEmpty} from "lib/emptyChecks";
+import { VError } from "verror";
+import { isEmpty } from "lib/emptyChecks";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
@@ -7,9 +7,9 @@ import * as Result from "../../../result";
 import * as UserAssignments from "./user_assignments";
 import * as UserRecord from "../organization/user_record";
 import Intent from "../../../authz/intents";
-import {ServiceUser} from "../organization/service_user";
-import {NotAuthorized} from "../errors/not_authorized";
-import {Ctx} from "lib/ctx";
+import { ServiceUser } from "../organization/service_user";
+import { NotAuthorized } from "../errors/not_authorized";
+import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
 
 export interface RequestData {
@@ -64,7 +64,7 @@ export async function getUserAssignments(
   const user = userResult;
 
   logger.trace(
-    {user, issuer},
+    { user, issuer },
     "Checking that revokee and issuer belong to the same organization",
   );
   if (user.organization !== issuerOrganization) {
@@ -89,7 +89,7 @@ export async function getUserAssignments(
 
   for await (const project of projects) {
     if (project.status === "closed") continue;
-    logger.trace({project}, "Looking for user assigments in projects");
+    logger.trace({ project }, "Looking for user assigments in projects");
     if (project.assignee === userId) {
       if (!isRoot && !Project.permits(project, issuer, projectIntents)) {
         hiddenAssignments.hasHiddenProjects = true;
@@ -102,11 +102,11 @@ export async function getUserAssignments(
 
     for await (const subproject of subprojects) {
       if (subproject.status === "closed") continue;
-      logger.trace({subproject}, "Looking for user assignments in subprojects");
+      logger.trace({ subproject }, "Looking for user assignments in subprojects");
       if (subproject.assignee === userId) {
         if (!isRoot && !Subproject.permits(subproject, issuer, subprojectIntents)) {
           hiddenAssignments.hasHiddenSubprojects = true;
-        } else assignedSubprojects.push({...subproject, projectId: project.id});
+        } else assignedSubprojects.push({ ...subproject, projectId: project.id });
       }
       const workflowitems = await repository.getWorkflowitems(project.id, subproject.id);
       if (Result.isErr(workflowitems)) {
@@ -115,7 +115,7 @@ export async function getUserAssignments(
 
       for await (const workflowitem of workflowitems) {
         if (workflowitem.status === "closed") continue;
-        logger.trace({workflowitem}, "Looking for user assignments in workflowitems");
+        logger.trace({ workflowitem }, "Looking for user assignments in workflowitems");
         if (workflowitem.assignee === userId) {
           if (!isRoot && !Workflowitem.permits(workflowitem, issuer, workflowitemIntents)) {
             hiddenAssignments.hasHiddenWorkflowitems = true;
@@ -141,7 +141,7 @@ export async function getUserAssignments(
   if (hasAssignments(userAssignments)) {
     return userAssignments;
   } else {
-    return {userId};
+    return { userId };
   }
 }
 

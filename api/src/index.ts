@@ -35,7 +35,6 @@ import * as ProjectPermissionRevokeAPI from "./project_permission_revoke";
 import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
-import * as ProjectViewHistoryAPIv2 from "./project_view_history_v2";
 import * as ProvisioningEndAPI from "./provisioning_end";
 import * as ProvisioningStatusAPI from "./provisioning_get";
 import * as ProvisioningStartAPI from "./provisioning_start";
@@ -59,7 +58,6 @@ import * as ProjectAssignService from "./service/project_assign";
 import * as ProjectCloseService from "./service/project_close";
 import * as ProjectCreateService from "./service/project_create";
 import * as ProjectGetService from "./service/project_get";
-import * as ProjectViewHistoryService from "./service/project_history_get";
 import * as ProjectListService from "./service/project_list";
 import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectPermissionGrantService from "./service/project_permission_grant";
@@ -144,6 +142,7 @@ import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
+import * as ProjectViewHistoryService from "./service/project_history_get";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -497,15 +496,10 @@ ProjectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
-  getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
-  getSubprojects: (ctx, user, projectId) =>
-    SubprojectListService.listSubprojects(db, ctx, user, projectId),
-});
-
-ProjectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
   getProjectHistory: (ctx, user, projectId, filter) =>
     ProjectViewHistoryService.getProjectHistory(db, ctx, user, projectId, filter),
 });
+
 
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, orga, amount, currencyCode) =>

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bf767620-3601-4c10-a8b9-7254df09706f",
+		"_postman_id": "f9dbb34e-3680-4036-adfe-b28cadb80968",
 		"name": "TruBudget",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -74,7 +74,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"method\": \"liststreamitems\",\n\t\"params\": [\"documents\"]\n}"
+							"raw": "{\n\t\"method\": \"liststreamitems\",\n\t\"params\": [\"offchain_documents\"]\n}"
 						},
 						"url": {
 							"raw": "{{rpcHost}}:{{rpcPort}}/",
@@ -144,7 +144,7 @@
 								{
 									"key": "",
 									"type": "file",
-									"src": "/C:/github/backup-fix/alpha.gz"
+									"src": "/C:/github/backup-fix/master.gz"
 								}
 							]
 						},
@@ -1202,7 +1202,7 @@
 								"body": {
 									"mode": "file",
 									"file": {
-										"src": "/C:/github/backup-fix/alpha.gz"
+										"src": "/C:/github/backup-fix/master.gz"
 									}
 								},
 								"url": {
@@ -2701,57 +2701,6 @@
 									}
 								],
 								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/subproject.viewHistory?projectId={{projectId}}&subprojectId={{subprojectId}}&offset=-30&limit=5",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"subproject.viewHistory"
-									],
-									"query": [
-										{
-											"key": "projectId",
-											"value": "{{projectId}}"
-										},
-										{
-											"key": "subprojectId",
-											"value": "{{subprojectId}}"
-										},
-										{
-											"key": "offset",
-											"value": "-30"
-										},
-										{
-											"key": "limit",
-											"value": "5"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "subproject.viewHistory.v2",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"url": {
 									"raw": "{{host}}:{{port}}{{base}}/project.viewHistory?projectId={{projectId}}",
 									"host": [
 										"{{host}}"
@@ -3221,45 +3170,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "project.viewHistory.v2",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{rootToken}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "{{host}}:{{port}}{{base}}/project.viewHistory?projectId={{projectId}}",
-									"host": [
-										"{{host}}"
-									],
-									"port": "{{port}}{{base}}",
-									"path": [
-										"project.viewHistory"
-									],
-									"query": [
-										{
-											"key": "projectId",
-											"value": "{{projectId}}"
-										}
-									]
-								}
-							},
-							"response": []
 						}
 					]
 				},
@@ -3288,7 +3198,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"reviewers\",\n\t\t\"userIds\": [\"pkleffmann\"]\n\t}\n}"
+									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"bb\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
 								},
 								"url": {
 									"raw": "{{host}}:{{port}}{{base}}/group.addUser",
@@ -3358,7 +3268,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"apiVersion\": \"1.0\",\n    \"data\": {\n        \"groupId\": \"reviewers\",\n        \"userIds\": [\n            \"pkleffmann\"\n        ]\n    }\n}"
+									"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"groupId\": \"bb\",\n\t\t\"userId\": \"asmith\"\n\t}\n}"
 								},
 								"url": {
 									"raw": "{{host}}:{{port}}{{base}}/group.removeUser",
@@ -4495,7 +4405,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"root\",\n\t\t\t\"password\": \"root-secret\"\n\t\t}\n\t}\n}"
+					"raw": "{\n\t\"apiVersion\": \"1.0\",\n\t\"data\": {\n\t\t\"user\": {\n\t\t\t\"id\": \"root\",\n\t\t\t\"password\": \"asdf\"\n\t\t}\n\t}\n}"
 				},
 				"url": {
 					"raw": "{{host}}:{{port}}{{base}}/user.authenticate",

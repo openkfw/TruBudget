@@ -1,11 +1,11 @@
-import {assert, expect} from "chai";
-import {Ctx} from "lib/ctx";
+import { assert, expect } from "chai";
+import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import {ServiceUser} from "../organization/service_user";
-import {Workflowitem} from "../workflow/workflowitem";
-import {DocumentReference, StoredDocument, UploadedDocument} from "./document";
+import { ServiceUser } from "../organization/service_user";
+import { Workflowitem } from "../workflow/workflowitem";
+import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
 import * as DocumentShared from "./document_shared";
-import {getDocument} from "./workflowitem_document_download";
+import { getDocument } from "./workflowitem_document_download";
 import VError from "verror";
 
 const ctx: Ctx = {
@@ -91,7 +91,7 @@ const baseWorkflowitem: Workflowitem = {
   description: "dummy",
   amountType: "N/A",
   documents: documentReferences,
-  permissions: {"workflowitem.list": ["alice"]},
+  permissions: { "workflowitem.list": ["alice"] },
   log: [],
   additionalData: {},
   workflowitemType: "general",
@@ -117,7 +117,7 @@ const repository = {
   getDocumentInfo: (docId) => {
     return Promise.resolve(undefined);
   },
-  getSecret: (docId, organization) => Promise.resolve({...secretPublished, docId}),
+  getSecret: (docId, organization) => Promise.resolve({ ...secretPublished, docId }),
   decryptWithKey: () => Promise.resolve(decryptedSecret),
   getPrivateKey: (organization) => Promise.resolve(privateKey),
 };
@@ -138,7 +138,7 @@ describe("Download documents attached to a workflowitem", () => {
     });
 
     assert.isTrue(Result.isOk(result));
-    expect(result).to.include({fileName: "storageFile"});
+    expect(result).to.include({ fileName: "storageFile" });
   });
 
   it("External Storage: Downloading existing documents works", async () => {
@@ -148,7 +148,7 @@ describe("Download documents attached to a workflowitem", () => {
       getDocumentInfo: () => Promise.resolve(documentInfoExternalStorage),
     });
     assert.isTrue(Result.isOk(result));
-    expect(result).to.include({fileName: "externalStorageFile"});
+    expect(result).to.include({ fileName: "externalStorageFile" });
   });
 
   it("Downloading existing documents does not work without workflowitem.list permission", async () => {
