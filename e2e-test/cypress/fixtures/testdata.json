@@ -5,12 +5,30 @@
   "assignee": "jdoe",
   "currency": "BRL",
   "permissions": {
-    "project.viewDetails": ["mstein", "jxavier"],
-    "project.viewSummary": ["mstein", "jxavier"],
-    "project.assign": ["mstein", "jxavier"],
-    "project.intent.listPermissions": ["mstein", "jxavier"],
-    "project.intent.grantPermission": ["mstein", "jxavier"],
-    "project.intent.revokePermission": ["mstein", "jxavier"]
+    "project.viewDetails": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.list": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.assign": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.listPermissions": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.grantPermission": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.revokePermission": [
+      "mstein",
+      "jxavier"
+    ]
   },
   "subprojects": [
     {
@@ -26,9 +44,15 @@
       ],
       "assignee": "jdoe",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"],
-        "subproject.intent.grantPermission": ["mstein"]
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ],
+        "subproject.intent.grantPermission": [
+          "mstein"
+        ]
       },
       "workflows": [
         {

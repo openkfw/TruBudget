@@ -1,27 +1,119 @@
-import { RequestGenericInterface } from "fastify";
+import { FastifyReply, FastifyRequest, RequestGenericInterface } from "fastify";
 import { AugmentedFastifyInstance } from "types";
-import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
+import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
-import { BusinessEvent } from "./service/domain/business_event";
+import { businessEventSchema } from "./service/domain/business_event";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import * as History from "./service/domain/workflow/historyFilter";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
+import Joi = require("joi");
+import VError = require("verror");
+
+const requestBodySchema = Joi.array().items({
+  entityId: safeIdSchema.required(),
+  entityType: Joi.valid("subproject").required(),
+  businessEvent: businessEventSchema.required(),
+  snapshot: Joi.object({
+    displayName: safeStringSchema.required(),
+  }).required(),
+});
+
+function validateRequestBody(body): Result.Type<SubprojectTraceEvent[]> {
+  const { error, value } = Joi.validate(body, requestBodySchema);
+  return !error ? value : error;
+}
+
+/**
+ * If no filter option is provided the return value is undefined
+ */
+const createFilter = (reply: FastifyReply, request: FastifyRequest): History.Filter | undefined => {
+  const { publisher, startAt, endAt, eventType } = request.query as Querystring;
+  const noFilterSet = !publisher && !startAt && !endAt && !eventType;
+  if (noFilterSet) return;
+
+  if (publisher !== undefined) {
+    if (!isNonemptyString(publisher)) {
+      const message = "if present, the query parameter `publisher` must be non-empty string";
+      reply.status(400).send({
+        apiVersion: "1.0",
+        error: {
+          code: 400,
+          message,
+        },
+      });
+      request.log.error({ err: message }, "Invalid request body");
+    }
+  }
+
+  // ISO Timestamp example: 01.01.2020 or 2019-12-31T23:00:00.000Z
+  if (startAt !== undefined) {
+    const startAtDate = new Date(startAt);
+    if (isNaN(startAtDate.getTime())) {
+      const message = "if present, the query parameter `startAt` must be a valid ISO timestamp";
+      reply.status(400).send({
+        apiVersion: "1.0",
+        error: {
+          code: 400,
+          message,
+        },
+      });
+      request.log.error({ err: message }, "Invalid request body");
+    }
+  }
+
+  if (endAt !== undefined) {
+    const endAtDate = new Date(endAt);
+    if (isNaN(endAtDate.getTime())) {
+      const message = "if present, the query parameter `endAt` must be a valid ISO timestamp";
+      reply.status(400).send({
+        apiVersion: "1.0",
+        error: {
+          code: 400,
+          message,
+        },
+      });
+      request.log.error({ err: message }, "Invalid request body");
+    }
+  }
+
+  if (eventType !== undefined) {
+    if (!isNonemptyString(eventType)) {
+      const message = "if present, the query parameter `eventType` must be non-empty string";
+      reply.status(400).send({
+        apiVersion: "1.0",
+        error: {
+          code: 400,
+          message,
+        },
+      });
+      request.log.error({ err: message }, "Invalid request body");
+    }
+  }
+
+  return {
+    publisher,
+    startAt,
+    endAt,
+    eventType,
+    // Make typescript happy - noFilterSet condition exists
+  } as History.Filter;
+};
 
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
     schema: {
-      deprecated: true,
       description:
-        "View the history of a given project (filtered by what the user is allowed to see).",
+        "View the history of a given subproject (filtered by what the user is allowed to see).",
       tags: ["subproject"],
-      summary: "View history",
+      summary: "View subproject history",
       querystring: {
         type: "object",
         properties: {
@@ -45,20 +137,22 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
           },
         },
       },
-      security: [
-        {
-          bearerToken: [],
-        },
-      ],
+      security: [{ bearerToken: [] }],
       response: {
         200: {
-          description: "successful response",
+          description: "changes related to the given subproject in chronological order",
           type: "object",
           properties: {
             apiVersion: { type: "string", example: "1.0" },
             data: {
               type: "object",
               properties: {
+                historyItemsCount: {
+                  type: "number",
+                  description:
+                    "Total number of history items (greater or equal to the number of returned items)",
+                  example: 10,
+                },
                 events: {
                   type: "array",
                   items: {
@@ -86,15 +180,11 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
                         type: "object",
                         additionalProperties: true,
                         properties: {
-                          displayName: { type: "string", example: "townproject" },
+                          displayName: { type: "string", example: "Build a town" },
                         },
                       },
                     },
                   },
-                },
-                historyItemsCount: {
-                  type: "number",
-                  example: 10,
                 },
               },
             },
@@ -106,41 +196,25 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
-interface ExposedEvent {
-  entityId: string;
-  entityType: "subproject" | "workflowitem";
-  businessEvent: BusinessEvent;
-  snapshot: {
-    displayName?: string;
-  };
-}
-
 interface Service {
-  getSubproject(
+  getSubprojectHistory(
     ctx: Ctx,
     user: ServiceUser,
     projectId: Project.Id,
     subprojectId: Subproject.Id,
-  ): Promise<Result.Type<Subproject.Subproject>>;
-  getWorkflowitems(
-    ctx: Ctx,
-    user: ServiceUser,
-    projectId: Project.Id,
-    subprojectId: Subproject.Id,
-  ): Promise<Result.Type<Workflowitem.ScrubbedWorkflowitem[]>>;
+    filter?: History.Filter,
+  ): Promise<Result.Type<SubprojectTraceEvent[]>>;
 }
 
-interface Request extends RequestGenericInterface {
-  Querystring: {
-    projectId: string;
-    subprojectId: string;
-    offset?: string;
-    limit?: string;
-    startAt?: string;
-    endAt?: string;
-    publisher?: string;
-    eventType?: string;
-  };
+interface Querystring extends RequestGenericInterface {
+  projectId: string;
+  subprojectId: string;
+  offset?: string;
+  limit?: string;
+  startAt?: string;
+  endAt?: string;
+  publisher?: string;
+  eventType?: string;
 }
 
 export function addHttpHandler(
@@ -148,7 +222,7 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get<Request>(
+  server.get<{ Querystring: Querystring }>(
     `${urlPrefix}/subproject.viewHistory`,
     mkSwaggerSchema(server),
     async (request, reply) => {
@@ -226,37 +300,27 @@ export function addHttpHandler(
         }
       }
 
-      try {
-        // Get subproject log
-        const subprojectResult = await service.getSubproject(ctx, user, projectId, subprojectId);
-        if (Result.isErr(subprojectResult)) {
-          throw new VError(subprojectResult, "subproject.viewHistory failed");
-        }
-        const subproject: Subproject.Subproject = subprojectResult;
+      const filter = createFilter(reply, request);
 
-        // Get log of workflowitems
-        request.log.debug({ subproject }, "Getting Workflowitems of subproject");
-        const workflowitemsResult = await service.getWorkflowitems(
+      try {
+        // Get all Events in subproject stream
+        const eventsResult = await service.getSubprojectHistory(
           ctx,
           user,
           projectId,
           subprojectId,
+          filter,
         );
-        if (Result.isErr(workflowitemsResult)) {
-          throw new VError(workflowitemsResult, "subproject.viewHistory failed");
+        if (Result.isErr(eventsResult)) {
+          throw new VError(eventsResult, "subproject.viewHistory failed");
         }
-        const workflowitems: Workflowitem.ScrubbedWorkflowitem[] = workflowitemsResult;
 
-        // Concat logs of subproject and workflowitems and sort them
-        const events: ExposedEvent[] = subproject.log;
-        for (const workflowitem of workflowitems) {
-          if (!workflowitem.isRedacted) {
-            events.push(...workflowitem.log);
-          }
+        const eventsResultVerified = validateRequestBody(eventsResult);
+        if (Result.isErr(eventsResultVerified)) {
+          throw new VError(eventsResultVerified, "subproject.viewHistory failed");
         }
-        events.sort(byEventTime);
+        const events: SubprojectTraceEvent[] = eventsResultVerified;
 
-        // Handle offset and limit
         const offsetIndex = offset < 0 ? Math.max(0, events.length + offset) : offset;
         const slice = events.slice(
           offsetIndex,
@@ -267,8 +331,8 @@ export function addHttpHandler(
         const body = {
           apiVersion: "1.0",
           data: {
-            events: slice,
             historyItemsCount: events.length,
+            events: slice,
           },
         };
         reply.status(code).send(body);
@@ -279,12 +343,4 @@ export function addHttpHandler(
       }
     },
   );
-}
-
-function byEventTime(a: ExposedEvent, b: ExposedEvent): -1 | 0 | 1 {
-  const timeA = new Date(a.businessEvent.time);
-  const timeB = new Date(b.businessEvent.time);
-  if (timeA < timeB) return -1;
-  if (timeA > timeB) return 1;
-  return 0;
 }

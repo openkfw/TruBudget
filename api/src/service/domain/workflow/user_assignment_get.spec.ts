@@ -1,20 +1,20 @@
-import { assert } from "chai";
-import { Ctx } from "lib/ctx";
-import { VError } from "verror";
+import {assert} from "chai";
+import {Ctx} from "lib/ctx";
+import {VError} from "verror";
 import * as Result from "../../../result";
-import { NotAuthorized } from "../errors/not_authorized";
-import { ServiceUser } from "../organization/service_user";
+import {NotAuthorized} from "../errors/not_authorized";
+import {ServiceUser} from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
-import { getUserAssignments } from "./user_assignments_get";
+import {getUserAssignments} from "./user_assignments_get";
 
-const ctx: Ctx = { requestId: "", source: "test" };
+const ctx: Ctx = {requestId: "", source: "test"};
 const address = "address";
-const root: ServiceUser = { id: "root", groups: [], address };
-const admin: ServiceUser = { id: "admin", groups: [], address };
-const member: ServiceUser = { id: "member", groups: [], address };
+const root: ServiceUser = {id: "root", groups: [], address};
+const admin: ServiceUser = {id: "admin", groups: [], address};
+const member: ServiceUser = {id: "member", groups: [], address};
 const orgaA = "orgaA";
 const otherOrganization = "otherOrganization";
 
@@ -94,7 +94,7 @@ const baseRepository = {
 
 describe("Get user assignments: authorization and conditions", () => {
   it("The root user can always view user assignments within the same organization", async () => {
-    const result = await getUserAssignments(ctx, member.id, root, orgaA, { ...baseRepository });
+    const result = await getUserAssignments(ctx, member.id, root, orgaA, {...baseRepository});
 
     assert.isTrue(Result.isOk(result));
   });
@@ -112,7 +112,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const result = await getUserAssignments(ctx, member.id, admin, orgaA, {
       ...baseRepository,
       getAllProjects: async () => {
-        return [{ ...baseProject[0] }];
+        return [{...baseProject[0]}];
       },
     });
 
@@ -123,7 +123,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenProjects === true,
+      userAssignments.hiddenAssignments.hasHiddenProjects === true,
     );
   });
 
@@ -131,7 +131,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const result = await getUserAssignments(ctx, member.id, admin, orgaA, {
       ...baseRepository,
       getSubprojects: async () => {
-        return [{ ...baseSubproject[0] }];
+        return [{...baseSubproject[0]}];
       },
     });
 
@@ -142,7 +142,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenSubprojects === true,
+      userAssignments.hiddenAssignments.hasHiddenSubprojects === true,
     );
   });
 
@@ -150,7 +150,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const result = await getUserAssignments(ctx, member.id, admin, orgaA, {
       ...baseRepository,
       getWorkflowitems: async () => {
-        return [{ ...baseWorkflowitem[0] }];
+        return [{...baseWorkflowitem[0]}];
       },
     });
 
@@ -161,7 +161,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenWorkflowitems === true,
+      userAssignments.hiddenAssignments.hasHiddenWorkflowitems === true,
     );
   });
 
@@ -173,7 +173,7 @@ describe("Get user assignments: authorization and conditions", () => {
           {
             ...baseProject[0],
             permissions: {
-              "project.viewSummary": [admin.id],
+              "project.list": [admin.id],
               "project.viewDetails": [admin.id],
             },
           },
@@ -188,8 +188,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenProjects === false &&
-        userAssignments.projects !== undefined,
+      userAssignments.hiddenAssignments.hasHiddenProjects === false &&
+      userAssignments.projects !== undefined,
     );
   });
 
@@ -201,7 +201,7 @@ describe("Get user assignments: authorization and conditions", () => {
           {
             ...baseSubproject[0],
             permissions: {
-              "subproject.viewSummary": [admin.id],
+              "subproject.list": [admin.id],
               "subproject.viewDetails": [admin.id],
             },
           },
@@ -216,8 +216,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenSubprojects === false &&
-        userAssignments.subprojects !== undefined,
+      userAssignments.hiddenAssignments.hasHiddenSubprojects === false &&
+      userAssignments.subprojects !== undefined,
     );
   });
 
@@ -229,7 +229,7 @@ describe("Get user assignments: authorization and conditions", () => {
           {
             ...baseWorkflowitem[0],
             permissions: {
-              "workflowitem.view": [admin.id],
+              "workflowitem.list": [admin.id],
             },
           },
         ];
@@ -243,8 +243,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenWorkflowitems === false &&
-        userAssignments.workflowitems !== undefined,
+      userAssignments.hiddenAssignments.hasHiddenWorkflowitems === false &&
+      userAssignments.workflowitems !== undefined,
     );
   });
 });

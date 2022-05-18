@@ -1,15 +1,16 @@
-import { Ctx } from "lib/ctx";
+import {Ctx} from "lib/ctx";
 import * as Result from "../../../result";
-import { NotAuthorized } from "../errors/not_authorized";
-import { NotFound } from "../errors/not_found";
-import { ServiceUser } from "../organization/service_user";
+import {NotAuthorized} from "../errors/not_authorized";
+import {NotFound} from "../errors/not_found";
+import {ServiceUser} from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocument from "../document/document";
+import {DocumentReference} from "../document/document";
 import logger from "lib/logger";
-import { DocumentReference } from "../document/document";
 
 interface Repository {
   getWorkflowitem(): Promise<Result.Type<Workflowitem.Workflowitem>>;
+
   downloadDocument(docId: string): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>;
 }
 
@@ -25,11 +26,11 @@ export async function getWorkflowitemDetails(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  logger.trace({ user }, "Checking user authorization");
+  logger.trace({user}, "Checking user authorization");
   if (user.id !== "root") {
-    const intent = "workflowitem.view";
+    const intent = "workflowitem.list";
     if (!Workflowitem.permits(workflowitem, user, [intent])) {
-      return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
+      return new NotAuthorized({ctx, userId: user.id, intent, target: workflowitem});
     }
   }
 
@@ -37,7 +38,7 @@ export async function getWorkflowitemDetails(
     workflowitem.documents,
     repository,
   );
-  return { ...workflowitem, documents: documentsWithAvailability };
+  return {...workflowitem, documents: documentsWithAvailability};
 }
 
 async function setDocumentAvailability(
@@ -48,7 +49,7 @@ async function setDocumentAvailability(
 
   for (const doc of documents) {
     const result = await repository.downloadDocument(doc.id);
-    docsWithAvailability.push({ ...doc, available: Result.isOk(result) });
+    docsWithAvailability.push({...doc, available: Result.isOk(result)});
   }
 
   return docsWithAvailability;

@@ -80,8 +80,10 @@ import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
-import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
-import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
+import * as SubprojectProjectedBudgetDeleteService
+  from "./service/subproject_projected_budget_delete";
+import * as SubprojectProjectedBudgetUpdateService
+  from "./service/subproject_projected_budget_update";
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserAuthenticateService from "./service/user_authenticate";
@@ -117,7 +119,6 @@ import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
 import * as SubprojectUpdateAPI from "./subproject_update";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as SubprojectViewHistoryAPI from "./subproject_view_history";
-import * as SubprojectViewHistoryAPIv2 from "./subproject_view_history_v2";
 import ensureStorageServiceUrlPublished from "./system/ensureOrganizationUrlPublished";
 import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
 import * as UserAuthenticateAPI from "./user_authenticate";
@@ -564,13 +565,6 @@ SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 SubprojectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
-  getSubproject: (ctx, user, projectId, subprojectId) =>
-    SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
-  getWorkflowitems: (ctx, user, projectId, subprojectId) =>
-    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
-});
-
-SubprojectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
   getSubprojectHistory: (ctx, user, projectId, subprojectId, filter) =>
     SubprojectViewHistoryService.getSubprojectHistory(
       db,
@@ -888,7 +882,7 @@ server.listen(port, "0.0.0.0", async (err) => {
         );
         return false;
       }))
-  ) {
+    ) {
     await timeout(retryIntervalMs);
   }
   logger.debug({ multichainClient, organization }, "Organization stream present");

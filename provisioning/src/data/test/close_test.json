@@ -11,12 +11,24 @@
     }
   ],
   "permissions": {
-    "project.viewDetails": ["mstein"],
-    "project.viewSummary": ["mstein"],
-    "project.close": ["mstein"],
-    "project.intent.listPermissions": ["mstein"],
-    "project.intent.grantPermission": ["mstein"],
-    "project.intent.revokePermission": ["mstein"]
+    "project.viewDetails": [
+      "mstein"
+    ],
+    "project.list": [
+      "mstein"
+    ],
+    "project.close": [
+      "mstein"
+    ],
+    "project.intent.listPermissions": [
+      "mstein"
+    ],
+    "project.intent.grantPermission": [
+      "mstein"
+    ],
+    "project.intent.revokePermission": [
+      "mstein"
+    ]
   },
   "subprojects": [
     {
@@ -33,9 +45,15 @@
       ],
       "assignee": "mstein",
       "permissions": {
-        "subproject.viewSummary": ["mstein"],
-        "subproject.viewDetails": ["mstein"],
-        "subproject.close": ["mstein"]
+        "subproject.list": [
+          "mstein"
+        ],
+        "subproject.viewDetails": [
+          "mstein"
+        ],
+        "subproject.close": [
+          "mstein"
+        ]
       },
       "workflows": []
     },
@@ -53,9 +71,18 @@
       ],
       "assignee": "mstein",
       "permissions": {
-        "subproject.viewSummary": ["mstein", "jdoe"],
-        "subproject.viewDetails": ["mstein", "jdoe"],
-        "subproject.close": ["mstein", "jdoe"]
+        "subproject.list": [
+          "mstein",
+          "jdoe"
+        ],
+        "subproject.viewDetails": [
+          "mstein",
+          "jdoe"
+        ],
+        "subproject.close": [
+          "mstein",
+          "jdoe"
+        ]
       },
       "workflows": []
     }

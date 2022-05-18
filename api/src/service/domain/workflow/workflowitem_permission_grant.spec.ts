@@ -1,24 +1,24 @@
-import { assert } from "chai";
-import { Ctx } from "lib/ctx";
+import {assert} from "chai";
+import {Ctx} from "lib/ctx";
 import * as Result from "../../../result";
-import { BusinessEvent } from "../business_event";
-import { NotAuthorized } from "../errors/not_authorized";
-import { NotFound } from "../errors/not_found";
+import {BusinessEvent} from "../business_event";
+import {NotAuthorized} from "../errors/not_authorized";
+import {NotFound} from "../errors/not_found";
 import * as Group from "../organization/group";
-import { ServiceUser } from "../organization/service_user";
+import {ServiceUser} from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import { Permissions } from "../permissions";
+import {Permissions} from "../permissions";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemPermissionGrant from "./workflowitem_permission_grant";
 
-const ctx: Ctx = { requestId: "", source: "test" };
+const ctx: Ctx = {requestId: "", source: "test"};
 const address = "address";
-const executingUser: ServiceUser = { id: "mstein", groups: [], address };
-const testUser: ServiceUser = { id: "testUser", groups: [], address };
+const executingUser: ServiceUser = {id: "mstein", groups: [], address};
+const testUser: ServiceUser = {id: "testUser", groups: [], address};
 const projectId = "testProject";
 
 const permissions: Permissions = {
-  "workflowitem.view": [],
+  "workflowitem.list": [],
   "workflowitem.assign": [],
   "workflowitem.intent.revokePermission": ["testUser"],
   "workflowitem.intent.grantPermission": ["mstein"],
@@ -126,7 +126,7 @@ describe("grant workflowitem permissions", () => {
       amountType: "N/A",
       description: "",
       documents: [],
-      permissions: { "workflowitem.intent.grantPermission": [] },
+      permissions: {"workflowitem.intent.grantPermission": []},
       log: [],
       additionalData: {},
     };
@@ -137,7 +137,7 @@ describe("grant workflowitem permissions", () => {
       testworkflowitem.subprojectId,
       testworkflowitem.id,
       testUser.id,
-      "workflowitem.view",
+      "workflowitem.list",
       {
         getWorkflowitem: async () => workflowitemWithoutPermission,
         userExists: async (user) => false,
@@ -161,7 +161,7 @@ describe("grant workflowitem permission: preconditions", () => {
       testworkflowitem.subprojectId,
       testworkflowitem.id,
       testUser.id,
-      "workflowitem.view",
+      "workflowitem.list",
       {
         getWorkflowitem: async () => new Error("some error"),
         userExists: async (user) => false,
@@ -176,7 +176,7 @@ describe("grant workflowitem permission: preconditions", () => {
   });
   it("No changes to existing permissions emit no new events", async () => {
     const existingPermissions: Permissions = {
-      "workflowitem.view": ["testUser"],
+      "workflowitem.list": ["testUser"],
       "workflowitem.assign": [],
       "workflowitem.intent.grantPermission": ["mstein"],
     };
@@ -191,7 +191,7 @@ describe("grant workflowitem permission: preconditions", () => {
       testworkflowitem.subprojectId,
       testworkflowitem.id,
       testUser.id,
-      "workflowitem.view",
+      "workflowitem.list",
       {
         getWorkflowitem: async () => baseWorkflowitem,
         userExists: async (user) => false,

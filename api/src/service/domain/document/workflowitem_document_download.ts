@@ -1,18 +1,17 @@
-import { Ctx } from "lib/ctx";
+import {Ctx} from "lib/ctx";
 import logger from "lib/logger";
-import { config } from "../../../config";
+import {config} from "../../../config";
 import * as Result from "../../../result";
-import { NotAuthorized } from "../errors/not_authorized";
-import { NotFound } from "../errors/not_found";
-import { ServiceUser } from "../organization/service_user";
+import {NotAuthorized} from "../errors/not_authorized";
+import {NotFound} from "../errors/not_found";
+import {ServiceUser} from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
-import { StoredDocument } from "./document";
-import { UploadedDocument } from "./document";
 import * as DocumentShared from "./document_shared";
-
+import {StoredDocument} from "./document";
 import VError = require("verror");
 
 type Base64String = string;
+
 interface DocumentStorageServiceResponse {
   id: string;
   fileName: string;
@@ -21,11 +20,17 @@ interface DocumentStorageServiceResponse {
 
 interface Repository {
   getWorkflowitem(workflowitemId): Promise<Result.Type<Workflowitem.Workflowitem>>;
+
   getDocumentInfo(docId: string): Promise<Result.Type<StoredDocument | undefined>>;
+
   getSecret(docId, organization): Promise<Result.Type<DocumentShared.SecretPublished>>;
+
   decryptWithKey(secret, privateKey): Promise<Result.Type<string>>;
+
   getPrivateKey(organization): Promise<Result.Type<string>>;
+
   getDocumentFromStorage(id, secret): Promise<Result.Type<DocumentStorageServiceResponse>>;
+
   getDocumentFromExternalStorage(
     id,
     secret,
@@ -108,7 +113,7 @@ export async function getDocument(
   workflowitemId: string,
   documentId: string,
   repository: Repository,
-): Promise<Result.Type<UploadedDocument>> {
+): Promise<Result.Type<any>> {
   logger.trace("Fetching document: ", documentId, "...");
 
   // check for permissions etc
@@ -117,9 +122,9 @@ export async function getDocument(
     return workflowitem;
   }
 
-  const intent = "workflowitem.view";
+  const intent = "workflowitem.list";
   if (!Workflowitem.permits(workflowitem, user, [intent])) {
-    return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
+    return new NotAuthorized({ctx, userId: user.id, intent, target: workflowitem});
   }
 
   // Only return if document has relation to the workflowitem

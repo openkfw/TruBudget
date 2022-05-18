@@ -1,6 +1,6 @@
-import { toAmountString } from "../support/helper";
+import {toAmountString} from "../support/helper";
 
-describe("Subproject Analytics", function() {
+describe("Subproject Analytics", function () {
   const executingUser = "mstein";
   const otherUser = "jdoe";
 
@@ -54,19 +54,19 @@ describe("Subproject Analytics", function() {
 
   before(() => {
     cy.login();
-    cy.createProject(project.displayName, project.description, project.projectedBudgets).then(({ id }) => {
+    cy.createProject(project.displayName, project.description, project.projectedBudgets).then(({id}) => {
       project.id = id;
       cy.createSubproject(project.id, subproject.displayName, subproject.currency, {
         projectedBudgets: subproject.projectedBudgets
-      }).then(({ id }) => {
+      }).then(({id}) => {
         subproject.id = id;
         cy.createWorkflowitem(project.id, subproject.id, allocatedWorkflowitem.displayName, {
           ...allocatedWorkflowitem
-        }).then(({ id }) => {
+        }).then(({id}) => {
           allocatedWorkflowitem.id = id;
           cy.createWorkflowitem(project.id, subproject.id, disbursedWorkflowitem.displayName, {
             ...disbursedWorkflowitem
-          }).then(({ id }) => {
+          }).then(({id}) => {
             disbursedWorkflowitem.id = id;
             // Create the workflowitem with status "closed" instead (currently bugged)
             cy.closeWorkflowitem(
@@ -87,7 +87,7 @@ describe("Subproject Analytics", function() {
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login();
     cy.visit(`/projects/${project.id}/${subproject.id}`);
   });
@@ -96,7 +96,7 @@ describe("Subproject Analytics", function() {
     return (projectedBudget / totalBudget) * 100;
   }
 
-  it("The analytics-screen can be opened and closed", function() {
+  it("The analytics-screen can be opened and closed", function () {
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
@@ -104,7 +104,7 @@ describe("Subproject Analytics", function() {
     cy.get("[data-test=close-analytics-button]").should("be.visible");
   });
 
-  it("The analytics-charts are calculated correctly", function() {
+  it("The analytics-charts are calculated correctly", function () {
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
@@ -134,7 +134,7 @@ describe("Subproject Analytics", function() {
     );
   });
 
-  it("Without view permission of every workflowitem of all subprojects the user can see the analytics-charts are not visible", function() {
+  it("Without view permission of every workflowitem of all subprojects the user can see the analytics-charts are not visible", function () {
     cy.grantProjectPermission(project.id, "project.viewDetails", otherUser);
     cy.grantWorkflowitemPermission(
       project.id,
@@ -156,14 +156,14 @@ describe("Subproject Analytics", function() {
       project.id,
       subproject.id,
       allocatedWorkflowitem.id,
-      "workflowitem.view",
+      "workflowitem.list",
       executingUser
     );
 
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
-      .click({ force: true });
+      .click({force: true});
 
     cy.get("[data-test=number-chart-total-budget]").should("not.exist");
     cy.get("[data-test=projected-budget-table]").should("be.visible");
@@ -175,12 +175,12 @@ describe("Subproject Analytics", function() {
       project.id,
       subproject.id,
       allocatedWorkflowitem.id,
-      "workflowitem.view",
+      "workflowitem.list",
       executingUser
     );
   });
 
-  it("Without view permission of every subproject the analytics calculate all budgets using all subprojects seen", function() {
+  it("Without view permission of every subproject the analytics calculate all budgets using all subprojects seen", function () {
     let notListedSubprojectId;
     // Create subproject
     cy.createSubproject(project.id, "test", "EUR", {
@@ -191,10 +191,10 @@ describe("Subproject Analytics", function() {
           currencyCode: "EUR"
         }
       ]
-    }).then(({ id }) => {
+    }).then(({id}) => {
       notListedSubprojectId = id;
       // Revoke subproject view permissions
-      cy.revokeSubprojectPermission(project.id, notListedSubprojectId, "subproject.viewSummary", executingUser);
+      cy.revokeSubprojectPermission(project.id, notListedSubprojectId, "subproject.list", executingUser);
       cy.revokeSubprojectPermission(project.id, notListedSubprojectId, "subproject.viewDetails", executingUser);
 
       // Open dialog
@@ -210,11 +210,11 @@ describe("Subproject Analytics", function() {
     });
   });
 
-  it("Changing the currency converts all calculated amounts into the new currency", function() {
+  it("Changing the currency converts all calculated amounts into the new currency", function () {
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
-      .click({ force: true });
+      .click({force: true});
     cy.get("[data-test=select-currencies]")
       .should("be.visible")
       .click();

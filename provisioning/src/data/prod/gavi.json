@@ -22,7 +22,7 @@
       "ihealth",
       "ahealth"
     ],
-    "project.viewSummary": [
+    "project.list": [
       "msiddiqui",
       "aproducer",
       "kdeliverer",
@@ -66,7 +66,7 @@
       ],
       "assignee": "msiddiqui",
       "permissions": {
-        "subproject.viewSummary": [
+        "subproject.list": [
           "msiddiqui",
           "aproducer",
           "kdeliverer",
@@ -124,7 +124,7 @@
           "status": "closed",
           "assignee": "msiddiqui",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "aproducer"
             ],
@@ -159,7 +159,7 @@
           "status": "closed",
           "assignee": "aproducer",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "aproducer",
               "kdeliverer"
@@ -196,7 +196,7 @@
           "status": "closed",
           "assignee": "kdeliverer",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "ccustoms",
               "kdeliverer"
@@ -233,7 +233,7 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "sdistributor",
               "ccustoms"
@@ -267,7 +267,7 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "sdistributor"
             ],
@@ -298,7 +298,7 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "sdistributor",
               "msiddiqui",
               "fhealth"
@@ -334,7 +334,7 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "sdistributor",
               "msiddiqui",
               "ihealth"
@@ -370,7 +370,7 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "sdistributor",
               "msiddiqui",
               "ahealth"
@@ -417,7 +417,7 @@
       ],
       "assignee": "msiddiqui",
       "permissions": {
-        "subproject.viewSummary": [
+        "subproject.list": [
           "msiddiqui",
           "aproducer",
           "kdeliverer",
@@ -475,7 +475,7 @@
           "status": "closed",
           "assignee": "msiddiqui",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "aproducer"
             ],
@@ -510,7 +510,7 @@
           "status": "closed",
           "assignee": "aproducer",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "aproducer",
               "kdeliverer"
@@ -547,7 +547,7 @@
           "status": "closed",
           "assignee": "kdeliverer",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "ccustoms",
               "kdeliverer"
@@ -584,7 +584,7 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "sdistributor",
               "ccustoms"
@@ -618,7 +618,7 @@
           "status": "closed",
           "assignee": "sdistributor",
           "permissions": {
-            "workflowitem.view": [
+            "workflowitem.list": [
               "msiddiqui",
               "sdistributor"
             ],

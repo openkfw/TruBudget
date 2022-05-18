@@ -12,12 +12,30 @@
     }
   ],
   "permissions": {
-    "project.viewDetails": ["mstein", "mmoh"],
-    "project.viewSummary": ["mstein", "mmoh"],
-    "project.assign": ["mstein", "mmoh"],
-    "project.intent.listPermissions": ["mstein", "mmoh"],
-    "project.intent.grantPermission": ["mstein", "mmoh"],
-    "project.intent.revokePermission": ["mstein", "mmoh"]
+    "project.viewDetails": [
+      "mstein",
+      "mmoh"
+    ],
+    "project.list": [
+      "mstein",
+      "mmoh"
+    ],
+    "project.assign": [
+      "mstein",
+      "mmoh"
+    ],
+    "project.intent.listPermissions": [
+      "mstein",
+      "mmoh"
+    ],
+    "project.intent.grantPermission": [
+      "mstein",
+      "mmoh"
+    ],
+    "project.intent.revokePermission": [
+      "mstein",
+      "mmoh"
+    ]
   },
   "subprojects": [
     {
@@ -34,8 +52,12 @@
       ],
       "assignee": "mmoh",
       "permissions": {
-        "subproject.viewSummary": ["mmoh"],
-        "subproject.viewDetails": ["mmoh"]
+        "subproject.list": [
+          "mmoh"
+        ],
+        "subproject.viewDetails": [
+          "mmoh"
+        ]
       },
       "workflows": [
         {
@@ -43,7 +65,9 @@
           "assignee": "mmoh",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -51,7 +75,9 @@
           "assignee": "mmoh",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -59,7 +85,9 @@
           "assignee": "jport",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -67,7 +95,9 @@
           "assignee": "iport",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -75,7 +105,9 @@
           "assignee": "mmoh",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -83,7 +115,9 @@
           "assignee": "dhospital",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -91,7 +125,9 @@
           "assignee": "dhospital",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         }
       ]
@@ -110,8 +146,12 @@
       ],
       "assignee": "mmoh",
       "permissions": {
-        "subproject.viewSummary": ["mmoh"],
-        "subproject.viewDetails": ["mmoh"]
+        "subproject.list": [
+          "mmoh"
+        ],
+        "subproject.viewDetails": [
+          "mmoh"
+        ]
       },
       "workflows": [
         {
@@ -119,7 +159,9 @@
           "assignee": "mmoh",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -127,7 +169,9 @@
           "assignee": "mmoh",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -135,7 +179,9 @@
           "assignee": "jport",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -143,7 +189,9 @@
           "assignee": "iport",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -151,7 +199,9 @@
           "assignee": "mmoh",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -159,7 +209,9 @@
           "assignee": "dhospital",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         },
         {
@@ -167,7 +219,9 @@
           "assignee": "dhospital",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["mmoh"]
+            "workflowitem.list": [
+              "mmoh"
+            ]
           }
         }
       ]

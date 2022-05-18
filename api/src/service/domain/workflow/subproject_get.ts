@@ -27,7 +27,7 @@ export async function getSubproject(
 
   logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
-    const intents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
+    const intents: Intent[] = ["subproject.list", "subproject.viewDetails"];
     if (!Subproject.permits(subproject, user, intents)) {
       return new NotAuthorized({ ctx, userId: user.id, intent: intents, target: subproject });
     }
@@ -38,12 +38,12 @@ export async function getSubproject(
 
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
-  ["subproject_created", ["subproject.viewSummary", "subproject.viewDetails"]],
+  ["subproject_created", ["subproject.list", "subproject.viewDetails"]],
   ["subproject_permission_granted", ["subproject.intent.listPermissions"]],
   ["subproject_permission_revoked", ["subproject.intent.listPermissions"]],
   ["subproject_assigned", ["subproject.viewDetails"]],
   ["subproject_updated", ["subproject.viewDetails"]],
-  ["subproject_closed", ["subproject.viewSummary", "subproject.viewDetails"]],
+  ["subproject_closed", ["subproject.list", "subproject.viewDetails"]],
   ["subproject_projected_budget_updated", ["subproject.viewDetails"]],
   ["subproject_projected_budget_deleted", ["subproject.viewDetails"]],
   ["workflowitems_reordered", ["subproject.reorderWorkflowitems"]],
@@ -57,15 +57,15 @@ function dropHiddenHistoryEvents(
     actingUser.id === "root"
       ? () => true
       : (event: SubprojectTraceEvent) => {
-          const allowed = requiredPermissions.get(event.businessEvent.type);
-          if (!allowed) return false;
-          for (const intent of allowed) {
-            for (const identity of subproject.permissions[intent] || []) {
-              if (canAssumeIdentity(actingUser, identity)) return true;
-            }
+        const allowed = requiredPermissions.get(event.businessEvent.type);
+        if (!allowed) return false;
+        for (const intent of allowed) {
+          for (const identity of subproject.permissions[intent] || []) {
+            if (canAssumeIdentity(actingUser, identity)) return true;
           }
-          return false;
-        };
+        }
+        return false;
+      };
 
   return {
     ...subproject,
