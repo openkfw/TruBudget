@@ -84,7 +84,7 @@ const columns = [
     selector: row => row.data.projectName,
     sortable: true,
     compact: false,
-    minWidth: "25rem",
+    minWidth: "15rem",
     cell: row => <Typography>{row.data.projectName}</Typography>
   },
   {
@@ -120,7 +120,7 @@ const columns = [
     selector: row => row.data.assignee,
     sortable: true,
     compact: true,
-    minWidth: "10rem",
+    minWidth: "5rem",
     cell: row => <Typography>{row.data.assignee}</Typography>
   },
   {
@@ -131,7 +131,8 @@ const columns = [
     ),
     sortable: false,
     compact: true,
-    minWidth: "20rem",
+    minWidth: "0rem",
+    maxWidth: "20rem",
     cell: row => row.components.Tags
   },
   {
@@ -143,7 +144,7 @@ const columns = [
     sortable: false,
     right: true,
     compact: false,
-    minWidth: "15rem",
+    minWidth: "10rem",
     cell: row => row.components.ProjectButtons
   }
 ];
