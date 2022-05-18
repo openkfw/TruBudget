@@ -21,20 +21,8 @@ jobs:
         id: sha
         run: |
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-      - name: Generate API docs
-        run: echo "Generating api documentation" && cd api && npm install --no-audit && npm run build docs
-        shell: bash
-      - name: Add API docs formatting
-        env:
-          CATEGORY_JSON: '{"label": "Api Code Documentation","position": 7}'
-        run: |
-          cd ./../TruBudget/docs/developer/api
-          echo "Generating the category file"
-          echo "${CATEGORY_JSON}" > _category_.json
-          echo "Setting title of root readme"
-          sed -i "" '1s/^/---\nsidebar_position: 1\nsidebar_label: Introduction\n---\n/'  ./README.md
-          echo "Setting title of modules file"
-          sed -i "" '1s/^/---\nsidebar_position: 2\nsidebar_label: Table of Contents\n---\n/'  ./modules.md
+      - name: Generate and format API docs
+        run: echo "Generating api documentation" && cd api && npm install --no-audit && npm run build-docs
         shell: bash
       - name: Publish Doc
         env:
