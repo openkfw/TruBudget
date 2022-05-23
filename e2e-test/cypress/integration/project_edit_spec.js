@@ -30,7 +30,7 @@ describe("Project Edit", function() {
         cy.get("[data-test=submit]").click();
         // Check if title has changed
         cy.get(`[data-test=project-card-${projectId}]`).within(() => {
-          cy.get("[data-test=project-title] span")
+          cy.get(`[data-test^='project-title-${title}']`)
             .invoke("text")
             .should("not.eq", title);
           // Change title back to original
@@ -41,7 +41,7 @@ describe("Project Edit", function() {
           .type(title);
         cy.get("[data-test=submit]").click();
         cy.get(`[data-test=project-card-${projectId}]`).within(() => {
-          cy.get("[data-test=project-title] span")
+          cy.get(`[data-test^='project-title-${title}']`)
             .invoke("text")
             .should("eq", title);
         });

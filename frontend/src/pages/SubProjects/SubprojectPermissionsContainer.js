@@ -86,7 +86,7 @@ class SubProjectPermissionsContainer extends Component {
     const { permissions, myself, groups } = this.props;
     // get all permission that are assigned to the user
     const userPermissions = Object.keys(permissions).filter(intent => permissions[intent].includes(myself));
-    if (typeof groups === undefined || groups.length === 0 || groups == null) {
+    if (typeof groups === undefined || groups.length === 0 || groups === null) {
       return userPermissions;
     } else {
       // get all groups where the user belongs to

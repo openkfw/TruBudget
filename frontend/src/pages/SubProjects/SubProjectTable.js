@@ -14,7 +14,7 @@ import PermissionIcon from "@mui/icons-material/LockOpen";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import LaunchIcon from "@mui/icons-material/ZoomIn";
 import _isEmpty from "lodash/isEmpty";
-import { Highlight } from "react-highlighter-ts";
+import Highlighter from "react-highlight-words";
 import React from "react";
 
 import { statusMapping, toAmountString } from "../../helper";
@@ -117,7 +117,7 @@ const getTableEntries = ({
   showEditDialog,
   showSubProjectPermissions,
   showSubProjectAdditionalData,
-  highlightingRegex,
+  searchTermArray,
   theme,
   storeSubSearchTerm,
   storeSubSearchBarDisplayed,
@@ -137,19 +137,20 @@ const getTableEntries = ({
       return (
         <TableRow key={index} data-test={`subproject-${id}`}>
           <TableCell className={classes.displayName} data-test={`subproject-title-${index}`}>
-            <Highlight
+            <Highlighter
               data-test="highlighted-displayname"
-              matchStyle={{ backgroundColor: theme.palette.primary.light }}
-              search={highlightingRegex}
-            >
-              {displayName}
-            </Highlight>
+              highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+              searchWords={searchTermArray}
+              textToHighlight={displayName}
+            />
           </TableCell>
           <TableCell className={classes.projectdBudget}>{amountString}</TableCell>
           <TableCell className={classes.status}>
-            <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
-              {statusMapping(status)}
-            </Highlight>
+            <Highlighter
+              highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+              searchWords={searchTermArray}
+              textToHighlight={statusMapping(status)}
+            />
           </TableCell>
           <TableCell className={classes.actions}>
             <div className={classes.buttonContainer}>
@@ -218,7 +219,7 @@ const SubProjectTable = ({
   searchDisabled,
   storeSubSearchBarDisplayed,
   storeSubSearchTerm,
-  highlightingRegex,
+  searchTermArray,
   theme
 }) => {
   const tableEntries = getTableEntries({
@@ -229,7 +230,7 @@ const SubProjectTable = ({
     showEditDialog,
     showSubProjectPermissions,
     showSubProjectAdditionalData,
-    highlightingRegex,
+    searchTermArray,
     theme,
     storeSubSearchTerm,
     storeSubSearchBarDisplayed,

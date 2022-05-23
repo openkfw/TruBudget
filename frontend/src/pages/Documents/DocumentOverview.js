@@ -55,23 +55,22 @@ class DocumentOverview extends Component {
   getPropsForValidationButton = (validated, available) => {
     let style = {};
     let label = "";
-    // REFACTOR COLOR - sonst Error wegen mui update
-    let color = "default";
+    let color = undefined;
     const disabled = !available;
     if (_isUndefined(validated)) {
       label = strings.workflow.workflow_document_validate;
     } else if (validated === true) {
       label = strings.workflow.workflow_document_validated + "!";
-      // color = "primary";
+      color = "success";
     } else {
       label = strings.workflow.workflow_document_changed + "!";
       style = {
         ...styles.validationButtonNotValidated
       };
-      // color = "secondary";
+      color = "error";
     }
 
-    return { style, label, disabled };
+    return { style, label, color, disabled };
   };
 
   getValidationText = validated => {
