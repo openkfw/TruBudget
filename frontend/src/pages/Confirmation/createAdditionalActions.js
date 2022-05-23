@@ -52,20 +52,20 @@ function createAdditionalActionsForResource(
   listPermissionIntentNeededFor,
   groupsOfUser = []
 ) {
-  const viewSummary = `${resource}.viewSummary`;
+  const list = `${resource}.list`;
   const viewDetails = `${resource}.viewDetails`;
-  const viewWorkflowitem = `${resource}.view`;
+  const listWorkflowitem = `${resource}.list`;
   const listPermissions = `${resource}.intent.listPermissions`;
 
   let actions = [];
 
   if (resource !== "workflowitem") {
-    if (permissions[viewSummary] === undefined || !isUserOrGroupPermitted(identity, groupsOfUser, permissions[viewSummary])) {
+    if (permissions[list] === undefined || !isUserOrGroupPermitted(identity, groupsOfUser, permissions[list])) {
       const action = {
         intent,
         id,
         displayName,
-        permission: viewSummary,
+        permission: list,
         identity,
         isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent])
       };
@@ -84,12 +84,12 @@ function createAdditionalActionsForResource(
       actions.push(action);
     }
   } else {
-    if (permissions[viewWorkflowitem] === undefined || !isUserOrGroupPermitted(identity, groupsOfUser, permissions[viewWorkflowitem])) {
+    if (permissions[listWorkflowitem] === undefined || !isUserOrGroupPermitted(identity, groupsOfUser, permissions[listWorkflowitem])) {
       const action = {
         intent,
         id,
         displayName,
-        permission: viewWorkflowitem,
+        permission: listWorkflowitem,
         identity,
         isUserPermitted: isUserOrGroupPermitted(confirmingUser, groupsOfConfirmingUser, permissions[intent])
       };
@@ -398,7 +398,7 @@ export function createAdditionalActions(originalActions, permissions, project, s
         };
         const grantee = payload.grantee;
 
-        if (payload.intent !== "workflowitem.viewSummary") {
+        if (payload.intent !== "workflowitem.list") {
           wPermissions.workflowitem = applyOriginalActions(wPermissions, originalActions, true);
           additionalActions = createAdditionalActionsforIntent({
             permissions: wPermissions,
