@@ -382,7 +382,7 @@ const en = {
     update: "update",
     viewDetails: "view details",
     viewHistory: "view history",
-    viewSummary: "view summary"
+    list: "view summary"
   },
 
   analytics: {
@@ -571,7 +571,7 @@ const en = {
     project_intent_revokePermission: "Revoke project permissions",
     project_update: "Update project",
     project_viewDetails: "View project details",
-    project_viewSummary: "View project in overview",
+    project_list: "View project in overview",
     read_only: "Read-only permissions",
     subproject_assign: "Assign subproject",
     subproject_close: "Close subproject",
@@ -582,7 +582,7 @@ const en = {
     subproject_reorderWorkflowitems: "Reorder workflowitems",
     subproject_update: "Update subproject",
     subproject_viewDetails: "View subproject details",
-    subproject_viewSummary: "View subproject overview",
+    subproject_list: "View subproject overview",
     view: "View permissions",
     workflowitem_assign: "Assign workflowitem",
     workflowitem_close: "Close workflowitem",

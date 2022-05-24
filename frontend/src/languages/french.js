@@ -385,7 +385,7 @@ const fr = {
     update: "mise à jour",
     viewDetails: "voir les détails",
     viewHistory: "voir l’historique",
-    viewSummary: "voir le résumé"
+    list: "voir le résumé"
   },
 
   analytics: {
@@ -578,7 +578,7 @@ const fr = {
     project_intent_revokePermission: "Révoquer des permissions",
     project_update: "Modifier le projet",
     project_viewDetails: "Voir les détails du projet",
-    project_viewSummary: "Voir le projet en aperçu",
+    project_list: "Voir le projet en aperçu",
     read_only: "Autorisations en lecture seule",
     subproject_assign: "Attribuer la composante",
     subproject_close: "Fermer la composante",
@@ -589,7 +589,7 @@ const fr = {
     subproject_reorderWorkflowitems: "Réorganiser les étapes de workflow",
     subproject_update: "Mettre à jour la composante",
     subproject_viewDetails: "Voir les détails de la composante",
-    subproject_viewSummary: "Voir la vue d'ensemble de la composante",
+    subproject_list: "Voir la vue d'ensemble de la composante",
     view: "Autorisations de lecture",
     workflowitem_assign: "Assigner l’étape de workflow",
     workflowitem_close: "Fermer l’étape de workflow",
