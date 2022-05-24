@@ -383,7 +383,7 @@ const pt = {
     update: "atualizar",
     viewDetails: "ver detalhes",
     viewHistory: "ver história",
-    viewSummary: "ver resumo"
+    list: "ver resumo"
   },
 
   analytics: {
@@ -572,7 +572,7 @@ const pt = {
     project_intent_revokePermission: "Revogar permissões do projeto",
     project_update: "Atualizar projeto",
     project_viewDetails: "Visualizar detalhes do projeto",
-    project_viewSummary: "Visualizar dados gerais do projeto",
+    project_list: "Visualizar dados gerais do projeto",
     read_only: "Permissões somente leitura",
     subproject_assign: "Atribuir subprojeto a outros",
     subproject_close: "Fechar subprojeto",
@@ -583,7 +583,7 @@ const pt = {
     subproject_reorderWorkflowitems: "Reordenar items de workflow",
     subproject_update: "Atualizar subprojeto",
     subproject_viewDetails: "Visualizar detalhes do subprojeto",
-    subproject_viewSummary: "Visualizar dados gerais do subprojeto",
+    subproject_list: "Visualizar dados gerais do subprojeto",
     view: "Permissões de leitura",
     workflowitem_assign: "Atribuir item de workflow a outros",
     workflowitem_close: "Fechar item de workflow",

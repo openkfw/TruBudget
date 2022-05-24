@@ -370,7 +370,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it.only("Granting view permissions doesn't additionally view the same permission", function () {
+  it("Granting view permissions doesn't additionally view the same permission", function () {
     // Grant test User project view-permission
     cy.grantProjectPermission(projectId, "project.list", testUser.id).then(() => {
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id).then(() => {
