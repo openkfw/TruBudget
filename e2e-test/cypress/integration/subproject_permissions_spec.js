@@ -370,7 +370,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("Granting view permissions doesn't additionally view the same permission", function () {
+  it.only("Granting view permissions doesn't additionally view the same permission", function () {
     // Grant test User project view-permission
     cy.grantProjectPermission(projectId, "project.list", testUser.id).then(() => {
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id).then(() => {
@@ -400,7 +400,7 @@ describe("Subproject Permissions", function () {
             .should("be.visible")
             .children()
             .should("have.length", 1)
-            .contains("view summary");
+            .contains("list");
         });
         // 1 original actions
         cy.get("[data-test=original-actions]").within(() => {
