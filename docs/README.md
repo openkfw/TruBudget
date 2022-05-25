@@ -14,11 +14,11 @@ Welcome to the TruBudget documentation! This guide aims to provide you with info
 Installation - How to install TruBudget
 
 - [Bare Metal Installation](./operation-administration/installation/create-a-new-network/bare-metal.md) - installation without Docker (deprecated)
-- [Deploying using Docker](./operation-administration/installation/create-a-new-network/create-a-new-network-with-docker-compose.md)
+- [Deploying using Docker](./operation-administration/installation/create-a-new-network/docker.md)
 - [Environment Variables](./operation-administration/introduction.md#environment-variables)
 - [Organizations and Nodes](./operation-administration/introduction.md#organizations-and-nodes-in-trubudget)
-- [Starting a new network](./operation-administration/installation/create-a-new-network/create-a-new-network-with-docker-compose.md)
-- [Connect to an existing network](./operation-administration/installation/connect-to-an-existing-network/how-to-connect-to-a-master-node.md)
+- [Node connection process](./operation-administration/installation/create-a-new-network/connection-process.md)
+- [Connect to an existing network](./operation-administration/installation/connect-to-an-existing-network/docker.md)
 - [Update TruBudget](./operation-administration/update-trubudget.md)
 - [Logging](./operation-administration/logging.md) - Information on the API log and how to handle it
 - [Security](./operation-administration/security.md) - Information on the security aspects of Trubudget
