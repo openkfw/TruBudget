@@ -6,6 +6,8 @@ let fileName = "backup.gz";
 
 let pathToFile = `cypress/fixtures/${fileName}`;
 
+// npm run e2etest -- --spec **/backup_spec.js
+
 describe("Backup Feature", function() {
   before(() => {
     //download directly to fixture folder, without pop-ups
