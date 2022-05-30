@@ -19,7 +19,7 @@
   "main": "index.js",
   "devDependencies": {
     "accounting": "^0.4.1",
-    "cypress": "^9.6.0",
+    "cypress": "^9.7.0",
     "cypress-dotenv": "^1.2.2",
     "cypress-file-upload": "^4.1.1",
     "dotenv": "^8.2.0",

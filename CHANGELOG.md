@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased 2.0.0
 
-Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14
+<!-- Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14 -->
 
 <!-- ### Added -->
 
