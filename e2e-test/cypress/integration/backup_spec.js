@@ -1,7 +1,7 @@
 import "cypress-file-upload";
 
 let baseUrl, apiRoute;
-baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+baseUrl = Cypress.env("CYPRESS_API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
 apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
 let fileName = "backup.gz";
 
