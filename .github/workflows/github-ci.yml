@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - 1.x.x-release
+      - 2.0.0-release
   pull_request:
   release:
     types: [published]
