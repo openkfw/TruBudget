@@ -26,7 +26,6 @@ import {
   showSubprojectDialog,
   showSubProjectPermissions,
   storeFilteredSubProjects,
-  storeSubHighlightingRegex,
   storeSubSearchBarDisplayed,
   storeSubSearchTerm,
   storeSubSearchTermArray
@@ -64,10 +63,8 @@ class SubProjectContainer extends Component {
     // Listen for postmessage from worker
     this.worker.addEventListener("message", event => {
       const filteredSubProjects = event.data ? event.data.filteredProjects : this.props.subProjects;
-      const highlightingRegex = event.data.highlightingRegex;
       const searchTerms = event.data.searchTerms;
       this.props.storeFilteredSubProjects(filteredSubProjects);
-      this.props.storeSubHighlightingRegex(highlightingRegex);
       this.props.storeSubSearchTermArray(searchTerms);
     });
   }
@@ -83,7 +80,6 @@ class SubProjectContainer extends Component {
     // Reset searchbar
     if (!this.props.searchTerm && prevProps.searchTerm) {
       this.props.storeFilteredSubProjects(this.props.subProjects);
-      this.props.storeSubHighlightingRegex("");
       this.props.storeSubSearchTermArray([]);
     }
   }
@@ -130,7 +126,7 @@ class SubProjectContainer extends Component {
                 searchTerm={this.props.searchTerm}
                 searchBarDisplayed={this.props.searchBarDisplayed}
                 subProjects={this.props.filteredSubProjects}
-                highlightingRegex={this.props.highlightingRegex}
+                searchTermArray={this.props.searchTerms}
                 idsPermissionsUnassigned={this.props.idsPermissionsUnassigned}
                 isDataLoading={this.props.isDataLoading}
               />
@@ -175,7 +171,6 @@ const mapDispatchToProps = dispatch => {
     storeSubSearchTerm: subSearchTerm => dispatch(storeSubSearchTerm(subSearchTerm)),
     storeSubSearchBarDisplayed: subSearchBarDisplayed => dispatch(storeSubSearchBarDisplayed(subSearchBarDisplayed)),
     storeFilteredSubProjects: filteredSubProjects => dispatch(storeFilteredSubProjects(filteredSubProjects)),
-    storeSubHighlightingRegex: highlightingRegex => dispatch(storeSubHighlightingRegex(highlightingRegex)),
     storeSubSearchTermArray: searchTerms => dispatch(storeSubSearchTermArray(searchTerms))
   };
 };
@@ -206,7 +201,6 @@ const mapStateToProps = state => {
     permissionDialogShown: state.getIn(["detailview", "showSubProjectPermissions"]),
     searchTerm: state.getIn(["detailview", "searchTerm"]),
     searchBarDisplayed: state.getIn(["detailview", "searchBarDisplayed"]),
-    highlightingRegex: state.getIn(["detailview", "highlightingRegex"]),
     searchTerms: state.getIn(["detailview", "searchTerms"]),
     idsPermissionsUnassigned: state.getIn(["detailview", "idsPermissionsUnassigned"]),
     isDataLoading: state.getIn(["loading", "loadingVisible"]),

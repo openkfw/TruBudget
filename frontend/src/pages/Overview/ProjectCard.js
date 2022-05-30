@@ -18,7 +18,7 @@ import PermissionIcon from "@mui/icons-material/LockOpen";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import ViewIcon from "@mui/icons-material/ZoomIn";
 import React from "react";
-import { Highlight } from "react-highlighter-ts";
+import Highlighter from "react-highlight-words";
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
@@ -52,7 +52,7 @@ const ProjectCard = ({
   tags,
   parentClasses,
   imagePath,
-  highlightingRegex,
+  searchTermArray,
   theme
 }) => {
   return (
@@ -88,16 +88,25 @@ const ProjectCard = ({
           data-test="project-header"
           className={parentClasses.cardHeader}
           title={
-            <div className={parentClasses.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
-              <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
-                {displayName}
-              </Highlight>
+            <div
+              className={parentClasses.cardTitle}
+              id={`project-title-${index}`}
+              data-test={`project-title-${displayName}`}
+            >
+              <Highlighter
+                highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+                searchWords={searchTermArray}
+                textToHighlight={displayName}
+              />
             </div>
           }
           subheader={
-            <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
-              {mappedStatus}
-            </Highlight>
+            <Highlighter
+              data-test={`project-status-${mappedStatus}`}
+              highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+              searchWords={searchTermArray}
+              textToHighlight={mappedStatus}
+            />
           }
         />
         <List>

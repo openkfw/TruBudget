@@ -5,7 +5,7 @@ import { ServiceUser } from "../organization/service_user";
 import { Project } from "../workflow/project";
 import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
-import { DocumentReference, UploadedDocument } from "./document";
+import { DocumentReference } from "./document";
 import { documentValidate } from "./document_validate";
 import { PreconditionError } from "../errors/precondition_error";
 import { NotFound } from "../errors/not_found";
@@ -85,11 +85,6 @@ const baseWorkflowitem: Workflowitem = {
 const uploadedDocumentId = "1";
 const uploadedDocumentFileName = "1";
 
-const uploadedDocument: UploadedDocument = {
-  id: uploadedDocumentId,
-  base64: "lakjflaksdjf",
-  fileName: uploadedDocumentFileName,
-};
 const documentReference: DocumentReference[] = [
   {
     id: uploadedDocumentId,

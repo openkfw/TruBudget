@@ -1,10 +1,10 @@
 import { assert, expect } from "chai";
-import { BusinessEvent } from "../business_event";
-import { ServiceUser } from "../organization/service_user";
-import { StoredDocument, UploadedDocument } from "./document";
-import { sourceDocuments, sourceSecrets } from "./document_eventsourcing";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
+import { BusinessEvent } from "../business_event";
+import { ServiceUser } from "../organization/service_user";
+import { StoredDocument } from "./document";
+import { sourceDocuments, sourceSecrets } from "./document_eventsourcing";
 
 const alice: ServiceUser = {
   id: "alice",

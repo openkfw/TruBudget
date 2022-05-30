@@ -1,9 +1,9 @@
 import Joi = require("joi");
-import { VError } from "verror";
-
 import { Ctx } from "lib/ctx";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { StoredDocument, storedDocumentSchema } from "../document/document";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";

@@ -11,7 +11,6 @@ const ListView = props => {
   const {
     filteredProjects,
     history,
-    highlightingRegex,
     users,
     fetchAllProjectDetails,
     showSearchBar,
@@ -30,7 +29,6 @@ const ListView = props => {
           <ProjectAccordion
             project={project.data}
             allowedIntents={project.allowedIntents}
-            highlightingRegex={highlightingRegex}
             history={history}
             key={project.data.id}
             users={users}
