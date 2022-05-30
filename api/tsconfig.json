@@ -20,7 +20,7 @@
   "typedocOptions": {
     "name": "Api Code Documentation",
     "entryPoints": ["src/index.ts"],
-    "out": "../docs/developer/api",
+    "out": "../docs/developer/api-docs",
     "plugin": [
       "typedoc-plugin-markdown",
       "typedoc-plugin-not-exported",

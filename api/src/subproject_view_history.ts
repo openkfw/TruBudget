@@ -208,18 +208,6 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
-interface ExposedEvent {
-  entityId: string;
-  entityType: "subproject" | "workflowitem";
-  businessEvent: BusinessEvent;
-  snapshot: {
-    displayName?: string;
-  };
-}
-
-/**
- * Represents the service that returns the history of a subproject
- */
 interface Service {
   getSubprojectHistory(
     ctx: Ctx,
@@ -374,19 +362,4 @@ export function addHttpHandler(
       }
     },
   );
-}
-
-/**
- * Sorts notification by event time
- *
- * @param a first notification to check
- * @param b second notification to check
- * @returns value mentioning if @param a happens before after or at the same time as @param b
- */
-function byEventTime(a: ExposedEvent, b: ExposedEvent): -1 | 0 | 1 {
-  const timeA = new Date(a.businessEvent.time);
-  const timeB = new Date(b.businessEvent.time);
-  if (timeA < timeB) return -1;
-  if (timeA > timeB) return 1;
-  return 0;
 }
