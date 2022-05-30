@@ -102,7 +102,7 @@ const getTableEntries = ({
   showProjectPermissions,
   showProjectAdditionalData,
   storeSearchTerm,
-  showSearchBar,
+  showNavSearchBar,
   searchTermArray
 }) => {
   return filteredProjects.map(({ data, allowedIntents }, index) => {
@@ -125,7 +125,13 @@ const getTableEntries = ({
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
-    const displayedTags = displayTags({ classes, tags: tags || [], storeSearchTerm, showSearchBar, searchTermArray });
+    const displayedTags = displayTags({
+      classes,
+      tags: tags || [],
+      storeSearchTerm,
+      showNavSearchBar,
+      searchTermArray
+    });
 
     if (canViewProjectSummary(allowedIntents)) {
       return (

@@ -3,8 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 
 export default function SelectablePill(props) {
-  // eslint-disable-next-line no-useless-computed-key
-  const { label = "empty", onClick, sx, isSelected = false, ["data-test"]: dataTest } = props;
+  const { label = "empty", onClick, sx, isSelected = false, "data-test": dataTest } = props;
   const theme = useTheme();
 
   const backgroundColor = isSelected ? theme.palette.tag.selected : theme.palette.tag.main;
@@ -27,7 +26,7 @@ export default function SelectablePill(props) {
         backgroundColor: backgroundColor,
         color: "white",
         ":hover": {
-          color: "black"
+          color: isSelected ? "white" : "black"
         },
         ...sx
       }}
