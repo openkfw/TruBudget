@@ -30,10 +30,10 @@ const port = process.env.PORT || 8085;
 
 const ORGANIZATION = process.env.ORGANIZATION || "MyOrga";
 const CHAINNAME = "TrubudgetChain";
-const RPC_PORT = process.env.RPC_PORT || 8000;
-const RPC_USER = process.env.RPC_USER || "multichainrpc";
-const RPC_PASSWORD =
-  process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
+const MULTICHAIN_RPC_PORT = process.env.MULTICHAIN_RPC_PORT || 8000;
+const MULTICHAIN_RPC_USER = process.env.MULTICHAIN_RPC_USER || "multichainrpc";
+const MULTICHAIN_RPC_PASSWORD =
+  process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
 const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 const CERT_PATH = process.env.CERT_PATH || undefined;
 const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
@@ -127,9 +127,9 @@ configureChain(
   isAlpha,
   CHAINNAME,
   multichainDir,
-  RPC_PORT,
-  RPC_USER,
-  RPC_PASSWORD,
+  MULTICHAIN_RPC_PORT,
+  MULTICHAIN_RPC_USER,
+  MULTICHAIN_RPC_PASSWORD,
   RPC_ALLOW_IP,
   multichainFeedEnabled,
 );
@@ -306,7 +306,7 @@ app.post("/chain", async (req, res) => {
         const chainConfig = yaml.safeLoad(
           fs.readFileSync(chainConfigPath, "utf8"),
         );
-        let correctConfig = chainConfig.includes(RPC_PASSWORD);
+        let correctConfig = chainConfig.includes(MULTICHAIN_RPC_PASSWORD);
 
         if (config.hasOwnProperty("Organisation")) {
           const correctOrg = config.Organisation === ORGANIZATION;
