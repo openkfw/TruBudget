@@ -71,7 +71,7 @@ fi
 docker build --build-arg BUILDTIMESTAMP="$BUILDTIMESTAMP" --build-arg CI_COMMIT_SHA="$GITHUB_SHA" --tag "$TAG" -f Dockerfile .
 
 # if a pull request is updated
-if [[ "$GITHUB_EVENT_NAME" = "pull_request" ]];
+if [[ "$GITHUB_EVENT_NAME" = "pull_request" ]] || ([[ "$GITHUB_BRANCH" = "2.0.0-release" ]] && [[ "$GITHUB_EVENT_NAME" = "push" ]]);
 then
     # log into private registry
     echo "$PRIVATE_REGISTRY_PASSWORD" | docker login -u "$PRIVATE_REGISTRY_USERNAME" --password-stdin "$PRIVATE_REGISTRY"
