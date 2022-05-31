@@ -18,14 +18,14 @@ spec:
   ports:
   - name: rpc-port
     protocol: TCP
-    port: {{ .Values.bc.env.RPC_PORT }} 
-    targetPort: {{ .Values.bc.env.RPC_PORT }} 
+    port: {{ .Values.bc.env.MULTICHAIN_RPC_PORT }} 
+    targetPort: {{ .Values.bc.env.MULTICHAIN_RPC_PORT }} 
   - name: node-port
     protocol: TCP
     port: {{ .Values.bc.env.P2P_PORT }} 
     targetPort: {{ .Values.bc.env.P2P_PORT }} 
   - name: backup-port
     protocol: TCP
-    port: {{ .Values.bc.env.BACKUP_API_PORT }} 
-    targetPort: {{ .Values.bc.env.BACKUP_API_PORT }} 
+    port: {{ .Values.bc.env.BLOCKCHAIN_PORT }} 
+    targetPort: {{ .Values.bc.env.BLOCKCHAIN_PORT }} 
 

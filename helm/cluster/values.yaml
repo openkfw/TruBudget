@@ -32,7 +32,7 @@ blockchain-prod-1:
     env:
       ORGANIZATION: ACMECorp
       CHAINNAME: TrubudgetChain
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
   persistentVolume:
     name: blockchain-prod-1-data
     storageSize: 5Gi
@@ -47,7 +47,7 @@ blockchain-prod-2:
     env:
       ORGANIZATION: ACMECorp
       CHAINNAME: TrubudgetChain
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       P2P_HOST: blockchain-prod-1
       API_PROTO: http
       API_HOST: api-prod-1
@@ -69,7 +69,7 @@ blockchain-test-1:
     env:
       ORGANIZATION: ACMECorp
       CHAINNAME: TrubudgetChain
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
   persistentVolume:
     name: blockchain-test-1-data
     storageSize: 5Gi
@@ -84,7 +84,7 @@ blockchain-test-2:
     env:
       ORGANIZATION: ACMECorp
       CHAINNAME: TrubudgetChain
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       P2P_HOST: blockchain-test-1
       API_PROTO: http
       API_HOST: api-test-1
@@ -99,10 +99,10 @@ api-prod-1:
     type: LoadBalancer
   api:
     env:
-      RPC_HOST: blockchain-prod-1
+      MULTICHAIN_RPC_HOST: blockchain-prod-1
       JWT_SECRET: jwt-secret
       ROOT_SECRET: root-secret
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
       ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /prod
@@ -112,10 +112,10 @@ api-prod-2:
     name: api-prod-2
   api:
     env:
-      RPC_HOST: blockchain-prod-2
+      MULTICHAIN_RPC_HOST: blockchain-prod-2
       JWT_SECRET: jwt-secret
       ROOT_SECRET: root-secret
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
       ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /prod
@@ -126,10 +126,10 @@ api-test-1:
     type: LoadBalancer
   api:
     env:
-      RPC_HOST: blockchain-test-1
+      MULTICHAIN_RPC_HOST: blockchain-test-1
       JWT_SECRET: jwt-secret
       ROOT_SECRET: root-secret
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
       ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /test
@@ -139,10 +139,10 @@ api-test-2:
     name: api-test-2
   api:
     env:
-      RPC_HOST: blockchain-test-2
+      MULTICHAIN_RPC_HOST: blockchain-test-2
       JWT_SECRET: jwt-secret
       ROOT_SECRET: root-secret
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
       ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /test
