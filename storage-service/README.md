@@ -16,7 +16,7 @@ all services.
 | Env Variable                | Default Value | Description                                                                                     |
 | --------------------------- | ------------- | ----------------------------------------------------------------------------------------------- |
 | STORAGE_SERVICE_HOST        | localhost     | IP address of storage service                                                                   |
-| STORAGE_SERVICE_PORT        | 8090          | Port of storage service                                                                         |
+| PORT                        | 8090          | The port used to expose the storage service                                                     |
 | ACCESS_CONTROL_ALLOW_ORIGIN | "\*"          | CORS configuration                                                                              |
 | MINIO_ACCESS_KEY            | minio         | Access key for Minio server                                                                     |
 | MINIO_SECRET_KEY            | minio123      | Secret (Password) for Minio server                                                              |
