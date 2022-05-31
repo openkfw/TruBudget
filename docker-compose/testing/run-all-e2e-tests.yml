@@ -3,9 +3,9 @@ services:
   api:
     image: trubudget/api:${TAG}
     environment:
-      RPC_HOST: alpha
-      RPC_PORT: ${RPC_PORT}
-      RPC_PASSWORD: ${RPC_PASSWORD}
+      MULTICHAIN_RPC_HOST: alpha
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       PORT: ${API_PORT}
       ORGANIZATION: KfW
       ROOT_SECRET: ${ROOT_SECRET}
@@ -26,8 +26,8 @@ services:
   alpha:
     image: trubudget/blockchain:${TAG}
     environment:
-      RPC_PORT: ${RPC_PORT}
-      RPC_PASSWORD: ${RPC_PASSWORD}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       ORGANIZATION: KfW
     volumes:
       - /alphaVolume:/root/.multichain

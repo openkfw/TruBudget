@@ -16,17 +16,17 @@ blockchain-prod:
     env:
       ORGANIZATION: ACMECorp
       CHAINNAME: TrubudgetChain
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
 
 api-prod:
   service:
     name: api-prod
   api:
     env:
-      RPC_HOST: blockchain-prod
+      MULTICHAIN_RPC_HOST: blockchain-prod
       JWT_SECRET: jwt-secret
       ROOT_SECRET: root-secret
-      RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+      MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       ORGANIZATION: ACMECorp
       ORGANIZATION_VAULT_SECRET: secret
       SWAGGER_BASEPATH: /prod
