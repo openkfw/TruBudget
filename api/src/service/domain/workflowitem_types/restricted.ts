@@ -76,7 +76,7 @@ const createPermissionEvents = (
   const permissionRevokedEvents: Result.Type<WorkflowitemPermissionRevoked.Event[]> = [];
   if (assignee !== publisher.id) {
     for (const intent of workflowitemIntents) {
-      if (intent !== "workflowitem.view") {
+      if (intent !== "workflowitem.list") {
         const createEventResult = WorkflowitemPermissionRevoked.createEvent(
           ctx.source,
           publisher.id,

@@ -35,7 +35,6 @@ import * as ProjectPermissionRevokeAPI from "./project_permission_revoke";
 import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
-import * as ProjectViewHistoryAPIv2 from "./project_view_history_v2";
 import * as ProvisioningEndAPI from "./provisioning_end";
 import * as ProvisioningStatusAPI from "./provisioning_get";
 import * as ProvisioningStartAPI from "./provisioning_start";
@@ -59,7 +58,6 @@ import * as ProjectAssignService from "./service/project_assign";
 import * as ProjectCloseService from "./service/project_close";
 import * as ProjectCreateService from "./service/project_create";
 import * as ProjectGetService from "./service/project_get";
-import * as ProjectViewHistoryService from "./service/project_history_get";
 import * as ProjectListService from "./service/project_list";
 import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectPermissionGrantService from "./service/project_permission_grant";
@@ -80,8 +78,10 @@ import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
-import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
-import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
+import * as SubprojectProjectedBudgetDeleteService
+  from "./service/subproject_projected_budget_delete";
+import * as SubprojectProjectedBudgetUpdateService
+  from "./service/subproject_projected_budget_update";
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserAuthenticateService from "./service/user_authenticate";
@@ -117,7 +117,6 @@ import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
 import * as SubprojectUpdateAPI from "./subproject_update";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as SubprojectViewHistoryAPI from "./subproject_view_history";
-import * as SubprojectViewHistoryAPIv2 from "./subproject_view_history_v2";
 import ensureStorageServiceUrlPublished from "./system/ensureOrganizationUrlPublished";
 import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
 import * as UserAuthenticateAPI from "./user_authenticate";
@@ -143,6 +142,7 @@ import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
+import * as ProjectViewHistoryService from "./service/project_history_get";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -496,15 +496,10 @@ ProjectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
-  getProject: (ctx, user, projectId) => ProjectGetService.getProject(db, ctx, user, projectId),
-  getSubprojects: (ctx, user, projectId) =>
-    SubprojectListService.listSubprojects(db, ctx, user, projectId),
-});
-
-ProjectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
   getProjectHistory: (ctx, user, projectId, filter) =>
     ProjectViewHistoryService.getProjectHistory(db, ctx, user, projectId, filter),
 });
+
 
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, orga, amount, currencyCode) =>
@@ -564,13 +559,6 @@ SubprojectViewDetailsAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 SubprojectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
-  getSubproject: (ctx, user, projectId, subprojectId) =>
-    SubprojectGetService.getSubproject(db, ctx, user, projectId, subprojectId),
-  getWorkflowitems: (ctx, user, projectId, subprojectId) =>
-    WorkflowitemListService.listWorkflowitems(db, ctx, user, projectId, subprojectId),
-});
-
-SubprojectViewHistoryAPIv2.addHttpHandler(server, URL_PREFIX, {
   getSubprojectHistory: (ctx, user, projectId, subprojectId, filter) =>
     SubprojectViewHistoryService.getSubprojectHistory(
       db,
@@ -888,7 +876,7 @@ server.listen(port, "0.0.0.0", async (err) => {
         );
         return false;
       }))
-  ) {
+    ) {
     await timeout(retryIntervalMs);
   }
   logger.debug({ multichainClient, organization }, "Organization stream present");

@@ -381,7 +381,7 @@ const ka = {
     update: "განახლება",
     viewDetails: "დეტალების ნახვა ",
     viewHistory: "ისტორიის ნახვა",
-    viewSummary: "დასკვნის ნახვა"
+    list: "დასკვნის ნახვა"
   },
 
   analytics: {
@@ -570,7 +570,7 @@ const ka = {
     project_intent_revokePermission: " გააუქმეთ ნებართვა",
     project_update: "განაახლეთ პროექტი",
     project_viewDetails: "იხილეთ პროექტის დეტალები",
-    project_viewSummary: "იხილეთ პროექტის მიმოხილვა",
+    project_list: "იხილეთ პროექტის მიმოხილვა",
     read_only: "მხოლოდ წაკითხვის ნებართვა",
     subproject_assign: "გადაუგზავნეთ ქვეპროექტი სხვებს განსახილველად",
     subproject_close: "დახურეთ ქვეპროექტი",
@@ -581,7 +581,7 @@ const ka = {
     subproject_reorderWorkflowitems: "გადააჯგუფეთ workflowitem-ები",
     subproject_update: "განაახლეთ ქვეპროექტი",
     subproject_viewDetails: "იხილეთ ქვეპროექტის დეტალები",
-    subproject_viewSummary: "იხილეთ ქვეპროექტის მიმოხილვა",
+    subproject_list: "იხილეთ ქვეპროექტის მიმოხილვა",
     view: "View permissions",
     workflowitem_assign: "გადაუგზავნეთ სხვებს workflowitem-ი განსახილველად",
     workflowitem_close: "დახურეთ workflowitem-ი",

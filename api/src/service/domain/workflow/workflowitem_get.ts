@@ -27,7 +27,7 @@ export async function getWorkflowitem(
 
   logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
-    const intent = "workflowitem.view";
+    const intent = "workflowitem.list";
     if (!Workflowitem.permits(workflowitem, user, [intent])) {
       return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
     }
@@ -38,14 +38,14 @@ export async function getWorkflowitem(
 
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
-  ["workflowitem_created", ["workflowitem.view"]],
+  ["workflowitem_created", ["workflowitem.list"]],
   ["workflowitem_permission_granted", ["workflowitem.intent.listPermissions"]],
   ["workflowitem_permission_revoked", ["workflowitem.intent.listPermissions"]],
-  ["workflowitem_assigned", ["workflowitem.view"]],
-  ["workflowitem_updated", ["workflowitem.view"]],
-  ["workflowitem_closed", ["workflowitem.view"]],
-  ["workflowitem_projected_budget_updated", ["workflowitem.view"]],
-  ["workflowitem_projected_budget_deleted", ["workflowitem.view"]],
+  ["workflowitem_assigned", ["workflowitem.list"]],
+  ["workflowitem_updated", ["workflowitem.list"]],
+  ["workflowitem_closed", ["workflowitem.list"]],
+  ["workflowitem_projected_budget_updated", ["workflowitem.list"]],
+  ["workflowitem_projected_budget_deleted", ["workflowitem.list"]],
 ]);
 
 function dropHiddenHistoryEvents(
@@ -56,15 +56,15 @@ function dropHiddenHistoryEvents(
     actingUser.id === "root"
       ? () => true
       : (event: WorkflowitemTraceEvent) => {
-          const allowed = requiredPermissions.get(event.businessEvent.type);
-          if (!allowed) return false;
-          for (const intent of allowed) {
-            for (const identity of workflowitem.permissions[intent] || []) {
-              if (canAssumeIdentity(actingUser, identity)) return true;
-            }
+        const allowed = requiredPermissions.get(event.businessEvent.type);
+        if (!allowed) return false;
+        for (const intent of allowed) {
+          for (const identity of workflowitem.permissions[intent] || []) {
+            if (canAssumeIdentity(actingUser, identity)) return true;
           }
-          return false;
-        };
+        }
+        return false;
+      };
 
   return {
     ...workflowitem,

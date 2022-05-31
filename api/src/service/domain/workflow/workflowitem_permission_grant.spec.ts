@@ -18,7 +18,7 @@ const testUser: ServiceUser = { id: "testUser", groups: [], address };
 const projectId = "testProject";
 
 const permissions: Permissions = {
-  "workflowitem.view": [],
+  "workflowitem.list": [],
   "workflowitem.assign": [],
   "workflowitem.intent.revokePermission": ["testUser"],
   "workflowitem.intent.grantPermission": ["mstein"],
@@ -137,7 +137,7 @@ describe("grant workflowitem permissions", () => {
       testworkflowitem.subprojectId,
       testworkflowitem.id,
       testUser.id,
-      "workflowitem.view",
+      "workflowitem.list",
       {
         getWorkflowitem: async () => workflowitemWithoutPermission,
         userExists: async (user) => false,
@@ -161,7 +161,7 @@ describe("grant workflowitem permission: preconditions", () => {
       testworkflowitem.subprojectId,
       testworkflowitem.id,
       testUser.id,
-      "workflowitem.view",
+      "workflowitem.list",
       {
         getWorkflowitem: async () => new Error("some error"),
         userExists: async (user) => false,
@@ -176,7 +176,7 @@ describe("grant workflowitem permission: preconditions", () => {
   });
   it("No changes to existing permissions emit no new events", async () => {
     const existingPermissions: Permissions = {
-      "workflowitem.view": ["testUser"],
+      "workflowitem.list": ["testUser"],
       "workflowitem.assign": [],
       "workflowitem.intent.grantPermission": ["mstein"],
     };
@@ -191,7 +191,7 @@ describe("grant workflowitem permission: preconditions", () => {
       testworkflowitem.subprojectId,
       testworkflowitem.id,
       testUser.id,
-      "workflowitem.view",
+      "workflowitem.list",
       {
         getWorkflowitem: async () => baseWorkflowitem,
         userExists: async (user) => false,

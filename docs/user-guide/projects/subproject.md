@@ -1,28 +1,29 @@
 # Subproject
 
 - [Subproject](#subproject)
-  - [View subprojects](#view-subprojects)
-  - [Filter subprojects](#filter-subprojects)
-  - [View subproject details](#view-subproject-details)
-  - [Create a subproject](#create-a-subproject)
-  - [Update a subproject](#update-a-subproject)
-  - [Assign an User/Group to a subproject](#assign-an-usergroup-to-a-subproject)
-  - [Close subproject](#close-subproject)
-  - [View the history of a subproject](#view-the-history-of-a-subproject)
-  - [Filter the history of a subproject](#filter-the-history-of-a-subproject)
-  - [View the additional data of a subproject](#view-the-additional-data-of-a-subproject)
-  - [Permissions on subproject](#permissions-on-subproject)
-  - [Create a workflowitem](#create-a-workflowitem)
+    - [View subprojects](#view-subprojects)
+    - [Filter subprojects](#filter-subprojects)
+    - [View subproject details](#view-subproject-details)
+    - [Create a subproject](#create-a-subproject)
+    - [Update a subproject](#update-a-subproject)
+    - [Assign an User/Group to a subproject](#assign-an-usergroup-to-a-subproject)
+    - [Close subproject](#close-subproject)
+    - [View the history of a subproject](#view-the-history-of-a-subproject)
+    - [Filter the history of a subproject](#filter-the-history-of-a-subproject)
+    - [View the additional data of a subproject](#view-the-additional-data-of-a-subproject)
+    - [Permissions on subproject](#permissions-on-subproject)
+    - [Create a workflowitem](#create-a-workflowitem)
 
 A project is normally split into a fraction of sub-task and Trubudget calls them **Subprojects**.
-In case of the school example the overall project would be the "School" having multiple subprojects like Design studies, Construction lot, Equipment...
+In case of the school example the overall project would be the "School" having multiple subprojects like Design studies,
+Construction lot, Equipment...
 
 There are some different permissions which affect subprojects.
 
 - subproject.intent.listPermissions
 - subproject.intent.grantPermission
 - subproject.intent.revokePermission
-- subproject.viewSummary
+- subproject.list
 - subproject.viewDetails
 - subproject.assign
 - subproject.update
@@ -62,7 +63,10 @@ There are 2 ways how subprojects can be filtered:
 1. Searchbar
 2. URL
 
-The Searchbar can be used to search all projects for a term included in name, tag or status. These can also be used as prefixes to specify the search context (e.g. tag:mycustomtag). If no prefix is used display name, tag and status are searched for a match. After typing the project list and the URL are updated instantly. The URL can then be shared to other users including the filter.
+The Searchbar can be used to search all projects for a term included in name, tag or status. These can also be used as
+prefixes to specify the search context (e.g. tag:mycustomtag). If no prefix is used display name, tag and status are
+searched for a match. After typing the project list and the URL are updated instantly. The URL can then be shared to
+other users including the filter.
 The URL supports query parameters which are updated instantly when typing search terms into the searchbar.
 
 **Instructions:**
@@ -115,16 +119,18 @@ Create a new subproject defining title, comment, currency, budget, validator and
 
 5. Fill in the required fields:
 
-   - "Subproject Title": Title of the subproject
-   - "Comment": A little description or comment refering to the subproject
-   - "Organization": Organization that the budget belongs to
-   - "Currency": The currency of the organization's budget
-   - [Optional]"Validator": Select a user identity
-     1. Defines the default assignee of each workflowitem created in this subproject
-     1. Defines the only user who is allowed to close workflowitems in this subproject
-   - [Optional]"Workflowitem type": Select a type which should be applied to all workflowitems in thios subproject. Workflowitems behave differently according to their type.
-     - general: A workflowitem of type general will be created
-     - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.
+    - "Subproject Title": Title of the subproject
+    - "Comment": A little description or comment refering to the subproject
+    - "Organization": Organization that the budget belongs to
+    - "Currency": The currency of the organization's budget
+    - [Optional]"Validator": Select a user identity
+        1. Defines the default assignee of each workflowitem created in this subproject
+        1. Defines the only user who is allowed to close workflowitems in this subproject
+    - [Optional]"Workflowitem type": Select a type which should be applied to all workflowitems in thios subproject.
+      Workflowitems behave differently according to their type.
+        - general: A workflowitem of type general will be created
+        - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The
+          assigner will only keep the view permissions.
 
 6. Add the projected budget of the organization by clicking the "+" symbol
    After this, the entered budget will appear on the screen
@@ -136,7 +142,8 @@ Create a new subproject defining title, comment, currency, budget, validator and
 - The root user may not create subprojects.
 - Do not forget to permit other users to view/edit the newly created subproject.
 - You have to add at least one budget before you can submit the project.
-- To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the blockchain.
+- To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the
+  blockchain.
 - The validator is an optional field
 - The workflowitem type is an optional field
 
@@ -156,9 +163,9 @@ Update details like budget amount or title of a subproject.
 4. Click the pen icon next to the status of the subproject which shall be updated
 5. Fill in the fields that shall be updated:
 
-   - "Subproject Title": Title of the subproject
-   - "Comment": A little description or comment refering to the subproject
-   - "Currency": Currency of the subproject
+    - "Subproject Title": Title of the subproject
+    - "Comment": A little description or comment refering to the subproject
+    - "Currency": Currency of the subproject
 
 6. Click the "Submit"-button to update the subproject.
 
@@ -195,7 +202,8 @@ Assign a User or Group to a subproject to show which User or Group is responsibl
 
 - Assigning a user/group needs project and subproject view permissions.
 - If the assignee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they can be granted if the assigner has grant permissions. (see [confirmation](../confirmation.md) for more Details)
+  On confirm they can be granted if the assigner has grant permissions. (see [confirmation](../confirmation.md) for more
+  Details)
 
 :::
 
@@ -229,7 +237,8 @@ The history contains all activities done and directly refer to the current subpr
 2. Click the "Projects" menu point
 3. Click the blue magnifier icon in the bottom right corner of a project
 4. Click the grey magnifier icon on the most right of the subproject you want to view
-5. Click the grey button below the '+' button on te right to open the right sidebar viewing the history of the current subproject.
+5. Click the grey button below the '+' button on te right to open the right sidebar viewing the history of the current
+   subproject.
 
 ![show subproject history](./../img/view_subproject_history.jpg)
 
@@ -243,7 +252,9 @@ The history of actions refer to workflowitems are also viewed.
 
 **Description:**
 
-The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and a end date, where a timeframe can be determined. By clicking the search button, all values that are specified are used in the filter request.
+The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and a end date,
+where a timeframe can be determined. By clicking the search button, all values that are specified are used in the filter
+request.
 
 **Instructions:**
 
@@ -251,7 +262,8 @@ The entries in the history can be filtered by 4 different values: publisher, typ
 2. Click the "Projects" menu point
 3. Click the blue magnifier icon in the bottom right corner of a project
 4. Click the grey magnifier icon on the most right of the subproject you want to view
-5. Click the grey button below the '+' button on te right to open the right sidebar viewing the history of the current subproject
+5. Click the grey button below the '+' button on te right to open the right sidebar viewing the history of the current
+   subproject
 6. Click on the top of the sidebar to open the expandable filter area
 
 ![filter subproject history](./../img/filter_subproject_history.jpg)
@@ -260,7 +272,9 @@ The entries in the history can be filtered by 4 different values: publisher, typ
 
 **Description:**
 
-The additional data is a free field that can be used to extend the subproject data beyond the visible information like display name and budget. To view this data, an additional button was added that opens a window containing the data of this field.
+The additional data is a free field that can be used to extend the subproject data beyond the visible information like
+display name and budget. To view this data, an additional button was added that opens a window containing the data of
+this field.
 
 **Instructions:**
 

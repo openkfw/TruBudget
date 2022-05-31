@@ -5,11 +5,12 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemDocument from "../document/document";
-import logger from "lib/logger";
 import { DocumentReference } from "../document/document";
+import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitem(): Promise<Result.Type<Workflowitem.Workflowitem>>;
+
   downloadDocument(docId: string): Promise<Result.Type<WorkflowitemDocument.UploadedDocument>>;
 }
 
@@ -27,7 +28,7 @@ export async function getWorkflowitemDetails(
 
   logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
-    const intent = "workflowitem.view";
+    const intent = "workflowitem.list";
     if (!Workflowitem.permits(workflowitem, user, [intent])) {
       return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
     }

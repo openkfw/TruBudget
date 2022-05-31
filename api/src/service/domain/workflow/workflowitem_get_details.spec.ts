@@ -1,4 +1,5 @@
 import { assert } from "chai";
+
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -17,7 +18,7 @@ const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
 
 const permissions: Permissions = {
-  "workflowitem.view": ["alice"],
+  "workflowitem.list": ["alice"],
 };
 
 const baseWorkflowitem: Workflowitem = {
@@ -51,7 +52,7 @@ const uploadedDocument: UploadedDocument = {
 
 const baseRepository = {
   getWorkflowitem: async () => baseWorkflowitem,
-  downloadDocument: async (_docId: string) => uploadedDocument,
+  downloadDocument: async (docId: string) => uploadedDocument,
 };
 
 describe("get workflowitems: authorization", () => {

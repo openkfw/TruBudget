@@ -8,7 +8,7 @@ import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
 
 import { DocumentReference, UploadedDocument } from "./document";
-import { getAllDocumentInfos, getDocumentInfo, getAllDocumentReferences } from "./document_get";
+import { getAllDocumentInfos, getAllDocumentReferences, getDocumentInfo } from "./document_get";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -88,7 +88,7 @@ const baseWorkflowitem: Workflowitem = {
   description: "dummy",
   amountType: "N/A",
   documents: documentReference,
-  permissions: { "workflowitem.view": ["alice"] },
+  permissions: { "workflowitem.list": ["alice"] },
   log: [],
   additionalData: {},
   workflowitemType: "general",

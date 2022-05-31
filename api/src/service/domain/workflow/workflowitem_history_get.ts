@@ -36,7 +36,7 @@ export const getHistory = async (
 
   logger.trace({ user }, "Checking user authorization");
   if (user.id !== "root") {
-    const intents: Intent[] = ["workflowitem.view", "workflowitem.viewHistory"];
+    const intents: Intent[] = ["workflowitem.list", "workflowitem.viewHistory"];
     if (
       !(
         Workflowitem.permits(workflowitem, user, [intents[0]]) ||

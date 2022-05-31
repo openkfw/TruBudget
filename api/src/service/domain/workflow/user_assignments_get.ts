@@ -19,6 +19,7 @@ export interface RequestData {
 interface SubprojectTrace {
   projectId: string;
 }
+
 interface WorkflowItemTrace {
   projectId: string;
   subprojectId: string;
@@ -26,11 +27,14 @@ interface WorkflowItemTrace {
 
 interface Repository {
   getAllProjects(): Promise<Project.Project[]>;
+
   getSubprojects(projectId: string): Promise<Result.Type<Subproject.Subproject[]>>;
+
   getWorkflowitems(
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
+
   getUser(userId: string): Promise<Result.Type<UserRecord.UserRecord>>;
 }
 
@@ -72,9 +76,9 @@ export async function getUserAssignments(
     });
   }
 
-  const projectIntents: Intent[] = ["project.viewSummary", "project.viewDetails"];
-  const subprojectIntents: Intent[] = ["subproject.viewSummary", "subproject.viewDetails"];
-  const workflowitemIntents: Intent[] = ["workflowitem.view"];
+  const projectIntents: Intent[] = ["project.list", "project.viewDetails"];
+  const subprojectIntents: Intent[] = ["subproject.list", "subproject.viewDetails"];
+  const workflowitemIntents: Intent[] = ["workflowitem.list"];
 
   let projects: Project.Project[] = [];
   try {

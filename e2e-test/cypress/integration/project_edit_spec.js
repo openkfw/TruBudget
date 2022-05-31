@@ -1,24 +1,24 @@
-describe("Project Edit", function() {
+describe("Project Edit", function () {
   let projectId;
   const executingUser = "mstein";
   const otherUser = "jxavier";
 
   before(() => {
     cy.login(executingUser, "test");
-    cy.createProject("p-subp-edit", "subproject edit test").then(({ id }) => {
+    cy.createProject("p-subp-edit", "subproject edit test").then(({id}) => {
       projectId = id;
-      cy.grantProjectPermission(projectId, "project.viewSummary", otherUser);
+      cy.grantProjectPermission(projectId, "project.list", otherUser);
       cy.grantProjectPermission(projectId, "project.viewDetails", otherUser);
       cy.grantProjectPermission(projectId, "project.intent.revokePermission", otherUser);
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login(executingUser, "test");
     cy.visit(`/projects`);
   });
 
-  it("Editing the title is possible", function() {
+  it("Editing the title is possible", function () {
     cy.get(`[data-test=project-card-${projectId}]`).within(() => {
       cy.get(`[data-test=pe-button]`).click();
     });
@@ -48,7 +48,7 @@ describe("Project Edit", function() {
       });
   });
 
-  it("Editing without a change isn't possible", function() {
+  it("Editing without a change isn't possible", function () {
     cy.get(`[data-test=project-card-${projectId}]`).within(() => {
       cy.get(`[data-test=pe-button]`).click();
     });
@@ -65,7 +65,7 @@ describe("Project Edit", function() {
       });
   });
 
-  it("The edit button isn't visible without edit permissions", function() {
+  it("The edit button isn't visible without edit permissions", function () {
     cy.login(otherUser, "test");
     cy.visit(`/projects`);
     cy.revokeProjectPermission(projectId, "project.update", executingUser);

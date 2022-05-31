@@ -123,7 +123,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenProjects === true,
+      userAssignments.hiddenAssignments.hasHiddenProjects === true,
     );
   });
 
@@ -142,7 +142,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenSubprojects === true,
+      userAssignments.hiddenAssignments.hasHiddenSubprojects === true,
     );
   });
 
@@ -161,7 +161,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenWorkflowitems === true,
+      userAssignments.hiddenAssignments.hasHiddenWorkflowitems === true,
     );
   });
 
@@ -173,7 +173,7 @@ describe("Get user assignments: authorization and conditions", () => {
           {
             ...baseProject[0],
             permissions: {
-              "project.viewSummary": [admin.id],
+              "project.list": [admin.id],
               "project.viewDetails": [admin.id],
             },
           },
@@ -188,8 +188,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenProjects === false &&
-        userAssignments.projects !== undefined,
+      userAssignments.hiddenAssignments.hasHiddenProjects === false &&
+      userAssignments.projects !== undefined,
     );
   });
 
@@ -201,7 +201,7 @@ describe("Get user assignments: authorization and conditions", () => {
           {
             ...baseSubproject[0],
             permissions: {
-              "subproject.viewSummary": [admin.id],
+              "subproject.list": [admin.id],
               "subproject.viewDetails": [admin.id],
             },
           },
@@ -216,8 +216,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenSubprojects === false &&
-        userAssignments.subprojects !== undefined,
+      userAssignments.hiddenAssignments.hasHiddenSubprojects === false &&
+      userAssignments.subprojects !== undefined,
     );
   });
 
@@ -229,7 +229,7 @@ describe("Get user assignments: authorization and conditions", () => {
           {
             ...baseWorkflowitem[0],
             permissions: {
-              "workflowitem.view": [admin.id],
+              "workflowitem.list": [admin.id],
             },
           },
         ];
@@ -243,8 +243,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-        userAssignments.hiddenAssignments.hasHiddenWorkflowitems === false &&
-        userAssignments.workflowitems !== undefined,
+      userAssignments.hiddenAssignments.hasHiddenWorkflowitems === false &&
+      userAssignments.workflowitems !== undefined,
     );
   });
 });

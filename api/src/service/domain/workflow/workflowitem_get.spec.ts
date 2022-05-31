@@ -16,7 +16,7 @@ const subprojectId = "dummy-subproject";
 const workflowitemId = "dummy-workflowitem";
 
 const permissions: Permissions = {
-  "workflowitem.view": ["alice"],
+  "workflowitem.list": ["alice"],
 };
 
 const baseWorkflowitem: Workflowitem = {

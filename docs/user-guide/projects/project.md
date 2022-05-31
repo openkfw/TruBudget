@@ -1,24 +1,25 @@
 # Project
 
 - [Project](#project)
-  - [View projects](#view-projects)
-  - [Filter projects](#filter-projects)
-  - [View project details](#view-project-details)
-  - [Create a project](#create-a-project)
-  - [Update a project](#update-a-project)
-  - [Assign an User/Group to a project](#assign-an-usergroup-to-a-project)
-  - [Close project](#close-project)
-  - [View the history of a project](#view-the-history-of-a-project)
-  - [Filter the history of a project](#filter-the-history-of-a-project)
-  - [Project tags](#project-tags)
-  - [Permissions on project](#permissions-on-project)
-  - [Create a subproject](#create-a-subproject)
+    - [View projects](#view-projects)
+    - [Filter projects](#filter-projects)
+    - [View project details](#view-project-details)
+    - [Create a project](#create-a-project)
+    - [Update a project](#update-a-project)
+    - [Assign an User/Group to a project](#assign-an-usergroup-to-a-project)
+    - [Close project](#close-project)
+    - [View the history of a project](#view-the-history-of-a-project)
+    - [Filter the history of a project](#filter-the-history-of-a-project)
+    - [Project tags](#project-tags)
+    - [Permissions on project](#permissions-on-project)
+    - [Create a subproject](#create-a-subproject)
 
-Projects are currently the highest layer of abstraction in TruBudget. They represent the overall intention of what you trying to achieve, like building a school in Malawi.
+Projects are currently the highest layer of abstraction in TruBudget. They represent the overall intention of what you
+trying to achieve, like building a school in Malawi.
 
 There are some different permissions which affect projects.
 
-- project.viewSummary
+- project.list
 - project.viewDetails
 - project.assign
 - project.update
@@ -61,7 +62,10 @@ There are 3 ways how projects can be filtered on the overview page:
 2. Tag-Button
 3. URL
 
-The Searchbar can be used to search all projects for a term included in name, tag or status. These can also be used as prefixes to specify the search context (e.g. tag:mycustomtag). If no prefix is used display name, tag and status are searched for a match. After typing the project list and the URL are updated instantly. The URL can then be shared to other users including the filter.
+The Searchbar can be used to search all projects for a term included in name, tag or status. These can also be used as
+prefixes to specify the search context (e.g. tag:mycustomtag). If no prefix is used display name, tag and status are
+searched for a match. After typing the project list and the URL are updated instantly. The URL can then be shared to
+other users including the filter.
 The Tag-Button can be clicked to only show projects including the clicked tag.
 The URL supports query parameters which are updated instantly when typing search terms into the searchbar.
 
@@ -114,11 +118,11 @@ Create a new project defining title, comment and budgets.
 
 4. Fill in the required fields:
 
-   - "Project Title": Title of the project
-   - "Comment": A little description or comment refering to the project
-   - "Organization": Organization that the budget belongs to
-   - "Currency": The currency of the organization's budget
-   - "Amount": The amount of the organization's budget
+    - "Project Title": Title of the project
+    - "Comment": A little description or comment refering to the project
+    - "Organization": Organization that the budget belongs to
+    - "Currency": The currency of the organization's budget
+    - "Amount": The amount of the organization's budget
 
 5. Add the budget of the organization by clicking the "+" symbol
    ![create a  project](./../img/add_project_3.jpeg)
@@ -135,7 +139,8 @@ Create a new project defining title, comment and budgets.
 - The root user may not create projects.
 - Do not forget to permit other users to view/edit the newly created project.
 - You have to add at least one budget before you can submit the project.
-- To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the blockchain.
+- To add a budget, the "+" button needs to be pressed. Only budgets that appear above the text field are saved to the
+  blockchain.
 
 :::
 
@@ -155,10 +160,10 @@ Update details like title, currency, comment or budget amount of a project.
 
 4. Fill in the fields that shall be updated:
 
-   - "Project Title": Title of the project
-   - "Comment": A little description or comment refering to the project
-   - "Currency": Currency of the project
-   - "Project budget amount": Assigned budget to the project
+    - "Project Title": Title of the project
+    - "Comment": A little description or comment refering to the project
+    - "Currency": Currency of the project
+    - "Project budget amount": Assigned budget to the project
 
 5. Change the thumbnail to a picture that fits best for your project
 
@@ -194,7 +199,8 @@ Assign a User or Group to a project to show which User or Group is responsible f
 
 - Assigning a user/group needs project view permissions.
 - If the assignee has not all necessary view permissions yet a dialog opens which shows all required permissions.
-  On confirm they can be granted if the assigner has grant permissions. (see [confirmation](../confirmation.md) for more Details)
+  On confirm they can be granted if the assigner has grant permissions. (see [confirmation](../confirmation.md) for more
+  Details)
 
 :::
 
@@ -226,26 +232,31 @@ The history contains all activities done directly refer to the current project.
 1. Click the button in the upper left corner to open the side-navigation-bar
 2. Click the "Projects" menu point
 3. Click the blue magnifier icon in the bottom right corner of a project
-4. Click the grey button below the '+' button on the right to open the right sidebar viewing the history of the current project.
+4. Click the grey button below the '+' button on the right to open the right sidebar viewing the history of the current
+   project.
 
 ![show project history](./../img/view_project_history.jpg)
 
 :::note
-The history of actions refer to workflowitems can only be viewed by the [history](./subproject.md) of a certain subproject
+The history of actions refer to workflowitems can only be viewed by the [history](./subproject.md) of a certain
+subproject
 :::
 
 ## Filter the history of a project
 
 **Description:**
 
-The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and an end date, where a timeframe can be determined. By clicking the search button, all values that are specified are used in the filter request.
+The entries in the history can be filtered by 4 different values: publisher, type of event, a start date and an end
+date, where a timeframe can be determined. By clicking the search button, all values that are specified are used in the
+filter request.
 
 **Instructions:**
 
 1. Click the button in the upper left corner to open the side-navigation-bar
 2. Click the "Projects" menu point
 3. Click the blue magnifier icon in the bottom right corner of a project
-4. Click the grey button below the '+' button on the right to open the right sidebar viewing the history of the current project
+4. Click the grey button below the '+' button on the right to open the right sidebar viewing the history of the current
+   project
 5. Click on the top of the sidebar to open the expandable filter area
 
 ![filter project history](./../img/filter_project_history.jpg)

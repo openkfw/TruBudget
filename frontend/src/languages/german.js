@@ -383,7 +383,7 @@ const de = {
     update: "aktualisieren",
     viewDetails: "Details anzeigen",
     viewHistory: "History anzeigen",
-    viewSummary: "Zusammenfassung anzeigen"
+    list: "Zusammenfassung anzeigen"
   },
 
   analytics: {
@@ -572,7 +572,7 @@ const de = {
     project_intent_revokePermission: "German: Revoke permissions",
     project_update: "German: Update project",
     project_viewDetails: "German: View project details",
-    project_viewSummary: "German: View project in overview",
+    project_list: "German: View project in overview",
     read_only: "German: Read-only permissions",
     subproject_assign: "German: Assign subproject",
     subproject_close: "German: Close subproject",
@@ -583,7 +583,7 @@ const de = {
     subproject_reorderWorkflowitems: "German: Reorder workflowitems",
     subproject_update: "German: Update subproject",
     subproject_viewDetails: "German: View subproject details",
-    subproject_viewSummary: "German: View subproject overview",
+    subproject_list: "German: View subproject overview",
     view: "German: View permissions",
     workflowitem_assign: "German: Assign workflowitem",
     workflowitem_close: "German: Close workflowitem",

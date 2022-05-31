@@ -14,7 +14,7 @@ const address = "address";
 const executingUser: ServiceUser = { id: "mstein", groups: [], address };
 const testUser: ServiceUser = { id: "testUser", groups: [], address };
 const permissions: Permissions = {
-  "subproject.viewSummary": ["testUser"],
+  "subproject.list": ["testUser"],
   "subproject.viewDetails": [],
   "subproject.intent.revokePermission": ["testUser"],
   "subproject.intent.grantPermission": ["mstein"],
@@ -119,7 +119,7 @@ describe("grant subproject permission: preconditions", () => {
   });
   it("No changes to existing permissions emit no new events", async () => {
     const existingPermissions: Permissions = {
-      "subproject.viewSummary": ["testUser"],
+      "subproject.list": ["testUser"],
       "subproject.viewDetails": ["testUser"],
       "subproject.intent.revokePermission": ["testUser"],
       "subproject.intent.grantPermission": ["mstein"],

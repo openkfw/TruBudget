@@ -1,12 +1,12 @@
 import { assert, expect } from "chai";
 import { Ctx } from "lib/ctx";
-import VError from "verror";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
 import { Workflowitem } from "../workflow/workflowitem";
 import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
 import * as DocumentShared from "./document_shared";
 import { getDocument } from "./workflowitem_document_download";
+import VError from "verror";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -91,7 +91,7 @@ const baseWorkflowitem: Workflowitem = {
   description: "dummy",
   amountType: "N/A",
   documents: documentReferences,
-  permissions: { "workflowitem.view": ["alice"] },
+  permissions: { "workflowitem.list": ["alice"] },
   log: [],
   additionalData: {},
   workflowitemType: "general",
@@ -151,7 +151,7 @@ describe("Download documents attached to a workflowitem", () => {
     expect(result).to.include({ fileName: "externalStorageFile" });
   });
 
-  it("Downloading existing documents does not work without workflowitem.view permission", async () => {
+  it("Downloading existing documents does not work without workflowitem.list permission", async () => {
     const storageResult = await getDocument(ctx, bob, projectId, documentIdStorage, {
       ...repository,
       getDocumentFromStorage: () => Promise.resolve(uploadedStorageDocument),

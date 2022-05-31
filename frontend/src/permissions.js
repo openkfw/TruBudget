@@ -7,7 +7,7 @@ export const canCreateProject = i => can("global.createProject", i);
 export const canViewProjectPermissions = i => can("project.intent.listPermissions", i);
 export const canGrantProjectPermissions = i => can("project.intent.grantPermissions", i);
 export const canViewProjectDetails = i => can("project.viewDetails", i);
-export const canViewProjectSummary = i => can("project.viewSummary", i);
+export const canViewProjectSummary = i => can("project.list", i);
 export const canUpdateProject = i => can("project.update", i);
 export const canAssignProject = i => can("project.assign", i);
 export const canCreateSubProject = i => can("project.createSubproject", i);
@@ -16,7 +16,7 @@ export const canCreateSubProject = i => can("project.createSubproject", i);
 export const canViewSubProjectPermissions = i => can("subproject.intent.listPermissions", i);
 export const canGrantSubProjectPermissions = i => can("subproject.intent.grantPermissions", i);
 export const canViewSubProjectDetails = i => can("subproject.viewDetails", i);
-export const canViewSubProjectSummary = i => can("subproject.viewSummary", i);
+export const canViewSubProjectSummary = i => can("subproject.list", i);
 export const canUpdateSubProject = i => can("subproject.update", i);
 export const canAssignSubProject = i => can("subproject.assign", i);
 export const canCreateWorkflowItems = i => can("subproject.createWorkflowitem", i);
@@ -53,7 +53,7 @@ export const globalIntentOrder = [
 export const projectIntentOrder = [
   {
     name: "view",
-    intents: ["project.viewSummary", "project.viewDetails", "project.intent.listPermissions"]
+    intents: ["project.list", "project.viewDetails", "project.intent.listPermissions"]
   },
   {
     name: "write",
@@ -68,7 +68,7 @@ export const projectIntentOrder = [
 export const subProjectIntentOrder = [
   {
     name: "view",
-    intents: ["subproject.viewSummary", "subproject.viewDetails", "subproject.intent.listPermissions"]
+    intents: ["subproject.list", "subproject.viewDetails", "subproject.intent.listPermissions"]
   },
   {
     name: "write",
@@ -87,7 +87,7 @@ export const subProjectIntentOrder = [
 export const workflowItemIntentOrder = [
   {
     name: "view",
-    intents: ["workflowitem.view", "workflowitem.intent.listPermissions"]
+    intents: ["workflowitem.list", "workflowitem.intent.listPermissions"]
   },
   {
     name: "write",

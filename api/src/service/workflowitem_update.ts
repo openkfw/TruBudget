@@ -133,7 +133,7 @@ export async function updateWorkflowitem(
     modification.documents.length > 0
   ) {
     for (const doc of modification.documents) {
-      const users = workflowitem.permissions["workflowitem.view"];
+      const users = workflowitem.permissions["workflowitem.list"];
       if (users) {
         const organizations = await getOrganizations(users);
 

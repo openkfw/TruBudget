@@ -6,7 +6,7 @@ import Intent from "./intents";
 const requiredPermissions = new Map<Intent, Intent[]>([
   ["global.grantPermission", ["global.listPermissions"]],
   ["global.revokePermission", ["global.listPermissions"]],
-  ["global.createProject", ["project.viewSummary", "project.viewDetails"]],
+  ["global.createProject", ["project.list", "project.viewDetails"]],
   ["project.intent.grantPermission", ["project.intent.listPermissions"]],
   ["project.intent.revokePermission", ["project.intent.listPermissions"]],
   ["project.assign", ["project.viewDetails"]],
@@ -18,12 +18,12 @@ const requiredPermissions = new Map<Intent, Intent[]>([
   ["subproject.assign", ["subproject.viewDetails"]],
   ["subproject.update", ["subproject.viewDetails"]],
 
-  ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.view"]],
-  ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.view"]],
+  ["subproject.createWorkflowitem", ["subproject.viewDetails", "workflowitem.list"]],
+  ["subproject.reorderWorkflowitems", ["subproject.viewDetails", "workflowitem.list"]],
   ["workflowitem.intent.grantPermission", ["workflowitem.intent.listPermissions"]],
   ["workflowitem.intent.revokePermission", ["workflowitem.intent.listPermissions"]],
-  ["workflowitem.assign", ["workflowitem.view"]],
-  ["workflowitem.update", ["workflowitem.view"]],
+  ["workflowitem.assign", ["workflowitem.list"]],
+  ["workflowitem.update", ["workflowitem.list"]],
 ]);
 
 export function onlyAllowedData(event: Event, userIntents: Intent[]): Event | null {

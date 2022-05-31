@@ -6,13 +6,17 @@ sidebar_position: 3
 
 **Description:**
 
-The purpose of a permission is to allow access to information or functionality to certain users only. Most permissions are self explaining, but if more information are required click on the intent of the permission. The intent for example for "create User" would be global.createUser. A complete [list of all existing permissions](#permission-intents) can be found at the end of this document.
+The purpose of a permission is to allow access to information or functionality to certain users only. Most permissions
+are self explaining, but if more information are required click on the intent of the permission. The intent for example
+for "create User" would be global.createUser. A complete [list of all existing permissions](#permission-intents) can be
+found at the end of this document.
 
 ## Global permissions
 
 **Description:**
 
-All permissions not limited to projects, subprojects or workflowitems are global permissions. Global permissions can be added to users or to groups.
+All permissions not limited to projects, subprojects or workflowitems are global permissions. Global permissions can be
+added to users or to groups.
 All global permissions are documented at the bottom of this document.
 
 ### New permissions
@@ -45,7 +49,8 @@ A sample set of global permissions are:
 
 **Description:**
 
-These section describes all permissions related to a project. Selecting a user or group grant them the specific permission and deselecting revoke them the specific permissions.
+These section describes all permissions related to a project. Selecting a user or group grant them the specific
+permission and deselecting revoke them the specific permissions.
 
 **Instructions:**
 
@@ -54,7 +59,8 @@ These section describes all permissions related to a project. Selecting a user o
 3. Click the lock icon in the bottom right corner of a project to open the permissions dialog
 4. After selecting/deselecting certain users or groups click on submit to open a confirmation
 5. If additional permissions are required the confirmation dialog lists these.
-6. Confirming the dialog first executes all additional actions listed if there are any, then grant/revoke the users/groups
+6. Confirming the dialog first executes all additional actions listed if there are any, then grant/revoke the
+   users/groups
 7. If no additional permissions have to be granted the users/groups are granted/revoked all selected permissions
 
 ![open project permission dialog](./../img/open_project_permission_dialog.jpg)
@@ -123,13 +129,15 @@ These section describes all permissions related to a subproject
 4. Click the lock icon on the right of the subproject to open the permissions dialog
 5. After selecting/deselecting certain users or groups click on submit to open a confirmation
 6. If additional permissions are required the confirmation dialog lists these.
-7. Confirming the dialog first executes all additional actions listed if there are any, then grant/revoke the users/groups
+7. Confirming the dialog first executes all additional actions listed if there are any, then grant/revoke the
+   users/groups
 8. If no additional permissions have to be granted the users/groups are granted/revoked all selected permissions
 
 ![open subproject permission dialog](./../img/open_subproject_permission_dialog.jpg)
 
 :::note
-More information about a specific action on a subproject can be found in the [subproject section](./../projects/subproject.md).
+More information about a specific action on a subproject can be found in
+the [subproject section](./../projects/subproject.md).
 :::
 
 ### View permissions
@@ -196,7 +204,8 @@ These section describes all permissions related to a workflowitem
 5. Click the lock icon on the right of the workflowitem to open the permissions dialog
 6. After selecting/deselecting certain users or groups click on submit to open a confirmation
 7. If additional permissions are required the confirmation dialog lists these.
-8. Confirming the dialog first executes all additional actions listed if there are any, then grant/revoke the users/groups
+8. Confirming the dialog first executes all additional actions listed if there are any, then grant/revoke the
+   users/groups
 9. If no additional permissions have to be granted the users/groups are granted/revoked all selected permissions
 
 ![open workflowitem permission dialog](./../img/open_workflowitem_permission_dialog.jpg)
@@ -219,7 +228,8 @@ Following intents do exist related to view permissions of a subproject:
 
 - If the grantee has not all necessary view permissions yet a dialog opens which shows all required permissions.
   On confirm they are granted. (see [confirmation](./../confirmation.md) for more Details)
-- "view project overview", "view project details", "view subproject overview" and "view subproject details" are also required to view a workflowitem
+- "view project overview", "view project details", "view subproject overview" and "view subproject details" are also
+  required to view a workflowitem
 
 :::
 
@@ -254,7 +264,8 @@ On confirm they are granted. (see [confirmation](./../confirmation.md) for more 
 
 ## Permission intents
 
-Following list describes all existing permissions. If you need more information how you can make use of a specific permission, access the documentation of the specific section via the [User-Guide overview](../README.md).
+Following list describes all existing permissions. If you need more information how you can make use of a specific
+permission, access the documentation of the specific section via the [User-Guide overview](../README.md).
 
 | Intent                                        | Description                                                                                                            |
 | :-------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
@@ -274,7 +285,7 @@ Following list describes all existing permissions. If you need more information 
 | network.voteForPermission                     | vote for a new organization to join the network                                                                        |
 | network.approveNewOrganization                | approve a new organization to join the network                                                                         |
 | network.approveNewNodeForExistingOrganization | approve a new node for an existing organization                                                                        |
-| project.viewSummary                           | show the project on the overview site                                                                                  |
+| project.list                           | show the project on the overview site                                                                                  |
 | project.viewDetails                           | show the project's details by accessing the project details site                                                       |
 | project.assign                                | assign a user/group to the project                                                                                     |
 | project.update                                | the intent has no influence on the trubudget website                                                                   |
@@ -284,7 +295,7 @@ Following list describes all existing permissions. If you need more information 
 | project.createSubproject                      | create a subproject                                                                                                    |
 | project.viewHistory                           | access the history of the project                                                                                      |
 | project.close                                 | close the project                                                                                                      |
-| subproject.viewSummary                        | show the subproject on the project detail site                                                                         |
+| subproject.list                        | show the subproject on the project detail site                                                                         |
 | subproject.viewDetails                        | show the subproject's details by accessing the subproject details site                                                 |
 | subproject.assign                             | assign a user/group to the subproject                                                                                  |
 | subproject.update                             | edit title, currency, comment or budget amount of the subproject                                                       |
@@ -295,7 +306,7 @@ Following list describes all existing permissions. If you need more information 
 | subproject.viewHistory                        | access the history of the subproject                                                                                   |
 | subproject.close                              | close the subproject                                                                                                   |
 | subproject.reorderWorkflowitems               | reorder workflowitems that are not redacted/closed                                                                     |
-| workflowitem.view                             | show the workflowitem' details on the subproject detail site                                                           |
+| workflowitem.list                             | show the workflowitem' details on the subproject detail site                                                           |
 | workflowitem.assign                           | assign a user/group to the workflowitem                                                                                |
 | workflowitem.update                           | edit title, comment, budget or add documents to the workflowitem                                                       |
 | workflowitem.intent.listPermissions           | show which user/group has which permission on the workflowitem                                                         |

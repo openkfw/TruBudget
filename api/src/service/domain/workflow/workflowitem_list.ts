@@ -16,6 +16,7 @@ interface Repository {
     projectId: string,
     subprojectId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
+
   getWorkflowitemOrdering(
     projectId: string,
     subprojectId: string,
@@ -49,7 +50,7 @@ export async function getAllVisible(
   const visibleWorkflowitems = sortedWorkflowitems
     // Redact workflowitems the user is not entitled to see:
     .map((item) =>
-      user.id === "root" || Workflowitem.permits(item, user, ["workflowitem.view"])
+      user.id === "root" || Workflowitem.permits(item, user, ["workflowitem.list"])
         ? item
         : Workflowitem.redact(item),
     )
@@ -61,13 +62,13 @@ export async function getAllVisible(
 
 type EventType = string;
 const requiredPermissions = new Map<EventType, Intent[]>([
-  ["workflowitem_created", ["workflowitem.view"]],
+  ["workflowitem_created", ["workflowitem.list"]],
   ["workflowitem_permission_granted", ["workflowitem.intent.listPermissions"]],
   ["workflowitem_permission_revoked", ["workflowitem.intent.listPermissions"]],
-  ["workflowitem_assigned", ["workflowitem.view"]],
-  ["workflowitem_updated", ["workflowitem.view"]],
-  ["workflowitem_closed", ["workflowitem.view"]],
-  ["workflowitems_reordered", ["workflowitem.view"]],
+  ["workflowitem_assigned", ["workflowitem.list"]],
+  ["workflowitem_updated", ["workflowitem.list"]],
+  ["workflowitem_closed", ["workflowitem.list"]],
+  ["workflowitems_reordered", ["workflowitem.list"]],
 ]);
 
 function traceEventsVisibleTo(workflowitem: Workflowitem.Workflowitem, user: ServiceUser) {

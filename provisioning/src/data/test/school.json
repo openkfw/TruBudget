@@ -11,12 +11,30 @@
     }
   ],
   "permissions": {
-    "project.viewDetails": ["mstein", "jxavier"],
-    "project.viewSummary": ["mstein", "jxavier"],
-    "project.assign": ["mstein", "jxavier"],
-    "project.intent.listPermissions": ["mstein", "jxavier"],
-    "project.intent.grantPermission": ["mstein", "jxavier"],
-    "project.intent.revokePermission": ["mstein", "jxavier"]
+    "project.viewDetails": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.list": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.assign": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.listPermissions": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.grantPermission": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.revokePermission": [
+      "mstein",
+      "jxavier"
+    ]
   },
   "subprojects": [
     {
@@ -33,8 +51,12 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
       },
       "workflows": [
         {
@@ -43,7 +65,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -52,7 +76,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -61,7 +87,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -73,7 +101,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -82,7 +112,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -94,7 +126,9 @@
           "amountType": "disbursed",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -106,7 +140,9 @@
           "amountType": "disbursed",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -118,7 +154,9 @@
           "amountType": "disbursed",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         }
       ]
@@ -137,8 +175,12 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
       },
       "workflows": [
         {
@@ -147,7 +189,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -156,7 +200,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -164,7 +210,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -175,7 +223,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -186,7 +236,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -197,7 +249,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -205,7 +259,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -216,7 +272,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         }
       ]
@@ -234,8 +292,12 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
       },
       "workflows": [
         {
@@ -244,7 +306,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -253,7 +317,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -261,7 +327,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -272,7 +340,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -283,7 +353,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -294,7 +366,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -305,7 +379,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -313,7 +389,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         }
       ]
@@ -331,8 +409,12 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
       },
       "workflows": [
         {
@@ -341,7 +423,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -350,7 +434,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -358,7 +444,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -369,7 +457,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -380,7 +470,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -391,7 +483,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -402,7 +496,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         }
       ]
@@ -420,8 +516,12 @@
       ],
       "assignee": "jxavier",
       "permissions": {
-        "subproject.viewSummary": ["jxavier"],
-        "subproject.viewDetails": ["jxavier"]
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
       },
       "workflows": [
         {
@@ -430,7 +530,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -439,7 +541,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -447,7 +551,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -455,7 +561,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -466,7 +574,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -474,7 +584,9 @@
           "assignee": "jxavier",
           "amountType": "N/A",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         },
         {
@@ -485,7 +597,9 @@
           "amountType": "allocated",
           "exchangeRate": "1.0",
           "permissions": {
-            "workflowitem.view": ["jxavier"]
+            "workflowitem.list": [
+              "jxavier"
+            ]
           }
         }
       ]

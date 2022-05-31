@@ -28,8 +28,12 @@
           "name": "users",
           "createtxid": "c3d8d23f7fb031e07d30703f0f628d6f1eed926b96a50ba56b149edbda472816",
           "streamref": null,
-          "publishers": ["19j2Y8kJi86Hgh6Rs6ejUWmuVdM8iTUsh6mXgc"],
-          "keys": ["dviolin"],
+          "publishers": [
+            "19j2Y8kJi86Hgh6Rs6ejUWmuVdM8iTUsh6mXgc"
+          ],
+          "keys": [
+            "dviolin"
+          ],
           "offchain": false,
           "data": {
             "json": {
@@ -44,12 +48,24 @@
                 "address": "1Wo1or7MJyJGeSKwWwWapd7AtSD36LGmxd2ZHT",
                 "encryptedPrivKey": "73f99cc140d79fa6d9324538474899481b420c390f7bca08ced098fbe8ee058a422f6a20b360a22f1e01e31b9804ccf3ae5784307f84eb1f9a67e4380ccf5271e18cb8616426dd9361c12be83ea89ecf1b8aa2ead40c0b9303231fab8518e31f",
                 "permissions": {
-                  "user.view": ["dviolin"],
-                  "user.authenticate": ["dviolin"],
-                  "user.changePassword": ["dviolin"],
-                  "user.intent.listPermissions": ["dviolin"],
-                  "user.intent.grantPermission": ["dviolin"],
-                  "user.intent.revokePermission": ["dviolin"]
+                  "user.list": [
+                    "dviolin"
+                  ],
+                  "user.authenticate": [
+                    "dviolin"
+                  ],
+                  "user.changePassword": [
+                    "dviolin"
+                  ],
+                  "user.intent.listPermissions": [
+                    "dviolin"
+                  ],
+                  "user.intent.grantPermission": [
+                    "dviolin"
+                  ],
+                  "user.intent.revokePermission": [
+                    "dviolin"
+                  ]
                 },
                 "additionalData": {}
               },
@@ -67,7 +83,9 @@
         "hex": "76a914408d791858f1897ad169befba7ec3f9028239fb788ac",
         "reqSigs": 1,
         "type": "pubkeyhash",
-        "addresses": ["19j2Y8kJi86Hgh6Rs6ejUWmuVdM8iTUsh6mXgc"]
+        "addresses": [
+          "19j2Y8kJi86Hgh6Rs6ejUWmuVdM8iTUsh6mXgc"
+        ]
       }
     }
   ]

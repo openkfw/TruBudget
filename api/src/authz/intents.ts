@@ -1,13 +1,5 @@
-export type ExposableIntent = Exclude<
-  Intent,
-  "project.close" | "subproject.close" | "workflowitem.close"
->;
-
-/*
- * TODO For  version 2.x since breaking change
- * check if each permission matches an (permission-)endpoint (user.view matches user.list should be user.list
- * intends should be adapted to api endpoints (breaking change))
- */
+export type ExposableIntent = Exclude<Intent,
+  "project.close" | "subproject.close" | "workflowitem.close">;
 
 type Intent =
   | "global.listPermissions"
@@ -22,7 +14,7 @@ type Intent =
   | "global.createGroup"
   | "user.authenticate"
   | "user.changePassword"
-  | "user.view"
+  | "user.list"
   | "user.intent.listPermissions"
   | "user.intent.grantPermission"
   | "user.intent.revokePermission"
@@ -31,7 +23,7 @@ type Intent =
   | "project.intent.listPermissions"
   | "project.intent.grantPermission"
   | "project.intent.revokePermission"
-  | "project.viewSummary" // TODO: rename to project.list on endpoint: rename permission view summary to subproject list
+  | "project.list"
   | "project.viewDetails"
   | "project.viewHistory"
   | "project.assign"
@@ -43,7 +35,7 @@ type Intent =
   | "subproject.intent.listPermissions"
   | "subproject.intent.grantPermission"
   | "subproject.intent.revokePermission"
-  | "subproject.viewSummary" // TODO: rename to subproject.list on endpoint: rename permission view summary to subproject list
+  | "subproject.list"
   | "subproject.viewDetails"
   | "subproject.viewHistory"
   | "subproject.assign"
@@ -56,7 +48,7 @@ type Intent =
   | "workflowitem.intent.listPermissions"
   | "workflowitem.intent.grantPermission"
   | "workflowitem.intent.revokePermission"
-  | "workflowitem.view" // TODO (if possible) split into list and view details
+  | "workflowitem.list"
   | "workflowitem.viewHistory"
   | "workflowitem.assign"
   | "workflowitem.update"
@@ -120,7 +112,7 @@ export const userAssignableIntents: Intent[] = [
 export const userDefaultIntents: Intent[] = ["network.listActive"];
 
 export const userIntents: Intent[] = [
-  "user.view",
+  "user.list",
   "user.authenticate",
   "user.changePassword",
   "user.intent.listPermissions",
@@ -134,7 +126,7 @@ export const projectIntents: Intent[] = [
   "project.intent.listPermissions",
   "project.intent.grantPermission",
   "project.intent.revokePermission",
-  "project.viewSummary",
+  "project.list",
   "project.viewDetails",
   "project.viewHistory",
   "project.assign",
@@ -149,7 +141,7 @@ export const subprojectIntents: Intent[] = [
   "subproject.intent.listPermissions",
   "subproject.intent.grantPermission",
   "subproject.intent.revokePermission",
-  "subproject.viewSummary",
+  "subproject.list",
   "subproject.viewDetails",
   "subproject.viewHistory",
   "subproject.assign",
@@ -165,7 +157,7 @@ export const workflowitemIntents: Intent[] = [
   "workflowitem.intent.listPermissions",
   "workflowitem.intent.grantPermission",
   "workflowitem.intent.revokePermission",
-  "workflowitem.view",
+  "workflowitem.list",
   "workflowitem.viewHistory",
   "workflowitem.assign",
   "workflowitem.update",
@@ -188,13 +180,13 @@ export const allIntents: Intent[] = [
   "user.intent.listPermissions",
   "user.intent.grantPermission",
   "user.intent.revokePermission",
-  "user.view",
+  "user.list",
   "group.addUser",
   "group.removeUser",
   "project.intent.listPermissions",
   "project.intent.grantPermission",
   "project.intent.revokePermission",
-  "project.viewSummary",
+  "project.list",
   "project.viewDetails",
   "project.viewHistory",
   "project.assign",
@@ -206,7 +198,7 @@ export const allIntents: Intent[] = [
   "subproject.intent.listPermissions",
   "subproject.intent.grantPermission",
   "subproject.intent.revokePermission",
-  "subproject.viewSummary",
+  "subproject.list",
   "subproject.viewDetails",
   "subproject.viewHistory",
   "subproject.assign",
@@ -219,7 +211,7 @@ export const allIntents: Intent[] = [
   "workflowitem.intent.listPermissions",
   "workflowitem.intent.grantPermission",
   "workflowitem.intent.revokePermission",
-  "workflowitem.view",
+  "workflowitem.list",
   "workflowitem.viewHistory",
   "workflowitem.assign",
   "workflowitem.update",

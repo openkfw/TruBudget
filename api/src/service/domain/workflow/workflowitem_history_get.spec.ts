@@ -29,7 +29,7 @@ const filter: Filter = {
 };
 
 const permissions: Permissions = {
-  "workflowitem.view": ["alice"],
+  "workflowitem.list": ["alice"],
   "workflowitem.viewHistory": ["alice"],
 };
 
@@ -114,7 +114,7 @@ describe("get worklfowitem history: authorization", () => {
   it("With only view permissions, a user can still get a worklfowitem's history.", async () => {
     const modifiedWorkflowitem: Workflowitem = {
       ...baseWorkflowitem,
-      permissions: { "workflowitem.view": ["alice"] },
+      permissions: { "workflowitem.list": ["alice"] },
     };
     const result = await getHistory(ctx, alice, projectId, subprojectId, workflowitemId, {
       ...baseRepository,
