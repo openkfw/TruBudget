@@ -6,14 +6,12 @@ interface MinioConfig {
   bucketName: string;
 }
 interface Config {
-  host: string;
   port: number;
   allowOrigin: string;
   storage: MinioConfig;
 }
 
 const config: Config = {
-  host: process.env.STORAGE_SERVICE_HOST || "localhost",
   port: Number(process.env.PORT) || 8090,
   allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
   storage: {
