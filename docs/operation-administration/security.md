@@ -91,7 +91,7 @@ connect-to-an-existing-network/how-to-connect-to-a-master-node.md
 
 First of all, internal systems can’t be accessed through other TruBudget instances/ nodes. Data can be accessed directly through the multichain-cli available on TruBudget’s node instance or through TruBudget’s API. Direct access to a node should be restricted by the organization itself. Access using the routes of TruBudget’s API is protected by user authorization through JSON Web Tokens. There are 3 different secrets which an organization must provide to setup a new node:
 
-- `RPC_PASSWORD`: Additionally, an API can only connect to a node in the network knowing the right `RPC_PASSWORD` which is set by the first node (alpha node) of the blockchain network.
+- `MULTICHAIN_RPC_PASSWORD`: Additionally, an API can only connect to a node in the network knowing the right `MULTICHAIN_RPC_PASSWORD` which is set by the first node (alpha node) of the blockchain network.
 - `ORGANIZATION_VAULT_SECRET`: Every node belongs to an organization which has its own stream on the multichain. The data in this stream can only be accessed through the node which belongs to this organization using the `ORGANIZATION_VAULT_SECRET`. This secret is shared between all nodes of one organization.
 - `ROOT_SECRET`: The root secret is the password for the root user. If you start with an empty block-chain, the root user is needed e.g. to add other users or approve new nodes.
 
