@@ -46,7 +46,8 @@
     "lint-modified": "bash -c '$(npm bin)/tslint -c tslint.json --project tsconfig.json | grep -f <(git ls-files --modified) --color=always'",
     "tsc": "tsc",
     "test:here": "node ./runTest.js",
-    "generate-joi": "node dist/scripts/joiGenerator.js"
+    "generate-joi": "node dist/scripts/joiGenerator.js",
+    "build-docs": "bash ./buildDocs.sh"
   },
   "nyc": {
     "include": [
@@ -125,6 +126,9 @@
     "ts-node-dev": "^1.1.8",
     "tsconfig-paths": "^3.11.0",
     "tslint": "*",
+    "typedoc": "^0.22.15",
+    "typedoc-plugin-markdown": "^3.12.1",
+    "typedoc-plugin-not-exported": "^0.1.6",
     "typescript": "^4.6.2"
   },
   "_moduleAliases": {

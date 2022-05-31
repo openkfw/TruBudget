@@ -1,7 +1,10 @@
 import logger from "./lib/logger";
 import { randomString } from "./service/hash";
 
-// All environment variables possible
+/**
+ * Shows all environment variables that the api can contain
+ * @notExported
+ */
 interface ProcessEnvVars {
   ORGANIZATION: string;
   ORGANIZATION_VAULT_SECRET: string;
@@ -21,6 +24,10 @@ interface ProcessEnvVars {
   STORAGE_SERVICE_EXTERNAL_URL: string;
 }
 
+/**
+ * Shows the type of an API configuration
+ * @notExported
+ */
 interface Config {
   organization: string;
   organizationVaultSecret: string;
@@ -57,6 +64,10 @@ interface Config {
   accessControlAllowOrigin: string;
 }
 
+/**
+ * environment variables which are required by the API
+ * @notExported
+ */
 const requiredEnvVars = ["ORGANIZATION", "ORGANIZATION_VAULT_SECRET"];
 
 export const config: Config = {
@@ -97,6 +108,12 @@ export const config: Config = {
   accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
 };
 
+/**
+ * Checks if required environment variables are set, stops the process otherwise
+ * @notExported
+ *
+ * @param requiredEnvVars environment variables required for the API to run
+ */
 function exitIfMissing(requiredEnvVars) {
   let envVarMissing = false;
   requiredEnvVars.forEach((env: string) => {
@@ -105,6 +122,15 @@ function exitIfMissing(requiredEnvVars) {
   if (envVarMissing) process.exit(1);
 }
 
+/**
+ * Checks if an environment variable is attached to the current process
+ * @notExported
+ *
+ * @param processEnv environment variables attached to the current process
+ * @param prop environment variable to check
+ * @param msg optional message to print out
+ * @returns a boolean indicating if an environment variable is attached to the current process
+ */
 const envExists = <T, K extends keyof T>(
   processEnv: Partial<T>,
   prop: K,
@@ -129,6 +155,12 @@ const envExists = <T, K extends keyof T>(
   }
 };
 
+/**
+ * Gets the configuration used to start the API
+ *
+ * @returns the configuration {@link Config}
+ * @notExported
+ */
 const getValidConfig = (): Config => {
   exitIfMissing(requiredEnvVars);
 
@@ -150,7 +182,11 @@ const getValidConfig = (): Config => {
 
   return config;
 };
-
+/**
+ * Checks if a production environment is running
+ *
+ * @returns true if the current environment is a production environment. otherwise false
+ */
 export const isProductionEnvironment = () => config.nodeEnv === "production";
 
 declare global {

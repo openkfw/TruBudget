@@ -28,13 +28,19 @@ const requestBodySchema = Joi.array().items({
   }).required(),
 });
 
+/**
+ * Validates the request body of the http request
+ *
+ * @param body the request body
+ * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
+ */
 function validateRequestBody(body): Result.Type<WorkflowitemTraceEvent[]> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
 }
 
 /**
- * If no filter option is provided the return value is undefined
+ * Creates a filter for returning workflowitem history. If no filter option is provided the return value is undefined
  */
 const createFilter = (reply: FastifyReply, request: FastifyRequest): History.Filter | undefined => {
   const { publisher, startAt, endAt, eventType } = request.query as Querystring;
@@ -108,6 +114,12 @@ const createFilter = (reply: FastifyReply, request: FastifyRequest): History.Fil
   } as History.Filter;
 };
 
+/**
+ * Creates the swagger schema for the `/workflowitem.viewHistory` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -205,6 +217,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the service that returns the history of a workflowitem
+ */
 interface Service {
   getWorkflowitemHistory(
     ctx: Ctx,
@@ -216,6 +231,9 @@ interface Service {
   ): Promise<Result.Type<WorkflowitemTraceEvent[]>>;
 }
 
+/**
+ * Represents the query string required for this endpoint
+ */
 interface Querystring extends RequestGenericInterface {
   projectId: string;
   subprojectId: string;
@@ -228,6 +246,13 @@ interface Querystring extends RequestGenericInterface {
   eventType?: string;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/workflowitem.viewHistory` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

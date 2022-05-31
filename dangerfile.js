@@ -166,7 +166,7 @@ if (
   if (apiResourceHasChanged && !excelExportSources.edited) {
     warn(
       "One of the resource files in the api domain layer (project.ts/subproject.ts/workflowitem.ts) were edited. " +
-        "If a new property was added the excel-export project has to be adapted."
+      "If a new property was added the excel-export project has to be adapted."
     );
   }
 

@@ -25,6 +25,12 @@ const requestBodySchema = Joi.array().items({
   }).required(),
 });
 
+/**
+ * Validates the request body of the http request
+ *
+ * @param body the request body
+ * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
+ */
 function validateRequestBody(body): Result.Type<SubprojectTraceEvent[]> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
@@ -106,6 +112,12 @@ const createFilter = (reply: FastifyReply, request: FastifyRequest): History.Fil
   } as History.Filter;
 };
 
+/**
+ * Creates the swagger schema for the `/subproject.viewHistory` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -217,6 +229,13 @@ interface Querystring extends RequestGenericInterface {
   eventType?: string;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/subproject.viewHistory` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

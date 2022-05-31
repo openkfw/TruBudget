@@ -21,6 +21,9 @@ jobs:
         id: sha
         run: |
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Generate and format API docs
+        run: echo "Generating api documentation" && cd api && npm install --no-audit && npm run build-docs
+        shell: bash
       - name: Publish Doc
         env:
           USE_SSH: true

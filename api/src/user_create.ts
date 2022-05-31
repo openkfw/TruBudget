@@ -12,6 +12,9 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserCreate from "./service/domain/organization/user_create";
 
+/**
+ * Represents the request body of the endpoint
+ */
 interface RequestBodyV1 {
   apiVersion: "1.0";
   data: {
@@ -39,6 +42,12 @@ const requestBodyV1Schema = Joi.object({
 type RequestBody = RequestBodyV1;
 const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
 
+/**
+ * Validates the request body of the http request
+ *
+ * @param body the request body
+ * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
+ */
 function validateRequestBody(body): Result.Type<RequestBody> {
   const { error, value } = Joi.validate(body, requestBodySchema);
   return !error ? value : error;
@@ -51,6 +60,12 @@ interface ResponseUserRecord {
   address: string;
 }
 
+/**
+ * Creates the swagger schema for the `/global.createUser` endpoint
+ *
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
+ */
 function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
     preValidation: [server.authenticate],
@@ -131,6 +146,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   };
 }
 
+/**
+ * Represents the service that creates a user
+ */
 interface Service {
   createUser(
     ctx: Ctx,
@@ -139,6 +157,13 @@ interface Service {
   ): Promise<Result.Type<AuthToken>>;
 }
 
+/**
+ * Creates an http handler that handles incoming http requests for the `/global.createUser` route
+ *
+ * @param server the current fastify server instance
+ * @param urlPrefix the prefix of the http url
+ * @param service the service {@link Service} object used to offer an interface to the domain logic
+ */
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,

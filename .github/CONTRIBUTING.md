@@ -89,6 +89,10 @@ So when working on a feature branch make sure to:
 7. When your feature is ready make sure you have the latest changes by running `$ git pull --rebase origin main` on your feature branch and push the changes
 8. Merge the pull request into main
 
+### Code Documentation
+
+During development, make sure you document code additions or modifications in the API using code docs. Some guidelines on how this is done can be found in [this article](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html). All functions, interfaces, enums and important constants should contain code docs. By default, exported members will be visible in the [TruBudget official documentation](https://trubudget.net/docs). If you also want not exported members to be included in the documentation, this can be achieved using the `@notExported` tag provided by [this plugin](https://github.com/tomchen/typedoc-plugin-not-exported).
+
 ## Architecture Decisions
 
 When we make a significant decision in how to write code, or how to maintain the
