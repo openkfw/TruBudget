@@ -58,6 +58,7 @@ import * as ProjectAssignService from "./service/project_assign";
 import * as ProjectCloseService from "./service/project_close";
 import * as ProjectCreateService from "./service/project_create";
 import * as ProjectGetService from "./service/project_get";
+import * as ProjectViewHistoryService from "./service/project_history_get";
 import * as ProjectListService from "./service/project_list";
 import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectPermissionGrantService from "./service/project_permission_grant";
@@ -78,10 +79,8 @@ import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
-import * as SubprojectProjectedBudgetDeleteService
-  from "./service/subproject_projected_budget_delete";
-import * as SubprojectProjectedBudgetUpdateService
-  from "./service/subproject_projected_budget_update";
+import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
+import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserAuthenticateService from "./service/user_authenticate";
@@ -142,7 +141,6 @@ import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
-import * as ProjectViewHistoryService from "./service/project_history_get";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -503,7 +501,6 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
   getProjectHistory: (ctx, user, projectId, filter) =>
     ProjectViewHistoryService.getProjectHistory(db, ctx, user, projectId, filter),
 });
-
 
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, orga, amount, currencyCode) =>
@@ -880,7 +877,7 @@ server.listen(port, "0.0.0.0", async (err) => {
         );
         return false;
       }))
-    ) {
+  ) {
     await timeout(retryIntervalMs);
   }
   logger.debug({ multichainClient, organization }, "Organization stream present");

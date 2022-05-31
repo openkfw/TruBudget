@@ -10,11 +10,11 @@ interface ProcessEnvVars {
   ORGANIZATION_VAULT_SECRET: string;
   PORT: string;
   ROOT_SECRET: string;
-  RPC_HOST: string;
-  RPC_PORT: string;
-  RPC_USER: string;
-  RPC_PASSWORD: string;
-  BACKUP_API_PORT: string;
+  MULTICHAIN_RPC_HOST: string;
+  MULTICHAIN_RPC_PORT: string;
+  MULTICHAIN_RPC_USER: string;
+  MULTICHAIN_RPC_PASSWORD: string;
+  BLOCKCHAIN_PORT: string;
   JWT_SECRET: string;
   CI_COMMIT_SHA: string;
   BUILDTIMESTAMP: string;
@@ -81,16 +81,16 @@ export const config: Config = {
   rootSecret: process.env.ROOT_SECRET || randomString(32),
   // RPC is the mutlichain daemon
   rpc: {
-    host: process.env.RPC_HOST || "localhost",
-    port: Number(process.env.RPC_PORT) || 8000,
-    user: process.env.RPC_USER || "multichainrpc",
-    password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
+    host: process.env.MULTICHAIN_RPC_HOST || "localhost",
+    port: Number(process.env.MULTICHAIN_RPC_PORT) || 8000,
+    user: process.env.MULTICHAIN_RPC_USER || "multichainrpc",
+    password: process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
   },
   // Blockchain is the blockchain component of Trubudget
   // It serves e.g. backup or version endpoints
   blockchain: {
-    host: process.env.RPC_HOST || "localhost",
-    port: Number(process.env.BACKUP_API_PORT) || 8085,
+    host: process.env.MULTICHAIN_RPC_HOST || "localhost",
+    port: Number(process.env.BLOCKCHAIN_PORT) || 8085,
   },
   jwtSecret: process.env.JWT_SECRET || randomString(32),
   npmPackageVersion: process.env.npm_package_version || "",
