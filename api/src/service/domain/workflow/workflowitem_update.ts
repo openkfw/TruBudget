@@ -2,27 +2,27 @@ import isEqual = require("lodash.isequal");
 import uuid = require("uuid");
 import { VError } from "verror";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { config } from "../../../config";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+import {
+  GenericDocument,
+  hashDocument,
+  UploadedDocument,
+  DocumentReference,
+} from "../document/document";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import { config } from "../../../config";
-import {
-  DocumentReference,
-  GenericDocument,
-  hashDocument,
-  UploadedDocument,
-} from "../document/document";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import logger from "lib/logger";
 
 export interface RequestData {
   displayName?: string;

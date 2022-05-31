@@ -51,9 +51,10 @@ Depending on the Trubudget setup environment variables
 | CERT_CA_PATH                | no       |                           | The path to the certificate authority root certificate by the blockchain to authenticate with the connection peer. Note that self-signed certificates are not allowed in production environments.[More information can be found here](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-authentication/)                  |
 | CERT_KEY_PATH               | no       |                           | The path to the certificate key used by the blockchain to authenticate with the connection peer. [More information can be found here](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-authentication/)                                                                                                                  |
 
-<!-- TODO: move to Email-Notification Service -->
-
 #### Email-Service
+
+The email-service can be configured via the following environment variables.
+To get started have a look at dedicated [documentation](./email-notification-service/README)
 
 | Env Variable               | Required | Default Value    | Description                                                                                                                                                      |
 | -------------------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -65,8 +66,6 @@ Depending on the Trubudget setup environment variables
 | NOTIFICATION_MAX_LIFETIME  | no       | 24               | This number configure how long notifications shall be saved in the NOTIFICATION_PATH in hours                                                                    |
 | NOTIFICATION_SEND_INTERVAL | no       | 10               | This number configure in which interval the notifications in the NOTIFICATION_PATH should be checked and send                                                    |
 | JWT_SECRET                 | no       |                  | The `JWT_SECRET` is only required if the Email feature is enabled. It is used to authenticate the blockchain at the email-service, so it can send notifications. |
-
-<!-- TODO: attach to basic blockchain env list -->
 
 #### Kubernetes
 
@@ -99,40 +98,9 @@ Trubudget is a private Blockchain (BC) network. That means an Alpha need to give
 - Alpha node: I want to create a new network
 - Beta node: I want to participate on an existing network
 
-<!-- TODO: move to Email-Notification Service -->
-
 ## Mutual Authentication
 
 Mutual Authentication is a feature that ensures that only nodes with a valid certificate can access the network.
 A node, which wants to access the network, has to authenticate itself against the Alpha API with a valid certificate.
 If the certificate is not valid, the API will reject the request. If the certificate is valid, the API will accept the connection and the user can approve the connection.
 More information about mutual authentication can be found [here](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-authentication/).
-
-## Enable email notifications
-
-If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichain daemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification transactions. In other words The blockchain starts the background processes to send user ids to the email-notification service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false).
-
-The easiest way to get started is to use our pre-set `docker-compose` cluster available in the `email-notification` project which starts the whole TruBudget application including all email components(that means you need to install [Docker](https://www.docker.com/community-edition#/download)).
-The pre-set cluster contains:
-
-- 1 Alpha-Node
-- 1 Alpha API connected to Alpha-Node
-- 1 Frontend connected to Alpha-API
-- 1 Email-Service
-- 1 Email-Database (Postgres)
-
-When started the Email-Service sends email notifications to the configured SMTP-host. The default configuration is:
-
-- SMTP_HOST: host.docker.internal(localhost)
-- SMTP_PORT: 2500
-
-More details about the email notification service can be found in the [email notification documentation](../email-notification-service/README.md#)
-
-<!-- TODO: move to Email-Notification Service -->
-
-## Disable email notifications
-
-To disable email notifications for blockchain simply set the `EMAIL_SERVICE` to "DISABLED" or unset it.
-If disabled the multichain-feed is not applied to the multichain-daemon and notifications are not created.
-
-**Hint:** To prevent the frontend requesting an email-notifications readiness call simply unset the email notification service environment variable in the frontend. More details can be found in the [frontend documentation](../frontend/README.md#email-notifications)

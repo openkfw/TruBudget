@@ -31,9 +31,7 @@ export const store = configureStore(history);
 
 const muiTheme = createTheme({
   palette: {
-    primary: {
-      main: blue[500]
-    },
+    primary: blue,
     secondary: red,
     error: red,
     warning: {

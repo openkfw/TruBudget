@@ -1,3 +1,4 @@
+import logger from "lib/logger";
 import { VError } from "verror";
 import { encryptWithKey } from "../lib/asymmetricCrypto";
 import { Ctx } from "../lib/ctx";
@@ -12,7 +13,6 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as PublicKeyGet from "./public_key_get";
 import * as UserQuery from "./domain/organization/user_query";
 import { store } from "./store";
-import logger from "lib/logger";
 import { StoredDocument } from "./domain/document/document";
 
 export async function documentUpload(
