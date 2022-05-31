@@ -3,8 +3,8 @@ services:
   blockchain:
     build: .
     environment:
-      RPC_PORT: ${RPC_PORT}
-      RPC_PASSWORD: ${RPC_PASSWORD}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}

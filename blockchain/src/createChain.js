@@ -10,9 +10,9 @@ const configureChain = (
   isAlpha,
   chainName,
   multichainDir,
-  RPC_PORT,
-  RPC_USER,
-  RPC_PASSWORD,
+  MULTICHAIN_RPC_PORT,
+  MULTICHAIN_RPC_USER,
+  MULTICHAIN_RPC_PASSWORD,
   RPC_ALLOW_IP,
   isMultichainFeedEnabled,
 ) => {
@@ -35,18 +35,18 @@ const configureChain = (
   if (isMultichainFeedEnabled) {
     log.info("Multichain feed is enabled");
     shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-rpcport=${RPC_PORT}
-rpcuser=${RPC_USER}
-rpcpassword=${RPC_PASSWORD}
+rpcport=${MULTICHAIN_RPC_PORT}
+rpcuser=${MULTICHAIN_RPC_USER}
+rpcpassword=${MULTICHAIN_RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
 walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j
 EOF
 `);
   } else {
     shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-rpcport=${RPC_PORT}
-rpcuser=${RPC_USER}
-rpcpassword=${RPC_PASSWORD}
+rpcport=${MULTICHAIN_RPC_PORT}
+rpcuser=${MULTICHAIN_RPC_USER}
+rpcpassword=${MULTICHAIN_RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
 EOF
 `);
