@@ -169,15 +169,15 @@ const {
  * Initialize the components:
  */
 
-const multichainHost = process.env.RPC_HOST || "localhost";
-const backupApiPort = process.env.BACKUP_API_PORT || "8085";
+const multichainHost = process.env.MULTICHAIN_RPC_HOST || "localhost";
+const backupApiPort = process.env.BLOCKCHAIN_PORT || "8085";
 
 const rpcSettings: ConnectionSettings = {
   protocol: "http",
   host: multichainHost,
-  port: parseInt(process.env.RPC_PORT || "8000", 10),
-  username: process.env.RPC_USER || "multichainrpc",
-  password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
+  port: parseInt(process.env.MULTICHAIN_RPC_PORT || "8000", 10),
+  username: process.env.MULTICHAIN_RPC_USER || "multichainrpc",
+  password: process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
 };
 
 logger.info(
