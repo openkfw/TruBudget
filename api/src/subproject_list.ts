@@ -13,7 +13,6 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import { SubprojectTraceEvent } from "./service/domain/workflow/subproject_trace_event";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
 
 /**
@@ -84,43 +83,6 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
                           additionalData: { type: "object", additionalProperties: true },
                         },
                       },
-                      log: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          required: ["entityId", "entityType", "businessEvent", "snapshot"],
-                          properties: {
-                            entityId: {
-                              type: "string",
-                              example: "d0e8c69eg298c87e3899119e025eff1f",
-                            },
-                            entityType: { type: "string", example: "subproject" },
-                            businessEvent: {
-                              type: "object",
-                              required: ["type", "source", "time", "publisher"],
-                              properties: {
-                                type: { type: "string" },
-                                source: { type: "string" },
-                                time: { type: "string" },
-                                publisher: { type: "string" },
-                              },
-                              example: {
-                                type: "subproject_closed",
-                                source: "http",
-                                time: "2018-09-05T13:37:25.775Z",
-                                publisher: "jdoe",
-                              },
-                            },
-                            snapshot: {
-                              type: "object",
-                              required: ["displayName"],
-                              properties: {
-                                displayName: { type: "string", example: "Build a town-subproject" },
-                              },
-                            },
-                          },
-                        },
-                      },
                       allowedIntents: { type: "array", items: { type: "string" } },
                     },
                   },
@@ -139,7 +101,6 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
  * Represents the subproject that will be returned in the response
  */
 interface ExposedSubproject {
-  log: SubprojectTraceEvent[];
   allowedIntents: Intent[];
   data: {
     id: string;
@@ -221,7 +182,6 @@ export function addHttpHandler(
         }
         const subprojects: ExposedSubproject[] = subprojectsResult.map((subproject) => {
           return {
-            log: subproject.log,
             allowedIntents: getAllowedIntents(
               [user.id].concat(user.groups),
               subproject.permissions,

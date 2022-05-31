@@ -10,7 +10,6 @@ import { toUnixTimestampStr } from "./lib/datetime";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
-import { ProjectTraceEvent } from "./service/domain/workflow/project_trace_event";
 
 /**
  * Creates the swagger schema for the `/project.list` endpoint
@@ -45,7 +44,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
                   type: "array",
                   items: {
                     type: "object",
-                    required: ["data", "log", "allowedIntents"],
+                    required: ["data", "allowedIntents"],
                     properties: {
                       data: {
                         type: "object",
@@ -81,43 +80,6 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
                           },
                         },
                       },
-                      log: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          required: ["entityId", "entityType", "businessEvent", "snapshot"],
-                          properties: {
-                            entityId: {
-                              type: "string",
-                              example: "d0e8c69eg298c87e3899119e025eff1f",
-                            },
-                            entityType: { type: "string", example: "project" },
-                            businessEvent: {
-                              type: "object",
-                              required: ["type", "source", "time", "publisher"],
-                              properties: {
-                                type: { type: "string" },
-                                source: { type: "string" },
-                                time: { type: "string" },
-                                publisher: { type: "string" },
-                              },
-                              example: {
-                                type: "project_closed",
-                                source: "http",
-                                time: "2018-09-05T13:37:25.775Z",
-                                publisher: "jdoe",
-                              },
-                            },
-                            snapshot: {
-                              type: "object",
-                              required: ["displayName"],
-                              properties: {
-                                displayName: { type: "string", example: "Build a town-project" },
-                              },
-                            },
-                          },
-                        },
-                      },
                       allowedIntents: { type: "array", items: { type: "string" } },
                     },
                   },
@@ -133,7 +95,6 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
 }
 
 interface ExposedProject {
-  log: ProjectTraceEvent[];
   allowedIntents: Intent[];
   data: {
     id: string;
@@ -189,7 +150,6 @@ export function addHttpHandler(
         request.log.debug("Mapping intents and timestamp of projects");
         return projects.map((project) => {
           return {
-            log: project.log,
             allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
             data: {
               id: project.id,
