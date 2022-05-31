@@ -4,8 +4,8 @@ services:
     build:
       context: ../blockchain
     environment:
-      RPC_PORT: ${RPC_PORT}
-      RPC_PASSWORD: ${RPC_PASSWORD}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
       EMAIL_SERVICE: ${EMAIL_SERVICE}
       EMAIL_HOST: ${EMAIL_HOST}
@@ -17,7 +17,7 @@ services:
     links:
       - email-service
     ports:
-      - "8000:${RPC_PORT}"
+      - "8000:${MULTICHAIN_RPC_PORT}"
       - "8085:8085"
 
   email-service:
@@ -31,7 +31,7 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
-      EMAIL_PORT: ${EMAIL_PORT}
+      PORT: ${EMAIL_PORT}
       DEFAULT_LOG_LEVEL: ${DEFAULT_LOG_LEVEL}
       EMAIL_LOG_LEVEL: ${EMAIL_LOG_LEVEL}
       # AUTHENTICATION: none
@@ -58,10 +58,10 @@ services:
     environment:
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
-      RPC_HOST: ${RPC_HOST}
-      RPC_PORT: ${RPC_PORT}
+      MULTICHAIN_RPC_HOST: ${MULTICHAIN_RPC_HOST}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
-      RPC_PASSWORD: ${RPC_PASSWORD}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       DEFAULT_LOG_LEVEL: ${DEFAULT_LOG_LEVEL}
       API_LOG_LEVEL: ${API_LOG_LEVEL}

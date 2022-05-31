@@ -32,7 +32,7 @@ interface Config {
 const config: Config = {
   authentication: process.env.AUTHENTICATION?.toLowerCase() || "jwt",
   http: {
-    port: Number(process.env.EMAIL_PORT) || 8890,
+    port: Number(process.env.PORT) || 8890,
   },
   dbType: process.env.DB_TYPE || "pg",
   db: {
