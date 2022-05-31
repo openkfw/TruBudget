@@ -24,9 +24,14 @@ const dotenvPlugin = require("cypress-dotenv");
 function apiReportsReadiness(baseUrl) {
   return axios
     .get(`${baseUrl}/api/readiness`)
-    .then(() => {
-      console.log("API reports readiness!");
-      return true;
+    .then(response => {
+      if (response.status === 200) {
+        console.log("API reports readiness!");
+        return true;
+      } else {
+        console.log(`API is not ready yet and responded with: ${JSON.stringify(response)}`);
+        return false;
+      }
     })
     .catch(err => {
       console.log(`API is not ready yet: ${err}`);
@@ -38,7 +43,7 @@ function excelExportReportsReadiness(exportServiceBaseUrl) {
   return axios
     .get(`${exportServiceBaseUrl}/readiness`)
     .then(response => {
-      if (response.statusText === "OK") {
+      if (response.status === 200) {
         console.log("Excel-Export-Service reports readiness!");
         return true;
       } else {
