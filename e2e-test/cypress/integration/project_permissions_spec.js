@@ -360,7 +360,7 @@ describe("Project Permissions", function () {
         .children()
         .should("have.length", 1)
         .find("td")
-        .contains("list")
+        .contains("view")
         .should("have.length", 1);
     });
   });

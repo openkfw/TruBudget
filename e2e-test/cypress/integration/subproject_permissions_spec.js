@@ -400,7 +400,7 @@ describe("Subproject Permissions", function () {
             .should("be.visible")
             .children()
             .should("have.length", 1)
-            .contains("list");
+            .contains("view");
         });
         // 1 original actions
         cy.get("[data-test=original-actions]").within(() => {
