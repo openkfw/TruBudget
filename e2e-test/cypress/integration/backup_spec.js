@@ -1,4 +1,5 @@
 import "cypress-file-upload";
+
 let baseUrl, apiRoute;
 baseUrl = Cypress.env("CYPRESS_API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
 apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
@@ -13,9 +14,9 @@ describe("Backup Feature", function () {
       cy.wrap(
         Cypress.automation("remote:debugger:protocol", {
           command: "Page.setDownloadBehavior",
-          params: { behavior: "allow", downloadPath: "cypress/fixtures" }
+          params: {behavior: "allow", downloadPath: "cypress/fixtures"}
         }),
-        { log: false }
+        {log: false}
       );
     }
 
@@ -33,7 +34,7 @@ describe("Backup Feature", function () {
     cy.url().then(url => {
       if (!url.includes("/login")) {
         cy.get("[data-test=navbar-logout-button]").should("be.visible");
-        cy.get("[data-test=navbar-logout-button]").click({ force: true });
+        cy.get("[data-test=navbar-logout-button]").click({force: true});
         cy.location("pathname").should("eq", "/login");
       }
     });
@@ -41,7 +42,7 @@ describe("Backup Feature", function () {
 
   after(() => {
     //restore the backup to the original state
-    cy.task("checkFileExists", { file: pathToFile, timeout: 500 });
+    cy.task("checkFileExists", {file: pathToFile, timeout: 500});
     cy.task("awaitApiReady", baseUrl);
 
     cy.intercept(apiRoute + "/system.restoreBackup*").as("restore");
@@ -54,8 +55,8 @@ describe("Backup Feature", function () {
     cy.fixture(fileName, "binary").then(fileContent => {
       const blob = Cypress.Blob.binaryStringToBlob(fileContent);
       cy.get("#uploadBackup").attachFile(
-        { fileContent: blob, fileName, mimeType: "application/gzip", encoding: "utf-8" },
-        { subjectType: "input" }
+        {fileContent: blob, fileName, mimeType: "application/gzip", encoding: "utf-8"},
+        {subjectType: "input"}
       );
     });
     cy.task("deleteFile", pathToFile).then(success => {
@@ -84,7 +85,7 @@ describe("Backup Feature", function () {
   it("Tests the restore of an invalid backup", function () {
     const invalidBackupFile = "backup_invalidHash.gz";
 
-    cy.task("modifyHash", { pathToFile, newHash: "wrongHash", newBackup: invalidBackupFile }).then(success => {
+    cy.task("modifyHash", {pathToFile, newHash: "wrongHash", newBackup: invalidBackupFile}).then(success => {
       expect(success).to.eq(true);
     });
 
@@ -99,8 +100,8 @@ describe("Backup Feature", function () {
     cy.fixture(invalidBackupFile, "binary").then(fileContent => {
       const blob = Cypress.Blob.binaryStringToBlob(fileContent);
       cy.get("#uploadBackup").attachFile(
-        { fileContent: blob, fileName: invalidBackupFile, mimeType: "application/gzip", encoding: "utf-8" },
-        { subjectType: "input" }
+        {fileContent: blob, fileName: invalidBackupFile, mimeType: "application/gzip", encoding: "utf-8"},
+        {subjectType: "input"}
       );
       cy.wait("@restore")
         .should(interception => {
@@ -115,6 +116,11 @@ describe("Backup Feature", function () {
             .should("be.visible");
           cy.url()
             .should("include", "/projects")
+            .then(() => {
+              cy.get("[data-test^=project-title-]")
+                .invoke("text")
+                .should("not.include", "Backup Successful");
+            });
         });
     });
   });
@@ -133,8 +139,8 @@ describe("Backup Feature", function () {
     cy.fixture(wrongOrgaFile, "binary").then(fileContent => {
       const blob = Cypress.Blob.binaryStringToBlob(fileContent);
       cy.get("#uploadBackup").attachFile(
-        { fileContent: blob, fileName: wrongOrgaFile, mimeType: "application/gzip", encoding: "utf-8" },
-        { subjectType: "input" }
+        {fileContent: blob, fileName: wrongOrgaFile, mimeType: "application/gzip", encoding: "utf-8"},
+        {subjectType: "input"}
       );
       cy.wait("@restore")
         .should(interception => {
@@ -146,6 +152,11 @@ describe("Backup Feature", function () {
             .should("be.visible");
           cy.url()
             .should("include", "/projects")
+            .then(() => {
+              cy.get("[data-test^=project-title-]")
+                .invoke("text")
+                .should("not.include", "Backup Successful");
+            });
         });
     });
   });
