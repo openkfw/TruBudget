@@ -8,8 +8,10 @@ import { config } from "./config";
 import { writeXLSX } from "./excel";
 import strings, { languages } from "./localizeStrings";
 import logger from "./logger";
+import { CustomExpressRequest, CustomExpressResponse } from "./types";
 
 const DEFAULT_API_VERSION = "1.0";
+const API_BASE = `http://${config.apiHost}:${config.apiPort}/api`;
 
 const transformRequest: AxiosTransformer = (data) => {
   if (typeof data === "object") {
@@ -27,12 +29,16 @@ const excelService = express();
 excelService.use(createPinoExpressLogger(logger));
 excelService.use(express.json());
 excelService.use(cors({ origin: config.accessControlAllowOrigin }));
-excelService.use((req: express.Request, res: express.Response, next) => {
+excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) => {
+  res.apiBase = API_BASE;
+  next();
+});
+excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) => {
   res.setHeader("Content-Security-Policy", "default-src 'self'");
   next();
 });
 
-excelService.get("/readiness", async (req: express.Request, res: express.Response) => {
+excelService.get("/readiness", async (req: CustomExpressRequest, res: CustomExpressResponse) => {
   try {
     const ready = await getApiReadiness(axios, res.apiBase);
     res.status(200).send(ready);
@@ -42,11 +48,11 @@ excelService.get("/readiness", async (req: express.Request, res: express.Respons
   }
 });
 
-excelService.get("/health", (req: express.Request, res: express.Response) => {
+excelService.get("/health", (req: CustomExpressRequest, res: CustomExpressResponse) => {
   res.end();
 });
 
-excelService.get("/version", (req: express.Request, res: express.Response) => {
+excelService.get("/version", (req: CustomExpressRequest, res: CustomExpressResponse) => {
   res.status(200).send(
     JSON.stringify({
       release: process.env.npm_package_version,
@@ -56,11 +62,11 @@ excelService.get("/version", (req: express.Request, res: express.Response) => {
   );
 });
 
-excelService.get("/download", async (req: express.Request, res: express.Response) => {
+excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpressResponse) => {
   const token = req.headers.authorization;
   if (!token) {
     req.log.error("No authorization token was provided");
-    res.status(401).send("Please provide authorization token");
+    return res.status(401).send("Please provide authorization token");
   }
 
   try {
@@ -86,7 +92,7 @@ excelService.get("/download", async (req: express.Request, res: express.Response
     res.setHeader("Content-Disposition", "attachment; filename=TruBudget_Export.xlsx");
     res.setHeader("Transfer-Encoding", "chunked");
 
-    await writeXLSX(axios, req.headers.authorization, res);
+    await writeXLSX(axios, token, res);
   } catch (error) {
     req.log.error({ err: error }, "Error while creating excel export");
     if (error.response) {
