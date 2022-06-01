@@ -4,9 +4,9 @@ services:
     build:
       context: ../blockchain
     environment:
-      RPC_PORT: ${RPC_PORT}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-      RPC_PASSWORD: ${RPC_PASSWORD}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
     ports:
-      - "8000:${RPC_PORT}"
+      - "8000:${MULTICHAIN_RPC_PORT}"
       - "8085:8085"

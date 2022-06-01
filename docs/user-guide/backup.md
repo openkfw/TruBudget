@@ -2,7 +2,7 @@
 
 Only the admin user (root) is allowed to create and restore backups of blockchain states.
 
-While creating or restoring a backup the blockchain needs to be stopped. **During that time errors might pop up in the frontend**. Furthermore the RPC_PASSWORD of the Blockchain Backup needs to be equal to the password that is currently in use, that should be the case using the default configuration.
+While creating or restoring a backup the blockchain needs to be stopped. **During that time errors might pop up in the frontend**. Furthermore the MULTICHAIN_RPC_PASSWORD of the Blockchain Backup needs to be equal to the password that is currently in use, that should be the case using the default configuration.
 
 ### Create a Backup
 
@@ -21,7 +21,7 @@ These section describes how to create a gzip file which contains the current blo
 :::note
 
 - Only the `root` user is allowed to restore backups of blockchain states.
-- The RPC_PASSWORD of the Blockchain Backup needs to be equal to the password that is currently in use.
+- The MULTICHAIN_RPC_PASSWORD of the Blockchain Backup needs to be equal to the password that is currently in use.
 
 :::
 
@@ -45,7 +45,7 @@ These section describes how to restore a blockchain state with an backup file cr
 :::note
 
 - Only the `root` user is allowed to restore backups of blockchain states.
-- The RPC_PASSWORD of the Blockchain Backup needs to be equal to the password that is currently in use.
+- The MULTICHAIN_RPC_PASSWORD of the Blockchain Backup needs to be equal to the password that is currently in use.
 - During restoring errors might pop up in the frontend of other users connected
 - After successfully restored the blockchain state, the user is logged out.
 

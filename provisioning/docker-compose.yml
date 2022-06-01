@@ -3,7 +3,7 @@ services:
   blockchain:
     image: trubudget/blockchain:main
     environment:
-      RPC_PORT: ${RPC_PORT}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       ORGANIZATION: ${ORGANIZATION_BC}
     ports:
       - "8000:8000"
@@ -14,8 +14,8 @@ services:
     environment:
       ORGANIZATION: ${ORGANIZATION_API}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
-      RPC_HOST: ${RPC_HOST}
-      RPC_PORT: ${RPC_PORT}
+      MULTICHAIN_RPC_HOST: ${MULTICHAIN_RPC_HOST}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       PORT: ${API_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
     links:

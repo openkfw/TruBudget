@@ -3,21 +3,21 @@ services:
   alpha:
     image: trubudget/blockchain:latest
     environment:
-      RPC_PORT: ${RPC_PORT}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
-      RPC_PASSWORD: ${RPC_PASSWORD}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
     volumes:
       - /tmp/bcAlphaVolume:/root/.multichain
     ports:
       - "7447:7447"
-      - "8000:${RPC_PORT}"
+      - "8000:${MULTICHAIN_RPC_PORT}"
   api:
     image: trubudget/api:latest
     environment:
-      RPC_HOST: ${RPC_HOST}
-      RPC_PORT: ${RPC_PORT}
+      MULTICHAIN_RPC_HOST: ${MULTICHAIN_RPC_HOST}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
-      RPC_PASSWORD: ${RPC_PASSWORD}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       PORT: ${API_PORT}
       ORGANIZATION: ${ORGANIZATION}
       ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}

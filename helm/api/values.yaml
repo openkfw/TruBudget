@@ -12,7 +12,7 @@ api:
     PORT: 8080
     JWT_SECRET: jwt-secret
     ROOT_SECRET: root-secret
-    RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
+    MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
     ORGANIZATION: ACMECorp
     ORGANIZATION_VAULT_SECRET: secret
     ENVIRONMENT_TYPE: TEST

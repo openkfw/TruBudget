@@ -50,9 +50,9 @@ Set the following environment variables to deploy a new Blockchain network:
 
 ```bash
 export P2P_PORT=7447
-export RPC_PORT=8000
-export RPC_USER="multichainrpc"
-export RPC_PASSWORD="password"
+export MULTICHAIN_RPC_PORT=8000
+export MULTICHAIN_RPC_USER="multichainrpc"
+export MULTICHAIN_RPC_PASSWORD="password"
 export MULTICHAIN_DIR="/root"
 ```
 
@@ -98,11 +98,11 @@ Set the environment parameters listed below on the machine:
 ```bash
 export ORGANIZATION=MyOrga
 export P2P_PORT=7447
-export RPC_PORT=8000
+export MULTICHAIN_RPC_PORT=8000
 export PORT=8080
-export RPC_HOST=127.0.0.1
-export RPC_USER=multichainrpc
-export RPC_PASSWORD=password
+export MULTICHAIN_RPC_HOST=127.0.0.1
+export MULTICHAIN_RPC_USER=multichainrpc
+export MULTICHAIN_RPC_PASSWORD=password
 export ORGANIZATION_VAULT_SECRET=secret
 export ROOT_SECRET=root-secret
 ```
@@ -342,9 +342,9 @@ To connect to an already existing Blockchain network **adapt** and set the follo
 
 ```bash
 export ORGANIZATION="YourOrga";
-export RPC_PORT=8000;
-export RPC_USER="multichainrpc";
-export RPC_PASSWORD="password";
+export MULTICHAIN_RPC_PORT=8000;
+export MULTICHAIN_RPC_USER="multichainrpc";
+export MULTICHAIN_RPC_PASSWORD="password";
 export RPC_ALLOW_IP="0.0.0.0/0";
 export MULTICHAIN_DIR="/root"
 export EXTERNAL_IP = [external IP here];
