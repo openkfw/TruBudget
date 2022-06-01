@@ -5,12 +5,9 @@ interface Config {
   accessControlAllowOrigin: string;
 }
 
-let apiHost: string = "localhost";
-let apiPort: number = 8080;
-
 export const config: Config = {
-  apiHost,
-  apiPort,
+  apiHost: process.env.API_HOST || "localhost",
+  apiPort: (process.env.API_PORT && parseInt(process.env.API_PORT, 10)) || 8080,
   serverPort: (process.env.PORT && parseInt(process.env.PORT, 10)) || 8888,
   accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
 };
