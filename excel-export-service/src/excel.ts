@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { Response } from "express";
+import { CustomExpressResponse } from "./types";
 import * as jwtDecode from "jwt-decode";
 import {
   getProjects,
@@ -19,7 +19,11 @@ const smallWidth = 20;
 const mediumWidth = 40;
 const largeWidth = 60;
 
-export async function writeXLSX(axios: AxiosInstance, token: string, res: Response): Promise<void> {
+export async function writeXLSX(
+  axios: AxiosInstance,
+  token: string,
+  res: CustomExpressResponse,
+): Promise<void> {
   logger.debug("Creating excel sheet");
   try {
     const options = {
