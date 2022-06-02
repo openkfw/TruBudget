@@ -224,7 +224,11 @@ export const registerRoutes = (
     getSchemaWithoutAuth("readiness"),
     async (_request, reply) => {
       if (await isReady(multichainClient)) {
-        return reply.status(200).send("Ready");
+        if (await storageServiceClient.isReady()) {
+          return reply.status(200).send("Ready");
+        } else {
+          return reply.status(504).send("Not ready. Waiting for storage service.");
+        }
       } else {
         return reply.status(504).send("Not ready. Waiting for multichain.");
       }

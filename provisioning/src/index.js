@@ -623,7 +623,7 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     log.info("Axios baseURL is set to " + axios.defaults.baseURL);
     axios.defaults.timeout = 10000;
 
-    await isApiReady();
+    await isApiReady(axios);
 
     currentUser.id = "root";
     currentUser.password = rootSecret;
