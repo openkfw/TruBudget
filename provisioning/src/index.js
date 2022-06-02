@@ -663,12 +663,16 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
 
 const port = process.env.API_PORT || 8080;
 const host = process.env.API_HOST || "localhost";
-const rootSecret = process.env.ROOT_SECRET;
+const rootSecret = process.env.ROOT_SECRET || "root-secret";
 const organization = process.env.ORGANIZATION;
 let currentUser = { id: "root", password: rootSecret };
 
 if (!organization) {
   log.info("ORGANIZATION not set");
+  process.exit(1);
+}
+if (!rootSecret) {
+  log.info("ROOT_SECRET not set");
   process.exit(1);
 }
 

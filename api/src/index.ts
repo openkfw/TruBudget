@@ -163,21 +163,20 @@ const {
   encryptionPassword,
   signingMethod,
   accessControlAllowOrigin,
+  rpc,
+  blockchain,
 } = getValidConfig();
 
 /*
  * Initialize the components:
  */
 
-const multichainHost = process.env.RPC_HOST || "localhost";
-const backupApiPort = process.env.BACKUP_API_PORT || "8085";
-
 const rpcSettings: ConnectionSettings = {
   protocol: "http",
-  host: multichainHost,
-  port: parseInt(process.env.RPC_PORT || "8000", 10),
-  username: process.env.RPC_USER || "multichainrpc",
-  password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
+  host: rpc.host,
+  port: rpc.port,
+  username: rpc.user,
+  password: rpc.password,
 };
 
 logger.info(
@@ -261,7 +260,7 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, storageServiceClient, () =>
+registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storageServiceClient, () =>
   Cache.invalidateCache(db),
 );
 
