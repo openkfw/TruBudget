@@ -15,22 +15,6 @@ storage_service_port=8090
 
 # Check if the required env variables are set otherwise localhost will be used.
 
-if [ -n "$TEST_API_HOST" ]; then
-    echo "TEST_API_HOST is deprecated. Use API_HOST instead."
-    api_host=$TEST_API_HOST
-fi
-if [ -n "$TEST_API_PORT" ]; then
-    echo "TEST_API_PORT is deprecated. Use API_PORT instead."
-    api_port=$TEST_API_PORT
-fi
-if [ -n "$PROD_API_HOST" ]; then
-    echo "PROD_API_HOST is deprecated. Use API_HOST instead."
-    api_host=$PROD_API_HOST
-fi
-if [ -n "$PROD_API_PORT" ]; then
-    echo "PROD_API_PORT is deprecated. Use API_PORT instead."
-    api_port=$PROD_API_PORT
-fi
 if [ -n "$API_HOST" ]; then
     api_host=$API_HOST
 fi
