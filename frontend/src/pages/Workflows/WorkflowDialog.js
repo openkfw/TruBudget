@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import _isEmpty from "lodash/isEmpty";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";

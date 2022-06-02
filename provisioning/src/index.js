@@ -2,6 +2,7 @@ const axios = require("axios");
 const { provisionUsers, provisionGroups } = require("./users_and_groups");
 const { readDirectory, readJsonFile } = require("./files");
 const {
+  isApiReady,
   authenticate,
   createProject,
   assignProject,
@@ -621,6 +622,8 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     axios.defaults.baseURL = `http://${host}:${port}/api`;
     log.info("Axios baseURL is set to " + axios.defaults.baseURL);
     axios.defaults.timeout = 10000;
+
+    await isApiReady(axios);
 
     currentUser.id = "root";
     currentUser.password = rootSecret;

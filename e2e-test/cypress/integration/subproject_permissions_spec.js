@@ -715,6 +715,7 @@ describe("Subproject Permissions", function() {
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=nameinput]").type("Test");
 
+      cy.get("[data-test=next]").click();
       cy.get("[data-test=submit]").click();
 
       cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
