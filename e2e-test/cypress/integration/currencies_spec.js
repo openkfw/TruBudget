@@ -3,7 +3,7 @@ import { currencies } from "../support/helper";
 import { toAmountString } from "../support/helper";
 
 describe("Describe Currencies", function() {
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
   const currenciesArray = Object.keys(currencies);
   const standardBudget = [
     {
@@ -12,11 +12,6 @@ describe("Describe Currencies", function() {
       currencyCode: "EUR"
     }
   ];
-
-  before(function() {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
 
   beforeEach(function() {
     cy.login();
@@ -59,6 +54,8 @@ describe("Describe Currencies", function() {
   });
 
   it("Sets the currency of a new project to EUR and checks if the Euro sign is displayed", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.list*").as("listProjects");
     cy.createProject("project budget test project", "project budget test", standardBudget);
     cy.visit("/projects").wait("@listProjects");
     cy.get("[data-test*=project-card]")
@@ -68,6 +65,8 @@ describe("Describe Currencies", function() {
   });
 
   it("Checking format for Value and currency Symbol of all languages", function() {
+    cy.server();
+    cy.route("GET", apiRoute + "/project.list*").as("listProjects");
     cy.createProject("project budget test project", "project budget test", standardBudget);
     cy.visit("/projects").wait("@listProjects");
     languages.forEach(languageElement => {

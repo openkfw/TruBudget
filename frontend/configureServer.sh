@@ -4,10 +4,8 @@
 sed -i "/proxy_pass/d" /etc/nginx/conf.d/default.conf
 
 # Set default values
-prod_host=localhost
-prod_port=8080
-test_host=localhost
-test_port=8080
+api_host=localhost
+api_port=8080
 export_host=localhost
 export_port=8888
 email_host=localhost
@@ -16,21 +14,15 @@ storage_service_host=localhost
 storage_service_port=8090
 
 # Check if the required env variables are set otherwise localhost will be used.
-if [ -n "$PROD_API_HOST" ]; then
-    prod_host=$PROD_API_HOST
+
+if [ -n "$API_HOST" ]; then
+    api_host=$API_HOST
 fi
 
-if [ -n "$PROD_API_PORT" ]; then
-    prod_port=$PROD_API_PORT
+if [ -n "$API_PORT" ]; then
+    api_port=$API_PORT
 fi
 
-if [ -n "$TEST_API_HOST" ]; then
-    test_host=$TEST_API_HOST
-fi
-
-if [ -n "$TEST_API_PORT" ]; then
-    test_port=$TEST_API_PORT
-fi
 if [ -n "$EXPORT_HOST" ]; then
     export_host=$EXPORT_HOST
 fi
@@ -65,17 +57,13 @@ rm /etc/nginx/conf.d/default-ssl.conf
 
 # add the proxy pass and store the conf into the nginx conf directory
 sed -i -e "/# pathToApi/i\\
-proxy_pass http://$prod_host:$prod_port/;" /etc/nginx/conf.d/default.conf
-sed -i -e "/# pathToTestApi/i\\
-proxy_pass http://$test_host:$test_port/;" /etc/nginx/conf.d/default.conf
+proxy_pass http://$api_host:$api_port;" /etc/nginx/conf.d/default.conf
 
 if [ "$REACT_APP_EXPORT_SERVICE_ENABLED" = true ]; then
     echo "Excel export has been enabled"
-    echo "http://$export_host:$export_port/test/"
-    sed -i -e "/# pathToProdExcelExport/i\\
-    proxy_pass http://$export_host:$export_port/prod/;" /etc/nginx/conf.d/default.conf
-    sed -i -e "/# pathToTestExcelExport/i\\
-    proxy_pass http://$export_host:$export_port/test/;" /etc/nginx/conf.d/default.conf
+    echo "http://$export_host:$export_port/"
+    sed -i -e "/# pathToExcelExport/i\\
+    proxy_pass http://$export_host:$export_port/;" /etc/nginx/conf.d/default.conf
 fi
 
 if [ "$REACT_APP_EMAIL_SERVICE_ENABLED" = true ]; then

@@ -65,6 +65,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [2.0.0] -
+
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+### Removed
+
+- Removed the option to upload documents to the MultiChain offchain storage [#1042](https://github.com/openkfw/TruBudget/issues/1042)
+
+<!-- ### Fixed -->
+
 ## [1.29.0] - 2022-03-02
 
 ### Added

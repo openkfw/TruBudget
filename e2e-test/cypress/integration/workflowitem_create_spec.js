@@ -1,16 +1,12 @@
 describe("Workflowitem create", function() {
   let projectId;
   let subprojectId;
-  let baseUrl, apiRoute;
+  const apiRoute = "/api";
   const today = new Date().toISOString();
 
-  before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
+
   before(() => {
     cy.login();
-
     cy.createProject("workflowitem create test project", "workflowitem create test", [])
       .then(({ id }) => {
         projectId = id;

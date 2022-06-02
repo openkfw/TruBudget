@@ -36,7 +36,7 @@ services:
     environment:
       API_HOST: ${API_HOST}
       API_PORT: ${API_PORT}
-      ENVIRONMENT_TYPE: ${ENVIRONMENT_TYPE}
+      PROVISIONING_TYPE: ${PROVISIONING_TYPE}
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
     links:
@@ -47,10 +47,8 @@ services:
     build:
       context: ../frontend
     environment:
-      PROD_API_HOST: ${PROD_API_HOST}
-      PROD_API_PORT: ${PROD_API_PORT}
-      TEST_API_HOST: ${TEST_API_HOST}
-      TEST_API_PORT: ${TEST_API_PORT}
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
       EXPORT_HOST: ${EXPORT_HOST}
       EXPORT_PORT: ${EXPORT_PORT}
@@ -64,10 +62,8 @@ services:
     build:
       context: .
     environment:
-      PROD_API_HOST: ${PROD_API_HOST}
-      PROD_API_PORT: ${PROD_API_PORT}
-      TEST_API_HOST: ${TEST_API_HOST}
-      TEST_API_PORT: ${TEST_API_PORT}
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
       JWT_SECRET: ${JWT_SECRET}

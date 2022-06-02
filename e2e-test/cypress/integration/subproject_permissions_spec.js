@@ -1,26 +1,22 @@
 import _cloneDeep from "lodash/cloneDeep";
 
-const executingUser = {id: "mstein", displayname: "Mauro Stein"};
-const testUser = {id: "thouse", displayname: "Tom House", password: "test"};
-const testUser2 = {id: "jxavier", displayname: "Jane Xavier", password: "test"};
-const testUser3 = {id: "pkleffmann", displayname: "Piet Kleffmann"};
-const testGroup = {id: "admins", displayname: "Admins"};
-const testGroup2 = {id: "reviewers", displayname: "Reviewers"};
-let projectId, subprojectId, permissionsBeforeTesting, baseUrl, apiRoute;
+const executingUser = { id: "mstein", displayname: "Mauro Stein" };
+const testUser = { id: "thouse", displayname: "Tom House", password: "test" };
+const testUser2 = { id: "jxavier", displayname: "Jane Xavier", password: "test" };
+const testUser3 = { id: "pkleffmann", displayname: "Piet Kleffmann" };
+const testGroup = { id: "admins", displayname: "Admins" };
+const testGroup2 = { id: "reviewers", displayname: "Reviewers" };
+let projectId, subprojectId, permissionsBeforeTesting;
 const subprojectDisplayname = "subproject assign test";
+const apiRoute = "/api";
 
-describe("Subproject Permissions", function () {
-  before(() => {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-  });
-
-  beforeEach(function () {
-    permissionsBeforeTesting = {project: {}, subproject: {}};
+describe("Subproject Permissions", function() {
+  permissionsBeforeTesting = { project: {}, subproject: {} };
+  beforeEach(function() {
     cy.login();
-    cy.createProject("p-subp-permissions", "subproject permissions test").then(({id}) => {
+    cy.createProject("p-subp-permissions", "subproject permissions test").then(({ id }) => {
       projectId = id;
-      cy.createSubproject(projectId, subprojectDisplayname).then(({id}) => {
+      cy.createSubproject(projectId, subprojectDisplayname).then(({ id }) => {
         subprojectId = id;
         cy.listProjectPermissions(projectId).then(permissions => {
           permissionsBeforeTesting.project = permissions;
@@ -52,7 +48,7 @@ describe("Subproject Permissions", function () {
 
   function sortPermissionsObject(permissions) {
     for (const intent in permissions) {
-      if (permissions.hasOwnProperty(intent)) {
+      if (Object.prototype.hasOwnProperty.call(permissions, intent)) {
         const identities = permissions[intent];
         permissions[intent] = identities.sort(alphabeticalSort);
       }
@@ -87,7 +83,7 @@ describe("Subproject Permissions", function () {
     return permissions;
   }
 
-  it("Show subproject permissions correctly", function () {
+  it("Show subproject permissions correctly", function() {
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -133,7 +129,7 @@ describe("Subproject Permissions", function () {
     cy.get("[data-test=permission-container]").should("not.exist");
   });
 
-  it("Canceling the permission dialog doesn't revoke nor grant permissions ", function () {
+  it("Canceling the permission dialog doesn't revoke nor grant permissions ", function() {
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -143,7 +139,7 @@ describe("Subproject Permissions", function () {
     assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId);
   });
 
-  it("Submitting the permission dialog without any changes doesn't revoke nor grant permissions and close the dialog", function () {
+  it("Submitting the permission dialog without any changes doesn't revoke nor grant permissions and close the dialog", function() {
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -156,7 +152,7 @@ describe("Subproject Permissions", function () {
     assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId);
   });
 
-  it("Submitting the permission dialog after adding a user opens a confirmation dialog", function () {
+  it("Submitting the permission dialog after adding a user opens a confirmation dialog", function() {
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -179,7 +175,7 @@ describe("Subproject Permissions", function () {
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
 
-  it("Submitting the permission dialog after removing a user opens a confirmation dialog", function () {
+  it("Submitting the permission dialog after removing a user opens a confirmation dialog", function() {
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testUser.id).then(() => {
       cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
       cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
@@ -203,7 +199,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("Revoke a permission from myself is not allowed", function () {
+  it("Revoke a permission from myself is not allowed", function() {
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -219,7 +215,7 @@ describe("Subproject Permissions", function () {
       .and("match", /true/);
   });
 
-  it("Submitting the permission dialog without subproject.intent.grantPermission disables the submit button when adding user", function () {
+  it("Submitting the permission dialog without subproject.intent.grantPermission disables the submit button when adding user", function() {
     cy.login(executingUser.id, "test");
     // Grant subproject.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", testUser2.id);
@@ -248,7 +244,7 @@ describe("Subproject Permissions", function () {
     );
   });
 
-  it("Submitting the permission dialog without subproject.intent.revokePermission disables the submit button when removing user", function () {
+  it("Submitting the permission dialog without subproject.intent.revokePermission disables the submit button when removing user", function() {
     cy.login(executingUser.id, "test");
     // Grant test User view-permission
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testUser.id).then(() => {
@@ -282,7 +278,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function () {
+  it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function() {
     cy.login(executingUser.id, "test");
     // Grant test User view-permission
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testUser.id).then(() => {
@@ -298,7 +294,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("Granting update permissions views 4 additional view permissions needed", function () {
+  it("Granting update permissions views 4 additional view permissions needed", function() {
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
       .click();
@@ -335,7 +331,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("Granting revoke permissions views 5 additional permissions needed including 'view permission'-permissions", function () {
+  it("Granting revoke permissions views 5 additional permissions needed including 'view permission'-permissions", function() {
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -370,7 +366,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("Granting view permissions doesn't additionally view the same permission", function () {
+  it("Granting view permissions doesn't additionally view the same permission", function() {
     // Grant test User project view-permission
     cy.grantProjectPermission(projectId, "project.list", testUser.id).then(() => {
       cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id).then(() => {
@@ -413,7 +409,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("Executing additional actions grant permissions correctly", function () {
+  it("Executing additional actions grant permissions correctly", function() {
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -478,7 +474,7 @@ describe("Subproject Permissions", function () {
     assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId, subprojectId);
   });
 
-  it("User with grant permission inherited by a group can grant a permission", function () {
+  it("User with grant permission inherited by a group can grant a permission", function() {
     Cypress.Promise.all([
       // grant permissions to testgroup
       cy.grantProjectPermission(projectId, "project.list", testGroup.id),
@@ -546,7 +542,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("Granting grant-permission permission additionally generates an action to grant list-permissions permission", function () {
+  it("Granting grant-permission permission additionally generates an action to grant list-permissions permission", function() {
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -577,7 +573,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("Confirmation of multiple grant permission changes grants permissions correctly", function () {
+  it("Confirmation of multiple grant permission changes grants permissions correctly", function() {
     const testIds = [testUser.id, testUser2.id, testGroup.id];
     // Grant testUser testUser2 and admins write permissions (createWorkflowitem)
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
@@ -609,7 +605,7 @@ describe("Subproject Permissions", function () {
       .get("[data-test=additional-actions]")
       .within(() => {
         cy.get("[data-test=actions-table-body]")
-          .scrollIntoView({offset: {top: 150, left: 0}})
+          .scrollIntoView({ offset: { top: 150, left: 0 } })
           .should("be.visible")
           .children()
           // 6 permissions per user/group granted
@@ -652,7 +648,7 @@ describe("Subproject Permissions", function () {
       });
   });
 
-  it("Confirmation of multiple revoke permission changes grants permissions correctly", function () {
+  it("Confirmation of multiple revoke permission changes grants permissions correctly", function() {
     const testIds = [testUser.id, testUser2.id, testGroup.id];
     // Revoke testUser testUser2 and admins write permissions (assign)
     // Modify permissionsBeforeTestingr regarding theprevious api calls
@@ -693,14 +689,14 @@ describe("Subproject Permissions", function () {
       .each(testId => {
         permissionsBeforeTesting.subproject["subproject.assign"] = permissionsBeforeTesting.subproject[
           "subproject.assign"
-          ].filter(id => id !== testId);
+        ].filter(id => id !== testId);
       })
       .then(() => {
         assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId);
       });
   });
 
-  it("Users of group with Permission have minimum the same permission as the group", function () {
+  it("Users of group with Permission have minimum the same permission as the group", function() {
     Cypress.Promise.all([
       // grant permissions to testgroup
       cy.grantProjectPermission(projectId, "project.list", testGroup2.id),
@@ -719,7 +715,6 @@ describe("Subproject Permissions", function () {
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=nameinput]").type("Test");
 
-      cy.get("[data-test=next]").click();
       cy.get("[data-test=submit]").click();
 
       cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
@@ -736,7 +731,7 @@ describe("Subproject Permissions", function () {
     });
   });
 
-  it("It is possible to revoke and grant a permission in one step", function () {
+  it("It is possible to revoke and grant a permission in one step", function() {
     // Grant Permission Beforehand so it can be revoked during the test
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testUser.id).then(() => {
       // Edit Sub Project Permissions

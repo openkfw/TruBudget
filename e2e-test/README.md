@@ -44,12 +44,12 @@ As 1. has the highest priority, 4. the lowest. Order between 3. and 4. is define
 
 Following variables are used with connection with command `npm run e2etest` or `npm run cypress`:
 
-| Name                    | Default Value                   | Command Line Switch | Description                                   |
-| ----------------------- | ------------------------------- | ------------------- | --------------------------------------------- |
-| baseUrl                 | http://localhost:3000           | env                 | The address of the frontend service.          |
-| API_BASE_URL            | http://localhost:8080           | env                 | The address of the api production environment |
-| EXPORT_SERVICE_BASE_URL | baseUrl + /test/api/export/xlsx | env                 | The address of the excel export service       |
-| ROOT_SECRET             | not set                         | env                 | Password of the root user, for some api calls |
+| Name                    | Default Value              | Command Line Switch | Description                                   |
+| ----------------------- | -------------------------- | ------------------- | --------------------------------------------- |
+| baseUrl                 | http://localhost:3000      | env                 | The address of the frontend service.          |
+| API_BASE_URL            | http://localhost:8080      | env                 | The address of the api production environment |
+| EXPORT_SERVICE_BASE_URL | baseUrl + /api/export/xlsx | env                 | The address of the excel export service       |
+| ROOT_SECRET             | not set                    | env                 | Password of the root user, for some api calls |
 
 Note: The only difference between those two commands is `npm run cypress` opens GUI for interaction mode. Obviously, the _spec_ option has no sense in this case.
 

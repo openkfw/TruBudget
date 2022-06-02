@@ -130,9 +130,7 @@ services:
     environment:
       API_HOST: alpha-api
       API_PORT: ${API_PORT}
-      ENVIRONMENT_TYPE: TEST
-      #Other provisioning data:
-      #ENVIRONMENT_TYPE: PROD
+      PROVISIONING_TYPE: ${PROVISIONING_TYPE}
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
       LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
@@ -144,11 +142,11 @@ services:
 
   excel-export-service:
     image: trubudget/excel-export:${TAG}
+    # build:
+    #   context: ../../excel-export-service
     environment:
-      PROD_API_HOST: alpha-api
-      PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: alpha-api
-      TEST_API_PORT: ${API_PORT}
+      API_HOST: alpha-api
+      API_PORT: ${API_PORT}
       PORT: ${EXPORT_PORT}
       JWT_SECRET: ${JWT_SECRET}
       MODE: DEBUG
@@ -187,14 +185,12 @@ services:
       NODE_ENV: ${NODE_ENV}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
       REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
-      PROD_API_HOST: alpha-api
-      PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: alpha-api
-      TEST_API_PORT: ${API_PORT}
+      API_HOST: alpha-api
+      API_PORT: ${API_PORT}
+      EXPORT_HOST: ${EXPORT_HOST}
+      EXPORT_PORT: ${EXPORT_PORT}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
-      EXPORT_PORT: ${EXPORT_PORT}
-      EXPORT_HOST: ${EXPORT_HOST}
       INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
       REACT_APP_LOGGING: ${REACT_APP_LOGGING}
       REACT_APP_LOG_LEVEL: ${REACT_APP_LOG_LEVEL}

@@ -1,5 +1,6 @@
 describe("Login", function() {
-  let projectId, subprojectId, apiRoute, baseUrl;
+  let projectId, subprojectId;
+  const apiRoute = "/api";
   const routes = {
     overview: "projects",
     users: "users",
@@ -11,9 +12,6 @@ describe("Login", function() {
   };
 
   before(function() {
-    baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
-    apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
-
     cy.login();
     cy.createProject("p-login", "login test").then(({ id }) => {
       projectId = id;

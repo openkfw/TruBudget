@@ -1,9 +1,9 @@
 describe("Component Versions", function () {
   let exportUrl, apiBaseUrl, apiUrl;
   before(() => {
-    apiBaseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
+    apiBaseUrl = Cypress.env("API_BASE_URL") || Cypress.config("baseUrl");
     apiUrl = apiBaseUrl + "/api";
-    exportUrl = Cypress.env("EXPORT_SERVICE_BASE_URL") || `${Cypress.config("baseUrl")}/test/api/export/xlsx`;
+    exportUrl = Cypress.env("EXPORT_SERVICE_BASE_URL") || `${Cypress.config("baseUrl")}/api/export/xlsx`;
   });
 
   it("Shows status list", function () {

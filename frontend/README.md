@@ -6,14 +6,12 @@ This is the frontend, which consumes the exposed Trubudget API.
 
 ### Frontend
 
-| Env Variable      | Default Value | Description                                                                                                                                                           |
-| ----------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NODE_ENV          | -             | If set to `development` search Trubudget's external services (Email-/Excel-Export-Service) on localhost. <br/>If set to `production` disable Redux devtools extension |
-| REACT_APP_VERSION | -             | Injected version via `$npm_package_version` in`.env` file to ensure the version is shown in the frontend                                                              |
-| PROD_API_HOST     | -             | IP address of the api with production environment. This is only required if nginx proxy is used <br/>**Hint:** When deployed locally the host is set to localhost     |
-| PROD_API_PORT     | 8080          | Port of the api with production environment. This is only required if nginx proxy is used                                                                             |
-| TEST_API_HOST     | -             | IP address of the api with test environment. This is only required if nginx proxy is used. <br/>**Hint:** When deployed locally the host is set to localhost          |
-| TEST_API_PORT     | 8080          | Port of the api with test environment. This is only required if nginx proxy is used                                                                                   |
+| Env Variable      | Default Value | Description                                                                                                                                                          |
+| ----------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NODE_ENV          | -             | If set to `development` search Trubudget's external services (Email-/Excel-Export-Service) on localhost. <br>If set to `production` disable Redux devtools extension |
+| REACT_APP_VERSION | -             | Injected version via `$npm_package_version` in`.env` file to ensure the version is shown in the frontend                                                             |
+| API_HOST          | -             | IP address of the api. This is only required if nginx proxy is used. <br>**Hint:** When deployed locally the host is set to localhost                                |
+| API_PORT          | 8080          | Port of the api. This is only required if nginx proxy is used                                                                                                        |
 
 ### Email-Service
 
@@ -33,14 +31,14 @@ This is the frontend, which consumes the exposed Trubudget API.
 
 ## Peer dependencies
 
-This project is based on the `create-react-app` starter kit provided by the Facebook Incubator. The main part of the project configuration is encapsulated into the `create-react-app` and not accessible. If you need to access project configuration you can eject the project, which will then move the configuratin into the project. More informations here: https://github.com/facebookincubator/create-react-app
+This project is based on the `create-react-app` starter kit provided by the Facebook Incubator. The main part of the project configuration is encapsulated into the `create-react-app` and not accessible. If you need to access project configuration you can eject the project, which will then move the configuration into the project. More information here: https://github.com/facebookincubator/create-react-app
 
 ## Production vs. Development Mode
 
 It is common for Modern Single Page Application to run in in different modes. This also apply to the TruBudget frontend. We decide between:
 
 - Development Mode: Is started with node and offers JIT, Hot Reloading and Debug Logging. The node process spawns an own webserver, performance is degraded but developer experience is best
-- Production Mode: Application is pre-build and transpiled to an ES5 Version of Javascript (compatible with a variety of browser), no log output, optmized file-sized. The production mode outputs static files which need to be hosted on a seperate webserver (in our case NGINX). Performance is best, developer experience (due to compiling and deployment to separate server) lowest.
+- Production Mode: Application is pre-build and transpiled to an ES5 Version of Javascript (compatible with a variety of browser), no log output, optimized file-sized. The production mode outputs static files which need to be hosted on a separate webserver (in our case NGINX). Performance is best, developer experience (due to compiling and deployment to separate server) lowest.
 
 It is possible to check the mode inside the Javascript Code by checking `process.env.NODE_NEV` with will return `development` or `production` depending on the mode.
 
@@ -71,7 +69,7 @@ npm start
 
 After some compilation it will open the browser and load the frontend. But the first thing you will realize, the frontend won't allow you to do much. You need a "backend" (therefore an API + BC) to make the frontend work.
 
-Dont panic, simply run `./startDev` which will spawn up a dummy-backend, which is configured to work seemlessly with your frontend.
+Do not panic, simply run `./startDev` which will spawn up a dummy-backend, which is configured to work seamlessly with your frontend.
 
 #### Proxy the API calls of the Frontend
 
@@ -89,7 +87,7 @@ If you get an authentication error because you are not logged into the registry.
 
 ### Using the frontend in Production Mode
 
-Modern Single Page Applications need to be transpiled to be compatible to older browser versions. On top of that, the Application is minimized, uglyfied and bundled into a single file for maximum performance. You can create a production build by:
+Modern Single Page Applications need to be transpiled to be compatible to older browser versions. On top of that, the Application is minimized, uglified and bundled into a single file for maximum performance. You can create a production build by:
 
 ```bash
 yarn build
@@ -108,7 +106,7 @@ docker build -t trubudget-frontend .
 docker run -p 80:80 -it trubudget-frontend
 ```
 
-This will build the application and run it in an NGINX webserver which is accesible under `http://localhost/`
+This will build the application and run it in an NGINX webserver which is accessible under `http://localhost/`
 Similar to the development mode we need to proxy the API calls.
 
 #### Reverse proxying API in NGINX
@@ -119,12 +117,10 @@ The solution is to proxy the calls to the designated API's (e.g. API or Test-API
 
 If you take a look at the NGINX config `nginx.conf` you will see that the proxy is not configured. Thats because we run a script to configure the API locations dynamically when the Dockerfile is running (see `configureServer.sh`).
 
-The Proxy Paths are defined through 4 environment variables of the container:
+The Proxy Paths are defined through 2 environment variables of the container:
 
-- PROD_API_HOST (default: `localhost`)
-- PROD_API_PORT (default: `8080`)
-- TEST_API_HOST (default: `localhost`)
-- TEST_API_PORT (default: `8080`)
+- API_HOST (default: `localhost`)
+- API_PORT (default: `8080`)
 
 That means, running the following docker commands
 
@@ -132,10 +128,8 @@ That means, running the following docker commands
 docker build -t trubudget-frontend .
 docker run \
   -p 80:80 \
-  -e PROD_API_HOST=127.0.0.1 \
-  -e PROD_API_PORT=8081 \
-  -e TEST_API_HOST=127.0.0.2 \
-  -e TEST_API_PORT=8082 \
+  -e API_HOST=127.0.0.1 \
+  -e API_PORT=8080 \
   -it trubudget-frontend
 ```
 
@@ -145,24 +139,21 @@ will result in the following `nginx.conf` file.
 location ^~ /api/ {
   proxy_pass http://api:8080/;
 }
-location ^~ /test/ {
-  proxy_pass http://testapi:8080/;
-}
 ```
 
-Here you can see how NGINX is reverse-proxing the requests to the API and TEST-API endpoints to the respective APIs. If you run the API's under a seperate hostname you have to adapt this file.
+Here you can see how NGINX is reverse-proxing the requests to the API endpoints to the respective APIs. If you run the API's under a separate hostname you have to adapt this file.
 
 ## Architecture
 
 ### `public` Folder
 
-The public folder contains all static assets. During development mode (when started with `npm start`) the content is accesible under `http://adress/`.
+The public folder contains all static assets. During development mode (when started with `npm start`) the content is accessible under `http://adress/`.
 
 ### `src` Folder
 
 All Javascript code which needs to be transpiled _must_ be in this folder. During build it will be transpiled and bundled and included into the index HTML file
 
-Inside the `src` folder the Javascript files are seperated into a `pages` directory and plain javascript files (e.g. `api.js`). The `pages` directory contains all code which is specific to certain pages on the frontend (e.g. Notification Page). The plain javascript files are covering logic which is needed across several pages (e.g. API, Stores).
+Inside the `src` folder the Javascript files are separated into a `pages` directory and plain javascript files (e.g. `api.js`). The `pages` directory contains all code which is specific to certain pages on the frontend (e.g. Notification Page). The plain javascript files are covering logic which is needed across several pages (e.g. API, Stores).
 
 ## State management
 
@@ -188,4 +179,4 @@ Use the admin credentials to login onto the dashboard. If `BC_ADDRESS_VERIFICATI
 ## Email notifications
 
 To enable/disable email notifications for blockchain simply set the `REACT_APP_EMAIL_SERVICE_ENABLED` to "true" or unset it.
-When enabled the frontend requesting a email-notifcations readiness call when entering the login screen. If the email notification service is ready the email section in the user profile is activated and visible so the user can create/edit the email-address where he/she wants to get notifications to. More details about the email notification service can be found in the [email notification documentation](../email-notification-service/README.md#)
+When enabled the frontend requesting a email-notifications readiness call when entering the login screen. If the email notification service is ready the email section in the user profile is activated and visible so the user can create/edit the email-address where he/she wants to get notifications to. More details about the email notification service can be found in the [email notification documentation](../email-notification-service/README.md#)

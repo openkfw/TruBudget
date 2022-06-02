@@ -14,7 +14,7 @@ spec:
     app: {{ template "api.name" . }}
     release: {{ .Release.Name }}
     service: {{ .Chart.Name }}
-  type: {{- if (eq .Values.global.env.ENVIRONMENT_TYPE "PROD") }} {{ .Values.service.type }} {{- else }} ClusterIP {{- end }}
+  type: {{- if (eq .Values.global.env.PROVISIONING_TYPE "PROD") }} {{ .Values.service.type }} {{- else }} ClusterIP {{- end }}
   ports:
   - name: api-port
     protocol: TCP

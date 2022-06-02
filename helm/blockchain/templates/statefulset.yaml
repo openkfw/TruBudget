@@ -40,7 +40,7 @@ spec:
         app.kubernetes.io/component: multichain
         app.kubernetes.io/managed-by: helm
     spec:
-      {{- if eq .Values.global.env.ENVIRONMENT_TYPE "TEST"}}
+      {{- if eq .Values.global.env.PROVISIONING_TYPE "TEST"}}
       serviceAccountName: default
       {{- else}}
       serviceAccountName: blockchain-sa
@@ -75,7 +75,7 @@ spec:
             - multichain-cli
             - {{ .Values.bc.env.CHAINNAME }}
             - getinfo
-          initialDelaySeconds: {{if eq .Values.global.env.ENVIRONMENT_TYPE "PROD"}}60{{ else }}30{{ end }}
+          initialDelaySeconds: {{if eq .Values.global.env.PROVISIONING_TYPE "PROD"}}60{{ else }}30{{ end }}
           periodSeconds: 10
           failureThreshold: 5
           timeoutSeconds: 2
@@ -85,7 +85,7 @@ spec:
             - multichain-cli
             - {{ .Values.bc.env.CHAINNAME }}
             - getinfo
-          initialDelaySeconds: {{if eq .Values.global.env.ENVIRONMENT_TYPE "PROD"}}60{{ else }}30{{- end }}
+          initialDelaySeconds: {{if eq .Values.global.env.PROVISIONING_TYPE "PROD"}}60{{ else }}30{{- end }}
           periodSeconds: 10
           failureThreshold: 5
           timeoutSeconds: 2
