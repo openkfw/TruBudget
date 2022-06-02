@@ -17,6 +17,7 @@ const {
 } = require("./multichain-feed/email-notifications/notificationWatcher");
 const { startBeta, registerNodeAtAlpha } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
+const { isMultichainReady } = require("./readiness");
 
 const {
   moveBackup,
@@ -33,7 +34,8 @@ const CHAINNAME = "TrubudgetChain";
 const MULTICHAIN_RPC_PORT = process.env.MULTICHAIN_RPC_PORT || 8000;
 const MULTICHAIN_RPC_USER = process.env.MULTICHAIN_RPC_USER || "multichainrpc";
 const MULTICHAIN_RPC_PASSWORD =
-  process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
+  process.env.MULTICHAIN_RPC_PASSWORD ||
+  "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
 const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 const CERT_PATH = process.env.CERT_PATH || undefined;
 const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
@@ -112,7 +114,7 @@ const spawnProcess = (startProcess) => {
       const retryIntervalMs = 10000;
       log.info(
         `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${retryIntervalMs /
-        1000} Seconds...`,
+          1000} Seconds...`,
       );
       await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));
       spawnProcess(startProcess);
@@ -276,6 +278,37 @@ app.get("/version", (req, res) => {
   res.send(content);
 });
 
+app.get("/liveness", (req, res) => {
+  res
+    .status(200)
+    .header({ "Content-Type": "application/json" })
+    .send(
+      JSON.stringify({
+        uptime: process.uptime(),
+      }),
+    );
+});
+
+app.get("/readiness", (req, res) => {
+  const isReady = isMultichainReady(CHAINNAME);
+  if (isReady && isRunning) {
+    res
+      .status(200)
+      .header({ "Content-Type": "application/json" })
+      .send("Ready");
+  } else if (!isReady && isRunning) {
+    res
+      .status(504)
+      .header({ "Content-Type": "application/json" })
+      .send("Not ready. Multichain is starting ...");
+  } else {
+    res
+      .status(504)
+      .header({ "Content-Type": "application/json" })
+      .send("Not ready. Multichain process stopped");
+  }
+});
+
 const loadConfig = (path) => {
   const config = yaml.safeLoad(fs.readFileSync(path, "utf8"));
   removeFile(path);
@@ -363,6 +396,6 @@ app.post("/chain", async (req, res) => {
   }
 });
 
-app.listen(port, function () {
+app.listen(port, function() {
   log.info(`App listening on ${port}`);
 });
