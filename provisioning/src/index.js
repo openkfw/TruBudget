@@ -317,12 +317,6 @@ async function testProjectCloseOnlyWorksIfAllSubprojectsAreClosed(
         "mstein",
         "project.list"
     );
-    await revokeProjectPermission(
-        axios,
-        project.data.id,
-        "mstein",
-        "project.viewDetails"
-    );
 }
 
 async function testWorkflowitemUpdate(folder) {
