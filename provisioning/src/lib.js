@@ -27,8 +27,7 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       (!err.response && err.code === "ECONNRESET")
     ) {
       log.warn(
-        `Server Error with status code ${err.status}, ${
-          err.code
+        `Server Error with status code ${err.status}, ${err.code
         }:  (${JSON.stringify(err.data)}), retry in ${timeoutMs / 1000} seconds`
       );
       await timeout(timeoutMs);
