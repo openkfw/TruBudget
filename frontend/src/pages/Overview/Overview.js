@@ -4,7 +4,7 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import IconButton from "@mui/material/IconButton";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import CardView from "./CardView";
-import ListView from "./ListView";
+import TableView from "./TableView";
 
 const styles = {
   button: {
@@ -19,17 +19,18 @@ const Overview = props => {
         <IconButton onClick={() => props.setProjectView("card")} data-test="set-card-view" sx={styles.button}>
           <GridViewIcon color="primary" />
         </IconButton>
-        <IconButton onClick={() => props.setProjectView("list")} data-test="set-list-view" sx={styles.button}>
+        <IconButton onClick={() => props.setProjectView("table")} data-test="set-table-view" sx={styles.button}>
           <ViewListIcon color="primary" />
         </IconButton>
       </Box>
-      {props.projectView === "card" ? (
+      {props.projectView === "card" && (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <CardView {...props} />
         </Box>
-      ) : (
+      )}
+      {props.projectView === "table" && (
         <Box>
-          <ListView {...props} />
+          <TableView {...props} />
         </Box>
       )}
     </Box>

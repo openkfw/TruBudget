@@ -6,7 +6,7 @@ For the setup of the e2e-tests please visit the [Developer Setup](../docs/develo
 
 ## Environment Variables
 
-In general, Cypress loads each OS environment variable prefixed with \_CYPRESS\_\_ to be accessible in the code with `Cypress.env`. When defined, they will overrides equivalent variables in the configuration file `cypress.json`. See [Cypress documentation for enviroment variables setting](https://docs.cypress.io/guides/guides/environment-variables.html#Setting) and [Cypress configuration options](https://docs.cypress.io/guides/references/configuration.html#Options) for more details.
+In general, Cypress loads each OS environment variable prefixed with \_CYPRESS\_\_ to be accessible in the code with `Cypress.env`. When defined, they will overrides equivalent variables in the configuration file `cypress.json`. See [Cypress documentation for environment variables setting](https://docs.cypress.io/guides/guides/environment-variables.html#Setting) and [Cypress configuration options](https://docs.cypress.io/guides/references/configuration.html#Options) for more details.
 
 Variables after \_CYPRESS\_\_ prefix can have either camel case or screaming snake case notation. For example, both definitions are equivalent:
 

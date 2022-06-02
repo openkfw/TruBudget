@@ -13,21 +13,21 @@ Welcome to the TruBudget documentation! This guide aims to provide you with info
 
 Installation - How to install TruBudget
 
-- [Bare Metal Installation](./operation-administration/installation/create-new-network/bare-metal.md) - installation without Docker
-- [Deploying using Docker](./operation-administration/installation/create-new-network/create-new-docker-compose.md)
+- [Bare Metal Installation](./operation-administration/installation/create-a-new-network/bare-metal.md) - installation without Docker (deprecated)
+- [Deploying using Docker](./operation-administration/installation/create-a-new-network/docker.md)
 - [Environment Variables](./operation-administration/introduction.md#environment-variables)
 - [Organizations and Nodes](./operation-administration/introduction.md#organizations-and-nodes-in-trubudget)
-- [Starting a new network](./operation-administration/installation/create-new-network/create-new-docker-compose.md)
-- [Connect to an existing network](./operation-administration/installation/create-new-network/create-new-docker-compose.md#connect-to-an-existing-blockchain-network)
+- [Node connection process](./operation-administration/installation/create-a-new-network/connection-process.md)
+- [Connect to an existing network](./operation-administration/installation/connect-to-an-existing-network/docker.md)
 - [Update TruBudget](./operation-administration/update-trubudget.md)
-- [Logging](./operation-administration/logging.md) - Informations on the API log and how to handle it
+- [Logging](./operation-administration/logging.md) - Information on the API log and how to handle it
 - [Security](./operation-administration/security.md) - Information on the security aspects of Trubudget
 - [Troubleshooting](./known-issues/intro.md) - How to solve known issues
 
 Contributing
 
 - [Developer Setup](./developer/developer-setup.md)
-- [Logging](./operation-administration/logging.md) - Informations on the API log and how to handle it
+- [Logging](./operation-administration/logging.md) - Information on the API log and how to handle it
 - [Troubleshooting](./known-issues/intro.md) - How to solve known issues
 
 [User Guide](./user-guide/README.md)

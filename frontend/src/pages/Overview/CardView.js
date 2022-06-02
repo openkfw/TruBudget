@@ -17,7 +17,6 @@ import {
 import ProjectCard from "./ProjectCard";
 import BudgetsList from "./BudgetsList";
 import SelectablePill from "../Common/SelectablePill";
-import { Typography } from "@mui/material";
 
 const styles = theme => ({
   card: {
@@ -80,19 +79,18 @@ const styles = theme => ({
   }
 });
 
-const displayTags = ({ classes, tags, storeSearchTerm, showSearchBar, searchTermArray }) => {
+const displayTags = ({ classes, tags, storeSearchTerm, showNavSearchBar, searchTermArray }) => {
   return tags.map((tag, i) => (
     <SelectablePill
       key={tag}
       isSelected={searchTermArray?.includes(tag) || false}
       onClick={() => {
-        showSearchBar();
+        showNavSearchBar();
         storeSearchTerm(`tag:${tag}`);
       }}
       data-test="overview-tag"
-    >
-      <Typography>{tag}</Typography>
-    </SelectablePill>
+      label={tag}
+    ></SelectablePill>
   ));
 };
 
@@ -104,7 +102,7 @@ const getTableEntries = ({
   showProjectPermissions,
   showProjectAdditionalData,
   storeSearchTerm,
-  showSearchBar,
+  showNavSearchBar,
   searchTermArray
 }) => {
   return filteredProjects.map(({ data, allowedIntents }, index) => {
@@ -127,7 +125,13 @@ const getTableEntries = ({
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
-    const displayedTags = displayTags({ classes, tags: tags || [], storeSearchTerm, showSearchBar, searchTermArray });
+    const displayedTags = displayTags({
+      classes,
+      tags: tags || [],
+      storeSearchTerm,
+      showNavSearchBar,
+      searchTermArray
+    });
 
     if (canViewProjectSummary(allowedIntents)) {
       return (

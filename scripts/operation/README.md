@@ -24,7 +24,7 @@ API: http://localhost:8080/api/documentation/static/index.html
 
 ### Setup with two organizations
 
-To learn how to setup TruBudget with multiple organizations and how tho connect them, see the documentation of [Connect to an existing network](../../docs/operation-administration/installation/create-new-network/create-new-docker-compose.md#connect-to-an-existing-blockchain-network)
+To learn how to setup TruBudget with multiple organizations and how tho connect them, see the documentation of [Connect to an existing network](../../docs/operation-administration/installation/connect-to-an-existing-network/docker.md)
 
 ### Environment Variables
 

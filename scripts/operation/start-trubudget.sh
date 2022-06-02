@@ -105,7 +105,8 @@ while [ "$1" != "" ]; do
         ;;
 
     --with-frontend-logging)
-        HAS_FRONTEND_LOGGING=true
+        HAS_ENABLED_SERVICES=true
+        ENABLED_SERVICES="${ENABLED_SERVICES} logging-service"
         shift # past argument
         ;;
 
@@ -151,6 +152,9 @@ while [ "$1" != "" ]; do
     esac
 done
 
+# Update browser list for Frontend
+#npx browserslist@latest --update-db
+
 if [ "$PRUNE_DATA" = true ]; then
     echo -n "${orange}WARNING: Do you really want to prune the data of multichain, minio and emailDB? This cannot be undone! (y/N)${colorReset}"
     read answer
@@ -191,6 +195,7 @@ if [ "$IS_FULL" = false ]; then
     perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=false/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/REACT_APP_LOGGING=.*/REACT_APP_LOGGING=false/g' ${SCRIPT_DIR}/.env
 fi
 
 if [ "$HAS_ENABLED_SERVICES" = true ]; then
@@ -214,7 +219,11 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
             perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} minio"
             echo "INFO: storage-service enabled"
-            
+
+        elif [ "$word" = "logging-service" ]; then
+            perl -pi -e 's/REACT_APP_LOGGING=.*/REACT_APP_LOGGING=true/g' ${SCRIPT_DIR}/.env
+            echo "INFO: logging-service enabled"
+
         else
             echo "${red}ERROR: Unknown service $word${colorReset}"
             echo "${red}Only these services can be added with --enable-service: email-service, excel-export-service, storage-service${colorReset}"
@@ -250,11 +259,6 @@ else
         echo "INFO: Setup slim TruBudget environment with provisioning ..."
         COMPOSE_SERVICES="alpha-node alpha-api provisioning frontend"
     fi
-fi
-
-if [ "$HAS_FRONTEND_LOGGING" = true ]; then
-    perl -pi -e 's/REACT_APP_LOGGING=.*/REACT_APP_LOGGING=true/g' ${SCRIPT_DIR}/.env
-    COMPOSE_SERVICES="${COMPOSE_SERVICES} logging-service"
 fi
 
 COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"

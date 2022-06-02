@@ -22,6 +22,10 @@ interface ProcessEnvVars {
   STORAGE_SERVICE_HOST: string;
   STORAGE_SERVICE_PORT: string;
   STORAGE_SERVICE_EXTERNAL_URL: string;
+  ACCESS_CONTROL_ALLOW_ORIGIN: string;
+  NODE_ENV: string;
+  ENCRYPTION_PASSWORD: string;
+  SIGNING_METHOD: string;
 }
 
 /**
@@ -47,9 +51,9 @@ interface Config {
     port: number;
   };
   jwtSecret: string;
-  version: string;
+  npmPackageVersion: string;
   // Continues Integration
-  commit: string;
+  ciCommitSha: string;
   buildTimeStamp: string;
   swaggerBasepath: string;
   documentFeatureEnabled: boolean;
@@ -89,9 +93,9 @@ export const config: Config = {
     port: Number(process.env.BLOCKCHAIN_PORT) || 8085,
   },
   jwtSecret: process.env.JWT_SECRET || randomString(32),
-  version: process.env.npm_package_version || "",
+  npmPackageVersion: process.env.npm_package_version || "",
   // Continues Integration
-  commit: process.env.CI_COMMIT_SHA || "",
+  ciCommitSha: process.env.CI_COMMIT_SHA || "",
   buildTimeStamp: process.env.BUILDTIMESTAMP || "",
   // deprecated
   swaggerBasepath: "/",

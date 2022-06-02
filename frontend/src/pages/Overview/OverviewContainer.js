@@ -82,7 +82,7 @@ const mapDispatchToProps = dispatch => {
     storeFilteredProjects: filteredProjects => dispatch(storeFilteredProjects(filteredProjects)),
     storeSearchTermArray: searchTerms => dispatch(storeSearchTermArray(searchTerms)),
     storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
-    showSearchBar: () => dispatch(storeSearchBarDisplayed(true)),
+    showNavSearchBar: () => dispatch(storeSearchBarDisplayed(true)),
     fetchUser: () => dispatch(fetchUser(true)),
     fetchAllProjectDetails: projectId => dispatch(fetchAllProjectDetails(projectId, false)),
     setProjectView: view => dispatch(setProjectView(view))
@@ -101,10 +101,13 @@ const mapStateToProps = state => {
     searchTermString: state.getIn(["navbar", "searchTerm"]),
     isRoot: state.getIn(["navbar", "isRoot"]),
     permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
-    searchTermArray: state.getIn(["overview", "searchTerms"]),
+    highlightingRegex: state.getIn(["overview", "highlightingRegex"]),
+    searchTermArray: state.getIn(["overview", "searchTerms"]), // only for WebWorker
+    searchTerm: state.getIn(["navbar", "searchTerm"]), // searchTerm in SearchBar
     users: state.getIn(["login", "enabledUsers"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
-    projectView: state.getIn(["overview", "projectView"])
+    projectView: state.getIn(["overview", "projectView"]),
+    enabledUsers: state.getIn(["login", "enabledUsers"])
   };
 };
 

@@ -13,6 +13,12 @@ If you have any questions refer to the [Frequently Asked Questions (FAQ)](#frequ
 
 ## Getting started
 
+### Trubudget as a Service
+
+If you want to try out TruBudget, we serve an as a service solution. Register for TruBudget as a Service and dive straight into a TruBudget sandbox: [taas.trubudget.net](https://taas.trubudget.net/)
+
+### Trubudget on your machine
+
 If you want to try out TruBudget locally, you need to install [Docker](https://www.docker.com/community-edition#/download).
 
 For a very **quick and easy** TruBudget setup, run:

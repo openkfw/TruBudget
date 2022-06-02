@@ -49,7 +49,6 @@ const muiTheme = createTheme({
     },
     tonalOffset: 0.6
   },
-  typography: {},
   components: {
     MuiTextField: {
       defaultProps: {

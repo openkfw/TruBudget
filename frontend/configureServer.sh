@@ -61,14 +61,14 @@ proxy_pass http://$api_host:$api_port;" /etc/nginx/conf.d/default.conf
 
 if [ "$REACT_APP_EXPORT_SERVICE_ENABLED" = true ]; then
     echo "Excel export has been enabled"
-    echo "http://$export_host:$export_port/"
+    echo "The excel export service is available at http://[NGINX_HOST]:[NGINX_PORT]/api/export/xlsx/readiness"
     sed -i -e "/# pathToExcelExport/i\\
     proxy_pass http://$export_host:$export_port/;" /etc/nginx/conf.d/default.conf
 fi
 
 if [ "$REACT_APP_EMAIL_SERVICE_ENABLED" = true ]; then
     echo "Email service has been enabled"
-    echo "http://$email_host:$email_port/"
+    echo "The email service is available at http://[NGINX_HOST]:[NGINX_PORT]/api/email/readiness"
     sed -i -e "/# pathToEmailService/i\\
     proxy_pass http://$email_host:$email_port/;" /etc/nginx/conf.d/default.conf
 fi

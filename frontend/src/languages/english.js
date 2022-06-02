@@ -124,7 +124,10 @@ const en = {
     dueDate_exceeded: "Due date exceeded",
     login_disabled: "Login ID is disabled",
     login_data_error: "Login ID or password field cannot be empty",
-    refresh_assignments: "Refresh assignments"
+    refresh_assignments: "Refresh assignments",
+    tags: "Tags",
+    all: "all",
+    assignee: "Assignee"
   },
 
   users: {

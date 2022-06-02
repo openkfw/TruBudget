@@ -5,8 +5,8 @@ import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 
 export const restoreBackup = async (
-  multichainHost: string,
-  backupApiPort: string,
+  blockchainHost: string,
+  blockchainPort: number,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const { userId } = req.user;
@@ -27,7 +27,7 @@ export const restoreBackup = async (
     maxBodyLength: 1074790400,
   };
   try {
-    await axios.post(`http://${multichainHost}:${backupApiPort}/chain`, data, config);
+    await axios.post(`http://${blockchainHost}:${blockchainPort}/chain`, data, config);
     logger.info("backup restored successfully");
   } catch (error) {
     const cause = error.response.status === 400 ? new Error(error.response.data) : error;

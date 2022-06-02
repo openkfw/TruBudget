@@ -78,10 +78,8 @@ import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
-import * as SubprojectProjectedBudgetDeleteService
-  from "./service/subproject_projected_budget_delete";
-import * as SubprojectProjectedBudgetUpdateService
-  from "./service/subproject_projected_budget_update";
+import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
+import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserAuthenticateService from "./service/user_authenticate";
@@ -163,21 +161,20 @@ const {
   encryptionPassword,
   signingMethod,
   accessControlAllowOrigin,
+  rpc,
+  blockchain,
 } = getValidConfig();
 
 /*
  * Initialize the components:
  */
 
-const multichainHost = process.env.MULTICHAIN_RPC_HOST || "localhost";
-const backupApiPort = process.env.BLOCKCHAIN_PORT || "8085";
-
 const rpcSettings: ConnectionSettings = {
   protocol: "http",
-  host: multichainHost,
-  port: parseInt(process.env.MULTICHAIN_RPC_PORT || "8000", 10),
-  username: process.env.MULTICHAIN_RPC_USER || "multichainrpc",
-  password: process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
+  host: rpc.host,
+  port: rpc.port,
+  username: rpc.user,
+  password: rpc.password,
 };
 
 logger.info(
@@ -266,7 +263,7 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, storageServiceClient, () =>
+registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storageServiceClient, () =>
   Cache.invalidateCache(db),
 );
 
@@ -504,7 +501,6 @@ ProjectViewHistoryAPI.addHttpHandler(server, URL_PREFIX, {
   getProjectHistory: (ctx, user, projectId, filter) =>
     ProjectViewHistoryService.getProjectHistory(db, ctx, user, projectId, filter),
 });
-
 
 ProjectProjectedBudgetUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateProjectedBudget: (ctx, user, projectId, orga, amount, currencyCode) =>
@@ -881,7 +877,7 @@ server.listen(port, "0.0.0.0", async (err) => {
         );
         return false;
       }))
-    ) {
+  ) {
     await timeout(retryIntervalMs);
   }
   logger.debug({ multichainClient, organization }, "Organization stream present");
