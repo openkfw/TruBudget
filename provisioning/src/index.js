@@ -657,10 +657,8 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
     log.info("Set provision_ended flag on multichain");
     await setProvisionEndFlag(axios);
   } catch (err) {
-    log.warn({ err }, "Provisioning failed");
-    if (err.code && err.code === "MAX_RETRIES") {
-      process.exit(1);
-    }
+    log.error({ err }, "Provisioning failed");
+    process.exit(1);
   }
 };
 
