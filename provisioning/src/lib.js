@@ -21,15 +21,15 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       log.error({ err: err.data.error.message }, "The request had no effect");
     } else if (
       // Stop provisioning but retry same request
-      (err.status >= 400 && err.status < 500) ||
+      (err.status >= 400 && err.status <= 504) ||
       (!err.response && err.code === "ECONNREFUSED") ||
       (!err.response && err.code === "ECONNABORTED") ||
       (!err.response && err.code === "ECONNRESET")
     ) {
       log.warn(
-        `Server Error with status code ${err.status} (${
-          err.data.error.message
-        }), retry in ${timeoutMs / 1000} seconds`
+        `Server Error with status code ${err.status} (${err.data}), retry in ${
+          timeoutMs / 1000
+        } seconds`
       );
       await timeout(timeoutMs);
       return await withRetry(cb, --maxTimes);
