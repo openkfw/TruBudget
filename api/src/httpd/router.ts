@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { config } from "../config";
 import { toHttpError } from "../http_errors";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
@@ -224,7 +225,11 @@ export const registerRoutes = (
     getSchemaWithoutAuth("readiness"),
     async (_request, reply) => {
       if (await isReady(multichainClient)) {
-        return reply.status(200).send("OK");
+        if (!config.documentFeatureEnabled || (await storageServiceClient.isReady())) {
+          return reply.status(200).send("Ready");
+        } else {
+          return reply.status(504).send("Not ready. Waiting for storage service.");
+        }
       } else {
         return reply.status(503).send("Service unavailable.");
       }

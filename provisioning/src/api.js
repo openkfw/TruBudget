@@ -316,6 +316,9 @@ const revokeProjectPermission = async (axios, projectId, userId, intent) => {
   );
 };
 
+const isApiReady = async (axios) =>
+  await withRetry(() => axios.get("/readiness"));
+
 const queryApiDoc = async (axios) =>
   await withRetry(() => axios.get("/documentation"));
 
@@ -331,6 +334,7 @@ const setProvisionEndFlag = async (axios) => {
 };
 
 module.exports = {
+  isApiReady,
   authenticate,
   createUser,
   createGroup,
