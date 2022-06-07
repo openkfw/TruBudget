@@ -1,19 +1,18 @@
+import * as cors from "cors";
+import * as express from "express";
+import { body, query, validationResult } from "express-validator";
+import { Logger } from "pino";
 import {
-  getMinioStatus,
-  uploadAsPromised,
+  createPinoExpressLogger,
+  createPinoLogger,
+} from "trubudget-logging-service";
+import config from "./config";
+import {
   downloadAsPromised,
   establishConnection,
   getMinioStatus,
+  uploadAsPromised,
 } from "./minio";
-import config from "./config";
-import * as express from "express";
-import * as cors from "cors";
-import { query, body, validationResult } from "express-validator";
-import { Logger } from "pino";
-import {
-  createPinoLogger,
-  createPinoExpressLogger,
-} from "trubudget-logging-service";
 
 interface DocumentUploadRequest extends express.Request {
   query: {
