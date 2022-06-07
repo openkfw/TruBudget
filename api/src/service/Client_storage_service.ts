@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { performance } from "perf_hooks";
 import { VError } from "verror";
 import * as Result from "../result";
@@ -47,11 +47,12 @@ export default class StorageServiceClient implements StorageServiceClientI {
   }
 
   public async isReady(): Promise<boolean> {
-    return this.axiosInstance.get("/readiness");
+    const result: AxiosResponse<any> = await this.axiosInstance.get("/readiness");
+    return result.status === 200;
   }
 
   public async getVersion(): Promise<Version> {
-    const result = await this.axiosInstance.get("/version");
+    const result: AxiosResponse<any> = await this.axiosInstance.get("/version");
     if (result.status !== 200) {
       return {
         release: "",
