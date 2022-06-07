@@ -1,3 +1,4 @@
+import axios from "axios";
 import * as Minio from "minio";
 import { v4 } from "uuid";
 import config from "./config";
@@ -37,6 +38,18 @@ const minioClient: any = new Minio.Client({
 });
 
 const bucketName: string = config.storage.bucketName;
+
+export const getMinioStatus = async () => {
+  try {
+    await axios.get(
+      `http://${config.storage.host}:${config.storage.port}/minio/health/ready`,
+    );
+  } catch (error) {
+    log.error({ error }, "Error during health check on minio-server");
+    return { status: 504, statusText: "Not ready. Waiting for Minio server" };
+  }
+  return { status: 200, statusText: "Ready" };
+};
 
 const makeBucket = (bucket: string, cb: Function) => {
   minioClient.bucketExists(bucket, (err: any, exists: any) => {
