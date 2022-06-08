@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import strings from "../../localizeStrings";
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
 import ActionButton from "./ActionButton";
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 
 const styles = {
   closeButtonContainer: {
@@ -19,7 +19,8 @@ const styles = {
     display: "flex",
     height: "100%",
     alignItems: "flex-end"
-  }
+  },
+  itemContainer: { maxHeight: "35vh", overflow: "auto", boxShadow: "none" }
 };
 
 const Dropdown = props => {
@@ -42,17 +43,20 @@ const Dropdown = props => {
     <form autoComplete="off" style={formStyle}>
       <div style={styles.flexContainer}>
         <FormControl disabled={disabled} style={style} data-test={`dropdown-${id}`} error={error || false}>
-          <InputLabel htmlFor={id}>{floatingLabel}</InputLabel>
+          <InputLabel>{floatingLabel}</InputLabel>
           <Select
+            variant="standard"
+            label={floatingLabel}
             value={value}
             onChange={v => {
               if (v.target.value) {
                 onChange(v.target.value);
+                setIsOpen(false);
               }
             }}
             open={isOpen}
             onOpen={() => setIsOpen(true)}
-            onClick={() => setIsOpen(false)}
+            onClose={() => setIsOpen(false)}
             inputProps={{
               name: id,
               id
@@ -75,6 +79,12 @@ const Dropdown = props => {
                 />
               </div>
             </div>
+            {/* TODO refactor to this:
+             <Box style={styles.itemContainer}>{children}</Box>
+
+             This way, the DropDown has a maximal height and the close button is visible.
+             If you do this, every <MenuItem> must have an onClick method to select itself (see PermissionSelection)
+             */}
             {children}
           </Select>
           <FormHelperText>{error ? errorText : ""}</FormHelperText>

@@ -1,11 +1,11 @@
-import { VError } from "verror";
-
 import { Ctx } from "lib/ctx";
+import { VError } from "verror";
 import { BusinessEvent } from "../business_event";
 
 interface Info {
   ctx: Ctx;
   event: BusinessEvent;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   target?: any;
 }
 

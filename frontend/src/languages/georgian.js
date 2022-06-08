@@ -124,7 +124,10 @@ const ka = {
     dueDate_exceeded: "დასრულდა თარიღი",
     login_disabled: "შესვლის იდენტიფიკაცია გამორთულია",
     login_data_error: "შესვლა პირადობის ან პაროლის ველი ვერ იქნება ცარიელი",
-    refresh_assignments: "დავალებების განახლება"
+    refresh_assignments: "დავალებების განახლება",
+    tags: "ტეგები",
+    all: "ყველა",
+    assignee: "დავალებული"
   },
 
   users: {

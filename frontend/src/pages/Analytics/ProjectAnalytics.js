@@ -1,11 +1,11 @@
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { connect } from "react-redux";
@@ -139,7 +139,9 @@ class ProjectAnalytics extends React.Component {
                     <TableCell />
                     <TableCell />
                     <TableCell align="right">{strings.analytics.total}</TableCell>
-                    <TableCell data-test="table-total-budget" align="right">{toAmountString(totalBudget, indicatedCurrency)}</TableCell>
+                    <TableCell data-test="table-total-budget" align="right">
+                      {toAmountString(totalBudget, indicatedCurrency)}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

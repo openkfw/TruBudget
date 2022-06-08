@@ -161,6 +161,9 @@ while [ "$1" != "" ]; do
     esac
 done
 
+# Update browser list for Frontend
+#npx browserslist@latest --update-db
+
 if [ "$PRUNE_DATA" = true ]; then
     echo -n "${orange}WARNING: Do you really want to prune the data of multichain, minio and emailDB? This cannot be undone! (y/N)${colorReset}"
     read answer
@@ -179,6 +182,8 @@ fi
 SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
+npm config set registry http://registry.npmjs.org/
+
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then
     echo "${orange}WARNING: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
@@ -195,12 +200,13 @@ fi
 # Set service enabling/disabling env vars
 
 if [ "$IS_FULL" = false ]; then
-    # Slim version without --enable-service option: disable all services
+    # Slim version: Per default, disable all services
     perl -pi -e 's/EMAIL_SERVICE=.*/EMAIL_SERVICE=DISABLED/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED=DISABLED/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=false/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/REACT_APP_LOGGING=.*/REACT_APP_LOGGING=false/g' ${SCRIPT_DIR}/.env
 fi
 
 if [ "$HAS_ENABLED_SERVICES" = true ]; then
@@ -215,7 +221,7 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
             perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} emaildb"
             echo "INFO: email-service enabled"
-        
+
         elif [ "$word" = "excel-export-service" ]; then
             perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             echo "INFO: excel-export-service enabled"
@@ -270,7 +276,7 @@ COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-dev --env
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
-$COMPOSE pull
+$COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $SLAVE_SERVICES
 
 if [ "$IS_REBUILDING" = true ]; then
     echo "INFO: Re-build all selected images"

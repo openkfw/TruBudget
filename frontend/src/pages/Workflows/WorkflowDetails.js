@@ -1,19 +1,19 @@
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import { withStyles, withTheme } from "@material-ui/core/styles";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
-import AccessAlarmIcon from "@material-ui/icons/AccessAlarm";
-import AmountIcon from "@material-ui/icons/AccountBalance";
-import AssigneeIcon from "@material-ui/icons/Group";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import { withStyles, withTheme } from "@mui/styles";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import AmountIcon from "@mui/icons-material/AccountBalance";
+import AssigneeIcon from "@mui/icons-material/Group";
 import dayjs from "dayjs";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
@@ -226,7 +226,13 @@ function WorkflowDetails({
   }
 
   return (
-    <Dialog open={showWorkflowDetails} className={classes.dialog} onExited={closeWorkflowitemDetailsDialog}>
+    <Dialog
+      open={showWorkflowDetails}
+      className={classes.dialog}
+      TransitionProps={{
+        onExited: closeWorkflowitemDetailsDialog
+      }}
+    >
       <DialogTitle data-test="workflowInfoDialog">{strings.workflow.workflowitem_details}</DialogTitle>
       <DialogContent className={classes.dialogContent}>
         <Tabs value={selectedTab} onChange={(_, index) => setSelectedTab(index)}>

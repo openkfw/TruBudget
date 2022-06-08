@@ -73,7 +73,7 @@ describe("Update subproject projected budget: permissions", () => {
     assert.instanceOf(result, NotAuthorized);
   });
 
-  it("The root user doesn't need permission to update a projected budget", async () => {
+  it("The root user is not allowed to update a projected budget", async () => {
     const result = await updateProjectedBudget(
       ctx,
       root,
@@ -99,7 +99,7 @@ describe("Update subproject projected budget: permissions", () => {
     );
 
     // No errors, despite the missing permissions:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 
   it("Updating a projected budget fails if the subproject cannot be found.", async () => {

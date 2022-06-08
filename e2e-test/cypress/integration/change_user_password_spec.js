@@ -1,7 +1,7 @@
-const testUserName = "passwordChangeUser";
-const testUserNamePassword = "test1234";
-
 describe("Users/Groups Dashboard", function() {
+  // Generate random IDs since every ID can only exists once in the multichain
+  const testUserName = `passwordChangeUser_${Math.floor(Math.random() * 1000000)}`;
+  const testUserNamePassword = "test1234";
   before(() => {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.getUserList().then(userList => {
@@ -14,9 +14,9 @@ describe("Users/Groups Dashboard", function() {
     cy.visit("/users");
   });
 
-  it("If a user is granted permission to edit another user's password, the edit button appears next to the user", function() {
-    // Log in as root and grant the permission
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+  it("If a user is granted permission to edit another user's password (only in the same organization), the edit button appears next to the user", function() {
+    // Log in as dviolin and grant the permission to testUser
+    cy.login("dviolin", "test");
     cy.grantUserPermissions("dviolin", "user.changePassword", testUserName);
 
     // Log in as test user again and refresh the page
@@ -26,10 +26,13 @@ describe("Users/Groups Dashboard", function() {
     // Check if the button is indeed visible
     cy.get("[data-test=edit-user-dviolin]").should("be.visible");
 
-    // Revoke the permission agian to make the test re-runnable
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    // Revoke the permission
+    cy.login("dviolin", "test");
     cy.revokeUserPermissions("dviolin", "user.changePassword", testUserName);
-    cy.login();
+
+    cy.login(testUserName, testUserNamePassword);
+    cy.visit("/users");
+    cy.get("[data-test=edit-user-dviolin]").should("not.exist");
   });
 
   it("Before the user enters the user password and the new passwords, he/she cannot proceed", function() {
@@ -96,7 +99,7 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test=password-change-submit]").click();
 
     // A success snackbar is displayed
-    cy.get("#client-snackbar")
+    cy.get("[data-test=client-snackbar]")
       .should("be.visible")
       .contains("Password successfully changed");
 
@@ -123,12 +126,12 @@ describe("Users/Groups Dashboard", function() {
     cy.get("[data-test=password-change-submit]").click();
 
     // A success snackbar is displayed
-    cy.get("#client-snackbar")
+    cy.get("[data-test=client-snackbar]")
       .should("be.visible")
       .contains("Password successfully changed");
   });
 
-  it("Root can edit all user passwords", function() {
+  it("Root can edit all user passwords (of his organization)", function() {
     // Log in as root
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/users");

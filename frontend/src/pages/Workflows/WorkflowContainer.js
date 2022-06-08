@@ -1,4 +1,4 @@
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";

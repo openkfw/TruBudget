@@ -125,7 +125,10 @@ const pt = {
     dueDate_exceeded: "Data de vencimento excedida",
     login_disabled: "O ID de login está desativado",
     login_data_error: "O campo de identidade ou senha de login não pode estar vazio",
-    refresh_assignments: "Atualizar atribuições"
+    refresh_assignments: "Atualizar atribuições",
+    tags: "Etiquetas",
+    all: "Tudo",
+    assignee: "Responsável"
   },
 
   users: {

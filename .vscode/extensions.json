@@ -4,7 +4,6 @@
   // List of extensions which should be recommended for users of this workspace.
   "recommendations": [
     "aaron-bond.better-comments",
-    "CoenraadS.bracket-pair-colorizer",
     "dbaeumer.vscode-eslint",
     "EditorConfig.EditorConfig",
     "eg2.tslint",

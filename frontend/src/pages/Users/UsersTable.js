@@ -1,14 +1,14 @@
-import { withStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import EditIcon from "@material-ui/icons/Edit";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
+import { withStyles } from "@mui/styles";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EditIcon from "@mui/icons-material/Edit";
+import PermissionIcon from "@mui/icons-material/LockOpen";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import _sortBy from "lodash/sortBy";
 import React from "react";
 import strings from "../../localizeStrings";
@@ -85,20 +85,25 @@ const renderActionButtons = props => {
     showPasswordDialog,
     disableUser,
     enableUser,
-    isRoot
+    isRoot,
+    organization
   } = props;
 
   const isEnabledUser = displayUser.permissions["user.authenticate"].includes(displayUser.id);
+  const isRootUserOfSameOrga = isRoot && organization === displayUser.organization;
   const canEditPassword =
     // need to check if user permissions exist yet
     // to make sure this is compatible with older versions
     (displayUser.permissions &&
       displayUser.permissions.hasOwnProperty("user.changePassword") &&
-      displayUser.permissions["user.changePassword"].some(x => x === userId)) ||
-    isRoot;
-  const canListUserPermissions = allowedIntents.includes("global.listPermissions") || isRoot;
-  const canEnableUser = (allowedIntents.includes("global.enableUser") || isRoot) && !isEnabledUser;
-  const canDisableUser = (allowedIntents.includes("global.disableUser") || isRoot) && isEnabledUser;
+      displayUser.permissions["user.changePassword"].some(x => x === userId) &&
+      !isRoot) ||
+    isRootUserOfSameOrga;
+  const canListUserPermissions = (allowedIntents.includes("global.listPermissions") && !isRoot) || isRootUserOfSameOrga;
+  const canEnableUser =
+    ((allowedIntents.includes("global.enableUser") && !isRoot) || isRootUserOfSameOrga) && !isEnabledUser;
+  const canDisableUser =
+    ((allowedIntents.includes("global.disableUser") && !isRoot) || isRootUserOfSameOrga) && isEnabledUser;
 
   return (
     <>

@@ -2,6 +2,8 @@ import { toAmountString } from "../support/helper";
 
 describe("Project Analytics", function() {
   const executingUser = "mstein";
+  const otherUser = "jdoe";
+
   let project = {
     id: "",
     displayName: "p-analytics",
@@ -50,7 +52,8 @@ describe("Project Analytics", function() {
   };
 
   before(() => {
-    cy.login();
+    cy.login(executingUser, "test");
+
     cy.createProject(project.displayName, project.description, project.projectedBudgets).then(({ id }) => {
       project.id = id;
       cy.createSubproject(project.id, subproject.displayName, subproject.currency, {
@@ -142,6 +145,21 @@ describe("Project Analytics", function() {
 
   it("Without view permission of every workflowitem of all subprojects the user can see the analytics-charts are not visible", function() {
     // Setup permissions
+    cy.grantProjectPermission(project.id, "project.viewDetails", otherUser);
+    cy.grantWorkflowitemPermission(
+      project.id,
+      subproject.id,
+      allocatedWorkflowitem.id,
+      "workflowitem.intent.grantPermission",
+      otherUser
+    );
+    cy.grantWorkflowitemPermission(
+      project.id,
+      subproject.id,
+      allocatedWorkflowitem.id,
+      "workflowitem.intent.revokePermission",
+      otherUser
+    );
     cy.revokeWorkflowitemPermission(
       project.id,
       subproject.id,
@@ -160,7 +178,7 @@ describe("Project Analytics", function() {
     cy.get("[data-test=redacted-warning]").should("be.visible");
 
     // Reset permissions
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(otherUser, "test");
     cy.grantWorkflowitemPermission(
       project.id,
       subproject.id,

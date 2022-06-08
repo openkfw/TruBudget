@@ -15,7 +15,7 @@ export async function getNotificationsForUser(
 ): Promise<Result.Type<Notification.Notification[]>> {
   logger.debug({ user }, "Getting notifications for user");
 
-  return await Cache.withCache(conn, ctx, (cache) =>
+  return Cache.withCache(conn, ctx, (cache) =>
     NotificationList.getUserNotifications(ctx, user, {
       getUserNotificationEvents: async (userId: UserRecord.Id) => {
         return cache.getNotificationEvents(userId);

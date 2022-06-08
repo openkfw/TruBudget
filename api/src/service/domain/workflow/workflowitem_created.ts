@@ -1,14 +1,13 @@
 import Joi = require("joi");
-import { VError } from "verror";
-
 import { Ctx } from "lib/ctx";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { StoredDocument, storedDocumentSchema } from "../document/document";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
-import { StoredDocument, storedDocumentSchema } from "../document/document";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
@@ -97,7 +96,7 @@ export function createEvent(
   return event;
 }
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

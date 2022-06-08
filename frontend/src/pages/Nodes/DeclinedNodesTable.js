@@ -1,11 +1,11 @@
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
 import React from "react";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import Paper from "@material-ui/core/Paper";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import TableBody from "@mui/material/TableBody";
+import Paper from "@mui/material/Paper";
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -42,14 +42,12 @@ const getDeclinersString = decliners => {
   return resultString;
 };
 
-const getListEntries = (declinedNodes) => {
+const getListEntries = declinedNodes => {
   if (declinedNodes.length) {
     return declinedNodes.map(node => {
       return (
         <TableRow key={node.address.address}>
-          <TableCell align="right">
-            {node.address.organization}
-          </TableCell>
+          <TableCell align="right">{node.address.organization}</TableCell>
           <TableCell align="center">{node.address.address}</TableCell>
           <TableCell align="left">{getDeclinersString(node.currentAccess.decliners)}</TableCell>
         </TableRow>
@@ -65,7 +63,6 @@ const DeclinedNodesTable = props => {
   const declinedNodesListEntries = getListEntries(declinedNodes, classes);
 
   return (
-
     <Paper data-test="declined-nodes-table">
       <Table>
         <TableHead>
@@ -75,9 +72,7 @@ const DeclinedNodesTable = props => {
             <TableCell align="left">{strings.nodesDashboard.declined_by}</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody data-test="declined-nodes-table-body">
-          {declinedNodesListEntries}
-        </TableBody>
+        <TableBody data-test="declined-nodes-table-body">{declinedNodesListEntries}</TableBody>
       </Table>
     </Paper>
   );

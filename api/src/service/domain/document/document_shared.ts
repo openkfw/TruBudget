@@ -33,7 +33,7 @@ export const schema = Joi.object({
   encryptedSecret: Joi.string().required(),
 });
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }
@@ -71,7 +71,7 @@ const secretSchema = Joi.object().keys({
   encryptedSecret: Joi.string().required(),
 });
 
-export function validateSecret(input: any): Result.Type<SecretPublished> {
+export function validateSecret(input): Result.Type<SecretPublished> {
   const { error } = Joi.validate(input, secretSchema);
   return error === null ? (input as SecretPublished) : error;
 }

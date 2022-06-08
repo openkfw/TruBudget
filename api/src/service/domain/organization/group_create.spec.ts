@@ -69,7 +69,7 @@ describe("Create a new group: conditions", () => {
   it("Group that already exists cannot be created", async () => {
     const result = await createGroup(ctx, root, requestData, {
       ...baseRepository,
-      groupExists: (groupId) => Promise.resolve(true),
+      groupExists: (_groupId) => Promise.resolve(true),
     });
     assert.isTrue(Result.isErr(result));
     assert.instanceOf(result, AlreadyExists);
@@ -78,7 +78,7 @@ describe("Create a new group: conditions", () => {
   it("Group cannot be created if user with that id already exists", async () => {
     const result = await createGroup(ctx, root, requestData, {
       ...baseRepository,
-      userExists: (groupId) => Promise.resolve(true),
+      userExists: (_groupId) => Promise.resolve(true),
     });
     assert.isTrue(Result.isErr(result));
     assert.instanceOf(result, AlreadyExists);

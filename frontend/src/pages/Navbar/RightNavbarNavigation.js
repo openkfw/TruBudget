@@ -1,4 +1,4 @@
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import React from "react";
 
 import NavbarIcons from "./NavbarIcons";
@@ -19,7 +19,7 @@ const styles = {
   }
 };
 
-const RightNavbarNavigations = ({
+const RightNavbarNavigation = ({
   peers,
   numberOfActivePeers,
   unreadNotificationCount,
@@ -29,9 +29,10 @@ const RightNavbarNavigations = ({
   storeSearchTerm,
   searchTerm,
   searchBarDisplayed,
+  projectView,
   storeSearchBarDisplayed
 }) => {
-  const searchVisible = history.location.pathname === "/projects";
+  const searchVisible = history.location.pathname === "/projects" && projectView === "card";
   return (
     <div style={styles.container}>
       {searchVisible ? (
@@ -56,4 +57,4 @@ const RightNavbarNavigations = ({
   );
 };
 
-export default RightNavbarNavigations;
+export default RightNavbarNavigation;

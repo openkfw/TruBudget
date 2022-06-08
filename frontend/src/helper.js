@@ -1,6 +1,6 @@
-import DoneIcon from "@material-ui/icons/Check";
-import OpenIcon from "@material-ui/icons/Remove";
-import RejectedIcon from "@material-ui/icons/Block";
+import DoneIcon from "@mui/icons-material/Check";
+import OpenIcon from "@mui/icons-material/Remove";
+import RejectedIcon from "@mui/icons-material/Block";
 import accounting from "accounting";
 import dayjs from "dayjs";
 import { Iterable } from "immutable";
@@ -102,8 +102,13 @@ export const validateLanguagePattern = amount => {
 export const numberSignsRegex = /^[0-9,.-]*$/;
 
 export const unixTsToString = ts => {
-  let dateString = dayjs.unix(ts).format("MMM D, YYYY");
+  let dateString = dayjs.unix(ts).format("D MMM YYYY HH:mm");
   return dateString;
+};
+
+export const stringToUnixTs = date => {
+  let ts = dayjs(date).unix() ?? 0;
+  return ts;
 };
 
 export const statusMapping = status => {

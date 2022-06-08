@@ -30,22 +30,16 @@ export interface Group {
 
 const schema = Joi.object({
   id: idSchema.required(),
-  createdAt: Joi.date()
-    .iso()
-    .required(),
+  createdAt: Joi.date().iso().required(),
   displayName: Joi.string().required(),
-  description: Joi.string()
-    .allow("")
-    .required(),
+  description: Joi.string().allow("").required(),
   members: membersSchema.required(),
   permissions: permissionsSchema.required(),
-  log: Joi.array()
-    .required()
-    .items(groupTraceEventSchema),
+  log: Joi.array().required().items(groupTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
 });
 
-export function validate(input: any): Result.Type<Group> {
+export function validate(input): Result.Type<Group> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }
@@ -55,7 +49,7 @@ export function permits(group: Group, actingUser: ServiceUser, intents: Intent[]
     const eligibles = group.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;

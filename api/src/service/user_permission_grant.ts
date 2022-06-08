@@ -7,9 +7,9 @@ import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserPermissionGrant from "./domain/organization/user_permission_grant";
+import * as UserQuery from "./domain/organization/user_query";
 import * as Project from "./domain/workflow/project";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
 
 export { RequestData } from "./domain/workflow/project_create";
 
@@ -17,6 +17,7 @@ export async function grantUserPermission(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
+  granterOrganization: string,
   userId: Project.Id,
   grantee: Identity,
   intent: Intent,
@@ -26,6 +27,7 @@ export async function grantUserPermission(
   const newEventsResult = await UserPermissionGrant.grantUserPermission(
     ctx,
     serviceUser,
+    granterOrganization,
     userId,
     grantee,
     intent,

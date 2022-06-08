@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import Tooltip from "@material-ui/core/Tooltip";
+import Tooltip from "@mui/material/Tooltip";
 
 const OverflowTooltip = ({ text = "", maxWidth = "140px" }) => {
   const textElementRef = useRef();

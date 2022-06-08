@@ -1,8 +1,8 @@
-import { Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import NameIcon from "@material-ui/icons/AssignmentInd";
-import InfoIcon from "@material-ui/icons/Info";
-import OrgaIcon from "@material-ui/icons/StoreMallDirectory";
+import { Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import NameIcon from "@mui/icons-material/AssignmentInd";
+import InfoIcon from "@mui/icons-material/Info";
+import OrgaIcon from "@mui/icons-material/StoreMallDirectory";
 import React from "react";
 
 import strings from "../../localizeStrings";

@@ -37,7 +37,7 @@ export function createEvent(
   revokee: Identity,
   time: string = new Date().toISOString(),
 ): Result.Type<Event> {
-  logger.trace("Creating user_permission_reviked event");
+  logger.trace("Creating user_permission_revoked event");
 
   const event = {
     type: eventType,
@@ -55,7 +55,7 @@ export function createEvent(
   return event;
 }
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

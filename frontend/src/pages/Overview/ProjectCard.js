@@ -1,24 +1,24 @@
-import { withStyles, withTheme } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
-import Fab from "@material-ui/core/Fab";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Tooltip from "@material-ui/core/Tooltip";
-import AmountIcon from "@material-ui/icons/AccountBalance";
-import DateIcon from "@material-ui/icons/DateRange";
-import EditIcon from "@material-ui/icons/Edit";
-import LabelIcon from "@material-ui/icons/LabelOutlined";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-import MoreIcon from "@material-ui/icons/MoreHoriz";
-import ViewIcon from "@material-ui/icons/ZoomIn";
+import { withStyles, withTheme } from "@mui/styles";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import Fab from "@mui/material/Fab";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Tooltip from "@mui/material/Tooltip";
+import AmountIcon from "@mui/icons-material/AccountBalance";
+import DateIcon from "@mui/icons-material/DateRange";
+import EditIcon from "@mui/icons-material/Edit";
+import LabelIcon from "@mui/icons-material/LabelOutlined";
+import PermissionIcon from "@mui/icons-material/LockOpen";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
+import ViewIcon from "@mui/icons-material/ZoomIn";
 import React from "react";
-import Highlight from "react-highlighter";
+import Highlighter from "react-highlight-words";
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
@@ -52,7 +52,7 @@ const ProjectCard = ({
   tags,
   parentClasses,
   imagePath,
-  highlightingRegex,
+  searchTermArray,
   theme
 }) => {
   return (
@@ -88,16 +88,25 @@ const ProjectCard = ({
           data-test="project-header"
           className={parentClasses.cardHeader}
           title={
-            <div className={parentClasses.cardTitle} id={`project-title-${index}`} data-test={`project-title`}>
-              <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
-                {displayName}
-              </Highlight>
+            <div
+              className={parentClasses.cardTitle}
+              id={`project-title-${index}`}
+              data-test={`project-title-${displayName}`}
+            >
+              <Highlighter
+                highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+                searchWords={searchTermArray}
+                textToHighlight={displayName}
+              />
             </div>
           }
           subheader={
-            <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
-              {mappedStatus}
-            </Highlight>
+            <Highlighter
+              data-test={`project-status-${mappedStatus}`}
+              highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+              searchWords={searchTermArray}
+              textToHighlight={mappedStatus}
+            />
           }
         />
         <List>

@@ -1,13 +1,13 @@
-import { Ctx } from "../lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
+import { Ctx } from "../lib/ctx";
+import * as Result from "../result";
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
-import * as Result from "../result";
-import * as UserAssignmentsGet from "./domain/workflow/user_assignments_get";
-import * as UserAssignments from "./domain/workflow/user_assignments";
-import * as UserQuery from "./user_query";
 import { ServiceUser } from "./domain/organization/service_user";
-import logger from "lib/logger";
+import * as UserQuery from "./domain/organization/user_query";
+import * as UserAssignments from "./domain/workflow/user_assignments";
+import * as UserAssignmentsGet from "./domain/workflow/user_assignments_get";
 
 export async function getUserAssignments(
   conn: ConnToken,
@@ -18,28 +18,19 @@ export async function getUserAssignments(
 ): Promise<Result.Type<UserAssignments.UserAssignments>> {
   logger.debug({ req: requestData }, "Get user assignments");
 
-  const userAssignmentResult = await Cache.withCache(
-    conn,
-    ctx,
-    async (cache) =>
-      await UserAssignmentsGet.getUserAssignments(
-        ctx,
-        requestData.userId,
-        issuer,
-        issuerOrganization,
-        {
-          getAllProjects: async () => {
-            return cache.getProjects();
-          },
-          getSubprojects: async (pId) => {
-            return cache.getSubprojects(pId);
-          },
-          getWorkflowitems: async (pId, spId) => {
-            return cache.getWorkflowitems(pId, spId);
-          },
-          getUser: () => UserQuery.getUser(conn, ctx, issuer, requestData.userId),
-        },
-      ),
+  const userAssignmentResult = await Cache.withCache(conn, ctx, async (cache) =>
+    UserAssignmentsGet.getUserAssignments(ctx, requestData.userId, issuer, issuerOrganization, {
+      getAllProjects: async () => {
+        return cache.getProjects();
+      },
+      getSubprojects: async (pId) => {
+        return cache.getSubprojects(pId);
+      },
+      getWorkflowitems: async (pId, spId) => {
+        return cache.getWorkflowitems(pId, spId);
+      },
+      getUser: () => UserQuery.getUser(conn, ctx, issuer, requestData.userId),
+    }),
   );
   return Result.mapErr(
     userAssignmentResult,

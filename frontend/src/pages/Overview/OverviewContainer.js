@@ -15,9 +15,11 @@ import {
   showProjectAdditionalData,
   showProjectPermissions,
   storeFilteredProjects,
-  storeHighlightingRegex,
-  storeSearchTermArray
+  storeSearchTermArray,
+  setProjectView
 } from "./actions";
+import { fetchUser } from "../Login/actions";
+import { fetchAllProjectDetails } from "../SubProjects/actions";
 import Overview from "./Overview";
 import ProjectDialogContainer from "./ProjectDialogContainer";
 import ProjectPermissionsContainer from "./ProjectPermissionsContainer";
@@ -29,13 +31,12 @@ class OverviewContainer extends Component {
     // Listen for postmessage from worker
     this.worker.addEventListener("message", event => {
       const filteredProjects = event.data ? event.data.filteredProjects : this.props.projects;
-      const highlightingRegex = event.data.highlightingRegex;
       const searchTerms = event.data.searchTerms;
       this.props.storeFilteredProjects(filteredProjects);
-      this.props.storeHighlightingRegex(highlightingRegex);
       this.props.storeSearchTermArray(searchTerms);
     });
     this.props.fetchAllProjects(true);
+    this.props.fetchUser();
   }
 
   componentDidUpdate(prevProps) {
@@ -46,7 +47,6 @@ class OverviewContainer extends Component {
     }
     if (!this.props.searchTermString && prevProps.searchTermString) {
       this.props.storeFilteredProjects(this.props.projects);
-      this.props.storeHighlightingRegex("");
       this.props.storeSearchTermArray([]);
     }
   }
@@ -80,10 +80,12 @@ const mapDispatchToProps = dispatch => {
     showProjectAdditionalData: id => dispatch(showProjectAdditionalData(id)),
     hideProjectAdditionalData: () => dispatch(hideProjectAdditionalData()),
     storeFilteredProjects: filteredProjects => dispatch(storeFilteredProjects(filteredProjects)),
-    storeHighlightingRegex: highlightingRegex => dispatch(storeHighlightingRegex(highlightingRegex)),
     storeSearchTermArray: searchTerms => dispatch(storeSearchTermArray(searchTerms)),
     storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
-    showSearchBar: () => dispatch(storeSearchBarDisplayed(true))
+    showNavSearchBar: () => dispatch(storeSearchBarDisplayed(true)),
+    fetchUser: () => dispatch(fetchUser(true)),
+    fetchAllProjectDetails: projectId => dispatch(fetchAllProjectDetails(projectId, false)),
+    setProjectView: view => dispatch(setProjectView(view))
   };
 };
 
@@ -100,7 +102,12 @@ const mapStateToProps = state => {
     isRoot: state.getIn(["navbar", "isRoot"]),
     permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
     highlightingRegex: state.getIn(["overview", "highlightingRegex"]),
-    searchTermArray: state.getIn(["overview", "searchTerms"])
+    searchTermArray: state.getIn(["overview", "searchTerms"]), // only for WebWorker
+    searchTerm: state.getIn(["navbar", "searchTerm"]), // searchTerm in SearchBar
+    users: state.getIn(["login", "enabledUsers"]),
+    subProjects: state.getIn(["detailview", "subProjects"]),
+    projectView: state.getIn(["overview", "projectView"]),
+    enabledUsers: state.getIn(["login", "enabledUsers"])
   };
 };
 

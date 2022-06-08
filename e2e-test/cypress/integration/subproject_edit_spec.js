@@ -1,4 +1,5 @@
 describe("Subproject Edit", function() {
+  const otherUser = "jxavier";
   let projectId;
   let subprojectId;
   let baseUrl, apiRoute;
@@ -12,6 +13,8 @@ describe("Subproject Edit", function() {
       projectId = id;
       cy.createSubproject(projectId, "subproject edit test").then(({ id }) => {
         subprojectId = id;
+        cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.grantPermission", otherUser);
+        cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.revokePermission", otherUser);
       });
     });
   });
@@ -59,7 +62,7 @@ describe("Subproject Edit", function() {
 
   it("The edit button isn't visible without edit permissions", function() {
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=subproject-edit-button]").click();
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(otherUser, "test");
     cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.update", "mstein");
     cy.login();
     cy.visit(`/projects/${projectId}`);

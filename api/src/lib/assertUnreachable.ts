@@ -21,7 +21,7 @@
 
 import logger from "./logger";
 
-export function assertUnreachable(x: never): never {
+export function assertUnreachable(_x: never): never {
   logger.trace();
   throw new Error("Didn't expect to get here");
 }

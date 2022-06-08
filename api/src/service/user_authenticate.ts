@@ -9,15 +9,15 @@ import { getOrganizationAddress } from "../organization/organization";
 import * as Result from "../result";
 import { NotAuthorized } from "./domain/errors/not_authorized";
 import * as AuthToken from "./domain/organization/auth_token";
+import { getGroupsForUser } from "./domain/organization/group_query";
+import * as UserQuery from "./domain/organization/user_query";
 import * as UserRecord from "./domain/organization/user_record";
 import { AuthenticationFailed } from "./errors/authentication_failed";
 import { getselfaddress } from "./getselfaddress";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
-import { getGroupsForUser } from "./group_query";
 import { importprivkey } from "./importprivkey";
 import { hashPassword, isPasswordMatch } from "./password";
-import * as UserQuery from "./user_query";
 
 export interface UserLoginResponse {
   id: string;
@@ -124,7 +124,11 @@ async function authenticateUser(
   }
 
   // Check if user has user.authenticate intent
-  if (!UserRecord.permits(userRecord, rootUser, ["user.authenticate"])) {
+  const canAuthenticate =
+    userRecord?.permissions["user.authenticate"] &&
+    userRecord?.permissions["user.authenticate"].some((id) => id === userId);
+
+  if (!canAuthenticate) {
     return new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
   }
 

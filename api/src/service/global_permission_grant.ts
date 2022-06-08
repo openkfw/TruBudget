@@ -4,13 +4,13 @@ import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import { ConnToken } from "./conn";
+import * as GroupQuery from "./domain/organization/group_query";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
+import * as UserQuery from "./domain/organization/user_query";
 import * as GlobalPermissionsGrant from "./domain/workflow/global_permission_grant";
 import { getGlobalPermissions } from "./global_permissions_get";
-import * as GroupQuery from "./group_query";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
 
 export async function grantGlobalPermission(
   conn: ConnToken,
@@ -29,8 +29,8 @@ export async function grantGlobalPermission(
     permission,
     {
       getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-      isGroup: async (granteeId) => await GroupQuery.groupExists(conn, ctx, serviceUser, granteeId),
-      getUser: async (userId) => await UserQuery.getUser(conn, ctx, serviceUser, userId),
+      isGroup: async (granteeId) => GroupQuery.groupExists(conn, ctx, serviceUser, granteeId),
+      getUser: async (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
     },
   );
   if (Result.isErr(result)) return new VError(result, "failed to grant global permission");

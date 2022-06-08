@@ -1,19 +1,10 @@
-import {
-  Avatar,
-  Card,
-  CardHeader,
-  Dialog,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Typography,
-  withStyles
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import DoneIcon from "@material-ui/icons/Done";
-import EditIcon from "@material-ui/icons/Edit";
-import EmailIcon from "@material-ui/icons/Email";
-import GroupIcon from "@material-ui/icons/Group";
+import { Avatar, Card, CardHeader, Dialog, DialogTitle, IconButton, TextField, Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import CloseIcon from "@mui/icons-material/Close";
+import DoneIcon from "@mui/icons-material/Done";
+import EditIcon from "@mui/icons-material/Edit";
+import EmailIcon from "@mui/icons-material/Email";
+import GroupIcon from "@mui/icons-material/Group";
 import React from "react";
 
 import { isEmailAddressValid } from "../../helper";
@@ -93,7 +84,7 @@ const UserProfile = ({
       open={open}
       data-test="user-profile-dialog"
     >
-      <DialogTitle disableTypography={true} className={classes.flex}>
+      <DialogTitle className={classes.flex}>
         <div className={classes.title}>
           <Avatar className={classes.avatar} src={avatar} />
           <Typography className={classes.displayName}>{displayName}</Typography>
@@ -103,6 +94,7 @@ const UserProfile = ({
           className={classes.closeButton}
           onClick={hideUserProfile}
           data-test="close-user-profile"
+          size="large"
         >
           <CloseIcon />
         </IconButton>
@@ -131,12 +123,14 @@ const UserProfile = ({
                 <>
                   {isEmailAddressInputValid ? (
                     <TextField
+                      variant="standard"
                       className={classes.emailTextField}
                       label={strings.common.email}
                       onChange={e => storeTempEmailAddress(e.target.value)}
                     />
                   ) : (
                     <TextField
+                      variant="standard"
                       error
                       helperText={strings.userProfile.invalid_email_address}
                       className={classes.emailTextField}

@@ -1,7 +1,7 @@
-import AppBar from "@material-ui/core/AppBar";
-import { withStyles } from "@material-ui/core/styles";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
+import AppBar from "@mui/material/AppBar";
+import { withStyles } from "@mui/styles";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import React from "react";
 import strings from "../../localizeStrings";
 import CreateButton from "../Common/CreateButton";

@@ -1,5 +1,4 @@
 const filterProjectsWorker = () => {
-  let highlightingRegex;
   onmessage = ({ data: { projects, searchTerm } }) => {
     const filteredProjects = filterProjects(projects, searchTerm);
     postMessage(filteredProjects);
@@ -13,9 +12,8 @@ const filterProjectsWorker = () => {
     const searchTermsWithoutPrefix = unfilteredSearchTerms.filter(
       searchTerm => !searchTerm.includes(":") && searchTerm.length !== 0
     );
-    // Create highligthingRegex from all filtered searchterms
+
     const filteredSearchTerms = searchTermsWithoutPrefix.concat(searchedDisplayNames, searchedTags, searchedStatus);
-    highlightingRegex = filteredSearchTerms.length !== 0 ? generateHighligthingRegex(filteredSearchTerms) : "";
 
     const filteredProjects = projects.filter(project => {
       let hasDisplayName = true;
@@ -30,7 +28,7 @@ const filterProjectsWorker = () => {
       return hasDisplayName && hasStatus && hasTag && hasSearchTerm;
     });
 
-    return { filteredProjects, searchTerms: filteredSearchTerms, highlightingRegex };
+    return { filteredProjects, searchTerms: filteredSearchTerms };
   };
 
   const extractFromSearchTerms = (searchTerms, prefix) => {
@@ -74,13 +72,6 @@ const filterProjectsWorker = () => {
     return searchedDisplayNames.some(displayName =>
       project.data.displayName.toLowerCase().includes(displayName.toLowerCase())
     );
-  }
-
-  function generateHighligthingRegex(searchTerms) {
-    const regexString = searchTerms.reduce((string, searchTerm) => {
-      return string.concat("|" + searchTerm);
-    });
-    return new RegExp("(" + regexString + ")", "i");
   }
 };
 

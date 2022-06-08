@@ -9,8 +9,8 @@ interface ItemAndIndex {
 }
 
 export function sortWorkflowitems<
-  T extends Workflowitem.ScrubbedWorkflowitem 
-  | Workflowitem.Workflowitem>(workflowitems: T[], ordering: string[]): T[] {
+  T extends Workflowitem.ScrubbedWorkflowitem | Workflowitem.Workflowitem,
+>(workflowitems: T[], ordering: string[]): T[] {
   // The index is needed to enable stable sorting:
   const items = workflowitems.map((workflowitem, index) => ({ index, workflowitem }));
 
@@ -69,7 +69,7 @@ function isClosed(item: Workflowitem.ScrubbedWorkflowitem): boolean {
   return item.status === "closed";
 }
 
-function closedAt(item: Workflowitem.ScrubbedWorkflowitem): any {
+function closedAt(item: Workflowitem.ScrubbedWorkflowitem) {
   const traceEvent = item.log.find((e) => e.businessEvent.type === "workflowitem_closed");
 
   if (traceEvent === undefined || traceEvent.businessEvent.type !== "workflowitem_closed") {

@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import Transition from "react-transition-group/Transition";
 
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import LaunchIcon from "@material-ui/icons/ZoomIn";
-import Typography from "@material-ui/core/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import LaunchIcon from "@mui/icons-material/ZoomIn";
+import Typography from "@mui/material/Typography";
 
 import { intentMapping, parseURI, isAllowedToSee, getParentData } from "./helper";
 
@@ -49,7 +49,7 @@ export default class FlyInNotification extends Component {
                   disabled={!isAllowedToSee(notification)}
                   color="primary"
                   onClick={() => history.push(parseURI({ projectId, subprojectId }))}
-                >
+                  size="large">
                   <LaunchIcon />
                 </IconButton>
               ) : null

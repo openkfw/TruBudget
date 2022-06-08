@@ -1,6 +1,6 @@
 {
   "name": "trubudget-api",
-  "version": "1.29.0",
+  "version": "1.30.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -37,8 +37,8 @@
     "start": "node dist/",
     "audit": "better-npm-audit audit",
     "build": "rimraf dist && tsc",
-    "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
-    "watch": "ts-node-dev -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
+    "dev": "ts-node-dev --poll --respawn -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
+    "watch": "ts-node-dev --poll --respawn -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
     "test": "nyc mocha --require ts-node/register -r tsconfig-paths/register \"src/**/*.spec.ts\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "generate-report": "nyc report --reporter=html",
@@ -73,6 +73,7 @@
     "axios": "^0.21.4",
     "bcryptjs": "^2.4.3",
     "better-npm-audit": "^3.4.0",
+    "content-disposition": "^0.5.4",
     "fastify": "^3.11.0",
     "fastify-cors": "^6.0.2",
     "fastify-helmet": "^5.3.2",
@@ -81,6 +82,7 @@
     "fastify-swagger": "^4.12.4",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.0",
+    "lodash": "^4.17.21",
     "lodash.isequal": "^4.5.0",
     "module-alias": "^2.2.2",
     "raw-body": "^2.3.3",
@@ -100,8 +102,8 @@
     "@types/pino": "^6.3.11",
     "@types/uuid": "^3.4.3",
     "@types/verror": "^1.10.3",
-    "@typescript-eslint/eslint-plugin": "4.28.5",
-    "@typescript-eslint/parser": "4.28.5",
+    "@typescript-eslint/eslint-plugin": "5.16.0",
+    "@typescript-eslint/parser": "5.16.0",
     "chai": "^4.1.2",
     "colors": "^1.4.0",
     "coveralls": "^3.0.3",
@@ -123,7 +125,7 @@
     "ts-node-dev": "^1.1.8",
     "tsconfig-paths": "^3.11.0",
     "tslint": "*",
-    "typescript": "^4.0.2"
+    "typescript": "^4.6.2"
   },
   "_moduleAliases": {
     "lib": "dist/lib"

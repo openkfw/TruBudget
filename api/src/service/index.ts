@@ -1,3 +1,5 @@
+import { TruBudgetError } from "../error";
+import VError from "verror";
 import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
 import logger from "../lib/logger";
@@ -8,18 +10,15 @@ import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
 import { Issuer } from "./issuer";
 import { ConnectionSettings } from "./RpcClient.h";
-import VError from "verror";
 
+export { ConnToken } from "./conn";
 export * from "./event";
 export * from "./issuer";
 export * from "./ProjectEvents";
-export { ConnToken } from "./conn";
 
 const workflowitemsGroupKey = (subprojectId) => `${subprojectId}_workflows`;
 const workflowitemOrderingKey = (subprojectId) => `${subprojectId}_workflowitem_ordering`;
 const globalSelfKey = "self";
-
-type ResourceType = "project" | "subproject" | "workflowitem";
 
 interface Update {
   displayName?: string;
@@ -187,7 +186,11 @@ export async function getWorkflowitemOrdering(
     .v2_readStreamItems(projectId, workflowitemOrderingKey(subprojectId), nValues)
     .then((items) => {
       if (items.length > 0) return items;
-      else throw { kind: "NotFound", what: workflowitemOrderingKey(subprojectId) };
+      else
+        throw new TruBudgetError({
+          kind: "NotFound",
+          what: { key: workflowitemOrderingKey(subprojectId) },
+        });
     })
     .catch((err) => {
       logger.error({ err }, "Error while getting order of workflowitems");

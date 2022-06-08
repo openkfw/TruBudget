@@ -15,7 +15,7 @@ const schema = Joi.object({
   publicKey: Joi.string().required(),
 });
 
-export function validate(input: any): Result.Type<PublicKey> {
+export function validate(input): Result.Type<PublicKey> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

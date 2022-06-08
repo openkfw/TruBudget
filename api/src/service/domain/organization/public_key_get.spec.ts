@@ -1,12 +1,10 @@
 import { assert, expect } from "chai";
 import { Ctx } from "lib/ctx";
-import * as Result from "../../../result";
-import { NotFound } from "../errors/not_found";
-import { ServiceUser } from "../organization/service_user";
-import { PublicKeyBase64 } from "../organization/public_key";
-import { getPublicKey, publicKeyAlreadyExists } from "../organization/public_key_get";
-import { BusinessEvent } from "../business_event";
 import { VError } from "verror";
+import * as Result from "../../../result";
+import { BusinessEvent } from "../business_event";
+import { getPublicKey, publicKeyAlreadyExists } from "../organization/public_key_get";
+import { ServiceUser } from "../organization/service_user";
 
 const ctx: Ctx = {
   requestId: "test",

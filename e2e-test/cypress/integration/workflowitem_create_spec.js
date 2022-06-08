@@ -61,10 +61,7 @@ describe("Workflowitem create", function() {
         .should("contain", "€");
       // The information on the workflow item amount
       // and exchange rate is displayed in a tooltip
-      cy.get("[data-test=amount-explanation]")
-        .first()
-        .should("have.attr", "title")
-        .should("contain", "$");
+      cy.get("[data-test=amount-explanation-USD]").should("be.visible");
     });
   });
 

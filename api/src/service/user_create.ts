@@ -7,14 +7,14 @@ import * as Result from "../result";
 import { ConnToken } from "./conn";
 import { createkeypairs } from "./createkeypairs";
 import * as AuthToken from "./domain/organization/auth_token";
+import * as GroupQuery from "./domain/organization/group_query";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserCreate from "./domain/organization/user_create";
 import { sourceUserRecords } from "./domain/organization/user_eventsourcing";
+import { userExists } from "./domain/organization/user_query";
 import { getGlobalPermissions } from "./global_permissions_get";
-import * as GroupQuery from "./group_query";
 import { hashPassword } from "./password";
 import { store } from "./store";
-import { userExists } from "./user_query";
 
 export async function createUser(
   organizationSecret: string,

@@ -1,22 +1,23 @@
 import React, { Component } from "react";
 
-import Button from "@material-ui/core/Button";
-import FingerPrint from "@material-ui/icons/Fingerprint";
-import Input from "@material-ui/core/Input";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
-import DownloadIcon from "@material-ui/icons/GetApp";
-import ValidationIcon from "@material-ui/icons/FindInPage";
+import Button from "@mui/material/Button";
+import FingerPrint from "@mui/icons-material/Fingerprint";
+import Input from "@mui/material/Input";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import DownloadIcon from "@mui/icons-material/GetApp";
+import ValidationIcon from "@mui/icons-material/FindInPage";
 
 import _isUndefined from "lodash/isUndefined";
 import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import withInitialLoading from "../Loading/withInitialLoading";
-import { TableHead, withStyles } from "@material-ui/core";
+import { TableHead } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import OverflowTooltip from "../Common/OverflowTooltip";
 import { DocumentEmptyState } from "./DocumentEmptyStates";
 
@@ -54,19 +55,19 @@ class DocumentOverview extends Component {
   getPropsForValidationButton = (validated, available) => {
     let style = {};
     let label = "";
-    let color = "default";
+    let color = undefined;
     const disabled = !available;
     if (_isUndefined(validated)) {
       label = strings.workflow.workflow_document_validate;
     } else if (validated === true) {
       label = strings.workflow.workflow_document_validated + "!";
-      color = "primary";
+      color = "success";
     } else {
       label = strings.workflow.workflow_document_changed + "!";
       style = {
         ...styles.validationButtonNotValidated
       };
-      color = "secondary";
+      color = "error";
     }
 
     return { style, label, color, disabled };
@@ -86,7 +87,7 @@ class DocumentOverview extends Component {
     const { hash, id, available } = document;
 
     return (
-      <Button {...this.getPropsForValidationButton(validated, available)}>
+      <Button {...this.getPropsForValidationButton(validated, available)} data-test="validation-button">
         <ValidationIcon />
         {this.getValidationText(validated)}
         <Input
@@ -152,10 +153,7 @@ class DocumentOverview extends Component {
     return (
       <>
         {header}
-        < TableBody >
-          {rows}
-        </TableBody >
-
+        <TableBody>{rows}</TableBody>
       </>
     );
   };
@@ -171,9 +169,7 @@ class DocumentOverview extends Component {
             <Typography>{strings.common.hash}</Typography>
           </TableCell>
           <TableCell>
-            <Typography>
-              {strings.common.actions}
-            </Typography>
+            <Typography>{strings.common.actions}</Typography>
           </TableCell>
         </TableRow>
       </TableHead>
@@ -187,26 +183,19 @@ class DocumentOverview extends Component {
   );
 
   render = () => {
-    const {
-      documents,
-      validatedDocuments,
-      workflowitemId,
-      projectId,
-      subprojectId,
-      downloadDocument
-    } = this.props;
+    const { documents, validatedDocuments, workflowitemId, projectId, subprojectId, downloadDocument } = this.props;
     return (
       <Table>
         {_isEmpty(documents)
           ? this.generateEmptyList()
           : this.generateDocumentList({
-            workflowitemId,
-            projectId,
-            subprojectId,
-            documents,
-            validatedDocuments,
-            downloadDocument
-          })}
+              workflowitemId,
+              projectId,
+              subprojectId,
+              documents,
+              validatedDocuments,
+              downloadDocument
+            })}
       </Table>
     );
   };
@@ -214,7 +203,6 @@ class DocumentOverview extends Component {
   generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document) {
     return (
       <Button
-        color="default"
         aria-label="Validation picture"
         data-test="download-document"
         component="span"

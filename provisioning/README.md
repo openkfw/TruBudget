@@ -36,3 +36,19 @@ ORGANIZATION=myorga ROOT_SECRET=my-secret ENVIRONMENT_TYPE=PROD npm start
 ```
 
 By default, the script expects the API to listen on `127.0.0.1:8080`, but this can be customized using the `API_HOST` and `API_PORT` environment variables.
+
+## Provisioning data
+
+The default provisioning data is stored in `provisioning/src/data/test`.
+
+| Login ID   | Name           | Group  | Password |
+| ---------- | -------------- | ------ | -------- |
+| mstein     | Mauro Stein    | admins | test     |
+| jdoe       | John Doe       | admins | test     |
+| thouse     | Tom House      |        | test     |
+| pkleffmann | Piet Kleffmann |        | test     |
+| jxavier    | Jane Xavier    |        | test     |
+| dviolin    | Dana Violin    |        | test     |
+| auditUser  | Romina Checker |        | test     |
+
+For more information about the provisioning data, view the JSON objects [here](https://github.com/openkfw/TruBudget/tree/master/provisioning/src/data/test).

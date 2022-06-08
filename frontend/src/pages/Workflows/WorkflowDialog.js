@@ -1,8 +1,8 @@
-import Divider from "@material-ui/core/Divider";
-import { withStyles } from "@material-ui/core/styles";
-import MenuItem from "@material-ui/core/MenuItem";
-import Tooltip from "@material-ui/core/Tooltip";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import Divider from "@mui/material/Divider";
+import { withStyles } from "@mui/styles";
+import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "@mui/material/Tooltip";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect } from "react";
 import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";

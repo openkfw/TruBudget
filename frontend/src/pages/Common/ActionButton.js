@@ -1,5 +1,5 @@
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 
 const styles = {
@@ -15,12 +15,13 @@ const ActionButton = ({
   notVisible,
   onClick,
   icon,
-  title,
+  title = "",
   id,
   // eslint-disable-next-line no-useless-computed-key
   ["data-test"]: dataTest,
   iconButtonStyle,
-  iconButtonClassName
+  iconButtonClassName,
+  alignTooltip = "bottom-end"
 }) => {
   const disabled = notVisible;
   return (
@@ -28,9 +29,10 @@ const ActionButton = ({
       <Tooltip
         id={"tooltip-" + title}
         title={notVisible ? "" : title}
-        disableFocusListener={disabled}
-        disableHoverListener={disabled}
-        disableTouchListener={disabled}
+        disableFocusListener={disabled || title === ""}
+        disableHoverListener={disabled || title === ""}
+        disableTouchListener={disabled || title === ""}
+        placement={alignTooltip}
       >
         <div>
           <IconButton
@@ -40,6 +42,7 @@ const ActionButton = ({
             disabled={disabled}
             data-test={dataTest}
             id={id}
+            size="large"
           >
             {icon}
           </IconButton>

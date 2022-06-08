@@ -1,14 +1,14 @@
 import React from "react";
 
-import Card from "@material-ui/core/Card";
-import Table from "@material-ui/core/Table";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import { withStyles } from "@material-ui/core/styles";
-import ErrorIcon from "@material-ui/icons/Close";
-import DoneIcon from "@material-ui/icons/Done";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Card from "@mui/material/Card";
+import Table from "@mui/material/Table";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import { withStyles } from "@mui/styles";
+import ErrorIcon from "@mui/icons-material/Close";
+import DoneIcon from "@mui/icons-material/Done";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import PreviewDialog from "../Common/PreviewDialog";
 

@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
-
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -56,7 +56,7 @@ describe("assign project: authorization", () => {
     assert.instanceOf(result, NotAuthorized);
   });
 
-  it("The root user doesn't need permission to change a project's assignee.", async () => {
+  it("The root user can never change a project's assignee.", async () => {
     const assigner = root;
     const assignee = bob;
     const result = await assignProject(ctx, assigner, dummy, assignee.id, {
@@ -69,7 +69,7 @@ describe("assign project: authorization", () => {
     });
 
     // No errors, despite the missing permissions:
-    assert.isTrue(Result.isOk(result), (result as Error).message);
+    assert.isTrue(Result.isErr(result), (result as Error).message);
   });
 });
 
@@ -164,7 +164,7 @@ describe("assign project: preconditions", () => {
     assert.isTrue(Result.isErr(result));
     // Make TypeScript happy:
     if (Result.isOk(result)) {
-      throw result;
+      throw new Error(result as any);
     }
 
     assert.match(result.message, /assignee.*\s+.*empty/);

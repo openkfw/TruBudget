@@ -1,14 +1,14 @@
-import Button from "@material-ui/core/Button";
-import MenuItem from "@material-ui/core/MenuItem";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TextField from "@material-ui/core/TextField";
-import DoneIcon from "@material-ui/icons/Check";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TextField from "@mui/material/TextField";
+import DoneIcon from "@mui/icons-material/Check";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import _isEmpty from "lodash/isEmpty";
 import React, { useState, useEffect, useCallback } from "react";
 import {
@@ -40,6 +40,7 @@ const renderProjectedBudgetAmount = ({
     <TableCell align="right" data-test="saved-projected-budget-amount">
       {isEditing && editIndex === currIndex ? (
         <TextField
+          variant="standard"
           label={strings.common.total_budget}
           value={budgetAmountEdit}
           onChange={e => {
@@ -163,6 +164,7 @@ const renderAddProjectedBudget = ({
     <div style={styles.cell}>
       {_isEmpty(projectProjectedBudgets) ? (
         <TextField
+          variant="standard"
           style={styles.inputfield}
           label={strings.common.organization}
           value={organization}
@@ -205,6 +207,7 @@ const renderAddProjectedBudget = ({
         {getCurrencyMenuItems(currencies)}
       </DropDown>
       <TextField
+        variant="standard"
         label={strings.common.total_budget}
         data-test="projected-budget"
         disabled={isEditing}

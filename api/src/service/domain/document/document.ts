@@ -1,9 +1,8 @@
 import * as crypto from "crypto";
-import Joi = require("joi");
-import uuid = require("uuid");
-import * as Result from "../../../result";
-import VError = require("verror");
 import logger from "lib/logger";
+import * as Result from "../../../result";
+import Joi = require("joi");
+import VError = require("verror");
 
 export interface StoredDocument {
   id: string;
@@ -85,7 +84,7 @@ async function hashBase64String(base64String: string): Promise<string> {
   });
 }
 
-export function validate(input: any): Result.Type<UploadedDocument> {
+export function validate(input): Result.Type<UploadedDocument> {
   const { error, value } = Joi.validate(input, uploadedDocumentSchema);
   return !error ? value : error;
 }

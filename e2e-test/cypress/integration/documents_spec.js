@@ -4,7 +4,6 @@ let projectId;
 let subprojectId;
 let workflowitemId;
 let baseUrl, apiRoute;
-let isExternalStorageEnabled = false;
 
 // Actual file in fixture folder
 const fileName = "documents_test.json";
@@ -14,11 +13,6 @@ describe("Attaching a document to a workflowitem.", function() {
     baseUrl = Cypress.env("API_BASE_URL") || `${Cypress.config("baseUrl")}/test`;
     apiRoute = baseUrl.toLowerCase().includes("test") ? "/test/api" : "/api";
     cy.login();
-    cy.getVersion().then(data => {
-      if (data.storage && data.storage.release) {
-        isExternalStorageEnabled = true;
-      }
-    });
     cy.createProject("documents test project", "workflowitem documents test", [])
       .then(({ id }) => {
         projectId = id;
@@ -41,7 +35,7 @@ describe("Attaching a document to a workflowitem.", function() {
 
   const uploadDocument = fileName => {
     // open edit dialog:
-    cy.get("div[title=Edit] > button")
+    cy.get("[data-test=edit-workflowitem]")
       .should("be.visible")
       .click();
 
@@ -93,7 +87,7 @@ describe("Attaching a document to a workflowitem.", function() {
 
     // make sure the validation was successful:
     cy.wait("@validate")
-      .get(`button[label="Validated!"] > span`)
+      .get(`[data-test=validation-button]`)
       .should("contain", "Identical");
   });
 
@@ -131,7 +125,7 @@ describe("Attaching a document to a workflowitem.", function() {
 
     // make sure the validation was not successful:
     cy.wait("@validate")
-      .get(`button[label="Changed!"] > span`)
+      .get(`[data-test=validation-button]`)
       .should("contain", "Different");
   });
 
@@ -161,13 +155,7 @@ describe("Attaching a document to a workflowitem.", function() {
     // Check document name
     cy.get("[data-test=workflowitemDocumentFileName]")
       .should("be.visible")
+      .first()
       .contains(fileName);
-
-    // Check filename if saved on external storage (minio)
-    if (isExternalStorageEnabled) {
-      cy.get("[data-test=workflowitemDocumentFileName]")
-        .should("be.visible")
-        .contains(`(${fileName})`);
-    }
   });
 });

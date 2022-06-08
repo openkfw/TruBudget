@@ -67,7 +67,7 @@ const requestDataSchema = Joi.object({
   workflowitemType: workflowitemTypeSchema,
 });
 
-export function validate(input: any): Result.Type<RequestData> {
+export function validate(input): Result.Type<RequestData> {
   const { value, error } = Joi.validate(input, requestDataSchema);
   return !error ? value : error;
 }
@@ -100,6 +100,7 @@ function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
 
 function generateUniqueDocId(allDocuments: GenericDocument[]): string {
   // Generate a new document id
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const docId = uuid.v4();
     if (!docIdAlreadyExists(allDocuments, docId)) {

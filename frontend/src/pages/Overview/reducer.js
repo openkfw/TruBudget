@@ -26,8 +26,8 @@ import {
   SHOW_PROJECT_ADDITIONAL_DATA,
   SHOW_PROJECT_PERMISSIONS,
   STORE_FILTERED_PROJECTS,
-  STORE_HIGHLIGHTING_REGEX,
-  STORE_SEARCH_TERMS_AS_ARRAY
+  STORE_SEARCH_TERMS_AS_ARRAY,
+  STORE_PROJECT_VIEW
 } from "./actions";
 
 const defaultState = fromJS({
@@ -55,13 +55,12 @@ const defaultState = fromJS({
   nextButtonEnabled: false,
   roles: [],
   loading: false,
-  logs: [],
   allowedIntents: [],
   dialogTitle: strings.project.add_new_project,
   idForInfo: "",
   isProjectAdditionalDataShown: false,
-  highlightingRegex: "",
-  searchTerms: []
+  searchTerms: [],
+  projectView: "card"
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -179,8 +178,7 @@ export default function overviewReducer(state = defaultState, action) {
     case CREATE_PROJECT_SUCCESS:
       return state.merge({
         projectToAdd: defaultState.getIn(["projectToAdd"]),
-        searchTerms: defaultState.get("searchTerms"),
-        highlightingRegex: defaultState.get("highlightingRegex")
+        searchTerms: defaultState.get("searchTerms")
       });
     case PROJECT_CREATION_STEP:
       return state.set("currentStep", action.step);
@@ -205,15 +203,14 @@ export default function overviewReducer(state = defaultState, action) {
       );
     case STORE_FILTERED_PROJECTS:
       return state.set("filteredProjects", fromJS(action.filteredProjects));
-    case STORE_HIGHLIGHTING_REGEX:
-      return state.set("highlightingRegex", fromJS(action.highlightingRegex));
     case STORE_SEARCH_TERMS_AS_ARRAY:
       return state.set("searchTerms", fromJS(action.searchTerms));
     case SEARCH_BAR_DISPLAYED:
       return state.merge({
-        searchTerms: defaultState.get("searchTerms"),
-        highlightingRegex: defaultState.get("highlightingRegex")
+        searchTerms: defaultState.get("searchTerms")
       });
+    case STORE_PROJECT_VIEW:
+      return state.set("projectView", fromJS(action.projectView));
     default:
       return state;
   }

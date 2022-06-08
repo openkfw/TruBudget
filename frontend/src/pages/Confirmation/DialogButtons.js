@@ -1,7 +1,7 @@
-import { Button } from "@material-ui/core";
-import { Typography } from "@material-ui/core";
-import DialogActions from "@material-ui/core/DialogActions";
-import { withStyles } from "@material-ui/core/styles";
+import { Button } from "@mui/material";
+import { Typography } from "@mui/material";
+import DialogActions from "@mui/material/DialogActions";
+import { withStyles } from "@mui/styles";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import strings from "../../localizeStrings";

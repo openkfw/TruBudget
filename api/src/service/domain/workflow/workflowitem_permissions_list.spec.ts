@@ -1,5 +1,4 @@
 import { assert } from "chai";
-
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -19,7 +18,6 @@ const alice: ServiceUser = {
 };
 const projectId = "dummy-project";
 const subprojectId = "dummy-subproject";
-const subprojectName = "dummy";
 const workflowitemId = "dummy-workflowitem";
 
 const permissions: Permissions = {

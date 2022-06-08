@@ -1,12 +1,11 @@
-import Intent from "../../../authz/intents";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import * as Result from "../../../result";
+import * as WorkflowitemDocument from "../document/document";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
-import * as WorkflowitemDocument from "../document/document";
-import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitem(): Promise<Result.Type<Workflowitem.Workflowitem>>;

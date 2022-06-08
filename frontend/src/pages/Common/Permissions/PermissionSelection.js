@@ -1,27 +1,27 @@
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import { withStyles } from "@material-ui/core/styles";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import MenuItem from "@material-ui/core/MenuItem";
-import Paper from "@material-ui/core/Paper";
-import List from "@material-ui/core/List";
-import Select from "@material-ui/core/Select";
-import Typography from "@material-ui/core/Typography";
-import Warning from "@material-ui/icons/Warning";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
+import { withStyles } from "@mui/styles";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import List from "@mui/material/List";
+import Select from "@mui/material/Select";
+import Typography from "@mui/material/Typography";
+import Warning from "@mui/icons-material/Warning";
 import _isEmpty from "lodash/isEmpty";
 import React, { Component } from "react";
 import strings from "../../../localizeStrings";
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 import ActionButton from "../ActionButton";
 import OverflowTooltip from "../OverflowTooltip";
 
 const styles = {
   closeButtonContainer: { float: "right", marginTop: -8 },
   closeButtonSize: { fontSize: 15 },
-  itemContainer: { maxHeight: "65vh", overflow: "auto", boxShadow: 'none' },
+  itemContainer: { maxHeight: "65vh", overflow: "auto", boxShadow: "none" },
   fixLabel: { top: "auto" },
   warning: { marginRight: "8px" },
   warningContainer: { display: "flex", alignItems: "center", justifyContent: "center" },
@@ -143,6 +143,7 @@ class PermissionSelection extends Component {
     return (
       <FormControl data-test={`permission-select-${this.props.name}`} key={this.props.name + "form"}>
         <Select
+          variant="standard"
           multiple
           className={classes.select}
           autoWidth

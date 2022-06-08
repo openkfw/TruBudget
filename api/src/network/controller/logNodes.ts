@@ -1,6 +1,6 @@
 import logger from "lib/logger";
-import { MultichainClient } from "../../service/Client.h";
 import { WalletAddress } from "../../network/model/Nodes";
+import { MultichainClient } from "../../service/Client.h";
 import * as NodesLogged from "../../service/domain/network/nodes_logged";
 
 const NETWORK_LOG = "network_log";
@@ -9,7 +9,7 @@ export const getLatestDateOnlineByAddress = async (
   multichainClient: MultichainClient,
   address: WalletAddress,
 ) => {
-  const [latestEntry]: any = await multichainClient
+  const [latestEntry] = await multichainClient
     .getRpcClient()
     .invoke("liststreamkeyitems", NETWORK_LOG, address, false, 1);
   if (latestEntry) {
@@ -17,6 +17,8 @@ export const getLatestDateOnlineByAddress = async (
   }
 };
 
+// No type checking needed.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function checkNodes(multichain: MultichainClient): Promise<any> {
   await multichain.getOrCreateStream({ kind: NETWORK_LOG, name: NETWORK_LOG });
   // current global date in YYYYMMDD format
@@ -46,7 +48,7 @@ export async function checkNodes(multichain: MultichainClient): Promise<any> {
   });
 }
 
-const publishEvent = (multichain: MultichainClient, { stream, keys, event }: any) => {
+const publishEvent = (multichain: MultichainClient, { stream, keys, event }) => {
   const streamItem = { json: event };
   return multichain
     .getRpcClient()

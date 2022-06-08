@@ -8,9 +8,9 @@ import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserPermissionRevoke from "./domain/organization/user_permission_revoke";
+import * as UserQuery from "./domain/organization/user_query";
 import * as UserRecord from "./domain/organization/user_record";
 import { store } from "./store";
-import * as UserQuery from "./user_query";
 
 export { RequestData } from "./domain/workflow/project_create";
 
@@ -18,6 +18,7 @@ export async function revokeUserPermission(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
+  revokerOrganization: string,
   userId: UserRecord.Id,
   revokee: Identity,
   intent: Intent,
@@ -25,9 +26,17 @@ export async function revokeUserPermission(
   logger.debug({ revokee, intent, userId }, "Revoking user permission");
 
   const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
-    UserPermissionRevoke.revokeUserPermission(ctx, serviceUser, userId, revokee, intent, {
-      getTargetUser: (id) => UserQuery.getUser(conn, ctx, serviceUser, id),
-    }),
+    UserPermissionRevoke.revokeUserPermission(
+      ctx,
+      serviceUser,
+      revokerOrganization,
+      userId,
+      revokee,
+      intent,
+      {
+        getTargetUser: (id) => UserQuery.getUser(conn, ctx, serviceUser, id),
+      },
+    ),
   );
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, `failed to grant ${intent} to ${revokee}`);

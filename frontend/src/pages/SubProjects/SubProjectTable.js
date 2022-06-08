@@ -1,20 +1,20 @@
-import Avatar from "@material-ui/core/Avatar";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import Chip from "@material-ui/core/Chip";
-import { withStyles, withTheme } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Tooltip from "@material-ui/core/Tooltip";
-import EditIcon from "@material-ui/icons/Edit";
-import PermissionIcon from "@material-ui/icons/LockOpen";
-import MoreIcon from "@material-ui/icons/MoreHoriz";
-import LaunchIcon from "@material-ui/icons/ZoomIn";
+import Avatar from "@mui/material/Avatar";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import Chip from "@mui/material/Chip";
+import { withStyles, withTheme } from "@mui/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
+import EditIcon from "@mui/icons-material/Edit";
+import PermissionIcon from "@mui/icons-material/LockOpen";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
+import LaunchIcon from "@mui/icons-material/ZoomIn";
 import _isEmpty from "lodash/isEmpty";
-import Highlight from "react-highlighter";
+import Highlighter from "react-highlight-words";
 import React from "react";
 
 import { statusMapping, toAmountString } from "../../helper";
@@ -117,7 +117,7 @@ const getTableEntries = ({
   showEditDialog,
   showSubProjectPermissions,
   showSubProjectAdditionalData,
-  highlightingRegex,
+  searchTermArray,
   theme,
   storeSubSearchTerm,
   storeSubSearchBarDisplayed,
@@ -137,19 +137,20 @@ const getTableEntries = ({
       return (
         <TableRow key={index} data-test={`subproject-${id}`}>
           <TableCell className={classes.displayName} data-test={`subproject-title-${index}`}>
-            <Highlight
+            <Highlighter
               data-test="highlighted-displayname"
-              matchStyle={{ backgroundColor: theme.palette.primary.light }}
-              search={highlightingRegex}
-            >
-              {displayName}
-            </Highlight>
+              highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+              searchWords={searchTermArray}
+              textToHighlight={displayName}
+            />
           </TableCell>
           <TableCell className={classes.projectdBudget}>{amountString}</TableCell>
           <TableCell className={classes.status}>
-            <Highlight matchStyle={{ backgroundColor: theme.palette.primary.light }} search={highlightingRegex}>
-              {statusMapping(status)}
-            </Highlight>
+            <Highlighter
+              highlightStyle={{ backgroundColor: theme.palette.primary.light }}
+              searchWords={searchTermArray}
+              textToHighlight={statusMapping(status)}
+            />
           </TableCell>
           <TableCell className={classes.actions}>
             <div className={classes.buttonContainer}>
@@ -218,7 +219,7 @@ const SubProjectTable = ({
   searchDisabled,
   storeSubSearchBarDisplayed,
   storeSubSearchTerm,
-  highlightingRegex,
+  searchTermArray,
   theme
 }) => {
   const tableEntries = getTableEntries({
@@ -229,7 +230,7 @@ const SubProjectTable = ({
     showEditDialog,
     showSubProjectPermissions,
     showSubProjectAdditionalData,
-    highlightingRegex,
+    searchTermArray,
     theme,
     storeSubSearchTerm,
     storeSubSearchBarDisplayed,

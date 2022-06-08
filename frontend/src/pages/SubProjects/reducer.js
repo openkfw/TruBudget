@@ -36,7 +36,6 @@ import {
   SUBPROJECT_SEARCH_BAR_DISPLAYED,
   SUBPROJECT_SEARCH_TERM,
   SUBPROJECT_STORE_FILTERED_PROJECTS,
-  SUBPROJECT_STORE_HIGHLIGHTING_REGEX,
   SUBPROJECT_STORE_SEARCH_TERMS_AS_ARRAY,
   FETCH_FIRST_PROJECT_HISTORY_PAGE,
   FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS
@@ -73,7 +72,6 @@ const defaultState = fromJS({
   showHistory: false,
   hasMoreHistory: true,
   roles: [],
-  logs: [],
   historyItems: [],
   isHistoryLoading: false,
   totalHistoryItemCount: 0,
@@ -94,7 +92,6 @@ const defaultState = fromJS({
   searchTerm: "",
   searchTerms: [],
   searchBarDisplayed: true,
-  highlightingRegex: "",
   isLiveUpdatesProjectEnabled: true
 });
 
@@ -116,7 +113,6 @@ export default function detailviewReducer(state = defaultState, action) {
         projectAdditionalData: fromJS(action.project.data.additionalData),
         projectTags: fromJS(action.project.data.tags),
         allowedIntents: fromJS(action.project.allowedIntents),
-        logs: fromJS(action.project.log),
         subProjects: fromJS(action.subprojects)
       });
 
@@ -203,7 +199,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return newState;
     case CREATE_SUBPROJECT_SUCCESS:
       return state.merge({
-        highlightingRegex: defaultState.get("highlightingRegex"),
         subprojectToAdd: defaultState.get("subprojectToAdd"),
         idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").concat(fromJS(action.subprojectId))
       });
@@ -288,13 +283,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case SUBPROJECT_SEARCH_BAR_DISPLAYED:
       return state.merge({
         searchTerms: defaultState.get("searchTerms"),
-        highlightingRegex: defaultState.get("highlightingRegex"),
         searchBarDisplayed: action.searchBarDisplayed
       });
     case SUBPROJECT_STORE_FILTERED_PROJECTS:
       return state.set("filteredSubProjects", fromJS(action.filteredSubProjects));
-    case SUBPROJECT_STORE_HIGHLIGHTING_REGEX:
-      return state.set("highlightingRegex", fromJS(action.highlightingRegex));
     case SUBPROJECT_STORE_SEARCH_TERMS_AS_ARRAY:
       return state.set("searchTerms", fromJS(action.searchTerms));
     case DISABLE_ALL_LIVE_UPDATES:

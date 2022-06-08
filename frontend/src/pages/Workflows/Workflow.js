@@ -1,7 +1,7 @@
-import Card from "@material-ui/core/Card";
-import Fab from "@material-ui/core/Fab";
-import ContentAdd from "@material-ui/icons/Add";
-import HistoryIcon from "@material-ui/icons/Reorder";
+import Card from "@mui/material/Card";
+import Fab from "@mui/material/Fab";
+import ContentAdd from "@mui/icons-material/Add";
+import HistoryIcon from "@mui/icons-material/Reorder";
 import React from "react";
 
 import { canCreateWorkflowItems } from "../../permissions";

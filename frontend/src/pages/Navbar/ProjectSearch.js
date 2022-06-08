@@ -1,5 +1,5 @@
 import React from "react";
-import { withStyles } from "@material-ui/core";
+import { withStyles } from "@mui/styles";
 import Searchbar from "../Common/Searchbar";
 import strings from "../../localizeStrings";
 
@@ -26,11 +26,12 @@ const ProjectSearch = ({
   return (
     <Searchbar
       data-test="project-search"
+      searchDisabled={searchDisabled}
       searchBarDisplayed={searchBarDisplayed}
       searchTerm={searchTerm}
       storeSearchBarDisplayed={storeSearchBarDisplayed}
       storeSearchTerm={storeSearchTerm}
-      autoSearch={true}
+      safeOnChange={true}
       previewText={strings.project.project_searchtext}
     />
   );

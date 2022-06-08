@@ -13,7 +13,7 @@ interface Repository {
 
 export async function getOneUser(
   ctx: Ctx,
-  serviceUser: ServiceUser,
+  _serviceUser: ServiceUser,
   userId: string,
   repository: Repository,
 ): Promise<Result.Type<UserRecord.UserRecord>> {
@@ -40,7 +40,7 @@ export async function getOneUser(
 
 export async function getAllUsers(
   ctx: Ctx,
-  serviceUser: ServiceUser,
+  _serviceUser: ServiceUser,
   repository: Repository,
 ): Promise<Result.Type<UserRecord.UserRecord[]>> {
   logger.trace("Fetching all users. *NOTE* errors are ignored in this procedure.");

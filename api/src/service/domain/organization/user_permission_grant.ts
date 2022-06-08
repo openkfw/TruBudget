@@ -1,8 +1,9 @@
 import isEqual = require("lodash.isequal");
 
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { VError } from "verror";
 import Intent from "../../../authz/intents";
-import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -13,18 +14,15 @@ import { ServiceUser } from "./service_user";
 import * as UserEventSourcing from "./user_eventsourcing";
 import * as UserPermissionGranted from "./user_permission_granted";
 import * as UserRecord from "./user_record";
-import logger from "lib/logger";
 
 interface Repository {
   getTargetUser(userId: UserRecord.Id): Promise<Result.Type<UserRecord.UserRecord>>;
 }
 
-type EventTypeType = "user_permission_granted";
-const eventType: EventTypeType = "user_permission_granted";
-
 export async function grantUserPermission(
   ctx: Ctx,
   issuer: ServiceUser,
+  issuerOrganization: string,
   userId: UserRecord.Id,
   grantee: Identity,
   intent: Intent,
@@ -47,12 +45,20 @@ export async function grantUserPermission(
     return new VError(permissionGranted, "failed to create user permission granted event");
   }
 
-  logger.trace({ issuer }, "Checking if user is root");
-  if (issuer.id !== "root") {
-    const grantIntent: Intent = "user.intent.grantPermission";
-    if (!UserRecord.permits(user, issuer, [grantIntent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: user });
-    }
+  logger.trace({ issuer }, "Checking if issuer and target belong to the same organization");
+  if (user.organization !== issuerOrganization) {
+    return new NotAuthorized({
+      ctx,
+      userId: issuer.id,
+      intent,
+      isOtherOrganization: true,
+    });
+  }
+
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const grantIntent: Intent = "user.intent.grantPermission";
+  if (!UserRecord.permits(user, issuer, [grantIntent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: user });
   }
 
   logger.trace({ event: permissionGranted }, "Checking validity of event");

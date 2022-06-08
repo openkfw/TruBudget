@@ -1,7 +1,9 @@
 # Number of days of inactivity before an issue becomes stale
-daysUntilStale: 30
+daysUntilStale: 60
 # Number of days of inactivity before a stale issue is closed
 daysUntilClose: 7
+# Set to true to ignore issues in a milestone (defaults to false)
+exemptMilestones: true
 # Issues with these labels will never be considered stale
 exemptLabels:
   - good first issue
@@ -13,5 +15,9 @@ markComment: >
   This issue has been automatically marked as stale because it has not had
   activity for 30 days. It will be closed if no further activity occurs. Thank you
   for your contributions.
-# Comment to post when closing a stale issue. Set to `false` to disable
-closeComment: false
+
+# Comment to post when closing a stale Issue or Pull Request.
+closeComment: >
+  This issue has been automatically closed because of inactivity. You can re-open it if needed.
+
+

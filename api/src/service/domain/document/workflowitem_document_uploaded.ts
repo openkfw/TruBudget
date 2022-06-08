@@ -1,13 +1,13 @@
 import Joi = require("joi");
+import { Ctx } from "lib/ctx";
 import { VError } from "verror";
 import * as Result from "../../../result";
+import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
-import * as WorkflowitemDocument from "./document";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
-import { Ctx } from "lib/ctx";
-import { EventSourcingError } from "../errors/event_sourcing_error";
+import * as WorkflowitemDocument from "./document";
 
 type EventTypeType = "workflowitem_document_uploaded";
 const eventType: EventTypeType = "workflowitem_document_uploaded";
@@ -40,7 +40,7 @@ export const schema = Joi.object({
   document: initialDataSchema.required(),
 });
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

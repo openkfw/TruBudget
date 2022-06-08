@@ -1,7 +1,8 @@
 import Joi = require("joi");
 import isEqual = require("lodash.isequal");
-import { VError } from "verror";
 import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -15,12 +16,11 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as SubprojectEventSourcing from "./subproject_eventsourcing";
 import * as SubprojectUpdated from "./subproject_updated";
-import logger from "lib/logger";
 
 export type RequestData = SubprojectUpdated.UpdatedData;
 export const requestDataSchema = SubprojectUpdated.updatedDataSchema;
 
-export function validate(input: any): Result.Type<RequestData> {
+export function validate(input): Result.Type<RequestData> {
   const { value, error } = Joi.validate(input, requestDataSchema);
   return !error ? value : error;
 }
@@ -60,12 +60,10 @@ export async function updateSubproject(
   }
   const subprojectUpdated = subprojectUpdatedResult;
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const intent = "subproject.update";
-    if (!Subproject.permits(subproject, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const intent = "subproject.update";
+  if (!Subproject.permits(subproject, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
   }
 
   logger.trace({ event: subprojectUpdated }, "Checking event validity");

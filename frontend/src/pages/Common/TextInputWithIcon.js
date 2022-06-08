@@ -1,6 +1,6 @@
 import React from "react";
 
-import TextField from "@material-ui/core/TextField";
+import TextField from "@mui/material/TextField";
 
 import strings from "../../localizeStrings";
 
@@ -24,11 +24,12 @@ const styles = {
   }
 };
 
-const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, id, ...props }) => {
+const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, id, variant = "standard", ...props }) => {
   return (
     <div style={styles.container}>
       <div style={styles.icon}>{icon}</div>
       <TextField
+        variant="standard"
         id={id}
         label={label}
         InputLabelProps={{

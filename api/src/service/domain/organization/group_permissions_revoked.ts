@@ -1,7 +1,6 @@
 import Joi = require("joi");
 import logger from "lib/logger";
 import { VError } from "verror";
-
 import Intent, { groupIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as Group from "./group";
@@ -57,7 +56,7 @@ export function createEvent(
   return event;
 }
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

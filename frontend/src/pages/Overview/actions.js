@@ -48,8 +48,9 @@ export const ADD_TEMPORARY_PROJECT_PERMISSION = "ADD_TEMPORARY_PROJECT_PERMISSIO
 export const REMOVE_TEMPORARY_PROJECT_PERMISSION = " REMOVE_TEMPORARY_PROJECT_PERMISSION";
 
 export const STORE_FILTERED_PROJECTS = "STORE_FILTERED_PROJECTS";
-export const STORE_HIGHLIGHTING_REGEX = "STORE_HIGHLIGHTING_REGEX";
 export const STORE_SEARCH_TERMS_AS_ARRAY = "STORE_SEARCH_TERMS_AS_ARRAY";
+
+export const STORE_PROJECT_VIEW = "STORE_PROJECT_VIEW";
 
 export function fetchAllProjects(showLoading = false) {
   return {
@@ -261,16 +262,15 @@ export function storeFilteredProjects(filteredProjects) {
   };
 }
 
-export function storeHighlightingRegex(highlightingRegex) {
-  return {
-    type: STORE_HIGHLIGHTING_REGEX,
-    highlightingRegex
-  };
-}
-
 export function storeSearchTermArray(searchTerms) {
   return {
     type: STORE_SEARCH_TERMS_AS_ARRAY,
     searchTerms
+  };
+}
+export function setProjectView(projectView) {
+  return {
+    type: STORE_PROJECT_VIEW,
+    projectView
   };
 }

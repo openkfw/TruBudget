@@ -61,19 +61,19 @@ describe("Project Assignee", function() {
     cy.get("[data-test=single-select]").click();
     cy.get("[data-test=single-select-list]")
       .should("exist")
+      .find("[data-test=not-selected-item]")
+      .first()
+      .invoke("attr", "value")
+      .as("assigneeId");
+
+    cy.get("[data-test=single-select-list]")
+      .should("exist")
       .then($list => {
-        const firstUncheckedRadioButton = $list.find("input:not(:checked)").first();
         cy.wrap($list.find("input:not(:checked)").first()).as("firstUncheckedRadioButton");
-        cy.wrap(
-          firstUncheckedRadioButton
-            .parent()
-            .parent()
-            .parent()
-        )
-          .invoke("attr", "value")
-          .as("assigneeId");
       });
+
     cy.get("@assigneeId").then(assigneeId => {
+      cy.log(assigneeId);
       revokeViewPermissions(permissionsBeforeTesting, projectId, assigneeId);
     });
   }
@@ -152,11 +152,12 @@ describe("Project Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
     // Reset permissions
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(testUser, "test");
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
 
   it("Assigning without project 'list permissions'- permissions opens dialog viewing this information", function() {
+    cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
@@ -174,7 +175,7 @@ describe("Project Assignee", function() {
       cy.get(firstUncheckedRadioButton).should("not.be.checked");
     });
 
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(testUser, "test");
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
 

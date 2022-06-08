@@ -1,5 +1,6 @@
-import "module-alias/register";
 import { AxiosRequestConfig } from "axios";
+import "module-alias/register";
+import { AugmentedFastifyInstance } from "types";
 import getValidConfig from "./config";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
 import * as GlobalPermissionsListAPI from "./global_permissions_list";
@@ -43,6 +44,8 @@ import * as Multichain from "./service";
 import * as Cache from "./service/cache2";
 import StorageServiceClient from "./service/Client_storage_service";
 import * as DocumentValidationService from "./service/document_validation";
+import * as GroupQueryService from "./service/domain/organization/group_query";
+import * as UserQueryService from "./service/domain/organization/user_query";
 import * as GlobalPermissionsGetService from "./service/global_permissions_get";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
@@ -50,7 +53,6 @@ import * as GroupCreateService from "./service/group_create";
 import * as GroupMemberAddService from "./service/group_member_add";
 import * as GroupMemberRemoveService from "./service/group_member_remove";
 import * as GroupPermissionsListService from "./service/group_permissions_list";
-import * as GroupQueryService from "./service/group_query";
 import * as NotificationListService from "./service/notification_list";
 import * as NotificationMarkReadService from "./service/notification_mark_read";
 import * as ProjectAssignService from "./service/project_assign";
@@ -90,16 +92,15 @@ import * as UserPasswordChangeService from "./service/user_password_change";
 import * as UserPermissionsListService from "./service/user_permissions_list";
 import * as UserPermissionGrantService from "./service/user_permission_grant";
 import * as UserPermissionRevokeService from "./service/user_permission_revoke";
-import * as UserQueryService from "./service/user_query";
 import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
 import * as WorkflowitemGetService from "./service/workflowitem_get";
+import * as WorkflowitemGetDetailsService from "./service/workflowitem_get_details";
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
-import * as WorkflowitemGetDetailsService from "./service/workflowitem_get_details";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
@@ -135,12 +136,12 @@ import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
 import * as WorkflowitemListAPI from "./workflowitem_list";
-import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
+import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 
 const URL_PREFIX = "/api";
@@ -162,21 +163,20 @@ const {
   encryptionPassword,
   signingMethod,
   accessControlAllowOrigin,
+  rpc,
+  blockchain,
 } = getValidConfig();
 
 /*
  * Initialize the components:
  */
 
-const multichainHost = process.env.RPC_HOST || "localhost";
-const backupApiPort = process.env.BACKUP_API_PORT || "8085";
-
 const rpcSettings: ConnectionSettings = {
   protocol: "http",
-  host: multichainHost,
-  port: parseInt(process.env.RPC_PORT || "8000", 10),
-  username: process.env.RPC_USER || "multichainrpc",
-  password: process.env.RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
+  host: rpc.host,
+  port: rpc.port,
+  username: rpc.user,
+  password: rpc.password,
 };
 
 logger.info(
@@ -219,7 +219,7 @@ const server = createBasicApp(
   port,
   swaggerBasepath,
   accessControlAllowOrigin,
-);
+) as AugmentedFastifyInstance;
 
 /*
  * Run the app:
@@ -260,7 +260,7 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, multichainHost, backupApiPort, storageServiceClient, () =>
+registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storageServiceClient, () =>
   Cache.invalidateCache(db),
 );
 
@@ -366,13 +366,21 @@ UserPasswordChangeAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 UserPermissionGrantAPI.addHttpHandler(server, URL_PREFIX, {
-  grantUserPermission: (ctx, granter, userId, grantee, intent) =>
-    UserPermissionGrantService.grantUserPermission(db, ctx, granter, userId, grantee, intent),
+  grantUserPermission: (ctx, granter, orga, userId, grantee, intent) =>
+    UserPermissionGrantService.grantUserPermission(db, ctx, granter, orga, userId, grantee, intent),
 });
 
 UserPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
-  revokeUserPermission: (ctx, revoker, userId, revokee, intent) =>
-    UserPermissionRevokeService.revokeUserPermission(db, ctx, revoker, userId, revokee, intent),
+  revokeUserPermission: (ctx, revoker, orga, userId, revokee, intent) =>
+    UserPermissionRevokeService.revokeUserPermission(
+      db,
+      ctx,
+      revoker,
+      orga,
+      userId,
+      revokee,
+      intent,
+    ),
 });
 
 UserPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {

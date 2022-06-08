@@ -23,7 +23,7 @@ const schema = Joi.object({
   additionalData: AdditionalData.schema,
 });
 
-export function validate(input: any): Result.Type<GlobalPermissions> {
+export function validate(input): Result.Type<GlobalPermissions> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }

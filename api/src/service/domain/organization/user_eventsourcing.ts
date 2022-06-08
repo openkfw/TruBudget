@@ -179,6 +179,7 @@ export function newUserFromEvent(
 function copyUserExceptLog(user: UserRecord.UserRecord): UserRecord.UserRecord {
   const { log, ...tmp } = user;
   const copy = deepcopy(tmp);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (copy as any).log = [];
   return copy as UserRecord.UserRecord;
 }

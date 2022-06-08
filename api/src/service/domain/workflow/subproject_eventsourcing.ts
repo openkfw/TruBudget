@@ -1,7 +1,7 @@
-import { VError } from "verror";
-
 import { Ctx } from "lib/ctx";
 import deepcopy from "lib/deepcopy";
+import logger from "lib/logger";
+import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
@@ -16,7 +16,6 @@ import * as SubprojectProjectedBudgetUpdated from "./subproject_projected_budget
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 import * as SubprojectUpdated from "./subproject_updated";
 import * as WorkflowitemsReordered from "./workflowitems_reordered";
-import logger from "lib/logger";
 
 export function sourceSubprojects(
   ctx: Ctx,
@@ -198,6 +197,7 @@ function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
 function copySubprojectExceptLog(subproject: Subproject.Subproject): Subproject.Subproject {
   const { log, ...tmp } = subproject;
   const copy = deepcopy(tmp);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (copy as any).log = [];
   return copy as Subproject.Subproject;
 }

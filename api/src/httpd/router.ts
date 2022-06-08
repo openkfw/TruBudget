@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { config } from "../config";
 import { toHttpError } from "../http_errors";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
@@ -24,7 +25,7 @@ const send = (res, httpResponse: HttpResponse) => {
   res.status(code).send(body);
 };
 
-const handleError = (req, res, err: any) => {
+const handleError = (_req, res, err) => {
   switch (err.kind) {
     case "NotAuthorized": {
       const message = `User ${err.token.userId} is not authorized.`;
@@ -195,11 +196,11 @@ const handleError = (req, res, err: any) => {
   }
 };
 
-function ctx(request: any): Ctx {
+function ctx(request): Ctx {
   return { requestId: request.id, source: "http" };
 }
 
-function issuer(request: any): ServiceUser {
+function issuer(request): ServiceUser {
   const req = request as AuthenticatedRequest;
   return { id: req.user.userId, groups: req.user.groups, address: req.user.address };
 }
@@ -208,8 +209,8 @@ export const registerRoutes = (
   server: FastifyInstance,
   conn: ConnToken,
   urlPrefix: string,
-  multichainHost: string,
-  backupApiPort: string,
+  blockchainHost: string,
+  blockchainPort: number,
   storageServiceClient: StorageServiceClient,
   invalidateCache: () => void,
 ) => {
@@ -222,9 +223,13 @@ export const registerRoutes = (
   server.get(
     `${urlPrefix}/readiness`,
     getSchemaWithoutAuth("readiness"),
-    async (request, reply) => {
+    async (_request, reply) => {
       if (await isReady(multichainClient)) {
-        return reply.status(200).send("OK");
+        if (!config.documentFeatureEnabled || (await storageServiceClient.isReady())) {
+          return reply.status(200).send("Ready");
+        } else {
+          return reply.status(504).send("Not ready. Waiting for storage service.");
+        }
       } else {
         return reply.status(503).send("Service unavailable.");
       }
@@ -236,7 +241,7 @@ export const registerRoutes = (
   });
 
   server.get(`${urlPrefix}/version`, getSchema(server, "version"), async (request, reply) => {
-    getVersion(multichainHost, backupApiPort, multichainClient, storageServiceClient)
+    getVersion(blockchainHost, blockchainPort, multichainClient, storageServiceClient)
       .then((response) => {
         send(reply, response);
       })
@@ -322,7 +327,7 @@ export const registerRoutes = (
     `${urlPrefix}/system.createBackup`,
     getSchema(server, "createBackup"),
     (req: AuthenticatedRequest, reply) => {
-      createBackup(multichainHost, backupApiPort, req)
+      createBackup(blockchainHost, blockchainPort, req)
         .then((data) => {
           reply.header("Content-Type", "application/gzip");
           reply.header("Content-Disposition", 'attachment; filename="backup.gz"');
@@ -336,7 +341,7 @@ export const registerRoutes = (
     `${urlPrefix}/system.restoreBackup`,
     getSchema(server, "restoreBackup"),
     async (req: AuthenticatedRequest, reply) => {
-      await restoreBackup(multichainHost, backupApiPort, req)
+      await restoreBackup(blockchainHost, blockchainPort, req)
         .then((response) => send(reply, response))
         .catch((err) => handleError(req, reply, err));
       // Invalidate the cache, regardless of the outcome:

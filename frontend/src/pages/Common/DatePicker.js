@@ -1,12 +1,13 @@
 import React from "react";
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import CancelIcon from "@material-ui/icons/Cancel";
-import IconButton from "@material-ui/core/IconButton";
-import { withStyles } from "@material-ui/core";
+import { DatePicker as DatePickerMui } from "@mui/lab";
+import CancelIcon from "@mui/icons-material/Cancel";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import { withStyles } from "@mui/styles";
 import _isEmpty from "lodash/isEmpty";
 import dayjs from "dayjs";
-import DateFnsUtils from "@date-io/date-fns";
-
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -37,24 +38,26 @@ function DatePicker({ classes, name, label, onChange, onDelete, datetime, id = "
   return (
     <div className={classes.searchField}>
       <form className={classes.form} noValidate>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            autoOk
-            variant="inline"
-            id={id}
-            label={label}
-            placeholder={datePlaceholder}
-            format={dateFormat}
-            value={dateValue}
-            onChange={date => {
-              onChange(dayjs(date).format("YYYY-MM-DD"), name);
-            }}
-            onBlur={ date => handleOnBlur(date)}
-            data-test={`datepicker-${id}`}
-          />
-        </MuiPickersUtilsProvider>
+        <div data-test={`datepicker-${id}`}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePickerMui
+              autoOk
+              variant="standard"
+              id={id}
+              label={label}
+              placeholder={datePlaceholder}
+              inputFormat={dateFormat}
+              value={dateValue}
+              onChange={date => {
+                onChange(dayjs(date).format("YYYY-MM-DD"), name);
+              }}
+              onBlur={date => handleOnBlur(date)}
+              renderInput={params => <TextField variant="standard" {...params} />}
+            />
+          </LocalizationProvider>
+        </div>
       </form>
-      <IconButton data-test={`clear-datepicker-${id}`} onClick={onDelete} className={classes.clearButton}>
+      <IconButton data-test={`clear-datepicker-${id}`} onClick={onDelete} className={classes.clearButton} size="large">
         <CancelIcon color="action" />
       </IconButton>
     </div>

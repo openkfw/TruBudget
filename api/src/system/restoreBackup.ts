@@ -1,22 +1,25 @@
 import axios from "axios";
+import { TruBudgetError } from "../error";
 import { VError } from "verror";
-
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 
 export const restoreBackup = async (
-  multichainHost: string,
-  backupApiPort: string,
+  blockchainHost: string,
+  blockchainPort: number,
   req: AuthenticatedRequest,
 ): Promise<HttpResponse> => {
   const { userId } = req.user;
   if (userId !== "root") {
-    throw { kind: "AuthenticationError", userId };
+    throw new TruBudgetError({ kind: "AuthenticationError", userId });
   }
   const data = req.body;
   const contentType = req.headers["content-type"];
   if (contentType !== "application/gzip") {
-    throw { kind: "UnsupportedMediaType", contentType };
+    throw new TruBudgetError({
+      kind: "UnsupportedMediaType",
+      contentType: contentType ? contentType : "",
+    });
   }
   const config = {
     headers: { "content-type": "application/gzip" },
@@ -24,7 +27,7 @@ export const restoreBackup = async (
     maxBodyLength: 1074790400,
   };
   try {
-    await axios.post(`http://${multichainHost}:${backupApiPort}/chain`, data, config);
+    await axios.post(`http://${blockchainHost}:${blockchainPort}/chain`, data, config);
     logger.info("backup restored successfully");
   } catch (error) {
     const cause = error.response.status === 400 ? new Error(error.response.data) : error;

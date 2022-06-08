@@ -1,7 +1,8 @@
 import Joi = require("joi");
+import { Ctx } from "lib/ctx";
+import logger from "lib/logger";
 import { isEqual } from "lodash";
 import { VError } from "verror";
-import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -14,12 +15,11 @@ import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as ProjectEventSourcing from "./project_eventsourcing";
 import * as ProjectUpdated from "./project_updated";
-import logger from "lib/logger";
 
 export type RequestData = ProjectUpdated.Modification;
 export const requestDataSchema = ProjectUpdated.modificationSchema;
 
-export function validate(input: any): Result.Type<RequestData> {
+export function validate(input): Result.Type<RequestData> {
   const { value, error } = Joi.validate(input, requestDataSchema);
   return !error ? value : error;
 }
@@ -49,12 +49,10 @@ export async function updateProject(
   }
   const projectUpdated = projectUpdatedResult;
 
-  logger.trace({ issuer }, "Checking user authorization");
-  if (issuer.id !== "root") {
-    const intent = "project.update";
-    if (!Project.permits(project, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
-    }
+  logger.trace({ issuer }, "Checking if user has permissions");
+  const intent = "project.update";
+  if (!Project.permits(project, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
   }
 
   logger.trace({ event: projectUpdated }, "Checking event validity");

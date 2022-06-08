@@ -1,6 +1,6 @@
-import TextField from "@material-ui/core/TextField";
-import Tooltip from "@material-ui/core/Tooltip";
-import PasswordIcon from "@material-ui/icons/Lock";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
+import PasswordIcon from "@mui/icons-material/Lock";
 import React from "react";
 import strings from "../../localizeStrings";
 
@@ -44,6 +44,7 @@ const Password = ({
         <TextField
           data-test={props["data-test"] || "password-textfield"}
           style={{ width: "50%" }}
+          variant="standard"
           label={label || strings.common.password}
           value={password}
           margin="normal"

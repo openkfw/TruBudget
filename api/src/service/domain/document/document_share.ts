@@ -9,6 +9,7 @@ import * as Workflowitem from "../workflow/workflowitem";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import logger from "lib/logger";
+import * as DocumentUploaded from "../document/document_uploaded";
 
 type Base64String = string;
 
@@ -32,6 +33,7 @@ interface Repository {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<Result.Type<Workflowitem.Workflowitem>>;
+  getDocumentInfo(docId: string): Promise<Result.Type<DocumentUploaded.Document | undefined>>;
 }
 
 export async function shareDocument(
@@ -48,6 +50,25 @@ export async function shareDocument(
   // if secret is already published for this document and organization no event is created
   const alreadyPublished = await repository.secretAlreadyExists(docId, organization);
   if (alreadyPublished) {
+    logger.debug(
+      { docId, publisherOrganization },
+      "Secret is already shared with this organization",
+    );
+    return undefined;
+  }
+
+  const workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
+  if (Result.isErr(workflowitem)) {
+    return new VError(" Error while fetching workflowitem!");
+  }
+
+  const { documents } = workflowitem;
+  if (!documents.some((doc) => doc.id === docId)) {
+    return new VError(`No documents with id ${docId} found in workflowitem ${workflowitemId}`);
+  }
+  const documentInfo = await repository.getDocumentInfo(docId);
+  if (!documentInfo) {
+    logger.debug({ docId, workflowitemId }, "No such document attached to this workflowitem");
     return undefined;
   }
 
@@ -112,12 +133,6 @@ export async function shareDocument(
       newSecretPublishedEvent,
       "user 'root' is not allowed to share documents",
     );
-  }
-
-  const workflowitem = await repository.getWorkflowitem(projectId, subprojectId, workflowitemId);
-
-  if (Result.isErr(workflowitem)) {
-    return new VError(" Error while fetching workflowitem!");
   }
 
   const intent = "workflowitem.intent.grantPermission";

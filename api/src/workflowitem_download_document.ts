@@ -1,18 +1,19 @@
-import { FastifyInstance, RequestGenericInterface } from "fastify";
+import * as contentDisposition from "content-disposition";
+import { RequestGenericInterface } from "fastify";
+import { AugmentedFastifyInstance } from "types";
 import { VError } from "verror";
-
+import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
-import { ServiceUser } from "./service/domain/organization/service_user";
 import * as WorkflowitemDocument from "./service/domain/document/document";
+import { ServiceUser } from "./service/domain/organization/service_user";
 
-function mkSwaggerSchema(server: FastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance) {
   return {
-    preValidation: [(server as any).authenticate],
+    preValidation: [server.authenticate],
     schema: {
       description: "Download documents attached to workflowitems",
       tags: ["workflowitem"],
@@ -48,11 +49,6 @@ function mkSwaggerSchema(server: FastifyInstance) {
       },
     },
   };
-}
-
-interface Document {
-  data: string;
-  fileName: string;
 }
 
 interface Service {
@@ -91,7 +87,11 @@ interface Request extends RequestGenericInterface {
   };
 }
 
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string, service: Service) {
+export function addHttpHandler(
+  server: AugmentedFastifyInstance,
+  urlPrefix: string,
+  service: Service,
+) {
   server.get<Request>(
     `${urlPrefix}/workflowitem.downloadDocument`,
     mkSwaggerSchema(server),
@@ -133,7 +133,7 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string, servi
         const code = 200;
         reply.headers({
           "Content-Type": "application/octet-stream",
-          "Content-Disposition": `attachment; filename="${documentResult.fileName}"`,
+          "Content-Disposition": contentDisposition(documentResult.fileName),
         });
 
         reply.status(code).send(Buffer.from(documentResult.base64, "base64"));

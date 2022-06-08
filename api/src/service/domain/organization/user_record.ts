@@ -27,22 +27,18 @@ export interface UserRecord {
 
 const schema = Joi.object({
   id: idSchema.required(),
-  createdAt: Joi.date()
-    .iso()
-    .required(),
+  createdAt: Joi.date().iso().required(),
   displayName: Joi.string().required(),
   organization: Joi.string().required(),
   passwordHash: Joi.string().required(),
   address: Joi.string().required(),
   encryptedPrivKey: Joi.string().required(),
   permissions: permissionsSchema.required(),
-  log: Joi.array()
-    .required()
-    .items(userTraceEventSchema),
+  log: Joi.array().required().items(userTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
 });
 
-export function validate(input: any): Result.Type<UserRecord> {
+export function validate(input): Result.Type<UserRecord> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }
@@ -52,7 +48,7 @@ export function permits(user: UserRecord, actingUser: ServiceUser, intents: Inte
     const eligibles = user.permissions[intent] || [];
     return acc.concat(eligibles);
   }, []);
-  const hasPermission = eligibleIdentities.some(identity =>
+  const hasPermission = eligibleIdentities.some((identity) =>
     canAssumeIdentity(actingUser, identity),
   );
   return hasPermission;

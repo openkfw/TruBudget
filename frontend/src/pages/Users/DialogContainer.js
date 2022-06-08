@@ -53,6 +53,7 @@ class DialogContainer extends Component {
             checkAndChangeUserPassword={this.props.checkAndChangeUserPassword}
             hidePasswordDialog={this.props.hidePasswordDialog}
             userId={this.props.userId}
+            isRoot={this.props.isRoot}
           />
         ) : null}
       </div>
@@ -84,7 +85,8 @@ const mapStateToProps = state => {
     newPasswordConfirmation: state.getIn(["users", "newPasswordConfirmation"]),
     newPasswordsMatch: state.getIn(["users", "newPasswordsMatch"]),
     usernameInvalid: state.getIn(["users", "usernameInvalid"]),
-    authenticationFailed: state.getIn(["users", "authenticationFailed"])
+    authenticationFailed: state.getIn(["users", "authenticationFailed"]),
+    isRoot: state.getIn(["navbar", "isRoot"])
   };
 };
 

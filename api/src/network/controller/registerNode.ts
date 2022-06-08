@@ -1,8 +1,8 @@
-import Intent from "../../authz/intents";
-import { AddressIsInvalidError } from "../../error";
-import { HttpResponse } from "../../httpd/lib";
 import logger from "lib/logger";
 import { isNonemptyString, value } from "lib/validation";
+import Intent from "../../authz/intents";
+import { AddressIsInvalidError, TruBudgetError } from "../../error";
+import { HttpResponse } from "../../httpd/lib";
 import { MultichainClient } from "../../service/Client.h";
 import * as Nodes from "../model/Nodes";
 
@@ -12,7 +12,10 @@ export async function registerNode(multichain: MultichainClient, req): Promise<H
   const address: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
 
   if (!(await multichain.isValidAddress(address))) {
-    throw { kind: "AddressIsInvalid", address: input.address } as AddressIsInvalidError;
+    throw new TruBudgetError({
+      kind: "AddressIsInvalid",
+      address: input.address,
+    } as AddressIsInvalidError);
   }
 
   const organization: string = value("organization", input.organization, isNonemptyString);

@@ -1,11 +1,11 @@
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { withStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import { withStyles } from "@mui/styles";
 import { useState } from "react";
 import React from "react";
 import { useEffect } from "react";
@@ -78,7 +78,8 @@ const PasswordDialog = props => {
     storeSnackbarMessage,
     authenticationFailed,
     checkAndChangeUserPassword,
-    hidePasswordDialog
+    hidePasswordDialog,
+    isRoot
   } = props;
 
   const [userPassword, setUserPassword] = useState("");
@@ -143,7 +144,8 @@ const PasswordDialog = props => {
     </div>
   );
 
-  const submitDisabled = userPassword.length === 0 || newPassword.length === 0 || newPasswordConfirmation.length === 0;
+  const submitDisabled =
+    (!isRoot && userPassword.length === 0) || newPassword.length === 0 || newPasswordConfirmation.length === 0;
 
   return (
     <Dialog
@@ -156,21 +158,24 @@ const PasswordDialog = props => {
       <DialogTitle>{title}</DialogTitle>
       <div style={styles.contentStyle}>
         <div>
-          <Card style={styles.card}>
-            <CardHeader subheader={formatString(strings.users.type_current_password, props.userId)} />
-            <CardContent>
-              <Password
-                iconDisplayed={false}
-                data-test="user-password-textfield"
-                label={strings.users.current_user_password}
-                password={userPassword}
-                setPassword={setUserPassword}
-                failed={authenticationFailed}
-                id="userPassword"
-                failedText={strings.common.incorrect_password}
-              />
-            </CardContent>
-          </Card>
+          {!isRoot ? (
+            <Card style={styles.card}>
+              <CardHeader subheader={formatString(strings.users.type_current_password, props.userId)} />
+              <CardContent>
+                <Password
+                  iconDisplayed={false}
+                  data-test="user-password-textfield"
+                  label={strings.users.current_user_password}
+                  password={userPassword}
+                  setPassword={setUserPassword}
+                  failed={authenticationFailed}
+                  id="userPassword"
+                  failedText={strings.common.incorrect_password}
+                />
+              </CardContent>
+            </Card>
+          ) : null}
+
           <Card style={styles.card}>
             <CardHeader subheader={formatString(strings.users.type_new_password, editId)} />
             <CardContent>

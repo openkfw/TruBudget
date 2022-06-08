@@ -1,6 +1,6 @@
 import React from "react";
 
-import UsernameIcon from "@material-ui/icons/Person";
+import UsernameIcon from "@mui/icons-material/Person";
 
 import strings from "../../localizeStrings";
 import TextInputWithIcon from "./TextInputWithIcon";

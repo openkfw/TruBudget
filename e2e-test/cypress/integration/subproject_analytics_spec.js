@@ -2,6 +2,8 @@ import { toAmountString } from "../support/helper";
 
 describe("Subproject Analytics", function() {
   const executingUser = "mstein";
+  const otherUser = "jdoe";
+
   const description = "subproject analytics test";
   let project = {
     id: "",
@@ -133,6 +135,22 @@ describe("Subproject Analytics", function() {
   });
 
   it("Without view permission of every workflowitem of all subprojects the user can see the analytics-charts are not visible", function() {
+    cy.grantProjectPermission(project.id, "project.viewDetails", otherUser);
+    cy.grantWorkflowitemPermission(
+      project.id,
+      subproject.id,
+      allocatedWorkflowitem.id,
+      "workflowitem.intent.grantPermission",
+      otherUser
+    );
+    cy.grantWorkflowitemPermission(
+      project.id,
+      subproject.id,
+      allocatedWorkflowitem.id,
+      "workflowitem.intent.revokePermission",
+      otherUser
+    );
+
     // Setup permissions
     cy.revokeWorkflowitemPermission(
       project.id,
@@ -152,7 +170,7 @@ describe("Subproject Analytics", function() {
     cy.get("[data-test=redacted-warning]").should("be.visible");
 
     // Reset permissions
-    cy.login("root", Cypress.env("ROOT_SECRET"));
+    cy.login(otherUser, "test");
     cy.grantWorkflowitemPermission(
       project.id,
       subproject.id,

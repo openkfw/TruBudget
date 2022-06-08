@@ -3136,7 +3136,7 @@ const schemas = {
     schema: {
       description:
         "Approves a new node for an existing organization." +
-        " This organization doesn't have to go throught the voting system again",
+        " This organization doesn't have to go through the voting system again",
       tags: ["network"],
       summary: "Approve a new node",
       security: [

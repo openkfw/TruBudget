@@ -1,6 +1,5 @@
 import Joi = require("joi");
 import { VError } from "verror";
-
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Project from "../workflow/project";
@@ -62,7 +61,7 @@ export function createEvent(
   return event;
 }
 
-export function validate(input: any): Result.Type<Event> {
+export function validate(input): Result.Type<Event> {
   const { error, value } = Joi.validate(input, schema);
   return !error ? value : error;
 }
@@ -77,7 +76,7 @@ export function validate(input: any): Result.Type<Event> {
  * workflowitem is automatically validated when obtained using
  * `workflowitem_eventsourcing.ts`:`newWorkflowitemFromEvent`.
  */
-export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
+export function mutate(_workflowitem: Workflowitem.Workflowitem, event: Event): Result.Type<void> {
   if (event.type !== "workflowitem_document_validated") {
     return new VError(`illegal event type: ${event.type}`);
   }

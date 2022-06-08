@@ -1,6 +1,7 @@
 # TruBudget <!-- omit in TOC -->
 
-<!-- TODO add some badges -->
+![BuildStatus]https://github.com/openkfw/TruBudget/actions/workflows/github-ci.yml/badge.svg)
+![DocumentationBuildStatus](https://github.com/openkfw/TruBudget/actions/workflows/update-documentation.yml/badge.svg)
 
 # Introduction
 
@@ -11,6 +12,12 @@ To fully understand the idea and motivation behind Trubudget, watch following vi
 If you have any questions refer to the [Frequently Asked Questions (FAQ)](#frequently-asked-questions) section below or [start a new discussion](https://github.com/openkfw/TruBudget/discussions/new)
 
 ## Getting started
+
+### Trubudget as a Service
+
+If you want to try out TruBudget, we serve an as a service solution. Register for TruBudget as a Service and dive straight into a TruBudget sandbox: [taas.trubudget.net](https://taas.trubudget.net/)
+
+### Trubudget on your machine
 
 If you want to try out TruBudget locally, you need to install [Docker](https://www.docker.com/community-edition#/download).
 
@@ -81,8 +88,10 @@ No, each organization is responsible for the hosting of their TruBudget installa
 
 - How do you handle GDPR (DSGVO) if data cannot be deleted?
 
-Data that is relevant for GDPR (e.g. personal data) is stored off-chain
+Data that is relevant for GDPR (e.g. personal data) should be stored off-chain.
 
 ## License
 
 Trubudget is [GNU GENERAL PUBLIC](./LICENSE) licensed.
+
+TruBudget is a workflow engine therefore does not contain any relevant data to GDPR. If relevant data is collected, the organizations using the software have to ensure that the data is appropriately encoded or stored.

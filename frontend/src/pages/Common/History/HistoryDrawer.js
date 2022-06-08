@@ -1,5 +1,5 @@
-import { withStyles } from "@material-ui/core";
-import Drawer from "@material-ui/core/Drawer";
+import { withStyles } from "@mui/styles";
+import Drawer from "@mui/material/Drawer";
 import HistoryContainer from "./HistoryContainer";
 import React from "react";
 import useHistoryState from "./historyHook";
