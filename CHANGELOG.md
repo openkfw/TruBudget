@@ -15,9 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-## Unreleased 2.0.0
-
-<!-- Milestone for 2.0.0: https://github.com/openkfw/TruBudget/milestone/14 -->
+## [2.0.0] - 2022-06-08
 
 <!-- ### Added -->
 
@@ -25,10 +23,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Replaced the master branch name and image tag with main [#1098](https://github.com/openkfw/TruBudget/pull/1098)
 - Replaced master and slave terminology with alpha and beta [#1098](https://github.com/openkfw/TruBudget/issues/1068)
+- All services use `PORT` environment variable to describe their own service port [#999](https://github.com/openkfw/TruBudget/issues/999)
+- All services use `[SERVICE_NAME]_ENABLED=true` to describe an enabled service [#999](https://github.com/openkfw/TruBudget/issues/999)
+- Renamed `RPC...` environment variables to `MULTICHAIN_RPC...` e.g. `RPC_PORT` to `MULTICHAIN_RPC_PORT` [#999](https://github.com/openkfw/TruBudget/issues/999)
+- All services serve a liveness and readiness endpoint [#1122] (https://github.com/openkfw/TruBudget/issues/1122)
+- Add stricter validation for strings, ids and passwords [#1029](https://github.com/openkfw/TruBudget/issues/1029)
+- Additional check for backup version in backup endpoint [#1076](https://github.com/openkfw/TruBudget/issues/1076)
+- Group.addUser supports more than one user [#725](https://github.com/openkfw/TruBudget/issues/725)
+- Remove test/prod environment from frontend including environment variables `TEST_API_HOST`/`TEST_API_PORT` changed to `API_HOST`/`API_PORT` [#954](https://github.com/openkfw/TruBudget/issues/954)
 
-<!-- ### Deprecated -->
+### Deprecated
 
-<!-- ### Removed -->
+- Remove v1 of history endpoints [#1152](https://github.com/openkfw/TruBudget/issues/1152)
+
+### Removed
+
+- project.list and subproject.list do not contain the `log` property anymore (use history endpoint instead) [#1132](https://github.com/openkfw/TruBudget/issues/1132)
+- Storing offchain documents using the multichain feature is removed, storage-service must be used instead [#1042](https://github.com/openkfw/TruBudget/issues/1042)
 
 <!-- ### Fixed -->
 
@@ -875,7 +886,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v1.30.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.0.0...main
+[2.0.0]: https://github.com/openkfw/TruBudget/compare/v1.30.0...v2.0.0
 [1.30.0]: https://github.com/openkfw/TruBudget/compare/v1.29.0...v1.30.0
 [1.29.0]: https://github.com/openkfw/TruBudget/compare/v1.28.1...v1.29.0
 [1.28.1]: https://github.com/openkfw/TruBudget/compare/v1.28.0...v1.28.1
