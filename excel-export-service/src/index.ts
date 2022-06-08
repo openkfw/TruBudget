@@ -50,27 +50,17 @@ excelService.get("/liveness", (req, res) => {
 });
 
 excelService.get("/readiness", async (req: CustomExpressRequest, res: CustomExpressResponse) => {
-  let status = 200;
-  let statusText = "Ready";
-  let response;
-
   try {
-    response = await getApiReadiness(axios, res.apiBase);
+    const response = await getApiReadiness(axios, res.apiBase);
+    if (response.status === 200) {
+      return res.status(200).send("Ready");
+    } else {
+      return res.status(504).send("Not ready. Waiting for API");
+    }
   } catch (error) {
     logger.error({ error }, "Error during readiness check on API");
-    status = 504;
-    statusText = "Not ready. Waiting for API";
+    return res.status(504).send("Error during readiness check");
   }
-
-  if (response.status === 200) {
-    status = 200;
-    statusText = "Ready";
-  } else {
-    status = 504;
-    statusText = "Not ready. Waiting for API";
-  }
-
-  res.status(status).header({ "Content-Type": "application/json" }).send(statusText);
 });
 
 excelService.get("/version", (req: CustomExpressRequest, res: CustomExpressResponse) => {
