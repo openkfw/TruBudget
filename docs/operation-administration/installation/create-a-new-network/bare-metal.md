@@ -141,10 +141,8 @@ There are two ways of starting the frontend using different networking solutions
 Set the environment parameters listed below:
 
 ```bash
-export PROD_API_HOST=127.0.0.1
-export PROD_API_PORT=8080
-export TEST_API_HOST=127.0.0.1
-export TEST_API_PORT=8080
+export API_HOST=127.0.0.1
+export API_PORT=8080
 ```
 
 Navigate into the `frontend` directory, install the node packages defined in the `package.json` and start the frontend using following lines:
@@ -225,10 +223,8 @@ To test if the provisioning worked, login with credentials:
 Set the environment parameters listed below:
 
 ```bash
-export PROD_API_HOST=127.0.0.1
-export TEST_API_HOST=127.0.0.1
-export PROD_API_PORT=8080
-export TEST_API_PORT=8080
+export API_HOST=127.0.0.1
+export API_PORT=8080
 export PORT=8888
 export ACCESS_CONTROL_ALLOW_ORIGIN="*"
 export PRETTY_PRINT="true"
