@@ -17,28 +17,28 @@ If the above commands cannot be found make sure the tools are installed and the 
 ## Table of Contents
 
 - [Create a new Network on a Machine](#create-a-new-network-on-a-machine)
-    - [Table of Contents](#table-of-contents)
-    - [Get the repository](#get-the-repository)
-    - [Blockchain](#blockchain)
-    - [API](#api)
-    - [Frontend](#frontend)
-        - [Direct Connect](#direct-connect)
-        - [Reverse Proxy (nginx)](#reverse-proxy-nginx)
-            - [Adding a TruBudget Service to the reverse proxy](#adding-a-trubudget-service-to-the-reverse-proxy)
-    - [Provisioning](#provisioning)
-    - [Excel-Export Service](#excel-export-service)
-        - [Frontend](#frontend-1)
-    - [Email-Notification Service](#email-notification-service)
-        - [Service](#service)
-        - [Database](#database)
-        - [SMTP-Server](#smtp-server)
-        - [Frontend](#frontend-2)
-        - [Blockchain](#blockchain-1)
-    - [Storage Service](#storage-service)
-        - [Service](#service-1)
-        - [Storage](#storage)
-        - [API](#api-1)
-    - [Log-Rotation](#log-rotation)
+  - [Table of Contents](#table-of-contents)
+  - [Get the repository](#get-the-repository)
+  - [Blockchain](#blockchain)
+  - [API](#api)
+  - [Frontend](#frontend)
+    - [Direct Connect](#direct-connect)
+    - [Reverse Proxy (nginx)](#reverse-proxy-nginx)
+      - [Adding a TruBudget Service to the reverse proxy](#adding-a-trubudget-service-to-the-reverse-proxy)
+  - [Provisioning](#provisioning)
+  - [Excel-Export Service](#excel-export-service)
+    - [Frontend](#frontend-1)
+  - [Email-Notification Service](#email-notification-service)
+    - [Service](#service)
+    - [Database](#database)
+    - [SMTP-Server](#smtp-server)
+    - [Frontend](#frontend-2)
+    - [Blockchain](#blockchain-1)
+  - [Storage Service](#storage-service)
+    - [Service](#service-1)
+    - [Storage](#storage)
+    - [API](#api-1)
+  - [Log-Rotation](#log-rotation)
 
 ## Get the repository
 
@@ -354,7 +354,7 @@ To enable the email-notification-service additional environment variables must b
 Make sure the following lines adapt the environment of the blockchain NOT the excel-export-service:
 
 ```bash
-export EMAIL_SERVICE=ENABLED
+export EMAIL_SERVICE_ENABLED=true
 export EMAIL_HOST=localhost
 export EMAIL_PORT=8890
 export JWT_SECRET="jwt-secret"

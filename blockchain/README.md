@@ -59,7 +59,7 @@ To get started have a look at dedicated [documentation](./email-notification-ser
 
 | Env Variable               | Required | Default Value    | Description                                                                                                                                                      |
 | -------------------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| EMAIL_SERVICE              | no       | DISABLED         | If set to `ENABLED` the Email-Service feature is enabled and the EMAIL\_\* variables are required                                                                |
+| EMAIL_SERVICE_ENABLED      | no       | false            | If set to `true` the Email-Service feature is enabled and the EMAIL\_\* variables are required                                                                   |
 | EMAIL_HOST                 | no       |                  | The IP address from the email-notification service.                                                                                                              |
 | EMAIL_PORT                 | no       |                  | The port address from the email-notification service.                                                                                                            |
 | EMAIL_SSL                  | no       | false            | If set to `true` the connection between blockchain and email-notification service is https instead of http                                                       |

@@ -61,11 +61,11 @@ const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
 const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
 const NOTIFICATION_SEND_INTERVAL = process.env.NOTIFICATION_SEND_INTERVAL || 10;
 const emailAuthSecret = process.env.JWT_SECRET;
-const EMAIL_SERVICE_ENABLED =
-  (process.env.EMAIL_HOST &&
-    process.env.EMAIL_PORT &&
-    process.env.EMAIL_SERVICE === "ENABLED") ||
-  false;
+
+const EMAIL_SERVICE_ENABLED = process.env.EMAIL_SERVICE_ENABLED || false;
+const MULTICHAIN_FEED_ENABLED = process.env.MULTICHAIN_FEED_ENABLED || false;
+const isMultichainFeedEnabled =
+  EMAIL_SERVICE_ENABLED || MULTICHAIN_FEED_ENABLED;
 
 const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
@@ -79,11 +79,24 @@ const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
 const NAMESPACE = process.env.KUBE_NAMESPACE || "";
 const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
 
-if (EMAIL_SERVICE_ENABLED && !emailAuthSecret) {
-  log.fatal(
-    "Env variable 'JWT_SECRET' not set. Please set the same secret as in the trubudget email-service.",
-  );
-  os.exit(1);
+const isEmailConfigured = !EMAIL_HOST || !EMAIL_PORT || !emailAuthSecret;
+if (EMAIL_SERVICE_ENABLED && !isEmailConfigured) {
+  if (!EMAIL_HOST) {
+    log.fatal(
+      "Env variable EMAIL_HOST is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false",
+    );
+  }
+  if (!EMAIL_PORT) {
+    log.fatal(
+      "Env variable EMAIL_PORT is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false",
+    );
+  }
+  if (!emailAuthSecret) {
+    log.fatal(
+      "Env variable JWT_SECRET is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false",
+    );
+  }
+  process.exit(1);
 }
 
 app.use(logService.createPinoExpressLogger(log));
@@ -122,9 +135,6 @@ const spawnProcess = (startProcess) => {
   });
 };
 
-const multichainFeedEnabled =
-  process.env.MULTICHAIN_FEED === "ENABLED" || EMAIL_SERVICE_ENABLED;
-
 configureChain(
   isAlpha,
   CHAINNAME,
@@ -133,7 +143,7 @@ configureChain(
   MULTICHAIN_RPC_USER,
   MULTICHAIN_RPC_PASSWORD,
   RPC_ALLOW_IP,
-  multichainFeedEnabled,
+  isMultichainFeedEnabled,
 );
 
 function initMultichain() {

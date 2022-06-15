@@ -1,6 +1,7 @@
-version: "3"
+version: "3.7"
 services:
   blockchain:
+    platform: linux/amd64
     build: .
     environment:
       PORT: 8085
@@ -9,7 +10,7 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
-      MULTICHAIN_FEED: ${MULTICHAIN_FEED}
+      EMAIL_SERVICE_ENABLED: ${EMAIL_SERVICE_ENABLED}
       LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       NODE_ENV: ${NODE_ENV}
@@ -17,7 +18,7 @@ services:
       CERT_CA_PATH: ${CERT_CA_PATH}
       CERT_KEY_PATH: ${CERT_KEY_PATH}
     ports:
-      - ${RPC_PORT}:${RPC_PORT} # port for connecting API
+      - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting API
       - "8085:8085" # port for backup
       - "7447:7447" # port for connecting beta (P2P)
 

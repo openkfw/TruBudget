@@ -55,7 +55,7 @@ const config: Config = {
   },
   email: {
     from: process.env.EMAIL_FROM || '"Trubudget Notification Service" <trubudget@notification.com>',
-    subject: process.env.EMAIL_SUBJECT || "Trubudget Notificaiton",
+    subject: process.env.EMAIL_SUBJECT || "Trubudget Notification",
     text: process.env.EMAIL_TEXT || "You have received a notification.",
   },
   allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",

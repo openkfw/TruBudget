@@ -50,13 +50,13 @@ A detailed description can be found in the [environment variable overview](../..
 ```bash
 export PRETTY_PRINT="true"
 export ORGANIZATION="BetaOrga"
-export RPC_USER="multichainrpc"
-export RPC_PASSWORD="password"
+export MULTICHAIN_RPC_USER="multichainrpc"
+export MULTICHAIN_RPC_PASSWORD="password"
 export RPC_ALLOW_IP="0.0.0.0/0"
 export MULTICHAIN_DIR="/tmp/beta"
 export PORT=8086
 export P2P_PORT=7447
-export RPC_PORT=8000
+export MULTICHAIN_RPC_PORT=8000
 export API_PORT=8080
 export P2P_HOST=[IP of alpha node]
 export EXTERNAL_IP=[IP where this node is external available]
