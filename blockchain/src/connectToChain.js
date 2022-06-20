@@ -95,7 +95,13 @@ function startBeta(
     mdLog.debug(`${data}`);
     const regex = new RegExp("[0-9a-zA-Z]{30,40}");
     const match = regex.exec(data);
-    if (match) address = match[0];
+    // Store own wallet address into global "address"
+    if (match) {
+      address = match[0];
+      log.info(
+        "Wallet address registered. Entry added in nodes stream of network of alpha node, approval needed.",
+      );
+    }
   });
 
   mc.stderr.on("data", (err) =>
@@ -122,6 +128,7 @@ function askAlphaForPermissions(
   certKeyPath,
 ) {
   const url = `${proto}://${host}:${port}/api/network.registerNode`;
+  log.info(`Trying to register at ${url}`);
   if (certPath) {
     log.debug(
       `Connecting with alpha node using certificate ${certPath}, ca ${certCaPath},key ${certKeyPath} ...`,
@@ -130,15 +137,15 @@ function askAlphaForPermissions(
     const httpsAgent = new https.Agent(
       certCaPath && certKeyPath
         ? {
-          cert: fs.readFileSync(certPath),
-          ca: fs.readFileSync(certCaPath),
-          key: fs.readFileSync(certKeyPath),
-          rejectUnauthorized: process.env.NODE_ENV !== "production",
-        }
+            cert: fs.readFileSync(certPath),
+            ca: fs.readFileSync(certCaPath),
+            key: fs.readFileSync(certKeyPath),
+            rejectUnauthorized: process.env.NODE_ENV !== "production",
+          }
         : {
-          cert: fs.readFileSync(certPath),
-          rejectUnauthorized: process.env.NODE_ENV !== "production",
-        },
+            cert: fs.readFileSync(certPath),
+            rejectUnauthorized: process.env.NODE_ENV !== "production",
+          },
     );
     return axios.post(
       url,
@@ -173,11 +180,17 @@ async function registerNodeAtAlpha(
 ) {
   const retryIntervalMs = 10000;
   try {
+    log.info(`Waiting for registration at alpha node (${host}:${port})`);
     while (!address) {
+      log.debug(
+        "Wallet address not yet registered at alpha node waiting for 5 seconds ...",
+      );
       await relax(5000);
     }
 
-    log.info(`Registering ${organization} node address ${address}`);
+    log.info(
+      `Registering ${organization} node address ${address} via alpha API`,
+    );
     await askAlphaForPermissions(
       address,
       organization,
@@ -192,7 +205,7 @@ async function registerNodeAtAlpha(
   } catch (error) {
     log.error(
       `Could not register (${error}). Retry in ${retryIntervalMs /
-      1000} seconds ...`,
+        1000} seconds ...`,
     );
     await relax(retryIntervalMs);
     await registerNodeAtAlpha(organization, proto, host, port, certPath);
