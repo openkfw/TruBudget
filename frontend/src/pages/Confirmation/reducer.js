@@ -98,7 +98,8 @@ const defaultState = fromJS({
   failedPostAction: [],
   originalActionsExecuted: false,
   executingOriginalActions: false,
-  failedOriginalAction: []
+  failedOriginalAction: [],
+  failureMessage: ""
 });
 
 export default function confirmationReducer(state = defaultState, action) {
@@ -291,7 +292,8 @@ export default function confirmationReducer(state = defaultState, action) {
     case DISABLE_USER_FAILURE:
     case CREATE_WORKFLOW_FAILURE:
     case CREATE_SUBPROJECT_FAILURE:
-      return defaultState.set("open", true);
+      console.log(action);
+      return defaultState.set("open", true).set("failureMessage", action.message);
 
     default:
       return state;

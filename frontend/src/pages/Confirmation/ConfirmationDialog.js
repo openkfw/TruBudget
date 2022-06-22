@@ -44,6 +44,7 @@ const ConfirmationDialog = props => {
     isFetchingPermissions,
     userAssignments,
     failedAction,
+    failureMessage,
     ...restProps
   } = props;
 
@@ -64,6 +65,7 @@ const ConfirmationDialog = props => {
   const confirmationDialogCreator = new ConfirmationDialogCreator(
     {
       ...restProps,
+      failureMessage,
       groups,
       failedAction,
       additionalActions,

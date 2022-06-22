@@ -2684,6 +2684,7 @@ export function* assignProjectSaga({
     }
 
     try {
+      throw new Error();
       yield executeConfirmedAdditionalActionsSaga({
         projectId: projectId,
         additionalActions
@@ -2698,7 +2699,7 @@ export function* assignProjectSaga({
     } catch (error) {
       yield put({
         type: ASSIGN_PROJECT_FAILURE,
-        message: error.message
+        message: "ERROR ON ASSIGN_PROJECT_FAILURE" // error.message
       });
       throw error;
     }
