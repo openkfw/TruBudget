@@ -3,7 +3,7 @@ name: Update Documentation
 on:
   workflow_dispatch:
   release:
-    types: [released]
+    types: [ released ]
 
 jobs:
   copy:
@@ -39,8 +39,7 @@ jobs:
           git merge main
           cd ./../TruBudget/docs/
           cp -Rf ./* ./../../trubudget-website/docs
-          cd ./../../
-          cd trubudget-website
+          cd ./../../trubudget-website
           git add -A .
           git commit -m "Bump Doc ${{ steps.sha.outputs.sha_short }}"
           git push
