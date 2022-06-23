@@ -67,9 +67,9 @@ Set the environment parameters listed below:
 ```bash
 export PORT=8085
 export P2P_PORT=7447
-export RPC_PORT=8000
-export RPC_USER="multichainrpc"
-export RPC_PASSWORD="password"
+export MULTICHAIN_RPC_PORT=8000
+export MULTICHAIN_RPC_USER="multichainrpc"
+export MULTICHAIN_RPC_PASSWORD="password"
 export MULTICHAIN_DIR="/tmp"
 export PRETTY_PRINT="true"
 ```
@@ -107,11 +107,11 @@ Set the environment parameters listed below:
 ```bash
 export ORGANIZATION=MyOrga
 export P2P_PORT=7447
-export RPC_PORT=8000
+export MULTICHAIN_RPC_PORT=8000
 export PORT=8080
-export RPC_HOST=127.0.0.1
-export RPC_USER=multichainrpc
-export RPC_PASSWORD=password
+export MULTICHAIN_RPC_HOST=127.0.0.1
+export MULTICHAIN_RPC_USER="multichainrpc"
+export MULTICHAIN_RPC_PASSWORD="password"
 export ORGANIZATION_VAULT_SECRET=secret
 export ROOT_SECRET=root-secret
 export PRETTY_PRINT="true"
