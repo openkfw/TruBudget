@@ -24,7 +24,7 @@ Help() {
     echo "                                  Available services: email-service, excel-export-service, storage-service"
     echo "  --no-log                        Disable logs of all docker-containers"
     echo "  --no-provision                  Disable the provisioning"
-    echo "  --add-beta                     Add a beta-node that trys to connect to alpha-node"
+    echo "  --add-beta                      Add a beta-node that trys to connect to alpha-node"
     echo "  --add-organization              Add a beta-node, beta-api, beta-frontend from a new Organization."
     echo "                                  Needs to be approved by alpha-node"
     echo "  --prune                         Delete the multichain, document storage and email database (docker volume)"
@@ -81,7 +81,7 @@ while [ "$1" != "" ]; do
         shift # past argument
         ;;
 
-    --add-BETA)
+    --add-beta)
         if [ "$HAS_BETA" = true ]; then
             echo "Either --add-beta or --add-organization"
             exit 1
