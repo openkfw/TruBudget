@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
-<!-- ### Changed -->
+### Changed
+
+- Use unicode properties for regex validation schemas [#1202](https://github.com/openkfw/TruBudget/issues/1202)
 
 <!-- ### Deprecated -->
 
