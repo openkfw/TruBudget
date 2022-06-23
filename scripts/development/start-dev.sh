@@ -276,7 +276,7 @@ COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-dev --env
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
-$COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $SLAVE_SERVICES
+$COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 if [ "$IS_REBUILDING" = true ]; then
     echo "INFO: Re-build all selected images"

@@ -120,12 +120,12 @@ on: http://localhost:8080/api/documentation/static/index.html
 
 ## Create a new Blockchain network with two organization
 
-To connect two blockchains, you need to define exactly one alpha node and one or more slave nodes. The define a slave
+To connect two blockchains, you need to define exactly one alpha node and one or more beta nodes. The define a beta
 node, you must set the
 correct [Environmental variables](https://github.com/openkfw/TruBudget/blob/main/blockchain/README.md#environment-variables)
 in a blockchain node in order to
 
-1. start a slave node with correct environmental variables
+1. start a beta node with correct environmental variables
 1. send access requests to the alpha node
 
 To understand how to set the environment variables correctly,
