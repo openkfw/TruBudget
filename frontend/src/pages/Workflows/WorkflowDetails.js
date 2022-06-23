@@ -190,9 +190,10 @@ function WorkflowDetails({
   validateDocument,
   validatedDocuments,
   projectId,
-  subProjectId: subprojectId
+  subProjectId: subprojectId,
+  worflowDetailsInitialTab
 }) {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(worflowDetailsInitialTab);
   useEffect(() => {
     if (!showWorkflowDetails) {
       setSelectedTab(0);

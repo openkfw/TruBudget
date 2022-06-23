@@ -157,7 +157,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     openHistory: () => {
       dispatch(openHistory());
     },
-    openWorkflowDetails: (pId, sId, id) => dispatch(fetchWorkflowitem(pId, sId, id)),
+    openWorkflowDetails: (pId, sId, id, worflowDetailsInitialTab) => {
+      dispatch(fetchWorkflowitem(pId, sId, id, true, worflowDetailsInitialTab));
+    },
     hideWorkflowDetails: () => dispatch(hideWorkflowDetails()),
     closeWorkflowitemDetailsDialog: () => dispatch(closeWorkflowitemDetailsDialog()),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
@@ -253,7 +255,8 @@ const mapStateToProps = state => {
     isLiveUpdatesSubprojectEnabled: state.getIn(["workflow", "isLiveUpdatesSubprojectEnabled"]),
     currentUser: state.getIn(["login", "id"]),
     rejectReason: state.getIn(["workflow", "rejectReason"]),
-    isRejectReasonDialogShown: state.getIn(["workflow", "isRejectReasonDialogShown"])
+    isRejectReasonDialogShown: state.getIn(["workflow", "isRejectReasonDialogShown"]),
+    worflowDetailsInitialTab: state.getIn(["workflow", "worflowDetailsInitialTab"])
   };
 };
 

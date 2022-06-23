@@ -277,6 +277,7 @@ const editWorkflow = (
 
 const getInfoButton = (classes, props, status, workflowSortEnabled, workflow) => {
   const { openWorkflowDetails, projectId, subProjectId } = props;
+
   const showBadge = status === "open" && isDateReached(workflow.dueDate) && !workflowSortEnabled;
   return (
     <div>
@@ -302,7 +303,13 @@ const getInfoButton = (classes, props, status, workflowSortEnabled, workflow) =>
   );
 };
 
-const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
+const getAttachmentButton = (
+  classes,
+  { openWorkflowDetails, projectId, subProjectId },
+  status,
+  workflowSortEnabled,
+  workflow
+) => {
   const { documents } = workflow;
   const showAttachFileBadge = documents && documents.length > 0;
   const showToolTip = documents && documents.length > 0 && documents.some(doc => doc.fileName !== undefined);
@@ -323,26 +330,24 @@ const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowS
   return (
     <div>
       {showAttachFileBadge && (
-        <Tooltip
-          id={`tooltip-workflow-attachfile-${workflow.id}`}
-          data-test={`tooltip-workflow-attachfile-data-${workflow.id}`}
-          title={attachmentFileTooltip()}
+        <StyledBadge
+          variant="dot"
+          invisible={!showAttachFileBadge}
+          data-test={`attachment-file-badge-show-${workflow.id}`}
+          className={classes.buttonStyle}
         >
-          <StyledBadge
-            variant="dot"
-            invisible={!showAttachFileBadge}
-            data-test={`attachment-file-badge-show-${workflow.id}`}
-            className={classes.buttonStyle}
+          <IconButton
+            style={{ cursor: "default" }}
+            data-test={`workflowitem-attachment-file-button-${workflow.id}`}
+            size="large"
+            onClick={() => {
+              const documentTab = 1;
+              openWorkflowDetails(projectId, subProjectId, workflow.id, documentTab);
+            }}
           >
-            <IconButton
-              style={{ cursor: "default" }}
-              data-test={`workflowitem-attachment-file-button-${workflow.id}`}
-              size="large"
-            >
-              <AttachmentIcon />
-            </IconButton>
-          </StyledBadge>
-        </Tooltip>
+            <AttachmentIcon />
+          </IconButton>
+        </StyledBadge>
       )}
     </div>
   );
