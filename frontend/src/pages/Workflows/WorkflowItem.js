@@ -313,23 +313,10 @@ const getAttachmentButton = (
   const { documents } = workflow;
   const showAttachFileBadge = documents && documents.length > 0;
   const showToolTip = documents && documents.length > 0 && documents.some(doc => doc.fileName !== undefined);
-  const attachmentFileTooltip = () =>
-    showAttachFileBadge &&
-    showToolTip && (
-      <ul className={classes.tooltip}>
-        {documents.map((item, index) =>
-          item.fileName ? (
-            <li key={`${item.fileName}_${index}`} className={classes.tooltipItem}>
-              {item.fileName}
-            </li>
-          ) : null
-        )}
-      </ul>
-    );
 
   return (
     <div>
-      {showAttachFileBadge && (
+      {showAttachFileBadge && showToolTip && (
         <StyledBadge
           variant="dot"
           invisible={!showAttachFileBadge}
