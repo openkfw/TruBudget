@@ -19,6 +19,6 @@ services:
     ports:
       - ${RPC_PORT}:${RPC_PORT} # port for connecting API
       - "8085:8085" # port for backup
-      - "7447:7447" # port for connecting slaves (P2P)
+      - "7447:7447" # port for connecting beta (P2P)
 
 
