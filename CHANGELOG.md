@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
-### Changed
-
-- Use unicode properties for regex validation schemas [#1202](https://github.com/openkfw/TruBudget/issues/1202)
+<!-- ### Changed -->
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
+
+## [2.0.1] - 2022-06-24
+
+### Changed
+
+- Use unicode properties for regex validation schemas [#1202](https://github.com/openkfw/TruBudget/issues/1202)
 
 ## [2.0.0] - 2022-06-08
 
@@ -888,7 +892,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.0.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.0.1...main
+[2.0.1]: https://github.com/openkfw/TruBudget/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/openkfw/TruBudget/compare/v1.30.0...v2.0.0
 [1.30.0]: https://github.com/openkfw/TruBudget/compare/v1.29.0...v1.30.0
 [1.29.0]: https://github.com/openkfw/TruBudget/compare/v1.28.1...v1.29.0
