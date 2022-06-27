@@ -277,6 +277,7 @@ const editWorkflow = (
 
 const getInfoButton = (classes, props, status, workflowSortEnabled, workflow) => {
   const { openWorkflowDetails, projectId, subProjectId } = props;
+
   const showBadge = status === "open" && isDateReached(workflow.dueDate) && !workflowSortEnabled;
   return (
     <div>
@@ -302,47 +303,32 @@ const getInfoButton = (classes, props, status, workflowSortEnabled, workflow) =>
   );
 };
 
-const getAttachmentButton = (classes, { openWorkflowDetails }, status, workflowSortEnabled, workflow) => {
+const getAttachmentButton = (classes, { openWorkflowDetails, projectId, subProjectId }, workflow) => {
   const { documents } = workflow;
   const showAttachFileBadge = documents && documents.length > 0;
   const showToolTip = documents && documents.length > 0 && documents.some(doc => doc.fileName !== undefined);
-  const attachmentFileTooltip = () =>
-    showAttachFileBadge &&
-    showToolTip && (
-      <ul className={classes.tooltip}>
-        {documents.map((item, index) =>
-          item.fileName ? (
-            <li key={`${item.fileName}_${index}`} className={classes.tooltipItem}>
-              {item.fileName}
-            </li>
-          ) : null
-        )}
-      </ul>
-    );
 
   return (
     <div>
-      {showAttachFileBadge && (
-        <Tooltip
-          id={`tooltip-workflow-attachfile-${workflow.id}`}
-          data-test={`tooltip-workflow-attachfile-data-${workflow.id}`}
-          title={attachmentFileTooltip()}
+      {showAttachFileBadge && showToolTip && (
+        <StyledBadge
+          variant="dot"
+          invisible={!showAttachFileBadge}
+          data-test={`attachment-file-badge-show-${workflow.id}`}
+          className={classes.buttonStyle}
         >
-          <StyledBadge
-            variant="dot"
-            invisible={!showAttachFileBadge}
-            data-test={`attachment-file-badge-show-${workflow.id}`}
-            className={classes.buttonStyle}
+          <IconButton
+            style={{ cursor: "default" }}
+            data-test={`workflowitem-attachment-file-button-${workflow.id}`}
+            size="large"
+            onClick={() => {
+              const documentTab = 1;
+              openWorkflowDetails(projectId, subProjectId, workflow.id, documentTab);
+            }}
           >
-            <IconButton
-              style={{ cursor: "default" }}
-              data-test={`workflowitem-attachment-file-button-${workflow.id}`}
-              size="large"
-            >
-              <AttachmentIcon />
-            </IconButton>
-          </StyledBadge>
-        </Tooltip>
+            <AttachmentIcon />
+          </IconButton>
+        </StyledBadge>
       )}
     </div>
   );
@@ -543,7 +529,7 @@ export const WorkflowItem = withTheme(
         const itemStyle = workflowSelectable ? {} : { opacity: 0.31 };
         const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
         const infoButton = getInfoButton(classes, props, status, workflowSortEnabled, workflow.data);
-        const attachmentButton = getAttachmentButton(classes, props, status, workflowSortEnabled, workflow.data);
+        const attachmentButton = getAttachmentButton(classes, props, workflow.data);
         const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
         const canCloseWorkflowitem = currentUser === assignee;
         const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";

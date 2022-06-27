@@ -1,4 +1,3 @@
-
 export const SHOW_WORKFLOW_CREATE = "SHOW_WORKFLOW_CREATE";
 export const HIDE_WORKFLOW_DIALOG = "HIDE_WORKFLOW_DIALOG";
 
@@ -134,7 +133,7 @@ export const REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION = "REMOVE_TEMPORARY_WORKFL
 export const STORE_REJECT_REASON = "STORE_REJECT_REASON";
 export const SHOW_REASON_DIALOG = "SHOW_REASON_DIALOG";
 export const HIDE_REASON_DIALOG = "HIDE_REASON_DIALOG";
-export const REJECT_WORKFLOWITEM ="REJECT_WORKFLOWITEM";
+export const REJECT_WORKFLOWITEM = "REJECT_WORKFLOWITEM";
 export const REJECT_WORKFLOWITEM_FAILURE = "REJECT_WORKFLOWITEM_FAILURE";
 export const CLEAR_REJECT_REASON = "CLEAR_REJECT_REASON";
 
@@ -147,13 +146,20 @@ export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading =
   };
 }
 
-export function fetchWorkflowitem(projectId, subprojectId, workflowitemId, showLoading = true) {
+export function fetchWorkflowitem(
+  projectId,
+  subprojectId,
+  workflowitemId,
+  showLoading = true,
+  worflowDetailsInitialTab = 0
+) {
   return {
     type: FETCH_WORKFLOWITEM,
     projectId,
     subprojectId,
     workflowitemId,
-    showLoading
+    showLoading,
+    worflowDetailsInitialTab
   };
 }
 
@@ -280,13 +286,13 @@ export function hideWorkflowitemAdditionalData() {
   };
 }
 
-export function showReasonDialog(rejectReason){
+export function showReasonDialog(rejectReason) {
   return {
     type: SHOW_REASON_DIALOG,
     rejectReason
   };
 }
-export function hideReasonDialog(){
+export function hideReasonDialog() {
   return {
     type: HIDE_REASON_DIALOG
   };
@@ -681,8 +687,6 @@ export function closeWorkflowItem(projectId, subprojectId, workflowitemId, isRej
     showLoading
   };
 }
-
-
 
 export function storeRejectReason(rejectReason) {
   return {
