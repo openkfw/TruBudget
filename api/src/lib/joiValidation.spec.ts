@@ -38,13 +38,13 @@ describe("JoiValidation: Password", () => {
   it("Should not accept a Password with malicious code", async () => {
     const pass = "Test1234<script>";
 
-    const { value, error } = Joi.validate(pass, safePasswordSchemaSchema);
+    const { value } = Joi.validate(pass, safePasswordSchemaSchema);
 
-    expect(value).to.equal(undefined);
-    expect(error.message).to.contain("fails to match the required pattern:");
+    expect(value).to.equal("Test1234");
   });
 
-  it("Should accept user creation with a correct Password", async () => {});
+  it("Should accept user creation with a correct Password", async () => {
+  });
 });
 
 describe("JoiValidation: safe String", () => {
@@ -58,13 +58,39 @@ describe("JoiValidation: safe String", () => {
     expect(error).to.equal(null);
   });
 
-  it("Not accept a malicious string", async () => {
-    const text = "Test<script>alert(1)</script>1234";
+  it("Accept orthographic characters string", async () => {
+    const text = "Test–1234»«„“”''''";
+    const controlValue = "Test–1234»«„“”''''";
 
     const { value, error } = Joi.validate(text, safeStringSchemaSchema);
 
-    expect(value).to.equal(undefined);
-    expect(error.message).to.contain("fails to match the required pattern:");
+    expect(value).to.equal(controlValue);
+    expect(error).to.equal(null);
+  });
+
+  it("Accept a safe string with non latin characters 1/2", async () => {
+    const text = "დამატებითი ინფორმაცია";
+    const controlValue = "დამატებითი ინფორმაცია";
+    const { value, error } = Joi.validate(text, safeStringSchemaSchema);
+    expect(value).to.equal(controlValue);
+    expect(error).to.equal(null);
+  });
+
+  it("Accept a safe string with non latin characters 2/2", async () => {
+    const text = "صباح الخير";
+    const controlValue = "صباح الخير";
+    const { value, error } = Joi.validate(text, safeStringSchemaSchema);
+    expect(value).to.equal(controlValue);
+    expect(error).to.equal(null);
+  });
+
+
+  it("Not accept a malicious string", async () => {
+    const text = "Test<script>alert(1)</script>1234";
+
+    const { value } = Joi.validate(text, safeStringSchemaSchema);
+
+    expect(value).to.equal("Test1234");
   });
 
   it("Accept a string including apostrophes", async () => {
@@ -88,10 +114,7 @@ describe("JoiValidation: safe String", () => {
 
   it("Not accept a malicious Id", async () => {
     const text = "Test<script> alert(1) </script>1234";
-
-    const { value, error } = Joi.validate(text, safeIdSchemaSchema);
-
-    expect(value).to.equal(undefined);
-    expect(error.message).to.contain("fails to match the required pattern:");
+    const { value } = Joi.validate(text, safeIdSchemaSchema);
+    expect(value).to.equal("Test1234");
   });
 });
