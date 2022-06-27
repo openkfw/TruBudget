@@ -1,4 +1,3 @@
-import { withStyles } from "@mui/styles";
 import React from "react";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -7,18 +6,6 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import Paper from "@mui/material/Paper";
 import strings from "../../localizeStrings";
-
-const styles = {
-  container: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-  customWidth: {
-    width: "100%",
-    marginTop: "40px"
-  }
-};
 
 const filterDeclinedNodes = (nodes, organization) => {
   return nodes.filter(node => {
@@ -57,10 +44,9 @@ const getListEntries = declinedNodes => {
 };
 
 const DeclinedNodesTable = props => {
-  const { classes, nodes, organization } = props;
+  const { nodes, organization } = props;
   const declinedNodes = filterDeclinedNodes(nodes, organization);
-
-  const declinedNodesListEntries = getListEntries(declinedNodes, classes);
+  const declinedNodesListEntries = getListEntries(declinedNodes);
 
   return (
     <Paper data-test="declined-nodes-table">
@@ -78,4 +64,4 @@ const DeclinedNodesTable = props => {
   );
 };
 
-export default withStyles(styles)(DeclinedNodesTable);
+export default DeclinedNodesTable;

@@ -4,19 +4,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListSubheader from "@mui/material/ListSubheader";
-import { withStyles } from "@mui/styles";
 import dayjs from "dayjs";
 import React from "react";
-import { dateFormat } from "../../../helper";
 import strings from "../../../localizeStrings";
 import stringifyHistoryEvent from "./stringifyHistoryEvent";
-
-const styles = {
-  list: {
-    maxWidth: "350px",
-    minWidth: "350px"
-  }
-};
 
 const getEvents = (events, getUserDisplayname) => {
   return events.map((event, index) => {
@@ -35,14 +26,14 @@ const getEvents = (events, getUserDisplayname) => {
         <ListItemText
           data-test={`history-item-${index}`}
           primary={stringifyHistoryEvent(event.businessEvent, event.snapshot, getUserDisplayname)}
-          secondary={dayjs(eventTime).format(dateFormat())}
+          secondary={dayjs(eventTime).format(strings.format.dateFormat)}
         />
       </ListItem>
     );
   });
 };
 
-const HistoryList = ({ classes, events, nEventsTotal, hasMore, getUserDisplayname, isLoading, historyType }) => {
+const HistoryList = ({ events, nEventsTotal, hasMore, getUserDisplayname, isLoading, historyType }) => {
   const [eventItems, setEventItems] = React.useState([]);
 
   React.useEffect(() => {
@@ -53,7 +44,10 @@ const HistoryList = ({ classes, events, nEventsTotal, hasMore, getUserDisplaynam
     <List
       data-test="history-list"
       subheader={<ListSubheader disableSticky>{historyType}</ListSubheader>}
-      className={classes.list}
+      sx={{
+        maxWidth: "350px",
+        minWidth: "350px"
+      }}
     >
       {!isLoading && nEventsTotal === 0 ? (
         <ListItem key="no-element">
@@ -77,4 +71,4 @@ const HistoryList = ({ classes, events, nEventsTotal, hasMore, getUserDisplaynam
   );
 };
 
-export default withStyles(styles)(HistoryList);
+export default HistoryList;

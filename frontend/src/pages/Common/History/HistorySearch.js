@@ -1,5 +1,4 @@
 import { MenuItem } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import Button from "@mui/material/Button";
 import React from "react";
 import strings from "../../../localizeStrings";
@@ -27,7 +26,7 @@ const styles = {
   dropdown: { minWidth: 200, marginRight: "16px" }
 };
 
-const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) => {
+const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
   const [{ startAt, endAt, publisher, eventType }, mergeState, clearState] = useHistoryState();
 
   const onChange = (selectedDate, name) => {
@@ -60,7 +59,7 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
     <div>
       <DatePicker
         id="filter-startat"
-        className={classes.datepicker}
+        style={styles.datepicker}
         label={strings.history.start_date}
         name="startAt"
         datetime={startAt}
@@ -69,7 +68,7 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
       />
       <DatePicker
         id="filter-endat"
-        className={classes.datepicker}
+        style={styles.datepicker}
         label={strings.history.end_date}
         name="endAt"
         datetime={endAt}
@@ -99,7 +98,7 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
         {getMenuItems(eventTypes)}
       </Dropdown>
 
-      <div className={classes.searchActions}>
+      <div style={styles.searchActions}>
         <Button aria-label="reset" data-test="reset" color="secondary" onClick={onReset}>
           {strings.common.reset}
         </Button>
@@ -118,4 +117,4 @@ const HistorySearch = ({ classes, fetchFirstHistoryEvents, users, eventTypes }) 
   );
 };
 
-export default withStyles(styles)(HistorySearch);
+export default HistorySearch;

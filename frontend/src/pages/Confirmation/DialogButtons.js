@@ -1,7 +1,6 @@
 import { Button } from "@mui/material";
 import { Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
-import { withStyles } from "@mui/styles";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import strings from "../../localizeStrings";
@@ -22,7 +21,6 @@ const styles = {
 
 const DialogButtons = props => {
   const {
-    classes,
     confirmButtonText,
     onConfirm,
     onCancel,
@@ -40,10 +38,10 @@ const DialogButtons = props => {
   const totalActionsLength = additionalActions?.length + originalActions?.length + postActions?.length;
 
   return (
-    <DialogActions className={classes.dialogActions}>
+    <DialogActions style={styles.dialogActions}>
       {submitable && (
-        <div className={classes.progessContainer}>
-          <Typography key="progressInfo" className={classes.progressInfo} data-test="actions-counter">
+        <div style={styles.progessContainer}>
+          <Typography key="progressInfo" style={styles.progressInfo} data-test="actions-counter">
             {strings.formatString(strings.preview.actions_done, executedActions.length, totalActionsLength)}
           </Typography>
         </div>
@@ -74,4 +72,4 @@ const DialogButtons = props => {
   );
 };
 
-export default withStyles(styles)(DialogButtons);
+export default DialogButtons;

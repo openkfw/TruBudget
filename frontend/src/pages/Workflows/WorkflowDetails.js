@@ -8,7 +8,6 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
-import { withStyles, withTheme } from "@mui/styles";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
@@ -17,50 +16,48 @@ import AssigneeIcon from "@mui/icons-material/Group";
 import dayjs from "dayjs";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
-import { dateFormat, isDateReached, statusIconMapping, statusMapping, toAmountString } from "../../helper";
+import { isDateReached, statusIconMapping, statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
 import DocumentOverviewContainer from "../Documents/DocumentOverviewContainer";
 import WorkflowitemHistoryTab from "./WorkflowitemHistoryTab/WorkflowHistoryTab";
 
-const styles = theme => {
-  return {
-    alert: {
-      border: `3px solid ${theme.palette.warning.main}`,
-      width: 37,
-      height: 37
-    },
-    textfield: {
-      width: "50%",
-      right: -30
-    },
-    closeButton: {
-      left: 650,
-      position: "absolute",
-      top: 20
-    },
-    avatarCard: {
-      width: "45%",
-      left: "35px"
-    },
-    dialog: {
-      width: "95%"
-    },
-    paper: {
-      width: "70%",
-      marginTop: "10px"
-    },
-    dialogContent: {
-      width: "500px"
-    },
-    row: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center"
-    },
-    displayName: {
-      wordBreak: "break-word"
-    }
-  };
+const styles = {
+  alert: {
+    border: theme => `3px solid ${theme.palette.warning.main}`,
+    width: 37,
+    height: 37
+  },
+  textfield: {
+    width: "50%",
+    right: -30
+  },
+  closeButton: {
+    left: 650,
+    position: "absolute",
+    top: 20
+  },
+  avatarCard: {
+    width: "45%",
+    left: "35px"
+  },
+  dialog: {
+    width: "95%"
+  },
+  paper: {
+    width: "70%",
+    marginTop: "10px"
+  },
+  dialogContent: {
+    width: "500px"
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  displayName: {
+    wordBreak: "break-word"
+  }
 };
 
 const removeNewLines = text => {
@@ -71,7 +68,7 @@ const removeNewLines = text => {
   return formattedText;
 };
 
-function Overview({ classes, users, workflowitem }) {
+function Overview({ users, workflowitem }) {
   const {
     displayName,
     description,
@@ -97,7 +94,7 @@ function Overview({ classes, users, workflowitem }) {
           data-test="workflowitemInfoDisplayName"
           primary={displayName}
           secondary={trimmedComment}
-          className={classes.displayName}
+          style={styles.displayName}
         />
       </ListItem>
       <ListItem>
@@ -124,12 +121,12 @@ function Overview({ classes, users, workflowitem }) {
       {dueDate ? (
         <ListItem>
           <ListItemAvatar>
-            <Avatar className={isDateReached(dueDate) && status === "open" ? classes.alert : null} data-test="due-date">
+            <Avatar sx={isDateReached(dueDate) && status === "open" ? styles.alert : null} data-test="due-date">
               <AccessAlarmIcon />
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={dayjs(dueDate).format(dateFormat())}
+            primary={dayjs(dueDate).format(strings.format.dateFormat)}
             secondary={
               isDateReached(dueDate) && status === "open" ? strings.common.dueDate_exceeded : strings.common.dueDate
             }
@@ -181,7 +178,6 @@ function Documents({
 }
 
 function WorkflowDetails({
-  classes,
   workflowitem,
   showWorkflowDetails,
   hideWorkflowDetails,
@@ -203,7 +199,7 @@ function WorkflowDetails({
   let content;
 
   if (selectedTab === 0) {
-    content = <Overview {...{ classes, users, workflowitem }} />;
+    content = <Overview {...{ users, workflowitem }} />;
   } else if (selectedTab === 1) {
     content = (
       <Documents
@@ -229,13 +225,13 @@ function WorkflowDetails({
   return (
     <Dialog
       open={showWorkflowDetails}
-      className={classes.dialog}
+      style={styles.dialog}
       TransitionProps={{
         onExited: closeWorkflowitemDetailsDialog
       }}
     >
       <DialogTitle data-test="workflowInfoDialog">{strings.workflow.workflowitem_details}</DialogTitle>
-      <DialogContent className={classes.dialogContent}>
+      <DialogContent style={styles.dialogContent}>
         <Tabs value={selectedTab} onChange={(_, index) => setSelectedTab(index)}>
           <Tab data-test="workflowitem-overview-tab" label={strings.workflow.workflowitem_details_overview} />
           <Tab data-test="workflowitem-documents-tab" label={strings.workflow.workflowitem_details_documents} />
@@ -252,4 +248,4 @@ function WorkflowDetails({
   );
 }
 
-export default withTheme(withStyles(styles)(WorkflowDetails));
+export default WorkflowDetails;

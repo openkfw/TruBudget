@@ -2,10 +2,8 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import List from "@mui/material/List";
-import { withStyles } from "@mui/styles";
 import TablePagination from "@mui/material/TablePagination";
 import React from "react";
-
 import strings from "../../localizeStrings";
 import NotificationListItems from "./NotificationListItems";
 
@@ -42,7 +40,6 @@ const onChangeRowsPerPage = (
 
 const NotificationList = props => {
   const {
-    classes,
     markMultipleNotificationsAsRead,
     notifications,
     setNotifcationsPerPage,
@@ -64,10 +61,9 @@ const NotificationList = props => {
         <Button
           variant="outlined"
           onClick={() => markPageAsRead(markMultipleNotificationsAsRead, notifications, currentPage)}
-          className={classes.button + " mark-all-notifications-as-read"}
+          style={styles.button}
           data-test="read-multiple-notifications"
           disabled={!allNotificationsRead}
-          style={{ margin: "0px" }}
         >
           {strings.notification.read_all}
         </Button>
@@ -90,7 +86,7 @@ const NotificationList = props => {
           )}
         </List>
       )}
-      <div className={classes.paginationDiv}>
+      <div style={styles.paginationDiv}>
         <TablePagination
           component="div"
           rowsPerPageOptions={rowsPerPageOptions}
@@ -116,4 +112,4 @@ const NotificationList = props => {
   );
 };
 
-export default withStyles(styles)(NotificationList);
+export default NotificationList;

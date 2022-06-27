@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import WarningIcon from "@mui/icons-material/Warning";
 import React from "react";
 
@@ -42,4 +41,4 @@ class ErrorTypography extends React.Component {
   }
 }
 
-export default withStyles(styles)(ErrorTypography);
+export default ErrorTypography;

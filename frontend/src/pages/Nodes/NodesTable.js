@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withStyles } from "@mui/styles";
 import AppBar from "@mui/material/AppBar";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
@@ -32,10 +31,9 @@ const renderTab = (tabIndex, props) => {
 
 const NodesTable = props => {
   const [tabIndex, setTabIndex] = useState(0);
-  const { classes } = props;
   return (
-    <div data-test="nodesDashboard" className={classes.container}>
-      <div className={classes.customWidth}>
+    <div data-test="nodesDashboard" style={styles.container}>
+      <div style={styles.customWidth}>
         <AppBar position="static" color="default">
           <Tabs
             value={tabIndex}
@@ -52,4 +50,4 @@ const NodesTable = props => {
     </div>
   );
 };
-export default withStyles(styles)(NodesTable);
+export default NodesTable;

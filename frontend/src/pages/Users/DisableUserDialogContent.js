@@ -8,7 +8,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { withStyles } from "@mui/styles";
 import React, { useEffect, useState } from "react";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
@@ -44,7 +43,7 @@ const styles = {
   }
 };
 
-const formatUserAssignments = (assignments, hasHiddenAssignments, assignmentType, classes) => {
+const formatUserAssignments = (assignments, hasHiddenAssignments, assignmentType) => {
   if (_isEmpty(assignments) && !hasHiddenAssignments) {
     return strings.users.no_assignments;
   }
@@ -62,7 +61,7 @@ const formatUserAssignments = (assignments, hasHiddenAssignments, assignmentType
       url = `${baseurl}/projects/${assignment.projectId}/${assignment.subprojectId}`;
     }
     return (
-      <div key={assignment.id} className={classes.container}>
+      <div key={assignment.id} style={styles.container}>
         <a href={url} target="_blank" rel="noopener noreferrer">
           {assignment.displayName}
         </a>
@@ -71,20 +70,20 @@ const formatUserAssignments = (assignments, hasHiddenAssignments, assignmentType
   });
 };
 
-const formatHiddenAssignments = (hasHiddenAssignments, assignmentType, classes) => {
+const formatHiddenAssignments = (hasHiddenAssignments, assignmentType) => {
   if (!hasHiddenAssignments) {
     return;
   }
   const hiddenAssignmentInfo = formatString(strings.users.hidden_assignments, assignmentType);
   return (
-    <div className={classes.hiddenInfo}>
-      <InfoIcon className={classes.infoIcon} />
+    <div style={styles.hiddenInfo}>
+      <InfoIcon style={styles.infoIcon} />
       <Typography variant="body2">{hiddenAssignmentInfo}</Typography>
     </div>
   );
 };
 
-const getUserAssignmentsTable = (userAssignments, classes) => {
+const getUserAssignmentsTable = userAssignments => {
   const hasHiddenProjects = userAssignments.hiddenAssignments.hasHiddenProjects;
   const hasHiddenSubprojects = userAssignments.hiddenAssignments.hasHiddenSubprojects;
   const hasHiddenWorkflowitems = userAssignments.hiddenAssignments.hasHiddenWorkflowitems;
@@ -100,17 +99,17 @@ const getUserAssignmentsTable = (userAssignments, classes) => {
         </TableHead>
         <TableBody id="usertablebody">
           <TableRow>
-            <TableCell className={classes.tableCell} data-test="project-assignments">
-              {formatUserAssignments(userAssignments.projects, hasHiddenProjects, "project", classes)}
-              {formatHiddenAssignments(hasHiddenProjects, "projects", classes)}
+            <TableCell style={styles.tableCell} data-test="project-assignments">
+              {formatUserAssignments(userAssignments.projects, hasHiddenProjects, "project")}
+              {formatHiddenAssignments(hasHiddenProjects, "projects")}
             </TableCell>
-            <TableCell className={classes.tableCell} data-test="subproject-assignments">
-              {formatUserAssignments(userAssignments.subprojects, hasHiddenSubprojects, "subproject", classes)}
-              {formatHiddenAssignments(hasHiddenSubprojects, "subprojects", classes)}
+            <TableCell style={styles.tableCell} data-test="subproject-assignments">
+              {formatUserAssignments(userAssignments.subprojects, hasHiddenSubprojects, "subproject")}
+              {formatHiddenAssignments(hasHiddenSubprojects, "subprojects")}
             </TableCell>
-            <TableCell className={classes.tableCell} data-test="workflowitem-assignments">
-              {formatUserAssignments(userAssignments.workflowitems, hasHiddenWorkflowitems, "workflowitem", classes)}
-              {formatHiddenAssignments(hasHiddenWorkflowitems, "workflowitems", classes)}
+            <TableCell style={styles.tableCell} data-test="workflowitem-assignments">
+              {formatUserAssignments(userAssignments.workflowitems, hasHiddenWorkflowitems, "workflowitem")}
+              {formatHiddenAssignments(hasHiddenWorkflowitems, "workflowitems")}
             </TableCell>
           </TableRow>
         </TableBody>
@@ -120,7 +119,7 @@ const getUserAssignmentsTable = (userAssignments, classes) => {
 };
 
 const DisableUserDialogContent = props => {
-  const { classes, fetchUserAssignments, cleanUserAssignments, userAssignments, editId } = props;
+  const { fetchUserAssignments, cleanUserAssignments, userAssignments, editId } = props;
 
   const [isUserAssigned, setIsUserAssigned] = useState(false);
   const [isUserAssignmentsFetched, setIsUserAssignmentsFetched] = useState(false);
@@ -158,11 +157,11 @@ const DisableUserDialogContent = props => {
   return (
     <div>
       {isUserAssigned && isUserAssignmentsFetched ? (
-        <div className={classes.container}>
-          <div className={classes.errorArea}>
-            <div className={{ float: "left" }}>
-              <div className={classes.infoArea}>
-                <InfoIcon className={classes.infoIcon} data-test="info-hidden-assignment" />
+        <div style={styles.container}>
+          <div style={styles.errorArea}>
+            <div style={{ float: "left" }}>
+              <div style={styles.infoArea}>
+                <InfoIcon style={styles.infoIcon} data-test="info-hidden-assignment" />
                 <Typography variant="body2">{strings.users.assigned_message}</Typography>
               </div>
             </div>
@@ -178,14 +177,14 @@ const DisableUserDialogContent = props => {
             />
           </div>
           <Card>
-            <CardContent>{getUserAssignmentsTable(userAssignments, classes)}</CardContent>
+            <CardContent>{getUserAssignmentsTable(userAssignments)}</CardContent>
           </Card>
         </div>
       ) : null}
 
       {!isUserAssigned && isUserAssignmentsFetched ? (
-        <div className={classes.infoArea}>
-          <InfoIcon className={classes.infoIcon} />
+        <div style={styles.infoArea}>
+          <InfoIcon style={styles.infoIcon} />
           <Typography variant="body2">{strings.users.not_assigned_message}</Typography>
         </div>
       ) : null}
@@ -193,4 +192,4 @@ const DisableUserDialogContent = props => {
   );
 };
 
-export default withStyles(styles)(DisableUserDialogContent);
+export default DisableUserDialogContent;

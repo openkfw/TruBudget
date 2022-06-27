@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withStyles } from "@mui/styles";
 import MenuItem from "@mui/material/MenuItem";
 import Chip from "@mui/material/Chip";
 import UserIcon from "@mui/icons-material/Person";
@@ -16,7 +15,7 @@ import Paper from "@mui/material/Paper";
 import List from "@mui/material/List";
 import OverflowTooltip from "./OverflowTooltip";
 
-const styles = theme => ({
+const styles = {
   container: { marginTop: "30px" },
   closeButtonContainer: { float: "right", marginTop: -8 },
   closeButtonSize: { fontSize: 15 },
@@ -27,7 +26,7 @@ const styles = theme => ({
     marginBottom: "5px"
   },
   chip: {
-    margin: `${theme.spacing(0.5)} ${theme.spacing(0.25)}`
+    margin: theme => `${theme.spacing(0.5)} ${theme.spacing(0.25)}`
   },
   chipSelection: {
     width: "100%",
@@ -51,7 +50,7 @@ const styles = theme => ({
     textOverflow: "ellipsis"
   },
   itemContainer: { maxHeight: "70vh", overflow: "auto", maxWidth: "300px", minWidth: "300px", boxShadow: "none" }
-});
+};
 
 function UserSelection(props) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -93,7 +92,7 @@ function UserSelection(props) {
     return renderUser(suggestedUsers, selectedItems, addToSelection);
   };
 
-  const { classes, users, addToSelection, selectedItems, handleDelete } = props;
+  const { users, addToSelection, selectedItems, handleDelete } = props;
   const suggestedUsers = renderUserSelection(users, searchTerm, selectedItems, addToSelection);
 
   const openSelect = () => {
@@ -107,13 +106,13 @@ function UserSelection(props) {
   };
 
   return (
-    <div className={classes.container}>
-      <div className={classes.userSelection}>
-        <div className={classes.userIcon}>
+    <div style={styles.container}>
+      <div style={styles.userSelection}>
+        <div style={styles.userIcon}>
           <UserIcon />
         </div>
-        <FormControl data-test="add-user-container" className={classes.formControl}>
-          <InputLabel className={classes.label} shrink={false}>
+        <FormControl data-test="add-user-container" style={styles.formControl}>
+          <InputLabel style={styles.label} shrink={false}>
             {selectedItems.length + " " + strings.users.selected_users}
           </InputLabel>
           <Select
@@ -125,16 +124,16 @@ function UserSelection(props) {
             onOpen={openSelect}
             onClose={closeSelect}
           >
-            <div className={classes.closeButtonContainer}>
+            <div style={styles.closeButtonContainer}>
               <ActionButton
                 data-test={"close-select"}
                 onClick={closeSelect}
                 title={strings.common.close}
                 iconButtonStyle={{ width: 15, height: 15 }}
-                icon={<CloseIcon className={classes.closeButtonSize} />}
+                icon={<CloseIcon style={styles.closeButtonSize} />}
               />
             </div>
-            <div className={classes.formControlContainer}>
+            <div style={styles.formControlContainer}>
               <FormControl>
                 <InputLabel>{strings.common.search}</InputLabel>
                 <Input
@@ -147,21 +146,21 @@ function UserSelection(props) {
               </FormControl>
             </div>
             <div data-test="user-list">
-              <Paper className={classes.itemContainer}>
+              <Paper style={styles.itemContainer}>
                 <List>{suggestedUsers}</List>
               </Paper>
             </div>
           </Select>
         </FormControl>
       </div>
-      <div className={classes.chipSelection}>
+      <div style={styles.chipSelection}>
         {selectedItems.map(item => (
           <Chip
             data-test={`user-chip-${item}`}
             key={item}
             tabIndex={-1}
             label={item}
-            className={classes.chip}
+            style={styles.chip}
             onDelete={() => handleDelete(item)}
           />
         ))}
@@ -170,4 +169,4 @@ function UserSelection(props) {
   );
 }
 
-export default withStyles(styles)(UserSelection);
+export default UserSelection;

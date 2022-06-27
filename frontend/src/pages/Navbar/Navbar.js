@@ -1,5 +1,4 @@
 import AppBar from "@mui/material/AppBar";
-import { withStyles } from "@mui/styles";
 import Toolbar from "@mui/material/Toolbar";
 import React from "react";
 
@@ -7,13 +6,6 @@ import LeftNavbarNavigation from "./LeftNavbarNavigation";
 import MainNavbarNavigation from "./MainNavbarNavigation";
 import RightNavbarNavigation from "./RightNavbarNavigation";
 import SideNav from "./SideNav";
-
-const styles = {
-  root: {
-    backgroundColor: "transparent",
-    boxShadow: "none"
-  }
-};
 
 const Navbar = ({
   toggleSidebar,
@@ -35,7 +27,6 @@ const Navbar = ({
   userId,
   createBackup,
   restoreBackup,
-  classes,
   versions,
   exportData,
   storeSearchTerm,
@@ -49,7 +40,13 @@ const Navbar = ({
 }) => {
   return (
     <div>
-      <AppBar classes={classes} position="absolute">
+      <AppBar
+        sx={{
+          backgroundColor: "transparent",
+          boxShadow: "none"
+        }}
+        position="absolute"
+      >
         <Toolbar id="back-to-top">
           <LeftNavbarNavigation toggleSidebar={toggleSidebar} />
           <MainNavbarNavigation
@@ -98,4 +95,4 @@ const Navbar = ({
   );
 };
 
-export default withStyles(styles)(Navbar);
+export default Navbar;

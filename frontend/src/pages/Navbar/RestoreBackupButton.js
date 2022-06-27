@@ -1,15 +1,14 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import Upload from "@mui/icons-material/CloudUpload";
-import { withStyles } from "@mui/styles";
 import strings from "../../localizeStrings";
 
-const styles = theme => ({
+const styles = {
   button: {
-    margin: theme.spacing(1)
+    margin: theme => theme.spacing(1)
   },
   leftIcon: {
-    marginRight: theme.spacing(1)
+    marginRight: theme => theme.spacing(1)
   },
   iconSmall: {
     fontSize: 20
@@ -24,17 +23,17 @@ const styles = theme => ({
     width: "100%",
     opacity: 0
   }
-});
+};
 
-const RestoreBackupButton = ({ restoreBackup, classes }) => {
+const RestoreBackupButton = ({ restoreBackup }) => {
   return (
-    <Button variant="contained" id="upload" color="primary" className={classes.button} data-test="restore-backup">
-      <Upload className={`${classes.leftIcon} ${classes.iconSmall}`} />
+    <Button variant="contained" id="upload" color="primary" sx={styles.button} data-test="restore-backup">
+      <Upload sx={{ ...styles.leftIcon, ...styles.iconSmall }} />
       {strings.navigation.restore}
       <input
         id="uploadBackup"
         type="file"
-        className={classes.uploadInput}
+        style={styles.uploadInput}
         onChange={event => {
           if (event.target.files) {
             const file = event.target.files[0];
@@ -53,4 +52,4 @@ const RestoreBackupButton = ({ restoreBackup, classes }) => {
   );
 };
 
-export default withStyles(styles)(RestoreBackupButton);
+export default RestoreBackupButton;

@@ -2,19 +2,15 @@ import { Button, CircularProgress, DialogActions, Typography } from "@mui/materi
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { withStyles } from "@mui/styles";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
 import { getGroupsOfUser, hasUserAssignments, isEmptyDeep, isUserOrGroupPermitted } from "../../helper";
 import strings from "../../localizeStrings";
-
 import { ConfirmationDialogCreator } from "./confirmationDialogCreator";
 
 const styles = {
   paperRoot: {
-    width: "100%",
-    overflow: "visible",
-    maxWidth: "800px"
+    overflow: "visible"
   },
   loadingContainer: {
     display: "flex",
@@ -37,7 +33,6 @@ const styles = {
 // Implement a new confirmation dialog by setting  title, content and confirmButtonText
 const ConfirmationDialog = props => {
   const {
-    classes,
     open = false,
     permissions,
     confirmingUser,
@@ -60,13 +55,7 @@ const ConfirmationDialog = props => {
 
   // If permissions are not fetched yet show Loading indicator
   if (isFetchingPermissions) {
-    return buildDialogWithLoadingIndicator(
-      classes,
-      open,
-      isListPermissionsRequiredFromApi,
-      onCancel,
-      requestedPermissions
-    );
+    return buildDialogWithLoadingIndicator(open, isListPermissionsRequiredFromApi, onCancel, requestedPermissions);
   }
 
   const resourcesToCheck = getResourcesToCheck(additionalActions);
@@ -83,7 +72,7 @@ const ConfirmationDialog = props => {
       requestedPermissions,
       permittedToGrant
     },
-    classes.paperRoot,
+    styles.paperRoot,
     open,
     onCancel
   );
@@ -97,19 +86,13 @@ const ConfirmationDialog = props => {
   );
 };
 
-function buildDialogWithLoadingIndicator(
-  classes,
-  open,
-  isListPermissionsRequiredFromApi,
-  onCancel,
-  requestedPermissions
-) {
+function buildDialogWithLoadingIndicator(open, isListPermissionsRequiredFromApi, onCancel, requestedPermissions) {
   return (
-    <Dialog classes={{ paper: classes.paperRoot }} open={open} data-test="confirmation-dialog">
+    <Dialog style={{ paper: styles.paperRoot }} open={open} data-test="confirmation-dialog">
       {isListPermissionsRequiredFromApi ? (
         <React.Fragment>
           <DialogTitle data-test="confirmation-dialog-title">{strings.confirmation.permissions_required}</DialogTitle>
-          <DialogContent className={classes.dialogContent}>
+          <DialogContent style={styles.dialogContent}>
             <Typography>{strings.confirmation.list_permissions_required_text}</Typography>
           </DialogContent>
           <DialogActions>
@@ -123,14 +106,14 @@ function buildDialogWithLoadingIndicator(
           </DialogActions>
         </React.Fragment>
       ) : (
-        <div className={classes.loadingContainer}>
+        <div style={styles.loadingContainer}>
           <CircularProgress
             size={50}
             left={0}
             top={0}
             percentage={50}
             color="primary"
-            className={classes.loadingIndicator}
+            style={styles.loadingIndicator}
           />
         </div>
       )}
@@ -182,4 +165,4 @@ function getGrantPermissionUserMap(username, groups, permissions, resourcesToChe
   }, []);
 }
 
-export default withStyles(styles)(ConfirmationDialog);
+export default ConfirmationDialog;

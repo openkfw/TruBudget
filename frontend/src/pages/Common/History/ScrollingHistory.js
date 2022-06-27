@@ -33,7 +33,7 @@ export default class ScrollingHistory extends React.Component {
         }}
         hasMore={hasMore}
         loader={
-          <div className="loader" key={0} style={styles.loader}>
+          <div key={0} style={styles.loader}>
             {<CircularProgress />}
           </div>
         }

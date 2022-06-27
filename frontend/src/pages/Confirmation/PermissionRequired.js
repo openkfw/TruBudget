@@ -1,5 +1,4 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import Card from "@mui/material/Card";
 import React from "react";
 import { capitalize } from "../../helper";
@@ -13,7 +12,7 @@ const styles = {
 };
 
 const PermissionRequired = props => {
-  const { actions, grantPermissionUserMap, classes } = props;
+  const { actions, grantPermissionUserMap } = props;
   const unpermittedActions = actions.filter(action => !action.isUserPermitted);
   const unpermittedIntents = unpermittedActions.filter(
     (value, index, array) => array.findIndex(action => action.intent === value.intent) === index
@@ -22,16 +21,16 @@ const PermissionRequired = props => {
   return (
     <React.Fragment>
       <Typography>{strings.confirmation.no_permission_warning}</Typography>
-      <IntentTable unpermittedIntents={unpermittedIntents} tableClass={classes.table} />
+      <IntentTable unpermittedIntents={unpermittedIntents} style={styles.table} />
 
       <Typography>{strings.confirmation.no_permission_help}</Typography>
-      <UsersTable grantPermissionUserMap={grantPermissionUserMap} tableClass={classes.table} />
+      <UsersTable grantPermissionUserMap={grantPermissionUserMap} style={styles.table} />
     </React.Fragment>
   );
 };
 
-const IntentTable = ({ unpermittedIntents, tableClass }) => (
-  <Card className={tableClass}>
+const IntentTable = ({ unpermittedIntents, style }) => (
+  <Card style={style}>
     <TableContainer>
       <Table data-test="permission-required-intent-table">
         <TableHead>
@@ -59,8 +58,8 @@ const createIntentTableRow = (action, index) => {
   );
 };
 
-const UsersTable = ({ grantPermissionUserMap, tableClass }) => (
-  <Card className={tableClass}>
+const UsersTable = ({ grantPermissionUserMap, style }) => (
+  <Card style={style}>
     <TableContainer>
       <Table data-test="permission-required-user-table">
         <TableHead>
@@ -84,4 +83,4 @@ const createUsersTableRow = ({ permittedUser, resource }, index) => {
   );
 };
 
-export default withStyles(styles)(PermissionRequired);
+export default PermissionRequired;

@@ -1,4 +1,3 @@
-import { withStyles, withTheme } from "@mui/styles";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -22,6 +21,7 @@ import Highlighter from "react-highlight-words";
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
+import { useTheme } from "@mui/material/styles";
 
 const styles = {
   editIcon: {
@@ -50,14 +50,15 @@ const ProjectCard = ({
   description,
   thumbnail,
   tags,
-  parentClasses,
+  parentStyles,
   imagePath,
-  searchTermArray,
-  theme
+  searchTermArray
 }) => {
+  const theme = useTheme();
+
   return (
-    <Card aria-label="project" key={index} className={parentClasses.card} data-test={`project-card-${id}`}>
-      <CardMedia className={parentClasses.media} image={imagePath} />
+    <Card aria-label="project" key={index} style={parentStyles.card} data-test={`project-card-${id}`}>
+      <CardMedia style={parentStyles.media} image={imagePath} />
       <CardActions
         style={{
           display: "flex",
@@ -70,7 +71,7 @@ const ProjectCard = ({
         <Tooltip id="tooltip-pview" title={strings.common.view}>
           <div>
             <Fab
-              className={parentClasses.button}
+              style={parentStyles.button}
               disabled={!canViewProjectDetails(allowedIntents)}
               color="primary"
               onClick={() => {
@@ -86,10 +87,10 @@ const ProjectCard = ({
       <CardContent>
         <CardHeader
           data-test="project-header"
-          className={parentClasses.cardHeader}
+          style={parentStyles.cardHeader}
           title={
             <div
-              className={parentClasses.cardTitle}
+              style={parentStyles.cardTitle}
               id={`project-title-${index}`}
               data-test={`project-title-${displayName}`}
             >
@@ -114,14 +115,14 @@ const ProjectCard = ({
             style={{ marginTop: "5px", height: "200px", overflow: "scroll", overflowY: "auto", overflowX: "hidden" }}
           >
             {projectedBudgets.length === 0 ? null : (
-              <ListItem className={parentClasses.listItem} disabled={false}>
+              <ListItem style={parentStyles.listItem} disabled={false}>
                 <ListItemIcon>
                   <AmountIcon />
                 </ListItemIcon>
                 <ListItemText data-test="project-budget" primary={budgets} secondary={strings.common.budget} />
               </ListItem>
             )}
-            <ListItem className={parentClasses.listItem} disabled={false}>
+            <ListItem style={parentStyles.listItem} disabled={false}>
               <ListItemIcon>
                 <DateIcon />
               </ListItemIcon>
@@ -129,8 +130,7 @@ const ProjectCard = ({
             </ListItem>
             {displayedTags.length > 0 ? (
               <ListItem
-                style={{ marginTop: "13px" }}
-                className={parentClasses.listItem}
+                style={{ ...parentStyles.listItem, marginTop: "13px" }}
                 data-test="overview-taglist"
                 disabled={false}
               >
@@ -141,7 +141,7 @@ const ProjectCard = ({
               </ListItem>
             ) : null}
           </div>
-          <div className={parentClasses.editContainer}>
+          <div style={parentStyles.editContainer}>
             <ActionButton
               notVisible={additionalDataEmpty}
               onClick={() => {
@@ -177,4 +177,4 @@ const ProjectCard = ({
   );
 };
 
-export default withTheme(withStyles(styles)(ProjectCard));
+export default ProjectCard;

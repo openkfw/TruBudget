@@ -1,5 +1,4 @@
 import React from "react";
-import { withStyles } from "@mui/styles";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -8,18 +7,6 @@ import TableBody from "@mui/material/TableBody";
 import Paper from "@mui/material/Paper";
 import strings from "../../localizeStrings";
 import ApprovedNodestableEntry from "./ApprovedNodestableEntry";
-
-const styles = {
-  container: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-  customWidth: {
-    width: "100%",
-    marginTop: "40px"
-  }
-};
 
 const groupBy = nodes => {
   return nodes.reduce((acc, node) => {
@@ -62,4 +49,4 @@ const ApprovedNodesTable = props => {
   );
 };
 
-export default withStyles(styles)(ApprovedNodesTable);
+export default ApprovedNodesTable;

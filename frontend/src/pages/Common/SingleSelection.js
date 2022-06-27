@@ -9,7 +9,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Radio from "@mui/material/Radio";
 import Select from "@mui/material/Select";
-import { withStyles } from "@mui/styles";
 import Typography from "@mui/material/Typography";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
@@ -74,7 +73,6 @@ class SingleSelection extends Component {
   }
 
   renderSelection(selectableItems, selectId, disabled) {
-    const { classes } = this.props;
     return selectableItems.map(u => {
       const { id, displayName } = u;
       const isChecked = id === selectId;
@@ -85,8 +83,8 @@ class SingleSelection extends Component {
           data-test={isChecked ? "selected-item" : "not-selected-item"}
           onClick={() => (id !== selectId ? this.props.onSelect(id, displayName) : undefined)}
         >
-          <Radio className={classes.radioButton} disabled={disabled} checked={isChecked} />
-          <ListItemText data-test={`single-select-name-${id}`} className={classes.nameContainer}>
+          <Radio style={styles.radioButton} disabled={disabled} checked={isChecked} />
+          <ListItemText data-test={`single-select-name-${id}`} style={styles.nameContainer}>
             <OverflowTooltip text={displayName} />
           </ListItemText>
         </MenuItem>
@@ -102,7 +100,6 @@ class SingleSelection extends Component {
   }
 
   renderUserSelection = (selectableItems, selectId, disabled) => {
-    const { classes } = this.props;
     const selection = this.renderSelection(
       selectableItems.filter(
         u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
@@ -113,7 +110,7 @@ class SingleSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader className={classes.listSubHeader}> {strings.users.users} </ListSubheader>
+          <ListSubheader style={styles.listSubHeader}> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -123,7 +120,6 @@ class SingleSelection extends Component {
   };
 
   renderGroupSelection = (selectableItems, selectId, disabled) => {
-    const { classes } = this.props;
     const selection = this.renderSelection(
       selectableItems.filter(
         u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
@@ -134,7 +130,7 @@ class SingleSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader className={classes.listSubHeader}> {strings.users.groups} </ListSubheader>
+          <ListSubheader style={styles.listSubHeader}> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );
@@ -144,25 +140,16 @@ class SingleSelection extends Component {
   };
 
   render() {
-    const {
-      selectId,
-      selectableItems,
-      disabled,
-      classes,
-      workflowSortEnabled,
-      status,
-      floatingLabel,
-      onClearItem
-    } = this.props;
+    const { selectId, selectableItems, disabled, workflowSortEnabled, status, floatingLabel, onClearItem } = this.props;
     const suggestedUsers = this.renderUserSelection(selectableItems, selectId, disabled);
     const suggestedGroups = this.renderGroupSelection(selectableItems, selectId, disabled);
     const selectedItem = selectableItems.find(s => s.id === selectId);
-    const getSortClasses = () => {
+    const getSortStyles = () => {
       if (workflowSortEnabled) {
         if (status !== "closed") {
           return {
-            select: classes.select,
-            disabled: classes.disabled
+            select: styles.select,
+            disabled: styles.disabled
           };
         }
       }
@@ -183,21 +170,21 @@ class SingleSelection extends Component {
         <FormControl
           data-test={"single-select-container" + (disabled ? "-disabled" : "")}
           disabled={disabled}
-          className={classes.formControl}
+          style={styles.formControl}
         >
           <InputLabel htmlFor={selectId}>{floatingLabel}</InputLabel>
           <Select
             data-test={"single-select" + (disabled ? "-disabled" : "")}
             variant="standard"
-            classes={{
-              ...getSortClasses()
+            style={{
+              ...getSortStyles()
             }}
             value={selectedItem ? this.renderTitle(selectedItem) : []}
             renderValue={name => {
               return selectedItem ? (
-                <div className={classes.selectValue}>
-                  <Checkbox className={classes.radioButton} disabled={disabled} checked={true} />
-                  <Typography disabled={disabled} variant="body1" className={classes.assigneeTypography}>
+                <div style={styles.selectValue}>
+                  <Checkbox style={styles.radioButton} disabled={disabled} checked={true} />
+                  <Typography disabled={disabled} variant="body1" style={styles.assigneeTypography}>
                     {name}
                   </Typography>
                 </div>
@@ -208,16 +195,16 @@ class SingleSelection extends Component {
             onOpen={openSelect}
             onClose={closeSelect}
           >
-            <div className={classes.closeButtonContainer}>
+            <div style={styles.closeButtonContainer}>
               <ActionButton
                 data-test={"close-select"}
                 onClick={closeSelect}
                 title={strings.common.close}
                 iconButtonStyle={{ width: 15, height: 15 }}
-                icon={<CloseIcon className={classes.closeButtonSize} />}
+                icon={<CloseIcon style={styles.closeButtonSize} />}
               />
             </div>
-            <div className={classes.formControlContainer}>
+            <div style={styles.formControlContainer}>
               <FormControl>
                 <InputLabel>{strings.common.search}</InputLabel>
                 <Input
@@ -228,7 +215,7 @@ class SingleSelection extends Component {
               </FormControl>
             </div>
             <div data-test="single-select-list">
-              <Paper className={classes.itemContainer}>
+              <Paper style={styles.itemContainer}>
                 <List>
                   {suggestedUsers}
                   {suggestedGroups}
@@ -247,4 +234,4 @@ class SingleSelection extends Component {
   }
 }
 
-export default withStyles(styles)(SingleSelection);
+export default SingleSelection;

@@ -6,14 +6,13 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { withStyles } from "@mui/styles";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import strings from "../../localizeStrings";
 import { canApproveNode } from "../../permissions";
 import { ExistingNodesEmptyState, NewOrganizationsEmptyState } from "./NodesEmptyStates";
 
-const styles = theme => ({
+const styles = {
   container: {
     marginTop: 40,
     display: "flex",
@@ -50,15 +49,15 @@ const styles = theme => ({
     flexDirection: "column"
   },
   rightIcon: {
-    marginLeft: theme.spacing(1)
+    marginLeft: theme => theme.spacing(1)
   },
   leftIcon: {
-    marginRight: theme.spacing(1)
+    marginRight: theme => theme.spacing(1)
   },
   button: {
-    margin: theme.spacing(1)
+    margin: theme => theme.spacing(1)
   }
-});
+};
 
 const splitNodes = nodes => {
   /*
@@ -112,19 +111,19 @@ const getDeclinersString = decliners => {
   return resultString;
 };
 
-const getListEntries = (nodes, canApprove, classes, declineNode, approveNode) => {
+const getListEntries = (nodes, canApprove, declineNode, approveNode) => {
   return nodes.map(node => {
     return (
       <div key={node.address.address}>
         <ListItem key={node.address.address}>
           <ListItemText
             primary={
-              <div className={classes.listItem}>
+              <div style={styles.listItem}>
                 <Typography variant="subtitle1"> {node.address.organization}</Typography>
               </div>
             }
             secondary={
-              <span component={"span"} variant="body2" className={classes.listItem}>
+              <span component={"span"} variant="body2" style={styles.listItem}>
                 <Typography variant="body2" display="block" component={"span"}>
                   {`${strings.nodesDashboard.address}: ${node.address.address} `}
                 </Typography>
@@ -138,7 +137,7 @@ const getListEntries = (nodes, canApprove, classes, declineNode, approveNode) =>
             variant="contained"
             disabled={node.myVote !== "none" || !canApprove}
             color="primary"
-            className={classes.button}
+            style={styles.button}
             onClick={() => approveNode(node.address)}
           >
             {strings.nodesDashboard.approve}
@@ -147,7 +146,7 @@ const getListEntries = (nodes, canApprove, classes, declineNode, approveNode) =>
             variant="contained"
             disabled={node.myVote !== "none" || !canApprove}
             color="primary"
-            className={classes.button}
+            style={styles.button}
             onClick={() => declineNode(node.address)}
           >
             {strings.nodesDashboard.decline}
@@ -164,7 +163,6 @@ const NodeVoting = ({
   approveNewNodeForExistingOrganization,
   approveNewOrganization,
   allowedIntents,
-  classes,
   isDataLoading,
   organization,
   declineNode
@@ -174,20 +172,16 @@ const NodeVoting = ({
 
   const [, newOrgaNodes, existingOrgaNodes] = splitNodes(visibleNodes);
 
-  const newOrgaNodesListEntries = getListEntries(newOrgaNodes, canApprove, classes, declineNode, ({ organization }) =>
+  const newOrgaNodesListEntries = getListEntries(newOrgaNodes, canApprove, declineNode, ({ organization }) =>
     approveNewOrganization(organization)
   );
-  const existingOrgaNodesListEntries = getListEntries(
-    existingOrgaNodes,
-    canApprove,
-    classes,
-    declineNode,
-    ({ address }) => approveNewNodeForExistingOrganization(address)
+  const existingOrgaNodesListEntries = getListEntries(existingOrgaNodes, canApprove, declineNode, ({ address }) =>
+    approveNewNodeForExistingOrganization(address)
   );
 
   return (
-    <div className={classes.container} data-test="node-voting">
-      <Card className={classes.card}>
+    <div style={styles.container} data-test="node-voting">
+      <Card style={styles.card}>
         <CardHeader title={strings.nodesDashboard.new_organization} />
         {isDataLoading ? (
           <div />
@@ -197,12 +191,12 @@ const NodeVoting = ({
           </CardContent>
         )}
       </Card>
-      <Card className={classes.card}>
+      <Card style={styles.card}>
         <CardHeader title={strings.nodesDashboard.additional_organization_node} />
         {isDataLoading ? (
           <div />
         ) : (
-          <CardContent className={classes.cardContent}>
+          <CardContent style={styles.cardContent}>
             <List>{existingOrgaNodes.length ? existingOrgaNodesListEntries : <ExistingNodesEmptyState />}</List>
           </CardContent>
         )}
@@ -211,4 +205,4 @@ const NodeVoting = ({
   );
 };
 
-export default withStyles(styles)(NodeVoting);
+export default NodeVoting;

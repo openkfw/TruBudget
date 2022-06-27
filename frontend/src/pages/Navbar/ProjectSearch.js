@@ -1,20 +1,6 @@
 import React from "react";
-import { withStyles } from "@mui/styles";
 import Searchbar from "../Common/Searchbar";
 import strings from "../../localizeStrings";
-
-const styles = {
-  searchField: {
-    padding: "2px",
-    margin: "5px",
-    width: "270px",
-    display: "flex",
-    flexDirection: "row",
-    opacity: "0.8",
-    boxShadow: "none"
-  },
-  debounceInput: {}
-};
 
 const ProjectSearch = ({
   searchBarDisplayed,
@@ -37,4 +23,4 @@ const ProjectSearch = ({
   );
 };
 
-export default withStyles(styles)(ProjectSearch);
+export default ProjectSearch;

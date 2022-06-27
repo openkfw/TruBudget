@@ -1,5 +1,4 @@
 import Divider from "@mui/material/Divider";
-import { withStyles } from "@mui/styles";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -135,7 +134,6 @@ const getDropdownMenuItems = types => {
 const Content = props => {
   const { workflowitemType } = props.workflowToAdd;
   const {
-    classes,
     selectedAssignee,
     users,
     creationDialogShown,
@@ -176,7 +174,7 @@ const Content = props => {
         commentOnChange={props.storeWorkflowComment}
       />
       <div style={styles.container}>
-        <div className={classes.inputContainer}>
+        <div style={styles.inputContainer}>
           <DatePicker
             id="due-date"
             label={strings.common.dueDate}
@@ -191,7 +189,7 @@ const Content = props => {
         </div>
         {creationDialogShown ? (
           <>
-            <div className={classes.inputContainer}>
+            <div style={styles.inputContainer}>
               <Dropdown
                 disabled={hasFixedWorkflowitemType}
                 style={styles.dropdown}
@@ -203,10 +201,10 @@ const Content = props => {
                 {getDropdownMenuItems(types)}
               </Dropdown>
               <Tooltip title={getWorkflowitemTypeInfo(workflowitemType)} placement="right">
-                <InfoOutlinedIcon className={classes.infoIcon} />
+                <InfoOutlinedIcon style={styles.infoIcon} />
               </Tooltip>
             </div>
-            <div className={classes.inputContainer}>
+            <div style={styles.inputContainer}>
               <SingleSelection
                 disabled={hasSubprojectValidator}
                 floatingLabel={strings.subproject.workflowitem_assignee}
@@ -288,16 +286,15 @@ const WorkflowDialog = props => {
     };
   }, [setStorageServiceAvailable, versions]);
 
-
   const specificProps = editDialogShown
     ? {
-      handleSubmit: handleEdit,
-      dialogShown: editDialogShown
-    }
+        handleSubmit: handleEdit,
+        dialogShown: editDialogShown
+      }
     : {
-      handleSubmit: handleCreate,
-      dialogShown: creationDialogShown
-    };
+        handleSubmit: handleCreate,
+        dialogShown: creationDialogShown
+      };
   const { displayName, amountType, amount } = workflowToAdd;
   const exchangeRate = fromAmountString(workflowToAdd.exchangeRate);
   const changes = compareObjects(workflowItems, workflowToAdd);
@@ -305,7 +302,11 @@ const WorkflowDialog = props => {
   const documentStep = {
     title: strings.workflow.workflow_documents,
     content: (
-      <DocumentUpload storeWorkflowDocument={storeWorkflowDocument} workflowDocuments={workflowToAdd.documents} {...props} />
+      <DocumentUpload
+        storeWorkflowDocument={storeWorkflowDocument}
+        workflowDocuments={workflowToAdd.documents}
+        {...props}
+      />
     ),
     nextDisabled:
       workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
@@ -321,16 +322,17 @@ const WorkflowDialog = props => {
         (amountType !== "N/A" && amount === "") ||
         (amountType !== "N/A" && (!Number.isFinite(exchangeRate) || exchangeRate === 0)),
       content: (
-        <div className={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Content {...props} />
         </div>
       )
     }
   ];
+
   if (storageServiceAvailable) {
     steps.push(documentStep);
   }
-  const { classes, ...propsWithoutClasses } = props;
+
   return (
     <CreationDialog
       title={props.dialogTitle}
@@ -338,9 +340,9 @@ const WorkflowDialog = props => {
       steps={steps}
       numberOfSteps={steps.length}
       {...specificProps}
-      {...propsWithoutClasses}
+      {...props}
     />
   );
 };
 
-export default withStyles(styles)(WorkflowDialog);
+export default WorkflowDialog;

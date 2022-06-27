@@ -6,7 +6,6 @@ import Tooltip from "@mui/material/Tooltip";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
-import { withStyles } from "@mui/styles";
 import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
 import strings from "../../localizeStrings";
@@ -32,7 +31,6 @@ const styles = {
   }
 };
 const Searchbar = ({
-  classes,
   searchBarDisplayed = true,
   searchDisabled,
   searchTerm,
@@ -43,11 +41,11 @@ const Searchbar = ({
   isSearchBarDisplayedByDefault = false
 }) => {
   return (
-    <div className={classes.searchBar} data-test="search-bar">
+    <div style={styles.searchBar} data-test="search-bar">
       {searchBarDisplayed && !searchDisabled ? (
-        <Paper className={classes.searchField}>
-          <form onSubmit={e => e.preventDefault()} className={classes.formField}>
-            <FormControl className={classes.formControlField} data-test="search-input">
+        <Paper style={styles.searchField}>
+          <form onSubmit={e => e.preventDefault()} style={styles.formField}>
+            <FormControl style={styles.formControlField} data-test="search-input">
               <Input
                 value={searchTerm}
                 placeholder={previewText}
@@ -114,4 +112,4 @@ const Searchbar = ({
   );
 };
 
-export default withStyles(styles)(Searchbar);
+export default Searchbar;

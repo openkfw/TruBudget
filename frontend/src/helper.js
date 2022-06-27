@@ -168,13 +168,11 @@ export function makePermissionReadable(intent) {
   return strings.permissions[intent.replace(/[.]/g, "_")] || intent;
 }
 
-export const dateFormat = () => {
-  return "DD.MM.YYYY";
-};
-
 export const isDateReached = date => {
-  const today = dayjs(new Date());
-  return today.isAfter(date);
+  if (date === undefined) {
+    return false;
+  }
+  return dayjs().isSameOrAfter(date, "day");
 };
 
 export const isEmailAddressValid = emailAddress => {

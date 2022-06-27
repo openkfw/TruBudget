@@ -1,10 +1,8 @@
 import { Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import NameIcon from "@mui/icons-material/AssignmentInd";
 import InfoIcon from "@mui/icons-material/Info";
 import OrgaIcon from "@mui/icons-material/StoreMallDirectory";
 import React from "react";
-
 import strings from "../../localizeStrings";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
@@ -41,7 +39,6 @@ const styles = {
 };
 
 const UserDialogContent = ({
-  classes,
   user,
   setDisplayName,
   setOrganization,
@@ -55,14 +52,14 @@ const UserDialogContent = ({
   const { displayName, password, username } = user;
 
   return (
-    <div className={classes.container}>
-      <span className={classes.info}>
-        <InfoIcon className={classes.infoIcon} />
+    <div style={styles.container}>
+      <span style={styles.info}>
+        <InfoIcon style={styles.infoIcon} />
         <Typography variant="body2">{strings.users.privacy_notice}</Typography>
       </span>
-      <div className={classes.textInputContainer}>
+      <div style={styles.textInputContainer}>
         <TextInputWithIcon
-          className={classes.textInput}
+          style={styles.textInput}
           label={strings.common.organization}
           value={organization}
           data-test="organization"
@@ -72,7 +69,7 @@ const UserDialogContent = ({
           onChange={event => setOrganization(event.target.value)}
         />
         <TextInputWithIcon
-          className={classes.textInput}
+          style={styles.textInput}
           label={strings.users.account_name}
           value={displayName}
           error={false}
@@ -109,4 +106,4 @@ const UserDialogContent = ({
     </div>
   );
 };
-export default withStyles(styles)(UserDialogContent);
+export default UserDialogContent;

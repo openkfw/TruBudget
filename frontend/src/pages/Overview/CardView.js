@@ -3,7 +3,6 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
 import Tooltip from "@mui/material/Tooltip";
-import { withStyles } from "@mui/styles";
 import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { statusMapping, unixTsToString } from "../../helper";
@@ -18,7 +17,7 @@ import SelectablePill from "../Common/SelectablePill";
 import BudgetsList from "./BudgetsList";
 import ProjectCard from "./ProjectCard";
 
-const styles = theme => ({
+const styles = {
   card: {
     maxWidth: "310px",
     margin: "35px",
@@ -77,9 +76,9 @@ const styles = theme => ({
     alignItems: "center",
     justifyContent: "center"
   }
-});
+};
 
-const displayTags = ({ classes, tags, storeSearchTerm, showNavSearchBar, searchTermArray }) => {
+const displayTags = ({ tags, storeSearchTerm, showNavSearchBar, searchTermArray }) => {
   return tags.map((tag, i) => (
     <SelectablePill
       key={tag}
@@ -97,7 +96,6 @@ const displayTags = ({ classes, tags, storeSearchTerm, showNavSearchBar, searchT
 const getTableEntries = ({
   filteredProjects,
   history,
-  classes,
   showEditDialog,
   showProjectPermissions,
   showProjectAdditionalData,
@@ -126,7 +124,6 @@ const getTableEntries = ({
     const canViewPermissions = canViewProjectPermissions(allowedIntents);
     const additionalDataEmpty = _isEmpty(additionalData);
     const displayedTags = displayTags({
-      classes,
       tags: tags || [],
       storeSearchTerm,
       showNavSearchBar,
@@ -157,7 +154,7 @@ const getTableEntries = ({
           description={description}
           thumbnail={thumbnail}
           tags={tags}
-          parentClasses={classes}
+          parentStyles={styles}
           imagePath={imagePath}
           searchTermArray={searchTermArray}
         />
@@ -167,18 +164,18 @@ const getTableEntries = ({
 };
 
 const CardView = props => {
-  const { classes, isRoot, allowedIntents, showCreationDialog } = props;
+  const { isRoot, allowedIntents, showCreationDialog } = props;
   const tableEntries = getTableEntries(props);
   return (
-    <div aria-label="projects" className={classes.tableEntries}>
+    <div aria-label="projects" style={styles.tableEntries}>
       {tableEntries}
-      <Card data-test="project-creation" className={classes.addProject}>
-        <div className={classes.addProjectContent}>
+      <Card data-test="project-creation" style={styles.addProject}>
+        <div style={styles.addProjectContent}>
           <CardActions>
             <Tooltip id="tooltip-pcreate" title={strings.common.create}>
               <div>
                 <Fab
-                  className={classes.button}
+                  style={styles.button}
                   aria-label="create"
                   disabled={!canCreateProject(allowedIntents) || isRoot}
                   onClick={() => showCreationDialog()}
@@ -196,4 +193,4 @@ const CardView = props => {
   );
 };
 
-export default withStyles(styles)(CardView);
+export default CardView;
