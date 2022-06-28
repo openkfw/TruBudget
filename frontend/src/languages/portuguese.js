@@ -6,7 +6,7 @@ const pt = {
       thousand: ".",
       precision: 2
     },
-    dateFormat: "dd/MM/yyyy",
+    dateFormat: "DD/MM/YYYY",
     datePlaceholder: "dd/mm/yyyy",
     // numberRegex describes values with "," as decimal separator (matches e.g. 1000; 1.000; 1000,00; 1.000,00)    numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/
     numberRegex: /^([0-9]{1,3}.([0-9]{3}.)*[0-9]{3}|[0-9]+)(,[0-9]+)?$/

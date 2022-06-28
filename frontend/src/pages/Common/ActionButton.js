@@ -20,7 +20,6 @@ const ActionButton = ({
   // eslint-disable-next-line no-useless-computed-key
   ["data-test"]: dataTest,
   iconButtonStyle,
-  iconButtonClassName,
   alignTooltip = "bottom-end"
 }) => {
   const disabled = notVisible;
@@ -38,7 +37,6 @@ const ActionButton = ({
           <IconButton
             onClick={onClick}
             style={notVisible ? { ...styles.hide } : iconButtonStyle}
-            className={notVisible ? null : iconButtonClassName}
             disabled={disabled}
             data-test={dataTest}
             id={id}

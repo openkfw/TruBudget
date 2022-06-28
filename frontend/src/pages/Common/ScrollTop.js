@@ -1,22 +1,19 @@
 import React from "react";
-
-import { makeStyles } from "@mui/styles";
 import Fab from "@mui/material/Fab";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Zoom from "@mui/material/Zoom";
 
-const useStyles = makeStyles(theme => ({
+const styles = {
   root: {
     position: "fixed",
-    bottom: theme.spacing(5),
-    right: theme.spacing(5)
+    bottom: theme => theme.spacing(5),
+    right: theme => theme.spacing(5)
   }
-}));
+};
 
 const ScrollTop = props => {
   const { window } = props;
-  const classes = useStyles();
 
   const trigger = useScrollTrigger({
     target: window ? window() : undefined,
@@ -39,7 +36,7 @@ const ScrollTop = props => {
         aria-label="scroll back to top"
         data-test="backToTop-button"
         onClick={handleClick}
-        className={classes.root}
+        sx={{ ...styles.root }}
       >
         <KeyboardArrowUpIcon />
       </Fab>

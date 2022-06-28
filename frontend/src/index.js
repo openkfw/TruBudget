@@ -6,7 +6,8 @@ import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
 import { ConnectedRouter } from "connected-react-router/immutable";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import * as relativeTime from "dayjs/plugin/relativeTime";
+import * as isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { createBrowserHistory } from "history";
 import React, { Component } from "react";
 import { createRoot } from "react-dom/client";
@@ -20,9 +21,7 @@ import Main from "./pages/Main/Main";
 import LiveNotificationContainer from "./pages/Notifications/LiveNotificationContainer";
 import configureStore from "./store";
 
-// setup dayjs
-// if you need to add time to your charts you have to add a dayjs adapter
-// see: https://github.com/chartjs/Chart.js/pull/5960
+dayjs.extend(isSameOrAfter);
 dayjs.extend(relativeTime);
 
 const history = createBrowserHistory();

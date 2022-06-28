@@ -24,7 +24,7 @@ const ActionTypes = {
 Object.freeze(ActionTypes);
 
 export class ConfirmationDialogCreator {
-  constructor(confirmationDialogProps, paperRootClass, open, onCancel) {
+  constructor(confirmationDialogProps, paperRootStyle, open, onCancel) {
     ({
       executedAdditionalActions: this.executedAdditionalActions,
       originalActions: this.originalActions,
@@ -55,7 +55,7 @@ export class ConfirmationDialogCreator {
       rejectReason: this.rejectReason
     } = confirmationDialogProps);
 
-    this.paperRootClass = paperRootClass;
+    this.paperRootStyle = paperRootStyle;
     this.open = open;
     this.onCancel = onCancel;
   }
@@ -117,7 +117,7 @@ export class ConfirmationDialogCreator {
 
   _createDialog(title, content, confirmButtonText, errorInformation, submitable) {
     return (
-      <Dialog classes={{ paper: this.paperRootClass }} open={this.open} data-test="confirmation-dialog">
+      <Dialog sx={{ overflow: "visible" }} maxWidth={"xl"} open={this.open} data-test="confirmation-dialog">
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>{content}</DialogContent>
         {errorInformation}
@@ -348,17 +348,15 @@ const _createActionsTable = (actionTableData, actionType) => {
   const dataTest = _getDataTestOfType(actionType);
 
   return (
-    <>
-      <ActionsTable
-        data-test={dataTest}
-        actions={actions}
-        executedActions={executedActions}
-        executingActions={executingActions}
-        failedAction={failedAction}
-        users={enabledUsers}
-        groups={groups}
-      />
-    </>
+    <ActionsTable
+      data-test={dataTest}
+      actions={actions}
+      executedActions={executedActions}
+      executingActions={executingActions}
+      failedAction={failedAction}
+      users={enabledUsers}
+      groups={groups}
+    />
   );
 };
 

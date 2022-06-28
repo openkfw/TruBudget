@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
-import { withStyles } from "@mui/styles";
 import Typography from "@mui/material/Typography";
 import strings from "../../localizeStrings";
 
@@ -66,9 +65,9 @@ const getDialogActions = props => {
 };
 
 const PreviewDialog = props => {
-  const { dialogShown, title, classes } = props;
+  const { dialogShown, title } = props;
   return (
-    <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown} data-test="preview-dialog">
+    <Dialog style={{ paper: styles.paperRoot }} open={dialogShown} data-test="preview-dialog">
       <DialogTitle>{title}</DialogTitle>
       {props.preview}
       <DialogActions>{getDialogActions(props)}</DialogActions>
@@ -76,4 +75,4 @@ const PreviewDialog = props => {
   );
 };
 
-export default withStyles(styles)(PreviewDialog);
+export default PreviewDialog;

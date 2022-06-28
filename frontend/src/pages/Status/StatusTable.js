@@ -1,6 +1,5 @@
-import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import React from "react";
+import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 
 import strings from "../../localizeStrings";
 
@@ -8,7 +7,7 @@ const FAST_CONNECTION_PING = 500;
 const AVERAGE_CONNECTION_PING = 2000;
 const SLOW_CONNECTION_PING = 4000;
 
-const styles = theme => ({
+const styles = {
   container: {
     width: "100%",
     display: "flex",
@@ -19,12 +18,12 @@ const styles = theme => ({
     marginTop: "40px"
   },
   shapeCircle: {
-    backgroundColor: theme.palette.primary.secondary,
+    backgroundColor: theme => theme.palette.primary.secondary,
     width: 20,
     height: 20,
     borderRadius: "50%"
   }
-});
+};
 
 const getConnectionDescription = ping => {
   if (!ping) {
@@ -79,7 +78,6 @@ function renderCircularProgressRow(service) {
 const StatusTable = props => {
   const {
     versions,
-    classes,
     isEmailServiceAvailable,
     isExportServiceAvailable,
     isFetchingVersions,
@@ -117,7 +115,7 @@ const StatusTable = props => {
     const ping = filteredVersions[service].ping;
     const release = filteredVersions[service].release || "?";
     const { circleColor, connectionDescription } = getConnectionDescription(ping);
-    const circle = <div className={classes.shapeCircle} style={{ backgroundColor: circleColor }} />;
+    const circle = <div style={{ ...styles.shapeCircle, backgroundColor: circleColor }} />;
     if (!isFetchingVersion(service)) {
       return (
         <TableRow key={`status-${service}-row`}>
@@ -150,8 +148,8 @@ const StatusTable = props => {
   }, {});
 
   return (
-    <div data-test="status-dashboard" className={classes.container}>
-      <div className={classes.customWidth}>
+    <div data-test="status-dashboard" style={styles.container}>
+      <div style={styles.customWidth}>
         <Paper>
           <Table>
             <TableHead>
@@ -179,4 +177,4 @@ const StatusTable = props => {
   );
 };
 
-export default withStyles(styles)(StatusTable);
+export default StatusTable;

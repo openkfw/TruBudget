@@ -1,8 +1,8 @@
+import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import Chip from "@mui/material/Chip";
-import { withStyles, withTheme } from "@mui/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,7 +15,7 @@ import MoreIcon from "@mui/icons-material/MoreHoriz";
 import LaunchIcon from "@mui/icons-material/ZoomIn";
 import _isEmpty from "lodash/isEmpty";
 import Highlighter from "react-highlight-words";
-import React from "react";
+import { useTheme } from "@mui/material/styles";
 
 import { statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
@@ -110,7 +110,6 @@ const displaySubprojectBudget = budgets => {
 };
 
 const getTableEntries = ({
-  classes,
   subProjects,
   location,
   history,
@@ -118,8 +117,8 @@ const getTableEntries = ({
   showSubProjectPermissions,
   showSubProjectAdditionalData,
   searchTermArray,
-  theme,
   storeSubSearchTerm,
+  theme,
   storeSubSearchBarDisplayed,
   idsPermissionsUnassigned
 }) => {
@@ -136,7 +135,7 @@ const getTableEntries = ({
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
         <TableRow key={index} data-test={`subproject-${id}`}>
-          <TableCell className={classes.displayName} data-test={`subproject-title-${index}`}>
+          <TableCell style={styles.displayName} data-test={`subproject-title-${index}`}>
             <Highlighter
               data-test="highlighted-displayname"
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
@@ -144,17 +143,17 @@ const getTableEntries = ({
               textToHighlight={displayName}
             />
           </TableCell>
-          <TableCell className={classes.projectdBudget}>{amountString}</TableCell>
-          <TableCell className={classes.status}>
+          <TableCell style={styles.projectdBudget}>{amountString}</TableCell>
+          <TableCell style={styles.status}>
             <Highlighter
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
               searchWords={searchTermArray}
               textToHighlight={statusMapping(status)}
             />
           </TableCell>
-          <TableCell className={classes.actions}>
-            <div className={classes.buttonContainer}>
-              <div className={classes.button}>
+          <TableCell style={styles.actions}>
+            <div style={styles.buttonContainer}>
+              <div style={styles.button}>
                 <ActionButton
                   notVisible={additionalDataEmpty}
                   onClick={() => {
@@ -165,7 +164,7 @@ const getTableEntries = ({
                   data-test={`subproject-additionaldata-${index}`}
                 />
               </div>
-              <div className={classes.button}>
+              <div style={styles.button}>
                 <ActionButton
                   notVisible={!isOpen || editDisabled}
                   onClick={() => showEditDialog(id, displayName, description, currency, projectedBudgets)}
@@ -174,7 +173,7 @@ const getTableEntries = ({
                   data-test={`subproject-edit-button-${index}`}
                 />
               </div>
-              <div className={classes.button}>
+              <div style={styles.button}>
                 <ActionButton
                   notVisible={!canViewPermissions}
                   onClick={() => showSubProjectPermissions(id, displayName)}
@@ -183,7 +182,7 @@ const getTableEntries = ({
                   data-test={"spp-button-" + index}
                 />
               </div>
-              <div className={classes.button}>
+              <div style={styles.button}>
                 <ActionButton
                   notVisible={!canViewSubProjectDetails(allowedIntents)}
                   onClick={() => {
@@ -206,7 +205,6 @@ const getTableEntries = ({
 
 const SubProjectTable = ({
   idsPermissionsUnassigned,
-  classes,
   subProjects,
   history,
   location,
@@ -219,11 +217,10 @@ const SubProjectTable = ({
   searchDisabled,
   storeSubSearchBarDisplayed,
   storeSubSearchTerm,
-  searchTermArray,
-  theme
+  searchTermArray
 }) => {
+  const theme = useTheme();
   const tableEntries = getTableEntries({
-    classes,
     subProjects,
     location,
     history,
@@ -247,13 +244,13 @@ const SubProjectTable = ({
         storeSearchTerm={storeSubSearchTerm}
       />
       {subProjects.length > 0 ? (
-        <Table data-test="ssp-table" className={classes.subprojectTable}>
+        <Table data-test="ssp-table" style={styles.subprojectTable}>
           <TableHead>
             <TableRow data-test="subproject-row">
-              <TableCell className={classes.displayName}>{strings.common.subproject}</TableCell>
-              <TableCell className={classes.projectdBudget}>{strings.common.projected_budget}</TableCell>
-              <TableCell className={classes.status}>{strings.common.status}</TableCell>
-              <TableCell className={classes.actions}> </TableCell>
+              <TableCell style={styles.displayName}>{strings.common.subproject}</TableCell>
+              <TableCell style={styles.projectdBudget}>{strings.common.projected_budget}</TableCell>
+              <TableCell style={styles.status}>{strings.common.status}</TableCell>
+              <TableCell style={styles.actions}> </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>{tableEntries}</TableBody>
@@ -265,4 +262,4 @@ const SubProjectTable = ({
   );
 };
 
-export default withTheme(withStyles(styles)(SubProjectTable));
+export default SubProjectTable;

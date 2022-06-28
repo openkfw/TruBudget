@@ -1,4 +1,3 @@
-import { withStyles } from "@mui/styles";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -10,10 +9,7 @@ import strings from "../../../localizeStrings";
 import HistorySearch from "./HistorySearch";
 import ScrollingHistory from "./ScrollingHistory";
 
-const styles = {};
-
 const HistoryContainer = ({
-  classes,
   events,
   nEventsTotal,
   fetchNext,
@@ -49,4 +45,4 @@ const HistoryContainer = ({
   );
 };
 
-export default withStyles(styles)(HistoryContainer);
+export default HistoryContainer;

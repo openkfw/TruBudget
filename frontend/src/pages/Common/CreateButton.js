@@ -1,9 +1,8 @@
+import React from "react";
 import Fab from "@mui/material/Fab";
 import Add from "@mui/icons-material/Add";
-import React from "react";
-import { withStyles } from "@mui/styles";
 
-const styles = {
+const defaultStyles = {
   createButtonContainer: {
     height: 20
   },
@@ -12,14 +11,20 @@ const styles = {
   }
 };
 
-const CreateButton = ({ classes, dataTest = "create", color = "primary", onClick }) => {
+const CreateButton = ({ dataTest = "create", color = "primary", onClick, styles = defaultStyles }) => {
   return (
-    <div className={classes.createButtonContainer}>
-      <Fab data-test={dataTest} onClick={onClick} color={color} className={classes.createButton} aria-label="Add">
+    <div style={{ ...defaultStyles.createButtonContainer, ...styles.createButtonContainer }}>
+      <Fab
+        data-test={dataTest}
+        onClick={onClick}
+        color={color}
+        style={{ ...defaultStyles.createButton, ...styles.createButton }}
+        aria-label="Add"
+      >
         <Add />
       </Fab>
     </div>
   );
 };
 
-export default withStyles(styles)(CreateButton);
+export default CreateButton;

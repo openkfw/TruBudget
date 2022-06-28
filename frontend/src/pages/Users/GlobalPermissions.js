@@ -1,12 +1,11 @@
 import React from "react";
-import { withStyles } from "@mui/styles";
 import { globalIntentOrder } from "../../permissions";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import strings from "../../localizeStrings";
 
-const styles = theme => ({
+const styles = {
   root: {
     width: "100%"
   },
@@ -14,8 +13,8 @@ const styles = theme => ({
     boxShadow: "none"
   },
   heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightMedium
+    fontSize: theme => theme.typography.pxToRem(15),
+    fontWeight: theme => theme.typography.fontWeightMedium
   },
   detailsDiv: {
     width: "100%"
@@ -28,10 +27,9 @@ const styles = theme => ({
     width: "100%",
     justifyContent: "center"
   }
-});
+};
 
 const renderPermissions = (
-  classes,
   globalPermissions,
   revokeGlobalPermission,
   grantGlobalPermission,
@@ -52,7 +50,7 @@ const renderPermissions = (
           data-test={`permission-${intent}`}
           control={
             <Checkbox
-              className={classes.checkbox}
+              style={styles.checkbox}
               checked={checked}
               disabled={!disabled}
               onChange={() =>
@@ -67,7 +65,7 @@ const renderPermissions = (
       );
     });
     return (
-      <div key={index} className={classes.formGroupDiv}>
+      <div key={index} style={styles.formGroupDiv}>
         <FormGroup>{intents}</FormGroup>
       </div>
     );
@@ -76,7 +74,6 @@ const renderPermissions = (
 
 const GlobalPermissions = props => {
   const {
-    classes,
     resourceId,
     grantGlobalPermission,
     revokeGlobalPermission,
@@ -84,8 +81,8 @@ const GlobalPermissions = props => {
     allowedIntents,
     loggedInUserId
   } = props;
+
   const permissions = renderPermissions(
-    classes,
     globalPermissions,
     revokeGlobalPermission,
     grantGlobalPermission,
@@ -93,11 +90,12 @@ const GlobalPermissions = props => {
     allowedIntents,
     loggedInUserId
   );
+
   return (
-    <div className={classes.root} data-test="global-permissions-dialog">
-      <div className={classes.detailsDiv}>{permissions}</div>
+    <div style={styles.root} data-test="global-permissions-dialog">
+      <div style={styles.detailsDiv}>{permissions}</div>
     </div>
   );
 };
 
-export default withStyles(styles)(GlobalPermissions);
+export default GlobalPermissions;

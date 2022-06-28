@@ -1,11 +1,8 @@
-import { withStyles } from "@mui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
 import SingleSelection from "../Common/SingleSelection";
 import { assignSubproject } from "./actions";
-
-const styles = {};
 
 class SubProjectAssigneeContainer extends Component {
   render() {
@@ -72,4 +69,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(withStyles(styles)(SubProjectAssigneeContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectAssigneeContainer));

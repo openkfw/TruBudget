@@ -17,7 +17,6 @@ import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { TableHead } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import OverflowTooltip from "../Common/OverflowTooltip";
 import { DocumentEmptyState } from "./DocumentEmptyStates";
 
@@ -113,15 +112,7 @@ class DocumentOverview extends Component {
   };
 
   generateDocumentList = props => {
-    const {
-      classes,
-      workflowitemId,
-      projectId,
-      subprojectId,
-      documents,
-      validatedDocuments,
-      downloadDocument
-    } = this.props;
+    const { workflowitemId, projectId, subprojectId, documents, validatedDocuments, downloadDocument } = this.props;
     const header = this.generateDocumentListHeader();
     const rows = documents.map((document, index) => {
       let validated = undefined;
@@ -140,7 +131,7 @@ class DocumentOverview extends Component {
             </div>
           </TableCell>
           <TableCell>
-            <div className={classes.actionContainer}>
+            <div style={styles.actionContainer}>
               {this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
               {document.id
                 ? this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)
@@ -216,4 +207,4 @@ class DocumentOverview extends Component {
   }
 }
 
-export default withInitialLoading(withStyles(styles)(DocumentOverview));
+export default withInitialLoading(DocumentOverview);

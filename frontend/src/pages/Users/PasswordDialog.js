@@ -5,11 +5,9 @@ import CardHeader from "@mui/material/CardHeader";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { withStyles } from "@mui/styles";
 import { useState } from "react";
 import React from "react";
 import { useEffect } from "react";
-
 import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
 import Password from "../Common/Password";
@@ -72,7 +70,6 @@ const getDialogActions = (submitDisabled, hidePasswordDialog, handleSubmit) => {
 
 const PasswordDialog = props => {
   const {
-    classes,
     passwordDialogShown,
     editId,
     storeSnackbarMessage,
@@ -150,7 +147,7 @@ const PasswordDialog = props => {
   return (
     <Dialog
       disableRestoreFocus
-      classes={{ paper: classes.paperRoot }}
+      style={{ paper: styles.paperRoot }}
       open={passwordDialogShown}
       maxWidth="md"
       data-test="creation-dialog"
@@ -223,4 +220,4 @@ const PasswordDialog = props => {
   );
 };
 
-export default withStyles(styles)(PasswordDialog);
+export default PasswordDialog;

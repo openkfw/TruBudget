@@ -1,7 +1,5 @@
-import { withStyles } from "@mui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { storeSnackbarMessage } from "../Notifications/actions";
@@ -26,8 +24,6 @@ import {
 } from "./actions";
 import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
 import WorkflowDialog from "./WorkflowDialog";
-
-const styles = {};
 
 class WorkflowDialogContainer extends Component {
   createWorkflowItem = (
@@ -147,11 +143,8 @@ const mapDispatchToProps = dispatch => {
         )
       ),
     fetchVersions: () => dispatch(fetchVersions()),
-    setStorageServiceAvailable: (isAvailable) => dispatch(setStorageServiceAvailable(isAvailable))
+    setStorageServiceAvailable: isAvailable => dispatch(setStorageServiceAvailable(isAvailable))
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withInitialLoading(withStyles(styles)(toJS(WorkflowDialogContainer))));
+export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(WorkflowDialogContainer)));

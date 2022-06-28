@@ -1,4 +1,3 @@
-import { withStyles } from "@mui/styles";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -60,7 +59,7 @@ const UsersTable = props => {
 };
 
 const renderUser = props => {
-  const { classes, displayUser } = props;
+  const { displayUser } = props;
 
   return (
     <TableRow data-test={`user-${displayUser.id}`} key={displayUser.id}>
@@ -69,8 +68,8 @@ const renderUser = props => {
       </TableCell>
       <TableCell>{displayUser.displayName}</TableCell>
       <TableCell>{displayUser.organization}</TableCell>
-      <TableCell className={classes.flexColumn}>
-        <div className={classes.flex}>{renderActionButtons(props)}</div>
+      <TableCell style={styles.flexColumn}>
+        <div style={styles.flex}>{renderActionButtons(props)}</div>
       </TableCell>
     </TableRow>
   );
@@ -148,4 +147,4 @@ const renderActionButtons = props => {
   );
 };
 
-export default withStyles(styles)(UsersTable);
+export default UsersTable;

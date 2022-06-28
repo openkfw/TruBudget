@@ -3,7 +3,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { withStyles } from "@mui/styles";
+
 import React from "react";
 
 const styles = {
@@ -14,10 +14,10 @@ const styles = {
 };
 
 const InformationDialog = props => {
-  const { dialogShown, title, content, handleClose, closeLabel, classes } = props;
+  const { dialogShown, title, content, handleClose, closeLabel } = props;
   return (
     <>
-      <Dialog classes={{ paper: classes.paperRoot }} open={dialogShown} data-test="information-dialog">
+      <Dialog style={{ paper: styles.paperRoot }} open={dialogShown} data-test="information-dialog">
         <DialogTitle> {title}</DialogTitle>
         <DialogContent data-test="infromation-dialog-content">{content ? content : ""}</DialogContent>
         <DialogActions>
@@ -29,4 +29,4 @@ const InformationDialog = props => {
     </>
   );
 };
-export default withStyles(styles)(InformationDialog);
+export default InformationDialog;

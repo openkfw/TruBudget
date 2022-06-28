@@ -1,5 +1,4 @@
 import AppBar from "@mui/material/AppBar";
-import { withStyles } from "@mui/styles";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import React from "react";
@@ -38,16 +37,7 @@ const styles = {
 };
 
 const renderTab = props => {
-  const {
-    classes,
-    tabIndex,
-    allowedIntents,
-    isDataLoading,
-    enabledUsers,
-    groups,
-    disabledUsers,
-    showDashboardDialog
-  } = props;
+  const { tabIndex, allowedIntents, isDataLoading, enabledUsers, groups, disabledUsers, showDashboardDialog } = props;
 
   if (isDataLoading) {
     return <LoadingIndicator />;
@@ -61,14 +51,14 @@ const renderTab = props => {
         <>
           {isAllowedToCreateUser ? (
             <CreateButton
-              classes={{
-                createButtonContainer: classes.createButtonContainer,
-                createButton: classes.createButton
+              styles={{
+                createButtonContainer: styles.createButtonContainer,
+                createButton: styles.createButton
               }}
               onClick={() => showDashboardDialog("addUser")}
             />
           ) : null}
-          <UsersTable {...props} classes={{}} users={enabledUsers} CustomEmptyState={EnabledUserEmptyState} />
+          <UsersTable {...props} users={enabledUsers} CustomEmptyState={EnabledUserEmptyState} />
         </>
       );
 
@@ -79,9 +69,9 @@ const renderTab = props => {
         <>
           {isAllowedToCreateGroup ? (
             <CreateButton
-              classes={{
-                createButtonContainer: classes.createButtonContainer,
-                createButton: classes.createButton
+              styles={{
+                createButtonContainer: styles.createButtonContainer,
+                createButton: styles.createButton
               }}
               onClick={() => showDashboardDialog("addGroup")}
             />
@@ -97,7 +87,6 @@ const renderTab = props => {
           {disabledUsers.length > 0 ? (
             <UsersTable
               {...props}
-              classes={{}}
               permissionIconDisplayed={allowedIntents.includes("global.listPermissions")}
               users={disabledUsers}
             />
@@ -114,10 +103,10 @@ const renderTab = props => {
 };
 
 const Users = props => {
-  const { classes, tabIndex, setTabIndex } = props;
+  const { tabIndex, setTabIndex } = props;
   return (
-    <div data-test="userdashboard" className={classes.container}>
-      <div className={classes.customWidth}>
+    <div data-test="userdashboard" style={styles.container}>
+      <div style={styles.customWidth}>
         <AppBar position="static" color="default">
           <Tabs
             value={tabIndex}
@@ -137,4 +126,4 @@ const Users = props => {
   );
 };
 
-export default withStyles(styles)(Users);
+export default Users;

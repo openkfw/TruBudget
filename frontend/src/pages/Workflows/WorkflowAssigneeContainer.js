@@ -1,4 +1,3 @@
-import { withStyles } from "@mui/styles";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toJS } from "../../helper";
@@ -30,7 +29,6 @@ class WorkflowAssigneeContainer extends Component {
       workflowitemId,
       workflowitemDisplayName,
       workflowItems,
-      classes,
       users,
       title,
       disabled,
@@ -42,7 +40,7 @@ class WorkflowAssigneeContainer extends Component {
     const assignee = this.getWorkflowAssignee(workflowItems, workflowitemId);
 
     return (
-      <div className={classes.assigneeContainer} data-test={`workflowitem-assignee-${workflowitemId}`}>
+      <div style={styles.assigneeContainer} data-test={`workflowitem-assignee-${workflowitemId}`}>
         <SingleSelection
           selectId={assignee}
           disabled={disabled || workflowSortEnabled || hasSubprojectValidator}
@@ -108,4 +106,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(withStyles(styles)(WorkflowAssigneeContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(WorkflowAssigneeContainer));

@@ -5,7 +5,6 @@ import Table from "@mui/material/Table";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
-import { withStyles } from "@mui/styles";
 import ErrorIcon from "@mui/icons-material/Close";
 import DoneIcon from "@mui/icons-material/Done";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -55,58 +54,48 @@ const styles = {
 };
 
 const getTableEntries = props => {
-  const { workflowActions, submittedWorkflowItems, failedWorkflowItem, classes } = props;
+  const { workflowActions, submittedWorkflowItems, failedWorkflowItem } = props;
   const possibleActions = workflowActions.possible;
   const notPossibleActions = workflowActions.notPossible;
   let table = [];
 
   if (!_isEmpty(notPossibleActions)) {
-    table = addHeader(table, strings.preview.not_possible_action, classes);
-    table = addActions(table, notPossibleActions, classes, failedWorkflowItem);
+    table = addHeader(table, strings.preview.not_possible_action);
+    table = addActions(table, notPossibleActions, failedWorkflowItem);
   }
   if (!_isEmpty(possibleActions)) {
-    table = addHeader(table, strings.preview.possible_action, classes);
-    table = addActions(table, possibleActions, classes, failedWorkflowItem, submittedWorkflowItems);
+    table = addHeader(table, strings.preview.possible_action);
+    table = addActions(table, possibleActions, failedWorkflowItem, submittedWorkflowItems);
   }
   return table;
 };
 
-function addHeader(table, headline, classes) {
+function addHeader(table, headline) {
   table.push(
     <React.Fragment key={headline}>
-      <TableRow className={classes.headerRow} key={headline}>
-        <TableCell className={classes.headerCell}>{headline}</TableCell>
+      <TableRow style={styles.headerRow} key={headline}>
+        <TableCell style={styles.headerCell}>{headline}</TableCell>
       </TableRow>
-      <TableRow className={classes.headerRow} key={headline + "-columns"}>
-        <TableCell className={classes.columnHeaderCell} style={{ flex: 6 }}>
-          {strings.common.workflowitem}
-        </TableCell>
-        <TableCell className={classes.columnHeaderCell} style={{ flex: 12 }}>
-          {strings.common.action}
-        </TableCell>
-        <TableCell className={classes.columnHeaderCell} style={{ textAlign: "right" }}>
-          {strings.common.status}
-        </TableCell>
+      <TableRow style={styles.headerRow} key={headline + "-columns"}>
+        <TableCell style={{ ...styles.columnHeaderCell, flex: 6 }}>{strings.common.workflowitem}</TableCell>
+        <TableCell style={{ ...styles.columnHeaderCell, flex: 12 }}>{strings.common.action}</TableCell>
+        <TableCell style={{ ...styles.columnHeaderCell, textAlign: "right" }}>{strings.common.status}</TableCell>
       </TableRow>
     </React.Fragment>
   );
   return table;
 }
 
-function addActions(table, actions, classes, failedWorkflowItem, submittedWorkflowItems) {
+function addActions(table, actions, failedWorkflowItem, submittedWorkflowItems) {
   actions.forEach((action, index) => {
     table.push(
       <TableRow
-        className={classes.workflowRow}
+        style={styles.workflowRow}
         key={index + "-" + action.displayName + "-" + action.action + "-" + action.identity}
       >
-        <TableCell className={classes.workflowCell} style={{ flex: 6 }}>
-          {action.displayName}:
-        </TableCell>
-        <TableCell className={classes.workflowCell} style={{ flex: 12 }}>
-          {getActionText(action)}
-        </TableCell>
-        <TableCell className={classes.workflowCell} style={{ textAlign: "right" }}>
+        <TableCell style={{ ...styles.workflowCell, flex: 6 }}>{action.displayName}:</TableCell>
+        <TableCell style={{ ...styles.workflowCell, flex: 12 }}>{getActionText(action)}</TableCell>
+        <TableCell style={{ ...styles.workflowCell, textAlign: "right" }}>
           {getStatusIcon(submittedWorkflowItems, failedWorkflowItem, action)}
         </TableCell>
       </TableRow>
@@ -161,7 +150,6 @@ function getStatusIcon(submittedWorkflowItems, failedWorkflowItem, action) {
 
 const WorkflowPreviewDialog = props => {
   const {
-    classes,
     previewDialogShown,
     hideWorkflowItemPreview,
     resetSucceededWorkflowitems,
@@ -183,9 +171,9 @@ const WorkflowPreviewDialog = props => {
 
   const preview = (
     <React.Fragment>
-      <Card className={classes.scrollable}>
+      <Card style={styles.scrollable}>
         <Table>
-          <TableBody className={classes.tableBody}>{getTableEntries(props)}</TableBody>
+          <TableBody style={styles.tableBody}>{getTableEntries(props)}</TableBody>
         </Table>
       </Card>
       {submitInProgress ? <LinearProgress color="primary" /> : null}
@@ -214,4 +202,4 @@ const WorkflowPreviewDialog = props => {
   );
 };
 
-export default withStyles(styles)(WorkflowPreviewDialog);
+export default WorkflowPreviewDialog;

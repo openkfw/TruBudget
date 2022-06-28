@@ -5,12 +5,9 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import Subheader from "@mui/material/ListSubheader";
-import { withStyles } from "@mui/styles";
 import React from "react";
 import strings from "../../localizeStrings";
 import { images } from "./images";
-
-
 
 const styles = {
   root: {
@@ -39,7 +36,7 @@ const styles = {
   }
 };
 
-const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
+const ImageSelector = ({ onTouchTap, selectedImage }) => {
   return (
     <>
       <div style={styles.root}>
@@ -65,7 +62,7 @@ const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
                   </IconButton>
                 }
                 title=" " // Otherwise the action buttons would not be visible
-                className={classes.tileBar}
+                style={styles.tileBar}
                 actionPosition="right"
               />
             </ImageListItem>
@@ -75,4 +72,4 @@ const ImageSelector = ({ onTouchTap, selectedImage, classes }) => {
     </>
   );
 };
-export default withStyles(styles)(ImageSelector);
+export default ImageSelector;

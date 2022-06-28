@@ -1,5 +1,4 @@
 import React from "react";
-
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -7,17 +6,11 @@ import DialogTitle from "@mui/material/DialogTitle";
 import isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import CreationDialogStepper from "./CreationDialogStepper";
-import { withStyles } from "@mui/styles";
 
 const styles = {
   paperRoot: {
-    width: "100%",
     overflow: "scrollable"
-  },
-  container: {},
-  customWidth: {},
-  createButtonContainer: {},
-  createButton: {}
+  }
 };
 
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
@@ -94,13 +87,13 @@ const handleBack = props => props.setCurrentStep(props.currentStep - 1);
 const handleNext = props => props.setCurrentStep(props.currentStep + 1);
 
 const CreationDialog = props => {
-  const { dialogShown, title, handleSubmit, classes } = props;
+  const { dialogShown, title, handleSubmit } = props;
   return (
     <Dialog
       disableRestoreFocus
-      classes={{ paper: classes.paperRoot }}
+      style={{ paper: styles.paperRoot }}
       open={dialogShown}
-      maxWidth="md"
+      maxWidth="xl"
       data-test="creation-dialog"
     >
       <DialogTitle> {title}</DialogTitle>
@@ -110,4 +103,4 @@ const CreationDialog = props => {
   );
 };
 
-export default withStyles(styles)(CreationDialog);
+export default CreationDialog;

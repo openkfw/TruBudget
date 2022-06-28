@@ -1,10 +1,8 @@
 import { Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import NameIcon from "@mui/icons-material/AssignmentInd";
 import InfoIcon from "@mui/icons-material/Info";
 import OrgaIcon from "@mui/icons-material/StoreMallDirectory";
 import React from "react";
-
 import strings from "../../localizeStrings";
 import UserSelection from "../Common/UserSelection";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
@@ -47,19 +45,18 @@ const GroupDialogContent = ({
   editMode,
   removeInitialUserFromGroup,
   removeUsers,
-  addUsers,
-  classes
+  addUsers
 }) => {
   const { groupId, displayName, groupUsers } = group;
   return (
     <div>
-      <span className={classes.info}>
-        <InfoIcon className={classes.infoIcon} />
+      <span style={styles.info}>
+        <InfoIcon style={styles.infoIcon} />
         <Typography variant="body2">{strings.users.privacy_notice}</Typography>
       </span>
-      <div className={classes.textInputContainer}>
+      <div style={styles.textInputContainer}>
         <TextInputWithIcon
-          className={classes.textInput}
+          style={styles.textInput}
           label={editMode ? groupId : strings.common.id}
           error={false}
           disabled={editMode}
@@ -68,7 +65,7 @@ const GroupDialogContent = ({
           onChange={event => storeGroupId(event.target.value)}
         />
         <TextInputWithIcon
-          className={classes.textInput}
+          style={styles.textInput}
           label={editMode ? displayName : strings.common.name}
           data-test="groupname"
           error={false}
@@ -89,4 +86,4 @@ const GroupDialogContent = ({
   );
 };
 
-export default withStyles(styles)(GroupDialogContent);
+export default GroupDialogContent;

@@ -44,9 +44,11 @@ export default class DocumentUpload extends Component {
             </TableRow>
           ))
         ) : (
-          <div style={{ backgroundColor: "#f3f3f3" }}>
-            <DocumentEmptyState />
-          </div>
+          <TableRow>
+            <TableCell style={{ backgroundColor: "#f3f3f3" }}>
+              <DocumentEmptyState />
+            </TableCell>
+          </TableRow>
         )}
       </TableBody>
     );

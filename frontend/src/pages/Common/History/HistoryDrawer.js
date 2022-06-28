@@ -1,13 +1,10 @@
-import { withStyles } from "@mui/styles";
 import Drawer from "@mui/material/Drawer";
 import HistoryContainer from "./HistoryContainer";
 import React from "react";
 import useHistoryState from "./historyHook";
 
-const styles = {};
-
 const HistoryDrawer = ({
-  classes,
+  style,
   doShow,
   onClose,
   events,
@@ -41,4 +38,4 @@ const HistoryDrawer = ({
   );
 };
 
-export default withStyles(styles)(HistoryDrawer);
+export default HistoryDrawer;

@@ -1,6 +1,4 @@
 import React from "react";
-
-import { withStyles } from "@mui/styles";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import IconButton from "@mui/material/IconButton";
@@ -16,7 +14,7 @@ import Tooltip from "@mui/material/Tooltip";
 import dayjs from "dayjs";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
-const styles = () => ({
+const styles = {
   shapeCircle: {
     width: 20,
     height: 20,
@@ -41,21 +39,20 @@ const styles = () => ({
     fontSize: "x-large",
     color: "dimgrey"
   }
-});
+};
 
 const renderTimeStampString = node => {
   return node.lastSeen ? dayjs(node.lastSeen).format("MMM D, YYYY") : "";
 };
 
-const ApprovedNodestableEntry = ({ nodeGroup, nodes, classes }) => {
+const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
   const [open, setOpen] = React.useState(false);
 
   const renderTableRow = node => {
     const circleColor = node.isConnected ? "green" : "red";
     const circle = (
       <div
-        className={classes.shapeCircle}
-        style={{ backgroundColor: circleColor }}
+        style={{ ...styles.shapeCircle, backgroundColor: circleColor }}
         data-test={`status-${node.address.organization}`}
       />
     );
@@ -63,7 +60,7 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes, classes }) => {
 
     return (
       <TableRow key={node.address.address}>
-        <TableCell align="center" className={classes.cell}>
+        <TableCell align="center" style={styles.cell}>
           {" "}
           {node.address.address}{" "}
         </TableCell>
@@ -78,7 +75,7 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes, classes }) => {
       <TableCell>
         {permissions}
         <Tooltip title={strings.nodesDashboard.admin_description} placement="right">
-          <InfoOutlinedIcon className={classes.infoIcon} />
+          <InfoOutlinedIcon style={styles.infoIcon} />
         </Tooltip>
       </TableCell>
     ) : (
@@ -108,17 +105,17 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes, classes }) => {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box className={classes.box}>
+            <Box style={styles.box}>
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" className={classes.cell}>
+                    <TableCell align="center" style={styles.cell}>
                       {strings.nodesDashboard.nodes} {strings.nodesDashboard.address}
                     </TableCell>
-                    <TableCell align="center" className={classes.cell}>
+                    <TableCell align="center" style={styles.cell}>
                       {strings.nodesDashboard.connection_status}
                     </TableCell>
-                    <TableCell align="center" className={classes.cell}>
+                    <TableCell align="center" style={styles.cell}>
                       {strings.nodesDashboard.last_seen}
                     </TableCell>
                   </TableRow>
@@ -136,4 +133,4 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes, classes }) => {
     </React.Fragment>
   );
 };
-export default withStyles(styles)(ApprovedNodestableEntry);
+export default ApprovedNodestableEntry;

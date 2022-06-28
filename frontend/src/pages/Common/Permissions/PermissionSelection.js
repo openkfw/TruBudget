@@ -2,7 +2,6 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
-import { withStyles } from "@mui/styles";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import MenuItem from "@mui/material/MenuItem";
@@ -78,7 +77,6 @@ class PermissionSelection extends Component {
   };
 
   renderUserSelection = () => {
-    const { classes } = this.props;
     const selection = renderSelection(
       this.props.userList.filter(
         u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
@@ -93,7 +91,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader className={classes.fixLabel}> {strings.users.users} </ListSubheader>
+          <ListSubheader style={styles.fixLabel}> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -103,7 +101,6 @@ class PermissionSelection extends Component {
   };
 
   renderGroupSelection = () => {
-    const { classes } = this.props;
     const selection = renderSelection(
       this.props.userList.filter(
         u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
@@ -118,7 +115,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader className={classes.fixLabel}> {strings.users.groups} </ListSubheader>
+          <ListSubheader style={styles.fixLabel}> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );
@@ -127,7 +124,6 @@ class PermissionSelection extends Component {
     }
   };
   render() {
-    const { classes } = this.props;
     const selections = this.resolveSelections(this.props.userList, this.props.permissions[this.props.name]);
     const selectedUsers = this.renderUserSelection();
     const selectedGroups = this.renderGroupSelection();
@@ -145,7 +141,7 @@ class PermissionSelection extends Component {
         <Select
           variant="standard"
           multiple
-          className={classes.select}
+          style={styles.select}
           autoWidth
           value={selections}
           renderValue={s => s.join(", ")}
@@ -164,8 +160,8 @@ class PermissionSelection extends Component {
             />
           </div>
           {this.props.disabled ? (
-            <ListSubheader className={classes.warningContainer} component="div">
-              <Warning className={classes.warning} />
+            <ListSubheader style={styles.warningContainer} component="div">
+              <Warning style={styles.warning} />
               <Typography data-test="read-only-permissions-text" variant="caption">
                 {strings.permissions.read_only}
               </Typography>
@@ -178,7 +174,7 @@ class PermissionSelection extends Component {
             </FormControl>
           </div>
           <div data-test="permission-list">
-            <Paper className={classes.itemContainer}>
+            <Paper style={styles.itemContainer}>
               <List>
                 {selectedUsers}
                 {selectedGroups}
@@ -191,4 +187,4 @@ class PermissionSelection extends Component {
   }
 }
 
-export default withStyles(styles)(PermissionSelection);
+export default PermissionSelection;

@@ -45,7 +45,7 @@ class DialogContainer extends Component {
 
         {this.props.passwordDialogShown ? (
           <PasswordDialog
-            classes={this.props.classes}
+            style={this.props.style}
             passwordDialogShown={this.props.passwordDialogShown}
             editId={this.props.editId}
             storeSnackbarMessage={this.props.storeSnackbarMessage}

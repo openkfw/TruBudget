@@ -1,11 +1,8 @@
 import React from "react";
-
 import Badge from "@mui/material/Badge";
 import BubbleIcon from "@mui/icons-material/ChatBubbleOutline";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { withStyles } from "@mui/styles";
-
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -20,16 +17,16 @@ const styles = {
   }
 };
 
-const NotificationIcon = ({ unreadNotificationCount, history, classes }) => {
+const NotificationIcon = ({ unreadNotificationCount, history }) => {
   if (typeof unreadNotificationCount === "number" && unreadNotificationCount > 0) {
     const maxNotificationCount = 50;
     const unread =
       unreadNotificationCount > maxNotificationCount ? `${maxNotificationCount}+` : unreadNotificationCount;
     return (
       <Badge
-        classes={{ badge: classes.badge }}
+        sx={{ badge: styles.badge }}
         badgeContent={
-          <Typography className={classes.white} variant="caption">
+          <Typography sx={styles.white} variant="caption">
             {unread}
           </Typography>
         }
@@ -59,4 +56,4 @@ const NotificationIcon = ({ unreadNotificationCount, history, classes }) => {
   }
 };
 
-export default withStyles(styles)(NotificationIcon);
+export default NotificationIcon;
