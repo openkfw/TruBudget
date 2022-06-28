@@ -78,7 +78,7 @@ const styles = theme => {
       borderLeftColor: "black",
       height: "100%",
       left: "25px",
-      bottom: "43px"
+      bottom: "35px"
     },
     firstLine: {
       position: "absolute",
