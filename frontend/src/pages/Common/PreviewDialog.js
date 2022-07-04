@@ -7,13 +7,6 @@ import DialogActions from "@mui/material/DialogActions";
 import Typography from "@mui/material/Typography";
 import strings from "../../localizeStrings";
 
-const styles = {
-  paperRoot: {
-    width: "100%",
-    overflow: "visible"
-  }
-};
-
 const getDialogActions = props => {
   const {
     onDialogSubmit,
@@ -67,7 +60,7 @@ const getDialogActions = props => {
 const PreviewDialog = props => {
   const { dialogShown, title } = props;
   return (
-    <Dialog style={{ paper: styles.paperRoot }} open={dialogShown} data-test="preview-dialog">
+    <Dialog sx={{ overflow: "visible" }} maxWidth={"xl"} open={dialogShown} data-test="preview-dialog">
       <DialogTitle>{title}</DialogTitle>
       {props.preview}
       <DialogActions>{getDialogActions(props)}</DialogActions>

@@ -1,31 +1,18 @@
 import React from "react";
-
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-
 import { workflowItemIntentOrder } from "../../permissions";
 import PermissionTable from "../Common/Permissions/PermissionsTable";
 import SingleSelection from "../Common/SingleSelection";
-
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 
 const styles = {
-  drawerCancelButton: {
-    position: "right",
-    left: "205px",
-    zIndex: 2,
-    top: "10px"
-  },
-  drawerUpdateButton: {
-    float: "left",
-    top: "10px",
-    left: "15px"
-  },
   assigneeCard: {
     marginTop: "12px",
     marginBottom: "12px"
@@ -35,8 +22,21 @@ const styles = {
     align: "center",
     textAlign: "center"
   },
+  infoContainer: {
+    margin: "24px 36px 0px 36px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: "500px"
+  },
   assigneeContainer: {
     padding: "32px"
+  },
+  spaceBox: {
+    margin: "20px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
   }
 };
 
@@ -93,7 +93,7 @@ const WorkflowEditDrawer = props => {
 
   return (
     <Drawer open={isOpen} variant="persistent" anchor="right">
-      <div>
+      <Box sx={styles.spaceBox}>
         <Button
           variant="contained"
           color="primary"
@@ -106,22 +106,19 @@ const WorkflowEditDrawer = props => {
               tempDrawerPermissions
             );
           }}
-          style={styles.drawerUpdateButton}
           disabled={_isEmpty(tempDrawerAssignee) && _isEmpty(tempDrawerPermissions)}
         >
-          {strings.common.update}
+          {strings.preview.overwrite}
         </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => disableWorkflowEdit()}
-          style={styles.drawerCancelButton}
-        >
+        <Button variant="contained" color="secondary" onClick={() => disableWorkflowEdit()}>
           {strings.common.cancel}
         </Button>
-      </div>
-      <Typography style={styles.selectedWorkflowItemsDisplay} color="primary" variant="subtitle1">
+      </Box>
+      <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
         {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
+      </Typography>
+      <Typography style={styles.infoContainer} color="error" variant="subtitle1">
+        {strings.preview.overwrite_warning}
       </Typography>
       <div>
         <Card style={styles.assigneeCard}>

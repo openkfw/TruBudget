@@ -323,7 +323,10 @@ const en = {
     not_possible_action: "Not possible actions",
     possible_action: "Possible actions",
     preview: "Preview",
-    revoke_permission_action_text: "revoke {0} from {1}"
+    revoke_permission_action_text: "revoke {0} from {1}",
+    overwrite: "overwrite",
+    overwrite_warning:
+      "Warning: This resets all permissions to the current selection. If you want to add or remove only some permissions, you have to go to each workflowitem's permission dialog instead."
   },
 
   confirmation: {
