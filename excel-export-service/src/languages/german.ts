@@ -2,8 +2,8 @@ const de = {
   common: {
     created: "Erstellt",
     status: "Status",
-    description: "Description",
-    assignee: "Assignee",
+    description: "Beschreibung",
+    assignee: "Beauftragter",
     additional_data: "Zusätzliche Daten",
     currency: "Währung",
     amount: "Betrag",
@@ -14,7 +14,7 @@ const de = {
     organisation: "Organisation",
     closed: "Geschlossen",
     open: "Offen",
-    general: "General",
+    general: "Allgemein",
     restricted: "Eingeschränkt",
   },
 
