@@ -92,7 +92,7 @@ const createBreadcrumb = (
     const displayedName = index ? formattedPathName : strings.navigation.main_site;
     return (
       <div key={index} style={styles.breadcrumb}>
-        <div>{index ? <ChevronRight color="primary" style={{ height: "16px" }} /> : null}</div>
+        <div>{index ? <ChevronRight color="primary" style={styles.breadcrumb} /> : null}</div>
         <Button
           disabled={isLastItem || pathName === ""}
           data-test={`breadcrumb-${displayedName}`}
@@ -118,10 +118,9 @@ const MainNavbarNavigation = ({
   storeSearchTerm,
   storeSearchBarDisplayed
 }) => {
-
   return (
     <div style={styles.container}>
-      <Typography variant="button" color={ "primary" }>
+      <Typography variant="button" color={"primary"}>
         {strings.login.frontend_name}
       </Typography>
       <div style={styles.breadcrumbs}>
