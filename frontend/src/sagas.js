@@ -1,4 +1,4 @@
-import { saveAs } from "file-saver/FileSaver";
+import { saveAs } from "file-saver";
 import _isEmpty from "lodash/isEmpty";
 import { all, call, cancel, delay, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
 import Api from "./api.js";
