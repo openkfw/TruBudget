@@ -211,27 +211,16 @@ const pt = {
   project: {
     add_new_project: "Criar novo projeto",
     assignee: "Proprietário",
-    project_authority_organization_search: "Pesquisar organizações",
-    project_authority_role_search: "Pesquisar papéis",
-    project_budget_amount_description: "Descrição do orçamento do projeto",
     project_budget_amount: "Valor do orçamento do projeto",
-    project_budget_authority_role_description: "A autoridade competente para modificar o valor de orçamento do projeto",
-    project_budget_authority_role: "Selecione o papel da autoridade orçamentária",
     project_budget: "Orçamento",
     project_close_info: "Pelo menos um subprojeto permanece aberto",
     project_comment: "Comentário",
     project_currency: "Moeda",
     project_details: "Detalhes",
-    project_disbursement_authority_role_description:
-      "As autoridades competentes para aprovar as transações financeiras",
-    project_disbursement_authority_role: "Selecione a função da autoridade de pagamento",
     project_edit_title: "Editar projeto",
-    project_implementing_authority_role_description:
-      "As autoridades competentes para criar e modificar subprojetos e definir e executar os fluxos de trabalho",
-    project_implementing_authority_role: "Selecione o papel das autoridades implementadoras",
     project_name: "Nome",
-    project_permissions_title: "Configurar permissões para projeto",
-    project_roles: "´Papéis",
+
+    project_roles: "Papéis",
     project_thumbnail: "Miniatura",
     project_title_description: "Descrição do projeto",
     project_title: "Nome do projeto",
@@ -243,7 +232,7 @@ const pt = {
     fixed_workflowitem_type: "Tipo de item de fluxo de trabalho fixo",
     subproject_add_title: "Criar novo subprojeto",
     subproject_assigned_organization: "Organização responsável",
-    subproject_budget_amount_description: "Descrição do orçamento para o subprojeto",
+
     subproject_budget_amount: "Valor do orçamento do subprojeto",
     subproject_close_info: "Pelo menos um item do fluxo de trabalho ainda não foi fechado",
     subproject_close_not_allowed: "Você não tem permissão para fechar o subprojeto",
@@ -251,7 +240,7 @@ const pt = {
     subproject_completion_string: "{0} de {1} finalizado",
     subproject_currency: "Moeda do subprojeto",
     subproject_edit_title: "Editar subprojeto",
-    subproject_permissions_title: "Configurar permissões para subprojeto",
+
     subproject_preview: "Pré-visualização de subprojeto",
     subproject_select_button: "Selecionar",
     subproject_title_description: "Descrição do subprojeto",
@@ -270,14 +259,9 @@ const pt = {
     approval_required: "Aprovação necessária",
     edit_item: "Editar item de workflow",
     exchange_rate: "Taxa de câmbio",
-    non_approval: "Aprovação desnecessária",
-    workflow_action_in_review: "Aguardando revisão de ",
-    workflow_action_open_in_progress: "Aguardando ação de ",
-    workflow_action_pending_approval: "Aguardando aprovação de ",
+
     workflow_budget_allocated: "Alocado",
-    workflow_budget_amount_description: "Descrição do orçamento do item de workflow",
-    workflow_budget_amount: "Valor do item de workflow",
-    workflow_budget_description: "Orçamento para o item de workflow",
+
     workflow_budget_disbursed: "pago",
     workflow_budget_na: "Não se aplica",
     workflow_budget_status_allocated: "Atribuído",
@@ -418,23 +402,14 @@ const pt = {
     menu_item_users: "Usuários",
     no_peers: "Desconectado",
     options: "Opções",
-    other_trustees: "Outros administradores",
     peers: "Nós",
     projects_site: "Projetos",
-    read_permission: "Leitura",
     restore: "Restore",
     rtUpdates: "Atualizações em tempo real",
     selections: "Menu",
     service_status: "Status do serviço",
     unread_notifications: "Notificações não lidas",
     write_permission: "Escrita"
-  },
-
-  dashboard: {
-    dashboard_card_text:
-      " Os nós conectados na blockchain são mostrados no mapa abaixo. Para obter a localização exata, clique nos respectivos marcadores.",
-    dashboard_subtitle: "Nós conectados na rede blockchain",
-    dashboard_title: "Painel da rede blockchain"
   },
 
   notification: {
@@ -449,8 +424,6 @@ const pt = {
     edit_workflow: "Item de workflow {0} foi adaptado ",
     email_saved: "Email {0} salvo",
     no_permissions: "(Sem permissão para visualizar mais detalhes)",
-    notification_card_text:
-      "Por favor, verifique suas notificações abaixo. Elas contêm informações ou ações a serem tratadas.",
     notification_subtitle: "Não lidas",
     notification_table_all_read: "Todas lidas",
     notification_table_by: "Por",
@@ -500,13 +473,6 @@ const pt = {
   },
 
   history: {
-    created_project: "Projeto criado ",
-    created_subproject: "Subprojeto {0} criado",
-    created_workflow: "Workflow {0} criado ",
-    edit_addData: "Dados adicionais do workflow {0} mudaram para {1} ",
-    edit_amount: "Valor do workflow {0} mudou de {1} para {2} ",
-    edit_amountType: "Status orçamentário do workflow {0} mudou de {1} para {2}",
-    edit_comment: "Comentário do workflow {0} mudou para {1} ",
     edit_currency: "Moeda do workflow {0} mudou para {1} ",
     edit_documents: "Documentos alterados para workflow {0}",
     edit_status: "Status do workflow {0} mudou para {1}",
@@ -519,7 +485,7 @@ const pt = {
     project_close: "Projeto fechado",
     project_create: "{0} criou projeto {1}",
     project_createSubproject: "{0} criou subprojeto {1}",
-    project_grantPermission_details: "{0} concedeu permissão {1} para {2} para {3}",
+    project_grantPermission_details: "{0} concedeu permissão {1} para {2} para {3}",
     project_grantPermission: "{0} concedeu permissão {1} para {2}",
     project_projected_budget_deleted: "{0} excluiu o orçamento projetado para {1}",
     project_projected_budget_updated: "{0} atualizou o orçamento projetado para {1}",
@@ -534,7 +500,7 @@ const pt = {
     subproject_create: "{0} criou subprojeto {1}",
     subproject_createWorkflowitem: "{0} criou item de workflow {1}",
     subproject_grantPermission_details: "{0} concedeu permissão {1} para {2} em {3}",
-    subproject_grantPermission: "{0} concedeu permissão {1} para {2}",
+    subproject_grantPermission: "{0} concedeu permissão {1} para {2}",
     subproject_reorderWorkflowitems: "{0} alterou a ordem dos items de workflow",
     subproject_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
     subproject_revokePermission: "{0} revougou permissão {1} de {2}",
@@ -542,9 +508,9 @@ const pt = {
     to: "{0} para {1}",
     workflowitem_assign: "{0} atribuiu item de workflow {1} para {2}",
     workflowitem_close: "{0} fechou item de workflow {1}",
-    workflowitem_grantPermission_details: "{0} concedeu permissão {1} para {2} em {3}",
-    workflowitem_grantPermission: "{0} concedeu permissão {1} para {2} em {3}",
-    workflowitem_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
+    workflowitem_grantPermission_details: "{0} concedeu permissão {1} para {2} em {3}",
+    workflowitem_grantPermission: "{0} concedeu permissão {1} para {2} em {3}",
+    workflowitem_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_revokePermission: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_update_docs: "{0} adicionou documentos ao item de workflow {1} ",
     workflowitem_update: "{0} modificou o item de workflow {1} ",

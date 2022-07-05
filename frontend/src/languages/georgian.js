@@ -211,26 +211,15 @@ const ka = {
   project: {
     add_new_project: "ახალი პროექტის დამატება",
     assignee: "მფლობელი",
-    project_authority_organization_search: "ორგანიზაციის ძიება",
-    project_authority_role_search: "როლის ძიება",
-    project_budget_amount_description: "მაგალითად",
     project_budget_amount: "პროექტის ბიუჯეტი",
-    project_budget_authority_role_description: "უფლებამოსილმა პირმა ბიუჯეტში ცვლილებების შეტანის შესაძლებლობა გახსნა",
-    project_budget_authority_role: "შეარჩიეთ საბიუჯეტო უფლებამოსილების როლი",
     project_budget: "ბიუჯეტი",
     project_close_info: "მინიმუმ ერთი ქვეპროექტი არ არის დახურული.",
     project_comment: "კომენტარი",
     project_currency: "პროექტის ვალუტა",
     project_details: "დეტალები",
-    project_disbursement_authority_role_description:
-      "უფლებამოსილმა პირმა ფინანსური ტრანზაქციის დადასტურების ნებართვა გასცა",
-    project_disbursement_authority_role: "შეარჩიეთ გადახდის ორგანოს როლი",
     project_edit_title: "პროექტის ცვლილება",
-    project_implementing_authority_role_description:
-      "The authorities enabled to create and modify subprojects, define and execute workflow activities",
-    project_implementing_authority_role: "Select implementation authority role",
     project_name: "სახელი",
-    project_permissions_title: "პროექტთან დაკავშირებული უფლებამოსილებების გაცემა",
+
     project_roles: "ფუნქციები",
     project_thumbnail: "Thumbnail",
     project_title_description: "პროექტის სახელწოდება",
@@ -243,7 +232,7 @@ const ka = {
     fixed_workflowitem_type: "ფიქსირებული სამუშაო ნაკადის ტიპი",
     subproject_add_title: "ახალი ქვეპროექტის დამატება",
     subproject_assigned_organization: "Assigned organization",
-    subproject_budget_amount_description: "მაგალითად",
+
     subproject_budget_amount: "ქვეპროექტისთვის გათვალისწინებული ბიუჯეტი",
     subproject_close_info: "workflowitem-ი დახურული არ არის",
     subproject_close_not_allowed: "თქვენ არ გაქვთ უფლებამოსილება დახუროთ ქვეპროექტი",
@@ -251,7 +240,7 @@ const ka = {
     subproject_completion_string: "{0} of {1} done",
     subproject_currency: "ქვეპროექტის ვალუტა",
     subproject_edit_title: "ქვეპროექტის რედაქტირება",
-    subproject_permissions_title: "ქვეპროექტის უფლებამოსილებების განსაზღვრა",
+
     subproject_preview: "Subproject preview",
     subproject_select_button: "არჩევა",
     subproject_title_description: "ქვეპროექტის სახელწოდება",
@@ -270,14 +259,9 @@ const ka = {
     approval_required: "აუცილებელია დადასტურება",
     edit_item: "Workflowitem-ის რედაქტირება",
     exchange_rate: "გაცვლითი კურსი",
-    non_approval: "Non-approval",
-    workflow_action_in_review: "Pending for review of",
-    workflow_action_open_in_progress: "Pending on ",
-    workflow_action_pending_approval: "Pending for approval of ",
+
     workflow_budget_allocated: "გამოყოფილი",
-    workflow_budget_amount_description: "Budget for the workflowitem",
-    workflow_budget_amount: "Workflowitem budget amount",
-    workflow_budget_description: "მაგალითად",
+
     workflow_budget_disbursed: "გადახდილი",
     workflow_budget_na: "Not applicable",
     workflow_budget_status_allocated: "Assigned",
@@ -416,23 +400,14 @@ const ka = {
     menu_item_users: "მომხმარებლები",
     no_peers: "No peers",
     options: "პარამეტრები",
-    other_trustees: "Other Trustees",
     peers: "Peers",
     projects_site: "პროექტები",
-    read_permission: "წაკითხვის",
     restore: "აღდგენა",
     rtUpdates: "რეალურ დროში განახლებები",
     selections: "შერჩევა",
     service_status: "მომსახურების სტატუსი",
     unread_notifications: "წაუკითხავი შეტყობინებები",
     write_permission: "Write"
-  },
-
-  dashboard: {
-    dashboard_card_text:
-      " The connected blockchain nodes are shown in the map below. You can click on the respective markers to obtain the exact location.",
-    dashboard_subtitle: "Connected peers in the blockchain network",
-    dashboard_title: "The Blockchain network dashboard"
   },
 
   notification: {
@@ -447,8 +422,6 @@ const ka = {
     edit_workflow: "Workflowitem-ი {0} რედაქტირებულია",
     email_saved: "Email {0} შენახული",
     no_permissions: "(დამატებითი დეტალების სანახავად არ ფლობთ ნებართვას)",
-    notification_card_text:
-      "გთხოვთ ქვემოთ იხილოთ თქვენი შეტყობინებები. These display action items or information items to be dealt with.",
     notification_subtitle: "არ არის წაკითხული",
     notification_table_all_read: "ყველა წაკითხულია",
     notification_table_by: "By",
@@ -498,13 +471,6 @@ const ka = {
   },
 
   history: {
-    created_project: "პროექტი შექმნილია",
-    created_subproject: "ქვეპროექტი {0} შექმნილია",
-    created_workflow: "Workflowitem-ი {0} შექმნილია ",
-    edit_addData: "Workflowitem-თან დაკავშირებული დამატებითი ინფორმაცია {0} შეიცვალა და გახდა {1} ",
-    edit_amount: "Workflowitem-ის {0} თანხა შეიცვალა {1}-დან {2}-მდე ",
-    edit_amountType: "Workflowitem-ის {0} ბიუჯეტის სტატუსი შეიცვალა {1}-ის ნაცვლად {2}-ით",
-    edit_comment: "Workflowitem-ის {0} კომენტარი შეიცვალა და გახდა {1} ",
     edit_currency: "Workflowitem-ის {0} ვალუტა შეიცვალა და გახდა {1} ",
     edit_documents: "Workflowitem-ისთვის {0} შეიცვალა დოკუმენტები ",
     edit_status: "Workflowitem-ის {0} სტატუსი შეიცვალა და გახდა {1}",

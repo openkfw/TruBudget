@@ -145,26 +145,15 @@ const fr = {
   project: {
     add_new_project: "Ajouter un nouveau projet",
     assignee: "propriétaire",
-    project_authority_organization_search: "Rechercher une organisation",
-    project_authority_role_search: "Rechercher un rôle",
-    project_budget_amount_description: "Description du montant du budget du projet",
     project_budget_amount: "Montant du budget du projet",
-    project_budget_authority_role_description: "L'autorité a permis de modifier la ligne budgétaire du projet",
-    project_budget_authority_role: "Rôle de l'autorité chargée du budget",
     project_budget: "Budget du projet",
     project_close_info: "Au moins une composante n'est pas encore terminée",
     project_comment: "Commentaire sur le projet",
     project_currency: "Devise",
     project_details: "Tableau de bord",
-    project_disbursement_authority_role_description:
-      "Les autorités ont autorisé l'approbation des transactions financières",
-    project_disbursement_authority_role: "Sélectionnez le rôle d'autorité de paiement",
     project_edit_title: "Modifier un projet",
-    project_implementing_authority_role_description:
-      "Les autorités ont permis de créer et de modifier des composantes, de définir et d'exécuter des activités de workflow",
-    project_implementing_authority_role: "Rôle de l'autorité chargée de la mise en œuvre",
     project_name: "Nom du projet",
-    project_permissions_title: "Définir les autorisations pour le projet",
+
     project_roles: "Rôles dans le projet",
     project_thumbnail: "Vignette",
     project_title_description: "Description du titre du projet",
@@ -177,7 +166,7 @@ const fr = {
     fixed_workflowitem_type: "Type de workflow fixe",
     subproject_add_title: "Ajouter une nouvelle composante",
     subproject_assigned_organization: "Organisation assignée",
-    subproject_budget_amount_description: "description du montant de la composante",
+
     subproject_budget_amount: "Montant du budget de la composante",
     subproject_close_info: "Au moins une étape de workflow n'est pas encore fermée",
     subproject_close_not_allowed: "Vous n'êtes pas autorisé à fermer la composante",
@@ -185,7 +174,7 @@ const fr = {
     subproject_completion_string: "{0} cal {1} van",
     subproject_currency: "Devise de la composante",
     subproject_edit_title: "Modifier la composante",
-    subproject_permissions_title: "Définir les autorisations pour la composante",
+
     subproject_preview: "Aperçu de la composante",
     subproject_select_button: "Sélectionnez",
     subproject_title_description: "Titre de la composante",
@@ -204,14 +193,9 @@ const fr = {
     approval_required: "Approbation exigée",
     edit_item: "Modifier l'étape de workflow",
     exchange_rate: "taux de change",
-    non_approval: "Non-approbation",
-    workflow_action_in_review: "En attente d'approbation de ",
-    workflow_action_open_in_progress: "En attente sur ",
-    workflow_action_pending_approval: "En attente d'approbation de ",
+
     workflow_budget_allocated: "Engagé",
-    workflow_budget_amount_description: "Description du montant du budget du workflow",
-    workflow_budget_amount: "Montant du budget du workflow",
-    workflow_budget_description: "Description du budget",
+
     workflow_budget_disbursed: "payé",
     workflow_budget_na: "N/A",
     workflow_budget_status_allocated: "Engagé",
@@ -417,23 +401,14 @@ const fr = {
     menu_item_users: "Utilisateurs",
     no_peers: "Pas de pairs",
     options: "Options",
-    other_trustees: "Autres fiduciaires",
     peers: "Pairs",
     projects_site: "Projets",
-    read_permission: "Lire",
     restore: "Restaurer",
     rtUpdates: "Mises à jour en temps réel",
     selections: "Sélections",
     service_status: "État du service",
     unread_notifications: "Notifications non-lues",
     write_permission: "Écrire"
-  },
-
-  dashboard: {
-    dashboard_title: "Le tableau de bord du réseau Blockchain",
-    dashboard_subtitle: "Les nœuds connectés dans le réseau de Blockchain",
-    dashboard_card_text:
-      "Les nœuds connectés sont affichés dans la carte ci-dessous_ Vous pouvez cliquer sur les marqueurs pour obtenir l'emplacement exact_"
   },
 
   notification: {
@@ -446,8 +421,6 @@ const fr = {
     email_saved: "Email {0} enregistré",
     next_page: "Page suivante",
     no_permissions: "(Pas de permission pour voir plus de détails)",
-    notification_card_text:
-      "Veuillez trouver vos notifications actuelles ci-dessous_ Ces éléments d'action s'affichent ou des éléments d'information à traiter_",
     notification_subtitle: "Non lus",
     notification_table_all_read: "Tout lire",
     notification_table_by: "Par",
@@ -503,13 +476,6 @@ const fr = {
   },
 
   history: {
-    created_project: "Projet créé ",
-    created_subproject: "Composante {0} créée",
-    created_workflow: "Workflow {0} créé ",
-    edit_addData: "Les données supplémentaires de l’étape de workflow {0} ont été changées en {1} ",
-    edit_amount: "Le montant de l’étape de workflow {0} est passé de {1} à {2} ",
-    edit_amountType: "L'état budgétaire de l’étape de workflow {0} est passé de {1} à {2}",
-    edit_comment: "Commentaire de l’étape de workflow {0} modifié à {1} ",
     edit_currency: "La devise de l’étape de workflow {0} a changé pour {1} ",
     edit_documents: "Documents modifiés pour l’étape de workflow {0}",
     edit_status: "L'état de l’étape de workflow {0} a changé pour {1} ",

@@ -61,11 +61,11 @@ describe("Language", function() {
     cy.get("[data-test=project-header]")
       .last()
       .should("be.visible")
-      .should("contain", "Status: Open");
+      .should("contain", "Status: Offen");
     cy.get("[data-test=project-creation-date]")
       .last()
       .should("be.visible")
-      .should("contain", "Created");
+      .should("contain", "Erstellt");
   });
 
   it("Check some english words", function() {

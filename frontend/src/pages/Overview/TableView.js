@@ -85,7 +85,7 @@ const columns = [
     sortable: true,
     compact: false,
     minWidth: "15rem",
-    cell: row => <Typography>{row.data.projectName}</Typography>
+    cell: row => <Typography data-test="project-name">{row.data.projectName}</Typography>
   },
   {
     name: (
