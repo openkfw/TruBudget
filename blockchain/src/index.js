@@ -18,6 +18,7 @@ const {
 const { startBeta, registerNodeAtAlpha } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
 const { isMultichainReady } = require("./readiness");
+
 const {
   adaptMultichianParams,
   importWallet,
