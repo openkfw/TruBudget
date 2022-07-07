@@ -18,6 +18,7 @@ const {
 const { startBeta, registerNodeAtAlpha } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
 const { isMultichainReady } = require("./readiness");
+
 const {
   adaptMultichianParams,
   importWallet,
@@ -350,35 +351,7 @@ const loadConfig = (path) => {
   return config;
 };
 
-app.post("/multichainEnabled", async (req, res) => {
-  if (!ENV === "development") {
-    return res.status(401).send();
-  }
-  const multichainEnabled = req.query.multichainEnabled;
-  if (multichainEnabled === "true" || multichainEnabled === "false") {
-    if (multichainEnabled === "false" && isRunning) {
-      log.info("Multichain stopping multichain deamon...");
-      AUTOSTART = false;
-      await stopMultichain(mcproc);
-    } else if (multichainEnabled === "true" && !isRunning) {
-      log.info("Multichain starting multichain deamon...");
-      await spawnProcess(() =>
-        startMultichainDaemon(
-          CHAINNAME,
-          externalIpArg,
-          blockNotifyArg,
-          P2P_PORT,
-          multichainDir,
-        ),
-      );
-      AUTOSTART = true;
-    }
-    return res.status(200).send("Ok.");
-  }
-  return res.status(404).send();
-});
-
-app.post("/restoreWallet", (req, res) => {
+app.post("/restoreWallet", async (req, res) => {
   if (!ENV === "development") {
     return res.status(401).send();
   }
@@ -416,7 +389,9 @@ app.post("/restoreWallet", (req, res) => {
       await importWallet(`${extractPath}/wallet.txt`, CHAINNAME);
       const availableWallets = await listAvailableWallets(CHAINNAME);
 
-      res.json(`Ok. Aviable wallets are: ${JSON.stringify(availableWallets)}`);
+      res.json(
+        `Ok. Available wallets are: ${JSON.stringify(availableWallets)}`,
+      );
     });
   } catch (err) {
     log.error({ err }, "Error while trying to restore wallet: ");

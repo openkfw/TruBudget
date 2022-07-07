@@ -4,6 +4,7 @@ const exec = util.promisify(require("child_process").exec);
 const log = require("./../log/logger");
 const shell = require("shelljs");
 
+
 const adaptMultichianParams = async (paramsFile, newParamsFile) => {
   log.info("Adapting multichain params...");
   let newParams = [];
@@ -30,7 +31,7 @@ const adaptMultichianParams = async (paramsFile, newParamsFile) => {
     .replace(/address-checksum-value/g, "# address-checksum-value")
     .concat(
       "# THIS DATA HAS BEEN INSERTED DURING THE MIGRATION STEP! \n" +
-        "# THE ORGINAL VALUES CAN BE FOUND ABOVE.\n",
+      "# THE ORGINAL VALUES CAN BE FOUND ABOVE.\n",
     )
     .concat(newParams.join(" \n"));
 
@@ -38,14 +39,14 @@ const adaptMultichianParams = async (paramsFile, newParamsFile) => {
 };
 
 const importWallet = async (walletPath, chainName) => {
-  const { stdout } = await exec(
+  const {stdout} = await exec(
     `multichain-cli ${chainName} importwallet ${walletPath}`,
   );
-  log.debug({ message: "Imported wallet:", stdout });
+  log.debug({message: "Imported wallet:", stdout});
 };
 
 const backupWallet = async (chainName, destinationPath) => {
-  const { stdout } = await exec(
+  const {stdout} = await exec(
     `multichain-cli ${chainName} dumpwallet ${chainName}-wallet.txt`,
   );
   shell.mv(`/home/node/${chainName}-wallet.txt`, destinationPath);
@@ -53,8 +54,8 @@ const backupWallet = async (chainName, destinationPath) => {
 };
 
 const listAvailableWallets = async (chainName) => {
-  const { stdout } = await exec(`multichain-cli ${chainName} getaddresses`);
-  log.debug({ message: "Available wallets:", stdout });
+  const {stdout} = await exec(`multichain-cli ${chainName} getaddresses`);
+  log.debug({message: "Available wallets:", stdout});
 
   return stdout;
 };
