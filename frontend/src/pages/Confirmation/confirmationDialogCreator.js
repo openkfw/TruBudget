@@ -99,7 +99,9 @@ export class ConfirmationDialogCreator {
     );
     const errorInformation = !_isEmpty(this.failedAction) ? _createErrorInformation(this.failedAction) : null;
 
-    return this._createDialog(title, content, confirmButtonText, errorInformation, true);
+    const hasFailure = this.failureMessage !== '';
+
+    return this._createDialog(title, content, confirmButtonText, errorInformation, true, hasFailure);
   }
 
   // It is possible for an User to not have sufficient permissions to perform all "AdditionalActions"
@@ -117,7 +119,7 @@ export class ConfirmationDialogCreator {
     );
   }
 
-  _createDialog(title, content, confirmButtonText, errorInformation, submitable) {
+  _createDialog(title, content, confirmButtonText, errorInformation, submitable, hasFailure) {
     //failureMessage
     return (
       <Dialog sx={{ overflow: "visible" }} maxWidth={"xl"} open={this.open} data-test="confirmation-dialog">
@@ -149,6 +151,7 @@ export class ConfirmationDialogCreator {
           }
           failedAction={this.failedAction}
           submitable={submitable}
+          hasFailure={hasFailure}
         />
       </Dialog>
     );
@@ -251,8 +254,7 @@ const _createActionTableDialogContent = (
   let title = strings.confirmation.confirmation_required;
 
   if (failureMessage !== "") {
-    content = "ERROR- " + failureMessage;
-    confirmButtonText = "CLOSE";
+    content = "Error: " + failureMessage + '. Please try again later';
     return { content, title, confirmButtonText };
   }
 
