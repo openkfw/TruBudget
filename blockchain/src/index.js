@@ -62,8 +62,10 @@ const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
 const NOTIFICATION_SEND_INTERVAL = process.env.NOTIFICATION_SEND_INTERVAL || 10;
 const emailAuthSecret = process.env.JWT_SECRET;
 
-const EMAIL_SERVICE_ENABLED = process.env.EMAIL_SERVICE_ENABLED || false;
-const MULTICHAIN_FEED_ENABLED = process.env.MULTICHAIN_FEED_ENABLED || false;
+const EMAIL_SERVICE_ENABLED =
+  process.env.EMAIL_SERVICE_ENABLED === "true" ? true : false;
+const MULTICHAIN_FEED_ENABLED =
+  process.env.MULTICHAIN_FEED_ENABLED === "true" ? true : false;
 const isMultichainFeedEnabled =
   EMAIL_SERVICE_ENABLED || MULTICHAIN_FEED_ENABLED;
 
@@ -79,7 +81,8 @@ const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
 const NAMESPACE = process.env.KUBE_NAMESPACE || "";
 const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
 
-const isEmailConfigured = !EMAIL_HOST || !EMAIL_PORT || !emailAuthSecret;
+const isEmailConfigured = EMAIL_HOST && EMAIL_PORT && emailAuthSecret;
+
 if (EMAIL_SERVICE_ENABLED && !isEmailConfigured) {
   if (!EMAIL_HOST) {
     log.fatal(
@@ -96,6 +99,7 @@ if (EMAIL_SERVICE_ENABLED && !isEmailConfigured) {
       "Env variable JWT_SECRET is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false",
     );
   }
+  log.fatal("Incorrectly set env vars, exiting ...");
   process.exit(1);
 }
 
