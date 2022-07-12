@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ## Unreleased -->
 
-<!-- ### Added -->
+### Added
+
+- Add a warning in the workflowitem dialog for overwriting permissions [#1189](https://github.com/openkfw/TruBudget/issues/1189)
 
 <!-- ### Changed -->
 
