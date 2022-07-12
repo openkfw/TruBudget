@@ -138,7 +138,7 @@ const deleteFilesOlderThan = async (time, path) => {
 };
 
 function sleep(s) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, s * 1000);
   });
 }
@@ -147,7 +147,7 @@ const args = process.argv.slice(2);
 log.debug(`${process.argv[0]} is executed with following arguments: ${args}`);
 if (args.length !== 6) {
   log.error("Wrong amount of arguments");
-  return;
+  process.exit(1);
 }
 const [
   path,

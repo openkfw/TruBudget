@@ -130,10 +130,13 @@ const spawnProcess = (startProcess) => {
     } else {
       const retryIntervalMs = 10000;
       log.info(
-        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${retryIntervalMs /
-          1000} Seconds...`,
+        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${
+          retryIntervalMs / 1000
+        } Seconds...`,
       );
-      await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));
+      await new Promise((resolve) => {
+        setTimeout(resolve, retryIntervalMs);
+      });
       spawnProcess(startProcess);
     }
   });
@@ -244,7 +247,9 @@ const stopMultichain = async (mcproc) => {
   while (isRunning) {
     mcproc.kill();
     const retryInMs = 3000;
-    await new Promise((resolve) => setTimeout(resolve, retryInMs));
+    await new Promise((resolve) => {
+      setTimeout(resolve, retryInMs);
+    });
   }
   log.info("Multichain process killed");
 };
@@ -410,6 +415,6 @@ app.post("/chain", async (req, res) => {
   }
 });
 
-app.listen(port, function() {
+app.listen(port, function () {
   log.info(`App listening on ${port}`);
 });

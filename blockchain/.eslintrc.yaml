@@ -6,9 +6,10 @@ env:
   node: true
   mocha: true
   es6: true
-parser: "babel-eslint"
+parser: "@babel/eslint-parser"
 parserOptions:
   sourceType: module
+  requireConfigFile: false
   ecmaVersion: 9
   ecmaFeatures:
     modules: true
