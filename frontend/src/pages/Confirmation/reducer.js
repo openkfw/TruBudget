@@ -292,9 +292,7 @@ export default function confirmationReducer(state = defaultState, action) {
     case DISABLE_USER_FAILURE:
     case CREATE_WORKFLOW_FAILURE:
     case CREATE_SUBPROJECT_FAILURE:
-      console.log(action);
       return defaultState.set("open", true).set("failureMessage", action.message);
-
     default:
       return state;
   }

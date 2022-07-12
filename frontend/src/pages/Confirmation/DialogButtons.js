@@ -79,7 +79,7 @@ const DialogButtons = props => {
           color={submitable ? "secondary" : "primary"}
           onClick={() => onCancel()}
         >
-          Close
+          {strings.common.close}
         </Button>
       )}
     </DialogActions>
