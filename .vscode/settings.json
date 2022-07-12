@@ -1,5 +1,14 @@
 {
-  "eslint.workingDirectories": ["./api", "./frontend", "./provisioning", "./blockchain"],
+  "eslint.workingDirectories": [
+    "./api",
+    "./frontend",
+    "./provisioning",
+    "./blockchain",
+    "./storage-service",
+    "./excel-export-service",
+    "./email-notification-service",
+    "./logging-service"
+  ],
   "editor.bracketPairColorization.enabled": true,
   "editor.formatOnSave": true
 }
