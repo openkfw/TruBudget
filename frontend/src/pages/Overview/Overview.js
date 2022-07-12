@@ -23,7 +23,7 @@ const Overview = props => {
           <ViewListIcon color="primary" />
         </IconButton>
       </Box>
-      {props.projectView === "card" && (
+      {(props.projectView === "card" || props.projectView === "") && (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <CardView {...props} />
         </Box>
