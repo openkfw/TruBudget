@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import * as Minio from "minio";
 import { v4 } from "uuid";
