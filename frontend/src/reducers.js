@@ -70,9 +70,9 @@ const combinedReducer = (history, action) => {
       route: routeReducer,
       actions: lastActionReducer,
       login: loginReducer,
+      overview: overviewReducer,
       // Passing an undefined state returns the defaultState
       navbar: (_state, action) => navbarReducer(undefined, action),
-      overview: (_state, action) => overviewReducer(undefined, action),
       detailview: (_state, action) => subProjectReducer(undefined, action),
       workflow: (_state, action) => workflowReducer(undefined, action),
       workflowitemDetails: (_state, action) => workflowitemDetailsReducer(undefined, action),

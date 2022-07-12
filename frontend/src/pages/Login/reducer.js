@@ -49,7 +49,7 @@ export const defaultState = fromJS({
   loginError: false
 });
 
-const setTimeLocale = (language) => {
+const setTimeLocale = language => {
   switch (language) {
     // daysjs excpects en instead of en-gb.
     // Changing the language preset would break existing clients because it it saved in the clients local storage
@@ -62,7 +62,7 @@ const setTimeLocale = (language) => {
   }
 };
 
-export const changeLanguage = (state) => {
+export const changeLanguage = state => {
   const language = state.get("language");
   setTimeLocale(language);
   strings.setLanguage(language);
@@ -91,7 +91,7 @@ export default function loginReducer(state = defaultState, action) {
       const enabledUsers = [];
       const disabledUsers = [];
       const groupList = [];
-      action.user.forEach((user) => {
+      action.user.forEach(user => {
         userDisplayNameMap[user.id] = user.displayName;
         if (!user.isGroup) {
           user.permissions["user.authenticate"].includes(user.id) ? enabledUsers.push(user) : disabledUsers.push(user);

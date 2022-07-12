@@ -2,13 +2,10 @@ import { Map, fromJS } from "immutable";
 
 import { defaultState as loginState } from "./pages/Login/reducer";
 import { actionInitialState as actionState } from "./reducers";
+import { defaultState as overviewState } from "./pages/Overview/reducer";
 
-import {
-  LOGOUT_SUCCESS,
-  ADMIN_LOGOUT_SUCCESS,
-  LOGIN_SUCCESS,
-  SET_LANGUAGE
-} from "./pages/Login/actions";
+import { LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS, LOGIN_SUCCESS, SET_LANGUAGE } from "./pages/Login/actions";
+import { STORE_PROJECT_VIEW } from "./pages/Overview/actions";
 
 const STORAGE_KEY = "state";
 
@@ -25,12 +22,16 @@ const parseFromState = state => ({
     groups: state.getIn(["login", "groups"]).toJS(),
     emailServiceAvailable: state.getIn(["login", "emailServiceAvailable"]),
     exportServiceAvailable: state.getIn(["login", "exportServiceAvailable"])
+  },
+  overview: {
+    projectView: state.getIn(["overview", "projectView"])
   }
 });
 
 const defaultPersistedState = Map({
   login: loginState,
-  actions: actionState
+  actions: actionState,
+  overview: overviewState
 });
 
 export const loadState = () => {
@@ -54,8 +55,9 @@ export const persistState = state => {
     switch (action) {
       case LOGIN_SUCCESS:
       case SET_LANGUAGE:
-      case LOGOUT_SUCCESS:
+      case STORE_PROJECT_VIEW:
       case ADMIN_LOGOUT_SUCCESS:
+      case LOGOUT_SUCCESS:
         const stateToPersist = parseFromState(state);
         setStorage(stateToPersist);
         break;
