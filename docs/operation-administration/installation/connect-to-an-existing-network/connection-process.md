@@ -39,7 +39,7 @@ If a TruBudget beta node is setup additional configurations must be made:
 - The P2P_HOST must be set to the EXTERNAL_IP of the alpha node
 - The P2P_PORT must be the same of the alpha node
 - The API_HOST and API_PORT must be set to the API of the alpha node
-- The RPC_PASSWORD must be the one of the TruBudget network
+- The MULTICHAIN_RPC_PASSWORD must be the one of the TruBudget network
 
 :::hint
 It is also possible to connect a beta node to a beta node, just make sure the additional configurations of the [alpha node configuration section](#alpha-node-configuration) are set

@@ -201,8 +201,8 @@ fi
 
 if [ "$IS_FULL" = false ]; then
     # Slim version without --enable-service option: disable all services
-    perl -pi -e 's/EMAIL_SERVICE=.*/EMAIL_SERVICE_ENABLED=FALSE/g' ${SCRIPT_DIR}/.env
-    perl -pi -e 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED_ENABLED=FALSE/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/EMAIL_SERVICE_ENABLED=.*/EMAIL_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/MULTICHAIN_FEED_ENABLED=.*/MULTICHAIN_FEED_ENABLED=false/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=false/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=false/g' ${SCRIPT_DIR}/.env
@@ -216,8 +216,8 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
     for word in ${selectedServices}; do
         if [ "$word" = "email-service" ]; then
             # Enable Services
-            perl -pi -e 's/EMAIL_SERVICE=.*/EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
-            perl -pi -e 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED_ENABLED=true/g' ${SCRIPT_DIR}/.env
+            perl -pi -e 's/EMAIL_SERVICE_ENABLED=.*/EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
+            perl -pi -e 's/MULTICHAIN_FEED_ENABLED=.*/MULTICHAIN_FEED_ENABLED=true/g' ${SCRIPT_DIR}/.env
             perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} emaildb"
             echo "INFO: email-service enabled"
@@ -246,8 +246,8 @@ fi
 
 if [ "$IS_FULL" = true ]; then
     # Full version: enable all services
-    perl -pi -e 's/EMAIL_SERVICE=.*/EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
-    perl -pi -e 's/MULTICHAIN_FEED=.*/MULTICHAIN_FEED_ENABLED=true/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/EMAIL_SERVICE_ENABLED=.*/EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
+    perl -pi -e 's/MULTICHAIN_FEED_ENABLED=.*/MULTICHAIN_FEED_ENABLED=true/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/REACT_APP_EXPORT_SERVICE_ENABLED=.*/REACT_APP_EXPORT_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
     perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env

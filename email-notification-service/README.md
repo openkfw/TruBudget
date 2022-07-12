@@ -117,11 +117,7 @@ be used
 
 ## Enable email notifications
 
-If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to
-the multichaindaemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification
-transactions. In other words The blockchain starts the background processes to send user ids to the email-notification
-service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be
-https(true) or http(false).
+If `EMAIL_SERVICE_ENABLED` is set to "true" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification transactions. In other words The blockchain starts the background processes to send user ids to the email-notification service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false).
 
 The easiest way to get started is to use our pre-set `docker-compose` cluster available in the `email-notification`
 project which starts the whole TruBudget application including all email components(that means you need to
@@ -144,7 +140,7 @@ the [email notification documentation](../email-notification-service/README.md#)
 
 ## Disable email notifications
 
-To disable email notifications for blockchain simply set the `EMAIL_SERVICE` to "DISABLED" or unset it.
+To disable email notifications for blockchain simply set the `EMAIL_SERVICE_ENABLED` to "false" or unset it.
 If disabled the multichain-feed is not applied to the multichain-deamon and notifications are not created.
 
 **Hint:** To prevent the frontend requesting an email-notifcations readiness call simply unset the email notification

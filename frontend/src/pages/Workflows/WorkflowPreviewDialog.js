@@ -1,6 +1,7 @@
 import React from "react";
 
-import Card from "@mui/material/Card";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import Table from "@mui/material/Table";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -16,9 +17,6 @@ import strings from "../../localizeStrings";
 import { formatString } from "../../helper";
 
 const styles = {
-  scrollable: {
-    overflowY: "scroll"
-  },
   tableBody: {
     display: "flex",
     flexDirection: "column"
@@ -50,6 +48,13 @@ const styles = {
     borderBottom: "unset",
     padding: "0px 0px 0px 8px",
     flex: 1
+  },
+  infoContainer: {
+    margin: "0px 36px 10px 36px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: "500px"
   }
 };
 
@@ -170,14 +175,19 @@ const WorkflowPreviewDialog = props => {
   };
 
   const preview = (
-    <React.Fragment>
-      <Card style={styles.scrollable}>
+    <>
+      <Typography style={styles.infoContainer} color="error" variant="subtitle1">
+        {strings.preview.overwrite_warning}
+      </Typography>
+      <Box
+        sx={{ minWidth: "600px", overflowY: "scroll", display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
         <Table>
           <TableBody style={styles.tableBody}>{getTableEntries(props)}</TableBody>
         </Table>
-      </Card>
+      </Box>
       {submitInProgress ? <LinearProgress color="primary" /> : null}
-    </React.Fragment>
+    </>
   );
 
   const onCancel = () => {

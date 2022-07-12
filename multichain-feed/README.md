@@ -35,7 +35,7 @@ As an Example, we want to log every transaction where a new user is created in a
 
    ![add-user-created-transaction](./doc/images/add-user-created-transaction.JPG)
 
-3. Set the environmental variables `MULTICHAIN_FEED` to `ENABLED` in `blockchain/.env`.
+3. Set the environmental variables `MULTICHAIN_FEED_ENABLED` to `true` in `blockchain/.env`.
 
 4. Go to the multichain-feed directory (/multichain-feed) and compile the GO project to a binary script file with `go build .`
 

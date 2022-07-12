@@ -321,7 +321,10 @@ const de = {
     not_possible_action: "Nicht ausführbare Actions",
     possible_action: "Ausführbare Actions",
     preview: "Vorschau",
-    revoke_permission_action_text: "Zurückziehen von {0} für {1}"
+    revoke_permission_action_text: "Zurückziehen von {0} für {1}",
+    overwrite: "überschreiben",
+    overwrite_warning:
+      "Warnung: Dies setzt alle Berechtigungen auf die aktuelle Auswahl zurück. Wenn Sie nur einige Berechtigungen hinzufügen oder entfernen möchten, müssen Sie stattdessen zum Berechtigungsdialog jedes Workflow-Elements gehen."
   },
 
   confirmation: {

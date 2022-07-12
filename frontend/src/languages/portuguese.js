@@ -325,7 +325,10 @@ const pt = {
     not_possible_action: "Não há ações possíveis",
     possible_action: "Ações possíveis",
     preview: "Pré-visualização",
-    revoke_permission_action_text: "Revogar {0} de {1}"
+    revoke_permission_action_text: "Revogar {0} de {1}",
+    overwrite: "sobrescrever",
+    overwrite_warning:
+      "Aviso: Isso redefine todas as permissões para a seleção atual. Se você deseja adicionar ou remover apenas algumas permissões, você deve ir para a caixa de diálogo de permissão de cada item de fluxo de trabalho."
   },
 
   confirmation: {

@@ -323,7 +323,10 @@ const fr = {
     not_possible_action: "Actions impossibles",
     possible_action: "Actions possibles",
     preview: "Aperçu",
-    revoke_permission_action_text: "Revoquer {0} de {1}"
+    revoke_permission_action_text: "Revoquer {0} de {1}",
+    overwrite: "écraser",
+    overwrite_warning:
+      "Avertissement: Cela réinitialise toutes les autorisations à la sélection actuelle. Si vous souhaitez ajouter ou supprimer uniquement certaines autorisations, vous devez plutôt accéder à la boîte de dialogue d'autorisation de chaque élément de flux de travail."
   },
 
   confirmation: {

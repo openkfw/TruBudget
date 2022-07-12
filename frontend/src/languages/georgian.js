@@ -325,7 +325,10 @@ const ka = {
     not_possible_action: "ქმედების შესრულება შეუძლებელია",
     possible_action: "შესაძლებელი ქმედებები",
     preview: "Preview",
-    revoke_permission_action_text: "revoke {0} from {1}"
+    revoke_permission_action_text: "გააუქმეთ {0} {1}-ისგან",
+    overwrite: "გადაწერა",
+    overwrite_warning:
+      "გაფრთხილება: ეს აღადგენს ყველა ნებართვას მიმდინარე არჩევანს. თუ გსურთ დაამატოთ ან წაშალოთ მხოლოდ ზოგიერთი ნებართვა, თქვენ უნდა გადახვიდეთ თითოეული სამუშაო ნაკადის ნებართვის დიალოგში."
   },
 
   confirmation: {
