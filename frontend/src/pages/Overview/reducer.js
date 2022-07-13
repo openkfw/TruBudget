@@ -60,7 +60,7 @@ export const defaultState = fromJS({
   idForInfo: "",
   isProjectAdditionalDataShown: false,
   searchTerms: [],
-  projectView: ""
+  projectView: "card"
 });
 
 export default function overviewReducer(state = defaultState, action) {
