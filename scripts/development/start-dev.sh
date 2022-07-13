@@ -65,6 +65,18 @@ while [ "$1" != "" ]; do
         shift # past argument
         ;;
 
+    --slim2)
+        # Same as SLim but with storage-service and minio
+        IS_SLIM=true
+        HAS_ENABLED_SERVICES=true
+        ENABLED_SERVICES=" storage-service"
+        if [ "$IS_FULL" = true ]; then
+            echo "Either --slim or --full"
+            exit 1
+        fi
+        shift # past argument
+        ;;
+
     --full)
         IS_FULL=true
         if [ "$IS_SLIM" = true ]; then
