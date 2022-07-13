@@ -120,7 +120,6 @@ export class ConfirmationDialogCreator {
   }
 
   _createDialog(title, content, confirmButtonText, errorInformation, submitable, hasFailure) {
-    //failureMessage
     return (
       <Dialog sx={{ overflow: "visible" }} maxWidth={"xl"} open={this.open} data-test="confirmation-dialog">
         <DialogTitle>{title}</DialogTitle>
