@@ -8,8 +8,8 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
+import "chart.js/auto";
 import { connect } from "react-redux";
-
 import { toAmountString, toJS } from "../../helper";
 import { getSubProjectKPIs, resetKPIs } from "./actions";
 import strings from "../../localizeStrings";
@@ -75,7 +75,7 @@ class SubprojectAnalytics extends React.Component {
   }
 
   convertProjectedBudget() {
-    return this.props.projectedBudgets.map(pb => {
+    return this.props.projectedBudgets.map((pb) => {
       return {
         ...pb,
         convertedAmount: this.convertToSelectedCurrency(pb.value, pb.currencyCode)
@@ -107,7 +107,7 @@ class SubprojectAnalytics extends React.Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {projectedBudgets.map(budget => (
+                  {projectedBudgets.map((budget) => (
                     <TableRow key={budget.organization + budget.currencyCode}>
                       <TableCell>{budget.organization}</TableCell>
                       <TableCell align="right">{toAmountString(budget.value)}</TableCell>
@@ -225,10 +225,10 @@ const Dashboard = ({ indicatedCurrency, projectedBudgets, projectedBudget, assig
         chart={
           <Doughnut
             data={{
-              labels: projectedBudgets.map(tb => tb.organization),
+              labels: projectedBudgets.map((tb) => tb.organization),
               datasets: [
                 {
-                  data: projectedBudgets.map(tb => tb.convertedAmount),
+                  data: projectedBudgets.map((tb) => tb.convertedAmount),
                   backgroundColor: [
                     "rgba(255, 99, 132, 0.8)",
                     "rgba(54, 162, 235, 0.8)",
@@ -247,8 +247,11 @@ const Dashboard = ({ indicatedCurrency, projectedBudgets, projectedBudget, assig
                     return toAmountString(data.datasets[item.datasetIndex].data[item.index], indicatedCurrency);
                   }
                 }
-              }
+              },
+              maintainAspectRatio: false
             }}
+            width={250}
+            height={250}
           />
         }
       />
@@ -284,7 +287,7 @@ const Dashboard = ({ indicatedCurrency, projectedBudgets, projectedBudget, assig
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     subProjectCurrency: state.getIn(["analytics", "subproject", "currency"]),
     indicatedCurrency: state.getIn(["analytics", "currency"]),
@@ -296,7 +299,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     getSubProjectKPIs: (projectId, subprojectId) => dispatch(getSubProjectKPIs(projectId, subprojectId)),
     resetKPIs: () => dispatch(resetKPIs())
