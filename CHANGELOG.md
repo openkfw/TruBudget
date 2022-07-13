@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Changed -->
 
+- Fixed a bug where the confirmation dialog remains frozen in case of error [#1105](https://github.com/openkfw/TruBudget/issues/1105)
+
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->

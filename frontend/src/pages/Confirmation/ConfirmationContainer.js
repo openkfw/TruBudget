@@ -172,7 +172,8 @@ class ConfirmationContainer extends React.Component {
       originalActionsExecuted,
       failedOriginalAction,
       storeRejectReason,
-      rejectReason
+      rejectReason,
+      failureMessage
     } = this.props;
 
     if (confirmationDialogOpen) {
@@ -213,6 +214,7 @@ class ConfirmationContainer extends React.Component {
           failedOriginalAction={failedOriginalAction}
           storeRejectReason={storeRejectReason}
           rejectReason={rejectReason}
+          failureMessage={failureMessage}
         />
       );
     } else {
@@ -345,7 +347,8 @@ const mapStateToProps = state => {
     isPayloadValidationFailed: state.getIn(["confirmation", "isPayloadValidationFailed"]),
     groups: state.getIn(["users", "groups"]),
     userAssignments: state.getIn(["users", "userAssignments"]),
-    rejectReason: state.getIn(["workflow", "rejectReason"])
+    rejectReason: state.getIn(["workflow", "rejectReason"]),
+    failureMessage: state.getIn(["confirmation", "failureMessage"])
   };
 };
 

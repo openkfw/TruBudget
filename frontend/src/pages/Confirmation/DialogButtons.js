@@ -1,9 +1,8 @@
-import { Button } from "@mui/material";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import _isEmpty from "lodash/isEmpty";
-import React from "react";
 import strings from "../../localizeStrings";
+import React from "react";
 
 const styles = {
   dialogActions: {
@@ -32,14 +31,15 @@ const DialogButtons = props => {
     actionsAreExecuted,
     executingActions,
     failedAction,
-    submitable = true
+    submitable = true,
+    hasFailure = false
   } = props;
 
   const totalActionsLength = additionalActions?.length + originalActions?.length + postActions?.length;
 
   return (
     <DialogActions style={styles.dialogActions}>
-      {submitable && (
+      {submitable && !hasFailure && (
         <div style={styles.progessContainer}>
           <Typography key="progressInfo" style={styles.progressInfo} data-test="actions-counter">
             {strings.formatString(strings.preview.actions_done, executedActions.length, totalActionsLength)}
@@ -47,17 +47,19 @@ const DialogButtons = props => {
         </div>
       )}
 
-      <Button
-        disabled={executingActions || actionsAreExecuted}
-        aria-label="cancel"
-        data-test="confirmation-dialog-cancel"
-        color={submitable ? "secondary" : "primary"}
-        onClick={() => onCancel()}
-      >
-        {submitable ? strings.common.cancel : strings.common.ok}
-      </Button>
+      {!hasFailure && (
+        <Button
+          disabled={executingActions || actionsAreExecuted}
+          aria-label="cancel"
+          data-test="confirmation-dialog-cancel"
+          color={submitable ? "secondary" : "primary"}
+          onClick={() => onCancel()}
+        >
+          {submitable ? strings.common.cancel : strings.common.ok}
+        </Button>
+      )}
 
-      {submitable && (
+      {submitable && !hasFailure && (
         <Button
           aria-label="confirm"
           data-test="confirmation-dialog-confirm"
@@ -66,6 +68,18 @@ const DialogButtons = props => {
           disabled={confirmDisabled || executingActions || actionsAreExecuted}
         >
           {confirmButtonText}
+        </Button>
+      )}
+
+      {hasFailure && (
+        <Button
+          disabled={executingActions || actionsAreExecuted}
+          aria-label="cancel"
+          data-test="confirmation-dialog-cancel"
+          color={submitable ? "secondary" : "primary"}
+          onClick={() => onCancel()}
+        >
+          {strings.common.close}
         </Button>
       )}
     </DialogActions>

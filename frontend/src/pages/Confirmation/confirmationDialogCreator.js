@@ -52,7 +52,8 @@ export class ConfirmationDialogCreator {
       permittedToGrant: this.permittedToGrant,
       hasAssignments: this.hasAssignments,
       storeRejectReason: this.storeRejectReason,
-      rejectReason: this.rejectReason
+      rejectReason: this.rejectReason,
+      failureMessage: this.failureMessage
     } = confirmationDialogProps);
 
     this.paperRootStyle = paperRootStyle;
@@ -93,11 +94,14 @@ export class ConfirmationDialogCreator {
       actionTableData,
       allUsers,
       assignments,
-      marginTop
+      marginTop,
+      this.failureMessage
     );
     const errorInformation = !_isEmpty(this.failedAction) ? _createErrorInformation(this.failedAction) : null;
 
-    return this._createDialog(title, content, confirmButtonText, errorInformation, true);
+    const hasFailure = this.failureMessage !== '';
+
+    return this._createDialog(title, content, confirmButtonText, errorInformation, true, hasFailure);
   }
 
   // It is possible for an User to not have sufficient permissions to perform all "AdditionalActions"
@@ -115,7 +119,7 @@ export class ConfirmationDialogCreator {
     );
   }
 
-  _createDialog(title, content, confirmButtonText, errorInformation, submitable) {
+  _createDialog(title, content, confirmButtonText, errorInformation, submitable, hasFailure) {
     return (
       <Dialog sx={{ overflow: "visible" }} maxWidth={"xl"} open={this.open} data-test="confirmation-dialog">
         <DialogTitle>{title}</DialogTitle>
@@ -146,6 +150,7 @@ export class ConfirmationDialogCreator {
           }
           failedAction={this.failedAction}
           submitable={submitable}
+          hasFailure={hasFailure}
         />
       </Dialog>
     );
@@ -235,10 +240,22 @@ const _createDisableUserContent = (actionTableData, payload, marginTop) => {
   return { createdContent, createdTitle, createdConfirmButtonText };
 };
 
-const _createActionTableDialogContent = (originalActions, actionTableData, allUsers, assignments, marginTop) => {
+const _createActionTableDialogContent = (
+  originalActions,
+  actionTableData,
+  allUsers,
+  assignments,
+  marginTop,
+  failureMessage
+) => {
   let content = undefined;
   let confirmButtonText = strings.common.confirm;
   let title = strings.confirmation.confirmation_required;
+
+  if (failureMessage !== "") {
+    content = "Error: " + failureMessage + '. Please try again later';
+    return { content, title, confirmButtonText };
+  }
 
   for (const originalAction of originalActions) {
     const intent = originalAction.intent;
