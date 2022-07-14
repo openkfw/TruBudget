@@ -44,7 +44,7 @@
     "downshift": "^6.1.7",
     "file-saver": "^2.0.5",
     "history": "^4.9.0",
-    "immutable": "^4.1.0",
+    "immutable": "^3.8.2",
     "lodash": "^4.17.21",
     "query-string": "^7.1.1",
     "react": "^18.2.0",
