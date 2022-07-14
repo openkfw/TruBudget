@@ -39,23 +39,29 @@ const adaptMultichianParams = async (paramsFile, newParamsFile) => {
 };
 
 const importWallet = async (walletPath, chainName) => {
-  const {stdout} = await exec(
-    `multichain-cli ${chainName} importwallet ${walletPath}`,
-  );
-  log.debug({message: "Imported wallet:", stdout});
+  //TODO import wallet by copying the wallet folder and the wallet.dat file from backup to destination (TrubudgetChain folder)
+  // const { stdout } = await exec(
+  //   `multichain-cli ${chainName} importwallet ${walletPath}`,
+  // );
+
+  console.log("importing wallet..");
+  shell.mv(`${walletPath}/wallet`, `/root/.multichain/${chainName}/wallet`);
+  shell.mv(`${walletPath}/wallet.dat`, `/root/.multichain/${chainName}/wallet.dat`);
+
 };
 
 const backupWallet = async (chainName, destinationPath) => {
-  const {stdout} = await exec(
+  const { stdout } = await exec(
     `multichain-cli ${chainName} dumpwallet ${chainName}-wallet.txt`,
   );
   shell.mv(`/home/node/${chainName}-wallet.txt`, destinationPath);
   log.debug(stdout);
+  //TODO this is not needed anymore, since we don't use the importwallet rpc command anymore on the destination chain
 };
 
 const listAvailableWallets = async (chainName) => {
-  const {stdout} = await exec(`multichain-cli ${chainName} getaddresses`);
-  log.debug({message: "Available wallets:", stdout});
+  const { stdout } = await exec(`multichain-cli ${chainName} getaddresses`);
+  log.debug({ message: "Available wallets:", stdout });
 
   return stdout;
 };
