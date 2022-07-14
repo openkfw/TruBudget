@@ -1,12 +1,10 @@
-FROM node:10.5-alpine
+FROM node:18.4.0-alpine
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /home/node
 
-COPY package*.json ./
-
+COPY package.json ./
+COPY package-lock.json ./
 RUN npm ci
-
 COPY src/ src/
 
 CMD ["npm" ,"start"]

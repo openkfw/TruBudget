@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { CustomExpressResponse } from "./types";
-import * as jwtDecode from "jwt-decode";
+import jwtDecode from "jwt-decode";
 import {
   getProjects,
   getSubprojects,
@@ -12,6 +12,16 @@ import {
 import { amountTypesMapping, statusMapping, workflowItemTypeMapping } from "./helper";
 import strings from "./localizeStrings";
 import logger from "./logger";
+
+interface DecodedJwtToken {
+  userId: string;
+  address: string;
+  organization: string;
+  organizationAddress: string;
+  groups: Array<string>;
+  iat: number;
+  exp: number;
+}
 
 var Excel = require("exceljs");
 
@@ -31,9 +41,12 @@ export async function writeXLSX(
       useStyles: true,
       useSharedStrings: true,
     };
-    const { userId } = jwtDecode(token);
+    const { userId } = jwtDecode<DecodedJwtToken>(token);
     const workbook = new Excel.stream.xlsx.WorkbookWriter(options);
-    workbook.creator = userId ? userId : "Unknown TruBudget User";
+    workbook.creator = userId;
+    if (userId && userId !== "") {
+      workbook.creator = "Unknown TruBudget User";
+    }
     workbook.created = new Date();
 
     logger.trace("Preparing excel sheets");

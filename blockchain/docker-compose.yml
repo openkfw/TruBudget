@@ -1,7 +1,6 @@
 version: "3.7"
 services:
   blockchain:
-    platform: linux/amd64
     build: .
     environment:
       PORT: 8085

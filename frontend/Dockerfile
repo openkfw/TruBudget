@@ -1,18 +1,17 @@
-FROM node:13.12.0-alpine as builder
+FROM node:18.4.0-alpine as builder
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-#RUN sed -i '/"cypress"/d' package.json
-RUN npm ci
-
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm ci --legacy-peer-deps
 COPY . ./
 RUN npm run build
 
 ######
 
-FROM nginx:1.15-alpine
+FROM nginx:1.21.6-alpine
 
 ARG USE_SSL
 ARG SSL_DOMAIN
