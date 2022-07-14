@@ -30,7 +30,16 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        project: [frontend, api, blockchain, provisioning]
+        project:
+          [
+            frontend,
+            api,
+            blockchain,
+            provisioning,
+            excel-export-service,
+            email-notification-service,
+            storage-service,
+          ]
     defaults:
       run:
         working-directory: ${{ matrix.project }}
