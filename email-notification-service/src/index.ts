@@ -245,7 +245,7 @@ emailService.post(
     }
     const id: string = req.body.data.user.id;
     // authenticate
-    if (config.authentication !== "none") {
+    if (config.authentication === "jwt") {
       // Only the notification watcher of the Trubudget blockchain may send notifications
       if (res.locals.id !== "notification-watcher") {
         const message = `${res.locals.id} is not allowed to send a notification to ${id}`;
@@ -259,6 +259,7 @@ emailService.post(
 
     let emailAddress: string;
     (async () => {
+      logger.info(`Get email address of user ${id}`);
       emailAddress = await db.getEmailAddress(id);
       let body: NotificationResponseBody;
       if (emailAddress.length > 0) {
@@ -285,7 +286,7 @@ emailService.listen(config.http.port, () => {
 });
 
 function isAllowed(requestedUserId: string, res: express.Response): boolean {
-  if (config.authentication === "none") {
+  if (config.authentication !== "jwt") {
     return true;
   }
   const requestor: string = res.locals.userId;

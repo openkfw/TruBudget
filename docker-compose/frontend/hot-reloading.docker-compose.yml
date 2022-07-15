@@ -1,0 +1,15 @@
+version: "3"
+services:
+  frontend:
+    extends:
+      file: frontend/docker-compose.yml
+      service: frontend
+    stdin_open: true
+    restart: always
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.dev
+    image: docker-compose-frontend:local
+    volumes:
+      - "../frontend/src:/app/src"
+      - "/app/node_modules"

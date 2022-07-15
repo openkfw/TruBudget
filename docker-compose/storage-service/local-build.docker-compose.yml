@@ -1,0 +1,8 @@
+version: "3"
+services:
+  storage-service:
+    extends:
+      file: storage-service/docker-compose.yml
+      service: storage-service
+    build: ../storage-service
+    image: docker-compose-storage-service:local

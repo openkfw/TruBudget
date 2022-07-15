@@ -1,0 +1,14 @@
+version: "3"
+services:
+
+  email-db:
+    extends:
+      file: email-notification-service/docker-compose.yml
+      service: email-db
+    volumes:
+      - /emaildbVolume:/var/lib/postgresql/data
+
+  email-notification-service:
+    extends:
+      file: email-notification-service/docker-compose.yml
+      service: email-notification-service

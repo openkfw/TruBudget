@@ -4,6 +4,7 @@ const log = require("./log/logger");
 const mdLog = require("trubudget-logging-service").createPinoLogger(
   "Multichain-Deamon",
 );
+const os = require("os");
 const includeLoggingParamsToArgs = require("./log/logArguments");
 
 const configureChain = (
@@ -16,7 +17,7 @@ const configureChain = (
   RPC_ALLOW_IP,
   isMultichainFeedEnabled,
 ) => {
-  log.info(`Creating chain in directory ${__dirname}`);
+  log.info(`Creating chain in directory ${multichainDir}`);
   shell.mkdir("-p", multichainDir);
 
   if (isAlpha) {

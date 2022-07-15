@@ -1,11 +1,9 @@
-FROM node:18.4-alpine
+FROM node:10.5-slim
 
 # Default P2P Port:
 EXPOSE 7447
 # Default RPC Port:
 EXPOSE 8000
-
-RUN apk --no-cache add curl
 
 RUN curl -ko- https://www.multichain.com/download/multichain-2.1.2.tar.gz | tar xzv -C /usr/local/bin --strip 1 --exclude='multichain-2.1.2/multichaind-cold'
 
@@ -15,6 +13,7 @@ COPY package-lock.json ./
 RUN npm ci
 COPY src/ src/
 RUN chmod +x src/multichain-feed/multichain-feed
+RUN chown -R node src/multichain-feed/multichain-feed
 
 # Since we can not move the .multichain dir to the node users home (breaking change), we have to chown the root users home.
 # TODO: for version 3 - move .multichain in node home

@@ -1,0 +1,11 @@
+version: "3"
+services:
+  excel-export-service:
+    extends:
+      file: excel-export-service/docker-compose.yml
+      service: excel-export-service
+    build: ../excel-export-service
+    image: docker-compose-excel-export-service:local
+    command: [ "npm", "run", "watch" ]
+    volumes:
+      - "../excel-export-service/src:/home/node/src:delegated"

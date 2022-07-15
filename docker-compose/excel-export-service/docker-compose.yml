@@ -1,0 +1,23 @@
+version: "3"
+services:
+  excel-export-service:
+    image: trubudget/excel-export:${TAG}
+    environment:
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
+      PORT: ${EXPORT_PORT}
+      LOG_LEVEL: ${EXCEL_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    # networks:
+    #   mynetwork:
+    #     ipv4_address: 172.20.0.7
+    # depends_on:
+    #   - master-api
+    ports:
+      - "${EXPORT_PORT}:${EXPORT_PORT}"
+
+  frontend:
+    environment:
+      REACT_APP_EXPORT_SERVICE_ENABLED: "true"
+      EXPORT_HOST: ${EXPORT_HOST}
+      EXPORT_PORT: ${EXPORT_PORT}

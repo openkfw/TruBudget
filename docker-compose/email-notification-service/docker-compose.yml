@@ -1,0 +1,64 @@
+version: "3"
+services:
+
+  email-db:
+    image: postgres:14.4
+    environment:
+      POSTGRES_USER: ${EMAIL_POSTGRES_USER}
+      POSTGRES_HOST: ${EMAIL_POSTGRES_HOST}
+      POSTGRES_PASSWORD: ${EMAIL_POSTGRES_PASSWORD}
+      POSTGRES_PORT: ${EMAIL_POSTGRES_PORT}
+      POSTGRES_DB: ${EMAIL_POSTGRES_DB_NAME}
+    # volume for persisting data
+    volumes:
+      - /emaildbVolume:/var/lib/postgresql/data
+    # networks:
+    #   mynetwork:
+    #     ipv4_address: 172.21.0.2
+    ports:
+      - ${EMAIL_POSTGRES_PORT}:${EMAIL_POSTGRES_PORT}
+
+  email-notification-service:
+    image: trubudget/email-notification:${TAG}
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      SMTP_HOST: ${EMAIL_SERVICE_SMTP_HOST}
+      SMTP_PORT: ${EMAIL_SERVICE_SMTP_PORT}
+      SMTP_USER: ${EMAIL_SERVICE_SMTP_USER}
+      SMTP_PASSWORD: ${EMAIL_SERVICE_SMTP_PASSWORD}
+      PORT: ${EMAIL_SERVICE_PORT}
+      DB_HOST: ${EMAIL_POSTGRES_HOST}
+      DB_USER: ${EMAIL_POSTGRES_USER}
+      DB_PORT: ${EMAIL_POSTGRES_PORT}
+      DB_NAME: ${EMAIL_POSTGRES_DB_NAME}
+      DB_SCHEMA: ${EMAIL_SERVICE_DB_SCHEMA}
+      DB_TYPE: ${EMAIL_SERVICE_DB_TYPE}
+      SQL_DEBUG: ${EMAIL_SERVICE_SQL_DEBUG}
+      AUTHENTICATION: ${EMAIL_SERVICE_AUTHENTICATION}
+      USER_TABLE: ${EMAIL_SERVICE_USER_TABLE}
+      EMAIL_FROM: ${EMAIL_SERVICE_FROM}
+      EMAIL_SUBJECT: ${EMAIL_SERVICE_SUBJECT}
+      EMAILTEXT: ${EMAIL_SERVICE_TEXT}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${EMAIL_SERVICE_ACCESS_CONTROL_ALLOW_ORIGIN}
+      LOG_LEVEL: ${EMAIL_SERVICE_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    # networks:
+    #   mynetwork:
+    #     ipv4_address: 172.21.0.5
+    ports:
+      - "${EMAIL_SERVICE_PORT}:${EMAIL_SERVICE_PORT}"
+
+  frontend:
+    environment:
+      REACT_APP_EMAIL_SERVICE_ENABLED: true
+      EMAIL_HOST: ${EMAIL_SERVICE_HOST}
+      EMAIL_PORT: ${EMAIL_SERVICE_PORT}
+
+  blockchain:
+    environment:
+      EMAIL_SERVICE_ENABLED: true
+      EMAIL_HOST: ${EMAIL_SERVICE_HOST}
+      EMAIL_PORT: ${EMAIL_SERVICE_PORT}
+      NOTIFICATION_PATH: ${NOTIFICATION_PATH}
+      NOTIFICATION_MAX_LIFETIME: ${NOTIFICATION_MAX_LIFETIME}
+      NOTIFICATION_SEND_INTERVAL: ${NOTIFICATION_SEND_INTERVAL}

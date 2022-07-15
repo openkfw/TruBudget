@@ -1,0 +1,10 @@
+version: "3"
+services:
+  provisioning:
+    extends:
+      file: provisioning/docker-compose.yml
+      service: provisioning
+    build:
+      context: ../provisioning
+      dockerfile: Dockerfile
+    image: docker-compose-provisioning:local
