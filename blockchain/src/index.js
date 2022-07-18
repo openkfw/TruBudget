@@ -329,7 +329,7 @@ app.get("/readiness", (req, res) => {
 });
 
 const loadConfig = (path) => {
-  const config = yaml.safeLoad(fs.readFileSync(path, "utf8"));
+  const config = yaml.load(fs.readFileSync(path, "utf8"));
   removeFile(path);
   return config;
 };
@@ -355,9 +355,7 @@ app.post("/chain", async (req, res) => {
           config.DirectoryHash,
           extractPath,
         );
-        const chainConfig = yaml.safeLoad(
-          fs.readFileSync(chainConfigPath, "utf8"),
-        );
+        const chainConfig = yaml.load(fs.readFileSync(chainConfigPath, "utf8"));
         let correctConfig = chainConfig.includes(MULTICHAIN_RPC_PASSWORD);
 
         if (config.hasOwnProperty("Organisation")) {
