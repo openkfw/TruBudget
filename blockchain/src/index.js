@@ -19,12 +19,7 @@ const { startBeta, registerNodeAtAlpha } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
 const { isMultichainReady } = require("./readiness");
 
-const {
-  adaptMultichianParams,
-  importWallet,
-  listAvailableWallets,
-  backupWallet,
-} = require("./wallet-backup");
+const { importWallet, listAvailableWallets } = require("./wallet-backup");
 
 const {
   moveBackup,
@@ -139,9 +134,8 @@ const spawnProcess = (startProcess) => {
     } else {
       const retryIntervalMs = 10000;
       log.info(
-        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${
-          retryIntervalMs / 1000
-        } Seconds...`,
+        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${retryIntervalMs /
+          1000} Seconds...`,
       );
       await new Promise((resolve) => {
         setTimeout(resolve, retryIntervalMs);
@@ -273,7 +267,6 @@ const stopMultichain = async (mcproc) => {
 app.get("/chain-sha256", async (req, res) => {
   try {
     log.info("Start packaging");
-    await backupWallet(CHAINNAME, `${multichainDir}/${CHAINNAME}/wallet.txt`);
     AUTOSTART = false;
     await stopMultichain(mcproc);
     await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
@@ -368,35 +361,34 @@ app.post("/restoreWallet", async (req, res) => {
     const file = streamifier.createReadStream(req.body);
     const stream = file.pipe(extract);
     stream.on("finish", async () => {
-      AUTOSTART = false;
-      if (isRunning) await stopMultichain(mcproc);
-      await adaptMultichianParams(
-        `${multichainDir}/${CHAINNAME}/params.dat`,
-        `${extractPath}/params.dat`,
-      );
-      await importWallet(`${extractPath}`, CHAINNAME);
-      await spawnProcess(() =>
-        startMultichainDaemon(
-          CHAINNAME,
-          externalIpArg,
-          blockNotifyArg,
-          P2P_PORT,
-          multichainDir,
-        ),
-      );
-      AUTOSTART = true;
-      // //TODO this is nasty why is startDeamon not waiting?
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      // await importWallet(`${extractPath}`, CHAINNAME);
-      const availableWallets = await listAvailableWallets(CHAINNAME);
-
-      res.json(
-        `Ok. Available wallets are: ${JSON.stringify(availableWallets)}`,
-      );
+      try {
+        AUTOSTART = false;
+        if (isRunning) await stopMultichain(mcproc);
+        await importWallet(`${extractPath}`, CHAINNAME);
+        await spawnProcess(() =>
+          startMultichainDaemon(
+            CHAINNAME,
+            externalIpArg,
+            blockNotifyArg,
+            P2P_PORT,
+            multichainDir,
+          ),
+        );
+        AUTOSTART = true;
+        //TODO this is nasty why is startDeamon not waiting?
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+        const availableWallets = await listAvailableWallets(CHAINNAME);
+        return res.json(
+          `Ok. Available wallets are: ${JSON.stringify(availableWallets)}`,
+        );
+      } catch (err) {
+        log.error({ err }, "Error while trying to restore wallet: ");
+        return res.status(500).send(err.message);
+      }
     });
   } catch (err) {
     log.error({ err }, "Error while trying to restore wallet: ");
-    res.status(500).send(err.message);
+    return res.status(500).send(err.message);
   }
 });
 
@@ -479,6 +471,6 @@ app.post("/chain", async (req, res) => {
   }
 });
 
-app.listen(port, function () {
+app.listen(port, function() {
   log.info(`App listening on ${port}`);
 });
