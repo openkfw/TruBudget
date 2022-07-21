@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
+import "chart.js/auto";
 import { connect } from "react-redux";
 import { toAmountString, toJS } from "../../helper";
 import strings from "../../localizeStrings";
@@ -67,7 +68,7 @@ class ProjectAnalytics extends React.Component {
   }
 
   convertTotalBudget() {
-    return this.props.totalBudget.map(pb => {
+    return this.props.totalBudget.map((pb) => {
       return {
         ...pb,
         convertedAmount: this.convertToSelectedCurrency(pb.value, pb.currencyCode)
@@ -75,8 +76,8 @@ class ProjectAnalytics extends React.Component {
     });
   }
   convertProjectedBudget() {
-    return this.props.projectedBudget.map(pb =>
-      pb.map(pb => {
+    return this.props.projectedBudget.map((pb) =>
+      pb.map((pb) => {
         return {
           ...pb,
           convertedAmount: this.convertToSelectedCurrency(pb.value, pb.currencyCode)
@@ -123,7 +124,7 @@ class ProjectAnalytics extends React.Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {convertedTotalBudget.map(budget => (
+                  {convertedTotalBudget.map((budget) => (
                     <TableRow key={budget.organization + budget.currencyCode}>
                       <TableCell>{budget.organization}</TableCell>
                       <TableCell align="right">{toAmountString(budget.value)}</TableCell>
@@ -198,7 +199,7 @@ const dashboardStyles = {
   }
 };
 
-const onlyPositive = number => (number < 0 ? 0 : number);
+const onlyPositive = (number) => (number < 0 ? 0 : number);
 
 const NumberChart = ({ title, budget, currency, dataTest }) => (
   <Card style={dashboardStyles.card}>
@@ -273,10 +274,10 @@ const Dashboard = ({
         chart={
           <Doughnut
             data={{
-              labels: totalBudgets.map(tb => tb.organization),
+              labels: totalBudgets.map((tb) => tb.organization),
               datasets: [
                 {
-                  data: totalBudgets.map(tb => tb.convertedAmount),
+                  data: totalBudgets.map((tb) => tb.convertedAmount),
                   backgroundColor: [
                     "rgba(255, 99, 132, 0.8)",
                     "rgba(54, 162, 235, 0.8)",
@@ -295,8 +296,11 @@ const Dashboard = ({
                     return toAmountString(data.datasets[item.datasetIndex].data[item.index], indicatedCurrency);
                   }
                 }
-              }
+              },
+              maintainAspectRatio: false
             }}
+            width={250}
+            height={250}
           />
         }
       />
@@ -346,8 +350,11 @@ const Dashboard = ({
                     return toAmountString(data.datasets[item.datasetIndex].data[item.index], indicatedCurrency);
                   }
                 }
-              }
+              },
+              maintainAspectRatio: false
             }}
+            width={250}
+            height={250}
           />
         }
       />
@@ -355,7 +362,7 @@ const Dashboard = ({
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     projectedBudget: state.getIn(["analytics", "project", "projectedBudget"]),
     assignedBudget: state.getIn(["analytics", "project", "assignedBudget"]),
@@ -367,9 +374,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    getProjectKPIs: projectId => dispatch(getProjectKPIs(projectId)),
+    getProjectKPIs: (projectId) => dispatch(getProjectKPIs(projectId)),
     resetKPIs: () => dispatch(resetKPIs())
   };
 };
