@@ -5,12 +5,6 @@ export interface User {
   emailAddress: string;
 }
 
-export interface Request {
-  body: {
-    data: any;
-  };
-}
-
 export type Status = "updated" | "inserted" | "deleted" | "sent" | "not found" | "already exists";
 
 export interface UserEditResponseBody {
