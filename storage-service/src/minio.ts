@@ -29,6 +29,7 @@ interface FileWithMeta {
   meta: MetadataWithName;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const minioClient: any = new Minio.Client({
   endPoint: config.storage.host,
   port: config.storage.port,
@@ -52,7 +53,7 @@ export const getMinioStatus = async () => {
 const bucketName: string = config.storage.bucketName;
 
 const makeBucket = (bucket: string, cb: Function) => {
-  minioClient.bucketExists(bucket, (err: any, exists: any) => {
+  minioClient.bucketExists(bucket, (err: unknown, exists: unknown) => {
     if (err) {
       log.error({ err }, "Error during searching for bucket");
       return cb(err);
@@ -100,7 +101,7 @@ const upload = (
     file,
     s,
     metaDataWithName,
-    (err: any, etag: any) => {
+    (err: unknown, etag: unknown) => {
       if (err) {
         log.error({ err }, "minioClient.putObject");
         return cb(err);
