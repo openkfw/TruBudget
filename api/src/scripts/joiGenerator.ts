@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable import/no-dynamic-require */
 import * as colors from "colors";
 import * as Diff from "diff";
 import * as fs from "fs";

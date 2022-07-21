@@ -30,7 +30,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
-  permission: Joi.valid(workflowitemIntents).required(),
+  permission: Joi.valid(...workflowitemIntents).required(),
   grantee: Joi.string().required(),
 });
 
@@ -64,7 +64,7 @@ export function createEvent(
 }
 
 export function validate(input): Result.Type<Event> {
-  const { error, value } = Joi.validate(input, schema);
+  const { error, value } = schema.validate(input);
   return !error ? value : error;
 }
 

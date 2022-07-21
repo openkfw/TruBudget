@@ -34,7 +34,7 @@ export const schema = Joi.object({
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function validate(input: any): Result.Type<Event> {
-  const { error, value } = Joi.validate(input, schema);
+  const { error, value } = schema.validate(input);
   return !error ? value : error;
 }
 
@@ -75,8 +75,8 @@ const documentSchema = Joi.object().keys({
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function validateDocument(input: any): Result.Type<StoredDocument> {
-  const { error } = Joi.validate(input, documentSchema);
-  return error === null ? (input as StoredDocument) : error;
+  const { error } = documentSchema.validate(input);
+  return error === undefined ? (input as StoredDocument) : error;
 }
 
 export function createFrom(ctx: Ctx, event: Event): Result.Type<StoredDocument> {

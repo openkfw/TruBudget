@@ -35,7 +35,7 @@ const requestBodySchema = Joi.array().items({
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
 function validateRequestBody(body): Result.Type<WorkflowitemTraceEvent[]> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
+  const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
 

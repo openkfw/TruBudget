@@ -10,7 +10,13 @@ export interface SwaggerSchema extends FastifySchema {
 }
 
 export interface Schema {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  preValidation?: any;
   schema: SwaggerSchema;
+}
+
+interface Schemas {
+  [key: string]: Schema;
 }
 
 // ------------------------------------------------------------
@@ -44,7 +50,7 @@ function getSuccessfulSchema() {
   };
 }
 
-const schemas = {
+const schemas: Schemas = {
   // ------------------------------------------------------------
   //       system
   // ------------------------------------------------------------
@@ -2883,8 +2889,8 @@ const schemas = {
             },
           },
         },
+        401: getAuthErrorSchema(),
       },
-      401: getAuthErrorSchema(),
     },
   },
   markRead: {
@@ -2980,13 +2986,13 @@ const schemas = {
       body: {
         type: "object",
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: { type: "string" },
           data: {
             type: "object",
             additionalProperties: false,
             properties: {
-              address: { type: "string", example: "1CaWV7nTVwAd8bTzcPBBSQRZgbXLd9K8faM9QM" },
-              organization: { type: "string", example: "Alice's Solutions & Co" },
+              address: { type: "string" },
+              organization: { type: "string" },
             },
             required: ["address", "organization"],
           },
@@ -2997,7 +3003,7 @@ const schemas = {
           description: "successful response",
           type: "object",
           properties: {
-            apiVersion: { type: "string", example: "1.0" },
+            apiVersion: { type: "string", example4: "1.0" },
             data: {
               type: "object",
             },
@@ -3366,7 +3372,6 @@ const schemas = {
 export function getSchema(server, id): Schema {
   const schema = schemas[id];
   return {
-    // @ts-ignore: Unreachable code error
     preValidation: [server.authenticate],
     ...schema,
   };

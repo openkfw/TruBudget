@@ -848,7 +848,7 @@ ProvisioningStatusAPI.addHttpHandler(server, URL_PREFIX, {
  * Run the server.
  */
 
-server.listen(port, "0.0.0.0", async (err) => {
+server.listen({ port, host: "0.0.0.0" }, async (err) => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
     logger.trace();

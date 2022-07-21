@@ -1,26 +1,24 @@
 import * as sanitizeHtml from "sanitize-html";
-import * as Joi from "joi";
+import Joi = require("joi");
 
-export const htmlStrip = (joi) => {
-  return {
-    name: "string",
-    base: Joi.string(),
-    language: {
-      htmlStrip: "remove all html tags from string",
-    },
-    rules: [{
-      name: "htmlStrip",
-      validate(params, value, state, options) {
+export const htmlStrip = {
+  type: "string",
+  base: Joi.string(),
+  messages: {
+    "string.htmlStrip": "remove all html tags from string",
+  },
+  rules: {
+    htmlStrip: {
+      validate(value, helpers) {
         const clean = sanitizeHtml(value, {
           allowedTags: [],
           allowedAttributes: {},
         });
-
         if (clean) {
           return clean;
         }
-        return this.createError("string.htmlStrip", { value }, state, options);
+        return helpers.error("string.htmlStrip", { value });
       },
-    }],
-  };
+    },
+  },
 };

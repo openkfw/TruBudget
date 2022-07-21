@@ -75,47 +75,46 @@ const schema = Joi.object().keys({
   dueDate: Joi.date().iso().allow(""),
   displayName: Joi.string().required(),
   // This should use exchangeRateSchema but can't, because of backward compatibility:
-  exchangeRate: Joi.string()
-    .when("amountType", {
-      is: Joi.valid("N/A"),
-      then: Joi.forbidden(),
-    })
-    .when("status", {
-      is: Joi.valid("closed"),
+  exchangeRate: Joi.string().when("amountType", {
+    is: "N/A",
+    then: Joi.forbidden(),
+    otherwise: Joi.when("status", {
+      is: "closed",
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
+  }),
+
   billingDate: Joi.date()
     .iso()
     .when("amountType", {
       is: Joi.valid("N/A"),
       then: Joi.forbidden(),
-    })
-    .when("status", {
-      is: Joi.valid("closed"),
+      otherwise: Joi.when("status", {
+        is: "closed",
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+      }),
+    }),
+
+  amount: moneyAmountSchema.when("amountType", {
+    is: Joi.valid("N/A"),
+    then: Joi.forbidden(),
+    otherwise: Joi.when("status", {
+      is: "closed",
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-  amount: moneyAmountSchema
-    .when("amountType", {
-      is: Joi.valid("N/A"),
-      then: Joi.forbidden(),
-    })
-    .when("status", {
-      is: Joi.valid("closed"),
+  }),
+  currency: Joi.string().when("amountType", {
+    is: Joi.valid("N/A"),
+    then: Joi.forbidden(),
+    otherwise: Joi.when("status", {
+      is: "closed",
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
-  currency: Joi.string()
-    .when("amountType", {
-      is: Joi.valid("N/A"),
-      then: Joi.forbidden(),
-    })
-    .when("status", {
-      is: Joi.valid("closed"),
-      then: Joi.required(),
-      otherwise: Joi.optional(),
-    }),
+  }),
   amountType: Joi.string().valid("N/A", "disbursed", "allocated").required(),
   description: Joi.string().allow(""),
   status: Joi.string().valid("open", "closed").required(),
@@ -129,8 +128,8 @@ const schema = Joi.object().keys({
 });
 
 export function validate(input): Result.Type<Workflowitem> {
-  const { error } = Joi.validate(input, schema);
-  return error === null ? (input as Workflowitem) : error;
+  const { error } = schema.validate(input);
+  return error === undefined ? (input as Workflowitem) : error;
 }
 
 export function permits(

@@ -34,7 +34,7 @@ export const schema = Joi.object({
 });
 
 export function validate(input): Result.Type<Event> {
-  const { error, value } = Joi.validate(input, schema);
+  const { error, value } = schema.validate(input);
   return !error ? value : error;
 }
 
@@ -72,6 +72,6 @@ const secretSchema = Joi.object().keys({
 });
 
 export function validateSecret(input): Result.Type<SecretPublished> {
-  const { error } = Joi.validate(input, secretSchema);
-  return error === null ? (input as SecretPublished) : error;
+  const { error } = secretSchema.validate(input);
+  return error === undefined ? (input as SecretPublished) : error;
 }

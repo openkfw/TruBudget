@@ -49,8 +49,8 @@ const schema = Joi.object({
 });
 
 export function validate(input): Result.Type<Project> {
-  const { error } = Joi.validate(input, schema);
-  return error === null ? (input as Project) : error;
+  const { error } = schema.validate(input);
+  return error === undefined ? (input as Project) : error;
 }
 
 export function permits(project: Project, actingUser: ServiceUser, intents: Intent[]): boolean {

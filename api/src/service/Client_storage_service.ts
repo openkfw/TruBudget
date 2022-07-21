@@ -47,12 +47,12 @@ export default class StorageServiceClient implements StorageServiceClientI {
   }
 
   public async isReady(): Promise<boolean> {
-    const result: AxiosResponse<any> = await this.axiosInstance.get("/readiness");
+    const result: AxiosResponse<unknown> = await this.axiosInstance.get("/readiness");
     return result.status === 200;
   }
 
   public async getVersion(): Promise<Version> {
-    const result: AxiosResponse<any> = await this.axiosInstance.get("/version");
+    const result: AxiosResponse<unknown> = await this.axiosInstance.get("/version");
     if (result.status !== 200) {
       return {
         release: "",
@@ -62,7 +62,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
       } as Version;
     }
 
-    return result?.data;
+    return result?.data as Version;
   }
 
   public async uploadObject(

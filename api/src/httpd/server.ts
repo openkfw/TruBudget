@@ -1,12 +1,12 @@
-import * as Ajv from "ajv";
+import Ajv from "ajv";
 import { fastify, FastifyInstance } from "fastify";
-import fastifyCors from "fastify-cors";
-import * as metricsPlugin from "fastify-metrics";
+import fastifyMetricsPlugin from "fastify-metrics";
 import { IncomingMessage, Server, ServerResponse } from "http";
 import { AugmentedFastifyInstance } from "types";
 import logger from "../lib/logger";
 import { AuthenticatedRequest } from "./lib";
 
+const path = require("path");
 const DEFAULT_API_VERSION = "1.0";
 
 const ajv = new Ajv({
@@ -14,13 +14,14 @@ const ajv = new Ajv({
   removeAdditional: true,
   useDefaults: true,
   coerceTypes: true,
-  unknownFormats: "ignore",
+  // strictSchema: "log",
   // any other options
   // ...
+  keywords: ["example"],
 });
 
 const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
-  server.register(require("fastify-jwt"), {
+  server.register(require("@fastify/jwt"), {
     secret: jwtSecret,
   });
 
@@ -64,7 +65,8 @@ const registerSwagger = (
   _apiPort: number,
   swaggerBasePath: string,
 ) => {
-  server.register(require("fastify-swagger"), {
+  server.register(require("@fastify/swagger"), {
+    // http://localhost:8080/api/documentation/static/index.html
     routePrefix: `${urlPrefix}/documentation`,
     swagger: {
       info: {
@@ -73,9 +75,9 @@ const registerSwagger = (
           "The documentation contains all endpoints used for TruBudget blockchain communication." +
           "\nStart at the 'user.authenticate' endpoint to receive a token which is needed for authentication " +
           "at almost every endpoint.\nTo use the token click on the 'Authorize' Button at the top right",
-        version: "0.1.0",
+        version: "1.0.0",
       },
-      basePath: `${swaggerBasePath}`,
+      host: "localhost",
       schemes: ["http", "https"],
       consumes: ["application/json"],
       produces: ["application/json"],
@@ -101,8 +103,24 @@ const registerSwagger = (
         { name: "workflowitem" },
       ],
     },
+    uiConfig: {
+      docExpansion: "full",
+      deepLinking: false,
+    },
+    uiHooks: {
+      onRequest: function (_request, _reply, next) {
+        next();
+      },
+      preHandler: function (_request, _reply, next) {
+        next();
+      },
+    },
+    staticCSP: true,
+    transformStaticCSP: (header) => header,
     exposeRoute: true,
   });
+
+  // server.swagger();
 };
 
 export const createBasicApp = (
@@ -118,13 +136,14 @@ export const createBasicApp = (
   });
 
   server.setValidatorCompiler(({ schema }) => ajv.compile(schema));
-  server.register(metricsPlugin, { endpoint: "/metrics" });
-  server.register(fastifyCors, { origin: accessControlAllowOrigin });
+  server.register(fastifyMetricsPlugin, { endpoint: "/metrics" });
+  server.register(require("@fastify/cors"), { origin: accessControlAllowOrigin });
+  server.register(require("@fastify/static"), { root: path.join(__dirname, "public") });
 
   registerSwagger(server, urlPrefix, apiPort, swaggerBasePath);
 
   // It is important that swagger is registered first in order for a swaggerSCP object to exist on the instance
-  server.register(require("fastify-helmet"), (instance) => {
+  server.register(require("@fastify/helmet"), (instance) => {
     return {
       contentSecurityPolicy: {
         directives: {
@@ -147,6 +166,5 @@ export const createBasicApp = (
     return payload;
   });
 
-  // app.use(logging);
   return server;
 };
