@@ -86,7 +86,7 @@ const handleCreate = props => {
 const handleEdit = props => {
   const { editWorkflowItem, onDialogCancel, workflowItems, workflowToAdd, location, storeSnackbarMessage } = props;
   const originalWorkflowItem = workflowItems.find(workflowItem => workflowItem.data.id === workflowToAdd.id).data;
-  // TODO handle change in state through actions
+
   if (workflowToAdd.amountType === "N/A") {
     if (workflowToAdd.amountType === originalWorkflowItem.amountType) {
       delete workflowToAdd.amount;
