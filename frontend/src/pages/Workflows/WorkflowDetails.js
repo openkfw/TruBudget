@@ -23,7 +23,7 @@ import WorkflowitemHistoryTab from "./WorkflowitemHistoryTab/WorkflowHistoryTab"
 
 const styles = {
   alert: {
-    border: theme => `3px solid ${theme.palette.warning.main}`,
+    border: (theme) => `3px solid ${theme.palette.warning.main}`,
     width: 37,
     height: 37
   },
@@ -60,7 +60,7 @@ const styles = {
   }
 };
 
-const removeNewLines = text => {
+const removeNewLines = (text) => {
   let formattedText = "";
   if (!_isEmpty(text)) {
     formattedText = text.replace(/\n/g, " ");
@@ -69,20 +69,11 @@ const removeNewLines = text => {
 };
 
 function Overview({ users, workflowitem }) {
-  const {
-    displayName,
-    description,
-    amountType,
-    assignee,
-    amount,
-    currency,
-    dueDate,
-    workflowitemType,
-    rejectReason
-  } = workflowitem.data;
+  const { displayName, description, amountType, assignee, amount, currency, dueDate, workflowitemType, rejectReason } =
+    workflowitem?.data;
   const status = rejectReason ? "rejected" : workflowitem.data.status;
   const trimmedComment = removeNewLines(description);
-  const assignedUser = users.find(user => user.id === assignee);
+  const assignedUser = users.find((user) => user.id === assignee);
 
   return (
     <List>
@@ -195,6 +186,10 @@ function WorkflowDetails({
       setSelectedTab(0);
     }
   }, [showWorkflowDetails]);
+
+  if (workflowitem.data === undefined) {
+    return <></>;
+  }
 
   let content;
 
