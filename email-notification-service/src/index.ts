@@ -67,7 +67,7 @@ emailService.post(
     if (!isDataValid) {
       logger.error("Validation error. Data not valid!");
       res.status(400).send({
-        message: `The request body validation failed`,
+        message: "The request body validation failed",
       });
       return;
     }
@@ -159,7 +159,7 @@ emailService.post(
     if (!isDataValid) {
       logger.error("Validation error. Data not valid!");
       res.status(400).send({
-        message: `The request body validation failed`,
+        message: "The request body validation failed",
       });
       return;
     }
@@ -196,7 +196,7 @@ emailService.get(
     if (!isDataValid) {
       logger.error("Validation error. Data not valid!");
       res.status(400).send({
-        message: `The request body validation failed`,
+        message: "The request body validation failed",
       });
       return;
     }
@@ -239,7 +239,7 @@ emailService.post(
     if (!isDataValid) {
       logger.error("Validation error. Data not valid!");
       res.status(400).send({
-        message: `The request body validation failed`,
+        message: "The request body validation failed",
       });
       return;
     }

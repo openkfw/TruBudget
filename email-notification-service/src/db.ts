@@ -8,7 +8,9 @@ interface EmailAddress {
 
 class DbConnector {
   private pool: Knex;
+
   private idTableName = "id";
+
   private emailAddressTableName = "email_address";
 
   public executeQuery = async (
@@ -16,7 +18,7 @@ class DbConnector {
     errorMessage = "Failed to execute database operation\n",
   ) => {
     try {
-      return query;
+      return await query;
     } catch (error) {
       throw new Error(errorMessage + error);
     }
@@ -82,6 +84,7 @@ class DbConnector {
         [`${this.emailAddressTableName}`]: emailAddress,
       });
     } catch (error) {
+      logger.error(error);
       throw error;
     }
   };
@@ -96,6 +99,7 @@ class DbConnector {
         .where({ [`${this.idTableName}`]: id });
       logger.info(`Update User '${id}' with email address '${emailAddress}'`);
     } catch (error) {
+      logger.error(error);
       throw error;
     }
   };
@@ -111,6 +115,7 @@ class DbConnector {
         .del();
       logger.info(`Delete User '${id}' with email address '${emailAddress}'`);
     } catch (error) {
+      logger.error(error);
       throw error;
     }
   };
@@ -138,6 +143,7 @@ class DbConnector {
         return emailAddresses[0].email_address;
       }
     } catch (error) {
+      logger.error(error);
       throw error;
     }
     logger.debug(`No email address found for ${id}`);
