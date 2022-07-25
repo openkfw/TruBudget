@@ -102,7 +102,7 @@ stream.on("finish", async () => {
 });
 
 const loadConfig = (path) => {
-  const config = yaml.safeLoad(fs.readFileSync(path, "utf8"));
+  const config = yaml.load(fs.readFileSync(path, "utf8"));
   shell.rm(path);
   return config;
 };

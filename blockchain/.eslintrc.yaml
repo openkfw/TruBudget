@@ -6,9 +6,10 @@ env:
   node: true
   mocha: true
   es6: true
-parser: "babel-eslint"
+parser: "@babel/eslint-parser"
 parserOptions:
   sourceType: module
+  requireConfigFile: false
   ecmaVersion: 9
   ecmaFeatures:
     modules: true
@@ -27,6 +28,7 @@ rules:
   no-control-regex: 0
   no-undef: 2
   linebreak-style: 0
+  arrow-body-style: 0
   ## temporarily overriden below
   # import/no-extraneous-dependencies:
   #   - 2
