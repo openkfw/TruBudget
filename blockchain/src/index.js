@@ -11,6 +11,7 @@ const KubernetesClient = require("./kubernetesClient");
 const log = require("./log/logger");
 const logService = require("trubudget-logging-service");
 const { version } = require("../package.json");
+const shell = require("shelljs");
 
 const {
   startEmailNotificationWatcher,
@@ -367,6 +368,25 @@ app.post("/restoreWallet", async (req, res) => {
         AUTOSTART = false;
         if (isRunning) await stopMultichain(mcproc);
         await importWallet(`${extractPath}`, CHAINNAME);
+        if (isMultichainFeedEnabled) {
+          log.info("Multichain feed is enabled");
+          shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
+      rpcport=${MULTICHAIN_RPC_PORT}
+      rpcuser=${MULTICHAIN_RPC_USER}
+      rpcpassword=${MULTICHAIN_RPC_PASSWORD}
+      rpcallowip=${RPC_ALLOW_IP}
+      walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j
+      EOF
+      `);
+        } else {
+          shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
+      rpcport=${MULTICHAIN_RPC_PORT}
+      rpcuser=${MULTICHAIN_RPC_USER}
+      rpcpassword=${MULTICHAIN_RPC_PASSWORD}
+      rpcallowip=${RPC_ALLOW_IP}
+      EOF
+      `);
+        }
         await spawnProcess(() =>
           startMultichainDaemon(
             CHAINNAME,
