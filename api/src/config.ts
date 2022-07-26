@@ -152,7 +152,7 @@ const envExists = <T, K extends keyof T>(
       default:
         break;
     }
-    logger.fatal(msg || `Environment is missing required variable ${prop}`);
+    logger.fatal(msg || `Environment is missing required variable ${String(prop)}`);
     return false;
   } else {
     return true;
