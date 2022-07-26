@@ -62,14 +62,16 @@ export async function assignWorkflowitem(
   }
 
   logger.trace({ publisher }, "Checking if user has permissions");
-  const assignIntent = "workflowitem.assign";
-  if (!Workflowitem.permits(workflowitem, publisher, [assignIntent])) {
-    return new NotAuthorized({
-      ctx,
-      userId: publisher.id,
-      intent: assignIntent,
-      target: workflowitem,
-    });
+  if (publisher.id !== "root") {
+    const assignIntent = "workflowitem.assign";
+    if (!Workflowitem.permits(workflowitem, publisher, [assignIntent])) {
+      return new NotAuthorized({
+        ctx,
+        userId: publisher.id,
+        intent: assignIntent,
+        target: workflowitem,
+      });
+    }
   }
 
   logger.trace({ event: assignEvent }, "Checking event validity");

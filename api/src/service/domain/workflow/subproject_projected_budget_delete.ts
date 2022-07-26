@@ -56,9 +56,11 @@ export async function deleteProjectedBudget(
   }
 
   logger.trace({ issuer }, "Checking if user has permissions");
-  const intent = "subproject.budget.deleteProjected";
-  if (!Subproject.permits(subproject, issuer, [intent])) {
-    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
+  if (issuer.id !== "root") {
+    const intent = "subproject.budget.deleteProjected";
+    if (!Subproject.permits(subproject, issuer, [intent])) {
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
+    }
   }
 
   logger.trace({ event: budgetDeleted }, "Checking event validity");

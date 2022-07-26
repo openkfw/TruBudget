@@ -65,7 +65,7 @@ describe("Revoking user permissions: permissions", () => {
     assert.instanceOf(result, NotAuthorized, "The error is of the type 'Not Authorized'");
   });
 
-  it("The root user can never revoke user permissions", async () => {
+  it("The root user can always revoke user permissions", async () => {
     const result = await revokeUserPermission(
       ctx,
       root,
@@ -78,7 +78,7 @@ describe("Revoking user permissions: permissions", () => {
       },
     );
 
-    assert.isFalse(Result.isOk(result));
+    assert.isTrue(Result.isOk(result));
   });
 });
 
