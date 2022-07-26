@@ -1,49 +1,248 @@
 ---
-  extends: airbnb-base
-  env:
-    node: true
-    mocha: true
-    es6: true
-  parser: typescript-eslint-parser
-  parserOptions:
-    sourceType: module
-    ecmaFeatures: 
-      modules: true
-  rules:
-    generator-star-spacing:
-      - 2
-      - before: true
-        after: true
-    no-shadow: 0
-    import/no-unresolved: 0
-    import/extensions: 0
-    require-yield: 0
-    no-param-reassign: 0
-    comma-dangle: 0
-    no-underscore-dangle: 0
-    no-control-regex: 0
-    import/no-extraneous-dependencies:
-      - 2
-      - devDependencies: true
-    func-names: 0
-    no-unused-expressions: 0
-    prefer-arrow-callback: 1
-    no-use-before-define:
-      - 2
-      - functions: false
-    space-before-function-paren:
-      - 2
-      - always
-    max-len:
-      - 2
-      - 120
-      - 2
-    semi:
-      - 2
-      - never
-    strict:
-      - 2
-      - global
-    arrow-parens:
-      - 2
-      - always
+extends:
+  - airbnb-typescript/base
+  - prettier
+  - eslint:recommended
+env:
+  node: true
+  mocha: true
+  es6: true
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaVersion: 6
+  project: "./tsconfig.json"
+  sourceType: module
+rules:
+  "@typescript-eslint/quotes":
+    - 2
+    - "double"
+    - "avoidEscape": true
+
+  ## "@typescript-eslint/no-unused-vars": 2 doesn't seem to be working properly
+  "@typescript-eslint/no-unused-vars": 0
+  generator-star-spacing:
+    - 2
+    - before: true
+      after: true
+  no-shadow: 0
+  import/no-unresolved: 0
+  import/extensions: 0
+  require-yield: 0
+  no-param-reassign: 0
+  comma-dangle: 0
+  no-underscore-dangle: 0
+  no-control-regex: 0
+  ## temporarily overriden below
+  # import/no-extraneous-dependencies:
+  #   - 2
+  #   - devDependencies: true
+  func-names: 0
+  no-unused-expressions: 0
+  ## temporarily overriden below
+  # prefer-arrow-callback: 1
+  ## temporarily overriden below
+  # no-use-before-define:
+  #   - 2
+  #   - functions: false
+  space-before-function-paren: 0
+  ## temporarily overriden below
+  # max-len:
+  #   - 2
+  #   - 120
+  #   - 2
+  strict:
+    - 2
+    - global
+  ## temporarily overriden below
+  # arrow-parens:
+  #   - 2
+  #   - always
+
+  "@typescript-eslint/no-unused-expressions":
+    - 2
+    - allowTernary: true
+
+  ## TEMPORARY OVERRIDES
+  ## most of these are turned on by default and overrides can be deleted
+
+  ## should be left turned off, reports false positives for TS
+  ## no-unused-vars: 0
+  no-unused-vars: 0
+
+  # no-restricted-syntax airbnb override to allow ForOfStatement
+  no-restricted-syntax:
+    - error
+    - ForInStatement
+    - LabeledStatement
+    - WithStatement
+
+  # disallow require globally, allow require for joi inline
+  import/first: 0
+  import/order: 0
+
+  ## import/prefer-default-export: 0
+  import/prefer-default-export: 0
+
+  ## import/no-extraneous-dependencies but check lodash.isempty imports/require - separate PR
+  import/no-extraneous-dependencies: 0
+
+  ## import/no-duplicates: 2 check
+  import/no-duplicates: 0
+
+  # import/no-cycle: 2 check if possible to fix
+  import/no-cycle: 0
+
+  ## import/export: 2 and check (separate PR?)
+  import/export: 0
+
+  ## import/no-useless-path-segments: 2 autofixable
+  import/no-useless-path-segments: 0
+
+  ## no-prototype-builtins: 2
+  ## use Object.prototype.hasOwnProperty.call
+  no-prototype-builtins: 0
+
+  ## spaced-comment: 2 autofixable
+  spaced-comment: 0
+
+  ## no-lonely-if: 2 almost autofixable
+  no-lonely-if: 0
+
+  ## prefer-destructuring: 2 autofixable
+  prefer-destructuring: 0
+
+  ## does not recognize ForOf loops
+  ## turn the rule on and add inline overrides
+  no-continue: 0
+
+  ## consistent-return can stay turned off, little value in TS
+  consistent-return: 0
+
+  ## global isNaN added to exceptions for the rule
+  ## Number.isNaN may give different results
+  no-restricted-globals:
+    - 0
+    - isNaN
+
+  ## https://eslint.org/docs/rules/no-await-in-loop
+  ## In many cases the iterations of a loop are not actually independent of each-other.
+  ## For example, the output of one iteration might be used as the input to another.
+  ## Or, loops may be used to retry asynchronous operations that were unsuccessful.
+  ## Or, loops may be used to prevent your code from sending an excessive amount of requests in parallel.
+  ## In such cases it makes sense to use await within a loop and it is recommended to disable the rule
+  ## via a standard ESLint disable comment.
+  no-await-in-loop: 0
+
+  ## await on return is redundant
+  ## no-return-await: 2
+  no-return-await: 0
+
+  ## turn on and inline override
+  no-console: 0
+
+  ## no-else-return: 2
+  ## autofixable
+  no-else-return: 0
+
+  ## rule violations can be resolved with formatting or inline overrides
+  max-len: 0
+
+  ## wrap case clauses with lexical declaration in blocks { }
+  ## no-case-declarations: 2
+  no-case-declarations: 0
+
+  ## autofixable
+  ## arrow-parens: 2
+  arrow-parens: 0
+
+  ## let's keep this turned off, explicit return helps with understanding of functional flow
+  no-useless-return: 0
+
+  ## default-case: 2
+  ## throwing errors should be put inside default case
+  default-case: 0
+
+  ## object-shorthand: 2
+  ## { a } instead of { a: a }
+  object-shorthand: 0
+
+  ## string templates instead of concatenation
+  prefer-template: 0
+
+  ## autofixable a += b instead of a = a + b
+  operator-assignment: 0
+
+  ## use const if variable is not reassigned
+  prefer-const: 0
+
+  ## += 1 instead of ++
+  no-plusplus: 0
+
+  ## enable rule and override inline
+  no-cond-assign: 0
+
+  ## autofixable
+  no-irregular-whitespace: 0
+
+  ## https://eslint.org/docs/rules/no-async-promise-executor
+  ## The executor function can also be an async function. However, this is usually a mistake
+  ## if not, inline override
+  ## we have one such instance: return new Promise<RpcResponse>(async (resolve, reject) => ...
+  no-async-promise-executor: 0
+
+  ## max-classes-per-file: 2
+  max-classes-per-file: 2
+
+  ## autofixable
+  ## a ? true : false    ->      !!a
+  no-unneeded-ternary: 0
+
+  ## nested ternary expressions are terrible, it would be better to refactor in separate PR
+  no-nested-ternary: 0
+
+  ## global-require: 2
+  ## inline override where desired
+  global-require: 0
+
+  ## prefer-arrow-callback: 2
+  prefer-arrow-callback: 0
+
+  ## "@typescript-eslint/explicit-module-boundary-types":
+  ##   - 2
+  ##   - allowArgumentsExplicitlyTypedAsAny: true
+  "@typescript-eslint/explicit-module-boundary-types": 0
+
+  ## should be turned off when @typescript-eslint/no-use-before-define is in use
+  no-use-before-define: 0
+
+  ## few const = function() definitions can be moved
+  ## "@typescript-eslint/no-use-before-define":
+  ##   - 2
+  ##   - functions: false
+  "@typescript-eslint/no-use-before-define": 0
+
+  ## "@typescript-eslint/no-shadow": 2
+  ## should be reviewed on case-by-case bases
+  "@typescript-eslint/no-shadow": 0
+
+  "@typescript-eslint/no-explicit-any": 1
+
+  ## no-throw-literal: 0
+  ## "@typescript-eslint/no-throw-literal": 2
+  ## using this rule would require rework of error handling in API (using extended Error and not interfaces)
+  "@typescript-eslint/no-throw-literal": 2
+
+  #@typescript-eslint/no-unused-vars-experimental": 2
+  #"@typescript-eslint/no-unused-vars": 2
+
+  ## Using non-null assertions cancels the benefits of the strict null-checking mode
+  ## "@typescript-eslint/no-non-null-assertion": 2 and
+  ## perhaps override on per-file bases for existing code?
+  "@typescript-eslint/no-non-null-assertion": 0
+
+  ## String and Boolean should be banned in favor of string and boolean,
+  ## object type needs to be investigated, perhaps added to exceptions?
+  "@typescript-eslint/ban-types": 0
+
+  ## @typescript-eslint/indent should stay disabled because it messes with formatting
+  "@typescript-eslint/indent": 0
