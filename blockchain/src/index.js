@@ -398,6 +398,7 @@ app.post("/restoreWallet", async (req, res) => {
         );
         AUTOSTART = true;
         //TODO this is nasty why is startDeamon not waiting?
+        /*eslint no-promise-executor-return: "off"*/
         await new Promise((resolve) => setTimeout(resolve, 10000));
         const availableWallets = await listAvailableWallets(CHAINNAME);
         return res.json(
