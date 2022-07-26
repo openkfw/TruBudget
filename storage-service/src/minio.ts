@@ -3,10 +3,9 @@ import * as Minio from "minio";
 import { v4 } from "uuid";
 import config from "./config";
 import { log } from "./index";
+import * as Stream from "stream";
 
-const Readable = require("stream").Readable;
-
-interface Metadata {
+interface Metadata extends Minio.ItemBucketMetadata {
   "Content-Type"?: string;
   fileName: string;
   docId: string;
@@ -30,7 +29,7 @@ interface FileWithMeta {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const minioClient: any = new Minio.Client({
+const minioClient: Minio.Client = new Minio.Client({
   endPoint: config.storage.host,
   port: config.storage.port,
   useSSL: false,
@@ -53,7 +52,7 @@ export const getMinioStatus = async () => {
 const bucketName: string = config.storage.bucketName;
 
 const makeBucket = (bucket: string, cb: Function) => {
-  minioClient.bucketExists(bucket, (err: unknown, exists: unknown) => {
+  minioClient.bucketExists(bucket, (err: Error, exists: boolean) => {
     if (err) {
       log.error({ err }, "Error during searching for bucket");
       return cb(err);
@@ -83,31 +82,37 @@ export const makeBucketAsPromised = (bucket: string) => {
   });
 };
 
+const getSizeInBytes = (str: string): number => {
+  const size = new Blob([str]).size;
+  return size;
+};
+
 const upload = (
   file: string,
   content: string,
   metaData: Metadata,
   cb: Function,
 ) => {
-  const s = new Readable();
-  s._read = () => {};
-  s.push(content);
-  s.push(null);
+  const readableStream: Stream.Readable = new Stream.Readable();
+  readableStream._read = () => {};
+  readableStream.push(content);
+  readableStream.push(null);
 
   const metaDataWithName: MetadataWithName = { ...metaData, name: file };
   // Using putObject API upload your file to the bucket.
   minioClient.putObject(
     bucketName,
     file,
-    s,
+    readableStream,
+    getSizeInBytes(content),
     metaDataWithName,
-    (err: unknown, etag: unknown) => {
+    (err: Error) => {
       if (err) {
         log.error({ err }, "minioClient.putObject");
         return cb(err);
       }
 
-      return cb(null, etag);
+      return cb(null);
     },
   );
 };
@@ -151,7 +156,7 @@ const download = (file: string, cb: Function) => {
         cb(null, { data: fileContent, meta });
       });
       dataStream.on("error", function (err) {
-        log.error({ err }, "Error during getting file object datastream");
+        log.error({ err }, "Error during getting file object data-stream");
       });
     }
   });
@@ -190,7 +195,7 @@ export const getMetadataAsPromised = (
 };
 
 export const getReadiness = async () => {
-  minioClient.listBuckets(function (err, buckets) {
+  minioClient.listBuckets(function (err, _buckets) {
     if (err) return log.error(err);
   });
 };
