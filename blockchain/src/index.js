@@ -20,9 +20,7 @@ const {startBeta, registerNodeAtAlpha} = require("./connectToChain");
 const {startMultichainDaemon, configureChain} = require("./createChain");
 const {isMultichainReady} = require("./readiness");
 
-const { importWallet, listAvailableWallets } = require("./wallet-backup");
-
-const { importWallet, listAvailableWallets } = require("./wallet-backup");
+const {importWallet, listAvailableWallets} = require("./wallet-backup");
 
 const {
   moveBackup,
@@ -375,15 +373,13 @@ rpcport=${MULTICHAIN_RPC_PORT}
 rpcuser=${MULTICHAIN_RPC_USER}
 rpcpassword=${MULTICHAIN_RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
-walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j
-      `);
+walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j`);
         } else {
           shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
 rpcport=${MULTICHAIN_RPC_PORT}
 rpcuser=${MULTICHAIN_RPC_USER}
 rpcpassword=${MULTICHAIN_RPC_PASSWORD}
-rpcallowip=${RPC_ALLOW_IP}
-      `);
+rpcallowip=${RPC_ALLOW_IP}`);
         }
         await spawnProcess(() =>
           startMultichainDaemon(
