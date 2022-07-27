@@ -7,7 +7,7 @@ const safeIdSchemaSchema = Joi.alternatives([safeIdSchema]);
 const safePasswordSchemaSchema = Joi.alternatives([safePasswordSchema]);
 
 describe("JoiValidation: Password", () => {
-  it("Accept a correct Passwords", async () => {
+  it("Should accept user creation with a correct Password", async () => {
     const pass = "Test1234";
     const controlValue = "Test1234";
 
@@ -42,8 +42,6 @@ describe("JoiValidation: Password", () => {
 
     expect(value).to.equal("Test1234");
   });
-
-  it("Should accept user creation with a correct Password", async () => {});
 });
 
 describe("JoiValidation: safe String", () => {
