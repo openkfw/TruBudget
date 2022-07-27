@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import ContentAdd from "@mui/icons-material/Add";
@@ -6,8 +7,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import PermissionIcon from "@mui/icons-material/LockOpen";
 import LaunchIcon from "@mui/icons-material/ZoomIn";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-
 import Typography from "@mui/material/Typography";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+
 import strings from "../../localizeStrings";
 import {
   canCreateProject,
@@ -21,7 +25,7 @@ import DataTable from "react-data-table-component";
 import ActionButton from "../Common/ActionButton";
 import SelectablePill from "../Common/SelectablePill";
 import FilterMenu from "./FilterMenu";
-import { useHistory } from "react-router-dom";
+import BudgetsList from "./BudgetsList";
 
 // Documentation for this custom react data table:
 // https://react-data-table-component.netlify.app/?path=/story/columns-cells-custom-cells--custom-cells
@@ -73,9 +77,27 @@ const ProjectButtons = ({ project, showEditDialog, showProjectPermissions, allow
   );
 };
 
-const columns = [
+const TableViewEditor = ({ showTags, setShowTags, showBudgets, setShowBudgets }) => {
+  return (
+    <Box>
+      <FormGroup>
+        <FormControlLabel
+          control={<Checkbox checked={showTags} onChange={e => setShowTags(e.target.checked)} />}
+          label="Tags"
+        />
+        <FormControlLabel
+          control={<Checkbox checked={showBudgets} onChange={e => setShowBudgets(e.target.checked)} />}
+          label="Budgets"
+        />
+      </FormGroup>
+    </Box>
+  );
+};
+
+const rawColumns = [
   // Documentation: https://react-data-table-component.netlify.app/?path=/docs/api-columns--page
   {
+    id: "project_name_column",
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
         {strings.common.project}
@@ -88,6 +110,7 @@ const columns = [
     cell: row => <Typography data-test="project-name">{row.data.projectName}</Typography>
   },
   {
+    id: "project_status_column",
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
         {strings.common.status}
@@ -100,6 +123,7 @@ const columns = [
     cell: row => <Typography>{row.data.projectStatus}</Typography>
   },
   {
+    id: "project_date_column",
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
         {strings.common.created}
@@ -112,6 +136,7 @@ const columns = [
     cell: row => <Typography>{row.data.createdDate}</Typography> // formatted date that is shown
   },
   {
+    id: "project_assignee_column",
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
         {strings.common.assignee}
@@ -124,6 +149,7 @@ const columns = [
     cell: row => <Typography>{row.data.assignee}</Typography>
   },
   {
+    id: "project_tags_column",
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
         {strings.common.tags}
@@ -136,6 +162,20 @@ const columns = [
     cell: row => row.components.Tags
   },
   {
+    id: "project_budgets_column",
+    name: (
+      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+        {strings.common.budget}
+      </Typography>
+    ),
+    sortable: false,
+    compact: true,
+    minWidth: "0rem",
+    maxWidth: "20rem",
+    cell: row => row.components.Budgets
+  },
+  {
+    id: "action_buttons_column",
     name: (
       <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
         {strings.common.actions}
@@ -148,6 +188,8 @@ const columns = [
     cell: row => row.components.ProjectButtons
   }
 ];
+
+Object.freeze(rawColumns);
 
 const formatTable = ({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTermArray }) => {
   const projectRows = projects.map((project, index) => {
@@ -185,7 +227,8 @@ const formatTable = ({ projects, showEditDialog, showProjectPermissions, storeSe
               ></SelectablePill>
             ))}
           </Box>
-        )
+        ),
+        Budgets: <BudgetsList budgets={project.data.projectedBudgets} />
       }
     };
     return row;
@@ -212,14 +255,12 @@ const TableView = props => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
+  const [columns, setColumns] = useState(rawColumns);
+  const [showTags, setShowTags] = useState(true);
+  const [showBudgets, setShowBudgets] = useState(true);
   const [table, setTable] = useState(
     formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm })
   );
-
-  useEffect(() => {
-    // Update Table when new project was created
-    setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
-  }, [projects, searchTerm, showEditDialog, showProjectPermissions, storeSearchTerm]);
 
   const handleSearch = useCallback(() => {
     if (!projects) {
@@ -285,16 +326,45 @@ const TableView = props => {
   }, [projects, searchTerm, showEditDialog, showProjectPermissions, storeSearchTerm]);
 
   useEffect(() => {
+    // Update Table when new project was created
+    setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
+  }, [projects, searchTerm, showEditDialog, showProjectPermissions, storeSearchTerm]);
+
+  useEffect(() => {
     // Search on change: Since handleSearch uses useCallback, the function will change according to
     // to its dependency array. When this happens, this useEffect will be triggered
     handleSearch();
   }, [handleSearch]);
 
+  useEffect(() => {
+    // Enable or disable columns in the Table
+    const currentColumns = rawColumns.filter(c => {
+      if (!showTags && c.id === "project_tags_column") {
+        return false;
+      }
+      if (!showBudgets && c.id === "project_budgets_column") {
+        return false;
+      }
+      return true;
+    });
+
+    setColumns(currentColumns);
+  }, [showBudgets, showTags]);
+
   const actionsMemo = useMemo(
     () => (
       <>
-        <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <Box sx={{ display: "block", margin: "0px" }}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginTop: "30px",
+            marginBottom: "30px"
+          }}
+        >
+          <Box sx={{ display: "block" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Searchbar
                 isSearchBarDisplayedByDefault={true}
@@ -327,10 +397,30 @@ const TableView = props => {
               )}
             </Box>
           </Box>
+          <Box sx={{ marginRight: "150px" }}>
+            <TableViewEditor
+              showTags={showTags}
+              setShowTags={setShowTags}
+              showBudgets={showBudgets}
+              setShowBudgets={setShowBudgets}
+            />
+          </Box>
         </Box>
       </>
     ),
-    [searchTerm, showFilter, startDate, endDate, status, handleReset, assigneeId, enabledUsers, storeSearchTerm]
+    [
+      searchTerm,
+      showFilter,
+      startDate,
+      endDate,
+      status,
+      handleReset,
+      assigneeId,
+      enabledUsers,
+      showTags,
+      showBudgets,
+      storeSearchTerm
+    ]
   );
 
   return (
