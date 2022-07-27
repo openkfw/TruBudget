@@ -193,8 +193,6 @@ const useRawColumns = () => {
   return rawColumns;
 };
 
-// Object.freeze(rawColumns);
-
 const formatTable = ({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTermArray }) => {
   const projectRows = projects.map((project, index) => {
     const row = {
@@ -382,7 +380,7 @@ const TableView = props => {
               <ActionButton
                 onClick={() => setShowFilter(!showFilter)}
                 icon={<FilterAltIcon />}
-                data-test={`open-filter`}
+                data-test="open-filter"
               />
             </Box>
             <Box sx={{ marginLeft: "23px" }}>

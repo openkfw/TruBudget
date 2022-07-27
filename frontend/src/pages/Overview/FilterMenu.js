@@ -22,7 +22,7 @@ const FilterMenu = props => {
   } = props;
 
   return (
-    <Box>
+    <Box data-test="filter-menu">
       <Box sx={{ display: "flex", margin: "0px" }}>
         <Box sx={{ marginLeft: "0px" }}>
           <DatePicker
@@ -82,7 +82,7 @@ const FilterMenu = props => {
         </Box>
       </Box>
       <Box sx={{ marginLeft: "0px", marginTop: "10px" }}>
-        <Button aria-label="reset" data-test="reset" color="secondary" onClick={handleReset}>
+        <Button aria-label="reset" data-test="reset-table-view" color="secondary" onClick={handleReset}>
           {strings.common.reset}
         </Button>
         {/* TODO Add Search Button after implementing pagination from API */}
