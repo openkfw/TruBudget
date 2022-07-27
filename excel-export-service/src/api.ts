@@ -47,7 +47,8 @@ export interface Subproject {
       currencyCode: string;
     },
   ];
-  additionData: any;
+  // Define a Type if you want to user additionData
+  additionData: unknown;
 }
 
 interface WorkflowitemResponse {
@@ -144,7 +145,7 @@ export async function getWorkflowitems(
 
 export async function getApiReadiness(axios: AxiosInstance, base: string) {
   logger.trace("Fetching readiness ...");
-  return await axios.get(`${base}/readiness`);
+  return axios.get(`${base}/readiness`);
 }
 
 export async function getApiVersion(
