@@ -1,5 +1,5 @@
 import React from "react";
-import arrayMove from "array-move";
+import { arrayMoveImmutable } from "array-move";
 
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -43,8 +43,8 @@ const createTableHeader = props => (
 
 const createWorkflowItems = ({ workflowItems, ...props }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
-    workflowItems = arrayMove(workflowItems, oldIndex, newIndex);
-    props.updateWorkflowOrderOnState(workflowItems);
+    const items = arrayMoveImmutable(workflowItems, oldIndex, newIndex);
+    props.updateWorkflowOrderOnState(items);
   };
 
   return workflowItems.length > 0 ? (

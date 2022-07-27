@@ -62,7 +62,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- A root user can not modify users of other organisations
+- A root user can not modify users of other organizations
   anymore [#983](https://github.com/openkfw/TruBudget/issues/983)
 - API readiness improvement: API waits for all connected services to be
   up [#1173](https://github.com/openkfw/TruBudget/pull/1173)

@@ -201,7 +201,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case HIDE_WORKFLOW_DETAILS:
       return state.merge({
         showDetails: false,
-        showDetailsItem: defaultState.getIn("showDetailsItem")
+        showDetailsItem: defaultState.get("showDetailsItem")
       });
     case SHOW_WORKFLOW_EDIT:
       return state.merge({
@@ -254,7 +254,7 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowItemReference: action.workflowitemId,
         workflowitemDisplayName: action.workflowitemDisplayName,
         permissions: defaultState.get("permissions"),
-        temporaryPermissions: defaultState.getIn("temporaryPermissions"),
+        temporaryPermissions: defaultState.get("temporaryPermissions"),
         showWorkflowPermissions: true,
         idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter(id => id !== action.workflowitemId)
       });
@@ -265,7 +265,7 @@ export default function detailviewReducer(state = defaultState, action) {
         workflowitemDisplayName: defaultState.getIn(["workflowitemDisplayName"]),
         showWorkflowPermissions: defaultState.getIn(["showWorkflowPermissions"]),
         permissions: defaultState.getIn(["permissions"]),
-        temporaryPermissions: defaultState.getIn("temporaryPermissions")
+        temporaryPermissions: defaultState.get("temporaryPermissions")
       });
 
     case SHOW_WORKFLOWITEM_ADDITIONAL_DATA:
