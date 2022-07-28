@@ -71,7 +71,7 @@ This will transform the query into a function.
 ### Replace Access Token of Dataset with Function 
 In this step, you need to replace the hardcoded access token (you entered manually for the first API connection) with the just created GetToken() function.
 1) open the Advanced Editor for the dataset you fetched from the API
-2) in the script, replace the hardcoded access token in the Source Headers section with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()". 
+2) in the script, replace the hardcoded access token of the source header with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()". 
 
 To verify the successful API connection, click on "refresh data set", which should run smoothly. 
 
