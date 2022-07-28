@@ -71,14 +71,8 @@ class WorkflowContainer extends Component {
     this.props.disableWorkflowEdit();
   }
 
-  closeSubproject = () => {
-    const openWorkflowItems = this.props.workflowItems.find(wItem => wItem.data.status === "open");
-    if (!openWorkflowItems) {
-      this.props.closeSubproject(this.projectId, this.subprojectId);
-    }
-  };
-
   closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subprojectId, wId, false, true);
+
   rejectWorkflowItem = wId => {
     this.props.rejectWorkflowItem(this.projectId, this.subprojectId, wId, true, true);
   };

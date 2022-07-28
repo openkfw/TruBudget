@@ -56,14 +56,16 @@ export async function revokeSubprojectPermission(
   }
 
   logger.trace({ issuer }, "Checking if user has permissions");
-  const revokeIntent = "subproject.intent.revokePermission";
-  if (!Subproject.permits(subproject, issuer, [revokeIntent])) {
-    return new NotAuthorized({
-      ctx,
-      userId: issuer.id,
-      intent: revokeIntent,
-      target: subproject,
-    });
+  if (issuer.id !== "root") {
+    const revokeIntent = "subproject.intent.revokePermission";
+    if (!Subproject.permits(subproject, issuer, [revokeIntent])) {
+      return new NotAuthorized({
+        ctx,
+        userId: issuer.id,
+        intent: revokeIntent,
+        target: subproject,
+      });
+    }
   }
 
   logger.trace({ event: permissionRevoked }, "Checking event validity");

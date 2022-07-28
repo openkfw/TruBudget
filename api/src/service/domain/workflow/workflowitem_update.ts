@@ -139,9 +139,11 @@ export async function updateWorkflowitem(
   }
 
   logger.trace({ issuer }, "Checking if user has permissions");
-  const intent = "workflowitem.update";
-  if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
-    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: workflowitem });
+  if (issuer.id !== "root") {
+    const intent = "workflowitem.update";
+    if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: workflowitem });
+    }
   }
 
   logger.trace({ event: newEvent }, "Checking event validity");

@@ -7,7 +7,7 @@ const safeIdSchemaSchema = Joi.alternatives([safeIdSchema]);
 const safePasswordSchemaSchema = Joi.alternatives([safePasswordSchema]);
 
 describe("JoiValidation: Password", () => {
-  it("Accept a correct Passwords", async () => {
+  it("Should accept user creation with a correct Password", async () => {
     const pass = "Test1234";
     const controlValue = "Test1234";
 
@@ -17,7 +17,7 @@ describe("JoiValidation: Password", () => {
     expect(error).to.equal(null);
   });
 
-  it("Should not accept a weak Password", async () => {
+  it("Should not accept a weak Password (only in Production)", async () => {
     const pass = "asdfasdf";
 
     const { value, error } = Joi.validate(pass, safePasswordSchemaSchema);
@@ -41,9 +41,6 @@ describe("JoiValidation: Password", () => {
     const { value } = Joi.validate(pass, safePasswordSchemaSchema);
 
     expect(value).to.equal("Test1234");
-  });
-
-  it("Should accept user creation with a correct Password", async () => {
   });
 });
 
@@ -83,7 +80,6 @@ describe("JoiValidation: safe String", () => {
     expect(value).to.equal(controlValue);
     expect(error).to.equal(null);
   });
-
 
   it("Not accept a malicious string", async () => {
     const text = "Test<script>alert(1)</script>1234";

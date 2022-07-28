@@ -72,7 +72,7 @@ describe("Update project projected budget: permissions", () => {
     assert.instanceOf(result, NotAuthorized);
   });
 
-  it("The root user is not allowed to update a projected budget", async () => {
+  it("The root user is always allowed to update a projected budget", async () => {
     const result = await updateProjectedBudget(
       ctx,
       root,
@@ -96,7 +96,7 @@ describe("Update project projected budget: permissions", () => {
       },
     );
 
-    assert.isTrue(Result.isErr(result), (result as Error).message);
+    assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 
   it("Updating a projected budget fails if the project cannot be found.", async () => {

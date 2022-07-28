@@ -1,3 +1,4 @@
+import Intent from "authz/intents";
 import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
 import { VError } from "verror";
@@ -43,8 +44,8 @@ export async function assignProject(
   }
 
   logger.trace({ issuer }, "Checking if user has permissions");
-  const intent = "project.assign";
-  if (!Project.permits(project, issuer, [intent])) {
+  const intent: Intent = "project.assign";
+  if (issuer.id !== "root" && !Project.permits(project, issuer, [intent])) {
     return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
   }
 

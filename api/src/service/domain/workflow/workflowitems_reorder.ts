@@ -56,9 +56,12 @@ export async function setWorkflowitemOrdering(
     return new VError(reorderEvent, "failed to create reorder event");
   }
 
-  const intent = "subproject.reorderWorkflowitems";
-  if (!Subproject.permits(subproject, issuer, [intent])) {
-    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
+  logger.trace({ issuer }, "Checking if user has permissions");
+  if (issuer.id !== "root") {
+    const intent = "subproject.reorderWorkflowitems";
+    if (!Subproject.permits(subproject, issuer, [intent])) {
+      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
+    }
   }
 
   logger.trace({ event: reorderEvent }, "Checking event validity");

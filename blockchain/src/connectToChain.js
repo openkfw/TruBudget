@@ -11,7 +11,9 @@ const includeLoggingParamsToArgs = require("./log/logArguments");
 let address;
 
 async function relax(ms) {
-  return new Promise((res) => setInterval(res, ms));
+  return new Promise((res) => {
+    setInterval(res, ms);
+  });
 }
 
 function logFileContent(path) {
@@ -93,7 +95,7 @@ function startBeta(
 
   mc.stdout.on("data", (data) => {
     mdLog.debug(`${data}`);
-    const regex = new RegExp("[0-9a-zA-Z]{30,40}");
+    const regex = /[0-9a-zA-Z]{30,40}/;
     const match = regex.exec(data);
     // Store own wallet address into global "address"
     if (match) {
@@ -204,8 +206,9 @@ async function registerNodeAtAlpha(
     log.info("Node address registered successfully (approval pending).");
   } catch (error) {
     log.error(
-      `Could not register (${error}). Retry in ${retryIntervalMs /
-        1000} seconds ...`,
+      `Could not register (${error}). Retry in ${
+        retryIntervalMs / 1000
+      } seconds ...`,
     );
     await relax(retryIntervalMs);
     await registerNodeAtAlpha(organization, proto, host, port, certPath);

@@ -2,7 +2,7 @@ import { fromJS, Set } from "immutable";
 import _isEmpty from "lodash/isEmpty";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
-import { SEARCH_BAR_DISPLAYED } from "../Navbar/actions";
+import { SEARCH_BAR_DISPLAYED, SET_SELECTED_VIEW } from "../Navbar/actions";
 import {
   ADD_PROJECT_PROJECTED_BUDGET,
   ADD_PROJECT_TAG,
@@ -207,6 +207,12 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set("searchTerms", fromJS(action.searchTerms));
     case SEARCH_BAR_DISPLAYED:
       return state.merge({
+        searchTerms: defaultState.get("searchTerms")
+      });
+    case SET_SELECTED_VIEW:
+      return state.merge({
+        // Reset searched projects and searchTerm in <Highlighter/>
+        filteredProjects: state.get("projects"),
         searchTerms: defaultState.get("searchTerms")
       });
     case STORE_PROJECT_VIEW:

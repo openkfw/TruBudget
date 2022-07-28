@@ -70,7 +70,7 @@ describe("update subproject: authorization", () => {
     assert.instanceOf(result, NotAuthorized);
   });
 
-  it("The root user is not allowed to update a subproject", async () => {
+  it("The root user is always allowed to update a subproject", async () => {
     const modification: UpdatedData = {};
     const result = await updateSubproject(ctx, root, projectId, subprojectId, modification, {
       ...baseRepository,
@@ -79,7 +79,7 @@ describe("update subproject: authorization", () => {
         permissions: {},
       }),
     });
-    assert.isTrue(Result.isErr(result), (result as Error).message);
+    assert.isTrue(Result.isOk(result), (result as Error).message);
   });
 });
 
