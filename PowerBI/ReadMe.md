@@ -71,9 +71,9 @@ Once the above script yields the bearer token as intended, you can proceed to:
 This will transform the query into a function.
 
 ### Replace Access Token of Dataset with Function 
-Lastly, you need to replace the hardcoded access token (you entered manually for the first API connection) with the just created GetToken() function.
-1) open the Advanced Editor for the dataset you fetched from the API
-2) in the script, replace the hardcoded access token of the source header with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()". 
+Lastly, you need to replace the hardcoded access token (you entered manually for the first API connection) with the just created GetToken() function in the dataset query.
+1) open the Advanced Editor for the dataset you fetched from TruBudget via the API
+2) in the script, replace the hardcoded access token in the source header with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()". 
 
-To verify the successful API connection, click on "refresh data set", which should run smoothly. 
+To verify the successful API connection, refresh dataset in PowerBI, which should run smoothly. 
 
