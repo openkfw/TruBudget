@@ -1,5 +1,5 @@
 # Connect TruBudget to PowerBI with Dynamic Token Request
-This readme explains how to connect PowerBI to TruBudget via it's API. As a core element, the necessary Power Query M script to dynamically generate a bearer token will be provided. As a result, you will be able to automatically fetch the respective data from TruBudget into PowerBI for further evaluation and visualisation.
+This readme explains how to connect PowerBI to TruBudget via it's API. As a core element, the necessary Power Query M script to dynamically generate a bearer token will be provided. As a result, you will be able to automatically fetch data from TruBudget into PowerBI for further evaluation and visualisation.
 
 Note: all fields you have to modify in this readme are indicated by "<...>". 
 
@@ -10,24 +10,23 @@ Use the user.authenticate POST-request in Postman to obtain a bearer token manua
 In the next step PowerBI will be connected to TruBudget via the API using - for now - the manually generated bearer token. 
 
 To set up the API connection to TruBudget, you have to:
-1) add a new web source in PowerBI
+1) add a new web source in PowerBI Desktop
 2) go to the advanced settings
 3) paste the API URL of the data source you want to connect (can be obtained from Postman)
-4) in the "HTTP request header parameters" write "Authorization" and for the value enter "Bearer <Token you have generate manually in Postman>". 
-5) connect to the API. The according data to the API URL will appear in PowerBI. 
+4) in the "HTTP request header parameters" field, write "Authorization" and for the value enter "Bearer <Token you have generate manually in Postman>". Pay attention that a space is between "Bearer" and the token you entered.
+5) connect to the API. The according data of the API URL will appear in PowerBI. 
 
 ## Generate token dynamically
 
-1) in the Power Query editor add a blank query as a new source.
-2) open the advanced editor
-
+1) in the Power Query editor, add a blank query as a new source
+2) open the blank query in the advanced editor
 
 Use this skript to generate a dynamic token - modify all fields indicated by the "<..>": 
 
 ```
 let
 
-url = "<URL>",
+url = "<API URL>",
 
 headers = [#"Content-Type" = "application/json"],
 
@@ -61,18 +60,18 @@ access_token
 
 ```
 
-If the call is working correctly, you will receive the token as a result.
+If the query is working correctly, you will receive a bearer token as a result.
 
 ### Convert Query to Function
-3) Rename the Query to "GetToken"
-4) in the Advanced Editor for the query add "()=> " at the very beginning before "let"
+3) rename the Query to "GetToken"
+4) in the Advanced Editor for the query, add "()=> " at the very beginning of the script before "let"
 
 This will transform the Query into a function.
 
 ### Replace Access Token of Dataset with Function 
 In this step, you need to replace the hardcoded access token (you entered manually for the first API connection) with the just created GetToken() function.
-1) Open the Advanced Editor for the dataset you pulled from the API
-2) in the skript, replace the hardcoded access token with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()". 
+1) open the Advanced Editor for the dataset you fetched from the API
+2) in the query script, replace the hardcoded access token with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()". 
 
-To verify the successful API connection, click on refresh data set, which should run smoothly. 
+To verify the successful API connection, click on "refresh data set", which should run smoothly. 
 
