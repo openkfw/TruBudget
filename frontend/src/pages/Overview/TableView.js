@@ -6,6 +6,7 @@ import ContentAdd from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import PermissionIcon from "@mui/icons-material/LockOpen";
 import LaunchIcon from "@mui/icons-material/ZoomIn";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Typography from "@mui/material/Typography";
 import FormGroup from "@mui/material/FormGroup";
@@ -20,7 +21,7 @@ import {
   canViewProjectDetails
 } from "../../permissions";
 import Searchbar from "../Common/Searchbar";
-import { unixTsToString, stringToUnixTs } from "../../helper";
+import { unixTsToString, stringToUnixTs, isEmptyDeep } from "../../helper";
 import DataTable from "react-data-table-component";
 import ActionButton from "../Common/ActionButton";
 import SelectablePill from "../Common/SelectablePill";
@@ -30,14 +31,30 @@ import BudgetsList from "./BudgetsList";
 // Documentation for this custom react data table:
 // https://react-data-table-component.netlify.app/?path=/story/columns-cells-custom-cells--custom-cells
 
-const ProjectButtons = ({ project, showEditDialog, showProjectPermissions, allowedIntents }) => {
+const ProjectButtons = ({
+  project,
+  showEditDialog,
+  showProjectPermissions,
+  showProjectAdditionalData,
+  allowedIntents
+}) => {
   const isOpen = project.status === "open";
+  const isAdditionalDataEmpty = isEmptyDeep(project.additionalData);
   const canViewPermissions = canViewProjectPermissions(allowedIntents);
   const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
   const viewDisabled = !canViewProjectDetails(allowedIntents);
   const history = useHistory();
   return (
     <Box sx={{ display: "flex", gap: "20px" }}>
+      <ActionButton
+        notVisible={isAdditionalDataEmpty}
+        onClick={() => {
+          showProjectAdditionalData(project.id);
+        }}
+        title="Additional Data"
+        icon={<MoreIcon />}
+        data-test={`project-overview-additionaldata-${project.id}`}
+      />
       <ActionButton
         notVisible={viewDisabled}
         onClick={() => {
@@ -185,7 +202,7 @@ const useRawColumns = () => {
       sortable: false,
       right: true,
       compact: false,
-      minWidth: "10rem",
+      minWidth: "20rem",
       cell: row => row.components.ProjectButtons
     }
   ];
@@ -193,7 +210,14 @@ const useRawColumns = () => {
   return rawColumns;
 };
 
-const formatTable = ({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTermArray }) => {
+const formatTable = ({
+  projects,
+  showEditDialog,
+  showProjectPermissions,
+  showProjectAdditionalData,
+  storeSearchTerm,
+  searchTermArray
+}) => {
   const projectRows = projects.map((project, index) => {
     const row = {
       data: {
@@ -212,6 +236,7 @@ const formatTable = ({ projects, showEditDialog, showProjectPermissions, storeSe
             project={project.data}
             showEditDialog={showEditDialog}
             showProjectPermissions={showProjectPermissions}
+            showProjectAdditionalData={showProjectAdditionalData}
             allowedIntents={project.allowedIntents}
           />
         ),
@@ -245,6 +270,7 @@ const TableView = props => {
     showProjectPermissions,
     showCreationDialog,
     enabledUsers,
+    showProjectAdditionalData,
     storeSearchTerm,
     searchTerm,
     showNavSearchBar // to open the search bar for CardView in NavBar
@@ -262,7 +288,14 @@ const TableView = props => {
   const [showTags, setShowTags] = useState(true);
   const [showBudgets, setShowBudgets] = useState(true);
   const [table, setTable] = useState(
-    formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm })
+    formatTable({
+      projects,
+      showEditDialog,
+      showProjectPermissions,
+      showProjectAdditionalData,
+      storeSearchTerm,
+      searchTerm
+    })
   );
 
   const handleSearch = useCallback(() => {
@@ -280,7 +313,16 @@ const TableView = props => {
     const hasEndDate = endDate !== null;
     if (!hasSearchTerm && !hasStartDate && !hasEndDate && !hasStatus && !hasAssignee) {
       // Filtered with no active filter: all projects shown
-      setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
+      setTable(
+        formatTable({
+          projects,
+          showEditDialog,
+          showProjectPermissions,
+          showProjectAdditionalData,
+          storeSearchTerm,
+          searchTerm
+        })
+      );
       return;
     }
     if (hasSearchTerm) {
@@ -305,7 +347,16 @@ const TableView = props => {
     if (hasAssignee) {
       filtered = filtered.filter(project => project.data?.assignee === assigneeId);
     }
-    setTable(formatTable({ projects: filtered, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
+    setTable(
+      formatTable({
+        projects: filtered,
+        showEditDialog,
+        showProjectPermissions,
+        showProjectAdditionalData,
+        storeSearchTerm,
+        searchTerm
+      })
+    );
   }, [
     projects,
     searchTerm,
@@ -315,6 +366,7 @@ const TableView = props => {
     endDate,
     showEditDialog,
     showProjectPermissions,
+    showProjectAdditionalData,
     storeSearchTerm,
     showNavSearchBar
   ]);
@@ -325,13 +377,31 @@ const TableView = props => {
     setAssigneeId("all");
     setStartDate(null);
     setEndDate(null);
-    setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
-  }, [projects, searchTerm, showEditDialog, showProjectPermissions, storeSearchTerm]);
+    setTable(
+      formatTable({
+        projects,
+        showEditDialog,
+        showProjectPermissions,
+        showProjectAdditionalData,
+        storeSearchTerm,
+        searchTerm
+      })
+    );
+  }, [projects, searchTerm, showEditDialog, showProjectPermissions, showProjectAdditionalData, storeSearchTerm]);
 
   useEffect(() => {
     // Update Table when new project was created
-    setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
-  }, [projects, searchTerm, showEditDialog, showProjectPermissions, storeSearchTerm]);
+    setTable(
+      formatTable({
+        projects,
+        showEditDialog,
+        showProjectPermissions,
+        showProjectAdditionalData,
+        storeSearchTerm,
+        searchTerm
+      })
+    );
+  }, [projects, searchTerm, showEditDialog, showProjectPermissions, showProjectAdditionalData, storeSearchTerm]);
 
   useEffect(() => {
     // Search on change: Since handleSearch uses useCallback, the function will change according to
