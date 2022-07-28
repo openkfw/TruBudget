@@ -70,7 +70,7 @@ describe("assign workflowitem: authorization", () => {
     assert.instanceOf(result, NotAuthorized, "The error is due to missing authorization");
   });
 
-  it("The root user can never change a workflowitem's assignee.", async () => {
+  it("The root user can always change a workflowitem's assignee.", async () => {
     const result = await assignWorkflowitem(
       ctx,
       root,
@@ -90,7 +90,7 @@ describe("assign workflowitem: authorization", () => {
       },
     );
 
-    assert.isTrue(Result.isErr(result), (result as Error).message);
+    assert.isTrue(Result.isOk(result));
   });
 });
 

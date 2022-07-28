@@ -45,9 +45,11 @@ export async function grantProjectPermission(
   }
 
   logger.trace({ issuer }, "Checking if user has permissions");
-  const grantIntent = "project.intent.grantPermission";
-  if (!Project.permits(project, issuer, [grantIntent])) {
-    return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: project });
+  if (issuer.id !== "root") {
+    const grantIntent = "project.intent.grantPermission";
+    if (!Project.permits(project, issuer, [grantIntent])) {
+      return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: project });
+    }
   }
 
   // Check that the new event is indeed valid:

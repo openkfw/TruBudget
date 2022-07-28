@@ -60,14 +60,16 @@ export async function revokeWorkflowitemPermission(
   }
 
   logger.trace({ issuer }, "Checking if user has permissions");
-  const revokeIntent = "workflowitem.intent.revokePermission";
-  if (!Workflowitem.permits(workflowitem, issuer, [revokeIntent])) {
-    return new NotAuthorized({
-      ctx,
-      userId: issuer.id,
-      intent: revokeIntent,
-      target: workflowitem,
-    });
+  if (issuer.id !== "root") {
+    const revokeIntent = "workflowitem.intent.revokePermission";
+    if (!Workflowitem.permits(workflowitem, issuer, [revokeIntent])) {
+      return new NotAuthorized({
+        ctx,
+        userId: issuer.id,
+        intent: revokeIntent,
+        target: workflowitem,
+      });
+    }
   }
 
   logger.trace({ event: permissionRevoked }, "Checking event validity");

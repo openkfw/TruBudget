@@ -46,6 +46,7 @@ export async function grantUserPermission(
   }
 
   logger.trace({ issuer }, "Checking if issuer and target belong to the same organization");
+
   if (user.organization !== issuerOrganization) {
     return new NotAuthorized({
       ctx,
@@ -56,9 +57,11 @@ export async function grantUserPermission(
   }
 
   logger.trace({ issuer }, "Checking if user has permissions");
-  const grantIntent: Intent = "user.intent.grantPermission";
-  if (!UserRecord.permits(user, issuer, [grantIntent])) {
-    return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: user });
+  if (issuer.id !== "root") {
+    const grantIntent: Intent = "user.intent.grantPermission";
+    if (!UserRecord.permits(user, issuer, [grantIntent])) {
+      return new NotAuthorized({ ctx, userId: issuer.id, intent: grantIntent, target: user });
+    }
   }
 
   logger.trace({ event: permissionGranted }, "Checking validity of event");

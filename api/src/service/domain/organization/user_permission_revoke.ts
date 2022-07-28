@@ -57,9 +57,11 @@ export async function revokeUserPermission(
   }
 
   logger.trace({ issuer }, "Checking if user has permissions");
-  const revokeIntent = "user.intent.revokePermission";
-  if (!UserRecord.permits(user, issuer, [revokeIntent])) {
-    return new NotAuthorized({ ctx, userId: issuer.id, intent: revokeIntent, target: user });
+  if (issuer.id !== "root") {
+    const revokeIntent = "user.intent.revokePermission";
+    if (!UserRecord.permits(user, issuer, [revokeIntent])) {
+      return new NotAuthorized({ ctx, userId: issuer.id, intent: revokeIntent, target: user });
+    }
   }
 
   logger.trace({ event: permissionRevoked }, "Checking event validity");

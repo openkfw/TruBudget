@@ -62,7 +62,7 @@ describe("Granting user permissions: permissions", () => {
     assert.instanceOf(result, NotAuthorized, "The error is of the type 'Not Authorized'");
   });
 
-  it("The root user can never grant user permissions", async () => {
+  it("The root user can always grant user permissions", async () => {
     const result = await grantUserPermission(
       ctx,
       root,
@@ -75,7 +75,7 @@ describe("Granting user permissions: permissions", () => {
       },
     );
 
-    assert.isFalse(Result.isOk(result));
+    assert.isTrue(Result.isOk(result));
   });
 });
 

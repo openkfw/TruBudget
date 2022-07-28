@@ -51,7 +51,7 @@ export async function closeProject(
   }
   const assignedIdentities = assignedIdentitiesResult;
 
-  if (!assignedIdentities.includes(issuer.id)) {
+  if (issuer.id !== "root" && !assignedIdentities.includes(issuer.id)) {
     return new PreconditionError(
       ctx,
       projectClosed,
