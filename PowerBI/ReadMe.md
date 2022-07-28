@@ -1,5 +1,5 @@
 # Connect TruBudget to PowerBI with Dynamic Token Request
-This readme explains how to connect PowerBI to TruBudget via it's API. As a core element, the necessary Power Query M script to dynamically generate a bearer token will be provided. As a result, you will be able to automatically fetch data from TruBudget into PowerBI for further evaluation and visualisation.
+This readme explains how to connect PowerBI to TruBudget via it's API. As a core element, the necessary Power Query M script to dynamically generate a bearer token will be provided. As a result, you will be able to fetch data from TruBudget into PowerBI for further evaluation and visualisation.
 
 Note: all fields you have to modify in this readme are indicated by "<. .>". 
 
