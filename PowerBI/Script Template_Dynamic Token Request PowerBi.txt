@@ -1,3 +1,5 @@
++++ NOTE: ALL FIELDS YOU HAVE TO MODIFY IN THIS README ARE INDICATED BY "<. .>" +++
+
 let
 
 url = "<.URL.>",
