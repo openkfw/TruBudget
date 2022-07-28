@@ -63,15 +63,15 @@ access_token
 If the query is working correctly, you will receive a bearer token as a result.
 
 ### Convert Query to Function
-3) rename the Query to "GetToken"
+3) rename the query to "GetToken"
 4) in the Advanced Editor for the query, add "()=> " at the very beginning of the script before "let"
 
-This will transform the Query into a function.
+This will transform the query into a function.
 
 ### Replace Access Token of Dataset with Function 
 In this step, you need to replace the hardcoded access token (you entered manually for the first API connection) with the just created GetToken() function.
 1) open the Advanced Editor for the dataset you fetched from the API
-2) in the query script, replace the hardcoded access token with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()". 
+2) in the script, replace the hardcoded access token in the Source Headers section with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()". 
 
 To verify the successful API connection, click on "refresh data set", which should run smoothly. 
 
