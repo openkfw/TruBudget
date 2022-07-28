@@ -1,16 +1,19 @@
 # Connect TruBudget to PowerBI with Dynamic Token Request
-This readme explains how to connect PowerBI to TruBudget via it's API. As a core issue, this explanation will provide the necessary Power Query M skript to dynamically generate a token, which will in turn be used to get the respective data from TruBudget.
+This readme explains how to connect PowerBI to TruBudget via it's API. As a core element, the necessary Power Query M script to dynamically generate a bearer token will be provided. As a result, you will be able to automatically fetch the respective data from TruBudget into PowerBI for further evaluation and visualisation.
+
+Note: all fields you have to modify in this readme are indicated by "<...>". 
 
 ## Get Token Manually from Postman 
-Use the user.authenticate POST request in Postman to obtain a bearer token manually. Copy this token as you will need it to connect PowerBI to the TruBudget API. 
+Use the user.authenticate POST-request in Postman to obtain a bearer token manually. Copy this token as you will need it in the next step to initially connect PowerBI to the TruBudget API. 
 
 ## Connect PowerBI to TruBudget via API
-In the next step PowerBI will be connected to TruBudget via the API using - for now - the manually generated token. 
+In the next step PowerBI will be connected to TruBudget via the API using - for now - the manually generated bearer token. 
 
-1) to set up the API connection you have to add a new web source
+To set up the API connection to TruBudget, you have to:
+1) add a new web source in PowerBI
 2) go to the advanced settings
-3) paste the API URL of the data source you want to connect
-4) in the "HTTP request header parameters" write "Authorization" and for the value enter "Bearer [Token you have generate manually in Postman]". 
+3) paste the API URL of the data source you want to connect (can be obtained from Postman)
+4) in the "HTTP request header parameters" write "Authorization" and for the value enter "Bearer <Token you have generate manually in Postman>". 
 5) connect to the API. The according data to the API URL will appear in PowerBI. 
 
 ## Generate token dynamically
@@ -19,7 +22,7 @@ In the next step PowerBI will be connected to TruBudget via the API using - for 
 2) open the advanced editor
 
 
-Use this skript to generate a dynamic token - modify all fields indicated with the "<..>": 
+Use this skript to generate a dynamic token - modify all fields indicated by the "<..>": 
 
 ```
 let
