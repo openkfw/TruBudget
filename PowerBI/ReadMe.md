@@ -13,7 +13,7 @@ To set up the API connection to TruBudget, you have to:
 1) add a new web source in PowerBI Desktop
 2) go to the advanced settings
 3) paste the API URL of the data source you want to connect (can be obtained from Postman)
-4) in the "HTTP request header parameters" field write "Authorization"; for the value enter "Bearer <.Token you have generate manually in Postman.>". Pay attention that a space is between "Bearer" and the token you entered.
+4) in the "HTTP request header parameters" field, write "Authorization"; for the value enter "Bearer <.Token you have generated manually in Postman.>". Pay attention that there is a space between "Bearer" and the token you entered.
 5) connect to the API. The according data of the API URL will appear in PowerBI. 
 
 ## Generate token dynamically
@@ -60,11 +60,12 @@ access_token
 
 ```
 
-If the query is working correctly, you will receive a bearer token as a result.
+You can follow the individual queries of the script in the "Applied steps" section in PowerBI (to inform your debugging). If the query is working correctly, you will receive a bearer token as a result. 
 
 ### Convert Query to Function
-3) rename the query to "GetToken"
-4) in the Advanced Editor for the query, add "()=> " at the very beginning of the script before "let"
+Once the above script yields the bearer token, you can proceed to: 
+1) rename the query to "GetToken"
+2) in the Advanced Editor for the query, add "()=> " at the very beginning of the script before "let"
 
 This will transform the query into a function.
 
