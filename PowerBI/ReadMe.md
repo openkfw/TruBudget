@@ -2,7 +2,7 @@
 This readme explains how to connect PowerBI to TruBudget via it's API. As a core issue, this explanation will provide the necessary Power Query M skript to dynamically generate a token, which will in turn be used to get the respective data from TruBudget.
 
 ## Get Token Manually from Postman 
-Use the user.authenticate POST request in Postman to obtain a token manually. Copy this token as you will need it to connect PowerBI to the TruBudget API. 
+Use the user.authenticate POST request in Postman to obtain a bearer token manually. Copy this token as you will need it to connect PowerBI to the TruBudget API. 
 
 ## Connect PowerBI to TruBudget via API
 In the next step PowerBI will be connected to TruBudget via the API using - for now - the manually generated token. 
