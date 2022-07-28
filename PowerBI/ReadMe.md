@@ -17,7 +17,7 @@ To set up the API connection to TruBudget, you have to:
 5) connect to the API. The according data of the API URL will appear in PowerBI. 
 
 ## Generate token dynamically
-Subsequently, you have to create a script that automatically requests the bearer token and thus, allows updating the data set without having to repeatedly enter a token by hand. 
+Subsequently, you have to create a script that automatically requests the bearer token and thus, allows updating the dataset without having to repeatedly enter a token by hand. 
 
 1) in the Power Query editor, add a blank query as a new source
 2) open the blank query in the advanced editor
