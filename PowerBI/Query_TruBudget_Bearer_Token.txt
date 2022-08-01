@@ -1,0 +1,35 @@
++++ NOTE: ALL FIELDS YOU HAVE TO MODIFY IN THIS SCRIPT ARE INDICATED BY "<. .>" +++
+
+let
+
+url = "<.URL.>",
+
+headers = [#"Content-Type" = "application/json"],
+
+postData = Json.Document("{""apiVersion"":""1.0"",""data"":{""user"":{""id"":""<.Username.>"",""password"":""<.Password.>""}}}"),
+
+response = Web.Contents(
+
+url,
+
+[
+
+Headers = headers,
+
+Content = Text.ToBinary("{""apiVersion"":""1.0"",""data"":{""user"":{""id"":""<.Username.>"",""password"":""<.Password.>""}}}")
+
+]
+
+),
+
+res = Json.Document(response),
+
+data = Record.Field(res,"data"),
+
+user = Record.Field(data, "user"),
+
+access_token = Record.Field(user, "token")
+
+in
+
+access_token
