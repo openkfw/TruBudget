@@ -49,13 +49,26 @@ Feel free to help out if you noticed a bug or if you want to suggest a new featu
 When working on a feature, you can open a PR in as soon as you push the first changes. Please make sure you follow these guidelines regarding PRs:
 
 - Make sure that the PR description clearly describes what you are working on
-- If aplicable, mention what issue will be closed with this pull request, by typing `Closes #issueNumber`
-- Describe how you are planning on implementing the soultion, maybe by creating a TODO list
+- If applicable, mention what issue will be closed with this pull request, by typing `Closes #issueNumber`
+- Describe how you are planning on implementing the solution, maybe by creating a TODO list
 - The PR should be in draft mode if you're still making some changes. If it is ready to be reviewed then mark it as "Ready for review"
 
 ### Don't forget to update the changelog!
 
 If you make changes that are relevant to the end user you should add an entry in the CHANGELOG.md file, which can be found in the root folder of the project. Before adding to the changelog, you should read these [guidelines]
+
+## How to merge pull requests from forks
+
+Since open source developer need to fork TruBudget to change the code and open a Pull Request to merge their changes into the openkfw/TruBudget repository, we need to add their forked repo to our local git repos. Then we can make review changes and push them back to their Pull Request.
+
+To do this in git, run:
+
+git remote add protected_repo https://github.com/theirusername/their_repo.git
+git fetch protected_repo
+git checkout protected_repo/branch_name
+git switch -c branch_name_for_our_repo
+
+After this commands, we have copied the branch from the contributors repo to the openkfw/TruBudget repo.
 
 ## Styleguides
 
@@ -98,7 +111,7 @@ During development, make sure you document code additions or modifications in th
 When we make a significant decision in how to write code, or how to maintain the
 project and what we can or cannot support, we will document it using [Architecture
 Decision Records (ADR)]. Take a look at the [doc/architecture/decisions] directory for
-existings ADRs. If you have a question around how we do things, check to see if it is
+existing ADRs. If you have a question around how we do things, check to see if it is
 documented there. If it is _not_ documented there, please ask us - chances are you're
 not the only one wondering. Of course, also feel free to challenge the decisions by
 starting a discussion on [Gitter] or by opening a new [github issue].
