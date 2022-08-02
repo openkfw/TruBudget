@@ -63,7 +63,7 @@ const authAgainstApi = async (
 ): Promise<AxiosInstance> => {
   try {
     const auth = await axios.post(
-      `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/user.authenticate`,
+      `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/api/user.authenticate`,
       {
         apiVersion: "1.0",
         data: {
@@ -76,8 +76,7 @@ const authAgainstApi = async (
     );
     const token = auth.data.data.user.token;
     return axios.create({
-      baseURL: `${ApplicationConfiguration.DESTINATION_API_BASE_URL}`,
-      timeout: 1000,
+      baseURL: `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/api`,
       headers: { Authorization: `Bearer ${token}` },
     });
   } catch (error) {
@@ -117,7 +116,7 @@ export const downloadFileFromApi = async (
   documentId: string
 ) => {
   const request = await api.get(
-    `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
+    `/workflowitem.downloadDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
   );
 
   if (request.status !== 200) {
@@ -133,7 +132,7 @@ export const getWorkflowItemDetails = async (
   workflowitemId: string
 ): Promise<WorkflowItemDetails> => {
   const request = await api.get(
-    `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/workflowitem.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
+    `/workflowitem.viewDetails?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`
   );
 
   if (request.status !== 200) {
@@ -149,20 +148,17 @@ export const createUser = async (
   username: string,
   password: string
 ): Promise<string> => {
-  const request = await api.post(
-    `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/global.createUser`,
-    {
-      apiVersion: "1.0",
-      data: {
-        user: {
-          displayName,
-          organization,
-          id: username,
-          password,
-        },
+  const request = await api.post(`/global.createUser`, {
+    apiVersion: "1.0",
+    data: {
+      user: {
+        displayName,
+        organization,
+        id: username,
+        password,
       },
-    }
-  );
+    },
+  });
 
   if (request.status !== 200) {
     throw new Error(`Can not create user ${username}`);
@@ -175,15 +171,12 @@ export const disableUser = async (
   api: AxiosInstance,
   userId: string
 ): Promise<void> => {
-  const request = await api.post(
-    `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/global.disableUser`,
-    {
-      apiVersion: "1.0",
-      data: {
-        userId,
-      },
-    }
-  );
+  const request = await api.post(`/global.disableUser`, {
+    apiVersion: "1.0",
+    data: {
+      userId,
+    },
+  });
 
   if (request.status !== 200) {
     throw new Error(`Can not disable user ${userId}`);
@@ -194,15 +187,12 @@ export const grantAllRightsToUser = async (
   api: AxiosInstance,
   userId: string
 ): Promise<void> => {
-  const request = await api.post(
-    `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/global.grantAllPermissions`,
-    {
-      apiVersion: "1.0",
-      data: {
-        identity: userId,
-      },
-    }
-  );
+  const request = await api.post(`/global.grantAllPermissions`, {
+    apiVersion: "1.0",
+    data: {
+      identity: userId,
+    },
+  });
 
   if (request.status !== 200) {
     throw new Error(`Can not grant all rights to user ${userId}`);
@@ -217,19 +207,16 @@ export const grantAllPermissionsOnWorkflowItem = async (
   workflowitemId
 ): Promise<void> => {
   for (const intent of workflowitemIntents) {
-    const request = await api.post(
-      `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/workflowitem.intent.grantPermission`,
-      {
-        apiVersion: "1.0",
-        data: {
-          projectId,
-          subprojectId,
-          workflowitemId,
-          identity: userId,
-          intent,
-        },
-      }
-    );
+    const request = await api.post(`/workflowitem.intent.grantPermission`, {
+      apiVersion: "1.0",
+      data: {
+        projectId,
+        subprojectId,
+        workflowitemId,
+        identity: userId,
+        intent,
+      },
+    });
 
     if (request.status !== 200) {
       throw new Error(`Can not grant rights to user ${userId}`);
@@ -247,9 +234,7 @@ export const listUsers = async (
     }
   ]
 > => {
-  const request = await api.get(
-    `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/user.list`
-  );
+  const request = await api.get(`/user.list`);
 
   if (request.status !== 200) {
     throw new Error(`Can not list users`);

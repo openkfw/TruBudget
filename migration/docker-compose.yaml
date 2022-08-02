@@ -1,0 +1,21 @@
+version: "3"
+services:
+  migration:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SOURCE_RPC_PORT: 8000
+      SOURCE_RPC_USER: multichainrpc
+      SOURCE_RPC_PASSWORD: k1oR5s12kY93NaUz1w5nQHJynqTtLw8Lk68E7KwWHQfW
+      SOURCE_RPC_HOST: #todo
+      DESTINATION_API_BASE_URL:
+      DESTINATION_RPC_PORT: 8000
+      DESTINATION_RPC_USER: multichainrpc
+      DESTINATION_RPC_PASSWORD: k1oR5s12kY93NaUz1w5nQHJynqTtLw8Lk68E7KwWHQfW
+      DESTINATION_RPC_HOST: #todo
+      BACKUP_FILE_LOCATION:#todo
+      DESTINATION_BLOCKCHAIN_BASE_URL: #todo
+      ROOT_SECRET: root-secret
+      ORGANIZATION: KfW
+      MIGRATION_USER_PASSWORD: test

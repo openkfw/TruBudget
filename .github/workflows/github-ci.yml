@@ -29,8 +29,8 @@ jobs:
     needs: danger
     strategy:
       matrix:
-        node-version: [ 10.x ]
-        project: [ frontend, api, blockchain, provisioning, migration ]
+        node-version: [ 18.x ]
+        project: [ frontend, api, blockchain, provisioning ]
     defaults:
       run:
         working-directory: ${{ matrix.project }}
@@ -44,7 +44,7 @@ jobs:
     needs: [ danger, lint ]
     strategy:
       matrix:
-        node-version: [ 10.x ]
+        node-version: [ 18.x ]
         project:
           [
             frontend,
@@ -76,7 +76,7 @@ jobs:
     needs: [ danger, lint, audit ]
     strategy:
       matrix:
-        node-version: [ 10.x ]
+        node-version: [ 18.x ]
         project: [ frontend, api ]
     defaults:
       run:

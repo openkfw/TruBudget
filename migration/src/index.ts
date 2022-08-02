@@ -9,7 +9,6 @@ import {
   createMigrationUser,
   disableMigrationUser,
 } from "./helper/configureDestination";
-
 let migrationSource = require("multichain-node")({
   port: ApplicationConfiguration.SOURCE_RPC_PORT,
   host: ApplicationConfiguration.SOURCE_RPC_HOST,
@@ -29,10 +28,15 @@ customMigrationFunctions["offchain_documents"] = documentUploader;
 
 (async function () {
   try {
+    console.log("generate Project Migration Function...");
     await generateProjectMigrationFunction();
+    console.log("configure Destination Chain...");
     await configureDestinationChain();
+    console.log("create Migration User");
     await createMigrationUser();
+    console.log("run Migration");
     await runMigration();
+    console.log("disable Migration User");
     await disableMigrationUser();
     await listStreams();
   } catch (e) {
@@ -57,6 +61,9 @@ async function listStreams() {
 }
 
 async function generateProjectMigrationFunction() {
+  console.log(
+    `Get projects of source stream ${ApplicationConfiguration.SOURCE_RPC_HOST}:${ApplicationConfiguration.SOURCE_RPC_PORT} ...`
+  );
   const projectIds = await getProjectStreams(migrationSource);
   for (const projectId of projectIds) {
     customMigrationFunctions[projectId] = makeProjectUploader(projectId);
