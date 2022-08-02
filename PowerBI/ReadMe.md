@@ -65,6 +65,10 @@ This will transform the query into a function.
 Lastly, you need to replace the hardcoded access token (you entered manually for the first API connection) with the just created GetToken() function in the dataset query.
 
 1. open the Advanced Editor for the dataset you fetched from TruBudget via the API
-2. in the script, replace the hardcoded access token in the source header with "&GetToken()". Make sure there is a space between the "Bearer" and "&GetToken()".
+2. in the script, replace the hardcoded access token in the source header with "&GetToken()" like this: 
+
+    [Headers=[Authorization="Bearer "&GetToken()]]
+
+    Make sure there is a space after "Bearer".
 
 To verify the successful API connection, refresh dataset in PowerBI, which should run smoothly.
