@@ -1,13 +1,18 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import ContentAdd from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import PermissionIcon from "@mui/icons-material/LockOpen";
 import LaunchIcon from "@mui/icons-material/ZoomIn";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-
 import Typography from "@mui/material/Typography";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+
 import strings from "../../localizeStrings";
 import {
   canCreateProject,
@@ -16,24 +21,40 @@ import {
   canViewProjectDetails
 } from "../../permissions";
 import Searchbar from "../Common/Searchbar";
-import { unixTsToString, stringToUnixTs } from "../../helper";
+import { unixTsToString, stringToUnixTs, isEmptyDeep } from "../../helper";
 import DataTable from "react-data-table-component";
 import ActionButton from "../Common/ActionButton";
 import SelectablePill from "../Common/SelectablePill";
 import FilterMenu from "./FilterMenu";
-import { useHistory } from "react-router-dom";
+import BudgetsList from "./BudgetsList";
 
 // Documentation for this custom react data table:
 // https://react-data-table-component.netlify.app/?path=/story/columns-cells-custom-cells--custom-cells
 
-const ProjectButtons = ({ project, showEditDialog, showProjectPermissions, allowedIntents }) => {
+const ProjectButtons = ({
+  project,
+  showEditDialog,
+  showProjectPermissions,
+  showProjectAdditionalData,
+  allowedIntents
+}) => {
   const isOpen = project.status === "open";
+  const isAdditionalDataEmpty = isEmptyDeep(project.additionalData);
   const canViewPermissions = canViewProjectPermissions(allowedIntents);
   const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
   const viewDisabled = !canViewProjectDetails(allowedIntents);
   const history = useHistory();
   return (
     <Box sx={{ display: "flex", gap: "20px" }}>
+      <ActionButton
+        notVisible={isAdditionalDataEmpty}
+        onClick={() => {
+          showProjectAdditionalData(project.id);
+        }}
+        title="Additional Data"
+        icon={<MoreIcon />}
+        data-test={`project-overview-additionaldata-${project.id}`}
+      />
       <ActionButton
         notVisible={viewDisabled}
         onClick={() => {
@@ -73,83 +94,130 @@ const ProjectButtons = ({ project, showEditDialog, showProjectPermissions, allow
   );
 };
 
-const columns = [
-  // Documentation: https://react-data-table-component.netlify.app/?path=/docs/api-columns--page
-  {
-    name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        {strings.common.project}
-      </Typography>
-    ),
-    selector: row => row.data.projectName,
-    sortable: true,
-    compact: false,
-    minWidth: "15rem",
-    cell: row => <Typography data-test="project-name">{row.data.projectName}</Typography>
-  },
-  {
-    name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        {strings.common.status}
-      </Typography>
-    ),
-    selector: row => row.data.projectStatus,
-    sortable: true,
-    compact: true,
-    minWidth: "5rem",
-    cell: row => <Typography>{row.data.projectStatus}</Typography>
-  },
-  {
-    name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        {strings.common.created}
-      </Typography>
-    ),
-    selector: row => row.data.creationUnixTs, // time in ms to use the built-in sort
-    sortable: true,
-    compact: true,
-    minWidth: "10rem",
-    cell: row => <Typography>{row.data.createdDate}</Typography> // formatted date that is shown
-  },
-  {
-    name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        {strings.common.assignee}
-      </Typography>
-    ),
-    selector: row => row.data.assignee,
-    sortable: true,
-    compact: true,
-    minWidth: "5rem",
-    cell: row => <Typography>{row.data.assignee}</Typography>
-  },
-  {
-    name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        {strings.common.tags}
-      </Typography>
-    ),
-    sortable: false,
-    compact: true,
-    minWidth: "0rem",
-    maxWidth: "20rem",
-    cell: row => row.components.Tags
-  },
-  {
-    name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-        {strings.common.actions}
-      </Typography>
-    ),
-    sortable: false,
-    right: true,
-    compact: false,
-    minWidth: "10rem",
-    cell: row => row.components.ProjectButtons
-  }
-];
+const TableViewEditor = ({ showTags, setShowTags, showBudgets, setShowBudgets }) => {
+  return (
+    <Box>
+      <FormGroup>
+        <FormControlLabel
+          control={<Checkbox checked={showTags} onChange={e => setShowTags(e.target.checked)} />}
+          label="Tags"
+        />
+        <FormControlLabel
+          control={<Checkbox checked={showBudgets} onChange={e => setShowBudgets(e.target.checked)} />}
+          label="Budgets"
+        />
+      </FormGroup>
+    </Box>
+  );
+};
 
-const formatTable = ({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTermArray }) => {
+const useRawColumns = () => {
+  const rawColumns = [
+    // Documentation: https://react-data-table-component.netlify.app/?path=/docs/api-columns--page
+    {
+      id: "project_name_column",
+      name: (
+        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+          {strings.common.project}
+        </Typography>
+      ),
+      selector: row => row.data.projectName,
+      sortable: true,
+      compact: false,
+      minWidth: "15rem",
+      cell: row => <Typography data-test="project-name">{row.data.projectName}</Typography>
+    },
+    {
+      id: "project_status_column",
+      name: (
+        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+          {strings.common.status}
+        </Typography>
+      ),
+      selector: row => row.data.projectStatus,
+      sortable: true,
+      compact: true,
+      minWidth: "5rem",
+      cell: row => <Typography>{row.data.projectStatus}</Typography>
+    },
+    {
+      id: "project_date_column",
+      name: (
+        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+          {strings.common.created}
+        </Typography>
+      ),
+      selector: row => row.data.creationUnixTs, // time in ms to use the built-in sort
+      sortable: true,
+      compact: true,
+      minWidth: "10rem",
+      cell: row => <Typography>{row.data.createdDate}</Typography> // formatted date that is shown
+    },
+    {
+      id: "project_assignee_column",
+      name: (
+        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+          {strings.common.assignee}
+        </Typography>
+      ),
+      selector: row => row.data.assignee,
+      sortable: true,
+      compact: true,
+      minWidth: "5rem",
+      cell: row => <Typography>{row.data.assignee}</Typography>
+    },
+    {
+      id: "project_tags_column",
+      name: (
+        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+          {strings.common.tags}
+        </Typography>
+      ),
+      sortable: false,
+      compact: true,
+      minWidth: "0rem",
+      maxWidth: "20rem",
+      cell: row => row.components.Tags
+    },
+    {
+      id: "project_budgets_column",
+      name: (
+        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+          {strings.common.budget}
+        </Typography>
+      ),
+      sortable: false,
+      compact: true,
+      minWidth: "0rem",
+      maxWidth: "20rem",
+      cell: row => row.components.Budgets
+    },
+    {
+      id: "action_buttons_column",
+      name: (
+        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+          {strings.common.actions}
+        </Typography>
+      ),
+      sortable: false,
+      right: true,
+      compact: false,
+      minWidth: "20rem",
+      cell: row => row.components.ProjectButtons
+    }
+  ];
+
+  return rawColumns;
+};
+
+const formatTable = ({
+  projects,
+  showEditDialog,
+  showProjectPermissions,
+  showProjectAdditionalData,
+  storeSearchTerm,
+  searchTermArray
+}) => {
   const projectRows = projects.map((project, index) => {
     const row = {
       data: {
@@ -168,6 +236,7 @@ const formatTable = ({ projects, showEditDialog, showProjectPermissions, storeSe
             project={project.data}
             showEditDialog={showEditDialog}
             showProjectPermissions={showProjectPermissions}
+            showProjectAdditionalData={showProjectAdditionalData}
             allowedIntents={project.allowedIntents}
           />
         ),
@@ -185,7 +254,8 @@ const formatTable = ({ projects, showEditDialog, showProjectPermissions, storeSe
               ></SelectablePill>
             ))}
           </Box>
-        )
+        ),
+        Budgets: <BudgetsList budgets={project.data.projectedBudgets} />
       }
     };
     return row;
@@ -200,26 +270,33 @@ const TableView = props => {
     showProjectPermissions,
     showCreationDialog,
     enabledUsers,
+    showProjectAdditionalData,
     storeSearchTerm,
     searchTerm,
     showNavSearchBar // to open the search bar for CardView in NavBar
   } = props;
 
   const projects = filteredProjects;
+  const rawColumns = useRawColumns();
 
   const [status, setStatus] = useState("all");
   const [assigneeId, setAssigneeId] = useState("all");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
+  const [columns, setColumns] = useState(rawColumns);
+  const [showTags, setShowTags] = useState(true);
+  const [showBudgets, setShowBudgets] = useState(true);
   const [table, setTable] = useState(
-    formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm })
+    formatTable({
+      projects,
+      showEditDialog,
+      showProjectPermissions,
+      showProjectAdditionalData,
+      storeSearchTerm,
+      searchTerm
+    })
   );
-
-  useEffect(() => {
-    // Update Table when new project was created
-    setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
-  }, [projects, searchTerm, showEditDialog, showProjectPermissions, storeSearchTerm]);
 
   const handleSearch = useCallback(() => {
     if (!projects) {
@@ -236,7 +313,16 @@ const TableView = props => {
     const hasEndDate = endDate !== null;
     if (!hasSearchTerm && !hasStartDate && !hasEndDate && !hasStatus && !hasAssignee) {
       // Filtered with no active filter: all projects shown
-      setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
+      setTable(
+        formatTable({
+          projects,
+          showEditDialog,
+          showProjectPermissions,
+          showProjectAdditionalData,
+          storeSearchTerm,
+          searchTerm
+        })
+      );
       return;
     }
     if (hasSearchTerm) {
@@ -261,7 +347,16 @@ const TableView = props => {
     if (hasAssignee) {
       filtered = filtered.filter(project => project.data?.assignee === assigneeId);
     }
-    setTable(formatTable({ projects: filtered, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
+    setTable(
+      formatTable({
+        projects: filtered,
+        showEditDialog,
+        showProjectPermissions,
+        showProjectAdditionalData,
+        storeSearchTerm,
+        searchTerm
+      })
+    );
   }, [
     projects,
     searchTerm,
@@ -271,6 +366,7 @@ const TableView = props => {
     endDate,
     showEditDialog,
     showProjectPermissions,
+    showProjectAdditionalData,
     storeSearchTerm,
     showNavSearchBar
   ]);
@@ -281,8 +377,31 @@ const TableView = props => {
     setAssigneeId("all");
     setStartDate(null);
     setEndDate(null);
-    setTable(formatTable({ projects, showEditDialog, showProjectPermissions, storeSearchTerm, searchTerm }));
-  }, [projects, searchTerm, showEditDialog, showProjectPermissions, storeSearchTerm]);
+    setTable(
+      formatTable({
+        projects,
+        showEditDialog,
+        showProjectPermissions,
+        showProjectAdditionalData,
+        storeSearchTerm,
+        searchTerm
+      })
+    );
+  }, [projects, searchTerm, showEditDialog, showProjectPermissions, showProjectAdditionalData, storeSearchTerm]);
+
+  useEffect(() => {
+    // Update Table when new project was created
+    setTable(
+      formatTable({
+        projects,
+        showEditDialog,
+        showProjectPermissions,
+        showProjectAdditionalData,
+        storeSearchTerm,
+        searchTerm
+      })
+    );
+  }, [projects, searchTerm, showEditDialog, showProjectPermissions, showProjectAdditionalData, storeSearchTerm]);
 
   useEffect(() => {
     // Search on change: Since handleSearch uses useCallback, the function will change according to
@@ -290,11 +409,35 @@ const TableView = props => {
     handleSearch();
   }, [handleSearch]);
 
+  useEffect(() => {
+    // Enable or disable columns in the Table
+    const currentColumns = rawColumns.filter(c => {
+      if (!showTags && c.id === "project_tags_column") {
+        return false;
+      }
+      if (!showBudgets && c.id === "project_budgets_column") {
+        return false;
+      }
+      return true;
+    });
+
+    setColumns(currentColumns);
+  }, [rawColumns, showBudgets, showTags]);
+
   const actionsMemo = useMemo(
     () => (
       <>
-        <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <Box sx={{ display: "block", margin: "0px" }}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginTop: "30px",
+            marginBottom: "30px"
+          }}
+        >
+          <Box sx={{ display: "block" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Searchbar
                 isSearchBarDisplayedByDefault={true}
@@ -307,7 +450,7 @@ const TableView = props => {
               <ActionButton
                 onClick={() => setShowFilter(!showFilter)}
                 icon={<FilterAltIcon />}
-                data-test={`open-filter`}
+                data-test="open-filter"
               />
             </Box>
             <Box sx={{ marginLeft: "23px" }}>
@@ -327,10 +470,30 @@ const TableView = props => {
               )}
             </Box>
           </Box>
+          <Box sx={{ marginRight: "150px" }}>
+            <TableViewEditor
+              showTags={showTags}
+              setShowTags={setShowTags}
+              showBudgets={showBudgets}
+              setShowBudgets={setShowBudgets}
+            />
+          </Box>
         </Box>
       </>
     ),
-    [searchTerm, showFilter, startDate, endDate, status, handleReset, assigneeId, enabledUsers, storeSearchTerm]
+    [
+      searchTerm,
+      showFilter,
+      startDate,
+      endDate,
+      status,
+      handleReset,
+      assigneeId,
+      enabledUsers,
+      showTags,
+      showBudgets,
+      storeSearchTerm
+    ]
   );
 
   return (
