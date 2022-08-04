@@ -142,7 +142,7 @@ services:
       context: ../../provisioning
     command: ["npm", "start"]
     environment:
-      API_HOST: alpha-api
+      API_HOST: 172.20.0.4
       API_PORT: ${API_PORT}
       PROVISIONING_TYPE: ${PROVISIONING_TYPE}
       ROOT_SECRET: ${ROOT_SECRET}
@@ -211,7 +211,7 @@ services:
       context: ../../frontend
       dockerfile: Dockerfile.dev
       args:
-        API_HOST: alpha-api
+        API_HOST: 172.20.0.4
         API_PORT: ${API_PORT}
     environment:
       NODE_ENV: ${NODE_ENV}
@@ -219,9 +219,9 @@ services:
       REACT_APP_VERSION: ${REACT_APP_VERSION}
       REACT_APP_EXPORT_SERVICE_ENABLED: ${REACT_APP_EXPORT_SERVICE_ENABLED}
       REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
-      PROD_API_HOST: alpha-api
+      PROD_API_HOST: 172.20.0.4
       PROD_API_PORT: ${API_PORT}
-      TEST_API_HOST: alpha-api
+      TEST_API_HOST: 172.20.0.4
       TEST_API_PORT: ${API_PORT}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}

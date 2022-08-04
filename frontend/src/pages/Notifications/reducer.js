@@ -21,7 +21,7 @@ const defaultState = fromJS({
   newNotifications: [],
   showHistory: false,
   showSnackbar: false,
-  snackbarMessage: "New Project added",
+  snackbarMessage: "Success",
   snackbarError: false,
   snackbarWarning: false,
   historyItems: [],
