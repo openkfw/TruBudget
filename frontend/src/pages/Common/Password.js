@@ -67,15 +67,9 @@ const Password = ({
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                {!isPasswordVisible ? (
-                  <IconButton onClick={togglePasswordVisibilty}>
-                    <VisibilityIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton onClick={togglePasswordVisibilty}>
-                    <VisibilityOffIcon />
-                  </IconButton>
-                )}
+                <IconButton id="showPasswordButton" onClick={togglePasswordVisibilty}>
+                  {!isPasswordVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </IconButton>
               </InputAdornment>
             )
           }}
