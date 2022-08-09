@@ -1,8 +1,5 @@
 version: "3"
 services:
   blockchain:
-    extends:
-      file: blockchain/docker-compose.alphanode.yml
-      service: blockchain
     build: ../blockchain
     image: docker-compose-blockchain:local

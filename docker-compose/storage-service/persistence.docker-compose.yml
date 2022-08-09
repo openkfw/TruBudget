@@ -2,8 +2,5 @@
 version: "3"
 services:
   minio:
-    extends:
-      file: storage-service/docker-compose.yml
-      service: minio
     volumes:
       - /minioVolume:/data
