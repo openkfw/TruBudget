@@ -1,0 +1,7 @@
+*.xlsx
+*.docx
+node_modules/
+dist/
+doc/
+postman/
+.vscode/
