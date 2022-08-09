@@ -193,18 +193,21 @@ const NumberChart = ({ title, budget, currency, dataTest }) => (
     </CardContent>
   </Card>
 );
-const RatioChart = ({ title, budget, dataTest }) => (
-  <Card style={dashboardStyles.card}>
-    <CardContent style={dashboardStyles.ratioContent}>
-      <Typography style={{ flex: 1 }} variant="overline">
-        {title}
-      </Typography>
-      <Typography style={{ flex: 1 }} data-test={dataTest} variant="h6">
-        {budget ? `${(budget * 100).toFixed(2)}%` : "-"}
-      </Typography>
-    </CardContent>
-  </Card>
-);
+const RatioChart = ({ title, budget, dataTest }) => {
+  const isValidBudget = !isNaN(budget) && isFinite(budget);
+  return (
+    <Card style={dashboardStyles.card}>
+      <CardContent style={dashboardStyles.ratioContent}>
+        <Typography style={{ flex: 1 }} variant="overline">
+          {title}
+        </Typography>
+        <Typography style={{ flex: 1 }} data-test={dataTest} variant="h6">
+          {isValidBudget ? `${(budget * 100).toFixed(2)}%` : "-"}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
 
 const Chart = ({ title, chart, dataTest }) => (
   <Card style={dashboardStyles.card}>
