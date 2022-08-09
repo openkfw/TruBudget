@@ -1,9 +1,6 @@
-# Change ~/masterVolume to the location where the .multichain content should be saved on your machine 
+# Change /tmp to the location where the .multichain content should be saved on your machine 
 version: "3"
 services:
   blockchain:
-    extends:
-      file: blockchain/docker-compose.alphanode.yml
-      service: blockchain
     volumes:
-      - ~/masterVolume:${MULTICHAIN_DIR}/.multichain
+      - /alphaVolume:${MULTICHAIN_DIR}/.multichain

@@ -106,10 +106,18 @@ Let's analyze the use case:
 - the newest official version should be used
   This means we need to check the docker-compose images. There we can find the image property as follows: `image: trubudget/blockchain:${TAG}`. There we can find the ${TAG} variable set as image tag. To make sure we are using the latest version of TruBudget we can change the `TAG` environment variable in our .env file to `latest`. Tough it is recommended to check the latest version of TruBudget on [docker-hub](https://hub.docker.com/u/trubudget) and use a specific tag like `v2.0.0`.
 
-After analyzing the use case we can put the files together and create our docker compose command:
+After analyzing the use case we can put the files together and create our docker compose commands.
+First we want to check if every environment variable is passed correctly to each container. To check the whole final configuration of the docker-compose setup use `docker-compose config` with the files you want to use:
 
 ```
-docker-compose
+docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f excel-export-service/docker-compose.yml -f storage-service/docker-compose.yml -f storage-service/persistence.docker-compose.yml -f blockchain/persistence.docker-compose.yml -f api/docker-compose.yml -f frontend/docker-compose.yml config
+```
+
+Double check the image tags and make sure you are using the correct ones.
+If the configuration looks fine start the whole setup with `docker-compose up`.
+
+```
+docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f excel-export-service/docker-compose.yml -f storage-service/docker-compose.yml -f storage-service/persistence.docker-compose.yml -f blockchain/persistence.docker-compose.yml -f api/docker-compose.yml -f frontend/docker-compose.yml up
 ```
 
 ## E2E-tests
