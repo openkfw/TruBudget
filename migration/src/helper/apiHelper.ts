@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from "axios";
+import axios, {AxiosInstance, AxiosResponse} from "axios";
 import ApplicationConfiguration from "./config";
 
 export interface UploadMetadata {
@@ -45,10 +45,41 @@ export const workflowitemIntents = [
 
 const apiInstances = new Map<String, AxiosInstance>();
 
+const apiIsReady = async (apiBaseUrl: string): Promise<boolean> => {
+    try {
+        console.log("Check if Api is ready...");
+        const response: AxiosResponse = await axios.get(
+            `${apiBaseUrl}/api/readiness`,
+            {timeout: 5000}
+        );
+        return response.status === 200;
+    } catch (error) {
+        console.log(`Api (${apiBaseUrl}) not reachable.`);
+        return false;
+    }
+};
+
+const waitForApi = async (delayInS: number, maxRetries: number = 50) => {
+    let retries = 0;
+    while (retries < maxRetries) {
+        if (await apiIsReady(ApplicationConfiguration.DESTINATION_API_BASE_URL)) {
+            console.log("Api reports readiness!");
+            return;
+        } else {
+            console.log(`Retry in ${delayInS} seconds...`);
+            await new Promise((resolve) => setTimeout(resolve, delayInS * 1000));
+        }
+        retries++;
+    }
+    console.log(`Max retries of ${maxRetries} reached. Api not ready. Exit.`);
+    process.exit(1);
+};
+
 export const getApiInstanceForUser = async (
     username: string,
     password: string
 ): Promise<AxiosInstance> => {
+    await waitForApi(10, 50);
     const apiInstance = apiInstances.get(username);
     if (apiInstance) return apiInstance;
 
@@ -62,6 +93,7 @@ const authAgainstApi = async (
     password: string
 ): Promise<AxiosInstance> => {
     try {
+        console.log("Authenticate with root user");
         const auth = await axios.post(
             `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/api/user.authenticate`,
             {
@@ -81,7 +113,7 @@ const authAgainstApi = async (
         });
     } catch (error) {
         throw new Error(
-            `Can not authenticate user! Request failed with: ${error}`
+            `Can not authenticate user! Request failed wit status ${error}`
         );
     }
 };
