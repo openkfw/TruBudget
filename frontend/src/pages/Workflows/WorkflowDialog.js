@@ -1,7 +1,7 @@
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import _isEmpty from "lodash/isEmpty";
 import React, { useEffect } from "react";
 import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
@@ -288,13 +288,13 @@ const WorkflowDialog = props => {
 
   const specificProps = editDialogShown
     ? {
-        handleSubmit: handleEdit,
-        dialogShown: editDialogShown
-      }
+      handleSubmit: handleEdit,
+      dialogShown: editDialogShown
+    }
     : {
-        handleSubmit: handleCreate,
-        dialogShown: creationDialogShown
-      };
+      handleSubmit: handleCreate,
+      dialogShown: creationDialogShown
+    };
   const { displayName, amountType, amount } = workflowToAdd;
   const exchangeRate = fromAmountString(workflowToAdd.exchangeRate);
   const changes = compareObjects(workflowItems, workflowToAdd);
@@ -329,7 +329,7 @@ const WorkflowDialog = props => {
     }
   ];
 
-  if (storageServiceAvailable) {
+  if (storageServiceAvailable || !(editDialogShown || creationDialogShown)) {
     steps.push(documentStep);
   }
 
