@@ -43,7 +43,7 @@ const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 const CERT_PATH = process.env.CERT_PATH || undefined;
 const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
 const CERT_KEY_PATH = process.env.CERT_KEY_PATH || undefined;
-let AUTOSTART = process.env.AUTOSTART === "true";
+let AUTOSTART = process.env.AUTOSTART === "false" ? false : true;
 
 let isRunning = AUTOSTART ? true : false;
 
@@ -128,22 +128,16 @@ const spawnProcess = (startProcess) => {
   isRunning = true;
   mcproc.on("close", async (code, signal) => {
     isRunning = false;
-    if (!AUTOSTART) {
-      log.info(
-        `multichaind stopped with exit code ${code} and signal ${signal}. Autorestart is disabled`,
-      );
-    } else {
-      const retryIntervalMs = 10000;
-      log.info(
-        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${
-          retryIntervalMs / 1000
-        } Seconds...`,
-      );
-      await new Promise((resolve) => {
-        setTimeout(resolve, retryIntervalMs);
-      });
-      spawnProcess(startProcess);
-    }
+    const retryIntervalMs = 10000;
+    log.info(
+      `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${
+        retryIntervalMs / 1000
+      } Seconds...`,
+    );
+    await new Promise((resolve) => {
+      setTimeout(resolve, retryIntervalMs);
+    });
+    spawnProcess(startProcess);
   });
 };
 
