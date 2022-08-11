@@ -1,0 +1,13 @@
+services:
+  blockchain:
+    extends:
+      file: blockchain/docker-compose.alphanode.yml
+      service: blockchain
+  api:
+    extends:
+      file: api/docker-compose.yml
+      service: api
+  frontend:
+    extends:
+      file: frontend/docker-compose.yml
+      service: frontend

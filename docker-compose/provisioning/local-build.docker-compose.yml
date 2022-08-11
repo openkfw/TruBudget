@@ -1,0 +1,7 @@
+version: "3"
+services:
+  provisioning:
+    build:
+      context: ../provisioning
+      dockerfile: Dockerfile
+    image: docker-compose-provisioning:local

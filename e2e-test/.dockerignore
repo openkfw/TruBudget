@@ -1,5 +1,4 @@
 *.xlsx
 *.docx
 node_modules/
-build/
 .vscode/

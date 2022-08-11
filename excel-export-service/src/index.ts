@@ -112,7 +112,6 @@ excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpre
     }
   }
 });
-
 excelService.listen(config.serverPort, () => logger.info(`App listening on ${config.serverPort}`));
 
 // Enable useful traces of unhandled-promise warnings:

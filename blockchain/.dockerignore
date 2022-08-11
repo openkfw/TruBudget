@@ -1,5 +1,5 @@
 *.xlsx
 *.docx
 node_modules/
-build/
+notifications/
 .vscode/

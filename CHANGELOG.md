@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add a warning in the workflowitem dialog for overwriting permissions [#1189](https://github.com/openkfw/TruBudget/issues/1189)
 - Add Budgets in Table-View [#1226](https://github.com/openkfw/TruBudget/issues/1226)
 - Add Button to view additional data object in Table-View [#1203](https://github.com/openkfw/TruBudget/issues/1203)
+- Docker-compose files including a better structure for more transparent configuration [#1046](https://github.com/openkfw/TruBudget/issues/1046)
 
 <!-- ### Changed -->
 

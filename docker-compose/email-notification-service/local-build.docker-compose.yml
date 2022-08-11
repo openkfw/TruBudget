@@ -1,0 +1,6 @@
+version: "3"
+services:
+
+  email-notification-service:
+    build: ../email-notification-service
+    image: docker-compose-email-notification-service:local

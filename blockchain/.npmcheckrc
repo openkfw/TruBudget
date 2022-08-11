@@ -1,0 +1,8 @@
+{
+  "depcheck": {
+    "ignoreMatches": [
+      "jshint",
+      "prettier"
+    ]
+  }
+}

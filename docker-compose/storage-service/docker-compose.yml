@@ -1,0 +1,50 @@
+version: "3"
+services:
+  storage-service:
+    image: trubudget/storage-service:${TAG}
+    environment:
+      PORT: ${STORAGE_SERVICE_PORT}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${STORAGE_SERVICE_ACCESS_CONTROL_ALLOW_ORIGIN}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_HOST: ${MINIO_HOST}
+      MINIO_PORT: ${MINIO_PORT}
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+      LOG_LEVEL: ${STORAGE_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    # networks:
+    #   mynetwork:
+    #     ipv4_address: 172.21.0.8
+    ports:
+      - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
+
+  minio:
+    image: minio/minio:RELEASE.2021-06-17T00-10-46Z
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server /data
+    ports:
+      - ${MINIO_PORT}:${MINIO_PORT}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9000/minio/health/live"
+        ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    # networks:
+    #   mynetwork:
+    #     ipv4_address: 172.21.0.3
+
+
+  api:
+    environment:
+      DOCUMENT_FEATURE_ENABLED: true
+      STORAGE_SERVICE_HOST: ${STORAGE_SERVICE_HOST}
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
+      STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}

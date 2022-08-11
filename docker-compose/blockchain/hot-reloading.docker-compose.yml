@@ -1,0 +1,8 @@
+version: "3"
+services:
+  blockchain:
+    build: ../blockchain
+    image: docker-compose-blockchain:local
+    command: [ "npm", "run", "watch" ]
+    volumes:
+      - "../blockchain/src:/home/node/src:delegated"

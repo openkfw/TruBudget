@@ -74,7 +74,7 @@ const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
 const isAlpha = P2P_HOST ? false : true;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
-  ? `-blocknotify=${blockNotifyArg}`
+  ? `-blocknotify=${process.env.BLOCKNOTIFY_SCRIPT}`
   : "";
 
 const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
