@@ -2,4 +2,4 @@ version: "3"
 services:
   email-db:
     volumes:
-      - /emaildbVolume:/var/lib/postgresql/data
+      - ./emaildbVolume:/var/lib/postgresql/data

@@ -9,9 +9,6 @@ services:
       POSTGRES_PASSWORD: ${EMAIL_POSTGRES_PASSWORD}
       POSTGRES_PORT: ${EMAIL_POSTGRES_PORT}
       POSTGRES_DB: ${EMAIL_POSTGRES_DB_NAME}
-    # volume for persisting data
-    volumes:
-      - /emaildbVolume:/var/lib/postgresql/data
     # networks:
     #   mynetwork:
     #     ipv4_address: 172.21.0.2
