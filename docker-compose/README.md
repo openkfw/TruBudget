@@ -20,12 +20,12 @@ All environment variables are configured via `.env` file. The `.env_example` fil
 cp .env_example .env
 ```
 
-All variables in the `.env` file are passed to one or more TruBudget docker-compose service per default, if another .env file should be used the `--env-file` option can be used.
+All variables in the `.env` file are passed to one or more TruBudget docker-compose services per default, if another .env file should be used the `--env-file` option can be used.
 The mapping of .env environment variables and docker-compose container variables can be checked in the used docker-compose.yml file/s.
 The actual environment variable values passed to each docker-compose container can be checked by the `docker compose config` command:
 
 ```
-docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml up
+docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml config
 ```
 
 ## Getting Started
