@@ -74,11 +74,11 @@ const schema = Joi.object().keys({
   createdAt: Joi.date().iso().required(),
   dueDate: Joi.date().iso().allow(""),
   displayName: Joi.string().required(),
-  // This should use exchangeRateSchema but can't, because of backward compatibility:
   exchangeRate: Joi.string()
     .when("amountType", {
       is: Joi.valid("N/A"),
       then: Joi.forbidden(),
+      break: true,
     })
     .when("status", {
       is: Joi.valid("closed"),
@@ -90,6 +90,7 @@ const schema = Joi.object().keys({
     .when("amountType", {
       is: Joi.valid("N/A"),
       then: Joi.forbidden(),
+      break: true,
     })
     .when("status", {
       is: Joi.valid("closed"),
@@ -100,6 +101,7 @@ const schema = Joi.object().keys({
     .when("amountType", {
       is: Joi.valid("N/A"),
       then: Joi.forbidden(),
+      break: true,
     })
     .when("status", {
       is: Joi.valid("closed"),
@@ -110,6 +112,7 @@ const schema = Joi.object().keys({
     .when("amountType", {
       is: Joi.valid("N/A"),
       then: Joi.forbidden(),
+      break: true,
     })
     .when("status", {
       is: Joi.valid("closed"),
