@@ -2,48 +2,23 @@ import React from "react";
 import Badge from "@mui/material/Badge";
 import BubbleIcon from "@mui/icons-material/ChatBubbleOutline";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import strings from "../../localizeStrings";
 
-const styles = {
-  badge: {
-    top: "8px",
-    right: "8px",
-    width: "25px",
-    height: "25px"
-  },
-  white: {
-    color: "white"
-  }
-};
-
 const NotificationIcon = ({ unreadNotificationCount, history }) => {
-  if (typeof unreadNotificationCount === "number" && unreadNotificationCount > 0) {
-    const maxNotificationCount = 50;
-    const unread =
+  const hasNotifications = typeof unreadNotificationCount === "number" && unreadNotificationCount > 0;
+  const maxNotificationCount = 50;
+  let unreadCountShown = 0;
+  if (hasNotifications) {
+    unreadCountShown =
       unreadNotificationCount > maxNotificationCount ? `${maxNotificationCount}+` : unreadNotificationCount;
-    return (
-      <Badge
-        sx={{ badge: styles.badge }}
-        badgeContent={
-          <Typography sx={styles.white} variant="caption">
-            {unread}
-          </Typography>
-        }
-        color="secondary"
-      >
-        <IconButton
-          data-test="navbar-notification-button"
-          tooltip={strings.navigation.unread_notifications}
-          onClick={() => history.push("/notifications")}
-          size="large"
-        >
-          <BubbleIcon color="primary" />
-        </IconButton>
-      </Badge>
-    );
-  } else {
-    return (
+  }
+  return (
+    <Badge
+      sx={{ "& .MuiBadge-badge": { top: "10px", right: "5px" } }}
+      badgeContent={unreadCountShown}
+      color="secondary"
+      invisible={!hasNotifications}
+    >
       <IconButton
         data-test="navbar-notification-button"
         tooltip={strings.navigation.unread_notifications}
@@ -52,8 +27,8 @@ const NotificationIcon = ({ unreadNotificationCount, history }) => {
       >
         <BubbleIcon color="primary" />
       </IconButton>
-    );
-  }
+    </Badge>
+  );
 };
 
 export default NotificationIcon;
