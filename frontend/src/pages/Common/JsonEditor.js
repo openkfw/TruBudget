@@ -18,7 +18,6 @@ export default function JsonEditor({ data = {}, onChange }) {
 
   useEffect(() => {
     // create editor
-    // console.log("create editor", refContainer.current);
     refEditor.current = new VanillaJsonEditor({
       // inject into refContainer
       target: refContainer.current,
@@ -39,10 +38,11 @@ export default function JsonEditor({ data = {}, onChange }) {
   // update props
   useEffect(() => {
     if (refEditor.current) {
-      // console.log("update props", { content: dataObject, onChange: changeDataCallback });
       refEditor.current.updateProps({ content: dataObject, onChange: changeDataCallback });
     }
   }, [changeDataCallback, data, dataObject, onChange]);
 
-  return <div style={{ display: "flex", maxWidth: "700px" }} ref={refContainer}></div>;
+  return (
+    <div style={{ display: "flex", maxWidth: "700px" }} ref={refContainer} data-test={`project-additional-data`}></div>
+  );
 }

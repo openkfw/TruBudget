@@ -12,7 +12,7 @@ const styles = {
   }
 };
 
-const Overview = props => {
+const Overview = (props) => {
   return (
     <Box>
       <Box sx={{ display: "flex" }}>

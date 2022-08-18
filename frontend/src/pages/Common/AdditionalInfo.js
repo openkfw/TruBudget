@@ -12,22 +12,24 @@ const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAddit
   const [additionalDateChange, setAdditionalDateChange] = useState(
     resources.find((item) => item.data.id === idForInfo)?.data?.additionalData || {}
   );
+  const [isDisabled, setDisabled] = useState(true);
 
   useEffect(() => {
     setAdditionalDateChange(resources.find((item) => item.data.id === idForInfo)?.data?.additionalData || {});
   }, [idForInfo, resources]);
-
-  useEffect(() => {
-    console.log("additionalDateChange --- ");
-    console.log(additionalDateChange);
-  }, [additionalDateChange]);
 
   return (
     <Dialog disableRestoreFocus open={isAdditionalDataShown} onClose={hideAdditionalData}>
       <DialogTitle>{strings.common.additional_data}</DialogTitle>
       <DialogContent sx={{ maxWidth: "800px" }}>
         <div>
-          <JsonEditor data={additionalDateChange} onChange={(x) => setAdditionalDateChange(x)} />
+          <JsonEditor
+            data={additionalDateChange}
+            onChange={(x) => {
+              setAdditionalDateChange(x);
+              setDisabled(false);
+            }}
+          />
         </div>
         {additionalDateChange === undefined && <div>{strings.common.no_resources}</div>}
       </DialogContent>
@@ -38,6 +40,8 @@ const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAddit
             submitAdditionalData(additionalDateChange);
             hideAdditionalData();
           }}
+          disabled={isDisabled}
+          data-test={`project-additional-data-submit`}
         >
           {strings.common.submit}
         </Button>
