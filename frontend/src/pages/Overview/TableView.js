@@ -43,6 +43,7 @@ const ProjectButtons = ({
   const canViewPermissions = canViewProjectPermissions(allowedIntents);
   const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
   const viewDisabled = !canViewProjectDetails(allowedIntents);
+
   const history = useHistory();
   return (
     <Box sx={{ display: "flex", gap: "20px" }}>
@@ -99,11 +100,11 @@ const TableViewEditor = ({ showTags, setShowTags, showBudgets, setShowBudgets })
     <Box>
       <FormGroup>
         <FormControlLabel
-          control={<Checkbox checked={showTags} onChange={e => setShowTags(e.target.checked)} />}
+          control={<Checkbox checked={showTags} onChange={(e) => setShowTags(e.target.checked)} />}
           label="Tags"
         />
         <FormControlLabel
-          control={<Checkbox checked={showBudgets} onChange={e => setShowBudgets(e.target.checked)} />}
+          control={<Checkbox checked={showBudgets} onChange={(e) => setShowBudgets(e.target.checked)} />}
           label="Budgets"
         />
       </FormGroup>
@@ -121,11 +122,11 @@ const useRawColumns = () => {
           {strings.common.project}
         </Typography>
       ),
-      selector: row => row.data.projectName,
+      selector: (row) => row.data.projectName,
       sortable: true,
       compact: false,
       minWidth: "15rem",
-      cell: row => <Typography data-test="project-name">{row.data.projectName}</Typography>
+      cell: (row) => <Typography data-test="project-name">{row.data.projectName}</Typography>
     },
     {
       id: "project_status_column",
@@ -134,11 +135,11 @@ const useRawColumns = () => {
           {strings.common.status}
         </Typography>
       ),
-      selector: row => row.data.projectStatus,
+      selector: (row) => row.data.projectStatus,
       sortable: true,
       compact: true,
       minWidth: "5rem",
-      cell: row => <Typography>{row.data.projectStatus}</Typography>
+      cell: (row) => <Typography>{row.data.projectStatus}</Typography>
     },
     {
       id: "project_date_column",
@@ -147,11 +148,11 @@ const useRawColumns = () => {
           {strings.common.created}
         </Typography>
       ),
-      selector: row => row.data.creationUnixTs, // time in ms to use the built-in sort
+      selector: (row) => row.data.creationUnixTs, // time in ms to use the built-in sort
       sortable: true,
       compact: true,
       minWidth: "10rem",
-      cell: row => <Typography>{row.data.createdDate}</Typography> // formatted date that is shown
+      cell: (row) => <Typography>{row.data.createdDate}</Typography> // formatted date that is shown
     },
     {
       id: "project_assignee_column",
@@ -160,11 +161,11 @@ const useRawColumns = () => {
           {strings.common.assignee}
         </Typography>
       ),
-      selector: row => row.data.assignee,
+      selector: (row) => row.data.assignee,
       sortable: true,
       compact: true,
       minWidth: "5rem",
-      cell: row => <Typography>{row.data.assignee}</Typography>
+      cell: (row) => <Typography>{row.data.assignee}</Typography>
     },
     {
       id: "project_tags_column",
@@ -177,7 +178,7 @@ const useRawColumns = () => {
       compact: true,
       minWidth: "0rem",
       maxWidth: "20rem",
-      cell: row => row.components.Tags
+      cell: (row) => row.components.Tags
     },
     {
       id: "project_budgets_column",
@@ -190,7 +191,7 @@ const useRawColumns = () => {
       compact: true,
       minWidth: "0rem",
       maxWidth: "20rem",
-      cell: row => row.components.Budgets
+      cell: (row) => row.components.Budgets
     },
     {
       id: "action_buttons_column",
@@ -203,7 +204,7 @@ const useRawColumns = () => {
       right: true,
       compact: false,
       minWidth: "20rem",
-      cell: row => row.components.ProjectButtons
+      cell: (row) => row.components.ProjectButtons
     }
   ];
 
@@ -242,7 +243,7 @@ const formatTable = ({
         ),
         Tags: (
           <Box sx={{ display: "flex", flexWrap: "wrap", overflow: "auto", maxHeight: "100px" }}>
-            {project.data.tags?.map(tag => (
+            {project.data.tags?.map((tag) => (
               <SelectablePill
                 key={tag}
                 isSelected={searchTermArray?.includes(tag) || false}
@@ -263,14 +264,14 @@ const formatTable = ({
   return projectRows;
 };
 
-const TableView = props => {
+const TableView = (props) => {
   const {
     filteredProjects,
     showEditDialog,
     showProjectPermissions,
+    showProjectAdditionalData,
     showCreationDialog,
     enabledUsers,
-    showProjectAdditionalData,
     storeSearchTerm,
     searchTerm,
     showNavSearchBar // to open the search bar for CardView in NavBar
@@ -297,6 +298,20 @@ const TableView = props => {
       searchTerm
     })
   );
+
+  useEffect(() => {
+    // Update Table when new project was created
+    setTable(
+      formatTable({
+        projects,
+        showEditDialog,
+        showProjectPermissions,
+        showProjectAdditionalData,
+        storeSearchTerm,
+        searchTerm
+      })
+    );
+  }, [projects, searchTerm, showEditDialog, showProjectPermissions, showProjectAdditionalData, storeSearchTerm]);
 
   const handleSearch = useCallback(() => {
     if (!projects) {
@@ -332,20 +347,20 @@ const TableView = props => {
     }
     if (hasStartDate) {
       const startUnixTs = stringToUnixTs(startDate);
-      filtered = filtered.filter(project => project.data?.creationUnixTs >= startUnixTs - 1);
+      filtered = filtered.filter((project) => project.data?.creationUnixTs >= startUnixTs - 1);
     }
     if (hasEndDate) {
       // Since Datepicker returns the date from the start of the day (00:00) but a project timestamp also contains
       // the time in hours, minutes, seconds; We need to round the time up to the end of that day ( from 00:00 to 23:59)
       const dayInSeconds = 86400;
       const endUnixTs = stringToUnixTs(endDate) + dayInSeconds - 1;
-      filtered = filtered.filter(project => project.data?.creationUnixTs <= endUnixTs);
+      filtered = filtered.filter((project) => project.data?.creationUnixTs <= endUnixTs);
     }
     if (hasStatus) {
-      filtered = filtered.filter(project => project.data?.status === status);
+      filtered = filtered.filter((project) => project.data?.status === status);
     }
     if (hasAssignee) {
-      filtered = filtered.filter(project => project.data?.assignee === assigneeId);
+      filtered = filtered.filter((project) => project.data?.assignee === assigneeId);
     }
     setTable(
       formatTable({
@@ -411,7 +426,7 @@ const TableView = props => {
 
   useEffect(() => {
     // Enable or disable columns in the Table
-    const currentColumns = rawColumns.filter(c => {
+    const currentColumns = rawColumns.filter((c) => {
       if (!showTags && c.id === "project_tags_column") {
         return false;
       }
@@ -445,7 +460,7 @@ const TableView = props => {
                 safeOnChange={true}
                 previewText="Search Projects"
                 searchTerm={searchTerm}
-                storeSearchTerm={word => storeSearchTerm(word)}
+                storeSearchTerm={(word) => storeSearchTerm(word)}
               />
               <ActionButton
                 onClick={() => setShowFilter(!showFilter)}
@@ -512,7 +527,14 @@ const TableView = props => {
           </Fab>
         </div>
       </Box>
-      <DataTable columns={columns} data={table} title={actionsMemo} highlightOnHover pagination />
+      <DataTable
+        columns={columns}
+        data={table}
+        title={actionsMemo}
+        highlightOnHover
+        pagination
+        data-test="project-list"
+      />
     </>
   );
 };

@@ -32,14 +32,14 @@ class Api {
       ...instance.defaults.transformRequest
     ];
 
-    instance.interceptors.request.use(request => {
+    instance.interceptors.request.use((request) => {
       if (request.url.includes("/version")) {
         this.timeStamp = performance.now();
       }
       return request;
     });
 
-    instance.interceptors.response.use(response => {
+    instance.interceptors.response.use((response) => {
       if (response.config.url.includes("/version")) {
         response.data.ping = performance.now() - this.timeStamp;
       }
@@ -47,7 +47,7 @@ class Api {
     });
   }
 
-  setAuthorizationHeader = token => {
+  setAuthorizationHeader = (token) => {
     instance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
   };
 
@@ -71,7 +71,7 @@ class Api {
    * Returns URL for calling Email service
    * @param {*} urlSlug tail segment of the URL
    */
-  getEmailServiceUrl = urlSlug => `${devMode ? `http://localhost:${PORT_EMAIL_SVC}` : "/email"}/${urlSlug}`;
+  getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${PORT_EMAIL_SVC}` : "/email"}/${urlSlug}`;
 
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
@@ -81,12 +81,12 @@ class Api {
       }
     });
 
-  disableUser = userId =>
+  disableUser = (userId) =>
     instance.post(`/global.disableUser`, {
       userId
     });
 
-  enableUser = userId =>
+  enableUser = (userId) =>
     instance.post(`/global.enableUser`, {
       userId
     });
@@ -103,7 +103,7 @@ class Api {
       }
     });
 
-  grantAllUserPermissions = userId =>
+  grantAllUserPermissions = (userId) =>
     instance.post(`global.grantAllPermissions`, {
       identity: userId
     });
@@ -121,7 +121,7 @@ class Api {
       newPassword
     });
 
-  listUserAssignments = userId => instance.get(removeEmptyQueryParams(`/global.listAssignments?userId=${userId}`));
+  listUserAssignments = (userId) => instance.get(removeEmptyQueryParams(`/global.listAssignments?userId=${userId}`));
 
   createGroup = (groupId, displayName, users) =>
     instance.post(`/global.createGroup`, {
@@ -144,29 +144,30 @@ class Api {
   listGroup = () => instance.get(`/group.list`);
   listNodes = () => instance.get(`/network.list`);
   listActiveNodes = () => instance.get(`/network.listActive`);
-  approveNewOrganization = organization =>
+  approveNewOrganization = (organization) =>
     instance.post(`/network.approveNewOrganization`, {
       organization
     });
-  approveNewNodeForOrganization = address =>
+  approveNewNodeForOrganization = (address) =>
     instance.post(`/network.approveNewNodeForExistingOrganization`, {
       address
     });
-  declineNode = node =>
+  declineNode = (node) =>
     instance.post(`/network.declineNode`, {
       node
     });
   listProjects = () => instance.get(`/project.list`);
-  listSubprojects = projectId => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
+  listSubprojects = (projectId) => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
 
-  createProject = (displayName, description, thumbnail, projectedBudgets, tags) =>
+  createProject = (displayName, description, thumbnail, projectedBudgets, tags, additionalData) =>
     instance.post(`/global.createProject`, {
       project: {
         displayName,
         description,
         thumbnail,
         projectedBudgets,
-        tags
+        tags,
+        additionalData
       }
     });
 
@@ -176,7 +177,8 @@ class Api {
       ...changes
     });
 
-  viewProjectDetails = projectId => instance.get(removeEmptyQueryParams(`/project.viewDetails?projectId=${projectId}`));
+  viewProjectDetails = (projectId) =>
+    instance.get(removeEmptyQueryParams(`/project.viewDetails?projectId=${projectId}`));
   viewProjectHistory = (projectId, offset, limit, filter) => {
     let url = removeEmptyQueryParams(`/project.viewHistory?projectId=${projectId}&offset=${offset}&limit=${limit}`);
 
@@ -189,7 +191,7 @@ class Api {
     return instance.get(url);
   };
 
-  listProjectIntents = projectId =>
+  listProjectIntents = (projectId) =>
     instance.get(removeEmptyQueryParams(`/project.intent.listPermissions?projectId=${projectId}`));
 
   grantProjectPermissions = (projectId, intent, identity) =>
@@ -298,7 +300,7 @@ class Api {
       currencyCode
     });
 
-  createWorkflowItem = payload => {
+  createWorkflowItem = (payload) => {
     const { currency, amount, exchangeRate, ...minimalPayload } = payload;
     const payloadToSend =
       payload.amountType === "N/A"
@@ -414,7 +416,7 @@ class Api {
       identity
     });
 
-  closeProject = projectId =>
+  closeProject = (projectId) =>
     instance.post(`/project.close`, {
       projectId
     });
@@ -450,11 +452,11 @@ class Api {
     return instance.get(`/notification.count`);
   };
 
-  markNotificationAsRead = notificationId =>
+  markNotificationAsRead = (notificationId) =>
     instance.post(`/notification.markRead`, {
       notifications: [notificationId]
     });
-  markMultipleNotificationsAsRead = notificationIds =>
+  markMultipleNotificationsAsRead = (notificationIds) =>
     instance.post(`/notification.markRead`, { notifications: notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
@@ -466,7 +468,7 @@ class Api {
     });
     return response;
   };
-  export = devModeEnvironment => {
+  export = (devModeEnvironment) => {
     const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, devModeEnvironment);
     return instance.get(path, { responseType: "blob" });
   };
@@ -501,7 +503,7 @@ class Api {
     const path = this.getEmailServiceUrl("user.delete");
     return instance.post(path, data);
   };
-  getEmailAddress = id => {
+  getEmailAddress = (id) => {
     const path = this.getEmailServiceUrl(`user.getEmailAddress?id=${id}`);
     return instance.get(path);
   };
@@ -522,7 +524,7 @@ class Api {
         ),
         { responseType: "blob" }
       )
-      .then(response => {
+      .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -543,7 +545,7 @@ class Api {
  * @returns the url without empty or undefined parameters
 
  */
-const removeEmptyQueryParams = url => {
+const removeEmptyQueryParams = (url) => {
   return url
     .replace(/[^=&]+=(&|$)/g, "") // removes a parameter if the '=' is followed by a '&' or if it's the end of the line
     .replace(/[^=&]+=(undefined|$)/g, "") // removes a parameter if the '=' is followed by 'undefined'

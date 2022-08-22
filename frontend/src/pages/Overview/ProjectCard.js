@@ -149,7 +149,7 @@ const ProjectCard = ({
               }}
               title="Additional Data"
               icon={<MoreIcon />}
-              data-test={`project-overview-additionaldata-${index}`}
+              data-test={`project-overview-additionaldata-${id}`}
             />
             <ActionButton
               notVisible={!canViewPermissions}

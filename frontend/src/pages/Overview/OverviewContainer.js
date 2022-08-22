@@ -11,12 +11,15 @@ import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
 import { fetchAllProjectDetails } from "../SubProjects/actions";
 import {
   fetchAllProjects,
-  hideProjectAdditionalData, setProjectView, showCreationDialog,
+  hideProjectAdditionalData,
+  setProjectView,
+  showCreationDialog,
   showEditDialog,
   showProjectAdditionalData,
   showProjectPermissions,
   storeFilteredProjects,
-  storeSearchTermArray
+  storeSearchTermArray,
+  editProject
 } from "./actions";
 import Overview from "./Overview";
 import ProjectDialogContainer from "./ProjectDialogContainer";
@@ -27,7 +30,7 @@ class OverviewContainer extends Component {
     this.worker = new WebWorker(worker);
 
     // Listen for postmessage from worker
-    this.worker.addEventListener("message", event => {
+    this.worker.addEventListener("message", (event) => {
       const filteredProjects = event.data ? event.data.filteredProjects : this.props.projects;
       const searchTerms = event.data.searchTerms;
       this.props.storeFilteredProjects(filteredProjects);
@@ -57,9 +60,10 @@ class OverviewContainer extends Component {
           <ProjectDialogContainer location={this.props.location} />
           <AdditionalInfo
             resources={this.props.projects}
+            idForInfo={this.props.idForInfo}
             isAdditionalDataShown={this.props.isProjectAdditionalDataShown}
             hideAdditionalData={this.props.hideProjectAdditionalData}
-            {...this.props}
+            submitAdditionalData={(additionalData) => this.props.editProject(this.props.idForInfo, { additionalData })}
           />
           {this.props.permissionDialogShown ? <ProjectPermissionsContainer {...this.props} /> : null}
         </div>
@@ -68,26 +72,27 @@ class OverviewContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showCreationDialog: () => dispatch(showCreationDialog()),
     showEditDialog: (id, displayName, description, thumbnail, projectedBudgets, tags) =>
       dispatch(showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags)),
-    fetchAllProjects: showLoading => dispatch(fetchAllProjects(showLoading)),
+    fetchAllProjects: (showLoading) => dispatch(fetchAllProjects(showLoading)),
     showProjectPermissions: (id, displayName) => dispatch(showProjectPermissions(id, displayName)),
-    showProjectAdditionalData: id => dispatch(showProjectAdditionalData(id)),
+    showProjectAdditionalData: (id) => dispatch(showProjectAdditionalData(id)),
     hideProjectAdditionalData: () => dispatch(hideProjectAdditionalData()),
-    storeFilteredProjects: filteredProjects => dispatch(storeFilteredProjects(filteredProjects)),
-    storeSearchTermArray: searchTerms => dispatch(storeSearchTermArray(searchTerms)),
-    storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
+    storeFilteredProjects: (filteredProjects) => dispatch(storeFilteredProjects(filteredProjects)),
+    storeSearchTermArray: (searchTerms) => dispatch(storeSearchTermArray(searchTerms)),
+    storeSearchTerm: (searchTerm) => dispatch(storeSearchTerm(searchTerm)),
     showNavSearchBar: () => dispatch(storeSearchBarDisplayed(true)),
     fetchUser: () => dispatch(fetchUser(true)),
-    fetchAllProjectDetails: projectId => dispatch(fetchAllProjectDetails(projectId, false)),
-    setProjectView: view => dispatch(setProjectView(view))
+    fetchAllProjectDetails: (projectId) => dispatch(fetchAllProjectDetails(projectId, false)),
+    setProjectView: (view) => dispatch(setProjectView(view)),
+    editProject: (projectId, changes) => dispatch(editProject(projectId, changes, undefined))
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     projects: state.getIn(["overview", "projects"]),
     filteredProjects: state.getIn(["overview", "filteredProjects"]),

@@ -194,7 +194,7 @@ fi
 SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
-npm config set registry http://registry.npmjs.org/
+npm config set registry https://registry.npmjs.org/
 
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then

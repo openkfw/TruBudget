@@ -3,56 +3,48 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import _isEmpty from "lodash/isEmpty";
-import React from "react";
-
+import { isEmptyDeep } from "../../helper";
+import React, { useState, useEffect } from "react";
+import JsonEditor from "./JsonEditor";
 import strings from "../../localizeStrings";
 
-const styles = {
-  textfield: {
-    width: "50%",
-    right: -30
-  },
-  closeButton: {
-    left: 650,
-    position: "absolute",
-    top: 20
-  },
-  avatarCard: {
-    width: "45%",
-    left: "35px"
-  },
-  dialog: {
-    width: "95%"
-  },
-  paper: {
-    width: "70%",
-    marginTop: "10px"
-  },
-  dialogContent: {
-    width: "500px"
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
-  }
-};
+const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAdditionalData, submitAdditionalData }) => {
+  const [additionalDateChange, setAdditionalDateChange] = useState(
+    resources.find((item) => item.data.id === idForInfo)?.data?.additionalData || {}
+  );
+  const [isDisabled, setDisabled] = useState(true);
 
-const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAdditionalData }) => {
-  const resourceForInfo = resources.find(item => item.data.id === idForInfo);
+  useEffect(() => {
+    setAdditionalDateChange(resources.find((item) => item.data.id === idForInfo)?.data?.additionalData || {});
+  }, [idForInfo, resources]);
+
   return (
-    <Dialog disableRestoreFocus open={isAdditionalDataShown} style={styles.dialog} onClose={hideAdditionalData}>
+    <Dialog disableRestoreFocus open={isAdditionalDataShown} onClose={hideAdditionalData}>
       <DialogTitle>{strings.common.additional_data}</DialogTitle>
-      <DialogContent style={styles.dialogContent}>
-        {resourceForInfo && !_isEmpty(resourceForInfo.data.additionalData) ? (
-          <pre>{JSON.stringify(resourceForInfo.data.additionalData, null, `\t`)}</pre>
-        ) : (
-          <div>{strings.common.no_resources}</div>
-        )}
+      <DialogContent sx={{ maxWidth: "800px" }}>
+        <div>
+          <JsonEditor
+            data={additionalDateChange}
+            onChange={(x) => {
+              setAdditionalDateChange(x);
+              setDisabled(false);
+            }}
+          />
+        </div>
+        {additionalDateChange === undefined && <div>{strings.common.no_resources}</div>}
       </DialogContent>
       <DialogActions>
         <Button onClick={hideAdditionalData}>{strings.common.close}</Button>
+        <Button
+          onClick={() => {
+            submitAdditionalData(additionalDateChange);
+            hideAdditionalData();
+          }}
+          disabled={isDisabled}
+          data-test={`project-additional-data-submit`}
+        >
+          {strings.common.submit}
+        </Button>
       </DialogActions>
     </Dialog>
   );

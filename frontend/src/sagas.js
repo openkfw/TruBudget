@@ -243,55 +243,55 @@ import {
 const api = new Api();
 
 // SELECTORS
-const getSelfId = state => {
+const getSelfId = (state) => {
   return state.getIn(["login", "id"]);
 };
-const getEmailAddress = state => {
+const getEmailAddress = (state) => {
   return state.getIn(["login", "emailAddress"]);
 };
-const getJwt = state => {
+const getJwt = (state) => {
   return state.getIn(["login", "jwt"]);
 };
 
-const getProjectHistoryState = state => {
+const getProjectHistoryState = (state) => {
   return {
     currentHistoryPage: state.getIn(["detailview", "currentHistoryPage"]),
     historyPageSize: state.getIn(["detailview", "historyPageSize"]),
     totalHistoryItemCount: state.getIn(["detailview", "totalHistoryItemCount"])
   };
 };
-const getSubprojectHistoryState = state => {
+const getSubprojectHistoryState = (state) => {
   return {
     currentHistoryPage: state.getIn(["workflow", "currentHistoryPage"]),
     historyPageSize: state.getIn(["workflow", "historyPageSize"]),
     totalHistoryItemCount: state.getIn(["workflow", "totalHistoryItemCount"])
   };
 };
-const getWorkflowitemHistoryState = state => {
+const getWorkflowitemHistoryState = (state) => {
   return {
     currentHistoryPage: state.getIn(["workflowitemDetails", "currentHistoryPage"]),
     historyPageSize: state.getIn(["workflowitemDetails", "historyPageSize"]),
     totalHistoryItemCount: state.getIn(["workflowitemDetails", "totalHistoryItemCount"])
   };
 };
-const getConfirmedState = state => {
+const getConfirmedState = (state) => {
   return state.getIn(["confirmation", "confirmed"]);
 };
-const getAdditionalActionsState = state => {
+const getAdditionalActionsState = (state) => {
   return state.getIn(["confirmation", "additionalActions"]).toJS();
 };
-const getPostActionsState = state => {
+const getPostActionsState = (state) => {
   return state.getIn(["confirmation", "postActions"]).toJS();
 };
-const getEmailServiceAvailable = state => {
+const getEmailServiceAvailable = (state) => {
   return state.getIn(["login", "emailServiceAvailable"]);
 };
 
-const getExportServiceAvailable = state => {
+const getExportServiceAvailable = (state) => {
   return state.getIn(["login", "exportServiceAvailable"]);
 };
 
-const getWorkflowitemRejectReason = state => {
+const getWorkflowitemRejectReason = (state) => {
   return state.getIn(["workflow", "rejectReason"]);
 };
 
@@ -364,7 +364,7 @@ function* handleError(error) {
   }
 }
 
-const getNotificationState = state => {
+const getNotificationState = (state) => {
   return {
     currentNotificationPage: state.getIn(["notifications", "currentNotificationPage"]),
     numberOfNotificationPages: state.getIn(["notifications", "numberOfNotificationPages"]),
@@ -419,7 +419,7 @@ function* handleLoading(showLoading) {
       }
     };
   } else {
-    return function* () { };
+    return function* () {};
   }
 }
 
@@ -473,7 +473,7 @@ function* getBatchFromSubprojectTemplate(projectId, subprojectId, resources, sel
         notRevokedIdentities.push(identity);
       }
       // add revoke permission actions last
-      revokeIdentities = permissionsForResource[intent].filter(i => !notRevokedIdentities.includes(i) && i !== self);
+      revokeIdentities = permissionsForResource[intent].filter((i) => !notRevokedIdentities.includes(i) && i !== self);
       for (const revokeIdentity in revokeIdentities) {
         action = {
           action: revokeAction,
@@ -597,10 +597,9 @@ export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets =
       );
     }
 
-    if (Object.values(rest).some(value => value !== undefined)) {
+    if (Object.values(rest).some((value) => value !== undefined)) {
       yield callApi(api.editProject, projectId, rest);
     }
-
     yield showSnackbarSuccess();
     yield put({
       type: EDIT_PROJECT_SUCCESS
@@ -734,7 +733,7 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
       );
     }
 
-    if (Object.values(rest).some(value => value !== undefined)) {
+    if (Object.values(rest).some((value) => value !== undefined)) {
       yield callApi(api.editSubProject, projectId, subprojectId, rest);
     }
 
@@ -1441,7 +1440,7 @@ export function* fetchNodesSaga({ showLoading }) {
   yield execute(function* () {
     const { data } = yield callApi(api.listNodes);
     // allows backwards compatibility:
-    data.nodes.forEach(node => {
+    data.nodes.forEach((node) => {
       if (!node.currentAccess.decliners) {
         node.currentAccess = { ...node.currentAccess, decliners: [] };
       }
@@ -2697,7 +2696,7 @@ export function* assignProjectSaga({
     } catch (error) {
       yield put({
         type: ASSIGN_PROJECT_FAILURE,
-        message:error.message
+        message: error.message
       });
       throw error;
     }
@@ -2805,8 +2804,8 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
 
     try {
       const subprojectBudgets = (yield all(
-        subprojects.map(subproject => callApi(api.viewSubProjectDetails, projectId, subproject.data.id))
-      )).map(subprojectDetails => {
+        subprojects.map((subproject) => callApi(api.viewSubProjectDetails, projectId, subproject.data.id))
+      )).map((subprojectDetails) => {
         const currency = subprojectDetails.data.subproject.data.currency;
         const projected = subprojectDetails.data.subproject.data.projectedBudgets;
         const workflowBudgets = subprojectDetails.data.workflowitems.reduce(
