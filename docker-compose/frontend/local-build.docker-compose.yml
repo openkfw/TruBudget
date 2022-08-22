@@ -1,0 +1,7 @@
+version: "3"
+services:
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: docker-compose-frontend:local

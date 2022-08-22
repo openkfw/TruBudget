@@ -1,0 +1,4 @@
+*.xlsx
+*.docx
+node_modules/
+.vscode/

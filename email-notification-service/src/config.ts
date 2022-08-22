@@ -50,8 +50,8 @@ const config: Config = {
     host: process.env.SMTP_HOST || "localhost",
     port: Number(process.env.SMTP_PORT) || 2500,
     secure: Boolean(process.env.SMTP_SSL) || false,
-    user: process.env.SMTP_USER || "testuser",
-    password: process.env.SMTP_PASSWORD || "test",
+    user: process.env.SMTP_USER || "",
+    password: process.env.SMTP_PASSWORD || "",
   },
   email: {
     from: process.env.EMAIL_FROM || '"Trubudget Notification Service" <trubudget@notification.com>',

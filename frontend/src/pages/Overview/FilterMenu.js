@@ -2,12 +2,18 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
+import { keyframes } from "@mui/system";
 
 import strings from "../../localizeStrings";
 import DropDown from "../Common/NewDropdown";
 import DatePicker from "../Common/DatePicker";
 
-const FilterMenu = props => {
+const flyInAnimation = keyframes`
+0%   { opacity: 0; }
+100% { opacity: 1; }
+`;
+
+const FilterMenu = (props) => {
   const {
     startDate,
     setStartDate,
@@ -22,15 +28,15 @@ const FilterMenu = props => {
   } = props;
 
   return (
-    <Box>
-      <Box sx={{ display: "flex", margin: "0px" }}>
+    <Box data-test="filter-menu" style={{}}>
+      <Box sx={{ display: "flex", margin: "0px", animation: `${flyInAnimation} 1s ease` }}>
         <Box sx={{ marginLeft: "0px" }}>
           <DatePicker
             id="filter-start"
             label={strings.history.start_date}
             name="start"
             datetime={startDate}
-            onChange={selectedDate => setStartDate(selectedDate)}
+            onChange={(selectedDate) => setStartDate(selectedDate)}
             onDelete={() => setStartDate(null)}
           />
           <DatePicker
@@ -38,7 +44,7 @@ const FilterMenu = props => {
             label={strings.history.end_date}
             name="end"
             datetime={endDate}
-            onChange={selectedDate => setEndDate(selectedDate)}
+            onChange={(selectedDate) => setEndDate(selectedDate)}
             onDelete={() => setEndDate(null)}
           />
         </Box>
@@ -46,8 +52,8 @@ const FilterMenu = props => {
           <DropDown
             style={{ minWidth: 200, marginLeft: "10px" }}
             value={status}
-            floatingLabel={"Status"}
-            onChange={x => setStatus(x)}
+            floatingLabel={strings.common.status}
+            onChange={(x) => setStatus(x)}
             id="status-select"
           >
             <MenuItem key={"status-all"} value={"all"}>
@@ -64,14 +70,14 @@ const FilterMenu = props => {
           <DropDown
             style={{ minWidth: 200, marginLeft: "10px" }}
             value={assigneeId}
-            floatingLabel={"Assignee"}
-            onChange={x => setAssigneeId(x)}
+            floatingLabel={strings.common.assignee}
+            onChange={(x) => setAssigneeId(x)}
             id="assignee-select"
           >
             <MenuItem key={"assignee-all"} value={"all"}>
               {strings.common.all}
             </MenuItem>
-            {users.map(u => {
+            {users.map((u) => {
               return (
                 <MenuItem key={"assignee-" + u.id} value={u.id}>
                   {u.id}
@@ -82,7 +88,7 @@ const FilterMenu = props => {
         </Box>
       </Box>
       <Box sx={{ marginLeft: "0px", marginTop: "10px" }}>
-        <Button aria-label="reset" data-test="reset" color="secondary" onClick={handleReset}>
+        <Button aria-label="reset" data-test="reset-table-view" color="secondary" onClick={handleReset}>
           {strings.common.reset}
         </Button>
         {/* TODO Add Search Button after implementing pagination from API */}

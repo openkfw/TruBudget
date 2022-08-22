@@ -1,0 +1,17 @@
+services:
+  blockchain:
+    image: trubudget/blockchain:${TAG}
+    environment:
+      BLOCKCHAIN_PORT: 8085
+      CHAINNAME: TrubudgetChain
+      MULTICHAIN_RPC_PASSWORD: k1oR5s12kY93NaUz1w5nQHJynqTtLw8Lk68E7KwWHQfW
+      MULTICHAIN_RPC_PORT: 8000
+      ORGANIZATION: KfW
+      P2P_PORT: 7447
+    # networks:
+    #   mynetwork:
+    #     ipv4_address: 172.20.0.11
+    ports:
+      - "${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT}"
+      - "${BLOCKCHAIN_PORT}:${BLOCKCHAIN_PORT}"
+      - "${P2P_PORT}:${P2P_PORT}"

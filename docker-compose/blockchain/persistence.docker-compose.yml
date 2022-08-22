@@ -1,0 +1,6 @@
+# Change /tmp to the location where the .multichain content should be saved on your machine 
+version: "3"
+services:
+  blockchain:
+    volumes:
+      - ./alphaVolume:${MULTICHAIN_DIR}/.multichain

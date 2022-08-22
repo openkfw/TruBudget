@@ -4,8 +4,8 @@ ARG API_HOST=localhost
 ARG API_PORT=8080
 
 # Try to make sure auto reload is enabled on code change
-ARG CHOKIDAR_USEPOLLING=true
-ARG CHOKIDAR_INTERVAL=2000
+ENV CHOKIDAR_USEPOLLING true
+ENV CHOKIDAR_INTERVAL 2000
 
 # If you have low performing Hardware, enable this for hot reload without fast refresh:
 #ARG FAST_REFRESH=false

@@ -24,6 +24,7 @@ services:
       CERT_PATH: ${CERT_PATH}
       CERT_CA_PATH: ${CERT_CA_PATH}
       CERT_KEY_PATH: ${CERT_KEY_PATH}
+      AUTOSTART: ${AUTOSTART}
 
     # volume for persisting data from multichain
     # volumes:

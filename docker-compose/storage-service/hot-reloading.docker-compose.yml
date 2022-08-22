@@ -1,0 +1,8 @@
+version: "3"
+services:
+  storage-service:
+    build: ../storage-service
+    image: docker-compose-storage-service:local
+    command: [ "npm", "run", "watch" ]
+    volumes:
+      - "../storage-service/src:/home/node/src:delegated"

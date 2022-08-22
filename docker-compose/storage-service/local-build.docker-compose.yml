@@ -1,0 +1,5 @@
+version: "3"
+services:
+  storage-service:
+    build: ../storage-service
+    image: docker-compose-storage-service:local

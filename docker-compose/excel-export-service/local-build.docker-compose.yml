@@ -1,0 +1,5 @@
+version: "3"
+services:
+  excel-export-service:
+    build: ../excel-export-service
+    image: docker-compose-excel-export-service:local

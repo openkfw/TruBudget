@@ -22,7 +22,7 @@ services:
       CERT_PATH: ${CERT_PATH}
       CERT_CA_PATH: ${CERT_CA_PATH}
       CERT_KEY_PATH: ${CERT_KEY_PATH}
-
+      AUTOSTART: ${AUTOSTART}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.11
