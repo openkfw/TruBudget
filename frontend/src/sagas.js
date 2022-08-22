@@ -600,12 +600,6 @@ export function* editProjectSaga({ projectId, changes, deletedProjectedBudgets =
     if (Object.values(rest).some((value) => value !== undefined)) {
       yield callApi(api.editProject, projectId, rest);
     }
-
-    yield put({
-      type: SNACKBAR_MESSAGE,
-      message: "PROJECT CHANGED"
-    });
-
     yield showSnackbarSuccess();
     yield put({
       type: EDIT_PROJECT_SUCCESS
