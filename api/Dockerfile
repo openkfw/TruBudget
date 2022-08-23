@@ -17,12 +17,11 @@ ARG CI_COMMIT_SHA=''
 ENV BUILDTIMESTAMP ${BUILDTIMESTAMP}
 ENV CI_COMMIT_SHA ${CI_COMMIT_SHA}
 
-# Create user
-RUN useradd -ms /bin/bash newuser
+
 # Give users permission to read and execute files
 # Only root is the owner and has write permissions
 RUN chmod -R u+rx /home/node
 # Switch from root to normal user (this is a security best practice)
-USER newuser
+USER node
 
 CMD npm start
