@@ -1,0 +1,7 @@
+version: "3"
+services:
+  provisioning:
+    build:
+      context: ../e2e-test
+      dockerfile: Dockerfile
+    image: docker-compose-e2e-test:local
