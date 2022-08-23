@@ -3,8 +3,7 @@ import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
 import { TruBudgetError } from "../error";
 import logger from "../lib/logger";
-import * as Cache from "./cache";
-import * as Cache2 from "./cache2";
+import * as Cache from "./cache/index";
 import { RpcMultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";
@@ -31,6 +30,7 @@ interface Update {
   billingDate?: string;
   dueDate?: string;
 }
+
 interface Document {
   id: string;
   hash: string;
@@ -45,7 +45,6 @@ export function init(rpcSettings: ConnectionSettings): ConnToken {
   return {
     multichainClient,
     cache: Cache.initCache(),
-    cache2: Cache2.initCache(),
   };
 }
 

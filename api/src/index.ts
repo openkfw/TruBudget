@@ -40,7 +40,7 @@ import * as ProvisioningStatusAPI from "./provisioning_get";
 import * as ProvisioningStartAPI from "./provisioning_start";
 import * as Result from "./result";
 import * as Multichain from "./service";
-import * as Cache from "./service/cache2";
+import * as Cache from "./service/cache/index";
 import StorageServiceClient from "./service/Client_storage_service";
 import * as DocumentValidationService from "./service/document_validation";
 import * as GroupQueryService from "./service/domain/organization/group_query";
@@ -79,8 +79,10 @@ import * as SubprojectListService from "./service/subproject_list";
 import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
-import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
-import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
+import * as SubprojectProjectedBudgetDeleteService
+  from "./service/subproject_projected_budget_delete";
+import * as SubprojectProjectedBudgetUpdateService
+  from "./service/subproject_projected_budget_update";
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserAuthenticateService from "./service/user_authenticate";
@@ -877,7 +879,7 @@ server.listen(port, "0.0.0.0", async (err) => {
         );
         return false;
       }))
-  ) {
+    ) {
     await timeout(retryIntervalMs);
   }
   logger.debug({ multichainClient, organization }, "Organization stream present");

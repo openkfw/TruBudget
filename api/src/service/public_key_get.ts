@@ -1,6 +1,6 @@
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { ConnToken } from "./conn";
 import * as PublicKeyGet from "./domain/organization/public_key_get";
 import { PublicKeyBase64 } from "./domain/organization/public_key";

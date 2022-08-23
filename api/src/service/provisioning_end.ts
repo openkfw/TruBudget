@@ -2,7 +2,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as ProvisioningEnd from "./domain/system_information/provisioning_end";

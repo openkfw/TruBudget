@@ -3,7 +3,7 @@ import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";

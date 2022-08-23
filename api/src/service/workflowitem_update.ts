@@ -4,7 +4,7 @@ import { config } from "../config";
 import { encryptWithKey } from "../lib/asymmetricCrypto";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
 import * as DocumentShare from "./document_share";

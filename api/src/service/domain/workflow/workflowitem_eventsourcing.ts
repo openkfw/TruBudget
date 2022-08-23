@@ -1,6 +1,6 @@
-import { Ctx } from "lib/ctx";
-import deepcopy from "lib/deepcopy";
-import logger from "lib/logger";
+import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -88,7 +88,7 @@ function sourceEvent(
     if (event.type !== "workflowitem_created") {
       return new VError(
         `event ${event.type} is not of type "workflowitem_created" but also ` +
-          "does not include a workflowitem ID",
+        "does not include a workflowitem ID",
       );
     }
 
@@ -171,6 +171,7 @@ export function newWorkflowitemFromEvent(
 type EventModule = {
   mutate: (workflowitem: Workflowitem.Workflowitem, event: BusinessEvent) => Result.Type<void>;
 };
+
 function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
     case "workflowitem_document_validated":

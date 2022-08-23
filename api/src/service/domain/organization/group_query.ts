@@ -4,7 +4,7 @@ import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { ConnToken } from "../../conn";
 import { NotFound } from "../errors/not_found";
-import * as Cache from "./../../cache2";
+import * as Cache from "./../../cache/index";
 import * as Group from "./group";
 import * as GroupGet from "./group_get";
 import { Identity } from "./identity";

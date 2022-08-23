@@ -1,5 +1,6 @@
 import Joi = require("joi");
-import logger from "lib/logger";
+import uuid = require("uuid");
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent, businessEventSchema } from "../business_event";
@@ -9,7 +10,6 @@ import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import uuid = require("uuid");
 
 type EventTypeType = "notification_created";
 const eventType: EventTypeType = "notification_created";

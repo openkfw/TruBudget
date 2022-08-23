@@ -1,6 +1,6 @@
 import { Ctx } from "lib/ctx";
-import deepcopy from "lib/deepcopy";
-import logger from "lib/logger";
+import deepcopy from "../../../lib/deepcopy";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
@@ -85,7 +85,7 @@ function sourceEvent(
     if (event.type !== "subproject_created") {
       return new VError(
         `event ${event.type} is not of type "subproject_created" but also ` +
-          "does not include a subproject ID",
+        "does not include a subproject ID",
       );
     }
 
@@ -163,6 +163,7 @@ export function newSubprojectFromEvent(
 type EventModule = {
   mutate: (subproject: Subproject.Subproject, event: BusinessEvent) => Result.Type<void>;
 };
+
 function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
     case "subproject_updated":

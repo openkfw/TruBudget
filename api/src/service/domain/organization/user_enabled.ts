@@ -1,5 +1,5 @@
 import Joi = require("joi");
-import logger from "lib/logger";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import * as UserRecord from "../organization/user_record";

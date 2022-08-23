@@ -1,15 +1,15 @@
 import logger from "lib/logger";
-import VError = require("verror");
 
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as History from "./domain/workflow/historyFilter";
 import * as Project from "./domain/workflow/project";
 import * as ProjectHistory from "./domain/workflow/project_history_get";
 import { ProjectTraceEvent } from "./domain/workflow/project_trace_event";
+import VError = require("verror");
 
 export async function getProjectHistory(
   conn: ConnToken,

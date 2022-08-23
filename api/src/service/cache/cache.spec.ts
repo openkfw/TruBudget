@@ -1,19 +1,23 @@
 import { assert } from "chai";
 import * as isEmpty from "lodash.isempty";
 import { VError } from "verror";
-import { Ctx } from "../lib/ctx";
-import * as Result from "../result";
-import * as ProjectAssigned from "../service/domain/workflow/project_assigned";
-import * as ProjectClosed from "../service/domain/workflow/project_closed";
-import * as ProjectCreated from "../service/domain/workflow/project_created";
-import * as SubprojectAssigned from "../service/domain/workflow/subproject_assigned";
-import * as SubprojectClosed from "../service/domain/workflow/subproject_closed";
-import * as SubprojectCreated from "../service/domain/workflow/subproject_created";
-import * as WorkflowitemAssigned from "../service/domain/workflow/workflowitem_assigned";
-import * as WorkflowitemClosed from "../service/domain/workflow/workflowitem_closed";
-import * as WorkflowitemCreated from "../service/domain/workflow/workflowitem_created";
-import { Cache2, getCacheInstance, initCache, updateAggregates } from "./cache2";
-import { NotFound } from "./domain/errors/not_found";
+import { Ctx } from "../../lib/ctx";
+import * as Result from "../../result";
+import * as ProjectAssigned from "../../service/domain/workflow/project_assigned";
+import * as ProjectClosed from "../../service/domain/workflow/project_closed";
+import * as ProjectCreated from "../../service/domain/workflow/project_created";
+import * as SubprojectAssigned from "../../service/domain/workflow/subproject_assigned";
+import * as SubprojectClosed from "../../service/domain/workflow/subproject_closed";
+import * as SubprojectCreated from "../../service/domain/workflow/subproject_created";
+import * as WorkflowitemAssigned from "../../service/domain/workflow/workflowitem_assigned";
+import * as WorkflowitemClosed from "../../service/domain/workflow/workflowitem_closed";
+import * as WorkflowitemCreated from "../../service/domain/workflow/workflowitem_created";
+import { Cache, getCacheInstance, initCache, updateAggregates } from "./index";
+import { NotFound } from "../domain/errors/not_found";
+import { Project } from "../domain/workflow/project";
+import { Subproject } from "../domain/workflow/subproject";
+import { Workflowitem } from "../domain/workflow/workflowitem";
+
 
 describe("The cache updates", () => {
   context("project aggregates", async () => {
@@ -25,7 +29,7 @@ describe("The cache updates", () => {
     it("from scratch", async () => {
       // Setup test with empty cache
       const cache = initCache();
-      assert.isTrue(isEmpty(cache.cachedProjects));
+      assert.isTrue(isEmpty(cache.cachedProjects.keys()));
 
       // Add project and check if it in the aggregate
       const projectId = "id";
@@ -55,7 +59,7 @@ describe("The cache updates", () => {
       updateAggregates(defaultCtx, cache, [projectAssignedEvent, projectCloseEvent]);
 
       // Test if events have been reflected on the aggregate
-      const projectUnderTest = cache.cachedProjects.get(projectId);
+      const projectUnderTest = cache.cachedProjects.get<Project>(projectId);
       if (!projectUnderTest) {
         return assert.fail(undefined, undefined, "Project not found");
       }
@@ -73,7 +77,7 @@ describe("The cache updates", () => {
     it("from scratch", async () => {
       // Setup test with empty cache
       const cache = initCache();
-      assert.isTrue(isEmpty(cache.cachedSubprojects));
+      assert.isTrue(isEmpty(cache.cachedSubprojects.keys()));
 
       // Add subproject and check if it in the aggregate
       const projectId = "p-id";
@@ -110,7 +114,7 @@ describe("The cache updates", () => {
       updateAggregates(defaultCtx, cache, [spAssginedEvent, spCloseEvent]);
 
       // Test if events have been reflected on the aggregate
-      const spUnderTest = cache.cachedSubprojects.get(subprojectId);
+      const spUnderTest = cache.cachedSubprojects.get<Subproject>(subprojectId);
       if (!spUnderTest) {
         return assert.fail(undefined, undefined, "Subproject not found");
       }
@@ -123,7 +127,7 @@ describe("The cache updates", () => {
     });
     it("and generates lookup", async () => {
       // Setup test with 5 Subprojects linked to 2 Projects
-      // p-id0 -> s-id0 | p-id0 -> s-id2 | p-id0 -> s-id4
+      // p-id0 -> s-id0 |p-id0 -> s-id2 | p-id0 -> s-id4
       // and
       // p-id1 -> s-id1 | p-id1 -> s-id3
       const cache = initCache();
@@ -135,7 +139,7 @@ describe("The cache updates", () => {
 
       // Check if lookup was generated
       const lookUp = cache.cachedSubprojectLookup;
-      if (!lookUp) return assert.fail(undefined, undefined, "Lookup not found");
+      if (lookUp.keys().length === 0) return assert.fail(undefined, undefined, "Lookup not found");
 
       // Check if lookup for the first project is correct
       const lookUpForFirstProject = lookUp.get("p-id0");
@@ -209,7 +213,7 @@ describe("The cache updates", () => {
       updateAggregates(defaultCtx, cache, [wfAssignedEvent, wfCloseEvent]);
 
       // Test if events have been reflected on the aggregate
-      const wfUnderTest = cache.cachedWorkflowItems.get(workflowitemId);
+      const wfUnderTest = cache.cachedWorkflowItems.get<Workflowitem>(workflowitemId);
       if (!wfUnderTest) {
         return assert.fail(undefined, undefined, "Workflowitem not found");
       }
@@ -236,11 +240,11 @@ describe("The cache updates", () => {
       }
 
       // Check if lookup was generated
-      const lookUp = cache.cachedWorkflowitemLookup;
-      if (!lookUp) return assert.fail(undefined, undefined, "Lookup not found");
+      const lookup = cache.cachedWorkflowitemLookup;
+      if (!lookup) return assert.fail(undefined, undefined, "Lookup not found");
 
       // Check if lookup for the first subproject is correct
-      const lookUpForFirstSubproject = lookUp.get("s-id0");
+      const lookUpForFirstSubproject = lookup.get<Subproject>("s-id0");
       if (!lookUpForFirstSubproject) {
         return assert.fail(undefined, undefined, "Lookup for first Subproject not found");
       }
@@ -248,7 +252,7 @@ describe("The cache updates", () => {
       assert.hasAllKeys(lookUpForFirstSubproject, ["w-id0", "w-id2", "w-id4"]);
 
       // Check if lookup for the second subproject is correct
-      const lookUpForSecondSubproject = lookUp.get("s-id1");
+      const lookUpForSecondSubproject = cache.cachedWorkflowitemLookup.get("s-id1");
       if (!lookUpForSecondSubproject) {
         return assert.fail(undefined, undefined, "Lookup for second Subproject not found");
       }
@@ -524,12 +528,14 @@ describe("The cache", () => {
       assert.instanceOf(Result.unwrapErr(responseFromCache), NotFound);
     });
   });
+
+
 });
 
 // Helper functions
 function addExampleProject(
   ctx: Ctx,
-  cache: Cache2,
+  cache: Cache,
   projectId: string,
 ): Result.Type<ProjectCreated.Event> {
   const projectCreationEvent = ProjectCreated.createEvent("http", "test", {
@@ -553,7 +559,7 @@ function addExampleProject(
 
 function addExampleSubproject(
   ctx: Ctx,
-  cache: Cache2,
+  cache: Cache,
   projectId: string,
   subprojectId: string,
 ): Result.Type<SubprojectCreated.Event> {
@@ -579,7 +585,7 @@ function addExampleSubproject(
 
 function addExampleWorkflowitem(
   ctx: Ctx,
-  cache: Cache2,
+  cache: Cache,
   projectId: string,
   subprojectId: string,
   workflowitemId: string,

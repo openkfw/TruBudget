@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import { config } from "../../../config";
 import * as Result from "../../../result";

@@ -1,6 +1,6 @@
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { ConnToken } from "./conn";
 import { StoredDocument } from "./domain/document/document";
 import * as DocumentGet from "./domain/document/document_get";

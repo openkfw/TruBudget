@@ -85,6 +85,7 @@
     "lodash": "^4.17.21",
     "lodash.isequal": "^4.5.0",
     "module-alias": "^2.2.2",
+    "node-cache": "^5.1.2",
     "raw-body": "^2.3.3",
     "sanitize-html": "^2.7.0",
     "sodium-native": "^3.3.0",

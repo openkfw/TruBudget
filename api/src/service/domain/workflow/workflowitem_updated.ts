@@ -1,5 +1,5 @@
 import Joi = require("joi");
-import logger from "lib/logger";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
@@ -177,7 +177,7 @@ function updateDocuments(
       if (existingDocument.hash !== document.hash) {
         return new VError(
           `cannot update document ${document.id}, ` +
-            "as changing existing documents is not allowed",
+          "as changing existing documents is not allowed",
         );
       }
     }

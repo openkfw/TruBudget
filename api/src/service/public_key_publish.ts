@@ -7,7 +7,7 @@ import { publicKeyAlreadyExists } from "./domain/organization/public_key_get";
 import * as PublicKeyPublish from "./domain/organization/public_key_publish";
 import { ServiceUser } from "./domain/organization/service_user";
 import { store } from "./store";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import logger from "../lib/logger";
 
 interface PublicKey {

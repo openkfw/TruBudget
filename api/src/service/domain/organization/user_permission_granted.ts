@@ -1,5 +1,5 @@
 import Joi = require("joi");
-import logger from "lib/logger";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import Intent, { userIntents } from "../../../authz/intents";
 import * as Result from "../../../result";

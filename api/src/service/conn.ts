@@ -1,5 +1,5 @@
-import { Cache } from "./cache";
-import { Cache2 } from "./cache2";
+import { Cache } from "./cache/index";
+
 import { MultichainClient } from "./Client.h";
 
 /**
@@ -8,5 +8,4 @@ import { MultichainClient } from "./Client.h";
 export type ConnToken = {
   multichainClient: MultichainClient;
   cache: Cache;
-  cache2: Cache2;
 };

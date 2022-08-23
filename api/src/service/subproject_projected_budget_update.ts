@@ -2,7 +2,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { ConnToken } from "./conn";
 import * as GroupQuery from "./domain/organization/group_query";
 import { ServiceUser } from "./domain/organization/service_user";
@@ -10,7 +10,8 @@ import { CurrencyCode, MoneyAmount } from "./domain/workflow/money";
 import * as Project from "./domain/workflow/project";
 import { ProjectedBudget } from "./domain/workflow/projected_budget";
 import * as Subproject from "./domain/workflow/subproject";
-import * as SubprojectProjectedBudgetUpdate from "./domain/workflow/subproject_projected_budget_update";
+import * as SubprojectProjectedBudgetUpdate
+  from "./domain/workflow/subproject_projected_budget_update";
 import { store } from "./store";
 
 export async function updateProjectedBudget(

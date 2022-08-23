@@ -3,7 +3,7 @@ import { Ctx } from "lib/ctx";
 export class NotFound extends Error {
   constructor(
     private readonly ctx: Ctx,
-    private readonly entityType:
+    readonly entityType:
       | "project"
       | "subproject"
       | "workflowitem"
@@ -12,6 +12,8 @@ export class NotFound extends Error {
       | "document"
       | "notification"
       | "key"
+      | "global"
+      | "system_information"
       | "secret",
     private readonly entityId: string,
   ) {

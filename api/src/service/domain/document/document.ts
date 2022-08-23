@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import logger from "lib/logger";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import Joi = require("joi");
 import VError = require("verror");

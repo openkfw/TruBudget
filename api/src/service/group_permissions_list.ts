@@ -3,7 +3,7 @@ import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { ConnToken } from "./conn";
 import * as Group from "./domain/organization/group";
 import * as GroupGet from "./domain/organization/group_get";

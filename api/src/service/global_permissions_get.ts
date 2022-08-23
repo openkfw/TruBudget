@@ -1,7 +1,7 @@
 import logger from "lib/logger";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as GlobalPermissions from "./domain/workflow/global_permissions";

@@ -1,9 +1,8 @@
 import logger from "lib/logger";
-import VError = require("verror");
 
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
+import * as Cache from "./cache/index";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as History from "./domain/workflow/historyFilter";
@@ -12,6 +11,7 @@ import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemHistory from "./domain/workflow/workflowitem_history_get";
 import { WorkflowitemTraceEvent } from "./domain/workflow/workflowitem_trace_event";
+import VError = require("verror");
 
 export async function getWorkflowitemHistory(
   conn: ConnToken,
