@@ -128,16 +128,22 @@ const spawnProcess = (startProcess) => {
   isRunning = true;
   mcproc.on("close", async (code, signal) => {
     isRunning = false;
-    const retryIntervalMs = 10000;
-    log.info(
-      `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${
-        retryIntervalMs / 1000
-      } Seconds...`,
-    );
-    await new Promise((resolve) => {
-      setTimeout(resolve, retryIntervalMs);
-    });
-    spawnProcess(startProcess);
+    if (!AUTOSTART) {
+      log.info(
+        `multichaind stopped with exit code ${code} and signal ${signal}. Autorestart is disabled`,
+      );
+    } else {
+      const retryIntervalMs = 10000;
+      log.info(
+        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${
+          retryIntervalMs / 1000
+        } Seconds...`,
+      );
+      await new Promise((resolve) => {
+        setTimeout(resolve, retryIntervalMs);
+      });
+      spawnProcess(startProcess);
+    }
   });
 };
 
