@@ -100,7 +100,6 @@ export type Cache = {
 };
 
 interface CacheInstance {
-  //TODO: check which method must be async & which not
 
   getGlobalEvents(): BusinessEvent[];
 
@@ -115,12 +114,12 @@ interface CacheInstance {
   getPublicKeyEvents(): Result.Type<BusinessEvent[]>;
 
   // Project:
-  getProjects(): Promise<Project.Project[]>;
+  getProjects(): Project.Project[];
 
-  getProject(projectId: string): Promise<Result.Type<Project.Project>>;
+  getProject(projectId: string): Result.Type<Project.Project>;
 
   // Subproject:
-  getSubprojects(projectId: string): Promise<Result.Type<Subproject.Subproject[]>>;
+  getSubprojects(projectId: string): Result.Type<Subproject.Subproject[]>;
 
   getSubproject(projectId: string, subprojectId: string): Result.Type<Subproject.Subproject>;
 
@@ -128,13 +127,13 @@ interface CacheInstance {
   getWorkflowitems(
     _projectId: string,
     subprojectId: string,
-  ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
+  ): Result.Type<Workflowitem.Workflowitem[]>;
 
   getWorkflowitem(
     projectId: string,
     subprojectId: string,
     workflowitemId: string,
-  ): Promise<Result.Type<Workflowitem.Workflowitem>>;
+  ): Result.Type<Workflowitem.Workflowitem>;
 
   getDocumentUploadedEvents(): Result.Type<BusinessEvent[]>;
 
@@ -252,7 +251,7 @@ export const getCacheInstance = (ctx: Ctx, cache: Cache): CacheInstance => {
       return (cache.eventsByStream.get<BusinessEvent[]>("documents") || []).filter(secretPhublishedFilter);
     },
 
-    getProjects: async (): Promise<Project.Project[]> => {
+    getProjects: (): Project.Project[] => {
       logger.trace("Getting projects from cache");
       const projectIDs = cache.cachedProjects.keys();
       const projects = cache.cachedProjects.mget<Project.Project[]>(projectIDs);
@@ -262,7 +261,7 @@ export const getCacheInstance = (ctx: Ctx, cache: Cache): CacheInstance => {
       return flatten(projectIDs.map(id => projects[id]));
     },
 
-    getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
+    getProject: (projectId: string): Result.Type<Project.Project> => {
       logger.trace(`Getting Project with id "${projectId}" from cache`);
       const project = cache.cachedProjects.get<Project.Project>(projectId);
       if (project === undefined) {
@@ -271,9 +270,8 @@ export const getCacheInstance = (ctx: Ctx, cache: Cache): CacheInstance => {
       return project;
     },
 
-    getSubprojects: async (projectId: string): Promise<Result.Type<Subproject.Subproject[]>> => {
+    getSubprojects: (projectId: string): Result.Type<Subproject.Subproject[]> => {
       logger.trace("Getting subprojects from cache");
-
       // Look up subproject ids
       const subprojectIDs = cache.cachedSubprojectLookup.get<Set<string>>(projectId);
       if (subprojectIDs === undefined) {
@@ -307,10 +305,10 @@ export const getCacheInstance = (ctx: Ctx, cache: Cache): CacheInstance => {
       return subproject;
     },
 
-    getWorkflowitems: async (
+    getWorkflowitems: (
       _projectId: string,
       subprojectId: string,
-    ): Promise<Result.Type<Workflowitem.Workflowitem[]>> => {
+    ): Result.Type<Workflowitem.Workflowitem[]> => {
       logger.trace("Getting workflowitems from cache");
       const workflowitemIDs = cache.cachedWorkflowitemLookup.get<Set<string>>(subprojectId);
       const workflowitems: Workflowitem.Workflowitem[] = [];
@@ -330,11 +328,11 @@ export const getCacheInstance = (ctx: Ctx, cache: Cache): CacheInstance => {
       return workflowitems;
     },
 
-    getWorkflowitem: async (
+    getWorkflowitem: (
       _projectId: string,
       _subprojectId: string,
       workflowitemId: string,
-    ): Promise<Result.Type<Workflowitem.Workflowitem>> => {
+    ): Result.Type<Workflowitem.Workflowitem> => {
       logger.trace(
         `Getting Workflowitem from project ${_projectId} and ${_subprojectId} with id "${workflowitemId}" from cache`,
       );
@@ -530,6 +528,7 @@ export function updateAggregates(ctx: Ctx, cache: Cache, newEvents: BusinessEven
   const projectsInCache = cache.cachedProjects.mget<Project.Project[]>(projectIDs);
   const projectsToSource: Map<Project.Id, Project.Project> = new Map();
   flatten(projectIDs.map(id => projectsInCache[id]))
+    .filter(el => el !== undefined)
     .forEach((el: Project.Project) => projectsToSource.set(el.id, el));
 
 
@@ -544,6 +543,7 @@ export function updateAggregates(ctx: Ctx, cache: Cache, newEvents: BusinessEven
   const subprojectInCache = cache.cachedSubprojects.mget<Subproject.Subproject[]>(subprojectIDs);
   const subprojectToSource: Map<Subproject.Id, Subproject.Subproject> = new Map();
   flatten(subprojectIDs.map(id => subprojectInCache[id]))
+    .filter(el => el !== undefined)
     .forEach((el: Subproject.Subproject) => subprojectToSource.set(el.id, el));
 
 
@@ -569,6 +569,7 @@ export function updateAggregates(ctx: Ctx, cache: Cache, newEvents: BusinessEven
   const workflowItemsInCache = cache.cachedWorkflowItems.mget<Workflowitem.Workflowitem[]>(workflowItemsIDs);
   const workflowItemsToSource: Map<Workflowitem.Id, Workflowitem.Workflowitem> = new Map();
   flatten(workflowItemsIDs.map(id => workflowItemsInCache[id]))
+    .filter(el => el !== undefined)
     .forEach((el: Workflowitem.Workflowitem) => workflowItemsToSource.set(el.id, el));
 
   const { workflowitems, errors: wErrors = [] } = sourceWorkflowitems(

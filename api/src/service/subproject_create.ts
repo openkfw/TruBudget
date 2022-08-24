@@ -26,9 +26,10 @@ export async function createSubproject(
         return Result.isOk(subproject);
       },
       projectPermissions: async (projectId) => {
-        return cache
-          .getProject(projectId)
-          .then((result) => Result.map(result, (p) => p.permissions));
+        return Result.map(
+          cache.getProject(projectId),
+          (p) => p.permissions,
+        );
       },
     });
   });
