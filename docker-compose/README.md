@@ -120,9 +120,19 @@ If the configuration looks fine start the whole setup with `docker-compose up`.
 docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f excel-export-service/docker-compose.yml -f storage-service/docker-compose.yml -f storage-service/persistence.docker-compose.yml -f blockchain/persistence.docker-compose.yml -f api/docker-compose.yml -f frontend/docker-compose.yml up
 ```
 
-## E2E-tests
+## E2E-test
 
-tbd
+To run the E2E-test a provisioned TruBudget instance has to be up and running. To achieve this execute following command first:
+
+```
+docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f storage-service/docker-compose.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f provisioning/docker-compose.yml up
+```
+
+After provisioning is logging `Successfully provisioned Trubudget!` or `The blockchain is already provisioned, skip provisioning ...` the e2e-test component can be added to the docker-compose environment with following command (make sure you specify the e2e-test service at the end of the command "...up e2e-test"):
+
+```
+docker-compose --project-directory . -f e2e-test/docker-compose.yml up e2e-test
+```
 
 ## Multi node setup
 

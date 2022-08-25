@@ -1,0 +1,9 @@
+version: "3"
+services:
+  e2e-test:
+    image: trubudget/e2e-test:${TAG}
+    environment:
+      CYPRESS_ROOT_SECRET: ${ROOT_SECRET}
+      CYPRESS_BASE_URL: http://${FRONTEND_HOST}
+      LOG_LEVEL: ${E2ETEST_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
