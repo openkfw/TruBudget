@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ## Unreleased -->
 
-<!-- ### Added -->
+### Added
+
+- Docker-compose files for e2e-test component [#1282](https://github.com/openkfw/TruBudget/pull/1282)
 
 <!-- ### Changed -->
 
@@ -15,7 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Fixed a bug where restoring a backup corrupts the blockchain [#1285](https://github.com/openkfw/TruBudget/issues/1285)
 
 ## [2.1.0] - 2022-08-11
 
