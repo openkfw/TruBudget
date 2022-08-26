@@ -25,11 +25,24 @@ const ajv = new Ajv({
 const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
   server.register(require("@fastify/jwt"), {
     secret: jwtSecret,
+    cookie: {
+      cookieName: "token",
+      signed: false,
+    },
   });
+
+  server
+    .register(require("@fastify/cookie"));
 
   server.decorate("authenticate", async (request, reply) => {
     try {
+      console.log("---------------------------------------", request.cookies);
+      const token = request.cookies.token;
+      if (token) {
+        request.headers.authorization = `Bearer ${token}`;
+      }
       await request.jwtVerify();
+      console.log(request.headers.authorization);
     } catch (err) {
       request.log.debug(err, "Authentication error");
       reply.status(401).send({

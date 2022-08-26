@@ -57,7 +57,6 @@ interface LoginResponse {
     groupId: string;
     displayName: string;
   }>;
-  token: string; // JWT
 }
 
 /**
@@ -249,7 +248,6 @@ export function addHttpHandler(
           organization: token.organization,
           allowedIntents: token.allowedIntents,
           groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
-          token: signedJwt,
         };
         const body = {
           apiVersion: "1.0",
@@ -257,7 +255,15 @@ export function addHttpHandler(
             user: loginResponse,
           },
         };
-        reply.status(200).send(body);
+        reply
+          .setCookie("token", signedJwt, {
+            path: "/",
+            secure: true,
+            httpOnly: true,
+            sameSite: true,
+          })
+          .status(200)
+          .send(body);
       } catch (err) {
         const { code, body } = toHttpError(err);
         request.log.error({ err }, "Error while user authenticate");
