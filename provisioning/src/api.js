@@ -12,7 +12,7 @@ const authenticate = async (axios, userId, password) => {
     );
     const body = response.data;
     if (body.apiVersion !== "1.0") throw Error("unexpected API version");
-    return body.data.user.token;
+    return ((response.headers['set-cookie'][0]).split(";"))[0].replace("token=", "");
 };
 
 const createUser = async (axios, user, organization) => {
