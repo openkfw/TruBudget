@@ -14,7 +14,6 @@ const getRate = series => {
 
 export async function getExchangeRates(baseCurrency = "EUR") {
   const instance = axios.create();
-  delete instance.defaults.headers.common["Authorization"];
   const response = await instance.get(
     "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A?lastNObservations=1",
     { headers: {} }

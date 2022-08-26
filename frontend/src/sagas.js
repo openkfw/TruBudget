@@ -249,8 +249,9 @@ const getSelfId = (state) => {
 const getEmailAddress = (state) => {
   return state.getIn(["login", "emailAddress"]);
 };
-const getJwt = (state) => {
-  return state.getIn(["login", "jwt"]);
+
+const getUserLoggedIn = state => {
+  return state.getIn(["login", "isUserLoggedIn"]);
 };
 
 const getProjectHistoryState = (state) => {
@@ -373,8 +374,7 @@ const getNotificationState = (state) => {
 };
 
 function* callApi(func, ...args) {
-  const token = yield select(getJwt);
-  yield call(api.setAuthorizationHeader, token);
+  // yield call(api.setAuthorizationHeader, token);
   yield call(api.setBaseUrl);
   const { data = {} } = yield call(func, ...args);
   return data;
@@ -1108,6 +1108,7 @@ export function* markMultipleNotificationsAsReadSaga({ notificationIds, notifica
 export function* loginSaga({ user }) {
   function* login() {
     const { data } = yield callApi(api.login, user.username, user.password);
+    data.user.isUserLoggedIn = true;
     yield put({
       type: LOGIN_SUCCESS,
       ...data
@@ -2750,8 +2751,7 @@ export function* restoreBackupSaga({ file, showLoading = true }) {
     type: DISABLE_ALL_LIVE_UPDATES
   });
   yield execute(function* () {
-    const token = yield select(getJwt);
-    yield call(api.restoreFromBackup, token, file);
+    yield call(api.restoreFromBackup, file);
     yield put({
       type: RESTORE_BACKUP_SUCCESS
     });

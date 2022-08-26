@@ -29,7 +29,7 @@ class NotificationPageContainer extends Component {
   }
 
   componentWillUnmount() {
-    const loggingOut = this.props.jwt;
+    const loggingOut = this.props.isUserLoggedIn;
     if (!loggingOut) {
       this.props.enableLiveUpdates();
       this.props.fetchNotificationCounts();
@@ -60,7 +60,8 @@ const mapDispatchToProps = (dispatch, props) => {
 
 const mapStateToProps = state => {
   return {
-    jwt: state.getIn(["login", "jwt"]),
+    // jwt: state.getIn(["login", "jwt"]),
+    isUserLoggedIn: state.getIn(['login', 'isUserLoggedIn']),
     notifications: state.getIn(["notifications", "notifications"]),
     notificationsPerPage: state.getIn(["notifications", "notificationPageSize"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
