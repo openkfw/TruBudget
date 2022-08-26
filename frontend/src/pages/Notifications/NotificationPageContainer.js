@@ -60,7 +60,6 @@ const mapDispatchToProps = (dispatch, props) => {
 
 const mapStateToProps = state => {
   return {
-    // jwt: state.getIn(["login", "jwt"]),
     isUserLoggedIn: state.getIn(['login', 'isUserLoggedIn']),
     notifications: state.getIn(["notifications", "notifications"]),
     notificationsPerPage: state.getIn(["notifications", "notificationPageSize"]),

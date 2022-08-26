@@ -374,7 +374,6 @@ const getNotificationState = (state) => {
 };
 
 function* callApi(func, ...args) {
-  // yield call(api.setAuthorizationHeader, token);
   yield call(api.setBaseUrl);
   const { data = {} } = yield call(func, ...args);
   return data;

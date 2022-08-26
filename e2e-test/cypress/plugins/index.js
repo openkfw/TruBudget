@@ -69,7 +69,7 @@ function isProvisioned(baseUrl) {
       }
     })
     .then(response => {
-      const JWTtoken = response.data.data.user.token;
+      const JWTtoken = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
       return axios
         .get(`${baseUrl}/api/provisioned`, {
           headers: {

@@ -106,7 +106,7 @@ const authAgainstApi = async (
                 },
             }
         );
-        const token = auth.data.data.user.token;
+        const token = auth.headers["set-cookie"][0].split(";")[0].replace("token=", "");
         return axios.create({
             baseURL: `${ApplicationConfiguration.DESTINATION_API_BASE_URL}/api`,
             headers: {Authorization: `Bearer ${token}`},

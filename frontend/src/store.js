@@ -36,6 +36,9 @@ export default function configureStore(history) {
 
   store.subscribe(() => {
     persistState(store.getState());
+    if (window.Cypress) {
+      window.store = store;
+    }
   });
 
   // Extensions
