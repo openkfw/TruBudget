@@ -119,7 +119,7 @@ export async function createWorkflowitem(
   const documents: DocumentReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
 
-  if (reqData.documents) {
+  if (reqData.documents?.length) {
     if (config.documentFeatureEnabled) {
       logger.trace(
         { req: reqData },
