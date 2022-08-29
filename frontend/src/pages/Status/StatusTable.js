@@ -1,5 +1,5 @@
-import React from "react";
 import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import React from "react";
 
 import strings from "../../localizeStrings";
 
@@ -139,7 +139,8 @@ const StatusTable = props => {
   const filteredVersions = Object.keys(versions).reduce((filtered, serviceName) => {
     if (
       (!isEmailServiceAvailable && serviceName === "emailService") ||
-      (!isExportServiceAvailable && serviceName === "exportService")
+      (!isExportServiceAvailable && serviceName === "exportService") ||
+      ((!versions["storage"] || !versions["storage"].ping) && serviceName === "storage")
     ) {
       return filtered;
     }
