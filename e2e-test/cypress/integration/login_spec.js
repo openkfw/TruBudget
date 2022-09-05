@@ -1,4 +1,4 @@
-describe("Login", function() {
+describe("Login", function () {
   let projectId, subprojectId;
   const apiRoute = "/api";
   const routes = {
@@ -11,11 +11,11 @@ describe("Login", function() {
     notFound: "notfound"
   };
 
-  before(function() {
+  before(function () {
     cy.login();
-    cy.createProject("p-login", "login test").then(({ id }) => {
+    cy.createProject("p-login", "login test").then(({id}) => {
       projectId = id;
-      cy.createSubproject(projectId, "sp-login").then(({ id }) => {
+      cy.createSubproject(projectId, "sp-login").then(({id}) => {
         subprojectId = id;
         // Logout
         localStorage.setItem("state", undefined);
@@ -23,41 +23,41 @@ describe("Login", function() {
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.visit(`/`);
   });
 
-  it(`Log in and out on overview page`, function() {
+  it(`Log in and out on overview page`, function () {
     loginUi();
     logout(routes.overview);
   });
 
-  it(`Log in and out on users page`, function() {
+  it(`Log in and out on users page`, function () {
     loginUi();
     logout(routes.users);
   });
-  it(`Log in and out on notifications page`, function() {
+  it(`Log in and out on notifications page`, function () {
     loginUi();
     logout(routes.notifications);
   });
-  it(`Log in and out on nodes page`, function() {
+  it(`Log in and out on nodes page`, function () {
     loginUi();
     logout(routes.nodes);
   });
-  it(`Log in and out on projectDetails page`, function() {
+  it(`Log in and out on projectDetails page`, function () {
     loginUi();
     logout(routes.projectDetails);
   });
-  it(`Log in and out on subprojectDetails page`, function() {
+  it(`Log in and out on subprojectDetails page`, function () {
     loginUi();
     logout(routes.subprojectDetails);
   });
-  it(`Log in and out on a page that's not found`, function() {
+  it(`Log in and out on a page that's not found`, function () {
     loginUi();
     logout(routes.notFound);
   });
 
-  it("Reject wrong inputs", function() {
+  it("Reject wrong inputs", function () {
     cy.intercept(apiRoute + "/user.authenticate").as("login");
     cy.get("#loginpage").should("be.visible");
     cy.get("#username")
@@ -76,7 +76,7 @@ describe("Login", function() {
       .should("be.visible");
   });
 
-  it("Reject empty inputs", function() {
+  it("Reject empty inputs", function () {
     cy.intercept(apiRoute + "/user.authenticate").as("login");
     cy.get("#loginpage").should("be.visible");
     cy.get("#loginbutton").click();
@@ -87,6 +87,41 @@ describe("Login", function() {
       .contains("Login ID or password field cannot be empty")
       .should("be.visible");
   });
+
+  it("Password-input can toggled to shown input as clear text", function () {
+    cy.intercept(apiRoute + "/user.authenticate").as("login");
+
+    cy.get("#loginpage")
+      .should("be.visible")
+      .get("#password")
+      .invoke("attr", "type")
+      .should("eq", "password")
+
+    cy.get("#loginpage")
+      .should("be.visible")
+      .get("#password")
+      .type("test")
+      .get("#showPasswordButton")
+      .click();
+
+    cy.get("#loginpage")
+      .should("be.visible")
+      .get("#password")
+      .invoke("attr", "type")
+      .should("eq", "text")
+
+    cy.get("#loginpage")
+      .should("be.visible")
+      .get("#password")
+      .get("#showPasswordButton")
+      .click();
+    
+    cy.get("#loginpage")
+      .should("be.visible")
+      .get("#password")
+      .invoke("attr", "type")
+      .should("eq", "password")
+  })
 });
 
 function logout(route) {

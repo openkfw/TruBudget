@@ -9,9 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Add the possibility to a view the password when logging in [[#1225](https://github.com/openkfw/TruBudget/issues/1225)]
+
+- Add a warning in the workflowitem dialog for overwriting permissions [#1189](https://github.com/openkfw/TruBudget/issues/1189)
 - Docker-compose files for e2e-test component [#1282](https://github.com/openkfw/TruBudget/pull/1282)
+- Add Budgets in Table-View [#1226](https://github.com/openkfw/TruBudget/issues/1226)
+- Add Button to view additional data object in Table-View [#1203](https://github.com/openkfw/TruBudget/issues/1203)
 
 <!-- ### Changed -->
+
+- Fixed a bug where the confirmation dialog remains frozen in case of error [#1105](https://github.com/openkfw/TruBudget/issues/1105)
+- Fixed translation in Table-View [#1227](https://github.com/openkfw/TruBudget/issues/1227)
 
 <!-- ### Deprecated -->
 
@@ -45,6 +53,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.0.0] - 2022-06-08
 
+<!-- ### Added -->
+
 ### Changed
 
 - Replaced the master branch name and image tag with main [#1098](https://github.com/openkfw/TruBudget/pull/1098)
@@ -67,6 +77,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - project.list and subproject.list do not contain the `log` property anymore (use history endpoint instead) [#1132](https://github.com/openkfw/TruBudget/issues/1132)
 - Storing offchain documents using the multichain feature is removed, storage-service must be used instead [#1042](https://github.com/openkfw/TruBudget/issues/1042)
 
+<!-- ### Fixed -->
+
 ## [1.30.0] - 2022-06-08
 
 ### Added
@@ -81,6 +93,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - API readiness improvement: API waits for all connected services to be
   up [#1173](https://github.com/openkfw/TruBudget/pull/1173)
 
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
 ### Fixed
 
 - Fixed date picker for setting dates in another timezone [#1082](https://github.com/openkfw/TruBudget/issues/1082)
@@ -91,15 +107,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.0.0] -
 
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
 ### Removed
 
 - Removed the option to upload documents to the MultiChain offchain storage [#1042](https://github.com/openkfw/TruBudget/issues/1042)
+
+<!-- ### Fixed -->
 
 ## [2.0.0] -
 
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
 ### Removed
 
 - Removed the option to upload documents to the MultiChain offchain storage [#1042](https://github.com/openkfw/TruBudget/issues/1042)
+
+<!-- ### Fixed -->
 
 ## [1.29.0] - 2022-03-02
 
@@ -890,8 +922,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.1.0...main
-[2.1.0]: https://github.com/openkfw/TruBudget/compare/v2.0.1...v2.1.0
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.0.1...main
 [2.0.1]: https://github.com/openkfw/TruBudget/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/openkfw/TruBudget/compare/v1.30.0...v2.0.0
 [1.30.0]: https://github.com/openkfw/TruBudget/compare/v1.29.0...v1.30.0
