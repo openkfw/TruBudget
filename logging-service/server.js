@@ -6,10 +6,10 @@ const {
   LOGGING_SERVICE_CACHE_DURATION,
 } = process.env;
 if (!API_HOST || !API_PORT || !LOGGER_PORT || !LOGGING_SERVICE_CACHE_DURATION) {
-  console.log("Please provide all requierd ENV variables!");
+  console.log("Please provide all required ENV variables!");
   return;
 }
-const logBuilder = require("./index");
+const logBuilder = require("trubudget-pino-logger");
 const axios = require("axios");
 const jwtCache = new Set();
 const logger = logBuilder.createPinoLogger("Trubudget-Frontend");
@@ -43,12 +43,12 @@ fastify.post("/api", async (request, reply) => {
       request.headers.authorization.includes("Bearer")
     ) {
       const tokenToValidate = request.headers.authorization;
-      if (!(await verifyJWTToken(tokenToValidate)))
-        reply.status(401).send("Please provide authorization token");
+      const isValidToken = await verifyJWTToken(tokenToValidate);
+      if (!isValidToken)
+        reply.status(401).send("Please provide a valid authorization token");
     } else {
       reply.status(401).send("Please provide authorization token");
     }
-
     toStdOut(request.body);
 
     reply.status(200).send({
@@ -56,7 +56,7 @@ fastify.post("/api", async (request, reply) => {
     });
   } catch (e) {
     logger.error({ err: e }, "Could not handle incoming request!");
-    reply.status(500).send("Ups ...");
+    reply.status(500).send("Internal Server Error");
   }
 });
 
@@ -69,14 +69,21 @@ fastify.get("/alive", (req, res) => {
 const verifyJWTToken = async (tokenToValidate) => {
   const possibleCacheHit = jwtCache.has(tokenToValidate);
   if (possibleCacheHit) return possibleCacheHit;
-
-  const req = await axios.get(`http://${API_HOST}:${API_PORT}/api/version`, {
-    headers: {
-      Authorization: tokenToValidate,
-    },
-  });
-  jwtCache.add(tokenToValidate);
-  return req.status === 200;
+  console.log(`Send Request to http://${API_HOST}:${API_PORT}/api/version`);
+  try {
+    const req = await axios.get(`http://${API_HOST}:${API_PORT}/api/version`, {
+      headers: {
+        Authorization: tokenToValidate,
+      },
+    });
+    jwtCache.add(tokenToValidate);
+    return true;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      return false;
+    }
+    throw error;
+  }
 };
 
 const toStdOut = (logMsg) => {

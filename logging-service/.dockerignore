@@ -1,4 +1,6 @@
 *.xlsx
 *.docx
-node_modules/
-.vscode/
+node_modules
+.vscode
+.npm
+docs
