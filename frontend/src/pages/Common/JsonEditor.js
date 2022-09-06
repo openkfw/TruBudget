@@ -33,6 +33,7 @@ export default function JsonEditor({ data = {}, onChange }) {
         refEditor.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // update props

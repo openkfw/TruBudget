@@ -17,9 +17,9 @@ const getToken = () => (store ? store.getState().toJS().login.jwt : "");
 const getUserId = () => (store ? store.getState().toJS().login.id : "");
 
 const createConnection = () => {
-  if (REACT_APP_LOGGING === false) return;
-  // SSL musst be enabled when using logger in production
-  if (NODE_ENV !== "developement" && REACT_APP_LOGGING_SERVICE_HOST_SSL === "false" && REACT_APP_LOGGING === "true") {
+  if (REACT_APP_LOGGING !== "true") return;
+  // SSL must be enabled when using logger in production
+  if (NODE_ENV !== "development" && REACT_APP_LOGGING_SERVICE_HOST_SSL === "false" && REACT_APP_LOGGING === "true") {
     // eslint-disable-next-line no-console
     console.error(
       "Seems you are using TruBudget in production with logging enabled but without SSL! Enable SSL for Frontend-Logging to proceed!"
@@ -43,11 +43,11 @@ const logger = createLogger({
   timestamp: true,
   logErrors: true,
   predicate: (getState, action) => predicate(getState, action),
-  stateTransformer: s => stateTransformer(s),
+  stateTransformer: (s) => stateTransformer(s),
   diff: true,
-  errorTransformer: error => errorTransformer(error)
+  errorTransformer: (error) => errorTransformer(error)
 });
-const stateTransformer = s => s;
+const stateTransformer = (s) => s;
 
 const predicate = (getState, action) => {
   createLogMsg({
@@ -63,7 +63,7 @@ const predicate = (getState, action) => {
   return false;
 };
 
-const errorTransformer = error => {
+const errorTransformer = (error) => {
   createLogMsg({
     service: "FRONTEND",
     what: "Error",
@@ -78,15 +78,15 @@ const pushLogToServer = async () => {
       instance.defaults.headers.common["Authorization"] === undefined
     )
       setToken();
-    await instance.post("/api", { logMessages }).catch(ignore => ignore);
+    await instance.post("/api", { logMessages }).catch((ignore) => ignore);
     while (logMessages.length) {
       logMessages.pop();
     }
   }
 };
 
-export const createLogMsg = async log => {
-  if (REACT_APP_LOGGING === "false") return;
+export const createLogMsg = async (log) => {
+  if (REACT_APP_LOGGING !== "true") return;
   const msg = {
     ...log,
     when: new Date().toString(),
