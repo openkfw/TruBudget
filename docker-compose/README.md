@@ -125,10 +125,10 @@ docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml 
 To run the E2E-test a provisioned TruBudget instance has to be up and running. To achieve this execute following command first:
 
 ```
-docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f storage-service/docker-compose.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f provisioning/docker-compose.yml up
+docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f storage-service/docker-compose.yml -f excel-export-service/docker-compose.yml -f provisioning/docker-compose.yml up
 ```
 
-After provisioning is logging `Successfully provisioned Trubudget!` or `The blockchain is already provisioned, skip provisioning ...` the e2e-test component can be added to the docker-compose environment with following command (make sure you specify the e2e-test service at the end of the command "...up e2e-test"):
+After provisioning is logging `Successfully provisioned Trubudget!` or `The blockchain is already provisioned, skip provisioning ...` the e2e-test component can be added to the docker-compose environment with following command in another terminal(make sure you specify the e2e-test service at the end of the command "...up e2e-test"):
 
 ```
 docker-compose --project-directory . -f e2e-test/docker-compose.yml up e2e-test
@@ -140,4 +140,8 @@ tbd
 
 ## Logging-service
 
-tbd
+To collect all logs of users using the TruBudget frontend tha logging-service is used. To add the logging-service simply use the according docker-compose files in the `logging-service` folder:
+
+```
+docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f storage-service/docker-compose.yml -f logging-service/docker-compose.yml up
+```
