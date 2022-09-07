@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed a bug where restoring a backup corrupts the blockchain [#1285](https://github.com/openkfw/TruBudget/issues/1285)
+- Fixed a bug where downloading documents from other organizations in a network was not possible in a specific edge-case [#1192](https://github.com/openkfw/TruBudget/issues/1192)
 
 ## [2.1.0] - 2022-08-11
 

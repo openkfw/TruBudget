@@ -1,6 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import logger from "lib/logger";
 import { performance } from "perf_hooks";
 import { VError } from "verror";
+import { config } from "../config";
+import { decrypt, encrypt } from "../lib/symmetricCrypto";
 import * as Result from "../result";
 import {
   StorageObject,
@@ -8,9 +11,6 @@ import {
   UploadResponse,
   Version,
 } from "./Client_storage_service.h";
-import { config } from "../config";
-import { encrypt, decrypt } from "../lib/symmetricCrypto";
-import logger from "lib/logger";
 
 interface UploadRequest {
   fileName: string;
@@ -81,11 +81,15 @@ export default class StorageServiceClient implements StorageServiceClientI {
       requestData.content = encrypt(config.encryptionPassword, requestData.content);
     }
     const url = `/upload?docId=${id}`;
-    const UploadResponseResult = await this.axiosInstance.post(url, requestData);
-    if (Result.isErr(UploadResponseResult)) {
-      return new VError(UploadResponseResult, "upload object failed");
+    const uploadResponse = await this.axiosInstance.post(url, requestData);
+    if (Result.isErr(uploadResponse)) {
+      logger.error(`Error while uploading document ${id} to storage service.`);
+      return new VError(uploadResponse, "Uploading the object failed");
+    } else if (uploadResponse.status !== 200) {
+      logger.error(`Error while uploading document ${id} to storage service.`);
+      return new VError("Uploading the object failed");
     }
-    return UploadResponseResult.data;
+    return uploadResponse.data;
   }
 
   public async downloadObject(id: string, secret: string): Promise<Result.Type<StorageObject>> {
@@ -97,15 +101,19 @@ export default class StorageServiceClient implements StorageServiceClientI {
         secret: secret,
       },
     };
-    const DownloadResponseResult = await this.axiosInstance.get(url, axiosConfig);
-    if (Result.isErr(DownloadResponseResult)) {
-      return new VError(DownloadResponseResult, "downloading object failed");
+    const downloadResponse = await this.axiosInstance.get(url, axiosConfig);
+    if (Result.isErr(downloadResponse)) {
+      logger.error(`Error while downloading document ${id} from storage service.`);
+      return new VError(downloadResponse, "downloading object failed");
+    } else if (downloadResponse.status !== 200) {
+      logger.error(`Error while downloading document ${id} from storage service.`);
+      return new VError("Downloading object failed");
     }
 
     let documentObject: StorageObject = {
-      id: DownloadResponseResult.data.meta.docid,
-      fileName: decodeURIComponent(DownloadResponseResult.data.meta.filename),
-      base64: DownloadResponseResult.data.data,
+      id: downloadResponse.data.meta.docid,
+      fileName: decodeURIComponent(downloadResponse.data.meta.filename),
+      base64: downloadResponse.data.data,
     };
 
     if (config.encryptionPassword) {

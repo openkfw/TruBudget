@@ -1,4 +1,4 @@
-# Change ~/masterVolume to the location where the .multichain content should be saved on your machine 
+# Change ~/minioVolume to the location where the minio data should be saved on your machine 
 version: "3"
 services:
   minio:
