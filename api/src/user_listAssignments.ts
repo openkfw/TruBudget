@@ -1,5 +1,5 @@
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -88,55 +88,58 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get<Request>(
-    `${urlPrefix}/global.listAssignments`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
-      const issuer: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
-
-      const requestData: RequestData = { userId: request.query.userId };
-      const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
-
-      if (!isNonemptyString(requestData.userId)) {
-        const message = "required query parameter `userId` not present (must be non-empty string)";
-        reply.status(404).send({
-          apiVersion: "1.0",
-          error: {
-            code: 404,
-            message,
-          },
-        });
-        request.log.error({ err: message }, "Invalid request body");
-        return;
-      }
-
-      try {
-        const userAssignmentsResult = await service.getUserAssignments(
-          ctx,
-          issuer,
-          issuerOrganization,
-          requestData,
-        );
-        if (Result.isErr(userAssignmentsResult)) {
-          throw new VError(userAssignmentsResult, "global.listAssignments failed");
-        }
-        const userAssignments = userAssignmentsResult;
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: userAssignments,
+  server.register(async function () {
+    server.get<Request>(
+      `${urlPrefix}/global.listAssignments`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
+        const issuer: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
         };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while listing assignments of user");
-        reply.status(code).send(body);
-      }
-    },
-  );
+
+        const requestData: RequestData = { userId: request.query.userId };
+        const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
+
+        if (!isNonemptyString(requestData.userId)) {
+          const message =
+            "required query parameter `userId` not present (must be non-empty string)";
+          reply.status(404).send({
+            apiVersion: "1.0",
+            error: {
+              code: 404,
+              message,
+            },
+          });
+          request.log.error({ err: message }, "Invalid request body");
+          return;
+        }
+
+        try {
+          const userAssignmentsResult = await service.getUserAssignments(
+            ctx,
+            issuer,
+            issuerOrganization,
+            requestData,
+          );
+          if (Result.isErr(userAssignmentsResult)) {
+            throw new VError(userAssignmentsResult, "global.listAssignments failed");
+          }
+          const userAssignments = userAssignmentsResult;
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: userAssignments,
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while listing assignments of user");
+          reply.status(code).send(body);
+        }
+      },
+    );
+  });
 }

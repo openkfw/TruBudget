@@ -1,4 +1,4 @@
-import * as Joi from "joi";
+import Joi = require("joi");
 import { isProductionEnvironment } from "../config";
 import { htmlStrip } from "./htmlSanitize";
 
@@ -15,7 +15,6 @@ export const safeStringSchema = JoiBase.string()
   .regex(/^([\p{L}\p{N}\p{P}\p{M}\p{S}\p{Zs}]*)$/u)
   .max(250);
 
-
 export const safeIdSchema = JoiBase.string()
   .trim()
   .htmlStrip()
@@ -24,14 +23,8 @@ export const safeIdSchema = JoiBase.string()
 
 export const safePasswordSchema = isProductionEnvironment()
   ? JoiBase.string()
-    .trim()
-    .htmlStrip()
-    .regex(/^(?=.*[A-Za-zÀ-ÿ].*)(?=.*[0-9].*)([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ])*$/)
-    .min(8)
-  : JoiBase.string()
-    .trim()
-    .htmlStrip();
-
-
-
-
+      .trim()
+      .htmlStrip()
+      .regex(/^(?=.*[A-Za-zÀ-ÿ].*)(?=.*[0-9].*)([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ])*$/)
+      .min(8)
+  : JoiBase.string().trim().htmlStrip();

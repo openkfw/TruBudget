@@ -40,7 +40,7 @@ const schema = Joi.object({
 });
 
 export function validate(input): Result.Type<Group> {
-  const { error, value } = Joi.validate(input, schema);
+  const { error, value } = schema.validate(input);
   return !error ? value : error;
 }
 

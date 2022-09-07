@@ -55,7 +55,6 @@ interface Config {
   // Continues Integration
   ciCommitSha: string;
   buildTimeStamp: string;
-  swaggerBasepath: string;
   documentFeatureEnabled: boolean;
   storageService: {
     host: string;
@@ -97,8 +96,6 @@ export const config: Config = {
   // Continues Integration
   ciCommitSha: process.env.CI_COMMIT_SHA || "",
   buildTimeStamp: process.env.BUILDTIMESTAMP || "",
-  // deprecated
-  swaggerBasepath: "/",
   documentFeatureEnabled: process.env.DOCUMENT_FEATURE_ENABLED === "true" ? true : false,
   storageService: {
     host: process.env.STORAGE_SERVICE_HOST || "localhost",

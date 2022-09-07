@@ -1,5 +1,5 @@
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
@@ -219,135 +219,140 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get<Request>(
-    `${urlPrefix}/subproject.viewDetails`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get<Request>(
+      `${urlPrefix}/subproject.viewDetails`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
+        };
 
-      const projectId = request.query.projectId;
-      if (!isNonemptyString(projectId)) {
-        const message =
-          "required query parameter `projectId` not present (must be non-empty string)";
-        reply.status(404).send({
-          apiVersion: "1.0",
-          error: {
-            code: 404,
-            message,
-          },
-        });
-        request.log.error({ err: message }, "Invalid request body");
-        return;
-      }
-
-      const subprojectId = request.query.subprojectId;
-      if (!isNonemptyString(subprojectId)) {
-        const message =
-          "required query parameter `subprojectId` not present (must be non-empty string)";
-        reply.status(404).send({
-          apiVersion: "1.0",
-          error: {
-            code: 404,
-            message,
-          },
-        });
-        request.log.error({ err: message }, "Invalid request body");
-        return;
-      }
-
-      try {
-        // Get project info
-        const projectResult = await service.getProject(ctx, user, projectId);
-        if (Result.isErr(projectResult)) {
-          throw new VError(projectResult, "subproject.viewDetails failed");
+        const projectId = request.query.projectId;
+        if (!isNonemptyString(projectId)) {
+          const message =
+            "required query parameter `projectId` not present (must be non-empty string)";
+          reply.status(404).send({
+            apiVersion: "1.0",
+            error: {
+              code: 404,
+              message,
+            },
+          });
+          request.log.error({ err: message }, "Invalid request body");
+          return;
         }
-        const displayName = projectResult.displayName;
-        const exposedProject: ExposedProject = {
-          id: projectId,
-          displayName,
-        };
 
-        // Get subproject info
-        const subprojectResult = await service.getSubproject(ctx, user, projectId, subprojectId);
-        if (Result.isErr(subprojectResult)) {
-          throw new VError(subprojectResult, "subproject.viewDetails failed");
+        const subprojectId = request.query.subprojectId;
+        if (!isNonemptyString(subprojectId)) {
+          const message =
+            "required query parameter `subprojectId` not present (must be non-empty string)";
+          reply.status(404).send({
+            apiVersion: "1.0",
+            error: {
+              code: 404,
+              message,
+            },
+          });
+          request.log.error({ err: message }, "Invalid request body");
+          return;
         }
-        const subproject: Subproject.Subproject = subprojectResult;
-        const exposedSubproject: ExposedSubproject = {
-          allowedIntents: getAllowedIntents([user.id].concat(user.groups), subproject.permissions),
-          data: {
-            id: subproject.id,
-            creationUnixTs: toUnixTimestampStr(subproject.createdAt),
-            status: subproject.status,
-            displayName: subproject.displayName,
-            assignee: subproject.assignee,
-            validator: subproject.validator,
-            workflowitemType: subproject.workflowitemType,
-            description: subproject.description,
-            currency: subproject.currency,
-            projectedBudgets: subproject.projectedBudgets,
-            additionalData: subproject.additionalData,
-          },
-        };
 
-        // Get info of workflowitems
-        request.log.debug({ exposedProject }, "Collecting workflowitems of subproject");
-        const workflowitemsResult = await service.getWorkflowitems(
-          ctx,
-          user,
-          projectId,
-          subprojectId,
-        );
-        if (Result.isErr(workflowitemsResult)) {
-          throw new VError(workflowitemsResult, "subproject.viewDetails failed");
+        try {
+          // Get project info
+          const projectResult = await service.getProject(ctx, user, projectId);
+          if (Result.isErr(projectResult)) {
+            throw new VError(projectResult, "subproject.viewDetails failed");
+          }
+          const displayName = projectResult.displayName;
+          const exposedProject: ExposedProject = {
+            id: projectId,
+            displayName,
+          };
+
+          // Get subproject info
+          const subprojectResult = await service.getSubproject(ctx, user, projectId, subprojectId);
+          if (Result.isErr(subprojectResult)) {
+            throw new VError(subprojectResult, "subproject.viewDetails failed");
+          }
+          const subproject: Subproject.Subproject = subprojectResult;
+          const exposedSubproject: ExposedSubproject = {
+            allowedIntents: getAllowedIntents(
+              [user.id].concat(user.groups),
+              subproject.permissions,
+            ),
+            data: {
+              id: subproject.id,
+              creationUnixTs: toUnixTimestampStr(subproject.createdAt),
+              status: subproject.status,
+              displayName: subproject.displayName,
+              assignee: subproject.assignee,
+              validator: subproject.validator,
+              workflowitemType: subproject.workflowitemType,
+              description: subproject.description,
+              currency: subproject.currency,
+              projectedBudgets: subproject.projectedBudgets,
+              additionalData: subproject.additionalData,
+            },
+          };
+
+          // Get info of workflowitems
+          request.log.debug({ exposedProject }, "Collecting workflowitems of subproject");
+          const workflowitemsResult = await service.getWorkflowitems(
+            ctx,
+            user,
+            projectId,
+            subprojectId,
+          );
+          if (Result.isErr(workflowitemsResult)) {
+            throw new VError(workflowitemsResult, "subproject.viewDetails failed");
+          }
+          const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map((workflowitem) => ({
+            allowedIntents: workflowitem.isRedacted
+              ? []
+              : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
+            data: {
+              id: workflowitem.id,
+              creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),
+              displayName: workflowitem.displayName,
+              exchangeRate: workflowitem.exchangeRate,
+              currency: workflowitem.currency,
+              billingDate: workflowitem.billingDate,
+              dueDate: workflowitem.dueDate,
+              amountType: workflowitem.amountType,
+              description: workflowitem.description,
+              status: workflowitem.status,
+              rejectReason: workflowitem.rejectReason,
+              assignee: workflowitem.assignee,
+              documents: workflowitem.documents,
+              amount: workflowitem.amount,
+              additionalData: workflowitem.additionalData,
+              workflowitemType: workflowitem.workflowitemType,
+            },
+          }));
+
+          const data: ExposedSubprojectDetails = {
+            parentProject: exposedProject,
+            subproject: exposedSubproject,
+            workflowitems,
+          };
+
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data,
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while getting subproject details");
+          reply.status(code).send(body);
         }
-        const workflowitems: ExposedWorkflowitem[] = workflowitemsResult.map((workflowitem) => ({
-          allowedIntents: workflowitem.isRedacted
-            ? []
-            : getAllowedIntents([user.id].concat(user.groups), workflowitem.permissions),
-          data: {
-            id: workflowitem.id,
-            creationUnixTs: toUnixTimestampStr(workflowitem.createdAt),
-            displayName: workflowitem.displayName,
-            exchangeRate: workflowitem.exchangeRate,
-            currency: workflowitem.currency,
-            billingDate: workflowitem.billingDate,
-            dueDate: workflowitem.dueDate,
-            amountType: workflowitem.amountType,
-            description: workflowitem.description,
-            status: workflowitem.status,
-            rejectReason: workflowitem.rejectReason,
-            assignee: workflowitem.assignee,
-            documents: workflowitem.documents,
-            amount: workflowitem.amount,
-            additionalData: workflowitem.additionalData,
-            workflowitemType: workflowitem.workflowitemType,
-          },
-        }));
-
-        const data: ExposedSubprojectDetails = {
-          parentProject: exposedProject,
-          subproject: exposedSubproject,
-          workflowitems,
-        };
-
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data,
-        };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while getting subproject details");
-        reply.status(code).send(body);
-      }
-    },
-  );
+      },
+    );
+  });
 }

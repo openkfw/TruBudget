@@ -214,144 +214,151 @@ export const registerRoutes = (
   storageServiceClient: StorageServiceClient,
   invalidateCache: () => void,
 ) => {
-  const multichainClient = conn.multichainClient;
+  server.register(async function () {
+    const multichainClient = conn.multichainClient;
 
-  // ------------------------------------------------------------
-  //       system
-  // ------------------------------------------------------------
+    // ------------------------------------------------------------
+    //       system
+    // ------------------------------------------------------------
 
-  server.get(
-    `${urlPrefix}/readiness`,
-    getSchemaWithoutAuth("readiness"),
-    async (_request, reply) => {
-      if (await isReady(multichainClient)) {
-        if (!config.documentFeatureEnabled || (await storageServiceClient.isReady())) {
-          return reply.status(200).send("Ready");
+    server.get(
+      `${urlPrefix}/readiness`,
+      getSchemaWithoutAuth("readiness"),
+      async (_request, reply) => {
+        if (await isReady(multichainClient)) {
+          if (!config.documentFeatureEnabled || (await storageServiceClient.isReady())) {
+            return reply.status(200).send("Ready");
+          } else {
+            return reply.status(504).send("Not ready. Waiting for storage service.");
+          }
         } else {
-          return reply.status(504).send("Not ready. Waiting for storage service.");
+          return reply.status(504).send("Not ready. Waiting for multichain.");
         }
-      } else {
-        return reply.status(504).send("Not ready. Waiting for multichain.");
-      }
-    },
-  );
+      },
+    );
 
-  server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), (_, reply) => {
-    reply.status(200).send(
-      JSON.stringify({
-        uptime: process.uptime(),
-      }),
+    server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), (_, reply) => {
+      reply.status(200).send(
+        JSON.stringify({
+          uptime: process.uptime(),
+        }),
+      );
+    });
+
+    server.get(`${urlPrefix}/version`, getSchema(server, "version"), (request, reply) => {
+      getVersion(blockchainHost, blockchainPort, multichainClient, storageServiceClient)
+        .then((response) => {
+          send(reply, response);
+        })
+        .catch((err) => handleError(request, reply, err));
+    });
+
+    // ------------------------------------------------------------
+    //       network
+    // ------------------------------------------------------------
+
+    server.post(
+      `${urlPrefix}/network.registerNode`,
+      getSchemaWithoutAuth("registerNode"),
+      (request, reply) => {
+        registerNode(multichainClient, request as AuthenticatedRequest)
+          .then((response) => send(reply, response))
+          .catch((err) => handleError(request, reply, err));
+      },
+    );
+
+    server.post(
+      `${urlPrefix}/network.declineNode`,
+      getSchema(server, "declineNode"),
+      (request, reply) => {
+        declineNode(multichainClient, request as AuthenticatedRequest)
+          .then((response) => send(reply, response))
+          .catch((err) => handleError(request, reply, err));
+      },
+    );
+
+    server.post(
+      `${urlPrefix}/network.voteForPermission`,
+      getSchema(server, "voteForPermission"),
+      (request, reply) => {
+        voteForNetworkPermission(
+          conn,
+          ctx(request),
+          issuer(request),
+          request as AuthenticatedRequest,
+        )
+          .then((response) => send(reply, response))
+          .catch((err) => handleError(request, reply, err));
+      },
+    );
+
+    server.post(
+      `${urlPrefix}/network.approveNewOrganization`,
+      getSchema(server, "approveNewOrganization"),
+      (request, reply) => {
+        approveNewOrganization(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
+          .then((response) => send(reply, response))
+          .catch((err) => handleError(request, reply, err));
+      },
+    );
+
+    server.post(
+      `${urlPrefix}/network.approveNewNodeForExistingOrganization`,
+      getSchema(server, "approveNewNodeForExistingOrganization"),
+      (request, reply) => {
+        approveNewNodeForExistingOrganization(
+          conn,
+          ctx(request),
+          issuer(request),
+          request as AuthenticatedRequest,
+        )
+          .then((response) => send(reply, response))
+          .catch((err) => handleError(request, reply, err));
+      },
+    );
+
+    server.get(`${urlPrefix}/network.list`, getSchema(server, "networkList"), (request, reply) => {
+      getNodeList(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
+        .then((response) => send(reply, response))
+        .catch((err) => handleError(request, reply, err));
+    });
+
+    server.get(
+      `${urlPrefix}/network.listActive`,
+      getSchema(server, "listActive"),
+      (request, reply) => {
+        getActiveNodes(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
+          .then((response) => send(reply, response))
+          .catch((err) => handleError(request, reply, err));
+      },
+    );
+
+    server.get(
+      `${urlPrefix}/system.createBackup`,
+      getSchema(server, "createBackup"),
+      (req: AuthenticatedRequest, reply) => {
+        createBackup(blockchainHost, blockchainPort, req)
+          .then((data) => {
+            reply.header("Content-Type", "application/gzip");
+            reply.header("Content-Disposition", 'attachment; filename="backup.gz"');
+            reply.send(data);
+          })
+          .catch((err) => handleError(req, reply, err));
+      },
+    );
+
+    server.post(
+      `${urlPrefix}/system.restoreBackup`,
+      getSchema(server, "restoreBackup"),
+      async (req: AuthenticatedRequest, reply) => {
+        await restoreBackup(blockchainHost, blockchainPort, req)
+          .then((response) => send(reply, response))
+          .catch((err) => handleError(req, reply, err));
+        // Invalidate the cache, regardless of the outcome:
+        await invalidateCache();
+      },
     );
   });
-
-  server.get(`${urlPrefix}/version`, getSchema(server, "version"), async (request, reply) => {
-    getVersion(blockchainHost, blockchainPort, multichainClient, storageServiceClient)
-      .then((response) => {
-        send(reply, response);
-      })
-      .catch((err) => handleError(request, reply, err));
-  });
-
-  // ------------------------------------------------------------
-  //       network
-  // ------------------------------------------------------------
-
-  server.post(
-    `${urlPrefix}/network.registerNode`,
-    getSchemaWithoutAuth("registerNode"),
-    (request, reply) => {
-      registerNode(multichainClient, request as AuthenticatedRequest)
-        .then((response) => send(reply, response))
-        .catch((err) => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/network.declineNode`,
-    getSchema(server, "declineNode"),
-    (request, reply) => {
-      declineNode(multichainClient, request as AuthenticatedRequest)
-        .then((response) => send(reply, response))
-        .catch((err) => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/network.voteForPermission`,
-    getSchema(server, "voteForPermission"),
-    (request, reply) => {
-      voteForNetworkPermission(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then((response) => send(reply, response))
-        .catch((err) => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/network.approveNewOrganization`,
-    getSchema(server, "approveNewOrganization"),
-    (request, reply) => {
-      approveNewOrganization(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then((response) => send(reply, response))
-        .catch((err) => handleError(request, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/network.approveNewNodeForExistingOrganization`,
-    getSchema(server, "approveNewNodeForExistingOrganization"),
-    (request, reply) => {
-      approveNewNodeForExistingOrganization(
-        conn,
-        ctx(request),
-        issuer(request),
-        request as AuthenticatedRequest,
-      )
-        .then((response) => send(reply, response))
-        .catch((err) => handleError(request, reply, err));
-    },
-  );
-
-  server.get(`${urlPrefix}/network.list`, getSchema(server, "networkList"), (request, reply) => {
-    getNodeList(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-      .then((response) => send(reply, response))
-      .catch((err) => handleError(request, reply, err));
-  });
-
-  server.get(
-    `${urlPrefix}/network.listActive`,
-    getSchema(server, "listActive"),
-    (request, reply) => {
-      getActiveNodes(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
-        .then((response) => send(reply, response))
-        .catch((err) => handleError(request, reply, err));
-    },
-  );
-
-  server.get(
-    `${urlPrefix}/system.createBackup`,
-    getSchema(server, "createBackup"),
-    (req: AuthenticatedRequest, reply) => {
-      createBackup(blockchainHost, blockchainPort, req)
-        .then((data) => {
-          reply.header("Content-Type", "application/gzip");
-          reply.header("Content-Disposition", 'attachment; filename="backup.gz"');
-          reply.send(data);
-        })
-        .catch((err) => handleError(req, reply, err));
-    },
-  );
-
-  server.post(
-    `${urlPrefix}/system.restoreBackup`,
-    getSchema(server, "restoreBackup"),
-    async (req: AuthenticatedRequest, reply) => {
-      await restoreBackup(blockchainHost, blockchainPort, req)
-        .then((response) => send(reply, response))
-        .catch((err) => handleError(req, reply, err));
-      // Invalidate the cache, regardless of the outcome:
-      await invalidateCache();
-    },
-  );
 
   return server;
 };

@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -26,13 +26,10 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance) {
         "In case of a group the 'isGroup' property exists with value 'true",
       tags: ["user"],
       summary: "List all registered users",
-      security: [
-        {
-          bearerToken: [],
-        },
-      ],
+      security: [{ bearerToken: [] }],
       response: {
         200: {
+          name: "nice",
           description: "successful response",
           type: "object",
           required: ["apiVersion", "data"],
@@ -94,49 +91,51 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get(`${urlPrefix}/user.list`, mkSwaggerSchema(server), async (request, reply) => {
-    const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get(`${urlPrefix}/user.list`, mkSwaggerSchema(server), async (request, reply) => {
+      const ctx: Ctx = { requestId: request.id, source: "http" };
 
-    const issuer: ServiceUser = {
-      id: (request as AuthenticatedRequest).user.userId,
-      groups: (request as AuthenticatedRequest).user.groups,
-      address: (request as AuthenticatedRequest).user.address,
-    };
-
-    try {
-      const usersResult = await service.listUsers(ctx, issuer);
-      if (Result.isErr(usersResult)) {
-        throw new VError(usersResult, "user.list failed");
-      }
-      const users: ExposedIdentity[] = usersResult.map((user) => ({
-        id: user.id,
-        displayName: user.displayName,
-        organization: user.organization,
-        isGroup: false,
-        permissions: user.permissions,
-      }));
-
-      const groupsResult = await service.listGroups(ctx, issuer);
-      if (Result.isErr(groupsResult)) throw new VError(groupsResult, "user.list failed");
-      const groups: ExposedIdentity[] = groupsResult.map((group) => ({
-        id: group.id,
-        displayName: group.displayName,
-        isGroup: true,
-        permissions: group.permissions,
-      }));
-
-      const code = 200;
-      const body = {
-        apiVersion: "1.0",
-        data: {
-          items: users.concat(groups),
-        },
+      const issuer: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
       };
-      reply.status(code).send(body);
-    } catch (err) {
-      const { code, body } = toHttpError(err);
-      request.log.error({ err }, "Error while listing users");
-      reply.status(code).send(body);
-    }
+
+      try {
+        const usersResult = await service.listUsers(ctx, issuer);
+        if (Result.isErr(usersResult)) {
+          throw new VError(usersResult, "user.list failed");
+        }
+        const users: ExposedIdentity[] = usersResult.map((user) => ({
+          id: user.id,
+          displayName: user.displayName,
+          organization: user.organization,
+          isGroup: false,
+          permissions: user.permissions,
+        }));
+
+        const groupsResult = await service.listGroups(ctx, issuer);
+        if (Result.isErr(groupsResult)) throw new VError(groupsResult, "user.list failed");
+        const groups: ExposedIdentity[] = groupsResult.map((group) => ({
+          id: group.id,
+          displayName: group.displayName,
+          isGroup: true,
+          permissions: group.permissions,
+        }));
+
+        const code = 200;
+        const body = {
+          apiVersion: "1.0",
+          data: {
+            items: users.concat(groups),
+          },
+        };
+        reply.status(code).send(body);
+      } catch (err) {
+        const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while listing users");
+        reply.status(code).send(body);
+      }
+    });
   });
 }

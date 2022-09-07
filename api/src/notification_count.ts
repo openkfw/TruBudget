@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -76,38 +76,44 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get(`${urlPrefix}/notification.count`, mkSwaggerSchema(server), async (request, reply) => {
-    const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get(
+      `${urlPrefix}/notification.count`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-    const user: ServiceUser = {
-      id: (request as AuthenticatedRequest).user.userId,
-      groups: (request as AuthenticatedRequest).user.groups,
-      address: (request as AuthenticatedRequest).user.address,
-    };
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
+        };
 
-    try {
-      const notificationsResult = await service.getNotificationsForUser(ctx, user);
-      if (Result.isErr(notificationsResult)) {
-        throw new VError(notificationsResult, "notification.count failed");
-      }
-      const notifications = notificationsResult;
-      const total = notifications.length;
-      const unread = notifications.filter((x) => !x.isRead).length;
+        try {
+          const notificationsResult = await service.getNotificationsForUser(ctx, user);
+          if (Result.isErr(notificationsResult)) {
+            throw new VError(notificationsResult, "notification.count failed");
+          }
+          const notifications = notificationsResult;
+          const total = notifications.length;
+          const unread = notifications.filter((x) => !x.isRead).length;
 
-      const code = 200;
-      const body = {
-        apiVersion: "1.0",
-        data: {
-          userId: user.id,
-          total,
-          unread,
-        },
-      };
-      reply.status(code).send(body);
-    } catch (err) {
-      const { code, body } = toHttpError(err);
-      request.log.error({ err }, "Error while counting notifications");
-      reply.status(code).send(body);
-    }
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: {
+              userId: user.id,
+              total,
+              unread,
+            },
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while counting notifications");
+          reply.status(code).send(body);
+        }
+      },
+    );
   });
 }

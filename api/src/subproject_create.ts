@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -73,8 +73,8 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * @param body the request body
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
-function validateRequestBody(body): Result.Type<RequestBody> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
+function validateRequestBody(body: unknown): Result.Type<RequestBody> {
+  const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
 
@@ -193,60 +193,62 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.post(
-    `${urlPrefix}/project.createSubproject`,
-    mkSwaggerSchema(server),
-    (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.post(
+      `${urlPrefix}/project.createSubproject`,
+      mkSwaggerSchema(server),
+      (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
+        };
 
-      const bodyResult = validateRequestBody(request.body);
+        const bodyResult = validateRequestBody(request.body);
 
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to create subproject"));
-        reply.status(code).send(body);
-        request.log.error({ err: bodyResult }, "Invalid Request body");
-        return;
-      }
-
-      const reqData: SubprojectCreate.RequestData = {
-        projectId: bodyResult.data.projectId,
-        subprojectId: bodyResult.data.subproject.id,
-        status: bodyResult.data.subproject.status,
-        displayName: bodyResult.data.subproject.displayName,
-        description: bodyResult.data.subproject.description,
-        assignee: bodyResult.data.subproject.assignee,
-        validator: bodyResult.data.subproject.validator,
-        workflowitemType: bodyResult.data.subproject.workflowitemType,
-        currency: bodyResult.data.subproject.currency,
-        projectedBudgets: bodyResult.data.subproject.projectedBudgets,
-        additionalData: bodyResult.data.subproject.additionalData,
-      };
-
-      service
-        .createSubproject(ctx, user, reqData)
-        .then((result) => {
-          if (Result.isErr(result)) {
-            throw new VError(result, "project.createSubproject failed");
-          }
-          const resourceIds: ResourceMap = result;
-          const code = 200;
-          const body = {
-            apiVersion: "1.0",
-            data: { ...resourceIds },
-          };
+        if (Result.isErr(bodyResult)) {
+          const { code, body } = toHttpError(new VError(bodyResult, "failed to create subproject"));
           reply.status(code).send(body);
-        })
-        .catch((err) => {
-          const { code, body } = toHttpError(err);
-          reply.status(code).send(body);
-          request.log.error(err, "Error while creating Sub-Project");
-        });
-    },
-  );
+          request.log.error({ err: bodyResult }, "Invalid Request body");
+          return;
+        }
+
+        const reqData: SubprojectCreate.RequestData = {
+          projectId: bodyResult.data.projectId,
+          subprojectId: bodyResult.data.subproject.id,
+          status: bodyResult.data.subproject.status,
+          displayName: bodyResult.data.subproject.displayName,
+          description: bodyResult.data.subproject.description,
+          assignee: bodyResult.data.subproject.assignee,
+          validator: bodyResult.data.subproject.validator,
+          workflowitemType: bodyResult.data.subproject.workflowitemType,
+          currency: bodyResult.data.subproject.currency,
+          projectedBudgets: bodyResult.data.subproject.projectedBudgets,
+          additionalData: bodyResult.data.subproject.additionalData,
+        };
+
+        service
+          .createSubproject(ctx, user, reqData)
+          .then((result) => {
+            if (Result.isErr(result)) {
+              throw new VError(result, "project.createSubproject failed");
+            }
+            const resourceIds: ResourceMap = result;
+            const code = 200;
+            const body = {
+              apiVersion: "1.0",
+              data: { ...resourceIds },
+            };
+            reply.status(code).send(body);
+          })
+          .catch((err) => {
+            const { code, body } = toHttpError(err);
+            reply.status(code).send(body);
+            request.log.error(err, "Error while creating Sub-Project");
+          });
+      },
+    );
+  });
 }

@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable import/no-dynamic-require */
 import * as colors from "colors";
 import * as Diff from "diff";
 import * as fs from "fs";
 import * as parseSwagger from "swagger-to-joi";
+
+// This script auto generates the Joi-Object from the swagger-object.
+// Example: npm run generate-joi project_create.ts
 
 const fastifyMock = {
   authenticate: "",
@@ -103,7 +105,7 @@ const generate = () => {
   }
 
   if (fileName.length === 0) {
-    throw Error("filename not specified. Run e.g.: npm run generate project_create.ts");
+    throw Error("filename not specified. Run e.g.: npm run generate-joi project_create.ts");
   }
 
   const filePath = `./src/${fileName}`;

@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import "module-alias/register";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import getValidConfig from "./config";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
 import * as GlobalPermissionsListAPI from "./global_permissions_list";
@@ -155,7 +155,6 @@ const {
   rootSecret,
   jwtSecret,
   port,
-  swaggerBasepath,
   storageService,
   documentFeatureEnabled,
   encryptionPassword,
@@ -215,7 +214,6 @@ const server = createBasicApp(
   jwtSecret,
   URL_PREFIX,
   port,
-  swaggerBasepath,
   accessControlAllowOrigin,
 ) as AugmentedFastifyInstance;
 
@@ -848,7 +846,7 @@ ProvisioningStatusAPI.addHttpHandler(server, URL_PREFIX, {
  * Run the server.
  */
 
-server.listen(port, "0.0.0.0", async (err) => {
+server.listen({ port, host: "0.0.0.0" }, async (err) => {
   if (err) {
     logger.fatal({ err }, "Connection could not be established. Aborting.");
     logger.trace();

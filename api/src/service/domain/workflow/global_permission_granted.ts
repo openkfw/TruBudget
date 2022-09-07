@@ -22,7 +22,7 @@ export const schema = Joi.object({
   source: Joi.string().allow("").required(),
   time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
-  permission: Joi.valid(globalIntents).required(),
+  permission: Joi.valid(...globalIntents).required(),
   grantee: Joi.string().required(),
 }).options({ stripUnknown: true });
 
@@ -50,6 +50,6 @@ export function createEvent(
 }
 
 export function validate(input): Result.Type<Event> {
-  const { error, value } = Joi.validate(input, schema);
+  const { error, value } = schema.validate(input);
   return !error ? value : error;
 }

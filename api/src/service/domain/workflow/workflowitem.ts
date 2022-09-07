@@ -129,8 +129,8 @@ const schema = Joi.object().keys({
 });
 
 export function validate(input): Result.Type<Workflowitem> {
-  const { error } = Joi.validate(input, schema);
-  return error === null ? (input as Workflowitem) : error;
+  const { error } = schema.validate(input);
+  return error === undefined ? (input as Workflowitem) : error;
 }
 
 export function permits(

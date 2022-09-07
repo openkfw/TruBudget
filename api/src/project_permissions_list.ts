@@ -1,5 +1,5 @@
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -86,55 +86,57 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get<Request>(
-    `${urlPrefix}/project.intent.listPermissions`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get<Request>(
+      `${urlPrefix}/project.intent.listPermissions`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
+        };
 
-      const projectId = request.query.projectId;
-      if (!isNonemptyString(projectId)) {
-        const message =
-          "required query parameter `projectId` not present (must be non-empty string)";
-        reply.status(404).send({
-          apiVersion: "1.0",
-          error: {
-            code: 404,
-            message,
-          },
-        });
+        const projectId = request.query.projectId;
+        if (!isNonemptyString(projectId)) {
+          const message =
+            "required query parameter `projectId` not present (must be non-empty string)";
+          reply.status(404).send({
+            apiVersion: "1.0",
+            error: {
+              code: 404,
+              message,
+            },
+          });
 
-        request.log.error({ err: message }, "Invalid request body");
-        return;
-      }
-
-      try {
-        const projectPermissions = await service.getProjectPermissions(ctx, user, projectId);
-        if (Result.isErr(projectPermissions)) {
-          throw new VError(projectPermissions, "project.intent.listPermissions failed");
+          request.log.error({ err: message }, "Invalid request body");
+          return;
         }
 
-        const filteredProjectPermissions = getExposablePermissions(projectPermissions, [
-          "project.close",
-        ]);
+        try {
+          const projectPermissions = await service.getProjectPermissions(ctx, user, projectId);
+          if (Result.isErr(projectPermissions)) {
+            throw new VError(projectPermissions, "project.intent.listPermissions failed");
+          }
 
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: filteredProjectPermissions,
-        };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while listing project permissios");
-        reply.status(code).send(body);
-      }
-    },
-  );
+          const filteredProjectPermissions = getExposablePermissions(projectPermissions, [
+            "project.close",
+          ]);
+
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: filteredProjectPermissions,
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while listing project permissios");
+          reply.status(code).send(body);
+        }
+      },
+    );
+  });
 }

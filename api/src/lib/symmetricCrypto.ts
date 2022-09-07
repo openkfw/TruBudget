@@ -1,8 +1,7 @@
-import * as sodium from "sodium-native";
 import { VError } from "verror";
-
 import * as Result from "../result";
 import logger from "./logger";
+const sodium = require("sodium-native");
 
 class DecryptionFailed extends VError {
   constructor() {

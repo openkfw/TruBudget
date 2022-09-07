@@ -98,7 +98,7 @@ export function createEvent(
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function validate(input: any): Result.Type<Event> {
-  const { error, value } = Joi.validate(input, schema);
+  const { error, value } = schema.validate(input);
   return !error ? value : error;
 }
 

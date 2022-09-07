@@ -1,5 +1,5 @@
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
@@ -183,96 +183,101 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get<Request>(
-    `${urlPrefix}/project.viewDetails`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get<Request>(
+      `${urlPrefix}/project.viewDetails`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
+        };
 
-      const projectId = request.query.projectId;
-      if (!isNonemptyString(projectId)) {
-        const message =
-          "required query parameter `projectId` not present (must be non-empty string)";
-        reply.status(404).send({
-          apiVersion: "1.0",
-          error: {
-            code: 404,
-            message,
-          },
-        });
+        const projectId = request.query.projectId;
+        if (!isNonemptyString(projectId)) {
+          const message =
+            "required query parameter `projectId` not present (must be non-empty string)";
+          reply.status(404).send({
+            apiVersion: "1.0",
+            error: {
+              code: 404,
+              message,
+            },
+          });
 
-        request.log.error({ err: message }, "Invalid request body");
-        return;
-      }
-
-      try {
-        const projectResult = await service.getProject(ctx, user, projectId);
-        if (Result.isErr(projectResult)) {
-          throw new VError(projectResult, "project.viewDetails failed");
+          request.log.error({ err: message }, "Invalid request body");
+          return;
         }
-        const project: Project.Project = projectResult;
 
-        const exposedProject: ExposedProject = {
-          allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
-          data: {
-            id: project.id,
-            creationUnixTs: toUnixTimestampStr(project.createdAt),
-            status: project.status,
-            displayName: project.displayName,
-            assignee: project.assignee,
-            description: project.description,
-            thumbnail: project.thumbnail,
-            projectedBudgets: project.projectedBudgets,
-            additionalData: project.additionalData,
-            tags: project.tags,
-          },
-        };
+        try {
+          const projectResult = await service.getProject(ctx, user, projectId);
+          if (Result.isErr(projectResult)) {
+            throw new VError(projectResult, "project.viewDetails failed");
+          }
+          const project: Project.Project = projectResult;
 
-        const subprojectsResult = await service.getSubprojects(ctx, user, projectId);
-        if (Result.isErr(subprojectsResult)) {
-          throw new VError(subprojectsResult, "project.viewDetails failed");
+          const exposedProject: ExposedProject = {
+            allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
+            data: {
+              id: project.id,
+              creationUnixTs: toUnixTimestampStr(project.createdAt),
+              status: project.status,
+              displayName: project.displayName,
+              assignee: project.assignee,
+              description: project.description,
+              thumbnail: project.thumbnail,
+              projectedBudgets: project.projectedBudgets,
+              additionalData: project.additionalData,
+              tags: project.tags,
+            },
+          };
+
+          const subprojectsResult = await service.getSubprojects(ctx, user, projectId);
+          if (Result.isErr(subprojectsResult)) {
+            throw new VError(subprojectsResult, "project.viewDetails failed");
+          }
+          const subprojects: Subproject.Subproject[] = subprojectsResult;
+
+          const exposedSubprojects: ExposedSubproject[] = subprojects.map((subproject) => ({
+            allowedIntents: getAllowedIntents(
+              [user.id].concat(user.groups),
+              subproject.permissions,
+            ),
+            data: {
+              id: subproject.id,
+              creationUnixTs: toUnixTimestampStr(subproject.createdAt),
+              status: subproject.status,
+              displayName: subproject.displayName,
+              description: subproject.description,
+              assignee: subproject.assignee,
+              validator: subproject.validator,
+              workflowitemType: subproject.workflowitemType,
+              currency: subproject.currency,
+              projectedBudgets: subproject.projectedBudgets,
+              additionalData: subproject.additionalData,
+            },
+          }));
+
+          const data: ExposedProjectDetails = {
+            project: exposedProject,
+            subprojects: exposedSubprojects,
+          };
+
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data,
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while getting project details");
+          reply.status(code).send(body);
         }
-        const subprojects: Subproject.Subproject[] = subprojectsResult;
-
-        const exposedSubprojects: ExposedSubproject[] = subprojects.map((subproject) => ({
-          allowedIntents: getAllowedIntents([user.id].concat(user.groups), subproject.permissions),
-          data: {
-            id: subproject.id,
-            creationUnixTs: toUnixTimestampStr(subproject.createdAt),
-            status: subproject.status,
-            displayName: subproject.displayName,
-            description: subproject.description,
-            assignee: subproject.assignee,
-            validator: subproject.validator,
-            workflowitemType: subproject.workflowitemType,
-            currency: subproject.currency,
-            projectedBudgets: subproject.projectedBudgets,
-            additionalData: subproject.additionalData,
-          },
-        }));
-
-        const data: ExposedProjectDetails = {
-          project: exposedProject,
-          subprojects: exposedSubprojects,
-        };
-
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data,
-        };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while getting project details");
-        reply.status(code).send(body);
-      }
-    },
-  );
+      },
+    );
+  });
 }
