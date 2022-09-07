@@ -32,23 +32,27 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
       apiVersion: "1.0",
       data: { user: { id: username, password: password } }
     }
-  })
-    .then(response => {
-      const state = {
-        login: {
-          isUserLoggedIn: true,
-          environment: "Test",
-          productionActive: false,
-          id: response.body.data.user.id,
-          displayName: response.body.data.user.displayName,
-          organization: response.body.data.user.organization,
-          allowedIntents: response.body.data.user.allowedIntents,
-          ...opts
-        }
-      };
-      localStorage.setItem("state", JSON.stringify(state));
-      token = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
-    });
+  }).then(response => {
+    const state = {
+      login: {
+        isUserLoggedIn: true,
+        environment: "Test",
+        productionActive: false,
+        id: response.body.data.user.id,
+        displayName: response.body.data.user.displayName,
+        organization: response.body.data.user.organization,
+        allowedIntents: response.body.data.user.allowedIntents,
+        ...opts
+      }
+    };
+    localStorage.setItem("state", JSON.stringify(state));
+    /*
+      response.headers["set-cookie"][0] => "token={JWT_Token}; Path=/; HttpOnly; Secure; SameSite=Strict"
+      response.headers["set-cookie"][0].split(";")[0] => "token={JWT_Token}"
+      response.headers["set-cookie"][0].split(";")[0].replace("token=", "") => "{JWT_Token}"
+      */
+    token = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
+  });
 });
 
 Cypress.Commands.add("addUser", (username, userId, password, organization = "KfW") => {

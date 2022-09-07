@@ -115,7 +115,7 @@ export default function loginReducer(state = defaultState, action) {
     case LOGIN_SUCCESS:
       const user = action.user;
       return state.merge({
-        isUserLoggedIn: user.isUserLoggedIn,
+        isUserLoggedIn: action.isUserLoggedIn,
         id: user.id,
         displayName: user.displayName,
         organization: user.organization,

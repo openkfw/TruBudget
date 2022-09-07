@@ -68,7 +68,7 @@ const verifyJWTToken = (
 };
 
 function getJWTToken(req: Request): string {
-  if (req.cookies.token) {
+  if (req.cookies && req.cookies.token) {
       req.headers.authorization = `Bearer ${req.cookies.token}`;
   }
   let token: string = (req.headers["x-access-token"] as string) || req.headers.authorization || "";

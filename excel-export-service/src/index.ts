@@ -75,7 +75,7 @@ excelService.get("/version", (req: CustomExpressRequest, res: CustomExpressRespo
 });
 
 excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpressResponse) => {
-  if(req.cookies.token) {
+  if(req.cookies && req.cookies.token) {
     req.headers.authorization = req.cookies.token;
   }
   const token = req.headers.authorization;

@@ -1107,10 +1107,10 @@ export function* markMultipleNotificationsAsReadSaga({ notificationIds, notifica
 export function* loginSaga({ user }) {
   function* login() {
     const { data } = yield callApi(api.login, user.username, user.password);
-    data.user.isUserLoggedIn = true;
     yield put({
       type: LOGIN_SUCCESS,
-      ...data
+      ...data,
+      isUserLoggedIn: true
     });
     yield call(() => fetchNotificationCountsSaga(false));
     yield put({

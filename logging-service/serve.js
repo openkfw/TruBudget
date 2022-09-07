@@ -37,7 +37,7 @@ fastify.register(require("fastify-cors"), {
 
 fastify.post("/api", async (request, reply) => {
   try {
-    if(request.cookies.token) {
+    if(request.cookies && request.cookies.token) {
       request.headers.authorization = `Bearer ${request.cookies.token}`;
     }
     if (

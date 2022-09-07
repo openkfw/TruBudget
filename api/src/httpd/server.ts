@@ -5,6 +5,7 @@ import { IncomingMessage, Server, ServerResponse } from "http";
 import { AugmentedFastifyInstance } from "../types";
 import logger from "../lib/logger";
 import { AuthenticatedRequest } from "./lib";
+import cookie from "@fastify/cookie";
 
 const path = require("path");
 
@@ -27,18 +28,17 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
     secret: jwtSecret,
     cookie: {
       cookieName: "token",
-      signed: false,
+      signed: true,
     },
   });
 
   server
-    .register(require("@fastify/cookie"));
+    .register(cookie);
 
   server.decorate("authenticate", async (request, reply) => {
     try {
-      const token = request.cookies.token;
-      if (token) {
-        request.headers.authorization = `Bearer ${token}`;
+      if (request.cookies && request.cookies.token) {
+        request.headers.authorization = `Bearer ${request.cookies.token}`;
       }
       await request.jwtVerify();
     } catch (err) {
