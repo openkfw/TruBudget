@@ -22,6 +22,6 @@ const systemInformationSchema = Joi.object({
 });
 
 export function validate(input): Result.Type<SystemInformation> {
-  const { error, value } = Joi.validate(input, systemInformationSchema);
+  const { error, value } = systemInformationSchema.validate(input);
   return !error ? value : error;
 }

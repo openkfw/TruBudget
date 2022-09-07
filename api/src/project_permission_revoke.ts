@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import Intent, { projectIntents } from "./authz/intents";
 import { AuthenticatedRequest } from "./httpd/lib";
@@ -29,7 +29,7 @@ const requestBodyV1Schema = Joi.object({
   data: Joi.object({
     projectId: Project.idSchema.required(),
     identity: safeIdSchema.required(),
-    intent: Joi.valid(projectIntents).required(),
+    intent: Joi.valid(...projectIntents).required(),
   }).required(),
 });
 
@@ -42,8 +42,8 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * @param body the request body
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
-function validateRequestBody(body): Result.Type<RequestBody> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
+function validateRequestBody(body: unknown): Result.Type<RequestBody> {
+  const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
 
@@ -129,49 +129,51 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.post(
-    `${urlPrefix}/project.intent.revokePermission`,
-    mkSwaggerSchema(server),
-    (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.post(
+      `${urlPrefix}/project.intent.revokePermission`,
+      mkSwaggerSchema(server),
+      (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
+        };
 
-      const bodyResult = validateRequestBody(request.body);
+        const bodyResult = validateRequestBody(request.body);
 
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(
-          new VError(bodyResult, "failed to revoke project permission"),
-        );
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
-
-      const { projectId, identity: revokee, intent } = bodyResult.data;
-
-      service
-        .revokeProjectPermission(ctx, user, projectId, revokee, intent)
-        .then((result) => {
-          if (Result.isErr(result)) {
-            throw new VError(result, "project.intent.revokePermission failed");
-          }
-          const code = 200;
-          const body = {
-            apiVersion: "1.0",
-            data: {},
-          };
+        if (Result.isErr(bodyResult)) {
+          const { code, body } = toHttpError(
+            new VError(bodyResult, "failed to revoke project permission"),
+          );
+          request.log.error({ err: bodyResult }, "Invalid request body");
           reply.status(code).send(body);
-        })
-        .catch((err) => {
-          const { code, body } = toHttpError(err);
-          request.log.error({ err }, "Error while revoking project permission");
-          reply.status(code).send(body);
-        });
-    },
-  );
+          return;
+        }
+
+        const { projectId, identity: revokee, intent } = bodyResult.data;
+
+        service
+          .revokeProjectPermission(ctx, user, projectId, revokee, intent)
+          .then((result) => {
+            if (Result.isErr(result)) {
+              throw new VError(result, "project.intent.revokePermission failed");
+            }
+            const code = 200;
+            const body = {
+              apiVersion: "1.0",
+              data: {},
+            };
+            reply.status(code).send(body);
+          })
+          .catch((err) => {
+            const { code, body } = toHttpError(err);
+            request.log.error({ err }, "Error while revoking project permission");
+            reply.status(code).send(body);
+          });
+      },
+    );
+  });
 }

@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -90,43 +90,45 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get(`${urlPrefix}/group.list`, mkSwaggerSchema(server), (request, reply) => {
-    const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get(`${urlPrefix}/group.list`, mkSwaggerSchema(server), (request, reply) => {
+      const ctx: Ctx = { requestId: request.id, source: "http" };
 
-    const issuer: ServiceUser = {
-      id: (request as AuthenticatedRequest).user.userId,
-      groups: (request as AuthenticatedRequest).user.groups,
-      address: (request as AuthenticatedRequest).user.address,
-    };
+      const issuer: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
+      };
 
-    service
-      .listGroups(ctx, issuer)
-      .then((groupResult: Result.Type<Group.Group[]>) => {
-        if (Result.isErr(groupResult)) throw new VError(groupResult, "group.list failed");
-        const groups = groupResult;
-        return groups.map((group) => {
-          return {
-            groupId: group.id,
-            displayName: group.displayName,
-            users: group.members,
-            permissions: group.permissions,
+      service
+        .listGroups(ctx, issuer)
+        .then((groupResult: Result.Type<Group.Group[]>) => {
+          if (Result.isErr(groupResult)) throw new VError(groupResult, "group.list failed");
+          const groups = groupResult;
+          return groups.map((group) => {
+            return {
+              groupId: group.id,
+              displayName: group.displayName,
+              users: group.members,
+              permissions: group.permissions,
+            };
+          });
+        })
+        .then((groups: ExposedGroup[]) => {
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: {
+              groups,
+            },
           };
+          reply.status(code).send(body);
+        })
+        .catch((err) => {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while fetching all groups");
+          reply.status(code).send(body);
         });
-      })
-      .then((groups: ExposedGroup[]) => {
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: {
-            groups,
-          },
-        };
-        reply.status(code).send(body);
-      })
-      .catch((err) => {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while fetching all groups");
-        reply.status(code).send(body);
-      });
+    });
   });
 }

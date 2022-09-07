@@ -85,6 +85,6 @@ async function hashBase64String(base64String: string): Promise<string> {
 }
 
 export function validate(input): Result.Type<UploadedDocument> {
-  const { error, value } = Joi.validate(input, uploadedDocumentSchema);
+  const { error, value } = uploadedDocumentSchema.validate(input);
   return !error ? value : error;
 }

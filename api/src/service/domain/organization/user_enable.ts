@@ -24,7 +24,7 @@ const requestDataSchema = Joi.object({
 });
 
 export function validate(input): Result.Type<RequestData> {
-  const { value, error } = Joi.validate(input, requestDataSchema);
+  const { value, error } = requestDataSchema.validate(input);
   return !error ? value : error;
 }
 

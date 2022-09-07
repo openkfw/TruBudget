@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -74,8 +74,8 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * @param body the request body
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
-function validateRequestBody(body): Result.Type<RequestBody> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
+function validateRequestBody(body: unknown): Result.Type<RequestBody> {
+  const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
 
@@ -207,66 +207,70 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.post(
-    `${urlPrefix}/subproject.createWorkflowitem`,
-    mkSwaggerSchema(server),
-    (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.post(
+      `${urlPrefix}/subproject.createWorkflowitem`,
+      mkSwaggerSchema(server),
+      (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
+        };
 
-      const bodyResult = validateRequestBody(request.body);
+        const bodyResult = validateRequestBody(request.body);
 
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to create workflowitem"));
-        reply.status(code).send(body);
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        return;
-      }
-
-      const reqData: WorkflowitemCreate.RequestData = {
-        projectId: bodyResult.data.projectId,
-        subprojectId: bodyResult.data.subprojectId,
-        status: bodyResult.data.status,
-        displayName: bodyResult.data.displayName,
-        description: bodyResult.data.description,
-        assignee: bodyResult.data.assignee,
-        currency: bodyResult.data.currency,
-        amount: bodyResult.data.amount,
-        amountType: bodyResult.data.amountType,
-        billingDate: bodyResult.data.billingDate,
-        dueDate: bodyResult.data.dueDate,
-        exchangeRate: bodyResult.data.exchangeRate,
-        additionalData: bodyResult.data.additionalData,
-        documents: bodyResult.data.documents,
-        workflowitemType: bodyResult.data.workflowitemType,
-      };
-
-      service
-        .createWorkflowitem(ctx, user, reqData)
-        .then((resourceIdsResult) => {
-          if (Result.isErr(resourceIdsResult)) {
-            throw new VError(resourceIdsResult, "subproject.createWorkflowitem failed");
-          }
-          const resourceIds = resourceIdsResult;
-          const code = 200;
-          const body = {
-            apiVersion: "1.0",
-            data: {
-              ...resourceIds,
-            },
-          };
+        if (Result.isErr(bodyResult)) {
+          const { code, body } = toHttpError(
+            new VError(bodyResult, "failed to create workflowitem"),
+          );
           reply.status(code).send(body);
-        })
-        .catch((err) => {
-          const { code, body } = toHttpError(err);
-          reply.status(code).send(body);
-          request.log.error({ err }, "Error while creating Workflowitem");
-        });
-    },
-  );
+          request.log.error({ err: bodyResult }, "Invalid request body");
+          return;
+        }
+
+        const reqData: WorkflowitemCreate.RequestData = {
+          projectId: bodyResult.data.projectId,
+          subprojectId: bodyResult.data.subprojectId,
+          status: bodyResult.data.status,
+          displayName: bodyResult.data.displayName,
+          description: bodyResult.data.description,
+          assignee: bodyResult.data.assignee,
+          currency: bodyResult.data.currency,
+          amount: bodyResult.data.amount,
+          amountType: bodyResult.data.amountType,
+          billingDate: bodyResult.data.billingDate,
+          dueDate: bodyResult.data.dueDate,
+          exchangeRate: bodyResult.data.exchangeRate,
+          additionalData: bodyResult.data.additionalData,
+          documents: bodyResult.data.documents,
+          workflowitemType: bodyResult.data.workflowitemType,
+        };
+
+        service
+          .createWorkflowitem(ctx, user, reqData)
+          .then((resourceIdsResult) => {
+            if (Result.isErr(resourceIdsResult)) {
+              throw new VError(resourceIdsResult, "subproject.createWorkflowitem failed");
+            }
+            const resourceIds = resourceIdsResult;
+            const code = 200;
+            const body = {
+              apiVersion: "1.0",
+              data: {
+                ...resourceIds,
+              },
+            };
+            reply.status(code).send(body);
+          })
+          .catch((err) => {
+            const { code, body } = toHttpError(err);
+            reply.status(code).send(body);
+            request.log.error({ err }, "Error while creating Workflowitem");
+          });
+      },
+    );
+  });
 }

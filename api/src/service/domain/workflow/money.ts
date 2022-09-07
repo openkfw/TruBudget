@@ -7,8 +7,8 @@ export const moneyAmountSchema = Joi.string().regex(
 );
 
 export function isAmountOfMoney(value: string): boolean {
-  const { error } = Joi.validate(value, moneyAmountSchema);
-  return error === null;
+  const { error } = moneyAmountSchema.validate(value);
+  return error === undefined;
 }
 
 export const conversionRateSchema = Joi.string().regex(/^[0-9]+(\.[0-9]+)?$/, "conversion rate");
@@ -293,5 +293,5 @@ const isoCurrencyCodes = [
 ];
 
 export type CurrencyCode = string;
-export const currencyCodeSchema = Joi.string().valid(isoCurrencyCodes);
-export const amountTypeSchema = Joi.string().valid(["N/A", "disbursed", "allocated"]);
+export const currencyCodeSchema = Joi.string().valid(...isoCurrencyCodes);
+export const amountTypeSchema = Joi.string().valid("N/A", "disbursed", "allocated");

@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -38,8 +38,8 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * @param body the request body
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
-function validateRequestBody(body): Result.Type<RequestBody> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
+function validateRequestBody(body: unknown): Result.Type<RequestBody> {
+  const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
 
@@ -122,52 +122,54 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.post(`${urlPrefix}/group.removeUser`, mkSwaggerSchema(server), (request, reply) => {
-    const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.post(`${urlPrefix}/group.removeUser`, mkSwaggerSchema(server), (request, reply) => {
+      const ctx: Ctx = { requestId: request.id, source: "http" };
 
-    const user: ServiceUser = {
-      id: (request as AuthenticatedRequest).user.userId,
-      groups: (request as AuthenticatedRequest).user.groups,
-      address: (request as AuthenticatedRequest).user.address,
-    };
+      const user: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
+      };
 
-    const bodyResult = validateRequestBody(request.body);
+      const bodyResult = validateRequestBody(request.body);
 
-    if (Result.isErr(bodyResult)) {
-      const { code, body } = toHttpError(
-        new VError(bodyResult, "failed to remove user from group"),
-      );
-      request.log.error({ err: bodyResult }, "Invalid request body");
-      reply.status(code).send(body);
-      return;
-    }
-
-    let invokeService: Promise<Result.Type<void>>;
-    switch (bodyResult.apiVersion) {
-      case "1.0": {
-        const { groupId, userIds } = bodyResult.data;
-        invokeService = service.removeGroupMembers(ctx, user, groupId, userIds);
-        break;
+      if (Result.isErr(bodyResult)) {
+        const { code, body } = toHttpError(
+          new VError(bodyResult, "failed to remove user from group"),
+        );
+        request.log.error({ err: bodyResult }, "Invalid request body");
+        reply.status(code).send(body);
+        return;
       }
-      default:
-        // Joi validates only existing apiVersions
-        assertUnreachable(bodyResult.apiVersion);
-    }
 
-    invokeService
-      .then((result) => {
-        if (Result.isErr(result)) throw new VError(result, "group.removeUser failed");
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: {},
-        };
-        reply.status(code).send(body);
-      })
-      .catch((err) => {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while removing user from group");
-        reply.status(code).send(body);
-      });
+      let invokeService: Promise<Result.Type<void>>;
+      switch (bodyResult.apiVersion) {
+        case "1.0": {
+          const { groupId, userIds } = bodyResult.data;
+          invokeService = service.removeGroupMembers(ctx, user, groupId, userIds);
+          break;
+        }
+        default:
+          // Joi validates only existing apiVersions
+          assertUnreachable(bodyResult.apiVersion);
+      }
+
+      invokeService
+        .then((result) => {
+          if (Result.isErr(result)) throw new VError(result, "group.removeUser failed");
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: {},
+          };
+          reply.status(code).send(body);
+        })
+        .catch((err) => {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while removing user from group");
+          reply.status(code).send(body);
+        });
+    });
   });
 }

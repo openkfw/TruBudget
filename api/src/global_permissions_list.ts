@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -64,33 +64,35 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get(
-    `${urlPrefix}/global.listPermissions`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get(
+      `${urlPrefix}/global.listPermissions`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
-
-      try {
-        const globalPermissionsResult = await service.getGlobalPermissions(ctx, user);
-        if (Result.isErr(globalPermissionsResult))
-          throw new VError(globalPermissionsResult, "global.listPermissions failed");
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: globalPermissionsResult.permissions,
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
         };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while fetching global permisions");
-        reply.status(code).send(body);
-      }
-    },
-  );
+
+        try {
+          const globalPermissionsResult = await service.getGlobalPermissions(ctx, user);
+          if (Result.isErr(globalPermissionsResult))
+            throw new VError(globalPermissionsResult, "global.listPermissions failed");
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: globalPermissionsResult.permissions,
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while fetching global permisions");
+          reply.status(code).send(body);
+        }
+      },
+    );
+  });
 }

@@ -1,5 +1,5 @@
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -404,103 +404,105 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get<Request>(
-    `${urlPrefix}/notification.list`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get<Request>(
+      `${urlPrefix}/notification.list`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
-
-      // Default: last created history event
-      let offset: number = 0;
-      if (request.query.offset !== undefined) {
-        offset = parseInt(request.query.offset, 10);
-        if (isNaN(offset)) {
-          const message = "if present, the query parameter `offset` must be an integer";
-
-          reply.status(400).send({
-            apiVersion: "1.0",
-            error: {
-              code: 400,
-              message,
-            },
-          });
-          request.log.error({ err: message }, "Invalid request body");
-
-          return;
-        }
-      }
-
-      // Default: no limit
-      let limit: number | undefined;
-      if (request.query.limit !== undefined) {
-        limit = parseInt(request.query.limit, 10);
-        if (isNaN(limit) || limit <= 0) {
-          const message = "if present, the query parameter `limit` must be a positive integer";
-          reply.status(400).send({
-            apiVersion: "1.0",
-            error: {
-              code: 400,
-              message,
-            },
-          });
-          request.log.error({ err: message }, "Invalid request body");
-
-          return;
-        }
-      }
-
-      try {
-        const notificationsResult = await service.getNotificationsForUser(ctx, user);
-        if (Result.isErr(notificationsResult)) {
-          throw new VError(notificationsResult, "notification.list failed");
-        }
-        const notifications = notificationsResult;
-        notifications.sort(byEventTime);
-
-        const offsetIndex = offset < 0 ? Math.max(0, notifications.length + offset) : offset;
-        const slice = notifications.slice(
-          offsetIndex,
-          limit === undefined ? undefined : offsetIndex + limit,
-        );
-
-        request.log.debug("Getting exposed Notifcations");
-        const exposedNotifications: ExposedNotification[] = [];
-        for (const notification of slice) {
-          const metadata = await getMetadata(ctx, user, notification, service);
-          exposedNotifications.push({
-            id: notification.id,
-            isRead: notification.isRead,
-            businessEvent: {
-              type: notification.businessEvent.type,
-              time: notification.businessEvent.time,
-              publisher: notification.businessEvent.publisher,
-            },
-            metadata,
-          });
-        }
-
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: {
-            userId: user.id,
-            notifications: exposedNotifications,
-          },
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
         };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while getting Notifications");
-        reply.status(code).send(body);
-      }
-    },
-  );
+
+        // Default: last created history event
+        let offset: number = 0;
+        if (request.query.offset !== undefined) {
+          offset = parseInt(request.query.offset, 10);
+          if (isNaN(offset)) {
+            const message = "if present, the query parameter `offset` must be an integer";
+
+            reply.status(400).send({
+              apiVersion: "1.0",
+              error: {
+                code: 400,
+                message,
+              },
+            });
+            request.log.error({ err: message }, "Invalid request body");
+
+            return;
+          }
+        }
+
+        // Default: no limit
+        let limit: number | undefined;
+        if (request.query.limit !== undefined) {
+          limit = parseInt(request.query.limit, 10);
+          if (isNaN(limit) || limit <= 0) {
+            const message = "if present, the query parameter `limit` must be a positive integer";
+            reply.status(400).send({
+              apiVersion: "1.0",
+              error: {
+                code: 400,
+                message,
+              },
+            });
+            request.log.error({ err: message }, "Invalid request body");
+
+            return;
+          }
+        }
+
+        try {
+          const notificationsResult = await service.getNotificationsForUser(ctx, user);
+          if (Result.isErr(notificationsResult)) {
+            throw new VError(notificationsResult, "notification.list failed");
+          }
+          const notifications = notificationsResult;
+          notifications.sort(byEventTime);
+
+          const offsetIndex = offset < 0 ? Math.max(0, notifications.length + offset) : offset;
+          const slice = notifications.slice(
+            offsetIndex,
+            limit === undefined ? undefined : offsetIndex + limit,
+          );
+
+          request.log.debug("Getting exposed Notifcations");
+          const exposedNotifications: ExposedNotification[] = [];
+          for (const notification of slice) {
+            const metadata = await getMetadata(ctx, user, notification, service);
+            exposedNotifications.push({
+              id: notification.id,
+              isRead: notification.isRead,
+              businessEvent: {
+                type: notification.businessEvent.type,
+                time: notification.businessEvent.time,
+                publisher: notification.businessEvent.publisher,
+              },
+              metadata,
+            });
+          }
+
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: {
+              userId: user.id,
+              notifications: exposedNotifications,
+            },
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while getting Notifications");
+          reply.status(code).send(body);
+        }
+      },
+    );
+  });
 }
 
 /**

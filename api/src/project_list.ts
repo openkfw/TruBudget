@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
@@ -132,54 +132,56 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get(`${urlPrefix}/project.list`, mkSwaggerSchema(server), (request, reply) => {
-    const ctx: Ctx = { requestId: request.id, source: "http" };
-    const user: ServiceUser = {
-      id: (request as AuthenticatedRequest).user.userId,
-      groups: (request as AuthenticatedRequest).user.groups,
-      address: (request as AuthenticatedRequest).user.address,
-    };
+  server.register(async function () {
+    server.get(`${urlPrefix}/project.list`, mkSwaggerSchema(server), (request, reply) => {
+      const ctx: Ctx = { requestId: request.id, source: "http" };
+      const user: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
+      };
 
-    service
-      .listProjects(ctx, user)
-      .then((result) => {
-        if (Result.isErr(result)) {
-          throw new VError(result, "project.list failed");
-        }
-        const projects = result;
-        request.log.debug("Mapping intents and timestamp of projects");
-        return projects.map((project) => {
-          return {
-            allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
+      service
+        .listProjects(ctx, user)
+        .then((result) => {
+          if (Result.isErr(result)) {
+            throw new VError(result, "project.list failed");
+          }
+          const projects = result;
+          request.log.debug("Mapping intents and timestamp of projects");
+          return projects.map((project) => {
+            return {
+              allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
+              data: {
+                id: project.id,
+                creationUnixTs: toUnixTimestampStr(project.createdAt),
+                status: project.status,
+                displayName: project.displayName,
+                assignee: project.assignee,
+                description: project.description,
+                thumbnail: project.thumbnail,
+                projectedBudgets: project.projectedBudgets,
+                additionalData: project.additionalData,
+                tags: project.tags,
+              },
+            };
+          });
+        })
+        .then((projects: ExposedProject[]) => {
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
             data: {
-              id: project.id,
-              creationUnixTs: toUnixTimestampStr(project.createdAt),
-              status: project.status,
-              displayName: project.displayName,
-              assignee: project.assignee,
-              description: project.description,
-              thumbnail: project.thumbnail,
-              projectedBudgets: project.projectedBudgets,
-              additionalData: project.additionalData,
-              tags: project.tags,
+              items: projects,
             },
           };
+          reply.status(code).send(body);
+        })
+        .catch((err) => {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while listing projects");
+          reply.status(code).send(body);
         });
-      })
-      .then((projects: ExposedProject[]) => {
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: {
-            items: projects,
-          },
-        };
-        reply.status(code).send(body);
-      })
-      .catch((err) => {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while listing projects");
-        reply.status(code).send(body);
-      });
+    });
   });
 }

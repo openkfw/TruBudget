@@ -247,15 +247,18 @@ export class RpcClient {
     });
   }
 
-  private handleError = (error, method, params) => {
-    if (axios.isAxiosError(error)) {
+  private handleError = (error: any, method: any, params: any) => {
+    const isAxiosError: boolean = error.isAxiosError || false;
+    if (isAxiosError) {
       if (error.response && error.response.data.error !== null) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx and WITH multichain errors:
         const response = error.response.data.error;
         const err = JSON.stringify(response);
         logger.error(
-          `Error during invoke of ${method} with params ${params}. Multichain errors occured. ${err}`,
+          `Error during invoke of ${String(method)} with params ${JSON.stringify(
+            params,
+          )}. Multichain errors occurred. ${err}`,
         );
         return response;
       }
@@ -264,7 +267,9 @@ export class RpcClient {
         // non 2xx answer but no multichain data
         logger.error(
           { error: error.response },
-          `Error during invoke of ${method} with params ${params}. No multichain data.`,
+          `Error during invoke of ${method} with params ${JSON.stringify(
+            params,
+          )}. No multichain data.`,
         );
         return new RpcError(
           Number(error.response.status),
@@ -282,7 +287,9 @@ export class RpcClient {
       }
     } else {
       // Something happened in setting up the request that triggered an Error
-      logger.error(`Error during invoke of ${method} with params ${params}. ${error.message}`);
+      logger.error(
+        `Error during invoke of ${method} with params ${JSON.stringify(params)}. ${error.message}`,
+      );
       return new RpcError(500, `other error: ${error}`, error, "");
     }
   };

@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -73,38 +73,40 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get(`${urlPrefix}/provisioned`, mkSwaggerSchema(server), (request, reply) => {
-    const ctx: Ctx = { requestId: request.id, source: "http" };
-    const user: ServiceUser = {
-      id: (request as AuthenticatedRequest).user.userId,
-      groups: (request as AuthenticatedRequest).user.groups,
-      address: (request as AuthenticatedRequest).user.address,
-    };
+  server.register(async function () {
+    server.get(`${urlPrefix}/provisioned`, mkSwaggerSchema(server), (request, reply) => {
+      const ctx: Ctx = { requestId: request.id, source: "http" };
+      const user: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
+      };
 
-    service
-      .getProvisionStatus(ctx, user)
-      .then((result) => {
-        if (Result.isErr(result)) {
-          throw new VError(result, "get provisioned status failed");
-        }
-        const provisioned = result;
-        return provisioned;
-      })
-      .then((provisioned: SystemInformation.ProvisioningStatus) => {
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: {
-            isProvisioned: provisioned.isProvisioned,
-            message: provisioned.message,
-          },
-        };
-        reply.status(code).send(body);
-      })
-      .catch((err) => {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while getting provisioning status");
-        reply.status(code).send(body);
-      });
+      service
+        .getProvisionStatus(ctx, user)
+        .then((result) => {
+          if (Result.isErr(result)) {
+            throw new VError(result, "get provisioned status failed");
+          }
+          const provisioned = result;
+          return provisioned;
+        })
+        .then((provisioned: SystemInformation.ProvisioningStatus) => {
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: {
+              isProvisioned: provisioned.isProvisioned,
+              message: provisioned.message,
+            },
+          };
+          reply.status(code).send(body);
+        })
+        .catch((err) => {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while getting provisioning status");
+          reply.status(code).send(body);
+        });
+    });
   });
 }

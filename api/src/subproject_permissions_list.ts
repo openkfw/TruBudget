@@ -1,5 +1,5 @@
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -91,78 +91,83 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get<Request>(
-    `${urlPrefix}/subproject.intent.listPermissions`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get<Request>(
+      `${urlPrefix}/subproject.intent.listPermissions`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
-
-      const projectId = request.query.projectId;
-      if (!isNonemptyString(projectId)) {
-        const message =
-          "required query parameter `projectId` not present (must be non-empty string)";
-
-        reply.status(404).send({
-          apiVersion: "1.0",
-          error: {
-            code: 404,
-            message,
-          },
-        });
-        request.log.error({ err: message }, "Invalid request body");
-        return;
-      }
-
-      const subprojectId = request.query.subprojectId;
-      if (!isNonemptyString(subprojectId)) {
-        const message =
-          "required query parameter `subprojectId` not present (must be non-empty string)";
-
-        reply.status(404).send({
-          apiVersion: "1.0",
-          error: {
-            code: 404,
-            message,
-          },
-        });
-        request.log.error({ err: message }, "Invalid request body");
-        return;
-      }
-
-      try {
-        const subprojectPermissionsResult = await service.listSubprojectPermissions(
-          ctx,
-          user,
-          projectId,
-          subprojectId,
-        );
-
-        if (Result.isErr(subprojectPermissionsResult)) {
-          throw new VError(subprojectPermissionsResult, "subproject.intent.listPermissions failed");
-        }
-        const subprojectPermissions = subprojectPermissionsResult;
-
-        const filteredSubprojectPermissions = getExposablePermissions(subprojectPermissions, [
-          "subproject.close",
-        ]);
-
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: filteredSubprojectPermissions,
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
         };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while listing subproject permissions");
-        reply.status(code).send(body);
-      }
-    },
-  );
+
+        const projectId = request.query.projectId;
+        if (!isNonemptyString(projectId)) {
+          const message =
+            "required query parameter `projectId` not present (must be non-empty string)";
+
+          reply.status(404).send({
+            apiVersion: "1.0",
+            error: {
+              code: 404,
+              message,
+            },
+          });
+          request.log.error({ err: message }, "Invalid request body");
+          return;
+        }
+
+        const subprojectId = request.query.subprojectId;
+        if (!isNonemptyString(subprojectId)) {
+          const message =
+            "required query parameter `subprojectId` not present (must be non-empty string)";
+
+          reply.status(404).send({
+            apiVersion: "1.0",
+            error: {
+              code: 404,
+              message,
+            },
+          });
+          request.log.error({ err: message }, "Invalid request body");
+          return;
+        }
+
+        try {
+          const subprojectPermissionsResult = await service.listSubprojectPermissions(
+            ctx,
+            user,
+            projectId,
+            subprojectId,
+          );
+
+          if (Result.isErr(subprojectPermissionsResult)) {
+            throw new VError(
+              subprojectPermissionsResult,
+              "subproject.intent.listPermissions failed",
+            );
+          }
+          const subprojectPermissions = subprojectPermissionsResult;
+
+          const filteredSubprojectPermissions = getExposablePermissions(subprojectPermissions, [
+            "subproject.close",
+          ]);
+
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: filteredSubprojectPermissions,
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while listing subproject permissions");
+          reply.status(code).send(body);
+        }
+      },
+    );
+  });
 }

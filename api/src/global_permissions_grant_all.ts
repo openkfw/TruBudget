@@ -1,4 +1,4 @@
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import Intent, { globalIntents } from "./authz/intents";
 import { AuthenticatedRequest } from "./httpd/lib";
@@ -41,8 +41,8 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * @param body the request body
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
-function validateRequestBody(body: any): Result.Type<RequestBody> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
+function validateRequestBody(body: unknown): Result.Type<RequestBody> {
+  const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
 
@@ -120,68 +120,70 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.post(
-    `${urlPrefix}/global.grantAllPermissions`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.post(
+      `${urlPrefix}/global.grantAllPermissions`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
-
-      const userOrganization: string = (request as AuthenticatedRequest).user.organization;
-
-      const bodyResult = validateRequestBody(request.body);
-
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(
-          new VError(bodyResult, "failed to grant all global permissions"),
-        );
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
-
-      const { identity: grantee } = bodyResult.data;
-
-      try {
-        const globalPermissionsResult = await service.getGlobalPermissions(ctx, user);
-        if (Result.isErr(globalPermissionsResult)) {
-          throw new VError(globalPermissionsResult, "get global permissions failed");
-        }
-        const globalPermissions = globalPermissionsResult;
-        for (const intent of globalIntents) {
-          // A quick check to see if the user is already listed explicitly. In case the
-          // user is authorized through her membership in an authorized group, the user
-          // ID is still added.
-          if (identitiesAuthorizedFor(globalPermissions, intent).includes(user.id)) {
-            continue;
-          }
-          const result = await service.grantGlobalPermissions(
-            ctx,
-            user,
-            userOrganization,
-            grantee,
-            intent,
-          );
-          if (Result.isErr(result)) throw new VError(result, "global.grantAllPermissions failed");
-          request.log.debug({ grantee, intent }, "permission granted");
-        }
-
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: {},
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
         };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while granting all global permissions");
-        reply.status(code).send(body);
-      }
-    },
-  );
+
+        const userOrganization: string = (request as AuthenticatedRequest).user.organization;
+
+        const bodyResult = validateRequestBody(request.body);
+
+        if (Result.isErr(bodyResult)) {
+          const { code, body } = toHttpError(
+            new VError(bodyResult, "failed to grant all global permissions"),
+          );
+          request.log.error({ err: bodyResult }, "Invalid request body");
+          reply.status(code).send(body);
+          return;
+        }
+
+        const { identity: grantee } = bodyResult.data;
+
+        try {
+          const globalPermissionsResult = await service.getGlobalPermissions(ctx, user);
+          if (Result.isErr(globalPermissionsResult)) {
+            throw new VError(globalPermissionsResult, "get global permissions failed");
+          }
+          const globalPermissions = globalPermissionsResult;
+          for (const intent of globalIntents) {
+            // A quick check to see if the user is already listed explicitly. In case the
+            // user is authorized through her membership in an authorized group, the user
+            // ID is still added.
+            if (identitiesAuthorizedFor(globalPermissions, intent).includes(user.id)) {
+              continue;
+            }
+            const result = await service.grantGlobalPermissions(
+              ctx,
+              user,
+              userOrganization,
+              grantee,
+              intent,
+            );
+            if (Result.isErr(result)) throw new VError(result, "global.grantAllPermissions failed");
+            request.log.debug({ grantee, intent }, "permission granted");
+          }
+
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: {},
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while granting all global permissions");
+          reply.status(code).send(body);
+        }
+      },
+    );
+  });
 }

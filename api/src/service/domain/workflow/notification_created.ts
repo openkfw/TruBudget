@@ -73,6 +73,6 @@ export function createEvent(
 }
 
 export function validate(input): Result.Type<Event> {
-  const { error, value } = Joi.validate(input, schema, { allowUnknown: true });
+  const { error, value } = schema.validate(input, { allowUnknown: true });
   return !error ? value : error;
 }

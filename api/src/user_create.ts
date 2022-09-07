@@ -1,5 +1,5 @@
-import * as Joi from "joi";
-import { AugmentedFastifyInstance } from "types";
+import Joi = require("joi");
+import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
@@ -48,8 +48,8 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * @param body the request body
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
-function validateRequestBody(body): Result.Type<RequestBody> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
+function validateRequestBody(body: unknown): Result.Type<RequestBody> {
+  const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
 
@@ -169,67 +169,69 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.post(`${urlPrefix}/global.createUser`, mkSwaggerSchema(server), (request, reply) => {
-    const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.post(`${urlPrefix}/global.createUser`, mkSwaggerSchema(server), (request, reply) => {
+      const ctx: Ctx = { requestId: request.id, source: "http" };
 
-    const serviceUser: ServiceUser = {
-      id: (request as AuthenticatedRequest).user.userId,
-      groups: (request as AuthenticatedRequest).user.groups,
-      address: (request as AuthenticatedRequest).user.address,
-    };
+      const serviceUser: ServiceUser = {
+        id: (request as AuthenticatedRequest).user.userId,
+        groups: (request as AuthenticatedRequest).user.groups,
+        address: (request as AuthenticatedRequest).user.address,
+      };
 
-    const bodyResult = validateRequestBody(request.body);
+      const bodyResult = validateRequestBody(request.body);
 
-    if (Result.isErr(bodyResult)) {
-      const { code, body } = toHttpError(new VError(bodyResult, "failed to create user"));
-      request.log.error({ err: bodyResult }, "Invalid request body");
-      reply.status(code).send(body);
-      return;
-    }
-
-    let invokeService: Promise<Result.Type<AuthToken>>;
-    switch (bodyResult.apiVersion) {
-      case "1.0": {
-        const data = bodyResult.data;
-        invokeService = service.createUser(ctx, serviceUser, {
-          userId: data.user.id,
-          displayName: data.user.displayName,
-          organization: data.user.organization,
-          passwordPlaintext: data.user.password,
-        });
-        break;
+      if (Result.isErr(bodyResult)) {
+        const { code, body } = toHttpError(new VError(bodyResult, "failed to create user"));
+        request.log.error({ err: bodyResult }, "Invalid request body");
+        reply.status(code).send(body);
+        return;
       }
-      default:
-        // Joi validates only existing apiVersions
-        request.log.error({ err: bodyResult }, "Wrong api version specified");
-        assertUnreachable(bodyResult.apiVersion);
-    }
 
-    invokeService
-      .then((createdUserResult) => {
-        if (Result.isErr(createdUserResult)) {
-          throw new VError(createdUserResult, "global.createUser failed");
+      let invokeService: Promise<Result.Type<AuthToken>>;
+      switch (bodyResult.apiVersion) {
+        case "1.0": {
+          const data = bodyResult.data;
+          invokeService = service.createUser(ctx, serviceUser, {
+            userId: data.user.id,
+            displayName: data.user.displayName,
+            organization: data.user.organization,
+            passwordPlaintext: data.user.password,
+          });
+          break;
         }
-        const createdUser = createdUserResult;
-        const code = 200;
-        const publicUserData: ResponseUserRecord = {
-          id: createdUser.userId,
-          displayName: createdUser.displayName,
-          organization: createdUser.organization,
-          address: createdUser.address,
-        };
-        const body = {
-          apiVersion: "1.0",
-          data: {
-            user: publicUserData,
-          },
-        };
-        reply.status(code).send(body);
-      })
-      .catch((err) => {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while creating user");
-        reply.status(code).send(body);
-      });
+        default:
+          // Joi validates only existing apiVersions
+          request.log.error({ err: bodyResult }, "Wrong api version specified");
+          assertUnreachable(bodyResult.apiVersion);
+      }
+
+      invokeService
+        .then((createdUserResult) => {
+          if (Result.isErr(createdUserResult)) {
+            throw new VError(createdUserResult, "global.createUser failed");
+          }
+          const createdUser = createdUserResult;
+          const code = 200;
+          const publicUserData: ResponseUserRecord = {
+            id: createdUser.userId,
+            displayName: createdUser.displayName,
+            organization: createdUser.organization,
+            address: createdUser.address,
+          };
+          const body = {
+            apiVersion: "1.0",
+            data: {
+              user: publicUserData,
+            },
+          };
+          reply.status(code).send(body);
+        })
+        .catch((err) => {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while creating user");
+          reply.status(code).send(body);
+        });
+    });
   });
 }

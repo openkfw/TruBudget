@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest, RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
@@ -31,7 +31,7 @@ const requestBodySchema = Joi.array().items({
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
 function validateRequestBody(body): Result.Type<ProjectTraceEvent[]> {
-  const { error, value } = Joi.validate(body, requestBodySchema);
+  const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
 
@@ -260,108 +260,110 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
 ) {
-  server.get<{ Querystring: Querystring }>(
-    `${urlPrefix}/project.viewHistory`,
-    mkSwaggerSchema(server),
-    async (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+  server.register(async function () {
+    server.get<{ Querystring: Querystring }>(
+      `${urlPrefix}/project.viewHistory`,
+      mkSwaggerSchema(server),
+      async (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
-
-      const projectId = request.query.projectId;
-      if (!isNonemptyString(projectId)) {
-        const message =
-          "required query parameter `projectId` not present (must be non-empty string)";
-
-        reply.status(404).send({
-          apiVersion: "1.0",
-          error: {
-            code: 404,
-            message,
-          },
-        });
-
-        request.log.error({ err: message }, "Invalid request body");
-        return;
-      }
-
-      // Default: last created history event
-      let offset: number = 0;
-      if (request.query.offset !== undefined) {
-        const message = "if present, the query parameter `offset` must be an integer";
-        offset = parseInt(request.query.offset, 10);
-        if (isNaN(offset)) {
-          reply.status(400).send({
-            apiVersion: "1.0",
-            error: {
-              code: 400,
-              message,
-            },
-          });
-
-          request.log.error({ err: message }, "Invalid request body");
-          return;
-        }
-      }
-
-      // Default: no limit
-      let limit: number | undefined;
-      if (request.query.limit !== undefined) {
-        limit = parseInt(request.query.limit, 10);
-        if (isNaN(limit) || limit <= 0) {
-          const message = "if present, the query parameter `limit` must be a positive integer";
-          reply.status(400).send({
-            apiVersion: "1.0",
-            error: {
-              code: 400,
-              message,
-            },
-          });
-
-          request.log.error({ err: message }, "Invalid request body");
-          return;
-        }
-      }
-
-      const filter = createFilter(reply, request);
-
-      try {
-        // Get all Events in project stream
-        const eventsResult = await service.getProjectHistory(ctx, user, projectId, filter);
-        if (Result.isErr(eventsResult)) {
-          throw new VError(eventsResult, "project.viewHistory failed");
-        }
-
-        const eventsResultVerified = validateRequestBody(eventsResult);
-        if (Result.isErr(eventsResultVerified)) {
-          throw new VError(eventsResultVerified, "project.viewHistory failed");
-        }
-        const events: ProjectTraceEvent[] = eventsResultVerified;
-
-        const offsetIndex = offset < 0 ? Math.max(0, events.length + offset) : offset;
-        const slice = events.slice(
-          offsetIndex,
-          limit === undefined ? undefined : offsetIndex + limit,
-        );
-
-        const code = 200;
-        const body = {
-          apiVersion: "1.0",
-          data: {
-            historyItemsCount: events.length,
-            events: slice,
-          },
+        const user: ServiceUser = {
+          id: (request as AuthenticatedRequest).user.userId,
+          groups: (request as AuthenticatedRequest).user.groups,
+          address: (request as AuthenticatedRequest).user.address,
         };
-        reply.status(code).send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while viewing project history");
-        reply.status(code).send(body);
-      }
-    },
-  );
+
+        const projectId = request.query.projectId;
+        if (!isNonemptyString(projectId)) {
+          const message =
+            "required query parameter `projectId` not present (must be non-empty string)";
+
+          reply.status(404).send({
+            apiVersion: "1.0",
+            error: {
+              code: 404,
+              message,
+            },
+          });
+
+          request.log.error({ err: message }, "Invalid request body");
+          return;
+        }
+
+        // Default: last created history event
+        let offset: number = 0;
+        if (request.query.offset !== undefined) {
+          const message = "if present, the query parameter `offset` must be an integer";
+          offset = parseInt(request.query.offset, 10);
+          if (isNaN(offset)) {
+            reply.status(400).send({
+              apiVersion: "1.0",
+              error: {
+                code: 400,
+                message,
+              },
+            });
+
+            request.log.error({ err: message }, "Invalid request body");
+            return;
+          }
+        }
+
+        // Default: no limit
+        let limit: number | undefined;
+        if (request.query.limit !== undefined) {
+          limit = parseInt(request.query.limit, 10);
+          if (isNaN(limit) || limit <= 0) {
+            const message = "if present, the query parameter `limit` must be a positive integer";
+            reply.status(400).send({
+              apiVersion: "1.0",
+              error: {
+                code: 400,
+                message,
+              },
+            });
+
+            request.log.error({ err: message }, "Invalid request body");
+            return;
+          }
+        }
+
+        const filter = createFilter(reply, request);
+
+        try {
+          // Get all Events in project stream
+          const eventsResult = await service.getProjectHistory(ctx, user, projectId, filter);
+          if (Result.isErr(eventsResult)) {
+            throw new VError(eventsResult, "project.viewHistory failed");
+          }
+
+          const eventsResultVerified = validateRequestBody(eventsResult);
+          if (Result.isErr(eventsResultVerified)) {
+            throw new VError(eventsResultVerified, "project.viewHistory failed");
+          }
+          const events: ProjectTraceEvent[] = eventsResultVerified;
+
+          const offsetIndex = offset < 0 ? Math.max(0, events.length + offset) : offset;
+          const slice = events.slice(
+            offsetIndex,
+            limit === undefined ? undefined : offsetIndex + limit,
+          );
+
+          const code = 200;
+          const body = {
+            apiVersion: "1.0",
+            data: {
+              historyItemsCount: events.length,
+              events: slice,
+            },
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          request.log.error({ err }, "Error while viewing project history");
+          reply.status(code).send(body);
+        }
+      },
+    );
+  });
 }
