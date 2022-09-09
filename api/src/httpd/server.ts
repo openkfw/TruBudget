@@ -37,7 +37,7 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
 
   server.decorate("authenticate", async (request, reply) => {
     try {
-      if (request.cookies && request.cookies.token) {
+      if (!(request.headers.authorization) && request.cookies.token) {
         request.headers.authorization = `Bearer ${request.cookies.token}`;
       }
       await request.jwtVerify();

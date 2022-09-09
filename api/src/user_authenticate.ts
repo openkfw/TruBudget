@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, fastify } from "fastify";
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 import { toHttpError } from "./http_errors";
@@ -200,7 +200,8 @@ export function addHttpHandler(
   jwtSecret: string,
 ) {
   server.register(async function () {
-    server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply: any) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
       const bodyResult = validateRequestBody(request.body);
 
