@@ -250,6 +250,10 @@ const getEmailAddress = (state) => {
   return state.getIn(["login", "emailAddress"]);
 };
 
+const getJwt = state => {
+  return state.getIn(["login", "jwt"]);
+};
+
 const getUserLoggedIn = state => {
   return state.getIn(["login", "isUserLoggedIn"]);
 };
@@ -374,6 +378,8 @@ const getNotificationState = (state) => {
 };
 
 function* callApi(func, ...args) {
+  const token = yield select(getJwt);
+  yield call(api.setAuthorizationHeader, token);
   yield call(api.setBaseUrl);
   const { data = {} } = yield call(func, ...args);
   return data;
@@ -2750,7 +2756,8 @@ export function* restoreBackupSaga({ file, showLoading = true }) {
     type: DISABLE_ALL_LIVE_UPDATES
   });
   yield execute(function* () {
-    yield call(api.restoreFromBackup, file);
+    const token = yield select(getJwt);
+    yield call(api.restoreFromBackup, token, file);
     yield put({
       type: RESTORE_BACKUP_SUCCESS
     });

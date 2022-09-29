@@ -36,6 +36,7 @@ export const defaultState = fromJS({
   groups: [],
   avatarBackground: "/avatar_back.jpeg",
   avatar: "/lego_avatar_female2.jpg",
+  jwt: "",
   isUserLoggedIn: false,
   adminLoginFailed: false,
   language: "en-gb",
@@ -109,12 +110,14 @@ export default function loginReducer(state = defaultState, action) {
     case FETCH_ADMIN_USER_SUCCESS:
       return state.merge({
         loggedInAdminUser: action.user,
+        jwt: action.jwt,
         isUserLoggedIn: action.user.isUserLoggedIn
       });
 
     case LOGIN_SUCCESS:
       const user = action.user;
       return state.merge({
+        jwt: user.token,
         isUserLoggedIn: action.isUserLoggedIn,
         id: user.id,
         displayName: user.displayName,

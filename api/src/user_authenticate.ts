@@ -57,6 +57,7 @@ interface LoginResponse {
     groupId: string;
     displayName: string;
   }>;
+  token: string; // JWT
 }
 
 /**
@@ -199,78 +200,76 @@ export function addHttpHandler(
   service: Service,
   jwtSecret: string,
 ) {
-  server.register(async function () {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply: any) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
-      const bodyResult = validateRequestBody(request.body);
+  server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply) => {
+    const ctx: Ctx = { requestId: request.id, source: "http" };
+    const bodyResult = validateRequestBody(request.body);
 
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "authentication failed"));
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
+    if (Result.isErr(bodyResult)) {
+      const { code, body } = toHttpError(new VError(bodyResult, "authentication failed"));
+      request.log.error({ err: bodyResult }, "Invalid request body");
+      reply.status(code).send(body);
+      return;
+    }
+
+    let invokeService: Promise<Result.Type<AuthToken>>;
+    switch (bodyResult.apiVersion) {
+      case "1.0": {
+        const data = bodyResult.data;
+        invokeService = service.authenticate(ctx, data.user.id, data.user.password);
+        break;
       }
+      default:
+        // Joi validates only existing apiVersions
+        request.log.error({ err: bodyResult }, "Wrong api version specified");
+        assertUnreachable(bodyResult.apiVersion);
+    }
 
-      let invokeService: Promise<Result.Type<AuthToken>>;
-      switch (bodyResult.apiVersion) {
-        case "1.0": {
-          const data = bodyResult.data;
-          invokeService = service.authenticate(ctx, data.user.id, data.user.password);
-          break;
-        }
-        default:
-          // Joi validates only existing apiVersions
-          request.log.error({ err: bodyResult }, "Wrong api version specified");
-          assertUnreachable(bodyResult.apiVersion);
+    try {
+      const tokenResult = await invokeService;
+      if (Result.isErr(tokenResult)) {
+        throw new VError(tokenResult, "authentication failed");
       }
+      const token = tokenResult;
+      const signedJwt = createJWT(token, jwtSecret);
 
-      try {
-        const tokenResult = await invokeService;
-        if (Result.isErr(tokenResult)) {
-          throw new VError(tokenResult, "authentication failed");
-        }
-        const token = tokenResult;
-        const signedJwt = createJWT(token, jwtSecret);
-
-        const groupsResult = await service.getGroupsForUser(
-          ctx,
-          { id: token.userId, groups: token.groups, address: token.address },
-          token.userId,
-        );
-        if (Result.isErr(groupsResult)) {
-          throw new VError(groupsResult, "authentication failed");
-        }
-        const groups = groupsResult;
-
-        const loginResponse: LoginResponse = {
-          id: token.userId,
-          displayName: token.displayName,
-          organization: token.organization,
-          allowedIntents: token.allowedIntents,
-          groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
-        };
-        const body = {
-          apiVersion: "1.0",
-          data: {
-            user: loginResponse,
-          },
-        };
-        reply
-          .setCookie("token", signedJwt, {
-            path: "/",
-            secure: true,
-            httpOnly: true,
-            sameSite: true,
-          })
-          .status(200)
-          .send(body);
-      } catch (err) {
-        const { code, body } = toHttpError(err);
-        request.log.error({ err }, "Error while user authenticate");
-        reply.status(code).send(body);
+      const groupsResult = await service.getGroupsForUser(
+        ctx,
+        { id: token.userId, groups: token.groups, address: token.address },
+        token.userId,
+      );
+      if (Result.isErr(groupsResult)) {
+        throw new VError(groupsResult, "authentication failed");
       }
-    });
+      const groups = groupsResult;
+
+      const loginResponse: LoginResponse = {
+        id: token.userId,
+        displayName: token.displayName,
+        organization: token.organization,
+        allowedIntents: token.allowedIntents,
+        groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
+        token: signedJwt,
+      };
+      const body = {
+        apiVersion: "1.0",
+        data: {
+          user: loginResponse,
+        },
+      };
+      reply
+        .setCookie("token", signedJwt, {
+          path: "/",
+          secure: true,
+          httpOnly: true,
+          sameSite: true,
+        })
+        .status(200)
+        .send(body);
+    } catch (err) {
+      const { code, body } = toHttpError(err);
+      request.log.error({ err }, "Error while user authenticate");
+      reply.status(code).send(body);
+    }
   });
 }
 

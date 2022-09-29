@@ -35,6 +35,7 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
   }).then(response => {
     const state = {
       login: {
+        jwt: response.body.data.user.token,
         isUserLoggedIn: true,
         environment: "Test",
         productionActive: false,
@@ -51,7 +52,10 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
       response.headers["set-cookie"][0].split(";")[0] => "token={JWT_Token}"
       response.headers["set-cookie"][0].split(";")[0].replace("token=", "") => "{JWT_Token}"
       */
-    token = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
+    token = response.body.data.user.token;
+    if(!token) {
+      token = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
+    }
   });
 });
 

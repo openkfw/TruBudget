@@ -17,7 +17,11 @@ const authenticate = async (axios, userId, password) => {
       response.headers["set-cookie"][0].split(";")[0] => "token={JWT_Token}"
       response.headers["set-cookie"][0].split(";")[0].replace("token=", "") => "{JWT_Token}"
       */
-  return response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
+  let token = body.data.user.token;
+  if(!token) {
+    token = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
+  }
+  return token;
 };
 
 const createUser = async (axios, user, organization) => {

@@ -7,34 +7,6 @@ describe("`Cookie management`", function() {
     cy.visit(`/`);
   });
 
-  it("If a user is logged in, JWT token should not exist in local storage", async () => {
-    expect(JSON.parse(localStorage.getItem("state")).login.jwt).to.be.undefined;
-  });
-
-  it("If a user is logged out, JWT token should not exist in local storage", async () => {
-    cy.get("#logoutbutton")
-      .should("be.visible")
-      .click()
-      .then(() => {
-        expect(JSON.parse(localStorage.getItem("state")).login.jwt).to.be.undefined;
-      });
-  });
-
-  it("In case of failed login attempt, JWT should not exist in local storage", async () => {
-    cy.get("#logoutbutton")
-      .should("be.visible")
-      .click()
-      .then(() => {
-        cy.intercept(apiRoute + "/user.authenticate").as("login");
-        cy.get("#loginpage").should("be.visible");
-        cy.get("#loginbutton").click();
-        cy.wait("@login").then(xhr => {
-          expect(xhr.response.body.error.code).to.eql(500);
-          expect(JSON.parse(localStorage.getItem("state")).login.jwt).to.be.undefined;
-        });
-      });
-  });
-
   it("If a user is logged in, the login state must be true", async () => {
     expect(JSON.parse(localStorage.getItem("state")).login.isUserLoggedIn).to.be.true;
   });

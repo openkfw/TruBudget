@@ -460,8 +460,9 @@ class Api {
     instance.post(`/notification.markRead`, { notifications: notificationIds });
 
   createBackup = () => instance.get(`/system.createBackup`, { responseType: "blob" });
-  restoreFromBackup = (data) => {
+  restoreFromBackup = (token, data) => {
     const binaryInstance = axios.create();
+    binaryInstance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
     const response = binaryInstance.post(`/api/system.restoreBackup`, data, {
       headers: { "Content-Type": "application/gzip" }
     });
