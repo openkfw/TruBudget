@@ -120,6 +120,38 @@ If the configuration looks fine start the whole setup with `docker-compose up`.
 docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f excel-export-service/docker-compose.yml -f storage-service/docker-compose.yml -f storage-service/persistence.docker-compose.yml -f blockchain/persistence.docker-compose.yml -f api/docker-compose.yml -f frontend/docker-compose.yml up
 ```
 
+## Persistence
+
+There are two options how to persist data of a container:
+
+1. Bind-Mount
+   This option mounts a folder of the host system into the container. This is NOT recommended. There are limitations to that option. Since TruBudget is using non-root users to run a container the folder on the host system has to have the same user rights set before mounted into the container. Details can be found in the [official docker documentation](https://docs.docker.com/storage/bind-mounts/).
+
+   Example of a bind-mount
+
+   ```
+    version: "3"
+    services:
+      blockchain:
+        volumes:
+          - /tmp/alpha_chain:${MULTICHAIN_DIR}
+   ```
+
+2. Volume
+   This option mounts a volume create via docker into the container. This is the recommended option for TruBudget's persisted services. Details can be found in the [official docker documentation](https://docs.docker.com/storage/volumes/).
+   Example of a bind-mount
+
+   ```
+    version: "3"
+    services:
+      blockchain:
+        volumes:
+          - alpha-volume:${MULTICHAIN_DIR}
+
+    volumes:
+      alpha-volume:
+   ```
+
 ## E2E-test
 
 To run the E2E-test a provisioned TruBudget instance has to be up and running. To achieve this execute following command first:

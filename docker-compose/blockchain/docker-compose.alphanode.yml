@@ -8,6 +8,7 @@ services:
       MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       ORGANIZATION: ${ORGANIZATION}
       P2P_PORT: ${P2P_PORT}
+      MULTICHAIN_DIR: ${MULTICHAIN_DIR}
     # networks:
     #   mynetwork:
     #     ipv4_address: 172.20.0.11
