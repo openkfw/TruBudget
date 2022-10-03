@@ -1,7 +1,17 @@
 version: "3"
 services:
-  provisioning:
+  e2e-test:
     build:
       context: ../e2e-test
       dockerfile: Dockerfile
     image: docker-compose-e2e-test:local
+    # Use following line to only start specific e2e-test files
+    # command:
+    #   [
+    #     "npm",
+    #     "run",
+    #     "e2etest",
+    #     "--",
+    #     "--spec",
+    #     "**/cookies_spec.js"
+    #   ]
