@@ -3,4 +3,7 @@ version: "3"
 services:
   blockchain:
     volumes:
-      - ./alphaVolume:${MULTICHAIN_DIR}/.multichain
+      - alpha-volume:${MULTICHAIN_DIR}
+
+volumes:
+  alpha-volume:
