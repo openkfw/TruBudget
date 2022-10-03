@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed a bug where restoring a backup corrupts the blockchain [#1285](https://github.com/openkfw/TruBudget/issues/1285)
 - Fixed a bug where downloading documents from other organizations in a network was not possible in a specific edge-case [#1192](https://github.com/openkfw/TruBudget/issues/1192)
+- Fixed a bug where updating a budget was not possible just with the update permission, without the budget update and delete permissions [#1190](https://github.com/openkfw/TruBudget/issues/1190)
 
 ## [2.1.0] - 2022-08-11
 
