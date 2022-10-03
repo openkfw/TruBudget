@@ -8,7 +8,7 @@ let projectId, permissionsBeforeTesting;
 const groupToGivePermissions = "reviewers";
 const testGroupId = "admins";
 
-describe("Project Permissions", function() {
+describe("Project Permissions", function () {
   before(() => {
     cy.login();
     cy.createProject("p-subp-assign", "subproject assign test").then(({ id }) => {
@@ -16,7 +16,7 @@ describe("Project Permissions", function() {
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login();
     cy.visit(`/projects`);
     permissionsBeforeTesting = { project: {} };
@@ -90,7 +90,7 @@ describe("Project Permissions", function() {
     return Object.keys(permissions).filter(intent => permissions[intent].includes(id));
   }
 
-  it("Show project permissions correctly", function() {
+  it("Show project permissions correctly", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       // select all buttons which has an attribute data-test which value begins with pp-button
       .find("button[data-test^='pp-button']")
@@ -135,7 +135,7 @@ describe("Project Permissions", function() {
     cy.get("[data-test=permission-container]").should("not.exist");
   });
 
-  it("Canceling the permission dialog doesn't revoke nor grant permissions ", function() {
+  it("Canceling the permission dialog doesn't revoke nor grant permissions ", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -143,7 +143,7 @@ describe("Project Permissions", function() {
     assertUnchangedPermissions(permissionsBeforeTesting, projectId);
   });
 
-  it("Submitting the permission dialog without any changes doesn't revoke nor grant permissions and close the dialog", function() {
+  it("Submitting the permission dialog without any changes doesn't revoke nor grant permissions and close the dialog", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -153,7 +153,7 @@ describe("Project Permissions", function() {
     assertUnchangedPermissions(permissionsBeforeTesting, projectId);
   });
 
-  it("Executing additional actions as normal user extended through group permissions", function() {
+  it("Executing additional actions as normal user extended through group permissions", function () {
     Cypress.Promise.all([
       // grant permissions
       cy.grantProjectPermission(projectId, "project.list", testGroupId),
@@ -206,7 +206,7 @@ describe("Project Permissions", function() {
     });
   });
 
-  it("Submitting the permission dialog after adding a user opens a confirmation dialog", function() {
+  it("Submitting the permission dialog after adding a user opens a confirmation dialog", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -220,7 +220,7 @@ describe("Project Permissions", function() {
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
 
-  it("Submitting the permission dialog after removing a user opens a confirmation dialog", function() {
+  it("Submitting the permission dialog after removing a user opens a confirmation dialog", function () {
     cy.grantProjectPermission(projectId, "project.list", testUser.id);
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
@@ -235,7 +235,7 @@ describe("Project Permissions", function() {
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
 
-  it("Revoke a permission from myself is not allowed", function() {
+  it("Revoke a permission from myself is not allowed", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -245,7 +245,7 @@ describe("Project Permissions", function() {
       .should("be.disabled");
   });
 
-  it("Submitting the permission dialog without project.intent.grantPermission disables the submit button when adding user", function() {
+  it("Submitting the permission dialog without project.intent.grantPermission disables the submit button when adding user", function () {
     // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser2.id);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser.id);
@@ -267,7 +267,7 @@ describe("Project Permissions", function() {
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser.id);
   });
 
-  it("Submitting the permission dialog without project.intent.revokePermission disables the submit button when removing user", function() {
+  it("Submitting the permission dialog without project.intent.revokePermission disables the submit button when removing user", function () {
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser.id);
     cy.revokeProjectPermission(projectId, "project.intent.revokePermission", executingUser.id);
 
@@ -287,7 +287,7 @@ describe("Project Permissions", function() {
     cy.grantProjectPermission(projectId, "project.intent.revokePermission", executingUser.id);
   });
 
-  it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function() {
+  it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function () {
     // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser2.id);
     cy.revokeProjectPermission(projectId, "project.intent.grantPermission", executingUser.id);
@@ -308,7 +308,7 @@ describe("Project Permissions", function() {
     cy.grantProjectPermission(projectId, "project.intent.revokePermission", executingUser.id);
   });
 
-  it("Granting update permissions views 2 additional permissions needed", function() {
+  it("Granting update permissions views 2 additional permissions needed", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -332,7 +332,7 @@ describe("Project Permissions", function() {
     });
   });
 
-  it("Granting revoke permissions views 5 additional permissions needed including 'view permission'-permissions", function() {
+  it("Granting revoke permissions views 5 additional permissions needed including 'view permission'-permissions", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -343,7 +343,7 @@ describe("Project Permissions", function() {
     additionalActionTableIncludes("view permissions");
   });
 
-  it("Granting view permissions doesn't additionally view the same permission", function() {
+  it("Granting view permissions doesn't additionally view the same permission", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -362,7 +362,7 @@ describe("Project Permissions", function() {
     });
   });
 
-  it("Granting assign/grant/revoke permissions additionally generates an action to grant 'list permissions'-permissions", function() {
+  it("Granting assign/grant/revoke permissions additionally generates an action to grant 'list permissions'-permissions", function () {
     // Check assign
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
@@ -387,9 +387,10 @@ describe("Project Permissions", function() {
     additionalActionTableIncludes("view permissions");
   });
 
-  it("Confirmation of multiple grant permission changes grants permissions correctly", function() {
+  it("Confirmation of multiple grant permission changes grants permissions correctly", function () {
     cy.intercept(apiRoute + "/project.intent.listPermissions*").as("listPermissions");
     cy.intercept(apiRoute + "/project.intent.grantPermission").as("grantPermission");
+    cy.intercept(apiRoute + "/project.intent.revokePermission").as("revokePermission");
 
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
@@ -414,12 +415,17 @@ describe("Project Permissions", function() {
     changePermissionInGui("project.update", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     cy.get("[data-test=confirmation-dialog-confirm]").click();
+
+    // also wait for all additional actions 
+    cy.wait("@revokePermission")
+    cy.wait("@revokePermission")
+    cy.wait("@revokePermission")
     cy.wait("@listPermissions");
-    // compare Permissions to check if additional permission are granted successfully
+
     assertUnchangedPermissions(addViewPermissions(permissionsBeforeTesting, testUser.id), projectId);
   });
 
-  it("Confirmation of multiple revoke permission changes grants permissions correctly", function() {
+  it("Confirmation of multiple revoke permission changes grants permissions correctly", function () {
     let permCopy;
 
     Cypress.Promise.all([
@@ -447,16 +453,19 @@ describe("Project Permissions", function() {
         // Original actions are executed
         cy.wait("@listPermissions");
         // Equal permissions
+        cy.intercept(apiRoute + "/project.intent.revokePermission").as("revokePermission");
+
         permCopy.project = removePermission(permCopy.project, "project.update", testUser.id);
         permCopy.project = removePermission(permCopy.project, "project.list", testUser.id);
         permCopy.project = removePermission(permCopy.project, "project.viewDetails", testUser.id);
         permCopy.project = removePermission(permCopy.project, "project.intent.listPermissions", testUser.id);
+        cy.wait("@revokePermission")
         assertUnchangedPermissions(permCopy, projectId);
       });
     });
   });
 
-  it("Grant group Permission and test if their users have them", function() {
+  it("Grant group Permission and test if their users have them", function () {
     let filteredPermissions;
     Cypress.Promise.all([
       // grant permissions
@@ -483,7 +492,7 @@ describe("Project Permissions", function() {
     });
   });
 
-  it("The user selection dropdown can be closed by pressing the close-button", function() {
+  it("The user selection dropdown can be closed by pressing the close-button", function () {
     cy.get(`[data-test=project-card-${projectId}]`)
       .find("button[data-test^='pp-button']")
       .click();
@@ -495,7 +504,7 @@ describe("Project Permissions", function() {
     cy.get("[data-test='permission-list']").should("not.exist");
   });
 
-  it("Executing additional actions grant permissions correctly", function() {
+  it("Executing additional actions grant permissions correctly", function () {
     cy.intercept(apiRoute + "/project.intent.listPermissions*").as("listPermissions");
     cy.intercept(apiRoute + "/project.intent.grantPermission").as("grantPermission");
     cy.get(`[data-test=project-card-${projectId}]`)
