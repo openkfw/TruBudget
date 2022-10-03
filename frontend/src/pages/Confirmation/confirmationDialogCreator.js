@@ -1,20 +1,20 @@
-import React from "react";
 import { Typography } from "@mui/material";
 import _isEmpty from "lodash/isEmpty";
+import React from "react";
 
-import ActionsTable from "./ActionsTable";
-import DialogButtons from "./DialogButtons";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import ErrorTypography from "./ErrorTypography";
 import DisableUserDialogContent from "../Users/DisableUserDialogContent";
 import EnableUserDialogContent from "../Users/EnableUserDialogContent";
-import PermissionRequired from "./PermissionRequired";
 import WokflowRejectDialogContent from "./../Workflows/WokflowRejectDialogContent";
+import ActionsTable from "./ActionsTable";
+import DialogButtons from "./DialogButtons";
+import ErrorTypography from "./ErrorTypography";
+import PermissionRequired from "./PermissionRequired";
 
-import strings from "../../localizeStrings";
 import { formatString } from "../../helper";
+import strings from "../../localizeStrings";
 
 const ActionTypes = {
   ORIGINAL: 1,
@@ -529,5 +529,9 @@ const _createRejectWorkflowItemText = storeRejectReason => {
 };
 
 const _additionalActionsExist = additionalActions => {
-  return !_isEmpty(additionalActions);
+  return !_isEmpty(additionalActions) && areActionsVisible(additionalActions);
+};
+
+const areActionsVisible = additionalActions => {
+  return additionalActions.find(action => !action.hasOwnProperty("isVisible") || action.isVisible);
 };

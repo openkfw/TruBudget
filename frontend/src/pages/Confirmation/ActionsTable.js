@@ -116,48 +116,49 @@ const generateHeader = (status, actionTableColumns) => {
 
 const generateActions = (actions, executedActions, failedAction, users, groups, status, actionTableColumns) => {
   const actionsTable = [];
+  actions
+    .filter(action => !action.hasOwnProperty("isVisible") || action.isVisible)
+    .forEach((action, index) => {
+      const type = strings.common[action.intent.split(".")[0]];
+      const userOrGroup =
+        users.find(user => user.id === action.identity) || groups.find(group => group.groupId === action.identity);
 
-  actions.forEach((action, index) => {
-    const type = strings.common[action.intent.split(".")[0]];
-    const userOrGroup =
-      users.find(user => user.id === action.identity) || groups.find(group => group.groupId === action.identity);
-
-    actionsTable.push(
-      <TableRow style={styles.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
-        <TableCell key={index + "-type"} style={{ ...styles.tableCell, flex: 3 }}>
-          {type}
-        </TableCell>
-        {actionTableColumns.nameColumn ? (
-          <TableCell key={index + "-displayName"} style={{ ...styles.tableCell, flex: 3 }}>
-            <OverflowTooltip text={action.displayName} />
+      actionsTable.push(
+        <TableRow style={styles.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
+          <TableCell key={index + "-type"} style={{ ...styles.tableCell, flex: 3 }}>
+            {type}
           </TableCell>
-        ) : null}
-        {actionTableColumns.permissionColumn ? (
-          <TableCell key={index + "-permission"} style={{ ...styles.tableCell, flex: 3 }}>
-            <OverflowTooltip text={makeReadable(action.permission)} />
-          </TableCell>
-        ) : null}
-        {actionTableColumns.actionColumn ? (
-          <TableCell key={index + "-action"} style={{ ...styles.tableCell, flex: 3 }}>
-            <OverflowTooltip text={makeReadable(action.intent)} />
-          </TableCell>
-        ) : null}
-        {actionTableColumns.userOrGroupColumn ? (
-          <TableCell key={index + "-userName"} style={{ ...styles.tableCell, flex: 3 }}>
-            <OverflowTooltip text={userOrGroup ? userOrGroup.displayName : ""} />
-          </TableCell>
-        ) : null}
-        {status ? (
-          <TableCell
-            key={index + "-status"}
-            style={{ ...styles.tableCell, textAlign: "right", position: "relative", flex: 3 }}
-          >
-            {getStatusIcon(executedActions, failedAction, action)}
-          </TableCell>
-        ) : null}
-      </TableRow>
-    );
-  });
+          {actionTableColumns.nameColumn ? (
+            <TableCell key={index + "-displayName"} style={{ ...styles.tableCell, flex: 3 }}>
+              <OverflowTooltip text={action.displayName} />
+            </TableCell>
+          ) : null}
+          {actionTableColumns.permissionColumn ? (
+            <TableCell key={index + "-permission"} style={{ ...styles.tableCell, flex: 3 }}>
+              <OverflowTooltip text={makeReadable(action.permission)} />
+            </TableCell>
+          ) : null}
+          {actionTableColumns.actionColumn ? (
+            <TableCell key={index + "-action"} style={{ ...styles.tableCell, flex: 3 }}>
+              <OverflowTooltip text={makeReadable(action.intent)} />
+            </TableCell>
+          ) : null}
+          {actionTableColumns.userOrGroupColumn ? (
+            <TableCell key={index + "-userName"} style={{ ...styles.tableCell, flex: 3 }}>
+              <OverflowTooltip text={userOrGroup ? userOrGroup.displayName : ""} />
+            </TableCell>
+          ) : null}
+          {status ? (
+            <TableCell
+              key={index + "-status"}
+              style={{ ...styles.tableCell, textAlign: "right", position: "relative", flex: 3 }}
+            >
+              {getStatusIcon(executedActions, failedAction, action)}
+            </TableCell>
+          ) : null}
+        </TableRow>
+      );
+    });
   return actionsTable;
 };
 

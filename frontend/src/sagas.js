@@ -424,7 +424,7 @@ function* handleLoading(showLoading) {
       }
     };
   } else {
-    return function* () {};
+    return function* () { };
   }
 }
 
@@ -985,10 +985,32 @@ function* executeConfirmedAction(action, projectId, subprojectId, workflowitemId
       });
       isProjectPermissionChanged = true;
       break;
+    case "project.intent.revokePermission":
+      yield callApi(api.revokeProjectPermissions, projectId, action.permission, action.identity);
+      yield put({
+        type: REVOKE_PROJECT_PERMISSION_SUCCESS,
+        id: projectId,
+        intent: action.intent,
+        permission: action.permission,
+        identity: action.identity
+      });
+      isProjectPermissionChanged = true;
+      break;
     case "subproject.intent.grantPermission":
       yield callApi(api.grantSubProjectPermissions, projectId, subprojectId, action.permission, action.identity);
       yield put({
         type: GRANT_SUBPROJECT_PERMISSION_SUCCESS,
+        id: subprojectId,
+        intent: action.intent,
+        permission: action.permission,
+        identity: action.identity
+      });
+      isSubprojectPermissionChanged = true;
+      break;
+    case "subproject.intent.revokePermission":
+      yield callApi(api.revokeSubProjectPermissions, projectId, subprojectId, action.permission, action.identity);
+      yield put({
+        type: REVOKE_SUBPROJECT_PERMISSION_SUCCESS,
         id: subprojectId,
         intent: action.intent,
         permission: action.permission,
@@ -1007,6 +1029,25 @@ function* executeConfirmedAction(action, projectId, subprojectId, workflowitemId
       );
       yield put({
         type: GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
+        id: workflowitemId,
+        intent: action.intent,
+        permission: action.permission,
+        identity: action.identity
+      });
+      isWorkflowitemPermissionChange = true;
+
+      break;
+    case "workflowitem.intent.revokePermission":
+      yield callApi(
+        api.revokeWorkflowItemPermissions,
+        projectId,
+        subprojectId,
+        workflowitemId,
+        action.permission,
+        action.identity
+      );
+      yield put({
+        type: REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
         id: workflowitemId,
         intent: action.intent,
         permission: action.permission,
@@ -1926,6 +1967,7 @@ export function* revokeProjectPermissionsSaga({
 }) {
   yield execute(function* () {
     const confirmed = yield select(getConfirmedState);
+    const additionalActions = yield select(getAdditionalActionsState);
     const originalAction = {
       intent: "project.intent.revokePermission",
       permission: intent,
@@ -1949,6 +1991,10 @@ export function* revokeProjectPermissionsSaga({
     }
 
     try {
+      yield executeConfirmedAdditionalActionsSaga({
+        projectId: projectId,
+        additionalActions
+      });
       yield* executeOriginalAction(api.revokeProjectPermissions, originalAction, projectId, intent, revokeeId);
       yield put({
         type: REVOKE_PROJECT_PERMISSION_SUCCESS,
