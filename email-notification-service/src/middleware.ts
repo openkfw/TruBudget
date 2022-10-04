@@ -68,6 +68,9 @@ const verifyJWTToken = (
 };
 
 function getJWTToken(req: Request): string {
+  if (req.cookies && req.cookies.token) {
+      req.headers.authorization = `Bearer ${req.cookies.token}`;
+  }
   let token: string = (req.headers["x-access-token"] as string) || req.headers.authorization || "";
   logger.debug(`Provided JWT-TOKEN: ${token}`);
   if (token.startsWith("Bearer ")) {

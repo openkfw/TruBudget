@@ -43,8 +43,10 @@ function authenticate() {
       headers: {"Content-Type": "application/json"},
     },
   );
-
   MSTEIN_TOKEN = userRequest.json().data.user.token;
+  if(!MSTEIN_TOKEN) {
+    MSTEIN_TOKEN = userRequest.json().headers["set-cookie"][0].split(";")[0].replace("token=", "");
+  }
 
   let rootRequest = http.post(
     `${BASE_URL}/api/user.authenticate`,
@@ -61,8 +63,10 @@ function authenticate() {
       headers: {"Content-Type": "application/json"},
     },
   );
-
   ROOT_TOKEN = rootRequest.json().data.user.token;
+  if(!ROOT_TOKEN) {
+    ROOT_TOKEN = rootRequest.json().headers["set-cookie"][0].split(";")[0].replace("token=", "");
+  }
 }
 
 export default function () {

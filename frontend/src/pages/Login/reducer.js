@@ -37,6 +37,7 @@ export const defaultState = fromJS({
   avatarBackground: "/avatar_back.jpeg",
   avatar: "/lego_avatar_female2.jpg",
   jwt: "",
+  isUserLoggedIn: false,
   adminLoginFailed: false,
   language: "en-gb",
   user: [],
@@ -49,7 +50,7 @@ export const defaultState = fromJS({
   loginError: false
 });
 
-const setTimeLocale = language => {
+const setTimeLocale = (language) => {
   switch (language) {
     // daysjs excpects en instead of en-gb.
     // Changing the language preset would break existing clients because it it saved in the clients local storage
@@ -62,7 +63,7 @@ const setTimeLocale = language => {
   }
 };
 
-export const changeLanguage = state => {
+export const changeLanguage = (state) => {
   const language = state.get("language");
   setTimeLocale(language);
   strings.setLanguage(language);
@@ -91,7 +92,7 @@ export default function loginReducer(state = defaultState, action) {
       const enabledUsers = [];
       const disabledUsers = [];
       const groupList = [];
-      action.user.forEach(user => {
+      action.user.forEach((user) => {
         userDisplayNameMap[user.id] = user.displayName;
         if (!user.isGroup) {
           user.permissions["user.authenticate"].includes(user.id) ? enabledUsers.push(user) : disabledUsers.push(user);
@@ -109,13 +110,15 @@ export default function loginReducer(state = defaultState, action) {
     case FETCH_ADMIN_USER_SUCCESS:
       return state.merge({
         loggedInAdminUser: action.user,
-        jwt: action.jwt
+        jwt: action.jwt,
+        isUserLoggedIn: action.user.isUserLoggedIn
       });
 
     case LOGIN_SUCCESS:
       const user = action.user;
       return state.merge({
         jwt: user.token,
+        isUserLoggedIn: action.isUserLoggedIn,
         id: user.id,
         displayName: user.displayName,
         organization: user.organization,

@@ -47,7 +47,7 @@ class Api {
     });
   }
 
-  setAuthorizationHeader = (token) => {
+  setAuthorizationHeader = token => {
     instance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
   };
 

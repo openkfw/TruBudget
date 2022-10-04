@@ -249,8 +249,13 @@ const getSelfId = (state) => {
 const getEmailAddress = (state) => {
   return state.getIn(["login", "emailAddress"]);
 };
-const getJwt = (state) => {
+
+const getJwt = state => {
   return state.getIn(["login", "jwt"]);
+};
+
+const getUserLoggedIn = state => {
+  return state.getIn(["login", "isUserLoggedIn"]);
 };
 
 const getProjectHistoryState = (state) => {
@@ -1110,7 +1115,8 @@ export function* loginSaga({ user }) {
     const { data } = yield callApi(api.login, user.username, user.password);
     yield put({
       type: LOGIN_SUCCESS,
-      ...data
+      ...data,
+      isUserLoggedIn: true
     });
     yield call(() => fetchNotificationCountsSaga(false));
     yield put({

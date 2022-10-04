@@ -40,7 +40,7 @@ class LoginPageContainer extends Component {
     const from = this.props.location && this.props.location.state && this.props.location.state.from;
     const path = from ? this.props.location.state.from : "/";
 
-    if (this.props.jwt) this.props.history.push(path);
+    if (this.props.isUserLoggedIn) this.props.history.push(path);
   }
 
   render() {
@@ -65,6 +65,7 @@ const mapStateToProps = state => {
   return {
     username: state.getIn(["login", "username"]),
     jwt: state.getIn(["login", "jwt"]),
+    isUserLoggedIn: state.getIn(['login', 'isUserLoggedIn']),
     password: state.getIn(["login", "password"]),
     language: state.getIn(["login", "language"]),
     loginError: state.getIn(["login", "loginError"])
