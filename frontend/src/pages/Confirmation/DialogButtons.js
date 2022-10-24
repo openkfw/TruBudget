@@ -1,8 +1,9 @@
-import { Button, Typography } from "@mui/material";
-import DialogActions from "@mui/material/DialogActions";
-import _isEmpty from "lodash/isEmpty";
-import strings from "../../localizeStrings";
-import React from "react";
+import { Button, Typography } from '@mui/material';
+import DialogActions from '@mui/material/DialogActions';
+import _isEmpty from 'lodash/isEmpty';
+import React from 'react';
+
+import strings from '../../localizeStrings';
 
 const styles = {
   dialogActions: {
@@ -35,7 +36,10 @@ const DialogButtons = props => {
     hasFailure = false
   } = props;
 
-  const totalActionsLength = additionalActions?.length + originalActions?.length + postActions?.length;
+  const visibleAdditionalActions = additionalActions.filter(action => !action.hasOwnProperty("isVisible") || action.isVisible);
+  const visibleOriginalActions = originalActions.filter(action => !action.hasOwnProperty("isVisible") || action.isVisible);
+  const visiblePostActions = postActions.filter(action => !action.hasOwnProperty("isVisible") || action.isVisible);
+  const totalActionsLength = visibleAdditionalActions?.length + visibleOriginalActions?.length + visiblePostActions?.length;
 
   return (
     <DialogActions style={styles.dialogActions}>
