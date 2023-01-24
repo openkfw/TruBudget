@@ -234,9 +234,10 @@ const stopMultichain = async (mcproc) => {
 };
 
 app.get("/chain-sha256", async (req, res) => {
+  req.setTimeout(1000)
+  log.info("Start packaging");
+  autostart = false;
   try {
-    log.info("Start packaging");
-    autostart = false;
     await stopMultichain(mcproc);
     await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
     res.setHeader("Content-Type", "application/gzip");
@@ -283,6 +284,7 @@ const loadConfig = (path) => {
 };
 
 app.post("/chain", async (req, res) => {
+  req.setTimeout(1000)
   const extractPath = `/tmp/backup${Date.now()}`;
   const metadataPath = `${extractPath}/metadata.yml`;
   const chainConfigPath = `${extractPath}/multichain.conf`;
