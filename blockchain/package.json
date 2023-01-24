@@ -43,15 +43,15 @@
     "body-parser": "^1.20.0",
     "chai": "^4.3.6",
     "express": "^4.18.1",
+    "ignore": "^5.2.0",
     "js-yaml": "^4.1.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "sha256-file": "^1.0.0",
     "shelljs": "^0.8.5",
     "sinon": "^14.0.0",
     "streamifier": "^0.1.1",
     "tar-fs": "^2.1.1",
     "tar-stream": "^2.2.0",
-    "ignore": "^5.2.0",
     "trubudget-logging-service": "^1.1.6"
   },
   "devDependencies": {
