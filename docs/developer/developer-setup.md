@@ -53,18 +53,49 @@ This document describes how to set up your environment to start developing and d
 
 ### Working on Windows
 
-If you are using a Windows operating system, we suggest using the Windows Subsystem for Linux, for the installation please read [this guide](https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly). Because our setup was tested on WSL 1 and not on WSL 2, we suggest using WSL 1. However, if you want to use WSL 2, you can try by following [these steps](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+If you are using a Windows operating system, we suggest using the Windows Subsystem for Linux. Our setup was tested on both versions of WSL (1 and 2 with Ubuntu as Distribution), but we suggest using WSL 2 due to the increased performance over WSL 1. More information about the two versions [WSL1 and WSL2 Comparison](https://learn.microsoft.com/en-us/windows/wsl/compare-versions). If you don't have the WSL setup on your Windows machine already, you can install it by following [this guide](https://docs.microsoft.com/en-us/windows/wsl/install-win10) by Microsoft. For older builds of Windows, which require manual installation, please follow [this guide](https://learn.microsoft.com/en-us/windows/wsl/install-manual).
+
+### Updating and Upgrading Linux packages
+
+Since Windows does not automatically upgrade the Linux packages, it is recommended to run the following command (for Ubuntu and Debian) in your Linux distro.
+
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+### Windows Terminal (Optional)
+
+We recommend working with the Windows Terminal. You can install it from the Microsoft Store application. It works very well with the WSL.
+
+### Git
+
+Git already comes preinstalled with Linux Distributions on WSL. We highly recommend you to create an SSH key via following commands and add it to your GitHub.
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+If you directly pressed Enter during File prompt while generating new key, your public key file should be located under ~/.ssh/id_ed25519.pub by default.
+
+Copy the contents of this file and add it to your GitHub account. For more information, please check the "Adding a new SSH key to your account" section on [this guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) by GitHub.
 
 ### Docker/Docker-Compose
 
-The easiest way to setup the application on your machine is via Docker and Docker-Compose. To install these components, please follow the official documentation:
+The easiest way to setup the application on your machine is via Docker and Docker-Compose. For installing Docker, follow the "Install using the repository" section of the following guide. (For Ubuntu)
 
-- [Docker](https://docs.docker.com/engine/installation/)
-- [Docker Compose](https://docs.docker.com/compose/install/#install-compose)
+- [Docker](https://docs.docker.com/engine/install/ubuntu/)
+
+> Docker installation comes already bundled with Docker compose in new versions. One important thing to pay attention here is that the bash command is not docker-compose, but without the hyphen:
+
+```bash
+docker compose
+```
+
+> This will be relevant in the Development Setup section down below.
 
 ### Node.js / npm
 
-Follow the official instructions on how to setup [node.js/npm](https://nodejs.org/en/download/).
+Follow [this guide](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl) to install Node.js/npm on WSL via the package manager.
 
 ### TypeScript
 
@@ -78,7 +109,7 @@ Clone the repository from Github:
 
 - SSH:
 
-Follow the instructions on how to setup your [SSH-connection](https://help.github.com/en/articles/connecting-to-github-with-ssh)
+If you haven't done the SSH setup so far, please follow the instructions on how to setup your [SSH-connection](https://help.github.com/en/articles/connecting-to-github-with-ssh)
 
 ```bash
 git clone https://github.com/openkfw/TruBudget.git
@@ -90,7 +121,7 @@ git clone https://github.com/openkfw/TruBudget.git
 git clone https://github.com/openkfw/TruBudget.git
 ```
 
-### IDE
+### IDE
 
 For coding, we recommend the use of Visual Studio Code, which you can find [here](https://code.visualstudio.com/).
 
@@ -98,7 +129,7 @@ To ensure that the code is formatted properly we recommend following 
 
 - aaron-bond.better-comments
 
-- CoenraadS.bracket-pair-colorizer
+- CoenraadS.bracket-pair-colorizer (deprecated, this extension is now built-in to VS-Code)
 
 - dbaeumer.vscode-eslint †
 
@@ -108,17 +139,13 @@ To ensure that the code is formatted properly we recommend following 
 
 - pmneo.tsimporter
 
-- rbbit.typescript-hero
+- rbbit.typescript-hero (deprecated, no longer maintained)
 
 - xabikos.JavaScriptSnippets
 
 - esbenp.prettier-vscode
 
-:::note
-
-† Have a look [here](https://thesoreon.com/blog/how-to-set-up-eslint-with-typescript-in-vs-code) to learn more about how to set up es-lint for validating TypeScript in VSCode
-
-:::
+> † Have a look [here](https://thesoreon.com/blog/how-to-set-up-eslint-with-typescript-in-vs-code) to learn more about how to set up es-lint for validating TypeScript in VSCode
 
 ### Chrome Developer Tools
 
@@ -159,15 +186,15 @@ bash setupGitSecrets.sh
 
 All projects in TruBudget (blockchain, api, frontend, etc) have a docker-compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env_example` in each project directory. To use these environemnt variables, simply copy the `.env.example` file and rename it to `.env`.
 
-:::caution
-Do **NOT** use other additional ways to set environment variables like inline env-variables or env-variables defined by 'export'. Why? - Because these env-variables will overwrite each which makes it very hard to find mistakes.
-:::
+> Do **NOT** use other additional ways to set environment variables like inline env-variables or env-variables defined by 'export'. Why? - Because these env-variables will overwrite each which makes it very hard to find mistakes.
 
 ## Development Setup
 
 If you want to start developing on Trubudget, you need to setup the application locally. This guide tells you how to start the blockchain, start the API, load up some test data and start the frontend.
 
 ### Dockerized Application (recommended)
+
+> If you have installed Docker by following the above guide, then there is one extra step you have to do until this is fixed later. The scripts/development/start-dev.sh script file uses the "docker-compose" command. However within your installation, the command is "docker compose". Until the script is modified to take this into consideration, you are required to change the "docker-compose" commands in the script to "docker compose" locally. Using the IDE or nano/vim, change every "docker-compose" to "docker compose" before you start the script. Do NOT push these changes to the repository as this is only meant for local development.
 
 This is the fastest way you can run **all services** needed for development. Everything is started in one command:
 
@@ -198,9 +225,7 @@ Docker Compose ensures that services are communicating and have correct environm
 
 You can inspect each container individually: `docker logs --follow CONTAINER`. Where _CONTAINER_ represents name of the service that can be found in the `.yml` file.
 
-:::note
-Hot reloading with docker requires a lot of processing power (due to docker volumes). If you experience huge delays while hot-reloading, you should start the services you need by yourself without docker.
-:::
+> Hot reloading with docker requires a lot of processing power (due to docker volumes). If you experience huge delays while hot-reloading, you should start the services you need by yourself without docker.
 
 ### TruBudget Services
 
@@ -344,18 +369,13 @@ npm start
 
 The frontend should then be availaible at http://localhost:3000
 
-:::caution
-If you change the port of the api you may have to consider to change the proxy port in the `package.json` accordingly.
-:::
+> If you change the port of the api you may have to consider to change the proxy port in the `package.json` accordingly.
 
-:::note
-You do not need to run every project separately if you are developing on a single one. Just do following:
-
-1. go to a desired folder (e.g. _/api_)
-2. copy `.env.example` file and rename it to `.env`
-3. run `bash startDev.sh` in the folder to start dependent project(s)
-
-:::
+> You do not need to run every project separately if you are developing on a single one. Just do following:
+>
+> 1.  go to a desired folder (e.g. _/api_)
+> 2.  copy `.env.example` file and rename it to `.env`
+> 3.  run `bash startDev.sh` in the folder to start dependent project(s)
 
 #### Provisioning (Optional)
 
@@ -422,13 +442,9 @@ npm start
 
 The service is then available either on the host and port set by the environment variable or `localhost:8888` by default.
 
-:::note
-in order to access the excel export service from the UI, you should start the frontend with some additional environment variables as mentioned in the excel-export section of the [frontend README.md](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md#Excel-Export-Service) file.
-:::
+> in order to access the excel export service from the UI, you should start the frontend with some additional environment variables as mentioned in the excel-export section of the [frontend README.md](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md#Excel-Export-Service) file.
 
-:::note
-Another way to start the excel export service is in a docker container. Using the docker-compose file in the excel-export folder will build the whole application including api, blockchain, frontend and excel-export service at the same time.
-:::
+> Another way to start the excel export service is in a docker container. Using the docker-compose file in the excel-export folder will build the whole application including api, blockchain, frontend and excel-export service at the same time.
 
 #### Email-Notification (Optional)
 
@@ -454,9 +470,7 @@ Before running the tests you should make sure that the application is started (i
 
 #### Setup
 
-:::note
-If you are using WSL on Windows check out [this setup](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) to run cypress in WSL.
-:::
+> If you are using WSL on Windows check out [this setup](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) to run cypress in WSL.
 
 To setup a new TruBudget instance with Docker-Compose, run following command (recommended):
 
@@ -487,9 +501,7 @@ or through the Cypress frontend under settings.
 
 For further information see the [README.md](https://github.com/openkfw/TruBudget/blob/main/e2e-test/README.md) of /e2e-test
 
-:::note
-The .env file is needed.
-:::
+> The .env file is needed.
 
 ### Unit Tests
 
