@@ -11,9 +11,9 @@ import * as DocumentValidated from "./domain/document/document_validated";
 import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
 import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import { NotFound } from "./domain/errors/not_found";
-import * as NodesLogged from "./domain/network/nodes_logged";
 import * as NodeDeclined from "./domain/network/node_declined";
 import * as NodeRegistered from "./domain/network/node_registered";
+import * as NodesLogged from "./domain/network/nodes_logged";
 import * as GroupCreated from "./domain/organization/group_created";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
@@ -52,7 +52,6 @@ import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
 import * as SubprojectUpdated from "./domain/workflow/subproject_updated";
 import * as Workflowitem from "./domain/workflow/workflowitem";
-import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
@@ -60,6 +59,7 @@ import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcin
 import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
+import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import { Item } from "./liststreamitems";
 
 const STREAM_BLACKLIST = [
@@ -464,9 +464,11 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
 
     let cursorToLastItem: StreamCursor | undefined = cursor;
     // If there are new items, we update the cursor to point to the latest one:
-    const lastIndex = first - 1;
-    const lastTxid = newItems[newItems.length - 1].txid;
-    cursorToLastItem = { index: lastIndex, txid: lastTxid };
+    if (newItems.length > 0) {
+      const lastIndex = first - 1;
+      const lastTxid = newItems[newItems.length - 1].txid;
+      cursorToLastItem = { index: lastIndex, txid: lastTxid };
+    }
 
     if (cursorToLastItem !== undefined) {
       cache.streamState.set(streamName, cursorToLastItem);
