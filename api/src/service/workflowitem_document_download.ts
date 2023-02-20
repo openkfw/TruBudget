@@ -1,3 +1,6 @@
+import logger from "lib/logger";
+import VError = require("verror");
+
 import { config } from "../config";
 import { decryptWithKey } from "../lib/asymmetricCrypto";
 import { Ctx } from "../lib/ctx";
@@ -11,14 +14,12 @@ import * as WorkflowitemDocument from "./domain/document/document";
 import * as DocumentGet from "./domain/document/document_get";
 import * as SecretGet from "./domain/document/secret_get";
 import * as WorkflowitemDocumentDownload from "./domain/document/workflowitem_document_download";
+import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as Liststreamkeyitems from "./liststreamkeyitems";
-import * as WorkflowitemDocumentUploaded from "./domain/document/workflowitem_document_uploaded";
-import VError = require("verror");
-import logger from "lib/logger";
 
 export async function getDocument(
   conn: ConnToken,
@@ -101,6 +102,7 @@ export async function getDocument(
     }),
   );
 
+  logger.info(`Document download response: ${documentResult}`);
   return Result.mapErr(
     documentResult,
     (err) =>

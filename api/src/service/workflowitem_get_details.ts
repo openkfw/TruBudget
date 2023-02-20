@@ -1,17 +1,18 @@
+import logger from "lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
 import * as Cache from "./cache2";
+import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
-import * as WorkflowitemGetDetails from "./domain/workflow/workflowitem_get_details";
 import * as WorkflowitemGet from "./domain/workflow/workflowitem_get";
+import * as WorkflowitemGetDetails from "./domain/workflow/workflowitem_get_details";
 import * as WorkflowitemDocumentDownloadService from "./workflowitem_document_download";
-import { StorageServiceClientI } from "./Client_storage_service.h";
-import logger from "lib/logger";
 
 export async function getWorkflowitemDetails(
   conn: ConnToken,
@@ -47,6 +48,10 @@ export async function getWorkflowitemDetails(
       },
     }),
   );
+  logger.trace(`Workflowitem details response: ${workflowitemResult}`);
+  if (Result.isErr(workflowitemResult)) {
+    logger.trace(`Error while getting workflowitem details response: ${workflowitemResult}`);
+  }
   return Result.mapErr(
     workflowitemResult,
     (err) => new VError(err, `could not fetch workflowitem ${workflowitemId}`),

@@ -1,5 +1,7 @@
 import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
+import VError = require("verror");
+
 import { config } from "../../../config";
 import * as Result from "../../../result";
 import * as DocumentUploaded from "../document/document_uploaded";
@@ -10,8 +12,6 @@ import * as Workflowitem from "../workflow/workflowitem";
 import { UploadedDocument } from "./document";
 import * as DocumentShared from "./document_shared";
 import * as WorkflowitemDocumentUploaded from "./workflowitem_document_uploaded";
-
-import VError = require("verror");
 
 type Base64String = string;
 interface DocumentStorageServiceResponse {
@@ -112,7 +112,7 @@ export async function getDocument(
   documentId: string,
   repository: Repository,
 ): Promise<Result.Type<UploadedDocument>> {
-  logger.trace("Fetching document: ", documentId, "...");
+  logger.trace(`Fetching document: ${documentId} ...`);
 
   // check for permissions etc
   const workflowitem = await repository.getWorkflowitem(workflowitemId);
@@ -125,6 +125,10 @@ export async function getDocument(
     return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
   }
 
+  logger.trace(
+    `User ${user.id} has permission to view workflowitem ${workflowitemId} and download document ${documentId}`,
+  );
+
   // Only return if document has relation to the workflowitem
   if (!workflowitem.documents.some((d) => d.id === documentId)) {
     return new VError(
@@ -132,11 +136,12 @@ export async function getDocument(
       `workfowitem ${workflowitem.displayName} has no link to document`,
     );
   }
-  logger.trace("Trying to find document: ", documentId, "offchain ...");
+  logger.trace(`Trying to find document ${documentId} in the offchain storage`);
 
   // Try to get event from offchain storage
   const offchainDocumentEvent = await repository.getOffchainDocumentEvent(documentId);
   if (Result.isErr(offchainDocumentEvent)) {
+    logger.trace(`Error while getting document from offchain storage: ${offchainDocumentEvent}`);
     return new VError(
       new NotFound(ctx, "document", documentId),
       `couldn't get document events from ${workflowitem.displayName}. ${offchainDocumentEvent.message}`,
@@ -144,7 +149,7 @@ export async function getDocument(
   }
 
   if (!offchainDocumentEvent) {
-    logger.trace("Trying to find document: ", documentId, "via storage service ...");
+    logger.trace(`Trying to find document ${documentId} in the storage service`);
 
     // Try to get document from storage service
     const documentFromStorage = await getDocumentFromInternalOrExternalStorage(
@@ -155,11 +160,15 @@ export async function getDocument(
     );
 
     if (Result.isErr(documentFromStorage)) {
+      logger.trace(`Error while getting document from storage service: ${documentFromStorage}`);
+
       return new VError(
         new NotFound(ctx, "document", documentId),
         `Error while getting document from storage for workflowitem ${workflowitem.id} ERROR HERE: ${documentFromStorage}`,
       );
     } else if (!documentFromStorage) {
+      logger.trace(`No document found in storage service: ${documentFromStorage}`);
+
       return new VError(
         new NotFound(ctx, "document", documentId),
         `Couldn't find document from storage for workflowitem ${workflowitem.id}`,
