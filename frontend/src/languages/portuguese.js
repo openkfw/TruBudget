@@ -125,6 +125,8 @@ const pt = {
     dueDate_exceeded: "Data de vencimento excedida",
     login_disabled: "O ID de login está desativado",
     login_data_error: "O campo de identidade ou senha de login não pode estar vazio",
+    login_proxy_error: "A conexão com a API não pôde ser estabelecida! Verifique as configurações de proxy!",
+    login_api_error: "A API não está acessível, certifique-se de que está em execução!",
     refresh_assignments: "Atualizar atribuições",
     tags: "Etiquetas",
     all: "Tudo",
