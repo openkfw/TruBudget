@@ -3,7 +3,7 @@ import _isEmpty from "lodash/isEmpty";
 import { all, call, cancel, delay, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
 import Api from "./api.js";
 import { getExchangeRates } from "./getExchangeRates";
-import { formatString, fromAmountString } from "./helper.js";
+import { formatString, fromAmountString, getLoginErrorFromResponse } from "./helper.js";
 import strings from "./localizeStrings";
 import {
   GET_EXCHANGE_RATES,
@@ -1136,35 +1136,11 @@ export function* loginSaga({ user }) {
   }
 
   function* onLoginError(error) {
-    switch (error.response.status) {
-      case 400:
-        // User not found or password wrong
-        yield put({
-          type: SNACKBAR_MESSAGE,
-          message: strings.common.incorrect_username_or_password
-        });
-        break;
-      case 403:
-        // User is disabled
-        yield put({
-          type: SNACKBAR_MESSAGE,
-          message: strings.common.login_disabled
-        });
-        break;
-      case 500:
-        // ID or password field is empty
-        yield put({
-          type: SNACKBAR_MESSAGE,
-          message: strings.common.login_data_error
-        });
-        break;
-      default:
-        yield put({
-          type: SNACKBAR_MESSAGE,
-          message: strings.common.incorrect_username_or_password
-        });
-    }
-
+    const errorMessage = getLoginErrorFromResponse(error.response.status, error.response.data);
+    yield put({
+      type:SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
     yield put({
       type: SHOW_SNACKBAR,
       show: true,
