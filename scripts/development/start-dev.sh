@@ -284,7 +284,14 @@ else
     fi
 fi
 
-COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-dev --env-file $SCRIPT_DIR/.env"
+# Check if the docker-compose command exists. Newer Docker versions come with compose command along the docker. (docker compose)
+if type -t docker-compose>/dev/null; then
+  COMPOSE_COMMAND="docker-compose"
+else
+  COMPOSE_COMMAND="docker compose"
+fi
+
+COMPOSE="$COMPOSE_COMMAND -f $SCRIPT_DIR/docker-compose.yml -p trubudget-dev --env-file $SCRIPT_DIR/.env"
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
