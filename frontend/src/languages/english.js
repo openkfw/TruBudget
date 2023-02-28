@@ -124,6 +124,8 @@ const en = {
     dueDate_exceeded: "Due date exceeded",
     login_disabled: "Login ID is disabled",
     login_data_error: "Login ID or password field cannot be empty",
+    login_proxy_error: "Connection to the API could not be established! Please check proxy settings!",
+    login_api_error: "API is not reachable, please make sure it is running!",
     refresh_assignments: "Refresh assignments",
     tags: "Tags",
     all: "all",

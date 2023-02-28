@@ -125,6 +125,8 @@ const fr = {
     dueDate_exceeded: "Date d'échéance dépassée",
     login_disabled: "L'identification de connexion est désactivée",
     login_data_error: "Le champ « Identifiant de connexion » ou « Mot de passe » ne peut pas être vide",
+    login_proxy_error: "La connexion à l'API n'a pas pu être établie ! Veuillez vérifier les paramètres de proxy !",
+    login_api_error: "L'API n'est pas accessible, veuillez vous assurer qu'elle est en cours d'exécution !",
     refresh_assignments: "Actualiser les affectations",
     tags: "Balises",
     all: "Tous",

@@ -76,16 +76,30 @@ describe("Login", function () {
       .should("be.visible");
   });
 
-  it("Reject empty inputs", function () {
+  it("Disable login when empty username and password", function () {
     cy.intercept(apiRoute + "/user.authenticate").as("login");
     cy.get("#loginpage").should("be.visible");
-    cy.get("#loginbutton").click();
-    cy.wait("@login").then(xhr => {
-      expect(xhr.response.body.error.code).to.eql(500);
-    });
-    cy.get("[data-test=client-snackbar]")
-      .contains("Login ID or password field cannot be empty")
-      .should("be.visible");
+    cy.get("#loginbutton").should("be.disabled");
+  });
+
+  it("Disable login when empty username", function () {
+    cy.intercept(apiRoute + "/user.authenticate").as("login");
+    cy.get("#loginpage").should("be.visible");
+    cy.get("#username")
+      .should("be.visible")
+      .type("foo")
+      .should("have.value", "foo");
+
+    cy.get("#loginbutton").should("be.disabled");
+  });
+
+  it("Disable login when empty password", function () {
+    cy.intercept(apiRoute + "/user.authenticate").as("login");
+    cy.get("#loginpage").should("be.visible");
+    cy.get("#password")
+      .type("foo")
+      .should("have.value", "foo");
+    cy.get("#loginbutton").should("be.disabled");
   });
 
   it("Password-input can toggled to shown input as clear text", function () {
@@ -115,7 +129,7 @@ describe("Login", function () {
       .get("#password")
       .get("#showPasswordButton")
       .click();
-    
+
     cy.get("#loginpage")
       .should("be.visible")
       .get("#password")

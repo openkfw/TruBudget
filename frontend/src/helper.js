@@ -231,3 +231,27 @@ export const isUserOrGroupPermitted = (user, groupsOfUser, permittedUsersAndGrou
 };
 
 export const capitalize = string => string.replace(/^\w/, c => c.toUpperCase());
+
+export const getLoginErrorFromResponse = (status, data) => {
+  // 400: User not found or password wrong.
+  // 403: User is disabled.
+  // 500: Proxy error OR ID/password field is empty OR Api not found.
+  // Default: Incorrect username or password
+  switch (status) {
+    case 400:
+      return strings.common.incorrect_username_or_password;
+    case 403:
+      return strings.common.login_disabled;
+    case 500:
+      if(data.includes("ECONNREFUSED", 0)){
+        return strings.common.login_proxy_error;
+      }
+      if (data.includes("ENOTFOUND", 0)) {
+        return strings.common.login_api_error;
+      } else {
+        return strings.common.login_data_error;
+      }
+    default:
+      return strings.common.incorrect_username_or_password;
+    }
+};
