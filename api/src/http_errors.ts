@@ -57,6 +57,7 @@ function handleError(error: Error): { code: number; message: string } {
 
   switch (name) {
     case "BadRequest":
+    case "ValidationError":
     case "AuthenticationFailed":
       return { code: 400, message: error.message };
 
