@@ -25,6 +25,7 @@ const LoginPage = ({
   setLanguage
 }) => {
   const connectedToAdminNode = -1;
+  const isLoginDisabled = username === "" || password === "";
 
   return (
     <div
@@ -88,6 +89,7 @@ const LoginPage = ({
             <MenuItem value="ka">{strings.language.georgian}</MenuItem>
           </Dropdown>
           <Button
+            disabled={isLoginDisabled}
             aria-label="loginbutton"
             style={{ marginRight: 20, marginTop: 5 }}
             onClick={() => loginWithCredentials(username, password)}
