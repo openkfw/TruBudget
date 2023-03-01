@@ -49,6 +49,18 @@ Learn where to find the versions and connection quality of all Trubudget compone
 
 ## FAQ
 
+### I have started TruBudget without provisioning. What are the default login credentials?
+
+The default user for TruBudget is the root user. The following are the credentials.
+
+```
+Username  |  Password
+------------------------
+root      |  root-secret
+```
+
+> Default password can be changed via the environment variable ROOT_SECRET.
+
 ### How can I change the default project background images?
 
 Changing these images is only possible by replacing the Thumbnail\_\*.jpg files in the `frontend/public` folder.
