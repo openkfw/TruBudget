@@ -20,21 +20,31 @@ Frontend: http://localhost:3000/
 
 API: http://localhost:8080/api/documentation/static/index.html
 
+> If the Trubudget has started without provisioning, only available user will be the root. The root user credentials are (by default):
+
+```
+Username  |  Password
+------------------------
+root      |  root-secret
+```
+
+> Default password for the root user can be changed via the environment variable ROOT_SECRET under .env file.
+
 ### Environment Variables
 
 The environmental variables are located in the file `.env` (in the directory `scripts/development/`). You can change them directly. If you do not have an `.env` file, you can copy the `.env_example` file.
 
 ### Options for Setup
 
-| Options                        | Description                                                                                                                                        |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Options                        | Description                                                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | --slim                         | Starts a TruBudget instance with alpha-node, alpha-api, provisioning and frontend.                                                               |
 | --full                         | Starts a TruBudget instance with alpha-node, emaildb, minio, alpha-api, email-service, provisioning, excel-export-service, storage and frontend. |
-| --enable-service [services...] | Starts additional services to the TruBudget instance. Available services: email-service, excel-export-service, storage-service                     |
-| --no-log                       | Disable logs of all docker-containers                                                                                                              |
-| --no-provisioning              | Skip the provisioning                                                                                                                              |
-| --add-beta                    | Add a beta-node that trys to connect to alpha-node                                                                                               |
-| --add-organization             | Add a beta-node, beta-api, beta-frontend from a new Organization. Needs to be approved by alpha-node                                           |
-| --prune                        | Delete the multichain, document storage and email database (docker volume)                                                                         |
-| --down                         | Shutdown all docker containers                                                                                                                     |
-| --help                         | Print the help section                                                                                                                             |
+| --enable-service [services...] | Starts additional services to the TruBudget instance. Available services: email-service, excel-export-service, storage-service                   |
+| --no-log                       | Disable logs of all docker-containers                                                                                                            |
+| --no-provisioning              | Skip the provisioning                                                                                                                            |
+| --add-beta                     | Add a beta-node that trys to connect to alpha-node                                                                                               |
+| --add-organization             | Add a beta-node, beta-api, beta-frontend from a new Organization. Needs to be approved by alpha-node                                             |
+| --prune                        | Delete the multichain, document storage and email database (docker volume)                                                                       |
+| --down                         | Shutdown all docker containers                                                                                                                   |
+| --help                         | Print the help section                                                                                                                           |
