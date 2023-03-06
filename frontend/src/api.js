@@ -2,12 +2,13 @@ import axios from "axios";
 import _isEmpty from "lodash/isEmpty";
 import strings from "./localizeStrings";
 import contentDispositionAttachment from "content-disposition-attachment";
+import config from "./config";
 
-const devMode = process.env.NODE_ENV === "development";
+const devMode = config.envMode === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
-const PORT_EXPORT_SVC = process.env.EXPORT_PORT || "8888";
-const PORT_EMAIL_SVC = process.env.EMAIL_PORT || "8890";
+const exportSvcPort = config.export.servicePort;
+const emailSvcPort = config.email.servicePort;
 
 // eslint-disable-next-line no-console
 console.log(`API is running in ${devMode ? "development" : "production"} mode (API Version ${API_VERSION})`);
@@ -62,7 +63,7 @@ class Api {
    */
   getExportServiceUrl = (urlSlug, devModeEnvironment = "") => {
     const baseURL = devMode
-      ? `http://localhost:${PORT_EXPORT_SVC}${!devModeEnvironment.length ? "" : `/${devModeEnvironment.toLowerCase()}`}`
+      ? `http://localhost:${exportSvcPort}${!devModeEnvironment.length ? "" : `/${devModeEnvironment.toLowerCase()}`}`
       : "/export/xlsx";
     return `${baseURL}/${urlSlug}`;
   };
@@ -71,7 +72,7 @@ class Api {
    * Returns URL for calling Email service
    * @param {*} urlSlug tail segment of the URL
    */
-  getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${PORT_EMAIL_SVC}` : "/email"}/${urlSlug}`;
+  getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${emailSvcPort}` : "/email"}/${urlSlug}`;
 
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
