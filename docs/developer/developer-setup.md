@@ -289,6 +289,18 @@ ORGANIZATION_VAULT_SECRET="secret"
 MULTICHAIN_RPC_PASSWORD=s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
 ```
 
+> If the Trubudget has started without provisioning, only available user will be the root. The root user credentials are (by default):
+
+```
+Username  |  Password
+------------------------
+root      |  root-secret
+```
+
+> Default password for the root user can be changed via the environment variable ROOT_SECRET under .env file.
+
+> For more information about environment variables, see [Environment Variables in TruBudget](https://github.com/openkfw/TruBudget/blob/main/docs/environment-variables.md)
+
 2. Install node-modules
 
 - (Linux/Mac) Depending on your machine configuration, it might be necessary to install `autoconf` and `automake`
