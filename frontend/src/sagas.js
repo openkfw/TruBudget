@@ -5,6 +5,7 @@ import Api from "./api.js";
 import { getExchangeRates } from "./getExchangeRates";
 import { formatString, fromAmountString, getLoginErrorFromResponse } from "./helper.js";
 import strings from "./localizeStrings";
+import config from "./config";
 import {
   GET_EXCHANGE_RATES,
   GET_EXCHANGE_RATES_SUCCESS,
@@ -504,7 +505,7 @@ export function* fetchVersionsSaga() {
   yield execute(function* () {
     try {
       const response = yield callApi(api.fetchVersions);
-      response.data["frontend"] = { release: process.env.REACT_APP_VERSION, ping: 0 };
+      response.data["frontend"] = { release: config.version, ping: 0 };
       response.data["api"] = {
         ...response.data.api,
         ping: response.ping - response.data.blockchain.ping - response.data.multichain.ping

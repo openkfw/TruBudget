@@ -10,6 +10,7 @@ import {
   storePassword,
   storeUsername
 } from "./actions";
+import config from "./../../config";
 import LoginPage from "./LoginPage";
 
 class LoginPageContainer extends Component {
@@ -20,13 +21,13 @@ class LoginPageContainer extends Component {
     // process.env exists when using node.js
     if (
       window?.injectedEnv?.REACT_APP_EMAIL_SERVICE_ENABLED === "true" ||
-      process.env.REACT_APP_EMAIL_SERVICE_ENABLED === "true"
+      config.email.isEnabled
     ) {
       this.props.checkEmailService();
     }
     if (
       window?.injectedEnv?.REACT_APP_EXPORT_SERVICE_ENABLED === "true" ||
-      process.env.REACT_APP_EXPORT_SERVICE_ENABLED === "true"
+      config.export.isEnabled
     ) {
       this.props.checkExportService();
     }
