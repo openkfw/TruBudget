@@ -3,24 +3,15 @@ import { createLogger } from "redux-logger";
 import { store } from "./../index";
 import config from "./../config";
 
-// Create config variables
-const isLoggingEnabled = config.logging.isEnabled;
-const logLevel = config.logging.logLevel;
-const envMode = config.envMode;
-const isLoggingHostSSL = config.logging.isHostSSL;
-const loggingSvcHost = config.logging.serviceHost;
-const loggingSvcPort = config.logging.servicePort;
-const loggingPushInterval = config.logging.pushInterval;
-
 let instance = undefined;
 const logMessages = [];
 const getToken = () => (store ? store.getState().toJS().login.jwt : "");
 const getUserId = () => (store ? store.getState().toJS().login.id : "");
 
 const createConnection = () => {
-  if (isLoggingEnabled === false) return;
+  if (config.logging.isEnabled === false) return;
   // SSL musst be enabled when using logger in production
-  if (envMode !== "development" && isLoggingHostSSL === false && isLoggingEnabled) {
+  if (config.envMode !== "development" && config.logging.isHostSSL === false && config.logging.isEnabled) {
     // eslint-disable-next-line no-console
     console.error(
       "Seems you are using TruBudget in production with logging enabled but without SSL! Enable SSL for Frontend-Logging to proceed!"
@@ -29,10 +20,10 @@ const createConnection = () => {
   // Build url
   instance = axios.create();
   instance.defaults.baseURL = `${
-    isLoggingHostSSL ? "http://" : "https://"
-  }${loggingSvcHost}:${loggingSvcPort}`;
+    config.logging.isHostSSL ? "http://" : "https://"
+  }${config.logging.serviceHost}:${config.logging.servicePort}`;
 
-  setInterval(pushLogToServer, 1000 * loggingPushInterval);
+  setInterval(pushLogToServer, 1000 * config.logging.pushInterval);
 };
 
 const setToken = () => {
@@ -60,7 +51,7 @@ const predicate = (getState, action) => {
     }
   });
   //In trace mode print to console
-  if (logLevel === "trace" && isLoggingEnabled === true) return true;
+  if (config.logging.logLevel === "trace" && config.logging.isEnabled === true) return true;
   return false;
 };
 
@@ -87,7 +78,7 @@ const pushLogToServer = async () => {
 };
 
 export const createLogMsg = async log => {
-  if (isLoggingEnabled === false) return;
+  if (config.logging.isEnabled === false) return;
   const msg = {
     ...log,
     when: new Date().toString(),
