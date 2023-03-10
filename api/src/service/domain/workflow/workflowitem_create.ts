@@ -177,7 +177,7 @@ export async function createWorkflowitem(
       amount: reqData.amount,
       currency: reqData.currency,
       amountType: reqData.amountType,
-      exchangeRate: reqData.exchangeRate,
+      exchangeRate: reqData.exchangeRate || "1.0",
       billingDate: reqData.billingDate,
       dueDate: reqData.dueDate,
       documents,
