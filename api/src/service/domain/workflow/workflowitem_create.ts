@@ -177,7 +177,7 @@ export async function createWorkflowitem(
       amount: reqData.amount,
       currency: reqData.currency,
       amountType: reqData.amountType,
-      exchangeRate: reqData.exchangeRate || "1.0",
+      exchangeRate: reqData.exchangeRate,
       billingDate: reqData.billingDate,
       dueDate: reqData.dueDate,
       documents,
@@ -243,6 +243,14 @@ export async function createWorkflowitem(
   if (Result.isErr(workflowitemTypeEvents)) {
     return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
   }
+
+  logger.trace({ workflowitemCreated }, "Setting default exchange rate");
+  if (
+    workflowitemCreated.workflowitem.amountType !== "N/A" &&
+    workflowitemCreated.workflowitem.exchangeRate === undefined
+  ) {
+      workflowitemCreated.workflowitem.exchangeRate = "1.0";
+    }
 
   return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
 
