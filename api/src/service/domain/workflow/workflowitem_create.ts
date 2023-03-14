@@ -244,6 +244,14 @@ export async function createWorkflowitem(
     return new VError(workflowitemTypeEvents, "failed to apply workflowitem type");
   }
 
+  logger.trace({ workflowitemCreated }, "Setting default exchange rate");
+  if (
+    workflowitemCreated.workflowitem.amountType !== "N/A" &&
+    workflowitemCreated.workflowitem.exchangeRate === undefined
+  ) {
+      workflowitemCreated.workflowitem.exchangeRate = "1.0";
+    }
+
   return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
 
   function newDefaultPermissionsFor(userId: string): Permissions {

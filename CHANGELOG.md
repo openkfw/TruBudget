@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Add a default exchange rate of 1 to workflow items, if the exchange rate is undefined and amount type is not N/A. [#1170](https://github.com/openkfw/TruBudget/issues/1170)
+
 - Add the possibility to a view the password when logging in [[#1225](https://github.com/openkfw/TruBudget/issues/1225)]
 
 - Add a warning in the workflowitem dialog for overwriting permissions [#1189](https://github.com/openkfw/TruBudget/issues/1189)
