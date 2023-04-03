@@ -22,7 +22,7 @@
     "audit": "better-npm-audit audit",
     "test": "nyc --all --reporter=lcov --reporter=text mocha \"src/**/*.spec.js\"",
     "watch": "nodemon src",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov",
     "check-backup": "node check-backup.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"
@@ -57,7 +57,6 @@
   "devDependencies": {
     "@babel/core": "^7.18.10",
     "@babel/eslint-parser": "^7.18.2",
-    "coveralls": "^3.1.1",
     "eslint": "^8.21.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
