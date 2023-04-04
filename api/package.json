@@ -40,7 +40,7 @@
     "dev": "ts-node-dev --poll --respawn -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
     "watch": "ts-node-dev --poll --respawn -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
     "test": "nyc mocha --require ts-node/register -r tsconfig-paths/register \"src/**/*.spec.ts\"",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov",
     "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
     "tsc": "tsc",
