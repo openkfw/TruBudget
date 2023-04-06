@@ -210,7 +210,10 @@ export async function createWorkflowitem(
   );
 
   if(!isUserExists) {
-    return new VError("user exists check failed");
+    return new PreconditionError(
+      ctx,
+      workflowitemCreated,
+      "assigned user does not exist!");
   }
   const subprojectResult = await repository.getSubproject(reqData.projectId, reqData.subprojectId);
   if (Result.isErr(subprojectResult)) {
