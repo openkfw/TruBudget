@@ -41,6 +41,7 @@ describe("Create workflowitem", () => {
 
     const result = await WorkflowitemCreate.createWorkflowitem(ctx, root, data, {
       workflowitemExists: async (_projectId, _subprojectId, _workflowitemId) => false,
+      userExists: async (_userId) => false,
       getSubproject: async () => baseSubproject,
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
@@ -62,6 +63,7 @@ describe("Create workflowitem", () => {
 
     const result = await WorkflowitemCreate.createWorkflowitem(ctx, alice, data, {
       workflowitemExists: async (_projectId, _subprojectId, _workflowitemId) => false,
+      userExists: async (_userId) => false,
       getSubproject: async () => baseSubproject,
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
