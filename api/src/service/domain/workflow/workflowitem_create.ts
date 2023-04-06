@@ -77,6 +77,9 @@ interface Repository {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<boolean>;
+  userExists(
+    userId: string
+  ): Promise<Result.Type<boolean>>;
   getSubproject(
     projectId: string,
     subprojectId: string,
@@ -201,6 +204,14 @@ export async function createWorkflowitem(
     return new AlreadyExists(ctx, workflowitemCreated, workflowitemCreated.workflowitem.id);
   }
 
+  logger.trace({ item: workflowitemCreated }, "Check if assignee exists");
+  const isUserExists = await repository.userExists(
+    workflowitemCreated.workflowitem.assignee
+  );
+
+  if(!isUserExists) {
+    return new VError("user exists check failed");
+  }
   const subprojectResult = await repository.getSubproject(reqData.projectId, reqData.subprojectId);
   if (Result.isErr(subprojectResult)) {
     return new VError(subprojectResult, "failed to get subproject");
