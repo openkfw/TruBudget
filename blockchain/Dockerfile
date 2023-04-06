@@ -19,7 +19,7 @@ RUN chown -R node src/multichain-feed/multichain-feed
 
 # Since we can not move the .multichain dir to the node users home (breaking change), we have to chown the root users home.
 # TODO: for version 3 - move .multichain in node home
-RUN chown -R node /root
+RUN chown -R node: /root
 # Symlink must be created for production. Multichian wants to create a .multichain folder in node users home.
 # Why? Multichain internal.
 # Avoid using the node users .multichain folder use the root multichain folder instead
