@@ -28,7 +28,7 @@ services:
         ipv4_address: 172.21.0.11
     # volume for persisting data from multichain
     volumes:
-      - /alphaVolume:/root/.multichain
+      - alphaVolume:${MULTICHAIN_DIR}
     ports:
       - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting API
       - "8085:8085" # port for backup
@@ -234,7 +234,7 @@ services:
       API_HOST: alpha-api # API to send register request
       API_PORT: ${API_PORT}
     volumes:
-      - /beta1Volume:/root/.multichain
+      - beta1Volume:/root/.multichain
     depends_on:
       - alpha-node
       - alpha-api
@@ -293,3 +293,7 @@ services:
       - alpha-api
     ports:
       - "3005:80" # map nginx port 80 to localhost:3005
+
+volumes:
+  alphaVolume:
+  beta1Volume:
