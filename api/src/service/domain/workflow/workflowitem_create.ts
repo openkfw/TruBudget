@@ -235,7 +235,7 @@ export async function createWorkflowitem(
 
   const userPermissions = userResult.permissions;
 
-  if(userPermissions["user.authenticate"] === undefined || userPermissions["user.authenticate"].length === 0) {
+  if(!userPermissions["user.authenticate"] || !userPermissions["user.authenticate"].length) {
     return new PreconditionError(
       ctx,
       workflowitemCreated,
