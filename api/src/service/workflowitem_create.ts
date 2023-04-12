@@ -46,6 +46,11 @@ export async function createWorkflowitem(
       ) => {
         return userExists(conn, ctx, serviceUser, userId);
       },
+      getUser: async (
+        userId: string
+      ) =>  {
+        return UserQuery.getUser(conn, ctx, serviceUser, userId)
+      },
       getSubproject: async (projectId: string, subprojectId: string) =>
         cache.getSubproject(projectId, subprojectId),
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
