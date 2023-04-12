@@ -239,7 +239,7 @@ export async function createWorkflowitem(
     return new PreconditionError(
       ctx,
       workflowitemCreated,
-      "disabled users are not allowed to create workflow items!"
+      "disabled users are not allowed to be assigned to workflowitems"
     );
   }
 
