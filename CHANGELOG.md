@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Add additional checks that prevent creation of a workflow item with an assigned user that has a disabled account or does not exist.
 - Add a warning in the workflowitem dialog for overwriting permissions [#1189](https://github.com/openkfw/TruBudget/issues/1189)
 - Add Budgets in Table-View [#1226](https://github.com/openkfw/TruBudget/issues/1226)
 - Add Button to view additional data object in Table-View [#1203](https://github.com/openkfw/TruBudget/issues/1203)
