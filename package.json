@@ -13,7 +13,7 @@
     "better-npm-audit": "^3.7.3"
   },
   "devDependencies": {
-    "danger": "^10.7.1",
+    "danger": "^11.2.6",
     "lodash": "^4.17.19"
   }
 }
