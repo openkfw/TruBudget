@@ -20,6 +20,8 @@ import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
+import * as UserRecord from "../organization/user_record";
+
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import * as Project from "./project";
@@ -77,6 +79,10 @@ interface Repository {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<boolean>;
+  userExists(
+    userId: string
+  ): Promise<Result.Type<boolean>>;
+  getUser(userId: string): Promise<Result.Type<UserRecord.UserRecord>>;
   getSubproject(
     projectId: string,
     subprojectId: string,
@@ -199,6 +205,42 @@ export async function createWorkflowitem(
     )
   ) {
     return new AlreadyExists(ctx, workflowitemCreated, workflowitemCreated.workflowitem.id);
+  }
+
+  logger.trace({ item: workflowitemCreated }, "Check if assignee exists");
+  const userExistsResult = await repository.userExists(
+    workflowitemCreated.workflowitem.assignee
+  );
+
+  if (Result.isErr(userExistsResult)) {
+    return new VError(userExistsResult, "user exists check failed");
+  }
+
+  const userExists = userExistsResult;
+
+  if(!userExists) {
+    return new PreconditionError(
+      ctx,
+      workflowitemCreated,
+      "assigned user does not exist!");
+  }
+
+  const userResult = await repository.getUser(
+    workflowitemCreated.workflowitem.assignee
+    );
+
+  if (Result.isErr(userResult)) {
+    return new VError(userResult, "user check failed");
+  }
+
+  const userPermissions = userResult.permissions;
+
+  if(!userPermissions["user.authenticate"] || !userPermissions["user.authenticate"].length) {
+    return new PreconditionError(
+      ctx,
+      workflowitemCreated,
+      "disabled users are not allowed to be assigned to workflowitems"
+    );
   }
 
   const subprojectResult = await repository.getSubproject(reqData.projectId, reqData.subprojectId);

@@ -7,6 +7,7 @@ import * as Cache from "./cache2";
 import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
+import { userExists } from "./domain/organization/user_query";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
@@ -39,6 +40,16 @@ export async function createWorkflowitem(
       ) => {
         const item = await cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
         return Result.isOk(item);
+      },
+      userExists: async (
+        userId: string
+      ) => {
+        return userExists(conn, ctx, serviceUser, userId);
+      },
+      getUser: async (
+        userId: string
+      ) =>  {
+        return UserQuery.getUser(conn, ctx, serviceUser, userId)
       },
       getSubproject: async (projectId: string, subprojectId: string) =>
         cache.getSubproject(projectId, subprojectId),
