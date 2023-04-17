@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { performance } from "perf_hooks";
 import { VError } from "verror";
 import { config } from "../config";
@@ -86,7 +86,7 @@ export class RpcClient {
         password: settings.password,
       },
     });
-    this.instance.interceptors.request.use((request: AxiosRequestConfig) => {
+    this.instance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
       if (JSON.parse(request.data).method?.includes("getinfo")) {
         this.timeStamp = performance.now();
       }
