@@ -6,5 +6,9 @@
   "1091459": {
     "active": true,
     "notes": "Ignored since there is no fix in the kubernetes/client-node package yet."
+  },
+  "1091725": {
+    "active": true,
+    "notes": "Ignored since there is no fix in the kubernetes/client-node package yet."
   }
 }
