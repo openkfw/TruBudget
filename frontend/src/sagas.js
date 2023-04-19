@@ -2843,7 +2843,7 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
               };
             }
 
-            if (amountType === "disbursed" && status === "closed" && amount) {
+            if (amountType === "disbursed" && status === "closed" && amount && !rejectReason) {
               return {
                 ...acc,
                 disbursed: acc.disbursed + fromAmountString(amount) * (exchangeRate || 1)
@@ -2940,7 +2940,7 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true
             };
           }
 
-          if (amountType === "disbursed" && status === "closed" && amount) {
+          if (amountType === "disbursed" && status === "closed" && amount && !rejectReason) {
             return {
               ...acc,
               disbursedBudget: acc.disbursedBudget + fromAmountString(amount) * exchangeRate
