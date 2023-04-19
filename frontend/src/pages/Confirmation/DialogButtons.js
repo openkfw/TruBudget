@@ -1,8 +1,10 @@
+import React from "react";
+import _isEmpty from "lodash/isEmpty";
+
 import { Button, Typography } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
-import _isEmpty from "lodash/isEmpty";
+
 import strings from "../../localizeStrings";
-import React from "react";
 
 const styles = {
   dialogActions: {
@@ -18,7 +20,7 @@ const styles = {
   }
 };
 
-const DialogButtons = props => {
+const DialogButtons = (props) => {
   const {
     confirmButtonText,
     onConfirm,

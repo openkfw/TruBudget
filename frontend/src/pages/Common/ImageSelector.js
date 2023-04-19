@@ -1,3 +1,5 @@
+import React from "react";
+
 import FilledStar from "@mui/icons-material/Star";
 import NotFilledStar from "@mui/icons-material/StarBorder";
 import IconButton from "@mui/material/IconButton";
@@ -5,8 +7,9 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import Subheader from "@mui/material/ListSubheader";
-import React from "react";
+
 import strings from "../../localizeStrings";
+
 import { images } from "./images";
 
 const styles = {
@@ -52,7 +55,7 @@ const ImageSelector = ({ onTouchTap, selectedImage }) => {
             transform: "translateZ(0)"
           }}
         >
-          {images.map(image => (
+          {images.map((image) => (
             <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src}>
               <img alt={image.src} src={image.src} />
               <ImageListItemBar

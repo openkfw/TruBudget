@@ -1,6 +1,7 @@
-import { Typography } from "@mui/material";
-import WarningIcon from "@mui/icons-material/Warning";
 import React from "react";
+
+import WarningIcon from "@mui/icons-material/Warning";
+import { Typography } from "@mui/material";
 
 const styles = {
   warning: {

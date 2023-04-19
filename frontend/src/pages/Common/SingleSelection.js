@@ -1,3 +1,7 @@
+import React, { Component } from "react";
+
+import CancelIcon from "@mui/icons-material/Cancel";
+import CloseIcon from "@mui/icons-material/Close";
 import { Checkbox, IconButton } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
@@ -10,11 +14,9 @@ import Paper from "@mui/material/Paper";
 import Radio from "@mui/material/Radio";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
-import CancelIcon from "@mui/icons-material/Cancel";
-import CloseIcon from "@mui/icons-material/Close";
-import React, { Component } from "react";
 
 import strings from "../../localizeStrings";
+
 import ActionButton from "./ActionButton";
 import OverflowTooltip from "./OverflowTooltip";
 
@@ -73,7 +75,7 @@ class SingleSelection extends Component {
   }
 
   renderSelection(selectableItems, selectId, disabled) {
-    return selectableItems.map(u => {
+    return selectableItems.map((u) => {
       const { id, displayName } = u;
       const isChecked = id === selectId;
       return (
@@ -102,7 +104,7 @@ class SingleSelection extends Component {
   renderUserSelection = (selectableItems, selectId, disabled) => {
     const selection = this.renderSelection(
       selectableItems.filter(
-        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
+        (u) => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
       ),
       selectId,
       disabled
@@ -122,7 +124,7 @@ class SingleSelection extends Component {
   renderGroupSelection = (selectableItems, selectId, disabled) => {
     const selection = this.renderSelection(
       selectableItems.filter(
-        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
+        (u) => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
       ),
       selectId,
       disabled
@@ -143,7 +145,7 @@ class SingleSelection extends Component {
     const { selectId, selectableItems, disabled, workflowSortEnabled, status, floatingLabel, onClearItem } = this.props;
     const suggestedUsers = this.renderUserSelection(selectableItems, selectId, disabled);
     const suggestedGroups = this.renderGroupSelection(selectableItems, selectId, disabled);
-    const selectedItem = selectableItems.find(s => s.id === selectId);
+    const selectedItem = selectableItems.find((s) => s.id === selectId);
     const getSortStyles = () => {
       if (workflowSortEnabled) {
         if (status !== "closed") {
@@ -180,7 +182,7 @@ class SingleSelection extends Component {
               ...getSortStyles()
             }}
             value={selectedItem ? this.renderTitle(selectedItem) : []}
-            renderValue={name => {
+            renderValue={(name) => {
               return selectedItem ? (
                 <div style={styles.selectValue}>
                   <Checkbox style={styles.radioButton} disabled={disabled} checked={true} />
@@ -210,7 +212,7 @@ class SingleSelection extends Component {
                 <Input
                   inputProps={{ "data-test": "search-single-select-field" }}
                   value={this.state.searchTerm}
-                  onChange={e => this.setState({ searchTerm: e.target.value })}
+                  onChange={(e) => this.setState({ searchTerm: e.target.value })}
                 />
               </FormControl>
             </div>

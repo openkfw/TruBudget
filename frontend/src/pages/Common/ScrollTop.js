@@ -1,18 +1,19 @@
 import React from "react";
+
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Fab from "@mui/material/Fab";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Zoom from "@mui/material/Zoom";
 
 const styles = {
   root: {
     position: "fixed",
-    bottom: theme => theme.spacing(5),
-    right: theme => theme.spacing(5)
+    bottom: (theme) => theme.spacing(5),
+    right: (theme) => theme.spacing(5)
   }
 };
 
-const ScrollTop = props => {
+const ScrollTop = (props) => {
   const { window } = props;
 
   const trigger = useScrollTrigger({
@@ -21,7 +22,7 @@ const ScrollTop = props => {
     threshold: 100
   });
 
-  const handleClick = event => {
+  const handleClick = (event) => {
     const anchor = (event.target.ownerDocument || document).querySelector("#back-to-top");
 
     if (anchor) {

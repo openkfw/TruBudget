@@ -1,3 +1,10 @@
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import _isEmpty from "lodash/isEmpty";
+
+import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import AmountIcon from "@mui/icons-material/AccountBalance";
+import AssigneeIcon from "@mui/icons-material/Group";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -10,15 +17,11 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
-import AmountIcon from "@mui/icons-material/AccountBalance";
-import AssigneeIcon from "@mui/icons-material/Group";
-import dayjs from "dayjs";
-import _isEmpty from "lodash/isEmpty";
-import React, { useEffect, useState } from "react";
+
 import { isDateReached, statusIconMapping, statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
 import DocumentOverviewContainer from "../Documents/DocumentOverviewContainer";
+
 import WorkflowitemHistoryTab from "./WorkflowitemHistoryTab/WorkflowHistoryTab";
 
 const styles = {
@@ -70,7 +73,7 @@ const removeNewLines = (text) => {
 
 function Overview({ users, workflowitem }) {
   const { displayName, description, amountType, assignee, amount, currency, dueDate, workflowitemType, rejectReason } =
-    workflowitem?.data;
+    { ...workflowitem?.data };
   const status = rejectReason ? "rejected" : workflowitem.data.status;
   const trimmedComment = removeNewLines(description);
   const assignedUser = users.find((user) => user.id === assignee);

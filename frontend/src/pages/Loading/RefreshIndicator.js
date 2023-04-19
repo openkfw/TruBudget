@@ -30,7 +30,7 @@ const styles = {
   }
 };
 
-const Refresh = props => (
+const Refresh = (props) => (
   <div style={styles.container}>
     <div style={styles.refreshContainer}>
       <CircularProgress

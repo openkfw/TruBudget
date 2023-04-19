@@ -1,10 +1,13 @@
+import React from "react";
+
 import AppBar from "@mui/material/AppBar";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-import React from "react";
+
 import strings from "../../localizeStrings";
 import CreateButton from "../Common/CreateButton";
 import LoadingIndicator from "../Loading/RefreshIndicator";
+
 import DialogContainer from "./DialogContainer";
 import GroupTable from "./GroupTable";
 import { DisabledUserEmptyState, EnabledUserEmptyState, UserGroupsEmptyState } from "./UsersGroupsEmptyStates";
@@ -36,7 +39,7 @@ const styles = {
   }
 };
 
-const renderTab = props => {
+const renderTab = (props) => {
   const { tabIndex, allowedIntents, isDataLoading, enabledUsers, groups, disabledUsers, showDashboardDialog } = props;
 
   if (isDataLoading) {
@@ -45,7 +48,7 @@ const renderTab = props => {
 
   switch (tabIndex) {
     // Enabled Users
-    case 0:
+    case 0: {
       const isAllowedToCreateUser = allowedIntents.includes("global.createUser");
       return (
         <>
@@ -61,9 +64,9 @@ const renderTab = props => {
           <UsersTable {...props} users={enabledUsers} CustomEmptyState={EnabledUserEmptyState} />
         </>
       );
-
+    }
     // Groups
-    case 1:
+    case 1: {
       const isAllowedToCreateGroup = allowedIntents.includes("global.createGroup");
       return (
         <>
@@ -79,7 +82,7 @@ const renderTab = props => {
           {groups.length > 0 ? <GroupTable {...props} /> : <UserGroupsEmptyState />}
         </>
       );
-
+    }
     // Disabled Users
     case 2:
       return (
@@ -102,7 +105,7 @@ const renderTab = props => {
   return null;
 };
 
-const Users = props => {
+const Users = (props) => {
   const { tabIndex, setTabIndex } = props;
   return (
     <div data-test="userdashboard" style={styles.container}>

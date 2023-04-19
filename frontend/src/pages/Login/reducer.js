@@ -1,28 +1,31 @@
 import dayjs from "dayjs";
+import { fromJS } from "immutable";
+
 import "dayjs/locale/de";
 import "dayjs/locale/fr";
 import "dayjs/locale/ka";
 import "dayjs/locale/pt";
-import { fromJS } from "immutable";
+
 import strings from "../../localizeStrings";
 import { SAVE_EMAIL_ADDRESS_SUCCESS } from "../Navbar/actions";
+
 import {
   ADMIN_LOGIN_SUCCESS,
   ADMIN_LOGOUT_SUCCESS,
   CHECK_EMAIL_SERVICE_FAILURE,
   CHECK_EMAIL_SERVICE_SUCCESS,
+  CHECK_EXPORT_SERVICE_FAILURE,
+  CHECK_EXPORT_SERVICE_SUCCESS,
   FETCH_ADMIN_USER_SUCCESS,
   FETCH_EMAIL_ADDRESS_SUCCESS,
   FETCH_USER_SUCCESS,
   INIT_LANGUAGE,
-  LOGIN_SUCCESS,
   LOGIN_ERROR,
+  LOGIN_SUCCESS,
   LOGOUT_SUCCESS,
   SET_LANGUAGE,
   STORE_PASSWORD,
-  STORE_USERNAME,
-  CHECK_EXPORT_SERVICE_SUCCESS,
-  CHECK_EXPORT_SERVICE_FAILURE
+  STORE_USERNAME
 } from "./actions";
 
 export const defaultState = fromJS({
@@ -87,7 +90,7 @@ export default function loginReducer(state = defaultState, action) {
       return state.set("exportServiceAvailable", true);
     case STORE_PASSWORD:
       return state.set("password", action.password);
-    case FETCH_USER_SUCCESS:
+    case FETCH_USER_SUCCESS: {
       const userDisplayNameMap = {};
       const enabledUsers = [];
       const disabledUsers = [];
@@ -107,6 +110,7 @@ export default function loginReducer(state = defaultState, action) {
         enabledUsers: fromJS(enabledUsers),
         disabledUsers: fromJS(disabledUsers)
       });
+    }
     case FETCH_ADMIN_USER_SUCCESS:
       return state.merge({
         loggedInAdminUser: action.user,
@@ -114,7 +118,7 @@ export default function loginReducer(state = defaultState, action) {
         isUserLoggedIn: action.user.isUserLoggedIn
       });
 
-    case LOGIN_SUCCESS:
+    case LOGIN_SUCCESS: {
       const user = action.user;
       return state.merge({
         jwt: user.token,
@@ -128,6 +132,7 @@ export default function loginReducer(state = defaultState, action) {
         password: defaultState.get("password"),
         loginError: false
       });
+    }
     case ADMIN_LOGIN_SUCCESS:
       return state.merge({
         adminLoggedIn: true
@@ -137,10 +142,11 @@ export default function loginReducer(state = defaultState, action) {
     case INIT_LANGUAGE:
       changeLanguage(state);
       return state;
-    case SET_LANGUAGE:
+    case SET_LANGUAGE: {
       const newState = state.set("language", action.language);
       changeLanguage(newState);
       return newState;
+    }
     case ADMIN_LOGOUT_SUCCESS:
     case LOGOUT_SUCCESS:
       return defaultState.set("language", state.get("language"));

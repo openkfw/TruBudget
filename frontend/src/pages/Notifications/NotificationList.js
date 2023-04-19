@@ -1,13 +1,15 @@
+import React from "react";
+
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import List from "@mui/material/List";
 import TablePagination from "@mui/material/TablePagination";
-import React from "react";
+
 import strings from "../../localizeStrings";
-import NotificationListItems from "./NotificationListItems";
 
 import NotificationEmptyState from "./NotificationEmptyState";
+import NotificationListItems from "./NotificationListItems";
 
 const styles = {
   button: {
@@ -22,7 +24,7 @@ const styles = {
 };
 
 const markPageAsRead = (markMultipleNotificationsAsRead, notifications, notificationPage) => {
-  const notificationIds = notifications.map(notification => notification.id);
+  const notificationIds = notifications.map((notification) => notification.id);
   markMultipleNotificationsAsRead(notificationIds, notificationPage);
 };
 
@@ -38,7 +40,7 @@ const onChangeRowsPerPage = (
   fetchNotifications(0);
 };
 
-const NotificationList = props => {
+const NotificationList = (props) => {
   const {
     markMultipleNotificationsAsRead,
     notifications,
@@ -52,7 +54,7 @@ const NotificationList = props => {
     currentPage,
     isDataLoading
   } = props;
-  const allNotificationsRead = notifications.some(notification => notification.isRead === false);
+  const allNotificationsRead = notifications.some((notification) => notification.isRead === false);
   const rowsPerPageOptions = [5, 10, 20, 50];
   return (
     <Card>
@@ -77,7 +79,7 @@ const NotificationList = props => {
             <NotificationListItems
               notifications={notifications}
               history={history}
-              markNotificationAsRead={notificationId => markNotificationAsRead(notificationId, currentPage)}
+              markNotificationAsRead={(notificationId) => markNotificationAsRead(notificationId, currentPage)}
               notificationsPerPage={notificationsPerPage}
               notificationOffset={notificationOffset}
             />
@@ -91,7 +93,7 @@ const NotificationList = props => {
           component="div"
           rowsPerPageOptions={rowsPerPageOptions}
           rowsPerPage={notificationsPerPage}
-          onRowsPerPageChange={event =>
+          onRowsPerPageChange={(event) =>
             onChangeRowsPerPage(
               event.target.value,
               setNotifcationsPerPage,

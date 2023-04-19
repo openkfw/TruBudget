@@ -1,14 +1,14 @@
-import Divider from "@mui/material/Divider";
 import React from "react";
+
+import Divider from "@mui/material/Divider";
 
 import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import ImageSelector from "../Common/ImageSelector";
-
 import TagEditor from "../Common/TagEditor";
 
-const ProjectDialogContent = props => {
+const ProjectDialogContent = (props) => {
   return (
     <div>
       <div>

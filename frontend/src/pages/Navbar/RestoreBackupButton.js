@@ -1,14 +1,16 @@
 import React from "react";
-import Button from "@mui/material/Button";
+
 import Upload from "@mui/icons-material/CloudUpload";
+import Button from "@mui/material/Button";
+
 import strings from "../../localizeStrings";
 
 const styles = {
   button: {
-    margin: theme => theme.spacing(1)
+    margin: (theme) => theme.spacing(1)
   },
   leftIcon: {
-    marginRight: theme => theme.spacing(1)
+    marginRight: (theme) => theme.spacing(1)
   },
   iconSmall: {
     fontSize: 20
@@ -34,11 +36,11 @@ const RestoreBackupButton = ({ restoreBackup }) => {
         id="uploadBackup"
         type="file"
         style={styles.uploadInput}
-        onChange={event => {
+        onChange={(event) => {
           if (event.target.files) {
             const file = event.target.files[0];
             const reader = new FileReader();
-            reader.onload = e => {
+            reader.onload = (e) => {
               if (e.target.result !== undefined) {
                 restoreBackup(e.target.result);
               }

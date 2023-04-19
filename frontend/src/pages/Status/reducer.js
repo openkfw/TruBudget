@@ -1,4 +1,5 @@
 import { fromJS } from "immutable";
+
 import {
   FETCH_EMAIL_SERVICE_VERSION,
   FETCH_EMAIL_SERVICE_VERSION_FAILURE,

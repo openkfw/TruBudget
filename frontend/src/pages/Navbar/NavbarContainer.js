@@ -1,11 +1,12 @@
-import isEmpty from "lodash/isEmpty";
-import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import isEmpty from "lodash/isEmpty";
+import queryString from "query-string";
 
 import { convertToSearchBarString, toJS } from "../../helper";
 import { fetchEmailAddress, logout } from "../Login/actions";
 import FlyInNotifications from "../Notifications/FlyInNotifications";
+
 import {
   createBackup,
   enableUserProfileEdit,
@@ -58,28 +59,28 @@ class NavbarContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     toggleSidebar: () => dispatch(toggleSidebar()),
     logout: () => dispatch(logout()),
     fetchActivePeers: () => dispatch(fetchActivePeers()),
     createBackup: () => dispatch(createBackup()),
-    restoreBackup: file => dispatch(restoreBackup(file)),
-    exportData: devModeEnvironment => dispatch(exportData(devModeEnvironment)),
-    storeSearchTerm: searchTerm => dispatch(storeSearchTerm(searchTerm)),
-    storeSearchBarDisplayed: searchBarDisplayed => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
-    setIsRoot: isRoot => dispatch(setIsRoot(isRoot)),
+    restoreBackup: (file) => dispatch(restoreBackup(file)),
+    exportData: (devModeEnvironment) => dispatch(exportData(devModeEnvironment)),
+    storeSearchTerm: (searchTerm) => dispatch(storeSearchTerm(searchTerm)),
+    storeSearchBarDisplayed: (searchBarDisplayed) => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
+    setIsRoot: (isRoot) => dispatch(setIsRoot(isRoot)),
     showUserProfile: () => dispatch(showUserProfile()),
     fetchEmailAddress: () => dispatch(fetchEmailAddress()),
-    saveEmailAddress: emailAddress => dispatch(saveEmailAddress(emailAddress)),
-    storeTempEmailAddress: emailAddress => dispatch(storeTempEmailAddress(emailAddress)),
-    setValidEmailAddressInput: valid => dispatch(setValidEmailAddressInput(valid)),
+    saveEmailAddress: (emailAddress) => dispatch(saveEmailAddress(emailAddress)),
+    storeTempEmailAddress: (emailAddress) => dispatch(storeTempEmailAddress(emailAddress)),
+    setValidEmailAddressInput: (valid) => dispatch(setValidEmailAddressInput(valid)),
     enableUserProfileEdit: () => dispatch(enableUserProfileEdit()),
     hideUserProfile: () => dispatch(hideUserProfile())
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     showSidebar: state.getIn(["navbar", "showSidebar"]),
     peers: state.getIn(["navbar", "peers"]),

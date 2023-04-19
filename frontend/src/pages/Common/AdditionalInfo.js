@@ -1,12 +1,15 @@
+import React, { useEffect, useState } from "react";
+
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+
 import { isEmptyDeep } from "../../helper";
-import React, { useState, useEffect } from "react";
-import JsonEditor from "./JsonEditor";
 import strings from "../../localizeStrings";
+
+import JsonEditor from "./JsonEditor";
 
 const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAdditionalData, submitAdditionalData }) => {
   const [additionalDateChange, setAdditionalDateChange] = useState(

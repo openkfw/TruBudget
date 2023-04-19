@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+
 import { toJS } from "../../../helper";
+import strings from "../../../localizeStrings";
+import { workflowitemEventTypes } from "../../Common/History/eventTypes";
 import HistoryContainer from "../../Common/History/HistoryContainer";
 import useHistoryState from "../../Common/History/historyHook";
-import { fetchNextWorkflowitemHistoryPage, fetchFirstWorkflowitemHistoryPage, hideHistory } from "./actions";
-import { workflowitemEventTypes } from "../../Common/History/eventTypes";
-import strings from "../../../localizeStrings";
+
+import { fetchFirstWorkflowitemHistoryPage, fetchNextWorkflowitemHistoryPage, hideHistory } from "./actions";
 
 const WorkflowitemHistoryTab = ({
   users,
@@ -31,7 +33,7 @@ const WorkflowitemHistoryTab = ({
     };
   }, [hideHistory]);
 
-  const fetchFirstHistoryEvents = filter =>
+  const fetchFirstHistoryEvents = (filter) =>
     fetchFirstWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, filter);
   const fetchNext = () =>
     fetchNextWorkflowitemHistoryPage(projectId, subprojectId, workflowitemId, {
@@ -64,7 +66,7 @@ function mapStateToProps(state) {
     isLoading: state.getIn(["workflowitemDetails", "isHistoryLoading"]),
     currentHistoryPage: state.getIn(["workflowitemDetails", "currentHistoryPage"]),
     lastHistoryPage: state.getIn(["workflowitemDetails", "lastHistoryPage"]),
-    getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
+    getUserDisplayname: (uid) => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
   };
 }
 

@@ -1,28 +1,30 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { storeSnackbarMessage } from "../Notifications/actions";
+import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
+
 import {
+  assignWorkflowItem,
   createWorkflowItem,
+  defaultWorkflowExchangeRate,
   editWorkflowItem,
   hideWorkflowDialog,
   setCurrentStep,
   storeWorkflowAmount,
   storeWorkflowAmountType,
+  storeWorkflowAssignee,
   storeWorkflowComment,
   storeWorkflowCurrency,
   storeWorkflowDocument,
-  storeWorkflowName,
-  storeWorkflowStatus,
   storeWorkflowDueDate,
   storeWorkflowExchangeRate,
   storeWorkflowitemType,
-  defaultWorkflowExchangeRate,
-  storeWorkflowAssignee,
-  assignWorkflowItem
+  storeWorkflowName,
+  storeWorkflowStatus
 } from "./actions";
-import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
 import WorkflowDialog from "./WorkflowDialog";
 
 class WorkflowDialogContainer extends Component {
@@ -44,7 +46,7 @@ class WorkflowDialogContainer extends Component {
     const projectId = path[2];
     const subProjectId = path[3];
     const assignee = this.props.selectedAssignee;
-    const assigneeDisplayName = this.props.users.find(u => u.id === assignee).displayName;
+    const assigneeDisplayName = this.props.users.find((u) => u.id === assignee).displayName;
 
     this.props.createWorkflowitem(
       projectId,
@@ -77,7 +79,7 @@ class WorkflowDialogContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
     creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
@@ -101,25 +103,25 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     createWorkflowitem: (...workflowitemData) => dispatch(createWorkflowItem(...workflowitemData)),
     editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),
-    storeWorkflowComment: comment => dispatch(storeWorkflowComment(comment)),
-    storeWorkflowCurrency: currency => dispatch(storeWorkflowCurrency(currency)),
-    storeWorkflowAmount: amount => dispatch(storeWorkflowAmount(amount)),
-    storeWorkflowExchangeRate: rate => dispatch(storeWorkflowExchangeRate(rate)),
-    storeWorkflowAmountType: type => dispatch(storeWorkflowAmountType(type)),
-    storeWorkflowName: name => dispatch(storeWorkflowName(name)),
-    storeWorkflowStatus: state => dispatch(storeWorkflowStatus(state)),
-    storeWorkflowDueDate: dueDate => dispatch(storeWorkflowDueDate(dueDate)),
-    storeWorkflowitemType: workflowitemType => dispatch(storeWorkflowitemType(workflowitemType)),
+    storeWorkflowComment: (comment) => dispatch(storeWorkflowComment(comment)),
+    storeWorkflowCurrency: (currency) => dispatch(storeWorkflowCurrency(currency)),
+    storeWorkflowAmount: (amount) => dispatch(storeWorkflowAmount(amount)),
+    storeWorkflowExchangeRate: (rate) => dispatch(storeWorkflowExchangeRate(rate)),
+    storeWorkflowAmountType: (type) => dispatch(storeWorkflowAmountType(type)),
+    storeWorkflowName: (name) => dispatch(storeWorkflowName(name)),
+    storeWorkflowStatus: (state) => dispatch(storeWorkflowStatus(state)),
+    storeWorkflowDueDate: (dueDate) => dispatch(storeWorkflowDueDate(dueDate)),
+    storeWorkflowitemType: (workflowitemType) => dispatch(storeWorkflowitemType(workflowitemType)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
-    setCurrentStep: step => dispatch(setCurrentStep(step)),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
+    setCurrentStep: (step) => dispatch(setCurrentStep(step)),
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, fileName) => dispatch(storeWorkflowDocument(payload, fileName)),
-    defaultWorkflowExchangeRate: exchangeRate => dispatch(defaultWorkflowExchangeRate(exchangeRate)),
-    storeWorkflowAssignee: assignee => dispatch(storeWorkflowAssignee(assignee)),
+    defaultWorkflowExchangeRate: (exchangeRate) => dispatch(defaultWorkflowExchangeRate(exchangeRate)),
+    storeWorkflowAssignee: (assignee) => dispatch(storeWorkflowAssignee(assignee)),
     assignWorkflowItem: (
       projectId,
       projectDisplayName,
@@ -143,7 +145,7 @@ const mapDispatchToProps = dispatch => {
         )
       ),
     fetchVersions: () => dispatch(fetchVersions()),
-    setStorageServiceAvailable: isAvailable => dispatch(setStorageServiceAvailable(isAvailable))
+    setStorageServiceAvailable: (isAvailable) => dispatch(setStorageServiceAvailable(isAvailable))
   };
 };
 

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import DocumentOverview from "./DocumentOverview";
-import { validateDocument, downloadDocument } from "./actions";
 import { toJS } from "../../helper";
+
+import { downloadDocument, validateDocument } from "./actions";
+import DocumentOverview from "./DocumentOverview";
 
 class DocumentOverviewContainer extends Component {
   render() {
@@ -11,15 +12,16 @@ class DocumentOverviewContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    validateDocument: (hash, base64String, id, projectId, subprojectId, workflowitemId) => dispatch(validateDocument(hash, base64String, id, projectId, subprojectId, workflowitemId)),
+    validateDocument: (hash, base64String, id, projectId, subprojectId, workflowitemId) =>
+      dispatch(validateDocument(hash, base64String, id, projectId, subprojectId, workflowitemId)),
     downloadDocument: (projectId, subprojectId, workflowitemId, documentId) =>
       dispatch(downloadDocument(projectId, subprojectId, workflowitemId, documentId))
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     validatedDocuments: state.getIn(["documents", "validatedDocuments"])
   };

@@ -1,11 +1,14 @@
+import React, { useEffect, useState } from "react";
+import _isEmpty from "lodash/isEmpty";
+
 import { Button, CircularProgress, DialogActions, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import _isEmpty from "lodash/isEmpty";
-import React, { useEffect, useState } from "react";
+
 import { getGroupsOfUser, hasUserAssignments, isEmptyDeep, isUserOrGroupPermitted } from "../../helper";
 import strings from "../../localizeStrings";
+
 import { ConfirmationDialogCreator } from "./confirmationDialogCreator";
 
 const styles = {
@@ -31,7 +34,7 @@ const styles = {
 };
 
 // Implement a new confirmation dialog by setting  title, content and confirmButtonText
-const ConfirmationDialog = props => {
+const ConfirmationDialog = (props) => {
   const {
     open = false,
     permissions,
@@ -134,9 +137,9 @@ function hasSufficientPermission(permittedToGrant, additionalActions) {
 function isPermittedToGrant(username, groups, permissions, resourcesToCheck) {
   if (isEmptyDeep(permissions)) return true;
 
-  const groupsOfUser = groups.filter(item => item.users.includes(username));
+  const groupsOfUser = groups.filter((item) => item.users.includes(username));
 
-  return resourcesToCheck.every(resource =>
+  return resourcesToCheck.every((resource) =>
     isUserOrGroupPermitted(username, groupsOfUser, permissions[resource][`${resource}.intent.grantPermission`])
   );
 }

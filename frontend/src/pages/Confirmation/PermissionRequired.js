@@ -1,6 +1,8 @@
+import React from "react";
+
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
-import React from "react";
+
 import { capitalize } from "../../helper";
 import strings from "../../localizeStrings";
 
@@ -11,11 +13,11 @@ const styles = {
   }
 };
 
-const PermissionRequired = props => {
+const PermissionRequired = (props) => {
   const { actions, grantPermissionUserMap } = props;
-  const unpermittedActions = actions.filter(action => !action.isUserPermitted);
+  const unpermittedActions = actions.filter((action) => !action.isUserPermitted);
   const unpermittedIntents = unpermittedActions.filter(
-    (value, index, array) => array.findIndex(action => action.intent === value.intent) === index
+    (value, index, array) => array.findIndex((action) => action.intent === value.intent) === index
   );
 
   return (

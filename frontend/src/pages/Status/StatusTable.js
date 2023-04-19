@@ -1,5 +1,6 @@
-import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import React from "react";
+
+import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 
 import strings from "../../localizeStrings";
 
@@ -18,14 +19,14 @@ const styles = {
     marginTop: "40px"
   },
   shapeCircle: {
-    backgroundColor: theme => theme.palette.primary.secondary,
+    backgroundColor: (theme) => theme.palette.primary.secondary,
     width: 20,
     height: 20,
     borderRadius: "50%"
   }
 };
 
-const getConnectionDescription = ping => {
+const getConnectionDescription = (ping) => {
   if (!ping) {
     return {
       circleColor: "red",
@@ -75,7 +76,7 @@ function renderCircularProgressRow(service) {
   );
 }
 
-const StatusTable = props => {
+const StatusTable = (props) => {
   const {
     versions,
     isEmailServiceAvailable,
@@ -85,7 +86,7 @@ const StatusTable = props => {
     isFetchingExportVersion
   } = props;
 
-  const isFetchingVersion = serviceName => {
+  const isFetchingVersion = (serviceName) => {
     const standardServices = ["frontend", "api", "blockchain", "multichain"];
     if (
       (isFetchingEmailVersion && serviceName === "emailService") ||
@@ -98,7 +99,7 @@ const StatusTable = props => {
     }
   };
 
-  const renderEmptyStatusRow = service => {
+  const renderEmptyStatusRow = (service) => {
     const release = filteredVersions[service].release || "?";
     return (
       <TableRow key={`status-${service}-row`}>
@@ -111,7 +112,7 @@ const StatusTable = props => {
     );
   };
 
-  const renderStatusRow = service => {
+  const renderStatusRow = (service) => {
     const ping = filteredVersions[service].ping;
     const release = filteredVersions[service].release || "?";
     const { circleColor, connectionDescription } = getConnectionDescription(ping);
@@ -163,7 +164,7 @@ const StatusTable = props => {
               </TableRow>
             </TableHead>
             <TableBody data-test="status-table-body">
-              {Object.keys(filteredVersions).map(service => {
+              {Object.keys(filteredVersions).map((service) => {
                 if (service === "frontend") {
                   return renderEmptyStatusRow(service);
                 } else {

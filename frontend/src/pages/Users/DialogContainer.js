@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
+
 import {
   addInitialUserToGroup,
+  addTemporaryPermission,
   addUsers,
   createUser,
   createUserGroup,
@@ -12,17 +15,16 @@ import {
   hideDashboardDialog,
   hidePasswordDialog,
   removeInitialUserFromGroup,
+  removeTemporaryPermission,
   removeUsers,
   revokeGlobalPermission,
-  storeNewPassword,
-  storeNewPasswordConfirmation,
-  storeNewPasswordsMatch,
-  storeUserPassword,
   setUsernameInvalid,
   storeGroupId,
   storeGroupName,
-  addTemporaryPermission,
-  removeTemporaryPermission
+  storeNewPassword,
+  storeNewPasswordConfirmation,
+  storeNewPasswordsMatch,
+  storeUserPassword
 } from "./actions";
 import Dialog from "./Dialog";
 import PasswordDialog from "./PasswordDialog";
@@ -61,7 +63,7 @@ class DialogContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     dashboardDialogShown: state.getIn(["users", "dashboardDialogShown"]),
     passwordDialogShown: state.getIn(["users", "passwordDialogShown"]),
@@ -90,29 +92,29 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
-    storeGroupName: name => dispatch(storeGroupName(name)),
-    storeGroupId: groupId => dispatch(storeGroupId(groupId)),
-    addInitialUserToGroup: userId => dispatch(addInitialUserToGroup(userId)),
-    removeInitialUserFromGroup: userId => dispatch(removeInitialUserFromGroup(userId)),
+    storeGroupName: (name) => dispatch(storeGroupName(name)),
+    storeGroupId: (groupId) => dispatch(storeGroupId(groupId)),
+    addInitialUserToGroup: (userId) => dispatch(addInitialUserToGroup(userId)),
+    removeInitialUserFromGroup: (userId) => dispatch(removeInitialUserFromGroup(userId)),
     addUsers: (groupId, userIds) => dispatch(addUsers(groupId, userIds)),
     removeUsers: (groupId, userIds) => dispatch(removeUsers(groupId, userIds)),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
     createUser: (displayName, organization, username, password) =>
       dispatch(createUser(displayName, organization, username, password)),
     showSnackbar: () => dispatch(showSnackbar()),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
     hideDashboardDialog: () => dispatch(hideDashboardDialog()),
     hidePasswordDialog: () => dispatch(hidePasswordDialog()),
     grantGlobalPermission: (identity, intent) => dispatch(grantGlobalPermission(identity, intent)),
     revokeGlobalPermission: (identity, intent) => dispatch(revokeGlobalPermission(identity, intent)),
-    storeUserPassword: password => dispatch(storeUserPassword(password)),
-    storeNewPassword: password => dispatch(storeNewPassword(password)),
-    storeNewPasswordConfirmation: password => dispatch(storeNewPasswordConfirmation(password)),
-    storeNewPasswordsMatch: newPasswordsMatch => dispatch(storeNewPasswordsMatch(newPasswordsMatch)),
-    setUsernameInvalid: usernameInvalid => dispatch(setUsernameInvalid(usernameInvalid)),
+    storeUserPassword: (password) => dispatch(storeUserPassword(password)),
+    storeNewPassword: (password) => dispatch(storeNewPassword(password)),
+    storeNewPasswordConfirmation: (password) => dispatch(storeNewPasswordConfirmation(password)),
+    storeNewPasswordsMatch: (newPasswordsMatch) => dispatch(storeNewPasswordsMatch(newPasswordsMatch)),
+    setUsernameInvalid: (usernameInvalid) => dispatch(setUsernameInvalid(usernameInvalid)),
     addTemporaryPermission: (permission, userId) => dispatch(addTemporaryPermission(permission, userId)),
     removeTemporaryPermission: (permission, userId) => dispatch(removeTemporaryPermission(permission, userId))
   };

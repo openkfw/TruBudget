@@ -1,7 +1,8 @@
 import React from "react";
+
 import NotificationsSnackbar from "./NotificationsSnackbar";
 
-const LiveNotification = props => {
+const LiveNotification = (props) => {
   return <NotificationsSnackbar {...props} />;
 };
 

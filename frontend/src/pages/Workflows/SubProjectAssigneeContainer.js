@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { toJS } from "../../helper";
 import SingleSelection from "../Common/SingleSelection";
+
 import { assignSubproject } from "./actions";
 
 class SubProjectAssigneeContainer extends Component {
@@ -37,7 +39,7 @@ class SubProjectAssigneeContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     projectId: state.getIn(["workflow", "parentProject", "id"]),
     subprojectId: state.getIn(["workflow", "id"]),
@@ -46,7 +48,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     assignSubproject: (
       projectId,

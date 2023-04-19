@@ -1,28 +1,29 @@
-import _isEmpty from "lodash/isEmpty";
 import React, { useEffect, useState } from "react";
+import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
+
 import GlobalPermissions from "./GlobalPermissions";
 import GroupDialogContent from "./GroupDialogContent";
 import UserDialogContent from "./UserDialogContent";
 
 const createActions = (permissions, temporayPermissions) => {
   const actions = [];
-  Object.keys(temporayPermissions).forEach(key => {
+  Object.keys(temporayPermissions).forEach((key) => {
     const permissionIds = permissions[key] || [];
     const temporaryPermissionIds = temporayPermissions[key];
 
-    const revokeIds = permissionIds.filter(id => !temporaryPermissionIds.includes(id));
+    const revokeIds = permissionIds.filter((id) => !temporaryPermissionIds.includes(id));
     if (revokeIds.length > 0) actions.push({ type: "revoke", permission: key, userIds: revokeIds });
-    const grantIds = temporaryPermissionIds.filter(id => !permissionIds.includes(id));
+    const grantIds = temporaryPermissionIds.filter((id) => !permissionIds.includes(id));
     if (grantIds.length > 0) actions.push({ type: "grant", permission: key, userIds: grantIds });
   });
 
   return actions;
 };
 
-const Dialog = props => {
+const Dialog = (props) => {
   const {
     dashboardDialogShown,
     dialogType,
@@ -58,7 +59,7 @@ const Dialog = props => {
 
   useEffect(() => {
     if (dialogType === "editGroup" && !isMounted) {
-      const group = groups.find(group => group.groupId === editId);
+      const group = groups.find((group) => group.groupId === editId);
       setEditGroupAddMembers(group.users);
       setIsMounted(true);
     }
@@ -135,8 +136,8 @@ const Dialog = props => {
       };
       break;
 
-    case "editUserPermissions":
-      const userToEditPermissions = users.find(user => user.id === editId);
+    case "editUserPermissions": {
+      const userToEditPermissions = users.find((user) => user.id === editId);
       steps = [
         {
           title: `${strings.users.edit_permissions_for} ${userToEditPermissions.displayName}`,
@@ -157,13 +158,13 @@ const Dialog = props => {
       ];
       handleSubmitFunc = () => {
         const actions = createActions(globalPermissions, temporaryGlobalPermissions);
-        actions.forEach(action => {
+        actions.forEach((action) => {
           if (action.type === "grant") {
-            action.userIds.forEach(user => {
+            action.userIds.forEach((user) => {
               grantGlobalPermission(userToEditPermissions.id, action.permission);
             });
           } else if (action.type === "revoke") {
-            action.userIds.forEach(user => {
+            action.userIds.forEach((user) => {
               revokeGlobalPermission(userToEditPermissions.id, action.permission);
             });
             // eslint-disable-next-line no-console
@@ -172,9 +173,9 @@ const Dialog = props => {
         hideDashboardDialog();
       };
       break;
-
-    case "editGroup":
-      const group = groups.find(group => group.groupId === editId);
+    }
+    case "editGroup": {
+      const group = groups.find((group) => group.groupId === editId);
       const groupToEdit = {
         groupId: group.groupId,
         displayName: group.displayName,
@@ -191,8 +192,8 @@ const Dialog = props => {
               allowedIntents={allowedIntents}
               globalPermissions={temporaryGlobalPermissions}
               permissionsExpanded={permissionsExpanded}
-              addUsers={id => setEditGroupAddMembers([...editGroupAddMembers, id])}
-              removeUsers={id => setEditGroupAddMembers(editGroupAddMembers.filter(userId => userId !== id))}
+              addUsers={(id) => setEditGroupAddMembers([...editGroupAddMembers, id])}
+              removeUsers={(id) => setEditGroupAddMembers(editGroupAddMembers.filter((userId) => userId !== id))}
             />
           ),
           nextDisabled: false,
@@ -202,8 +203,8 @@ const Dialog = props => {
       ];
       handleSubmitFunc = () => {
         const currentGroupUsers = group.users || [];
-        const usersToRemove = currentGroupUsers.filter(groupUser => !editGroupAddMembers.includes(groupUser));
-        const usersToAdd = editGroupAddMembers.filter(groupUser => !currentGroupUsers.includes(groupUser));
+        const usersToRemove = currentGroupUsers.filter((groupUser) => !editGroupAddMembers.includes(groupUser));
+        const usersToAdd = editGroupAddMembers.filter((groupUser) => !currentGroupUsers.includes(groupUser));
         if (usersToAdd?.length !== 0) {
           addUsers(group.groupId, usersToAdd);
         }
@@ -213,7 +214,7 @@ const Dialog = props => {
         hideDashboardDialog();
       };
       break;
-
+    }
     default:
       steps = [{ title: "no content" }];
       break;

@@ -6,22 +6,29 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Typography from "@mui/material/Typography";
 
-import WorkflowDetails from "./WorkflowDetails";
-import WorkflowList from "./WorkflowList";
 import strings from "../../localizeStrings";
 
+import WorkflowDetails from "./WorkflowDetails";
 import WorkflowEmptyState from "./WorkflowEmptyState";
+import WorkflowList from "./WorkflowList";
 
 const style = {
   paddingLeft: "0px"
 };
 
-const createTableHeader = props => (
+const createTableHeader = (props) => (
   <Card>
     <CardHeader title={strings.workflow.workflow_table_title} />
     <CardContent style={style}>
       <div style={{ position: "relative" }}>
-        <div style={{ display: "flex", alignItems: "center", paddingLeft: "50px", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: "50px",
+            justifyContent: "space-between"
+          }}
+        >
           <div style={{ width: "8%", paddingLeft: "4px" }} />
           <div style={{ width: "25%" }}>
             <Typography variant="body1">{strings.workflow.workflow_type_workflow}</Typography>
@@ -57,7 +64,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
 };
 
 // Not sure about the Name
-const WorkflowTable = props => {
+const WorkflowTable = (props) => {
   const { showDetailsItem } = props;
   return (
     <div data-test="workflowitem-table" style={{ paddingBottom: "8px" }}>

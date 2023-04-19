@@ -38,7 +38,7 @@ const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, id, v
         value={username}
         margin="normal"
         error={failed}
-        onChange={event => storeUsername(event.target.value)}
+        onChange={(event) => storeUsername(event.target.value)}
         helperText={failed ? strings.common.incorrect_username : null}
         {...props}
       />

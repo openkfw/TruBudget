@@ -34,7 +34,7 @@ const TextInput = ({
     disabled={disabled}
     value={value}
     id={id}
-    onChange={event => onChange(event.target.value)}
+    onChange={(event) => onChange(event.target.value)}
     onBlur={onBlur}
     pattern={pattern}
     data-test={dataTest}

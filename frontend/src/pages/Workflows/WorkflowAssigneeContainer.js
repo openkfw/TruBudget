@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { toJS } from "../../helper";
 import SingleSelection from "../Common/SingleSelection";
+
 import { assignWorkflowItem } from "./actions";
 
 const styles = {
@@ -16,7 +18,7 @@ class WorkflowAssigneeContainer extends Component {
     if (workflowItems.length === 0 || !selectedId) {
       return "";
     }
-    const selectedWorkflowItem = workflowItems.find(workflow => workflow.data.id === selectedId);
+    const selectedWorkflowItem = workflowItems.find((workflow) => workflow.data.id === selectedId);
     return selectedWorkflowItem.data.assignee;
   };
 
@@ -66,7 +68,7 @@ class WorkflowAssigneeContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     projectId: state.getIn(["workflow", "parentProject", "id"]),
     subprojectId: state.getIn(["workflow", "id"]),
@@ -79,7 +81,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     assignWorkflowitem: (
       projectId,

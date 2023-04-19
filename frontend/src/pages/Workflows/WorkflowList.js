@@ -1,10 +1,13 @@
-import Fab from "@mui/material/Fab";
-import DoneIcon from "@mui/icons-material/Check";
-import EditIcon from "@mui/icons-material/Edit";
-import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { SortableContainer } from "react-sortable-hoc";
+import _isEmpty from "lodash/isEmpty";
+
+import DoneIcon from "@mui/icons-material/Check";
+import EditIcon from "@mui/icons-material/Edit";
+import Fab from "@mui/material/Fab";
+
 import { canReorderWorkflowItems } from "../../permissions.js";
+
 import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
 
 const styles = {
@@ -28,7 +31,7 @@ const styles = {
   }
 };
 
-const renderSortButton = props => (
+const renderSortButton = (props) => (
   <Fab
     size="small"
     disabled={
@@ -42,14 +45,14 @@ const renderSortButton = props => (
   </Fab>
 );
 
-const handleEnableWorkflowEdit = props => {
+const handleEnableWorkflowEdit = (props) => {
   const workflowItemIds = [];
-  props.workflowItems.map(item => workflowItemIds.push(item.data.id));
+  props.workflowItems.map((item) => workflowItemIds.push(item.data.id));
   props.saveWorkflowItemsBeforeSort(workflowItemIds);
   props.enableWorkflowEdit();
 };
 
-const renderSubmitSortButton = props => (
+const renderSubmitSortButton = (props) => (
   <Fab
     size="small"
     onClick={() => handleSubmitEdit(props)}
@@ -60,9 +63,9 @@ const renderSubmitSortButton = props => (
   </Fab>
 );
 
-const handleSubmitEdit = props => {
+const handleSubmitEdit = (props) => {
   const currentWorkflowItemIds = [];
-  props.workflowItems.map(item => currentWorkflowItemIds.push(item.data.id));
+  props.workflowItems.map((item) => currentWorkflowItemIds.push(item.data.id));
   const hasChanged =
     currentWorkflowItemIds.find((id, index) => props.workflowItemsBeforeSort[index] !== id) !== undefined;
   if (hasChanged) {
@@ -106,7 +109,7 @@ const getSortableItems = ({ workflowItems, ...props }) => {
   });
 };
 
-const WorkflowList = SortableContainer(props => {
+const WorkflowList = SortableContainer((props) => {
   const sortableItems = getSortableItems(props);
 
   return (

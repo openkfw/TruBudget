@@ -10,5 +10,29 @@
     "./logging-service"
   ],
   "editor.bracketPairColorization.enabled": true,
-  "editor.formatOnSave": true
-}
+  "editor.formatOnSave": true,
+    "debug.internalConsoleOptions": "neverOpen",
+    "editor.tabSize": 2,
+    "files.eol":"\n",
+    "explorer.confirmDragAndDrop": false,
+    "eslint.packageManager": "npm",
+    "eslint.run": "onSave",
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "html.format.wrapLineLength": 80,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[json]": {
+      "editor.formatOnSave": true
+    },
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "workbench.editor.highlightModifiedTabs": true,
+    "prettier.requireConfig": true,
+    "yaml.format.singleQuote": false,
+  }
+  

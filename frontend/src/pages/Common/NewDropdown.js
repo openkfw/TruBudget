@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import strings from "../../localizeStrings";
+
+import CloseIcon from "@mui/icons-material/Close";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
+
+import strings from "../../localizeStrings";
+
 import ActionButton from "./ActionButton";
-import CloseIcon from "@mui/icons-material/Close";
 
 const styles = {
   closeButtonContainer: {
@@ -23,7 +26,7 @@ const styles = {
   itemContainer: { maxHeight: "35vh", overflow: "auto", boxShadow: "none" }
 };
 
-const Dropdown = props => {
+const Dropdown = (props) => {
   const {
     value,
     children,
@@ -48,7 +51,7 @@ const Dropdown = props => {
             variant="standard"
             label={floatingLabel}
             value={value}
-            onChange={v => {
+            onChange={(v) => {
               if (v.target.value) {
                 onChange(v.target.value);
                 setIsOpen(false);

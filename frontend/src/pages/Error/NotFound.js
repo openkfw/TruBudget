@@ -19,7 +19,7 @@ const NotFound = () => (
           textAlign: "center"
         }}
       >
-        <h4>404 - Sorry, I couldn't find the page you requested</h4>
+        <h4>404 - Sorry, I couldn&apos;t find the page you requested</h4>
         <br />
         <img src="/404.gif" alt="I am sorry :(" />
       </CardContent>

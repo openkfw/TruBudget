@@ -1,19 +1,20 @@
-import _isEmpty from "lodash/isEmpty";
 import React from "react";
+import _isEmpty from "lodash/isEmpty";
 
-import { compareObjects, fromAmountString, shortenedDisplayName, isEmptyDeep } from "../../helper";
+import { compareObjects, fromAmountString, isEmptyDeep, shortenedDisplayName } from "../../helper";
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
+
 import ProjectDialogContent from "./ProjectDialogContent";
 
-const handleCreate = props => {
+const handleCreate = (props) => {
   const { createProject, onDialogCancel, projectToAdd, storeSnackbarMessage } = props;
   const { displayName, description, thumbnail, projectedBudgets, tags } = projectToAdd;
   createProject(
     displayName,
     description,
     thumbnail,
-    projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) })),
+    projectedBudgets.map((b) => ({ ...b, value: fromAmountString(b.value).toString(10) })),
     tags
   );
   onDialogCancel();
@@ -22,7 +23,7 @@ const handleCreate = props => {
   );
 };
 
-const handleEdit = props => {
+const handleEdit = (props) => {
   const { editProject, onDialogCancel, projectToAdd, projects, storeSnackbarMessage } = props;
 
   const changes = compareObjects(projects, projectToAdd);
@@ -48,7 +49,7 @@ const handleEdit = props => {
   onDialogCancel();
 };
 
-const ProjectDialog = props => {
+const ProjectDialog = (props) => {
   const { projects, projectToAdd, editDialogShown, creationDialogShown } = props;
   const { displayName } = projectToAdd;
   const changes = compareObjects(projects, projectToAdd);

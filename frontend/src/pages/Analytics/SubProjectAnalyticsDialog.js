@@ -1,20 +1,22 @@
-import AppBar from "@mui/material/AppBar";
-import FormControl from "@mui/material/FormControl";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import Dialog from "@mui/material/Dialog";
-import IconButton from "@mui/material/IconButton";
-import Slide from "@mui/material/Slide";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CloseIcon from "@mui/icons-material/Close";
 import React, { forwardRef } from "react";
 import { connect } from "react-redux";
 
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import CloseIcon from "@mui/icons-material/Close";
+import AppBar from "@mui/material/AppBar";
+import Dialog from "@mui/material/Dialog";
+import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Slide from "@mui/material/Slide";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+
 import { getCurrencies } from "../../helper";
-import { closeAnalyticsDialog, getExchangeRates, storeDisplayCurrency } from "./actions";
 import strings from "../../localizeStrings";
+
+import { closeAnalyticsDialog, getExchangeRates, storeDisplayCurrency } from "./actions";
 import SubProjectAnalytics from "./SubProjectAnalytics";
 
 const styles = {
@@ -83,7 +85,7 @@ const SubProjectAnalyticsDialog = ({
             <Select
               variant="standard"
               value={displayCurrency || "EUR"}
-              onChange={e => {
+              onChange={(e) => {
                 storeDisplayCurrency(e.target.value);
                 getExchangeRates(e.target.value);
               }}
@@ -92,7 +94,7 @@ const SubProjectAnalyticsDialog = ({
                 id: "currencies"
               }}
               data-test="select-currencies"
-              IconComponent={props => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
+              IconComponent={(props) => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
               style={{ color: "white" }}
             >
               {getMenuItems(getCurrencies())}
@@ -112,7 +114,7 @@ const SubProjectAnalyticsDialog = ({
   </Dialog>
 );
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     open: state.getIn(["analytics", "dialogOpen"]),
     displayCurrency: state.getIn(["analytics", "currency"])

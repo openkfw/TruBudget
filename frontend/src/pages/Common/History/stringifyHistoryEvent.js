@@ -1,8 +1,9 @@
 import _isEmpty from "lodash/isEmpty";
+
 import { formatString } from "../../../helper";
 import strings from "../../../localizeStrings";
 
-const formatPermission = data => `"${strings.permissions[data.replace(/[.]/g, "_")]}"` || `"${data.intent}"`;
+const formatPermission = (data) => `"${strings.permissions[data.replace(/[.]/g, "_")]}"` || `"${data.intent}"`;
 
 const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
   const createdBy = getUserDisplayname(businessEvent.publisher);
@@ -99,7 +100,7 @@ const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
     case "workflowitem_document_validated":
       return isDocumentValid
         ? formatString(strings.history.workflowitem_document_validated, createdBy, documentId, displayName)
-        :  formatString(strings.history.workflowitem_document_invalidated, createdBy, documentId, displayName);
+        : formatString(strings.history.workflowitem_document_invalidated, createdBy, documentId, displayName);
     case "workflowitem_closed":
       return formatString(strings.history.workflowitem_close, createdBy, displayName);
     case "workflowitem_permission_granted":

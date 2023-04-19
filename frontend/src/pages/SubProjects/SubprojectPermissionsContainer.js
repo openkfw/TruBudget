@@ -1,7 +1,8 @@
-import _isEmpty from "lodash/isEmpty";
-import _uniq from "lodash/uniq";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEmpty from "lodash/isEmpty";
+import _uniq from "lodash/uniq";
+
 import { formatString, toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { subProjectIntentOrder } from "../../permissions";
@@ -9,6 +10,7 @@ import PermissionDialog from "../Common/Permissions/PermissionDialog";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { fetchUser } from "../Login/actions";
 import { fetchGroups } from "../Users/actions";
+
 import {
   addTemporaryPermission,
   fetchSubProjectPermissions,
@@ -55,7 +57,7 @@ class SubProjectPermissionsContainer extends Component {
 
   hasOnlyViewPermissions(allowedIntents) {
     const necessaryIntents = ["subproject.intent.grantPermission", "subproject.intent.revokePermission"];
-    return necessaryIntents.every(i => !allowedIntents.includes(i));
+    return necessaryIntents.every((i) => !allowedIntents.includes(i));
   }
 
   /*
@@ -68,11 +70,11 @@ class SubProjectPermissionsContainer extends Component {
 
     const hasGrantPermissions = allowedIntents.includes("subproject.intent.grantPermission");
     const hasRevokePermissions = allowedIntents.includes("subproject.intent.revokePermission");
-    const temporaryPermissionsAdded = Object.keys(subprojectPermissions).some(intent =>
-      temporaryPermissions[intent].some(id => !subprojectPermissions[intent].includes(id))
+    const temporaryPermissionsAdded = Object.keys(subprojectPermissions).some((intent) =>
+      temporaryPermissions[intent].some((id) => !subprojectPermissions[intent].includes(id))
     );
-    const temporaryPermissionsRemoved = Object.keys(subprojectPermissions).some(intent =>
-      subprojectPermissions[intent].some(id => !temporaryPermissions[intent].includes(id))
+    const temporaryPermissionsRemoved = Object.keys(subprojectPermissions).some((intent) =>
+      subprojectPermissions[intent].some((id) => !temporaryPermissions[intent].includes(id))
     );
 
     if ((!hasGrantPermissions && temporaryPermissionsAdded) || (!hasRevokePermissions && temporaryPermissionsRemoved)) {
@@ -85,18 +87,18 @@ class SubProjectPermissionsContainer extends Component {
   getAllowedIntents = () => {
     const { permissions, myself, groups } = this.props;
     // get all permission that are assigned to the user
-    const userPermissions = Object.keys(permissions).filter(intent => permissions[intent].includes(myself));
+    const userPermissions = Object.keys(permissions).filter((intent) => permissions[intent].includes(myself));
     if (groups === undefined || groups.length === 0 || groups === null) {
       return userPermissions;
     } else {
       // get all groups where the user belongs to
-      const filteredGroups = groups.filter(item => {
+      const filteredGroups = groups.filter((item) => {
         return item.users.includes(myself);
       });
-      const groupIds = filteredGroups.map(item => item.groupId);
+      const groupIds = filteredGroups.map((item) => item.groupId);
       // get all permissions from groups the user belongs to
-      const groupPermissions = Object.keys(permissions).filter(intent =>
-        permissions[intent].some(member => groupIds.includes(member))
+      const groupPermissions = Object.keys(permissions).filter((intent) =>
+        permissions[intent].some((member) => groupIds.includes(member))
       );
       // remove duplicate permission (if User is in multiple groups with same permissions)
       const combinedPermissions = _uniq([...groupPermissions, ...userPermissions]);
@@ -140,7 +142,7 @@ class SubProjectPermissionsContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     permissions: state.getIn(["detailview", "permissions", "subproject"]),
     temporaryPermissions: state.getIn(["detailview", "temporaryPermissions"]),
@@ -158,7 +160,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hidePermissionDialog: () => dispatch(hideSubProjectPermissions()),
     grant: (pId, pName, sId, sName, permission, granteeId, granteeName) =>

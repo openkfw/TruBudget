@@ -1,21 +1,22 @@
 import React from "react";
+import Highlighter from "react-highlight-words";
+import _isEmpty from "lodash/isEmpty";
+
+import EditIcon from "@mui/icons-material/Edit";
+import PermissionIcon from "@mui/icons-material/LockOpen";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
+import LaunchIcon from "@mui/icons-material/ZoomIn";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import Chip from "@mui/material/Chip";
+import { useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
-import EditIcon from "@mui/icons-material/Edit";
-import PermissionIcon from "@mui/icons-material/LockOpen";
-import MoreIcon from "@mui/icons-material/MoreHoriz";
-import LaunchIcon from "@mui/icons-material/ZoomIn";
-import _isEmpty from "lodash/isEmpty";
-import Highlighter from "react-highlight-words";
-import { useTheme } from "@mui/material/styles";
 
 import { statusMapping, toAmountString } from "../../helper";
 import strings from "../../localizeStrings";
@@ -26,8 +27,9 @@ import {
   canViewSubProjectSummary
 } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
-import SubProjectSearch from "./SubProjectSearch";
+
 import SubProjectEmptyState from "./SubprojectEmptyState";
+import SubProjectSearch from "./SubProjectSearch";
 
 const styles = {
   subprojectTable: {
@@ -70,7 +72,7 @@ const styles = {
   }
 };
 
-const displaySubprojectBudget = budgets => {
+const displaySubprojectBudget = (budgets) => {
   const consolidatedBudgets = budgets.reduce((acc, next) => {
     acc[next.currencyCode] = acc[next.currencyCode] ? [...acc[next.currencyCode], next] : [next];
     return acc;

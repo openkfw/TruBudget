@@ -1,7 +1,8 @@
-import _isEmpty from "lodash/isEmpty";
-import _uniq from "lodash/uniq";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEmpty from "lodash/isEmpty";
+import _uniq from "lodash/uniq";
+
 import { formatString, toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { projectIntentOrder } from "../../permissions";
@@ -9,6 +10,7 @@ import PermissionDialog from "../Common/Permissions/PermissionDialog";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { fetchUser } from "../Login/actions";
 import { fetchGroups } from "../Users/actions";
+
 import {
   addTemporaryPermission,
   fetchProjectPermissions,
@@ -39,7 +41,7 @@ class ProjectPermissionsContainer extends Component {
 
   hasOnlyViewPermissions(allowedIntents) {
     const necessaryIntents = ["project.intent.grantPermission", "project.intent.revokePermission"];
-    return necessaryIntents.every(i => !allowedIntents.includes(i));
+    return necessaryIntents.every((i) => !allowedIntents.includes(i));
   }
 
   /*
@@ -52,11 +54,11 @@ class ProjectPermissionsContainer extends Component {
 
     const hasGrantPermissions = allowedIntents.includes("project.intent.grantPermission");
     const hasRevokePermissions = allowedIntents.includes("project.intent.revokePermission");
-    const temporaryPermissionsAdded = Object.keys(projectPermissions).some(intent => {
-      return temporaryPermissions[intent].some(id => !projectPermissions[intent].includes(id));
+    const temporaryPermissionsAdded = Object.keys(projectPermissions).some((intent) => {
+      return temporaryPermissions[intent].some((id) => !projectPermissions[intent].includes(id));
     });
-    const temporaryPermissionsRemoved = Object.keys(projectPermissions).some(intent =>
-      projectPermissions[intent].some(id => !temporaryPermissions[intent].includes(id))
+    const temporaryPermissionsRemoved = Object.keys(projectPermissions).some((intent) =>
+      projectPermissions[intent].some((id) => !temporaryPermissions[intent].includes(id))
     );
 
     if ((!hasGrantPermissions && temporaryPermissionsAdded) || (!hasRevokePermissions && temporaryPermissionsRemoved)) {
@@ -69,18 +71,18 @@ class ProjectPermissionsContainer extends Component {
   getAllowedIntents = () => {
     const { permissions, myself, groups } = this.props;
     // get all permission that are assigned to the user
-    const userPermissions = Object.keys(permissions).filter(intent => permissions[intent].includes(myself));
+    const userPermissions = Object.keys(permissions).filter((intent) => permissions[intent].includes(myself));
     if (groups === undefined || groups.length === 0 || groups === null) {
       return userPermissions;
     } else {
       // get all groups where the user belongs to
-      const filteredGroups = groups.filter(item => {
+      const filteredGroups = groups.filter((item) => {
         return item.users.includes(myself);
       });
-      const groupIds = filteredGroups.map(item => item.groupId);
+      const groupIds = filteredGroups.map((item) => item.groupId);
       // get all permissions from groups the user belongs to
-      const groupPermissions = Object.keys(permissions).filter(intent =>
-        permissions[intent].some(member => groupIds.includes(member))
+      const groupPermissions = Object.keys(permissions).filter((intent) =>
+        permissions[intent].some((member) => groupIds.includes(member))
       );
       // remove duplicate permission (if User is in multiple groups with same permissions)
       const combinedPermissions = _uniq([...groupPermissions, ...userPermissions]);
@@ -107,7 +109,7 @@ class ProjectPermissionsContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     permissions: state.getIn(["overview", "permissions", "project"]),
     temporaryPermissions: state.getIn(["overview", "temporaryPermissions"]),
@@ -122,7 +124,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hidePermissionDialog: () => dispatch(hideProjectPermissions()),
     grant: (pId, pName, permission, granteeId, granteeName) =>
@@ -130,7 +132,7 @@ const mapDispatchToProps = dispatch => {
     revoke: (pId, pName, permission, revokeeId, revokeeName) =>
       dispatch(revokeProjectPermission(pId, pName, permission, revokeeId, revokeeName, true)),
     fetchProjectPermissions: (projectId, showLoading) => dispatch(fetchProjectPermissions(projectId, showLoading)),
-    fetchUser: showLoading => dispatch(fetchUser(showLoading)),
+    fetchUser: (showLoading) => dispatch(fetchUser(showLoading)),
     addTemporaryPermission: (permission, userId) => dispatch(addTemporaryPermission(permission, userId)),
     removeTemporaryPermission: (permission, userId) => dispatch(removeTemporaryPermission(permission, userId)),
     fetchGroups: () => dispatch(fetchGroups(true))

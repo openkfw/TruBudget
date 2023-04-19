@@ -1,17 +1,20 @@
+import React from "react";
+import _sortBy from "lodash/sortBy";
+
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EditIcon from "@mui/icons-material/Edit";
+import PermissionIcon from "@mui/icons-material/LockOpen";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import EditIcon from "@mui/icons-material/Edit";
-import PermissionIcon from "@mui/icons-material/LockOpen";
-import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import _sortBy from "lodash/sortBy";
-import React from "react";
+
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
+
 import { DisabledUserEmptyState } from "./UsersGroupsEmptyStates";
 
 const styles = {
@@ -25,13 +28,13 @@ const styles = {
   }
 };
 
-const sortUsers = users => {
-  return _sortBy(users, user => user.organization && user.id);
+const sortUsers = (users) => {
+  return _sortBy(users, (user) => user.organization && user.id);
 };
 
-const UsersTable = props => {
+const UsersTable = (props) => {
   const { users, CustomEmptyState } = props;
-  let sortedUsers = sortUsers(users.filter(u => u.isGroup !== true));
+  let sortedUsers = sortUsers(users.filter((u) => u.isGroup !== true));
 
   if (sortedUsers.length === 0) {
     return <CustomEmptyState /> || <DisabledUserEmptyState />;
@@ -49,7 +52,7 @@ const UsersTable = props => {
           </TableRow>
         </TableHead>
         <TableBody id="usertablebody">
-          {sortedUsers.map(displayUser => {
+          {sortedUsers.map((displayUser) => {
             return renderUser({ ...props, displayUser });
           })}
         </TableBody>
@@ -58,7 +61,7 @@ const UsersTable = props => {
   );
 };
 
-const renderUser = props => {
+const renderUser = (props) => {
   const { displayUser } = props;
 
   return (
@@ -75,7 +78,7 @@ const renderUser = props => {
   );
 };
 
-const renderActionButtons = props => {
+const renderActionButtons = (props) => {
   const {
     displayUser,
     userId,
@@ -95,7 +98,7 @@ const renderActionButtons = props => {
     // to make sure this is compatible with older versions
     (displayUser.permissions &&
       displayUser.permissions.hasOwnProperty("user.changePassword") &&
-      displayUser.permissions["user.changePassword"].some(x => x === userId) &&
+      displayUser.permissions["user.changePassword"].some((x) => x === userId) &&
       !isRoot) ||
     isRootUserOfSameOrga;
   const canListUserPermissions = (allowedIntents.includes("global.listPermissions") && !isRoot) || isRootUserOfSameOrga;

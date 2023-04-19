@@ -1,6 +1,6 @@
 import { fromJS } from "immutable";
 
-import { VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS, CLEAR_DOCUMENTS } from "./actions";
+import { CLEAR_DOCUMENTS, VALIDATE_DOCUMENT, VALIDATE_DOCUMENT_SUCCESS } from "./actions";
 
 const defaultState = fromJS({
   validatedDocuments: {},

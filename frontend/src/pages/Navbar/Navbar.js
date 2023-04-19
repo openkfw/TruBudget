@@ -1,6 +1,7 @@
+import React from "react";
+
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import React from "react";
 
 import LeftNavbarNavigation from "./LeftNavbarNavigation";
 import MainNavbarNavigation from "./MainNavbarNavigation";

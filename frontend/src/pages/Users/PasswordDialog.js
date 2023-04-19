@@ -1,3 +1,7 @@
+import { useState } from "react";
+import React from "react";
+import { useEffect } from "react";
+
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -5,9 +9,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useState } from "react";
-import React from "react";
-import { useEffect } from "react";
+
 import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
 import Password from "../Common/Password";
@@ -23,7 +25,7 @@ const styles = {
   createButton: {}
 };
 
-const validate = newPassword => {
+const validate = (newPassword) => {
   const minLength = 8;
 
   return newPassword.length >= minLength && /[a-zA-Z]/.test(newPassword) && /[0-9]/.test(newPassword);
@@ -68,7 +70,7 @@ const getDialogActions = (submitDisabled, hidePasswordDialog, handleSubmit) => {
   return [leftAction, rightAction];
 };
 
-const PasswordDialog = props => {
+const PasswordDialog = (props) => {
   const {
     passwordDialogShown,
     editId,
@@ -183,7 +185,7 @@ const PasswordDialog = props => {
                 password={newPassword}
                 failed={newPasswordFailed}
                 id="newPassword"
-                onChange={event => setNewPassword(event.target.value)}
+                onChange={(event) => setNewPassword(event.target.value)}
                 type={fieldType}
                 tooltipTitle={tooltipTitle}
               />
@@ -194,7 +196,7 @@ const PasswordDialog = props => {
                 password={newPasswordConfirmation}
                 failed={newPasswordFailed}
                 id="newPasswordConfirmation"
-                onChange={event => setNewPasswordConfirmation(event.target.value)}
+                onChange={(event) => setNewPasswordConfirmation(event.target.value)}
                 type={fieldType}
                 failedText={failedText}
               />

@@ -7,11 +7,12 @@ import { fromJS } from "immutable";
 import { applyMiddleware, compose, createStore } from "redux";
 import createDebounce from "redux-debounced";
 import createSagaMiddleware from "redux-saga";
-import { loadState, persistState } from "./localStorage";
+
 import reduxLogger from "./logging/logger";
+import config from "./config";
+import { loadState, persistState } from "./localStorage";
 import createReducer from "./reducers";
 import rootSaga from "./sagas";
-import config from "./config";
 
 const sagaMiddleware = createSagaMiddleware();
 

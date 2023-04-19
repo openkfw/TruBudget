@@ -1,6 +1,6 @@
 import React from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { JSONEditor as VanillaJsonEditor } from "vanilla-jsoneditor";
-import { useEffect, useRef, useMemo, useCallback } from "react";
 
 // Component copied from https://codesandbox.io/s/svelte-jsoneditor-react-59wxz
 export default function JsonEditor({ data = {}, onChange }) {

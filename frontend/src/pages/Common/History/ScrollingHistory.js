@@ -1,6 +1,7 @@
-import CircularProgress from "@mui/material/CircularProgress";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
+
+import CircularProgress from "@mui/material/CircularProgress";
 
 import HistoryList from "./HistoryList";
 
@@ -28,7 +29,7 @@ export default class ScrollingHistory extends React.Component {
         pageStart={0}
         initialLoad={false}
         useWindow={false}
-        loadMore={page => {
+        loadMore={(page) => {
           if (!isLoading && hasMore) fetchNext();
         }}
         hasMore={hasMore}

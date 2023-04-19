@@ -1,34 +1,34 @@
 import { fromJS } from "immutable";
 
 import {
-  SET_USERNAME,
-  SET_ORGANIZATION,
-  SET_DISPLAYNAME,
-  RESET_USER,
-  TAB_INDEX,
-  SHOW_DASHBOARD_DIALOG,
-  HIDE_DASHBOARD_DIALOG,
-  SHOW_PASSWORD_DIALOG,
-  HIDE_PASSWORD_DIALOG,
+  ADD_INITIAL_USER,
+  ADD_TEMPORARY_GLOBAL_PERMISSION,
+  CHANGE_USER_PASSWORD_SUCCESS,
+  CHECK_USER_PASSWORD_ERROR,
+  CHECK_USER_PASSWORD_SUCCESS,
+  CLEAN_USER_ASSIGNMENTS,
+  CREATE_GROUP_SUCCESS,
+  DISABLE_USER,
+  ENABLE_USER,
   FETCH_GROUPS_SUCCESS,
   FETCH_USER_ASSIGNMENTS_SUCCESS,
-  CLEAN_USER_ASSIGNMENTS,
   GROUP_ID,
   GROUP_NAME,
-  ADD_INITIAL_USER,
-  REMOVE_INITIAL_USER,
-  CREATE_GROUP_SUCCESS,
+  HIDE_DASHBOARD_DIALOG,
+  HIDE_PASSWORD_DIALOG,
   LIST_GLOBAL_PERMISSIONS_SUCCESS,
-  CHECK_USER_PASSWORD_SUCCESS,
-  CHECK_USER_PASSWORD_ERROR,
-  CHANGE_USER_PASSWORD_SUCCESS,
-  STORE_NEW_PASSWORDS_MATCH,
-  SET_PASSWORD,
-  SET_USERNAME_INVALID,
-  ADD_TEMPORARY_GLOBAL_PERMISSION,
+  REMOVE_INITIAL_USER,
   REMOVE_TEMPORARY_GLOBAL_PERMISSION,
-  ENABLE_USER,
-  DISABLE_USER
+  RESET_USER,
+  SET_DISPLAYNAME,
+  SET_ORGANIZATION,
+  SET_PASSWORD,
+  SET_USERNAME,
+  SET_USERNAME_INVALID,
+  SHOW_DASHBOARD_DIALOG,
+  SHOW_PASSWORD_DIALOG,
+  STORE_NEW_PASSWORDS_MATCH,
+  TAB_INDEX
 } from "./actions";
 
 const defaultState = fromJS({
@@ -73,10 +73,10 @@ export default function userDashboardReducer(state = defaultState, action) {
     case GROUP_NAME:
       return state.setIn(["groupToAdd", "name"], action.name);
     case ADD_INITIAL_USER:
-      return state.updateIn(["groupToAdd", "groupUsers"], users => [...users, action.userId]);
+      return state.updateIn(["groupToAdd", "groupUsers"], (users) => [...users, action.userId]);
     case REMOVE_INITIAL_USER:
       // Offical way to delete something from an array with immutability https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
-      return state.updateIn(["groupToAdd", "groupUsers"], users => [
+      return state.updateIn(["groupToAdd", "groupUsers"], (users) => [
         ...users.slice(0, users.indexOf(action.userId)),
         ...users.slice(users.indexOf(action.userId) + 1)
       ]);
@@ -144,12 +144,12 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.set("usernameInvalid", action.usernameInvalid);
     case ADD_TEMPORARY_GLOBAL_PERMISSION:
       if (state.getIn(["temporaryGlobalPermissions", action.permission]) !== undefined) {
-        return state.updateIn(["temporaryGlobalPermissions", action.permission], users => [...users, action.userId]);
+        return state.updateIn(["temporaryGlobalPermissions", action.permission], (users) => [...users, action.userId]);
       } else {
         return state.mergeIn(["temporaryGlobalPermissions"], { [action.permission]: [action.userId] });
       }
     case REMOVE_TEMPORARY_GLOBAL_PERMISSION:
-      return state.updateIn(["temporaryGlobalPermissions", action.permission], users => [
+      return state.updateIn(["temporaryGlobalPermissions", action.permission], (users) => [
         ...users.slice(0, users.indexOf(action.userId)),
         ...users.slice(users.indexOf(action.userId) + 1)
       ]);

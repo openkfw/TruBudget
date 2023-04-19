@@ -434,7 +434,7 @@ export function saveWorkflowItemsBeforeSort(workflowItems) {
 export function reorderWorkflowItems(projectId, subprojectId, workflowItems) {
   // Just the keys are necessary to update the sort on the backend
   const ordering = [];
-  workflowItems.map(item => ordering.push(item.data.id));
+  workflowItems.map((item) => ordering.push(item.data.id));
   return {
     type: REORDER_WORKFLOW_ITEMS,
     projectId,

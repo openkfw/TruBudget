@@ -1,12 +1,14 @@
 // since Immutable can not be tree-shaked, we can simply import it in total to prevent nameclashes (e.g. map)
 import Immutable, { fromJS } from "immutable";
 import _isEmpty from "lodash/isEmpty";
+
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
 import { DISABLE_ALL_LIVE_UPDATES, ENABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
 import { FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
 import { FETCH_SUBPROJECT_PERMISSIONS, FETCH_SUBPROJECT_PERMISSIONS_SUCCESS } from "../SubProjects/actions";
+
 import {
   ADD_TEMPORARY_WORKFLOWITEM_PERMISSION,
   ASSIGN_WORKFLOWITEM_SUCCESS,
@@ -20,23 +22,23 @@ import {
   ENABLE_LIVE_UPDATES_SUBPROJECT,
   ENABLE_WORKFLOW_EDIT,
   FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS,
-  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
-  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_FIRST_SUBPROJECT_HISTORY_PAGE,
   FETCH_FIRST_SUBPROJECT_HISTORY_PAGE_SUCCESS,
-  FETCH_WORKFLOWITEM_SUCCESS,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE,
+  FETCH_NEXT_SUBPROJECT_HISTORY_PAGE_SUCCESS,
   FETCH_WORKFLOWITEM_PERMISSIONS,
   FETCH_WORKFLOWITEM_PERMISSIONS_SUCCESS,
+  FETCH_WORKFLOWITEM_SUCCESS,
   GRANT_WORKFLOWITEM_PERMISSION_SUCCESS,
   HIDE_REASON_DIALOG,
   HIDE_SUBPROJECT_ASSIGNEES,
   HIDE_SUBPROJECT_CONFIRMATION_DIALOG,
-  HIDE_WORKFLOWITEM_ADDITIONAL_DATA,
-  HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG,
-  HIDE_WORKFLOWITEM_PERMISSIONS,
   HIDE_WORKFLOW_DETAILS,
   HIDE_WORKFLOW_DIALOG,
   HIDE_WORKFLOW_PREVIEW,
+  HIDE_WORKFLOWITEM_ADDITIONAL_DATA,
+  HIDE_WORKFLOWITEM_CONFIRMATION_DIALOG,
+  HIDE_WORKFLOWITEM_PERMISSIONS,
   OPEN_HISTORY,
   REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION,
   RESET_SUCCEEDED_WORKFLOWITEMS,
@@ -47,22 +49,20 @@ import {
   SHOW_REASON_DIALOG,
   SHOW_SUBPROJECT_ASSIGNEES,
   SHOW_SUBPROJECT_CONFIRMATION_DIALOG,
-  SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
-  SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
-  SHOW_WORKFLOWITEM_PERMISSIONS,
   SHOW_WORKFLOW_CREATE,
   SHOW_WORKFLOW_EDIT,
   SHOW_WORKFLOW_PREVIEW,
+  SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
+  SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
+  SHOW_WORKFLOWITEM_PERMISSIONS,
   STORE_REJECT_REASON,
-  STORE_WORKFLOWACTIONS,
   STORE_WORKFLOW_BATCH_ASSIGNEE,
+  STORE_WORKFLOWACTIONS,
   SUBMIT_BATCH_FOR_WORKFLOW,
   SUBMIT_BATCH_FOR_WORKFLOW_FAILURE,
   SUBMIT_BATCH_FOR_WORKFLOW_SUCCESS,
   TRIGGER_SUBPROJECT_APPLY_ACTIONS,
   UPDATE_WORKFLOW_ORDER,
-  WORKFLOWITEMS_SELECTED,
-  WORKFLOWITEM_TYPE,
   WORKFLOW_AMOUNT,
   WORKFLOW_AMOUNT_TYPE,
   WORKFLOW_ASSIGNEE,
@@ -73,7 +73,9 @@ import {
   WORKFLOW_EXCHANGERATE,
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
-  WORKFLOW_STATUS
+  WORKFLOW_STATUS,
+  WORKFLOWITEM_TYPE,
+  WORKFLOWITEMS_SELECTED
 } from "./actions";
 
 const historyPageSize = 50;
@@ -172,7 +174,7 @@ const defaultState = fromJS({
 
 export default function detailviewReducer(state = defaultState, action) {
   switch (action.type) {
-    case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
+    case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS: {
       const { subproject, workflowitems, parentProject } = action;
       return state.merge({
         id: subproject.data.id,
@@ -191,6 +193,7 @@ export default function detailviewReducer(state = defaultState, action) {
         parentProject: fromJS(parentProject),
         projectedBudgets: fromJS(subproject.data.projectedBudgets)
       });
+    }
     case FETCH_WORKFLOWITEM_SUCCESS: {
       return state.merge({
         showDetails: true,
@@ -221,17 +224,17 @@ export default function detailviewReducer(state = defaultState, action) {
         dialogTitle: strings.workflow.edit_item
       });
     case ASSIGN_WORKFLOWITEM_SUCCESS:
-      return state.updateIn(["submittedWorkflowItems"], workflowitems => [
+      return state.updateIn(["submittedWorkflowItems"], (workflowitems) => [
         ...workflowitems,
         { id: action.workflowitemId, assignee: action.assignee }
       ]);
     case GRANT_WORKFLOWITEM_PERMISSION_SUCCESS:
-      return state.updateIn(["submittedWorkflowItems"], workflowitems => [
+      return state.updateIn(["submittedWorkflowItems"], (workflowitems) => [
         ...workflowitems,
         { id: action.workflowitemId, identity: action.identity, intent: action.intent }
       ]);
     case REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS:
-      return state.updateIn(["submittedWorkflowItems"], workflowitems => [
+      return state.updateIn(["submittedWorkflowItems"], (workflowitems) => [
         ...workflowitems,
         { id: action.workflowitemId, identity: action.identity, intent: action.intent }
       ]);
@@ -256,7 +259,7 @@ export default function detailviewReducer(state = defaultState, action) {
         permissions: defaultState.get("permissions"),
         temporaryPermissions: defaultState.get("temporaryPermissions"),
         showWorkflowPermissions: true,
-        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter(id => id !== action.workflowitemId)
+        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter((id) => id !== action.workflowitemId)
       });
     case HIDE_WORKFLOWITEM_PERMISSIONS:
     case CONFIRMATION_CONFIRMED:
@@ -323,13 +326,13 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);
     case WORKFLOW_DOCUMENT:
-      return state.updateIn(["workflowToAdd", "documents"], documents =>
+      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
         Immutable.List([...documents, Immutable.Map({ base64: action.base64, fileName: action.fileName })])
       );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
     case CREATE_WORKFLOW_SUCCESS:
-      return state.updateIn(["idsPermissionsUnassigned"], workflowitems => [...workflowitems, action.workflowitemId]);
+      return state.updateIn(["idsPermissionsUnassigned"], (workflowitems) => [...workflowitems, action.workflowitemId]);
     case EDIT_WORKFLOW_ITEM_SUCCESS:
       return state.merge({
         workflowToAdd: defaultState.getIn(["workflowToAdd"])
@@ -413,12 +416,13 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.set("subProjectBudgetEditEnabled", action.budgetEditEnabled);
     case STORE_WORKFLOW_BATCH_ASSIGNEE:
       return state.set("tempDrawerAssignee", action.tempDrawerAssignee);
-    case WORKFLOWITEMS_SELECTED:
-      const getSelectedIds = action.workflowItems.map(x => x.data.id);
+    case WORKFLOWITEMS_SELECTED: {
+      const getSelectedIds = action.workflowItems.map((x) => x.data.id);
       return state.merge({
         selectedWorkflowItems: fromJS(action.workflowItems),
-        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter(id => !getSelectedIds.includes(id))
+        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter((id) => !getSelectedIds.includes(id))
       });
+    }
     case SHOW_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:
@@ -473,10 +477,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case OPEN_HISTORY:
       return state.set("showHistory", true).set("isHistoryLoading", true);
     case ADD_TEMPORARY_WORKFLOWITEM_PERMISSION:
-      return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
+      return state.updateIn(["temporaryPermissions", action.permission], (users) => users.push(action.userId));
     case REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION:
-      return state.updateIn(["temporaryPermissions", action.permission], users =>
-        users.filter(user => user !== action.userId)
+      return state.updateIn(["temporaryPermissions", action.permission], (users) =>
+        users.filter((user) => user !== action.userId)
       );
     case DISABLE_ALL_LIVE_UPDATES:
     case DISABLE_LIVE_UPDATES_SUBPROJECT:

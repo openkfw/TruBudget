@@ -15,15 +15,15 @@ export const compareWorkflowItems = (originalItem, itemToCompare) => {
   };
 
   const changesExceptDocuments = Object.keys(modifiedItemToCompare)
-    .filter(key => key !== "documents")
-    .filter(key => modifiedOriginalItem[key] !== modifiedItemToCompare[key])
+    .filter((key) => key !== "documents")
+    .filter((key) => modifiedOriginalItem[key] !== modifiedItemToCompare[key])
     .reduce((acc, key) => {
       acc[key] = modifiedItemToCompare[key];
       return acc;
     }, {});
 
   const addedDocuments = Object.keys(itemToCompare.documents || {})
-    .map(docId => itemToCompare.documents[docId])
+    .map((docId) => itemToCompare.documents[docId])
     .filter(isNewDocument);
   return { ...changesExceptDocuments, documents: addedDocuments };
 };

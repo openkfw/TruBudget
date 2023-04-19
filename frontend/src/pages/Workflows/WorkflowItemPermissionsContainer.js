@@ -1,12 +1,14 @@
-import _isEmpty from "lodash/isEmpty";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEmpty from "lodash/isEmpty";
+
 import { formatString, toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { workflowItemIntentOrder } from "../../permissions";
 import PermissionDialog from "../Common/Permissions/PermissionDialog";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { fetchUser } from "../Login/actions";
+
 import {
   addTemporaryPermission,
   fetchWorkflowItemPermissions,
@@ -55,10 +57,10 @@ class WorkflowItemPermissionsContainer extends Component {
   };
 
   hasOnlyViewPermissions(workflowitems, selection) {
-    const item = workflowitems.filter(i => i.data.id === selection);
+    const item = workflowitems.filter((i) => i.data.id === selection);
     const allowedIntents = item.length > 0 ? item[0].allowedIntents : [];
     const necessaryIntents = ["workflowitem.intent.grantPermission", "workflowitem.intent.revokePermission"];
-    return necessaryIntents.every(i => !allowedIntents.includes(i));
+    return necessaryIntents.every((i) => !allowedIntents.includes(i));
   }
 
   /*
@@ -69,17 +71,17 @@ class WorkflowItemPermissionsContainer extends Component {
   isSubmitDisabled(workflowitems, selection, workflowitemPermissions, temporaryPermissions) {
     if (_isEmpty(temporaryPermissions)) return true;
 
-    const item = workflowitems.filter(i => i.data.id === selection);
+    const item = workflowitems.filter((i) => i.data.id === selection);
     const allowedIntents = item.length > 0 ? item[0].allowedIntents : [];
     const hasGrantPermissions = allowedIntents.includes("workflowitem.intent.grantPermission");
     const hasRevokePermissions = allowedIntents.includes("workflowitem.intent.revokePermission");
-    const temporaryPermissionsAdded = Object.keys(workflowitemPermissions).some(intent =>
+    const temporaryPermissionsAdded = Object.keys(workflowitemPermissions).some((intent) =>
       temporaryPermissions[intent]
-        ? temporaryPermissions[intent].some(id => !workflowitemPermissions[intent].includes(id))
+        ? temporaryPermissions[intent].some((id) => !workflowitemPermissions[intent].includes(id))
         : false
     );
-    const temporaryPermissionsRemoved = Object.keys(workflowitemPermissions).some(intent =>
-      workflowitemPermissions[intent].some(id => !temporaryPermissions[intent].includes(id))
+    const temporaryPermissionsRemoved = Object.keys(workflowitemPermissions).some((intent) =>
+      workflowitemPermissions[intent].some((id) => !temporaryPermissions[intent].includes(id))
     );
 
     if ((!hasGrantPermissions && temporaryPermissionsAdded) || (!hasRevokePermissions && temporaryPermissionsRemoved)) {
@@ -112,7 +114,7 @@ class WorkflowItemPermissionsContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     permissions: state.getIn(["workflow", "permissions", "workflowitem"]),
     temporaryPermissions: state.getIn(["workflow", "temporaryPermissions"]),
@@ -131,7 +133,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hidePermissionDialog: () => dispatch(hideWorkflowItemPermissions()),
     grant: (pId, pName, sId, sName, wId, wName, permission, granteeId, granteeName) =>

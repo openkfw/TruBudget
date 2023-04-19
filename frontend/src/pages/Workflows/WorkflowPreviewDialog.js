@@ -1,20 +1,19 @@
 import React from "react";
+import _isEmpty from "lodash/isEmpty";
 
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Table from "@mui/material/Table";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
-import TableBody from "@mui/material/TableBody";
 import ErrorIcon from "@mui/icons-material/Close";
 import DoneIcon from "@mui/icons-material/Done";
+import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 
-import PreviewDialog from "../Common/PreviewDialog";
-
-import _isEmpty from "lodash/isEmpty";
-import strings from "../../localizeStrings";
 import { formatString } from "../../helper";
+import strings from "../../localizeStrings";
+import PreviewDialog from "../Common/PreviewDialog";
 
 const styles = {
   tableBody: {
@@ -58,7 +57,7 @@ const styles = {
   }
 };
 
-const getTableEntries = props => {
+const getTableEntries = (props) => {
   const { workflowActions, submittedWorkflowItems, failedWorkflowItem } = props;
   const possibleActions = workflowActions.possible;
   const notPossibleActions = workflowActions.notPossible;
@@ -139,7 +138,7 @@ function getStatusIcon(submittedWorkflowItems, failedWorkflowItem, action) {
   } else {
     if (
       submittedWorkflowItems.some(
-        item =>
+        (item) =>
           action.id === item.id &&
           action.assignee === item.assignee &&
           action.identity === item.identity &&
@@ -153,7 +152,7 @@ function getStatusIcon(submittedWorkflowItems, failedWorkflowItem, action) {
   }
 }
 
-const WorkflowPreviewDialog = props => {
+const WorkflowPreviewDialog = (props) => {
   const {
     previewDialogShown,
     hideWorkflowItemPreview,
@@ -180,7 +179,13 @@ const WorkflowPreviewDialog = props => {
         {strings.preview.overwrite_warning}
       </Typography>
       <Box
-        sx={{ minWidth: "600px", overflowY: "scroll", display: "flex", justifyContent: "center", alignItems: "center" }}
+        sx={{
+          minWidth: "600px",
+          overflowY: "scroll",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
       >
         <Table>
           <TableBody style={styles.tableBody}>{getTableEntries(props)}</TableBody>

@@ -1,7 +1,9 @@
 import React from "react";
-import Badge from "@mui/material/Badge";
+
 import BubbleIcon from "@mui/icons-material/ChatBubbleOutline";
+import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";
+
 import strings from "../../localizeStrings";
 
 const NotificationIcon = ({ unreadNotificationCount, history }) => {

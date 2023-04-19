@@ -5,11 +5,14 @@ import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { fetchUser } from "../Login/actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
+
 import {
   addInitialUserToGroup,
   addUsers,
   checkAndChangeUserPassword,
   createUserGroup,
+  disableUser,
+  enableUser,
   fetchGroups,
   grantAllUserPermissions,
   listPermissions,
@@ -25,9 +28,7 @@ import {
   showDashboardDialog,
   showPasswordDialog,
   storeGroupId,
-  storeGroupName,
-  enableUser,
-  disableUser
+  storeGroupName
 } from "./actions";
 import Users from "./Users";
 
@@ -55,7 +56,7 @@ class UserManagementContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     allowedIntents: state.getIn(["login", "allowedIntents"]),
     enabledUsers: state.getIn(["login", "enabledUsers"]),
@@ -73,35 +74,35 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchUser: () => dispatch(fetchUser(true)),
-    setDisplayName: displayName => dispatch(setDisplayName(displayName)),
-    setOrganization: organization => dispatch(setOrganization(organization)),
-    setUsername: username => dispatch(setUsername(username)),
-    setPassword: password => dispatch(setPassword(password)),
+    setDisplayName: (displayName) => dispatch(setDisplayName(displayName)),
+    setOrganization: (organization) => dispatch(setOrganization(organization)),
+    setUsername: (username) => dispatch(setUsername(username)),
+    setPassword: (password) => dispatch(setPassword(password)),
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
     showSnackbar: () => dispatch(showSnackbar()),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
     resetState: () => dispatch(resetUserToAdd()),
-    setTabIndex: value => dispatch(setTabIndex(value)),
+    setTabIndex: (value) => dispatch(setTabIndex(value)),
     fetchGroups: () => dispatch(fetchGroups(true)),
-    storeGroupName: name => dispatch(storeGroupName(name)),
-    storeGroupId: groupId => dispatch(storeGroupId(groupId)),
-    addInitialUserToGroup: userId => dispatch(addInitialUserToGroup(userId)),
-    removeInitialUserFromGroup: userId => dispatch(removeInitialUserFromGroup(userId)),
+    storeGroupName: (name) => dispatch(storeGroupName(name)),
+    storeGroupId: (groupId) => dispatch(storeGroupId(groupId)),
+    addInitialUserToGroup: (userId) => dispatch(addInitialUserToGroup(userId)),
+    removeInitialUserFromGroup: (userId) => dispatch(removeInitialUserFromGroup(userId)),
     addUsers: (groupId, userIds) => dispatch(addUsers(groupId, userIds)),
     removeUsersFromGroup: (groupId, userIds) => dispatch(removeUsers(groupId, userIds)),
     createUserGroup: (groupId, name, users) => dispatch(createUserGroup(groupId, name, users)),
-    setAdminPermissions: hasAdminPermissions => dispatch(setAdminPermissions(hasAdminPermissions)),
-    grantAllUserPermissions: userId => dispatch(grantAllUserPermissions(userId)),
+    setAdminPermissions: (hasAdminPermissions) => dispatch(setAdminPermissions(hasAdminPermissions)),
+    grantAllUserPermissions: (userId) => dispatch(grantAllUserPermissions(userId)),
     showDashboardDialog: (dialogType, editId) => dispatch(showDashboardDialog(dialogType, editId)),
-    showPasswordDialog: editId => dispatch(showPasswordDialog(editId)),
+    showPasswordDialog: (editId) => dispatch(showPasswordDialog(editId)),
     listGlobalPermissions: () => dispatch(listPermissions()),
     checkAndChangeUserPassword: (actingUser, username, userPassword, newPassword) =>
       dispatch(checkAndChangeUserPassword(actingUser, username, userPassword, newPassword)),
-    enableUser: userId => dispatch(enableUser(userId)),
-    disableUser: userId => dispatch(disableUser(userId))
+    enableUser: (userId) => dispatch(enableUser(userId)),
+    disableUser: (userId) => dispatch(disableUser(userId))
   };
 };
 

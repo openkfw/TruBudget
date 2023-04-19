@@ -111,7 +111,7 @@ const combinedReducer = (history, action) => {
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
-const createReducer = history => (state, action) => {
+const createReducer = (history) => (state, action) => {
   return combinedReducer(history, action, state)(state, action);
 };
 

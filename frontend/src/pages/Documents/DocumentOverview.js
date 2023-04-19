@@ -1,23 +1,23 @@
 import React, { Component } from "react";
+import _isEmpty from "lodash/isEmpty";
+import _isUndefined from "lodash/isUndefined";
 
-import Button from "@mui/material/Button";
+import ValidationIcon from "@mui/icons-material/FindInPage";
 import FingerPrint from "@mui/icons-material/Fingerprint";
+import DownloadIcon from "@mui/icons-material/GetApp";
+import { TableHead } from "@mui/material";
+import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import DownloadIcon from "@mui/icons-material/GetApp";
-import ValidationIcon from "@mui/icons-material/FindInPage";
-
-import _isUndefined from "lodash/isUndefined";
-import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
-import withInitialLoading from "../Loading/withInitialLoading";
-import { TableHead } from "@mui/material";
 import OverflowTooltip from "../Common/OverflowTooltip";
+import withInitialLoading from "../Loading/withInitialLoading";
+
 import { DocumentEmptyState } from "./DocumentEmptyStates";
 
 const styles = {
@@ -72,7 +72,7 @@ class DocumentOverview extends Component {
     return { style, label, color, disabled };
   };
 
-  getValidationText = validated => {
+  getValidationText = (validated) => {
     if (_isUndefined(validated)) {
       return strings.workflow.workflow_document_validate;
     } else if (validated === true) {
@@ -93,11 +93,11 @@ class DocumentOverview extends Component {
           id="docvalidation"
           type="file"
           style={styles.validationInput}
-          onChange={event => {
+          onChange={(event) => {
             if (event.target.files[0]) {
               const file = event.target.files[0];
               const reader = new FileReader();
-              reader.onloadend = e => {
+              reader.onloadend = (e) => {
                 if (e.target.result !== undefined) {
                   const dataUrl = e.target.result.split(";base64,")[1];
                   this.props.validateDocument(hash, dataUrl, id, projectId, subprojectId, workflowitemId);
@@ -111,7 +111,7 @@ class DocumentOverview extends Component {
     );
   };
 
-  generateDocumentList = props => {
+  generateDocumentList = (props) => {
     const { workflowitemId, projectId, subprojectId, documents, validatedDocuments, downloadDocument } = this.props;
     const header = this.generateDocumentListHeader();
     const rows = documents.map((document, index) => {

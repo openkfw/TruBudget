@@ -1,4 +1,5 @@
 import { fromJS } from "immutable";
+
 import { HIDE_LOADING_INDICATOR, SHOW_LOADING_INDICATOR } from "./actions";
 
 const defaultState = fromJS({

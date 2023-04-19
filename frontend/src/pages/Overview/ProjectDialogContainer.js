@@ -4,19 +4,20 @@ import { connect } from "react-redux";
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { storeSnackbarMessage } from "../Notifications/actions";
+
 import {
+  addProjectProjectedBudget,
+  addProjectTag,
   createProject,
   editProject,
+  editProjectProjectedBudgetAmount,
   hideProjectDialog,
+  removeProjectTag,
   setCurrentStep,
+  storeDeletedProjectedBudget,
   storeProjectComment,
   storeProjectName,
-  storeProjectThumbnail,
-  addProjectProjectedBudget,
-  editProjectProjectedBudgetAmount,
-  storeDeletedProjectedBudget,
-  addProjectTag,
-  removeProjectTag
+  storeProjectThumbnail
 } from "./actions";
 import ProjectDialog from "./ProjectDialog";
 
@@ -26,7 +27,7 @@ class ProjectDialogContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     projects: state.getIn(["overview", "projects"]),
     creationDialogShown: state.getIn(["overview", "creationDialogShown"]),
@@ -38,23 +39,23 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     createProject: (name, comment, thumbnail, projectedBudgets, tags) =>
       dispatch(createProject(name, comment, thumbnail, projectedBudgets, tags)),
     editProject: (id, changes, deletedProjectedBudgets) => dispatch(editProject(id, changes, deletedProjectedBudgets)),
     hideProjectDialog: () => dispatch(hideProjectDialog()),
-    storeProjectName: name => dispatch(storeProjectName(name)),
-    storeProjectComment: comment => dispatch(storeProjectComment(comment)),
-    setCurrentStep: step => dispatch(setCurrentStep(step)),
-    storeProjectThumbnail: thumbnail => dispatch(storeProjectThumbnail(thumbnail)),
-    addProjectProjectedBudget: projectedBudget => dispatch(addProjectProjectedBudget(projectedBudget)),
+    storeProjectName: (name) => dispatch(storeProjectName(name)),
+    storeProjectComment: (comment) => dispatch(storeProjectComment(comment)),
+    setCurrentStep: (step) => dispatch(setCurrentStep(step)),
+    storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail)),
+    addProjectProjectedBudget: (projectedBudget) => dispatch(addProjectProjectedBudget(projectedBudget)),
     editProjectProjectedBudgetAmount: (projectedBudget, budgetAmountEdit) =>
       dispatch(editProjectProjectedBudgetAmount(projectedBudget, budgetAmountEdit)),
-    storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    addProjectTag: tag => dispatch(addProjectTag(tag)),
-    removeProjectTag: tag => dispatch(removeProjectTag(tag))
+    storeDeletedProjectedBudget: (projectedBudgets) => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
+    addProjectTag: (tag) => dispatch(addProjectTag(tag)),
+    removeProjectTag: (tag) => dispatch(removeProjectTag(tag))
   };
 };
 

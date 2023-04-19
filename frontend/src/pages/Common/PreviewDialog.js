@@ -2,12 +2,13 @@ import React from "react";
 
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
+
 import strings from "../../localizeStrings";
 
-const getDialogActions = props => {
+const getDialogActions = (props) => {
   const {
     onDialogSubmit,
     onDialogCancel,
@@ -57,7 +58,7 @@ const getDialogActions = props => {
   return [progressInfo, leftActions, rightActions];
 };
 
-const PreviewDialog = props => {
+const PreviewDialog = (props) => {
   const { dialogShown, title } = props;
   return (
     <Dialog sx={{ overflow: "visible" }} maxWidth={"xl"} open={dialogShown} data-test="preview-dialog">

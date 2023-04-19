@@ -1,6 +1,7 @@
+import * as React from "react";
+
 import Chip from "@mui/material/Chip";
 import { useTheme } from "@mui/material/styles";
-import * as React from "react";
 
 export default function SelectablePill(props) {
   const { label = "empty", onClick, sx, isSelected = false, "data-test": dataTest } = props;

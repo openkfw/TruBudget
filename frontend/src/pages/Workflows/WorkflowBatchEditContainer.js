@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
+
 import {
   assignWorkflowItem,
   disableWorkflowEdit,
@@ -26,7 +28,7 @@ class WorkflowBatchEditContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     previewDialogShown: state.getIn(["workflow", "previewDialogShown"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
@@ -49,14 +51,14 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hideWorkflowItemPreview: () => dispatch(hideWorkflowItemPreview()),
     assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
       dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
     resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems()),
-    storeAssignee: assignee => dispatch(storeWorkflowItemBatchAssignee(assignee)),
-    storePermissions: permissions => dispatch(storePermissions(permissions)),
+    storeAssignee: (assignee) => dispatch(storeWorkflowItemBatchAssignee(assignee)),
+    storePermissions: (permissions) => dispatch(storePermissions(permissions)),
     showWorkflowItemPreview: (pId, subprojectId, resources, assignee, permissions) =>
       dispatch(showWorkflowItemPreview(pId, subprojectId, resources, assignee, permissions)),
     disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),

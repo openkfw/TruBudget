@@ -1,3 +1,11 @@
+import React from "react";
+import _isEmpty from "lodash/isEmpty";
+
+import BarChartIcon from "@mui/icons-material/BarChart";
+import DoneIcon from "@mui/icons-material/Check";
+import DateIcon from "@mui/icons-material/DateRange";
+import AssigneeIcon from "@mui/icons-material/Group";
+import LabelIcon from "@mui/icons-material/Label";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -5,8 +13,8 @@ import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,18 +22,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DoneIcon from "@mui/icons-material/Check";
-import DateIcon from "@mui/icons-material/DateRange";
-import AssigneeIcon from "@mui/icons-material/Group";
-import LabelIcon from "@mui/icons-material/Label";
-import _isEmpty from "lodash/isEmpty";
-import React from "react";
 
 import { formattedTag, statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import ProjectAnalyticsDialog from "../Analytics/ProjectAnalyticsDialog";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
+
 import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
 
 const styles = {
@@ -76,7 +78,7 @@ const styles = {
   }
 };
 
-const displayTags = tags => {
+const displayTags = (tags) => {
   return tags.map((tag, i) => (
     <Chip
       key={`${tag}-${i}`}
@@ -90,7 +92,7 @@ const displayTags = tags => {
   ));
 };
 
-const ProjectDetails = props => {
+const ProjectDetails = (props) => {
   const {
     projectName,
     projectId,
@@ -110,7 +112,7 @@ const ProjectDetails = props => {
   } = props;
   const mappedStatus = statusMapping(projectStatus);
   const statusIcon = statusIconMapping[projectStatus];
-  const hasOpenSubprojects = !_isEmpty(subProjects.find(subproject => subproject.data.status === "open"));
+  const hasOpenSubprojects = !_isEmpty(subProjects.find((subproject) => subproject.data.status === "open"));
   const closeDisabled = !canClose || hasOpenSubprojects || projectStatus === "closed";
   const tags = displayTags(projectTags || []);
   return (
@@ -163,7 +165,7 @@ const ProjectDetails = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {projectProjectedBudgets.map(budget => (
+                  {projectProjectedBudgets.map((budget) => (
                     <TableRow key={budget.organization + budget.currencyCode}>
                       <TableCell style={styles.tableCell}>{budget.organization}</TableCell>
                       <TableCell style={styles.tableCell} align="right">

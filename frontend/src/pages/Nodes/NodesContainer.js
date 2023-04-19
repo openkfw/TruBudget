@@ -6,7 +6,8 @@ import { canViewNodesDashboard } from "../../permissions";
 import NotAuthorized from "../Error/NotAuthorized";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
-import { approveNewNodeForExistingOrganization, approveNewOrganization, fetchNodes, declineNode } from "./actions";
+
+import { approveNewNodeForExistingOrganization, approveNewOrganization, declineNode, fetchNodes } from "./actions";
 import Nodes from "./Nodes";
 
 class NodesContainer extends Component {
@@ -22,7 +23,7 @@ class NodesContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     nodes: state.getIn(["nodes", "nodes"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
@@ -31,15 +32,15 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchNodes: () => dispatch(fetchNodes(true)),
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
     showSnackbar: () => dispatch(showSnackbar()),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    approveNewOrganization: organization => dispatch(approveNewOrganization(organization)),
-    approveNewNodeForExistingOrganization: address => dispatch(approveNewNodeForExistingOrganization(address)),
-    declineNode: node => dispatch(declineNode(node))
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
+    approveNewOrganization: (organization) => dispatch(approveNewOrganization(organization)),
+    approveNewNodeForExistingOrganization: (address) => dispatch(approveNewNodeForExistingOrganization(address)),
+    declineNode: (node) => dispatch(declineNode(node))
   };
 };
 

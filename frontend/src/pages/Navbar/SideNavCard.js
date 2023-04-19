@@ -1,21 +1,24 @@
-import { IconButton } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Subheader from "@mui/material/ListSubheader";
+import React from "react";
+
+import StatusIcon from "@mui/icons-material/Build";
 import ProjectIcon from "@mui/icons-material/Business";
 import NodesIcon from "@mui/icons-material/DesktopWindows";
 import ExportIcon from "@mui/icons-material/ListAlt";
 import SocialNotificationIcon from "@mui/icons-material/NotificationsActive";
 import UsersIcon from "@mui/icons-material/PeopleOutline";
 import SettingsIcon from "@mui/icons-material/Settings";
-import StatusIcon from "@mui/icons-material/Build";
-import React from "react";
+import { IconButton } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Subheader from "@mui/material/ListSubheader";
+
 import strings from "../../localizeStrings";
+
 import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
 
@@ -71,23 +74,18 @@ const SideNavCard = ({
         >
           <ListItem style={{ paddingTop: "16px" }}>
             <ListItemIcon>
-              <IconButton
-                children={
-                  <ListItemAvatar>
-                    <Avatar size={60} src={avatar} />
-                  </ListItemAvatar>
-                }
-                size="large" />
+              <IconButton size="large">
+                <ListItemAvatar>
+                  <Avatar size={60} src={avatar} />
+                </ListItemAvatar>
+              </IconButton>
             </ListItemIcon>
             <ListItemText
               style={{ padding: "0px" }}
               primary={<span>{displayName}</span>}
               secondary={<span>{organization}</span>}
             />
-            <IconButton
-              data-test="show-user-profile"
-              onClick={() => openUserProfile()}
-              size="large">
+            <IconButton data-test="show-user-profile" onClick={() => openUserProfile()} size="large">
               <SettingsIcon />
             </IconButton>
           </ListItem>
@@ -149,7 +147,7 @@ const SideNavCard = ({
       ) : null}
       <List>
         {groups.length ? <Subheader> {strings.users.groups} </Subheader> : null}
-        {groups.map(group => {
+        {groups.map((group) => {
           return (
             <div key={group.groupId}>
               <ListItem>

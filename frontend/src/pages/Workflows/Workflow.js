@@ -1,13 +1,15 @@
-import Card from "@mui/material/Card";
-import Fab from "@mui/material/Fab";
-import ContentAdd from "@mui/icons-material/Add";
-import HistoryIcon from "@mui/icons-material/Reorder";
 import React from "react";
 
+import ContentAdd from "@mui/icons-material/Add";
+import HistoryIcon from "@mui/icons-material/Reorder";
+import Card from "@mui/material/Card";
+import Fab from "@mui/material/Fab";
+
 import { canCreateWorkflowItems } from "../../permissions";
+
 import WorkflowTable from "./WorkflowTable";
 
-const Workflow = props => {
+const Workflow = (props) => {
   const subprojectStatus = props.status;
   const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents) && !props.isRoot;
   const createDisabled = props.workflowSortEnabled

@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import { toJS } from "../../helper";
 import SingleSelection from "../Common/SingleSelection";
+
 import { assignProject } from "./actions";
 //
 class ProjectAssigneeContainer extends Component {
@@ -23,14 +25,14 @@ class ProjectAssigneeContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     projectId: state.getIn(["detailview", "id"]),
     projectDisplayName: state.getIn(["detailview", "projectName"])
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     assignProject: (projectId, projectDisplayName, assigneeId, assigneeDisplayName) =>
       dispatch(assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName))

@@ -1,14 +1,16 @@
 import React from "react";
+
 import Typography from "@mui/material/Typography";
+
 import strings from "../../localizeStrings";
 
-const BudgetEmptyState = props => {
+const BudgetEmptyState = (props) => {
   const { text } = props;
   return (
     <table style={{ alignItems: "center" }}>
       <tbody>
         <tr height="200vh">
-          <td max-width="200vw">
+          <td style={{ maxWidth: "200vw" }}>
             <img
               src="/images-for-empty-state/project-budget-empty-state.png"
               alt={strings.common.no_budget}
@@ -16,10 +18,10 @@ const BudgetEmptyState = props => {
             />
           </td>
           <td>
-            <Typography variant="subtitle1" sx={{ color: theme => theme.palette.grey.dark }}>
+            <Typography variant="subtitle1" sx={{ color: (theme) => theme.palette.grey.dark }}>
               {strings.common.no_budget}
             </Typography>
-            <Typography variant="caption" sx={{ color: theme => theme.palette.grey.main }}>
+            <Typography variant="caption" sx={{ color: (theme) => theme.palette.grey.main }}>
               {text}
             </Typography>
           </td>

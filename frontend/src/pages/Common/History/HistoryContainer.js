@@ -1,11 +1,14 @@
+import React from "react";
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SearchIcon from "@mui/icons-material/Search";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import SearchIcon from "@mui/icons-material/Search";
-import React from "react";
+
 import strings from "../../../localizeStrings";
+
 import HistorySearch from "./HistorySearch";
 import ScrollingHistory from "./ScrollingHistory";
 

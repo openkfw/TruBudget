@@ -1,7 +1,8 @@
 import axios from "axios";
 import { createLogger } from "redux-logger";
-import { store } from "./../index";
+
 import config from "./../config";
+import { store } from "./../index";
 
 let instance = undefined;
 const logMessages = [];
@@ -19,9 +20,9 @@ const createConnection = () => {
   }
   // Build url
   instance = axios.create();
-  instance.defaults.baseURL = `${
-    config.logging.isHostSSL ? "http://" : "https://"
-  }${config.logging.serviceHost}:${config.logging.servicePort}`;
+  instance.defaults.baseURL = `${config.logging.isHostSSL ? "http://" : "https://"}${config.logging.serviceHost}:${
+    config.logging.servicePort
+  }`;
 
   setInterval(pushLogToServer, 1000 * config.logging.pushInterval);
 };
@@ -35,11 +36,11 @@ const logger = createLogger({
   timestamp: true,
   logErrors: true,
   predicate: (getState, action) => predicate(getState, action),
-  stateTransformer: s => stateTransformer(s),
+  stateTransformer: (s) => stateTransformer(s),
   diff: true,
-  errorTransformer: error => errorTransformer(error)
+  errorTransformer: (error) => errorTransformer(error)
 });
-const stateTransformer = s => s;
+const stateTransformer = (s) => s;
 
 const predicate = (getState, action) => {
   createLogMsg({
@@ -55,7 +56,7 @@ const predicate = (getState, action) => {
   return false;
 };
 
-const errorTransformer = error => {
+const errorTransformer = (error) => {
   createLogMsg({
     service: "FRONTEND",
     what: "Error",
@@ -70,14 +71,14 @@ const pushLogToServer = async () => {
       instance.defaults.headers.common["Authorization"] === undefined
     )
       setToken();
-    await instance.post("/api", { logMessages }).catch(ignore => ignore);
+    await instance.post("/api", { logMessages }).catch((ignore) => ignore);
     while (logMessages.length) {
       logMessages.pop();
     }
   }
 };
 
-export const createLogMsg = async log => {
+export const createLogMsg = async (log) => {
   if (config.logging.isEnabled === false) return;
   const msg = {
     ...log,

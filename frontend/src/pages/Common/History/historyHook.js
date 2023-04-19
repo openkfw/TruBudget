@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 let listeners = [];
 const defaultState = {
@@ -11,16 +11,16 @@ let state = {
   ...defaultState
 };
 
-const mergeState = newState => {
+const mergeState = (newState) => {
   state = { ...state, ...newState };
-  listeners.forEach(listener => {
+  listeners.forEach((listener) => {
     listener(state);
   });
 };
 
 const clearState = () => {
   state = defaultState;
-  listeners.forEach(listener => {
+  listeners.forEach((listener) => {
     listener(state);
   });
 };

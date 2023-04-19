@@ -1,7 +1,8 @@
-import TextField from "@mui/material/TextField";
 import React from "react";
 
-const WokflowRejectDialogContent = props => {
+import TextField from "@mui/material/TextField";
+
+const WokflowRejectDialogContent = (props) => {
   const { storeRejectReason } = props;
   return (
     <>
@@ -13,7 +14,7 @@ const WokflowRejectDialogContent = props => {
         rows={4}
         placeholder={props.text.commentPlaceholder}
         variant="outlined"
-        onChange={event => storeRejectReason(event.target.value)}
+        onChange={(event) => storeRejectReason(event.target.value)}
         required
         data-test="reject-workflowitem-reject-reason"
       />

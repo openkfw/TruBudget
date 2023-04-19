@@ -80,9 +80,7 @@ schemes
         currency: Joi.string().required(),
         description: Joi.string().allow(""),
         documents: Joi.array().items({
-          base64: Joi.string()
-            .required()
-            .allow(""),
+          base64: Joi.string().required().allow(""),
           fileName: Joi.string().allow("")
         }),
         status: Joi.string().valid("open"),
@@ -114,8 +112,9 @@ schemes
       project: Joi.object().concat(validatorForId),
       subproject: Joi.object().concat(validatorForId),
       workflowitem: Joi.object().concat(validatorForId),
-      isRejectDialog:Joi.boolean()
-    }))
+      isRejectDialog: Joi.boolean()
+    })
+  )
   .set(
     "project.intent.grantPermission",
     Joi.object().keys({

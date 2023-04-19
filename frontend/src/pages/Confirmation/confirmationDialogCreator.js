@@ -1,20 +1,21 @@
 import React from "react";
-import { Typography } from "@mui/material";
 import _isEmpty from "lodash/isEmpty";
 
-import ActionsTable from "./ActionsTable";
-import DialogButtons from "./DialogButtons";
+import { Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import ErrorTypography from "./ErrorTypography";
+
+import { formatString } from "../../helper";
+import strings from "../../localizeStrings";
 import DisableUserDialogContent from "../Users/DisableUserDialogContent";
 import EnableUserDialogContent from "../Users/EnableUserDialogContent";
-import PermissionRequired from "./PermissionRequired";
-import WokflowRejectDialogContent from "./../Workflows/WokflowRejectDialogContent";
 
-import strings from "../../localizeStrings";
-import { formatString } from "../../helper";
+import WokflowRejectDialogContent from "./../Workflows/WokflowRejectDialogContent";
+import ActionsTable from "./ActionsTable";
+import DialogButtons from "./DialogButtons";
+import ErrorTypography from "./ErrorTypography";
+import PermissionRequired from "./PermissionRequired";
 
 const ActionTypes = {
   ORIGINAL: 1,
@@ -99,7 +100,7 @@ export class ConfirmationDialogCreator {
     );
     const errorInformation = !_isEmpty(this.failedAction) ? _createErrorInformation(this.failedAction) : null;
 
-    const hasFailure = this.failureMessage !== '';
+    const hasFailure = this.failureMessage !== "";
 
     return this._createDialog(title, content, confirmButtonText, errorInformation, true, hasFailure);
   }
@@ -253,7 +254,7 @@ const _createActionTableDialogContent = (
   let title = strings.confirmation.confirmation_required;
 
   if (failureMessage !== "") {
-    content = "Error: " + failureMessage + '. Please try again later';
+    content = "Error: " + failureMessage + ". Please try again later";
     return { content, title, confirmButtonText };
   }
 
@@ -287,7 +288,7 @@ const _createActionTableDialogContent = (
 
       case "project.close":
       case "subproject.close":
-      case "workflowitem.close":
+      case "workflowitem.close": {
         const textContainer = _createCloseTexts(originalAction, actionTableData.storeRejectReason);
 
         title = textContainer.closeTitle;
@@ -295,6 +296,7 @@ const _createActionTableDialogContent = (
         confirmButtonText = textContainer.closeConfirmButtonText;
 
         break;
+      }
 
       case "global.enableUser":
       case "global.disableUser": {
@@ -345,7 +347,7 @@ const _createAdditionalActionsContent = (originalAction, actionTableData) => {
   );
 };
 
-const _createErrorInformation = failedAction => {
+const _createErrorInformation = (failedAction) => {
   return (
     <ErrorTypography
       type="error"
@@ -377,7 +379,7 @@ const _createActionsTable = (actionTableData, actionType) => {
   );
 };
 
-const _getDataTestOfType = actionType => {
+const _getDataTestOfType = (actionType) => {
   switch (actionType) {
     case ActionTypes.POST:
       return "post-actions";
@@ -418,9 +420,9 @@ const _getActionTableDataOfType = (actionTableData, actionType) => {
   }
 };
 
-const _isWorkflowItemReject = originalActions =>
-  originalActions.some(action => action.intent === "workflowitem.close") &&
-  originalActions.some(action => action.payload.isRejectDialog === true);
+const _isWorkflowItemReject = (originalActions) =>
+  originalActions.some((action) => action.intent === "workflowitem.close") &&
+  originalActions.some((action) => action.payload.isRejectDialog === true);
 
 const _createCloseTexts = (originalAction, storeRejectReason) => {
   const { intent, payload } = originalAction;
@@ -516,7 +518,7 @@ const _createCloseWorkflowItemText = (payload, storeRejectReason) => {
   };
 };
 
-const _createRejectWorkflowItemText = storeRejectReason => {
+const _createRejectWorkflowItemText = (storeRejectReason) => {
   const dialogText = {
     commentLabel: strings.common.comment,
     commentPlaceholder: strings.common.comment_description
@@ -528,6 +530,6 @@ const _createRejectWorkflowItemText = storeRejectReason => {
   };
 };
 
-const _additionalActionsExist = additionalActions => {
+const _additionalActionsExist = (additionalActions) => {
   return !_isEmpty(additionalActions);
 };

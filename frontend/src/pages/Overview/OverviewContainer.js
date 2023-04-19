@@ -1,6 +1,7 @@
-import _isEqual from "lodash/isEqual";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEqual from "lodash/isEqual";
+
 import { toJS } from "../../helper";
 import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
@@ -9,7 +10,9 @@ import worker from "../Common/filterProjects.worker.js";
 import { fetchUser } from "../Login/actions";
 import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
 import { fetchAllProjectDetails } from "../SubProjects/actions";
+
 import {
+  editProject,
   fetchAllProjects,
   hideProjectAdditionalData,
   setProjectView,
@@ -18,8 +21,7 @@ import {
   showProjectAdditionalData,
   showProjectPermissions,
   storeFilteredProjects,
-  storeSearchTermArray,
-  editProject
+  storeSearchTermArray
 } from "./actions";
 import Overview from "./Overview";
 import ProjectDialogContainer from "./ProjectDialogContainer";
@@ -44,7 +46,10 @@ class OverviewContainer extends Component {
     const searchTermChanges = this.props.searchTermString !== prevProps.searchTermString;
     const projectsChange = !_isEqual(this.props.projects, prevProps.projects);
     if (this.props.searchTermString && (searchTermChanges || projectsChange)) {
-      this.worker.postMessage({ projects: this.props.projects, searchTerm: this.props.searchTermString });
+      this.worker.postMessage({
+        projects: this.props.projects,
+        searchTerm: this.props.searchTermString
+      });
     }
     if (!this.props.searchTermString && prevProps.searchTermString) {
       this.props.storeFilteredProjects(this.props.projects);

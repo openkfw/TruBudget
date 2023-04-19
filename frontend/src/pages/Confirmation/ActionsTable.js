@@ -1,13 +1,15 @@
-import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import Card from "@mui/material/Card";
-import LinearProgress from "@mui/material/LinearProgress";
+import React from "react";
+import _isEmpty from "lodash/isEmpty";
+import _isEqual from "lodash/isEqual";
+
 import ErrorIcon from "@mui/icons-material/Close";
 import DoneIcon from "@mui/icons-material/Done";
 import TBDIcon from "@mui/icons-material/Remove";
 import WarningIcon from "@mui/icons-material/Warning";
-import _isEmpty from "lodash/isEmpty";
-import _isEqual from "lodash/isEqual";
-import React from "react";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import Card from "@mui/material/Card";
+import LinearProgress from "@mui/material/LinearProgress";
+
 import strings from "../../localizeStrings";
 import OverflowTooltip from "../Common/OverflowTooltip";
 
@@ -120,7 +122,7 @@ const generateActions = (actions, executedActions, failedAction, users, groups, 
   actions.forEach((action, index) => {
     const type = strings.common[action.intent.split(".")[0]];
     const userOrGroup =
-      users.find(user => user.id === action.identity) || groups.find(group => group.groupId === action.identity);
+      users.find((user) => user.id === action.identity) || groups.find((group) => group.groupId === action.identity);
 
     actionsTable.push(
       <TableRow style={styles.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
@@ -178,17 +180,17 @@ const getStatusIcon = (executedActions, failedAction, action) => {
 };
 
 const actionExecuted = (executedActions, action) => {
-  return executedActions.some(item => {
+  return executedActions.some((item) => {
     return action.identity === item.identity && action.intent === item.intent && action.permission === item.permission;
   });
 };
 
-const makeReadable = intent => {
+const makeReadable = (intent) => {
   const splittedString = intent ? intent.split(".") : "";
   return strings.intents[splittedString[splittedString.length - 1]] || splittedString[splittedString.length - 1];
 };
 
-const ActionsTable = props => {
+const ActionsTable = (props) => {
   const {
     actions,
     executedActions,
@@ -207,7 +209,7 @@ const ActionsTable = props => {
     userOrGroupColumn: false
   };
 
-  actions.forEach(a => {
+  actions.forEach((a) => {
     _isEmpty(a.displayName) ? (actionTableColumns.nameColumn = false) : (actionTableColumns.nameColumn = true);
     _isEmpty(a.permission)
       ? (actionTableColumns.permissionColumn = false)

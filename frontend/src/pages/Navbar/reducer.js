@@ -5,6 +5,7 @@ import { FETCH_EMAIL_ADDRESS_SUCCESS } from "../Login/actions";
 import { CREATE_PROJECT_SUCCESS } from "../Overview/actions";
 import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
 import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from "../Workflows/actions";
+
 import {
   DISABLE_USER_PROFILE_EDIT,
   ENABLE_USER_PROFILE_EDIT,
@@ -66,10 +67,11 @@ export default function navbarReducer(state = defaultState, action) {
         currentSubProject: action.subproject.data.displayName,
         currentProject: action.parentProject.displayName
       });
-    case SEARCH_TERM:
+    case SEARCH_TERM: {
       const querySearchTerm = convertToURLQuery(action.searchTerm);
       window.history.replaceState("", "Title", "?" + querySearchTerm);
       return state.set("searchTerm", action.searchTerm);
+    }
     case SEARCH_BAR_DISPLAYED:
       return state.set("searchBarDisplayed", action.searchBarDisplayed);
     case SET_IS_ROOT:

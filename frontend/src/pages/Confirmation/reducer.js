@@ -1,4 +1,5 @@
 import { fromJS } from "immutable";
+
 import {
   FETCH_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_FAILURE,
@@ -44,6 +45,7 @@ import {
   REVOKE_WORKFLOWITEM_PERMISSION_FAILURE,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS
 } from "../Workflows/actions";
+
 import {
   ACTION_UPDATE_REQUIRED,
   CONFIRMATION_CANCELLED,
@@ -104,7 +106,7 @@ const defaultState = fromJS({
 
 export default function confirmationReducer(state = defaultState, action) {
   switch (action.type) {
-    case CONFIRMATION_REQUIRED:
+    case CONFIRMATION_REQUIRED: {
       const { project, subproject, workflowitem } = action.payload;
       const isPayloadValidationFailed = validate(action.intent, action.payload);
       if (isPayloadValidationFailed) {
@@ -114,7 +116,7 @@ export default function confirmationReducer(state = defaultState, action) {
         open: true,
         confirmed: false,
         originalActions: state
-          .updateIn(["originalActions"], intent => [
+          .updateIn(["originalActions"], (intent) => [
             ...intent,
             {
               intent: action.intent,
@@ -131,6 +133,7 @@ export default function confirmationReducer(state = defaultState, action) {
         workflowitem: workflowitem || defaultState.get("workflowitem"),
         permissions: defaultState.get("permissions")
       });
+    }
     case CONFIRMATION_CONFIRMED:
       return state.set("confirmed", true).set("open", true);
     case CONFIRMATION_FINISHED:
@@ -168,16 +171,13 @@ export default function confirmationReducer(state = defaultState, action) {
     case EXECUTE_CONFIRMED_ADDITIONAL_ACTIONS_SUCCESS:
       return state.set("additionalActionsExecuted", true).set("executingAdditionalActions", false);
     case EXECUTE_CONFIRMED_ADDITIONAL_ACTIONS_FAILURE:
-      return state
-        .set("additionalActionsExecuted", true)
-        .set("executingAdditionalActions", false)
-        .set("failedAction", {
-          id: action.id,
-          displayName: action.displayName,
-          identity: action.identity,
-          intent: action.intent,
-          permission: action.permission
-        });
+      return state.set("additionalActionsExecuted", true).set("executingAdditionalActions", false).set("failedAction", {
+        id: action.id,
+        displayName: action.displayName,
+        identity: action.identity,
+        intent: action.intent,
+        permission: action.permission
+      });
 
     case EXECUTING_ORIGINAL_ACTIONS:
       return state.set("executingOriginalActions", true);
@@ -212,16 +212,13 @@ export default function confirmationReducer(state = defaultState, action) {
     case EXECUTE_CONFIRMED_POST_ACTIONS_SUCCESS:
       return state.set("postActionsExecuted", true).set("executingPostActions", false);
     case EXECUTE_CONFIRMED_POST_ACTIONS_FAILURE:
-      return state
-        .set("postActionsExecuted", true)
-        .set("executingPostActions", false)
-        .set("failedPostAction", {
-          id: action.id,
-          displayName: action.displayName,
-          identity: action.identity,
-          intent: action.intent,
-          permission: action.permission
-        });
+      return state.set("postActionsExecuted", true).set("executingPostActions", false).set("failedPostAction", {
+        id: action.id,
+        displayName: action.displayName,
+        identity: action.identity,
+        intent: action.intent,
+        permission: action.permission
+      });
 
     case STORE_ACTIONS:
       return state.set("additionalActions", fromJS(action.actions));
@@ -242,29 +239,39 @@ export default function confirmationReducer(state = defaultState, action) {
     case ENABLE_USER_SUCCESS:
     case DISABLE_USER_SUCCESS:
     case CREATE_WORKFLOW_SUCCESS:
-    case CREATE_SUBPROJECT_SUCCESS:
+    case CREATE_SUBPROJECT_SUCCESS: {
       let updatedExecutedActions, executedActionsType;
       // If action is an additional view permission action add it to "executingAdditionalActions" state
       if (state.get("executingAdditionalActions") === true) {
         executedActionsType = "executedAdditionalActions";
         updatedExecutedActions = state
-          .updateIn([executedActionsType], executedActions => [
+          .updateIn([executedActionsType], (executedActions) => [
             ...executedActions,
-            { intent: action.intent, id: action.id, identity: action.identity, permission: action.permission }
+            {
+              intent: action.intent,
+              id: action.id,
+              identity: action.identity,
+              permission: action.permission
+            }
           ])
           .get(executedActionsType);
       } else if (state.get("executingPostActions") === true) {
         // If action is an post action add it to "executedPostActions" state
         executedActionsType = "executedPostActions";
         updatedExecutedActions = state
-          .updateIn([executedActionsType], executedActions => [
+          .updateIn([executedActionsType], (executedActions) => [
             ...executedActions,
-            { intent: action.intent, id: action.id, identity: action.identity, permission: action.permission }
+            {
+              intent: action.intent,
+              id: action.id,
+              identity: action.identity,
+              permission: action.permission
+            }
           ])
           .get(executedActionsType);
       }
       return state.set(executedActionsType, updatedExecutedActions);
-
+    }
     case FETCH_PROJECT_PERMISSIONS_FAILURE:
     case FETCH_SUBPROJECT_PERMISSIONS_FAILURE:
     case FETCH_WORKFLOWITEM_PERMISSIONS_FAILURE:
