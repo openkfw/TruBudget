@@ -1,17 +1,19 @@
 import React from "react";
+
 import Typography from "@mui/material/Typography";
+
 import strings from "../../localizeStrings";
 
 const styles = {
   subtitle: {
-    color: theme => theme.palette.grey.dark
+    color: (theme) => theme.palette.grey.dark
   },
   caption: {
-    color: theme => theme.palette.grey.main
+    color: (theme) => theme.palette.grey.main
   }
 };
 
-const NewOrganizationsEmptyState = props => {
+const NewOrganizationsEmptyState = (props) => {
   return (
     <table style={{ alignItems: "center" }}>
       <tbody>
@@ -34,7 +36,7 @@ const NewOrganizationsEmptyState = props => {
   );
 };
 
-const ExistingNodesEmptyState = props => {
+const ExistingNodesEmptyState = (props) => {
   return (
     <table style={{ alignItems: "center" }}>
       <tbody>
@@ -57,7 +59,7 @@ const ExistingNodesEmptyState = props => {
   );
 };
 
-const DeclinedNodesEmptyState = props => {
+const DeclinedNodesEmptyState = (props) => {
   return (
     <table style={{ alignItems: "center" }}>
       <tbody>

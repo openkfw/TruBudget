@@ -1,10 +1,13 @@
 import React from "react";
+import isEmpty from "lodash/isEmpty";
+
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
-import isEmpty from "lodash/isEmpty";
+
 import strings from "../../localizeStrings";
+
 import CreationDialogStepper from "./CreationDialogStepper";
 
 const styles = {
@@ -79,14 +82,14 @@ const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSub
   return [leftActions, rightActions];
 };
 
-const handleCancel = props => {
+const handleCancel = (props) => {
   props.onDialogCancel();
 };
 
-const handleBack = props => props.setCurrentStep(props.currentStep - 1);
-const handleNext = props => props.setCurrentStep(props.currentStep + 1);
+const handleBack = (props) => props.setCurrentStep(props.currentStep - 1);
+const handleNext = (props) => props.setCurrentStep(props.currentStep + 1);
 
-const CreationDialog = props => {
+const CreationDialog = (props) => {
   const { dialogShown, title, handleSubmit } = props;
   return (
     <Dialog

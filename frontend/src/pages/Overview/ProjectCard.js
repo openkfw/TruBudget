@@ -1,3 +1,13 @@
+import React from "react";
+import Highlighter from "react-highlight-words";
+
+import AmountIcon from "@mui/icons-material/AccountBalance";
+import DateIcon from "@mui/icons-material/DateRange";
+import EditIcon from "@mui/icons-material/Edit";
+import LabelIcon from "@mui/icons-material/LabelOutlined";
+import PermissionIcon from "@mui/icons-material/LockOpen";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
+import ViewIcon from "@mui/icons-material/ZoomIn";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -8,20 +18,12 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { useTheme } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
-import AmountIcon from "@mui/icons-material/AccountBalance";
-import DateIcon from "@mui/icons-material/DateRange";
-import EditIcon from "@mui/icons-material/Edit";
-import LabelIcon from "@mui/icons-material/LabelOutlined";
-import PermissionIcon from "@mui/icons-material/LockOpen";
-import MoreIcon from "@mui/icons-material/MoreHoriz";
-import ViewIcon from "@mui/icons-material/ZoomIn";
-import React from "react";
-import Highlighter from "react-highlight-words";
+
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
-import { useTheme } from "@mui/material/styles";
 
 const styles = {
   editIcon: {
@@ -112,7 +114,13 @@ const ProjectCard = ({
         />
         <List>
           <div
-            style={{ marginTop: "5px", height: "200px", overflow: "scroll", overflowY: "auto", overflowX: "hidden" }}
+            style={{
+              marginTop: "5px",
+              height: "200px",
+              overflow: "scroll",
+              overflowY: "auto",
+              overflowX: "hidden"
+            }}
           >
             {projectedBudgets.length === 0 ? null : (
               <ListItem style={parentStyles.listItem} disabled={false}>

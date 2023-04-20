@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 
+import UploadIcon from "@mui/icons-material/Publish";
+import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import UploadIcon from "@mui/icons-material/Publish";
+import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
+
 import { DocumentEmptyState } from "./DocumentEmptyStates";
 
 const styles = {
@@ -65,11 +66,11 @@ export default class DocumentUpload extends Component {
               id="docupload"
               type="file"
               style={styles.uploadInput}
-              onChange={event => {
+              onChange={(event) => {
                 if (event.target.files) {
                   const file = event.target.files[0];
                   const reader = new FileReader();
-                  reader.onloadend = e => {
+                  reader.onloadend = (e) => {
                     if (e.target.result !== undefined) {
                       const dataUrl = e.target.result.split(";base64,")[1];
                       storeWorkflowDocument(dataUrl, file.name);

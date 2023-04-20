@@ -1,14 +1,16 @@
+import React from "react";
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import React from "react";
 
-import strings from "../../../localizeStrings";
-import PermissionSelection from "./PermissionSelection";
 import { makePermissionReadable } from "../../../helper";
+import strings from "../../../localizeStrings";
+
+import PermissionSelection from "./PermissionSelection";
 
 const renderPermission = (name, userList, permissions, myself, grant, revoke, disabled) => {
   return (
@@ -43,7 +45,7 @@ const PermissionTable = ({
 }) => {
   return (
     <div>
-      {intentOrder.map(section => {
+      {intentOrder.map((section) => {
         return (
           <Card
             key={section.name + "section"}
@@ -54,8 +56,8 @@ const PermissionTable = ({
             <CardContent>
               <List data-test={`${section.name}-list`}>
                 {section.intents
-                  .filter(i => permissions[i] !== undefined)
-                  .map(p =>
+                  .filter((i) => permissions[i] !== undefined)
+                  .map((p) =>
                     renderPermission(
                       p,
                       userList,

@@ -1,13 +1,13 @@
 const axios = require("axios");
 
-const getRate = series => {
+const getRate = (series) => {
   // catch non existing series
   if (!series) return 0;
 
   const observations = series.observations ? Object.values(series.observations) : [];
-  const rateObservations = observations.find(obs => obs.length);
+  const rateObservations = observations.find((obs) => obs.length);
   if (!rateObservations) return 0;
-  const rate = rateObservations.find(rObs => typeof rObs === "number");
+  const rate = rateObservations.find((rObs) => typeof rObs === "number");
 
   return rate ? rate : 0;
 };

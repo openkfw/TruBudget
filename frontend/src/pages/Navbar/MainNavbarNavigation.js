@@ -1,7 +1,8 @@
+import React from "react";
+
+import ChevronRight from "@mui/icons-material/ChevronRight";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import ChevronRight from "@mui/icons-material/ChevronRight";
-import React from "react";
 
 import strings from "../../localizeStrings";
 
@@ -27,7 +28,7 @@ const styles = {
   }
 };
 
-const getStaticBreadcrumb = name => {
+const getStaticBreadcrumb = (name) => {
   switch (name) {
     case "projects":
       return strings.navigation.menu_item_projects;

@@ -3,6 +3,7 @@ import React from "react";
 import UsernameIcon from "@mui/icons-material/Person";
 
 import strings from "../../localizeStrings";
+
 import TextInputWithIcon from "./TextInputWithIcon";
 
 const Username = ({ username, storeUsername, failed, id, failedText, label, ...props }) => {
@@ -15,7 +16,7 @@ const Username = ({ username, storeUsername, failed, id, failedText, label, ...p
       error={failed}
       id={id}
       icon={<UsernameIcon />}
-      onChange={event => storeUsername(event.target.value)}
+      onChange={(event) => storeUsername(event.target.value)}
       helperText={failed ? failedText : null}
       {...props}
     />

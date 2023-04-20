@@ -1,7 +1,7 @@
-import _isEqual from "lodash/isEqual";
-import queryString from "query-string";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEqual from "lodash/isEqual";
+import queryString from "query-string";
 
 import { toJS } from "../../helper";
 import { convertToSearchBarString } from "../../helper";
@@ -15,6 +15,7 @@ import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
 import { hideHistory, openHistory } from "../Notifications/actions";
+
 import {
   closeProject,
   fetchAllProjectDetails,
@@ -61,7 +62,7 @@ class SubProjectContainer extends Component {
     this.worker = new WebWorker(worker);
 
     // Listen for postmessage from worker
-    this.worker.addEventListener("message", event => {
+    this.worker.addEventListener("message", (event) => {
       const filteredSubProjects = event.data ? event.data.filteredProjects : this.props.subProjects;
       const searchTerms = event.data.searchTerms;
       this.props.storeFilteredSubProjects(filteredSubProjects);
@@ -85,7 +86,7 @@ class SubProjectContainer extends Component {
   }
 
   closeProject = () => {
-    const openSubprojects = this.props.subProjects.find(subproject => subproject.data.status === "open");
+    const openSubprojects = this.props.subProjects.find((subproject) => subproject.data.status === "open");
     if (!openSubprojects) {
       this.props.closeProject(this.projectId);
     }
@@ -149,10 +150,10 @@ class SubProjectContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchAllProjectDetails: (projectId, showLoading) => dispatch(fetchAllProjectDetails(projectId, showLoading)),
-    liveUpdate: projectId => dispatch(liveUpdateProject(projectId)),
+    liveUpdate: (projectId) => dispatch(liveUpdateProject(projectId)),
     showSubprojectDialog: () => dispatch(showSubprojectDialog()),
     openHistory: () => {
       dispatch(openHistory());
@@ -163,19 +164,19 @@ const mapDispatchToProps = dispatch => {
     showEditDialog: (id, displayName, description, currency, projectedBudgets) =>
       dispatch(showEditDialog(id, displayName, description, currency, projectedBudgets)),
     fetchUser: () => dispatch(fetchUser(true)),
-    closeProject: pId => dispatch(closeProject(pId, true)),
+    closeProject: (pId) => dispatch(closeProject(pId, true)),
     showSubProjectPermissions: (id, displayName) => dispatch(showSubProjectPermissions(id, displayName)),
-    showSubProjectAdditionalData: id => dispatch(showSubProjectAdditionalData(id)),
+    showSubProjectAdditionalData: (id) => dispatch(showSubProjectAdditionalData(id)),
     hideSubProjectAdditionalData: () => dispatch(hideSubProjectAdditionalData()),
     openAnalyticsDialog: () => dispatch(openAnalyticsDialog()),
-    storeSubSearchTerm: subSearchTerm => dispatch(storeSubSearchTerm(subSearchTerm)),
-    storeSubSearchBarDisplayed: subSearchBarDisplayed => dispatch(storeSubSearchBarDisplayed(subSearchBarDisplayed)),
-    storeFilteredSubProjects: filteredSubProjects => dispatch(storeFilteredSubProjects(filteredSubProjects)),
-    storeSubSearchTermArray: searchTerms => dispatch(storeSubSearchTermArray(searchTerms))
+    storeSubSearchTerm: (subSearchTerm) => dispatch(storeSubSearchTerm(subSearchTerm)),
+    storeSubSearchBarDisplayed: (subSearchBarDisplayed) => dispatch(storeSubSearchBarDisplayed(subSearchBarDisplayed)),
+    storeFilteredSubProjects: (filteredSubProjects) => dispatch(storeFilteredSubProjects(filteredSubProjects)),
+    storeSubSearchTermArray: (searchTerms) => dispatch(storeSubSearchTermArray(searchTerms))
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     users: state.getIn(["login", "enabledUsers"]),
     projectId: state.getIn(["detailview", "id"]),

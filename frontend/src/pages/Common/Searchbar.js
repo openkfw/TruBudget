@@ -1,13 +1,15 @@
+import React from "react";
+
+import CancelIcon from "@mui/icons-material/Cancel";
+import SearchIcon from "@mui/icons-material/Search";
 import ButtonBase from "@mui/material/ButtonBase";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
-import Tooltip from "@mui/material/Tooltip";
-import CancelIcon from "@mui/icons-material/Cancel";
-import SearchIcon from "@mui/icons-material/Search";
-import React from "react";
 import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
+import Paper from "@mui/material/Paper";
+import Tooltip from "@mui/material/Tooltip";
+
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -44,14 +46,14 @@ const Searchbar = ({
     <div style={styles.searchBar} data-test="search-bar">
       {searchBarDisplayed && !searchDisabled ? (
         <Paper style={styles.searchField}>
-          <form onSubmit={e => e.preventDefault()} style={styles.formField}>
+          <form onSubmit={(e) => e.preventDefault()} style={styles.formField}>
             <FormControl style={styles.formControlField} data-test="search-input">
               <Input
                 value={searchTerm}
                 placeholder={previewText}
                 autoFocus={!isSearchBarDisplayedByDefault}
-                onChange={safeOnChange ? event => storeSearchTerm(event.target.value) : null}
-                onKeyDown={e => {
+                onChange={safeOnChange ? (event) => storeSearchTerm(event.target.value) : null}
+                onKeyDown={(e) => {
                   if (!isSearchBarDisplayedByDefault && (e.key === "Escape" || e.key === "Esc")) {
                     storeSearchTerm("");
                     storeSearchBarDisplayed(false);

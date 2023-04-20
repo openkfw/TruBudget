@@ -1,16 +1,18 @@
 import React from "react";
-import Button from "@mui/material/Button";
+import _isEmpty from "lodash/isEmpty";
+
 import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
+import Drawer from "@mui/material/Drawer";
+import Typography from "@mui/material/Typography";
+
+import strings from "../../localizeStrings";
 import { workflowItemIntentOrder } from "../../permissions";
 import PermissionTable from "../Common/Permissions/PermissionsTable";
 import SingleSelection from "../Common/SingleSelection";
-import _isEmpty from "lodash/isEmpty";
-import strings from "../../localizeStrings";
 
 const styles = {
   assigneeCard: {
@@ -42,13 +44,13 @@ const styles = {
 
 const getDefaultPermissions = () => {
   const permissions = workflowItemIntentOrder.reduce((acc, next) => {
-    next.intents.map(intent => (acc[intent] = []));
+    next.intents.map((intent) => (acc[intent] = []));
     return acc;
   }, {});
   return permissions;
 };
 
-const WorkflowEditDrawer = props => {
+const WorkflowEditDrawer = (props) => {
   const {
     selectedWorkflowItems,
     showWorkflowItemPreview,
@@ -67,7 +69,7 @@ const WorkflowEditDrawer = props => {
   } = props;
   const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
 
-  const assign = assignee => {
+  const assign = (assignee) => {
     storeAssignee(assignee);
   };
 

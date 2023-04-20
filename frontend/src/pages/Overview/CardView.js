@@ -1,10 +1,12 @@
+import React from "react";
+import _isEmpty from "lodash/isEmpty";
+
 import ContentAdd from "@mui/icons-material/Add";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
 import Tooltip from "@mui/material/Tooltip";
-import _isEmpty from "lodash/isEmpty";
-import React from "react";
+
 import { statusMapping, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import {
@@ -14,6 +16,7 @@ import {
   canViewProjectSummary
 } from "../../permissions";
 import SelectablePill from "../Common/SelectablePill";
+
 import BudgetsList from "./BudgetsList";
 import ProjectCard from "./ProjectCard";
 
@@ -163,7 +166,7 @@ const getTableEntries = ({
   });
 };
 
-const CardView = props => {
+const CardView = (props) => {
   const { isRoot, allowedIntents, showCreationDialog } = props;
   const tableEntries = getTableEntries(props);
   return (

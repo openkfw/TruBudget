@@ -1,20 +1,19 @@
-import { Map, fromJS } from "immutable";
+import { fromJS, Map } from "immutable";
 
+import { ADMIN_LOGOUT_SUCCESS, LOGIN_SUCCESS, LOGOUT_SUCCESS, SET_LANGUAGE } from "./pages/Login/actions";
 import { defaultState as loginState } from "./pages/Login/reducer";
-import { actionInitialState as actionState } from "./reducers";
-import { defaultState as overviewState } from "./pages/Overview/reducer";
-
-import { LOGOUT_SUCCESS, ADMIN_LOGOUT_SUCCESS, LOGIN_SUCCESS, SET_LANGUAGE } from "./pages/Login/actions";
 import { STORE_PROJECT_VIEW } from "./pages/Overview/actions";
+import { defaultState as overviewState } from "./pages/Overview/reducer";
+import { actionInitialState as actionState } from "./reducers";
 
 const STORAGE_KEY = "state";
 
-const parseActions = state => state.getIn(["actions", "lastAction"]);
+const parseActions = (state) => state.getIn(["actions", "lastAction"]);
 
-const parseFromState = state => ({
+const parseFromState = (state) => ({
   login: {
     jwt: state.getIn(["login", "jwt"]),
-    isUserLoggedIn: state.getIn(['login', 'isUserLoggedIn']),
+    isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
     language: state.getIn(["login", "language"]),
     id: state.getIn(["login", "id"]),
     displayName: state.getIn(["login", "displayName"]),
@@ -46,11 +45,11 @@ export const loadState = () => {
   }
 };
 
-const setStorage = state => {
+const setStorage = (state) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 };
 
-export const persistState = state => {
+export const persistState = (state) => {
   const action = parseActions(state);
   try {
     switch (action) {
@@ -58,10 +57,11 @@ export const persistState = state => {
       case SET_LANGUAGE:
       case STORE_PROJECT_VIEW:
       case ADMIN_LOGOUT_SUCCESS:
-      case LOGOUT_SUCCESS:
+      case LOGOUT_SUCCESS: {
         const stateToPersist = parseFromState(state);
         setStorage(stateToPersist);
         break;
+      }
       default:
         break;
     }

@@ -1,16 +1,17 @@
 import React from "react";
+
+import SettingsIcon from "@mui/icons-material/Settings";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
-import SettingsIcon from "@mui/icons-material/Settings";
 
-import Username from "../Common/Username";
-import Password from "../Common/Password";
 import strings from "../../localizeStrings";
 import Dropdown from "../Common/NewDropdown";
+import Password from "../Common/Password";
+import Username from "../Common/Username";
 
 const LoginPage = ({
   history,
@@ -101,10 +102,7 @@ const LoginPage = ({
         </div>
         <Divider />
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", float: "right" }}>
-          <IconButton
-            disabled={!(connectedToAdminNode > -1)}
-            onClick={() => history.push("/admin")}
-            size="large">
+          <IconButton disabled={!(connectedToAdminNode > -1)} onClick={() => history.push("/admin")} size="large">
             <SettingsIcon />
           </IconButton>
         </div>

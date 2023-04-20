@@ -1,18 +1,20 @@
-import { Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import _isEmpty from "lodash/isEmpty";
+
 import InfoIcon from "@mui/icons-material/Info";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import React, { useEffect, useState } from "react";
-import _isEmpty from "lodash/isEmpty";
+
+import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
-import { formatString } from "../../helper";
 
 const styles = {
   tableCell: {
@@ -49,7 +51,7 @@ const formatUserAssignments = (assignments, hasHiddenAssignments, assignmentType
   }
 
   const baseurl = window.location.origin;
-  return assignments.map(assignment => {
+  return assignments.map((assignment) => {
     let url;
     if (assignmentType === "project") {
       url = `${baseurl}/projects/${assignment.id}`;
@@ -83,7 +85,7 @@ const formatHiddenAssignments = (hasHiddenAssignments, assignmentType) => {
   );
 };
 
-const getUserAssignmentsTable = userAssignments => {
+const getUserAssignmentsTable = (userAssignments) => {
   const hasHiddenProjects = userAssignments.hiddenAssignments.hasHiddenProjects;
   const hasHiddenSubprojects = userAssignments.hiddenAssignments.hasHiddenSubprojects;
   const hasHiddenWorkflowitems = userAssignments.hiddenAssignments.hasHiddenWorkflowitems;
@@ -118,7 +120,7 @@ const getUserAssignmentsTable = userAssignments => {
   );
 };
 
-const DisableUserDialogContent = props => {
+const DisableUserDialogContent = (props) => {
   const { fetchUserAssignments, cleanUserAssignments, userAssignments, editId } = props;
 
   const [isUserAssigned, setIsUserAssigned] = useState(false);

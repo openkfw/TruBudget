@@ -17,7 +17,7 @@ export function executeActions(
   disableUser,
   enableUser
 ) {
-  actions.forEach(action => {
+  actions.forEach((action) => {
     switch (action.intent) {
       case "project.intent.grantPermission": {
         const project = action.payload.project;

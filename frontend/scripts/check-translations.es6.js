@@ -28,7 +28,7 @@ const translationsDir = "../src/languages";
 const languages = ["english", "french", "german", "portuguese", "georgian"];
 
 const translations = new Map(
-  languages.map(lang => {
+  languages.map((lang) => {
     const path = `${translationsDir}/${lang}.js`;
     return [lang, require(path).default];
   })
@@ -49,7 +49,7 @@ for (const category of categories) {
 haltOnError(missingTranslations);
 
 for (const category of categories) {
-  const categoryObjects = [...translations.values()].map(obj => obj[category]);
+  const categoryObjects = [...translations.values()].map((obj) => obj[category]);
   const keys = new Set(flatMap(Object.keys, categoryObjects));
 
   // Check that all translations have all keys for the current category:

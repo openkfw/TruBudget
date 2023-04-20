@@ -10,12 +10,12 @@ const filterProjectsWorker = () => {
     const searchedTags = extractFromSearchTerms(unfilteredSearchTerms, "tag");
     const searchedStatus = extractFromSearchTerms(unfilteredSearchTerms, "status");
     const searchTermsWithoutPrefix = unfilteredSearchTerms.filter(
-      searchTerm => !searchTerm.includes(":") && searchTerm.length !== 0
+      (searchTerm) => !searchTerm.includes(":") && searchTerm.length !== 0
     );
 
     const filteredSearchTerms = searchTermsWithoutPrefix.concat(searchedDisplayNames, searchedTags, searchedStatus);
 
-    const filteredProjects = projects.filter(project => {
+    const filteredProjects = projects.filter((project) => {
       let hasDisplayName = true;
       let hasStatus = true;
       let hasTag = true;
@@ -45,31 +45,31 @@ const filterProjectsWorker = () => {
   };
 
   function includesSearchTerm(project, searchTermsWithoutPrefix) {
-    return searchTermsWithoutPrefix.every(searchTerm => {
+    return searchTermsWithoutPrefix.every((searchTerm) => {
       return (
         project.data.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.data.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (project.data.tags !== undefined
-          ? project.data.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+          ? project.data.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
           : false)
       );
     });
   }
 
   function includesTag(project, searchedTags) {
-    return project.data.tags.some(projectTag =>
-      searchedTags.some(extractedTag => projectTag.toLowerCase().includes(extractedTag.toLowerCase()))
+    return project.data.tags.some((projectTag) =>
+      searchedTags.some((extractedTag) => projectTag.toLowerCase().includes(extractedTag.toLowerCase()))
     );
   }
 
   function includesStatus(project, searchedStatus) {
-    return searchedStatus.some(status => {
+    return searchedStatus.some((status) => {
       return project.data.status.toLowerCase().includes(status.toLowerCase());
     });
   }
 
   function includesDisplayName(project, searchedDisplayNames) {
-    return searchedDisplayNames.some(displayName =>
+    return searchedDisplayNames.some((displayName) =>
       project.data.displayName.toLowerCase().includes(displayName.toLowerCase())
     );
   }

@@ -2,11 +2,12 @@ import React from "react";
 
 import Drawer from "@mui/material/Drawer";
 
-import SideNavCard from "./SideNavCard";
 import { canViewNodesDashboard } from "../../permissions";
+
+import SideNavCard from "./SideNavCard";
 import UserProfile from "./UserProfile";
 
-const SideNav = props => {
+const SideNav = (props) => {
   const { showSidebar, toggleSidebar, allowedIntents, ...rest } = props;
   const nodeDashboardEnabled = canViewNodesDashboard(allowedIntents);
   return (

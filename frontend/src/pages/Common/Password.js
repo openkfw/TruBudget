@@ -1,13 +1,15 @@
-import TextField from "@mui/material/TextField";
-import Tooltip from "@mui/material/Tooltip";
-import PasswordIcon from "@mui/icons-material/Lock";
 import React from "react";
-import strings from "../../localizeStrings";
+import { useState } from "react";
+
+import PasswordIcon from "@mui/icons-material/Lock";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import { useState } from "react";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
+
+import strings from "../../localizeStrings";
 
 const styles = {
   container: {
@@ -59,9 +61,9 @@ const Password = ({
           margin="normal"
           error={failed}
           id={id}
-          onBlur={event => (storePassword ? storePassword(event.target.value) : null)}
-          onChange={event => (setPassword ? setPassword(event.target.value) : null)}
-          onKeyPress={e => handleEnter(e, nextBestAction)}
+          onBlur={(event) => (storePassword ? storePassword(event.target.value) : null)}
+          onChange={(event) => (setPassword ? setPassword(event.target.value) : null)}
+          onKeyPress={(e) => handleEnter(e, nextBestAction)}
           helperText={failed ? failedText : null}
           type={isPasswordVisible ? "text" : "password"}
           InputProps={{

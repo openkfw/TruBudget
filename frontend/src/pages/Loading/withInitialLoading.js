@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
+import Transition from "react-transition-group/Transition";
 
 import RefreshIndicator from "./RefreshIndicator";
-import Transition from "react-transition-group/Transition";
 
 const styles = {
   container: {
@@ -28,19 +28,19 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     loading: state.getIn(["loading", "loadingVisible"])
   };
 };
 
-const withInitialLoading = ComponentToEnhance => {
-  return connect(mapStateToProps)(props => {
+const withInitialLoading = (ComponentToEnhance) => {
+  return connect(mapStateToProps)((props) => {
     return (
       <div style={styles.container}>
         {props.loading ? <RefreshIndicator /> : null}
         <Transition in={props.loading} timeout={0}>
-          {state => (
+          {(state) => (
             <div
               style={{
                 ...styles.content,

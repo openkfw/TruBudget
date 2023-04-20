@@ -7,8 +7,14 @@ export const projectEventTypes = () => [
   { id: "project_closed", displayName: strings.eventTypes.project_closed },
   { id: "project_permission_granted", displayName: strings.eventTypes.project_permission_granted },
   { id: "project_permission_revoked", displayName: strings.eventTypes.project_permission_revoked },
-  { id: "project_projected_budget_updated", displayName: strings.eventTypes.project_projected_budget_updated },
-  { id: "project_projected_budget_deleted", displayName: strings.eventTypes.project_projected_budget_deleted }
+  {
+    id: "project_projected_budget_updated",
+    displayName: strings.eventTypes.project_projected_budget_updated
+  },
+  {
+    id: "project_projected_budget_deleted",
+    displayName: strings.eventTypes.project_projected_budget_deleted
+  }
 ];
 
 export const subprojectEventTypes = () => [
@@ -18,8 +24,14 @@ export const subprojectEventTypes = () => [
   { id: "subproject_closed", displayName: strings.eventTypes.subproject_closed },
   { id: "subproject_permission_granted", displayName: strings.eventTypes.subproject_permission_granted },
   { id: "subproject_permission_revoked", displayName: strings.eventTypes.subproject_permission_revoked },
-  { id: "subproject_projected_budget_updated", displayName: strings.eventTypes.subproject_projected_budget_updated },
-  { id: "subproject_projected_budget_deleted", displayName: strings.eventTypes.subproject_projected_budget_deleted }
+  {
+    id: "subproject_projected_budget_updated",
+    displayName: strings.eventTypes.subproject_projected_budget_updated
+  },
+  {
+    id: "subproject_projected_budget_deleted",
+    displayName: strings.eventTypes.subproject_projected_budget_deleted
+  }
 ];
 
 export const workflowitemEventTypes = () => [
@@ -27,10 +39,19 @@ export const workflowitemEventTypes = () => [
   { id: "workflowitem_updated", displayName: strings.eventTypes.workflowitem_updated },
   { id: "workflowitem_assigned", displayName: strings.eventTypes.workflowitem_assigned },
   { id: "workflowitem_closed", displayName: strings.eventTypes.workflowitem_closed },
-  { id: "workflowitem_permission_granted", displayName: strings.eventTypes.workflowitem_permission_granted },
-  { id: "workflowitem_permission_revoked", displayName: strings.eventTypes.workflowitem_permission_revoked },
+  {
+    id: "workflowitem_permission_granted",
+    displayName: strings.eventTypes.workflowitem_permission_granted
+  },
+  {
+    id: "workflowitem_permission_revoked",
+    displayName: strings.eventTypes.workflowitem_permission_revoked
+  },
   { id: "workflowitems_reordered", displayName: strings.eventTypes.workflowitems_reordered },
-  { id: "workflowitem_document_validated", displayName: strings.eventTypes.workflowitem_document_validated }
+  {
+    id: "workflowitem_document_validated",
+    displayName: strings.eventTypes.workflowitem_document_validated
+  }
 ];
 
 const eventTypes = { projectEventTypes, subprojectEventTypes, workflowitemEventTypes };

@@ -1,6 +1,8 @@
-import Typography from "@mui/material/Typography";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
+import Typography from "@mui/material/Typography";
+
 import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
@@ -14,6 +16,7 @@ import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
 import { openHistory } from "../Notifications/actions";
 import SubprojectHistoryDrawer from "../SubProjects/SubprojectHistoryDrawer";
+
 import {
   closeSubproject,
   closeWorkflowItem,
@@ -22,8 +25,8 @@ import {
   enableSubProjectBudgetEdit,
   enableWorkflowEdit,
   fetchAllSubprojectDetails,
-  hideReasonDialog,
   fetchWorkflowitem,
+  hideReasonDialog,
   hideWorkflowDetails,
   hideWorkflowDialog,
   hideWorkflowitemAdditionalData,
@@ -71,9 +74,9 @@ class WorkflowContainer extends Component {
     this.props.disableWorkflowEdit();
   }
 
-  closeWorkflowItem = wId => this.props.closeWorkflowItem(this.projectId, this.subprojectId, wId, false, true);
+  closeWorkflowItem = (wId) => this.props.closeWorkflowItem(this.projectId, this.subprojectId, wId, false, true);
 
-  rejectWorkflowItem = wId => {
+  rejectWorkflowItem = (wId) => {
     this.props.rejectWorkflowItem(this.projectId, this.subprojectId, wId, true, true);
   };
 
@@ -158,19 +161,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     rejectWorkflowItem: (pId, sId, wId) => dispatch(closeWorkflowItem(pId, sId, wId, true, true)),
     setSelectedView: (id, section) => dispatch(setSelectedView(id, section)),
     showWorkflowItemPermissions: (wId, wDisplayName) => dispatch(showWorkflowItemPermissions(wId, wDisplayName)),
-    updateWorkflowOrderOnState: items => dispatch(updateWorkflowOrderOnState(items)),
+    updateWorkflowOrderOnState: (items) => dispatch(updateWorkflowOrderOnState(items)),
     enableWorkflowEdit: () => dispatch(enableWorkflowEdit()),
     disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),
     reorderWorkflowItems: (projectId, subProjectId, workflowItems) =>
       dispatch(reorderWorkflowItems(projectId, subProjectId, workflowItems)),
-    storeWorkflowType: value => dispatch(storeWorkflowType(value)),
+    storeWorkflowType: (value) => dispatch(storeWorkflowType(value)),
     enableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(true)),
     disableBudgetEdit: () => dispatch(enableSubProjectBudgetEdit(false)),
     postSubProjectEdit: (parent, streamName, status, amount) =>
       dispatch(postSubProjectEdit(parent, streamName, status, amount)),
     fetchUser: () => dispatch(fetchUser(true)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
-    isWorkflowApprovalRequired: approvalRequired => dispatch(isWorkflowApprovalRequired(approvalRequired)),
+    isWorkflowApprovalRequired: (approvalRequired) => dispatch(isWorkflowApprovalRequired(approvalRequired)),
     showEditDialog: (
       id,
       displayName,
@@ -197,18 +200,18 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           workflowitemType
         )
       ),
-    saveWorkflowItemsBeforeSort: workflowItems => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
+    saveWorkflowItemsBeforeSort: (workflowItems) => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
     addDocument: (payload, name) => dispatch(addDocument(payload, name)),
-    storeWorkflowItemsSelected: workflowItems => dispatch(storeWorkflowItemsSelected(workflowItems)),
+    storeWorkflowItemsSelected: (workflowItems) => dispatch(storeWorkflowItemsSelected(workflowItems)),
     openAnalyticsDialog: () => dispatch(openAnalyticsDialog()),
-    showWorkflowitemAdditionalData: wId => dispatch(showWorkflowitemAdditionalData(wId)),
+    showWorkflowitemAdditionalData: (wId) => dispatch(showWorkflowitemAdditionalData(wId)),
     hideWorkflowitemAdditionalData: () => dispatch(hideWorkflowitemAdditionalData()),
-    showReasonDialog: rejectReason => dispatch(showReasonDialog(rejectReason)),
+    showReasonDialog: (rejectReason) => dispatch(showReasonDialog(rejectReason)),
     hideReasonDialog: () => dispatch(hideReasonDialog())
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     id: state.getIn(["workflow", "id"]),
     displayName: state.getIn(["workflow", "displayName"]),

@@ -1,6 +1,8 @@
-import { Typography } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
 import React from "react";
+
+import InfoIcon from "@mui/icons-material/Info";
+import { Typography } from "@mui/material";
+
 import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
 
@@ -16,7 +18,7 @@ const styles = {
   }
 };
 
-const EnableUserDialog = props => {
+const EnableUserDialog = (props) => {
   const { editId } = props;
   const dialogText = formatString(strings.users.enable_userId_confirm, editId);
 

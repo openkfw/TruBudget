@@ -1,3 +1,18 @@
+import React from "react";
+import { SortableElement } from "react-sortable-hoc";
+import _isEmpty from "lodash/isEmpty";
+
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import RejectedIcon from "@mui/icons-material/Block";
+import DoneIcon from "@mui/icons-material/Check";
+import EditIcon from "@mui/icons-material/Edit";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import InfoIcon from "@mui/icons-material/InfoOutlined";
+import PermissionIcon from "@mui/icons-material/LockOpen";
+import MoreIcon from "@mui/icons-material/MoreHoriz";
+import OpenIcon from "@mui/icons-material/Remove";
+import SwapIcon from "@mui/icons-material/SwapCalls";
+import HiddenIcon from "@mui/icons-material/VisibilityOff";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 import Chip from "@mui/material/Chip";
@@ -7,25 +22,13 @@ import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import AttachmentIcon from "@mui/icons-material/Attachment";
-import DoneIcon from "@mui/icons-material/Check";
-import RejectedIcon from "@mui/icons-material/Block";
-import EditIcon from "@mui/icons-material/Edit";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import InfoIcon from "@mui/icons-material/InfoOutlined";
-import PermissionIcon from "@mui/icons-material/LockOpen";
-import MoreIcon from "@mui/icons-material/MoreHoriz";
-import OpenIcon from "@mui/icons-material/Remove";
-import SwapIcon from "@mui/icons-material/SwapCalls";
-import HiddenIcon from "@mui/icons-material/VisibilityOff";
-import _isEmpty from "lodash/isEmpty";
-import React from "react";
-import { SortableElement } from "react-sortable-hoc";
+
 import { amountTypes, fromAmountString, isDateReached, toAmountString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import { canAssignWorkflowItem, canUpdateWorkflowItem, canViewWorkflowItemPermissions } from "../../permissions.js";
 import ActionButton from "../Common/ActionButton";
 import StyledBadge from "../Common/StyledBadge";
+
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
 const styles = {
@@ -179,7 +182,7 @@ const createLine = (isFirst, selectable) => {
   return <div style={style} />;
 };
 
-const StepDot = props => {
+const StepDot = (props) => {
   const {
     sortEnabled,
     status,
@@ -201,7 +204,7 @@ const StepDot = props => {
     default:
       Icon = OpenIcon;
   }
-  const updateSelectedList = event => {
+  const updateSelectedList = (event) => {
     if (event.target.checked) {
       selectedWorkflowItems.push(currentWorkflowItem);
     } else {
@@ -225,7 +228,7 @@ function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
     return false;
   }
   const intents = allowedIntents.filter(
-    i =>
+    (i) =>
       i === "workflowitem.intent.listPermissions" ||
       i === "workflowitem.intent.grantPermission" ||
       i === "workflowitem.intent.revokePermission"
@@ -299,7 +302,7 @@ const getInfoButton = (props, status, workflowSortEnabled, workflow) => {
 const getAttachmentButton = ({ openWorkflowDetails, projectId, subProjectId }, workflow) => {
   const { documents } = workflow;
   const showAttachFileBadge = documents && documents.length > 0;
-  const showToolTip = documents && documents.length > 0 && documents.some(doc => doc.fileName !== undefined);
+  const showToolTip = documents && documents.length > 0 && documents.some((doc) => doc.fileName !== undefined);
 
   return (
     <div>

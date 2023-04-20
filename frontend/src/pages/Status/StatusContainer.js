@@ -3,8 +3,9 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
-import { fetchEmailServiceVersion, fetchExportServiceVersion, fetchVersions } from "./actions";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
+
+import { fetchEmailServiceVersion, fetchExportServiceVersion, fetchVersions } from "./actions";
 import StatusTable from "./StatusTable";
 
 class StatusContainer extends Component {
@@ -36,7 +37,7 @@ class StatusContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     versions: state.getIn(["status", "versions"]),
     isFetchingVersions: state.getIn(["status", "isFetchingVersions"]),
@@ -47,11 +48,11 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showErrorSnackbar: () => dispatch(showSnackbar(true)),
     showSnackbar: () => dispatch(showSnackbar()),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
     fetchVersions: () => dispatch(fetchVersions()),
     fetchEmailServiceVersion: () => dispatch(fetchEmailServiceVersion()),
     fetchExportServiceVersion: () => dispatch(fetchExportServiceVersion())

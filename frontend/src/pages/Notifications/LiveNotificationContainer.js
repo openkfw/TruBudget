@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import LiveNotification from "./LiveNotification";
-import { hideSnackbar, updateNotification } from "./actions.js";
 import { toJS } from "../../helper";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
+
+import { hideSnackbar, updateNotification } from "./actions.js";
+import LiveNotification from "./LiveNotification";
 
 // Currently when a fly in appears the notifications aren't reloaded, due to the latency of the call.
 // Once notifications are compacted/snapshoted we can refresh every time the fly in saga was called.
@@ -27,14 +28,14 @@ class LiveNotificationContainer extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    fetchFlyInNotifications: offset => dispatch(updateNotification(false, offset)),
+    fetchFlyInNotifications: (offset) => dispatch(updateNotification(false, offset)),
     closeSnackbar: () => dispatch(hideSnackbar())
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     notifications: state.getIn(["notifications", "notifications"]),
     showSnackbar: state.getIn(["notifications", "showSnackbar"]),

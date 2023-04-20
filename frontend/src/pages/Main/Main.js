@@ -10,15 +10,16 @@ import { initLanguage } from "../Login/actions";
 import NavbarContainer from "../Navbar/NavbarContainer";
 import NodesContainer from "../Nodes/NodesContainer";
 import NotificationPageContainer from "../Notifications/NotificationPageContainer";
-import StatusContainer from "../Status/StatusContainer";
 import OverviewContainer from "../Overview/OverviewContainer";
+import StatusContainer from "../Status/StatusContainer";
 import SubProjectContainer from "../SubProjects/SubProjectContainer";
 import UserManagementContainer from "../Users/UserManagementContainer";
 import WorkflowContainer from "../Workflows/WorkflowContainer";
+
 import Footer from "./Footer";
 import Placeholder from "./Placeholder";
 
-const Main = props => {
+const Main = (props) => {
   return (
     <div
       style={{
@@ -75,7 +76,7 @@ class MainContainer extends Component {
     return <Main />;
   }
 }
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     initLanguage: () => dispatch(initLanguage())
   };

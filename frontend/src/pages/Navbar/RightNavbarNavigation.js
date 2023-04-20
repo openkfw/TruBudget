@@ -1,5 +1,6 @@
-import Typography from "@mui/material/Typography";
 import React from "react";
+
+import Typography from "@mui/material/Typography";
 
 import NavbarIcons from "./NavbarIcons";
 import ProjectSearch from "./ProjectSearch";

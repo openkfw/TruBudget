@@ -1,8 +1,10 @@
-import { Typography } from "@mui/material";
+import React from "react";
+
 import NameIcon from "@mui/icons-material/AssignmentInd";
 import InfoIcon from "@mui/icons-material/Info";
 import OrgaIcon from "@mui/icons-material/StoreMallDirectory";
-import React from "react";
+import { Typography } from "@mui/material";
+
 import strings from "../../localizeStrings";
 import Password from "../Common/Password";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
@@ -66,7 +68,7 @@ const UserDialogContent = ({
           disabled={true}
           error={false}
           icon={<OrgaIcon />}
-          onChange={event => setOrganization(event.target.value)}
+          onChange={(event) => setOrganization(event.target.value)}
         />
         <TextInputWithIcon
           style={styles.textInput}
@@ -75,7 +77,7 @@ const UserDialogContent = ({
           error={false}
           icon={<NameIcon />}
           data-test="accountname"
-          onChange={event => setDisplayName(event.target.value)}
+          onChange={(event) => setDisplayName(event.target.value)}
         />
         <Username
           username={username}

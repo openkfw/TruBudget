@@ -1,9 +1,11 @@
+import React, { useEffect } from "react";
+import _isEmpty from "lodash/isEmpty";
+
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
-import _isEmpty from "lodash/isEmpty";
-import React, { useEffect } from "react";
+
 import { compareObjects, fromAmountString, shortenedDisplayName } from "../../helper";
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
@@ -12,6 +14,7 @@ import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
 import SingleSelection from "../Common/SingleSelection";
 import DocumentUpload from "../Documents/DocumentUpload";
+
 import { compareWorkflowItems } from "./compareWorkflowItems";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
 
@@ -41,7 +44,7 @@ const styles = {
   }
 };
 
-const handleCreate = props => {
+const handleCreate = (props) => {
   const {
     createWorkflowItem,
     onDialogCancel,
@@ -83,9 +86,9 @@ const handleCreate = props => {
   onDialogCancel();
 };
 
-const handleEdit = props => {
+const handleEdit = (props) => {
   const { editWorkflowItem, onDialogCancel, workflowItems, workflowToAdd, location, storeSnackbarMessage } = props;
-  const originalWorkflowItem = workflowItems.find(workflowItem => workflowItem.data.id === workflowToAdd.id).data;
+  const originalWorkflowItem = workflowItems.find((workflowItem) => workflowItem.data.id === workflowToAdd.id).data;
 
   if (workflowToAdd.amountType === "N/A") {
     if (workflowToAdd.amountType === originalWorkflowItem.amountType) {
@@ -121,7 +124,7 @@ const handleEdit = props => {
   onDialogCancel();
 };
 
-const getDropdownMenuItems = types => {
+const getDropdownMenuItems = (types) => {
   return types.map((type, index) => {
     return (
       <MenuItem key={index} value={type}>
@@ -131,7 +134,7 @@ const getDropdownMenuItems = types => {
   });
 };
 
-const Content = props => {
+const Content = (props) => {
   const { workflowitemType } = props.workflowToAdd;
   const {
     selectedAssignee,
@@ -150,7 +153,7 @@ const Content = props => {
     restricted: strings.workflow.workflowitem_type_restricted
   };
 
-  const getWorkflowitemTypeInfo = type => {
+  const getWorkflowitemTypeInfo = (type) => {
     switch (type) {
       case "general":
         return typesDescription.general;
@@ -179,7 +182,7 @@ const Content = props => {
             id="due-date"
             label={strings.common.dueDate}
             datetime={props.workflowToAdd.dueDate}
-            onChange={date => {
+            onChange={(date) => {
               props.storeWorkflowDueDate(date);
             }}
             onDelete={() => {
@@ -195,7 +198,7 @@ const Content = props => {
                 style={styles.dropdown}
                 floatingLabel={strings.workflow.workflowitem_type}
                 value={hasFixedWorkflowitemType ? fixedWorkflowitemType : workflowitemType}
-                onChange={value => storeWorkflowitemType(value)}
+                onChange={(value) => storeWorkflowitemType(value)}
                 id="types"
               >
                 {getDropdownMenuItems(types)}
@@ -234,7 +237,7 @@ const Content = props => {
     </div>
   );
 };
-const WorkflowDialog = props => {
+const WorkflowDialog = (props) => {
   const {
     workflowItems,
     workflowToAdd,
@@ -288,13 +291,13 @@ const WorkflowDialog = props => {
 
   const specificProps = editDialogShown
     ? {
-      handleSubmit: handleEdit,
-      dialogShown: editDialogShown
-    }
+        handleSubmit: handleEdit,
+        dialogShown: editDialogShown
+      }
     : {
-      handleSubmit: handleCreate,
-      dialogShown: creationDialogShown
-    };
+        handleSubmit: handleCreate,
+        dialogShown: creationDialogShown
+      };
   const { displayName, amountType, amount } = workflowToAdd;
   const exchangeRate = fromAmountString(workflowToAdd.exchangeRate);
   const changes = compareObjects(workflowItems, workflowToAdd);

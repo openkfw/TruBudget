@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import Transition from "react-transition-group/Transition";
 
+import LaunchIcon from "@mui/icons-material/ZoomIn";
+import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
-import LaunchIcon from "@mui/icons-material/ZoomIn";
 import Typography from "@mui/material/Typography";
 
-import { intentMapping, parseURI, isAllowedToSee, getParentData } from "./helper";
+import { getParentData, intentMapping, isAllowedToSee, parseURI } from "./helper";
 
 const styles = {
   notification: {
@@ -25,8 +25,8 @@ const styles = {
 };
 
 export default class FlyInNotification extends Component {
-  getMessages = history => {
-    return this.props.notifications.map(notification => {
+  getMessages = (history) => {
+    return this.props.notifications.map((notification) => {
       const { id, businessEvent, metadata } = notification;
       const projectId = metadata.project ? metadata.project.id : undefined;
       const subprojectId = metadata.subproject ? metadata.subproject.id : undefined;
@@ -49,7 +49,8 @@ export default class FlyInNotification extends Component {
                   disabled={!isAllowedToSee(notification)}
                   color="primary"
                   onClick={() => history.push(parseURI({ projectId, subprojectId }))}
-                  size="large">
+                  size="large"
+                >
                   <LaunchIcon />
                 </IconButton>
               ) : null
@@ -75,7 +76,7 @@ export default class FlyInNotification extends Component {
         }}
       >
         <Transition in={this.props.show} timeout={{ enter: 500, exit: 500 }}>
-          {state => (
+          {(state) => (
             <div
               style={{
                 ...styles.notification,

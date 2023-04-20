@@ -1,22 +1,24 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import SubprojectDialog from "./SubprojectDialog";
-import withInitialLoading from "../Loading/withInitialLoading";
+
 import { toJS } from "../../helper";
+import withInitialLoading from "../Loading/withInitialLoading";
+import { storeSnackbarMessage } from "../Notifications/actions";
+
 import {
-  hideSubprojectDialog,
-  storeSubProjectName,
+  addSubProjectProjectedBudget,
   createSubProject,
   editSubproject,
+  editSubProjectProjectedBudgetAmount,
+  hideSubprojectDialog,
+  storeDeletedProjectedBudget,
+  storeFixedWorkflowitemType,
   storeSubProjectComment,
   storeSubProjectCurrency,
-  storeSubProjectValidator,
-  addSubProjectProjectedBudget,
-  editSubProjectProjectedBudgetAmount,
-  storeDeletedProjectedBudget,
-  storeFixedWorkflowitemType
+  storeSubProjectName,
+  storeSubProjectValidator
 } from "./actions";
-import { storeSnackbarMessage } from "../Notifications/actions";
+import SubprojectDialog from "./SubprojectDialog";
 
 class SubprojectDialogContainer extends Component {
   render() {
@@ -24,7 +26,7 @@ class SubprojectDialogContainer extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     subprojectToAdd: state.getIn(["detailview", "subprojectToAdd"]),
     creationDialogShown: state.getIn(["detailview", "creationDialogShown"]),
@@ -40,10 +42,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     hideSubprojectDialog: () => dispatch(hideSubprojectDialog()),
-    storeSubProjectName: name => dispatch(storeSubProjectName(name)),
+    storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
     createSubProject: (
       projectId,
       projectDisplayName,
@@ -67,15 +69,15 @@ const mapDispatchToProps = dispatch => {
         )
       ),
     editSubproject: (pId, sId, changes, deletedBudgets) => dispatch(editSubproject(pId, sId, changes, deletedBudgets)),
-    storeSubProjectComment: comment => dispatch(storeSubProjectComment(comment)),
-    storeSubProjectCurrency: currency => dispatch(storeSubProjectCurrency(currency)),
-    storeSubProjectValidator: validator => dispatch(storeSubProjectValidator(validator)),
-    addSubProjectProjectedBudget: projectedBudget => dispatch(addSubProjectProjectedBudget(projectedBudget)),
+    storeSubProjectComment: (comment) => dispatch(storeSubProjectComment(comment)),
+    storeSubProjectCurrency: (currency) => dispatch(storeSubProjectCurrency(currency)),
+    storeSubProjectValidator: (validator) => dispatch(storeSubProjectValidator(validator)),
+    addSubProjectProjectedBudget: (projectedBudget) => dispatch(addSubProjectProjectedBudget(projectedBudget)),
     editSubProjectProjectedBudgetAmount: (projectedBudget, budgetAmountEdit) =>
       dispatch(editSubProjectProjectedBudgetAmount(projectedBudget, budgetAmountEdit)),
-    storeSnackbarMessage: message => dispatch(storeSnackbarMessage(message)),
-    storeDeletedProjectedBudget: projectedBudgets => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
-    storeFixedWorkflowitemType: workflowitemType => dispatch(storeFixedWorkflowitemType(workflowitemType))
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
+    storeDeletedProjectedBudget: (projectedBudgets) => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
+    storeFixedWorkflowitemType: (workflowitemType) => dispatch(storeFixedWorkflowitemType(workflowitemType))
   };
 };
 

@@ -1,18 +1,21 @@
 import React, { useState } from "react";
-import MenuItem from "@mui/material/MenuItem";
-import Chip from "@mui/material/Chip";
-import UserIcon from "@mui/icons-material/Person";
+
 import CloseIcon from "@mui/icons-material/Close";
-import strings from "../../localizeStrings";
+import UserIcon from "@mui/icons-material/Person";
+import Checkbox from "@mui/material/Checkbox";
+import Chip from "@mui/material/Chip";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
-import ActionButton from "./ActionButton";
-import Select from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
-import ListItemText from "@mui/material/ListItemText";
-import Paper from "@mui/material/Paper";
 import List from "@mui/material/List";
+import ListItemText from "@mui/material/ListItemText";
+import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import Select from "@mui/material/Select";
+
+import strings from "../../localizeStrings";
+
+import ActionButton from "./ActionButton";
 import OverflowTooltip from "./OverflowTooltip";
 
 const styles = {
@@ -26,7 +29,7 @@ const styles = {
     marginBottom: "5px"
   },
   chip: {
-    margin: theme => `${theme.spacing(0.5)} ${theme.spacing(0.25)}`
+    margin: (theme) => `${theme.spacing(0.5)} ${theme.spacing(0.25)}`
   },
   chipSelection: {
     width: "100%",
@@ -49,7 +52,13 @@ const styles = {
     overflow: "hidden",
     textOverflow: "ellipsis"
   },
-  itemContainer: { maxHeight: "70vh", overflow: "auto", maxWidth: "300px", minWidth: "300px", boxShadow: "none" }
+  itemContainer: {
+    maxHeight: "70vh",
+    overflow: "auto",
+    maxWidth: "300px",
+    minWidth: "300px",
+    boxShadow: "none"
+  }
 };
 
 function UserSelection(props) {
@@ -58,7 +67,7 @@ function UserSelection(props) {
 
   const handleChange = (item, selectedItems, users, addToSelection) => {
     if (selectedItems.indexOf(item) === -1) {
-      const user = users.find(user => user.id === item);
+      const user = users.find((user) => user.id === item);
       addToSelection(user.id);
     }
     if (selectedItems.indexOf(item) > -1) {
@@ -66,7 +75,7 @@ function UserSelection(props) {
     }
   };
   const renderUser = (users, selectedItems, addToSelection) => {
-    return users.map(u => {
+    return users.map((u) => {
       const checked = selectedItems.indexOf(u.id) > -1;
       const { id, displayName } = u;
       return (
@@ -88,7 +97,7 @@ function UserSelection(props) {
     let suggestedUsers = [];
     searchTerm === ""
       ? (suggestedUsers = users)
-      : (suggestedUsers = users.filter(u => u.displayName.toLowerCase().includes(searchTerm.toLowerCase())));
+      : (suggestedUsers = users.filter((u) => u.displayName.toLowerCase().includes(searchTerm.toLowerCase())));
     return renderUser(suggestedUsers, selectedItems, addToSelection);
   };
 
@@ -139,7 +148,7 @@ function UserSelection(props) {
                 <Input
                   inputProps={{ "data-test": "search-user-input" }}
                   value={searchTerm}
-                  onChange={e => {
+                  onChange={(e) => {
                     setSearchTerm(e.target.value);
                   }}
                 />
@@ -154,7 +163,7 @@ function UserSelection(props) {
         </FormControl>
       </div>
       <div style={styles.chipSelection}>
-        {selectedItems.map(item => (
+        {selectedItems.map((item) => (
           <Chip
             data-test={`user-chip-${item}`}
             key={item}

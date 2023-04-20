@@ -1,11 +1,12 @@
-import { Alert as MuiAlert, Snackbar as MuiSnackbar } from "@mui/material";
 import React from "react";
+
+import { Alert as MuiAlert, Snackbar as MuiSnackbar } from "@mui/material";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const NotificationsSnackbar = props => {
+const NotificationsSnackbar = (props) => {
   const { showSnackbar, closeSnackbar, snackbarMessage, snackbarError, snackbarWarning } = props;
 
   let variant = "info";

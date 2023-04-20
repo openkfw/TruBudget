@@ -1,27 +1,29 @@
 import React from "react";
+
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import Paper from "@mui/material/Paper";
+
 import strings from "../../localizeStrings";
 
 const filterDeclinedNodes = (nodes, organization) => {
-  return nodes.filter(node => {
+  return nodes.filter((node) => {
     if (node.currentAccess.decliners.length > 0) {
-      return !node.currentAccess.decliners.forEach(declinerObject => {
+      return !node.currentAccess.decliners.forEach((declinerObject) => {
         return declinerObject.organization === organization;
       });
     } else return false;
   });
 };
 
-const getDeclinersString = decliners => {
+const getDeclinersString = (decliners) => {
   let resultString = "";
   let stringArray = [];
   if (decliners.length > 0) {
-    decliners.forEach(declinerObject => {
+    decliners.forEach((declinerObject) => {
       stringArray.push(declinerObject.organization);
     });
     resultString = `${stringArray.join(", ")}`;
@@ -29,9 +31,9 @@ const getDeclinersString = decliners => {
   return resultString;
 };
 
-const getListEntries = declinedNodes => {
+const getListEntries = (declinedNodes) => {
   if (declinedNodes.length) {
-    return declinedNodes.map(node => {
+    return declinedNodes.map((node) => {
       return (
         <TableRow key={node.address.address}>
           <TableCell align="right">{node.address.organization}</TableCell>
@@ -43,7 +45,7 @@ const getListEntries = declinedNodes => {
   }
 };
 
-const DeclinedNodesTable = props => {
+const DeclinedNodesTable = (props) => {
   const { nodes, organization } = props;
   const declinedNodes = filterDeclinedNodes(nodes, organization);
   const declinedNodesListEntries = getListEntries(declinedNodes);

@@ -1,10 +1,12 @@
-import { Avatar, Card, CardHeader, Dialog, DialogTitle, IconButton, TextField, Typography } from "@mui/material";
+import React from "react";
+
 import CloseIcon from "@mui/icons-material/Close";
 import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
 import GroupIcon from "@mui/icons-material/Group";
-import React from "react";
+import { Avatar, Card, CardHeader, Dialog, DialogTitle, IconButton, TextField, Typography } from "@mui/material";
+
 import { isEmailAddressValid } from "../../helper";
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
@@ -118,7 +120,7 @@ const UserProfile = ({
                       variant="standard"
                       style={styles.emailTextField}
                       label={strings.common.email}
-                      onChange={e => storeTempEmailAddress(e.target.value)}
+                      onChange={(e) => storeTempEmailAddress(e.target.value)}
                     />
                   ) : (
                     <TextField
@@ -127,7 +129,7 @@ const UserProfile = ({
                       helperText={strings.userProfile.invalid_email_address}
                       style={styles.emailTextField}
                       label={strings.common.email}
-                      onChange={e => storeTempEmailAddress(e.target.value)}
+                      onChange={(e) => storeTempEmailAddress(e.target.value)}
                     />
                   )}
                   <ActionButton

@@ -1,6 +1,7 @@
 import React from "react";
-import Searchbar from "../Common/Searchbar";
+
 import strings from "../../localizeStrings";
+import Searchbar from "../Common/Searchbar";
 
 const ProjectSearch = ({
   searchBarDisplayed,

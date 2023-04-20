@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import _isEmpty from "lodash/isEmpty";
-import CreationDialog from "../Common/CreationDialog";
-import strings from "../../localizeStrings";
-import SubprojectDialogContent from "./SubprojectDialogContent";
-import { compareObjects, fromAmountString, shortenedDisplayName, isEmptyDeep } from "../../helper";
 
-const handleCreate = props => {
+import { compareObjects, fromAmountString, isEmptyDeep, shortenedDisplayName } from "../../helper";
+import strings from "../../localizeStrings";
+import CreationDialog from "../Common/CreationDialog";
+
+import SubprojectDialogContent from "./SubprojectDialogContent";
+
+const handleCreate = (props) => {
   const {
     createSubProject,
     onDialogCancel,
@@ -19,7 +21,7 @@ const handleCreate = props => {
   const projectId = location.pathname.split("/")[2];
   const validator = {
     id: subprojectToAdd.validator,
-    displayName: users.find(u => u.id === subprojectToAdd.validator)?.displayName
+    displayName: users.find((u) => u.id === subprojectToAdd.validator)?.displayName
   };
 
   createSubProject(
@@ -30,14 +32,14 @@ const handleCreate = props => {
     currency,
     validator,
     workflowitemType,
-    projectedBudgets.map(b => ({ ...b, value: fromAmountString(b.value).toString(10) }))
+    projectedBudgets.map((b) => ({ ...b, value: fromAmountString(b.value).toString(10) }))
   );
   onDialogCancel();
 
   storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));
 };
 
-const handleEdit = props => {
+const handleEdit = (props) => {
   const { editSubproject, onDialogCancel, subProjects, subprojectToAdd, location, storeSnackbarMessage } = props;
   const changes = compareObjects(subProjects, subprojectToAdd);
   const hasChanges = !isEmptyDeep(changes);
@@ -61,7 +63,7 @@ const handleEdit = props => {
   onDialogCancel();
 };
 
-const SubprojectDialog = props => {
+const SubprojectDialog = (props) => {
   const {
     subprojectToAdd,
     dialogTitle,
@@ -77,7 +79,7 @@ const SubprojectDialog = props => {
   useEffect(() => {
     if (editDialogShown) {
       // Copy not changeable subproject data to subprojectToAdd to keep comparing consistent
-      const selectedSubproject = subProjects.find(s => s.data.id === subprojectToAdd.id).data;
+      const selectedSubproject = subProjects.find((s) => s.data.id === subprojectToAdd.id).data;
       storeSubProjectValidator(selectedSubproject.validator);
       storeFixedWorkflowitemType(selectedSubproject.workflowitemType);
     }

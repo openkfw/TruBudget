@@ -1,11 +1,13 @@
 import { fromJS } from "immutable";
 import _isEmpty from "lodash/isEmpty";
+
 import { convertToURLQuery } from "../../helper";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
 import { DISABLE_ALL_LIVE_UPDATES, ENABLE_ALL_LIVE_UPDATES, SET_SELECTED_VIEW } from "../Navbar/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
 import { FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
+
 import {
   ADD_SUBPROJECT_PROJECTED_BUDGET,
   ADD_TEMPORARY_SUBPROJECT_PERMISSION,
@@ -123,7 +125,7 @@ export default function detailviewReducer(state = defaultState, action) {
         idForPermissions: action.id,
         displayNameForPermissions: action.displayName,
         showSubProjectPermissions: true,
-        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter(id => id !== action.id)
+        idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter((id) => id !== action.id)
       });
     case SHOW_SUBPROJECT_ADDITIONAL_DATA:
       return state.merge({
@@ -145,7 +147,10 @@ export default function detailviewReducer(state = defaultState, action) {
         permissions: defaultState.getIn(["permissions"])
       });
     case SHOW_SUBPROJECT_CREATE:
-      return state.merge({ creationDialogShown: true, dialogTitle: strings.subproject.subproject_add_title });
+      return state.merge({
+        creationDialogShown: true,
+        dialogTitle: strings.subproject.subproject_add_title
+      });
     case SUBPROJECT_NAME:
       return state.setIn(["subprojectToAdd", "displayName"], action.name);
     case SUBPROJECT_COMMENT:
@@ -162,7 +167,7 @@ export default function detailviewReducer(state = defaultState, action) {
           projectedBudgets: [...state.getIn(["subprojectToAdd", "projectedBudgets"]).toJS(), action.projectedBudget]
         })
       });
-    case EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT:
+    case EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT: {
       let newStateWithEditedBudget;
       state
         .getIn(["subprojectToAdd", "projectedBudgets"])
@@ -179,7 +184,8 @@ export default function detailviewReducer(state = defaultState, action) {
           }
         });
       return newStateWithEditedBudget;
-    case SUBPROJECT_DELETED_PROJECTED_BUDGET:
+    }
+    case SUBPROJECT_DELETED_PROJECTED_BUDGET: {
       const projectedBudgets = state.getIn(["subprojectToAdd", "projectedBudgets"]).toJS();
       const projectedBudgetsToDelete = action.projectedBudgets;
       const newState = state.merge({
@@ -189,14 +195,15 @@ export default function detailviewReducer(state = defaultState, action) {
             ...projectedBudgetsToDelete
           ],
           projectedBudgets: projectedBudgets.filter(
-            b =>
+            (b) =>
               projectedBudgetsToDelete.find(
-                d => d.organization === b.organization && d.currencyCode === b.currencyCode
+                (d) => d.organization === b.organization && d.currencyCode === b.currencyCode
               ) === undefined
           )
         })
       });
       return newState;
+    }
     case CREATE_SUBPROJECT_SUCCESS:
       return state.merge({
         subprojectToAdd: defaultState.get("subprojectToAdd"),
@@ -241,7 +248,7 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case SHOW_SUBPROJECT_EDIT: {
       return state
-        .updateIn(["subprojectToAdd"], subproject =>
+        .updateIn(["subprojectToAdd"], (subproject) =>
           subproject
             .set("id", action.id)
             .set("displayName", action.name)
@@ -263,10 +270,10 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     }
     case ADD_TEMPORARY_SUBPROJECT_PERMISSION:
-      return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
+      return state.updateIn(["temporaryPermissions", action.permission], (users) => users.push(action.userId));
     case REMOVE_TEMPORARY_SUBPROJECT_PERMISSION:
-      return state.updateIn(["temporaryPermissions", action.permission], users =>
-        users.filter(user => user !== action.userId)
+      return state.updateIn(["temporaryPermissions", action.permission], (users) =>
+        users.filter((user) => user !== action.userId)
       );
     case CONFIRMATION_CANCELLED:
       return state.set(
@@ -276,10 +283,11 @@ export default function detailviewReducer(state = defaultState, action) {
           : defaultState.get("temporaryPermissions")
       );
 
-    case SUBPROJECT_SEARCH_TERM:
+    case SUBPROJECT_SEARCH_TERM: {
       const querySearchTerm = convertToURLQuery(action.searchTerm);
       window.history.replaceState("", "Title", "?" + querySearchTerm);
       return state.set("searchTerm", action.searchTerm);
+    }
     case SUBPROJECT_SEARCH_BAR_DISPLAYED:
       return state.merge({
         searchTerms: defaultState.get("searchTerms"),

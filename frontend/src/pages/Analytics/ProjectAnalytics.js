@@ -1,3 +1,7 @@
+import React from "react";
+import { Doughnut } from "react-chartjs-2";
+import { connect } from "react-redux";
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Table from "@mui/material/Table";
@@ -6,12 +10,12 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import React from "react";
-import { Doughnut } from "react-chartjs-2";
+
 import "chart.js/auto";
-import { connect } from "react-redux";
+
 import { toAmountString, toJS } from "../../helper";
 import strings from "../../localizeStrings";
+
 import { getProjectKPIs, resetKPIs } from "./actions";
 
 /**

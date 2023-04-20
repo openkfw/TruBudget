@@ -1,3 +1,5 @@
+import React from "react";
+
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -7,9 +9,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
-import React from "react";
+
 import strings from "../../localizeStrings";
 import { canApproveNode } from "../../permissions";
+
 import { ExistingNodesEmptyState, NewOrganizationsEmptyState } from "./NodesEmptyStates";
 
 const styles = {
@@ -49,17 +52,17 @@ const styles = {
     flexDirection: "column"
   },
   rightIcon: {
-    marginLeft: theme => theme.spacing(1)
+    marginLeft: (theme) => theme.spacing(1)
   },
   leftIcon: {
-    marginRight: theme => theme.spacing(1)
+    marginRight: (theme) => theme.spacing(1)
   },
   button: {
-    margin: theme => theme.spacing(1)
+    margin: (theme) => theme.spacing(1)
   }
 };
 
-const splitNodes = nodes => {
+const splitNodes = (nodes) => {
   /*
    * The reduce function returns a two dimensional array,
    * which contains the user's own node, all nodes of new organizations
@@ -72,7 +75,7 @@ const splitNodes = nodes => {
         return [[...self, node], newOrgaNodes, existingOrgaNodes];
       } else {
         const organizationExists = nodes.find(
-          existingNode =>
+          (existingNode) =>
             existingNode.address.organization === node.address.organization &&
             existingNode.address.address !== node.address.address &&
             existingNode.currentAccess.accessType !== "none"
@@ -90,20 +93,20 @@ const splitNodes = nodes => {
 };
 
 const filterDeclinedNodes = (nodes, organization) => {
-  return nodes.filter(node => {
+  return nodes.filter((node) => {
     if (node.currentAccess.decliners.length > 0) {
-      return node.currentAccess.decliners.forEach(declinerObject => {
+      return node.currentAccess.decliners.forEach((declinerObject) => {
         return declinerObject.organization !== organization;
       });
     } else return true;
   });
 };
 
-const getDeclinersString = decliners => {
+const getDeclinersString = (decliners) => {
   let resultString = "";
   let stringArray = [];
   if (decliners.length > 0) {
-    decliners.forEach(declinerObject => {
+    decliners.forEach((declinerObject) => {
       stringArray.push(declinerObject.organization);
     });
     resultString = `\n ${strings.nodesDashboard.declined_by}: ${stringArray.join(", ")}`;
@@ -112,7 +115,7 @@ const getDeclinersString = decliners => {
 };
 
 const getListEntries = (nodes, canApprove, declineNode, approveNode) => {
-  return nodes.map(node => {
+  return nodes.map((node) => {
     return (
       <div key={node.address.address}>
         <ListItem key={node.address.address}>
@@ -123,14 +126,14 @@ const getListEntries = (nodes, canApprove, declineNode, approveNode) => {
               </div>
             }
             secondary={
-              <span component={"span"} variant="body2" style={styles.listItem}>
+              <Typography component={"span"} variant="body2" style={styles.listItem}>
                 <Typography variant="body2" display="block" component={"span"}>
                   {`${strings.nodesDashboard.address}: ${node.address.address} `}
                 </Typography>
                 <Typography variant="body2" display="block" component={"span"}>
                   {getDeclinersString(node.currentAccess.decliners)}
                 </Typography>
-              </span>
+              </Typography>
             }
           />
           <Button

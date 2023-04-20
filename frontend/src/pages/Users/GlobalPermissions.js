@@ -1,9 +1,11 @@
 import React from "react";
-import { globalIntentOrder } from "../../permissions";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
+
 import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+
 import strings from "../../localizeStrings";
+import { globalIntentOrder } from "../../permissions";
 
 const styles = {
   root: {
@@ -13,8 +15,8 @@ const styles = {
     boxShadow: "none"
   },
   heading: {
-    fontSize: theme => theme.typography.pxToRem(15),
-    fontWeight: theme => theme.typography.fontWeightMedium
+    fontSize: (theme) => theme.typography.pxToRem(15),
+    fontWeight: (theme) => theme.typography.fontWeightMedium
   },
   detailsDiv: {
     width: "100%"
@@ -38,7 +40,7 @@ const renderPermissions = (
   loggedInUserId
 ) => {
   return globalIntentOrder.map((item, index) => {
-    const intents = item.intents.map(intent => {
+    const intents = item.intents.map((intent) => {
       const checked = globalPermissions[intent] ? globalPermissions[intent].includes(resourceId) : false;
       const isLoggedInUser = resourceId === loggedInUserId;
       const disabled = checked
@@ -72,7 +74,7 @@ const renderPermissions = (
   });
 };
 
-const GlobalPermissions = props => {
+const GlobalPermissions = (props) => {
   const {
     resourceId,
     grantGlobalPermission,

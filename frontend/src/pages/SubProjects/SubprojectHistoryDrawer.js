@@ -2,11 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
+import strings from "../../localizeStrings";
+import { subprojectEventTypes } from "../Common/History/eventTypes";
 import HistoryDrawer from "../Common/History/HistoryDrawer";
 import { hideHistory } from "../Notifications/actions";
-import { subprojectEventTypes } from "../Common/History/eventTypes";
-import { fetchNextSubprojectHistoryPage, fetchFirstSubprojectHistoryPage } from "../Workflows/actions";
-import strings from "../../localizeStrings";
+import { fetchFirstSubprojectHistoryPage, fetchNextSubprojectHistoryPage } from "../Workflows/actions";
 
 function SubprojectHistoryDrawer({
   projectId,
@@ -29,8 +29,8 @@ function SubprojectHistoryDrawer({
       onClose={hideHistory}
       events={events}
       nEventsTotal={nEventsTotal}
-      fetchNextHistoryEvents={filter => fetchNextSubprojectHistoryPage(projectId, subprojectId, filter)}
-      fetchFirstHistoryEvents={filter => fetchFirstSubprojectHistoryPage(projectId, subprojectId, filter)}
+      fetchNextHistoryEvents={(filter) => fetchNextSubprojectHistoryPage(projectId, subprojectId, filter)}
+      fetchFirstHistoryEvents={(filter) => fetchFirstSubprojectHistoryPage(projectId, subprojectId, filter)}
       hasMore={currentHistoryPage < lastHistoryPage}
       isLoading={isLoading}
       getUserDisplayname={getUserDisplayname}
@@ -50,7 +50,7 @@ function mapStateToProps(state) {
     isLoading: state.getIn(["workflow", "isHistoryLoading"]),
     currentHistoryPage: state.getIn(["workflow", "currentHistoryPage"]),
     lastHistoryPage: state.getIn(["workflow", "lastHistoryPage"]),
-    getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
+    getUserDisplayname: (uid) => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
   };
 }
 

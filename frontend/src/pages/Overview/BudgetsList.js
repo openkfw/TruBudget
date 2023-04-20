@@ -1,8 +1,10 @@
+import React from "react";
+
 import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
-import Box from "@mui/material/Box";
-import React from "react";
+
 import { toAmountString } from "../../helper";
 
 const BudgetsList = ({ budgets }) => {

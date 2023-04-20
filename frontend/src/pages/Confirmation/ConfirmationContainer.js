@@ -1,6 +1,7 @@
-import _isEmpty from "lodash/isEmpty";
 import React from "react";
 import { connect } from "react-redux";
+import _isEmpty from "lodash/isEmpty";
+
 import { toJS } from "../../helper";
 import { fetchProjectPermissions, grantProjectPermission, revokeProjectPermission } from "../Overview/actions";
 import {
@@ -23,6 +24,7 @@ import {
   revokeWorkflowItemPermission,
   storeRejectReason
 } from "../Workflows/actions";
+
 import {
   additionalActionUpdateRequired,
   cancelConfirmation,
@@ -132,7 +134,7 @@ class ConfirmationContainer extends React.Component {
   };
 
   includesPermissionIntent(originalActions) {
-    return originalActions.some(originalAction => {
+    return originalActions.some((originalAction) => {
       const intent = originalAction.intent.split(".")[originalAction.intent.split(".").length - 1];
       return intent === "grantPermission" || intent === "revokePermission";
     });
@@ -223,21 +225,21 @@ class ConfirmationContainer extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchGroups: () => dispatch(fetchGroups(false)),
-    fetchProjectPermissions: pId => dispatch(fetchProjectPermissions(pId, false)),
+    fetchProjectPermissions: (pId) => dispatch(fetchProjectPermissions(pId, false)),
     fetchSubprojectPermissions: (pId, sId) => dispatch(fetchSubProjectPermissions(pId, sId, false)),
     fetchWorkflowitemPermissions: (pId, spId, wId) => dispatch(fetchWorkflowItemPermissions(pId, spId, wId, false)),
     showValidationErrorMessage: () => dispatch(showValidationErrorMessage()),
     confirmConfirmation: () => dispatch(confirmConfirmation()),
     closeConfirmation: () => dispatch(closeConfirmation()),
-    cancelConfirmation: permissions => dispatch(cancelConfirmation(permissions)),
+    cancelConfirmation: (permissions) => dispatch(cancelConfirmation(permissions)),
     executeConfirmedActions: (actionType, actions, pId, subId, wId) =>
       dispatch(executeConfirmedActions(actionType, actions, pId, subId, wId, false)),
-    storeAdditionalActions: actions => dispatch(storeAdditionalActions(actions)),
-    storePostActions: actions => dispatch(storePostActions(actions)),
-    storeRequestedPermissions: permissions => dispatch(storeRequestedPermissions(permissions)),
+    storeAdditionalActions: (actions) => dispatch(storeAdditionalActions(actions)),
+    storePostActions: (actions) => dispatch(storePostActions(actions)),
+    storeRequestedPermissions: (permissions) => dispatch(storeRequestedPermissions(permissions)),
     assignProject: (projectId, projectDisplayName, assigneeId, assigneeDisplayName, additionalActions) =>
       dispatch(assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName, additionalActions)),
     assignSubproject: (pId, pDisplayName, subpId, subpName, assigneeId, assigneeName, additionalActions) =>
@@ -299,19 +301,19 @@ const mapDispatchToProps = dispatch => {
       dispatch(
         revokeWorkflowItemPermission(pId, pName, sId, sName, wId, wName, permission, revokeeId, revokeeName, true)
       ),
-    additionalActionUpdateRequired: required => dispatch(additionalActionUpdateRequired(required)),
-    closeProject: pId => dispatch(closeProject(pId, true)),
+    additionalActionUpdateRequired: (required) => dispatch(additionalActionUpdateRequired(required)),
+    closeProject: (pId) => dispatch(closeProject(pId, true)),
     closeSubproject: (pId, sId) => dispatch(closeSubproject(pId, sId, true)),
     closeWorkflowItem: (pId, sId, wId, isRejected) => dispatch(closeWorkflowItem(pId, sId, wId, isRejected, true)),
-    disableUser: userId => dispatch(disableUser(userId)),
-    enableUser: userId => dispatch(enableUser(userId)),
-    fetchUserAssignments: userId => dispatch(fetchUserAssignments(userId)),
+    disableUser: (userId) => dispatch(disableUser(userId)),
+    enableUser: (userId) => dispatch(enableUser(userId)),
+    fetchUserAssignments: (userId) => dispatch(fetchUserAssignments(userId)),
     cleanUserAssignments: () => dispatch(cleanUserAssignments()),
-    storeRejectReason: reason => dispatch(storeRejectReason(reason))
+    storeRejectReason: (reason) => dispatch(storeRejectReason(reason))
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     confirmationDialogOpen: state.getIn(["confirmation", "open"]),
     confirmationFinished: state.getIn(["confirmation", "confirmationFinished"]),

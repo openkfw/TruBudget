@@ -1,21 +1,23 @@
+import React from "react";
+
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import React from "react";
+
 import strings from "../../localizeStrings";
 
 const styles = {
   subtitle: {
-    color: theme => theme.palette.grey.dark
+    color: (theme) => theme.palette.grey.dark
   },
   caption: {
-    color: theme => theme.palette.grey.main
+    color: (theme) => theme.palette.grey.main
   }
 };
 
 // Source of images: https://undraw.co/illustrations
 // selected color code: #53BBFE
 
-const EnabledUserEmptyState = props => {
+const EnabledUserEmptyState = (props) => {
   return (
     <Paper style={{ textAlign: "center" }}>
       <img
@@ -34,7 +36,7 @@ const EnabledUserEmptyState = props => {
   );
 };
 
-const DisabledUserEmptyState = props => {
+const DisabledUserEmptyState = (props) => {
   return (
     <Paper style={{ textAlign: "center" }}>
       <img
@@ -50,7 +52,7 @@ const DisabledUserEmptyState = props => {
   );
 };
 
-const UserGroupsEmptyState = props => {
+const UserGroupsEmptyState = (props) => {
   return (
     <Paper style={{ textAlign: "center" }}>
       <img

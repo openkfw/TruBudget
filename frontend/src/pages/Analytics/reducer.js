@@ -1,4 +1,5 @@
 import { fromJS } from "immutable";
+
 import {
   CLOSE_ANALYTICS_DIALOG,
   GET_EXCHANGE_RATES_SUCCESS,

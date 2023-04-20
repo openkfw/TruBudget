@@ -1,19 +1,22 @@
-import amber from "@mui/material/colors/amber";
-import red from "@mui/material/colors/deepOrange";
-import grey from "@mui/material/colors/grey";
-import blue from "@mui/material/colors/indigo";
-import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import { ConnectedRouter } from "connected-react-router/immutable";
-import dayjs from "dayjs";
-import * as relativeTime from "dayjs/plugin/relativeTime";
-import * as isSameOrAfter from "dayjs/plugin/isSameOrAfter";
-import { createBrowserHistory } from "history";
 import React, { Component } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { Route, Switch, withRouter } from "react-router";
+import { ConnectedRouter } from "connected-react-router/immutable";
+import dayjs from "dayjs";
+import * as isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import * as relativeTime from "dayjs/plugin/relativeTime";
+import { createBrowserHistory } from "history";
+
+import amber from "@mui/material/colors/amber";
+import red from "@mui/material/colors/deepOrange";
+import grey from "@mui/material/colors/grey";
+import blue from "@mui/material/colors/indigo";
+import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
+
 import "./logging/console";
+
 import withInitialLoading from "./pages/Loading/withInitialLoading";
 import LoginPageContainer from "./pages/Login/LoginPageContainer";
 import PrivateRoute from "./pages/Login/PrivateRoute";

@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
+import _isEmpty from "lodash/isEmpty";
+
 import FormControlLabel from "@mui/material/FormControlLabel";
+import MenuItem from "@mui/material/MenuItem";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import MenuItem from "@mui/material/MenuItem";
-import DropDown from "../Common/NewDropdown";
 import TextField from "@mui/material/TextField";
-import strings from "../../localizeStrings";
-import _isEmpty from "lodash/isEmpty";
+import Typography from "@mui/material/Typography";
+
 import {
+  fromAmountString,
   getCurrencies,
+  numberSignsRegex,
   preselectCurrency,
   toAmountString,
-  fromAmountString,
-  validateLanguagePattern,
-  numberSignsRegex
+  validateLanguagePattern
 } from "../../helper";
-import Typography from "@mui/material/Typography";
+import strings from "../../localizeStrings";
+import DropDown from "../Common/NewDropdown";
 
 const styles = {
   container: {
@@ -38,14 +40,9 @@ const styles = {
   }
 };
 
-const WorkflowDialogAmount = props => {
-  const {
-    workflowCurrency,
-    subProjectCurrency,
-    storeWorkflowCurrency,
-    workflowAmountType,
-    storeWorkflowAmountType
-  } = props;
+const WorkflowDialogAmount = (props) => {
+  const { workflowCurrency, subProjectCurrency, storeWorkflowCurrency, workflowAmountType, storeWorkflowAmountType } =
+    props;
   const budgetDisabled = workflowAmountType === "N/A";
   const [isWorkflowAmountValid, setIsWorkflowAmountValid] = useState(true);
   const [isWorkflowExchangeRateValid, setIsWorkflowExchangeRateValid] = useState(true);
@@ -97,7 +94,7 @@ const WorkflowDialogAmount = props => {
   );
 };
 
-const getMenuItems = currencies => {
+const getMenuItems = (currencies) => {
   return currencies.map((currency, index) => {
     return (
       <MenuItem key={index} value={currency.value}>
@@ -138,7 +135,7 @@ const showAmountInputFields = (
         style={{ minWidth: 160 }}
         floatingLabel={strings.common.currency}
         value={workflowCurrency}
-        onChange={value => {
+        onChange={(value) => {
           if (value === subProjectCurrency) {
             defaultWorkflowExchangeRate();
           }
@@ -152,7 +149,7 @@ const showAmountInputFields = (
         variant="standard"
         label={floatingLabelText}
         value={workflowAmount}
-        onChange={v => {
+        onChange={(v) => {
           if (numberSignsRegex.test(v.target.value)) {
             storeWorkflowAmount(v.target.value);
             setIsWorkflowAmountValid(validateLanguagePattern(v.target.value) || _isEmpty(v.target.value));
@@ -174,7 +171,7 @@ const showAmountInputFields = (
         variant="standard"
         label={strings.workflow.exchange_rate}
         value={exchangeRate}
-        onChange={v => {
+        onChange={(v) => {
           if (numberSignsRegex.test(v.target.value)) {
             storeWorkflowExchangeRate(v.target.value);
             setIsWorkflowExchangeRateValid(validateLanguagePattern(v.target.value) || _isEmpty(v.target.value));

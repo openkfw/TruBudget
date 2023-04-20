@@ -2,11 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
+import strings from "../../localizeStrings";
+import { projectEventTypes } from "../Common/History/eventTypes";
 import HistoryDrawer from "../Common/History/HistoryDrawer";
 import { hideHistory } from "../Notifications/actions";
-import { fetchNextProjectHistoryPage, fetchFirstProjectHistoryPage } from "./actions";
-import { projectEventTypes } from "../Common/History/eventTypes";
-import strings from "../../localizeStrings";
+
+import { fetchFirstProjectHistoryPage, fetchNextProjectHistoryPage } from "./actions";
 
 function ProjectHistoryDrawer({
   projectId,
@@ -28,8 +29,8 @@ function ProjectHistoryDrawer({
       onClose={hideHistory}
       events={events}
       nEventsTotal={nEventsTotal}
-      fetchNextHistoryEvents={filter => fetchNextProjectHistoryPage(projectId, filter)}
-      fetchFirstHistoryEvents={filter => fetchFirstProjectHistoryPage(projectId, filter)}
+      fetchNextHistoryEvents={(filter) => fetchNextProjectHistoryPage(projectId, filter)}
+      fetchFirstHistoryEvents={(filter) => fetchFirstProjectHistoryPage(projectId, filter)}
       hasMore={currentHistoryPage < lastHistoryPage}
       isLoading={isLoading}
       getUserDisplayname={getUserDisplayname}
@@ -49,7 +50,7 @@ function mapStateToProps(state) {
     isLoading: state.getIn(["detailview", "isHistoryLoading"]),
     currentHistoryPage: state.getIn(["detailview", "currentHistoryPage"]),
     lastHistoryPage: state.getIn(["detailview", "lastHistoryPage"]),
-    getUserDisplayname: uid => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
+    getUserDisplayname: (uid) => state.getIn(["login", "userDisplayNameMap", uid]) || "Somebody"
   };
 }
 

@@ -6,7 +6,7 @@ import { createLogMsg } from "./logger";
   const _error = console.error;
   const _warning = console.warning;
 
-  console.error = function(errMessage) {
+  console.error = function (errMessage) {
     _error.apply(console, arguments);
     createLogMsg({
       service: "FRONTEND",
@@ -15,7 +15,7 @@ import { createLogMsg } from "./logger";
     });
   };
 
-  console.log = function(logMessage) {
+  console.log = function (logMessage) {
     _log.apply(console, arguments);
     createLogMsg({
       service: "FRONTEND",
@@ -24,7 +24,7 @@ import { createLogMsg } from "./logger";
     });
   };
 
-  console.warning = function(warnMessage) {
+  console.warning = function (warnMessage) {
     createLogMsg({
       service: "FRONTEND",
       what: "Error",

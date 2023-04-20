@@ -1,6 +1,4 @@
-import DoneIcon from "@mui/icons-material/Check";
-import OpenIcon from "@mui/icons-material/Remove";
-import RejectedIcon from "@mui/icons-material/Block";
+import React from "react";
 import accounting from "accounting";
 import dayjs from "dayjs";
 import { Iterable } from "immutable";
@@ -12,11 +10,15 @@ import _isObject from "lodash/isObject";
 import _isString from "lodash/isString";
 import _isUndefined from "lodash/isUndefined";
 import _map from "lodash/map";
-import React from "react";
+
+import RejectedIcon from "@mui/icons-material/Block";
+import DoneIcon from "@mui/icons-material/Check";
+import OpenIcon from "@mui/icons-material/Remove";
+
 import currencies from "./currency";
 import strings from "./localizeStrings";
 
-export const toJS = WrappedComponent => wrappedComponentProps => {
+export const toJS = (WrappedComponent) => (wrappedComponentProps) => {
   const KEY = 0;
   const VALUE = 1;
 
@@ -30,7 +32,7 @@ export const toJS = WrappedComponent => wrappedComponentProps => {
   return <WrappedComponent {...propsJS} />;
 };
 
-const getCurrencyFormat = currency => ({
+const getCurrencyFormat = (currency) => ({
   ...strings.format.numberFormat,
   ...currencies[currency],
   format: strings.format.currencyPositon
@@ -39,7 +41,7 @@ const getCurrencyFormat = currency => ({
 export const compareObjects = (items, itemToAdd) => {
   if (!_isEmpty(items)) {
     const itemToAddClone = _cloneDeep(itemToAdd);
-    const originalItem = items.find(item => item.data.id === itemToAdd.id);
+    const originalItem = items.find((item) => item.data.id === itemToAdd.id);
     if (originalItem) {
       const changes = {};
       for (const key of Object.keys(itemToAddClone)) {
@@ -66,12 +68,12 @@ export const fromAmountString = (amount, currency) => {
 
 export const getDisplayNameFromUsers = (id, users) => {
   if (!users) return "";
-  const user = users.find(user => user.id === id);
+  const user = users.find((user) => user.id === id);
   return user.displayName;
 };
 
 export const getCurrencies = () => {
-  return Object.keys(currencies).map(currency => {
+  return Object.keys(currencies).map((currency) => {
     return {
       primaryText: currency,
       value: currency
@@ -95,23 +97,23 @@ export const toAmountString = (amount, currency) => {
   return accounting.formatMoney(amount, getCurrencyFormat(currency));
 };
 
-export const validateLanguagePattern = amount => {
+export const validateLanguagePattern = (amount) => {
   return strings.format.numberRegex.test(amount.toString(10));
 };
 
 export const numberSignsRegex = /^[0-9,.-]*$/;
 
-export const unixTsToString = ts => {
+export const unixTsToString = (ts) => {
   let dateString = dayjs.unix(ts).format("D MMM YYYY HH:mm");
   return dateString;
 };
 
-export const stringToUnixTs = date => {
+export const stringToUnixTs = (date) => {
   let ts = dayjs(date).unix() ?? 0;
   return ts;
 };
 
-export const statusMapping = status => {
+export const statusMapping = (status) => {
   switch (status) {
     case "closed":
       return strings.common.closed;
@@ -124,7 +126,7 @@ export const statusMapping = status => {
   }
 };
 
-export const amountTypes = amountType => {
+export const amountTypes = (amountType) => {
   switch (amountType) {
     case "N/A":
       return strings.workflow.workflow_budget_status_na;
@@ -152,11 +154,11 @@ export const preselectCurrency = (parentCurrency, setCurrency) => {
   setCurrency(preSelectedCurrency);
 };
 
-export const formattedTag = tag => {
+export const formattedTag = (tag) => {
   return tag.replace(/[\s#]/g, "");
 };
 
-export const shortenedDisplayName = displayName => {
+export const shortenedDisplayName = (displayName) => {
   const maxLength = 50;
   if (displayName.length > maxLength) {
     return displayName.slice(0, maxLength) + "...";
@@ -168,30 +170,31 @@ export function makePermissionReadable(intent) {
   return strings.permissions[intent.replace(/[.]/g, "_")] || intent;
 }
 
-export const isDateReached = date => {
+export const isDateReached = (date) => {
   if (date === undefined) {
     return false;
   }
   return dayjs().isSameOrAfter(date, "day");
 };
 
-export const isEmailAddressValid = emailAddress => {
-  const validEmailAddressRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+export const isEmailAddressValid = (emailAddress) => {
+  const validEmailAddressRegex =
+    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
   return validEmailAddressRegex.test(emailAddress);
 };
 
-export const convertToURLQuery = searchBarString => {
+export const convertToURLQuery = (searchBarString) => {
   return searchBarString
     .replace(/[:]/g, "=")
     .replace(/[ ]/g, "&")
     .replace(/[&]{2,}/g, "&");
 };
 
-export const convertToSearchBarString = urlQueryString => {
+export const convertToSearchBarString = (urlQueryString) => {
   return urlQueryString.replace(/[=]/g, ":").replace(/[&]/g, " ");
 };
 
-export const hasUserAssignments = assignments => {
+export const hasUserAssignments = (assignments) => {
   const hasHiddenAssignments =
     assignments.hiddenAssignments !== undefined &&
     (assignments.hiddenAssignments.hasHiddenProjects === true ||
@@ -212,10 +215,10 @@ export const hasUserAssignments = assignments => {
  * A property can be an object or array
  * If property values are falsy (0, false), it is not considered as empty
  */
-export const isEmptyDeep = obj => {
+export const isEmptyDeep = (obj) => {
   if (_isObject(obj)) {
     if (Object.keys(obj).length === 0) return true;
-    return _every(_map(obj, v => isEmptyDeep(v)));
+    return _every(_map(obj, (v) => isEmptyDeep(v)));
   } else if (_isString(obj)) {
     return !obj.length;
   }
@@ -223,14 +226,14 @@ export const isEmptyDeep = obj => {
 };
 
 export const getGroupsOfUser = (user, groups) => {
-  return groups.filter(group => group.users.includes(user));
+  return groups.filter((group) => group.users.includes(user));
 };
 
 export const isUserOrGroupPermitted = (user, groupsOfUser, permittedUsersAndGroups = []) => {
-  return permittedUsersAndGroups.some(id => id === user || groupsOfUser.find(group => group.groupId === id));
+  return permittedUsersAndGroups.some((id) => id === user || groupsOfUser.find((group) => group.groupId === id));
 };
 
-export const capitalize = string => string.replace(/^\w/, c => c.toUpperCase());
+export const capitalize = (string) => string.replace(/^\w/, (c) => c.toUpperCase());
 
 export const getLoginErrorFromResponse = (status, data) => {
   // 400: User not found or password wrong.
@@ -243,7 +246,7 @@ export const getLoginErrorFromResponse = (status, data) => {
     case 403:
       return strings.common.login_disabled;
     case 500:
-      if(data.includes("ECONNREFUSED", 0)){
+      if (data.includes("ECONNREFUSED", 0)) {
         return strings.common.login_proxy_error;
       }
       if (data.includes("ENOTFOUND", 0)) {
@@ -253,5 +256,5 @@ export const getLoginErrorFromResponse = (status, data) => {
       }
     default:
       return strings.common.incorrect_username_or_password;
-    }
+  }
 };

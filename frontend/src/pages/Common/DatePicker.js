@@ -1,12 +1,14 @@
 import React from "react";
-import { DatePicker as DatePickerMui } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import _isEmpty from "lodash/isEmpty";
+
 import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
-import _isEmpty from "lodash/isEmpty";
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker as DatePickerMui } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 import strings from "../../localizeStrings";
 
 const styles = {
@@ -45,11 +47,11 @@ function DatePicker({ name, label, onChange, onDelete, datetime, id = "default" 
               placeholder={strings.format.datePlaceholder}
               inputFormat={strings.format.dateFormat}
               value={dateValue}
-              onChange={date => {
+              onChange={(date) => {
                 onChange(dayjs(date).format("YYYY-MM-DD"), name);
               }}
-              onBlur={date => handleOnBlur(date)}
-              renderInput={params => <TextField variant="standard" {...params} />}
+              onBlur={(date) => handleOnBlur(date)}
+              renderInput={(params) => <TextField variant="standard" {...params} />}
             />
           </LocalizationProvider>
         </div>

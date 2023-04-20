@@ -1,9 +1,12 @@
+import React from "react";
+
 import { MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
-import React from "react";
+
 import strings from "../../../localizeStrings";
 import DatePicker from "../../Common/DatePicker";
 import Dropdown from "../../Common/NewDropdown";
+
 import useHistoryState from "./historyHook";
 
 const styles = {
@@ -45,8 +48,8 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
     fetchFirstHistoryEvents({});
   };
 
-  const getMenuItems = items => {
-    return items.map(item => {
+  const getMenuItems = (items) => {
+    return items.map((item) => {
       return (
         <MenuItem key={`${item.displayName}_${item.id}`} value={item.id}>
           {item.displayName}
@@ -80,7 +83,7 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
         style={styles.dropdown}
         value={publisher}
         floatingLabel={strings.history.publisher}
-        onChange={value => mergeState({ publisher: value })}
+        onChange={(value) => mergeState({ publisher: value })}
         id="filter-publisher"
         disabled={false}
       >
@@ -91,7 +94,7 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
         style={styles.dropdown}
         value={eventType}
         floatingLabel={strings.history.event_type}
-        onChange={value => mergeState({ eventType: value })}
+        onChange={(value) => mergeState({ eventType: value })}
         id="filter-eventtype"
         disabled={false}
       >

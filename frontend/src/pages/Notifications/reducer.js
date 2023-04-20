@@ -1,4 +1,7 @@
 import { fromJS } from "immutable";
+
+import { DISABLE_ALL_LIVE_UPDATES, ENABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
+
 import {
   DISABLE_LIVE_UPDATES,
   ENABLE_LIVE_UPDATES,
@@ -14,7 +17,6 @@ import {
   SNACKBAR_MESSAGE,
   TIME_OUT_FLY_IN
 } from "./actions";
-import { ENABLE_ALL_LIVE_UPDATES, DISABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 
 const defaultState = fromJS({
   notifications: [],

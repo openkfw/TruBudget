@@ -1,11 +1,13 @@
-import { Typography } from "@mui/material";
+import React from "react";
+
 import NameIcon from "@mui/icons-material/AssignmentInd";
 import InfoIcon from "@mui/icons-material/Info";
 import OrgaIcon from "@mui/icons-material/StoreMallDirectory";
-import React from "react";
+import { Typography } from "@mui/material";
+
 import strings from "../../localizeStrings";
-import UserSelection from "../Common/UserSelection";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
+import UserSelection from "../Common/UserSelection";
 
 const styles = {
   container: {},
@@ -62,7 +64,7 @@ const GroupDialogContent = ({
           disabled={editMode}
           icon={<NameIcon />}
           data-test="groupid"
-          onChange={event => storeGroupId(event.target.value)}
+          onChange={(event) => storeGroupId(event.target.value)}
         />
         <TextInputWithIcon
           style={styles.textInput}
@@ -71,7 +73,7 @@ const GroupDialogContent = ({
           error={false}
           disabled={editMode}
           icon={<OrgaIcon />}
-          onChange={event => storeGroupName(event.target.value)}
+          onChange={(event) => storeGroupName(event.target.value)}
         />
       </div>
       <div>

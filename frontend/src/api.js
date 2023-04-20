@@ -1,8 +1,9 @@
 import axios from "axios";
-import _isEmpty from "lodash/isEmpty";
-import strings from "./localizeStrings";
 import contentDispositionAttachment from "content-disposition-attachment";
+import _isEmpty from "lodash/isEmpty";
+
 import config from "./config";
+import strings from "./localizeStrings";
 
 const devMode = config.envMode === "development";
 const API_VERSION = "1.0";
@@ -46,7 +47,7 @@ class Api {
     });
   }
 
-  setAuthorizationHeader = token => {
+  setAuthorizationHeader = (token) => {
     instance.defaults.headers.common["Authorization"] = token ? `Bearer ${token}` : "";
   };
 
@@ -61,7 +62,9 @@ class Api {
    */
   getExportServiceUrl = (urlSlug, devModeEnvironment = "") => {
     const baseURL = devMode
-      ? `http://localhost:${config.export.servicePort}${!devModeEnvironment.length ? "" : `/${devModeEnvironment.toLowerCase()}`}`
+      ? `http://localhost:${config.export.servicePort}${
+          !devModeEnvironment.length ? "" : `/${devModeEnvironment.toLowerCase()}`
+        }`
       : "/export/xlsx";
     return `${baseURL}/${urlSlug}`;
   };

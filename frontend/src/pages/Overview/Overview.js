@@ -1,8 +1,10 @@
+import React from "react";
+
 import GridViewIcon from "@mui/icons-material/GridView";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import React from "react";
+
 import CardView from "./CardView";
 import TableView from "./TableView";
 

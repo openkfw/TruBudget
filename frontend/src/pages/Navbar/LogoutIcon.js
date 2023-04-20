@@ -1,7 +1,7 @@
 import React from "react";
 
-import IconButton from "@mui/material/IconButton";
 import PowerIcon from "@mui/icons-material/PowerSettingsNew";
+import IconButton from "@mui/material/IconButton";
 
 import strings from "../../localizeStrings";
 
@@ -15,7 +15,8 @@ const LogoutIcon = ({ history, logout }) => {
         logout();
         history.push("/login");
       }}
-      size="large">
+      size="large"
+    >
       <PowerIcon color="primary" />
     </IconButton>
   );

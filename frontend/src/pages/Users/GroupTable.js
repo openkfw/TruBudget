@@ -1,19 +1,21 @@
+import React from "react";
+import _sortBy from "lodash/sortBy";
+
+import EditIcon from "@mui/icons-material/Edit";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import EditIcon from "@mui/icons-material/Edit";
-import _sortBy from "lodash/sortBy";
-import React from "react";
 
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
+
 import { UserGroupsEmptyState } from "./UsersGroupsEmptyStates";
 
-const sortGroups = groups => {
-  return _sortBy(groups, group => group.id && group.displayName);
+const sortGroups = (groups) => {
+  return _sortBy(groups, (group) => group.id && group.displayName);
 };
 
 const GroupsTable = ({ groups, showDashboardDialog, allowedIntents, userId }) => {
@@ -31,7 +33,7 @@ const GroupsTable = ({ groups, showDashboardDialog, allowedIntents, userId }) =>
           </TableRow>
         </TableHead>
         <TableBody data-test="grouptablebody">
-          {sortedGroups.map(group => {
+          {sortedGroups.map((group) => {
             const isAllowedToEditGroup =
               group.permissions["group.addUser"]?.includes(userId) &&
               group.permissions["group.removeUser"]?.includes(userId);

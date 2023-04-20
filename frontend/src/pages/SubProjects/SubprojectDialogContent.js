@@ -1,8 +1,9 @@
+import React from "react";
+
+import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
-import CancelIcon from "@mui/icons-material/Cancel";
-import React from "react";
 
 import { getCurrencies } from "../../helper";
 import strings from "../../localizeStrings";
@@ -53,7 +54,7 @@ function getMenuItems(currencies) {
   });
 }
 
-const getDropdownMenuItems = types => {
+const getDropdownMenuItems = (types) => {
   return types.map((type, index) => {
     return (
       <MenuItem key={index} value={type}>
@@ -63,7 +64,7 @@ const getDropdownMenuItems = types => {
   });
 };
 
-const SubprojectDialogContent = props => {
+const SubprojectDialogContent = (props) => {
   const currencies = getCurrencies();
 
   return (
@@ -87,7 +88,7 @@ const SubprojectDialogContent = props => {
                   style={styles.dropdown}
                   value={props.subprojectToAdd.currency}
                   floatingLabel={strings.subproject.subproject_currency}
-                  onChange={v => props.storeSubProjectCurrency(v)}
+                  onChange={(v) => props.storeSubProjectCurrency(v)}
                   id="sp-dialog-currencies"
                 >
                   {getMenuItems(currencies)}
@@ -99,7 +100,7 @@ const SubprojectDialogContent = props => {
                   style={styles.dropdown}
                   floatingLabel={strings.subproject.fixed_workflowitem_type}
                   value={props.selectedWorkflowitemType}
-                  onChange={value => props.storeFixedWorkflowitemType(value)}
+                  onChange={(value) => props.storeFixedWorkflowitemType(value)}
                   id="types"
                 >
                   {getDropdownMenuItems(subprojectWorkflowItemTypes)}
@@ -109,7 +110,8 @@ const SubprojectDialogContent = props => {
                     data-test={"clear-workflowitem-type"}
                     style={styles.clearButton}
                     onClick={() => props.storeFixedWorkflowitemType("")}
-                    size="large">
+                    size="large"
+                  >
                     <CancelIcon color="action" style={{ fontSize: "x-large" }} />
                   </IconButton>
                 ) : null}
@@ -121,7 +123,7 @@ const SubprojectDialogContent = props => {
                   selectableItems={props.users}
                   disabled={false}
                   floatingLabel={strings.subproject.workflowitem_assignee}
-                  onSelect={selectId => props.storeSubProjectValidator(selectId)}
+                  onSelect={(selectId) => props.storeSubProjectValidator(selectId)}
                   onClearItem={() => props.storeSubProjectValidator("")}
                 />
               </div>

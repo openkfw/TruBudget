@@ -125,7 +125,8 @@ const de = {
     dueDate_exceeded: "Fälligkeitsdatum überschritten",
     login_disabled: "Login-ID ist deaktiviert",
     login_data_error: "Login-ID oder Passwort kann nicht leer sein",
-    login_proxy_error: "Verbindung zum API konnte nicht hergestellt werden! Bitte überprüfen Sie die Proxy-Einstellungen!",
+    login_proxy_error:
+      "Verbindung zum API konnte nicht hergestellt werden! Bitte überprüfen Sie die Proxy-Einstellungen!",
     login_api_error: "API ist nicht erreichbar, bitte stellen Sie sicher, dass es läuft!",
     refresh_assignments: "Zuordnungen aktualisieren",
     tags: "Tags",

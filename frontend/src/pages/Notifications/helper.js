@@ -1,5 +1,5 @@
-import strings from "../../localizeStrings";
 import { formatString } from "../../helper";
+import strings from "../../localizeStrings";
 
 const ACCESSMAP = {
   PROJECT: "project",
@@ -15,16 +15,12 @@ export function getParentData(notification) {
 
   if (metadata !== undefined) {
     if (metadata.project) {
-      const {
-        displayName: projectName = "",
-        hasViewPermissions: hasProjectViewPermissions = false
-      } = getDataFromNotification(metadata, ACCESSMAP.PROJECT);
+      const { displayName: projectName = "", hasViewPermissions: hasProjectViewPermissions = false } =
+        getDataFromNotification(metadata, ACCESSMAP.PROJECT);
       projectDisplayName = hasProjectViewPermissions ? projectName : redacted;
       if (metadata.subproject) {
-        const {
-          displayName: subprojectName = "",
-          hasViewPermissions: hasSubprojectViewPermissions = false
-        } = getDataFromNotification(metadata, ACCESSMAP.SUBPROJECT);
+        const { displayName: subprojectName = "", hasViewPermissions: hasSubprojectViewPermissions = false } =
+          getDataFromNotification(metadata, ACCESSMAP.SUBPROJECT);
         subprojectDisplayName = hasSubprojectViewPermissions ? subprojectName : redacted;
       }
     }
@@ -36,7 +32,7 @@ export function getParentData(notification) {
   };
 }
 
-export const isAllowedToSee = notification => {
+export const isAllowedToSee = (notification) => {
   const metadata = notification.metadata;
   if (metadata !== undefined) {
     const { hasViewPermissions = false } = getDataFromNotification(metadata);
@@ -45,7 +41,7 @@ export const isAllowedToSee = notification => {
   return false;
 };
 
-export const intentMapping = notification => {
+export const intentMapping = (notification) => {
   const businessEvent = notification.businessEvent;
   if (!businessEvent) {
     // eslint-disable-next-line no-console

@@ -1,14 +1,16 @@
 import React from "react";
-import Button from "@mui/material/Button";
+
 import Backup from "@mui/icons-material/CloudDownload";
+import Button from "@mui/material/Button";
+
 import strings from "../../localizeStrings";
 
 const styles = {
   button: {
-    margin: theme => theme.spacing(1)
+    margin: (theme) => theme.spacing(1)
   },
   leftIcon: {
-    marginRight: theme => theme.spacing(1)
+    marginRight: (theme) => theme.spacing(1)
   },
   iconSmall: {
     fontSize: 20

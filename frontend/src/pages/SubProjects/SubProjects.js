@@ -1,12 +1,13 @@
-import Card from "@mui/material/Card";
-import Fab from "@mui/material/Fab";
+import React from "react";
+
 import ContentAdd from "@mui/icons-material/Add";
 import HistoryIcon from "@mui/icons-material/Reorder";
-import React from "react";
+import Card from "@mui/material/Card";
+import Fab from "@mui/material/Fab";
 
 import SubProjectTable from "./SubProjectTable";
 
-const SubProjects = props => {
+const SubProjects = (props) => {
   return (
     <div
       data-test="sub-projects"

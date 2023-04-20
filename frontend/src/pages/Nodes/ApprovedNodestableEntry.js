@@ -1,18 +1,20 @@
 import React from "react";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import IconButton from "@mui/material/IconButton";
+import dayjs from "dayjs";
+
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import strings from "../../localizeStrings";
 import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
-import dayjs from "dayjs";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+
+import strings from "../../localizeStrings";
 
 const styles = {
   shapeCircle: {
@@ -41,14 +43,14 @@ const styles = {
   }
 };
 
-const renderTimeStampString = node => {
+const renderTimeStampString = (node) => {
   return node.lastSeen ? dayjs(node.lastSeen).format("MMM D, YYYY") : "";
 };
 
 const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
   const [open, setOpen] = React.useState(false);
 
-  const renderTableRow = node => {
+  const renderTableRow = (node) => {
     const circleColor = node.isConnected ? "green" : "red";
     const circle = (
       <div
@@ -70,7 +72,7 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
     );
   };
 
-  const renderPermissionCell = permissions => {
+  const renderPermissionCell = (permissions) => {
     return permissions.includes("admin") ? (
       <TableCell>
         {permissions}
@@ -121,7 +123,7 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {nodes.map(node => {
+                  {nodes.map((node) => {
                     return node.address.organization === nodeGroup.organization ? renderTableRow(node) : null;
                   })}
                 </TableBody>

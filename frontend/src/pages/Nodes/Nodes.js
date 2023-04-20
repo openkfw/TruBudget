@@ -1,8 +1,9 @@
 import React from "react";
+
 import NodesTable from "./NodesTable";
 import NodeVoting from "./NodeVoting";
 
-const Nodes = props => {
+const Nodes = (props) => {
   return (
     <div>
       <NodeVoting {...props} />

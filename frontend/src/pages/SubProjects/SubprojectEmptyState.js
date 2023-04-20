@@ -1,19 +1,21 @@
 import React from "react";
+
 import { CardContent } from "@mui/material";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
+
 import strings from "../../localizeStrings";
 
 const styles = {
   subtitle: {
-    color: theme => theme.palette.grey.dark
+    color: (theme) => theme.palette.grey.dark
   },
   caption: {
-    color: theme => theme.palette.grey.main
+    color: (theme) => theme.palette.grey.main
   }
 };
 
-const SubprojectEmptyState = props => {
+const SubprojectEmptyState = (props) => {
   return (
     <CardContent style={{ textAlign: "center" }}>
       <List>

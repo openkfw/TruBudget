@@ -1,12 +1,15 @@
+import React from "react";
+import dayjs from "dayjs";
+
 import Avatar from "@mui/material/Avatar";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
-import dayjs from "dayjs";
-import React from "react";
+
 import strings from "../../../localizeStrings";
+
 import stringifyHistoryEvent from "./stringifyHistoryEvent";
 
 const getEvents = (events, getUserDisplayname) => {

@@ -1,18 +1,21 @@
 import React from "react";
+
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import Paper from "@mui/material/Paper";
+
 import strings from "../../localizeStrings";
+
 import ApprovedNodestableEntry from "./ApprovedNodestableEntry";
 
-const groupBy = nodes => {
+const groupBy = (nodes) => {
   return nodes.reduce((acc, node) => {
     if (node.currentAccess.accessType !== "none") {
       const key = node.address.organization;
-      const index = acc.findIndex(x => x.organization === key);
+      const index = acc.findIndex((x) => x.organization === key);
       if (index === -1) {
         acc.push({ organization: key, count: 1, permissions: node.currentAccess.accessType });
       } else {
@@ -24,7 +27,7 @@ const groupBy = nodes => {
   }, []);
 };
 
-const ApprovedNodesTable = props => {
+const ApprovedNodesTable = (props) => {
   const { nodes } = props;
   const groupedNodes = groupBy(nodes);
 
@@ -40,7 +43,7 @@ const ApprovedNodesTable = props => {
           </TableRow>
         </TableHead>
         <TableBody data-test="approved-nodes-table-body">
-          {groupedNodes.map(nodeGroup => {
+          {groupedNodes.map((nodeGroup) => {
             return <ApprovedNodestableEntry key={nodeGroup.organization} nodeGroup={nodeGroup} nodes={nodes} />;
           })}
         </TableBody>

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import globalStyles from "../../styles";
+
 import {
   disableLiveUpdates,
   enableLiveUpdates,
@@ -47,21 +48,21 @@ class NotificationPageContainer extends Component {
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    fetchNotifications: page => dispatch(fetchNotifications(true, page)),
+    fetchNotifications: (page) => dispatch(fetchNotifications(true, page)),
     markNotificationAsRead: (notificationId, page) => dispatch(markNotificationAsRead(notificationId, page)),
     markMultipleNotificationsAsRead: (notificationIds, page) =>
       dispatch(markMultipleNotificationsAsRead(notificationIds, page)),
-    setNotifcationsPerPage: notificationPageSize => dispatch(setNotifcationsPerPage(notificationPageSize)),
+    setNotifcationsPerPage: (notificationPageSize) => dispatch(setNotifcationsPerPage(notificationPageSize)),
     enableLiveUpdates: () => dispatch(enableLiveUpdates()),
     disableLiveUpdates: () => dispatch(disableLiveUpdates()),
     fetchNotificationCounts: () => dispatch(fetchNotificationCounts())
   };
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     jwt: state.getIn(["login", "jwt"]),
-    isUserLoggedIn: state.getIn(['login', 'isUserLoggedIn']),
+    isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
     notifications: state.getIn(["notifications", "notifications"]),
     notificationsPerPage: state.getIn(["notifications", "notificationPageSize"]),
     unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),

@@ -1,7 +1,8 @@
+import React, { useState } from "react";
+
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
 
 import { formattedTag } from "../../helper";
 import strings from "../../localizeStrings";
@@ -50,7 +51,7 @@ const handleEnter = (e, action = () => {}) => {
 
 function addTagToList(currentTags, newTag, addProjectTag, setInvalidInput, setInvalidInputMessage, changeInput) {
   const validTagRegex = /^([A-Za-zÀ-ÿ0-9])*[A-Za-zÀ-ÿ0-9-_]+$/;
-  if (currentTags !== undefined && currentTags.some(tag => formattedTag(tag) === formattedTag(newTag))) {
+  if (currentTags !== undefined && currentTags.some((tag) => formattedTag(tag) === formattedTag(newTag))) {
     setInvalidInputMessage(strings.common.tag_already_exists);
     setInvalidInput(true);
     return;
@@ -79,12 +80,12 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag }) {
         <TextField
           value={input}
           label={strings.common.tag}
-          onKeyPress={e =>
+          onKeyPress={(e) =>
             handleEnter(e, () =>
               addTagToList(projectTags, input, addProjectTag, setInvalidInput, setInvalidInputMessage, changeInput)
             )
           }
-          onChange={event => {
+          onChange={(event) => {
             if (event.target.value === "" || validTagRegex.test(event.target.value)) changeInput(event.target.value);
           }}
           multiline={false}
@@ -106,7 +107,7 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag }) {
         </Button>
       </div>
       <div style={styles.tags} data-test="taglist">
-        {displayTags(projectTags, value => removeProjectTag(value))}
+        {displayTags(projectTags, (value) => removeProjectTag(value))}
       </div>
     </div>
   );

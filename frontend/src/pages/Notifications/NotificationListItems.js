@@ -1,16 +1,19 @@
+import React from "react";
+import dayjs from "dayjs";
+
+import Unread from "@mui/icons-material/Email";
+import Read from "@mui/icons-material/MailOutline";
+import LaunchIcon from "@mui/icons-material/ZoomIn";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
-import Unread from "@mui/icons-material/Email";
-import Read from "@mui/icons-material/MailOutline";
-import LaunchIcon from "@mui/icons-material/ZoomIn";
-import dayjs from "dayjs";
-import React from "react";
-import { intentMapping, parseURI, getParentData, isAllowedToSee } from "./helper";
+
 import strings from "../../localizeStrings";
+
+import { getParentData, intentMapping, isAllowedToSee, parseURI } from "./helper";
 
 const styles = {
   row: {
@@ -40,7 +43,7 @@ const styles = {
     opacity: 1
   },
   unreadMessage: {
-    backgroundColor: theme => theme.palette.grey.light
+    backgroundColor: (theme) => theme.palette.grey.light
   }
 };
 

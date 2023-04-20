@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+
 import AppBar from "@mui/material/AppBar";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
+
 import ApprovedNodesTable from "./ApprovedNodesTable";
 import DeclinedNodesTable from "./DeclinedNodesTable";
 
@@ -29,7 +31,7 @@ const renderTab = (tabIndex, props) => {
   return null;
 };
 
-const NodesTable = props => {
+const NodesTable = (props) => {
   const [tabIndex, setTabIndex] = useState(0);
   return (
     <div data-test="nodesDashboard" style={styles.container}>

@@ -1,3 +1,9 @@
+import React, { useCallback, useEffect, useState } from "react";
+import _isEmpty from "lodash/isEmpty";
+
+import DoneIcon from "@mui/icons-material/Check";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
@@ -6,19 +12,16 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
-import DoneIcon from "@mui/icons-material/Check";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import _isEmpty from "lodash/isEmpty";
-import React, { useState, useEffect, useCallback } from "react";
+
 import {
   fromAmountString,
   getCurrencies,
+  numberSignsRegex,
   toAmountString,
-  validateLanguagePattern,
-  numberSignsRegex
+  validateLanguagePattern
 } from "../../helper";
 import strings from "../../localizeStrings";
+
 import DropDown from "./NewDropdown";
 
 const styles = {
@@ -43,7 +46,7 @@ const renderProjectedBudgetAmount = ({
           variant="standard"
           label={strings.common.total_budget}
           value={budgetAmountEdit}
-          onChange={e => {
+          onChange={(e) => {
             if (numberSignsRegex.test(e.target.value)) {
               setBudgetAmountEdit(e.target.value);
               setIsValidBudgetAmountEdit(validateLanguagePattern(e.target.value) || _isEmpty(e.target.value));
@@ -117,16 +120,16 @@ const renderProjectedBudgetEditButtons = ({
   );
 };
 
-const getOrganizationMenuItems = projectedBudgets => {
+const getOrganizationMenuItems = (projectedBudgets) => {
   // Get only unique organizations, ES6 syntax
   const distinctOrganizations = [
     ...new Set(
-      projectedBudgets.map(budget => {
+      projectedBudgets.map((budget) => {
         return budget.organization;
       })
     )
   ];
-  return distinctOrganizations.map(organization => {
+  return distinctOrganizations.map((organization) => {
     return (
       <MenuItem key={`budget-${organization}`} value={organization}>
         {organization}
@@ -135,8 +138,8 @@ const getOrganizationMenuItems = projectedBudgets => {
   });
 };
 
-const getCurrencyMenuItems = currencies => {
-  return currencies.map(currency => {
+const getCurrencyMenuItems = (currencies) => {
+  return currencies.map((currency) => {
     return (
       <MenuItem key={currency.primaryText} value={currency.value}>
         {currency.primaryText}
@@ -168,7 +171,7 @@ const renderAddProjectedBudget = ({
           style={styles.inputfield}
           label={strings.common.organization}
           value={organization}
-          onChange={e => {
+          onChange={(e) => {
             setOrganization(e.target.value);
           }}
           type="text"
@@ -184,7 +187,7 @@ const renderAddProjectedBudget = ({
           style={styles.inputfield}
           value={organization}
           floatingLabel={strings.common.organization}
-          onChange={e => setOrganization(e)}
+          onChange={(e) => setOrganization(e)}
           id="organizations"
           disabled={isEditing}
         >
@@ -196,7 +199,7 @@ const renderAddProjectedBudget = ({
         style={styles.inputfield}
         value={currency}
         floatingLabel={strings.common.currency}
-        onChange={currency => {
+        onChange={(currency) => {
           setCurrency(currency);
         }}
         id="currencies"
@@ -212,7 +215,7 @@ const renderAddProjectedBudget = ({
         data-test="projected-budget"
         disabled={isEditing}
         value={budgetAmountAdd}
-        onChange={v => {
+        onChange={(v) => {
           if (numberSignsRegex.test(v.target.value)) {
             setBudgetAmountAdd(v.target.value);
             setIsValidBudgetAmountAdd(validateLanguagePattern(v.target.value) || _isEmpty(v.target.value));
@@ -230,7 +233,7 @@ const renderAddProjectedBudget = ({
   );
 };
 
-const Budget = props => {
+const Budget = (props) => {
   const [isSaveable, setIsSaveable] = useState(true);
   const [isValidBudgetAmountAdd, setIsValidBudgetAmountAdd] = useState(true);
   const [isValidBudgetAmountEdit, setIsValidBudgetAmountEdit] = useState(true);
@@ -257,7 +260,7 @@ const Budget = props => {
       _isEmpty(projectedBudgets) ||
       _isEmpty(organization) ||
       _isEmpty(currency) ||
-      !projectedBudgets.some(x => {
+      !projectedBudgets.some((x) => {
         return x.organization === organization && x.currencyCode === currency;
       });
     setIsSaveable(isValidBudget);

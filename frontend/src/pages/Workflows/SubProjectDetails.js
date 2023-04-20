@@ -1,18 +1,6 @@
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
+import React from "react";
+import _isEmpty from "lodash/isEmpty";
+
 import AmountIcon from "@mui/icons-material/AccountBalance";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import DoneIcon from "@mui/icons-material/Check";
@@ -20,14 +8,28 @@ import DateIcon from "@mui/icons-material/DateRange";
 import AssigneeIcon from "@mui/icons-material/Group";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
-import _isEmpty from "lodash/isEmpty";
-import React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 
 import { statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
-import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
+
+import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 
 const styles = {
   container: {
@@ -79,7 +81,7 @@ const styles = {
 };
 
 const subProjectCanBeClosed = (subProjectIsClosed, userIsAllowedToClose, workflowItems) => {
-  const hasOpenWorkflowitems = !_isEmpty(workflowItems.find(workflowItem => workflowItem.data.status === "open"));
+  const hasOpenWorkflowitems = !_isEmpty(workflowItems.find((workflowItem) => workflowItem.data.status === "open"));
   return !subProjectIsClosed && userIsAllowedToClose && !hasOpenWorkflowitems;
 };
 
@@ -116,7 +118,7 @@ const SubProjectDetails = ({
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = unixTsToString(created);
-  const validator = users.find(user => user.id === subprojectValidator);
+  const validator = users.find((user) => user.id === subprojectValidator);
 
   const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
   return (
@@ -178,7 +180,7 @@ const SubProjectDetails = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {projectedBudgets.map(budget => (
+                  {projectedBudgets.map((budget) => (
                     <TableRow key={budget.organization + budget.currencyCode}>
                       <TableCell style={styles.tableCell}>{budget.organization}</TableCell>
                       <TableCell style={styles.tableCell} align="right">
@@ -224,7 +226,8 @@ const SubProjectDetails = ({
                     data-test="spc-button"
                     disabled={!closingOfSubProjectAllowed}
                     onClick={closeSubproject}
-                    size="large">
+                    size="large"
+                  >
                     <DoneIcon />
                   </IconButton>
                 </div>

@@ -1,8 +1,10 @@
 import { fromJS, Set } from "immutable";
 import _isEmpty from "lodash/isEmpty";
+
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
 import { SEARCH_BAR_DISPLAYED, SET_SELECTED_VIEW } from "../Navbar/actions";
+
 import {
   ADD_PROJECT_PROJECTED_BUDGET,
   ADD_PROJECT_TAG,
@@ -125,7 +127,7 @@ export default function overviewReducer(state = defaultState, action) {
           projectedBudgets: [...state.getIn(["projectToAdd", "projectedBudgets"]).toJS(), action.projectedBudget]
         })
       });
-    case EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT:
+    case EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT: {
       let newStateWithEditedBudget;
       state
         .getIn(["projectToAdd", "projectedBudgets"])
@@ -142,26 +144,28 @@ export default function overviewReducer(state = defaultState, action) {
           }
         });
       return newStateWithEditedBudget;
-    case PROJECT_DELETED_PROJECTED_BUDGET:
+    }
+    case PROJECT_DELETED_PROJECTED_BUDGET: {
       const projectedBudgets = state.getIn(["projectToAdd", "projectedBudgets"]).toJS();
       const projectedBudgetsToDelete = action.projectedBudgets;
       const newState = state.merge({
         projectToAdd: state.get("projectToAdd").merge({
           deletedProjectedBudgets: projectedBudgetsToDelete,
           projectedBudgets: projectedBudgets.filter(
-            b =>
+            (b) =>
               projectedBudgetsToDelete.find(
-                d => d.organization === b.organization && d.currencyCode === b.currencyCode
+                (d) => d.organization === b.organization && d.currencyCode === b.currencyCode
               ) === undefined
           )
         })
       });
       return newState;
+    }
     case PROJECT_COMMENT:
       return state.setIn(["projectToAdd", "description"], action.comment);
     case ADD_PROJECT_TAG: {
       const tags = state.getIn(["projectToAdd", "tags"]) || [];
-      if (!tags.some(tag => tag === action.tag)) {
+      if (!tags.some((tag) => tag === action.tag)) {
         return state.setIn(["projectToAdd", "tags"], [...tags, action.tag]);
       }
       return state;
@@ -170,7 +174,7 @@ export default function overviewReducer(state = defaultState, action) {
       const tags = state.getIn(["projectToAdd", "tags"]);
       return state.setIn(
         ["projectToAdd", "tags"],
-        tags.filter(tag => tag !== action.tag)
+        tags.filter((tag) => tag !== action.tag)
       );
     }
     case PROJECT_THUMBNAIL:
@@ -189,10 +193,10 @@ export default function overviewReducer(state = defaultState, action) {
       }
       return state.set("projects", fromJS(action.projects));
     case ADD_TEMPORARY_PROJECT_PERMISSION:
-      return state.updateIn(["temporaryPermissions", action.permission], users => users.push(action.userId));
+      return state.updateIn(["temporaryPermissions", action.permission], (users) => users.push(action.userId));
     case REMOVE_TEMPORARY_PROJECT_PERMISSION:
-      return state.updateIn(["temporaryPermissions", action.permission], users =>
-        users.filter(user => user !== action.userId)
+      return state.updateIn(["temporaryPermissions", action.permission], (users) =>
+        users.filter((user) => user !== action.userId)
       );
     case CONFIRMATION_CANCELLED:
       return state.set(

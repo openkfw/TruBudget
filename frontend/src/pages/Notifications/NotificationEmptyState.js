@@ -1,17 +1,19 @@
 import React from "react";
+
 import Typography from "@mui/material/Typography";
+
 import strings from "../../localizeStrings";
 
 const styles = {
   subtitle: {
-    color: theme => theme.palette.grey.dark
+    color: (theme) => theme.palette.grey.dark
   },
   caption: {
-    color: theme => theme.palette.grey.main
+    color: (theme) => theme.palette.grey.main
   }
 };
 
-const NotificationEmptyState = props => {
+const NotificationEmptyState = (props) => {
   return (
     <div style={{ textAlign: "center" }}>
       <img

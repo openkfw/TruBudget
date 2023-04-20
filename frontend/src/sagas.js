@@ -1,11 +1,7 @@
 import { saveAs } from "file-saver";
 import _isEmpty from "lodash/isEmpty";
 import { all, call, cancel, delay, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import Api from "./api.js";
-import { getExchangeRates } from "./getExchangeRates";
-import { formatString, fromAmountString, getLoginErrorFromResponse } from "./helper.js";
-import strings from "./localizeStrings";
-import config from "./config";
+
 import {
   GET_EXCHANGE_RATES,
   GET_EXCHANGE_RATES_SUCCESS,
@@ -240,6 +236,11 @@ import {
   FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE_SUCCESS,
   SET_TOTAL_WORKFLOWITEM_HISTORY_ITEM_COUNT
 } from "./pages/Workflows/WorkflowitemHistoryTab/actions";
+import Api from "./api.js";
+import config from "./config";
+import { getExchangeRates } from "./getExchangeRates";
+import { formatString, fromAmountString, getLoginErrorFromResponse } from "./helper.js";
+import strings from "./localizeStrings";
 
 const api = new Api();
 
@@ -251,11 +252,11 @@ const getEmailAddress = (state) => {
   return state.getIn(["login", "emailAddress"]);
 };
 
-const getJwt = state => {
+const getJwt = (state) => {
   return state.getIn(["login", "jwt"]);
 };
 
-const getUserLoggedIn = state => {
+const getUserLoggedIn = (state) => {
   return state.getIn(["login", "isUserLoggedIn"]);
 };
 
@@ -1139,7 +1140,7 @@ export function* loginSaga({ user }) {
   function* onLoginError(error) {
     const errorMessage = getLoginErrorFromResponse(error.response.status, error.response.data);
     yield put({
-      type:SNACKBAR_MESSAGE,
+      type: SNACKBAR_MESSAGE,
       message: errorMessage
     });
     yield put({
@@ -1981,7 +1982,11 @@ export function* grantSubProjectPermissionsSaga({
         payload: {
           intent,
           project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
+          subproject: {
+            id: subprojectId,
+            displayName: subprojectDisplayName,
+            listPermissionsNeeded: true
+          },
           grantee: { id: granteeId, displayName: granteeDisplayName }
         }
       });
@@ -2057,7 +2062,11 @@ export function* revokeSubProjectPermissionsSaga({
         payload: {
           intent,
           project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
+          subproject: {
+            id: subprojectId,
+            displayName: subprojectDisplayName,
+            listPermissionsNeeded: true
+          },
           revokee: { id: revokeeId, displayName: revokeeDisplayName }
         }
       });
@@ -2131,8 +2140,16 @@ export function* grantWorkflowItemPermissionsSaga({
         payload: {
           intent,
           project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
-          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName, listPermissionsNeeded: true },
+          subproject: {
+            id: subprojectId,
+            displayName: subprojectDisplayName,
+            listPermissionsNeeded: true
+          },
+          workflowitem: {
+            id: workflowitemId,
+            displayName: workflowitemDisplayName,
+            listPermissionsNeeded: true
+          },
           grantee: { id: granteeId, displayName: granteeDisplayName }
         }
       });
@@ -2213,8 +2230,16 @@ export function* revokeWorkflowItemPermissionsSaga({
         payload: {
           intent,
           project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
-          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName, listPermissionsNeeded: true },
+          subproject: {
+            id: subprojectId,
+            displayName: subprojectDisplayName,
+            listPermissionsNeeded: true
+          },
+          workflowitem: {
+            id: workflowitemId,
+            displayName: workflowitemDisplayName,
+            listPermissionsNeeded: true
+          },
           revokee: { id: revokeeId, displayName: revokeeDisplayName }
         }
       });
@@ -2507,8 +2532,16 @@ export function* assignWorkflowItemSaga({
         displayName: originalAction.displayName,
         payload: {
           project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
-          workflowitem: { id: workflowitemId, displayName: workflowitemDisplayName, listPermissionsNeeded: true },
+          subproject: {
+            id: subprojectId,
+            displayName: subprojectDisplayName,
+            listPermissionsNeeded: true
+          },
+          workflowitem: {
+            id: workflowitemId,
+            displayName: workflowitemDisplayName,
+            listPermissionsNeeded: true
+          },
           assignee: { id: assigneeId, displayName: assigneeDisplayName }
         }
       });
@@ -2580,7 +2613,11 @@ export function* assignSubprojectSaga({
         displayName: originalAction.displayName,
         payload: {
           project: { id: projectId, displayName: projectDisplayName, listPermissionsNeeded: true },
-          subproject: { id: subprojectId, displayName: subprojectDisplayName, listPermissionsNeeded: true },
+          subproject: {
+            id: subprojectId,
+            displayName: subprojectDisplayName,
+            listPermissionsNeeded: true
+          },
           assignee: { id: assigneeId, displayName: assigneeDisplayName }
         }
       });

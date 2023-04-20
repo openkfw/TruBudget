@@ -1,19 +1,21 @@
+import React, { Component } from "react";
+import _isEmpty from "lodash/isEmpty";
+
+import CloseIcon from "@mui/icons-material/Close";
+import Warning from "@mui/icons-material/Warning";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
+import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
-import List from "@mui/material/List";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
-import Warning from "@mui/icons-material/Warning";
-import _isEmpty from "lodash/isEmpty";
-import React, { Component } from "react";
+
 import strings from "../../../localizeStrings";
-import CloseIcon from "@mui/icons-material/Close";
 import ActionButton from "../ActionButton";
 import OverflowTooltip from "../OverflowTooltip";
 
@@ -38,7 +40,7 @@ const styles = {
 };
 
 const renderSelection = (user, permissionedUser, intent, grant, revoke, myself, disabled) =>
-  user.map(u => {
+  user.map((u) => {
     const checked = permissionedUser.indexOf(u.id) > -1;
     return (
       <MenuItem
@@ -68,7 +70,7 @@ class PermissionSelection extends Component {
     if (_isEmpty(userList) || _isEmpty(permissions)) return [];
 
     return permissions.reduce((userdisplaynames, permission) => {
-      const user = userList.find(u => u.id === permission);
+      const user = userList.find((u) => u.id === permission);
       if (user) {
         userdisplaynames.push(user.displayName);
       }
@@ -79,7 +81,7 @@ class PermissionSelection extends Component {
   renderUserSelection = () => {
     const selection = renderSelection(
       this.props.userList.filter(
-        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
+        (u) => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup !== true
       ),
       this.props.permissions[this.props.name],
       this.props.name,
@@ -103,7 +105,7 @@ class PermissionSelection extends Component {
   renderGroupSelection = () => {
     const selection = renderSelection(
       this.props.userList.filter(
-        u => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
+        (u) => u.displayName.toLowerCase().includes(this.state.searchTerm.toLowerCase()) && u.isGroup === true
       ),
       this.props.permissions[this.props.name],
       this.props.name,
@@ -144,7 +146,7 @@ class PermissionSelection extends Component {
           style={styles.select}
           autoWidth
           value={selections}
-          renderValue={s => s.join(", ")}
+          renderValue={(s) => s.join(", ")}
           MenuProps={{ "data-test": "permission-selection-popup" }}
           open={this.state.selectIsOpen}
           onOpen={openSelect}
@@ -170,7 +172,7 @@ class PermissionSelection extends Component {
           <div style={styles.formControlContainer}>
             <FormControl data-test="permission-search">
               <InputLabel>{strings.common.search}</InputLabel>
-              <Input value={this.state.searchTerm} onChange={e => this.setState({ searchTerm: e.target.value })} />
+              <Input value={this.state.searchTerm} onChange={(e) => this.setState({ searchTerm: e.target.value })} />
             </FormControl>
           </div>
           <div data-test="permission-list">

@@ -1,7 +1,9 @@
 import React from "react";
-import Badge from "@mui/material/Badge";
+
 import BubbleIcon from "@mui/icons-material/DeviceHub";
+import Badge from "@mui/material/Badge";
 import Tooltip from "@mui/material/Tooltip";
+
 import strings from "../../localizeStrings";
 
 const NumberOfPeersIcon = ({ numberOfActivePeers }) => {
