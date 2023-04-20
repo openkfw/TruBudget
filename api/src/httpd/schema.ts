@@ -1,11 +1,10 @@
 import { FastifySchema } from "fastify";
-import { projectIntents } from "../authz/intents";
 
 export interface SwaggerSchema extends FastifySchema {
   description: string;
   tags: string[];
   summary: string;
-  security?: object;
+  security?: { [securityLabel: string]: string[]; }[] | undefined
   consumes?: string[];
 }
 

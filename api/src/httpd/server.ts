@@ -5,7 +5,13 @@ import { IncomingMessage, Server, ServerResponse } from "http";
 import { AugmentedFastifyInstance } from "../types";
 import logger from "../lib/logger";
 import { AuthenticatedRequest } from "./lib";
-import cookie from "@fastify/cookie";
+import fastifyCookie from "@fastify/cookie";
+import fastifyHelmet from "@fastify/helmet";
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
+import fastifyStatic from "@fastify/static";
+import fastifyCors from "@fastify/cors";
+import fastifyJwt from "@fastify/jwt";
 
 const path = require("path");
 
@@ -24,7 +30,7 @@ const ajv = new Ajv({
 });
 
 const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
-  server.register(require("@fastify/jwt"), {
+  server.register(fastifyJwt, {
     secret: jwtSecret,
     cookie: {
       cookieName: "token",
@@ -33,7 +39,7 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
   });
 
   server
-    .register(cookie);
+    .register(fastifyCookie);
 
   server.decorate("authenticate", async (request, reply) => {
     try {
@@ -73,9 +79,8 @@ const addLogging = (server: FastifyInstance) => {
 };
 
 const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: number) => {
-  server.register(require("@fastify/swagger"), {
+  server.register(fastifySwagger, {
     // Swagger documentation is available at: http://localhost:8080/api/documentation/static/index.html
-    routePrefix: `${urlPrefix}/documentation`,
     swagger: {
       schemes: ["http", "https"],
       consumes: ["application/json"],
@@ -92,9 +97,6 @@ const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: n
         { name: "user" },
         { name: "workflowitem" },
       ],
-    },
-    uiConfig: {
-      docExpansion: "list",
     },
     openapi: {
       info: {
@@ -119,7 +121,14 @@ const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: n
       },
     },
     hideUntagged: false,
-    exposeRoute: true,
+  });
+
+  server.register(fastifySwaggerUi, {
+    // Swagger documentation is available at: http://localhost:8080/api/documentation/static/index.html
+    routePrefix: `${urlPrefix}/documentation`,  
+    uiConfig: {
+      docExpansion: "list",
+    },   
   });
 };
 
@@ -138,11 +147,11 @@ export const createBasicApp = (
 
   server.setValidatorCompiler(({ schema }) => ajv.compile(schema));
   server.register(fastifyMetricsPlugin, { endpoint: "/metrics" });
-  server.register(require("@fastify/cors"), { origin: accessControlAllowOrigin });
-  server.register(require("@fastify/static"), { root: path.join(__dirname, "public") });
+  server.register(fastifyCors, { origin: accessControlAllowOrigin });
+  server.register(fastifyStatic, { root: path.join(__dirname, "public") });
 
   // It is important that swagger is registered first in order for a swaggerSCP object to exist on the instance
-  server.register(require("@fastify/helmet"), (instance) => {
+  server.register(fastifyHelmet, (instance) => {
     return {
       contentSecurityPolicy: {
         directives: {
