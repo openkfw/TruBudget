@@ -1,13 +1,41 @@
 import axios from "axios";
-import { createLogger } from "redux-logger";
 
 import config from "./../config";
-import { store } from "./../index";
+import { store } from "./../store";
 
 let instance = undefined;
 const logMessages = [];
 const getToken = () => (store ? store.getState().toJS().login.jwt : "");
 const getUserId = () => (store ? store.getState().toJS().login.id : "");
+
+const setToken = () => {
+  let t = getToken();
+  instance.defaults.headers.common["Authorization"] = t ? `Bearer ${t}` : "";
+};
+
+export const createLogMsg = async (log) => {
+  if (config.logging.isEnabled === false) return;
+  const msg = {
+    ...log,
+    when: new Date().toString(),
+    who: getUserId()
+  };
+  logMessages.push(msg);
+};
+
+const pushLogToServer = async () => {
+  if (instance && logMessages.length > 0) {
+    if (
+      instance.defaults.headers.common["Authorization"] === "" ||
+      instance.defaults.headers.common["Authorization"] === undefined
+    )
+      setToken();
+    await instance.post("/api", { logMessages }).catch((ignore) => ignore);
+    while (logMessages.length) {
+      logMessages.pop();
+    }
+  }
+};
 
 const createConnection = () => {
   if (config.logging.isEnabled === false) return;
@@ -27,19 +55,6 @@ const createConnection = () => {
   setInterval(pushLogToServer, 1000 * config.logging.pushInterval);
 };
 
-const setToken = () => {
-  let t = getToken();
-  instance.defaults.headers.common["Authorization"] = t ? `Bearer ${t}` : "";
-};
-
-const logger = createLogger({
-  timestamp: true,
-  logErrors: true,
-  predicate: (getState, action) => predicate(getState, action),
-  stateTransformer: (s) => stateTransformer(s),
-  diff: true,
-  errorTransformer: (error) => errorTransformer(error)
-});
 const stateTransformer = (s) => s;
 
 const predicate = (getState, action) => {
@@ -64,29 +79,16 @@ const errorTransformer = (error) => {
   });
   return error;
 };
-const pushLogToServer = async () => {
-  if (instance && logMessages.length > 0) {
-    if (
-      instance.defaults.headers.common["Authorization"] === "" ||
-      instance.defaults.headers.common["Authorization"] === undefined
-    )
-      setToken();
-    await instance.post("/api", { logMessages }).catch((ignore) => ignore);
-    while (logMessages.length) {
-      logMessages.pop();
-    }
-  }
-};
 
-export const createLogMsg = async (log) => {
-  if (config.logging.isEnabled === false) return;
-  const msg = {
-    ...log,
-    when: new Date().toString(),
-    who: getUserId()
-  };
-  logMessages.push(msg);
+const loggerOptions = {
+  timestamp: true,
+  logErrors: true,
+  predicate: (getState, action) => predicate(getState, action),
+  stateTransformer: (s) => stateTransformer(s),
+  diff: true,
+  errorTransformer: (error) => errorTransformer(error)
 };
 
 createConnection();
-export default logger;
+
+export default loggerOptions;

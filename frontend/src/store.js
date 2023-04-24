@@ -1,40 +1,37 @@
 /**
  * Create the store with asynchronously loaded reducers
  */
-
-import { routerMiddleware } from "connected-react-router";
+import { configureStore } from "@reduxjs/toolkit";
 import { fromJS } from "immutable";
-import { applyMiddleware, compose, createStore } from "redux";
 import createDebounce from "redux-debounced";
+import { createLogger } from "redux-logger";
 import createSagaMiddleware from "redux-saga";
 
-import reduxLogger from "./logging/logger";
-import config from "./config";
+import loggerOptions from "./logging/logger";
 import { loadState, persistState } from "./localStorage";
-import createReducer from "./reducers";
+import rootReducer, { createReduxHistory, routerMiddleware } from "./reducers";
 import rootSaga from "./sagas";
 
 const sagaMiddleware = createSagaMiddleware();
 
-export default function configureStore(history) {
-  // Create the store with two middlewares
+function configureTBStore() {
+  // Create the store with four middlewares
   // 1. sagaMiddleware: Makes redux-sagas work
   // 2. routerMiddleware: Syncs the location/URL path to the state
-  const middlewares = [sagaMiddleware, createDebounce(), routerMiddleware(history), reduxLogger];
-
-  const enhancers = [applyMiddleware(...middlewares)];
-
-  // If Redux DevTools Extension is installed use it, otherwise use Redux compose
-  /* eslint-disable no-underscore-dangle */
-  const composeEnhancers =
-    config.envMode !== "production" && typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      : compose;
-  /* eslint-enable */
+  // 3. redux-debounced
+  // 4. redux-logger with custom options
 
   const persistedState = loadState();
 
-  const store = createStore(createReducer(history), fromJS(persistedState), composeEnhancers(...enhancers));
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState: fromJS(persistedState),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+        immutableCheck: false
+      }).concat(routerMiddleware, sagaMiddleware, createDebounce(), createLogger(loggerOptions))
+  });
 
   store.subscribe(() => {
     persistState(store.getState());
@@ -56,3 +53,7 @@ export default function configureStore(history) {
 
   return store;
 }
+
+export const store = configureTBStore();
+
+export const history = createReduxHistory(store);
