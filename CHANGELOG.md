@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixed a bug where allocated/paid amount of a rejected workflowitem was added to the assigned/disbursed project/subproject budget. [#1275](https://github.com/openkfw/TruBudget/issues/1275)
 - Add additional checks that prevent creation of a workflow item with an assigned user that has a disabled account or does not exist. [#1327](https://github.com/openkfw/TruBudget/issues/1327)
 - Fixed a bug where restoring a backup corrupts the blockchain [#1285](https://github.com/openkfw/TruBudget/issues/1285)
 - Fixed a bug where downloading documents from other organizations in a network was not possible in a specific edge-case [#1192](https://github.com/openkfw/TruBudget/issues/1192)
