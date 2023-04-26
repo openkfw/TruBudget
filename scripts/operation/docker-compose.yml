@@ -227,6 +227,7 @@ services:
       MULTICHAIN_RPC_PORT: ${BETA_MULTICHAIN_RPC_PORT}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       ORGANIZATION: ${BETA_ORGANIZATION}
+      EXTERNAL_IP: ${EXTERNAL_IP}
       # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
       P2P_HOST: 172.21.0.11 # IP of alpha-node
       P2P_PORT: 7447
