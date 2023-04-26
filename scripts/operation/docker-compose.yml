@@ -30,9 +30,9 @@ services:
     volumes:
       - alphaVolume:${MULTICHAIN_DIR}
     ports:
-      - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting API
-      - "8085:8085" # port for backup
-      - "7447:7447" # port for connecting betas (P2P)
+      - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting to the multichain daemon
+      - ${BLOCKCHAIN_PORT}:${BLOCKCHAIN_PORT} # port for requests to blockchain API
+      - "7447:7447" # port for connecting beta nodes (P2P)
 
   emaildb:
     image: postgres
@@ -82,6 +82,7 @@ services:
       MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
+      BLOCKCHAIN_PORT: ${BLOCKCHAIN_PORT}
       DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
       STORAGE_SERVICE_HOST: storage-service
@@ -244,6 +245,7 @@ services:
         ipv4_address: 172.21.0.12
     ports:
       - ${BETA_MULTICHAIN_RPC_PORT}:${BETA_MULTICHAIN_RPC_PORT}
+      - "8086:${BLOCKCHAIN_PORT}"
       - "7448:7447" # beta-node port is 7448 on host
     privileged: true
 
@@ -258,6 +260,7 @@ services:
       MULTICHAIN_RPC_PORT: ${BETA_MULTICHAIN_RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
+      BLOCKCHAIN_PORT: 8086
       DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
       STORAGE_SERVICE_HOST: storage-service
