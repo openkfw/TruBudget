@@ -110,5 +110,8 @@
   ],
   "browser": {
     "moment": false
+  },
+  "overrides": {
+    "yaml": "^2.2.2"
   }
 }

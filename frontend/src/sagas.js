@@ -2835,15 +2835,15 @@ export function* getProjectKPIsSaga({ projectId, showLoading = true }) {
               error.name = "redacted";
               throw error;
             }
-            const { amountType, status, amount, exchangeRate } = next.data;
-            if (amountType === "allocated" && status === "closed" && amount) {
+            const { amountType, status, amount, exchangeRate, rejectReason } = next.data;
+            if (amountType === "allocated" && status === "closed" && amount && !rejectReason) {
               return {
                 ...acc,
                 allocated: acc.allocated + fromAmountString(amount) * (exchangeRate || 1)
               };
             }
 
-            if (amountType === "disbursed" && status === "closed" && amount) {
+            if (amountType === "disbursed" && status === "closed" && amount && !rejectReason) {
               return {
                 ...acc,
                 disbursed: acc.disbursed + fromAmountString(amount) * (exchangeRate || 1)
@@ -2932,15 +2932,15 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true
             error.name = "redacted";
             throw error;
           }
-          const { amountType, status, amount, exchangeRate } = next.data;
-          if (amountType === "allocated" && status === "closed" && amount) {
+          const { amountType, status, amount, exchangeRate, rejectReason } = next.data;
+          if (amountType === "allocated" && status === "closed" && amount && !rejectReason) {
             return {
               ...acc,
               assignedBudget: acc.assignedBudget + fromAmountString(amount) * exchangeRate
             };
           }
 
-          if (amountType === "disbursed" && status === "closed" && amount) {
+          if (amountType === "disbursed" && status === "closed" && amount && !rejectReason) {
             return {
               ...acc,
               disbursedBudget: acc.disbursedBudget + fromAmountString(amount) * exchangeRate
