@@ -2,8 +2,10 @@
  * Combine all reducers in this file and export the combined reducers.
  * If we were doing this in store.js, reducers wouldn't be hot reloadable.
  */
-import { connectRouter, LOCATION_CHANGE } from "connected-react-router";
+import { createBrowserHistory } from "history";
 import { fromJS } from "immutable";
+import { LOCATION_CHANGE } from "redux-first-history";
+import { createReduxHistoryContext } from "redux-first-history";
 import { combineReducers } from "redux-immutable";
 
 import analyticsReducer from "./pages/Analytics/reducer";
@@ -20,6 +22,11 @@ import subProjectReducer from "./pages/SubProjects/reducer";
 import userDashboardReducer from "./pages/Users/reducer";
 import workflowReducer from "./pages/Workflows/reducer";
 import workflowitemDetailsReducer from "./pages/Workflows/WorkflowitemHistoryTab/reducer";
+
+const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({
+  history: createBrowserHistory(),
+  selectRouterState: (state) => state.get("router")
+});
 
 /*
  * routeReducer
@@ -63,10 +70,10 @@ function routeReducer(state = routeInitialState, action) {
   }
 }
 
-const combinedReducer = (history, action) => {
+const combinedReducer = (action) => {
   if (action.type === "LOGOUT") {
     return combineReducers({
-      router: connectRouter(history),
+      router: routerReducer,
       route: routeReducer,
       actions: lastActionReducer,
       login: loginReducer,
@@ -87,7 +94,7 @@ const combinedReducer = (history, action) => {
     });
   } else {
     return combineReducers({
-      router: connectRouter(history),
+      router: routerReducer,
       route: routeReducer,
       actions: lastActionReducer,
       navbar: navbarReducer,
@@ -111,8 +118,11 @@ const combinedReducer = (history, action) => {
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
-const createReducer = (history) => (state, action) => {
-  return combinedReducer(history, action, state)(state, action);
+const createReducer = () => (state, action) => {
+  return combinedReducer(action, state)(state, action);
 };
 
-export default createReducer;
+const rootReducer = createReducer();
+
+export default rootReducer;
+export { createReduxHistory, routerMiddleware };
