@@ -33,9 +33,9 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.11
     ports:
-      - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting API
-      - "8085:8085" # port for backup
-      - "7447:7447" # port for connecting betas (P2P)
+      - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting to the multichain daemon
+      - ${BLOCKCHAIN_PORT}:${BLOCKCHAIN_PORT} # port for requests to blockchain API
+      - "7447:7447" # port for connecting beta nodes (P2P)
 
   emaildb:
     image: postgres
@@ -86,6 +86,7 @@ services:
       MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
+      BLOCKCHAIN_PORT: ${BLOCKCHAIN_PORT}
       DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
       STORAGE_SERVICE_HOST: storage-service
@@ -272,6 +273,7 @@ services:
       MULTICHAIN_RPC_PORT: ${BETA_MULTICHAIN_RPC_PORT}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       ORGANIZATION: ${BETA_ORGANIZATION}
+      EXTERNAL_IP: ${EXTERNAL_IP}
       # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
       P2P_HOST: 172.20.0.11 # IP of alpha-node
       P2P_PORT: 7447
@@ -289,7 +291,8 @@ services:
     #   - /beta1Volume:/root/.multichain
     ports:
       - ${BETA_MULTICHAIN_RPC_PORT}:${BETA_MULTICHAIN_RPC_PORT}
-      - "7448:7447" # beta-node port is 7448 on host #port von blockchain #BLOCKCHAIN_PORT
+      - "8086:${BLOCKCHAIN_PORT}"
+      - "7448:7447" # beta-node port is 7448 on host 
     privileged: true
 
 
@@ -303,6 +306,7 @@ services:
       MULTICHAIN_RPC_PORT: ${BETA_MULTICHAIN_RPC_PORT}
       ROOT_SECRET: ${ROOT_SECRET}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
+      BLOCKCHAIN_PORT: 8086
       DOCUMENT_FEATURE_ENABLED: ${DOCUMENT_FEATURE_ENABLED}
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
       STORAGE_SERVICE_HOST: storage-service

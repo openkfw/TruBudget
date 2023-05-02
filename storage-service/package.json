@@ -28,7 +28,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
-    "minio": "^7.0.29",
+    "minio": "^7.1.0",
     "trubudget-logging-service": "^1.1.6",
     "url": "^0.11.0",
     "uuid": "^8.3.2"
