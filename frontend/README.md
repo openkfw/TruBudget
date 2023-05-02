@@ -2,33 +2,6 @@
 
 This is the frontend, which consumes the exposed Trubudget API.
 
-## Environment Variables
-
-### Frontend
-
-| Env Variable      | Default Value | Description                                                                                                                                                          |
-| ----------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NODE_ENV          | -             | If set to `development` search Trubudget's external services (Email-/Excel-Export-Service) on localhost. <br>If set to `production` disable Redux devtools extension |
-| REACT_APP_VERSION | -             | Injected version via `$npm_package_version` in`.env` file to ensure the version is shown in the frontend                                                             |
-| API_HOST          | -             | IP address of the api. This is only required if nginx proxy is used. <br>**Hint:** When deployed locally the host is set to localhost                                |
-| API_PORT          | 8080          | Port of the api. This is only required if nginx proxy is used                                                                                                        |
-
-### Email-Service
-
-| Env Variable                    | Default Value | Description                                                                                                                                                     |
-| ------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| REACT_APP_EMAIL_SERVICE_ENABLED | false         | When enabled, the frontend requests a email-service readiness call when entering the login screen.<br/>If true the email section in the user-profile is enabled |
-| EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                    |
-| EMAIL_PORT                      | 8890          | Port of the email notification service                                                                                                                          |
-
-### Excel-Export-Service
-
-| Env Variable                     | Default Value | Description                                                                                                                                         |
-| -------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| REACT_APP_EXPORT_SERVICE_ENABLED | false         | If true the frontend requests a export-service readiness call when entering the login screen and <br/>the export button is shown at the side navbar |
-| EXPORT_HOST                      | -             | IP address of the excel export service                                                                                                              |
-| EXPORT_PORT                      | 8888          | Port of the excel export service                                                                                                                    |
-
 ## Peer dependencies
 
 This project is based on the `create-react-app` starter kit provided by the Facebook Incubator. The main part of the project configuration is encapsulated into the `create-react-app` and not accessible. If you need to access project configuration you can eject the project, which will then move the configuration into the project. More information here: https://github.com/facebookincubator/create-react-app
@@ -180,3 +153,30 @@ Use the admin credentials to login onto the dashboard. If `BC_ADDRESS_VERIFICATI
 
 To enable/disable email notifications for blockchain simply set the `REACT_APP_EMAIL_SERVICE_ENABLED` to "true" or unset it.
 When enabled the frontend requesting a email-notifications readiness call when entering the login screen. If the email notification service is ready the email section in the user profile is activated and visible so the user can create/edit the email-address where he/she wants to get notifications to. More details about the email notification service can be found in the [email notification documentation](../email-notification-service/README.md#)
+
+## Environment Variables
+
+### Frontend
+
+| Env Variable      | Default Value | Description                                                                                                                                                          |
+| ----------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NODE_ENV          | -             | If set to `development` search Trubudget's external services (Email-/Excel-Export-Service) on localhost. <br>If set to `production` disable Redux devtools extension |
+| REACT_APP_VERSION | -             | Injected version via `$npm_package_version` in`.env` file to ensure the version is shown in the frontend                                                             |
+| API_HOST          | -             | IP address of the api. This is only required if nginx proxy is used. <br>**Hint:** When deployed locally the host is set to localhost                                |
+| API_PORT          | 8080          | Port of the api. This is only required if nginx proxy is used                                                                                                        |
+
+### Email-Service
+
+| Env Variable                    | Default Value | Description                                                                                                                                                     |
+| ------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EMAIL_SERVICE_ENABLED | false         | When enabled, the frontend requests a email-service readiness call when entering the login screen.<br/>If true the email section in the user-profile is enabled |
+| EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                    |
+| EMAIL_PORT                      | 8890          | Port of the email notification service                                                                                                                          |
+
+### Excel-Export-Service
+
+| Env Variable                     | Default Value | Description                                                                                                                                         |
+| -------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EXPORT_SERVICE_ENABLED | false         | If true the frontend requests a export-service readiness call when entering the login screen and <br/>the export button is shown at the side navbar |
+| EXPORT_HOST                      | -             | IP address of the excel export service                                                                                                              |
+| EXPORT_PORT                      | 8888          | Port of the excel export service                                                                                                                    |
