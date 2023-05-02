@@ -1,5 +1,5 @@
 import React from "react";
-import { SortableElement } from "react-sortable-hoc";
+import { Draggable } from "react-beautiful-dnd";
 import _isEmpty from "lodash/isEmpty";
 
 import AttachmentIcon from "@mui/icons-material/Attachment";
@@ -484,141 +484,161 @@ const renderActionButtons = (
   );
 };
 
-export const WorkflowItem = SortableElement(
-  ({
-    workflow,
-    mapIndex,
-    index,
-    currentWorkflowSelectable,
-    workflowSortEnabled,
-    parentProject,
-    users,
-    idsPermissionsUnassigned,
-    currentUser,
-    ...props
-  }) => {
-    const { storeWorkflowItemsSelected, selectedWorkflowItems, currency: targetCurrency } = props;
-    const {
-      id,
-      status,
-      displayName,
-      amountType,
-      amount,
-      assignee,
-      exchangeRate,
-      currency: sourceCurrency,
-      rejectReason,
-      additionalData
-    } = workflow.data;
-    const allowedIntents = workflow.allowedIntents;
-    const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
-    const itemStyle = workflowSelectable ? {} : { opacity: 0.31 };
-    const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
-    const infoButton = getInfoButton(props, status, workflowSortEnabled, workflow.data);
-    const attachmentButton = getAttachmentButton(props, workflow.data);
-    const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
-    const canCloseWorkflowitem = currentUser === assignee;
-    const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";
+export const WorkflowItem = ({
+  workflow,
+  mapIndex,
+  index,
+  currentWorkflowSelectable,
+  workflowSortEnabled,
+  parentProject,
+  users,
+  idsPermissionsUnassigned,
+  currentUser,
+  ...props
+}) => {
+  const { storeWorkflowItemsSelected, selectedWorkflowItems, currency: targetCurrency, disabled } = props;
+  const {
+    id,
+    status,
+    displayName,
+    amountType,
+    amount,
+    assignee,
+    exchangeRate,
+    currency: sourceCurrency,
+    rejectReason,
+    additionalData
+  } = workflow.data;
+  const allowedIntents = workflow.allowedIntents;
+  const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
+  const itemStyle = workflowSelectable ? {} : { opacity: 0.31 };
+  const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
+  const infoButton = getInfoButton(props, status, workflowSortEnabled, workflow.data);
+  const attachmentButton = getAttachmentButton(props, workflow.data);
+  const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
+  const canCloseWorkflowitem = currentUser === assignee;
+  const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";
 
-    return (
-      <div style={styles.container} data-test={`workflowitem-container-${id}`}>
-        {createLine(mapIndex === 0, workflowSelectable)}
-        <StepDot
-          sortEnabled={workflowSortEnabled}
-          status={status}
-          selectable={workflowSelectable}
-          storeWorkflowItemsSelected={storeWorkflowItemsSelected}
-          currentWorkflowItem={workflow}
-          selectedWorkflowItems={selectedWorkflowItems}
-          allowedIntents={allowedIntents}
-        />
-        <Card
-          data-test="selectable-card"
-          elevation={workflowSelectable ? 1 : 0}
-          key={mapIndex}
-          style={{ ...getCardStyle(workflowSortEnabled, status, rejectReason), ...styles.card }}
-        >
-          <div style={styles.workflowContent} data-test={`workflowitem-${id}`}>
-            <div style={styles.infoCell}>{infoButton}</div>
-            <div style={styles.infoCell}>{attachmentButton}</div>
-            <div style={{ ...styles.text, ...styles.workflowCell, ...itemStyle }}>
-              <Typography variant="body2" style={styles.typographs}>
-                {displayName}
-              </Typography>
-            </div>
-            <div style={{ ...styles.workflowCell, ...itemStyle }}>
-              <Typography variant="body2" style={styles.typographs} component="div" data-test="workflowitem-amount">
-                {amountType === "N/A"
-                  ? amountTypes(amountType)
-                  : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
-              </Typography>
-            </div>
-            <div style={styles.workflowCell} data-test="outside">
-              <WorkflowAssigneeContainer
-                workflowitemId={id}
-                workflowitemDisplayName={displayName}
-                disabled={!canAssign}
-                users={users}
-                assignee={assignee}
-                status={status}
-              />
-            </div>
-            {renderActionButtons(
-              showEdit,
-              editWorkflow.bind(this, workflow.data, props),
-              canViewWorkflowItemPermissions(allowedIntents),
-              () => props.showWorkflowItemPermissions(id, displayName),
-              showClose,
-              () => props.closeWorkflowItem(id),
-              currentWorkflowSelectable,
-              workflowSortEnabled,
-              status,
-              () => props.showWorkflowitemAdditionalData(id),
-              additionalData,
-              idsPermissionsUnassigned,
-              id,
-              rejectReason,
-              () => props.showReasonDialog(rejectReason),
-              () => props.rejectWorkflowItem(id)
-            )}
+  return (
+    <div style={styles.container} data-test={`workflowitem-container-${id}`}>
+      <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+            {createLine(mapIndex === 0, workflowSelectable)}
+            <StepDot
+              sortEnabled={workflowSortEnabled}
+              status={status}
+              selectable={workflowSelectable}
+              storeWorkflowItemsSelected={storeWorkflowItemsSelected}
+              currentWorkflowItem={workflow}
+              selectedWorkflowItems={selectedWorkflowItems}
+              allowedIntents={allowedIntents}
+            />
+            <Card
+              data-test="selectable-card"
+              elevation={workflowSelectable ? 1 : 0}
+              key={mapIndex}
+              style={{ ...getCardStyle(workflowSortEnabled, status, rejectReason), ...styles.card }}
+            >
+              <div style={styles.workflowContent} data-test={`workflowitem-${id}`}>
+                <div style={styles.infoCell}>{infoButton}</div>
+                <div style={styles.infoCell}>{attachmentButton}</div>
+                <div style={{ ...styles.text, ...styles.workflowCell, ...itemStyle }}>
+                  <Typography variant="body2" style={styles.typographs}>
+                    {displayName}
+                  </Typography>
+                </div>
+                <div style={{ ...styles.workflowCell, ...itemStyle }}>
+                  <Typography variant="body2" style={styles.typographs} component="div" data-test="workflowitem-amount">
+                    {amountType === "N/A"
+                      ? amountTypes(amountType)
+                      : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
+                  </Typography>
+                </div>
+                <div style={styles.workflowCell} data-test="outside">
+                  <WorkflowAssigneeContainer
+                    workflowitemId={id}
+                    workflowitemDisplayName={displayName}
+                    disabled={!canAssign}
+                    users={users}
+                    assignee={assignee}
+                    status={status}
+                  />
+                </div>
+                {renderActionButtons(
+                  showEdit,
+                  editWorkflow.bind(this, workflow.data, props),
+                  canViewWorkflowItemPermissions(allowedIntents),
+                  () => props.showWorkflowItemPermissions(id, displayName),
+                  showClose,
+                  () => props.closeWorkflowItem(id),
+                  currentWorkflowSelectable,
+                  workflowSortEnabled,
+                  status,
+                  () => props.showWorkflowitemAdditionalData(id),
+                  additionalData,
+                  idsPermissionsUnassigned,
+                  id,
+                  rejectReason,
+                  () => props.showReasonDialog(rejectReason),
+                  () => props.rejectWorkflowItem(id)
+                )}
+              </div>
+            </Card>
           </div>
-        </Card>
-      </div>
-    );
-  }
-);
+        )}
+      </Draggable>
+    </div>
+  );
+};
 
-export const RedactedWorkflowItem = SortableElement(
-  ({ workflow, mapIndex, index, permissions, currentWorkflowSelectable, workflowSortEnabled, ...props }) => {
-    const { status } = workflow.data;
-    const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
-    const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
+export const RedactedWorkflowItem = ({
+  workflow,
+  mapIndex,
+  index,
+  permissions,
+  currentWorkflowSelectable,
+  workflowSortEnabled,
+  disabled,
+  ...props
+}) => {
+  const { status } = workflow.data;
+  const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
+  const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
 
-    return (
-      <div style={styles.container}>
-        {createLine(mapIndex === 0, workflowSelectable)}
-        <StepDot status={status} selectable={workflowSelectable} redacted={true} />
-        <Card
-          data-test="redacted-selectable-card"
-          elevation={workflowSelectable ? 1 : 0}
-          key={mapIndex}
-          style={styles.card}
+  return (
+    <Draggable draggableId={`draggable-${mapIndex}`} key={mapIndex} index={index} isDragDisabled={disabled}>
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          style={styles.container}
         >
-          <div style={styles.workflowContent}>
-            <div style={{ flex: 1 }}>
-              <IconButton style={styles.buttonStyle} size="large">
-                <HiddenIcon />
-              </IconButton>
+          {createLine(mapIndex === 0, workflowSelectable)}
+          <StepDot status={status} selectable={workflowSelectable} redacted={true} />
+          <Card
+            data-test="redacted-selectable-card"
+            elevation={workflowSelectable ? 1 : 0}
+            key={mapIndex}
+            style={styles.card}
+          >
+            <div style={styles.workflowContent}>
+              <div style={{ flex: 1 }}>
+                <IconButton style={styles.buttonStyle} size="large">
+                  <HiddenIcon />
+                </IconButton>
+              </div>
+              <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
+                <Typography variant="body2">{strings.workflow.workflow_redacted}</Typography>
+              </div>
+              <div style={{ ...itemStyle, flex: 5 }}>{null}</div>
+              <div style={{ ...styles.chipRow, flex: 2 }}>{null}</div>
+              {null}
             </div>
-            <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
-              <Typography variant="body2">{strings.workflow.workflow_redacted}</Typography>
-            </div>
-            <div style={{ ...itemStyle, flex: 5 }}>{null}</div>
-            <div style={{ ...styles.chipRow, flex: 2 }}>{null}</div>
-            {null}
-          </div>
-        </Card>
-      </div>
-    );
-  }
-);
+          </Card>
+        </div>
+      )}
+    </Draggable>
+  );
+};

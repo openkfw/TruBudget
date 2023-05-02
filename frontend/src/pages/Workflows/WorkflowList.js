@@ -1,5 +1,5 @@
 import React from "react";
-import { SortableContainer } from "react-sortable-hoc";
+import { DragDropContext } from "react-beautiful-dnd";
 import _isEmpty from "lodash/isEmpty";
 
 import DoneIcon from "@mui/icons-material/Check";
@@ -8,6 +8,7 @@ import Fab from "@mui/material/Fab";
 
 import { canReorderWorkflowItems } from "../../permissions.js";
 
+import { StrictModeDroppable as Droppable } from "./StrictModeDroppable.js";
 import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
 
 const styles = {
@@ -109,17 +110,29 @@ const getSortableItems = ({ workflowItems, ...props }) => {
   });
 };
 
-const WorkflowList = SortableContainer((props) => {
+const WorkflowList = (props) => {
+  const { onSortEnd } = props;
+  const onDragEnd = (result) => {
+    onSortEnd({ oldIndex: result.source.index, newIndex: result.destination.index });
+  };
+
   const sortableItems = getSortableItems(props);
 
   return (
-    <div style={styles.workflowItemsContainer}>
-      <div style={styles.editButtonContainer}>
-        {!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}
-      </div>
-      {sortableItems}
-    </div>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="droppable">
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps} style={{ ...styles.workflowItemsContainer }}>
+            <div style={styles.editButtonContainer}>
+              {!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}
+            </div>
+            {sortableItems}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
-});
+};
 
 export default WorkflowList;
