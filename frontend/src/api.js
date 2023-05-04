@@ -1,5 +1,5 @@
 import axios from "axios";
-import contentDispositionAttachment from "content-disposition-attachment";
+import { parse } from "content-disposition-attachment";
 import _isEmpty from "lodash/isEmpty";
 
 import config from "./config";
@@ -530,7 +530,7 @@ class Api {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        const { attachment, filename } = contentDispositionAttachment.parse(response.headers["content-disposition"]);
+        const { attachment, filename } = parse(response.headers["content-disposition"]);
         if (attachment) {
           link.download = filename;
           document.body.appendChild(link);

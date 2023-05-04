@@ -1,5 +1,6 @@
 import React from "react";
 import Highlighter from "react-highlight-words";
+import { useLocation, useNavigate } from "react-router-dom";
 import _isEmpty from "lodash/isEmpty";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -114,7 +115,6 @@ const displaySubprojectBudget = (budgets) => {
 const getTableEntries = ({
   subProjects,
   location,
-  history,
   showEditDialog,
   showSubProjectPermissions,
   showSubProjectAdditionalData,
@@ -122,7 +122,8 @@ const getTableEntries = ({
   storeSubSearchTerm,
   theme,
   storeSubSearchBarDisplayed,
-  idsPermissionsUnassigned
+  idsPermissionsUnassigned,
+  navigate
 }) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
     const { currency, status, description, displayName, id, projectedBudgets, additionalData } = data;
@@ -189,7 +190,7 @@ const getTableEntries = ({
                   notVisible={!canViewSubProjectDetails(allowedIntents)}
                   onClick={() => {
                     storeSubSearchTerm("");
-                    history.push("/projects/" + location.pathname.split("/")[2] + "/" + id);
+                    navigate("/projects/" + location.pathname.split("/")[2] + "/" + id);
                   }}
                   title={strings.common.view}
                   icon={<LaunchIcon />}
@@ -208,8 +209,7 @@ const getTableEntries = ({
 const SubProjectTable = ({
   idsPermissionsUnassigned,
   subProjects,
-  history,
-  location,
+
   showEditDialog,
   showSubProjectPermissions,
   showSubProjectAdditionalData,
@@ -222,10 +222,13 @@ const SubProjectTable = ({
   searchTermArray
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const tableEntries = getTableEntries({
     subProjects,
     location,
-    history,
+    navigate,
     showEditDialog,
     showSubProjectPermissions,
     showSubProjectAdditionalData,
@@ -235,6 +238,7 @@ const SubProjectTable = ({
     storeSubSearchBarDisplayed,
     idsPermissionsUnassigned
   });
+
   return (
     <Card>
       <CardHeader title={strings.common.subprojects} />

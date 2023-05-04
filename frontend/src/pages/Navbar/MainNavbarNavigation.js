@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import ChevronRight from "@mui/icons-material/ChevronRight";
 import Button from "@mui/material/Button";
@@ -68,7 +69,7 @@ const getPathName = (name, index, currentProject, currentSubProject) => {
 
 const createBreadcrumb = (
   { pathname },
-  history,
+  navigate,
   currentProject,
   currentSubProject,
   storeSearchTerm,
@@ -101,7 +102,7 @@ const createBreadcrumb = (
           onClick={() => {
             storeSearchBarDisplayed(false);
             storeSearchTerm("");
-            history.push(accumulatedPath[index]);
+            navigate(accumulatedPath[index]);
           }}
         >
           {displayedName}
@@ -112,20 +113,20 @@ const createBreadcrumb = (
 };
 
 const MainNavbarNavigation = ({
-  history,
   route,
   currentProject,
   currentSubProject,
   storeSearchTerm,
   storeSearchBarDisplayed
 }) => {
+  const navigate = useNavigate();
   return (
     <div style={styles.container}>
       <Typography variant="button" color={"primary"}>
         {strings.login.frontend_name}
       </Typography>
       <div style={styles.breadcrumbs}>
-        {createBreadcrumb(route, history, currentProject, currentSubProject, storeSearchTerm, storeSearchBarDisplayed)}
+        {createBreadcrumb(route, navigate, currentProject, currentSubProject, storeSearchTerm, storeSearchBarDisplayed)}
       </div>
     </div>
   );

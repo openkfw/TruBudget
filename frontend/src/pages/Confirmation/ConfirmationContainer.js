@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import _isEmpty from "lodash/isEmpty";
 
 import { toJS } from "../../helper";
+import { withRouter } from "../../wrappers/withRouter";
 import { fetchProjectPermissions, grantProjectPermission, revokeProjectPermission } from "../Overview/actions";
 import {
   assignProject,
@@ -42,7 +43,7 @@ import { executeActions } from "./executeActions";
 
 class ConfirmationContainer extends React.Component {
   componentDidUpdate(prevProps) {
-    if (this.props.location.pathname !== prevProps.location.pathname) {
+    if (this.props.router.location.pathname !== prevProps.router.location.pathname) {
       this.props.cancelConfirmation();
     }
 
@@ -354,4 +355,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(ConfirmationContainer));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(toJS(ConfirmationContainer)));

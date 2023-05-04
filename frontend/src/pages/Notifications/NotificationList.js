@@ -105,8 +105,10 @@ const NotificationList = (props) => {
           count={notificationCount}
           page={currentPage}
           onPageChange={(_, nextPage) => fetchNotifications(nextPage)}
-          backIconButtonText={strings.notification.previous_page}
-          nextIconButtonText={strings.notification.next_page}
+          getItemAriaLabel={(where) => {
+            if (where === "previous") return strings.notification.previous_page;
+            return strings.notification.next_page;
+          }}
           labelRowsPerPage={strings.notification.rows_per_page}
         />
       </div>

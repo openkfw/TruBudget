@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import SettingsIcon from "@mui/icons-material/Settings";
 import Button from "@mui/material/Button";
@@ -14,7 +15,6 @@ import Password from "../Common/Password";
 import Username from "../Common/Username";
 
 const LoginPage = ({
-  history,
   nodePermissions,
   storeUsername,
   storePassword,
@@ -25,6 +25,7 @@ const LoginPage = ({
   language,
   setLanguage
 }) => {
+  const navigate = useNavigate();
   const connectedToAdminNode = -1;
   const isLoginDisabled = username === "" || password === "";
 
@@ -102,7 +103,7 @@ const LoginPage = ({
         </div>
         <Divider />
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", float: "right" }}>
-          <IconButton disabled={!(connectedToAdminNode > -1)} onClick={() => history.push("/admin")} size="large">
+          <IconButton disabled={!(connectedToAdminNode > -1)} onClick={() => navigate("/admin")} size="large">
             <SettingsIcon />
           </IconButton>
         </div>

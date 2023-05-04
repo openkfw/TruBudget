@@ -4,6 +4,7 @@ import isEmpty from "lodash/isEmpty";
 import queryString from "query-string";
 
 import { convertToSearchBarString, toJS } from "../../helper";
+import { withRouter } from "../../wrappers/withRouter";
 import { fetchEmailAddress, logout } from "../Login/actions";
 import FlyInNotifications from "../Notifications/FlyInNotifications";
 
@@ -49,7 +50,7 @@ class NavbarContainer extends Component {
           projectView={this.props.projectView}
         />
         <FlyInNotifications
-          history={this.props.history}
+          navigate={this.props.navigate}
           notifications={this.props.newNotifications}
           latestFlyInId={this.props.latestFlyInId}
           show={!isEmpty(this.props.newNotifications)}
@@ -114,4 +115,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(NavbarContainer));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(toJS(NavbarContainer)));

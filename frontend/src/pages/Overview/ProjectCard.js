@@ -1,5 +1,6 @@
 import React from "react";
 import Highlighter from "react-highlight-words";
+import { useNavigate } from "react-router-dom";
 
 import AmountIcon from "@mui/icons-material/AccountBalance";
 import DateIcon from "@mui/icons-material/DateRange";
@@ -35,7 +36,6 @@ const ProjectCard = ({
   index,
   id,
   allowedIntents,
-  history,
   displayName,
   mappedStatus,
   projectedBudgets,
@@ -57,6 +57,7 @@ const ProjectCard = ({
   searchTermArray
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Card aria-label="project" key={index} style={parentStyles.card} data-test={`project-card-${id}`}>
@@ -77,7 +78,7 @@ const ProjectCard = ({
               disabled={!canViewProjectDetails(allowedIntents)}
               color="primary"
               onClick={() => {
-                history.push("/projects/" + id);
+                navigate("/projects/" + id);
               }}
               data-test={`project-view-button-${index}`}
             >

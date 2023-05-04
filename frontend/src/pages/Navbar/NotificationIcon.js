@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import BubbleIcon from "@mui/icons-material/ChatBubbleOutline";
 import Badge from "@mui/material/Badge";
@@ -6,7 +7,8 @@ import IconButton from "@mui/material/IconButton";
 
 import strings from "../../localizeStrings";
 
-const NotificationIcon = ({ unreadNotificationCount, history }) => {
+const NotificationIcon = ({ unreadNotificationCount }) => {
+  const navigate = useNavigate();
   const hasNotifications = typeof unreadNotificationCount === "number" && unreadNotificationCount > 0;
   const maxNotificationCount = 50;
   let unreadCountShown = 0;
@@ -24,7 +26,7 @@ const NotificationIcon = ({ unreadNotificationCount, history }) => {
       <IconButton
         data-test="navbar-notification-button"
         tooltip={strings.navigation.unread_notifications}
-        onClick={() => history.push("/notifications")}
+        onClick={() => navigate("/notifications")}
         size="large"
       >
         <BubbleIcon color="primary" />

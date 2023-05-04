@@ -62,6 +62,6 @@
     "comma-dangle": ["error", "never"],
     "arrow-parens": ["error", "always"],
     "no-prototype-builtins": "warn",
-    "no-unused-vars": "warn"
+    "no-unused-vars": ["warn", { "args": "all", "argsIgnorePattern": "^_" }]
   }
 }
