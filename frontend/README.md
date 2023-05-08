@@ -13,8 +13,6 @@ It is common for Modern Single Page Application to run in in different modes. Th
 - Development Mode: Is started with node and offers JIT, Hot Reloading and Debug Logging. The node process spawns an own webserver, performance is degraded but developer experience is best
 - Production Mode: Application is pre-build and transpiled to an ES5 Version of Javascript (compatible with a variety of browser), no log output, optimized file-sized. The production mode outputs static files which need to be hosted on a separate webserver (in our case NGINX). Performance is best, developer experience (due to compiling and deployment to separate server) lowest.
 
-It is possible to check the mode inside the Javascript Code by checking `process.env.NODE_NEV` with will return `development` or `production` depending on the mode.
-
 ### Using the frontend in Development Mode
 
 When actively developing the frontend, it makes sense to do so in the Development mode. Developing the frontend brings two challenges:
@@ -42,8 +40,6 @@ npm start
 
 After some compilation it will open the browser and load the frontend. But the first thing you will realize, the frontend won't allow you to do much. You need a "backend" (therefore an API + BC) to make the frontend work.
 
-Do not panic, simply run `./startDev` which will spawn up a dummy-backend, which is configured to work seamlessly with your frontend.
-
 #### Proxy the API calls of the Frontend
 
 The frontend needs to talk to the API, but since the Frontend is hosted in its own and separate NodeJS environment, accessing the API will result in a CORS error. To make development easier, the node environment is able to proxy API requests (more here).
@@ -53,10 +49,6 @@ Therefore adapt the route to your api in the `package.json` file.
 ```json
   "proxy": "http://localhost:33331"
 ```
-
-If you are using `./startDev` the proxy is already correctly configured for you.
-
-If you get an authentication error because you are not logged into the registry. Simply create a login token by `$ echo $DOCKER_PASSWORD > DOCKER_REGISTRY_PASSWORD`
 
 ### Using the frontend in Production Mode
 

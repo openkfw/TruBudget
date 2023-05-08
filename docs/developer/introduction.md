@@ -111,30 +111,44 @@ TruBudget project consists of multiple folders under source. These folders conta
 
 We strongly advise you to read the README files in the relevant folders of the services/features you will be working on. 
 
-List of services/utilities under TruBudget Project:
+Core services of TruBudget:
 
-(Services marked with * represents the core TruBudget services, which are the minimum requirements to run TruBudget.)
 
-- [Api](https://github.com/openkfw/TruBudget/blob/main/api/README.md) *
-- [Blockchain](https://github.com/openkfw/TruBudget/blob/main/blockchain/README.md) *
-- [Docker compose](https://github.com/openkfw/TruBudget/blob/main/docker-compose/README.md)
-- [Documentation](https://github.com/openkfw/TruBudget/blob/main/docs/README.md)
-- [End-to-End Tests](https://github.com/openkfw/TruBudget/blob/main/e2e-test/README.md)
+- [Api](https://github.com/openkfw/TruBudget/blob/main/api/README.md)
+- [Blockchain](https://github.com/openkfw/TruBudget/blob/main/blockchain/README.md)
+- [Frontend (UI)](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md) 
+
+Optional (business relevant) services of TruBudget:
+
 - [Email Notification Service](https://github.com/openkfw/TruBudget/blob/main/email-notification-service/README.md)
 - [Excel Export Service](https://github.com/openkfw/TruBudget/blob/main/excel-export-service/README.md)
-- [Frontend (UI)](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md) *
+- [Storage Service](https://github.com/openkfw/TruBudget/blob/main/storage-service/README.md)
+
+Testing services and utilities:
+
+- [Provisioning Service](https://github.com/openkfw/TruBudget/blob/main/provisioning/README.md)
+- [End-to-End Tests](https://github.com/openkfw/TruBudget/blob/main/e2e-test/README.md)
+
+Miscelleanous services and utilities:
+
 - [Helm](https://github.com/openkfw/TruBudget/blob/main/helm/README.md)
 - [Logging Service](https://github.com/openkfw/TruBudget/blob/main/logging-service/README.md)
 - [Migration Script](https://github.com/openkfw/TruBudget/blob/main/migration/README.md)
 - [Multichain Feed Script](https://github.com/openkfw/TruBudget/blob/main/multichain-feed/README.md)
 - [Postman Collection](https://github.com/openkfw/TruBudget/blob/main/postman/README.md)
 - [PowerBI](https://github.com/openkfw/TruBudget/blob/main/PowerBI/ReadMe.md)
-- [Provisioning Service](https://github.com/openkfw/TruBudget/blob/main/provisioning/README.md)
+
 - Scripts
   - [Development](https://github.com/openkfw/TruBudget/blob/main/scripts/development/README.md)
   - [Operation](https://github.com/openkfw/TruBudget/blob/main/scripts/operation/README.md)
   - Pipeline
-- [Storage Service](https://github.com/openkfw/TruBudget/blob/main/storage-service/README.md)
+
+Docs: 
+
+- [Documentation](https://github.com/openkfw/TruBudget/blob/main/docs/README.md)
+
+Docker:
+- [Docker compose](https://github.com/openkfw/TruBudget/blob/main/docker-compose/README.md)
 
 [github issue]: https://github.com/openkfw/TruBudget/issues
 [code of conduct]: https://github.com/openkfw/TruBudget/blob/main/CODE_OF_CONDUCT.md

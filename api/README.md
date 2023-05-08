@@ -6,11 +6,15 @@
 
 Check out our [the ADRs](../doc/adr/) to learn about our current way of doing things.
 
-For additional information, you can checkout the README file under source folder: [README](./src/README.md)
-
-HTTP.Project <- Multichain.Project <- Project.Project -> Notification.Project
-
 #### Get started
+
+Before starting the API, environment variables has to be set under .env file. The .env_example file provides the default/example values for the environment variables. Just make a copy of example file via:
+
+```bash
+cp .env_example .env
+```
+
+Default values are usually enough to setup a working local Trubudget instance. However you are free to change the variable values under .env file.
 
 When not yet provisioned, it's recommended to start the server directly with node:
 
@@ -35,6 +39,10 @@ npm test
 ```bash
 docker build .
 ```
+
+#### Code Structure
+
+In the [README](./src/README.md) under source folder, you can find information about the best practices, code structure and layout for the api.
 
 ### API Swagger documentation
 

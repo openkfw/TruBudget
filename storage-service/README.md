@@ -14,17 +14,16 @@ See [Environment Variables](./environment-variables.md)
 
 ### Start with Docker
 
-The easiest way to get started is to use our pre-set [`docker-compose`](./docker-compose.yaml) file which starts the
+The easiest way to get started is to use our [`docker compose`](../docker-compose/) setup which starts the
 whole TruBudget application including the storage-service.
 Follow these steps to start the environment using docker:
 
-```
-cd storage-service
-cp .env_example .env
-bash startDev.sh
+```bash
+cd docker-compose
+docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f storage-service/docker-compose.yml up
 ```
 
-The pre-set cluster contains:
+The cluster contains:
 
 - 1 Alpha-Node (Blockchain)
 - 1 API connected to Alpha-Node
@@ -36,45 +35,16 @@ The pre-set cluster contains:
 
 To start the storage-service without docker, you need to start all desired service yourself with the right environment
 variables. To set these environment variables, read the documentation of the services in their folder or use the
-.env_example file of the stoage-service. We recommend to start Minio with docker since the configuration is much easier.
+.env_example file of the storage-service. We recommend to start Minio with docker since the configuration is much easier.
 You can use the docker-compose-minio.yaml file to start it. To start Minio without docker we refer to
 their [official documentation](https://docs.min.io/docs/minio-quickstart-guide.html).
 
-We recommend to start each service in an own shell.
-Follow these steps to start the environment without docker (assuming minio is already started):
+Follow this service start order to start the environment without docker (assuming minio is already started):
 
-Start the blockchain
-
-```
-cd storage-service
-source .env_example
-cd ../blockchain
-npm install
-npm start
-```
-
-Start the api
-
-```
-cd storage-service
-source .env_example
-cd ../api
-npm install
-npm run build
-npm start
-```
-
-Start the frontend
-
-```
-cd storage-service
-source .env_example
-cd ../frontend
-npm install
-npm start
-```
-
-Start the storage-service
+- Blockchain
+- Api
+- Frontend
+- Storage Service (below for instructions)
 
 ```
 cd storage-service

@@ -3,8 +3,7 @@
 The email notification service is responsible for saving/deleting email addresses per Trubudget user in a connected
 database. These email addresses are used to send configurable notifications to a connected SMTP server. If database and
 SMTP server are connected the notification.send endpoint can be used to send a user id. The database is checked if a
-email address is linked to the passed user id. If so a notification is sent. It is recommended to start at
-the [Getting Started section](#getting-started)
+email address is linked to the passed user id. If so a notification is sent.
 
 ## Database Configuration
 
@@ -25,10 +24,6 @@ To install the driver for your database type in following command:
 npm install <Driver> --save
 ```
 
-## Environment Variables
-
-See [Environment Variables](./environment-variables.md)
-
 ## Architecture
 
 As shown in the architecture section below, a script shall filter every transaction. This script is
@@ -48,9 +43,15 @@ or by using the user.insert/user.delete endpoint of the email service.
 
 ## Getting Started
 
-The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole TruBudget
+The easiest way to get started is to use our `docker-compose` setup which starts the whole TruBudget
 application including all email components (that means you need to
 install [Docker](https://www.docker.com/community-edition#/download)).
+
+```bash
+cd docker-compose
+docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f email-notification-service/docker-compose.yml up
+```
+
 The pre-set cluster contains:
 
 - 1 Alpha-Node
@@ -66,33 +67,17 @@ When started, the Email-Service sends email notifications to the configured SMTP
 
 To configure another database type for storing the user email addresses check out
 the [database configuration section](#database-configuration)
-To check what is configurable regarding email-notification service check out
-the [environment variables section](#environment-variables)
 If a local SMTP mail server for testing purposes is needed [mailslurper](https://github.com/mailslurper/mailslurper) can
 be used
+
+### Environment Variables
+
+To check what is configurable regarding email-notification service check out
+the list of [Environment Variables](./environment-variables.md)
 
 ## Enable email notifications
 
 If `EMAIL_SERVICE_ENABLED` is set to "true" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification transactions. In other words The blockchain starts the background processes to send user ids to the email-notification service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false).
-
-The easiest way to get started is to use our pre-set `docker-compose` cluster available in the `email-notification`
-project which starts the whole TruBudget application including all email components(that means you need to
-install [Docker](https://www.docker.com/community-edition#/download)).
-The pre-set cluster contains:
-
-- 1 Alpha-Node
-- 1 Alpha API connected to Alpha-Node
-- 1 Frontend connected to Alpha-API
-- 1 Email-Service
-- 1 Email-Database (Postgres)
-
-When started the Email-Service sends email notifications to the configured SMTP-host. The default configuration is:
-
-- SMTP_HOST: host.docker.internal(localhost)
-- SMTP_PORT: 2500
-
-More details about the email notification service can be found in
-the [email notification documentation](../email-notification-service/README.md#)
 
 ## Disable email notifications
 
@@ -103,7 +88,7 @@ If disabled the multichain-feed is not applied to the multichain-deamon and noti
 service environment variable in the frontend. More details can be found in
 the [frontend documentation](../frontend/README.md#email-notifications)
 
-### Endpoints
+## Endpoints
 
 | Method | Endpoint           | Description                                                    |
 | ------ | ------------------ | -------------------------------------------------------------- |

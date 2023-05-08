@@ -4,17 +4,43 @@ This project encapsulates the Multichain implementation for Trubudget. It can be
 
 ## Getting started
 
-The easiest way to get started is to use our pre-set `docker-compose` cluster which starts the whole TruBudget application (that means you need to install [Docker](https://www.docker.com/community-edition#/download)). It uses the local build of the blockchain and the alpha-deployments of the TruBudget API and Frontend. The pre-set cluster contains:
+The easiest way to get started is to use `docker compose`. (that means you need to install [Docker](https://www.docker.com/community-edition#/download)).
 
-- 1 Alpha-Node + 1 Beta-Node
-- 1 Alpha API connected to Alpha-Node
-- 1 Frontend connected to Alpha-API
+#### Run from Image
 
-Since the required docker images are located in the private Docker registry you need to authenticate.
+Navigate to the docker-compose folder under the project.
 
-To do so you simply create a login token by `$ echo $DOCKER_PASSWORD > DOCKER_REGISTRY_PASSWORD`
+```bash
+cd ../docker-compose
+```
 
-If you have set your password token you can simply start the cluster `$ ./start-service.sh`
+Copy the contents of the .env_example file into .env file.
+
+```bash
+cp .env_example .env
+```
+
+Then run the following docker compose command to start the blockchain:
+
+```bash
+docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml up
+```
+
+#### Run local build
+
+Copy the contents of the .env_example file into .env file.
+
+```bash
+cp .env_example .env
+```
+
+Then run the following docker compose command to start a local build of the blockchain:
+
+```bash
+docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f blockchain/local-build.docker-compose.yml up
+```
+
+For more information about docker compose and starting whole Trubudget as an application, checkout the [Docker Compose](https://github.com/openkfw/TruBudget/tree/main/docker-compose) documentation.
 
 Enjoy!
 
