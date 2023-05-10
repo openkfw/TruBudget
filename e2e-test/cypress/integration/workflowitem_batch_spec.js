@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+
 describe("Workflowitem batch test", function() {
   let projectId,
     subprojectId,
@@ -13,7 +14,7 @@ describe("Workflowitem batch test", function() {
     workflowitem3Closed,
     workflowitem4Closed,
     workflowitem5Closed;
-    const apiRoute = "/api";
+  const apiRoute = "/api";
 
   before(() => {
     cy.login();
@@ -99,11 +100,13 @@ describe("Workflowitem batch test", function() {
   });
 });
 
+const SPACE = 32;
+const DOWN = 40;
+
 function movePiece(draggable, dropzone) {
   cy.get(draggable)
-    .trigger("mousedown", { button: 0 }, { force: true })
-    .trigger("mousemove", 200, -200, { force: true });
-  cy.get(dropzone)
-    .click()
-    .trigger("mouseup", { force: true });
+    .trigger("keydown", { keyCode: SPACE })
+    .trigger("keydown", { keyCode: DOWN, force: true })
+    .wait(200)
+    .trigger("keydown", { keyCode: SPACE, force: true });
 }

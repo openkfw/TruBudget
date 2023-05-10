@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Add a default exchange rate of 1 to workflow items, if the exchange rate is undefined and amount type is not N/A. [#1170](https://github.com/openkfw/TruBudget/issues/1170)
 
-- Add the possibility to a view the password when logging in [[#1225](https://github.com/openkfw/TruBudget/issues/1225)]
+- Add the possibility to a view the password when logging in [[#1225](https://github.com/openkfw/TruBudget/issues/1225)
 
 - Add a warning in the workflowitem dialog for overwriting permissions [#1189](https://github.com/openkfw/TruBudget/issues/1189)
 - Docker-compose files for e2e-test component [#1282](https://github.com/openkfw/TruBudget/pull/1282)
@@ -20,8 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Changed -->
 
-- Fixed a bug where the confirmation dialog remains frozen in case of error [#1105](https://github.com/openkfw/TruBudget/issues/1105)
-- Fixed translation in Table-View [#1227](https://github.com/openkfw/TruBudget/issues/1227)
+- Updated the library used for drag and drop of workflowitems, replaced `react-sortable-hoc` with `react-beautiful-dnd` [#1347](https://github.com/openkfw/TruBudget/issues/1347)
 
 <!-- ### Deprecated -->
 
@@ -34,6 +33,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed a bug where restoring a backup corrupts the blockchain [#1285](https://github.com/openkfw/TruBudget/issues/1285)
 - Fixed a bug where downloading documents from other organizations in a network was not possible in a specific edge-case [#1192](https://github.com/openkfw/TruBudget/issues/1192)
 - Fixed a bug where HTTP 500 errors with different causes would result in displaying the same message that is not relevant to the error itself [#1319](https://github.com/openkfw/TruBudget/issues/1319)
+- Fixed a bug where the confirmation dialog remains frozen in case of error [#1105](https://github.com/openkfw/TruBudget/issues/1105)
+- Fixed translation in Table-View [#1227](https://github.com/openkfw/TruBudget/issues/1227)
 
 ## [2.1.0] - 2022-08-11
 
@@ -928,7 +929,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.0.1...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.1.0...main
+[2.1.0]: https://github.com/openkfw/TruBudget/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/openkfw/TruBudget/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/openkfw/TruBudget/compare/v1.30.0...v2.0.0
 [1.30.0]: https://github.com/openkfw/TruBudget/compare/v1.29.0...v1.30.0

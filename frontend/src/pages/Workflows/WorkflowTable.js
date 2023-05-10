@@ -16,7 +16,7 @@ const style = {
   paddingLeft: "0px"
 };
 
-const createTableHeader = (props) => (
+const WorkflowTableHeader = () => (
   <Card>
     <CardHeader title={strings.workflow.workflow_table_title} />
     <CardContent style={style}>
@@ -68,7 +68,7 @@ const WorkflowTable = (props) => {
   const { showDetailsItem } = props;
   return (
     <div data-test="workflowitem-table" style={{ paddingBottom: "8px" }}>
-      {createTableHeader(props)}
+      <WorkflowTableHeader />
       {createWorkflowItems(props)}
       {showDetailsItem && <WorkflowDetails workflowitem={showDetailsItem} {...props} />}
     </div>
