@@ -1,11 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import PowerIcon from "@mui/icons-material/PowerSettingsNew";
 import IconButton from "@mui/material/IconButton";
 
 import strings from "../../localizeStrings";
 
-const LogoutIcon = ({ history, logout }) => {
+const LogoutIcon = ({ logout }) => {
+  const navigate = useNavigate();
   return (
     <IconButton
       id="logoutbutton"
@@ -13,7 +15,7 @@ const LogoutIcon = ({ history, logout }) => {
       tooltip={strings.navigation.logout}
       onClick={() => {
         logout();
-        history.push("/login");
+        navigate("/login");
       }}
       size="large"
     >

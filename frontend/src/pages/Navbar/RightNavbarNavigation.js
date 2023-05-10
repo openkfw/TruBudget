@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 import Typography from "@mui/material/Typography";
 
@@ -33,7 +34,8 @@ const RightNavbarNavigation = ({
   projectView,
   storeSearchBarDisplayed
 }) => {
-  const searchVisible = history.location.pathname === "/projects" && projectView === "card";
+  let location = useLocation();
+  const searchVisible = location.pathname === "/projects" && projectView === "card";
   return (
     <div style={styles.container}>
       {searchVisible ? (

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
+import { withRouter } from "../../wrappers/withRouter";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { storeSnackbarMessage } from "../Notifications/actions";
 import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
@@ -42,7 +43,7 @@ class WorkflowDialogContainer extends Component {
     projectDisplayName,
     subprojectDisplayName
   ) => {
-    const path = this.props.location.pathname.split("/");
+    const path = this.props.router.location.pathname.split("/");
     const projectId = path[2];
     const subProjectId = path[3];
     const assignee = this.props.selectedAssignee;
@@ -149,4 +150,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(WorkflowDialogContainer)));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(WorkflowDialogContainer)))
+);

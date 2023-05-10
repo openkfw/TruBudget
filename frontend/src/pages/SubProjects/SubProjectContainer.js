@@ -8,6 +8,7 @@ import { convertToSearchBarString } from "../../helper";
 import { canAssignProject, canCreateSubProject } from "../../permissions";
 import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
+import { withRouter } from "../../wrappers/withRouter";
 import { openAnalyticsDialog } from "../Analytics/actions";
 import AdditionalInfo from "../Common/AdditionalInfo";
 import worker from "../Common/filterProjects.worker.js";
@@ -40,7 +41,7 @@ import SubProjects from "./SubProjects";
 class SubProjectContainer extends Component {
   constructor(props) {
     super(props);
-    this.projectId = this.props.location.pathname.split("/")[2];
+    this.projectId = this.props.router.location.pathname.split("/")[2];
     this.state = {
       isDataFetched: false
     };
@@ -53,8 +54,8 @@ class SubProjectContainer extends Component {
     this.setState({ isDataFetched: true });
 
     // Get Searchword from URL if available
-    if (this.props.location.search) {
-      const queryParameter = queryString.parse(this.props.location.search);
+    if (this.props.router.location.search) {
+      const queryParameter = queryString.parse(this.props.router.location.search);
       const searchTermString = convertToSearchBarString(queryString.stringify(queryParameter));
       this.props.storeSubSearchTerm(searchTermString);
       this.props.storeSubSearchBarDisplayed(true);
@@ -143,7 +144,7 @@ class SubProjectContainer extends Component {
             hideAdditionalData={this.props.hideSubProjectAdditionalData}
             {...this.props}
           />
-          <SubprojectDialogContainer location={this.props.location} />
+          <SubprojectDialogContainer location={this.props.router.location} />
         </div>
       </div>
     );
@@ -209,4 +210,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectContainer));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectContainer)));

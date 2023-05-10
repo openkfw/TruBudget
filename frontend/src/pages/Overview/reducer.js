@@ -124,7 +124,7 @@ export default function overviewReducer(state = defaultState, action) {
     case ADD_PROJECT_PROJECTED_BUDGET:
       return state.merge({
         projectToAdd: state.get("projectToAdd").merge({
-          projectedBudgets: [...state.getIn(["projectToAdd", "projectedBudgets"]).toJS(), action.projectedBudget]
+          projectedBudgets: fromJS([...state.getIn(["projectToAdd", "projectedBudgets"]), action.projectedBudget])
         })
       });
     case EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT: {
@@ -151,11 +151,13 @@ export default function overviewReducer(state = defaultState, action) {
       const newState = state.merge({
         projectToAdd: state.get("projectToAdd").merge({
           deletedProjectedBudgets: projectedBudgetsToDelete,
-          projectedBudgets: projectedBudgets.filter(
-            (b) =>
-              projectedBudgetsToDelete.find(
-                (d) => d.organization === b.organization && d.currencyCode === b.currencyCode
-              ) === undefined
+          projectedBudgets: fromJS(
+            projectedBudgets.filter(
+              (b) =>
+                projectedBudgetsToDelete.find(
+                  (d) => d.organization === b.organization && d.currencyCode === b.currencyCode
+                ) === undefined
+            )
           )
         })
       });

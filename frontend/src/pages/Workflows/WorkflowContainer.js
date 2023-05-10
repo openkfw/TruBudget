@@ -7,6 +7,7 @@ import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
 import globalStyles from "../../styles";
+import { withRouter } from "../../wrappers/withRouter";
 import { openAnalyticsDialog } from "../Analytics/actions";
 import AdditionalInfo from "../Common/AdditionalInfo";
 import InformationDialog from "../Common/InformationDialog";
@@ -54,7 +55,7 @@ import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer
 class WorkflowContainer extends Component {
   constructor(props) {
     super(props);
-    const path = props.location.pathname.split("/");
+    const path = props.router.location.pathname.split("/");
     this.projectId = path[2];
     this.subprojectId = path[3];
     this.state = {
@@ -254,4 +255,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(WorkflowContainer));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(toJS(WorkflowContainer)));

@@ -1,23 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import { connect } from "react-redux";
-import { Redirect, Route } from "react-router";
+import { Navigate } from "react-router-dom";
 
-class PrivateRoute extends Component {
-  render() {
-    const { component: Component, ...rest } = this.props;
-    return (
-      <Route
-        {...rest}
-        render={(props) =>
-          rest.isUserLoggedIn ? (
-            <Component {...props} />
-          ) : (
-            <Redirect to={{ pathname: "/login", state: { from: props.location } }} />
-          )
-        }
-      />
-    );
-  }
+function PrivateRoute({ children, redirectTo, isUserLoggedIn }) {
+  return isUserLoggedIn ? children : <Navigate to={redirectTo} />;
 }
 
 const mapStateToProps = (state) => {
@@ -25,7 +11,7 @@ const mapStateToProps = (state) => {
     isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"])
   };
 };
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (_dispatch) => {
   return {};
 };
 

@@ -33,10 +33,12 @@ class LoginPageContainer extends Component {
   }
 
   checkIfRedirect() {
-    const from = this.props.location && this.props.location.state && this.props.location.state.from;
-    const path = from ? this.props.location.state.from : "/";
-
-    if (this.props.isUserLoggedIn) this.props.history.push(path);
+    const from =
+      this.props.router.location && this.props.router.location.state && this.props.router.location.state.from;
+    const path = from ? this.props.router.location.state.from : "/";
+    if (this.props.isUserLoggedIn) {
+      this.props.router.navigate(path);
+    }
   }
 
   render() {

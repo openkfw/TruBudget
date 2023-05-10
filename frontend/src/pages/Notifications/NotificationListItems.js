@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 import Unread from "@mui/icons-material/Email";
@@ -47,13 +48,8 @@ const styles = {
   }
 };
 
-const NotificationListItems = ({
-  notifications,
-  history,
-  markNotificationAsRead,
-  notificationsPerPage,
-  notificationOffset
-}) => {
+const NotificationListItems = ({ notifications, markNotificationAsRead, notificationsPerPage, notificationOffset }) => {
+  const navigate = useNavigate();
   notifications.reverse();
 
   return notifications.map((notification, index) => {
@@ -99,7 +95,7 @@ const NotificationListItems = ({
             {isAllowedToSee(notification) ? (
               <Tooltip id="tooltip-inspect" title={strings.common.view}>
                 <div>
-                  <IconButton onClick={() => history.push(redirectUri)} size="large">
+                  <IconButton onClick={() => navigate(redirectUri)} size="large">
                     <LaunchIcon />
                   </IconButton>
                 </div>

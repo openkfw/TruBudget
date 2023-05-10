@@ -25,7 +25,7 @@ const styles = {
 };
 
 export default class FlyInNotification extends Component {
-  getMessages = (history) => {
+  getMessages = () => {
     return this.props.notifications.map((notification) => {
       const { id, businessEvent, metadata } = notification;
       const projectId = metadata.project ? metadata.project.id : undefined;
@@ -48,7 +48,7 @@ export default class FlyInNotification extends Component {
                 <IconButton
                   disabled={!isAllowedToSee(notification)}
                   color="primary"
-                  onClick={() => history.push(parseURI({ projectId, subprojectId }))}
+                  onClick={() => this.props.navigate(parseURI({ projectId, subprojectId }))}
                   size="large"
                 >
                   <LaunchIcon />
@@ -83,7 +83,7 @@ export default class FlyInNotification extends Component {
                 ...styles.notificationTransition[state]
               }}
             >
-              {this.getMessages(this.props.history)}
+              {this.getMessages()}
             </div>
           )}
         </Transition>

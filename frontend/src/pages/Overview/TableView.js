@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import ContentAdd from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -46,7 +46,7 @@ const ProjectButtons = ({
   const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
   const viewDisabled = !canViewProjectDetails(allowedIntents);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <Box sx={{ display: "flex", gap: "20px" }}>
       <ActionButton
@@ -61,7 +61,7 @@ const ProjectButtons = ({
       <ActionButton
         notVisible={viewDisabled}
         onClick={() => {
-          history.push("/projects/" + project.id);
+          navigate("/projects/" + project.id);
         }}
         title={strings.common.view}
         alignTooltip="top"

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import StatusIcon from "@mui/icons-material/Build";
 import ProjectIcon from "@mui/icons-material/Business";
@@ -28,7 +29,6 @@ const SideNavCard = ({
   displayName,
   organization,
   nodeDashboardEnabled,
-  history,
   groups,
   userId,
   createBackup,
@@ -39,6 +39,7 @@ const SideNavCard = ({
   exportServiceAvailable,
   environment
 }) => {
+  const navigate = useNavigate();
   const openUserProfile = () => {
     fetchEmailAddress();
     showUserProfile();
@@ -93,26 +94,26 @@ const SideNavCard = ({
       </div>
       <List>
         <Subheader>{strings.navigation.selections}</Subheader>
-        <ListItem button onClick={() => history.push("/")} data-test="side-navigation-projects">
+        <ListItem button onClick={() => navigate("/")} data-test="side-navigation-projects">
           <ListItemIcon>
             <ProjectIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_projects} />
         </ListItem>
-        <ListItem button onClick={() => history.push("/notifications")} data-test="side-navigation-notifications">
+        <ListItem button onClick={() => navigate("/notifications")} data-test="side-navigation-notifications">
           <ListItemIcon>
             <SocialNotificationIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_notifications} />
         </ListItem>
-        <ListItem button onClick={() => history.push("/users")} data-test="side-navigation-users">
+        <ListItem button onClick={() => navigate("/users")} data-test="side-navigation-users">
           <ListItemIcon>
             <UsersIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_users} />
         </ListItem>
         {nodeDashboardEnabled ? (
-          <ListItem button onClick={() => history.push("/nodes")} data-test="side-navigation-nodes">
+          <ListItem button onClick={() => navigate("/nodes")} data-test="side-navigation-nodes">
             <ListItemIcon>
               <NodesIcon />
             </ListItemIcon>
@@ -127,7 +128,7 @@ const SideNavCard = ({
             <ListItemText primary={strings.navigation.menu_item_export} />
           </ListItem>
         ) : null}
-        <ListItem button onClick={() => history.push("/status")} data-test="side-navigation-service-status">
+        <ListItem button onClick={() => navigate("/status")} data-test="side-navigation-service-status">
           <ListItemIcon>
             <StatusIcon />
           </ListItemIcon>
