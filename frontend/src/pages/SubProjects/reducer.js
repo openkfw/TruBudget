@@ -164,7 +164,7 @@ export default function detailviewReducer(state = defaultState, action) {
     case ADD_SUBPROJECT_PROJECTED_BUDGET:
       return state.merge({
         subprojectToAdd: state.get("subprojectToAdd").merge({
-          projectedBudgets: [...state.getIn(["subprojectToAdd", "projectedBudgets"]).toJS(), action.projectedBudget]
+          projectedBudgets: fromJS([...state.getIn(["subprojectToAdd", "projectedBudgets"]), action.projectedBudget])
         })
       });
     case EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT: {
@@ -190,15 +190,17 @@ export default function detailviewReducer(state = defaultState, action) {
       const projectedBudgetsToDelete = action.projectedBudgets;
       const newState = state.merge({
         subprojectToAdd: state.get("subprojectToAdd").merge({
-          deletedProjectedBudgets: [
+          deletedProjectedBudgets: fromJS([
             ...state.getIn(["subprojectToAdd", "deletedProjectedBudgets"]),
             ...projectedBudgetsToDelete
-          ],
-          projectedBudgets: projectedBudgets.filter(
-            (b) =>
-              projectedBudgetsToDelete.find(
-                (d) => d.organization === b.organization && d.currencyCode === b.currencyCode
-              ) === undefined
+          ]),
+          projectedBudgets: fromJS(
+            projectedBudgets.filter(
+              (b) =>
+                projectedBudgetsToDelete.find(
+                  (d) => d.organization === b.organization && d.currencyCode === b.currencyCode
+                ) === undefined
+            )
           )
         })
       });
