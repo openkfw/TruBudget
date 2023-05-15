@@ -27,6 +27,7 @@ to this document in a pull request.
     - [Git Workflow](#git-workflow)
   - [Architecture Decisions](#architecture-decisions)
   - [Source Layout](#source-layout)
+  - [Code Structure and Source Layout](#code-structure-and-source-layout)
 
 ## Code of Conduct
 
@@ -104,10 +105,50 @@ documented there. If it is _not_ documented there, please ask us - chances are y
 not the only one wondering. Of course, also feel free to challenge the decisions by
 starting a discussion on [GithubDiscussions] or by opening a new [github issue].
 
-## Source Layout
+## Code Structure and Source Layout
 
-Best practices and layout is documented in README files next to the source files they
-describe. For example, take a look at [api/src/](https://github.com/openkfw/TruBudget/tree/main/api/src) to get started.
+TruBudget project consists of multiple folders under source. These folders contain code and configuration for the different layers of services or utilities. Each folder has its own README file that describes the service in more detail. For example, README file under api folder [api/README.md](https://github.com/openkfw/TruBudget/blob/main/api/README.md) describes individual environment variables that are used by the api service, how to run api as standalone and how to generate code documentation. 
+
+We strongly advise you to read the README files in the relevant folders of the services/features you will be working on. 
+
+Core services of TruBudget:
+
+
+- [Api](https://github.com/openkfw/TruBudget/blob/main/api/README.md)
+- [Blockchain](https://github.com/openkfw/TruBudget/blob/main/blockchain/README.md)
+- [Frontend (UI)](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md) 
+
+Optional (business relevant) services of TruBudget:
+
+- [Email Notification Service](https://github.com/openkfw/TruBudget/blob/main/email-notification-service/README.md)
+- [Excel Export Service](https://github.com/openkfw/TruBudget/blob/main/excel-export-service/README.md)
+- [Storage Service](https://github.com/openkfw/TruBudget/blob/main/storage-service/README.md)
+
+Testing services and utilities:
+
+- [Provisioning Service](https://github.com/openkfw/TruBudget/blob/main/provisioning/README.md)
+- [End-to-End Tests](https://github.com/openkfw/TruBudget/blob/main/e2e-test/README.md)
+
+Miscelleanous services and utilities:
+
+- [Helm](https://github.com/openkfw/TruBudget/blob/main/helm/README.md)
+- [Logging Service](https://github.com/openkfw/TruBudget/blob/main/logging-service/README.md)
+- [Migration Script](https://github.com/openkfw/TruBudget/blob/main/migration/README.md)
+- [Multichain Feed Script](https://github.com/openkfw/TruBudget/blob/main/multichain-feed/README.md)
+- [Postman Collection](https://github.com/openkfw/TruBudget/blob/main/postman/README.md)
+- [PowerBI](https://github.com/openkfw/TruBudget/blob/main/PowerBI/ReadMe.md)
+
+- Scripts
+  - [Development](https://github.com/openkfw/TruBudget/blob/main/scripts/development/README.md)
+  - [Operation](https://github.com/openkfw/TruBudget/blob/main/scripts/operation/README.md)
+  - Pipeline
+
+Docs: 
+
+- [Documentation](https://github.com/openkfw/TruBudget/blob/main/docs/README.md)
+
+Docker:
+- [Docker compose](https://github.com/openkfw/TruBudget/blob/main/docker-compose/README.md)
 
 [github issue]: https://github.com/openkfw/TruBudget/issues
 [code of conduct]: https://github.com/openkfw/TruBudget/blob/main/CODE_OF_CONDUCT.md

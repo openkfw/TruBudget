@@ -6,40 +6,21 @@ the documents through TruBudget's permission system. If it is not enabled TruBud
 feature.
 In the future the storage-service can be extended to support other storage types. For now only minio is supported.
 
-## Environment Variables
-
-To ensure all necessary environment variables are set correctly this section describes all environment variables across
-all services.
-
-### Storage-Service
-
-| Env Variable                | Default Value | Description                                                                                     |
-| --------------------------- | ------------- | ----------------------------------------------------------------------------------------------- |
-| STORAGE_SERVICE_HOST        | localhost     | IP address of storage service                                                                   |
-| PORT                        | 8090          | The port used to expose the storage service                                                     |
-| ACCESS_CONTROL_ALLOW_ORIGIN | "\*"          | CORS configuration                                                                              |
-| MINIO_ACCESS_KEY            | minio         | Access key for Minio server                                                                     |
-| MINIO_SECRET_KEY            | minio123      | Secret (Password) for Minio server                                                              |
-| MINIO_PORT                  | 9000          | Port of connected Minio                                                                         |
-| MINIO_HOST                  | localhost     | IP address of connected Minio server                                                            |
-| MINIO_BUCKET_NAME           | trubudget     | Bucket name of the connected Minio server                                                       |
-| LOG_LEVEL                   | info          | Defines the log output. Supported levels are `trace`, `debug`, `info`, `warn`, `error`, `fatal` |
-
 ## Getting Started
 
 ### Start with Docker
 
-The easiest way to get started is to use our pre-set [`docker-compose`](./docker-compose.yaml) file which starts the
+The easiest way to get started is to use our [`docker compose`](../docker-compose/) setup which starts the
 whole TruBudget application including the storage-service.
 Follow these steps to start the environment using docker:
 
-```
-cd storage-service
+```bash
+cd docker-compose
 cp .env_example .env
-bash startDev.sh
+docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f storage-service/docker-compose.yml up
 ```
 
-The pre-set cluster contains:
+The cluster contains:
 
 - 1 Alpha-Node (Blockchain)
 - 1 API connected to Alpha-Node
@@ -51,45 +32,16 @@ The pre-set cluster contains:
 
 To start the storage-service without docker, you need to start all desired service yourself with the right environment
 variables. To set these environment variables, read the documentation of the services in their folder or use the
-.env_example file of the stoage-service. We recommend to start Minio with docker since the configuration is much easier.
+.env_example file of the storage-service. We recommend to start Minio with docker since the configuration is much easier.
 You can use the docker-compose-minio.yaml file to start it. To start Minio without docker we refer to
 their [official documentation](https://docs.min.io/docs/minio-quickstart-guide.html).
 
-We recommend to start each service in an own shell.
-Follow these steps to start the environment without docker (assuming minio is already started):
+Follow this service start order to start the environment without docker (assuming minio is already started):
 
-Start the blockchain
-
-```
-cd storage-service
-source .env_example
-cd ../blockchain
-npm install
-npm start
-```
-
-Start the api
-
-```
-cd storage-service
-source .env_example
-cd ../api
-npm install
-npm run build
-npm start
-```
-
-Start the frontend
-
-```
-cd storage-service
-source .env_example
-cd ../frontend
-npm install
-npm start
-```
-
-Start the storage-service
+- Blockchain
+- Api
+- Frontend
+- Storage Service (below for instructions)
 
 ```
 cd storage-service
@@ -108,6 +60,10 @@ npm start
 | GET    | /version   | Get the current version of the service       |
 | GET    | /download  | Download a document (docId + secret needed)  |
 | POST   | /upload    | Upload a document                            |
+
+### Environment Variables
+
+To be able to activate and configure the Storage Service, you need to set the relevant environment variables. More information on that and a list of available environment variables, see: [Environment Variables](./environment-variables.md)
 
 ## Architecture
 
