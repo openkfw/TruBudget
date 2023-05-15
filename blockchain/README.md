@@ -26,6 +26,8 @@ Then run the following docker compose command to start the blockchain:
 docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml up
 ```
 
+This command would start the blockchain container, using the image version specified under `TAG` in the `.env` file, which is `main` when using the default `.env_example` file.
+
 #### Run local build
 
 Copy the contents of the .env_example file into .env file.
@@ -80,4 +82,4 @@ The Blockchain node is fully configured through environment variables.
 
 ### Environment Variables
 
-See [Environment Variables](./environment-variables.md)
+In TruBudget, we use different environment variables to set credentials as well as configurations of the TruBudget services. The environment variables used in the Blockchain can be seen here [Environment Variables](./environment-variables.md)

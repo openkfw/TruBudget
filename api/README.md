@@ -4,11 +4,11 @@
 
 ### Development
 
-Check out our [the ADRs](../doc/adr/) to learn about our current way of doing things.
+Check out our [ADRs](../doc/adr/) to learn about our current way of doing things.
 
 #### Get started
 
-Before starting the API, environment variables has to be set under .env file. The .env_example file provides the default/example values for the environment variables. Just make a copy of example file via:
+Before starting the API, environment variables have to be set under `.env` file. The `.env_example` file provides the default/example values for the environment variables. Just make a copy of example file via:
 
 ```bash
 cp .env_example .env
@@ -19,7 +19,7 @@ Default values are usually enough to setup a working local Trubudget instance. H
 When not yet provisioned, it's recommended to start the server directly with node:
 
 ```bash
-npm run tsc && node dist/index.js
+npm run tsc && npm start
 ```
 
 After that, live-reloading doesn't hinder provisioning anymore, plus it's quite convenient, so you might want to use this instead:
@@ -68,4 +68,4 @@ Currently only domain layer functions are documented. If [#1164](https://github.
 
 ## Environment Variables
 
-See [Environment Variables](./environment-variables.md)
+In TruBudget, we use different environment variables to set credentials as well as configurations of the TruBudget services. The environment variables used in the API can be seen here [Environment Variables](./environment-variables.md)

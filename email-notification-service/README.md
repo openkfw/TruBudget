@@ -49,6 +49,7 @@ install [Docker](https://www.docker.com/community-edition#/download)).
 
 ```bash
 cd docker-compose
+cp .env_example .env
 docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f email-notification-service/docker-compose.yml up
 ```
 
@@ -72,7 +73,7 @@ be used
 
 ### Environment Variables
 
-To check what is configurable regarding email-notification service check out
+To check the possible configurations in the email-notification service check out
 the list of [Environment Variables](./environment-variables.md)
 
 ## Enable email notifications

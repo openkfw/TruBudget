@@ -16,4 +16,8 @@
 
 ### Frontend
 
-For details see [Frontend environment variables](../frontend/environment-variables.md#excel-export-service).
+| Env Variable                     | Default Value | Description                                                                                                                                         |
+| -------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EXPORT_SERVICE_ENABLED | false         | If true the frontend requests a export-service readiness call when entering the login screen and <br/>the export button is shown at the side navbar |
+| EXPORT_HOST                      | -             | IP address of the excel export service                                                                                                              |
+| EXPORT_PORT                      | 8888          | Port of the excel export service                                                                                                                    |

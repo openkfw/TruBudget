@@ -235,31 +235,26 @@ The blockchain works as data layer for the Trubudget application. We suggest rea
 
 We start by creating an instance of the blockchain.
 
-First, navigate to the `/blockchain` folder, install all the npm packages and then start the blockchain via a shellscript:
 
-1. Navigate to the ./blockchain folder and start your favourite shell.
+1. Navigate to the `/docker-compose` folder and start your favourite shell.
 
 ```bash
-cd blockchain
+cd docker-compose
 ```
 
 2. Start docker if it is not running already
 
-3. Install node-modules
+3. Set environment variables in the `.env` file, or to use the default values use the `.env_example`
 
 ```bash
-npm install
+cp .env_example .env
 ```
 
 4. Create a blockchain instance
 
 ```bash
-bash startDev.sh
+docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f blockchain/local-build.docker-compose.yml up
 ```
-
-##### Developing on Windows:
-
-If you are developing on Windows, we recommend using the Git Bash to run the `startDev.sh` script.
 
 #### API
 
@@ -383,11 +378,6 @@ The frontend should then be availaible at http://localhost:3000
 
 > If you change the port of the api you may have to consider to change the proxy port in the `package.json` accordingly.
 
-> You do not need to run every project separately if you are developing on a single one. Just do following:
->
-> 1.  go to a desired folder (e.g. _/api_)
-> 2.  copy `.env.example` file and rename it to `.env`
-> 3.  run `bash startDev.sh` in the folder to start dependent project(s)
 
 #### Provisioning (Optional)
 
@@ -454,7 +444,7 @@ npm start
 
 The service is then available either on the host and port set by the environment variable or `localhost:8888` by default.
 
-> in order to access the excel export service from the UI, you should start the frontend with some additional environment variables as mentioned in the excel-export section of the [frontend README.md](https://github.com/openkfw/TruBudget/blob/main/frontend/README.md#Excel-Export-Service) file.
+> in order to access the excel export service from the UI, you should start the frontend with some additional environment variables as mentioned in the excel-export section of the [frontend README.md](../../frontend/environment-variables.md#excel-export-service) file.
 
 > Another way to start the excel export service is in a docker container. Using the docker-compose file in the excel-export folder will build the whole application including api, blockchain, frontend and excel-export service at the same time.
 

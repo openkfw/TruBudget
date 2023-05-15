@@ -36,11 +36,28 @@ all services.
 
 ### Blockchain
 
-For details see [Blockchain environment variables](../blockchain/environment-variables.md#email-service).
+The blockchain can be configured to use the email-notification feature via the following environment variables:
+
+| Env Variable               | Required | Default Value    | Description                                                                                                                                                      |
+| -------------------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EMAIL_SERVICE_ENABLED      | no       | false            | If set to `true` the Email-Service feature is enabled and the EMAIL\_\* variables are required                                                                   |
+| EMAIL_HOST                 | no       |                  | The IP address from the email-notification service.                                                                                                              |
+| EMAIL_PORT                 | no       |                  | The port address from the email-notification service.                                                                                                            |
+| EMAIL_SSL                  | no       | false            | If set to `true` the connection between blockchain and email-notification service is https instead of http                                                       |
+| NOTIFICATION_PATH          | no       | ./notifications/ | The path where notification files shall be saved on the blockchain environment                                                                                   |
+| NOTIFICATION_MAX_LIFETIME  | no       | 24               | This number configure how long notifications shall be saved in the NOTIFICATION_PATH in hours                                                                    |
+| NOTIFICATION_SEND_INTERVAL | no       | 10               | This number configure in which interval the notifications in the NOTIFICATION_PATH should be checked and send                                                    |
+| JWT_SECRET                 | no       |                  | The `JWT_SECRET` is only required if the Email feature is enabled. It is used to authenticate the blockchain at the email-service, so it can send notifications. |
 
 ### Frontend
 
-For details see [Blockchain environment variables](../frontend/environment-variables.md#email-service).
+The frontend can be configured to use the email-notification feature via the following environment variables:
+
+| Env Variable                    | Default Value | Description                                                                                                                                                     |
+| ------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| REACT_APP_EMAIL_SERVICE_ENABLED | false         | When enabled, the frontend requests a email-service readiness call when entering the login screen.<br/>If true the email section in the user-profile is enabled |
+| EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                    |
+| EMAIL_PORT                      | 8890          | Port of the email notification service                                                                                                                          |
 
 #### JWT_SECRET
 

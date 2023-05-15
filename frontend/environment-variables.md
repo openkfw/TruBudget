@@ -13,6 +13,8 @@
 
 ### Email-Service
 
+Following environment variables need to be set to enable and configure the email-notification feature:
+
 | Env Variable                    | Default Value | Description                                                                                                                                                     |
 | ------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | REACT_APP_EMAIL_SERVICE_ENABLED | false         | When enabled, the frontend requests a email-service readiness call when entering the login screen.<br/>If true the email section in the user-profile is enabled |
@@ -20,6 +22,8 @@
 | EMAIL_PORT                      | 8890          | Port of the email notification service                                                                                                                          |
 
 ### Excel-Export-Service
+
+Following environment variables need to be set to enable and configure the excel-export feature:
 
 | Env Variable                     | Default Value | Description                                                                                                                                         |
 | -------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |

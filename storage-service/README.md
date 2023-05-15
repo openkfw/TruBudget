@@ -6,10 +6,6 @@ the documents through TruBudget's permission system. If it is not enabled TruBud
 feature.
 In the future the storage-service can be extended to support other storage types. For now only minio is supported.
 
-## Environment Variables
-
-See [Environment Variables](./environment-variables.md)
-
 ## Getting Started
 
 ### Start with Docker
@@ -20,6 +16,7 @@ Follow these steps to start the environment using docker:
 
 ```bash
 cd docker-compose
+cp .env_example .env
 docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f storage-service/docker-compose.yml up
 ```
 
@@ -63,6 +60,10 @@ npm start
 | GET    | /version   | Get the current version of the service       |
 | GET    | /download  | Download a document (docId + secret needed)  |
 | POST   | /upload    | Upload a document                            |
+
+### Environment Variables
+
+To be able to activate and configure the Storage Service, you need to set the relevant environment variables. More information on that and a list of available environment variables, see: [Environment Variables](./environment-variables.md)
 
 ## Architecture
 
