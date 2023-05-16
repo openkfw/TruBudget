@@ -4,6 +4,7 @@ import { all, call, cancel, delay, put, select, takeEvery, takeLatest, takeLeadi
 
 import {
   GET_EXCHANGE_RATES,
+  GET_EXCHANGE_RATES_FAILED,
   GET_EXCHANGE_RATES_SUCCESS,
   GET_PROJECT_KPIS,
   GET_PROJECT_KPIS_FAIL,
@@ -2978,13 +2979,32 @@ export function* getSubProjectKPIs({ projectId, subProjectId, showLoading = true
 }
 
 export function* getExchangeRatesSaga({ baseCurrency, showLoading = true }) {
-  yield execute(function* () {
-    const exchangeRates = yield getExchangeRates(baseCurrency);
-    yield put({
-      type: GET_EXCHANGE_RATES_SUCCESS,
-      exchangeRates
-    });
-  }, showLoading);
+  yield execute(
+    function* () {
+      const exchangeRates = yield getExchangeRates(baseCurrency);
+      yield put({
+        type: GET_EXCHANGE_RATES_SUCCESS,
+        exchangeRates
+      });
+    },
+    showLoading,
+    function* (error) {
+      yield put({
+        type: GET_EXCHANGE_RATES_FAILED,
+        error
+      });
+      yield put({
+        type: SNACKBAR_MESSAGE,
+        message: "Error while retrieving exchange rates!"
+      });
+      yield put({
+        type: SHOW_SNACKBAR,
+        show: true,
+        isError: true,
+        isWarning: false
+      });
+    }
+  );
 }
 
 function* exportDataSaga({ devModeEnvironment }) {
