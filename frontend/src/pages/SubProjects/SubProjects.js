@@ -29,6 +29,7 @@ const SubProjects = (props) => {
         }}
       >
         <Fab
+          aria-label="create subproject"
           disabled={!props.canCreateSubProject || props.projectStatus === "closed"}
           onClick={props.showSubprojectDialog}
           color="primary"
@@ -41,6 +42,7 @@ const SubProjects = (props) => {
           <ContentAdd />
         </Fab>
         <Fab
+          aria-label="show project history"
           data-test="project-history-button"
           size="small"
           onClick={props.openHistory}

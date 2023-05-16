@@ -111,6 +111,7 @@ const renderActionButtons = (props) => {
     <>
       {canEditPassword ? (
         <ActionButton
+          ariaLabel="show password"
           onClick={() => showPasswordDialog(displayUser.id)}
           title={strings.common.edit}
           icon={<EditIcon />}
@@ -119,6 +120,7 @@ const renderActionButtons = (props) => {
       ) : null}
       {canListUserPermissions ? (
         <ActionButton
+          ariaLabel="show dashboard"
           onClick={() => showDashboardDialog("editUserPermissions", displayUser.id)}
           title={strings.common.show_permissions}
           icon={<PermissionIcon />}
@@ -127,6 +129,7 @@ const renderActionButtons = (props) => {
       ) : null}
       {canEnableUser ? (
         <ActionButton
+          ariaLabel="enable user"
           onClick={() => {
             enableUser(displayUser.id);
           }}
@@ -137,6 +140,7 @@ const renderActionButtons = (props) => {
       ) : null}
       {canDisableUser ? (
         <ActionButton
+          ariaLabel="disable user"
           onClick={() => {
             disableUser(displayUser.id);
           }}

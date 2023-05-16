@@ -199,6 +199,7 @@ class SingleSelection extends Component {
           >
             <div style={styles.closeButtonContainer}>
               <ActionButton
+                ariaLabel="close"
                 data-test={"close-select"}
                 onClick={closeSelect}
                 title={strings.common.close}
@@ -227,7 +228,13 @@ class SingleSelection extends Component {
           </Select>
         </FormControl>
         {onClearItem && selectedItem ? (
-          <IconButton data-test={"clear-validator"} style={styles.clearButton} onClick={onClearItem} size="large">
+          <IconButton
+            aria-label="cancel"
+            data-test={"clear-validator"}
+            style={styles.clearButton}
+            onClick={onClearItem}
+            size="large"
+          >
             <CancelIcon color="action" style={{ fontSize: "x-large" }} />
           </IconButton>
         ) : null}

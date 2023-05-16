@@ -10,6 +10,7 @@ const LogoutIcon = ({ logout }) => {
   const navigate = useNavigate();
   return (
     <IconButton
+      aria-label="logout"
       id="logoutbutton"
       data-test="navbar-logout-button"
       tooltip={strings.navigation.logout}

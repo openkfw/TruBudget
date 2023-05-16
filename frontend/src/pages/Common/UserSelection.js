@@ -135,6 +135,7 @@ function UserSelection(props) {
           >
             <div style={styles.closeButtonContainer}>
               <ActionButton
+                ariaLabel="close"
                 data-test={"close-select"}
                 onClick={closeSelect}
                 title={strings.common.close}

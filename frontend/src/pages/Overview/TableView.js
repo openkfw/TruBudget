@@ -50,6 +50,7 @@ const ProjectButtons = ({
   return (
     <Box sx={{ display: "flex", gap: "20px" }}>
       <ActionButton
+        ariaLabel="show project data"
         notVisible={isAdditionalDataEmpty}
         onClick={() => {
           showProjectAdditionalData(project.id);
@@ -59,6 +60,7 @@ const ProjectButtons = ({
         data-test={`project-overview-additionaldata-${project.id}`}
       />
       <ActionButton
+        ariaLabel="show project"
         notVisible={viewDisabled}
         onClick={() => {
           navigate("/projects/" + project.id);
@@ -69,6 +71,7 @@ const ProjectButtons = ({
         data-test={`project-view-${project.id}`}
       />
       <ActionButton
+        ariaLabel="show project permissions"
         notVisible={!canViewPermissions}
         onClick={() => showProjectPermissions(project.id, project.displayName)}
         title={strings.common.show_permissions}
@@ -77,6 +80,7 @@ const ProjectButtons = ({
         data-test={`project-permissions-${project.id}`}
       />
       <ActionButton
+        ariaLabel="show edit dialog"
         notVisible={!isOpen || editDisabled}
         onClick={() => {
           showEditDialog(
@@ -465,6 +469,7 @@ const TableView = (props) => {
                 storeSearchTerm={(word) => storeSearchTerm(word)}
               />
               <ActionButton
+                ariaLabel="show filter"
                 onClick={() => setShowFilter(!showFilter)}
                 icon={<FilterAltIcon />}
                 data-test="open-filter"

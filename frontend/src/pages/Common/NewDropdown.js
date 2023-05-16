@@ -74,6 +74,7 @@ const Dropdown = (props) => {
             <div style={styles.closeButtonContainer}>
               <div style={styles.closeButton}>
                 <ActionButton
+                  ariaLabel="close"
                   data-test={"close-select"}
                   onClick={() => setIsOpen(false)}
                   title={strings.common.close}

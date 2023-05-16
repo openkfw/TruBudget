@@ -286,6 +286,7 @@ const getInfoButton = (props, status, workflowSortEnabled, workflow) => {
         style={styles.buttonStyle}
       >
         <IconButton
+          aria-label="show info"
           disabled={workflowSortEnabled}
           style={getButtonStyle(workflowSortEnabled, status)}
           onClick={() => openWorkflowDetails(projectId, subProjectId, workflow.id)}
@@ -314,6 +315,7 @@ const getAttachmentButton = ({ openWorkflowDetails, projectId, subProjectId }, w
           style={styles.buttonStyle}
         >
           <IconButton
+            aria-label="show attachment"
             style={{ cursor: "default" }}
             data-test={`workflowitem-attachment-file-button-${workflow.id}`}
             size="large"
@@ -413,6 +415,7 @@ const renderActionButtons = (
     <div style={styles.actionCell}>
       <div style={styles.actions}>
         <ActionButton
+          ariaLabel="show additional data"
           notVisible={additionalDataDisabled || status === "closed" || additionalDataDisabled}
           onClick={additionalDataDisabled ? undefined : showAdditionalData}
           icon={<MoreIcon />}
@@ -423,6 +426,7 @@ const renderActionButtons = (
           iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
+          ariaLabel="edit workflowitem"
           notVisible={workflowSortEnabled || status === "closed" || editDisabled}
           onClick={editDisabled ? undefined : edit}
           icon={<EditIcon />}
@@ -434,6 +438,7 @@ const renderActionButtons = (
         />
         {workflowSortEnabled || permissionsDisabled ? null : (
           <ActionButton
+            ariaLabel="show workflowitem permissions"
             notVisible={workflowSortEnabled || permissionsDisabled}
             onClick={permissionsDisabled ? undefined : showPerm}
             icon={<PermissionIcon />}
@@ -448,6 +453,7 @@ const renderActionButtons = (
         {statusIsClosed ? null : (
           <>
             <ActionButton
+              ariaLabel="reject workflowitem"
               onClick={closeDisabled ? undefined : reject}
               icon={<RejectedIcon />}
               title={closeDisabled ? "" : strings.common.reject}
@@ -458,6 +464,7 @@ const renderActionButtons = (
             />
 
             <ActionButton
+              ariaLabel="close workflowitem"
               onClick={closeDisabled ? undefined : close}
               icon={<DoneIcon />}
               title={closeDisabled ? "" : strings.common.close}
@@ -470,6 +477,7 @@ const renderActionButtons = (
         )}
 
         <ActionButton
+          ariaLabel="closed workflowitem reject reason"
           notVisible={status !== "closed" || !rejectReason}
           onClick={rejectReason ? showReasonDialog : undefined}
           icon={<ErrorOutlineIcon />}
@@ -625,7 +633,7 @@ export const RedactedWorkflowItem = ({
           >
             <div style={styles.workflowContent}>
               <div style={{ flex: 1 }}>
-                <IconButton style={styles.buttonStyle} size="large">
+                <IconButton aria-label="Hidden Icon" style={styles.buttonStyle} size="large">
                   <HiddenIcon />
                 </IconButton>
               </div>

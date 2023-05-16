@@ -24,6 +24,7 @@ const NotificationIcon = ({ unreadNotificationCount }) => {
       invisible={!hasNotifications}
     >
       <IconButton
+        aria-label="notification button"
         data-test="navbar-notification-button"
         tooltip={strings.navigation.unread_notifications}
         onClick={() => navigate("/notifications")}

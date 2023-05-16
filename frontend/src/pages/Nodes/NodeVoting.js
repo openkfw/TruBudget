@@ -5,7 +5,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
@@ -190,7 +189,7 @@ const NodeVoting = ({
           <div />
         ) : (
           <CardContent style={styles.cardContent}>
-            <List>{newOrgaNodes.length ? newOrgaNodesListEntries : <NewOrganizationsEmptyState />}</List>
+            <>{newOrgaNodes.length ? newOrgaNodesListEntries : <NewOrganizationsEmptyState />}</>
           </CardContent>
         )}
       </Card>
@@ -200,7 +199,7 @@ const NodeVoting = ({
           <div />
         ) : (
           <CardContent style={styles.cardContent}>
-            <List>{existingOrgaNodes.length ? existingOrgaNodesListEntries : <ExistingNodesEmptyState />}</List>
+            <>{existingOrgaNodes.length ? existingOrgaNodesListEntries : <ExistingNodesEmptyState />}</>
           </CardContent>
         )}
       </Card>

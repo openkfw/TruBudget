@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 const LeftNavbarNavigation = ({ toggleSidebar }) => {
   return (
     <div>
-      <IconButton onClick={toggleSidebar} data-test="openSideNavbar" size="large">
+      <IconButton aria-label="open menu" onClick={toggleSidebar} data-test="openSideNavbar" size="large">
         <MenuIcon color="primary" />
       </IconButton>
     </div>

@@ -103,7 +103,12 @@ const LoginPage = ({
         </div>
         <Divider />
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", float: "right" }}>
-          <IconButton disabled={!(connectedToAdminNode > -1)} onClick={() => navigate("/admin")} size="large">
+          <IconButton
+            aria-label="admin settings"
+            disabled={!(connectedToAdminNode > -1)}
+            onClick={() => navigate("/admin")}
+            size="large"
+          >
             <SettingsIcon />
           </IconButton>
         </div>

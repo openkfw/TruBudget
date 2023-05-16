@@ -75,7 +75,7 @@ const SideNavCard = ({
         >
           <ListItem style={{ paddingTop: "16px" }}>
             <ListItemIcon>
-              <IconButton size="large">
+              <IconButton aria-label="avatar icon" size="large">
                 <ListItemAvatar>
                   <Avatar size={60} src={avatar} />
                 </ListItemAvatar>
@@ -86,7 +86,12 @@ const SideNavCard = ({
               primary={<span>{displayName}</span>}
               secondary={<span>{organization}</span>}
             />
-            <IconButton data-test="show-user-profile" onClick={() => openUserProfile()} size="large">
+            <IconButton
+              aria-label="show user profile"
+              data-test="show-user-profile"
+              onClick={() => openUserProfile()}
+              size="large"
+            >
               <SettingsIcon />
             </IconButton>
           </ListItem>
@@ -94,26 +99,26 @@ const SideNavCard = ({
       </div>
       <List>
         <Subheader>{strings.navigation.selections}</Subheader>
-        <ListItem button onClick={() => navigate("/")} data-test="side-navigation-projects">
+        <ListItem onClick={() => navigate("/")} data-test="side-navigation-projects">
           <ListItemIcon>
             <ProjectIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_projects} />
         </ListItem>
-        <ListItem button onClick={() => navigate("/notifications")} data-test="side-navigation-notifications">
+        <ListItem onClick={() => navigate("/notifications")} data-test="side-navigation-notifications">
           <ListItemIcon>
             <SocialNotificationIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_notifications} />
         </ListItem>
-        <ListItem button onClick={() => navigate("/users")} data-test="side-navigation-users">
+        <ListItem onClick={() => navigate("/users")} data-test="side-navigation-users">
           <ListItemIcon>
             <UsersIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_users} />
         </ListItem>
         {nodeDashboardEnabled ? (
-          <ListItem button onClick={() => navigate("/nodes")} data-test="side-navigation-nodes">
+          <ListItem onClick={() => navigate("/nodes")} data-test="side-navigation-nodes">
             <ListItemIcon>
               <NodesIcon />
             </ListItemIcon>
@@ -121,14 +126,14 @@ const SideNavCard = ({
           </ListItem>
         ) : null}
         {exportServiceAvailable ? (
-          <ListItem button onClick={() => exportData(environment)} data-test="side-navigation-export">
+          <ListItem onClick={() => exportData(environment)} data-test="side-navigation-export">
             <ListItemIcon>
               <ExportIcon />
             </ListItemIcon>
             <ListItemText primary={strings.navigation.menu_item_export} />
           </ListItem>
         ) : null}
-        <ListItem button onClick={() => navigate("/status")} data-test="side-navigation-service-status">
+        <ListItem onClick={() => navigate("/status")} data-test="side-navigation-service-status">
           <ListItemIcon>
             <StatusIcon />
           </ListItemIcon>

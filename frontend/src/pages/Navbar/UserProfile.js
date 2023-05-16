@@ -133,6 +133,7 @@ const UserProfile = ({
                     />
                   )}
                   <ActionButton
+                    ariaLabel="confirm email"
                     style={styles.editButton}
                     onClick={() => {
                       if (isEmailAddressValid(tempEmailAddress)) {
@@ -148,6 +149,7 @@ const UserProfile = ({
                 </>
               ) : (
                 <ActionButton
+                  ariaLabel="edit"
                   style={styles.editButton}
                   onClick={enableUserProfileEdit}
                   title={strings.common.edit}

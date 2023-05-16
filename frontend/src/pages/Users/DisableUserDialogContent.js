@@ -168,6 +168,7 @@ const DisableUserDialogContent = (props) => {
               </div>
             </div>
             <ActionButton
+              ariaLabel="refresh assignments"
               onClick={() => {
                 setIsUserAssignmentsFetched(false);
                 fetchUserAssignments(editId);

@@ -56,7 +56,13 @@ function DatePicker({ name, label, onChange, onDelete, datetime, id = "default" 
           </LocalizationProvider>
         </div>
       </form>
-      <IconButton data-test={`clear-datepicker-${id}`} onClick={onDelete} style={styles.clearButton} size="large">
+      <IconButton
+        aria-label="cancel"
+        data-test={`clear-datepicker-${id}`}
+        onClick={onDelete}
+        style={styles.clearButton}
+        size="large"
+      >
         <CancelIcon color="action" />
       </IconButton>
     </div>
