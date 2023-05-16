@@ -95,7 +95,7 @@ const NotificationListItems = ({ notifications, markNotificationAsRead, notifica
             {isAllowedToSee(notification) ? (
               <Tooltip id="tooltip-inspect" title={strings.common.view}>
                 <div>
-                  <IconButton onClick={() => navigate(redirectUri)} size="large">
+                  <IconButton aria-label="launch" onClick={() => navigate(redirectUri)} size="large">
                     <LaunchIcon />
                   </IconButton>
                 </div>

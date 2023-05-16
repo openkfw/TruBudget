@@ -18,10 +18,20 @@ const Overview = (props) => {
   return (
     <Box>
       <Box sx={{ display: "flex" }}>
-        <IconButton onClick={() => props.setProjectView("card")} data-test="set-card-view" sx={styles.button}>
+        <IconButton
+          aria-label="view grid"
+          onClick={() => props.setProjectView("card")}
+          data-test="set-card-view"
+          sx={styles.button}
+        >
           <GridViewIcon color="primary" />
         </IconButton>
-        <IconButton onClick={() => props.setProjectView("table")} data-test="set-table-view" sx={styles.button}>
+        <IconButton
+          aria-label="view list"
+          onClick={() => props.setProjectView("table")}
+          data-test="set-table-view"
+          sx={styles.button}
+        >
           <ViewListIcon color="primary" />
         </IconButton>
       </Box>

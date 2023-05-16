@@ -46,6 +46,7 @@ export default class FlyInNotification extends Component {
             action={
               isAllowedToSee(notification) ? (
                 <IconButton
+                  aria-label="launch"
                   disabled={!isAllowedToSee(notification)}
                   color="primary"
                   onClick={() => this.props.navigate(parseURI({ projectId, subprojectId }))}

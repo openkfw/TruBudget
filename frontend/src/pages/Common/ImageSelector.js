@@ -60,7 +60,7 @@ const ImageSelector = ({ onTouchTap, selectedImage }) => {
               <img alt={image.src} src={image.src} />
               <ImageListItemBar
                 actionIcon={
-                  <IconButton size="large">
+                  <IconButton aria-label="star icon" size="large">
                     {selectedImage === image.src ? <FilledStar color="primary" /> : <NotFilledStar color="primary" />}
                   </IconButton>
                 }

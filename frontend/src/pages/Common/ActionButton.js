@@ -13,6 +13,7 @@ const styles = {
 };
 
 const ActionButton = ({
+  ariaLabel,
   notVisible,
   onClick,
   icon,
@@ -36,6 +37,7 @@ const ActionButton = ({
       >
         <div>
           <IconButton
+            aria-label={ariaLabel}
             onClick={onClick}
             style={notVisible ? { ...styles.hide } : iconButtonStyle}
             disabled={disabled}

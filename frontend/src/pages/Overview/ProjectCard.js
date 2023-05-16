@@ -74,6 +74,7 @@ const ProjectCard = ({
         <Tooltip id="tooltip-pview" title={strings.common.view}>
           <div>
             <Fab
+              aria-label="view project"
               style={parentStyles.button}
               disabled={!canViewProjectDetails(allowedIntents)}
               color="primary"
@@ -113,45 +114,41 @@ const ProjectCard = ({
             />
           }
         />
-        <List>
-          <div
-            style={{
-              marginTop: "5px",
-              height: "200px",
-              overflow: "scroll",
-              overflowY: "auto",
-              overflowX: "hidden"
-            }}
-          >
-            {projectedBudgets.length === 0 ? null : (
-              <ListItem style={parentStyles.listItem} disabled={false}>
-                <ListItemIcon>
-                  <AmountIcon />
-                </ListItemIcon>
-                <ListItemText data-test="project-budget" primary={budgets} secondary={strings.common.budget} />
-              </ListItem>
-            )}
-            <ListItem style={parentStyles.listItem} disabled={false}>
+        <List
+          sx={{
+            marginTop: "5px",
+            height: "200px",
+            overflow: "scroll",
+            overflowY: "auto",
+            overflowX: "hidden"
+          }}
+        >
+          {projectedBudgets.length === 0 ? null : (
+            <ListItem style={parentStyles.listItem}>
               <ListItemIcon>
-                <DateIcon />
+                <AmountIcon />
               </ListItemIcon>
-              <ListItemText data-test="project-creation-date" primary={dateString} secondary={strings.common.created} />
+              <ListItemText data-test="project-budget" primary={budgets} secondary={strings.common.budget} />
             </ListItem>
-            {displayedTags.length > 0 ? (
-              <ListItem
-                style={{ ...parentStyles.listItem, marginTop: "13px" }}
-                data-test="overview-taglist"
-                disabled={false}
-              >
-                <ListItemIcon>
-                  <LabelIcon />
-                </ListItemIcon>
-                <ListItemText data-test="overview-tags" primary="" secondary={displayedTags} />
-              </ListItem>
-            ) : null}
-          </div>
-          <div style={parentStyles.editContainer}>
+          )}
+          <ListItem style={parentStyles.listItem}>
+            <ListItemIcon>
+              <DateIcon />
+            </ListItemIcon>
+            <ListItemText data-test="project-creation-date" primary={dateString} secondary={strings.common.created} />
+          </ListItem>
+          {displayedTags.length > 0 ? (
+            <ListItem style={{ ...parentStyles.listItem, marginTop: "13px" }} data-test="overview-taglist">
+              <ListItemIcon>
+                <LabelIcon />
+              </ListItemIcon>
+              <ListItemText data-test="overview-tags" primary="" secondary={displayedTags} />
+            </ListItem>
+          ) : null}
+
+          <ListItem style={parentStyles.editContainer}>
             <ActionButton
+              ariaLabel="show project"
               notVisible={additionalDataEmpty}
               onClick={() => {
                 showProjectAdditionalData(id);
@@ -161,6 +158,7 @@ const ProjectCard = ({
               data-test={`project-overview-additionaldata-${id}`}
             />
             <ActionButton
+              ariaLabel="show project permissions"
               notVisible={!canViewPermissions}
               onClick={() => showProjectPermissions(id, displayName)}
               title={strings.common.show_permissions}
@@ -169,6 +167,7 @@ const ProjectCard = ({
               iconButtonStyle={styles.editIcon}
             />
             <ActionButton
+              ariaLabel="show edit dialog"
               notVisible={!isOpen || editDisabled}
               onClick={() => {
                 showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags);
@@ -179,7 +178,7 @@ const ProjectCard = ({
               data-test={`pe-button`}
               iconButtonStyle={styles.editIcon}
             />
-          </div>
+          </ListItem>
         </List>
       </CardContent>
     </Card>

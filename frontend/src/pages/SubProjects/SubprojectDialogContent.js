@@ -107,6 +107,7 @@ const SubprojectDialogContent = (props) => {
                 </Dropdown>
                 {props.selectedWorkflowitemType ? (
                   <IconButton
+                    aria-label="cancel"
                     data-test={"clear-workflowitem-type"}
                     style={styles.clearButton}
                     onClick={() => props.storeFixedWorkflowitemType("")}

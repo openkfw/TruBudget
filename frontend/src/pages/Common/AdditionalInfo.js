@@ -6,7 +6,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { isEmptyDeep } from "../../helper";
 import strings from "../../localizeStrings";
 
 import JsonEditor from "./JsonEditor";

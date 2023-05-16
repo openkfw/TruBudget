@@ -13,7 +13,7 @@ const styles = {
   }
 };
 
-const NewOrganizationsEmptyState = (props) => {
+const NewOrganizationsEmptyState = () => {
   return (
     <table style={{ alignItems: "center" }}>
       <tbody>
@@ -36,7 +36,7 @@ const NewOrganizationsEmptyState = (props) => {
   );
 };
 
-const ExistingNodesEmptyState = (props) => {
+const ExistingNodesEmptyState = () => {
   return (
     <table style={{ alignItems: "center" }}>
       <tbody>
@@ -59,7 +59,7 @@ const ExistingNodesEmptyState = (props) => {
   );
 };
 
-const DeclinedNodesEmptyState = (props) => {
+const DeclinedNodesEmptyState = () => {
   return (
     <table style={{ alignItems: "center" }}>
       <tbody>

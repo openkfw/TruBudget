@@ -34,6 +34,7 @@ const styles = {
 
 const renderSortButton = (props) => (
   <Fab
+    aria-label="enable workflowitem sort"
     size="small"
     disabled={
       !canReorderWorkflowItems(props.allowedIntents) || props.status === "closed" || _isEmpty(props.workflowItems)
@@ -55,6 +56,7 @@ const handleEnableWorkflowEdit = (props) => {
 
 const renderSubmitSortButton = (props) => (
   <Fab
+    aria-label="submit workflowitem sort"
     size="small"
     onClick={() => handleSubmitEdit(props)}
     style={styles.editButton}

@@ -222,6 +222,7 @@ const SubProjectDetails = ({
               >
                 <div>
                   <IconButton
+                    aria-label="close subproject"
                     color="primary"
                     data-test="spc-button"
                     disabled={!closingOfSubProjectAllowed}

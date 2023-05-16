@@ -92,10 +92,10 @@ class PermissionSelection extends Component {
     );
     if (selection.length > 0) {
       return (
-        <div>
+        <>
           <ListSubheader style={styles.fixLabel}> {strings.users.users} </ListSubheader>
           {selection}
-        </div>
+        </>
       );
     } else {
       return null;
@@ -116,10 +116,10 @@ class PermissionSelection extends Component {
     );
     if (selection.length > 0) {
       return (
-        <div>
+        <>
           <ListSubheader style={styles.fixLabel}> {strings.users.groups} </ListSubheader>
           {selection}
-        </div>
+        </>
       );
     } else {
       return null;
@@ -154,6 +154,7 @@ class PermissionSelection extends Component {
         >
           <div style={styles.closeButtonContainer}>
             <ActionButton
+              ariaLabel="close"
               data-test={"close-select"}
               onClick={closeSelect}
               title={strings.common.close}

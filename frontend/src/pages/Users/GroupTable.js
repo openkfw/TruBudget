@@ -47,6 +47,7 @@ const GroupsTable = ({ groups, showDashboardDialog, allowedIntents, userId }) =>
                 <TableCell>
                   <div style={{ display: "flex" }}>
                     <ActionButton
+                      ariaLabel="show dashboard"
                       notVisible={!isAllowedToEditGroup}
                       onClick={() => showDashboardDialog("editGroup", group.groupId)}
                       title={strings.common.edit}

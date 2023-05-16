@@ -207,6 +207,7 @@ const ProjectDetails = (props) => {
               >
                 <div>
                   <IconButton
+                    aria-label="close"
                     color="primary"
                     data-test="pc-button"
                     disabled={closeDisabled}

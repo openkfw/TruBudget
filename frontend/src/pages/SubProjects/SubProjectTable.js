@@ -158,6 +158,7 @@ const getTableEntries = ({
             <div style={styles.buttonContainer}>
               <div style={styles.button}>
                 <ActionButton
+                  ariaLabel="show subproject data"
                   notVisible={additionalDataEmpty}
                   onClick={() => {
                     showSubProjectAdditionalData(id);
@@ -169,6 +170,7 @@ const getTableEntries = ({
               </div>
               <div style={styles.button}>
                 <ActionButton
+                  ariaLabel="show edit dialog"
                   notVisible={!isOpen || editDisabled}
                   onClick={() => showEditDialog(id, displayName, description, currency, projectedBudgets)}
                   title={strings.common.edit}
@@ -178,6 +180,7 @@ const getTableEntries = ({
               </div>
               <div style={styles.button}>
                 <ActionButton
+                  ariaLabel="show subproject permissions"
                   notVisible={!canViewPermissions}
                   onClick={() => showSubProjectPermissions(id, displayName)}
                   title={strings.common.show_permissions}
@@ -187,6 +190,7 @@ const getTableEntries = ({
               </div>
               <div style={styles.button}>
                 <ActionButton
+                  ariaLabel="show subproject"
                   notVisible={!canViewSubProjectDetails(allowedIntents)}
                   onClick={() => {
                     storeSubSearchTerm("");

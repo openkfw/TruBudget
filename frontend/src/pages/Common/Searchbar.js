@@ -84,7 +84,7 @@ const Searchbar = ({
           ) : null}
         </Paper>
       ) : null}
-      <div>
+      <>
         {!isSearchBarDisplayedByDefault ? (
           // Lupe button to toggle searchbar
           <Tooltip
@@ -95,6 +95,7 @@ const Searchbar = ({
           >
             <div>
               <IconButton
+                aria-label="toggle searchbar"
                 color="primary"
                 onClick={() => {
                   storeSearchTerm("");
@@ -109,7 +110,7 @@ const Searchbar = ({
             </div>
           </Tooltip>
         ) : null}
-      </div>
+      </>
     </div>
   );
 };
