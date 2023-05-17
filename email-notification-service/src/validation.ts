@@ -45,7 +45,7 @@ schemes
     }),
   );
 
-const isBodyValid = (request, payload) => {
+const isBodyValid = (request, payload): boolean => {
   logger.debug({ request, payload }, "Checking request validity");
   const schema = schemes.get(request);
   if (!schema) {

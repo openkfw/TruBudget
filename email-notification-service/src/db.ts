@@ -16,7 +16,7 @@ class DbConnector {
   public executeQuery = async (
     query: Knex.QueryBuilder,
     errorMessage = "Failed to execute database operation\n",
-  ) => {
+  ): Promise<void> => {
     try {
       return await query;
     } catch (error) {
@@ -36,7 +36,7 @@ class DbConnector {
     return this.pool;
   };
 
-  public disconnect = async () => {
+  public disconnect = async (): Promise<void> => {
     if (this.pool) {
       await this.pool.destroy();
       logger.trace("Disconnected form DB");
@@ -47,7 +47,7 @@ class DbConnector {
     logger.debug("Starting health check");
     const client = await this.getDb();
     const tablesToCheck: string[] = [config.userTable];
-    const tablePromises: Promise<Knex.QueryBuilder[]> = Promise.all(
+    const tablePromises = Promise.all(
       tablesToCheck.map((table) => {
         logger.trace({ table }, "Checking table");
         const query: Knex.QueryBuilder = client.select().from(table).whereRaw("1=0");
@@ -57,7 +57,7 @@ class DbConnector {
     await tablePromises;
   };
 
-  public liveness = async () => {
+  public liveness = async (): Promise<{ status: number; statusText: string }> => {
     try {
       logger.debug("Starting to check database connection");
       await this.getDb();

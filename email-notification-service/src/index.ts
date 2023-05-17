@@ -81,7 +81,7 @@ emailService.post(
       return;
     }
 
-    (async () => {
+    (async (): Promise<void> => {
       logger.trace({ user }, "Fetching email address for user");
       const emailAddress: string = await db.getEmailAddress(user.id);
       if (emailAddress.length > 0) {
@@ -125,7 +125,7 @@ emailService.post(
       return;
     }
 
-    (async () => {
+    (async (): Promise<void> => {
       const emailAddress: string = await db.getEmailAddress(user.id);
       logger.trace("Fetching email address for user: ", user.id);
       let body: UserEditResponseBody;
@@ -172,7 +172,7 @@ emailService.post(
       return;
     }
 
-    (async () => {
+    (async (): Promise<void> => {
       await db.deleteUser(user.id, user.emailAddress);
       const body: UserEditResponseBody = {
         user: { id: user.id, status: "deleted", emailAddress: user.emailAddress },
@@ -210,7 +210,7 @@ emailService.get(
     }
 
     const id: string = req.query.id;
-    (async () => {
+    (async (): Promise<void> => {
       const emailAddress = await db.getEmailAddress(id);
       if (emailAddress.length > 0) {
         logger.trace("GET email address " + emailAddress + " for user " + id);
@@ -258,7 +258,7 @@ emailService.post(
     }
 
     let emailAddress: string;
-    (async () => {
+    (async (): Promise<void> => {
       logger.info(`Get email address of user ${id}`);
       emailAddress = await db.getEmailAddress(id);
       let body: NotificationResponseBody;
@@ -274,7 +274,7 @@ emailService.post(
         body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
         res.status(404).send(body);
       }
-    })().catch((error) => () => {
+    })().catch((error) => (): void => {
       logger.error({ err: error }, "Error while send notification");
       res.status(500).send(error);
     });
@@ -297,7 +297,7 @@ function isAllowed(requestedUserId: string, res: express.Response): boolean {
   return allowed;
 }
 
-function configureJWT() {
+function configureJWT(): void {
   logger.info("Configure with JWT authentication ...");
   if (!process.env.JWT_SECRET) {
     logger.error(
