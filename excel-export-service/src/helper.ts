@@ -1,7 +1,7 @@
 import strings from "./localizeStrings";
 import log from "./logger";
 
-export const statusMapping = (status) => {
+export const statusMapping = (status): string => {
   log.debug({ status }, "Mapping status");
 
   switch (status) {
@@ -14,7 +14,7 @@ export const statusMapping = (status) => {
   }
 };
 
-export const workflowItemTypeMapping = (type) => {
+export const workflowItemTypeMapping = (type): string => {
   log.debug({ type }, "Mapping workflowitem type");
 
   switch (type) {
@@ -23,11 +23,11 @@ export const workflowItemTypeMapping = (type) => {
     case "restricted":
       return strings.common.restricted;
     default:
-      return "";
+      return "unknown";
   }
 };
 
-export const amountTypesMapping = (amountType) => {
+export const amountTypesMapping = (amountType): string => {
   log.debug({ amountType }, "Mapping ammount type");
 
   switch (amountType) {
@@ -38,6 +38,6 @@ export const amountTypesMapping = (amountType) => {
     case "disbursed":
       return strings.workflowitem.disbursed;
     default:
-      break;
+      return "unknown";
   }
 };
