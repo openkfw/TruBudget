@@ -3,9 +3,7 @@ const axios = require("axios");
 const spawn = require("child_process").spawn;
 const fs = require("fs");
 const log = require("./log/logger");
-const mdLog = require("trubudget-logging-service").createPinoLogger(
-  "Multichain-Beta",
-);
+const mdLog = require("trubudget-logging-service").createPinoLogger("Multichain-Beta");
 const includeLoggingParamsToArgs = require("./log/logArguments");
 // global:
 let address;
@@ -100,41 +98,24 @@ function startBeta(
     // Store own wallet address into global "address"
     if (match) {
       address = match[0];
-      log.info(
-        "Wallet address registered. Entry added in nodes stream of network of alpha node, approval needed.",
-      );
+      log.info("Wallet address registered. Entry added in nodes stream of network of alpha node, approval needed.");
     }
   });
 
-  mc.stderr.on("data", (err) =>
-    log.error(Buffer.from(err).toString(), "Error in beta"),
-  );
+  mc.stderr.on("data", (err) => log.error(Buffer.from(err).toString(), "Error in beta"));
 
   mc.on("close", (code, signal) =>
-    mdLog.warn(
-      `Multichaind (beta node) closed with exit code ${code} and signal ${signal}.`,
-    ),
+    mdLog.warn(`Multichaind (beta node) closed with exit code ${code} and signal ${signal}.`),
   );
 
   return mc;
 }
 
-function askAlphaForPermissions(
-  address,
-  organization,
-  proto,
-  host,
-  port,
-  certPath,
-  certCaPath,
-  certKeyPath,
-) {
+function askAlphaForPermissions(address, organization, proto, host, port, certPath, certCaPath, certKeyPath) {
   const url = `${proto}://${host}:${port}/api/network.registerNode`;
   log.info(`Trying to register at ${url}`);
   if (certPath) {
-    log.debug(
-      `Connecting with alpha node using certificate ${certPath}, ca ${certCaPath},key ${certKeyPath} ...`,
-    );
+    log.debug(`Connecting with alpha node using certificate ${certPath}, ca ${certCaPath},key ${certKeyPath} ...`);
 
     const httpsAgent = new https.Agent(
       certCaPath && certKeyPath
@@ -171,45 +152,20 @@ function askAlphaForPermissions(
   });
 }
 
-async function registerNodeAtAlpha(
-  organization,
-  proto,
-  host,
-  port,
-  certPath,
-  certCaPath,
-  certKeyPath,
-) {
+async function registerNodeAtAlpha(organization, proto, host, port, certPath, certCaPath, certKeyPath) {
   const retryIntervalMs = 10000;
   try {
     log.info(`Waiting for registration at alpha node (${host}:${port})`);
     while (!address) {
-      log.debug(
-        "Wallet address not yet registered at alpha node waiting for 5 seconds ...",
-      );
+      log.debug("Wallet address not yet registered at alpha node waiting for 5 seconds ...");
       await relax(5000);
     }
 
-    log.info(
-      `Registering ${organization} node address ${address} via alpha API`,
-    );
-    await askAlphaForPermissions(
-      address,
-      organization,
-      proto,
-      host,
-      port,
-      certPath,
-      certCaPath,
-      certKeyPath,
-    );
+    log.info(`Registering ${organization} node address ${address} via alpha API`);
+    await askAlphaForPermissions(address, organization, proto, host, port, certPath, certCaPath, certKeyPath);
     log.info("Node address registered successfully (approval pending).");
   } catch (error) {
-    log.error(
-      `Could not register (${error}). Retry in ${
-        retryIntervalMs / 1000
-      } seconds ...`,
-    );
+    log.error(`Could not register (${error}). Retry in ${retryIntervalMs / 1000} seconds ...`);
     await relax(retryIntervalMs);
     await registerNodeAtAlpha(organization, proto, host, port, certPath);
   }

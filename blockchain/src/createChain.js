@@ -1,9 +1,7 @@
 const spawn = require("child_process").spawn;
 const shell = require("shelljs");
 const log = require("./log/logger");
-const mdLog = require("trubudget-logging-service").createPinoLogger(
-  "Multichain-Deamon",
-);
+const mdLog = require("trubudget-logging-service").createPinoLogger("Multichain-Deamon");
 const includeLoggingParamsToArgs = require("./log/logArguments");
 
 const configureChain = (
@@ -56,14 +54,7 @@ EOF
   shell.cp(`${multichainDir}/multichain.conf`, `${multichainDir}/${chainName}`);
 };
 
-const startMultichainDaemon = (
-  chainName,
-  externalIpArg,
-  blockNotifyArg,
-  P2P_PORT,
-  multichainDir,
-  connectArg = "",
-) => {
+const startMultichainDaemon = (chainName, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir, connectArg = "") => {
   const args = includeLoggingParamsToArgs([
     "-txindex",
     `${chainName}`,

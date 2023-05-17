@@ -5,7 +5,7 @@ const ignore = require("ignore");
 const each = require("async-each");
 const sha256File = require("sha256-file");
 
-function sha256Dir (dirname, options, cb) {
+function sha256Dir(dirname, options, cb) {
   if (typeof options === "function") {
     cb = options;
     options = {};
@@ -18,13 +18,13 @@ function sha256Dir (dirname, options, cb) {
   if (options.ignore) {
     ig.add(options.ignore);
   }
-  function run (prefix, cb) {
+  function run(prefix, cb) {
     fs.readdir(path.join(dirname, prefix), function (err, files) {
       if (err) {
         return cb(err);
       }
 
-      function iterator (file, cb) {
+      function iterator(file, cb) {
         const relativeFilepath = path.join(prefix, file);
 
         if (ig.ignores(relativeFilepath)) {
@@ -50,7 +50,7 @@ function sha256Dir (dirname, options, cb) {
         });
       }
 
-      each(files, iterator, function done (err, hashes) {
+      each(files, iterator, function done(err, hashes) {
         if (err) {
           return cb(err);
         }
@@ -71,7 +71,7 @@ function sha256Dir (dirname, options, cb) {
   return run("", cb);
 }
 
-function sha256DirAsPromised (dirname) {
+function sha256DirAsPromised(dirname) {
   return new Promise(function (resolve, reject) {
     sha256Dir(dirname, { ignore: ["**/metadata.yml"] }, function (err, hash) {
       if (err) {
@@ -84,5 +84,5 @@ function sha256DirAsPromised (dirname) {
 }
 
 module.exports = {
-  sha256Dir: sha256DirAsPromised
+  sha256Dir: sha256DirAsPromised,
 };

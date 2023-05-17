@@ -5,12 +5,7 @@ const { sha256Dir } = require("./sha256");
 
 const logger = require("./log/logger");
 
-
-const createMetadataFileSha256 = async (
-  chainName,
-  multichainDir,
-  organisation,
-) => {
+const createMetadataFileSha256 = async (chainName, multichainDir, organisation) => {
   let dirHash;
   try {
     dirHash = await sha256Dir(`${multichainDir}/${chainName}`);
