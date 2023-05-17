@@ -33,7 +33,7 @@ function apply(
   systemInformation: SystemInformation.SystemInformation,
   event: BusinessEvent,
   errors: EventSourcingError[],
-) {
+): void {
   if (event.type === "provisioning_started") {
     applyProvisioningStarted(ctx, systemInformation, event, errors);
   }
@@ -47,7 +47,7 @@ function applyProvisioningStarted(
   systemInformation: SystemInformation.SystemInformation,
   event: ProvisioningStarted.Event,
   errors: EventSourcingError[],
-) {
+): void {
   // Ignore all start events if the provisioning end flag is set
   if (systemInformation.provisioningStatus.isProvisioned) {
     return;
@@ -67,7 +67,7 @@ function applyProvisioningEnded(
   systemInformation: SystemInformation.SystemInformation,
   event: ProvisioningEnded.Event,
   errors: EventSourcingError[],
-) {
+): void {
   systemInformation.provisioningStatus = {
     isProvisioned: true,
     message: "Provisioning ended flag set. Trubudget seems to be provisioned.",

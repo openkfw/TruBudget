@@ -79,9 +79,7 @@ interface Repository {
     subprojectId: string,
     workflowitemId: string,
   ): Promise<boolean>;
-  userExists(
-    userId: string
-  ): Promise<Result.Type<boolean>>;
+  userExists(userId: string): Promise<Result.Type<boolean>>;
   getUser(userId: string): Promise<Result.Type<UserRecord.UserRecord>>;
   getSubproject(
     projectId: string,
@@ -99,7 +97,7 @@ interface Repository {
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
 }
 
-function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
+function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string): boolean {
   return allDocuments.some((doc) => doc.id === docId);
 }
 
@@ -208,9 +206,7 @@ export async function createWorkflowitem(
   }
 
   logger.trace({ item: workflowitemCreated }, "Check if assignee exists");
-  const userExistsResult = await repository.userExists(
-    workflowitemCreated.workflowitem.assignee
-  );
+  const userExistsResult = await repository.userExists(workflowitemCreated.workflowitem.assignee);
 
   if (Result.isErr(userExistsResult)) {
     return new VError(userExistsResult, "user exists check failed");
@@ -218,16 +214,11 @@ export async function createWorkflowitem(
 
   const userExists = userExistsResult;
 
-  if(!userExists) {
-    return new PreconditionError(
-      ctx,
-      workflowitemCreated,
-      "assigned user does not exist!");
+  if (!userExists) {
+    return new PreconditionError(ctx, workflowitemCreated, "assigned user does not exist!");
   }
 
-  const userResult = await repository.getUser(
-    workflowitemCreated.workflowitem.assignee
-    );
+  const userResult = await repository.getUser(workflowitemCreated.workflowitem.assignee);
 
   if (Result.isErr(userResult)) {
     return new VError(userResult, "user check failed");
@@ -235,11 +226,11 @@ export async function createWorkflowitem(
 
   const userPermissions = userResult.permissions;
 
-  if(!userPermissions["user.authenticate"] || !userPermissions["user.authenticate"].length) {
+  if (!userPermissions["user.authenticate"] || !userPermissions["user.authenticate"].length) {
     return new PreconditionError(
       ctx,
       workflowitemCreated,
-      "disabled users are not allowed to be assigned to workflowitems"
+      "disabled users are not allowed to be assigned to workflowitems",
     );
   }
 
@@ -291,8 +282,8 @@ export async function createWorkflowitem(
     workflowitemCreated.workflowitem.amountType !== "N/A" &&
     workflowitemCreated.workflowitem.exchangeRate === undefined
   ) {
-      workflowitemCreated.workflowitem.exchangeRate = "1.0";
-    }
+    workflowitemCreated.workflowitem.exchangeRate = "1.0";
+  }
 
   return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
 

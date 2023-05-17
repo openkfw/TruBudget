@@ -7,6 +7,7 @@ import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { Workflowitem } from "./workflowitem";
 import { getAllVisible } from "./workflowitem_list";
+import { Type } from "../../../result";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";
@@ -40,8 +41,8 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const baseRepository = {
-  getWorkflowitems: async () => [baseWorkflowitem],
-  getWorkflowitemOrdering: async () => [],
+  getWorkflowitems: async (): Promise<Workflowitem[]> => [baseWorkflowitem],
+  getWorkflowitemOrdering: async (): Promise<Type<string[]>> => [],
 };
 
 describe("list workflowitems: authorization", () => {

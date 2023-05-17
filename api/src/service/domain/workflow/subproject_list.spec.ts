@@ -6,6 +6,7 @@ import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import { Subproject } from "./subproject";
 import { getAllVisible } from "./subproject_list";
+import { Workflowitem } from "httpd";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";
@@ -36,9 +37,9 @@ const baseSubproject: Subproject = {
 };
 
 const baseRepository = {
-  getAllSubprojects: async () => [baseSubproject],
-  getWorkflowitems: async () => [],
-  getUsersForIdentity: async (identity: string) => {
+  getAllSubprojects: async (): Promise<Subproject[]> => [baseSubproject],
+  getWorkflowitems: async (): Promise<Workflowitem[]> => [],
+  getUsersForIdentity: async (identity: string): Promise<string[]> => {
     if (identity === "alice") return ["alice"];
     if (identity === "root") return ["root"];
     throw Error(`unexpected identity: ${identity}`);

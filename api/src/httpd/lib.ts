@@ -24,11 +24,11 @@ export interface ErrorResponse {
 export type HttpStatusCode = number;
 export type HttpResponse = [HttpStatusCode, SuccessResponse | ErrorResponse];
 
-export const throwParseError = (badKeys, message?) => {
+export const throwParseError = (badKeys, message?): TruBudgetError => {
   throw new TruBudgetError({ kind: "ParseError", badKeys, message });
 };
 
-export const throwParseErrorIfUndefined = (obj, path) => {
+export const throwParseErrorIfUndefined = (obj, path): void => {
   try {
     const val = path.reduce((acc, x) => acc[x], obj);
     logger.debug({ parsedValues: { obj, path, val } }, "Checking parsed values");

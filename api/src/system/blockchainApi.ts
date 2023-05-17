@@ -1,11 +1,10 @@
-import axios from "axios";
-import _isEmpty from "lodash/isEmpty";
+import axios, { AxiosResponse } from "axios";
 import { performance } from "perf_hooks";
 
 const instance = axios.create();
 
 class BlockchainApi {
-  timeStamp: number = 0;
+  timeStamp = 0;
 
   constructor() {
     instance.interceptors.request.use((request) => {
@@ -23,11 +22,11 @@ class BlockchainApi {
     });
   }
 
-  setBaseUrl = (url) => {
+  setBaseUrl = (url): void => {
     instance.defaults.baseURL = `${url}`;
   };
 
-  fetchVersion = () => instance.get("/version");
+  fetchVersion = (): Promise<AxiosResponse> => instance.get("/version");
 }
 
 export default BlockchainApi;

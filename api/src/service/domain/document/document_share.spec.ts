@@ -8,6 +8,7 @@ import { UserRecord } from "../organization/user_record";
 import { Workflowitem } from "../workflow/workflowitem";
 import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
 import { RequestData, shareDocument } from "./document_share";
+import { SecretPublished } from "./document_shared";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -92,14 +93,15 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const repository = {
-  encryptWithKey: (secret, publicKey) => Promise.resolve("plain"),
-  decryptWithKey: (secret, privateKey) => Promise.resolve("secret"),
-  getPublicKey: (organization) => Promise.resolve(organization),
-  getPrivateKey: (organization) => Promise.resolve(""),
-  getSecret: (docId, organization) => Promise.resolve(secret),
-  secretAlreadyExists: (docId, organization) => Promise.resolve(false),
-  getWorkflowitem: (projectId, subprojectId, workflowitemId) => Promise.resolve(baseWorkflowitem),
-  getDocumentInfo: (docId) => Promise.resolve(documentInfo),
+  encryptWithKey: (secret, publicKey): Promise<string> => Promise.resolve("plain"),
+  decryptWithKey: (secret, privateKey): Promise<string> => Promise.resolve("secret"),
+  getPublicKey: (organization): Promise<string> => Promise.resolve(organization),
+  getPrivateKey: (organization): Promise<string> => Promise.resolve(""),
+  getSecret: (docId, organization): Promise<SecretPublished> => Promise.resolve(secret),
+  secretAlreadyExists: (docId, organization): Promise<boolean> => Promise.resolve(false),
+  getWorkflowitem: (projectId, subprojectId, workflowitemId): Promise<Workflowitem> =>
+    Promise.resolve(baseWorkflowitem),
+  getDocumentInfo: (docId): Promise<StoredDocument> => Promise.resolve(documentInfo),
 };
 
 describe("Share a document", async () => {

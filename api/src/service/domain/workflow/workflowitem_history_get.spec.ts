@@ -83,7 +83,7 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const baseRepository = {
-  getWorkflowitem: async () => baseWorkflowitem,
+  getWorkflowitem: async (): Promise<Workflowitem> => baseWorkflowitem,
 };
 
 describe("get worklfowitem history: authorization", () => {

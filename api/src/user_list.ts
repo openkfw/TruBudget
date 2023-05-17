@@ -16,7 +16,7 @@ import { Permissions } from "./service/domain/permissions";
  * @param server fastify server
  * @returns the swagger schema for this endpoint
  */
-function mkSwaggerSchema(server: AugmentedFastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
   return {
     preValidation: [server.authenticate],
     schema: {
@@ -90,7 +90,7 @@ export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
   service: Service,
-) {
+): void {
   server.register(async function () {
     server.get(`${urlPrefix}/user.list`, mkSwaggerSchema(server), async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };

@@ -20,7 +20,7 @@ interface KeyPair {
   privateKey: string;
 }
 
-const isKeyValid = (privateKey: string, publicKey: string) => {
+const isKeyValid = (privateKey: string, publicKey: string): boolean => {
   const testKeyString = "TESTKEYSTRING";
   try {
     const encryptedString = AsymmetricCrypto.encryptWithKey(testKeyString, publicKey);

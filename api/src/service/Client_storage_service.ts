@@ -20,7 +20,7 @@ interface UploadRequest {
 export default class StorageServiceClient implements StorageServiceClientI {
   private axiosInstance: AxiosInstance;
 
-  private timeStamp: number = 0;
+  private timeStamp = 0;
 
   constructor(settings: AxiosRequestConfig) {
     logger.debug("Setting up StorageServiceClient");
@@ -133,7 +133,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
     return documentObject;
   }
 
-  public getAxiosInstance() {
+  public getAxiosInstance(): AxiosInstance {
     return this.axiosInstance;
   }
 }

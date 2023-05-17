@@ -93,9 +93,9 @@ const baseWorkflowitem: Workflowitem.Workflowitem = {
 const baseUserAssignments: UserAssignments.UserAssignments = { userId: "baseUser" };
 
 const baseRepository = {
-  getGlobalPermissions: async () => basePermissions,
-  getUser: async () => baseUser,
-  getUserAssignments: async () => baseUserAssignments,
+  getGlobalPermissions: async (): Promise<GlobalPermissions.GlobalPermissions> => basePermissions,
+  getUser: async (): Promise<UserRecord> => baseUser,
+  getUserAssignments: async (): Promise<UserAssignments.UserAssignments> => baseUserAssignments,
 };
 
 describe("Disable users: permissions", () => {

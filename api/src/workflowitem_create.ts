@@ -85,7 +85,7 @@ function validateRequestBody(body: unknown): Result.Type<RequestBody> {
  * @param server fastify server
  * @returns the swagger schema for this endpoint
  */
-function mkSwaggerSchema(server: AugmentedFastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
   return {
     preValidation: [server.authenticate],
     schema: {
@@ -206,7 +206,7 @@ export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
   service: Service,
-) {
+): void {
   server.register(async function () {
     server.post(
       `${urlPrefix}/subproject.createWorkflowitem`,

@@ -32,7 +32,7 @@ export async function isSameDocument(
 ): Promise<Result.Type<boolean>> {
   logger.debug(`Validating wether passed hash matches document "${documentId}"`);
 
-  let isDocumentValid: boolean = false;
+  let isDocumentValid = false;
   try {
     const hash = crypto.createHash("sha256");
     hash.update(Buffer.from(documentBase64, "base64"));

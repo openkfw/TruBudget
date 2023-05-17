@@ -6,6 +6,8 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "./service_user";
 import { createUser, RequestData } from "./user_create";
+import { KeyPair } from "./key_pair";
+import * as GlobalPermissions from "../workflow/global_permissions";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";
@@ -36,13 +38,14 @@ const dummyKeyPair = {
 };
 
 const baseRepository = {
-  getGlobalPermissions: () => Promise.resolve(noPermissions),
-  userExists: (userId) => Promise.resolve(false),
-  groupExists: (userId) => Promise.resolve(false),
-  organizationExists: (organization) => Promise.resolve(true),
-  createKeyPair: () => Promise.resolve(dummyKeyPair),
-  hash: (plaintext) => Promise.resolve("dummyHash"),
-  encrypt: (plaintext) => Promise.resolve("dummyEncrypted"),
+  getGlobalPermissions: (): Promise<GlobalPermissions.GlobalPermissions> =>
+    Promise.resolve(noPermissions),
+  userExists: (userId): Promise<boolean> => Promise.resolve(false),
+  groupExists: (userId): Promise<boolean> => Promise.resolve(false),
+  organizationExists: (organization): Promise<boolean> => Promise.resolve(true),
+  createKeyPair: (): Promise<KeyPair> => Promise.resolve(dummyKeyPair),
+  hash: (plaintext): Promise<string> => Promise.resolve("dummyHash"),
+  encrypt: (plaintext): Promise<string> => Promise.resolve("dummyEncrypted"),
 };
 
 describe("Create a new user: authorization", () => {

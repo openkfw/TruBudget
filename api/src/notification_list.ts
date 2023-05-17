@@ -18,7 +18,7 @@ import * as Workflowitem from "./service/domain/workflow/workflowitem";
  * @param server fastify server
  * @returns the swagger schema for this endpoint
  */
-function mkSwaggerSchema(server: AugmentedFastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
   return {
     preValidation: [server.authenticate],
     schema: {
@@ -403,7 +403,7 @@ export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
   service: Service,
-) {
+): void {
   server.register(async function () {
     server.get<Request>(
       `${urlPrefix}/notification.list`,
@@ -418,7 +418,7 @@ export function addHttpHandler(
         };
 
         // Default: last created history event
-        let offset: number = 0;
+        let offset = 0;
         if (request.query.offset !== undefined) {
           offset = parseInt(request.query.offset, 10);
           if (isNaN(offset)) {

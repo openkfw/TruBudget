@@ -9,7 +9,7 @@ export const htmlStrip = {
   },
   rules: {
     htmlStrip: {
-      validate(value, helpers) {
+      validate(value, helpers): string {
         const clean = sanitizeHtml(value, {
           allowedTags: [],
           allowedAttributes: {},

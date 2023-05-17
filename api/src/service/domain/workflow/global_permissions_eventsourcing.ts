@@ -25,7 +25,7 @@ function apply(
   globalPerms: GlobalPermissions.GlobalPermissions,
   event: BusinessEvent,
   errors: EventSourcingError[],
-) {
+): void {
   if (event.type === "global_permission_granted") {
     applyGrantPermission(ctx, globalPerms, event, errors);
   }
@@ -39,7 +39,7 @@ function applyGrantPermission(
   globalPerms: GlobalPermissions.GlobalPermissions,
   permissionGranted: GlobalPermissionGranted.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace({ event: permissionGranted }, "Applying grant permission event");
 
   const eligibleIdentities = globalPerms.permissions[permissionGranted.permission] || [];
@@ -68,7 +68,7 @@ function applyRevokePermission(
   globalPerms: GlobalPermissions.GlobalPermissions,
   permissionRevoked: GlobalPermissionRevoked.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace({ event: permissionRevoked }, "Applying permission revoked event");
   const eligibleIdentities = globalPerms.permissions[permissionRevoked.permission];
   if (eligibleIdentities !== undefined) {

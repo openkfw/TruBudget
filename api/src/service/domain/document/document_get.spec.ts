@@ -95,10 +95,10 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const repository = {
-  getDocumentsEvents: () => Promise.resolve([]),
-  getAllProjects: () => Promise.resolve([]),
-  getAllSubprojects: () => Promise.resolve([]),
-  getAllWorkflowitems: () => Promise.resolve([]),
+  getDocumentsEvents: (): Promise<Result.Type<BusinessEvent[]>> => Promise.resolve([]),
+  getAllProjects: (): Promise<Project[]> => Promise.resolve([]),
+  getAllSubprojects: (): Promise<Subproject[]> => Promise.resolve([]),
+  getAllWorkflowitems: (): Promise<Workflowitem[]> => Promise.resolve([]),
 };
 
 describe("Documents from storage service", () => {

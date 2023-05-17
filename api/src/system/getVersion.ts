@@ -20,7 +20,7 @@ const bcVersionMetaData = async (blockchainHost, blockchainPort): Promise<Versio
   return data;
 };
 
-const apiVersionMetaData = () => {
+const apiVersionMetaData = (): VersionMetadata => {
   const metaData: VersionMetadata = {
     release: config.npmPackageVersion,
     commit: config.ciCommitSha,

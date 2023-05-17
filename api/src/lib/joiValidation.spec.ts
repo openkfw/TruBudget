@@ -1,4 +1,4 @@
-import { expect, assert } from "chai";
+import { expect } from "chai";
 import { safeIdSchema, safePasswordSchema, safeStringSchema } from "./joiValidation";
 import Joi = require("joi");
 

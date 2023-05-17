@@ -16,8 +16,8 @@ export * from "./event";
 export * from "./issuer";
 export * from "./ProjectEvents";
 
-const workflowitemsGroupKey = (subprojectId) => `${subprojectId}_workflows`;
-const workflowitemOrderingKey = (subprojectId) => `${subprojectId}_workflowitem_ordering`;
+const workflowitemsGroupKey = (subprojectId): string => `${subprojectId}_workflows`;
+const workflowitemOrderingKey = (subprojectId): string => `${subprojectId}_workflowitem_ordering`;
 const globalSelfKey = "self";
 
 interface Update {
@@ -78,7 +78,8 @@ export async function grantGlobalPermission(
 
   logger.debug(`Publishing ${grantintent} to ${streamName}/${streamItemKey}`);
 
-  const publishEvent = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publishEvent = (): any => {
     return conn.multichainClient
       .getRpcClient()
       .invokePublish(streamName, streamItemKey, streamItem)
@@ -132,7 +133,8 @@ export async function revokeGlobalPermission(
 
   logger.debug(`Publishing ${revokeIntent} to ${streamName}/${streamItemKey}`);
 
-  const publishEvent = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publishEvent = (): any => {
     return conn.multichainClient
       .getRpcClient()
       .invokePublish(streamName, streamItemKey, streamItem)

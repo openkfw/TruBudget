@@ -60,9 +60,9 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const baseRepository = {
-  getSubproject: async () => baseSubproject,
-  getWorkflowitems: async () => [],
-  getUsersForIdentity: async (identity) => {
+  getSubproject: async (): Promise<Subproject> => baseSubproject,
+  getWorkflowitems: async (): Promise<Workflowitem[]> => [],
+  getUsersForIdentity: async (identity): Promise<string[]> => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     if (identity === "charlie") return ["charlie"];

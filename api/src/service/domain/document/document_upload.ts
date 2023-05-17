@@ -18,20 +18,16 @@ export interface RequestData {
 
 type Base64String = string;
 
-interface DocumentStorageServiceResponse {
-  id: string;
-  secret: string;
-}
-
 interface Repository {
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
-  storeDocument(id, name, hash): Promise<Result.Type<DocumentStorageServiceResponse>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  storeDocument(id, name, hash): Promise<any>;
   encryptWithKey(secret, publicKey): Promise<Result.Type<string>>;
   getPublicKey(organization): Promise<Result.Type<Base64String>>;
   getUser(userId: string): Promise<Result.Type<UserRecord.UserRecord>>;
 }
 
-function docIdAlreadyExists(existingDocuments: GenericDocument[], docId: string) {
+function docIdAlreadyExists(existingDocuments: GenericDocument[], docId: string): boolean {
   return existingDocuments.some((doc) => doc.id === docId);
 }
 

@@ -40,8 +40,8 @@ const requestData: RequestData = {
 };
 
 const baseRepository = {
-  getUser: () => Promise.resolve(passwordChangeUser),
-  hash: () => Promise.resolve("passwordHash"),
+  getUser: (): Promise<UserRecord> => Promise.resolve(passwordChangeUser),
+  hash: (): Promise<string> => Promise.resolve("passwordHash"),
 };
 
 describe("change a user's password: authorization", () => {

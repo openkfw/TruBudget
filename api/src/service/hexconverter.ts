@@ -1,12 +1,12 @@
-function d2h(d) {
+function d2h(d): string {
   return d.toString(16);
 }
 
-function h2d(h) {
+function h2d(h): number {
   return parseInt(h, 16);
 }
 
-export const stringToHex = (text = "") => {
+export const stringToHex = (text = ""): string => {
   let str = "";
   let i = 0;
   const tmpLen = text.length;
@@ -20,7 +20,7 @@ export const stringToHex = (text = "") => {
   return str;
 };
 
-export const hexToString = (hex) => {
+export const hexToString = (hex): string => {
   const hexArray = hex.match(/.{2}/g);
   let str = "";
   let i = 0;
@@ -35,19 +35,19 @@ export const hexToString = (hex) => {
   return str;
 };
 
-export const objectToHex = (object) => {
+export const objectToHex = (object): string => {
   const cleansedString = removeControlCharacter(JSON.stringify(object));
   return stringToHex(cleansedString);
 };
 
-const removeControlCharacter = (json) => json.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+const removeControlCharacter = (json): string => json.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
 
 // const removeInvisibleChars = (x: string): string => x.replace(/[^\P{C}]/gu, "");
 
 /*
  * Parse hex string, throws if not parseable.
  */
-export const hexToObject = (hex) => {
+export const hexToObject = (hex): Object => {
   const cleansedString = removeControlCharacter(hexToString(hex));
   return JSON.parse(cleansedString);
 };

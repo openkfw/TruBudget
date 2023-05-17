@@ -8,7 +8,12 @@ export function isNonemptyString(x: unknown): boolean {
   return typeof x === "string" && x.length > 0;
 }
 
-export async function isUserOrUndefined(conn: ConnToken, ctx: Ctx, issuer: ServiceUser, input) {
+export async function isUserOrUndefined(
+  conn: ConnToken,
+  ctx: Ctx,
+  issuer: ServiceUser,
+  input,
+): Promise<boolean> {
   if (input === undefined) {
     return true;
   }
@@ -33,16 +38,18 @@ export function findBadKeysInObject(
 ): string[] {
   return expectedKeys.filter((key) => typeof candidate !== "object" || !isGood(candidate[key]));
 }
-export function isDate(date: string) {
+export function isDate(date: string): Date {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
 }
 
-export function isNumber(x) {
+export function isNumber(x): boolean {
   return !isNaN(x);
 }
 
-export function value(name, val, isValid, defaultValue?) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function value(name, val, isValid, defaultValue?): any {
   if (val === undefined) {
     val = defaultValue; // might be undefined
   }
@@ -50,7 +57,8 @@ export function value(name, val, isValid, defaultValue?) {
   return val;
 }
 
-export async function asyncValue(multichain, name, val, isValid, defaultValue?) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function asyncValue(multichain, name, val, isValid, defaultValue?): Promise<any> {
   if (val === undefined) {
     val = defaultValue; // might be undefined
   }
@@ -60,6 +68,6 @@ export async function asyncValue(multichain, name, val, isValid, defaultValue?) 
   return val;
 }
 
-export function isObject(x) {
+export function isObject(x): boolean {
   return x != null && typeof x === "object";
 }

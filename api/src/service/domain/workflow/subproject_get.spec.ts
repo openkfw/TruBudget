@@ -37,7 +37,7 @@ const baseSubproject: Subproject = {
 };
 
 const baseRepository = {
-  getSubproject: async () => baseSubproject,
+  getSubproject: async (): Promise<Subproject> => baseSubproject,
 };
 
 describe("get subproject: authorization", () => {

@@ -55,7 +55,7 @@ interface Repository {
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
 }
 
-function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string) {
+function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string): boolean {
   return allDocuments.some((doc) => doc.id === docId);
 }
 

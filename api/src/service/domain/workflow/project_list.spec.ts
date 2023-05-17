@@ -36,8 +36,8 @@ const notPermittedProject: Project = {
   permissions: {},
 };
 const baseRepository = {
-  getAllProjects: async () => [baseProject],
-  getUsersForIdentity: async (identity: string) => {
+  getAllProjects: async (): Promise<Project[]> => [baseProject],
+  getUsersForIdentity: async (identity: string): Promise<string[]> => {
     if (identity === "alice") return ["alice"];
     if (identity === "root") return ["root"];
     throw Error(`unexpected identity: ${identity}`);

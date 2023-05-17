@@ -38,8 +38,8 @@ const requestData: RequestData = {
 };
 
 const baseRepository = {
-  getGlobalPermissions: async () => basePermissions,
-  getUser: async () => baseUser,
+  getGlobalPermissions: async (): Promise<GlobalPermissions.GlobalPermissions> => basePermissions,
+  getUser: async (): Promise<UserRecord> => baseUser,
 };
 
 describe("enable users: permissions", () => {

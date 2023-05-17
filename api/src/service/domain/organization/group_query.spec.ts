@@ -10,9 +10,9 @@ import { ServiceUser } from "./service_user";
 import { UserRecord } from "./user_record";
 
 // Globals as test fixture (ignored by the mock'ed code):
-const conn = (null as any) as ConnToken;
-const ctx = (null as any) as Ctx;
-const issuer = (null as any) as ServiceUser;
+const conn = null as any as ConnToken;
+const ctx = null as any as Ctx;
+const issuer = null as any as ServiceUser;
 
 function newGroup(id: string, members: string[]): Group.Group {
   return {

@@ -14,7 +14,7 @@ const address = "address";
 const alice: ServiceUser = { id: "alice", groups: ["alice"], address };
 const publicKey = "public_key";
 const repository = {
-  getPublicKey: (_organization) => Promise.resolve(publicKey),
+  getPublicKey: (_organization): Promise<string> => Promise.resolve(publicKey),
 };
 
 const requestData = { organization: "organization", publicKey: "newPublicKey" };

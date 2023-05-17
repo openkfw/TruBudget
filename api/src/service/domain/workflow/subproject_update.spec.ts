@@ -45,8 +45,8 @@ const baseSubproject: Subproject = {
 };
 
 const baseRepository = {
-  getSubproject: async () => baseSubproject,
-  getUsersForIdentity: async (identity: string) => {
+  getSubproject: async (): Promise<Subproject> => baseSubproject,
+  getUsersForIdentity: async (identity: string): Promise<string[]> => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     if (identity === "charlie") return ["charlie"];

@@ -916,7 +916,7 @@ server.listen({ port, host: "0.0.0.0" }, async (err) => {
  * @returns a copy of the current Rpc {@link ConnectionSettings} without the RPC password
  * @notExported
  */
-function rpcSettingsWithoutPassword(settings) {
+function rpcSettingsWithoutPassword(settings): ConnectionSettings {
   const tmp = deepcopy(settings);
   delete tmp.password;
   return tmp;

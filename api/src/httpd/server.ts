@@ -12,8 +12,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyStatic from "@fastify/static";
 import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
-
-const path = require("path");
+import * as path from "path";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -29,7 +28,7 @@ const ajv = new Ajv({
   keywords: ["example"],
 });
 
-const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
+const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
   server.register(fastifyJwt, {
     secret: jwtSecret,
     cookie: {
@@ -38,12 +37,11 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
     },
   });
 
-  server
-    .register(fastifyCookie);
+  server.register(fastifyCookie);
 
   server.decorate("authenticate", async (request, reply) => {
     try {
-      if (!(request.headers.authorization) && request.cookies.token) {
+      if (!request.headers.authorization && request.cookies.token) {
         request.headers.authorization = `Bearer ${request.cookies.token}`;
       }
       await request.jwtVerify();
@@ -57,7 +55,7 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string) => {
   });
 };
 
-const addLogging = (server: FastifyInstance) => {
+const addLogging = (server: FastifyInstance): void => {
   server.addHook("preHandler", (req, _reply, done) => {
     req.log.debug({
       id: req.id,
@@ -78,7 +76,7 @@ const addLogging = (server: FastifyInstance) => {
   });
 };
 
-const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: number) => {
+const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: number): void => {
   server.register(fastifySwagger, {
     // Swagger documentation is available at: http://localhost:8080/api/documentation/static/index.html
     swagger: {
@@ -125,10 +123,10 @@ const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: n
 
   server.register(fastifySwaggerUi, {
     // Swagger documentation is available at: http://localhost:8080/api/documentation/static/index.html
-    routePrefix: `${urlPrefix}/documentation`,  
+    routePrefix: `${urlPrefix}/documentation`,
     uiConfig: {
       docExpansion: "list",
-    },   
+    },
   });
 };
 
@@ -137,7 +135,7 @@ export const createBasicApp = (
   urlPrefix: string,
   apiPort: number,
   accessControlAllowOrigin: string,
-) => {
+): FastifyInstance => {
   const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger,
     bodyLimit: 104857600,

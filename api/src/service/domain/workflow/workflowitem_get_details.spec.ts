@@ -50,8 +50,8 @@ const uploadedDocument: UploadedDocument = {
 };
 
 const baseRepository = {
-  getWorkflowitem: async () => baseWorkflowitem,
-  downloadDocument: async (docId: string) => uploadedDocument,
+  getWorkflowitem: async (): Promise<Workflowitem> => baseWorkflowitem,
+  downloadDocument: async (docId: string): Promise<UploadedDocument> => uploadedDocument,
 };
 
 describe("get workflowitems: authorization", () => {

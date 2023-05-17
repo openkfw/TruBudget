@@ -88,7 +88,8 @@ export async function publish(
   const streamItemKey = address;
   const streamItem = { json: event };
 
-  const publishEvent = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publishEvent = (): any => {
     logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
     return multichain
       .getRpcClient()
@@ -307,7 +308,7 @@ export async function getNetworkPermissions(
   address: WalletAddress,
   organizationsByAddress?: Map<WalletAddress, Organization>,
 ): Promise<PermissionInfo[]> {
-  const augment = (addr) => augmentAddress(addr, organizationsByAddress);
+  const augment = (addr): AugmentedWalletAddress => augmentAddress(addr, organizationsByAddress);
 
   const permissions: NetworkPermission[] = ["connect", "admin"];
   const isVerbose = true;

@@ -23,7 +23,7 @@ const secretPublishedEvent: BusinessEvent = {
 };
 
 const repository = {
-  getSecretPublishedEvents: () => Promise.resolve([secretPublishedEvent]),
+  getSecretPublishedEvents: (): Promise<BusinessEvent[]> => Promise.resolve([secretPublishedEvent]),
 };
 
 describe("Get secrets for storage-service", async () => {

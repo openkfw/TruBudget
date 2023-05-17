@@ -171,7 +171,7 @@ export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
   service: Service,
-) {
+): void {
   server.register(async function () {
     server.post(`${urlPrefix}/global.createProject`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };

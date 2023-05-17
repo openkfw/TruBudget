@@ -39,9 +39,10 @@ const requestData: RequestData = {
 };
 
 const baseRepository = {
-  getGlobalPermissions: () => Promise.resolve(noPermissions),
-  groupExists: () => Promise.resolve(false),
-  userExists: () => Promise.resolve(false),
+  getGlobalPermissions: (): Promise<GlobalPermissions.GlobalPermissions> =>
+    Promise.resolve(noPermissions),
+  groupExists: (): Promise<boolean> => Promise.resolve(false),
+  userExists: (): Promise<boolean> => Promise.resolve(false),
 };
 
 describe("Create a new group: authorization", () => {

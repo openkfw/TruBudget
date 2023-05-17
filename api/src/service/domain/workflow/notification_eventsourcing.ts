@@ -31,7 +31,7 @@ function apply(
   notificationsById: NotificationsById,
   event: BusinessEvent,
   errors: EventSourcingError[],
-) {
+): void {
   if (event.type === "notification_created") {
     handleCreate(ctx, notificationsById, event, errors);
   } else if (event.type === "notification_marked_read") {
@@ -44,7 +44,7 @@ function handleCreate(
   notificationsById: NotificationsById,
   notificationCreated: NotificationCreated.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace({ event: notificationCreated }, "Applying notification_created event");
 
   let notification = notificationsById.get(notificationCreated.notificationId);
@@ -89,7 +89,7 @@ function applyRead(
   notificationsById: NotificationsById,
   notificationRead: NotificationMarkedRead.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace({ event: notificationRead }, "Applying notification_mark_read event");
   const notification = deepcopy(notificationsById.get(notificationRead.notificationId));
   if (notification === undefined) {

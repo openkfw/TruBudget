@@ -46,7 +46,7 @@ const dummyEventWithPermissions = [
   },
 ];
 const baseRepository = {
-  getGroupEvents: async () => Promise.resolve(dummyEvent),
+  getGroupEvents: async (): Promise<BusinessEvent[]> => Promise.resolve(dummyEvent),
 };
 
 describe("Remove member from group: authorization", () => {

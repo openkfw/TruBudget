@@ -4,7 +4,7 @@ export interface SwaggerSchema extends FastifySchema {
   description: string;
   tags: string[];
   summary: string;
-  security?: { [securityLabel: string]: string[]; }[] | undefined
+  security?: { [securityLabel: string]: string[] }[] | undefined;
   consumes?: string[];
 }
 
@@ -22,7 +22,7 @@ interface Schemas {
 //       Responses
 // ------------------------------------------------------------
 
-function getAuthErrorSchema() {
+function getAuthErrorSchema(): Object {
   return {
     description: "Unauthorized request",
     type: "object",
@@ -42,7 +42,7 @@ function getAuthErrorSchema() {
   };
 }
 
-function getSuccessfulSchema() {
+function getSuccessfulSchema(): { description: string; type: string } {
   return {
     description: "successful response",
     type: "object",

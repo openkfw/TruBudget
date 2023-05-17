@@ -43,8 +43,8 @@ const baseWorkflowitem: Workflowitem = {
 };
 
 const baseRepository = {
-  applyWorkflowitemType: () => [],
-  getWorkflowitem: async () => baseWorkflowitem,
+  applyWorkflowitemType: (): Workflowitem[] => [],
+  getWorkflowitem: async (): Promise<Workflowitem> => baseWorkflowitem,
 };
 
 describe("List workflowitem permissions: authorization", () => {

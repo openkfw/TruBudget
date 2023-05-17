@@ -103,23 +103,24 @@ const secretPublished: DocumentShared.SecretPublished = {
   encryptedSecret: "encryptedSecret",
 };
 
-const decryptedSecret: string = "decryptedSecret";
-const privateKey: string = "privateKey";
+const decryptedSecret = "decryptedSecret";
+const privateKey = "privateKey";
 
 const repository = {
-  getWorkflowitem: () => Promise.resolve(baseWorkflowitem),
-  getDocumentFromStorage: (id, secret) => {
+  getWorkflowitem: (): Promise<Workflowitem> => Promise.resolve(baseWorkflowitem),
+  getDocumentFromStorage: (_id, _secret): Promise<UploadedDocument> => {
     throw new VError();
   },
-  getDocumentFromExternalStorage: (id, secret, storageServiceUrl) => {
+  getDocumentFromExternalStorage: (_id, _secret, _storageServiceUrl): Promise<UploadedDocument> => {
     throw new VError();
   },
-  getDocumentInfo: (docId) => {
+  getDocumentInfo: (_docId): Promise<StoredDocument | undefined> => {
     return Promise.resolve(undefined);
   },
-  getSecret: (docId, organization) => Promise.resolve({ ...secretPublished, docId }),
-  decryptWithKey: () => Promise.resolve(decryptedSecret),
-  getPrivateKey: (organization) => Promise.resolve(privateKey),
+  getSecret: (docId, _organization): Promise<DocumentShared.SecretPublished> =>
+    Promise.resolve({ ...secretPublished, docId }),
+  decryptWithKey: (): Promise<string> => Promise.resolve(decryptedSecret),
+  getPrivateKey: (_organization): Promise<string> => Promise.resolve(privateKey),
 };
 
 // These tests will work even if the Storage-Service is not enabled.

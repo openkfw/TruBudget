@@ -2,13 +2,15 @@ import logger from "lib/logger";
 import { WalletAddress } from "../../network/model/Nodes";
 import { MultichainClient } from "../../service/Client.h";
 import * as NodesLogged from "../../service/domain/network/nodes_logged";
+import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 
 const NETWORK_LOG = "network_log";
 
 export const getLatestDateOnlineByAddress = async (
   multichainClient: MultichainClient,
   address: WalletAddress,
-) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any | undefined> => {
   const [latestEntry] = await multichainClient
     .getRpcClient()
     .invoke("liststreamkeyitems", NETWORK_LOG, address, false, 1);
@@ -48,7 +50,8 @@ export async function checkNodes(multichain: MultichainClient): Promise<any> {
   });
 }
 
-const publishEvent = (multichain: MultichainClient, { stream, keys, event }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const publishEvent = (multichain: MultichainClient, { stream, keys, event }): any => {
   const streamItem = { json: event };
   return multichain
     .getRpcClient()
@@ -59,13 +62,16 @@ const publishEvent = (multichain: MultichainClient, { stream, keys, event }) => 
     });
 };
 
-const getSelfAddress = async (multichain: MultichainClient) => {
+const getSelfAddress = async (multichain: MultichainClient): Promise<string> => {
   const addressList = await multichain.getRpcClient().invoke("listaddresses");
   const [myAddress] = addressList.filter((a) => a.ismine).map((o) => o.address);
   return myAddress;
 };
 
-const getPeerInfoByDate = async (multichain: MultichainClient, date: string) => {
+const getPeerInfoByDate = async (
+  multichain: MultichainClient,
+  date: string,
+): Promise<Liststreamkeyitems.Item[]> => {
   const peerInfo = await multichain
     .getRpcClient()
     .invoke("liststreamkeyitems", NETWORK_LOG, date, false, 1);
