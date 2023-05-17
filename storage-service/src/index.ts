@@ -56,7 +56,7 @@ app.use(
       // (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       if (allowOrigins.indexOf(origin) === -1) {
-        var msg =
+        const msg =
           "The CORS policy for this site does not " +
           "allow access from the specified Origin.";
         log.debug(msg);
@@ -127,7 +127,7 @@ app.post(
     const docId: string = req.query.docId;
     const { content, fileName } = req.body;
 
-    (async () => {
+    (async (): Promise<void> => {
       log.debug({ req }, "Uploading document");
       const result = await uploadAsPromised(docId, content, {
         fileName,
@@ -158,13 +158,13 @@ app.get(
     const docId: string = req.query.docId;
 
     // the secret should be in the headers
-    var secret = req.headers.secret;
+    const secret = req.headers.secret;
     if (!secret) {
       res.status(404).end();
     }
 
     // first get document
-    (async () => {
+    (async (): Promise<void> => {
       req.log.debug({ req }, "Downloading document");
       const result = await downloadAsPromised(docId);
 
