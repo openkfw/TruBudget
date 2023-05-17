@@ -1,24 +1,25 @@
 import axios from "axios";
+import { Iterable } from "immutable";
 
 import config from "./../config";
-import { store } from "./../store";
 
 let instance = undefined;
 const logMessages = [];
-const getToken = () => (store ? store.getState().toJS().login.jwt : "");
-const getUserId = () => (store ? store.getState().toJS().login.id : "");
+const getToken = (state) => stateTransformer(state)?.login?.jwt || "";
+const getUserId = (state) => stateTransformer(state)?.login?.id || "";
 
-const setToken = () => {
-  let t = getToken();
+const setToken = (msg) => {
+  let t = msg.token;
   instance.defaults.headers.common["Authorization"] = t ? `Bearer ${t}` : "";
 };
 
-export const createLogMsg = async (log) => {
+export const createLogMsg = (state, log) => {
   if (config.logging.isEnabled === false) return;
   const msg = {
     ...log,
     when: new Date().toString(),
-    who: getUserId()
+    who: getUserId(state),
+    token: getToken(state)
   };
   logMessages.push(msg);
 };
@@ -28,9 +29,12 @@ const pushLogToServer = async () => {
     if (
       instance.defaults.headers.common["Authorization"] === "" ||
       instance.defaults.headers.common["Authorization"] === undefined
-    )
-      setToken();
-    await instance.post("/api", { logMessages }).catch((ignore) => ignore);
+    ) {
+      setToken(logMessages[0]);
+    }
+    // eslint-disable-next-line no-unused-vars
+    const messages = logMessages.map(({ token, ...rest }) => rest).filter((m) => m.service !== undefined);
+    await instance.post("/api", { logMessages: messages }).catch((ignore) => ignore);
     while (logMessages.length) {
       logMessages.pop();
     }
@@ -38,7 +42,7 @@ const pushLogToServer = async () => {
 };
 
 const createConnection = () => {
-  if (config.logging.isEnabled === false) return;
+  if (config.logging.isEnabled === false) return false;
   // SSL musst be enabled when using logger in production
   if (config.envMode !== "development" && config.logging.isHostSSL === false && config.logging.isEnabled) {
     // eslint-disable-next-line no-console
@@ -48,22 +52,28 @@ const createConnection = () => {
   }
   // Build url
   instance = axios.create();
-  instance.defaults.baseURL = `${config.logging.isHostSSL ? "http://" : "https://"}${config.logging.serviceHost}:${
+  instance.defaults.baseURL = `${config.logging.isHostSSL ? "https://" : "http://"}${config.logging.serviceHost}:${
     config.logging.servicePort
   }`;
 
   setInterval(pushLogToServer, 1000 * config.logging.pushInterval);
+
+  return true;
 };
 
-const stateTransformer = (s) => s;
+const stateTransformer = (state) => {
+  if (Iterable.isIterable(state)) return state.toJS();
+  else return state;
+};
 
 const predicate = (getState, action) => {
-  createLogMsg({
+  const state = getState();
+  createLogMsg(state, {
     service: "FRONTEND",
     what: "Trace",
     why: {
       action: action,
-      prevState: stateTransformer(getState())
+      prevState: stateTransformer(state)
     }
   });
   //In trace mode print to console
@@ -71,8 +81,9 @@ const predicate = (getState, action) => {
   return false;
 };
 
-const errorTransformer = (error) => {
-  createLogMsg({
+const errorTransformer = (getState, error) => {
+  const state = getState();
+  createLogMsg(state, {
     service: "FRONTEND",
     what: "Error",
     why: error
@@ -86,9 +97,10 @@ const loggerOptions = {
   predicate: (getState, action) => predicate(getState, action),
   stateTransformer: (s) => stateTransformer(s),
   diff: true,
-  errorTransformer: (error) => errorTransformer(error)
+  errorTransformer: (getState, error) => errorTransformer(getState, error)
 };
 
-createConnection();
+// eslint-disable-next-line no-unused-vars
+const isLoggingConnected = createConnection();
 
 export default loggerOptions;
