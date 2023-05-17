@@ -97,7 +97,7 @@ const renderActionButtons = (props) => {
     // need to check if user permissions exist yet
     // to make sure this is compatible with older versions
     (displayUser.permissions &&
-      displayUser.permissions.hasOwnProperty("user.changePassword") &&
+      Object.hasOwn(displayUser.permissions, "user.changePassword") &&
       displayUser.permissions["user.changePassword"].some((x) => x === userId) &&
       !isRoot) ||
     isRootUserOfSameOrga;

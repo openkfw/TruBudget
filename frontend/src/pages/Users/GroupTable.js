@@ -18,7 +18,7 @@ const sortGroups = (groups) => {
   return _sortBy(groups, (group) => group.id && group.displayName);
 };
 
-const GroupsTable = ({ groups, showDashboardDialog, allowedIntents, userId }) => {
+const GroupsTable = ({ groups, showDashboardDialog, userId }) => {
   const sortedGroups = sortGroups(groups);
 
   return sortedGroups.length > 0 ? (

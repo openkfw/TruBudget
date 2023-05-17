@@ -13,7 +13,7 @@ const styles = {
   }
 };
 
-const NotificationEmptyState = (props) => {
+const NotificationEmptyState = () => {
   return (
     <div style={{ textAlign: "center" }}>
       <img

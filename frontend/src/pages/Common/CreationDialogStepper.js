@@ -6,7 +6,7 @@ import StepButton from "@mui/material/StepButton";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 
-const getStepContent = ({ currentStep = 0, steps, ...props }) => {
+const getStepContent = ({ currentStep = 0, steps }) => {
   return steps[currentStep].content;
 };
 

@@ -28,13 +28,7 @@ const markPageAsRead = (markMultipleNotificationsAsRead, notifications, notifica
   markMultipleNotificationsAsRead(notificationIds, notificationPage);
 };
 
-const onChangeRowsPerPage = (
-  newNotificationsPerPage,
-  setNotifcationsPerPage,
-  fetchNotifications,
-  currentPage,
-  notificationsPerPage
-) => {
+const onChangeRowsPerPage = (newNotificationsPerPage, setNotifcationsPerPage, fetchNotifications) => {
   setNotifcationsPerPage(newNotificationsPerPage);
   //Fetch first page again
   fetchNotifications(0);

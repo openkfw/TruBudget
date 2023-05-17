@@ -15,7 +15,6 @@ import Password from "../Common/Password";
 import Username from "../Common/Username";
 
 const LoginPage = ({
-  nodePermissions,
   storeUsername,
   storePassword,
   username,

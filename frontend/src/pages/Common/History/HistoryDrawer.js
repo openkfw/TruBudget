@@ -6,7 +6,6 @@ import HistoryContainer from "./HistoryContainer";
 import useHistoryState from "./historyHook";
 
 const HistoryDrawer = ({
-  style,
   doShow,
   onClose,
   events,

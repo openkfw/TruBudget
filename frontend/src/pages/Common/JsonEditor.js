@@ -33,7 +33,7 @@ export default function JsonEditor({ data = {}, onChange }) {
         refEditor.current = null;
       }
     };
-  }, []);
+  }, [changeDataCallback, dataObject]);
 
   // update props
   useEffect(() => {

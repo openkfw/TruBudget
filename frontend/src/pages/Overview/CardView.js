@@ -82,7 +82,7 @@ const styles = {
 };
 
 const displayTags = ({ tags, storeSearchTerm, showNavSearchBar, searchTermArray }) => {
-  return tags.map((tag, i) => (
+  return tags.map((tag) => (
     <SelectablePill
       key={tag}
       isSelected={searchTermArray?.includes(tag) || false}
