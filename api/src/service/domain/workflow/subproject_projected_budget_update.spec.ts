@@ -41,7 +41,7 @@ const baseSubproject: Subproject = {
   additionalData: {},
 };
 const baseRepository = {
-  getUsersForIdentity: async (identity) => {
+  getUsersForIdentity: async (identity): Promise<string[]> => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     if (identity === "charlie") return ["charlie"];

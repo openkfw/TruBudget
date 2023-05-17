@@ -70,7 +70,7 @@ const baseProject: Project = {
 };
 
 const baseRepository = {
-  getProject: async () => baseProject,
+  getProject: async (): Promise<Project> => baseProject,
 };
 
 describe("get project history: authorization", () => {

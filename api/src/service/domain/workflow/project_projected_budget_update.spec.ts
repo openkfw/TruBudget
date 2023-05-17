@@ -8,6 +8,7 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { Project } from "./project";
 import { updateProjectedBudget } from "./project_projected_budget_update";
+import { Subproject } from "./subproject";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";
@@ -40,8 +41,8 @@ const baseProject: Project = {
   tags: [],
 };
 const baseRepository = {
-  getSubprojects: async (_projectId) => [],
-  getUsersForIdentity: async (identity) => {
+  getSubprojects: async (_projectId): Promise<Subproject[]> => [],
+  getUsersForIdentity: async (identity): Promise<string[]> => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     if (identity === "charlie") return ["charlie"];

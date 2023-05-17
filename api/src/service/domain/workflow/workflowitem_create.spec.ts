@@ -6,7 +6,6 @@ import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Subproject } from "./subproject";
 import { UserRecord } from "../organization/user_record";
-import { Permissions } from "../permissions";
 import * as WorkflowitemCreate from "./workflowitem_create";
 
 const ctx: Ctx = { requestId: "", source: "test" };
@@ -39,10 +38,10 @@ const normalUser: UserRecord = {
   passwordHash: "abc",
   address: "testaddress",
   encryptedPrivKey: "abcd",
-  permissions: {["user.authenticate"]: ["test"]},
+  permissions: { ["user.authenticate"]: ["test"] },
   log: [],
-  additionalData: {}
-}
+  additionalData: {},
+};
 
 const disabledUser: UserRecord = {
   id: "test",
@@ -54,8 +53,8 @@ const disabledUser: UserRecord = {
   encryptedPrivKey: "abcd",
   permissions: {}, // no auth permissions
   log: [],
-  additionalData: {}
-}
+  additionalData: {},
+};
 
 describe("Create workflowitem", () => {
   it("Root cannot create a workflow item", async () => {

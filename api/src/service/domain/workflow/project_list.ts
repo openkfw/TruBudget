@@ -21,11 +21,11 @@ export async function getAllVisible(
   logger.trace({ user }, "Filtering projects visible to user");
   const isVisible =
     user.id === "root"
-      ? () => true
-      : (project: Project.Project) =>
-        Project.permits(project, user, ["project.list", "project.viewDetails"]);
+      ? (): boolean => true
+      : (project: Project.Project): boolean =>
+          Project.permits(project, user, ["project.list", "project.viewDetails"]);
 
-  const removeNonvisibleHistory = (project: Project.Project) =>
+  const removeNonvisibleHistory = (project: Project.Project): Project.Project =>
     dropHiddenHistoryEvents(project, user);
 
   const visibleProjects = allProjects.filter(isVisible).map(removeNonvisibleHistory);

@@ -25,12 +25,7 @@ function ConnectionRefusedException(message) {
   this.name = "ECONNREFUSED";
 }
 
-const sendNotifications = async (
-  path,
-  emailServiceSocketAddress,
-  token,
-  ssl = false,
-) => {
+const sendNotifications = async (path, emailServiceSocketAddress, token, ssl = false) => {
   const readdir = util.promisify(fs.readdir);
   let files;
   try {
@@ -71,19 +66,14 @@ const sendNotifications = async (
         },
         config,
       );
-      if (
-        response.data.notification &&
-        response.data.notification.status === "sent"
-      ) {
+      if (response.data.notification && response.data.notification.status === "sent") {
         log.debug("Delete file " + path + "/" + file);
         await fs.unlinkSync(path + "/" + file);
       }
     } catch (error) {
       if (!error.response) {
         if (error.errno === "ECONNREFUSED") {
-          throw new ConnectionRefusedException(
-            `Cannot connect to ${emailServiceSocketAddress}`,
-          );
+          throw new ConnectionRefusedException(`Cannot connect to ${emailServiceSocketAddress}`);
         } else {
           throw error;
         }
@@ -149,14 +139,7 @@ if (args.length !== 6) {
   log.error("Wrong amount of arguments");
   process.exit(1);
 }
-const [
-  path,
-  emailServiceSocketAddress,
-  secret,
-  maxPersistenceHours,
-  loopIntervalSeconds,
-  ssl,
-] = args;
+const [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl] = args;
 const absolutePath = process.cwd() + "/" + path;
 
 let token = "";
@@ -164,12 +147,7 @@ let token = "";
   while (true) {
     try {
       // Check/Send/Delete notification transaction files in notification directory
-      await sendNotifications(
-        absolutePath,
-        emailServiceSocketAddress,
-        token,
-        ssl,
-      );
+      await sendNotifications(absolutePath, emailServiceSocketAddress, token, ssl);
       await deleteFilesOlderThan(maxPersistenceHours, absolutePath);
     } catch (error) {
       // If Bearer Token expired

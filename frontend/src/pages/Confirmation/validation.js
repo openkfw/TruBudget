@@ -185,7 +185,7 @@ schemes
 export const validate = (intent, payload) => {
   const schema = schemes.get(intent);
   if (!schema) throw new Error(`Validation schema for intent ${intent} not implemented yet`);
-  const validatePayload = schema.validate(payload, { abortEarly: false }, (error, values) => error);
+  const validatePayload = schema.validate(payload, { abortEarly: false }, (error) => error);
   if (!validatePayload.error) {
     return false;
   }

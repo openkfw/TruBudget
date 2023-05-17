@@ -131,7 +131,7 @@ export function mutate(workflowitem: Workflowitem.Workflowitem, event: Event): R
   }
 }
 
-function updateProps(workflowitem: Workflowitem.Workflowitem, update: Modification) {
+function updateProps(workflowitem: Workflowitem.Workflowitem, update: Modification): void {
   [
     "displayName",
     "description",
@@ -148,7 +148,10 @@ function updateProps(workflowitem: Workflowitem.Workflowitem, update: Modificati
   });
 }
 
-function updateAdditionalData(workflowitem: Workflowitem.Workflowitem, additionalData?: object) {
+function updateAdditionalData(
+  workflowitem: Workflowitem.Workflowitem,
+  additionalData?: object,
+): void {
   if (additionalData === undefined) {
     return;
   }

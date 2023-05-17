@@ -13,21 +13,14 @@ const logService = require("trubudget-logging-service");
 const { version } = require("../package.json");
 const shell = require("shelljs");
 
-const {
-  startEmailNotificationWatcher,
-} = require("./multichain-feed/email-notifications/notificationWatcher");
+const { startEmailNotificationWatcher } = require("./multichain-feed/email-notifications/notificationWatcher");
 const { startBeta, registerNodeAtAlpha } = require("./connectToChain");
 const { startMultichainDaemon, configureChain } = require("./createChain");
 const { isMultichainReady } = require("./readiness");
 
 const { importWallet, listAvailableWallets } = require("./wallet-backup");
 
-const {
-  moveBackup,
-  verifyHashSha256,
-  removeFile,
-  createMetadataFileSha256,
-} = require("./shell");
+const { moveBackup, verifyHashSha256, removeFile, createMetadataFileSha256 } = require("./shell");
 
 const app = express();
 const port = process.env.PORT || 8085;
@@ -36,9 +29,7 @@ const ORGANIZATION = process.env.ORGANIZATION || "MyOrga";
 const CHAINNAME = "TrubudgetChain";
 const MULTICHAIN_RPC_PORT = process.env.MULTICHAIN_RPC_PORT || 8000;
 const MULTICHAIN_RPC_USER = process.env.MULTICHAIN_RPC_USER || "multichainrpc";
-const MULTICHAIN_RPC_PASSWORD =
-  process.env.MULTICHAIN_RPC_PASSWORD ||
-  "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
+const MULTICHAIN_RPC_PASSWORD = process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
 const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 const CERT_PATH = process.env.CERT_PATH || undefined;
 const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
@@ -65,12 +56,9 @@ const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
 const NOTIFICATION_SEND_INTERVAL = process.env.NOTIFICATION_SEND_INTERVAL || 10;
 const emailAuthSecret = process.env.JWT_SECRET;
 
-const EMAIL_SERVICE_ENABLED =
-  process.env.EMAIL_SERVICE_ENABLED === "true" ? true : false;
-const MULTICHAIN_FEED_ENABLED =
-  process.env.MULTICHAIN_FEED_ENABLED === "true" ? true : false;
-const isMultichainFeedEnabled =
-  EMAIL_SERVICE_ENABLED || MULTICHAIN_FEED_ENABLED;
+const EMAIL_SERVICE_ENABLED = process.env.EMAIL_SERVICE_ENABLED === "true" ? true : false;
+const MULTICHAIN_FEED_ENABLED = process.env.MULTICHAIN_FEED_ENABLED === "true" ? true : false;
+const isMultichainFeedEnabled = EMAIL_SERVICE_ENABLED || MULTICHAIN_FEED_ENABLED;
 
 const ENV = process.env.NODE_ENV || "production";
 
@@ -78,9 +66,7 @@ const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
 
 const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
 const isAlpha = P2P_HOST ? false : true;
-const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT
-  ? `-blocknotify=${process.env.BLOCKNOTIFY_SCRIPT}`
-  : "";
+const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT ? `-blocknotify=${process.env.BLOCKNOTIFY_SCRIPT}` : "";
 
 const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
 const NAMESPACE = process.env.KUBE_NAMESPACE || "";
@@ -90,19 +76,13 @@ const isEmailConfigured = EMAIL_HOST && EMAIL_PORT && emailAuthSecret;
 
 if (EMAIL_SERVICE_ENABLED && !isEmailConfigured) {
   if (!EMAIL_HOST) {
-    log.fatal(
-      "Env variable EMAIL_HOST is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false",
-    );
+    log.fatal("Env variable EMAIL_HOST is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
   }
   if (!EMAIL_PORT) {
-    log.fatal(
-      "Env variable EMAIL_PORT is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false",
-    );
+    log.fatal("Env variable EMAIL_PORT is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
   }
   if (!emailAuthSecret) {
-    log.fatal(
-      "Env variable JWT_SECRET is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false",
-    );
+    log.fatal("Env variable JWT_SECRET is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
   }
   log.fatal("Incorrectly set env vars, exiting ...");
   process.exit(1);
@@ -129,15 +109,11 @@ const spawnProcess = (startProcess) => {
   mcproc.on("close", async (code, signal) => {
     isRunning = false;
     if (!AUTOSTART) {
-      log.info(
-        `multichaind stopped with exit code ${code} and signal ${signal}. Autorestart is disabled`,
-      );
+      log.info(`multichaind stopped with exit code ${code} and signal ${signal}. Autorestart is disabled`);
     } else {
       const retryIntervalMs = 10000;
       log.info(
-        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${
-          retryIntervalMs / 1000
-        } Seconds...`,
+        `Multichain stopped with exit code ${code} and signal ${signal}. Retry in ${retryIntervalMs / 1000} Seconds...`,
       );
       await new Promise((resolve) => {
         setTimeout(resolve, retryIntervalMs);
@@ -167,15 +143,7 @@ function initMultichain() {
     return;
   }
   if (isAlpha) {
-    spawnProcess(() =>
-      startMultichainDaemon(
-        CHAINNAME,
-        externalIpArg,
-        blockNotifyArg,
-        P2P_PORT,
-        multichainDir,
-      ),
-    );
+    spawnProcess(() => startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir));
   } else {
     spawnProcess(() =>
       startBeta(
@@ -191,25 +159,13 @@ function initMultichain() {
       ),
     );
     setTimeout(
-      () =>
-        registerNodeAtAlpha(
-          ORGANIZATION,
-          API_PROTO,
-          API_HOST,
-          API_PORT,
-          CERT_PATH,
-          CERT_CA_PATH,
-          CERT_KEY_PATH,
-        ),
+      () => registerNodeAtAlpha(ORGANIZATION, API_PROTO, API_HOST, API_PORT, CERT_PATH, CERT_CA_PATH, CERT_KEY_PATH),
       5000,
     );
   }
 }
 
-let externalIpArg =
-  process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== ""
-    ? `-externalip=${EXTERNAL_IP}`
-    : "";
+let externalIpArg = process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== "" ? `-externalip=${EXTERNAL_IP}` : "";
 
 if (EXPOSE_MC) {
   const kc = new k8s.KubeConfig();
@@ -273,23 +229,12 @@ app.get("/chain-sha256", async (req, res) => {
     await stopMultichain(mcproc);
     await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
     res.setHeader("Content-Type", "application/gzip");
-    res.setHeader(
-      "Content-Disposition",
-      ` attachment; filename="${CHAINNAME}.gz"`,
-    );
+    res.setHeader("Content-Disposition", ` attachment; filename="${CHAINNAME}.gz"`);
     tar
       .pack(`${multichainDir}/${CHAINNAME}`, {
         finish: () => {
           log.info("Restarting multichain");
-          spawnProcess(() =>
-            startMultichainDaemon(
-              CHAINNAME,
-              externalIpArg,
-              blockNotifyArg,
-              P2P_PORT,
-              multichainDir,
-            ),
-          );
+          spawnProcess(() => startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir));
           AUTOSTART = true;
         },
       })
@@ -323,20 +268,11 @@ app.get("/liveness", (req, res) => {
 app.get("/readiness", (req, res) => {
   const isReady = isMultichainReady(CHAINNAME);
   if (isReady && isRunning) {
-    res
-      .status(200)
-      .header({ "Content-Type": "application/json" })
-      .send("Ready");
+    res.status(200).header({ "Content-Type": "application/json" }).send("Ready");
   } else if (!isReady && isRunning) {
-    res
-      .status(504)
-      .header({ "Content-Type": "application/json" })
-      .send("Not ready. Multichain is starting ...");
+    res.status(504).header({ "Content-Type": "application/json" }).send("Not ready. Multichain is starting ...");
   } else {
-    res
-      .status(504)
-      .header({ "Content-Type": "application/json" })
-      .send("Not ready. Multichain process stopped");
+    res.status(504).header({ "Content-Type": "application/json" }).send("Not ready. Multichain process stopped");
   }
 });
 
@@ -383,21 +319,13 @@ rpcpassword=${MULTICHAIN_RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}`);
         }
         await spawnProcess(() =>
-          startMultichainDaemon(
-            CHAINNAME,
-            externalIpArg,
-            blockNotifyArg,
-            P2P_PORT,
-            multichainDir,
-          ),
+          startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
         );
         AUTOSTART = true;
         /*eslint no-promise-executor-return: "off"*/
         await new Promise((resolve) => setTimeout(resolve, 10000));
         const availableWallets = await listAvailableWallets(CHAINNAME);
-        return res.json(
-          `Ok. Available wallets are: ${JSON.stringify(availableWallets)}`,
-        );
+        return res.json(`Ok. Available wallets are: ${JSON.stringify(availableWallets)}`);
       } catch (err) {
         log.error({ err }, "Error while trying to restore wallet: ");
         return res.status(500).send(err.message);
@@ -426,10 +354,7 @@ app.post("/chain", async (req, res) => {
     stream.on("finish", async () => {
       if (fs.existsSync(metadataPath)) {
         const config = loadConfig(metadataPath);
-        const validSha256 = await verifyHashSha256(
-          config.DirectoryHash,
-          extractPath,
-        );
+        const validSha256 = await verifyHashSha256(config.DirectoryHash, extractPath);
         const chainConfig = yaml.load(fs.readFileSync(chainConfigPath, "utf8"));
         let correctConfig = chainConfig.includes(MULTICHAIN_RPC_PASSWORD);
 
@@ -439,8 +364,7 @@ app.post("/chain", async (req, res) => {
         }
         //Check for major version compatibility
         const compatibleVersions =
-          config.hasOwnProperty("Version") &&
-          config.Version.split(".")[0] === version.split(".")[0];
+          config.hasOwnProperty("Version") && config.Version.split(".")[0] === version.split(".")[0];
 
         if (correctConfig && compatibleVersions) {
           if (validSha256) {
@@ -448,35 +372,23 @@ app.post("/chain", async (req, res) => {
             await stopMultichain(mcproc);
             await moveBackup(multichainDir, extractPath, CHAINNAME);
             spawnProcess(() =>
-              startMultichainDaemon(
-                CHAINNAME,
-                externalIpArg,
-                blockNotifyArg,
-                P2P_PORT,
-                multichainDir,
-              ),
+              startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
             );
             AUTOSTART = true;
             res.send("OK");
           } else {
             log.warn("Request did not contain a valid trubudget backup");
             if (!compatibleVersions) {
-              log.warn(
-                "The uploaded backup is not compatible with this version of TruBudget",
-              );
+              log.warn("The uploaded backup is not compatible with this version of TruBudget");
             }
             res.status(400).send("Not a valid TruBudget backup");
           }
         } else {
           if (!compatibleVersions) {
-            log.warn(
-              "The uploaded backup is not compatible with this version of TruBudget",
-            );
+            log.warn("The uploaded backup is not compatible with this version of TruBudget");
           }
           log.warn("Tried to Backup with invalid configuration");
-          res
-            .status(400)
-            .send("Backup with these configurations is not permitted");
+          res.status(400).send("Backup with these configurations is not permitted");
         }
       } else {
         res.status(400).send("Metadata not available");

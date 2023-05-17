@@ -17,7 +17,7 @@ const styles = {
 // Source of images: https://undraw.co/illustrations
 // selected color code: #53BBFE
 
-const EnabledUserEmptyState = (props) => {
+const EnabledUserEmptyState = () => {
   return (
     <Paper style={{ textAlign: "center" }}>
       <img
@@ -36,7 +36,7 @@ const EnabledUserEmptyState = (props) => {
   );
 };
 
-const DisabledUserEmptyState = (props) => {
+const DisabledUserEmptyState = () => {
   return (
     <Paper style={{ textAlign: "center" }}>
       <img
@@ -52,7 +52,7 @@ const DisabledUserEmptyState = (props) => {
   );
 };
 
-const UserGroupsEmptyState = (props) => {
+const UserGroupsEmptyState = () => {
   return (
     <Paper style={{ textAlign: "center" }}>
       <img

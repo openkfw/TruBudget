@@ -23,7 +23,8 @@
     "audit": "better-npm-audit audit",
     "build": "tsc",
     "watch": "tsc --watch & (sleep 30 && nodemon --inspect=0.0.0.0:9229 dist)",
-    "lint": "eslint src --ext ts"
+    "lint": "eslint src --ext ts",
+    "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\""
   },
   "bugs": {
     "url": "https://github.com/openkfw/TruBudget/issues"
@@ -49,12 +50,15 @@
     "@types/nodemailer": "^6.4.4",
     "@types/pino": "^7.0.4",
     "@typescript-eslint/parser": "^5.30.6",
+    "eslint": "^8.40.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-promise": "^6.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "nodemon": "^2.0.19",
+    "prettier": "^2.8.8",
     "typescript": "^4.7.4"
   }
 }

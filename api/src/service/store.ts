@@ -289,7 +289,12 @@ export async function store(
   }
 }
 
-async function ensureStreamExists(conn: ConnToken, ctx: Ctx, name: string, kind: string) {
+async function ensureStreamExists(
+  conn: ConnToken,
+  ctx: Ctx,
+  name: string,
+  kind: string,
+): Promise<void> {
   const isPublic = true; // in multichain terms: isOpen
   const customFields = { kind };
   await conn.multichainClient
@@ -311,7 +316,7 @@ async function writeTo(
   { stream, keys, event }: PublishableData,
   publisherAddress: String,
   offchain?: Boolean,
-) {
+): Promise<void> {
   const streamitem = { json: event };
   logger.debug({ ctx }, `Publishing ${event.type} to ${stream}/${keys}`);
   await conn.multichainClient

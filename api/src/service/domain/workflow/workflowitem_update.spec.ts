@@ -6,7 +6,7 @@ import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
-import { DocumentReference, hashDocument } from "../document/document";
+import { DocumentReference } from "../document/document";
 import { Workflowitem } from "./workflowitem";
 import { updateWorkflowitem } from "./workflowitem_update";
 
@@ -45,13 +45,13 @@ const baseWorkflowitem: Workflowitem = {
   workflowitemType: "general",
 };
 
-const stripOutDocumentId = (docs: DocumentReference[]) => {
+const stripOutDocumentId = (docs: DocumentReference[]): { hash: string }[] => {
   return docs.map((d) => ({ hash: d.hash }));
 };
 
 const baseRepository = {
-  applyWorkflowitemType: () => [],
-  getUsersForIdentity: async (identity) => {
+  applyWorkflowitemType: (): Result.Type<BusinessEvent[]> => [],
+  getUsersForIdentity: async (identity): Promise<string[]> => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     if (identity === "charlie") return ["charlie"];
@@ -60,8 +60,8 @@ const baseRepository = {
     if (identity === "root") return ["root"];
     throw Error(`unexpected identity: ${identity}`);
   },
-  uploadDocumentToStorageService: () => Promise.resolve([]),
-  getAllDocumentReferences: async () => [],
+  uploadDocumentToStorageService: (): Promise<[]> => Promise.resolve([]),
+  getAllDocumentReferences: async (): Promise<DocumentReference[]> => [],
 };
 
 describe("update workflowitem: authorization", () => {

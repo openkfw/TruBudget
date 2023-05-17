@@ -238,19 +238,7 @@ function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
 }
 
 const editWorkflow = (
-  {
-    id,
-    displayName,
-    amount,
-    exchangeRate,
-    amountType,
-    currency,
-    description,
-    status,
-    documents,
-    dueDate,
-    workflowitemType
-  },
+  { id, displayName, amount, exchangeRate, amountType, currency, description, documents, dueDate, workflowitemType },
   props
 ) => {
   // Otherwise we need to deal with undefined which causes errors in the editDialog
@@ -394,13 +382,10 @@ const renderActionButtons = (
   showPerm,
   canCloseWorkflow,
   close,
-  selectable,
   workflowSortEnabled,
   status,
   showAdditionalData,
   additionalData,
-  idsPermissionsUnassigned,
-  id,
   rejectReason,
   showReasonDialog,
   reject
@@ -498,7 +483,6 @@ export const WorkflowItem = ({
   index,
   currentWorkflowSelectable,
   workflowSortEnabled,
-  parentProject,
   users,
   idsPermissionsUnassigned,
   currentUser,
@@ -604,11 +588,9 @@ export const RedactedWorkflowItem = ({
   workflow,
   mapIndex,
   index,
-  permissions,
   currentWorkflowSelectable,
   workflowSortEnabled,
-  disabled,
-  ...props
+  disabled
 }) => {
   const { status } = workflow.data;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);

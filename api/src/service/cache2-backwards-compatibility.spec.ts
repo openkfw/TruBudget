@@ -42,12 +42,12 @@ const projectStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToProject = (items) => {
+const addUnknownPropertyToProject = (items): void => {
   items.forEach((item) => {
     item.data.json.project.additionalUnknownProperty = true;
   });
 };
-const makeProjectItemsInvalid = (items) => {
+const makeProjectItemsInvalid = (items): void => {
   items.forEach((item) => {
     delete item.data.json.project.id;
   });
@@ -90,12 +90,12 @@ const subprojectStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToSubproject = (items) => {
+const addUnknownPropertyToSubproject = (items): void => {
   items.forEach((item) => {
     item.data.json.subproject.additionalUnknownProperty = true;
   });
 };
-const makeSubprojectItemsInvalid = (items) => {
+const makeSubprojectItemsInvalid = (items): void => {
   items.forEach((item) => {
     delete item.data.json.subproject.id;
   });
@@ -168,12 +168,12 @@ const workflowitemStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToWorkflowitem = (items) => {
+const addUnknownPropertyToWorkflowitem = (items): void => {
   items.forEach((item) => {
     item.data.json.workflowitem.additionalUnknownProperty = true;
   });
 };
-const makeWorkflowitemItemsInvalid = (items) => {
+const makeWorkflowitemItemsInvalid = (items): void => {
   items.forEach((item) => {
     delete item.data.json.workflowitem.id;
   });
@@ -215,12 +215,12 @@ const userStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToUser = (items) => {
+const addUnknownPropertyToUser = (items): void => {
   items.forEach((item) => {
     item.data.json.user.additionalUnknownProperty = true;
   });
 };
-const makeUserItemsInvalid = (items) => {
+const makeUserItemsInvalid = (items): void => {
   items.forEach((item) => {
     delete item.data.json.user.id;
   });
@@ -261,12 +261,12 @@ const groupStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToGroup = (items) => {
+const addUnknownPropertyToGroup = (items): void => {
   items.forEach((item) => {
     item.data.json.group.additionalUnknownProperty = true;
   });
 };
-const makeGroupItemsInvalid = (items) => {
+const makeGroupItemsInvalid = (items): void => {
   items.forEach((item) => {
     delete item.data.json.group.id;
   });
@@ -311,12 +311,12 @@ const notificationStreamItems: any[] = [
     txid: "1",
   },
 ];
-const addUnknownPropertyToNotification = (items) => {
+const addUnknownPropertyToNotification = (items): void => {
   items.forEach((item) => {
     item.data.json.additionalUnknownProperty = true;
   });
 };
-const makeNotificationItemsInvalid = (items) => {
+const makeNotificationItemsInvalid = (items): void => {
   items.forEach((item) => {
     delete item.data.json.notificationId;
   });
@@ -356,12 +356,12 @@ const globalPermissionStreamItems: any[] = [
     },
   },
 ];
-const addUnknownPropertyToPermission = (items) => {
+const addUnknownPropertyToPermission = (items): void => {
   items.forEach((item) => {
     item.data.json.additionalUnknownProperty = true;
   });
 };
-const makePermissionItemsInvalid = (items) => {
+const makePermissionItemsInvalid = (items): void => {
   items.forEach((item) => {
     delete item.data.json.permission;
   });
@@ -389,12 +389,12 @@ const nodeStreamItems: any[] = [
     },
   },
 ];
-const addUnknownPropertyToNode = (items) => {
+const addUnknownPropertyToNode = (items): void => {
   items.forEach((item) => {
     item.data.json.additionalUnknownProperty = true;
   });
 };
-const makeNodeItemsInvalid = (items) => {
+const makeNodeItemsInvalid = (items): void => {
   items.forEach((item) => {
     delete item.data.json.organization;
   });

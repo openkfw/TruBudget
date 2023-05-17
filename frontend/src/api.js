@@ -17,7 +17,7 @@ class Api {
     // Set API Version header for POST / PUT / DELETE
     // Move all parameters into data object
     instance.defaults.transformRequest = [
-      (data, headers) => {
+      (data, _headers) => {
         if (typeof data === "object") {
           return {
             apiVersion: API_VERSION,

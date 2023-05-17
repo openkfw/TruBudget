@@ -24,7 +24,7 @@ const styles = {
   }
 };
 
-const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, id, variant = "standard", ...props }) => {
+const TextInputWithIcon = ({ username, storeUsername, failed, icon, label, id, ...props }) => {
   return (
     <div style={styles.container}>
       <div style={styles.icon}>{icon}</div>

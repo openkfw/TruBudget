@@ -15,7 +15,8 @@ const storageServiceUrlEvent: BusinessEvent = {
 };
 
 const repository = {
-  getStorageServiceUrlPublishedEvents: () => Promise.resolve([storageServiceUrlEvent]),
+  getStorageServiceUrlPublishedEvents: (): Promise<BusinessEvent[]> =>
+    Promise.resolve([storageServiceUrlEvent]),
 };
 
 describe("Storage service URL", () => {

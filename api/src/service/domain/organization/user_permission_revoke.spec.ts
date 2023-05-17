@@ -39,7 +39,7 @@ const baseUser: UserRecord = {
 };
 
 const baseRepository = {
-  getTargetUser: async () => baseUser,
+  getTargetUser: async (): Promise<UserRecord> => baseUser,
 };
 
 describe("Revoking user permissions: permissions", () => {

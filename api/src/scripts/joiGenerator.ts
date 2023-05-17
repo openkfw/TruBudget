@@ -17,7 +17,7 @@ const overrideKeys = {
   currencyCode: "currencyCodeSchema.required()",
 };
 
-const extractVariable = (text: string, variableName: string) => {
+const extractVariable = (text: string, variableName: string): string => {
   let extractedText = "";
   let curlyCount = 0;
   let curlyTotalCount = 0;
@@ -89,7 +89,7 @@ const extractVariable = (text: string, variableName: string) => {
   return extractedText;
 };
 
-const generate = () => {
+const generate = async (): Promise<void> => {
   const args = process.argv.slice(2);
 
   let fileName = "";
@@ -112,7 +112,7 @@ const generate = () => {
   const fileContent = fs.readFileSync(filePath, "utf8");
 
   // eslint-disable-next-line global-require
-  const { mkSwaggerSchema } = require(`../${fileName.replace(".ts", "")}`);
+  const { mkSwaggerSchema } = await import(`../${fileName.replace(".ts", "")}`);
 
   if (!mkSwaggerSchema) {
     console.error(`File ${fileName} doesn't have exported function mkSwaggerSchema.

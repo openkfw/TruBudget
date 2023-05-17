@@ -34,5 +34,6 @@
     "workbench.editor.highlightModifiedTabs": true,
     "prettier.requireConfig": true,
     "yaml.format.singleQuote": false,
+    "prettier.singleQuote": false
   }
   

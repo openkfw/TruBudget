@@ -1,5 +1,7 @@
-export type ExposableIntent = Exclude<Intent,
-  "project.close" | "subproject.close" | "workflowitem.close">;
+export type ExposableIntent = Exclude<
+  Intent,
+  "project.close" | "subproject.close" | "workflowitem.close"
+>;
 
 type Intent =
   | "global.listPermissions"

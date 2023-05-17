@@ -16,7 +16,7 @@ const styles = {
   }
 };
 
-const SubprojectEmptyState = (props) => {
+const SubprojectEmptyState = () => {
   return (
     <CardContent style={{ textAlign: "center" }}>
       <List>

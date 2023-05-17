@@ -18,14 +18,7 @@ const startEmailNotificationWatcher = (
   log.info("Starting email notification watcher process");
   const emailproc = fork(
     `${__dirname}/sendNotifications.js`,
-    [
-      path,
-      emailServiceSocketAddress,
-      secret,
-      maxPersistenceHours,
-      loopIntervalSeconds,
-      ssl,
-    ],
+    [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl],
     {},
   );
 

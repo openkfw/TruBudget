@@ -30,7 +30,9 @@ const baseProject: Project.Project = {
   tags: [],
 };
 
-const repository = (returnedProject) => {
+const repository = (
+  returnedProject: Project.Project,
+): { getProject: () => Promise<Project.Project> } => {
   return { getProject: async () => returnedProject };
 };
 

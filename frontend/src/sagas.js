@@ -256,7 +256,8 @@ const getJwt = (state) => {
   return state.getIn(["login", "jwt"]);
 };
 
-const getUserLoggedIn = (state) => {
+// eslint-disable-next-line no-unused-vars
+const _getUserLoggedIn = (state) => {
   return state.getIn(["login", "isUserLoggedIn"]);
 };
 
@@ -756,7 +757,7 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
   }, true);
 }
 
-export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
+export function* createWorkflowItemSaga({ _type, ...workflowitemData }) {
   const {
     projectId,
     subprojectId,
@@ -3043,7 +3044,8 @@ function* saveEmailAddressSaga({ emailAddress }) {
       function* (error) {
         yield put({
           type: SNACKBAR_MESSAGE,
-          message: strings.notification.save_email_error
+          message: strings.notification.save_email_error,
+          error
         });
         yield put({
           type: SHOW_SNACKBAR,

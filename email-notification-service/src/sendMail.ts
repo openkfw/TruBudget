@@ -4,7 +4,7 @@ import * as Mail from "nodemailer/lib/mailer";
 import config from "./config";
 import logger from "./logger";
 
-const sendMail = async (emailAddresses: string | string[]) => {
+const sendMail = async (emailAddresses: string | string[]): Promise<void> => {
   const transportOptions: SMTPTransport.Options = {
     host: config.smtpServer.host,
     port: config.smtpServer.port,

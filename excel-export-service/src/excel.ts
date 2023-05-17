@@ -23,7 +23,7 @@ interface DecodedJwtToken {
   exp: number;
 }
 
-var Excel = require("exceljs");
+import Excel = require("exceljs");
 
 const smallWidth = 20;
 const mediumWidth = 40;

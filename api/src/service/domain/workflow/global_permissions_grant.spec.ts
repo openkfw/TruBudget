@@ -44,9 +44,9 @@ const baseUser: UserRecord.UserRecord = {
 };
 
 const baseRepository = {
-  getGlobalPermissions: async () => basePermissions,
-  isGroup: async () => false,
-  getUser: async () => baseUser,
+  getGlobalPermissions: async (): Promise<GlobalPermissions.GlobalPermissions> => basePermissions,
+  isGroup: async (): Promise<boolean> => false,
+  getUser: async (): Promise<UserRecord.UserRecord> => baseUser,
 };
 
 describe("Grant global permissions: authorization and conditions", () => {

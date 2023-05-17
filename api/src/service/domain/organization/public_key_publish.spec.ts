@@ -13,7 +13,7 @@ const address = "address";
 const alice: ServiceUser = { id: "alice", groups: ["alice"], address };
 
 const repository = {
-  publicKeyAlreadyExists: async (organization: string) => {
+  publicKeyAlreadyExists: async (organization: string): Promise<boolean> => {
     if (organization === "organization") {
       return Promise.resolve(true);
     }

@@ -55,17 +55,17 @@ function dropHiddenHistoryEvents(
 ): Subproject.Subproject {
   const isEventVisible =
     actingUser.id === "root"
-      ? () => true
-      : (event: SubprojectTraceEvent) => {
-        const allowed = requiredPermissions.get(event.businessEvent.type);
-        if (!allowed) return false;
-        for (const intent of allowed) {
-          for (const identity of subproject.permissions[intent] || []) {
-            if (canAssumeIdentity(actingUser, identity)) return true;
+      ? (): boolean => true
+      : (event: SubprojectTraceEvent): boolean => {
+          const allowed = requiredPermissions.get(event.businessEvent.type);
+          if (!allowed) return false;
+          for (const intent of allowed) {
+            for (const identity of subproject.permissions[intent] || []) {
+              if (canAssumeIdentity(actingUser, identity)) return true;
+            }
           }
-        }
-        return false;
-      };
+          return false;
+        };
 
   return {
     ...subproject,

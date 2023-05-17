@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { TruBudgetError } from "../error";
 import { AuthenticatedRequest } from "../httpd/lib";
 
@@ -6,7 +6,7 @@ export const createBackup = async (
   blockchainHost: string,
   blockchainPort: number,
   req: AuthenticatedRequest,
-) => {
+): Promise<AxiosResponse> => {
   const { userId } = req.user;
   if (userId === "root") {
     try {

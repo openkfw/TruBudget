@@ -16,7 +16,7 @@ const styles = {
   }
 };
 
-const WorkflowEmptyState = (props) => {
+const WorkflowEmptyState = () => {
   return (
     <CardContent style={{ textAlign: "center" }}>
       <List>

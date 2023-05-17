@@ -184,7 +184,7 @@ export function showProjectAssignees() {
   };
 }
 
-export function assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName, showLoading = false) {
+export function assignProject(projectId, projectDisplayName, assigneeId, assigneeDisplayName) {
   return {
     type: ASSIGN_PROJECT,
     projectId,

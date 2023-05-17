@@ -10,7 +10,7 @@ export function sourceStorageServiceUrls(events: BusinessEvent[]): Map<string, s
   return urls;
 }
 
-export function applyStorageServiceUrls(urls: Map<string, string>, event: BusinessEvent) {
+export function applyStorageServiceUrls(urls: Map<string, string>, event: BusinessEvent): void {
   logger.trace("Applying storage service url");
   if (event.type === "storage_service_url_published") {
     const { organization, organizationUrl } = event;

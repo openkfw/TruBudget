@@ -27,7 +27,7 @@ const publicKeyEvent: BusinessEvent = {
 describe("Public key: Get", async () => {
   it("Getting a public key of an existing organization works", async () => {
     const repository = {
-      getPublicKeysEvents: () => Promise.resolve([publicKeyEvent]),
+      getPublicKeysEvents: (): Promise<BusinessEvent[]> => Promise.resolve([publicKeyEvent]),
     };
 
     const result = await getPublicKey(ctx, "organization", repository);
@@ -37,7 +37,7 @@ describe("Public key: Get", async () => {
 
   it("Getting a public key of an non-existing organization does not work", async () => {
     const repository = {
-      getPublicKeysEvents: () => Promise.resolve([publicKeyEvent]),
+      getPublicKeysEvents: (): Promise<BusinessEvent[]> => Promise.resolve([publicKeyEvent]),
     };
 
     const result: Result.Type<string> = await getPublicKey(ctx, "other_organization", repository);
@@ -48,7 +48,7 @@ describe("Public key: Get", async () => {
 
   it("A public key exists for an organization if already created", async () => {
     const repository = {
-      getPublicKeysEvents: () => Promise.resolve([publicKeyEvent]),
+      getPublicKeysEvents: (): Promise<BusinessEvent[]> => Promise.resolve([publicKeyEvent]),
     };
 
     const result = await publicKeyAlreadyExists(ctx, "organization", repository);
@@ -58,7 +58,7 @@ describe("Public key: Get", async () => {
 
   it("A public key does not exist for an organization if not created", async () => {
     const repository = {
-      getPublicKeysEvents: () => Promise.resolve([publicKeyEvent]),
+      getPublicKeysEvents: (): Promise<BusinessEvent[]> => Promise.resolve([publicKeyEvent]),
     };
 
     const result = await publicKeyAlreadyExists(ctx, "other_organization", repository);

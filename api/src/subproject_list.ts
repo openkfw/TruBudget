@@ -21,7 +21,7 @@ import WorkflowitemType from "./service/domain/workflowitem_types/types";
  * @param server fastify server
  * @returns the swagger schema for this endpoint
  */
-function mkSwaggerSchema(server: AugmentedFastifyInstance) {
+function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
   return {
     preValidation: [server.authenticate],
     schema: {
@@ -150,7 +150,7 @@ export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
   service: Service,
-) {
+): void {
   server.register(async function () {
     server.get<Request>(
       `${urlPrefix}/subproject.list`,

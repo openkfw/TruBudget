@@ -22,7 +22,7 @@ import * as Liststreamkeyitems from "./liststreamkeyitems";
 import { ConnectionSettings, RpcClient } from "./RpcClient.h";
 
 // Oddly enough, there is no way to tell Multichain to return _everything_..
-const maxItemCount: number = 0x7fffffff;
+const maxItemCount = 0x7fffffff;
 
 const randomStreamName = (): string => randomString(16);
 
@@ -48,7 +48,7 @@ export class RpcMultichainClient implements MultichainClient {
     this.hasWriteLock = false;
   }
 
-  public getRpcClient() {
+  public getRpcClient(): RpcClient {
     return this.rpcClient;
   }
 
@@ -105,7 +105,7 @@ export class RpcMultichainClient implements MultichainClient {
   public async latestValuesForKey(
     streamId: StreamName | StreamTxId,
     key: string,
-    nValues: number = 1,
+    nValues = 1,
   ): Promise<any[]> {
     const items: MultichainStreamItem[] = await this.rpcClient.invoke(
       "liststreamkeyitems",
@@ -240,7 +240,7 @@ export class RpcMultichainClient implements MultichainClient {
     }
   }
 
-  public async getLastBlockInfo(skip: number = 0): Promise<BlockInfo> {
+  public async getLastBlockInfo(skip = 0): Promise<BlockInfo> {
     return this.rpcClient.invoke("getlastblockinfo", skip);
   }
 
@@ -255,7 +255,7 @@ export class RpcMultichainClient implements MultichainClient {
   public async listBlocksByHeight(
     to: number,
     from: number | string = 0,
-    verbose: boolean = false,
+    verbose = false,
   ): Promise<BlockListItem[]> {
     return this.rpcClient.invoke("listblocks", `${from}-${to}`, verbose);
   }
@@ -263,8 +263,8 @@ export class RpcMultichainClient implements MultichainClient {
   public async listStreamBlockItemsByHeight(
     streamName: StreamName,
     to: number,
-    from: number = 0,
-    verbose: boolean = false,
+    from = 0,
+    verbose = false,
   ): Promise<Liststreamkeyitems.Item[]> {
     return this.rpcClient
       .invoke("liststreamblockitems", streamName, `${from}-${to}`, verbose)
@@ -280,7 +280,7 @@ export class RpcMultichainClient implements MultichainClient {
   public async v2_readStreamItems(
     streamName: StreamName,
     key: string,
-    nValues: number = maxItemCount,
+    nValues = maxItemCount,
   ): Promise<Liststreamkeyitems.Item[]> {
     if (nValues <= 0) {
       const message = `expected nValues > 0, got ${nValues}`;
@@ -298,4 +298,5 @@ export class RpcMultichainClient implements MultichainClient {
   }
 }
 
-const sleep = (timeout: number) => new Promise((resolve) => setTimeout(resolve, timeout));
+const sleep = (timeout: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, timeout));

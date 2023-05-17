@@ -37,7 +37,7 @@ const baseSubproject: Subproject = {
   additionalData: {},
 };
 
-const repository = (returnedSubproject) => {
+const repository = (returnedSubproject): { getSubproject: () => Promise<Subproject> } => {
   return { getSubproject: async () => returnedSubproject };
 };
 

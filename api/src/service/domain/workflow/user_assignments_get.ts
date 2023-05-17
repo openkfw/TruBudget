@@ -146,10 +146,10 @@ export async function getUserAssignments(
 }
 
 export function toString(assignments: UserAssignments.UserAssignments): string {
-  let projects: string = "";
-  let subprojects: string = "";
-  let workflowitems: string = "";
-  let hiddenAssignments: string = "";
+  let projects = "";
+  let subprojects = "";
+  let workflowitems = "";
+  let hiddenAssignments = "";
 
   if (assignments.projects !== undefined) {
     projects = assignments.projects.reduce((x: string, curr: Project.Project) => {

@@ -21,7 +21,7 @@ interface AuthNotificationToken {
   exp: number;
 }
 
-export const verifyUserJWT = (req: Request, res, next, secret: string) => {
+export const verifyUserJWT = (req: Request, res, next, secret: string): void => {
   logger.trace("Verifying User-JWT ...");
   const token: string = getJWTToken(req);
 
@@ -36,7 +36,7 @@ export const verifyUserJWT = (req: Request, res, next, secret: string) => {
       res.status(400).json(body);
     });
 };
-export const verifyNotificationJWT = (req: Request, res, next, secret: string) => {
+export const verifyNotificationJWT = (req: Request, res, next, secret: string): void => {
   logger.trace("Verifying Notification-JWT ...");
   const token: string = getJWTToken(req);
 
@@ -69,7 +69,7 @@ const verifyJWTToken = (
 
 function getJWTToken(req: Request): string {
   if (req.cookies && req.cookies.token) {
-      req.headers.authorization = `Bearer ${req.cookies.token}`;
+    req.headers.authorization = `Bearer ${req.cookies.token}`;
   }
   let token: string = (req.headers["x-access-token"] as string) || req.headers.authorization || "";
   logger.debug(`Provided JWT-TOKEN: ${token}`);

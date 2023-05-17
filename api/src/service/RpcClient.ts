@@ -178,7 +178,11 @@ export class RpcClient {
           resolve(responseData);
         })
         .catch((error: AxiosError | Error) => {
-          let response: RpcError = this.handleError(error, request.method, request.params);
+          let response: RpcError | undefined = this.handleError(
+            error,
+            request.method,
+            request.params,
+          );
           reject(response);
         });
     });
@@ -241,13 +245,13 @@ export class RpcClient {
               error,
             )}`,
           );
-          let response: RpcError = this.handleError(error, method, params);
+          let response: RpcError | undefined = this.handleError(error, method, params);
           reject(response);
         });
     });
   }
 
-  private handleError = (error: any, method: any, params: any) => {
+  private handleError = (error: any, method: any, params: any): RpcError | undefined => {
     const isAxiosError: boolean = error.isAxiosError || false;
     if (isAxiosError) {
       if (error.response && error.response.data.error !== null) {
@@ -341,7 +345,7 @@ export class RpcClient {
   };
 
   public async retrieveItems(streamName: string, start: number, count: number): Promise<Item[]> {
-    const verbose: boolean = false;
+    const verbose = false;
     return this.invoke("liststreamitems", streamName, verbose, count, start);
   }
 

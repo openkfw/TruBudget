@@ -10,7 +10,7 @@ export class AlreadyExists extends Error {
     private readonly ctx: Ctx,
     private readonly businessEvent: BusinessEvent,
     id: string,
-    message: string = `Intent ${businessEvent.type} failed. ${id} already exists.`,
+    message = `Intent ${businessEvent.type} failed. ${id} already exists.`,
   ) {
     super(message);
 

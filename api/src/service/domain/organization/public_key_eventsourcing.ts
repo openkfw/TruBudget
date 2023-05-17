@@ -26,7 +26,7 @@ function apply(
   keyByOrganization: KeysByOrganization,
   event: BusinessEvent,
   errors: EventSourcingError[],
-) {
+): void {
   if (event.type === "public_key_published") {
     handleCreate(ctx, keyByOrganization, event, errors);
   } else if (event.type === "public_key_updated") {
@@ -39,7 +39,7 @@ function handleCreate(
   keyByOrganization: KeysByOrganization,
   publicKeyPublished: PublicKeyCreated.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace({ event: publicKeyPublished }, "Handling public_key_published event");
   let publicKeyBase64 = keyByOrganization.get(publicKeyPublished.organization);
   if (publicKeyBase64 !== undefined) {
@@ -71,7 +71,7 @@ function handleUpdate(
   keyByOrganization: KeysByOrganization,
   publicKeyPublished: PublicKeyUpdated.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace({ event: publicKeyPublished }, "Handling public_key_updated event");
   let publicKeyBase64 = keyByOrganization.get(publicKeyPublished.organization);
   if (publicKeyBase64 === undefined) {

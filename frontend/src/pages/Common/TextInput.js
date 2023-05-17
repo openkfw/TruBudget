@@ -18,7 +18,6 @@ const TextInput = ({
   onFocus,
   pattern,
   multiline = false,
-  type = "text",
   disabled = false,
   id,
   // eslint-disable-next-line no-useless-computed-key

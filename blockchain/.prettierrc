@@ -1,0 +1,15 @@
+{
+  "semi": true,
+  "trailingComma": "all",
+  "printWidth": 120,
+  "tabWidth": 2,
+  "useTabs": false,
+  "overrides": [
+    {
+      "files": ["*.yaml", "*.models.ts"],
+      "options": {
+        "singleQuote": true
+      }
+    }
+  ]
+}

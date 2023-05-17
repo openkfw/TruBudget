@@ -121,8 +121,6 @@ const getTableEntries = ({
   searchTermArray,
   storeSubSearchTerm,
   theme,
-  storeSubSearchBarDisplayed,
-  idsPermissionsUnassigned,
   navigate
 }) => {
   return subProjects.map(({ data, allowedIntents }, index) => {
@@ -217,7 +215,6 @@ const SubProjectTable = ({
   showEditDialog,
   showSubProjectPermissions,
   showSubProjectAdditionalData,
-  isSubProjectAdditionalDataShown,
   searchBarDisplayed,
   searchTerm,
   searchDisabled,

@@ -63,7 +63,7 @@ export async function getCurrentVote(
   multichain: MultichainClient,
   callerAddress: Nodes.WalletAddress,
   targetAddress: Nodes.WalletAddress,
-) {
+): Promise<AccessVote.T> {
   const noOrganizationLookup = new Map<Nodes.WalletAddress, Nodes.Organization>();
   const currentPermissions: Nodes.PermissionInfo[] = await Nodes.getNetworkPermissions(
     multichain,

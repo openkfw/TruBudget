@@ -29,7 +29,7 @@ export default class ScrollingHistory extends React.Component {
         pageStart={0}
         initialLoad={false}
         useWindow={false}
-        loadMore={(page) => {
+        loadMore={() => {
           if (!isLoading && hasMore) fetchNext();
         }}
         hasMore={hasMore}

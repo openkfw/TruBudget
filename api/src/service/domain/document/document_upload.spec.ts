@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert, expect } from "chai";
 import { Ctx } from "lib/ctx";
-import { VError } from "verror";
 import * as Result from "../../../result";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
 import { uploadDocument } from "./document_upload";
+import { DocumentReference, StoredDocument } from "./document";
+import { VError } from "verror";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -41,7 +42,7 @@ const existingDocuments = [
     organizationUrl: "",
   },
 ];
-const documentReferences = [{ id: docId, fileName, hash: "hash" }];
+const documentReferences: DocumentReference[] = [{ id: docId, fileName, hash: "hash" }];
 
 const requestData = {
   id,
@@ -50,16 +51,16 @@ const requestData = {
 };
 
 const repository = {
-  getAllDocumentInfos: () => Promise.resolve(existingDocuments),
-  getAllDocumentReferences: () => Promise.resolve(documentReferences),
-  storeDocument: (id, name, hash) =>
+  getAllDocumentInfos: (): Promise<StoredDocument[]> => Promise.resolve(existingDocuments),
+  getAllDocumentReferences: (): Promise<DocumentReference[]> => Promise.resolve(documentReferences),
+  storeDocument: (_id, _name, _hash): Promise<any> =>
     Promise.resolve({
       id: "1",
       secret: "secret",
     }),
-  encryptWithKey: (secret, publicKey) => Promise.resolve("supersecret"),
-  getPublicKey: (organization) => Promise.resolve("ThePublicKeyBase64"),
-  getUser: async () => aliceUserRecord,
+  encryptWithKey: (_secret, _publicKey): Promise<string> => Promise.resolve("supersecret"),
+  getPublicKey: (_organization): Promise<string> => Promise.resolve("ThePublicKeyBase64"),
+  getUser: async (): Promise<UserRecord> => aliceUserRecord,
 };
 
 describe("Storage Service: Upload a document", async () => {
@@ -109,14 +110,14 @@ describe("Storage Service: Upload a document", async () => {
   it("Uploading document fails if encryption failed", async () => {
     const result = await uploadDocument(ctx, alice, requestData, {
       ...repository,
-      encryptWithKey: (organization) => Promise.resolve(new VError("failed to encrypt secret")),
+      encryptWithKey: (_organization) => Promise.resolve(new VError("failed to encrypt secret")),
     });
     assert.isTrue(Result.isErr(result));
   });
   it("Uploading document fails if storing the document failed", async () => {
     const result = await uploadDocument(ctx, alice, requestData, {
       ...repository,
-      storeDocument: (id, name, hash) => Promise.resolve(new VError("failed to store document")),
+      storeDocument: (_id, _name, _hash) => Promise.resolve(new VError("failed to store document")),
     });
     assert.isTrue(Result.isErr(result));
   });
@@ -124,7 +125,7 @@ describe("Storage Service: Upload a document", async () => {
   it("Uploading document fails if no secret is returned from storage service", async () => {
     const result = await uploadDocument(ctx, alice, requestData, {
       ...repository,
-      storeDocument: (id, name, hash) => Promise.resolve({ id, secret: undefined } as any),
+      storeDocument: (id, _name, _hash) => Promise.resolve({ id, secret: undefined } as any),
     });
     assert.isTrue(Result.isErr(result));
   });

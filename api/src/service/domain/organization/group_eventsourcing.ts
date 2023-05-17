@@ -30,7 +30,7 @@ function apply(
   groups: Map<Group.Id, Group.Group>,
   event: BusinessEvent,
   errors: EventSourcingError[],
-) {
+): void {
   if (event.type === "group_created") {
     handleGroupCreated(ctx, groups, event, errors);
   } else if (event.type === "group_member_added") {
@@ -49,7 +49,7 @@ function handleGroupCreated(
   groups: Map<Group.Id, Group.Group>,
   groupCreated: GroupCreated.Event,
   errors: EventSourcingError[],
-) {
+): void {
   const initialData = groupCreated.group;
 
   let group = groups.get(initialData.id);
@@ -90,7 +90,7 @@ function applyMembersAdded(
   groups: Map<Group.Id, Group.Group>,
   membersAdded: GroupMemberAdded.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace("Adding member to group...");
   // newMembers are member that are currently not in the group
   let newMembers: string[] = [];
@@ -129,7 +129,7 @@ function applyMemberRemoved(
   groups: Map<Group.Id, Group.Group>,
   membersRemoved: GroupMemberRemoved.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace("Remove member from group...");
   const group = deepcopy(groups.get(membersRemoved.groupId));
   if (group === undefined) return;
@@ -163,7 +163,7 @@ function applyPermissionGranted(
   groups: Map<Group.Id, Group.Group>,
   permissionGranted: GroupPermissionGranted.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace("Applying group permissions ...");
 
   const group = deepcopy(groups.get(permissionGranted.groupId));
@@ -200,7 +200,7 @@ function applyPermissionRevoked(
   groups: Map<Group.Id, Group.Group>,
   permissionRevoked: GroupPermissionRevoked.Event,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace("Applying group permissions revoke ...");
 
   const group = deepcopy(groups.get(permissionRevoked.groupId));

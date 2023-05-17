@@ -27,14 +27,11 @@ export async function getAllVisible(
   logger.trace({ user }, "Checking user autorization");
   const isVisible =
     user.id === "root"
-      ? () => true
-      : (subproject: Subproject.Subproject) =>
-        Subproject.permits(subproject, user, [
-          "subproject.list",
-          "subproject.viewDetails",
-        ]);
+      ? (): boolean => true
+      : (subproject: Subproject.Subproject): boolean =>
+          Subproject.permits(subproject, user, ["subproject.list", "subproject.viewDetails"]);
 
-  const removeNonvisibleHistory = (subproject: Subproject.Subproject) =>
+  const removeNonvisibleHistory = (subproject: Subproject.Subproject): Subproject.Subproject =>
     dropHiddenHistoryEvents(subproject, user);
 
   const visibleSubprojects = allSubprojects.filter(isVisible).map(removeNonvisibleHistory);
@@ -60,17 +57,17 @@ function dropHiddenHistoryEvents(
 ): Subproject.Subproject {
   const isEventVisible =
     actingUser.id === "root"
-      ? () => true
-      : (event: SubprojectTraceEvent) => {
-        const allowed = requiredPermissions.get(event.businessEvent.type);
-        if (!allowed) return false;
-        for (const intent of allowed) {
-          for (const identity of subproject.permissions[intent] || []) {
-            if (canAssumeIdentity(actingUser, identity)) return true;
+      ? (): boolean => true
+      : (event: SubprojectTraceEvent): boolean => {
+          const allowed = requiredPermissions.get(event.businessEvent.type);
+          if (!allowed) return false;
+          for (const intent of allowed) {
+            for (const identity of subproject.permissions[intent] || []) {
+              if (canAssumeIdentity(actingUser, identity)) return true;
+            }
           }
-        }
-        return false;
-      };
+          return false;
+        };
 
   return {
     ...subproject,

@@ -146,7 +146,7 @@ class WorkflowContainer extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchAllSubprojectDetails: (pId, sId, loading) => dispatch(fetchAllSubprojectDetails(pId, sId, loading)),
     showCreateDialog: () => dispatch(showCreateDialog()),

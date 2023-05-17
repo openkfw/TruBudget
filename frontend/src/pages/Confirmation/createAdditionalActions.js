@@ -279,7 +279,7 @@ export function createAdditionalActions(
   let allAdditionalActions = [];
   let allPostActions = [];
 
-  originalActions.forEach((originalAction, index) => {
+  originalActions.forEach((originalAction) => {
     const { intent, payload } = originalAction;
     let additionalActions;
     let postActions;

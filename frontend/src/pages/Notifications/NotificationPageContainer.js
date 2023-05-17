@@ -46,7 +46,7 @@ class NotificationPageContainer extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, props) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchNotifications: (page) => dispatch(fetchNotifications(true, page)),
     markNotificationAsRead: (notificationId, page) => dispatch(markNotificationAsRead(notificationId, page)),

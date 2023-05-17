@@ -76,7 +76,8 @@ export async function createProjectOnChain(
   const streamItemKey = projectSelfKey;
   const streamItem = { json: event };
 
-  const publishEvent = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const publishEvent = (): any => {
     logger.debug(`Publishing ${intent} to ${streamName}/${streamItemKey}`);
     return conn.multichainClient
       .getRpcClient()

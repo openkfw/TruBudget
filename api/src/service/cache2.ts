@@ -168,7 +168,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     getNotificationEvents: (userId: string): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting Notification Events from cache");
 
-      const userFilter = (event) => {
+      const userFilter = (event): Event | Error | boolean => {
         if (!event.type.startsWith("notification_")) {
           logger.debug(`Unexpected event type in "notifications" stream: ${event.type}`);
           return false;
@@ -193,7 +193,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
     getDocumentUploadedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting document uploaded events");
-      const documentFilter = (event) => {
+      const documentFilter = (event): boolean => {
         switch (event.type) {
           case "document_uploaded":
             return true;
@@ -207,7 +207,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
     getStorageServiceUrlPublishedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting storageserviceurl-published events from cache");
-      const storageServiceUrlFilter = (event) => {
+      const storageServiceUrlFilter = (event): boolean => {
         switch (event.type) {
           case "storage_service_url_published":
             return true;
@@ -219,7 +219,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
     getSecretPublishedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting Secret published events from cache");
-      const secretPhublishedFilter = (event) => {
+      const secretPhublishedFilter = (event): boolean => {
         switch (event.type) {
           case "secret_published":
             return true;
@@ -328,7 +328,7 @@ export async function withCache<T>(
   conn: ConnToken,
   ctx: Ctx,
   transaction: TransactionFn<T>,
-  doRefresh: boolean = true,
+  doRefresh = true,
 ): Promise<T> {
   const cache = conn.cache2;
 
@@ -364,14 +364,14 @@ export async function invalidateCache(conn: ConnToken): Promise<void> {
   }
 }
 
-async function grabWriteLock(cache: Cache2) {
+async function grabWriteLock(cache: Cache2): Promise<void> {
   while (cache.isWriteLocked) {
     await new Promise((res) => setTimeout(res, 1));
   }
   cache.isWriteLocked = true;
 }
 
-function releaseWriteLock(cache: Cache2) {
+function releaseWriteLock(cache: Cache2): void {
   cache.isWriteLocked = false;
 }
 
@@ -504,7 +504,7 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
   }
 }
 
-function addEventsToCache(cache: Cache2, streamName: string, newEvents: BusinessEvent[]) {
+function addEventsToCache(cache: Cache2, streamName: string, newEvents: BusinessEvent[]): void {
   switch (streamName) {
     case "global":
     case "users":
@@ -523,7 +523,7 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
   }
 }
 
-export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]) {
+export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]): void {
   const { projects, errors: pErrors = [] } = sourceProjects(ctx, newEvents, cache.cachedProjects);
   if (!isEmpty(pErrors)) logger.error({ err: pErrors }, "sourceProject caused error");
 

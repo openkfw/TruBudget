@@ -213,7 +213,7 @@ const Content = (props) => {
                 floatingLabel={strings.subproject.workflowitem_assignee}
                 selectId={hasSubprojectValidator ? subprojectValidator : selectedAssignee}
                 selectableItems={users}
-                onSelect={(assigneeId, assigneeDisplayName) => {
+                onSelect={(assigneeId) => {
                   storeWorkflowAssignee(assigneeId);
                 }}
               />
@@ -313,7 +313,7 @@ const WorkflowDialog = (props) => {
     ),
     nextDisabled:
       workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
-        ? Object.keys(changes).length === 2 && changes.hasOwnProperty("currency") && changes.hasOwnProperty("amount")
+        ? Object.keys(changes).length === 2 && Object.hasOwn(changes, "currency") && Object.hasOwn(changes, "amount")
         : _isEmpty(changes)
   };
 

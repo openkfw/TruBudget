@@ -9,6 +9,7 @@ import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
 import { DocumentReference, UploadedDocument } from "./document";
 import { documentValidate } from "./document_validate";
+import { BusinessEvent } from "../business_event";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -99,16 +100,16 @@ const documentReference: DocumentReference[] = [
 ];
 
 const repository = {
-  getWorkflowitem: () => Promise.resolve(baseWorkflowitem),
-  getUsersForIdentity: async (identity) => {
+  getWorkflowitem: (): Promise<Workflowitem> => Promise.resolve(baseWorkflowitem),
+  getUsersForIdentity: async (identity): Promise<string[] | Error> => {
     if (identity === "alice") return ["alice"];
     if (identity === "bob") return ["bob"];
     return Error(`unexpected identity: ${identity}`);
   },
-  getDocumentsEvents: () => Promise.resolve([]),
-  getAllProjects: () => Promise.resolve([]),
-  getAllSubprojects: () => Promise.resolve([]),
-  getAllWorkflowitems: () => Promise.resolve([]),
+  getDocumentsEvents: (): Promise<Result.Type<BusinessEvent[]>> => Promise.resolve([]),
+  getAllProjects: (): Promise<Project[]> => Promise.resolve([]),
+  getAllSubprojects: (): Promise<Subproject[]> => Promise.resolve([]),
+  getAllWorkflowitems: (): Promise<Workflowitem[]> => Promise.resolve([]),
 };
 
 describe("Validating uploaded document in workflowitem", () => {

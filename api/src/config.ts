@@ -26,6 +26,7 @@ interface ProcessEnvVars {
   NODE_ENV: string;
   ENCRYPTION_PASSWORD: string;
   SIGNING_METHOD: string;
+  npm_package_version: string;
 }
 
 /**
@@ -100,7 +101,7 @@ export const config: Config = {
   storageService: {
     host: process.env.STORAGE_SERVICE_HOST || "localhost",
     port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
-    externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL,
+    externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL || "",
   },
   encryptionPassword:
     process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,
@@ -115,9 +116,9 @@ export const config: Config = {
  *
  * @param requiredEnvVars environment variables required for the API to run
  */
-function exitIfMissing(requiredEnvVars) {
+function exitIfMissing(requiredEnvVars): void {
   let envVarMissing = false;
-  requiredEnvVars.forEach((env: string) => {
+  requiredEnvVars.forEach((env) => {
     if (!envExists(process.env, env)) envVarMissing = true;
   });
   if (envVarMissing) process.exit(1);
@@ -188,10 +189,11 @@ const getValidConfig = (): Config => {
  *
  * @returns true if the current environment is a production environment. otherwise false
  */
-export const isProductionEnvironment = () => config.nodeEnv === "production";
+export const isProductionEnvironment = (): boolean => config.nodeEnv === "production";
 
 declare global {
   namespace NodeJS {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface ProcessEnv extends ProcessEnvVars {}
   }
 }

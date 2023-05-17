@@ -54,17 +54,17 @@ function dropHiddenHistoryEvents(
 ): Workflowitem.Workflowitem {
   const isEventVisible =
     actingUser.id === "root"
-      ? () => true
-      : (event: WorkflowitemTraceEvent) => {
-        const allowed = requiredPermissions.get(event.businessEvent.type);
-        if (!allowed) return false;
-        for (const intent of allowed) {
-          for (const identity of workflowitem.permissions[intent] || []) {
-            if (canAssumeIdentity(actingUser, identity)) return true;
+      ? (): boolean => true
+      : (event: WorkflowitemTraceEvent): boolean => {
+          const allowed = requiredPermissions.get(event.businessEvent.type);
+          if (!allowed) return false;
+          for (const intent of allowed) {
+            for (const identity of workflowitem.permissions[intent] || []) {
+              if (canAssumeIdentity(actingUser, identity)) return true;
+            }
           }
-        }
-        return false;
-      };
+          return false;
+        };
 
   return {
     ...workflowitem,

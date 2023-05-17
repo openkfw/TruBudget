@@ -111,7 +111,7 @@ class DocumentOverview extends Component {
     );
   };
 
-  generateDocumentList = (props) => {
+  generateDocumentList = () => {
     const { workflowitemId, projectId, subprojectId, documents, validatedDocuments, downloadDocument } = this.props;
     const header = this.generateDocumentListHeader();
     const rows = documents.map((document, index) => {

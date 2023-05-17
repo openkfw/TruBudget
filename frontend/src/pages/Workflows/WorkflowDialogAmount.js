@@ -59,7 +59,7 @@ const WorkflowDialogAmount = (props) => {
           style={styles.selections}
           name="workflowAmountType"
           value={workflowAmountType}
-          onChange={(event, value) => storeWorkflowAmountType(value)}
+          onChange={(_event, value) => storeWorkflowAmountType(value)}
         >
           <FormControlLabel
             value="N/A"

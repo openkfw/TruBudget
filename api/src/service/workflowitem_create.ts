@@ -41,15 +41,11 @@ export async function createWorkflowitem(
         const item = await cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
         return Result.isOk(item);
       },
-      userExists: async (
-        userId: string
-      ) => {
+      userExists: async (userId: string) => {
         return userExists(conn, ctx, serviceUser, userId);
       },
-      getUser: async (
-        userId: string
-      ) =>  {
-        return UserQuery.getUser(conn, ctx, serviceUser, userId)
+      getUser: async (userId: string) => {
+        return UserQuery.getUser(conn, ctx, serviceUser, userId);
       },
       getSubproject: async (projectId: string, subprojectId: string) =>
         cache.getSubproject(projectId, subprojectId),

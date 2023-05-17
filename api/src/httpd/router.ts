@@ -20,12 +20,12 @@ import { restoreBackup } from "../system/restoreBackup";
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
 
-const send = (res, httpResponse: HttpResponse) => {
+const send = (res, httpResponse: HttpResponse): void => {
   const [code, body] = httpResponse;
   res.status(code).send(body);
 };
 
-const handleError = (_req, res, err) => {
+const handleError = (_req, res, err): void => {
   switch (err.kind) {
     case "NotAuthorized": {
       const message = `User ${err.token.userId} is not authorized.`;
@@ -213,7 +213,7 @@ export const registerRoutes = (
   blockchainPort: number,
   storageServiceClient: StorageServiceClient,
   invalidateCache: () => void,
-) => {
+): FastifyInstance => {
   server.register(async function () {
     const multichainClient = conn.multichainClient;
 

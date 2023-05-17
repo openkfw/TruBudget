@@ -37,7 +37,7 @@ function apply(
   urls: Map<string, string>,
   event: BusinessEvent,
   errors: EventSourcingError[],
-) {
+): void {
   logger.trace({ event }, "Applying document event");
   if (event.type === "document_uploaded") {
     newDocumentFromEvent(ctx, documents, event, errors);
@@ -51,7 +51,7 @@ function newDocumentFromEvent(
   documents: StoredDocument[],
   event: DocumentUploaded.Event,
   errors: EventSourcingError[],
-) {
+): void {
   const document: StoredDocument = {
     id: event.docId,
     fileName: event.fileName,
@@ -91,7 +91,7 @@ function newSecretFromEvent(
   secrets: DocumentShared.SecretPublished[],
   event: DocumentShared.Event,
   errors: EventSourcingError[],
-) {
+): void {
   const secret: DocumentShared.SecretPublished = {
     docId: event.docId,
     organization: event.organization,

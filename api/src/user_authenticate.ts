@@ -1,4 +1,4 @@
-import { FastifyInstance, fastify } from "fastify";
+import { FastifyInstance } from "fastify";
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 import { toHttpError } from "./http_errors";
@@ -199,7 +199,7 @@ export function addHttpHandler(
   urlPrefix: string,
   service: Service,
   jwtSecret: string,
-) {
+): void {
   server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
     const bodyResult = validateRequestBody(request.body);

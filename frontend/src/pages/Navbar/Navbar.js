@@ -28,7 +28,6 @@ const Navbar = ({
   userId,
   createBackup,
   restoreBackup,
-  versions,
   exportData,
   storeSearchTerm,
   searchTerm,

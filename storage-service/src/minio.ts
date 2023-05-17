@@ -37,7 +37,10 @@ const minioClient: Minio.Client = new Minio.Client({
   secretKey: config.storage.secretKey,
 });
 
-export const getMinioStatus = async () => {
+export const getMinioStatus = async (): Promise<{
+  status: number;
+  statusText: string;
+}> => {
   try {
     await axios.get(
       `http://${config.storage.host}:${config.storage.port}/minio/health/ready`,
@@ -51,7 +54,7 @@ export const getMinioStatus = async () => {
 
 const bucketName: string = config.storage.bucketName;
 
-const makeBucket = (bucket: string, cb: Function) => {
+const makeBucket = (bucket: string, cb: Function): void => {
   minioClient.bucketExists(bucket, (err: Error, exists: boolean) => {
     if (err) {
       log.error({ err }, "Error during searching for bucket");
@@ -72,7 +75,7 @@ const makeBucket = (bucket: string, cb: Function) => {
   });
 };
 
-export const makeBucketAsPromised = (bucket: string) => {
+export const makeBucketAsPromised = (bucket: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     makeBucket(bucket, (err) => {
       if (err) return reject(err);
@@ -92,9 +95,10 @@ const upload = (
   content: string,
   metaData: Metadata,
   cb: Function,
-) => {
+): void => {
   const readableStream: Stream.Readable = new Stream.Readable();
-  readableStream._read = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  readableStream._read = (): void => {};
   readableStream.push(content);
   readableStream.push(null);
 
@@ -139,8 +143,8 @@ export const uploadAsPromised = (
   });
 };
 
-const download = (file: string, cb: Function) => {
-  let fileContent: string = "";
+const download = (file: string, cb: Function): void => {
+  let fileContent = "";
   minioClient.getObject(bucketName, file, (err, dataStream) => {
     if (err || !dataStream) {
       log.error({ err }, "Error during getting file object");
@@ -172,7 +176,7 @@ export const downloadAsPromised = (file: string): Promise<FileWithMeta> => {
   });
 };
 
-const getMetadata = (fileHash: string, cb: Function) => {
+const getMetadata = (fileHash: string, cb: Function): void => {
   minioClient.statObject(bucketName, fileHash, (err, stat: FullStat) => {
     if (err) {
       log.error({ err }, "Error while getting Metadata");
@@ -194,19 +198,19 @@ export const getMetadataAsPromised = (
   });
 };
 
-export const getReadiness = async () => {
+export const getReadiness = async (): Promise<void> => {
   minioClient.listBuckets(function (err, _buckets) {
     if (err) return log.error(err);
   });
 };
 
-const sleep = (ms) => {
+const sleep = (ms): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 };
 
-export const establishConnection = async () => {
+export const establishConnection = async (): Promise<void> => {
   const retries = 20;
   for (let i = 0; i <= retries; i++) {
     try {

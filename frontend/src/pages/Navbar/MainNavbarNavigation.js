@@ -84,7 +84,7 @@ const createBreadcrumb = (
 
   const redacted = strings.common.redacted;
 
-  const accumulatedPath = paths.map((path, index, source) => {
+  const accumulatedPath = paths.map((_path, index, source) => {
     return index ? "/" + source.slice(1, index + 1).join("/") : "/";
   });
   return paths.map((path, index) => {

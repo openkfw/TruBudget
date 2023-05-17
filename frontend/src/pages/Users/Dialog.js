@@ -160,11 +160,11 @@ const Dialog = (props) => {
         const actions = createActions(globalPermissions, temporaryGlobalPermissions);
         actions.forEach((action) => {
           if (action.type === "grant") {
-            action.userIds.forEach((user) => {
+            action.userIds.forEach((_user) => {
               grantGlobalPermission(userToEditPermissions.id, action.permission);
             });
           } else if (action.type === "revoke") {
-            action.userIds.forEach((user) => {
+            action.userIds.forEach((_user) => {
               revokeGlobalPermission(userToEditPermissions.id, action.permission);
             });
             // eslint-disable-next-line no-console

@@ -10,6 +10,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import { sortWorkflowitems } from "./workflowitem_ordering";
+import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 
 interface Repository {
   getWorkflowitems(
@@ -71,7 +72,10 @@ const requiredPermissions = new Map<EventType, Intent[]>([
   ["workflowitems_reordered", ["workflowitem.list"]],
 ]);
 
-function traceEventsVisibleTo(workflowitem: Workflowitem.Workflowitem, user: ServiceUser) {
+function traceEventsVisibleTo(
+  workflowitem: Workflowitem.Workflowitem,
+  user: ServiceUser,
+): WorkflowitemTraceEvent[] {
   const traceEvents = workflowitem.log;
   return traceEvents.filter((traceEvent) => {
     if (user.id === "root") {

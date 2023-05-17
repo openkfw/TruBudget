@@ -86,10 +86,10 @@ const baseWorkflowitem: Workflowitem.Workflowitem[] = [
 ];
 
 const baseRepository = {
-  getAllProjects: async () => baseProject,
-  getSubprojects: async () => baseSubproject,
-  getWorkflowitems: async () => baseWorkflowitem,
-  getUser: async () => baseUser,
+  getAllProjects: async (): Promise<Project.Project[]> => baseProject,
+  getSubprojects: async (): Promise<Subproject.Subproject[]> => baseSubproject,
+  getWorkflowitems: async (): Promise<Workflowitem.Workflowitem[]> => baseWorkflowitem,
+  getUser: async (): Promise<UserRecord.UserRecord> => baseUser,
 };
 
 describe("Get user assignments: authorization and conditions", () => {
@@ -123,7 +123,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-      userAssignments.hiddenAssignments.hasHiddenProjects === true,
+        userAssignments.hiddenAssignments.hasHiddenProjects === true,
     );
   });
 
@@ -142,7 +142,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-      userAssignments.hiddenAssignments.hasHiddenSubprojects === true,
+        userAssignments.hiddenAssignments.hasHiddenSubprojects === true,
     );
   });
 
@@ -161,7 +161,7 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-      userAssignments.hiddenAssignments.hasHiddenWorkflowitems === true,
+        userAssignments.hiddenAssignments.hasHiddenWorkflowitems === true,
     );
   });
 
@@ -188,8 +188,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-      userAssignments.hiddenAssignments.hasHiddenProjects === false &&
-      userAssignments.projects !== undefined,
+        userAssignments.hiddenAssignments.hasHiddenProjects === false &&
+        userAssignments.projects !== undefined,
     );
   });
 
@@ -216,8 +216,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-      userAssignments.hiddenAssignments.hasHiddenSubprojects === false &&
-      userAssignments.subprojects !== undefined,
+        userAssignments.hiddenAssignments.hasHiddenSubprojects === false &&
+        userAssignments.subprojects !== undefined,
     );
   });
 
@@ -243,8 +243,8 @@ describe("Get user assignments: authorization and conditions", () => {
     const userAssignments = result;
     assert.isTrue(
       userAssignments.hiddenAssignments !== undefined &&
-      userAssignments.hiddenAssignments.hasHiddenWorkflowitems === false &&
-      userAssignments.workflowitems !== undefined,
+        userAssignments.hiddenAssignments.hasHiddenWorkflowitems === false &&
+        userAssignments.workflowitems !== undefined,
     );
   });
 });

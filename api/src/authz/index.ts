@@ -7,12 +7,13 @@ import { People, Permissions } from "./types";
 // const groupsForUser = user =>
 //   Sample.groups.filter(x => x.users.indexOf(user) !== -1).map(x => x.group);
 
-const intersection = (groups1, groups2) => groups1.filter((g1) => groups2.indexOf(g1) !== -1);
+const intersection = (groups1, groups2): People =>
+  groups1.filter((g1) => groups2.indexOf(g1) !== -1);
 
-export const hasIntersection = (actualGroups, allowedGroups) =>
+export const hasIntersection = (actualGroups, allowedGroups): boolean =>
   intersection(actualGroups, allowedGroups).length > 0;
 
-export const getUserAndGroups = (token: { userId: string; groups: string[] }) => {
+export const getUserAndGroups = (token: { userId: string; groups: string[] }): string[] => {
   return [token.userId, ...token.groups];
 };
 

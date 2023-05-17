@@ -96,16 +96,14 @@ const createPermissionEvents = (
   // Split the permission "revoked" Events into revoke intents and other intents,
   // because the event for the revoke intent should be applied at last to avoid insufficient permissions errors
   // Note that the events in revokePermissionRevokedEvents are events which revoke a "revoke"-permission.
-  const [
-    otherPermissionRevokedEvents,
-    revokePermissionRevokedEvents,
-  ] = permissionRevokedEvents.reduce(
-    ([otherRevokedEvents, revokeRevokedEvents], event) =>
-      event.permission !== revokeIntent
-        ? [[...revokeRevokedEvents, event], otherRevokedEvents]
-        : [otherRevokedEvents, [...revokeRevokedEvents, event]],
-    [[] as WorkflowitemPermissionRevoked.Event[], [] as WorkflowitemPermissionRevoked.Event[]],
-  );
+  const [otherPermissionRevokedEvents, revokePermissionRevokedEvents] =
+    permissionRevokedEvents.reduce(
+      ([otherRevokedEvents, revokeRevokedEvents], event) =>
+        event.permission !== revokeIntent
+          ? [[...revokeRevokedEvents, event], otherRevokedEvents]
+          : [otherRevokedEvents, [...revokeRevokedEvents, event]],
+      [[] as WorkflowitemPermissionRevoked.Event[], [] as WorkflowitemPermissionRevoked.Event[]],
+    );
 
   // Check authorization
   if (publisher.id !== "root") {
