@@ -59,11 +59,11 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "Debug API Container",
+      "name": "Docker: Attach to API Container",
       "port": 9230,
       "address": "localhost",
       "localRoot": "${workspaceFolder}/api",
-      "remoteRoot": "/home/node/"
+      "remoteRoot": "/home/node"
     },
     {
       "type": "node",
