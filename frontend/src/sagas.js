@@ -757,7 +757,8 @@ export function* editSubProjectSaga({ projectId, subprojectId, changes, deletedP
   }, true);
 }
 
-export function* createWorkflowItemSaga({ _type, ...workflowitemData }) {
+// eslint-disable-next-line no-unused-vars
+export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
   const {
     projectId,
     subprojectId,

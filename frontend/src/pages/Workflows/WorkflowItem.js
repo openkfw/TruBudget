@@ -238,7 +238,19 @@ function isWorkflowItemSelectable(redacted, sortenabled, allowedIntents) {
 }
 
 const editWorkflow = (
-  { id, displayName, amount, exchangeRate, amountType, currency, description, documents, dueDate, workflowitemType },
+  {
+    id,
+    displayName,
+    amount,
+    exchangeRate,
+    amountType,
+    currency,
+    description,
+    _status,
+    documents,
+    dueDate,
+    workflowitemType
+  },
   props
 ) => {
   // Otherwise we need to deal with undefined which causes errors in the editDialog
@@ -375,7 +387,7 @@ const getCardStyle = (workflowSortEnabled, status, rejected) => {
   return style;
 };
 
-const renderActionButtons = (
+const renderActionButtons = ({
   canEditWorkflow,
   edit,
   canListWorkflowPermissions,
@@ -389,7 +401,7 @@ const renderActionButtons = (
   rejectReason,
   showReasonDialog,
   reject
-) => {
+}) => {
   const additionalDataDisabled = _isEmpty(additionalData) || workflowSortEnabled;
   const editDisabled = !canEditWorkflow || workflowSortEnabled;
   const permissionsDisabled = !canListWorkflowPermissions || workflowSortEnabled;
@@ -484,7 +496,6 @@ export const WorkflowItem = ({
   currentWorkflowSelectable,
   workflowSortEnabled,
   users,
-  idsPermissionsUnassigned,
   currentUser,
   ...props
 }) => {
@@ -504,12 +515,11 @@ export const WorkflowItem = ({
   const allowedIntents = workflow.allowedIntents;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const itemStyle = workflowSelectable ? {} : { opacity: 0.31 };
-  const showEdit = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
+  const canEditWorkflow = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
   const infoButton = getInfoButton(props, status, workflowSortEnabled, workflow.data);
   const attachmentButton = getAttachmentButton(props, workflow.data);
   const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
-  const canCloseWorkflowitem = currentUser === assignee;
-  const showClose = canCloseWorkflowitem && workflowSelectable && status !== "closed";
+  const canCloseWorkflow = currentUser === assignee && workflowSelectable && status !== "closed";
 
   return (
     <div style={styles.container} data-test={`workflowitem-container-${id}`}>
@@ -557,24 +567,21 @@ export const WorkflowItem = ({
                     status={status}
                   />
                 </div>
-                {renderActionButtons(
-                  showEdit,
-                  editWorkflow.bind(this, workflow.data, props),
-                  canViewWorkflowItemPermissions(allowedIntents),
-                  () => props.showWorkflowItemPermissions(id, displayName),
-                  showClose,
-                  () => props.closeWorkflowItem(id),
-                  currentWorkflowSelectable,
+                {renderActionButtons({
+                  canEditWorkflow,
+                  edit: editWorkflow.bind(this, workflow.data, props),
+                  canListWorkflowPermissions: canViewWorkflowItemPermissions(allowedIntents),
+                  showPerm: () => props.showWorkflowItemPermissions(id, displayName),
+                  canCloseWorkflow,
+                  close: () => props.closeWorkflowItem(id),
                   workflowSortEnabled,
                   status,
-                  () => props.showWorkflowitemAdditionalData(id),
+                  showAdditionalData: () => props.showWorkflowitemAdditionalData(id),
                   additionalData,
-                  idsPermissionsUnassigned,
-                  id,
                   rejectReason,
-                  () => props.showReasonDialog(rejectReason),
-                  () => props.rejectWorkflowItem(id)
-                )}
+                  showReasonDialog: () => props.showReasonDialog(rejectReason),
+                  reject: () => props.rejectWorkflowItem(id)
+                })}
               </div>
             </Card>
           </div>
