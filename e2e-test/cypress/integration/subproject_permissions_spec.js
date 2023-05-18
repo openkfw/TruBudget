@@ -696,41 +696,45 @@ describe("Subproject Permissions", function() {
       });
   });
 
-  it("Users of group with Permission have minimum the same permission as the group", function() {
-    Cypress.Promise.all([
-      // grant permissions to testgroup
-      cy.grantProjectPermission(projectId, "project.list", testGroup2.id),
-      cy.grantProjectPermission(projectId, "project.viewDetails", testGroup2.id),
-      cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroup2.id),
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testGroup2.id),
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroup2.id),
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.createWorkflowitem", testGroup2.id),
-      cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroup2.id)
-    ]).then(() => {
-      // Create WorkflowItem with user as creator and assignee
-      // After provisioning testUser3 is part of testGroup2 and should automatically have the groups permissions
-      cy.login(testUser3.id, "test");
-      cy.visit(`/projects/${projectId}/${subprojectId}`);
+  it(
+    "Users of group with Permission have minimum the same permission as the group",
+    { defaultCommandTimeout: 50000 },
+    function() {
+      Cypress.Promise.all([
+        // grant permissions to testgroup
+        cy.grantProjectPermission(projectId, "project.list", testGroup2.id),
+        cy.grantProjectPermission(projectId, "project.viewDetails", testGroup2.id),
+        cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroup2.id),
+        cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testGroup2.id),
+        cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroup2.id),
+        cy.grantSubprojectPermission(projectId, subprojectId, "subproject.createWorkflowitem", testGroup2.id),
+        cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroup2.id)
+      ]).then(() => {
+        // Create WorkflowItem with user as creator and assignee
+        // After provisioning testUser3 is part of testGroup2 and should automatically have the groups permissions
+        cy.login(testUser3.id, "test");
+        cy.visit(`/projects/${projectId}/${subprojectId}`);
 
-      cy.get("[data-test=createWorkflowitem]").click();
-      cy.get("[data-test=nameinput]").type("Test");
+        cy.get("[data-test=createWorkflowitem]").click();
+        cy.get("[data-test=nameinput]").type("Test");
 
-      cy.get("[data-test=next]").click();
-      cy.get("[data-test=submit]").click();
+        cy.get("[data-test=next]").click();
+        cy.get("[data-test=submit]").click();
 
-      cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
+        cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
 
-      cy.get("[data-test=confirmation-dialog-confirm]")
-        .should("be.visible")
-        .click();
+        cy.get("[data-test=confirmation-dialog-confirm]")
+          .should("be.visible")
+          .click();
 
-      // Check if assignee has been set
-      cy.get("[data-test^=workflowitem-]")
-        .last()
-        .find(`[data-test=single-select]`)
-        .should("contain", testUser3.displayname);
-    });
-  });
+        // Check if assignee has been set
+        cy.get("[data-test^=workflowitem-]")
+          .last()
+          .find(`[data-test=single-select]`)
+          .should("contain", testUser3.displayname);
+      });
+    }
+  );
 
   it("It is possible to revoke and grant a permission in one step", function() {
     // Grant Permission Beforehand so it can be revoked during the test

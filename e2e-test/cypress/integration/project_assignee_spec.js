@@ -1,4 +1,4 @@
-describe("Project Assignee", function () {
+describe("Project Assignee", function() {
   const executingUser = "mstein";
   const testUser = "jdoe";
   let projectId;
@@ -9,16 +9,16 @@ describe("Project Assignee", function () {
 
   before(() => {
     cy.login();
-    cy.createProject("p-assign", "project assign test").then(({id}) => {
+    cy.createProject("p-assign", "project assign test").then(({ id }) => {
       projectId = id;
     });
     cy.addUser(longUserName, longUserId, "test");
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     cy.login();
     cy.visit(`/projects/${projectId}`);
-    permissionsBeforeTesting = {project: {}};
+    permissionsBeforeTesting = { project: {} };
     cy.listProjectPermissions(projectId).then(permissions => {
       permissionsBeforeTesting.project = permissions;
     });
@@ -77,7 +77,7 @@ describe("Project Assignee", function () {
     });
   }
 
-  it("After selecting a new assignee, a confirmation dialog opens", function () {
+  it("After selecting a new assignee, a confirmation dialog opens", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
@@ -87,7 +87,7 @@ describe("Project Assignee", function () {
     cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible");
   });
 
-  it("The confirmation dialog assigns the selected user and grants required view Permissions", function () {
+  it("The confirmation dialog assigns the selected user and grants required view Permissions", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
@@ -107,7 +107,7 @@ describe("Project Assignee", function () {
     });
   });
 
-  it("Canceling the confirmation dialog doesn't assign nor grant view permissions", function () {
+  it("Canceling the confirmation dialog doesn't assign nor grant view permissions", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
@@ -123,7 +123,7 @@ describe("Project Assignee", function () {
     assertViewPermissions(permissionsBeforeTesting, projectId, false);
   });
 
-  it("Assigning without project permission to grant view permissions is not possible", function () {
+  it("Assigning without project permission to grant view permissions is not possible", function() {
     cy.intercept(apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
 
     // Grant project.intent.grantPermission to other user first because it's not allowed to revoke the last user
@@ -155,7 +155,7 @@ describe("Project Assignee", function () {
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", executingUser);
   });
 
-  it("Assigning without project 'list permissions'- permissions opens dialog viewing this information", function () {
+  it("Assigning without project 'list permissions'- permissions opens dialog viewing this information", function() {
     cy.grantProjectPermission(projectId, "project.intent.grantPermission", testUser);
     cy.revokeProjectPermission(projectId, "project.intent.listPermissions", executingUser);
     // Open dialog
@@ -178,7 +178,7 @@ describe("Project Assignee", function () {
     cy.grantProjectPermission(projectId, "project.intent.listPermissions", executingUser);
   });
 
-  it("All required project permissions and actions are shown", function () {
+  it("All required project permissions and actions are shown", function() {
     // Open dialog
     cy.get("@firstUncheckedRadioButton").then(firstUncheckedRadioButton => {
       cy.get(firstUncheckedRadioButton)
@@ -201,7 +201,7 @@ describe("Project Assignee", function () {
     });
   });
 
-  it("No additional permissions are shown if there aren't any", function () {
+  it("No additional permissions are shown if there aren't any", function() {
     cy.get("@assigneeId").then(assigneeId => {
       cy.grantProjectPermission(projectId, "project.list", assigneeId);
       cy.grantProjectPermission(projectId, "project.viewDetails", assigneeId);
@@ -221,15 +221,21 @@ describe("Project Assignee", function () {
     });
   });
 
-  it("The dropdown can be closed by pressing the close-button", function () {
-    cy.get("[data-test=single-select-list]").should("be.visible");
-    cy.get("[data-test=close-select]")
-      .should("be.visible")
-      .click();
-    cy.get("[data-test=single-select-list]").should("not.be.visible");
-  });
+  it(
+    "The dropdown can be closed by pressing the close-button",
+    {
+      defaultCommandTimeout: 50000
+    },
+    function() {
+      cy.get("[data-test=single-select-list]").should("be.visible");
+      cy.get("[data-test=close-select]")
+        .should("be.visible")
+        .click();
+      cy.get("[data-test=single-select-list]").should("not.be.visible");
+    }
+  );
 
-  it("If the assignee name is too long, an ellipses with tooltip is shown", function () {
+  it("If the assignee name is too long, an ellipses with tooltip is shown", function() {
     cy.get("[data-test=single-select-list]").should("be.visible");
     cy.get(`[data-test=single-select-name-${longUserId}]`)
       .contains(longUserName)

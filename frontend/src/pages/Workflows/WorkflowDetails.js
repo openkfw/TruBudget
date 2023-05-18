@@ -149,7 +149,15 @@ function Overview({ users, workflowitem }) {
   );
 }
 
-function Documents({ documents, validateDocument, validatedDocuments, projectId, subprojectId, workflowitemId }) {
+function Documents({
+  documents,
+  validateDocument,
+  validatedDocuments,
+  _showWorkflowDetails,
+  projectId,
+  subprojectId,
+  workflowitemId
+}) {
   return (
     <DocumentOverviewContainer
       id={strings.workflow.workflow_documents}

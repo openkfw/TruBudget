@@ -211,7 +211,6 @@ const getTableEntries = ({
 const SubProjectTable = ({
   idsPermissionsUnassigned,
   subProjects,
-
   showEditDialog,
   showSubProjectPermissions,
   showSubProjectAdditionalData,
