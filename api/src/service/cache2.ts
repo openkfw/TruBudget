@@ -1,3 +1,4 @@
+import { EventEmitter } from "events";
 import { Ctx } from "../lib/ctx";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
@@ -70,6 +71,7 @@ type StreamName = string;
 type StreamCursor = { txid: string; index: number };
 
 export type Cache2 = {
+  ee: EventEmitter;
   // A lock is used to prevent sourcing updates concurrently:
   isWriteLocked: boolean;
   // How recent the cache is, in MultiChain terms:
@@ -89,6 +91,7 @@ export type Cache2 = {
 
 export function initCache(): Cache2 {
   return {
+    ee: new EventEmitter(),
     isWriteLocked: false,
     streamState: new Map(),
     eventsByStream: new Map(),
@@ -101,6 +104,7 @@ export function initCache(): Cache2 {
 }
 
 function clearCache(cache: Cache2): void {
+  cache.ee.emit("release");
   cache.streamState.clear();
   cache.eventsByStream.clear();
   cache.cachedProjects.clear();
@@ -365,14 +369,30 @@ export async function invalidateCache(conn: ConnToken): Promise<void> {
 }
 
 async function grabWriteLock(cache: Cache2): Promise<void> {
-  while (cache.isWriteLocked) {
-    await new Promise((res) => setTimeout(res, 1));
-  }
-  cache.isWriteLocked = true;
+  return new Promise((resolve) => {
+    // If nobody has the lock, take it and resolve immediately
+    if (!cache.isWriteLocked) {
+      // Safe because JS doesn't interrupt you on synchronous operations,
+      // so no need for compare-and-swap or anything like that.
+      cache.isWriteLocked = true;
+      return resolve();
+    }
+
+    // Otherwise, wait until somebody releases the lock and try again
+    const tryAcquire = (): void => {
+      if (!cache.isWriteLocked) {
+        cache.isWriteLocked = true;
+        cache.ee.removeListener("release", tryAcquire);
+        return resolve();
+      }
+    };
+    cache.ee.on("release", tryAcquire);
+  });
 }
 
 function releaseWriteLock(cache: Cache2): void {
   cache.isWriteLocked = false;
+  setImmediate(() => cache.ee.emit("release"));
 }
 
 async function findStartIndex(
