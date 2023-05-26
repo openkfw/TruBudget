@@ -141,6 +141,7 @@ import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
+import * as net from "net";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -921,3 +922,15 @@ function rpcSettingsWithoutPassword(settings): ConnectionSettings {
   delete tmp.password;
   return tmp;
 }
+
+const multichainListener = net.createServer((socket) => {
+  socket.on("data", async (data) => {
+    logger.info(`Received data: ${data.toString()}`);
+    await Cache.refreshCache(db, { requestId: "feed", source: "listener" });
+  });
+});
+
+// server listening to multichain's walletnotify custom multichain-feed
+multichainListener.listen(8089, () => {
+  logger.info("Multichain listener listening on port 8089");
+});

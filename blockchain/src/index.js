@@ -45,6 +45,7 @@ const P2P_PORT = process.env.P2P_PORT || 7447;
 const API_PROTO = process.env.API_PROTO || "http";
 const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
+const API_IPC_PORT = process.env.API_IPC_PORT || "8089";
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 
 // Email Service
@@ -132,6 +133,8 @@ configureChain(
   MULTICHAIN_RPC_PASSWORD,
   RPC_ALLOW_IP,
   isMultichainFeedEnabled,
+  API_HOST,
+  API_IPC_PORT,
 );
 
 function initMultichain() {
@@ -310,7 +313,7 @@ rpcport=${MULTICHAIN_RPC_PORT}
 rpcuser=${MULTICHAIN_RPC_USER}
 rpcpassword=${MULTICHAIN_RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
-walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j`);
+walletnotify=${__dirname}/multichain-feed/multichain-feed %j`);
         } else {
           shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
 rpcport=${MULTICHAIN_RPC_PORT}

@@ -6,7 +6,7 @@ EXPOSE 7447
 EXPOSE 8000
 
 RUN apt-get update
-RUN apt-get install -y curl
+RUN apt-get install -y curl file g++
 RUN curl -ko- https://www.multichain.com/download/multichain-2.1.2.tar.gz | tar xzv -C /usr/local/bin --strip 1 --exclude='multichain-2.1.2/multichaind-cold'
 
 WORKDIR /home/node
@@ -14,6 +14,7 @@ COPY package.json ./
 COPY package-lock.json ./
 RUN npm ci
 COPY src/ src/
+RUN g++ src/multichain-feed/multichain-feed.cpp -o src/multichain-feed/multichain-feed
 RUN chmod +x src/multichain-feed/multichain-feed
 RUN chown -R node src/multichain-feed/multichain-feed
 

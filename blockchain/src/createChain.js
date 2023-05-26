@@ -13,6 +13,8 @@ const configureChain = (
   MULTICHAIN_RPC_PASSWORD,
   RPC_ALLOW_IP,
   isMultichainFeedEnabled,
+  API_HOST,
+  API_IPC_PORT,
 ) => {
   log.info(`Creating chain in directory ${multichainDir}`);
   shell.mkdir("-p", multichainDir);
@@ -37,7 +39,7 @@ rpcport=${MULTICHAIN_RPC_PORT}
 rpcuser=${MULTICHAIN_RPC_USER}
 rpcpassword=${MULTICHAIN_RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
-walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j
+walletnotify=${__dirname}/multichain-feed/multichain-feed ${API_HOST} ${API_IPC_PORT} %j
 EOF
 `);
   } else {

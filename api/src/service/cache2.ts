@@ -1,3 +1,4 @@
+import { EventEmitter } from "events";
 import { Ctx } from "../lib/ctx";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
@@ -66,10 +67,13 @@ const STREAM_BLACKLIST = [
   "organization",
 ];
 
+const CACHE_LOCK_RELEASED_EVENT = "release";
+
 type StreamName = string;
 type StreamCursor = { txid: string; index: number };
 
 export type Cache2 = {
+  ee: EventEmitter;
   // A lock is used to prevent sourcing updates concurrently:
   isWriteLocked: boolean;
   // How recent the cache is, in MultiChain terms:
@@ -89,6 +93,7 @@ export type Cache2 = {
 
 export function initCache(): Cache2 {
   return {
+    ee: new EventEmitter(),
     isWriteLocked: false,
     streamState: new Map(),
     eventsByStream: new Map(),
@@ -101,6 +106,7 @@ export function initCache(): Cache2 {
 }
 
 function clearCache(cache: Cache2): void {
+  cache.ee.emit("release");
   cache.streamState.clear();
   cache.eventsByStream.clear();
   cache.cachedProjects.clear();
@@ -237,8 +243,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
 
     getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
       logger.trace(`Getting Project with id "${projectId}" from cache`);
-      const projects = [...cache.cachedProjects.values()];
-      const project = projects.find((x) => x.id === projectId);
+      const project = cache.cachedProjects.get(projectId);
       if (project === undefined) {
         return new NotFound(ctx, "project", projectId);
       }
@@ -328,7 +333,7 @@ export async function withCache<T>(
   conn: ConnToken,
   ctx: Ctx,
   transaction: TransactionFn<T>,
-  doRefresh = true,
+  doRefresh = false,
 ): Promise<T> {
   const cache = conn.cache2;
 
@@ -342,11 +347,23 @@ export async function withCache<T>(
     // Currently, this simply fetches new items for _all_ streams; when the number of
     // streams grows large, it might make sense to do this more fine-grained here.
     if (doRefresh) {
+      logger.error("updating cache from withCache");
       await updateCache(ctx, conn);
     }
 
     // eslint-disable-next-line @typescript-eslint/return-await
     return transaction(cacheInstance);
+  } finally {
+    releaseWriteLock(cache);
+  }
+}
+
+export async function refreshCache(conn: ConnToken, ctx: Ctx): Promise<void> {
+  const cache = conn.cache2;
+  try {
+    // Make sure we're the only thread-of-execution:
+    await grabWriteLock(cache);
+    await updateCache(ctx, conn);
   } finally {
     releaseWriteLock(cache);
   }
@@ -365,14 +382,28 @@ export async function invalidateCache(conn: ConnToken): Promise<void> {
 }
 
 async function grabWriteLock(cache: Cache2): Promise<void> {
-  while (cache.isWriteLocked) {
-    await new Promise((res) => setTimeout(res, 1));
-  }
-  cache.isWriteLocked = true;
+  return new Promise((resolve) => {
+    // If nobody has the lock, take it and resolve immediately
+    if (!cache.isWriteLocked) {
+      cache.isWriteLocked = true;
+      return resolve();
+    }
+
+    // Otherwise, wait until somebody releases the lock and try again
+    const tryAcquire = (): void => {
+      if (!cache.isWriteLocked) {
+        cache.isWriteLocked = true;
+        cache.ee.removeListener(CACHE_LOCK_RELEASED_EVENT, tryAcquire);
+        return resolve();
+      }
+    };
+    cache.ee.on(CACHE_LOCK_RELEASED_EVENT, tryAcquire);
+  });
 }
 
 function releaseWriteLock(cache: Cache2): void {
   cache.isWriteLocked = false;
+  setImmediate(() => cache.ee.emit(CACHE_LOCK_RELEASED_EVENT));
 }
 
 async function findStartIndex(
