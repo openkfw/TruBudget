@@ -29,6 +29,9 @@ const styles = {
     backgroundColor: "#f3f3f3",
     border: "1px solid #EFEFEF",
     borderRadius: 3
+  },
+  sortableContainer: {
+    marginTop: "15px"
   }
 };
 
@@ -128,7 +131,7 @@ const WorkflowList = (props) => {
             <div style={styles.editButtonContainer}>
               {!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}
             </div>
-            {sortableItems}
+            <div style={styles.sortableContainer}>{sortableItems}</div>
             {provided.placeholder}
           </div>
         )}

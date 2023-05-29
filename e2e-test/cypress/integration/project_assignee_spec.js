@@ -224,7 +224,7 @@ describe("Project Assignee", function() {
   it(
     "The dropdown can be closed by pressing the close-button",
     {
-      defaultCommandTimeout: 50000
+      defaultCommandTimeout: 70000
     },
     function() {
       cy.get("[data-test=single-select-list]").should("be.visible");

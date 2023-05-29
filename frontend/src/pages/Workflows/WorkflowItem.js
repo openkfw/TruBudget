@@ -74,17 +74,14 @@ const styles = {
   },
   line: {
     position: "absolute",
-    borderLeft: "2px",
-    borderLeftStyle: "solid",
-    borderLeftColor: "black",
+    borderLeft: "2px solid black",
     height: "100%",
     left: "25px",
     bottom: "35px"
   },
   firstLine: {
     position: "absolute",
-    borderLeft: "2px solid",
-    borderLeftColor: "black",
+    borderLeft: "2px solid black",
     height: "38px",
     left: "25px",
     bottom: "43px"
@@ -140,12 +137,13 @@ const styles = {
   },
   card: {
     marginLeft: "50px",
-    marginRight: "10px",
-    marginTop: "15px",
-    marginBottom: "15px"
+    marginRight: "10px"
   },
   container: {
     position: "relative"
+  },
+  containerItem: {
+    margin: "0 0 15px 0"
   },
   icon: {
     width: "14px",
@@ -525,7 +523,15 @@ export const WorkflowItem = ({
     <div style={styles.container} data-test={`workflowitem-container-${id}`}>
       <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
         {(provided) => (
-          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            style={{
+              ...provided.draggableProps.style,
+              ...styles.containerItem
+            }}
+          >
             {createLine(mapIndex === 0, workflowSelectable)}
             <StepDot
               sortEnabled={workflowSortEnabled}
@@ -610,7 +616,10 @@ export const RedactedWorkflowItem = ({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          style={styles.container}
+          style={{
+            ...provided.draggableProps.style,
+            ...styles.containerItem
+          }}
         >
           {createLine(mapIndex === 0, workflowSelectable)}
           <StepDot status={status} selectable={workflowSelectable} redacted={true} />
