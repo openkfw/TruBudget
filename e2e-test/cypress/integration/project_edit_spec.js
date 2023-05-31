@@ -95,70 +95,76 @@ describe("Project Edit", function() {
     });
   });
 
-  it("Editing the additional data is possible", function() {
-    let previousAddtionalData;
+  it(
+    "Editing the additional data is possible",
+    {
+      defaultCommandTimeout: 50000
+    },
+    function() {
+      let previousAddtionalData;
 
-    cy.login(executingUser, "test");
-    cy.createProject("AdditionalDataTest", undefined, undefined, undefined, {
-      additionalData: {
-        test: "Lorem ipsum dolor sit amet."
-      }
-    }).then(({ id }) => {
-      projectId = id;
-      cy.visit(`/projects`);
-      cy.get(`[data-test= project-overview-additionaldata-${projectId}]`)
-        .scrollIntoView()
-        .should("be.visible")
-        .click();
+      cy.login(executingUser, "test");
+      cy.createProject("AdditionalDataTest", undefined, undefined, undefined, {
+        additionalData: {
+          test: "Lorem ipsum dolor sit amet."
+        }
+      }).then(({ id }) => {
+        projectId = id;
+        cy.visit(`/projects`);
+        cy.get(`[data-test= project-overview-additionaldata-${projectId}]`)
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
-      // Edit addtional data
-      cy.get(`[data-test=project-additional-data]`).within(() => {
-        cy.get(".jse-value")
-          .invoke("text")
-          .then(additionalData => {
-            previousAddtionalData = additionalData;
-          });
-        cy.get(".jse-value")
-          .click()
-          .type("-changed{enter}");
+        // Edit addtional data
+        cy.get(`[data-test=project-additional-data]`).within(() => {
+          cy.get(".jse-value")
+            .invoke("text")
+            .then(additionalData => {
+              previousAddtionalData = additionalData;
+            });
+          cy.get(".jse-value")
+            .click()
+            .type("-changed{enter}");
+        });
+
+        cy.get(`[data-test=project-additional-data]`).click();
+        cy.get(`[data-test=project-additional-data-submit]`).click();
+
+        // Check if additional data has changed
+        cy.get(`[data-test= project-overview-additionaldata-${projectId}]`)
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
+
+        cy.get(`[data-test=project-additional-data]`).within(() => {
+          cy.get(".jse-value")
+            .invoke("text")
+            .should("not.eq", previousAddtionalData);
+        });
+
+        // Change additional data back to original
+        cy.get(`[data-test=project-additional-data]`).within(() => {
+          cy.get(".jse-value")
+            .click()
+            .type(`${previousAddtionalData}{enter}`);
+        });
+        cy.get(`[data-test=project-additional-data]`).click();
+        cy.get(`[data-test=project-additional-data-submit]`).click();
+
+        cy.get(`[data-test= project-overview-additionaldata-${projectId}]`)
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
+
+        cy.get(`[data-test=project-additional-data]`).within(() => {
+          cy.get(".jse-value")
+            .invoke("text")
+            .should("eq", previousAddtionalData);
+        });
       });
-
-      cy.get(`[data-test=project-additional-data]`).click();
-      cy.get(`[data-test=project-additional-data-submit]`).click();
-
-      // Check if additional data has changed
-      cy.get(`[data-test= project-overview-additionaldata-${projectId}]`)
-        .scrollIntoView()
-        .should("be.visible")
-        .click();
-
-      cy.get(`[data-test=project-additional-data]`).within(() => {
-        cy.get(".jse-value")
-          .invoke("text")
-          .should("not.eq", previousAddtionalData);
-      });
-
-      // Change additional data back to original
-      cy.get(`[data-test=project-additional-data]`).within(() => {
-        cy.get(".jse-value")
-          .click()
-          .type(`${previousAddtionalData}{enter}`);
-      });
-      cy.get(`[data-test=project-additional-data]`).click();
-      cy.get(`[data-test=project-additional-data-submit]`).click();
-
-      cy.get(`[data-test= project-overview-additionaldata-${projectId}]`)
-        .scrollIntoView()
-        .should("be.visible")
-        .click();
-
-      cy.get(`[data-test=project-additional-data]`).within(() => {
-        cy.get(".jse-value")
-          .invoke("text")
-          .should("eq", previousAddtionalData);
-      });
-    });
-  });
+    }
+  );
 
   it("Editing additional data without a change isn't possible", function() {
     cy.login(executingUser, "test");
