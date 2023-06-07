@@ -2,7 +2,7 @@
 
 ## API Log
 
-The API is the central part of the TruBudget application. It handles the requests from the frontend and manages the data that is written to the blockchain. Therefore logging is a cruicial part of the API's operation, so that the administrator is informed of where and when errors occur.
+The API is the central part of the TruBudget application. It handles the requests from the frontend and manages the data that is written to the blockchain. Therefore logging is a crucial part of the API's operation, so that the administrator is informed of where and when errors occur.
 
 TruBudget can be installed in 3 possible flavors:
 
