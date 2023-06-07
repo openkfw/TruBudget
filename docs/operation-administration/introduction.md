@@ -67,19 +67,19 @@ Each organization has one shared key to en-/decrypt the user data, which is set 
 
 ### Let's look at this using some examples.
 
-#### Two organizations: OrgaA (origin node), OrgaB (connecting to Organization A), Each with one Node
+#### Two organizations: Orga1 (origin node), Orga2 (connecting to Organization 1), Each with one Node
 
-OrgaA starts a new origin node (i.e. a new, empty blockchain) and creates a new user called Alice. At this point, OrgaA has 100% voting power in the network since it is the only node. OrgaB then connects to OrgaA's node. After OrgaA approves the addition of a new node, OrgaB synchronizes the data and creates a new user called Bob. Alice and Bob can now both see the complete user list of the network (i.e. Alice and Bob), but Alice cannot login on OrgaB's node and Bob cannot login on OrgaA's node since they don't have the same `ORGANIZATION_VAULT_SECRET`. Each of the organizations now holds 50% of the voting power in the network.
+Orga1 starts a new origin node (i.e. a new, empty blockchain) and creates a new user called Alice. At this point, Orga1 has 100% voting power in the network since it is the only node. Orga2 then connects to Orga1's node. After Orga1 approves the addition of a new node, Orga2 synchronizes the data and creates a new user called Bob. Alice and Bob can now both see the complete user list of the network (i.e. Alice and Bob), but Alice cannot login on Orga2's node and Bob cannot login on Orga1's node since they don't have the same `ORGANIZATION_VAULT_SECRET`. Each of the organizations now holds 50% of the voting power in the network.
 
 #### Two organizations: Additional Node
 
-OrgaA has employees in another location and decides to add another node on a server on this location. OrgaA then creates a new node with the same name and `ORGANIZATION_VAULT_SECRET`. The request for a new node of an existing organization pops up in the frontend for both organizations. The addition of a new node for one organization does not create a new wallet address and therefore also does not need more than 50% approval. OrgaA approves the addition of a new node and creates a user account for Ava. Both OrgaA and OrgaB still hold 50% of the voting power.
+Orga1 has employees in another location and decides to add another node on a server on this location. Orga1 then creates a new node with the same name and `ORGANIZATION_VAULT_SECRET`. The request for a new node of an existing organization pops up in the frontend for both organizations. The addition of a new node for one organization does not create a new wallet address and therefore also does not need more than 50% approval. Orga1 approves the addition of a new node and creates a user account for Ava. Both Orga1 and Orga2 still hold 50% of the voting power.
 
 Ava visits the other work location to work together with Alice. She can log in on the same node as Alice, since they share the same organization vault secret.
 
-#### Three organizations: OrgaC decides to join
+#### Three organizations: Orga3 decides to join
 
-OrgaC wants to join the network and connects to OrgaA. The request for approval is visible on the frontends of OrgaA and OrgaB. Since both of them hold 50% of the voting power, _both_ organizations need to approve OrgaC before it can join the network. After both organizations approve OrgaC, the data is synchronized and OrgaC creates a new user called Charlie. Like for the other organizations, Charlie can only login on the node of OrgaC. All three organizations now hold 33.33% of the voting power in the network.
+Orga3 wants to join the network and connects to Orga1. The request for approval is visible on the frontends of Orga1 and Orga2. Since both of them hold 50% of the voting power, _both_ organizations need to approve Orga3 before it can join the network. After both organizations approve Orga3, the data is synchronized and Orga3 creates a new user called Charlie. Like for the other organizations, Charlie can only login on the node of Orga3. All three organizations now hold 33.33% of the voting power in the network.
 
 ## Further reading
 
