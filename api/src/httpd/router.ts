@@ -28,7 +28,11 @@ const send = (res, httpResponse: HttpResponse): void => {
 const handleError = (_req, res, err): void => {
   switch (err.kind) {
     case "NotAuthorized": {
-      const message = `User ${err.token.userId} is not authorized.`;
+      let message = "Current user is not authorized.";
+      if (err.token) {
+        message = `User ${err.token?.userId} is not authorized.`;
+      }
+
       logger.error({ err }, message);
       send(res, [
         403,
