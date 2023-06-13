@@ -20,7 +20,7 @@ export async function getExchangeRates(baseCurrency = "EUR") {
     { headers: {} }
   );
   const exchangeRates = {};
-  if (response.data && response.data.dataSets.length) {
+  if (response.data && response.data.dataSets && response.data.dataSets.length) {
     const series = response.data.dataSets[0].series;
     for (let index = 0; index < Object.keys(series).length; index++) {
       const currency = response.data.structure.dimensions.series[1].values[index].id;
