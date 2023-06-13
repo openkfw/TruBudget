@@ -1,6 +1,6 @@
 # Helm Chart TruBudget <!-- omit in TOC -->
 
-- [Introduction and Basics](#intro)
+- [Introduction and Basics](#introduction-and-basics)
 - [Prerequisites](#prerequisites)
 - [Deploy TruBudget components to your cluster](#deploy-trubudget-components-to-your-cluster)
 - [Configuration](#configuration)

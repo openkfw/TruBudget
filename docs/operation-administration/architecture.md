@@ -1,7 +1,7 @@
 # Architecture in TruBudget
 
 ## Core TruBudget
-A core TruBudget node consist of minimal components needed to function, namely a UI, an API and a Blockchain. However additional services are available to extend the capabilities of a core TruBudget node. These services are explained under [Additional Services](#additional-services).
+A core TruBudget node consists of minimal components needed to function, namely a UI, an API and a Blockchain. However additional services are available to extend the capabilities of a core TruBudget node. These services are explained under [Additional Services](#additional-services).
 
 Following diagram shows the tech stack of the core TruBudget:
 
@@ -37,6 +37,6 @@ In TruBudget two types of data storage are used:
 
 ## Multiple nodes architecture
 Following architecture diagram shows a network with 3 nodes from 3 different organizations including the tech stack and communication protocols.
-Organizations can decide which additional TruBudget features they want to add or if they want to connect their own (external) system via Trubudget's API.
+Organizations can decide which additional TruBudget features they want to add or if they want to connect their own (external) system via TruBudget's API.
 
 ![trubudget-architecture](./img/Trubudget-architecture-diagram.PNG)

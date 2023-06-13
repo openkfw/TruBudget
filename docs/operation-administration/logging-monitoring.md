@@ -45,7 +45,7 @@ Another possibility is to use the EFK stack which will be described below.
 
 ### Kubernetes
 
-When operating the application via Kubernetes the logs of the trubudget components are available via the `kubectl logs -f <pod_name>`.
+When operating the application via Kubernetes the logs of the TruBudget components are available via the `kubectl logs -f <pod_name>`.
 
 
 ## Logging and Monitoring Tools
