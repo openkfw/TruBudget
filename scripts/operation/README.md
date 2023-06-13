@@ -10,7 +10,7 @@ First, to make sure the `.env` file is set, run `cp env_example .env`
 
 To start the slim setup (only blockchain, api, frontend), run `bash start-trubudget.sh` or `bash start-trubudget.sh --slim`.
 
-To start 2 slim TruBudget instances for 2 organizations, run `bash start-dev.sh --slim --add-organization`.
+To start 2 slim TruBudget instances for 2 organizations, run `bash start-trubudget.sh --slim --add-organization`.
 
 To start the full setup, run `bash start-trubudget.sh --full`.
 
@@ -44,7 +44,7 @@ The environmental variables are located in the file `.env` (in the directory `sc
 
 | Options                        | Description                                                                                                                                      |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| --slim                         | Starts a TruBudget instance with alpha-node, alpha-api, provisioning and frontend.                                                               |
+| --slim                         | Starts a TruBudget instance with alpha-node, alpha-api and frontend.                                                               |
 | --full                         | Starts a TruBudget instance with alpha-node, emaildb, minio, alpha-api, email-service, provisioning, excel-export-service, storage and frontend. |
 | --enable-service [services...] | Starts additional services to the TruBudget instance. Available services: email-service, excel-export-service, storage-service                   |
 | --no-log                       | Disable logs of all docker-containers                                                                                                            |
