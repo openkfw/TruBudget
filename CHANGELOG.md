@@ -7,24 +7,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ## Unreleased -->
 
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+
+## [2.2.0] - 2023-06-14
+
 ### Added
 
 - Add a default exchange rate of 1 to workflow items, if the exchange rate is undefined and amount type is not N/A. [#1170](https://github.com/openkfw/TruBudget/issues/1170)
 
-- Add the possibility to a view the password when logging in [[#1225](https://github.com/openkfw/TruBudget/issues/1225)
+- Add the possibility to a view the password when logging in [#1225](https://github.com/openkfw/TruBudget/issues/1225)
 
 - Add a warning in the workflowitem dialog for overwriting permissions [#1189](https://github.com/openkfw/TruBudget/issues/1189)
 - Docker-compose files for e2e-test component [#1282](https://github.com/openkfw/TruBudget/pull/1282)
 - Add Budgets in Table-View [#1226](https://github.com/openkfw/TruBudget/issues/1226)
 - Add Button to view additional data object in Table-View [#1203](https://github.com/openkfw/TruBudget/issues/1203)
 
-<!-- ### Changed -->
+### Changed
+
+- Updated the TruBudget documentation for developers and operators, and included architecture documentation [#1313](https://github.com/openkfw/TruBudget/issues/1313) [#1336](https://github.com/openkfw/TruBudget/issues/1336) [#1095](https://github.com/openkfw/TruBudget/issues/1095)
+
+- Updated package versions in all services [#1089](https://github.com/openkfw/TruBudget/issues/1089) [#1339](https://github.com/openkfw/TruBudget/issues/1339)
 
 - Updated the library used for drag and drop of workflowitems, replaced `react-sortable-hoc` with `react-beautiful-dnd` [#1347](https://github.com/openkfw/TruBudget/issues/1347)
+- Improved the UI-Output of the additional data field [#1252](https://github.com/openkfw/TruBudget/issues/1252)
 
-<!-- ### Deprecated -->
+- Replaced unmaintained ui libraries [#1166](https://github.com/openkfw/TruBudget/issues/1166) [#1347](https://github.com/openkfw/TruBudget/issues/1347)
 
-<!-- ### Removed -->
+- Updated scripts that starts the TruBudget for development and operations [#1316](https://github.com/openkfw/TruBudget/issues/1316) [#1330](https://github.com/openkfw/TruBudget/issues/1330)
 
 ### Fixed
 
@@ -35,6 +53,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed a bug where HTTP 500 errors with different causes would result in displaying the same message that is not relevant to the error itself [#1319](https://github.com/openkfw/TruBudget/issues/1319)
 - Fixed a bug where the confirmation dialog remains frozen in case of error [#1105](https://github.com/openkfw/TruBudget/issues/1105)
 - Fixed translation in Table-View [#1227](https://github.com/openkfw/TruBudget/issues/1227)
+- Fixed translation files [#1201](https://github.com/openkfw/TruBudget/issues/1201)
+- Fixed font of '>' sign in breadcrumb [#1193](https://github.com/openkfw/TruBudget/issues/1193)
+- Fixed the overflow in the notification badge [#1257](https://github.com/openkfw/TruBudget/issues/1257)
+- Fixed a bug where third party exchange rate requests would cause an unhandled error [#1109](https://github.com/openkfw/TruBudget/issues/1109)
+
 
 ## [2.1.0] - 2022-08-11
 
@@ -929,7 +952,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.1.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.2.0...main
+[2.2.0]: https://github.com/openkfw/TruBudget/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/openkfw/TruBudget/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/openkfw/TruBudget/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/openkfw/TruBudget/compare/v1.30.0...v2.0.0
