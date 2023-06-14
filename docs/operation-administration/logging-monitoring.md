@@ -1,8 +1,8 @@
-# Logging
+# Logging and Monitoring in TruBudget
 
-## API Log
+## Logs
 
-The API is the central part of the TruBudget application. It handles the requests from the frontend and manages the data that is written to the blockchain. Therefore logging is a cruicial part of the API's operation, so that the administrator is informed of where and when errors occur.
+The API is the central part of the TruBudget application. It handles the requests from the frontend and manages the data that is written to the blockchain. Therefore logging is a crucial part of the API's operation, so that the administrator is informed of where and when errors occur.
 
 TruBudget can be installed in 3 possible flavors:
 
@@ -45,19 +45,33 @@ Another possibility is to use the EFK stack which will be described below.
 
 ### Kubernetes
 
-When operating the application via Kubernetes it is recommended to use the EFK stack, which will be described in more detail below.
+When operating the application via Kubernetes the logs of the TruBudget components are available via the `kubectl logs -f <pod_name>`.
 
-## The EFK stack
+
+## Logging and Monitoring Tools
+Various logging and monitoring tools can be used with TruBudget, in order to collect, parse and visualize logs and metrics. Setting up monitoring and logging and choosing the right tools is highly dependent on the underlying infrastructure. For our infrastructure we decided for the Prometheus/Loki/Grafanastack. However, other technologies are also a good option, such as the EFK Stack, which is described below.
+
+### Prometheus/Loki/Grafana
+
+- [**Prometheus**](https://prometheus.io/docs/introduction/overview/) is used in collection of metrics from the TruBudget containers.
+- [**Loki**](https://github.com/grafana/loki) is used in collection of logs.
+- [**Grafana**](https://grafana.com/grafana/) is used to visualize the collected metrics and logs.
+
+Following is an example of how a fully configured Grafana dashboard could look like.
+
+![grafana-dashboard](./img/grafana_dashboard.png)
+
+### The EFK Stack
 
 The EFK stack consists of the following components:
 
-- Elasticsearch - A backend for indexing and persisting data
-- Fluentd/Fluentbit - An aggregator for log files
-- Kibana - A frontend to visualize logs and work with them
+- [Elasticsearch](https://www.elastic.co/elasticsearch/) - A backend for indexing and persisting data
+- [Fluentd/Fluentbit](https://www.fluentd.org/) - An aggregator for log files
+- [Kibana](https://www.elastic.co/kibana/) - A frontend to visualize logs and work with them
 
 The EFK stack is a powerful set of software that enables advanced administration of log information. The logs are aggregated from all sources via Fluentd or Fluent Bit, sent to Elasticsearch and can then be viewed in Kibana. Fluentd and Fluent Bit are similar applications that perform similar tasks, but Fluentd is more versatile and heavyweight whereas Fluent Bit is lightweight and not as rich in functionalities.
 
-### EFK & Docker-Compose
+#### EFK & Docker-Compose
 
 In the Docker-Compose setup, we have mainly two different options of getting the logs of the containers:
 
@@ -66,10 +80,12 @@ In the Docker-Compose setup, we have mainly two different options of getting the
 
 Elasticsearch and Kibana can then be installed in Docker containers or locally.
 
-### EFK and Kubernetes
+#### EFK and Kubernetes
 
 The Helm chart for Kubernetes can be configured such that a Fluent Bit pod is created on every node (see the reference architecture). The Fluent Bit pod then gathers all logs from the other pods on the node, adds some Kubernetes meta data (like pod names, cluster name, etc.) and sends it to a defined destination. In the reference architecture this destination is Fluentd, but if no further processing is required, the log data can be sent to Elasticsearch directly.
+
 ![Reference Architecture EFK stack](./img/fluentd_architecture.png)
+
 
 ## Logging Guidelines and information
 

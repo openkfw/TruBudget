@@ -36,7 +36,7 @@ Make sure your are in the `docker-compose` folder and use following command to m
 Copy .env_example to .env to use the default configuration
 
 ```
-cp.env_example .env
+cp .env_example .env
 ```
 
 Deploy TruBudget
@@ -44,6 +44,12 @@ Deploy TruBudget
 ```
 docker-compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml up
 ```
+
+When the setup has completed, you can open these URLs in the browser:
+
+Frontend: http://localhost:3000/
+
+API: http://localhost:8080/api/documentation/static/index.html
 
 Uninstall TruBudget
 

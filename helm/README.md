@@ -1,5 +1,6 @@
 # Helm Chart TruBudget <!-- omit in TOC -->
 
+- [Introduction and Basics](#introduction-and-basics)
 - [Prerequisites](#prerequisites)
 - [Deploy TruBudget components to your cluster](#deploy-trubudget-components-to-your-cluster)
 - [Configuration](#configuration)
@@ -7,6 +8,19 @@
 - [Deploy E2E component to Kubernetes](#deploy-e2e-component-to-kubernetes)
 
 # Deploy TruBudget to Kubernetes with Helm <!-- omit in TOC -->
+
+
+## Introduction and Basics
+The following guide will help you set up TruBudget on a Kubernetes cluster using Helm charts. In order to configure TruBudget or enable services you will need to take additional steps, but this guide should provide a starting point. 
+
+Using these charts, the following resources will be set up for each of the enabled services:
+- a deployment and a pod for each of the TruBudget components that are enabled and that don't need persistance. The deployment creates a replica set that makes sure a pod is up and running at any given time.
+- services for TruBudget components that are enabled. The services expose the underlying pods and make communication between components as well as between TruBudget nodes possible.
+- stateful sets, for all the components that have data that needs to be persisted (blockchain, minio, or email-notification-service).
+- ingress, to enable https access to the frontend service.
+- job, for running the provisioning script.
+
+
 
 ## Prerequisites
 
