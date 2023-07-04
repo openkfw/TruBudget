@@ -1,14 +1,10 @@
 {
-  "1075647": {
-    "active": true,
-    "notes": "Ignored since there is no fix in the nodemon package (dev dependency) yet."
-  },
-  "1091459": {
-    "active": true,
-    "notes": "Ignored since there is no fix in the kubernetes/client-node package yet."
-  },
   "1091725": {
     "active": true,
     "notes": "Ignored since there is no fix in the kubernetes/client-node package yet."
+  },
+  "1092310": {
+    "active": true,
+    "notes": "Ignored since there is no fix in the packages (dev dependency 'semver') yet."
   }
 }
