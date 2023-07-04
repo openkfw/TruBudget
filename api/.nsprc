@@ -1,6 +1,1 @@
-{
-  "1075647": {
-    "active": true,
-    "notes": "Ignored since there is no fix in the nodemon package (dev dependency) yet."
-  }
-}
+{}
