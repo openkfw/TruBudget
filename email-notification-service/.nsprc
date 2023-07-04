@@ -1,6 +1,6 @@
 {
-  "1075647": {
+  "1092310": {
     "active": true,
-    "notes": "Ignored since there is no fix in the nodemon package (dev dependency) yet."
+    "notes": "Ignored since there is no fix in the packages (dev dependency 'semver') yet."
   }
 }
