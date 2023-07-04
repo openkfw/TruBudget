@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import config from "./config";
+
 const getRate = (series) => {
   // catch non existing series
   if (!series) return 0;
@@ -16,7 +18,7 @@ export async function getExchangeRates(baseCurrency = "EUR") {
   const instance = axios.create();
   delete instance.defaults.headers.common["Authorization"];
   const response = await instance.get(
-    "https://data-api.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A?lastNObservations=1",
+    config.exchangeRateUrl,
     { headers: {} }
   );
   const exchangeRates = {};
