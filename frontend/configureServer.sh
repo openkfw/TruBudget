@@ -73,6 +73,12 @@ if [ "$REACT_APP_EMAIL_SERVICE_ENABLED" = true ]; then
     proxy_pass http://$email_host:$email_port/;" /etc/nginx/conf.d/default.conf
 fi
 
+if [[ ! -z "${REACT_APP_EXCHANGE_RATE_URL}" ]]; then
+  echo "Adding the exchange rate API url to ${REACT_APP_EXCHANGE_RATE_URL}"
+  sed -i -e "/# exchangeRateApi/i\\ \   add_header Content-Security-Policy \"default-src 'self'; connect-src 'self' $REACT_APP_EXCHANGE_RATE_URL; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; child-src 'self' blob:; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' data: https://validator.swagger.io;\";" /etc/nginx/conf.d/default.conf
+fi
+
+
 sed -i -e "/# pathToStorageService/i\\
 proxy_pass http://$storage_service_host:$storage_service_port/download;" /etc/nginx/conf.d/default.conf
 
