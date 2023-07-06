@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [2.2.1] - 2023-07-06
+
+### Fixed
+
+- Fixed a problem in the Analytics page due to failing request to exchange rate API [#1405](https://github.com/openkfw/TruBudget/issues/1405)
+
 
 ## [2.2.0] - 2023-06-14
 
@@ -952,7 +958,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.2.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.2.1...main
+[2.2.1]: https://github.com/openkfw/TruBudget/compare/v2.2.1...main
 [2.2.0]: https://github.com/openkfw/TruBudget/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/openkfw/TruBudget/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/openkfw/TruBudget/compare/v2.0.0...v2.0.1
