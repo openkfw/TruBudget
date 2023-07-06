@@ -10,6 +10,7 @@
 | REACT_APP_VERSION | -             | Injected version via `$npm_package_version` in`.env` file to ensure the version is shown in the frontend                                                             |
 | API_HOST          | -             | IP address of the api. This is only required if nginx proxy is used. <br>**Hint:** When deployed locally the host is set to localhost                                |
 | API_PORT          | 8080          | Port of the api. This is only required if nginx proxy is used                                                                                                        |
+| REACT_APP_EXCHANGE_RATE_URL          | `https://data-api.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A?lastNObservations=1`          | The external URL where the exchange rates are fetched from                                                                                                       |
 
 ### Email-Service
 

@@ -1,6 +1,7 @@
 const config = {
   envMode: process.env.NODE_ENV || "development",
   version: process.env.REACT_APP_VERSION || "",
+  exchangeRateUrl: process.env.REACT_APP_EXCHANGE_RATE_URL || "https://data-api.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A?lastNObservations=1",
   logging: {
     isEnabled: process.env.REACT_APP_LOGGING === "true" ? true : false,
     logLevel: process.env.REACT_APP_LOG_LEVEL || "trace",
