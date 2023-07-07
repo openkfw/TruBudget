@@ -54,3 +54,10 @@ The environmental variables are located in the file `.env` (in the directory `sc
 | --prune                        | Delete the multichain, document storage and email database (docker volume)                                                                       |
 | --down                         | Shutdown all docker containers                                                                                                                   |
 | --help                         | Print the help section                                                                                                                           |
+
+### Provision your own data (PYON)
+
+If you want to start the application provisioned with your own data, and you know what you are doing, use `start-provision.sh`.
+This script rebuilds the provisioning image, and uses most of the options above. Please read the documentation of [Provisioning](../../provisioning/README.md)
+
+
