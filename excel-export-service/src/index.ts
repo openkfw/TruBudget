@@ -87,13 +87,18 @@ excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpre
   try {
     await getApiVersion(axios, token, res.apiBase);
   } catch (err) {
+    if (!err.response) {
+      logger.error({ err }, "Cannot connect to API service");
+      return res.status(503).send({ message: "Cannot connect to API service" });
+    }
     if (err.response?.status == 401) {
       logger.error({ err }, "Invalid Token:");
-      res.status(err.response.status).send({ message: err.response.data });
-    } else {
-      logger.error({ err }, "Error validating token");
-      res.status(err.response.status).send({ message: `Error validating token: ${err.response} ` });
+      return res.status(err.response.status).send({ message: err.response.data });
     }
+    logger.error({ err }, "Error validating token");
+    return res
+      .status(err.response.status)
+      .send({ message: `Error validating token: ${err.response} ` });
   }
 
   setExcelLanguage(req.url);
@@ -111,7 +116,7 @@ excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpre
   } catch (error) {
     req.log.error({ err: error }, "Error while creating excel export");
     if (error.response) {
-      res.status(error.response.status).send({ message: error.response.data });
+      return res.status(error.response.status).send({ message: error.response.data });
     }
   }
 });
