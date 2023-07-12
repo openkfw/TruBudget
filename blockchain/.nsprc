@@ -6,5 +6,13 @@
   "1092310": {
     "active": true,
     "notes": "Ignored since there is no fix in the packages (dev dependency 'semver') yet."
+  },
+  "1092448": {
+    "active": true,
+    "notes": "Ignored because we are not handling cookies 'using CookieJar in rejectPublicSuffixes=false'"
+  },
+  "1092470": {
+    "active": true,
+    "notes": "Ignored because we are not handling cookies 'using CookieJar in rejectPublicSuffixes=false'"
   }
 }
