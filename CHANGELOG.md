@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## Unreleased
+
+### Changed
+
+Updated the deprecated 'docker-compose' command to 'docker compose' command in scripts and documentation for developers and operators [#1388](https://github.com/openkfw/TruBudget/issues/1388)
+
+
 ## [2.2.1] - 2023-07-06
 
 ### Fixed

@@ -33,7 +33,7 @@ Help() {
     echo "  --help                          Print the help section"
     echo
     echo "Default option: slim TruBudget instance without provisioning"
-    echo "Recommended docker-compose version: >1.29.2"
+    echo "Recommended docker compose version: >2"
 }
 
 orange=$(tput setaf 214)
@@ -121,7 +121,7 @@ while [ "$1" != "" ]; do
         ;;
 
     --down)
-        docker-compose -p trubudget-operation down
+        docker compose -p trubudget-operation down
         exit 1
         ;;
 
@@ -258,7 +258,7 @@ else
     fi
 fi
 
-COMPOSE="docker-compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
+COMPOSE="docker compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."

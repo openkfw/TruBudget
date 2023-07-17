@@ -7,7 +7,7 @@ The API is the central part of the TruBudget application. It handles the request
 TruBudget can be installed in 3 possible flavors:
 
 - Bare Metal - All componends (Node.js, Multichain, nginx, etc.) are installed directly onto the machine that will be running the application
-- Docker-Compose - All parts of the application are available as docker images, so they are pulled from a registry and started by docker on the host machine
+- Docker Compose - All parts of the application are available as docker images, so they are pulled from a registry and started by docker on the host machine
 - Kubernetes - The containers with the different parts of the application are managed and orchestrated by Kubernetes
 
 The API logs are printed to the standard output (STDOUT and STDERR) by default. This way the application does not need to worry about file paths, log rotation and other operations topics. We have compiled a list of recomended practices for handling the logs for each installation type.
@@ -37,9 +37,9 @@ pm2 start dist/index.js
 
 This is just an example. Please refer to the [official documentation](http://pm2.keymetrics.io/) for more information.
 
-### Docker-Compose
+### Docker Compose
 
-When choosing the Docker-Compose setup, all messages that are printed to STDOUT/STDERR are available via the `docker logs` command. On UNIX systems, the logs are available on `/var/lib/docker/containers/[container-id]/[container-id]-json.log` and can be processed with applications like Logrotate.
+When choosing the Docker Compose setup, all messages that are printed to STDOUT/STDERR are available via the `docker logs` command. On UNIX systems, the logs are available on `/var/lib/docker/containers/[container-id]/[container-id]-json.log` and can be processed with applications like Logrotate.
 
 Another possibility is to use the EFK stack which will be described below.
 
@@ -71,9 +71,9 @@ The EFK stack consists of the following components:
 
 The EFK stack is a powerful set of software that enables advanced administration of log information. The logs are aggregated from all sources via Fluentd or Fluent Bit, sent to Elasticsearch and can then be viewed in Kibana. Fluentd and Fluent Bit are similar applications that perform similar tasks, but Fluentd is more versatile and heavyweight whereas Fluent Bit is lightweight and not as rich in functionalities.
 
-#### EFK & Docker-Compose
+#### EFK & Docker Compose
 
-In the Docker-Compose setup, we have mainly two different options of getting the logs of the containers:
+In the Docker Compose setup, we have mainly two different options of getting the logs of the containers:
 
 1. Use the "Tail" input plugin and select the path of the docker logs as input
 2. Use the "Fluentd" log plugin that is built into Docker that automatically posts the log entries to the TCP port 24224 and then use the input plugin "Forward" to connect to the port 24224 and receive the log messages.

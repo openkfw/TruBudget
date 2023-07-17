@@ -118,7 +118,7 @@ npm run e2etest -- --spec **/currencies_spec.js
 
 ### Run Cypress GUI in Docker
 
-Showing the GUI of cypress which is running in a docker container is an advanced process that needs additional software (XQuartz) for Windows and Mac. Furthermore, Cypress does not recommend using Cypress in Docker (or Docker-Compose) except if you are working without NodeJS (like Python or GO).
+Showing the GUI of cypress which is running in a docker container is an advanced process that needs additional software (XQuartz) for Windows and Mac. Furthermore, Cypress does not recommend using Cypress in Docker (or Docker Compose) except if you are working without NodeJS (like Python or GO).
 
 For more information see this documentation:
 https://www.cypress.io/blog/2019/05/02/run-cypress-with-a-single-docker-command/

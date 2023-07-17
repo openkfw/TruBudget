@@ -1,7 +1,7 @@
 # Connect to an existing Blockchain network using docker
 
-This guide describes how to connect to an existing network using of Docker and Docker-Compose.
-Before starting make sure to have docker and docker-compose available on your machine.
+This guide describes how to connect to an existing network using of Docker and Docker Compose.
+Before starting make sure to have docker and docker compose available on your machine.
 
 ## Table of Contents
 

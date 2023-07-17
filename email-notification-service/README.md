@@ -43,7 +43,7 @@ or by using the user.insert/user.delete endpoint of the email service.
 
 ## Getting Started
 
-The easiest way to get started is to use our `docker-compose` setup which starts the whole TruBudget
+The easiest way to get started is to use our `docker compose` setup which starts the whole TruBudget
 application including all email components (that means you need to
 install [Docker](https://www.docker.com/community-edition#/download)).
 
