@@ -3,9 +3,9 @@
 CURR=$PWD
 git clone 'https://github.com/k6io/k6'
 cd k6
-docker-compose up -d \
+docker compose up -d \
     influxdb \
     grafana
-docker-compose run -v \
+docker compose run -v \
     $CURR/k6-tests/:/scripts \
     k6 run /scripts/script.js --config /scripts/smoke.config.json

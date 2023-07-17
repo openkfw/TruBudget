@@ -32,7 +32,7 @@ Help() {
     echo "  --help                          Print the help section"
     echo
     echo "Default option: slim TruBudget instance without provisioning"
-    echo "Recommended docker-compose version: >1.29.2"
+    echo "Recommended docker compose version: >2"
 }
 
 orange=$(tput setaf 214)
@@ -131,7 +131,7 @@ while [ "$1" != "" ]; do
         ;;
 
     --down)
-        docker-compose -p trubudget-dev down
+        docker compose -p trubudget-dev down
         exit 1
         ;;
 
@@ -283,6 +283,7 @@ else
         COMPOSE_SERVICES="alpha-node alpha-api provisioning frontend"
     fi
 fi
+
 
 # Check if the docker-compose command exists. Newer Docker versions come with compose command along the docker. (docker compose)
 if type -t docker-compose>/dev/null; then

@@ -9,7 +9,7 @@ function unset_alias() {
 }
 
 
-set_alias Dc='docker-compose'
+set_alias Dc='docker compose'
 
 unset_alias multichain-cli
 unset_alias beta-multichain-cli
