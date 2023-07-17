@@ -1,6 +1,6 @@
-# Create a new Network with Docker-Compose
+# Create a new Network with Docker Compose
 
-This guide describes how to start a new instance of Trubudget using docker-compose.
+This guide describes how to start a new instance of Trubudget using docker compose.
 
 We distinguish between two types of deployments:
 
@@ -17,7 +17,7 @@ execute shell scripts, e.g. Ubuntu. If not, take a look at the scripts and port 
 
 ## Table of Contents
 
-- [Create a new Network with Docker-Compose](#create-a-new-network-with-docker-compose)
+- [Create a new Network with Docker Compose](#create-a-new-network-with-docker-compose)
     - [Table of Contents](#table-of-contents)
     - [Prerequisites](#prerequisites)
         - [Docker & Docker Compose](#docker--docker-compose)
@@ -81,7 +81,7 @@ If this is either your first time starting TruBudget or you want to resume where
 
 Each Blockchain container comes with its own volume that persists the data of the Blockchain.
 To modify the host path, meaning the path where the data will be persisted on your local machine (docker volume), you
-can change it in the docker-compose file `scripts/operation/docker-compose.yml`.
+can change it in the docker compose file `scripts/operation/docker-compose.yml`.
 
 The next step is to set all required environment properties, otherwise Docker will not receive the required parameters
 to start the deployment.
@@ -137,7 +137,7 @@ the [Lifecycle](https://github.com/openkfw/TruBudget/blob/main/blockchain/README
 
 ### Example
 
-The docker-compose file in `scripts/operation/` comes with one additional blockchain node (beta-node) that tries to
+The docker compose file in `scripts/operation/` comes with one additional blockchain node (beta-node) that tries to
 connect to the alpha node after starting.
 Each Blockchain container comes with its own volume that persists the data of the Blockchain.
 

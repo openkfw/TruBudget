@@ -1,9 +1,9 @@
 # Create a new Network on a Machine
 
-**It is highly recommended to use the [Docker-Compose Setup guide](./docker.md) instead of this Setup guide. Only use
+**It is highly recommended to use the [Docker Compose Setup guide](./docker.md) instead of this Setup guide. Only use
 this guide if docker cannot be used**
 
-This guide describes how to create a new network without the use of Docker, Docker-Compose.
+This guide describes how to create a new network without the use of Docker, Docker Compose.
 Before starting make sure to have `node`,`npm` and
 the [latest release of MultiChain](https://www.multichain.com/download-community/) available on your machine.
 To check if all required tools are installed correctly use following check commands:

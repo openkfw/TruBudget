@@ -15,7 +15,7 @@ This document describes how to set up your environment to start developing and d
   - [Software components](#software-components)
 
     - [Working on Windows](#working-on-windows)
-    - [Docker/Docker-Compose](#dockerdocker-compose)
+    - [Docker/DockerCompose](#dockerdocker-compose)
     - [Node.js / npm](#nodejs--npm)
     - [Typescript](#typescript)
 
@@ -79,9 +79,9 @@ If you directly pressed Enter during File prompt while generating new key, your 
 
 Copy the contents of this file and add it to your GitHub account. For more information, please check the "Adding a new SSH key to your account" section on [this guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) by GitHub.
 
-### Docker/Docker-Compose
+### Docker/Docker Compose
 
-The easiest way to setup the application on your machine is via Docker and Docker-Compose. For installing Docker, follow the "Install using the repository" section of the following guide. (For Ubuntu)
+The easiest way to setup the application on your machine is via Docker and Docker Compose. For installing Docker, follow the "Install using the repository" section of the following guide. (For Ubuntu)
 
 - [Docker](https://docs.docker.com/engine/install/ubuntu/)
 
@@ -184,7 +184,7 @@ bash setupGitSecrets.sh
 
 ### Environment variables
 
-All projects in TruBudget (blockchain, api, frontend, etc) have a docker-compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env_example` in each project directory. To use these environemnt variables, simply copy the `.env.example` file and rename it to `.env`.
+All projects in TruBudget (blockchain, api, frontend, etc) have a docker compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env_example` in each project directory. To use these environemnt variables, simply copy the `.env.example` file and rename it to `.env`.
 
 > Do **NOT** use other additional ways to set environment variables like inline env-variables or env-variables defined by 'export'. Why? - Because these env-variables will overwrite each which makes it very hard to find mistakes.
 
@@ -194,7 +194,7 @@ If you want to start developing on Trubudget, you need to setup the application 
 
 ### Dockerized Application (recommended)
 
-> If you have installed Docker by following the above guide, then there is one extra step you have to do until this is fixed later. The scripts/development/start-dev.sh script file uses the "docker-compose" command. However within your installation, the command is "docker compose". Until the script is modified to take this into consideration, you are required to change the "docker-compose" commands in the script to "docker compose" locally. Using the IDE or nano/vim, change every "docker-compose" to "docker compose" before you start the script. Do NOT push these changes to the repository as this is only meant for local development.
+> If you have installed Docker by following the above guide, then there is one extra step you have to do until this is fixed later. The scripts/development/start-dev.sh script file uses the "docker compose" command. However within your installation, the command is "docker compose". Until the script is modified to take this into consideration, you are required to change the "docker compose" commands in the script to "docker compose" locally. Using the IDE or nano/vim, change every "docker-compose" to "docker compose" before you start the script. Do NOT push these changes to the repository as this is only meant for local development.
 
 This is the fastest way you can run **all services** needed for development. Everything is started in one command:
 
@@ -446,7 +446,7 @@ The service is then available either on the host and port set by the environment
 
 > in order to access the excel export service from the UI, you should start the frontend with some additional environment variables as mentioned in the excel-export section of the [frontend README.md](../../frontend/environment-variables.md#excel-export-service) file.
 
-> Another way to start the excel export service is in a docker container. Using the docker-compose file in the excel-export folder will build the whole application including api, blockchain, frontend and excel-export service at the same time.
+> Another way to start the excel export service is in a docker container. Using the docker compose file in the excel-export folder will build the whole application including api, blockchain, frontend and excel-export service at the same time.
 
 #### Email-Notification (Optional)
 
@@ -474,7 +474,7 @@ Before running the tests you should make sure that the application is started (i
 
 > If you are using WSL on Windows check out [this setup](https://nickymeuleman.netlify.app/blog/gui-on-wsl2-cypress) to run cypress in WSL.
 
-To setup a new TruBudget instance with Docker-Compose, run following command (recommended):
+To setup a new TruBudget instance with Docker Compose, run following command (recommended):
 
 ```bash
 bash scripts/development/start-dev.sh --slim
