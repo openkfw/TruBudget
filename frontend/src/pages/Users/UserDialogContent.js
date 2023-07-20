@@ -49,7 +49,8 @@ const UserDialogContent = ({
   organization,
   usernameInvalid,
   setConfirmPassword,
-  hasNewPasswordFailed
+  hasNewPasswordFailed,
+  failedText
 }) => {
   const { displayName, password, username } = user;
 
@@ -102,7 +103,7 @@ const UserDialogContent = ({
           label={strings.users.new_user_password_confirmation}
           failed={hasNewPasswordFailed}
           data-test="password-new-user-confirm"
-          failedText={strings.users.no_password_match}
+          failedText={failedText}
         />
       </div>
     </div>

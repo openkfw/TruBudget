@@ -23,6 +23,16 @@ const createActions = (permissions, temporayPermissions) => {
   return actions;
 };
 
+const checkPasswordComplexity = (password) => {
+  const regex = /^(?=.*[A-Za-zÀ-ÿ].*)(?=.*[0-9].*)([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ])*$/;
+  const valid = password.trim().match(regex);
+  return valid;
+};
+
+const checkPasswordLength = (password) => {
+  return password.length >= 8;
+};
+
 const Dialog = (props) => {
   const {
     dashboardDialogShown,
@@ -71,6 +81,9 @@ const Dialog = (props) => {
 
   const [confirmPassword, setConfirmPassword] = useState("");
   const [hasNewPasswordFailed, setHasNewPasswordFailed] = useState(false);
+  const [passwordNotComplex, setPasswordNotComplex] = useState(false);
+  const [passwordTooShort, setPasswordTooShort] = useState(false);
+  const [failedText, setFailedText] = useState("");
 
   const { groupId, name: groupName, groupUsers } = groupToAdd;
   let steps, handleSubmitFunc;
@@ -81,13 +94,31 @@ const Dialog = (props) => {
       return;
     }
 
+    if (!checkPasswordLength(password)) {
+      setPasswordTooShort(true);
+      setFailedText(`${strings.users.password_conditions_preface} ${strings.users.password_conditions_length}`);
+      return;
+    }
+
+    if (!checkPasswordComplexity(password)) {
+      setPasswordNotComplex(true);
+      setFailedText(
+        `${strings.users.password_conditions_preface} ${strings.users.password_conditions_letter}; ${strings.users.password_conditions_number}`
+      );
+      return;
+    }
+
     if (confirmPassword !== password) {
       setHasNewPasswordFailed(true);
+      setFailedText(strings.users.no_password_match);
       return;
     }
 
     setHasNewPasswordFailed(false);
     setUsernameInvalid(false);
+    setPasswordTooShort(false);
+    setPasswordNotComplex(false);
+    setFailedText("");
 
     createUser(displayName, userOrganization, username, password);
 
@@ -111,7 +142,8 @@ const Dialog = (props) => {
               {...props}
               user={userToAdd}
               setConfirmPassword={setConfirmPassword}
-              hasNewPasswordFailed={hasNewPasswordFailed}
+              hasNewPasswordFailed={hasNewPasswordFailed || passwordNotComplex || passwordTooShort}
+              failedText={failedText}
             />
           ),
           nextDisabled: _isEmpty(username) || _isEmpty(password) || _isEmpty(confirmPassword) || _isEmpty(displayName)
