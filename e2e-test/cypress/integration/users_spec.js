@@ -87,11 +87,11 @@ describe("Users/Groups Dashboard", function() {
       .type("testuser")
       .should("have.value", "testuser");
     cy.get("[data-test=password-new-user] input")
-      .type("test")
-      .should("have.value", "test");
+      .type("Testing1")
+      .should("have.value", "Testing1");
     cy.get("[data-test=password-new-user-confirm] input")
-      .type("test")
-      .should("have.value", "test");
+      .type("Testing1")
+      .should("have.value", "Testing1");
     cy.get("[data-test=submit]").click();
   });
 
@@ -113,11 +113,11 @@ describe("Users/Groups Dashboard", function() {
       .type("root")
       .should("have.value", "root");
     cy.get("[data-test=password-new-user] input")
-      .type("test")
-      .should("have.value", "test");
+      .type("Testing1")
+      .should("have.value", "Testing1");
     cy.get("[data-test=password-new-user-confirm] input")
-      .type("test")
-      .should("have.value", "test");
+      .type("Testing1")
+      .should("have.value", "Testing1");
     cy.get("[data-test=submit]").click();
     cy.get("#username-helper-text").contains("Invalid login ID");
     cy.get("[data-test=cancel]").click();
@@ -132,11 +132,11 @@ describe("Users/Groups Dashboard", function() {
       .type("newUser")
       .should("have.value", "newUser");
     cy.get("[data-test=password-new-user] input")
-      .type("password")
-      .should("have.value", "password");
+      .type("password1")
+      .should("have.value", "password1");
     cy.get("[data-test=password-new-user-confirm] input")
-      .type("differentPassword")
-      .should("have.value", "differentPassword");
+      .type("differentPassword1")
+      .should("have.value", "differentPassword1");
     cy.get("[data-test=submit]").click();
     cy.get("[data-test=password-new-user-confirm]").contains("Passwords don't match");
   });
