@@ -25,6 +25,14 @@ export function toHttpError(error: unknown | unknown[]): { code: number; body: E
     code: Math.max(acc.code, err.code),
     message: acc.message === "" ? err.message : `${acc.message}, ${err.message}`,
   }));
+  // don't reveal details in case of authentication issue
+  // - replace error message with generic "authentication failed"
+  if (httpError.code === 400) {
+    return {
+      code: httpError.code,
+      body: toErrorBody({ code: httpError.code, message: "authentication failed" }),
+    };
+  }
   return { code: httpError.code, body: toErrorBody(httpError) };
 }
 
