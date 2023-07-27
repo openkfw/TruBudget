@@ -162,6 +162,7 @@ const {
   accessControlAllowOrigin,
   rpc,
   blockchain,
+  rateLimit,
 } = getValidConfig();
 
 /*
@@ -215,6 +216,7 @@ const server = createBasicApp(
   URL_PREFIX,
   port,
   accessControlAllowOrigin,
+  rateLimit,
 ) as AugmentedFastifyInstance;
 
 /*

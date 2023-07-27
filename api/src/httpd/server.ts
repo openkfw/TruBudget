@@ -12,6 +12,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyStatic from "@fastify/static";
 import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
+import fastifyRateLimit from "@fastify/rate-limit";
 import * as path from "path";
 
 const DEFAULT_API_VERSION = "1.0";
@@ -135,6 +136,7 @@ export const createBasicApp = (
   urlPrefix: string,
   apiPort: number,
   accessControlAllowOrigin: string,
+  rateLimit: number | undefined,
 ): FastifyInstance => {
   const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger,
@@ -171,6 +173,13 @@ export const createBasicApp = (
     request.headers["content-length"] = "1024mb";
     return payload;
   });
+
+  if (rateLimit) {
+    server.register(fastifyRateLimit, {
+      max: rateLimit,
+      timeWindow: "1 minute",
+    });
+  }
 
   return server;
 };

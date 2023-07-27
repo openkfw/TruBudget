@@ -98,6 +98,7 @@ services:
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
       LOG_LEVEL: ${API_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
+      RATE_LIMIT: ${RATE_LIMIT}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:

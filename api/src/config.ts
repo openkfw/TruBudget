@@ -27,6 +27,7 @@ interface ProcessEnvVars {
   ENCRYPTION_PASSWORD: string;
   SIGNING_METHOD: string;
   npm_package_version: string;
+  RATE_LIMIT: string;
 }
 
 /**
@@ -66,6 +67,7 @@ interface Config {
   signingMethod: string;
   nodeEnv: string | undefined;
   accessControlAllowOrigin: string;
+  rateLimit: number | undefined;
 }
 
 /**
@@ -108,6 +110,7 @@ export const config: Config = {
   signingMethod: process.env.SIGNING_METHOD || "node",
   nodeEnv: process.env.NODE_ENV || "production",
   accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
+  rateLimit: process.env.RATE_LIMIT === "" ? undefined : Number(process.env.RATE_LIMIT),
 };
 
 /**

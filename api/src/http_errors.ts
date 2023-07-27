@@ -26,7 +26,7 @@ export function toHttpError(error: unknown | unknown[]): { code: number; body: E
     message: acc.message === "" ? err.message : `${acc.message}, ${err.message}`,
   }));
   // don't reveal details in case of authentication issue
-  // - replace error message with generic "authentication failed"
+  // replace error message sent to client with generic "authentication failed"
   if (httpError.code === 400) {
     return {
       code: httpError.code,
