@@ -93,6 +93,7 @@ services:
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
       LOG_LEVEL: ${API_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
     depends_on:
       - alpha-node
     networks:
@@ -270,6 +271,7 @@ services:
       SIGNING_METHOD: ${SIGNING_METHOD}
       NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+      RATE_LIMIT: ${RATE_LIMIT}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.44

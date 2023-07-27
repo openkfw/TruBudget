@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+RATE_LIMIT environment variable to optionally limit the rate of client HTTP requests to API. 
+Can be any integer number to set the rate of individual client requests per minute.
+
 ### Changed
 
 Updated the deprecated 'docker-compose' command to 'docker compose' command in scripts and documentation for developers and operators [#1388](https://github.com/openkfw/TruBudget/issues/1388)

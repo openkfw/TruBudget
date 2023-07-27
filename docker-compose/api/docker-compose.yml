@@ -20,6 +20,7 @@ services:
       BUILDTIMESTAMP: ${BUILDTIMESTAMP}
       LOG_LEVEL: ${API_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
+      RATE_LIMIT: ${RATE_LIMIT}
     # depends_on:
     #   - blockchain
     # networks:
