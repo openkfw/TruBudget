@@ -3,7 +3,12 @@ import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
-import { SEARCH_BAR_DISPLAYED, SET_SELECTED_VIEW } from "../Navbar/actions";
+import {
+  DISABLE_ALL_LIVE_UPDATES,
+  ENABLE_ALL_LIVE_UPDATES,
+  SEARCH_BAR_DISPLAYED,
+  SET_SELECTED_VIEW
+} from "../Navbar/actions";
 
 import {
   ADD_PROJECT_PROJECTED_BUDGET,
@@ -62,7 +67,8 @@ export const defaultState = fromJS({
   idForInfo: "",
   isProjectAdditionalDataShown: false,
   searchTerms: [],
-  projectView: "card"
+  projectView: "card",
+  isLiveUpdateAllProjectsEnabled: true
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -226,6 +232,10 @@ export default function overviewReducer(state = defaultState, action) {
       });
     case STORE_PROJECT_VIEW:
       return state.set("projectView", fromJS(action.projectView));
+    case DISABLE_ALL_LIVE_UPDATES:
+      return state.set("isLiveUpdateAllProjectsEnabled", false);
+    case ENABLE_ALL_LIVE_UPDATES:
+      return state.set("isLiveUpdateAllProjectsEnabled", true);
     default:
       return state;
   }

@@ -106,6 +106,7 @@ import {
   GRANT_PROJECT_PERMISSION,
   GRANT_PROJECT_PERMISSION_FAILURE,
   GRANT_PROJECT_PERMISSION_SUCCESS,
+  LIVE_UPDATE_ALL_PROJECTS,
   REVOKE_PROJECT_PERMISSION,
   REVOKE_PROJECT_PERMISSION_FAILURE,
   REVOKE_PROJECT_PERMISSION_SUCCESS
@@ -2788,6 +2789,11 @@ export function* restoreBackupSaga({ file, showLoading = true }) {
 }
 
 // LiveUpdate Sagas
+export function* liveUpdateAllProjectsSaga() {
+  yield execute(function* () {
+    yield fetchAllProjectsSaga({ loading: false });
+  }, false);
+}
 export function* liveUpdateProjectSaga({ projectId }) {
   yield execute(function* () {
     yield fetchAllProjectDetailsSaga({ projectId, loading: false });
@@ -3165,6 +3171,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_USER_ASSIGNMENTS, fetchUserAssignmentsSaga),
 
       // LiveUpdates
+      yield takeLeading(LIVE_UPDATE_ALL_PROJECTS, liveUpdateAllProjectsSaga),
       yield takeLeading(LIVE_UPDATE_PROJECT, liveUpdateProjectSaga),
       yield takeLeading(LIVE_UPDATE_SUBPROJECT, liveUpdateSubProjectSaga),
       yield takeLeading(LIVE_UPDATE_NOTIFICATIONS, liveUpdateNotificationsSaga),

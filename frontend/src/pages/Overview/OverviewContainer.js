@@ -7,6 +7,7 @@ import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import AdditionalInfo from "../Common/AdditionalInfo";
 import worker from "../Common/filterProjects.worker.js";
+import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
 import { fetchAllProjectDetails } from "../SubProjects/actions";
@@ -15,6 +16,7 @@ import {
   editProject,
   fetchAllProjects,
   hideProjectAdditionalData,
+  liveUpdateAllProjects,
   setProjectView,
   showCreationDialog,
   showEditDialog,
@@ -60,6 +62,7 @@ class OverviewContainer extends Component {
   render() {
     return (
       <div id="overviewpage">
+        {this.props.isLiveUpdateAllProjectsEnabled ? <LiveUpdates update={this.update} /> : null}
         <div style={globalStyles.innerContainer}>
           <Overview {...this.props} />
           <ProjectDialogContainer location={this.props.location} />
@@ -75,10 +78,15 @@ class OverviewContainer extends Component {
       </div>
     );
   }
+
+  update = () => {
+    this.props.liveUpdate();
+  };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    liveUpdate: () => dispatch(liveUpdateAllProjects()),
     showCreationDialog: () => dispatch(showCreationDialog()),
     showEditDialog: (id, displayName, description, thumbnail, projectedBudgets, tags) =>
       dispatch(showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags)),
@@ -115,7 +123,8 @@ const mapStateToProps = (state) => {
     users: state.getIn(["login", "enabledUsers"]),
     subProjects: state.getIn(["detailview", "subProjects"]),
     projectView: state.getIn(["overview", "projectView"]),
-    enabledUsers: state.getIn(["login", "enabledUsers"])
+    enabledUsers: state.getIn(["login", "enabledUsers"]),
+    isLiveUpdateAllProjectsEnabled: state.getIn(["overview", "isLiveUpdateAllProjectsEnabled"])
   };
 };
 
