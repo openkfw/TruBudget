@@ -2,7 +2,6 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
 import * as GroupQuery from "./domain/organization/group_query";
@@ -13,7 +12,9 @@ import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemAssign from "./domain/workflow/workflowitem_assign";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
+import * as WorkflowitemSnapshotPublish from "./domain/workflow/workflowitem_snapshot_publish";
 import { store } from "./store";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 
 export async function assignWorkflowitem(
   conn: ConnToken,
@@ -29,27 +30,25 @@ export async function assignWorkflowitem(
     "Assigning workflowitem to user",
   );
 
-  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) => {
-    return WorkflowitemAssign.assignWorkflowitem(
-      ctx,
-      serviceUser,
-      assignee,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      {
-        getWorkflowitem: async (id) => {
-          return cache.getWorkflowitem(projectId, subprojectId, id);
-        },
-        getUsersForIdentity: async (identity) => {
-          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
-        },
-        applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
-          return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
-        },
+  const newEventsResult = await WorkflowitemAssign.assignWorkflowitem(
+    ctx,
+    serviceUser,
+    assignee,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    {
+      getWorkflowitem: async (id) => {
+        return await WorkflowitemCacheHelper.getWorkflowitem(conn, ctx, projectId, id);
       },
-    );
-  });
+      getUsersForIdentity: async (identity) => {
+        return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
+      },
+      applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
+        return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
+      },
+    },
+  );
   if (Result.isErr(newEventsResult)) {
     return new VError(newEventsResult, `assign ${assignee} to workflowitem failed`);
   }
@@ -57,5 +56,20 @@ export async function assignWorkflowitem(
 
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);
+  }
+
+  const { canPublish, eventData } = await WorkflowitemSnapshotPublish.publishWorkflowitemSnapshot(
+    ctx,
+    conn,
+    projectId,
+    workflowitemId,
+    serviceUser,
+  );
+  if (canPublish) {
+    if (Result.isErr(eventData)) {
+      return new VError(eventData, "create workflowitem snapshot failed");
+    }
+    const publishEvent = eventData;
+    await store(conn, ctx, publishEvent, serviceUser.address);
   }
 }

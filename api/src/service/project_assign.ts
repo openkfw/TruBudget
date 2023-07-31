@@ -2,7 +2,6 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import * as GroupQuery from "./domain/organization/group_query";
 import { Identity } from "./domain/organization/identity";
@@ -10,6 +9,8 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as ProjectAssign from "./domain/workflow/project_assign";
 import { store } from "./store";
+import * as ProjectSnapshotPublish from "./domain/workflow/project_snapshot_publish";
+import * as ProjectCacheHelper from "./project_cache_helper";
 
 export async function assignProject(
   conn: ConnToken,
@@ -20,15 +21,19 @@ export async function assignProject(
 ): Promise<Result.Type<void>> {
   logger.debug({ projectId, assignee }, "Assigning project to user");
 
-  const assignProjectresult = await Cache.withCache(conn, ctx, async (cache) =>
-    ProjectAssign.assignProject(ctx, serviceUser, projectId, assignee, {
+  const assignProjectresult = await ProjectAssign.assignProject(
+    ctx,
+    serviceUser,
+    projectId,
+    assignee,
+    {
       getProject: async () => {
-        return cache.getProject(projectId);
+        return await ProjectCacheHelper.getProject(conn, ctx, projectId);
       },
       getUsersForIdentity: async (identity) => {
         return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
-    }),
+    },
   );
 
   if (Result.isErr(assignProjectresult)) {
@@ -39,5 +44,19 @@ export async function assignProject(
 
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);
+  }
+
+  const { canPublish, eventData } = await ProjectSnapshotPublish.publishProjectSnapshot(
+    ctx,
+    conn,
+    projectId,
+    serviceUser,
+  );
+  if (canPublish) {
+    if (Result.isErr(eventData)) {
+      return new VError(eventData, "create project snapshot failed");
+    }
+    const publishEvent = eventData;
+    await store(conn, ctx, publishEvent, serviceUser.address);
   }
 }

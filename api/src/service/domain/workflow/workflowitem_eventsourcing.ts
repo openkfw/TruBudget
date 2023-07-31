@@ -15,6 +15,91 @@ import * as WorkflowitemPermissionRevoked from "./workflowitem_permission_revoke
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
 
+export function sourceWorkflowitemFromSnapshot(
+  ctx: Ctx,
+  events: BusinessEvent[],
+  workflowitemJson?,
+): Result.Type<Workflowitem.Workflowitem> {
+  let workflowitem;
+  if (workflowitemJson != undefined) {
+    workflowitem = parseWorkflowitemFromSnapshot(workflowitemJson);
+  } else {
+    // no snapshot available, do event sourcing from creation
+    workflowitem = undefined;
+  }
+
+  for (const event of events) {
+    logger.trace({ event }, "Validating workflowitem Event by applying it");
+    if (!event.type.startsWith("workflowitem_") && event.type !== "workflowitems_reordered") {
+      continue;
+    }
+    const workflowitemResult = sourceEventFromSnapshot(ctx, event, workflowitem);
+    if (Result.isOk(workflowitemResult)) {
+      workflowitemResult.log.push(newTraceEvent(workflowitem, event));
+      workflowitem = workflowitemResult;
+    }
+  }
+
+  return workflowitem;
+}
+
+function sourceEventFromSnapshot(
+  ctx: Ctx,
+  event: BusinessEvent,
+  workflowitemI?: Workflowitem.Workflowitem,
+): Result.Type<Workflowitem.Workflowitem> {
+  const workflowitemId = getWorkflowitemId(event);
+  let workflowitem: Result.Type<Workflowitem.Workflowitem>;
+  if (Result.isOk(workflowitemId) && workflowitemI && workflowitemId === workflowitemI.id) {
+    // The event refers to an existing workflowitem and to the same workflowitem, so
+    // the workflowitem should have been initialized already.
+
+    if (Result.isErr(workflowitemI)) {
+      return new VError(`project ID ${workflowitemId} found in event ${event.type} is invalid`);
+    }
+
+    workflowitem = newWorkflowitemFromEvent(ctx, workflowitemI, event);
+    if (Result.isErr(workflowitem)) {
+      return workflowitem; // <- event-sourcing error
+    }
+  } else {
+    // The event does not refer to a workflowitem ID or snapshot data is missing, so it must be a creation event:
+    if (event.type !== "workflowitem_created") {
+      return new VError(
+        `event ${event.type} is not of type "workflowitem_created" but also ` +
+          "does not include a workflowitem ID",
+      );
+    }
+
+    workflowitem = WorkflowitemCreated.createFrom(ctx, event);
+    if (Result.isErr(workflowitem)) {
+      return new VError(workflowitem, "could not create workflowitem from event");
+    }
+  }
+
+  return workflowitem;
+}
+
+export function parseWorkflowitemFromSnapshot(workflowitemJson): Workflowitem.Workflowitem {
+  return {
+    isRedacted: false,
+    id: workflowitemJson.id,
+    subprojectId: workflowitemJson.subprojectId,
+    createdAt: workflowitemJson.createdAt,
+    status: workflowitemJson.status,
+    displayName: workflowitemJson.displayName,
+    description: workflowitemJson.description,
+    assignee: workflowitemJson.assignee,
+    amountType: workflowitemJson.amountType,
+    dueDate: workflowitemJson.dueDate,
+    documents: workflowitemJson.documents,
+    permissions: workflowitemJson.permissions,
+    log: workflowitemJson.log,
+    additionalData: workflowitemJson.additionalData,
+    workflowitemType: workflowitemJson.workflowitemType,
+  };
+}
+
 export function sourceWorkflowitems(
   ctx: Ctx,
   events: BusinessEvent[],

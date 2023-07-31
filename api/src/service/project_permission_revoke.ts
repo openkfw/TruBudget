@@ -3,13 +3,14 @@ import { VError } from "verror";
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as ProjectPermissionRevoke from "./domain/workflow/project_permission_revoke";
 import { store } from "./store";
+import * as ProjectSnapshotPublish from "./domain/workflow/project_snapshot_publish";
+import * as ProjectCacheHelper from "./project_cache_helper";
 
 export { RequestData } from "./domain/workflow/project_create";
 
@@ -23,12 +24,17 @@ export async function revokeProjectPermission(
 ): Promise<Result.Type<void>> {
   logger.debug({ projectId, revokee, intent }, "Revoking project permission");
 
-  const newEventsResult = await Cache.withCache(conn, ctx, async (cache) =>
-    ProjectPermissionRevoke.revokeProjectPermission(ctx, serviceUser, projectId, revokee, intent, {
+  const newEventsResult = await ProjectPermissionRevoke.revokeProjectPermission(
+    ctx,
+    serviceUser,
+    projectId,
+    revokee,
+    intent,
+    {
       getProject: async (id) => {
-        return cache.getProject(id);
+        return await ProjectCacheHelper.getProject(conn, ctx, id);
       },
-    }),
+    },
   );
 
   if (Result.isErr(newEventsResult)) {
@@ -39,5 +45,19 @@ export async function revokeProjectPermission(
 
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);
+  }
+
+  const { canPublish, eventData } = await ProjectSnapshotPublish.publishProjectSnapshot(
+    ctx,
+    conn,
+    projectId,
+    serviceUser,
+  );
+  if (canPublish) {
+    if (Result.isErr(eventData)) {
+      return new VError(eventData, "create project snapshot failed");
+    }
+    const publishEvent = eventData;
+    await store(conn, ctx, publishEvent, serviceUser.address);
   }
 }

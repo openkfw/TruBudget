@@ -13,6 +13,9 @@ import * as SecretGet from "./domain/document/secret_get";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as PublicKeyGet from "./public_key_get";
 import { store } from "./store";
+import * as ProjectCacheHelper from "./project_cache_helper";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 
 export async function documentShare(
   conn: ConnToken,
@@ -53,7 +56,7 @@ export async function documentShare(
         });
       },
       getWorkflowitem: async (projectId, subprojectId, workflowitemId) => {
-        return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
+        return await WorkflowitemCacheHelper.getWorkflowitem(conn, ctx, projectId, workflowitemId);
       },
       getDocumentInfo: async (docId) => {
         return DocumentGet.getDocumentInfo(ctx, docId, {
@@ -61,13 +64,18 @@ export async function documentShare(
             return cache.getDocumentUploadedEvents();
           },
           getAllProjects: async () => {
-            return cache.getProjects();
+            return await ProjectCacheHelper.getAllProjects(conn, ctx);
           },
           getAllSubprojects: async (projectId) => {
-            return cache.getSubprojects(projectId);
+            return await SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
           },
           getAllWorkflowitems: async (projectId, subprojectId) => {
-            return cache.getWorkflowitems(projectId, subprojectId);
+            return await WorkflowitemCacheHelper.getAllWorkflowitems(
+              conn,
+              ctx,
+              projectId,
+              subprojectId,
+            );
           },
         });
       },

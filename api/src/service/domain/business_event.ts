@@ -24,6 +24,7 @@ import * as OrganizationUrlUpdated from "./document/storage_service_url_updated"
 import * as ProjectAssigned from "./workflow/project_assigned";
 import * as ProjectClosed from "./workflow/project_closed";
 import * as ProjectCreated from "./workflow/project_created";
+import * as ProjectSnapshotPublished from "./workflow/project_snapshot_published";
 import * as ProjectPermissionGranted from "./workflow/project_permission_granted";
 import * as ProjectPermissionRevoked from "./workflow/project_permission_revoked";
 import * as ProjectProjectedBudgetDeleted from "./workflow/project_projected_budget_deleted";
@@ -32,12 +33,14 @@ import * as ProjectUpdated from "./workflow/project_updated";
 import * as SubprojectAssigned from "./workflow/subproject_assigned";
 import * as SubprojectClosed from "./workflow/subproject_closed";
 import * as SubprojectCreated from "./workflow/subproject_created";
+import * as SubprojectSnapshotPublished from "./workflow/subproject_snapshot_published";
 import * as SubprojectPermissionGranted from "./workflow/subproject_permission_granted";
 import * as SubprojectPermissionRevoked from "./workflow/subproject_permission_revoked";
 import * as SubprojectProjectedBudgetDeleted from "./workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./workflow/subproject_projected_budget_updated";
 import * as SubprojectUpdated from "./workflow/subproject_updated";
 import * as WorkflowitemsReordered from "./workflow/workflowitems_reordered";
+import * as WorkflowitemSnapshotPublished from "./workflow/workflowitem_snapshot_published";
 import * as WorkflowitemAssigned from "./workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./workflow/workflowitem_created";
@@ -60,6 +63,7 @@ export type BusinessEvent =
   | ProjectAssigned.Event
   | ProjectClosed.Event
   | ProjectCreated.Event
+  | ProjectSnapshotPublished.Event
   | ProjectPermissionGranted.Event
   | ProjectPermissionRevoked.Event
   | ProjectProjectedBudgetDeleted.Event
@@ -69,6 +73,7 @@ export type BusinessEvent =
   | SubprojectClosed.Event
   | SubprojectCreated.Event
   | WorkflowitemsReordered.Event
+  | SubprojectSnapshotPublished.Event
   | SubprojectPermissionGranted.Event
   | SubprojectPermissionRevoked.Event
   | SubprojectProjectedBudgetDeleted.Event
@@ -81,6 +86,7 @@ export type BusinessEvent =
   | UserPermissionGranted.Event
   | UserPermissionRevoked.Event
   | WorkflowitemAssigned.Event
+  | WorkflowitemSnapshotPublished.Event
   | WorkflowitemClosed.Event
   | WorkflowitemCreated.Event
   | WorkflowitemPermissionGranted.Event

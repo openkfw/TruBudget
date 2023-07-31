@@ -38,7 +38,7 @@ export interface Subproject {
   additionalData: object;
 }
 
-const schema = Joi.object({
+export const schema = Joi.object({
   id: idSchema.required(),
   projectId: Project.idSchema.required(),
   createdAt: Joi.date().iso().required(),

@@ -12,6 +12,9 @@ import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import { store } from "./store";
 import VError = require("verror");
+import * as ProjectCacheHelper from "./project_cache_helper";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 
 /**
  * Returns true if the given hash matches the given document.
@@ -53,7 +56,7 @@ export async function isSameDocument(
       workflowitemId,
       {
         getWorkflowitem: async (id) => {
-          return cache.getWorkflowitem(projectId, subprojectId, id);
+          return await WorkflowitemCacheHelper.getWorkflowitem(conn, ctx, projectId, id);
         },
         getUsersForIdentity: async (identity) => {
           return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
@@ -62,13 +65,18 @@ export async function isSameDocument(
           return cache.getDocumentUploadedEvents();
         },
         getAllProjects: async () => {
-          return cache.getProjects();
+          return await ProjectCacheHelper.getAllProjects(conn, ctx);
         },
         getAllSubprojects: async (projectId) => {
-          return cache.getSubprojects(projectId);
+          return await SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
         },
         getAllWorkflowitems: async (projectId, subprojectId) => {
-          return cache.getWorkflowitems(projectId, subprojectId);
+          return await WorkflowitemCacheHelper.getAllWorkflowitems(
+            conn,
+            ctx,
+            projectId,
+            subprojectId,
+          );
         },
       },
     );

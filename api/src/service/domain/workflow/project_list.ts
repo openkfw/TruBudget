@@ -16,8 +16,7 @@ export async function getAllVisible(
   user: ServiceUser,
   repository: Repository,
 ): Promise<Result.Type<Project.Project[]>> {
-  const allProjects = await repository.getAllProjects();
-
+  const projects = await repository.getAllProjects();
   logger.trace({ user }, "Filtering projects visible to user");
   const isVisible =
     user.id === "root"
@@ -28,7 +27,7 @@ export async function getAllVisible(
   const removeNonvisibleHistory = (project: Project.Project): Project.Project =>
     dropHiddenHistoryEvents(project, user);
 
-  const visibleProjects = allProjects.filter(isVisible).map(removeNonvisibleHistory);
+  const visibleProjects = projects.filter(isVisible).map(removeNonvisibleHistory);
   return visibleProjects;
 }
 
@@ -44,7 +43,7 @@ const requiredPermissions = new Map<EventType, Intent[]>([
   ["project_projected_budget_deleted", ["project.viewDetails"]],
 ]);
 
-function dropHiddenHistoryEvents(
+export function dropHiddenHistoryEvents(
   project: Project.Project,
   actingUser: ServiceUser,
 ): Project.Project {

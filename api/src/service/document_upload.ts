@@ -14,6 +14,9 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as UserQuery from "./domain/organization/user_query";
 import * as PublicKeyGet from "./public_key_get";
 import { store } from "./store";
+import * as ProjectCacheHelper from "./project_cache_helper";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 
 export async function documentUpload(
   conn: ConnToken,
@@ -31,13 +34,18 @@ export async function documentUpload(
             return cache.getDocumentUploadedEvents();
           },
           getAllProjects: async () => {
-            return cache.getProjects();
+            return await ProjectCacheHelper.getAllProjects(conn, ctx);
           },
           getAllSubprojects: async (projectId) => {
-            return cache.getSubprojects(projectId);
+            return await SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
           },
           getAllWorkflowitems: async (projectId, subprojectId) => {
-            return cache.getWorkflowitems(projectId, subprojectId);
+            return await WorkflowitemCacheHelper.getAllWorkflowitems(
+              conn,
+              ctx,
+              projectId,
+              subprojectId,
+            );
           },
         });
       },

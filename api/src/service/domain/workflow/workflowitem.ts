@@ -67,7 +67,7 @@ export interface RedactedWorkflowitem {
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
 
-const schema = Joi.object().keys({
+export const schema = Joi.object().keys({
   isRedacted: Joi.boolean().required(),
   id: Joi.string().required(),
   subprojectId: Subproject.idSchema.required(),

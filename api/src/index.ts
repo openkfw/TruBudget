@@ -165,6 +165,7 @@ const {
   blockchain,
   rateLimit,
   authProxy,
+  snapshotEventInterval,
 } = getValidConfig();
 
 /*

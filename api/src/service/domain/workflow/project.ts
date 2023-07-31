@@ -33,7 +33,7 @@ export interface Project {
   tags: string[];
 }
 
-const schema = Joi.object({
+export const schema = Joi.object({
   id: idSchema.required(),
   createdAt: Joi.date().iso().required(),
   status: Joi.string().valid("open", "closed").required(),

@@ -61,6 +61,14 @@ export async function store(
       await ensureStreamExists(conn, ctx, streamName, "project");
       return writeTo(conn, ctx, { stream: streamName, keys: ["self"], event }, publisherAddress);
 
+    case "project_snapshot_published":
+      await ensureStreamExists(conn, ctx, event.project.id, "project");
+      return writeTo(
+        conn,
+        ctx,
+        { stream: event.project.id, keys: ["self", "snapshot"], event },
+        publisherAddress,
+      );
     case "project_updated":
     case "project_assigned":
     case "project_closed":
@@ -86,7 +94,17 @@ export async function store(
         },
         publisherAddress,
       );
-
+    case "subproject_snapshot_published":
+      return writeTo(
+        conn,
+        ctx,
+        {
+          stream: event.projectId,
+          keys: [event.subproject.id, event.subproject.id + "_snapshot"],
+          event,
+        },
+        publisherAddress,
+      );
     case "subproject_assigned":
     case "subproject_closed":
     case "subproject_updated":
@@ -151,6 +169,18 @@ export async function store(
         {
           stream: event.projectId,
           keys: [`${event.subprojectId}_workflows`, event.workflowitem.id],
+          event,
+        },
+        publisherAddress,
+      );
+
+    case "workflowitem_snapshot_published":
+      return writeTo(
+        conn,
+        ctx,
+        {
+          stream: event.projectId,
+          keys: [event.workflowitem.id, `${event.workflowitem.id}_snapshot`],
           event,
         },
         publisherAddress,

@@ -2,13 +2,13 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import { Permissions } from "./domain/permissions";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectPermissionsList from "./domain/workflow/subproject_permissions_list";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
 
 export async function listSubprojectPermissions(
   conn: ConnToken,
@@ -19,12 +19,16 @@ export async function listSubprojectPermissions(
 ): Promise<Result.Type<Permissions>> {
   logger.debug({ projectId, subprojectId }, "Getting subproject permissions");
 
-  const subprojectPermissionsResult = await Cache.withCache(conn, ctx, async (cache) =>
-    SubprojectPermissionsList.getSubprojectPermissions(ctx, serviceUser, projectId, subprojectId, {
+  const subprojectPermissionsResult = await SubprojectPermissionsList.getSubprojectPermissions(
+    ctx,
+    serviceUser,
+    projectId,
+    subprojectId,
+    {
       getSubproject: async (pId, spId) => {
-        return cache.getSubproject(pId, spId);
+        return await SubprojectCacheHelper.getSubproject(conn, ctx, pId, spId);
       },
-    }),
+    },
   );
   return Result.mapErr(
     subprojectPermissionsResult,

@@ -193,3 +193,85 @@ function copyProjectExceptLog(project: Project.Project): Project.Project {
   (copy as any).log = [];
   return copy as Project.Project;
 }
+
+export function sourceProjectFromSnapshot(
+  ctx: Ctx,
+  events: BusinessEvent[],
+  projectJson?,
+): Result.Type<Project.Project> {
+  let project;
+  if (projectJson != undefined) {
+    project = parseProjectFromSnapshot(projectJson);
+  } else {
+    // no snapshot available, do event sourcing from creation
+    project = undefined;
+  }
+
+  for (const event of events) {
+    logger.trace({ event }, "Validating project Event by applying it");
+    if (!event.type.startsWith("project_")) {
+      continue;
+    }
+    const projectResult = sourceEventFromSnapshot(ctx, event, project);
+    if (Result.isOk(projectResult)) {
+      projectResult.log.push(newTraceEvent(projectResult, event));
+      project = projectResult;
+    }
+  }
+
+  return project;
+}
+
+function sourceEventFromSnapshot(
+  ctx: Ctx,
+  event: BusinessEvent,
+  projectI?: Project.Project,
+): Result.Type<Project.Project> {
+  const projectId = getProjectId(event);
+  let project: Result.Type<Project.Project>;
+  if (Result.isOk(projectId) && projectI && projectId === projectI.id) {
+    // The event refers to an existing project and to the same project, so
+    // the project should have been initialized already.
+
+    if (Result.isErr(projectI)) {
+      return new VError(`project ID ${projectId} found in event ${event.type} is invalid`);
+    }
+
+    project = newProjectFromEvent(ctx, projectI, event);
+    if (Result.isErr(project)) {
+      return project; // <- event-sourcing error
+    }
+  } else {
+    // The event does not refer to a project ID or snapshot data is missing, so it must be a creation event:
+    if (event.type !== "project_created") {
+      return new VError(
+        `event ${event.type} is not of type "project_created" but also ` +
+          "does not include a project ID",
+      );
+    }
+
+    project = ProjectCreated.createFrom(ctx, event);
+    if (Result.isErr(project)) {
+      return new VError(project, "could not create project from event");
+    }
+  }
+
+  return project;
+}
+
+export function parseProjectFromSnapshot(projectJson): Project.Project {
+  return {
+    id: projectJson.id,
+    createdAt: projectJson.createdAt,
+    status: projectJson.status,
+    displayName: projectJson.displayName,
+    description: projectJson.description,
+    assignee: projectJson.assignee,
+    thumbnail: projectJson.thumbnail,
+    projectedBudgets: projectJson.projectedBudgets,
+    permissions: projectJson.permissions,
+    log: projectJson.log,
+    additionalData: projectJson.additionalData,
+    tags: projectJson.tags,
+  };
+}
