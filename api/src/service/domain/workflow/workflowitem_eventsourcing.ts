@@ -35,7 +35,7 @@ export function sourceWorkflowitemFromSnapshot(
     }
     const workflowitemResult = sourceEventFromSnapshot(ctx, event, workflowitem);
     if (Result.isOk(workflowitemResult)) {
-      workflowitemResult.log.push(newTraceEvent(workflowitem, event));
+      workflowitemResult.log.push(newTraceEvent(workflowitemResult, event));
       workflowitem = workflowitemResult;
     }
   }
