@@ -1,8 +1,4 @@
 {
-  "1091725": {
-    "active": true,
-    "notes": "Ignored since there is no fix in the kubernetes/client-node package yet."
-  },
   "1092310": {
     "active": true,
     "notes": "Ignored since there is no fix in the packages (dev dependency 'semver') yet."
