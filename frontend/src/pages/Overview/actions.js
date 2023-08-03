@@ -1,11 +1,10 @@
-export const FETCH_PROJECTS = "FETCH_PROJECTS";
-export const FETCH_PROJECTS_SUCCESS = "FETCH_PROJECTS_SUCCESS";
-
 export const CREATE_PROJECT = "CREATE_PROJECT";
 export const CREATE_PROJECT_SUCCESS = "CREATE_PROJECT_SUCCESS";
 
 export const FETCH_ALL_PROJECTS = "FETCH_ALL_PROJECTS";
 export const FETCH_ALL_PROJECTS_SUCCESS = "FETCH_ALL_PROJECTS_SUCCESS";
+
+export const LIVE_UPDATE_ALL_PROJECTS = "LIVE_UPDATE_ALL_PROJECTS";
 
 export const SHOW_CREATION_DIALOG = "SHOW_CREATION_DIALOG";
 export const HIDE_PROJECT_DIALOG = "HIDE_CREATION_DIALOG";
@@ -55,6 +54,13 @@ export const STORE_PROJECT_VIEW = "STORE_PROJECT_VIEW";
 export function fetchAllProjects(showLoading = false) {
   return {
     type: FETCH_ALL_PROJECTS,
+    showLoading
+  };
+}
+
+export function liveUpdateAllProjects(showLoading = false) {
+  return {
+    type: LIVE_UPDATE_ALL_PROJECTS,
     showLoading
   };
 }
