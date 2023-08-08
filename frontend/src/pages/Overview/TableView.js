@@ -118,104 +118,100 @@ const TableViewEditor = ({ showTags, setShowTags, showBudgets, setShowBudgets })
   );
 };
 
-const useRawColumns = () => {
-  const rawColumns = [
-    // Documentation: https://react-data-table-component.netlify.app/?path=/docs/api-columns--page
-    {
-      id: "project_name_column",
-      name: (
-        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-          {strings.common.project}
-        </Typography>
-      ),
-      selector: (row) => row.data.projectName,
-      sortable: true,
-      compact: false,
-      minWidth: "15rem",
-      cell: (row) => <Typography data-test="project-name">{row.data.projectName}</Typography>
-    },
-    {
-      id: "project_status_column",
-      name: (
-        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-          {strings.common.status}
-        </Typography>
-      ),
-      selector: (row) => row.data.projectStatus,
-      sortable: true,
-      compact: true,
-      minWidth: "5rem",
-      cell: (row) => <Typography>{row.data.projectStatus}</Typography>
-    },
-    {
-      id: "project_date_column",
-      name: (
-        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-          {strings.common.created}
-        </Typography>
-      ),
-      selector: (row) => row.data.creationUnixTs, // time in ms to use the built-in sort
-      sortable: true,
-      compact: true,
-      minWidth: "10rem",
-      cell: (row) => <Typography>{row.data.createdDate}</Typography> // formatted date that is shown
-    },
-    {
-      id: "project_assignee_column",
-      name: (
-        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-          {strings.common.assignee}
-        </Typography>
-      ),
-      selector: (row) => row.data.assignee,
-      sortable: true,
-      compact: true,
-      minWidth: "5rem",
-      cell: (row) => <Typography>{row.data.assignee}</Typography>
-    },
-    {
-      id: "project_tags_column",
-      name: (
-        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-          {strings.common.tags}
-        </Typography>
-      ),
-      sortable: false,
-      compact: true,
-      minWidth: "0rem",
-      maxWidth: "20rem",
-      cell: (row) => row.components.Tags
-    },
-    {
-      id: "project_budgets_column",
-      name: (
-        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-          {strings.common.budget}
-        </Typography>
-      ),
-      sortable: false,
-      compact: true,
-      minWidth: "0rem",
-      maxWidth: "20rem",
-      cell: (row) => row.components.Budgets
-    },
-    {
-      id: "action_buttons_column",
-      name: (
-        <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-          {strings.common.actions}
-        </Typography>
-      ),
-      sortable: false,
-      right: true,
-      compact: false,
-      minWidth: "20rem",
-      cell: (row) => row.components.ProjectButtons
-    }
-  ];
-
-  return rawColumns;
-};
+const rawColumns = [
+  // Documentation: https://react-data-table-component.netlify.app/?path=/docs/api-columns--page
+  {
+    id: "project_name_column",
+    name: (
+      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+        {strings.common.project}
+      </Typography>
+    ),
+    selector: (row) => row.data.projectName,
+    sortable: true,
+    compact: false,
+    minWidth: "15rem",
+    cell: (row) => <Typography data-test="project-name">{row.data.projectName}</Typography>
+  },
+  {
+    id: "project_status_column",
+    name: (
+      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+        {strings.common.status}
+      </Typography>
+    ),
+    selector: (row) => row.data.projectStatus,
+    sortable: true,
+    compact: true,
+    minWidth: "5rem",
+    cell: (row) => <Typography>{row.data.projectStatus}</Typography>
+  },
+  {
+    id: "project_date_column",
+    name: (
+      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+        {strings.common.created}
+      </Typography>
+    ),
+    selector: (row) => row.data.creationUnixTs, // time in ms to use the built-in sort
+    sortable: true,
+    compact: true,
+    minWidth: "10rem",
+    cell: (row) => <Typography>{row.data.createdDate}</Typography> // formatted date that is shown
+  },
+  {
+    id: "project_assignee_column",
+    name: (
+      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+        {strings.common.assignee}
+      </Typography>
+    ),
+    selector: (row) => row.data.assignee,
+    sortable: true,
+    compact: true,
+    minWidth: "5rem",
+    cell: (row) => <Typography>{row.data.assignee}</Typography>
+  },
+  {
+    id: "project_tags_column",
+    name: (
+      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+        {strings.common.tags}
+      </Typography>
+    ),
+    sortable: false,
+    compact: true,
+    minWidth: "0rem",
+    maxWidth: "20rem",
+    cell: (row) => row.components.Tags
+  },
+  {
+    id: "project_budgets_column",
+    name: (
+      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+        {strings.common.budget}
+      </Typography>
+    ),
+    sortable: false,
+    compact: true,
+    minWidth: "0rem",
+    maxWidth: "20rem",
+    cell: (row) => row.components.Budgets
+  },
+  {
+    id: "action_buttons_column",
+    name: (
+      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+        {strings.common.actions}
+      </Typography>
+    ),
+    sortable: false,
+    right: true,
+    compact: false,
+    minWidth: "20rem",
+    cell: (row) => row.components.ProjectButtons
+  }
+];
 
 const formatTable = ({
   projects,
@@ -284,7 +280,6 @@ const TableView = (props) => {
   } = props;
 
   const projects = filteredProjects;
-  const rawColumns = useRawColumns();
 
   const [status, setStatus] = useState("all");
   const [assigneeId, setAssigneeId] = useState("all");
@@ -442,8 +437,8 @@ const TableView = (props) => {
       return true;
     });
 
-    setColumns(currentColumns);
-  }, [rawColumns, showBudgets, showTags]);
+    setColumns([...currentColumns]);
+  }, [showBudgets, showTags]);
 
   const actionsMemo = useMemo(
     () => (
