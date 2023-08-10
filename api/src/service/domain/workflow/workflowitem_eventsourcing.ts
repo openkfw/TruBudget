@@ -18,6 +18,7 @@ import * as WorkflowitemUpdated from "./workflowitem_updated";
 export function sourceWorkflowitemFromSnapshot(
   ctx: Ctx,
   events: BusinessEvent[],
+  withLog: boolean,
   workflowitemJson?,
 ): Result.Type<Workflowitem.Workflowitem> {
   let workflowitem;
@@ -35,7 +36,9 @@ export function sourceWorkflowitemFromSnapshot(
     }
     const workflowitemResult = sourceEventFromSnapshot(ctx, event, workflowitem);
     if (Result.isOk(workflowitemResult)) {
-      workflowitemResult.log.push(newTraceEvent(workflowitemResult, event));
+      if (withLog) {
+        workflowitemResult.log.push(newTraceEvent(workflowitemResult, event));
+      }
       workflowitem = workflowitemResult;
     }
   }

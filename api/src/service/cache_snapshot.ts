@@ -143,7 +143,7 @@ export async function getLatestSnapshot(
   items = items.slice(snapshotIndex + 1);
   let parsedEvents = parseBusinessEvents(items, streamName);
   const businessEvents = parsedEvents.filter(Result.isOk);
-  return sourceFromSnapshot(ctx, businessEvents, data);
+  return sourceFromSnapshot(ctx, businessEvents, false, data);
 }
 
 export async function publishSnapshot(
@@ -201,7 +201,7 @@ export async function publishSnapshot(
   let parsedEvents = parseBusinessEvents(items, streamName);
   const businessEvents = parsedEvents.filter(Result.isOk);
 
-  const sourcedData = sourceFromSnapshot(ctx, businessEvents, data);
+  const sourcedData = sourceFromSnapshot(ctx, businessEvents, false, data);
   let publishEvent: Result.Type<BusinessEvent>;
   if (eventType == "workflowitem_snapshot_published") {
     publishEvent = createEvent(

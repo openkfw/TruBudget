@@ -197,6 +197,7 @@ function copyProjectExceptLog(project: Project.Project): Project.Project {
 export function sourceProjectFromSnapshot(
   ctx: Ctx,
   events: BusinessEvent[],
+  withLog: boolean,
   projectJson?,
 ): Result.Type<Project.Project> {
   let project;
@@ -214,7 +215,9 @@ export function sourceProjectFromSnapshot(
     }
     const projectResult = sourceEventFromSnapshot(ctx, event, project);
     if (Result.isOk(projectResult)) {
-      projectResult.log.push(newTraceEvent(projectResult, event));
+      if (withLog) {
+        projectResult.log.push(newTraceEvent(projectResult, event));
+      }
       project = projectResult;
     }
   }

@@ -20,6 +20,7 @@ import * as WorkflowitemsReordered from "./workflowitems_reordered";
 export function sourceSubprojectFromSnapshot(
   ctx: Ctx,
   events: BusinessEvent[],
+  withLog: boolean,
   subprojectJson?,
 ): Result.Type<Subproject.Subproject> {
   let subproject;
@@ -37,7 +38,9 @@ export function sourceSubprojectFromSnapshot(
     }
     const subprojectResult = sourceEventFromSnapshot(ctx, event, subproject);
     if (Result.isOk(subprojectResult)) {
-      subprojectResult.log.push(newTraceEvent(subprojectResult, event));
+      if (withLog) {
+        subprojectResult.log.push(newTraceEvent(subprojectResult, event));
+      }
       subproject = subprojectResult;
     }
   }
