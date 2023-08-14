@@ -1,6 +1,6 @@
-import {toAmountString} from "../support/helper";
+import { toAmountString } from "../support/helper";
 
-describe("Project Analytics", function () {
+describe("Project Analytics", function() {
   const executingUser = "mstein";
   const otherUser = "jdoe";
 
@@ -54,19 +54,19 @@ describe("Project Analytics", function () {
   before(() => {
     cy.login(executingUser, "test");
 
-    cy.createProject(project.displayName, project.description, project.projectedBudgets).then(({id}) => {
+    cy.createProject(project.displayName, project.description, project.projectedBudgets).then(({ id }) => {
       project.id = id;
       cy.createSubproject(project.id, subproject.displayName, subproject.currency, {
         projectedBudgets: subproject.projectedBudgets
-      }).then(({id}) => {
+      }).then(({ id }) => {
         subproject.id = id;
         cy.createWorkflowitem(project.id, subproject.id, allocatedWorkflowitem.displayName, {
           ...allocatedWorkflowitem
-        }).then(({id}) => {
+        }).then(({ id }) => {
           allocatedWorkflowitem.id = id;
           cy.createWorkflowitem(project.id, subproject.id, disbursedWorkflowitem.displayName, {
             ...disbursedWorkflowitem
-          }).then(({id}) => {
+          }).then(({ id }) => {
             disbursedWorkflowitem.id = id;
             // Create the workflowitem with status "closed" instead (currently bugged)
             cy.closeWorkflowitem(
@@ -87,7 +87,7 @@ describe("Project Analytics", function () {
     });
   });
 
-  beforeEach(function () {
+  beforeEach(function() {
     cy.login();
     cy.visit(`/projects/${project.id}`);
   });
@@ -96,7 +96,7 @@ describe("Project Analytics", function () {
     return (projectedBudget / totalBudget) * 100;
   }
 
-  it("The analytics-screen can be opened and closed", function () {
+  it("The analytics-screen can be opened and closed", function() {
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
@@ -104,7 +104,7 @@ describe("Project Analytics", function () {
     cy.get("[data-test=close-analytics-button]").should("be.visible");
   });
 
-  it("The analytics-charts are calculated correctly", function () {
+  it("The analytics-charts are calculated correctly", function() {
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
@@ -143,7 +143,7 @@ describe("Project Analytics", function () {
     );
   });
 
-  it("Without view permission of every workflowitem of all subprojects the user can see the analytics-charts are not visible", function () {
+  it("Without view permission of every workflowitem of all subprojects the user can see the analytics-charts are not visible", function() {
     // Setup permissions
     cy.grantProjectPermission(project.id, "project.viewDetails", otherUser);
     cy.grantWorkflowitemPermission(
@@ -188,7 +188,7 @@ describe("Project Analytics", function () {
     );
   });
 
-  it("Without view permission of every subproject the analytics calculate all budgets using all subprojects seen", function () {
+  it("Without view permission of every subproject the analytics calculate all budgets using all subprojects seen", function() {
     let notListedSubprojectId;
     // Create subproject
     cy.createSubproject(project.id, "test", "EUR", {
@@ -199,7 +199,7 @@ describe("Project Analytics", function () {
           currencyCode: "EUR"
         }
       ]
-    }).then(({id}) => {
+    }).then(({ id }) => {
       notListedSubprojectId = id;
       // Revoke subproject view permissions
       cy.revokeSubprojectPermission(project.id, notListedSubprojectId, "subproject.list", executingUser);
@@ -218,20 +218,21 @@ describe("Project Analytics", function () {
       cy.get("[data-test=ratio-chart-projected-budget]").should(
         "have.text",
         calcProjectedBudgetRatio(project.projectedBudgets[0].value, subproject.projectedBudgets[0].value).toFixed(2) +
-        "%"
+          "%"
       );
     });
   });
 
-  it("Changing the currency converts all calculated amounts into the new currency", function () {
+  it("Changing the currency converts all calculated amounts into the new currency", function() {
     // Open dialog
     cy.get("[data-test=details-analytics-button]")
       .should("be.visible")
-      .click({force: true});
+      .click({ force: true });
     cy.get("[data-test=select-currencies]")
       .should("be.visible")
       .click();
     cy.get("[data-test=currency-menuitem-USD]")
+      .scrollIntoView({ behavior: "auto", block: "end", inline: "nearest" })
       .should("be.visible")
       .click();
     cy.get("[data-test=number-chart-projected-budget]").contains("$");

@@ -17,10 +17,7 @@ const getRate = (series) => {
 export async function getExchangeRates(baseCurrency = "EUR") {
   const instance = axios.create();
   delete instance.defaults.headers.common["Authorization"];
-  const response = await instance.get(
-    config.exchangeRateUrl,
-    { headers: {} }
-  );
+  const response = await instance.get(config.exchangeRateUrl, { headers: {} });
   const exchangeRates = {};
   if (response.data && response.data.dataSets && response.data.dataSets.length) {
     const series = response.data.dataSets[0].series;
@@ -38,6 +35,12 @@ export async function getExchangeRates(baseCurrency = "EUR") {
     exchangeRates["KES"] = 114.882;
     exchangeRates["TND"] = 3.2924;
     exchangeRates["ETB"] = 47.156;
+
+    // fixed exchange rate in reference to USD
+    if (exchangeRates["USD"]) {
+      exchangeRates["QAR"] = 3.64 * exchangeRates["USD"];
+      exchangeRates["SAR"] = 3.75 * exchangeRates["USD"];
+    }
 
     if (baseCurrency !== "EUR" && exchangeRates[baseCurrency]) {
       const baseRate = exchangeRates[baseCurrency];

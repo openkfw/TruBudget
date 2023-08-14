@@ -21,8 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-RATE_LIMIT environment variable to optionally limit the rate of client HTTP requests to API. 
-Can be any integer number to set the rate of individual client requests per minute.
+- Add RATE_LIMIT environment variable to optionally limit the rate of client HTTP requests to API. Can be any integer number to set the rate of individual client requests per minute.
+- Add currencies from ECB FX api [#1154](https://github.com/openkfw/TruBudget/issues/1154)
 
 ### Changed
 
