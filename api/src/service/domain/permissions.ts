@@ -6,7 +6,7 @@ export type Permissions = { [key in Intent]?: Identity[] };
 export type ExposablePermissions = { [key in ExposableIntent]?: Identity[] };
 
 export const permissionsSchema = Joi.object().pattern(
-  Joi.valid(...allIntents),
+  Joi.string().valid(...Object.values(allIntents)),
   Joi.array().items(Joi.string()),
 );
 

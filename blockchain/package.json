@@ -38,6 +38,8 @@
   },
   "dependencies": {
     "@kubernetes/client-node": "1.0.0-rc2",
+    "@opentelemetry/api": "^1.4.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.38.0",
     "async-each": "^1.0.3",
     "axios": "^0.27.2",
     "better-npm-audit": "^3.7.3",

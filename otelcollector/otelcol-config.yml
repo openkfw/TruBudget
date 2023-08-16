@@ -1,0 +1,29 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        cors:
+          allowed_origins: ["*"]
+          allowed_headers: ["*"]
+
+exporters:
+  logging:
+    verbosity: Detailed
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+
+processors:
+  batch:
+
+service:
+  telemetry:
+    logs:
+      level: "debug"
+
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [logging, jaeger]
+      processors: [batch]

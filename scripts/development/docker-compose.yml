@@ -25,7 +25,15 @@ services:
       CERT_CA_PATH: ${CERT_CA_PATH}
       CERT_KEY_PATH: ${CERT_KEY_PATH}
       AUTOSTART: ${AUTOSTART}
-
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_EXPORTER_OTLP_COMPRESSION: gzip
+      OTEL_RESOURCE_ATTRIBUTES: service.namespace=my-namespace
+      OTEL_NODE_RESOURCE_DETECTORS: env,host,os
+      OTEL_SERVICE_NAME: trubudget-blockchain-alpha-node
+      NODE_OPTIONS: --require @opentelemetry/auto-instrumentations-node/register
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://172.20.0.31:4318/v1/traces
+      
     # volume for persisting data from multichain
     # volumes:
     #   - ~/alphaVolume:/root/.multichain
@@ -99,6 +107,15 @@ services:
       LOG_LEVEL: ${API_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       RATE_LIMIT: ${RATE_LIMIT}
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_EXPORTER_OTLP_COMPRESSION: gzip
+      OTEL_RESOURCE_ATTRIBUTES: service.namespace=my-namespace
+      OTEL_NODE_RESOURCE_DETECTORS: env,host,os
+      OTEL_SERVICE_NAME: trubudget-api
+      # NODE_OPTIONS: --require @opentelemetry/auto-instrumentations-node/register
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://172.20.0.31:4318/v1/traces
+      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
@@ -238,6 +255,9 @@ services:
       REACT_APP_LOGGING_SERVICE_PORT: ${REACT_APP_LOGGING_SERVICE_PORT}
       REACT_APP_LOGGING_SERVICE_HOST_SSL: ${REACT_APP_LOGGING_SERVICE_HOST_SSL}
       REACT_APP_LOGGING_PUSH_INTERVAL: ${REACT_APP_LOGGING_PUSH_INTERVAL}
+      REACT_APP_NAME: Trubudget Frontend
+      REACT_APP_COLLECTOR: otelcol
+      REACT_APP_JAEGER: jaeger
     # volume for hot reloading
     volumes:
       - "../../frontend/src:/app/src"
@@ -354,4 +374,36 @@ services:
       - alpha-api
     ports:
       - "3005:3000"
+
+  # ********************
+  # Telemetry Components
+  # ********************
+  # OpenTelemetry collector
+  otelcol:
+    image: otel/opentelemetry-collector:latest
+    command: ["--config=/otelcol-config.yml"]
+    volumes:
+      - '../../otelcollector/otelcol-config.yml:/otelcol-config.yml'
+    ports:
+      - "4317"          # OTLP over gRPC receiver
+      - "4318:4318"     # OTLP over HTTP receiver
+      - "9464"          # Prometheus exporter
+      - "8888"          # metrics endpoint
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.31
+    depends_on:
+      - jaeger
+
+  # Jaeger
+  jaeger:
+    image: jaegertracing/all-in-one:1.48
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.32
+    ports:
+      - "16685"
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
     
