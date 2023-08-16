@@ -156,6 +156,8 @@ jobs:
       PRIVATE_REGISTRY_PASSWORD: ${{ secrets.PRIVATE_REGISTRY_PASSWORD}}
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME}}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD}}
       IMAGE_NAME: ${{ matrix.image_name}}
 
     steps:

@@ -88,6 +88,10 @@ then
     # log into docker hub
     echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     docker push "$TAG"
+    # also log into quay and push
+    echo "$QUAY_PASSWORD" | docker login quay.io -u "$QUAY_USERNAME" --password-stdin
+    docker tag "$TAG" "quay.io/$TAG"
+    docker push "quay.io/$TAG"
 fi
 
 # if new release is published push 2 images:
@@ -103,4 +107,10 @@ then
     docker push "$TAG_RELEASE"
     docker tag "$TAG" "$TAG_LATEST"
     docker push "$TAG_LATEST"
+    # also log into quay and push
+    echo "$QUAY_PASSWORD" | docker login quay.io -u "$QUAY_USERNAME" --password-stdin
+    docker tag "$TAG" "quay.io/$TAG_RELEASE"
+    docker push "quay.io/$TAG_RELEASE"
+    docker tag "$TAG" "quay.io/$TAG_LATEST"
+    docker push "quay.io/$TAG_LATEST"
 fi
