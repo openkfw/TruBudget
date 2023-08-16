@@ -29,7 +29,9 @@ describe("Describe Currencies", function() {
     cy.get("[data-test=dropdown-currencies]").should("be.visible");
     cy.get("[data-test=dropdown-currencies-click]").click();
     currenciesArray.forEach(currency => {
-      cy.get(`[data-value=${currency}]`).should("be.visible");
+      cy.get(`[data-value=${currency}]`)
+        .scrollIntoView()
+        .should("be.visible");
     });
     cy.get(`[data-value=${currenciesArray[0]}]`).click();
     cy.get("[data-test=cancel]").click();
