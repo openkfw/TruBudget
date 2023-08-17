@@ -258,6 +258,7 @@ services:
       REACT_APP_NAME: Trubudget Frontend
       REACT_APP_COLLECTOR: otelcol
       REACT_APP_JAEGER: jaeger
+      REACT_APP_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://172.20.0.31:4318/v1/traces
     # volume for hot reloading
     volumes:
       - "../../frontend/src:/app/src"

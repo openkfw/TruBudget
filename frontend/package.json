@@ -21,12 +21,15 @@
     "Daniel Arnauer <daniel.arnauer@accenture.com>"
   ],
   "dependencies": {
+    "@azure/monitor-opentelemetry": "^1.0.0-beta.1",
     "@babel/runtime": "^7.21.5",
     "@date-io/date-fns": "^2.16.0",
     "@date-io/dayjs": "^2.16.0",
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
     "@hapi/joi": "^17.1.1",
+    "@microsoft/applicationinsights-react-js": "^17.0.0",
+    "@microsoft/applicationinsights-web": "^3.0.2",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.2",
     "@mui/system": "^5.12.1",
