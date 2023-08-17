@@ -141,6 +141,8 @@ import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
+import * as appInsights from "applicationinsights";
+appInsights.setup(process.env["APPLICATIONINSIGHTS_CONNECTION_STRING"]).start();
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;

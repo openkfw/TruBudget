@@ -4,15 +4,13 @@ import { createRoot } from "react-dom/client";
 import "./logging/console";
 
 import AzureTelemetry from "./utils/telemetry/azure";
-import TraceProvider from "./utils/telemetry/tracing";
+// import TraceProvider from "./utils/telemetry/tracing";
 import App from "./App";
 
 const root = createRoot(document.getElementById("root"));
 
 root.render(
-  <TraceProvider>
-    <AzureTelemetry>
-      <App />
-    </AzureTelemetry>
-  </TraceProvider>
+  <AzureTelemetry>
+    <App />
+  </AzureTelemetry>
 );
