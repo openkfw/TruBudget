@@ -18,7 +18,7 @@ const clickPluginConfig = {
 let appInsights = new ApplicationInsights({
   config: {
     // TODO don't want to leave connString visible in repo
-    connectionString: "CONNECTION_STRING_HERE",
+    connectionString: "APPLICATIONINSIGHTS_CONNECTION_STRING",
     // *** Add the Click Analytics plug-in. ***
     extensions: [reactPlugin, clickPluginInstance],
     extensionConfig: {
@@ -29,6 +29,7 @@ let appInsights = new ApplicationInsights({
   }
 });
 appInsights.loadAppInsights();
+appInsights.trackPageView();
 
 export default function AzureTelemetry({ children }) {
   return <>{children}</>;
