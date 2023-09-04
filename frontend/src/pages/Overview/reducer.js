@@ -109,10 +109,14 @@ export default function overviewReducer(state = defaultState, action) {
     case SHOW_PROJECT_ADDITIONAL_DATA:
       return state.merge({
         idForInfo: fromJS(action.id),
-        isProjectAdditionalDataShown: true
+        isProjectAdditionalDataShown: true,
+        isLiveUpdateAllProjectsEnabled: false
       });
     case HIDE_PROJECT_ADDITIONAL_DATA:
-      return state.set("isProjectAdditionalDataShown", false);
+      return state.merge({
+        isProjectAdditionalDataShown: false,
+        isLiveUpdateAllProjectsEnabled: true
+      });
     case HIDE_PROJECT_DIALOG:
       return state.merge({
         projectToAdd: defaultState.getIn(["projectToAdd"]),
