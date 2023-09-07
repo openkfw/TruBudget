@@ -26,7 +26,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-Updated the deprecated 'docker-compose' command to 'docker compose' command in scripts and documentation for developers and operators [#1388](https://github.com/openkfw/TruBudget/issues/1388)
+- Updated the deprecated 'docker-compose' command to 'docker compose' command in scripts and documentation for developers and operators [#1388](https://github.com/openkfw/TruBudget/issues/1388)
+
+- Updated MinIO image to version RELEASE.2023-09-04T19-57-37Z due to [security vulnerablities](https://www.cvedetails.com/vulnerability-list/vendor_id-18671/Minio.html)
 
 
 ## [2.2.1] - 2023-07-06
