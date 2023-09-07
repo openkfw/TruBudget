@@ -8,12 +8,13 @@ import ExportIcon from "@mui/icons-material/ListAlt";
 import SocialNotificationIcon from "@mui/icons-material/NotificationsActive";
 import UsersIcon from "@mui/icons-material/PeopleOutline";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { IconButton } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Subheader from "@mui/material/ListSubheader";
@@ -99,46 +100,46 @@ const SideNavCard = ({
       </div>
       <List>
         <Subheader>{strings.navigation.selections}</Subheader>
-        <ListItem onClick={() => navigate("/")} data-test="side-navigation-projects">
+        <ListItemButton onClick={() => navigate("/")} data-test="side-navigation-projects">
           <ListItemIcon>
             <ProjectIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_projects} />
-        </ListItem>
-        <ListItem onClick={() => navigate("/notifications")} data-test="side-navigation-notifications">
+        </ListItemButton>
+        <ListItemButton onClick={() => navigate("/notifications")} data-test="side-navigation-notifications">
           <ListItemIcon>
             <SocialNotificationIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_notifications} />
-        </ListItem>
-        <ListItem onClick={() => navigate("/users")} data-test="side-navigation-users">
+        </ListItemButton>
+        <ListItemButton onClick={() => navigate("/users")} data-test="side-navigation-users">
           <ListItemIcon>
             <UsersIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.menu_item_users} />
-        </ListItem>
+        </ListItemButton>
         {nodeDashboardEnabled ? (
-          <ListItem onClick={() => navigate("/nodes")} data-test="side-navigation-nodes">
+          <ListItemButton onClick={() => navigate("/nodes")} data-test="side-navigation-nodes">
             <ListItemIcon>
               <NodesIcon />
             </ListItemIcon>
             <ListItemText primary={strings.nodesDashboard.nodes} />
-          </ListItem>
+          </ListItemButton>
         ) : null}
         {exportServiceAvailable ? (
-          <ListItem onClick={() => exportData(environment)} data-test="side-navigation-export">
+          <ListItemButton onClick={() => exportData(environment)} data-test="side-navigation-export">
             <ListItemIcon>
               <ExportIcon />
             </ListItemIcon>
             <ListItemText primary={strings.navigation.menu_item_export} />
-          </ListItem>
+          </ListItemButton>
         ) : null}
-        <ListItem onClick={() => navigate("/status")} data-test="side-navigation-service-status">
+        <ListItemButton onClick={() => navigate("/status")} data-test="side-navigation-service-status">
           <ListItemIcon>
             <StatusIcon />
           </ListItemIcon>
           <ListItemText primary={strings.navigation.service_status} />
-        </ListItem>
+        </ListItemButton>
       </List>
       <Divider />
       {userId === "root" ? (
