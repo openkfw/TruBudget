@@ -96,10 +96,15 @@ export function parseWorkflowitemFromSnapshot(workflowitemJson): Workflowitem.Wo
     amountType: workflowitemJson.amountType,
     dueDate: workflowitemJson.dueDate,
     documents: workflowitemJson.documents,
+    rejectReason: workflowitemJson.rejectReason,
     permissions: workflowitemJson.permissions,
     log: workflowitemJson.log,
     additionalData: workflowitemJson.additionalData,
     workflowitemType: workflowitemJson.workflowitemType,
+    exchangeRate: workflowitemJson.exchangeRate,
+    billingDate: workflowitemJson.billingDate,
+    amount: workflowitemJson.amount,
+    currency: workflowitemJson.currency,
   };
 }
 
