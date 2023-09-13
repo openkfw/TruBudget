@@ -10,8 +10,6 @@ export_host=localhost
 export_port=8888
 email_host=localhost
 email_port=8890
-storage_service_host=localhost
-storage_service_port=8090
 
 # Check if the required env variables are set otherwise localhost will be used.
 
@@ -37,14 +35,6 @@ fi
 
 if [ -n "$EMAIL_PORT" ]; then
     email_port=$EMAIL_PORT
-fi
-
-if [ -n "$STORAGE_SERVICE_HOST" ]; then
-    storage_service_host=$STORAGE_SERVICE_HOST
-fi
-
-if [ -n "$STORAGE_SERVICE_PORT" ]; then
-    storage_service_port=$STORAGE_SERVICE_PORT
 fi
 
 if [ "$USE_SSL" == "ssl" ]; then
@@ -78,9 +68,6 @@ if [[ ! -z "${REACT_APP_EXCHANGE_RATE_URL}" ]]; then
   sed -i -e "/# exchangeRateApi/i\\ \   add_header Content-Security-Policy \"default-src 'self'; connect-src 'self' $REACT_APP_EXCHANGE_RATE_URL; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; child-src 'self' blob:; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' data: https://validator.swagger.io;\";" /etc/nginx/conf.d/default.conf
 fi
 
-
-sed -i -e "/# pathToStorageService/i\\
-proxy_pass http://$storage_service_host:$storage_service_port/download;" /etc/nginx/conf.d/default.conf
 
 sed -i -e "s/^\(\s*include \/etc\/nginx\/sites-enabled\)/#&/" /etc/nginx/nginx.conf
 
