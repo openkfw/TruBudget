@@ -87,6 +87,7 @@ cp .env_example .env
 ### Start E2E-Tests via Cypress
 
 After a provisioned trubudget node is setup and cypress is working as expected the e2e-tests can be started.
+A report in HTML format will be generated once the tests are finished. This report includes screenshots of the failed tests and information about the passed tests. The report can be found in `cypress/report`.
 
 :::info
 Make sure following commands are executed from the `e2e-test` directory.

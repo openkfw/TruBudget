@@ -75,7 +75,7 @@ function isProvisioned(baseUrl) {
       response.headers["set-cookie"][0].split(";")[0].replace("token=", "") => "{JWT_Token}"
       */
       let JWTtoken = response.data.data.user.token;
-      if(!JWTtoken) {
+      if (!JWTtoken) {
         JWTtoken = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
       }
       return axios
@@ -212,6 +212,7 @@ const updateMetadataFile = async (config, newHash, metadataPath) => {
 };
 
 module.exports = (on, config) => {
+  require("cypress-mochawesome-reporter/plugin")(on);
   on("task", {
     awaitApiReady: awaitApiReady,
     awaitExcelExportReady: awaitExcelExportReady,
