@@ -99,6 +99,11 @@ services:
       LOG_LEVEL: ${API_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       RATE_LIMIT: ${RATE_LIMIT}
+      AUTHBUDDY_ENABLED: ${AUTHBUDDY_ENABLED}
+      AUTHBUDDY_JWK_KEYSTORE: ${AUTHBUDDY_JWK_KEYSTORE}
+      AUTHBUDDY_JWS_SIGNATURE: ${AUTHBUDDY_JWS_SIGNATURE}
+      AUTHBUDDY_JWE_KID: ${AUTHBUDDY_JWE_KID}
+      AUTHBUDDY_COOKIE: ${AUTHBUDDY_COOKIE}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:

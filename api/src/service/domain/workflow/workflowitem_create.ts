@@ -119,6 +119,7 @@ export async function createWorkflowitem(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const publisher = creatingUser.id;
+  const metadata = creatingUser.metadata;
   const workflowitemId = reqData.workflowitemId || randomString();
   const documents: DocumentReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
@@ -189,6 +190,8 @@ export async function createWorkflowitem(
       additionalData: reqData.additionalData || {},
       workflowitemType: reqData.workflowitemType || "general",
     },
+    undefined,
+    metadata,
   );
   if (Result.isErr(workflowitemCreated)) {
     return new VError(workflowitemCreated, "failed to create workflowitem created event");

@@ -218,6 +218,7 @@ export function addHttpHandler(
           id: (request as AuthenticatedRequest).user.userId,
           groups: (request as AuthenticatedRequest).user.groups,
           address: (request as AuthenticatedRequest).user.address,
+          metadata: (request as AuthenticatedRequest).user.metadata,
         };
 
         const bodyResult = validateRequestBody(request.body);

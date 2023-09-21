@@ -7,7 +7,9 @@ import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_p
 import { Identity } from "./identity";
 import { ServiceUser } from "./service_user";
 import * as UserRecord from "./user_record";
+import { Metadata } from "../metadata";
 
+// TODO compare api/src/authz - is one of these unused?
 export interface AuthToken {
   userId: UserRecord.Id;
   displayName: string;
@@ -16,6 +18,7 @@ export interface AuthToken {
   organization: string;
   organizationAddress: string;
   allowedIntents: Intent[];
+  metadata?: Metadata;
 }
 
 export function canAssumeIdentity(
@@ -36,6 +39,8 @@ interface Repository {
 export async function fromUserRecord(
   user: UserRecord.UserRecord,
   repository: Repository,
+  // TODO new type for metadata
+  metadata?: Metadata,
 ): Promise<Result.Type<AuthToken>> {
   logger.trace({ user }, "Getting groups of user by userrecord");
   const groupsResult = await repository.getGroupsForUser(user.id);
@@ -74,6 +79,7 @@ export async function fromUserRecord(
     organization: user.organization,
     organizationAddress,
     allowedIntents,
+    metadata: metadata,
   };
 }
 

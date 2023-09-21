@@ -119,6 +119,7 @@ import * as SubprojectViewHistoryAPI from "./subproject_view_history";
 import ensureStorageServiceUrlPublished from "./system/ensureOrganizationUrlPublished";
 import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
 import * as UserAuthenticateAPI from "./user_authenticate";
+import * as UserAuthenticateAdAPI from "./user_authenticateAd";
 import * as UserCreateAPI from "./user_create";
 import * as UserDisableAPI from "./user_disable";
 import * as UserEnableAPI from "./user_enable";
@@ -163,6 +164,7 @@ const {
   rpc,
   blockchain,
   rateLimit,
+  authBuddy,
 } = getValidConfig();
 
 /*
@@ -337,6 +339,28 @@ UserAuthenticateAPI.addHttpHandler(
   },
   jwtSecret,
 );
+
+if (authBuddy.enabled) {
+  UserAuthenticateAdAPI.addHttpHandler(
+    server,
+    URL_PREFIX,
+    {
+      authenticateToken: (ctx, token, csrf) =>
+        UserAuthenticateService.authenticateWithToken(
+          organization,
+          organizationVaultSecret,
+          rootSecret,
+          db,
+          ctx,
+          token,
+          csrf,
+        ),
+      getGroupsForUser: (ctx, serviceUser, userId) =>
+        GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
+    },
+    jwtSecret,
+  );
+}
 
 UserCreateAPI.addHttpHandler(server, URL_PREFIX, {
   createUser: (ctx, issuer, reqData) =>

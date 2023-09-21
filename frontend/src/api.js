@@ -83,6 +83,11 @@ class Api {
       }
     });
 
+  loginAd = (token) =>
+    instance.post(`/user.authenticateAd`, {
+      token
+    });
+
   disableUser = (userId) =>
     instance.post(`/global.disableUser`, {
       userId
