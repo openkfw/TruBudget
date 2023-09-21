@@ -26,9 +26,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Introduced HTML Testreport exports for E2E Tests [#1454](https://github.com/openkfw/TruBudget/issues/1454)
+
 - Updated the deprecated 'docker-compose' command to 'docker compose' command in scripts and documentation for developers and operators [#1388](https://github.com/openkfw/TruBudget/issues/1388)
 
-- Updated MinIO image to version RELEASE.2023-09-04T19-57-37Z due to [security vulnerablities](https://www.cvedetails.com/vulnerability-list/vendor_id-18671/Minio.html)
+- Updated MinIO image to version RELEASE.2023-09-04T19-57-37Z due to [security vulnerablities](https://www.cvedetails.com/vulnerability-list/vendor_id-18671/Minio.html).
+If you install TruBudget freshly, this is not an issue for you. If you update to this version, you might consider [migrating your data or downgrading MinIO](./storage-service/doc/migrate-minio.md)
 
 
 ## [2.2.1] - 2023-07-06
