@@ -11,15 +11,11 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 
+import config from "../../config";
 import strings from "../../localizeStrings";
 import Dropdown from "../Common/NewDropdown";
 import Password from "../Common/Password";
 import Username from "../Common/Username";
-
-export const getAuthorizeHref = () => {
-  // TODO - setup from ENV
-  return "http://localhost:4000/signin";
-};
 
 const LoginPage = ({
   storeUsername,
@@ -34,6 +30,7 @@ const LoginPage = ({
   const navigate = useNavigate();
   const connectedToAdminNode = -1;
   const isLoginDisabled = username === "" || password === "";
+  const isAuthBuddyEnabled = config.authBuddy.enabled;
 
   return (
     <div
@@ -116,29 +113,33 @@ const LoginPage = ({
                 </Button>
               </div>
             </Grid>
-            <Divider orientation="vertical" flexItem></Divider>
-            <Grid item xs>
-              <div
-                style={{
-                  padding: "20px",
-                  display: "flex",
-                  flexDirection: "row",
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "space-between"
-                }}
-              >
-                <Button
-                  aria-label="loginbutton"
-                  style={{ marginRight: 20, marginTop: 5 }}
-                  onClick={() => window.open(getAuthorizeHref(), "_self")}
-                  variant="contained"
-                  id="orgaloginbutton"
-                >
-                  LOGIN WITH AUTHBUDDY
-                </Button>
-              </div>
-            </Grid>
+            {isAuthBuddyEnabled && (
+              <>
+                <Divider orientation="vertical" flexItem></Divider>
+                <Grid item xs>
+                  <div
+                    style={{
+                      padding: "20px",
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "100%",
+                      alignItems: "center",
+                      justifyContent: "space-between"
+                    }}
+                  >
+                    <Button
+                      aria-label="loginbutton"
+                      style={{ marginRight: 20, marginTop: 5 }}
+                      onClick={() => window.open(config.authBuddy.url, "_self")}
+                      variant="contained"
+                      id="orgaloginbutton"
+                    >
+                      LOGIN WITH AUTHBUDDY
+                    </Button>
+                  </div>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Box>
         <Divider />
