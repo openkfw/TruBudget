@@ -74,7 +74,6 @@ interface Config {
     authBuddyCookie: string;
     jwkKeystore: string | undefined;
     jwsSignature: string | undefined;
-    jweKeyId: string | undefined;
   };
 }
 
@@ -124,7 +123,6 @@ export const config: Config = {
     authBuddyCookie: process.env.AUTHBUDDY_COOKIE || "authorizationToken",
     jwkKeystore: process.env.AUTHBUDDY_JWK_KEYSTORE || undefined,
     jwsSignature: process.env.AUTHBUDDY_JWS_SIGNATURE || undefined,
-    jweKeyId: process.env.AUTHBUDDY_JWE_KID || undefined,
   },
 };
 
