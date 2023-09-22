@@ -17,6 +17,7 @@ import WorkflowitemType, {
   workflowitemTypeSchema,
 } from "./service/domain/workflowitem_types/types";
 import * as SubprojectCreate from "./service/subproject_create";
+import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
 
 /**
@@ -200,11 +201,7 @@ export function addHttpHandler(
       (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         const bodyResult = validateRequestBody(request.body);
 

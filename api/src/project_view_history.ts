@@ -12,6 +12,7 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as History from "./service/domain/workflow/historyFilter";
 import * as Project from "./service/domain/workflow/project";
 import { ProjectTraceEvent } from "./service/domain/workflow/project_trace_event";
+import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
 import VError = require("verror");
 
@@ -267,11 +268,7 @@ export function addHttpHandler(
       async (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         const projectId = request.query.projectId;
         if (!isNonemptyString(projectId)) {

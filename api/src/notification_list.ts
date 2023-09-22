@@ -11,6 +11,7 @@ import * as Notification from "./service/domain/workflow/notification";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import { extractUser } from "./handlerUtils";
 
 /**
  * Creates the swagger schema for the `/notification.list` endpoint
@@ -411,11 +412,7 @@ export function addHttpHandler(
       async (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         // Default: last created history event
         let offset = 0;

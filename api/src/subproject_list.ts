@@ -14,6 +14,7 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
+import { extractUser } from "./handlerUtils";
 
 /**
  * Creates the swagger schema for the `/subproject.list` endpoint
@@ -158,11 +159,7 @@ export function addHttpHandler(
       (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         const projectId = request.query.projectId;
         if (!isNonemptyString(projectId)) {
