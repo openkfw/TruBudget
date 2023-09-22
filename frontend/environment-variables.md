@@ -11,8 +11,8 @@
 | API_HOST                    | -                                                                                   | IP address of the api. This is only required if nginx proxy is used. <br>**Hint:** When deployed locally the host is set to localhost                                |
 | API_PORT                    | 8080                                                                                | Port of the api. This is only required if nginx proxy is used                                                                                                        |
 | REACT_APP_EXCHANGE_RATE_URL | `https://data-api.ecb.europa.eu/service/data/EXR/D..EUR.SP00.A?lastNObservations=1` | The external URL where the exchange rates are fetched from                                                                                                           |
-| REACT_APP_AUTHBUDDY_ENABLED | `true`                                                                              | quatsch                                                                                                                                                              |
-| REACT_APP_AUTHBUDDY_URL     | `http://localhost:4000/signin`                                                      | AuthBuddy ingress                                                                                                                                                    |
+| REACT_APP_AUTHBUDDY_ENABLED | `false`                                                                             | Enables rendering of AuthBuddy login button                                                                                                                          |
+| REACT_APP_AUTHBUDDY_URL     | `http://localhost:4000/signin`                                                      | AuthBuddy ingress. Required if REACT_APP_AUTHBUDDY_ENABLED is set to true                                                                                            |
 
 ### Email-Service
 

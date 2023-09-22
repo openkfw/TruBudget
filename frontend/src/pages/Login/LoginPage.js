@@ -48,7 +48,7 @@ const LoginPage = ({
         flexDirection: "column"
       }}
     >
-      <Card style={{ width: "600px", zIndex: 1100, opacity: 0.9 }}>
+      <Card style={{ width: isAuthBuddyEnabled ? "600px" : "350px", zIndex: 1100, opacity: 0.9 }}>
         <div
           style={{
             display: "flex",

@@ -1188,21 +1188,21 @@ export function* loginTokenSaga({ token }) {
   }
 
   function* onLoginError(error) {
-    // const errorMessage = getLoginErrorFromResponse(error.response.status, error.response.data);
-    // yield put({
-    //   type: SNACKBAR_MESSAGE,
-    //   message: errorMessage
-    // });
-    // yield put({
-    //   type: SHOW_SNACKBAR,
-    //   show: true,
-    //   isError: true,
-    //   isWarning: false
-    // });
-    // yield put({
-    //   type: LOGIN_ERROR,
-    //   show: true
-    // });
+    const errorMessage = getLoginErrorFromResponse(error.response.status, error.response.data);
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+    yield put({
+      type: LOGIN_ERROR,
+      show: true
+    });
   }
   yield execute(login, true, onLoginError);
 }

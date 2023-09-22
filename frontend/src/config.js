@@ -21,8 +21,8 @@ const config = {
     servicePort: process.env.EXPORT_PORT || "8888"
   },
   authBuddy: {
-    enabled: process.env.REACT_APP_AUTHBUDDY_ENABLED || false,
-    url: process.env.REACT_APP_AUTHBUDDY_URL === "true" || "http://localhost:4000/signin"
+    enabled: process.env.REACT_APP_AUTHBUDDY_ENABLED === "true" || false,
+    url: process.env.REACT_APP_AUTHBUDDY_URL === "true" || "http://localhost:4000/signin" //TODO
   }
 };
 
