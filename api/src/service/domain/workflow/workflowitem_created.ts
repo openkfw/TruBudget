@@ -61,6 +61,7 @@ export interface Event {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   workflowitem: InitialData;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -80,7 +81,7 @@ export function createEvent(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitem: InitialData,
-  time: string = new Date().toISOString(),
+  time?: string,
   metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
@@ -90,7 +91,7 @@ export function createEvent(
     projectId,
     subprojectId,
     workflowitem,
-    time,
+    time: time || new Date().toISOString(),
     metadata,
   };
   const validationResult = validate(event);

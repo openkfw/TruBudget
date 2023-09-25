@@ -9,6 +9,7 @@ import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "project_created";
 const eventType: EventTypeType = "project_created";
@@ -46,6 +47,7 @@ export interface Event {
   time: string; // ISO timestamp
   publisher: Identity;
   project: InitialData;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -54,6 +56,7 @@ export const schema = Joi.object({
   time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   project: initialDataSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -61,6 +64,7 @@ export function createEvent(
   publisher: Identity,
   project: InitialData,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating project_created event");
 
@@ -70,6 +74,7 @@ export function createEvent(
     publisher,
     project,
     time,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
