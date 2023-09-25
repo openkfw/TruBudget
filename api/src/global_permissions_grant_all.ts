@@ -9,6 +9,7 @@ import { safeIdSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { Identity } from "./service/domain/organization/identity";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { extractUser } from "./handlerUtils";
 import {
   GlobalPermissions,
   identitiesAuthorizedFor,
@@ -127,11 +128,7 @@ export function addHttpHandler(
       async (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         const userOrganization: string = (request as AuthenticatedRequest).user.organization;
 

@@ -9,6 +9,7 @@ import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { getExposablePermissions, Permissions } from "./service/domain/permissions";
+import { extractUser } from "./handlerUtils";
 
 /**
  * Creates the swagger schema for the `/subproject.intent.listPermissions` endpoint
@@ -98,11 +99,7 @@ export function addHttpHandler(
       async (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         const projectId = request.query.projectId;
         if (!isNonemptyString(projectId)) {

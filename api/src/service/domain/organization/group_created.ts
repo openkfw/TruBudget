@@ -6,6 +6,7 @@ import * as AdditionalData from "../additional_data";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import * as Group from "./group";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "group_created";
 const eventType: EventTypeType = "group_created";
@@ -43,6 +44,7 @@ export const schema = Joi.object({
   time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   group: initialDataSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -50,6 +52,7 @@ export function createEvent(
   publisher: Identity,
   group: InitialData,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating group created event...");
 
@@ -59,6 +62,7 @@ export function createEvent(
     publisher,
     group,
     time,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
