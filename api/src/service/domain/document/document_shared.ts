@@ -32,7 +32,7 @@ export const schema = Joi.object({
   docId: Joi.string().required(),
   organization: Joi.string().required(),
   encryptedSecret: Joi.string().required(),
-  metadataSchema: userMetadataSchema,
+  metadata: userMetadataSchema,
 });
 
 export function validate(input): Result.Type<Event> {

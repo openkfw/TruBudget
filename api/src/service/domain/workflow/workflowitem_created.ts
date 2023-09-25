@@ -72,7 +72,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   workflowitem: initialDataSchema.required(),
-  metadataSchema: userMetadataSchema,
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
