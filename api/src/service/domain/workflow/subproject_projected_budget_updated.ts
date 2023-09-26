@@ -5,6 +5,7 @@ import { Identity } from "../organization/identity";
 import { CurrencyCode, currencyCodeSchema, MoneyAmount, moneyAmountSchema } from "./money";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "subproject_projected_budget_updated";
 const eventType: EventTypeType = "subproject_projected_budget_updated";
@@ -19,6 +20,7 @@ export interface Event {
   organization: string;
   value: MoneyAmount;
   currencyCode: CurrencyCode;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -31,6 +33,7 @@ export const schema = Joi.object({
   organization: Joi.string().required(),
   value: moneyAmountSchema.required(),
   currencyCode: currencyCodeSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -42,6 +45,7 @@ export function createEvent(
   value: string,
   currencyCode: CurrencyCode,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -53,6 +57,7 @@ export function createEvent(
     organization,
     value,
     currencyCode,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

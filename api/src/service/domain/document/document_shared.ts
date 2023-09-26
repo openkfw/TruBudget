@@ -22,6 +22,7 @@ export interface Event {
   docId: string;
   organization: string;
   encryptedSecret: string;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({

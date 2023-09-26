@@ -3,6 +3,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "./identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "public_key_updated";
 const eventType: EventTypeType = "public_key_updated";
@@ -14,6 +15,7 @@ export interface Event {
   publisher: Identity;
   organization: string;
   publicKey: string;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -23,6 +25,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   organization: Joi.string().required(),
   publicKey: Joi.string().required(),
+  metadata: userMetadataSchema,
 }).options({ stripUnknown: true });
 
 export function createEvent(
@@ -31,6 +34,7 @@ export function createEvent(
   organization: string,
   publicKey: string,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating public_key_update event...");
 
@@ -41,6 +45,7 @@ export function createEvent(
     organization,
     publicKey,
     time,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

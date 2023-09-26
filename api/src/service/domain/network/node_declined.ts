@@ -3,6 +3,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "node_declined";
 const eventType: EventTypeType = "node_declined";
@@ -16,6 +17,7 @@ export interface Event {
   organization: string;
   declinerAddress: string;
   declinerOrganization: string;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -27,6 +29,7 @@ export const schema = Joi.object({
   organization: Joi.string().required(),
   declinerAddress: Joi.string().required(),
   declinerOrganization: Joi.string().required(),
+  metadata: userMetadataSchema,
 }).options({ stripUnknown: true });
 
 export function createEvent(
@@ -37,6 +40,7 @@ export function createEvent(
   declinerAddress: string,
   declinerOrganization: string,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -47,6 +51,7 @@ export function createEvent(
     declinerAddress,
     declinerOrganization,
     time,
+    metadata,
   };
   logger.trace("Creating node declinded event");
 

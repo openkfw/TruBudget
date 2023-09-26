@@ -5,6 +5,7 @@ import Intent, { groupIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as Group from "./group";
 import { Identity } from "./identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "group_permissions_granted";
 const eventType: EventTypeType = "group_permissions_granted";
@@ -17,6 +18,7 @@ export interface Event {
   groupId: Group.Id;
   permission: Intent;
   grantee: Identity;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -27,6 +29,7 @@ export const schema = Joi.object({
   groupId: Group.idSchema.required(),
   permission: Joi.valid(...groupIntents).required(),
   grantee: Joi.string().required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -36,6 +39,7 @@ export function createEvent(
   permission: Intent,
   grantee: Identity,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -45,6 +49,7 @@ export function createEvent(
     groupId,
     permission,
     grantee,
+    metadata,
   };
 
   logger.trace({ event }, "Checking validity of event");

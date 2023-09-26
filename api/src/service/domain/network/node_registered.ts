@@ -3,6 +3,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "node_registered";
 const eventType: EventTypeType = "node_registered";
@@ -14,6 +15,7 @@ export interface Event {
   publisher: Identity;
   address: string;
   organization: string;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -23,6 +25,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   address: Joi.string().required(),
   organization: Joi.string().required(),
+  metadata: userMetadataSchema,
 }).options({ stripUnknown: true });
 
 export function createEvent(
@@ -31,6 +34,7 @@ export function createEvent(
   address: string,
   organization: string,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -39,6 +43,7 @@ export function createEvent(
     address,
     organization,
     time,
+    metadata,
   };
   logger.trace("Creating node registered event");
 

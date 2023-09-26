@@ -36,6 +36,7 @@ export interface Event {
   time: string; // ISO timestamp
   publisher: Identity;
   group: InitialData;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({

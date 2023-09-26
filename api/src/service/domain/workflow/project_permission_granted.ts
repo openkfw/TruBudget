@@ -5,6 +5,7 @@ import Intent, { projectIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "project_permission_granted";
 const eventType: EventTypeType = "project_permission_granted";
@@ -17,6 +18,7 @@ export interface Event {
   projectId: Project.Id;
   permission: Intent;
   grantee: Identity;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -27,6 +29,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   permission: Joi.valid(...projectIntents).required(),
   grantee: Joi.string().required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -36,6 +39,7 @@ export function createEvent(
   permission: Intent,
   grantee: Identity,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating project_premission_granted event");
 
@@ -47,6 +51,7 @@ export function createEvent(
     projectId,
     permission,
     grantee,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

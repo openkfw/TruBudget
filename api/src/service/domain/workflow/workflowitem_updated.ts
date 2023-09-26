@@ -9,6 +9,7 @@ import { conversionRateSchema, moneyAmountSchema } from "./money";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitem_updated";
 const eventType: EventTypeType = "workflowitem_updated";
@@ -48,6 +49,7 @@ export interface Event {
   subprojectId: Subproject.Id;
   workflowitemId: Workflowitem.Id;
   update: Modification;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -59,6 +61,7 @@ export const schema = Joi.object({
   subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
   update: modificationSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -69,6 +72,7 @@ export function createEvent(
   workflowitemId: Workflowitem.Id,
   update: Modification,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating workflowitem_updated event");
 
@@ -81,6 +85,7 @@ export function createEvent(
     workflowitemId,
     update,
     time,
+    metadata,
   };
 
   const validationResult = validate(event);

@@ -5,6 +5,7 @@ import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as UserRecord from "../organization/user_record";
 import * as Notification from "./notification";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "notification_marked_read";
 const eventType: EventTypeType = "notification_marked_read";
@@ -18,6 +19,7 @@ export interface Event {
   // Not strictly required, also storing the recipient allows to filter the
   // notification-stream's events by user ID:
   recipient: UserRecord.Id;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -27,6 +29,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   notificationId: Notification.idSchema.required(),
   recipient: UserRecord.idSchema,
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -35,6 +38,7 @@ export function createEvent(
   notificationId: Notification.Id,
   recipient: UserRecord.Id,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -43,6 +47,7 @@ export function createEvent(
     publisher,
     notificationId,
     recipient,
+    metadata,
   };
   logger.trace("Creating notification_mark_read event");
 

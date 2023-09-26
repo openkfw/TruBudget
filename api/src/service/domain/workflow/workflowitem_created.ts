@@ -81,7 +81,7 @@ export function createEvent(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitem: InitialData,
-  time?: string,
+  time = new Date().toISOString(),
   metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
@@ -91,7 +91,7 @@ export function createEvent(
     projectId,
     subprojectId,
     workflowitem,
-    time: time || new Date().toISOString(),
+    time,
     metadata,
   };
   const validationResult = validate(event);
