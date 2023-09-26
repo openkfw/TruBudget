@@ -114,11 +114,11 @@ function generateUniqueDocId(allDocuments: GenericDocument[]): string {
 
 export async function createWorkflowitem(
   ctx: Ctx,
-  creatingUser: ServiceUser,
+  issuer: ServiceUser,
   reqData: RequestData,
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
-  const publisher = creatingUser.id;
+  const publisher = issuer.id;
   const workflowitemId = reqData.workflowitemId || randomString();
   const documents: DocumentReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
@@ -177,7 +177,7 @@ export async function createWorkflowitem(
       status: reqData.status || "open",
       displayName: reqData.displayName,
       description: reqData.description || "",
-      assignee: reqData.assignee || creatingUser.id,
+      assignee: reqData.assignee || issuer.id,
       amount: reqData.amount,
       currency: reqData.currency,
       amountType: reqData.amountType,
@@ -185,10 +185,12 @@ export async function createWorkflowitem(
       billingDate: reqData.billingDate,
       dueDate: reqData.dueDate,
       documents,
-      permissions: newDefaultPermissionsFor(creatingUser.id),
+      permissions: newDefaultPermissionsFor(issuer.id),
       additionalData: reqData.additionalData || {},
       workflowitemType: reqData.workflowitemType || "general",
     },
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(workflowitemCreated)) {
     return new VError(workflowitemCreated, "failed to create workflowitem created event");
@@ -240,8 +242,8 @@ export async function createWorkflowitem(
   }
   const subproject = subprojectResult;
 
-  logger.trace({ user: creatingUser }, "Checking if user is authorized");
-  if (creatingUser.id === "root") {
+  logger.trace({ user: issuer }, "Checking if user is authorized");
+  if (issuer.id === "root") {
     return new PreconditionError(
       ctx,
       workflowitemCreated,
@@ -249,8 +251,8 @@ export async function createWorkflowitem(
     );
   }
   const intent = "subproject.createWorkflowitem";
-  if (!Subproject.permits(subproject, creatingUser, [intent])) {
-    return new NotAuthorized({ ctx, userId: creatingUser.id, intent, target: subproject });
+  if (!Subproject.permits(subproject, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: subproject });
   }
 
   logger.trace({ event: workflowitemCreated }, "Checking if Event is valid");

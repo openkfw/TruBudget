@@ -4,6 +4,7 @@ import { VError } from "verror";
 import Intent, { globalIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "global_permission_granted";
 const eventType: EventTypeType = "global_permission_granted";
@@ -15,6 +16,7 @@ export interface Event {
   publisher: Identity;
   permission: Intent;
   grantee: Identity;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -24,6 +26,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   permission: Joi.valid(...globalIntents).required(),
   grantee: Joi.string().required(),
+  metadata: userMetadataSchema,
 }).options({ stripUnknown: true });
 
 export function createEvent(
@@ -32,6 +35,7 @@ export function createEvent(
   permission: Intent,
   grantee: Identity,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace({ grantee, permission }, "Creating global permission granted event");
   const event = {
@@ -41,6 +45,7 @@ export function createEvent(
     time,
     permission,
     grantee,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

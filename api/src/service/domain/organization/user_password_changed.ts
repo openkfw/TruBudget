@@ -4,6 +4,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import * as UserRecord from "../organization/user_record";
 import { Identity } from "./identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "user_password_changed";
 const eventType: EventTypeType = "user_password_changed";
@@ -24,6 +25,7 @@ export interface Event {
   time: string; // ISO timestamp
   publisher: Identity;
   user: InitialData;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -32,6 +34,7 @@ export const schema = Joi.object({
   time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   user: initialDataSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -39,6 +42,7 @@ export function createEvent(
   publisher: Identity,
   user: InitialData,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -46,6 +50,7 @@ export function createEvent(
     publisher,
     time,
     user,
+    metadata,
   };
   logger.trace("Creating user_password_changed event");
 

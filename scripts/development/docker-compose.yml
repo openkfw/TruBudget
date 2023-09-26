@@ -99,6 +99,10 @@ services:
       LOG_LEVEL: ${API_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       RATE_LIMIT: ${RATE_LIMIT}
+      AUTHBUDDY_ENABLED: ${AUTHBUDDY_ENABLED}
+      AUTHBUDDY_JWK_KEYSTORE: ${AUTHBUDDY_JWK_KEYSTORE}
+      AUTHBUDDY_JWS_SIGNATURE: ${AUTHBUDDY_JWS_SIGNATURE}
+      AUTHBUDDY_COOKIE: ${AUTHBUDDY_COOKIE}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
@@ -238,6 +242,7 @@ services:
       REACT_APP_LOGGING_SERVICE_PORT: ${REACT_APP_LOGGING_SERVICE_PORT}
       REACT_APP_LOGGING_SERVICE_HOST_SSL: ${REACT_APP_LOGGING_SERVICE_HOST_SSL}
       REACT_APP_LOGGING_PUSH_INTERVAL: ${REACT_APP_LOGGING_PUSH_INTERVAL}
+      REACT_APP_AUTHBUDDY_ENABLED: ${AUTHBUDDY_ENABLED}
     # volume for hot reloading
     volumes:
       - "../../frontend/src:/app/src"

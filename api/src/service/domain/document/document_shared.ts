@@ -3,6 +3,7 @@ import logger from "../../../lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type SecretPublishedEventTypeType = "secret_published";
 const secretPublishedEventType: SecretPublishedEventTypeType = "secret_published";
@@ -21,6 +22,7 @@ export interface Event {
   docId: string;
   organization: string;
   encryptedSecret: string;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -31,6 +33,7 @@ export const schema = Joi.object({
   docId: Joi.string().required(),
   organization: Joi.string().required(),
   encryptedSecret: Joi.string().required(),
+  metadata: userMetadataSchema,
 });
 
 export function validate(input): Result.Type<Event> {
@@ -45,6 +48,7 @@ export function createEvent(
   organization: string,
   encryptedSecret: string,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: secretPublishedEventType,
@@ -54,6 +58,7 @@ export function createEvent(
     docId,
     organization,
     encryptedSecret,
+    metadata,
   };
 
   logger.trace({ event }, "Creating and validating secret_published event");

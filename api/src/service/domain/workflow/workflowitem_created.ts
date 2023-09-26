@@ -11,6 +11,7 @@ import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitem_created";
 const eventType: EventTypeType = "workflowitem_created";
@@ -60,6 +61,7 @@ export interface Event {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   workflowitem: InitialData;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -70,6 +72,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   workflowitem: initialDataSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -78,7 +81,8 @@ export function createEvent(
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitem: InitialData,
-  time: string = new Date().toISOString(),
+  time = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -88,6 +92,7 @@ export function createEvent(
     subprojectId,
     workflowitem,
     time,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

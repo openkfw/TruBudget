@@ -11,6 +11,7 @@ import { CurrencyCode, currencyCodeSchema } from "./service/domain/workflow/mone
 import * as Project from "./service/domain/workflow/project";
 import { ProjectedBudget } from "./service/domain/workflow/projected_budget";
 import * as Subproject from "./service/domain/workflow/subproject";
+import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
 
 /**
@@ -147,11 +148,7 @@ export function addHttpHandler(
       (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         const bodyResult = validateRequestBody(request.body);
 

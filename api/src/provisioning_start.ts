@@ -6,6 +6,7 @@ import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
 
 /**
@@ -104,11 +105,7 @@ export function addHttpHandler(
     server.post(`${urlPrefix}/provisioning.start`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+      const user = extractUser(request as AuthenticatedRequest);
 
       const bodyResult = validateRequestBody(request.body);
 

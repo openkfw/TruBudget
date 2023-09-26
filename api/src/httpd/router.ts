@@ -204,6 +204,7 @@ function ctx(request): Ctx {
   return { requestId: request.id, source: "http" };
 }
 
+// TODO add metadata here?
 function issuer(request): ServiceUser {
   const req = request as AuthenticatedRequest;
   return { id: req.user.userId, groups: req.user.groups, address: req.user.address };

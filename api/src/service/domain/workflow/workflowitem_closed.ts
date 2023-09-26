@@ -5,6 +5,7 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitem_closed";
 const eventType: EventTypeType = "workflowitem_closed";
@@ -18,6 +19,7 @@ export interface Event {
   subprojectId: Subproject.Id;
   workflowitemId: Workflowitem.Id;
   rejectReason?: string;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -29,6 +31,7 @@ export const schema = Joi.object({
   subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
   rejectReason: Joi.string().optional(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -39,6 +42,7 @@ export function createEvent(
   workflowitemId: Workflowitem.Id,
   time: string = new Date().toISOString(),
   rejectReason?: string,
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -49,6 +53,7 @@ export function createEvent(
     subprojectId,
     workflowitemId,
     rejectReason,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

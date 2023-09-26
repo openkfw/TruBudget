@@ -584,18 +584,26 @@ function addExampleWorkflowitem(
   subprojectId: string,
   workflowitemId: string,
 ): Result.Type<WorkflowitemCreated.Event> {
-  const wfCreationEvent = WorkflowitemCreated.createEvent("http", "test", projectId, subprojectId, {
-    id: workflowitemId,
-    status: "open",
-    assignee: "testAssignee",
-    displayName: "name",
-    description: "description",
-    amountType: "N/A",
-    permissions: {},
-    documents: [],
-    additionalData: {},
-    workflowitemType: "general",
-  });
+  const wfCreationEvent = WorkflowitemCreated.createEvent(
+    "http",
+    "test",
+    projectId,
+    subprojectId,
+    {
+      id: workflowitemId,
+      status: "open",
+      assignee: "testAssignee",
+      displayName: "name",
+      description: "description",
+      amountType: "N/A",
+      permissions: {},
+      documents: [],
+      additionalData: {},
+      workflowitemType: "general",
+    },
+    undefined,
+    undefined,
+  );
   if (Result.isErr(wfCreationEvent)) {
     return new VError(wfCreationEvent, "failed to create event");
   }

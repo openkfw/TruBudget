@@ -5,6 +5,7 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitems_reordered";
 const eventType: EventTypeType = "workflowitems_reordered";
@@ -17,6 +18,7 @@ export interface Event {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   ordering: Workflowitem.Id[];
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -27,6 +29,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   ordering: Joi.array().items(Workflowitem.idSchema).required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -36,6 +39,7 @@ export function createEvent(
   subprojectId: Subproject.Id,
   ordering: Workflowitem.Id[],
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -45,6 +49,7 @@ export function createEvent(
     subprojectId,
     ordering,
     time,
+    metadata,
   };
 
   const validationResult = validate(event);

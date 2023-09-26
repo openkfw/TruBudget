@@ -19,7 +19,12 @@ export async function setProvisioningEndFlag(
     return new NotAuthorized({ ctx, userId: issuer.id, intent });
   }
 
-  const provisioningEndedEventResult = ProvisioningEnded.createEvent(ctx.source, issuer.id);
+  const provisioningEndedEventResult = ProvisioningEnded.createEvent(
+    ctx.source,
+    issuer.id,
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(provisioningEndedEventResult)) {
     return new VError(provisioningEndedEventResult, "failed to create event");
   }

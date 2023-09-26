@@ -32,7 +32,14 @@ export async function addMembers(
   }
 
   logger.trace("Creating new GroupMemberAdded event");
-  const membersAdded = GroupMemberAdded.createEvent(ctx.source, issuer.id, groupId, newMembers);
+  const membersAdded = GroupMemberAdded.createEvent(
+    ctx.source,
+    issuer.id,
+    groupId,
+    newMembers,
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(membersAdded)) {
     return new VError(membersAdded, "failed to create group added event");
   }

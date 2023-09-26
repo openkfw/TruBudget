@@ -5,6 +5,7 @@ import Intent, { userIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
 import { Identity } from "./identity";
 import * as UserRecord from "./user_record";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "user_permission_granted";
 const eventType: EventTypeType = "user_permission_granted";
@@ -17,6 +18,7 @@ export interface Event {
   userId: UserRecord.Id;
   permission: Intent;
   grantee: Identity;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -27,6 +29,7 @@ export const schema = Joi.object({
   userId: UserRecord.idSchema.required(),
   permission: Joi.valid(...userIntents).required(),
   grantee: Joi.string().required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -36,6 +39,7 @@ export function createEvent(
   permission: Intent,
   grantee: Identity,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating user_permission_granted event");
 
@@ -47,6 +51,7 @@ export function createEvent(
     userId,
     permission,
     grantee,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

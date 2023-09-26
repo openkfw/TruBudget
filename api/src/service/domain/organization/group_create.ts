@@ -56,14 +56,20 @@ export async function createGroup(
   const publisher = creatingUser.id;
 
   logger.trace({ req: data }, "Trying to create 'GroupCreated' Event from request data");
-  const createEvent = GroupCreated.createEvent(source, publisher, {
-    id: data.id,
-    displayName: data.displayName,
-    description: data.description || "",
-    members: data.members,
-    permissions: newDefaultPermissionsFor(creatingUser),
-    additionalData: data.additionalData || {},
-  });
+  const createEvent = GroupCreated.createEvent(
+    source,
+    publisher,
+    {
+      id: data.id,
+      displayName: data.displayName,
+      description: data.description || "",
+      members: data.members,
+      permissions: newDefaultPermissionsFor(creatingUser),
+      additionalData: data.additionalData || {},
+    },
+    new Date().toISOString(),
+    creatingUser.metadata,
+  );
 
   if (Result.isErr(createEvent)) {
     return new VError(createEvent, "failed to create group created event");

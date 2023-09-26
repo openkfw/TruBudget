@@ -28,6 +28,7 @@ interface ProcessEnvVars {
   SIGNING_METHOD: string;
   npm_package_version: string;
   RATE_LIMIT: string;
+  // TODO add new ones
 }
 
 /**
@@ -68,6 +69,12 @@ interface Config {
   nodeEnv: string | undefined;
   accessControlAllowOrigin: string;
   rateLimit: number | undefined;
+  authBuddy: {
+    enabled: boolean;
+    authBuddyCookie: string;
+    jwkKeystore: string | undefined;
+    jwsSignature: string | undefined;
+  };
 }
 
 /**
@@ -111,6 +118,12 @@ export const config: Config = {
   nodeEnv: process.env.NODE_ENV || "production",
   accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
   rateLimit: process.env.RATE_LIMIT === "" ? undefined : Number(process.env.RATE_LIMIT),
+  authBuddy: {
+    enabled: process.env.AUTHBUDDY_ENABLED === "true" || false,
+    authBuddyCookie: process.env.AUTHBUDDY_COOKIE || "authorizationToken",
+    jwkKeystore: process.env.AUTHBUDDY_JWK_KEYSTORE || undefined,
+    jwsSignature: process.env.AUTHBUDDY_JWS_SIGNATURE || undefined,
+  },
 };
 
 /**

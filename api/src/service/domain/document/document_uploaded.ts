@@ -8,6 +8,7 @@ import * as Result from "../../../result";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import { Identity } from "../organization/identity";
 import { StoredDocument } from "./document";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type DocumentEventTypeType = "document_uploaded";
 const documentEventType: DocumentEventTypeType = "document_uploaded";
@@ -30,6 +31,7 @@ export const schema = Joi.object({
   docId: Joi.string().required(),
   fileName: Joi.string().required(),
   organization: Joi.string().required(),
+  metadata: userMetadataSchema,
 });
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -45,6 +47,7 @@ export function createEvent(
   fileName: string,
   organization: string,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: documentEventType,
@@ -54,6 +57,7 @@ export function createEvent(
     docId,
     fileName,
     organization,
+    metadata,
   };
 
   logger.trace({ event }, "Created document_uploaded event");
