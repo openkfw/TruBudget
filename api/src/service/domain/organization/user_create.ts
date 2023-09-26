@@ -57,7 +57,7 @@ export async function createUser(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const source = ctx.source;
-  const publisher = creatingUser.id;
+
   const eventTemplate = {
     id: data.userId,
     displayName: data.displayName,
@@ -70,9 +70,16 @@ export async function createUser(
     }, {}),
     additionalData: data.additionalData || {},
   };
+
   logger.trace("Creating user ", data);
 
-  const createEvent = UserCreated.createEvent(source, publisher, eventTemplate);
+  const createEvent = UserCreated.createEvent(
+    source,
+    creatingUser.id,
+    eventTemplate,
+    new Date().toISOString(),
+    creatingUser.metadata,
+  );
   if (Result.isErr(createEvent)) {
     return new VError(createEvent, "failed to create user created event");
   }
@@ -145,9 +152,11 @@ export async function createUser(
   for (const intent of userDefaultIntents) {
     const createEventResult = GlobalPermissionGranted.createEvent(
       ctx.source,
-      publisher,
+      creatingUser.id,
       intent,
       createEvent.user.id,
+      new Date().toISOString(),
+      creatingUser.metadata,
     );
     if (Result.isErr(createEventResult)) {
       return new VError(createEventResult, "failed to create permission grant event");

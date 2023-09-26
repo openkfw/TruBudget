@@ -53,6 +53,8 @@ export async function updatePublicKey(
     creatingUser.id,
     organization,
     publicKey,
+    new Date().toISOString(),
+    creatingUser.metadata,
   );
   if (Result.isErr(createEvent)) {
     return new VError(createEvent, "failed to create publish public key event");

@@ -39,7 +39,13 @@ export async function closeProject(
   }
 
   logger.trace({ issuer, projectId }, "Creating new project_closed event");
-  const projectClosed = ProjectClosed.createEvent(ctx.source, issuer.id, projectId);
+  const projectClosed = ProjectClosed.createEvent(
+    ctx.source,
+    issuer.id,
+    projectId,
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(projectClosed)) {
     return new VError(projectClosed, "failed to create event");
   }
@@ -93,6 +99,10 @@ export async function closeProject(
           recipient,
           projectClosed,
           projectId,
+          undefined,
+          undefined,
+          new Date().toISOString(),
+          issuer.metadata,
         );
         if (Result.isErr(notification)) {
           return new VError(notification, "failed to create notification event");

@@ -38,6 +38,8 @@ export async function storageServiceUrlPublish(
     issuer.id,
     organization,
     organizationUrl,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(newUrlUpdatedEvent)) {
     return new VError(newUrlUpdatedEvent, "cannot update url");

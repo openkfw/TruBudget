@@ -38,7 +38,14 @@ export async function assignProject(
   }
 
   logger.trace({ issuer, assignee, projectId }, "Creating new project_assign event");
-  const projectAssigned = ProjectAssigned.createEvent(ctx.source, issuer.id, projectId, assignee);
+  const projectAssigned = ProjectAssigned.createEvent(
+    ctx.source,
+    issuer.id,
+    projectId,
+    assignee,
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(projectAssigned)) {
     return new VError(projectAssigned, "failed to create event");
   }
@@ -73,6 +80,10 @@ export async function assignProject(
       recipient,
       projectAssigned,
       projectId,
+      undefined,
+      undefined,
+      new Date().toISOString(),
+      issuer.metadata,
     );
     if (Result.isErr(notification)) {
       return new VError(notification, "failed to create notification event");

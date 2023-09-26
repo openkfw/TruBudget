@@ -40,6 +40,8 @@ export async function revokeProjectPermission(
     projectId,
     intent,
     revokee,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(permissionRevoked)) {
     return new VError(permissionRevoked, "failed to create permission revoked event");

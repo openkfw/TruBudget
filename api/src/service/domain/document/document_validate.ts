@@ -65,6 +65,8 @@ export async function documentValidate(
     projectId,
     subprojectId,
     workflowitemId,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(documentValidatedEvent)) {
     return new VError(documentValidatedEvent, "failed to create event in domain");
@@ -108,6 +110,10 @@ export async function documentValidate(
         recipient,
         documentValidatedEvent,
         projectId,
+        undefined,
+        undefined,
+        new Date().toISOString(),
+        issuer.metadata,
       );
       if (Result.isErr(notification)) {
         return new VError(notification, "failed to create notification event");

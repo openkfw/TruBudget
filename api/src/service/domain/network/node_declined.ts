@@ -3,6 +3,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+// TODO this event probably doesn't need user metadata - is it always issued by "system"?
 import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "node_declined";

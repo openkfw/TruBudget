@@ -68,18 +68,24 @@ export async function createProject(
   const publisher = creatingUser.id;
 
   logger.trace({ req: data }, "Trying to create 'ProjectCreated' Event from request data");
-  const createEvent = ProjectCreated.createEvent(source, publisher, {
-    id: data.id || randomString(),
-    status: data.status || "open",
-    displayName: data.displayName,
-    description: data.description || "",
-    assignee: data.assignee || creatingUser.id,
-    thumbnail: data.thumbnail || "",
-    projectedBudgets: data.projectedBudgets || [],
-    permissions: newDefaultPermissionsFor(creatingUser),
-    additionalData: data.additionalData || {},
-    tags: data.tags || [],
-  });
+  const createEvent = ProjectCreated.createEvent(
+    source,
+    publisher,
+    {
+      id: data.id || randomString(),
+      status: data.status || "open",
+      displayName: data.displayName,
+      description: data.description || "",
+      assignee: data.assignee || creatingUser.id,
+      thumbnail: data.thumbnail || "",
+      projectedBudgets: data.projectedBudgets || [],
+      permissions: newDefaultPermissionsFor(creatingUser),
+      additionalData: data.additionalData || {},
+      tags: data.tags || [],
+    },
+    new Date().toISOString(),
+    creatingUser.metadata,
+  );
   if (Result.isErr(createEvent)) {
     return new VError(createEvent, "failed to create project created event");
   }

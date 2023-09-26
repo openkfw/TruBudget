@@ -46,10 +46,16 @@ export async function changeUserPassword(
   const publisher = issuer.id;
   const validationResult = validate(data);
   const intent: Intent = "user.changePassword";
-  const passwordChanged = UserPasswordChanged.createEvent(source, publisher, {
-    id: data.userId,
-    passwordHash: await repository.hash(data.newPassword),
-  });
+  const passwordChanged = UserPasswordChanged.createEvent(
+    source,
+    publisher,
+    {
+      id: data.userId,
+      passwordHash: await repository.hash(data.newPassword),
+    },
+    new Date().toISOString(),
+    issuer.metadata,
+  );
 
   logger.trace({ event: passwordChanged }, "Checking validity of password changed event");
   if (Result.isErr(passwordChanged)) {

@@ -50,6 +50,8 @@ export async function deleteProjectedBudget(
     subprojectId,
     organization,
     currencyCode,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(budgetDeleted)) {
     return new VError(budgetDeleted, "failed to create projected budget deleted event");
@@ -91,6 +93,10 @@ export async function deleteProjectedBudget(
         recipient,
         budgetDeleted,
         projectId,
+        undefined,
+        undefined,
+        new Date().toISOString(),
+        issuer.metadata,
       );
       if (Result.isErr(notification)) {
         return new VError(notification, "failed to create  event");

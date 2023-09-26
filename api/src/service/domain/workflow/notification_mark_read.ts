@@ -40,6 +40,8 @@ export async function markRead(
     user.id,
     notificationId,
     notification.recipient,
+    new Date().toISOString(),
+    user.metadata,
   );
   if (Result.isErr(markedRead)) {
     return new VError(markedRead, "failed to create notification marked read event");

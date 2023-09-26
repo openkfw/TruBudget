@@ -43,7 +43,14 @@ export async function updateProject(
   }
 
   logger.trace({ issuer, data, projectId }, "Creating project_updated event");
-  const projectUpdatedResult = ProjectUpdated.createEvent(ctx.source, issuer.id, projectId, data);
+  const projectUpdatedResult = ProjectUpdated.createEvent(
+    ctx.source,
+    issuer.id,
+    projectId,
+    data,
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(projectUpdatedResult)) {
     return new VError(projectUpdatedResult, "create update-event failed");
   }
@@ -86,6 +93,10 @@ export async function updateProject(
           recipient,
           projectUpdated,
           projectId,
+          undefined,
+          undefined,
+          new Date().toISOString(),
+          issuer.metadata,
         );
         if (Result.isErr(notification)) {
           return new VError(notification, "failed to create notification event");
