@@ -65,6 +65,7 @@ describe("grant subproject permissions", () => {
       subprojectId: testsubproject.id,
       permission: "subproject.viewDetails",
       grantee: testUser.id,
+      metadata: undefined,
     };
     assert.deepEqual(expectedEvent, grantEvent);
   });
