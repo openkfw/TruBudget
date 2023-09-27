@@ -22,7 +22,7 @@ const config = {
   },
   authBuddy: {
     enabled: process.env.REACT_APP_AUTHBUDDY_ENABLED === "true" || false,
-    url: process.env.REACT_APP_AUTHBUDDY_URL === "true" || "http://localhost:4000/signin" //TODO
+    url: process.env.REACT_APP_AUTHBUDDY_URL || "http://localhost:4000/signin"
   }
 };
 

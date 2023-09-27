@@ -28,7 +28,10 @@ interface ProcessEnvVars {
   SIGNING_METHOD: string;
   npm_package_version: string;
   RATE_LIMIT: string;
-  // TODO add new ones
+  AUTHBUDDY_ENABLED: string;
+  AUTHBUDDY_COOKIE: string;
+  AUTHBUDDY_JWK_KEYSTORE: string;
+  AUTHBUDDY_JWS_SIGNATURE: string;
 }
 
 /**

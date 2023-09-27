@@ -1,5 +1,5 @@
 import { Jwt, verify } from "njwt";
-import jose, { JWK, JWE } from "node-jose";
+import { JWK, JWE } from "node-jose";
 
 export const verifyToken = (token: string, signingKey: string | Buffer): Jwt | undefined => {
   try {
@@ -19,9 +19,6 @@ export const decryptToken = async (token, keystore): Promise<string> => {
     });
 };
 
-export const getKeyStore = async (keys: string | object): Promise<jose.JWK.KeyStore> => {
-  return await JWK.asKeyStore(keys).then(function (result) {
-    // {result} is a jose.JWK.KeyStore
-    return result;
-  });
+export const getKeyStore = async (keys: string | object): Promise<JWK.KeyStore> => {
+  return await JWK.asKeyStore(keys);
 };

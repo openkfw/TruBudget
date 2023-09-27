@@ -9,7 +9,6 @@ import { ServiceUser } from "./service_user";
 import * as UserRecord from "./user_record";
 import { UserMetadata } from "../metadata";
 
-// TODO compare api/src/authz - is one of these unused?
 export interface AuthToken {
   userId: UserRecord.Id;
   displayName: string;

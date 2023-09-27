@@ -3,10 +3,10 @@ import { AuthenticatedRequest } from "./httpd/lib";
 
 export const extractUser = (request: AuthenticatedRequest): ServiceUser => {
   const user: ServiceUser = {
-    id: (request as AuthenticatedRequest).user.userId,
-    groups: (request as AuthenticatedRequest).user.groups,
-    address: (request as AuthenticatedRequest).user.address,
-    metadata: (request as AuthenticatedRequest).user.metadata,
+    id: request.user.userId,
+    groups: request.user.groups,
+    address: request.user.address,
+    metadata: request.user.metadata,
   };
   return user;
 };
