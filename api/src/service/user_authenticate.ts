@@ -207,11 +207,9 @@ export async function authenticateWithToken(
 
   // verify JWS
   const verifiedToken = verifyToken(decryptedToken, Buffer.from(base64SigningKey, "base64"));
-  logger.error({ verifiedToken }, "VERIFIED TOKEN");
 
   // extract metadata
   const body = verifiedToken?.body.toJSON();
-  logger.error({ body }, "VERIFIED TOKEN BODY");
   const userId = body?.userId as string;
   const externalId = (body?.externalId as string) || "";
   const kid = (body?.kid as string) || "";
@@ -223,6 +221,11 @@ export async function authenticateWithToken(
       { ctx, userId, intent: "user.authenticate" },
       new VError("CSRF protection"),
     );
+  }
+
+  // disable proxy login for "root"
+  if (userId === "root") {
+    return new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
   }
 
   const metadata: UserMetadata = { externalId, kid };
