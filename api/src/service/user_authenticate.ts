@@ -190,7 +190,6 @@ async function getOrganizationAddressOrError(
 export async function authenticateWithToken(
   organization: string,
   organizationSecret: string,
-  rootSecret: string,
   conn: ConnToken,
   ctx: Ctx,
   token: string,

@@ -349,7 +349,6 @@ if (authBuddy.enabled) {
         UserAuthenticateService.authenticateWithToken(
           organization,
           organizationVaultSecret,
-          rootSecret,
           db,
           ctx,
           token,
