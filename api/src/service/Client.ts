@@ -57,18 +57,21 @@ export class RpcMultichainClient implements MultichainClient {
 
     const isPublic = true; // in multichain terms: isOpen
     const customFields = { kind: options.kind };
+
+    // using streams with name parameter will lead to rpc invoke function printing out -708 error,
+    // which is not desired for this method.
+    const streams = await this.streams();
+    const desiredStream = streams.filter((stream) => stream.name === streamName);
+    // Prevent error -705 in invoke function / Stream or asset with this name already exists
+    if (desiredStream.length > 0) {
+      logger.trace({ params: { options } }, "Stream or asset with this name already exists");
+      return streamName;
+    }
+
     const txId: StreamTxId = await this.rpcClient
       .invoke("create", "stream", streamName, isPublic, customFields)
       .then(() => logger.debug({ options }, `Created stream ${streamName} with options`))
       .catch((err) => {
-        if (options.name && err && err.code === -705) {
-          // Stream or asset with this name already exists
-          logger.trace(
-            { params: { err, options } },
-            "Stream or asset with this name already exists",
-          );
-          return options.name;
-        }
         logger.error({ err }, "Stream could not be created.");
         throw err;
       });

@@ -12,6 +12,8 @@ export type StreamKind =
   | "project"
   | "subproject"
   | "notifications"
+  | "public_keys"
+  | "documents"
   | "nodes"
   | "groups"
   | "network_log"

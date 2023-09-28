@@ -1,9 +1,9 @@
 /* eslint-disable no-unreachable */
-import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
+import { StreamKind } from "./Client.h";
 
 interface PublishableData {
   stream: String;
@@ -293,21 +293,12 @@ async function ensureStreamExists(
   conn: ConnToken,
   ctx: Ctx,
   name: string,
-  kind: string,
+  kind: StreamKind,
 ): Promise<void> {
-  const isPublic = true; // in multichain terms: isOpen
-  const customFields = { kind };
-  await conn.multichainClient
-    .getRpcClient()
-    .invoke("create", "stream", name, isPublic, customFields)
-    .then(() => logger.debug({ ctx }, `New ${kind} stream created: ${name}`))
-    .catch((err) => {
-      if (err && err.code === -705) {
-        // Code -705 means the stream already exists - that's fine.
-        return;
-      }
-      return new VError(err, `could not create ${kind} stream "${name}"`);
-    });
+  return conn.multichainClient.getOrCreateStream({
+    kind: kind,
+    name: name,
+  });
 }
 
 async function writeTo(
