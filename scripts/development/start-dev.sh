@@ -305,7 +305,7 @@ fi
 
 # Start docker containers
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
-$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES --build alpha-api
+$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES --build alpha-api # TODO remove build flag
 
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"
