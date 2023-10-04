@@ -9,6 +9,7 @@ import * as Subproject from "./domain/workflow/subproject";
 import * as WorkflowitemsReorder from "./domain/workflow/workflowitems_reorder";
 import { WorkflowitemOrdering } from "./domain/workflow/workflowitem_ordering";
 import * as SubprojectCacheHelper from "./subproject_cache_helper";
+import * as SubprojectSnapshotPublish from "./domain/workflow/subproject_snapshot_publish";
 import { store } from "./store";
 
 export async function setWorkflowitemOrdering(
@@ -41,5 +42,21 @@ export async function setWorkflowitemOrdering(
 
   for (const event of newEvents) {
     await store(conn, ctx, event, serviceUser.address);
+  }
+
+  const { canPublish, eventData } = await SubprojectSnapshotPublish.publishSubprojectSnapshot(
+    ctx,
+    conn,
+    projectId,
+    subprojectId,
+    serviceUser,
+    ordering,
+  );
+  if (canPublish) {
+    if (Result.isErr(eventData)) {
+      return new VError(eventData, "create subproject snapshot failed");
+    }
+    const publishEvent = eventData;
+    await store(conn, ctx, publishEvent, serviceUser.address);
   }
 }

@@ -31,7 +31,7 @@ export function sourceWorkflowitemFromSnapshot(
 
   for (const event of events) {
     logger.trace({ event }, "Validating workflowitem Event by applying it");
-    if (!event.type.startsWith("workflowitem_") && event.type !== "workflowitems_reordered") {
+    if (!event.type.startsWith("workflowitem_")) {
       continue;
     }
     const workflowitemResult = sourceEventFromSnapshot(ctx, event, workflowitem);

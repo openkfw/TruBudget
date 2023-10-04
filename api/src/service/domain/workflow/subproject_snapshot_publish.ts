@@ -5,6 +5,7 @@ import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
 import * as SnapshotService from "../../cache_snapshot";
 import { BusinessEvent } from "../business_event";
+import { WorkflowitemOrdering } from "./workflowitem_ordering";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -17,6 +18,7 @@ export async function publishSubprojectSnapshot(
   streamName: string,
   subprojectId: string,
   creatingUser: ServiceUser,
+  ordering?: WorkflowitemOrdering,
 ): Promise<{ canPublish: boolean; eventData: Result.Type<BusinessEvent> }> {
   return await SnapshotService.publishSnapshot(
     ctx,
@@ -26,5 +28,6 @@ export async function publishSubprojectSnapshot(
     "subproject_snapshot_published",
     creatingUser,
     createEvent,
+    ordering,
   );
 }

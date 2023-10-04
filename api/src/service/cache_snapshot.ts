@@ -55,6 +55,7 @@ import { Item } from "./liststreamitems";
 import * as ProjectEventSourcing from "./domain/workflow/project_eventsourcing";
 import * as SubprojectEventSourcing from "./domain/workflow/subproject_eventsourcing";
 import * as WorkflowitemEventSourcing from "./domain/workflow/workflowitem_eventsourcing";
+import { WorkflowitemOrdering } from "./domain/workflow/workflowitem_ordering";
 
 import { Ctx } from "../lib/ctx";
 import { ConnToken } from "./conn";
@@ -133,9 +134,40 @@ export async function getLatestSnapshot(
         break;
     }
   }
+  let lastOrderingEventItem;
+  if (eventType == "subproject_snapshot_published") {
+    logger.trace("Event Subproject snapshot publish");
+    const rpcClient = conn.multichainClient.getRpcClient();
+    let items: Item[] = [];
+    items = await rpcClient.invoke(
+      "liststreamkeyitems",
+      streamName,
+      key + "_workflowitem_ordering",
+      false,
+      0x7fffffff,
+    );
+    // Parse workflow reorder events because they are separate events saved on chain
+    if (items.length > 0) {
+      lastOrderingEventItem = items[items.length - 1];
+      logger.trace("Found WFI reordering");
+      logger.trace("Last Reorder: " + lastOrderingEventItem.data.json.ordering);
+    }
+  }
 
   if (lastIndex == snapshotIndex) {
     let parsedData = parseFromSnapshot(data);
+    if (lastOrderingEventItem && eventType == "subproject_snapshot_published") {
+      let lastOrdering: WorkflowitemOrdering = lastOrderingEventItem.data.json.ordering;
+      if (
+        Result.isOk(parsedData) &&
+        lastOrdering !== (parsedData as Subproject).workflowitemOrdering
+      ) {
+        logger.trace("Last snapshot data is not equal to latest ordering");
+        logger.trace("Snapshot order: " + (parsedData as Subproject).workflowitemOrdering);
+        logger.trace("Last Ordering order: " + lastOrdering);
+        (parsedData as Subproject).workflowitemOrdering = lastOrdering;
+      }
+    }
     return parsedData;
   }
 
@@ -143,7 +175,16 @@ export async function getLatestSnapshot(
   items = items.slice(snapshotIndex + 1);
   let parsedEvents = parseBusinessEvents(items, streamName);
   const businessEvents = parsedEvents.filter(Result.isOk);
-  return sourceFromSnapshot(ctx, businessEvents, false, data);
+  const sourcedData = sourceFromSnapshot(ctx, businessEvents, false, data);
+
+  // if there are reordering events, apply it
+  if (lastOrderingEventItem && eventType == "subproject_snapshot_published") {
+    let lastOrdering: WorkflowitemOrdering = lastOrderingEventItem.data.json.ordering;
+    if (Result.isOk(sourcedData)) {
+      sourcedData.workflowitemOrdering = lastOrdering;
+    }
+  }
+  return sourcedData;
 }
 
 export async function publishSnapshot(
@@ -154,6 +195,7 @@ export async function publishSnapshot(
   eventType: string,
   creatingUser: ServiceUser,
   createEvent: Function,
+  ordering?: WorkflowitemOrdering,
 ): Promise<{ canPublish: boolean; eventData: Result.Type<BusinessEvent> }> {
   let { searchKey, sourceFromSnapshot } = getSourceInfo(key, eventType);
   if (searchKey.length == 0) {
@@ -202,6 +244,11 @@ export async function publishSnapshot(
   const businessEvents = parsedEvents.filter(Result.isOk);
 
   const sourcedData = sourceFromSnapshot(ctx, businessEvents, false, data);
+  if (ordering && eventType == "subproject_snapshot_published") {
+    if (Result.isOk(sourcedData)) {
+      sourcedData.workflowitemOrdering = ordering;
+    }
+  }
   let publishEvent: Result.Type<BusinessEvent>;
   if (eventType == "workflowitem_snapshot_published") {
     publishEvent = createEvent(
