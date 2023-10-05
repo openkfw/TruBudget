@@ -31,9 +31,7 @@ const ajv = new Ajv({
 
 const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
   server.register(fastifyCookie, {
-    parseOptions: {
-      // TODO should signed: true ?
-    },
+    parseOptions: {},
   } as FastifyCookieOptions);
 
   server.register(fastifyJwt, {

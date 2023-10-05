@@ -9,6 +9,7 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
+import { config } from "./config";
 
 /**
  * Represents the request body of the endpoint
@@ -59,14 +60,7 @@ interface LoginResponse {
 const swaggerSchema = {
   preValidation: [],
   schema: {
-    // TODO update desc
-    description:
-      "Authenticate and retrieve a token in return. This token can then be supplied in the " +
-      "HTTP Authorization header, which is expected by most of the other. " +
-      "\nIf a token is required write 'Bearer' into the 'API Token' field of an endpoint " +
-      "you want to test and copy the token afterwards like in the following example:\n " +
-      ".\n" +
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    description: "Authenticate user with credentials supplied by custom authentication proxy",
     tags: ["default", "user"],
     summary: "Authenticate with user and password",
     body: {
@@ -194,8 +188,7 @@ export function addHttpHandler(
       const ctx: Ctx = { requestId: request.id, source: "http" };
       const bodyResult = validateRequestBody(request.body);
 
-      // TODO constant
-      const authorizationToken = request.cookies["authorizationToken"];
+      const authorizationToken = request.cookies[config.authProxy.authProxyCookie];
 
       if (Result.isErr(bodyResult)) {
         const { code, body } = toHttpError(new VError(bodyResult, "authentication failed"));
@@ -205,14 +198,7 @@ export function addHttpHandler(
       }
 
       if (!authorizationToken) {
-        const { code, body } = toHttpError(
-          new VError(
-            {
-              /*TODO*/
-            },
-            "authentication failed",
-          ),
-        );
+        const { code, body } = toHttpError(new VError("authentication failed"));
         request.log.error({ err: "Missing authorizationToken cookie" }, "Invalid request");
         reply.status(code).send(body);
         return;
