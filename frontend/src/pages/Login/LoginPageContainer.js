@@ -7,6 +7,7 @@ import {
   checkExportService,
   initLanguage,
   loginWithCredentials,
+  loginWithToken,
   logout,
   setLanguage,
   storePassword,
@@ -36,6 +37,10 @@ class LoginPageContainer extends Component {
     const from =
       this.props.router.location && this.props.router.location.state && this.props.router.location.state.from;
     const path = from ? this.props.router.location.state.from : "/";
+    const token = new URLSearchParams(this.props.location.search).get("token");
+    if (token) {
+      this.props.loginWithToken(token);
+    }
     if (this.props.isUserLoggedIn) {
       this.props.router.navigate(path);
     }
@@ -53,6 +58,7 @@ const mapDispatchToProps = (dispatch) => {
     storePassword: (password) => dispatch(storePassword(password)),
     logout: () => dispatch(logout()),
     loginWithCredentials: (username, password) => dispatch(loginWithCredentials(username, password)),
+    loginWithToken: (token) => dispatch(loginWithToken(token)),
     setLanguage: (language) => dispatch(setLanguage(language)),
     checkEmailService: () => dispatch(checkEmailService(false)),
     checkExportService: () => dispatch(checkExportService(false))

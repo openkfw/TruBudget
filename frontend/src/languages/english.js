@@ -206,7 +206,8 @@ const en = {
     production_env: "Prod",
     test_env: "Test",
     frontend_name: "TruBudget",
-    frontend_description: "A blockchain-based solution for budget expenditure"
+    frontend_description: "A blockchain-based solution for budget expenditure",
+    user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
   project: {
