@@ -61,29 +61,36 @@ interface Repository {
 
 export async function createSubproject(
   ctx: Ctx,
-  creatingUser: ServiceUser,
+  issuer: ServiceUser,
   reqData: RequestData,
   repository: Repository,
 ): Promise<Result.Type<SubprojectCreated.Event>> {
-  const publisher = creatingUser.id;
+  const publisher = issuer.id;
 
   const projectId = reqData.projectId;
   const subprojectId = reqData.subprojectId || randomString();
 
   logger.trace({ req: reqData }, "Trying to create 'SubprojectCreated' Event from request data");
-  const createEvent = SubprojectCreated.createEvent(ctx.source, publisher, projectId, {
-    id: subprojectId,
-    status: reqData.status || "open",
-    displayName: reqData.displayName,
-    description: reqData.description || "",
-    assignee: reqData.assignee || creatingUser.id,
-    validator: reqData.validator,
-    workflowitemType: reqData.workflowitemType,
-    currency: reqData.currency,
-    projectedBudgets: reqData.projectedBudgets || [],
-    permissions: newDefaultPermissionsFor(creatingUser.id),
-    additionalData: reqData.additionalData || {},
-  });
+  const createEvent = SubprojectCreated.createEvent(
+    ctx.source,
+    publisher,
+    projectId,
+    {
+      id: subprojectId,
+      status: reqData.status || "open",
+      displayName: reqData.displayName,
+      description: reqData.description || "",
+      assignee: reqData.assignee || issuer.id,
+      validator: reqData.validator,
+      workflowitemType: reqData.workflowitemType,
+      currency: reqData.currency,
+      projectedBudgets: reqData.projectedBudgets || [],
+      permissions: newDefaultPermissionsFor(issuer.id),
+      additionalData: reqData.additionalData || {},
+    },
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(createEvent)) {
     return new VError(createEvent, "failed to create subproject created event");
   }
@@ -116,18 +123,18 @@ export async function createSubproject(
   }
 
   // Check authorization (if not root):
-  logger.trace({ user: creatingUser }, "Checking authorization of user");
+  logger.trace({ user: issuer }, "Checking authorization of user");
   const projectPermissions = await repository.projectPermissions(projectId);
   if (Result.isErr(projectPermissions)) {
     return new NotFound(ctx, "project", projectId);
   }
 
-  if (creatingUser.id !== "root") {
+  if (issuer.id !== "root") {
     const intent = "project.createSubproject";
-    if (!AuthToken.permits(projectPermissions, creatingUser, [intent])) {
+    if (!AuthToken.permits(projectPermissions, issuer, [intent])) {
       return new NotAuthorized({
         ctx,
-        userId: creatingUser.id,
+        userId: issuer.id,
         intent,
         target: { projectId, projectPermissions },
       });

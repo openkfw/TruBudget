@@ -31,6 +31,8 @@ export async function grantGlobalPermission(
     issuer.id,
     intent,
     grantee,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(globalPermissionGranted)) {
     return new VError(globalPermissionGranted, "failed to create global permission granted event");

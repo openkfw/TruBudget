@@ -5,6 +5,7 @@ import { Identity } from "../organization/identity";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitem_document_validated";
 const eventType: EventTypeType = "workflowitem_document_validated";
@@ -19,6 +20,7 @@ export interface Event {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   workflowitemId: Workflowitem.Id;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -31,6 +33,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   workflowitemId: Workflowitem.idSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -42,6 +45,7 @@ export function createEvent(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -53,6 +57,7 @@ export function createEvent(
     subprojectId,
     workflowitemId,
     time,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

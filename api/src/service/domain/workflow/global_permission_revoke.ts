@@ -32,6 +32,8 @@ export async function revokeGlobalPermission(
     issuer.id,
     intent,
     revokee,
+    new Date().toISOString(),
+    issuer.metadata,
   );
 
   if (Result.isErr(globalPermissionRevoked)) {

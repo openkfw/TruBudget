@@ -41,6 +41,8 @@ export async function revokeUserPermission(
     userId,
     intent,
     revokee,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(permissionRevoked)) {
     return new VError(permissionRevoked, "failed to create permission revoked event");

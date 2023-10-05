@@ -52,6 +52,8 @@ export async function updateProjectedBudget(
     organization,
     value,
     currencyCode,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(budgetUpdated)) {
     return new VError(budgetUpdated, "failed to create projected budget updated event");
@@ -92,6 +94,10 @@ export async function updateProjectedBudget(
         recipient,
         budgetUpdated,
         projectId,
+        undefined,
+        undefined,
+        new Date().toISOString(),
+        issuer.metadata,
       );
       if (Result.isErr(notification)) {
         return new VError(notification, "failed to create  event");

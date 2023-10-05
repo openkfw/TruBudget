@@ -6,6 +6,7 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import { projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "subproject_updated";
 const eventType: EventTypeType = "subproject_updated";
@@ -24,6 +25,7 @@ export interface Event {
   projectId: Project.Id;
   subprojectId: Subproject.Id;
   update: UpdatedData;
+  metadata?: UserMetadata;
 }
 
 export const updatedDataSchema = Joi.object({
@@ -44,6 +46,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema.required(),
   subprojectId: Subproject.idSchema.required(),
   update: updatedDataSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -53,6 +56,7 @@ export function createEvent(
   subprojectId: Subproject.Id,
   update: UpdatedData,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -62,6 +66,7 @@ export function createEvent(
     subprojectId,
     update,
     time,
+    metadata,
   };
 
   const validationResult = validate(event);

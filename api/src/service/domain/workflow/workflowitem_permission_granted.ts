@@ -6,6 +6,7 @@ import { Identity } from "../organization/identity";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitem_permission_granted";
 const eventType: EventTypeType = "workflowitem_permission_granted";
@@ -20,6 +21,7 @@ export interface Event {
   workflowitemId: Workflowitem.Id;
   permission: Intent;
   grantee: Identity;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -32,6 +34,7 @@ export const schema = Joi.object({
   workflowitemId: Workflowitem.idSchema.required(),
   permission: Joi.valid(...workflowitemIntents).required(),
   grantee: Joi.string().required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -43,6 +46,7 @@ export function createEvent(
   permission: Intent,
   grantee: Identity,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -54,6 +58,7 @@ export function createEvent(
     permission,
     grantee,
     time,
+    metadata,
   };
 
   const validationResult = validate(event);

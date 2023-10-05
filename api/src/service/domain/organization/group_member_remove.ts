@@ -31,7 +31,14 @@ export async function removeMembers(
   }
 
   logger.trace({ groupId, issuer }, "Creating GroupMemberRemoved Event");
-  const memberRemoved = GroupMemberRemoved.createEvent(ctx.source, issuer.id, groupId, members);
+  const memberRemoved = GroupMemberRemoved.createEvent(
+    ctx.source,
+    issuer.id,
+    groupId,
+    members,
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(memberRemoved)) {
     return new VError(memberRemoved, "failed to create group member removed event");
   }

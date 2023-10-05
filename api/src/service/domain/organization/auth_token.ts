@@ -7,6 +7,7 @@ import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_p
 import { Identity } from "./identity";
 import { ServiceUser } from "./service_user";
 import * as UserRecord from "./user_record";
+import { UserMetadata } from "../metadata";
 
 export interface AuthToken {
   userId: UserRecord.Id;
@@ -16,6 +17,7 @@ export interface AuthToken {
   organization: string;
   organizationAddress: string;
   allowedIntents: Intent[];
+  metadata?: UserMetadata;
 }
 
 export function canAssumeIdentity(
@@ -36,6 +38,7 @@ interface Repository {
 export async function fromUserRecord(
   user: UserRecord.UserRecord,
   repository: Repository,
+  metadata?: UserMetadata,
 ): Promise<Result.Type<AuthToken>> {
   logger.trace({ user }, "Getting groups of user by userrecord");
   const groupsResult = await repository.getGroupsForUser(user.id);
@@ -74,6 +77,7 @@ export async function fromUserRecord(
     organization: user.organization,
     organizationAddress,
     allowedIntents,
+    metadata: metadata,
   };
 }
 

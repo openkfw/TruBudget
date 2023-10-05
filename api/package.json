@@ -71,7 +71,7 @@
   },
   "keywords": [],
   "dependencies": {
-    "@fastify/cookie": "^8.3.0",
+    "@fastify/cookie": "^9.0.4",
     "@fastify/cors": "^8.2.1",
     "@fastify/helmet": "^10.1.0",
     "@fastify/jwt": "^6.7.1",
@@ -93,6 +93,7 @@
     "lodash": "^4.17.21",
     "lodash.isequal": "^4.5.0",
     "module-alias": "^2.2.2",
+    "njwt": "^2.0.0",
     "sanitize-html": "^2.10.0",
     "sodium-native": "^4.0.1",
     "trubudget-logging-service": "^1.1.6",
@@ -137,5 +138,8 @@
   },
   "_moduleAliases": {
     "lib": "dist/lib"
+  },
+  "overrides": {
+    "postcss": "^8.4.31"
   }
 }

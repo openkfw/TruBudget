@@ -10,6 +10,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import uuid = require("uuid");
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "notification_created";
 const eventType: EventTypeType = "notification_created";
@@ -25,6 +26,7 @@ export interface Event {
   projectId?: Project.Id;
   subprojectId?: Subproject.Id;
   workflowitemId?: Workflowitem.Id;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -39,6 +41,7 @@ export const schema = Joi.object({
   projectId: Project.idSchema,
   subprojectId: Subproject.idSchema,
   workflowitemId: Workflowitem.idSchema,
+  metadata: userMetadataSchema,
 }).options({ stripUnknown: true });
 
 export function createEvent(
@@ -50,6 +53,7 @@ export function createEvent(
   subprojectId?: Subproject.Id,
   workflowitemId?: Workflowitem.Id,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace({ recipient, publisher, businessEvent }, "Creating notification created event");
   const event = {
@@ -63,6 +67,7 @@ export function createEvent(
     projectId,
     subprojectId,
     workflowitemId,
+    metadata,
   };
 
   const validationResult = validate(event);

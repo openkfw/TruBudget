@@ -2,7 +2,6 @@ import * as contentDisposition from "content-disposition";
 import { RequestGenericInterface } from "fastify";
 import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
@@ -10,6 +9,8 @@ import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import * as WorkflowitemDocument from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
+import { extractUser } from "./handlerUtils";
+import { AuthenticatedRequest } from "httpd/lib";
 
 /**
  * Creates the swagger schema for the `/workflowitem.downloadDocument` endpoint
@@ -122,11 +123,7 @@ export function addHttpHandler(
       async (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         const { projectId, subprojectId, workflowitemId, documentId } = request.query;
         const message =

@@ -45,6 +45,8 @@ export async function assignSubproject(
     projectId,
     subprojectId,
     assignee,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(subprojectAssignedResult)) {
     return new VError(subprojectAssignedResult, "failed to create event");
@@ -84,6 +86,10 @@ export async function assignSubproject(
         recipient,
         subprojectAssigned,
         projectId,
+        undefined,
+        undefined,
+        new Date().toISOString(),
+        issuer.metadata,
       );
       if (Result.isErr(notification)) {
         return new VError(notification, "failed to create notification event");

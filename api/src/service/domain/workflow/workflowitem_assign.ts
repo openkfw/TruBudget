@@ -27,7 +27,7 @@ interface Repository {
 
 export async function assignWorkflowitem(
   ctx: Ctx,
-  publisher: ServiceUser,
+  issuer: ServiceUser,
   assignee: UserRecord.Id,
   projectId: Project.Id,
   subprojectId: Subproject.Id,
@@ -45,29 +45,31 @@ export async function assignWorkflowitem(
   }
 
   logger.trace(
-    { publisher, assignee, projectId, subprojectId, workflowitemId },
+    { publisher: issuer, assignee, projectId, subprojectId, workflowitemId },
     "Creating workflowitem_assigned event",
   );
   const assignEvent = WorkflowitemAssigned.createEvent(
     ctx.source,
-    publisher.id,
+    issuer.id,
     projectId,
     subprojectId,
     workflowitemId,
     assignee,
+    new Date().toISOString(),
+    issuer.metadata,
   );
 
   if (Result.isErr(assignEvent)) {
     return new VError(assignEvent, "failed to create event");
   }
 
-  logger.trace({ publisher }, "Checking if user has permissions");
-  if (publisher.id !== "root") {
+  logger.trace({ publisher: issuer }, "Checking if user has permissions");
+  if (issuer.id !== "root") {
     const assignIntent = "workflowitem.assign";
-    if (!Workflowitem.permits(workflowitem, publisher, [assignIntent])) {
+    if (!Workflowitem.permits(workflowitem, issuer, [assignIntent])) {
       return new NotAuthorized({
         ctx,
-        userId: publisher.id,
+        userId: issuer.id,
         intent: assignIntent,
         target: workflowitem,
       });
@@ -87,13 +89,17 @@ export async function assignWorkflowitem(
   }
   const notifications = recipientsResult.reduce((notifications, recipient) => {
     // The issuer doesn't receive a notification:
-    if (recipient !== publisher.id) {
+    if (recipient !== issuer.id) {
       const notification = NotificationCreated.createEvent(
         ctx.source,
-        publisher.id,
+        issuer.id,
         recipient,
         assignEvent,
         projectId,
+        undefined,
+        undefined,
+        new Date().toISOString(),
+        issuer.metadata,
       );
       if (Result.isErr(notification)) {
         return new VError(notification, "failed to create notification event");
