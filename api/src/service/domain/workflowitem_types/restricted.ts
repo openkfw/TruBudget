@@ -49,7 +49,7 @@ const createPermissionEvents = (
   workflowitemId: string,
   assignee: Identity,
   ctx: Ctx,
-  publisher: ServiceUser,
+  issuer: ServiceUser,
   workflowitem: Workflowitem.Workflowitem,
 ): Result.Type<BusinessEvent[]> => {
   const revokeIntent = "workflowitem.intent.revokePermission";
@@ -60,12 +60,14 @@ const createPermissionEvents = (
   for (const intent of workflowitemIntents) {
     const createEventResult = WorkflowitemPermissionGranted.createEvent(
       ctx.source,
-      publisher.id,
+      issuer.id,
       projectId,
       subprojectId,
       workflowitemId,
       intent,
       assignee,
+      new Date().toISOString(),
+      issuer.metadata,
     );
     if (Result.isErr(createEventResult)) {
       return new VError(createEventResult, "failed to create permission grant event");
@@ -74,17 +76,19 @@ const createPermissionEvents = (
   }
 
   const permissionRevokedEvents: Result.Type<WorkflowitemPermissionRevoked.Event[]> = [];
-  if (assignee !== publisher.id) {
+  if (assignee !== issuer.id) {
     for (const intent of workflowitemIntents) {
       if (intent !== "workflowitem.list") {
         const createEventResult = WorkflowitemPermissionRevoked.createEvent(
           ctx.source,
-          publisher.id,
+          issuer.id,
           projectId,
           subprojectId,
           workflowitemId,
           intent,
-          publisher.id,
+          issuer.id,
+          new Date().toISOString(),
+          issuer.metadata,
         );
         if (Result.isErr(createEventResult)) {
           return new VError(createEventResult, "failed to create permission revoke event");
@@ -106,15 +110,15 @@ const createPermissionEvents = (
     );
 
   // Check authorization
-  if (publisher.id !== "root") {
-    if (!Workflowitem.permits(workflowitem, publisher, [grantIntent])) {
+  if (issuer.id !== "root") {
+    if (!Workflowitem.permits(workflowitem, issuer, [grantIntent])) {
       let hasRevokePermissions = true;
-      if (!Workflowitem.permits(workflowitem, publisher, [revokeIntent])) {
+      if (!Workflowitem.permits(workflowitem, issuer, [revokeIntent])) {
         hasRevokePermissions = false;
       }
       return new NotAuthorized({
         ctx,
-        userId: publisher.id,
+        userId: issuer.id,
         intent: hasRevokePermissions ? grantIntent : revokeIntent,
         target: workflowitem,
       });

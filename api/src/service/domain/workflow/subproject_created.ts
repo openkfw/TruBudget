@@ -12,6 +12,7 @@ import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "subproject_created";
 const eventType: EventTypeType = "subproject_created";
@@ -52,6 +53,7 @@ export interface Event {
   publisher: Identity;
   projectId: Project.Id;
   subproject: InitialData;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -61,6 +63,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   subproject: initialDataSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -69,6 +72,7 @@ export function createEvent(
   projectId: Project.Id,
   subproject: InitialData,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating subproject_created event");
 
@@ -79,6 +83,7 @@ export function createEvent(
     projectId,
     subproject,
     time,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

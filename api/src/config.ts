@@ -28,6 +28,8 @@ interface ProcessEnvVars {
   SIGNING_METHOD: string;
   npm_package_version: string;
   RATE_LIMIT: string;
+  AUTHPROXY_ENABLED: string;
+  AUTHPROXY_JWS_SIGNATURE: string;
 }
 
 /**
@@ -68,6 +70,11 @@ interface Config {
   nodeEnv: string | undefined;
   accessControlAllowOrigin: string;
   rateLimit: number | undefined;
+  authProxy: {
+    enabled: boolean;
+    authProxyCookie: string;
+    jwsSignature: string | undefined;
+  };
 }
 
 /**
@@ -111,6 +118,11 @@ export const config: Config = {
   nodeEnv: process.env.NODE_ENV || "production",
   accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
   rateLimit: process.env.RATE_LIMIT === "" ? undefined : Number(process.env.RATE_LIMIT),
+  authProxy: {
+    enabled: process.env.AUTHPROXY_ENABLED === "true" || false,
+    authProxyCookie: "authorizationToken",
+    jwsSignature: process.env.AUTHPROXY_JWS_SIGNATURE || undefined,
+  },
 };
 
 /**

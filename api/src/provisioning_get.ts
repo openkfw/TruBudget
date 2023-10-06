@@ -6,6 +6,7 @@ import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as SystemInformation from "./service/domain/system_information/system_information";
+import { extractUser } from "./handlerUtils";
 
 /**
  * Creates the swagger schema for the `/provisioned` endpoint
@@ -76,11 +77,7 @@ export function addHttpHandler(
   server.register(async function () {
     server.get(`${urlPrefix}/provisioned`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+      const user = extractUser(request as AuthenticatedRequest);
 
       service
         .getProvisionStatus(ctx, user)

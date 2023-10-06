@@ -39,6 +39,8 @@ export async function grantProjectPermission(
     projectId,
     intent,
     grantee,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(permissionGranted)) {
     return new VError(permissionGranted, "failed to create permission granted event");

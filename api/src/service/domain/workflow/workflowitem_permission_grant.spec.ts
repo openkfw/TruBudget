@@ -110,6 +110,7 @@ describe("grant workflowitem permissions", () => {
       workflowitemId: testworkflowitem.id,
       permission: "workflowitem.assign",
       grantee: testUser.id,
+      metadata: undefined,
     };
     assert.deepEqual(expectedEvent, grantEvent);
   });

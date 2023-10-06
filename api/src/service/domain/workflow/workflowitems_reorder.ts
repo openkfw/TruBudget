@@ -51,6 +51,8 @@ export async function setWorkflowitemOrdering(
     projectId,
     subprojectId,
     ordering,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(reorderEvent)) {
     return new VError(reorderEvent, "failed to create reorder event");

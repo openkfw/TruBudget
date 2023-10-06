@@ -141,7 +141,8 @@ const fr = {
     test_env: "Test",
     frontend_name: "TruBudget",
     frontend_description:
-      "Une plateforme collaborative pour une gestion transparente et sécurisée des financements extérieurs."
+      "Une plateforme collaborative pour une gestion transparente et sécurisée des financements extérieurs.",
+    user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
   project: {

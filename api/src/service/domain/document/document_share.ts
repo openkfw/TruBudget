@@ -121,6 +121,8 @@ export async function shareDocument(
     docId,
     organization,
     encryptedSecret,
+    new Date().toISOString(),
+    issuer.metadata,
   );
 
   if (Result.isErr(newSecretPublishedEvent)) {

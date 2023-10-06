@@ -14,6 +14,7 @@ import { DocumentReference } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
+import { extractUser } from "./handlerUtils";
 
 /**
  * Creates the swagger schema for the `/workflowitem.list` endpoint
@@ -190,11 +191,7 @@ export function addHttpHandler(
       (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
-        const user: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const user = extractUser(request as AuthenticatedRequest);
 
         const projectId = request.query.projectId;
         const subprojectId = request.query.subprojectId;

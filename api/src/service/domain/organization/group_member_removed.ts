@@ -4,6 +4,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Group from "./group";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "group_member_removed";
 const eventType: EventTypeType = "group_member_removed";
@@ -15,6 +16,7 @@ export interface Event {
   publisher: Identity;
   groupId: Group.Id;
   members: Group.Member[];
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -24,6 +26,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   groupId: Group.idSchema.required(),
   members: Joi.array().items(Group.memberSchema.required()).required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -32,6 +35,7 @@ export function createEvent(
   groupId: Group.Id,
   members: Group.Member[],
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -40,6 +44,7 @@ export function createEvent(
     groupId,
     members,
     time,
+    metadata,
   };
   logger.trace("Creating group_member_remove event...");
 

@@ -36,7 +36,7 @@ interface Repository {
 
 export async function closeWorkflowitem(
   ctx: Ctx,
-  closingUser: ServiceUser,
+  issuer: ServiceUser,
   projectId: Project.Id,
   subprojectId: Subproject.Id,
   workflowitemId: Id,
@@ -69,10 +69,10 @@ export async function closeWorkflowitem(
   }
 
   logger.trace(
-    { closingUser, projectId, subprojectId, workflowitemId },
+    { closingUser: issuer, projectId, subprojectId, workflowitemId },
     "Creating workflowitem_closed event",
   );
-  const publisher = closingUser.id;
+  const publisher = issuer.id;
   const closeEvent = WorkflowitemClosed.createEvent(
     ctx.source,
     publisher,
@@ -81,6 +81,7 @@ export async function closeWorkflowitem(
     workflowitemId,
     new Date().toISOString(),
     rejectReason,
+    issuer.metadata,
   );
   if (Result.isErr(closeEvent)) {
     return new VError(closeEvent, "failed to create event");
@@ -97,15 +98,15 @@ export async function closeWorkflowitem(
   }
   const assignedIdentities = assignedIdentitiesResult;
 
-  logger.trace({ closingUser }, "Checking user authorizaion");
-  if (closingUser.id !== "root") {
-    if (subproject.validator !== undefined && subproject.validator !== closingUser.id) {
+  logger.trace({ closingUser: issuer }, "Checking user authorizaion");
+  if (issuer.id !== "root") {
+    if (subproject.validator !== undefined && subproject.validator !== issuer.id) {
       return new PreconditionError(
         ctx,
         closeEvent,
         "Only the validator of this subproject is allowed to close workflowitems",
       );
-    } else if (!assignedIdentities.includes(closingUser.id)) {
+    } else if (!assignedIdentities.includes(issuer.id)) {
       return new PreconditionError(
         ctx,
         closeEvent,
@@ -138,13 +139,17 @@ export async function closeWorkflowitem(
   const notifications: Result.Type<NotificationCreated.Event[]> = assignedIdentities.reduce(
     (notifications, recipient) => {
       // The issuer doesn't receive a notification:
-      if (recipient !== closingUser.id) {
+      if (recipient !== issuer.id) {
         const notification = NotificationCreated.createEvent(
           ctx.source,
-          closingUser.id,
+          issuer.id,
           recipient,
           closeEvent,
           projectId,
+          undefined,
+          undefined,
+          new Date().toISOString(),
+          issuer.metadata,
         );
         if (Result.isErr(notification)) {
           return new VError(notification, "failed to create notification event");

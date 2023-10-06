@@ -17,6 +17,9 @@ import { getGlobalPermissions } from "./global_permissions_get";
 import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
 import { importprivkey } from "./importprivkey";
 import { hashPassword, isPasswordMatch } from "./password";
+import { verifyToken } from "../lib/token";
+import { UserMetadata } from "./domain/metadata";
+import { NotFound } from "./domain/errors/not_found";
 
 export interface UserLoginResponse {
   id: string;
@@ -101,7 +104,7 @@ async function authenticateRoot(
   };
 }
 
-async function authenticateUser(
+export async function authenticateUser(
   conn: ConnToken,
   ctx: Ctx,
   organization: string,
@@ -183,4 +186,121 @@ async function getOrganizationAddressOrError(
     );
   }
   return organizationAddress;
+}
+
+export async function authenticateWithToken(
+  organization: string,
+  organizationSecret: string,
+  conn: ConnToken,
+  ctx: Ctx,
+  token: string,
+  csrf: string,
+): Promise<Result.Type<AuthToken.AuthToken>> {
+  logger.debug({ organization }, "Authenticating user with token");
+  // config check
+  if (config.authProxy.enabled && !config.authProxy.jwsSignature) {
+    const cause = new VError(
+      `Environment variables not set correctly.\nconfig.authProxy.jwsSignature=${config.authProxy.jwsSignature}`,
+    );
+    return new AuthenticationFailed({ ctx, organization, userId: "" }, cause);
+  }
+
+  // check if external functional identity for user has been found
+  const unverifiedBody64 = token.split(".")[1];
+  const unverifiedBody = JSON.parse(Buffer.from(unverifiedBody64, "base64").toString());
+  if (!unverifiedBody.sub || unverifiedBody.sub === "") {
+    return new NotFound(ctx, "user", "");
+  }
+
+  let verifiedToken;
+  try {
+    const base64SigningKey = config.authProxy.jwsSignature as string;
+    verifiedToken = verifyToken(token, Buffer.from(base64SigningKey, "base64"));
+  } catch (err) {
+    const cause = new VError(err, "There was a problem verifying the authorization token");
+    return new AuthenticationFailed({ ctx, organization, userId: "" }, cause);
+  }
+
+  // extract id and metadata
+  const body = verifiedToken?.body.toJSON();
+  const userId = body?.sub as string;
+  const metadata = body.metadata;
+  const externalId = (metadata.externalId as string) || "";
+  const kid = (metadata.kid as string) || "";
+  const csrfFromCookie = body?.csrf as string;
+
+  // cookie value does not match with value from http request params
+  if (csrfFromCookie !== csrf) {
+    return new NotAuthorized(
+      { ctx, userId, intent: "user.authenticate" },
+      new VError("CSRF protection"),
+    );
+  }
+
+  // disable proxy login for "root"
+  if (userId === "root") {
+    return new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
+  }
+
+  const userMetadata: UserMetadata = { externalId, kid };
+
+  // Use root as the service user to ensure we see all the data:
+  const nodeAddress = await getselfaddress(conn.multichainClient);
+  const rootUser = { id: "root", groups: [], address: nodeAddress };
+
+  const userRecord = await UserQuery.getUser(conn, ctx, rootUser, userId);
+  if (Result.isErr(userRecord)) {
+    return new AuthenticationFailed({ ctx, organization, userId }, userRecord);
+  }
+
+  // Check if user has user.authenticate intent
+  const canAuthenticate =
+    userRecord?.permissions["user.authenticate"] &&
+    userRecord?.permissions["user.authenticate"].some((id) => id === userId);
+
+  if (!canAuthenticate) {
+    return new NotAuthorized({ ctx, userId, intent: "user.authenticate" });
+  }
+
+  // Every user has an address and an associated private key. Importing the private key
+  // when authenticating a user allows users to roam freely between nodes of their
+  // organization.
+  const privkey = SymmetricCrypto.decrypt(organizationSecret, userRecord.encryptedPrivKey);
+  if (Result.isErr(privkey)) {
+    const cause = new VError(
+      privkey,
+      "failed to decrypt the user's private key with the given organization secret " +
+        `(does "${userId}" belong to "${organization}"?)`,
+    );
+    return new AuthenticationFailed({ ctx, organization, userId }, cause);
+  }
+  await importprivkey(conn.multichainClient, privkey, userRecord.id);
+  if (config.signingMethod === "user") {
+    const userAddressPermissions: string[] = ["send"];
+    await grantpermissiontoaddress(
+      conn.multichainClient,
+      userRecord.address,
+      userAddressPermissions,
+    );
+  }
+  const authTokenResult = AuthToken.fromUserRecord(
+    userRecord,
+    {
+      getGroupsForUser: async (id) => {
+        const groupsResult = await getGroupsForUser(conn, ctx, rootUser, id);
+        if (Result.isErr(groupsResult)) {
+          return new VError(groupsResult, `fetch groups for user ${id} failed`);
+        }
+        return groupsResult.map((group) => group.id);
+      },
+      getOrganizationAddress: async (orga) => getOrganizationAddressOrError(conn, ctx, orga),
+      getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, rootUser),
+    },
+    userMetadata,
+  );
+
+  return Result.mapErr(
+    authTokenResult,
+    (err) => new VError(err, `token authentication failed for ${userId}`),
+  );
 }

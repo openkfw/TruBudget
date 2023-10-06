@@ -48,6 +48,7 @@ import {
   FETCH_USER,
   FETCH_USER_SUCCESS,
   LOGIN,
+  LOGIN_AD,
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
@@ -1119,6 +1120,51 @@ export function* markMultipleNotificationsAsReadSaga({ notificationIds, notifica
 export function* loginSaga({ user }) {
   function* login() {
     const { data } = yield callApi(api.login, user.username, user.password);
+    yield put({
+      type: LOGIN_SUCCESS,
+      ...data,
+      isUserLoggedIn: true
+    });
+    yield call(() => fetchNotificationCountsSaga(false));
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: ""
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: false,
+      isError: false,
+      isWarning: false
+    });
+    yield put({
+      type: LOGIN_ERROR,
+      show: false
+    });
+  }
+
+  function* onLoginError(error) {
+    const errorMessage = getLoginErrorFromResponse(error.response.status, error.response.data);
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+    yield put({
+      type: LOGIN_ERROR,
+      show: true
+    });
+  }
+  yield execute(login, true, onLoginError);
+}
+
+export function* loginTokenSaga({ token }) {
+  function* login() {
+    const { data } = yield callApi(api.loginAd, token);
     yield put({
       type: LOGIN_SUCCESS,
       ...data,
@@ -3147,6 +3193,7 @@ export default function* rootSaga() {
   try {
     yield all([
       // Global
+      yield takeLatest(LOGIN_AD, loginTokenSaga),
       yield takeLatest(LOGIN, loginSaga),
       yield takeEvery(LOGOUT, logoutSaga),
       yield takeEvery(CREATE_USER, createUserSaga),

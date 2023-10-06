@@ -10,6 +10,7 @@ import { toUnixTimestampStr } from "./lib/datetime";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
+import { extractUser } from "./handlerUtils";
 
 /**
  * Creates the swagger schema for the `/project.list` endpoint
@@ -135,11 +136,7 @@ export function addHttpHandler(
   server.register(async function () {
     server.get(`${urlPrefix}/project.list`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+      const user = extractUser(request as AuthenticatedRequest);
 
       service
         .listProjects(ctx, user)

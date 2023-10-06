@@ -1,11 +1,11 @@
 import Ajv from "ajv";
-import { fastify, FastifyInstance } from "fastify";
+import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import fastifyMetricsPlugin from "fastify-metrics";
 import { IncomingMessage, Server, ServerResponse } from "http";
 import { AugmentedFastifyInstance } from "../types";
 import logger from "../lib/logger";
 import { AuthenticatedRequest } from "./lib";
-import fastifyCookie from "@fastify/cookie";
+import fastifyCookie, { FastifyCookieOptions } from "@fastify/cookie";
 import fastifyHelmet from "@fastify/helmet";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
@@ -30,6 +30,10 @@ const ajv = new Ajv({
 });
 
 const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
+  server.register(fastifyCookie, {
+    parseOptions: {},
+  } as FastifyCookieOptions);
+
   server.register(fastifyJwt, {
     secret: jwtSecret,
     cookie: {
@@ -38,9 +42,7 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
     },
   });
 
-  server.register(fastifyCookie);
-
-  server.decorate("authenticate", async (request, reply) => {
+  server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       if (!request.headers.authorization && request.cookies.token) {
         request.headers.authorization = `Bearer ${request.cookies.token}`;

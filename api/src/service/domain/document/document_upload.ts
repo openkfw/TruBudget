@@ -98,6 +98,8 @@ export async function uploadDocument(
     id,
     fileName || "untitled",
     organization,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(newDocumentUploadedEvent)) {
     return new VError(newDocumentUploadedEvent, "cannot update workflowitem");
@@ -110,6 +112,8 @@ export async function uploadDocument(
     id,
     organization,
     encryptedSecret,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(newSecretPublishedEvent)) {
     return new VError(newSecretPublishedEvent, "cannot publish document secret");

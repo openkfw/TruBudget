@@ -8,6 +8,7 @@ import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as UserRecord from "../organization/user_record";
 import { Permissions, permissionsSchema } from "../permissions";
 import { Identity } from "./identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "user_created";
 const eventType: EventTypeType = "user_created";
@@ -41,6 +42,7 @@ export interface Event {
   time: string; // ISO timestamp
   publisher: Identity;
   user: InitialData;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -49,6 +51,7 @@ export const schema = Joi.object({
   time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
   user: initialDataSchema.required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -56,6 +59,7 @@ export function createEvent(
   publisher: Identity,
   user: InitialData,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating user_create event...");
 
@@ -65,6 +69,7 @@ export function createEvent(
     publisher,
     user,
     time,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {

@@ -133,6 +133,8 @@ export async function updateWorkflowitem(
     subprojectId,
     workflowitemId,
     modificationWithStoredDocuments,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(newEvent)) {
     return new VError(newEvent, "cannot update workflowitem");
@@ -178,6 +180,10 @@ export async function updateWorkflowitem(
           recipient,
           newEvent,
           projectId,
+          undefined,
+          undefined,
+          new Date().toISOString(),
+          issuer.metadata,
         );
         if (Result.isErr(notification)) {
           return new VError(notification, "failed to create notification event");

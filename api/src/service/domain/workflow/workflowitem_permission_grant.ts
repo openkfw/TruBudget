@@ -60,6 +60,8 @@ export async function grantWorkflowitemPermission(
     workflowitemId,
     intent,
     grantee,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(permissionGrantedEventResult)) {
     return new VError(permissionGrantedEventResult, "failed to create permission granted event");

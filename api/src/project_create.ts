@@ -12,6 +12,7 @@ import { ResourceMap } from "./service/domain/ResourceMap";
 import * as Project from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as ProjectCreate from "./service/project_create";
+import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
 
 /**
@@ -176,11 +177,7 @@ export function addHttpHandler(
     server.post(`${urlPrefix}/global.createProject`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const user: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+      const user = extractUser(request as AuthenticatedRequest);
 
       const bodyResult = validateRequestBody(request.body);
 

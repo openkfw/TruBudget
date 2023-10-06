@@ -52,9 +52,15 @@ export async function enableUser(
 
   // Create the new event:
   logger.trace("Creating userEnabled event");
-  const userEnabled = UserEnabled.createEvent(source, publisher, {
-    id: data.userId,
-  });
+  const userEnabled = UserEnabled.createEvent(
+    source,
+    publisher,
+    {
+      id: data.userId,
+    },
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(userEnabled)) {
     return new VError(userEnabled, "failed to create user enabled event");
   }

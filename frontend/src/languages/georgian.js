@@ -207,7 +207,8 @@ const ka = {
     production_env: "Prod",
     test_env: "ტესტი",
     frontend_name: "TruBudget",
-    frontend_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა"
+    frontend_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა",
+    user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
   project: {

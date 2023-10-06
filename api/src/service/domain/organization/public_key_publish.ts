@@ -46,6 +46,8 @@ export async function publishPublicKey(
     creatingUser.id,
     organization,
     publicKeyBase64,
+    new Date().toISOString(),
+    creatingUser.metadata,
   );
 
   logger.trace({ createEvent }, "event to publish public key created");

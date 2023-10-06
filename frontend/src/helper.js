@@ -245,6 +245,8 @@ export const getLoginErrorFromResponse = (status, data) => {
       return strings.common.incorrect_username_or_password;
     case 403:
       return strings.common.login_disabled;
+    case 404:
+      return strings.login.user_not_found;
     case 500:
       if (data.includes("ECONNREFUSED", 0)) {
         return strings.common.login_proxy_error;

@@ -62,6 +62,7 @@ describe("revoke project permissions", () => {
       projectId: testProject.id,
       permission: "project.viewDetails",
       revokee: testUser.id,
+      metadata: undefined,
     };
     assert.deepEqual(expectedEvent, revokeEvent);
   });

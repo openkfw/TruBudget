@@ -70,6 +70,7 @@ describe("revoke workflowitem permissions", () => {
       workflowitemId: testworkflowitem.id,
       permission: "workflowitem.assign",
       revokee: testUser.id,
+      metadata: undefined,
     };
     assert.deepEqual(expectedEvent, revokeEvent);
   });

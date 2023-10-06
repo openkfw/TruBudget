@@ -52,6 +52,8 @@ export async function closeSubproject(
     issuer.id,
     projectId,
     subprojectId,
+    new Date().toISOString(),
+    issuer.metadata,
   );
   if (Result.isErr(subprojectClosed)) {
     return new VError(subprojectClosed, "failed to create event");
@@ -109,6 +111,10 @@ export async function closeSubproject(
           recipient,
           subprojectClosed,
           projectId,
+          undefined,
+          undefined,
+          new Date().toISOString(),
+          issuer.metadata,
         );
         if (Result.isErr(notification)) {
           return new VError(notification, "failed to create event");

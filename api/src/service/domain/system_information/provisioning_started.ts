@@ -3,6 +3,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "provisioning_started";
 const eventType: EventTypeType = "provisioning_started";
@@ -12,6 +13,7 @@ export interface Event {
   source: string;
   time: string; // ISO timestamp
   publisher: Identity;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -19,12 +21,14 @@ export const schema = Joi.object({
   source: Joi.string().allow("").required(),
   time: Joi.date().iso().required(),
   publisher: Joi.string().required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
   source: string,
   publisher: Identity,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   logger.trace("Creating provisioning_start event");
 
@@ -33,6 +37,7 @@ export function createEvent(
     source,
     time,
     publisher,
+    metadata,
   };
 
   const validationResult = validate(event);

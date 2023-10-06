@@ -56,9 +56,15 @@ export async function disableUser(
   const globalPermissions = globalPermissionsResult;
 
   // Create the new event:
-  const userDisabled = UserDisabled.createEvent(source, publisher, {
-    id: userToDisable,
-  });
+  const userDisabled = UserDisabled.createEvent(
+    source,
+    publisher,
+    {
+      id: userToDisable,
+    },
+    new Date().toISOString(),
+    issuer.metadata,
+  );
   if (Result.isErr(userDisabled)) {
     return new VError(userDisabled, "failed to create user disabled event");
   }

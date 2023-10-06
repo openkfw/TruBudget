@@ -3,6 +3,7 @@ import { VError } from "verror";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
 import * as Project from "./project";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "project_assigned";
 const eventType: EventTypeType = "project_assigned";
@@ -14,6 +15,7 @@ export interface Event {
   publisher: Identity;
   projectId: Project.Id;
   assignee: Identity;
+  metadata?: UserMetadata;
 }
 
 export const schema = Joi.object({
@@ -23,6 +25,7 @@ export const schema = Joi.object({
   publisher: Joi.string().required(),
   projectId: Project.idSchema.required(),
   assignee: Joi.string().required(),
+  metadata: userMetadataSchema,
 });
 
 export function createEvent(
@@ -31,6 +34,7 @@ export function createEvent(
   projectId: Project.Id,
   assignee: string,
   time: string = new Date().toISOString(),
+  metadata?: UserMetadata,
 ): Result.Type<Event> {
   const event = {
     type: eventType,
@@ -39,6 +43,7 @@ export function createEvent(
     publisher,
     projectId,
     assignee,
+    metadata,
   };
   const validationResult = validate(event);
   if (Result.isErr(validationResult)) {
