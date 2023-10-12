@@ -409,6 +409,7 @@ describe("Workflowitem Permissions", function() {
       cy.grantProjectPermission(projectId, "project.list", testGroupId),
       cy.grantProjectPermission(projectId, "project.viewDetails", testGroupId),
       cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroupId),
+      cy.grantProjectPermission(projectId, "project.intent.grantPermission", testGroupId),
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testGroupId),
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroupId),
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroupId),
@@ -419,8 +420,17 @@ describe("Workflowitem Permissions", function() {
         "workflowitem.intent.listPermissions",
         testGroupId
       ),
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", testGroupId)
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", testGroupId),
+      cy.grantWorkflowitemPermission(
+        projectId,
+        subprojectId,
+        workflowitemId,
+        "workflowitem.intent.grantPermission",
+        testGroupId
+      )
     ]).then(() => {
+      permissionsBeforeTesting.project["project.intent.grantPermission"].push(testGroupId);
+      permissionsBeforeTesting.workflowitem["intent.grantPermission"].push(testGroupId);
       // user from testgroup grant other group some permission
       cy.login(testUser2.id, "test");
 

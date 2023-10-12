@@ -1,11 +1,6 @@
-let exportBaseUrl = Cypress.config("baseUrl");
+const exportUrl = Cypress.env("EXPORT_SERVICE_BASE_URL") || `${Cypress.config("baseUrl")}/api/export/xlsx`;
 
-if (Cypress.env("EXPORT_SERVICE_BASE_URL")) {
-  exportBaseUrl = Cypress.env("EXPORT_SERVICE_BASE_URL");
-}
-let exportUrl = `${exportBaseUrl}/api/export/xlsx`;
-
-let file = "cypress/fixtures/TruBudget_Export.xlsx";
+let file = "cypress/downloads/TruBudget_Export.xlsx";
 
 before(() => {
   //download directly to fixture folder, without pop-ups
@@ -13,7 +8,7 @@ before(() => {
     cy.wrap(
       Cypress.automation("remote:debugger:protocol", {
         command: "Page.setDownloadBehavior",
-        params: { behavior: "allow", downloadPath: "cypress/fixtures" }
+        params: { behavior: "allow", downloadPath: "cypress/downloads" }
       }),
       { log: false }
     );
@@ -22,7 +17,7 @@ before(() => {
 
 describe("Excel Export feature", function() {
   it("Tests the export of an excel file in english", function() {
-    cy.intercept(exportUrl + "/download?lang=en*").as("export");
+    cy.intercept(`${exportUrl}/download?lang=en`).as("export");
 
     //login
     cy.visit("/");
@@ -32,9 +27,8 @@ describe("Excel Export feature", function() {
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]").should("be.visible");
-    cy.get("[data-test=side-navigation-export]")
-      .should("be.visible")
-      .click();
+    cy.get("[data-test=side-navigation-export]").should("be.visible");
+    cy.get("[data-test=side-navigation-export]").click();
 
     // test exported file
     cy.wait("@export").should(interception => {
@@ -63,7 +57,7 @@ describe("Excel Export feature", function() {
   });
 
   it("Tests the export of an excel file in french", function() {
-    cy.intercept(exportUrl + "/download?lang=fr*").as("export");
+    cy.intercept(`${exportUrl}/download?lang=fr*`).as("export");
 
     //login
     cy.visit("/");

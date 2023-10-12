@@ -38,13 +38,13 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
     secret: jwtSecret,
     cookie: {
       cookieName: "token",
-      signed: true,
+      signed: false,
     },
   });
 
   server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      if (!request.headers.authorization && request.cookies.token) {
+      if (request.cookies.token) {
         request.headers.authorization = `Bearer ${request.cookies.token}`;
       }
       await request.jwtVerify();

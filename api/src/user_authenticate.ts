@@ -57,7 +57,6 @@ interface LoginResponse {
     groupId: string;
     displayName: string;
   }>;
-  token: string; // JWT
 }
 
 /**
@@ -121,15 +120,6 @@ const swaggerSchema = {
                         displayName: { type: "string", example: "All Manager Group" },
                       },
                     },
-                  },
-                  token: {
-                    type: "string",
-                    example:
-                      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJyb290IiwiYWRkcm" +
-                      "VzcyI6IjFIVXF2dHE5WU1QaXlMZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwib3JnYW" +
-                      "5pemF0aW9uIjoiS2ZXIiwib3JnYW5pemF0aW9uQWRkcmVzcyI6IjFIVXF2dHE5WU1QaXl" +
-                      "MZUxWM3pGRks5dGpBblVDVTNFbTQzaVBrIiwiZ3JvdXBzIjpbXSwiaWF0IjoxNTM2ODI2M" +
-                      "TkyLCJleHAiOjE1MzY4Mjk3OTJ9.PZbjTpsgnIHjNaDHos9LVwwrckYhpWjv1DDiojskylI",
                   },
                 },
               },
@@ -248,7 +238,6 @@ export function addHttpHandler(
         organization: token.organization,
         allowedIntents: token.allowedIntents,
         groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
-        token: signedJwt,
       };
       const body = {
         apiVersion: "1.0",
@@ -259,9 +248,9 @@ export function addHttpHandler(
       reply
         .setCookie("token", signedJwt, {
           path: "/",
-          secure: true,
+          secure: process.env.NODE_ENV !== "development",
           httpOnly: true,
-          sameSite: true,
+          sameSite: "strict",
         })
         .status(200)
         .send(body);

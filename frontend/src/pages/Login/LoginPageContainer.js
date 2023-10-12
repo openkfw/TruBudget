@@ -68,7 +68,6 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     username: state.getIn(["login", "username"]),
-    jwt: state.getIn(["login", "jwt"]),
     isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
     password: state.getIn(["login", "password"]),
     language: state.getIn(["login", "language"]),

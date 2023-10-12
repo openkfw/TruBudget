@@ -74,14 +74,14 @@ function isProvisioned(baseUrl) {
       response.headers["set-cookie"][0].split(";")[0] => "token={JWT_Token}"
       response.headers["set-cookie"][0].split(";")[0].replace("token=", "") => "{JWT_Token}"
       */
-      let JWTtoken = response.data.data.user.token;
-      if (!JWTtoken) {
-        JWTtoken = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
-      }
+      let cookie = response.headers["set-cookie"][0];
+      let JWTtoken = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
+
       return axios
         .get(`${baseUrl}/api/provisioned`, {
           headers: {
-            Authorization: "Bearer " + JWTtoken
+            Authorization: "Bearer " + JWTtoken,
+            Cookie: cookie
           }
         })
         .then(response => {
