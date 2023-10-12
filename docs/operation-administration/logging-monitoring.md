@@ -4,13 +4,13 @@
 
 The API is the central part of the TruBudget application. It handles the requests from the frontend and manages the data that is written to the blockchain. Therefore logging is a crucial part of the API's operation, so that the administrator is informed of where and when errors occur.
 
-TruBudget can be installed in 3 possible flavors:
+TruBudget can be installed in 3 possible flavors (but we strongly recommend the usage of Kubernetes, which was mainly used in testing the system):
 
-- Bare Metal - All componends (Node.js, Multichain, nginx, etc.) are installed directly onto the machine that will be running the application
+- Bare Metal - All components (Node.js, Multichain, nginx, etc.) are installed directly onto the machine that will be running the application
 - Docker Compose - All parts of the application are available as docker images, so they are pulled from a registry and started by docker on the host machine
 - Kubernetes - The containers with the different parts of the application are managed and orchestrated by Kubernetes
 
-The API logs are printed to the standard output (STDOUT and STDERR) by default. This way the application does not need to worry about file paths, log rotation and other operations topics. We have compiled a list of recomended practices for handling the logs for each installation type.
+The API logs are printed to the standard output (STDOUT and STDERR) by default. This way the application does not need to worry about file paths, log rotation and other operations topics. We have compiled a list of recommended practices for handling the logs for each installation type.
 
 ### Bare metal
 
