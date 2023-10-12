@@ -13,10 +13,8 @@ const authenticate = async (axios, userId, password) => {
   const body = response.data;
   if (body.apiVersion !== "1.0") throw Error("unexpected API version");
    /*
-      response.headers["set-cookie"][0] => "token={JWT_Token}; Path=/; HttpOnly; Secure; SameSite=Strict"
-      response.headers["set-cookie"][0].split(";")[0] => "token={JWT_Token}"
-      response.headers["set-cookie"][0].split(";")[0].replace("token=", "") => "{JWT_Token}"
-      */
+    * The token is in the cookie header we need to extract it:
+    */
   let token = body.data.user.token;
   if(!token) {
     token = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");

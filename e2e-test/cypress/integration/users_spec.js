@@ -79,6 +79,8 @@ describe("Users/Groups Dashboard", function() {
   });
 
   it("Create new user", function() {
+    cy.login();
+    cy.visit("/users");
     cy.get("[data-test=create]").click();
     cy.get("[data-test=accountname] input")
       .type("Test User")
@@ -87,15 +89,18 @@ describe("Users/Groups Dashboard", function() {
       .type("testuser")
       .should("have.value", "testuser");
     cy.get("[data-test=password-new-user] input")
-      .type("Testing1")
-      .should("have.value", "Testing1");
+      .type("Testing1Testing1")
+      .should("have.value", "Testing1Testing1");
     cy.get("[data-test=password-new-user-confirm] input")
-      .type("Testing1")
-      .should("have.value", "Testing1");
+      .type("Testing1Testing1")
+      .should("have.value", "Testing1Testing1");
     cy.get("[data-test=submit]").click();
   });
 
   it("Created user should be visible", function() {
+    cy.login();
+    cy.visit("/users");
+
     cy.get("[data-test=user-testuser]")
       .find("th")
       .then($th => {

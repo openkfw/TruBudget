@@ -477,7 +477,7 @@ class Api {
   };
   export = (devModeEnvironment) => {
     const path = this.getExportServiceUrl(`download?lang=${strings.getLanguage()}`, devModeEnvironment);
-    return instance.get(path, { responseType: "blob" });
+    return instance.get(path, { responseType: "blob", withCredentials: true });
   };
   fetchExportServiceVersion = () => {
     const path = this.getExportServiceUrl("version");

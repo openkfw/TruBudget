@@ -28,7 +28,22 @@ axios.defaults.transformRequest = [transformRequest];
 const excelService = express();
 excelService.use(createPinoExpressLogger(logger));
 excelService.use(express.json());
-excelService.use(cors({ origin: config.accessControlAllowOrigin }));
+
+let corsOptions = {
+  credentials: true,
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
+  origin: function (origin: any, callback: any) {
+    if (config.accessControlAllowOrigin === "*") {
+      callback(null, true);
+    } else if (config.accessControlAllowOrigin.split(";").includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+excelService.use(cors(corsOptions));
 excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) => {
   res.apiBase = API_BASE;
   next();
@@ -77,6 +92,8 @@ excelService.get("/version", (req: CustomExpressRequest, res: CustomExpressRespo
 excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpressResponse) => {
   if (req.cookies && req.cookies.token) {
     req.headers.authorization = req.cookies.token;
+  } else if (req.headers.cookie) {
+    req.headers.authorization = `Bearer ${req.headers.cookie.split("=")[1]}`;
   }
   const token = req.headers.authorization;
   if (!token) {

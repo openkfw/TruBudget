@@ -1,7 +1,7 @@
 import _cloneDeep from "lodash/cloneDeep";
 
 const executingUser = { id: "mstein", displayname: "Mauro Stein" };
-const testUser = { id: "thouse", displayname: "Tom House", password: "test" };
+const testUser = { id: "jdoe", displayname: "Jane Doe", password: "test" };
 const testUser2 = { id: "jxavier", displayname: "Jane Xavier", password: "test" };
 const testUser3 = { id: "pkleffmann", displayname: "Piet Kleffmann" };
 const testGroup = { id: "admins", displayname: "Admins" };
@@ -479,6 +479,8 @@ describe("Subproject Permissions", function() {
       // grant permissions to testgroup
       cy.grantProjectPermission(projectId, "project.list", testGroup.id),
       cy.grantProjectPermission(projectId, "project.viewDetails", testGroup.id),
+      cy.grantProjectPermission(projectId, "project.intent.listPermissions", testGroup.id),
+      cy.grantProjectPermission(projectId, "project.intent.grantPermission", testGroup.id),
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testGroup.id),
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testGroup.id),
       cy.grantSubprojectPermission(projectId, subprojectId, "subproject.intent.listPermissions", testGroup.id),
@@ -487,6 +489,8 @@ describe("Subproject Permissions", function() {
       // Modify permissionsBeforeTestingr regarding theprevious api calls
       permissionsBeforeTesting.project["project.list"].push(testGroup.id);
       permissionsBeforeTesting.project["project.viewDetails"].push(testGroup.id);
+      permissionsBeforeTesting.project["project.intent.listPermissions"].push(testGroup.id);
+      permissionsBeforeTesting.project["project.intent.grantPermission"].push(testGroup.id);
       permissionsBeforeTesting.subproject["subproject.list"].push(testGroup.id);
       permissionsBeforeTesting.subproject["subproject.viewDetails"].push(testGroup.id);
       permissionsBeforeTesting.subproject["subproject.intent.listPermissions"].push(testGroup.id);

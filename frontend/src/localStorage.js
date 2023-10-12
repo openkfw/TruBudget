@@ -12,7 +12,6 @@ const parseActions = (state) => state.getIn(["actions", "lastAction"]);
 
 const parseFromState = (state) => ({
   login: {
-    jwt: state.getIn(["login", "jwt"]),
     isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
     language: state.getIn(["login", "language"]),
     id: state.getIn(["login", "id"]),

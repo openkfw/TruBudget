@@ -22,7 +22,8 @@
 
 const baseUrl = Cypress.env("API_BASE_URL") || Cypress.config("baseUrl");
 
-let token = undefined;
+//let token = undefined;
+let cookie = undefined;
 
 Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { language: "en-gb" }) => {
   cy.request({
@@ -35,7 +36,6 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
   }).then(response => {
     const state = {
       login: {
-        jwt: response.body.data.user.token,
         isUserLoggedIn: true,
         environment: "Test",
         productionActive: false,
@@ -48,14 +48,9 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
     };
     localStorage.setItem("state", JSON.stringify(state));
     /*
-      response.headers["set-cookie"][0] => "token={JWT_Token}; Path=/; HttpOnly; Secure; SameSite=Strict"
-      response.headers["set-cookie"][0].split(";")[0] => "token={JWT_Token}"
-      response.headers["set-cookie"][0].split(";")[0].replace("token=", "") => "{JWT_Token}"
-      */
-    token = response.body.data.user.token;
-    if(!token) {
-      token = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
-    }
+     * The token is in the cookie header we need to extract it:
+     */
+    cookie = response.headers["set-cookie"][0];
   });
 });
 
@@ -64,7 +59,7 @@ Cypress.Commands.add("addUser", (username, userId, password, organization = "KfW
     url: `${baseUrl}/api/global.createUser`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -87,7 +82,7 @@ Cypress.Commands.add("fetchProjects", () => {
     url: `${baseUrl}/api/project.list`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     }
   })
     .its("body")
@@ -99,7 +94,7 @@ Cypress.Commands.add("fetchSubprojects", projectId => {
     url: `${baseUrl}/api/project.viewDetails?projectId=${projectId}`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     }
   })
     .its("body")
@@ -111,7 +106,7 @@ Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName
     url: `${baseUrl}/api/subproject.createWorkflowitem`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -139,7 +134,7 @@ Cypress.Commands.add(
       url: `${baseUrl}/api/global.createProject`,
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`
+        Cookie: cookie
       },
       body: {
         apiVersion: "1.0",
@@ -168,7 +163,7 @@ Cypress.Commands.add("updateProject", (projectId, opts = {}) => {
     url: `${baseUrl}/api/project.update`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -187,7 +182,7 @@ Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
     url: `${baseUrl}/api/project.assign`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -206,7 +201,7 @@ Cypress.Commands.add("updateSubprojectAssignee", (projectId, subprojectId, ident
     url: `${baseUrl}/api/subproject.assign`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -226,7 +221,7 @@ Cypress.Commands.add("updateWorkflowitemAssignee", (projectId, subprojectId, wor
     url: `${baseUrl}/api/workflowitem.assign`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -247,7 +242,7 @@ Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EU
     url: `${baseUrl}/api/project.createSubproject`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -274,7 +269,7 @@ Cypress.Commands.add("grantProjectPermission", (projectId, intent, identity) => 
     url: `${baseUrl}/api/project.intent.grantPermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -294,7 +289,7 @@ Cypress.Commands.add("revokeProjectPermission", (projectId, intent, identity) =>
     url: `${baseUrl}/api/project.intent.revokePermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -314,7 +309,7 @@ Cypress.Commands.add("grantSubprojectPermission", (projectId, subprojectId, inte
     url: `${baseUrl}/api/subproject.intent.grantPermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -335,7 +330,7 @@ Cypress.Commands.add("revokeSubprojectPermission", (projectId, subprojectId, int
     url: `${baseUrl}/api/subproject.intent.revokePermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -356,7 +351,7 @@ Cypress.Commands.add("grantWorkflowitemPermission", (projectId, subprojectId, wo
     url: `${baseUrl}/api/workflowitem.intent.grantPermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -378,7 +373,7 @@ Cypress.Commands.add("revokeWorkflowitemPermission", (projectId, subprojectId, w
     url: `${baseUrl}/api/workflowitem.intent.revokePermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -400,7 +395,7 @@ Cypress.Commands.add("updateSubprojectPermissions", (projectId, subprojectId, in
     url: `${baseUrl}/api/subproject.intent.grantPermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -421,7 +416,7 @@ Cypress.Commands.add("grantUserPermissions", (userId, intent, identity) => {
     url: `${baseUrl}/api/user.intent.grantPermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -441,7 +436,7 @@ Cypress.Commands.add("revokeUserPermissions", (userId, intent, identity) => {
     url: `${baseUrl}/api/user.intent.revokePermission`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -461,7 +456,7 @@ Cypress.Commands.add("closeProject", projectId => {
     url: `${baseUrl}/api/project.close`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -479,7 +474,7 @@ Cypress.Commands.add("closeSubproject", (projectId, subprojectId) => {
     url: `${baseUrl}/api/subproject.close`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -498,7 +493,7 @@ Cypress.Commands.add("closeWorkflowitem", (projectId, subprojectId, workflowitem
     url: `${baseUrl}/api/workflowitem.close`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -518,7 +513,7 @@ Cypress.Commands.add("updateWorkflowitem", (projectId, subprojectId, workflowite
     url: `${baseUrl}/api/workflowitem.update`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -539,7 +534,7 @@ Cypress.Commands.add("reorderWorkflowitems", (projectId, subprojectId, ordering)
     url: `${baseUrl}/api/subproject.reorderWorkflowitems`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -559,7 +554,7 @@ Cypress.Commands.add("assignWorkflowitem", (projectId, subprojectId, workflowite
     url: `${baseUrl}/api/workflowitem.assign`,
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     body: {
       apiVersion: "1.0",
@@ -580,7 +575,7 @@ Cypress.Commands.add("getUserList", () => {
     url: `${baseUrl}/api/user.list`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     }
   })
     .its("body")
@@ -592,7 +587,7 @@ Cypress.Commands.add("listProjectPermissions", projectId => {
     url: `${baseUrl}/api/project.intent.listPermissions?projectId=${projectId}`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     }
   })
     .its("body")
@@ -604,7 +599,7 @@ Cypress.Commands.add("listSubprojectPermissions", (projectId, subprojectId) => {
     url: `${baseUrl}/api/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     }
   })
     .its("body")
@@ -616,7 +611,7 @@ Cypress.Commands.add("listWorkflowitemPermissions", (projectId, subprojectId, wo
     url: `${baseUrl}/api/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     }
   })
     .its("body")
@@ -628,7 +623,7 @@ Cypress.Commands.add("listWorkflowitems", (projectId, subprojectId, workflowitem
     url: `${baseUrl}/api/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     }
   })
     .its("body")
@@ -640,7 +635,7 @@ Cypress.Commands.add("createBackup", () => {
     url: `${baseUrl}/api/system.createBackup`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     timeout: 60000
   })
@@ -653,7 +648,7 @@ Cypress.Commands.add("getVersion", () => {
     url: `${baseUrl}/api/version`,
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`
+      Cookie: cookie
     },
     timeout: 60000
   })
