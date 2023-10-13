@@ -17,22 +17,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
-## Unreleased
+## [2.3.0] - 2023-10-13
+
+### Fixed
+- Fixed a bug where the menu items on the left navbar did not look clickable. [#1444](https://github.com/openkfw/TruBudget/issues/1444)
+- Fixed a bug where the wrong error message was shown on failed login. [#1424](https://github.com/openkfw/TruBudget/issues/1424)
 
 ### Added
 
 - Add RATE_LIMIT environment variable to optionally limit the rate of client HTTP requests to API. Can be any integer number to set the rate of individual client requests per minute.
-- Add currencies from ECB FX api [#1154](https://github.com/openkfw/TruBudget/issues/1154)
-- Integrate with custom auth proxy [#1432](https://github.com/openkfw/TruBudget/issues/1432)
+- Add currencies from ECB FX api. [#1154](https://github.com/openkfw/TruBudget/issues/1154)
+- Add integration with custom auth proxy. [#1432](https://github.com/openkfw/TruBudget/issues/1432)
 
 ### Changed
 
-- Introduced HTML Testreport exports for E2E Tests [#1454](https://github.com/openkfw/TruBudget/issues/1454)
-
-- Updated the deprecated 'docker-compose' command to 'docker compose' command in scripts and documentation for developers and operators [#1388](https://github.com/openkfw/TruBudget/issues/1388)
+- Introduced HTML Testreport exports for E2E Tests. [#1454](https://github.com/openkfw/TruBudget/issues/1454)
+- Updated documentation on resource requirements for running TruBudget.[#1473](https://github.com/openkfw/TruBudget/issues/1473)
+- Update documentation regarding logging in TruBudget. [#1396](https://github.com/openkfw/TruBudget/issues/1396)
+- Updated the deprecated 'docker-compose' command to 'docker compose' command in scripts and documentation for developers and operators. [#1388](https://github.com/openkfw/TruBudget/issues/1388)
+- Allow negative amounts to workflowitems in order to handle corrections. [#1407](https://github.com/openkfw/TruBudget/issues/1407)[#1399](https://github.com/openkfw/TruBudget/issues/1399)
 
 - Updated MinIO image to version RELEASE.2023-09-04T19-57-37Z due to [security vulnerablities](https://www.cvedetails.com/vulnerability-list/vendor_id-18671/Minio.html).
-If you install TruBudget freshly, this is not an issue for you. If you update to this version, you might consider [migrating your data or downgrading MinIO](./storage-service/doc/migrate-minio.md)
+If you install TruBudget freshly, this is not an issue for you. If you update to this version, you might consider [migrating your data or downgrading MinIO](./storage-service/doc/migrate-minio.md).
+
 
 
 ## [2.2.1] - 2023-07-06
@@ -976,8 +983,9 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.2.1...main
-[2.2.1]: https://github.com/openkfw/TruBudget/compare/v2.2.1...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.3.0...main
+[2.3.0]: https://github.com/openkfw/TruBudget/compare/v2.2.1...v2.3.0
+[2.2.1]: https://github.com/openkfw/TruBudget/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/openkfw/TruBudget/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/openkfw/TruBudget/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/openkfw/TruBudget/compare/v2.0.0...v2.0.1
