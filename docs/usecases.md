@@ -13,7 +13,7 @@ Please refer to following videos to get an overview of Trubudget, and motivation
 
 <!-- TruBudget is a trusted, distributed public expenditure tool build on blockchain-technologies with aim to ensure trust between untrusted parties.
 TruBudget can be used to track and coordinate the implementation of donor-funded investment projects.
-This is done by strenghten the idea of workflows ...
+This is done by strengthen the idea of workflows ...
 
 The motivation behind TB ... -->
 

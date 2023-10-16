@@ -35,8 +35,8 @@ graph TD;
 
 ### Options
 
-1. Each resource has its own stream. Each resource has an array which links to the underlying resources (e.g. A Projects has an array of the ids of its Subrojects). That means if we want to query Subprojects of a specific Project, we need to lookup the Subproject ID's inside the projects to afterswards fetch all the underlying Subproject streams. **Pro:** We are only fetching the data which is necessary, changes inside the resources are storage efficent. **Con:** Resources with a high number of relations result in multiple (maybe hundreds) of queries.
-2. Each Project has its own stream. All relational resources of the projects are stored inside a JSON and resolved on the API Layer. **Pro:** Only one query necessary to resolve the whole resource tree for one project. **Con:** Large amount of storage needed, since every change inside a single resource would trigger a whole copy of the project tree. Large datastructures have to be kept in memory
+1. Each resource has its own stream. Each resource has an array which links to the underlying resources (e.g. A Projects has an array of the ids of its Subrojects). That means if we want to query Subprojects of a specific Project, we need to lookup the Subproject ID's inside the projects to afterwards fetch all the underlying Subproject streams. **Pro:** We are only fetching the data which is necessary, changes inside the resources are storage efficient. **Con:** Resources with a high number of relations result in multiple (maybe hundreds) of queries.
+2. Each Project has its own stream. All relational resources of the projects are stored inside a JSON and resolved on the API Layer. **Pro:** Only one query necessary to resolve the whole resource tree for one project. **Con:** Large amount of storage needed, since every change inside a single resource would trigger a whole copy of the project tree. Large data structures have to be kept in memory
 3. Each project has its own stream. All relational resources are organized with multiple key-items inside the project stream. This allows to specifically query resources with a single query. Updates to resources will only result in the copy of the affected resource. **Pro:** Easy to query, low storage / memory footprint **Con:** None
 
 ## Decision
@@ -45,13 +45,13 @@ Since we need to be able to scale out to larger projects, it is important to be 
 
 ## Implementation
 
-Each project will have its own stream. It contains its own resources specific metadata inside specific keys (e.g. \_logs, \_permissions, \_metdata). All underlying resources will be stored with specific key arrays.
+Each project will have its own stream. It contains its own resources specific metadata inside specific keys (e.g. \_logs, \_permissions, \_metadata). All underlying resources will be stored with specific key arrays.
 
 | Keys                                                     | Resource                   |
 | -------------------------------------------------------- | -------------------------- |
 | "\_log"                                                  | Changelog of the project   |
 | "\_permissions"                                          | Permissions of the project |
-| "\_metdata"                                              | Details of the project     |
+| "\_metadata"                                             | Details of the project     |
 | ["subprojects", "\<id of subproject\>"]                  | Subproject                 |
 | ["\<id of subproject\>_workflows", "\<id of workflow\>"] | Workflow                   |
 

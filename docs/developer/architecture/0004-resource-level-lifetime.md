@@ -27,7 +27,7 @@ C[State: Open & Ready to close] --> |Close| D
 D[Resource closed]
 ```
 
-Re-Opening is not supported; it could be discussed as long as the parent is still open (hierarchy must hold). Different usage-scenarios are acommodated via _manual_ steps.
+Re-Opening is not supported; it could be discussed as long as the parent is still open (hierarchy must hold). Different usage-scenarios are accommodated via _manual_ steps.
 
 #### Example: 4-Eyes Principle
 
@@ -62,7 +62,7 @@ graph TD;
 
 ## Implementation
 
-This ADR is desigend to enable a MVP implementation. Implementation consists of a check before closing a project whether all subprojects have already been closed.
+This ADR is designed to enable a MVP implementation. Implementation consists of a check before closing a project whether all subprojects have already been closed.
 
 ## Consequences
 

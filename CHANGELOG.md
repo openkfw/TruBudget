@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated the deprecated 'docker-compose' command to 'docker compose' command in scripts and documentation for developers and operators. [#1388](https://github.com/openkfw/TruBudget/issues/1388)
 - Allow negative amounts to workflowitems in order to handle corrections. [#1407](https://github.com/openkfw/TruBudget/issues/1407)[#1399](https://github.com/openkfw/TruBudget/issues/1399)
 
-- Updated MinIO image to version RELEASE.2023-09-04T19-57-37Z due to [security vulnerablities](https://www.cvedetails.com/vulnerability-list/vendor_id-18671/Minio.html).
+- Updated MinIO image to version RELEASE.2023-09-04T19-57-37Z due to [security vulnerabilities](https://www.cvedetails.com/vulnerability-list/vendor_id-18671/Minio.html).
 If you install TruBudget freshly, this is not an issue for you. If you update to this version, you might consider [migrating your data or downgrading MinIO](./storage-service/doc/migrate-minio.md).
 
 
@@ -394,7 +394,7 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 
 ### Fixed
 
-- Fixed a bug in checkbox and baseline aligment in workflowitem [#707](https://github.com/openkfw/TruBudget/issues/707)
+- Fixed a bug in checkbox and baseline alignment in workflowitem [#707](https://github.com/openkfw/TruBudget/issues/707)
 - Fixed a bug in no due date set in workflowedit [#708](https://github.com/openkfw/TruBudget/issues/708)
 - Restricted workflowitems are now working as expected [#643](https://github.com/openkfw/TruBudget/issues/643)
 - Fixed a Bug where labels e.g. on login ID field were too large and not readable

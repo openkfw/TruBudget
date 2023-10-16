@@ -29,7 +29,7 @@ Since Multichain doesn't offer transactions for stream operations, we cannot gua
 - Workflowitems that are included in the workflowitem-ordering are included in the result exactly in that ordering;
 - all remaining workflowitems are sorted by their creation time and appended to the result.
 
-Because workflowitems are sorted by their creation time by default, newly created items _do not_ have to be added to the ordering, so no inconsistensies can occur.
+Because workflowitems are sorted by their creation time by default, newly created items _do not_ have to be added to the ordering, so no inconsistencies can occur.
 
 ## Consequences
 

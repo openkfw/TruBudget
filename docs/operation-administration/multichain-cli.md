@@ -55,7 +55,7 @@ Observe, that we do not get complete details of a project with all subprojects a
 
 `getnetworkinfo`
 
-- How to get infromation about connected nodes
+- How to get information about connected nodes
 
 `getpeerinfo` returns an array of objects representing peer connected nodes, including IP address and ping
 

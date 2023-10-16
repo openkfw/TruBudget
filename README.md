@@ -30,7 +30,7 @@ bash scripts/operation/start-trubudget.sh --slim
 
 More information for the operation setup can be found in the [README.md](./scripts/operation/README.md)
 
-It may take a while to build and start all containers. The frontend should then be availaible at http://localhost:3000.
+It may take a while to build and start all containers. The frontend should then be available at http://localhost:3000.
 
 ## Installation
 
@@ -69,9 +69,9 @@ To help you get started as a contributor, we have a [list](https://github.com/op
 If it could, it would have been done already. The blockchain in this use case solves the problem of an integration
 architecture between several parties, which is not owned by a single participant.
 
-- Why don‘t you use a Sharepoint?
+- Why don‘t you use a SharePoint?
 
-In theory a good idea. However, you have to agree, who shoud host the Sharepoint. Should it be the donor? Which one in a multi-donor situation? Or should it be the partner? Do we trust the party who owns the sharepoint? Lots of open questions.
+In theory a good idea. However, you have to agree, who should host the SharePoint. Should it be the donor? Which one in a multi-donor situation? Or should it be the partner? Do we trust the party who owns the SharePoint? Lots of open questions.
 
 - Why don‘t you use a cloud service by a 3rd party provider (google, amazon, ..)
 

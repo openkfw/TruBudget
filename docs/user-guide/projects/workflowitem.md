@@ -99,7 +99,7 @@ workflowitem.
         - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The
           assigner will only keep the view permissions.
     - "Workflow Title": Title of the workflowitem
-    - "Comment": A little description or comment refering to the workflowitem
+    - "Comment": A little description or comment referring to the workflowitem
     - Budget:
         - Not applicable: The workflowitem does not affect the budget of the subproject
         - allocated: The workflowitem will affect the budget of the subproject but the budget is not disbursed yet
@@ -146,7 +146,7 @@ the workflowitem.
 6. Fill in the fields that shall be updated:
 
     - "Workflow Title": Title of the workflowitem
-    - "Comment": A little description or comment refering to the workflowitem
+    - "Comment": A little description or comment referring to the workflowitem
     - Budget:
         - Not applicable: The workflowitem does not affect the budget of the subproject
         - allocated: The workflowitem will affect the budget of the subproject but the budget is not disbursed yet
@@ -157,7 +157,7 @@ the workflowitem.
 7. [Optional] Click the "Next"-button to switch to the next dialog where documents can be uploaded
 8. [Optional] Fill in the required fields:
     - "Document Name": A unique name of the document
-9. [Optional] Click the "Upload"-button to open thge file selector.
+9. [Optional] Click the "Upload"-button to open the file selector.
 10. [Optional] Select the document which should be uploaded
 11. [Optional] All documents can now be seen above the input field
 12. Click the "Submit"-button to update the workflowitem
@@ -191,7 +191,7 @@ Update assignee or workflowitem-permissions for multiple workflowitems at once.
 8. [Optional] Click the assignee dropdown field to open a selection where the right user or group can be selected
 9. [Optional] Click on one permission dropdown field to open a selection where the right user or group can be selected
 10. Click the "Update"-button at the top of the side menu to open a preview of all actions the update will trigger.
-    Actions are differientiated between "possible" and "not possible" actions. "Not possible" actions are assign intents
+    Actions are differentiated between "possible" and "not possible" actions. "Not possible" actions are assign intents
     on closed workflowitems only.
 
 ![update selected workflowitems](./../img/update_selected_workflowitems.jpg)
@@ -226,7 +226,7 @@ Assign a User or Group to a workflowitem to show which User or Group is responsi
 6. Select and click on an user or group to open a [confirmation dialog](../confirmation.md)
 7. In case the assigner has no project view permissions the user or group cannot be assigned
 8. Confirming the dialog first executes all additional actions listed if there are any, then assigns the user
-9. If no addtional permissions have to be granted the user or group is assigned
+9. If no additional permissions have to be granted the user or group is assigned
 
 ![change workflowitem assignee](./../img/change_workflowitem_assignee.jpg)
 
@@ -257,7 +257,7 @@ Close a workflowitem when the work is done.
 
 :::note
 
-- Workflowitems can only be closed one after eachother.
+- Workflowitems can only be closed one after each other.
 - A workflowitem can only be closed if the user is assigned.
   :::
 
