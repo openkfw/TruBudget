@@ -191,7 +191,7 @@ Assign a User or Group to a project to show which User or Group is responsible f
 5. Select and click on an user or group to open a [confirmation dialog](../confirmation.md)
 6. In case the assigner has no project view permissions the user or group cannot be assigned
 7. Confirming the dialog first executes all additional actions listed if there are any, then assigns the user
-8. If no addtional permissions have to be granted the user or group is assigned
+8. If no additional permissions have to be granted the user or group is assigned
 
 ![change project assignee](./../img/change_project_assignee.jpg)
 

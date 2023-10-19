@@ -15,7 +15,6 @@
     "editor.tabSize": 2,
     "files.eol":"\n",
     "explorer.confirmDragAndDrop": false,
-    "eslint.packageManager": "npm",
     "eslint.run": "onSave",
     "eslint.validate": [
         "javascript",
@@ -34,6 +33,6 @@
     "workbench.editor.highlightModifiedTabs": true,
     "prettier.requireConfig": true,
     "yaml.format.singleQuote": false,
-    "prettier.singleQuote": false
+    "prettier.singleQuote": false,
   }
   

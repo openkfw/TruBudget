@@ -2454,7 +2454,7 @@ export function* closeWorkflowItemSaga({ projectId, subprojectId, workflowitemId
 export function* fetchWorkflowActionsSaga({
   projectId,
   subprojectId,
-  ressources,
+  resources,
   selectedAssignee,
   permissions,
   showLoading
@@ -2463,7 +2463,7 @@ export function* fetchWorkflowActionsSaga({
     const actions = yield getBatchFromSubprojectTemplate(
       projectId,
       subprojectId,
-      ressources,
+      resources,
       selectedAssignee,
       permissions
     );

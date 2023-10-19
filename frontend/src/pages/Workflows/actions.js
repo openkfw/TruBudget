@@ -208,7 +208,7 @@ export function showWorkflowItemPreview(projectId, subprojectId, resources, sele
     type: SHOW_WORKFLOW_PREVIEW,
     projectId,
     subprojectId,
-    ressources: resources,
+    resources,
     selectedAssignee,
     permissions
   };
