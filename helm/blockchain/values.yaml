@@ -22,7 +22,7 @@ bc:
     CHAINNAME: TrubudgetChain
     MULTICHAIN_RPC_PORT: 8000
     P2P_PORT: 7447
-    BLOCKCHAIN_PORT: 8085
+    PORT: 8085
   resources:
     memRequest: 300Mi
     memLimit: 400Mi

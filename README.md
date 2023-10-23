@@ -38,7 +38,7 @@ TruBudget can be installed in different ways. See [README.md](./docs/operation-a
 
 ## Documentation
 
-Check out our documentation on the [**Trubudget-Website**](https://openkfw.github.io/trubudget-website/docs/README) to find out how Trubudget works.
+Check out our documentation on the [**Trubudget-Website**](https://openkfw.github.io/trubudget-website/docs/) to find out how Trubudget works.
 
 ## Contributing
 

@@ -2,7 +2,7 @@ services:
   blockchain:
     image: trubudget/blockchain:${TAG}
     environment:
-      BLOCKCHAIN_PORT: ${BLOCKCHAIN_PORT}
+      PORT: ${BLOCKCHAIN_PORT}
       CHAINNAME: ${CHAINNAME}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}

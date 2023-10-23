@@ -184,7 +184,9 @@ bash setupGitSecrets.sh
 
 ### Environment variables
 
-All projects in TruBudget (blockchain, api, frontend, etc) have a docker compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env_example` in each project directory. To use these environemnt variables, simply copy the `.env.example` file and rename it to `.env`.
+All projects in TruBudget (blockchain, api, frontend, etc) have a docker compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env.example` in each project directory. To use these environemnt variables, simply copy the `.env.example` file and rename it to `.env`.
+
+Starting a network (composed of multiple services) via scripts uses the environment variables locally in the same directory as the script instead of individual .env files under each service. Path is usually `scripts/*/.env`
 
 > Do **NOT** use other additional ways to set environment variables like inline env-variables or env-variables defined by 'export'. Why? - Because these env-variables will overwrite each which makes it very hard to find mistakes.
 
@@ -200,7 +202,7 @@ This is the fastest way you can run **all services** needed for development. Eve
 
 1.  in root directory execute: `bash scripts/development/start-dev.sh --slim` or `bash scripts/development/start-dev.sh --full`
 
-This script sets the `.env` - file in the development directory automatically. No further steps needed.
+This script uses the `.env` - file under `scripts/development/.env` for setting the environment variables.
 
 Following services are dockerized with hot-reloading:
 

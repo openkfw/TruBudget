@@ -14,10 +14,10 @@ Navigate to the docker-compose folder under the project.
 cd ../docker-compose
 ```
 
-Copy the contents of the .env_example file into .env file.
+Copy the contents of the .env.example file into .env file.
 
 ```bash
-cp .env_example .env
+cp .env.example .env
 ```
 
 Then run the following docker compose command to start the blockchain:
@@ -26,14 +26,14 @@ Then run the following docker compose command to start the blockchain:
 docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml up
 ```
 
-This command would start the blockchain container, using the image version specified under `TAG` in the `.env` file, which is `main` when using the default `.env_example` file.
+This command would start the blockchain container, using the image version specified under `TAG` in the `.env` file, which is `main` when using the default `.env.example` file.
 
 #### Run local build
 
-Copy the contents of the .env_example file into .env file.
+Copy the contents of the .env.example file into .env file.
 
 ```bash
-cp .env_example .env
+cp .env.example .env
 ```
 
 Then run the following docker compose command to start a local build of the blockchain:
