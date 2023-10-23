@@ -4,16 +4,9 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import {
-  CurrencyCode,
-  currencyCodeSchema,
-  isoCurrencyCodes,
-  MoneyAmount,
-  moneyAmountSchema,
-} from "./service/domain/workflow/money";
+import { CurrencyCode, isoCurrencyCodes, MoneyAmount } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import { ProjectedBudget } from "./service/domain/workflow/projected_budget";
 import * as Subproject from "./service/domain/workflow/subproject";
