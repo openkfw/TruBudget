@@ -4,19 +4,14 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
-import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
+import { UploadedDocument } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
-import {
-  amountTypeSchema,
-  conversionRateSchema,
-  moneyAmountSchema,
-} from "./service/domain/workflow/money";
+import { isoCurrencyCodes } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
-import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_types/types";
+import Type, { workflowitemTypes } from "./service/domain/workflowitem_types/types";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
@@ -45,41 +40,6 @@ interface RequestBodyV1 {
   };
 }
 
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: Project.idSchema,
-    subprojectId: Subproject.idSchema,
-    status: Joi.valid("open"),
-    displayName: safeStringSchema.required(),
-    description: safeStringSchema.allow(""),
-    assignee: safeStringSchema,
-    currency: safeStringSchema,
-    amount: moneyAmountSchema,
-    amountType: amountTypeSchema.required(),
-    billingDate: safeStringSchema,
-    dueDate: Joi.string().allow(""),
-    exchangeRate: conversionRateSchema,
-    documents: Joi.array().items(uploadedDocumentSchema),
-    additionalData: Joi.object(),
-    workflowitemType: workflowitemTypeSchema,
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
-}
-
 /**
  * Creates the swagger schema for the `/subproject.createWorkflowitem` endpoint
  *
@@ -104,39 +64,74 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
       body: {
         type: "object",
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             additionalProperties: false,
             required: ["projectId", "subprojectId", "displayName", "amountType"],
             properties: {
-              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-              subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-              status: { type: "string", example: "open" },
-              displayName: { type: "string", example: "classroom" },
-              description: { type: "string", example: "build classroom" },
-              amount: { type: ["string", "null"], example: "500" },
-              assignee: { type: "string", example: "aSmith" },
-              currency: { type: ["string", "null"], example: "EUR" },
-              amountType: { type: "string", example: "disbursed" },
-              billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-              dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-              exchangeRate: { type: "string", example: "1.0" },
+              projectId: {
+                type: "string",
+                format: "projectIdFormat",
+                example: "d0e8c69eg298c87e3899119e025eff1f",
+              },
+              subprojectId: {
+                type: "string",
+                format: "subprojectIdFormat",
+                example: "er58c69eg298c87e3899119e025eff1f",
+              },
+              status: { type: "string", const: "open", example: "open" },
+              displayName: { type: "string", format: "safeStringFormat", example: "classroom" },
+              description: {
+                type: "string",
+                format: "safeStringWithEmptyFormat",
+                example: "build classroom",
+              },
+              amount: { type: ["string", "null"], format: "moneyAmountFormat", example: "500" },
+              assignee: { type: "string", format: "safeIdFormat", example: "aSmith" },
+              currency: { type: ["string", "null"], enum: isoCurrencyCodes, example: "EUR" },
+              amountType: {
+                type: "string",
+                enum: ["N/A", "disbursed", "allocated"],
+                example: "disbursed",
+              },
+              billingDate: {
+                type: "string",
+                format: "safeStringFormat",
+                example: "2018-12-11T00:00:00.000Z",
+              },
+              dueDate: {
+                type: "string",
+                format: "safeStringWithEmptyFormat",
+                example: "2018-12-11T00:00:00.000Z",
+              },
+              exchangeRate: { type: "string", format: "conversionRateFormat", example: "1.0" },
               documents: {
                 type: "array",
                 items: {
                   type: "object",
                   properties: {
-                    base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
+                    base64: {
+                      type: "string",
+                      format: "base64DocumentFormat",
+                      example: "dGVzdCBiYXNlNjRTdHJpbmc=",
+                      errorMessage: { format: "Document is not valid." },
+                    },
                     fileName: { type: "string", example: "test-document" },
                   },
                 },
               },
               additionalData: { type: "object", additionalProperties: true },
-              workflowitemType: { type: "string", example: "general" },
+              workflowitemType: { type: "string", enum: workflowitemTypes, example: "general" },
             },
           },
         },
+        errorMessage: "Failed to create workflowitem",
       },
       response: {
         200: {
@@ -217,33 +212,24 @@ export function addHttpHandler(
 
         const user = extractUser(request as AuthenticatedRequest);
 
-        const bodyResult = validateRequestBody(request.body);
-
-        if (Result.isErr(bodyResult)) {
-          const { code, body } = toHttpError(
-            new VError(bodyResult, "failed to create workflowitem"),
-          );
-          reply.status(code).send(body);
-          request.log.error({ err: bodyResult }, "Invalid request body");
-          return;
-        }
+        const reqBody = request.body as RequestBodyV1;
 
         const reqData: WorkflowitemCreate.RequestData = {
-          projectId: bodyResult.data.projectId,
-          subprojectId: bodyResult.data.subprojectId,
-          status: bodyResult.data.status,
-          displayName: bodyResult.data.displayName,
-          description: bodyResult.data.description,
-          assignee: bodyResult.data.assignee,
-          currency: bodyResult.data.currency,
-          amount: bodyResult.data.amount,
-          amountType: bodyResult.data.amountType,
-          billingDate: bodyResult.data.billingDate,
-          dueDate: bodyResult.data.dueDate,
-          exchangeRate: bodyResult.data.exchangeRate,
-          additionalData: bodyResult.data.additionalData,
-          documents: bodyResult.data.documents,
-          workflowitemType: bodyResult.data.workflowitemType,
+          projectId: reqBody.data.projectId,
+          subprojectId: reqBody.data.subprojectId,
+          status: reqBody.data.status,
+          displayName: reqBody.data.displayName,
+          description: reqBody.data.description,
+          assignee: reqBody.data.assignee,
+          currency: reqBody.data.currency,
+          amount: reqBody.data.amount,
+          amountType: reqBody.data.amountType,
+          billingDate: reqBody.data.billingDate,
+          dueDate: reqBody.data.dueDate,
+          exchangeRate: reqBody.data.exchangeRate,
+          additionalData: reqBody.data.additionalData,
+          documents: reqBody.data.documents,
+          workflowitemType: reqBody.data.workflowitemType,
         };
 
         service

@@ -3,9 +3,7 @@ import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import * as GroupCreate from "./service/domain/organization/group_create";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -32,31 +30,6 @@ interface RequestBodyV1 {
   };
 }
 
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    group: Joi.object({
-      id: safeIdSchema.required(),
-      displayName: safeStringSchema.required(),
-      users: Joi.array().required().items(safeStringSchema),
-    }).required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
-}
-
 /**
  * Creates the swagger schema for the `/global.createGroup` endpoint
  *
@@ -79,7 +52,12 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             additionalProperties: false,
@@ -90,17 +68,30 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 required: ["id", "displayName", "users"],
                 properties: {
                   additionalProperties: false,
-                  id: { type: "string", example: "Manager" },
-                  displayName: { type: "string", example: "All Manager Group" },
+                  id: {
+                    type: "string",
+                    format: "safeIdFormat",
+                    example: "Manager",
+                  },
+                  displayName: {
+                    type: "string",
+                    format: "safeStringFormat",
+                    example: "All Manager Group",
+                  },
                   users: {
                     type: "array",
-                    items: { type: "string", example: "aSmith" },
+                    items: {
+                      type: "string",
+                      format: "safeStringFormat",
+                      example: "aSmith",
+                    },
                   },
                 },
               },
             },
           },
         },
+        errorMessage: "Failed to create group",
       },
       response: {
         200: {
@@ -172,28 +163,8 @@ export function addHttpHandler(
 
       const user = extractUser(request as AuthenticatedRequest);
 
-      const bodyResult = validateRequestBody(request.body);
-
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to create group"));
-
-        reply.status(code).send(body);
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        return;
-      }
-
-      let invokeService: Promise<Result.Type<Group>>;
-      switch (bodyResult.apiVersion) {
-        case "1.0": {
-          const { id, displayName, users } = bodyResult.data.group;
-          invokeService = service.createGroup(ctx, user, { id, displayName, members: users });
-          break;
-        }
-        default:
-          request.log.error({ err: bodyResult }, "Invalid Api Version specified");
-          // Joi validates only existing apiVersions
-          assertUnreachable(bodyResult.apiVersion);
-      }
+      const { id, displayName, users } = (request.body as RequestBodyV1).data.group;
+      let invokeService = service.createGroup(ctx, user, { id, displayName, members: users });
 
       invokeService
         .then((groupResult) => {

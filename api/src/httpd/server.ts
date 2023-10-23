@@ -14,6 +14,9 @@ import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import fastifyRateLimit from "@fastify/rate-limit";
 import * as path from "path";
+import { toHttpError } from "http_errors";
+import ajvErrors from "ajv-errors";
+import { addValidationFormats } from "lib/ajvValidation";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -22,6 +25,7 @@ const ajv = new Ajv({
   removeAdditional: true,
   useDefaults: true,
   coerceTypes: true,
+  allErrors: true,
   // any other options
   // strict: "log"
   // strictSchema: "log",
@@ -143,6 +147,17 @@ export const createBasicApp = (
   const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger,
     bodyLimit: 104857600,
+  });
+
+  ajvErrors(ajv, { singleError: true });
+  addValidationFormats(ajv);
+
+  server.setErrorHandler(function (error, request, reply) {
+    if (error.validation) {
+      const { code, body } = toHttpError(new Error(error.message));
+      reply.status(code).send(body);
+      request.log.error({ err: error.validation[0] }, "Invalid request body");
+    }
   });
 
   registerSwagger(server, urlPrefix, apiPort);

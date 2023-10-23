@@ -5,7 +5,6 @@ import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
-import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as ProjectUpdate from "./service/domain/workflow/project_update";
@@ -25,32 +24,6 @@ interface RequestBodyV1 {
     additionalData?: object;
     tags?: string[];
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: Project.idSchema.required(),
-    displayName: Joi.string(),
-    description: Joi.string().allow(""),
-    thumbnail: Joi.string().allow(""),
-    additionalData: AdditionalData.schema,
-    tags: Joi.array().items(Joi.string()),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -77,12 +50,21 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["projectId"],
             properties: {
-              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              projectId: {
+                type: "string",
+                format: "projectIdFormat",
+                example: "d0e8c69eg298c87e3899119e025eff1f",
+              },
               displayName: { type: "string", example: "townproject" },
               description: { type: "string", example: "A town should be built" },
               thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
@@ -94,6 +76,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
             },
           },
         },
+        errorMessage: "Failed to update project",
       },
       response: {
         200: {
@@ -142,22 +125,15 @@ export function addHttpHandler(
 
       const user = extractUser(request as AuthenticatedRequest);
 
-      const bodyResult = validateRequestBody(request.body);
+      const reqBody = request.body as RequestBodyV1;
 
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to update project"));
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
-
-      const { projectId } = bodyResult.data;
+      const { projectId } = reqBody.data;
       const reqData = {
-        displayName: bodyResult.data.displayName,
-        description: bodyResult.data.description,
-        thumbnail: bodyResult.data.thumbnail,
-        additionalData: bodyResult.data.additionalData,
-        tags: bodyResult.data.tags,
+        displayName: reqBody.data.displayName,
+        description: reqBody.data.description,
+        thumbnail: reqBody.data.thumbnail,
+        additionalData: reqBody.data.additionalData,
+        tags: reqBody.data.tags,
       };
 
       service

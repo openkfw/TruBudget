@@ -27,32 +27,6 @@ interface RequestBodyV1 {
   };
 }
 
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    base64String: Joi.string().required(),
-    hash: Joi.string().required(),
-    id: Joi.string().required(),
-    projectId: Project.idSchema.required(),
-    subprojectId: Subproject.idSchema.required(),
-    workflowitemId: Workflowitem.idSchema.required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
-}
-
 /**
  * Creates the swagger schema for the `/workflowitem.validateDocument` endpoint
  *
@@ -71,7 +45,12 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["base64String", "hash"],
@@ -91,19 +70,23 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
               },
               projectId: {
                 type: "string",
+                format: "projectIdFormat",
                 example: "3r28c69eg298c87e3899119e025eff1f",
               },
               subprojectId: {
                 type: "string",
+                format: "subprojectIdFormat",
                 example: "5t28c69eg298c87e3899119e025eff1f",
               },
               workflowitemId: {
                 type: "string",
+                format: "workflowitemIdFormat",
                 example: "4j28c69eg298c87e3899119e025eff1f",
               },
             },
           },
         },
+        errorMessage: "Invalid request",
       },
       response: {
         200: {
@@ -158,14 +141,6 @@ export function addHttpHandler(
       `${urlPrefix}/workflowitem.validateDocument`,
       mkSwaggerSchema(server),
       (request, reply) => {
-        const bodyResult = validateRequestBody(request.body);
-        if (Result.isErr(bodyResult)) {
-          const { code, body } = toHttpError(new VError(bodyResult, "invalid request"));
-          request.log.error({ err: bodyResult }, "Invalid request body");
-          reply.status(code).send(body);
-          return;
-        }
-
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
         const user = extractUser(request as AuthenticatedRequest);
@@ -177,7 +152,7 @@ export function addHttpHandler(
           projectId,
           subprojectId,
           workflowitemId,
-        } = bodyResult.data;
+        } = (request.body as RequestBodyV1).data;
 
         service
           .matches(

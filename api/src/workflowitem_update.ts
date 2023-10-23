@@ -5,15 +5,15 @@ import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
-import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
+import { UploadedDocument } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
-import * as WorkflowitemUpdated from "./service/domain/workflow/workflowitem_updated";
 import * as WorkflowitemUpdate from "./service/workflowitem_update";
 import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
+import { isoCurrencyCodes } from "service/domain/workflow/money";
 
 /**
  * Represents the request body of the endpoint
@@ -35,32 +35,6 @@ interface RequestBodyV1 {
     documents?: UploadedDocument[];
     additionalData?: object;
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: Project.idSchema.required(),
-    subprojectId: Subproject.idSchema.required(),
-    workflowitemId: Workflowitem.idSchema.required(),
-  })
-    .concat(WorkflowitemUpdated.modificationSchema)
-    .keys({ documents: Joi.array().items(uploadedDocumentSchema) })
-    .required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -89,22 +63,55 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["workflowitemId", "subprojectId", "projectId"],
             properties: {
-              displayName: { type: "string", example: "classroom" },
-              description: { type: "string", example: "build a classroom" },
-              amountType: { type: "string", example: "disbursed" },
-              amount: { type: "string", example: "500" },
-              currency: { type: "string", example: "EUR" },
-              exchangeRate: { type: "string", example: "1.0" },
-              billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-              dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-              projectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
-              subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
-              workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+              displayName: { type: "string", format: "safeStringFormat", example: "classroom" },
+              description: {
+                type: "string",
+                format: "safeStringWithEmptyFormat",
+                example: "build a classroom",
+              },
+              amountType: {
+                type: "string",
+                enum: ["N/A", "disbursed", "allocated"],
+                example: "disbursed",
+              },
+              amount: { type: "string", format: "moneyAmountFormat", example: "500" },
+              currency: { type: "string", enum: isoCurrencyCodes, example: "EUR" },
+              exchangeRate: { type: "string", format: "conversionRateFormat", example: "1.0" },
+              billingDate: {
+                type: "string",
+                format: "safeStringFormat",
+                example: "2018-12-11T00:00:00.000Z",
+              },
+              dueDate: {
+                type: "string",
+                format: "safeStringWithEmptyFormat",
+                example: "2018-12-11T00:00:00.000Z",
+              },
+              projectId: {
+                type: "string",
+                format: "projectIdFormat",
+                example: "3r28c69eg298c87e3899119e025eff1f",
+              },
+              subprojectId: {
+                type: "string",
+                format: "subprojectIdFormat",
+                example: "5t28c69eg298c87e3899119e025eff1f",
+              },
+              workflowitemId: {
+                type: "string",
+                format: "workflowitemIdFormat",
+                example: "4j28c69eg298c87e3899119e025eff1f",
+              },
               documents: {
                 type: "array",
                 items: {
@@ -114,7 +121,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                     fileName: { type: "string", example: "printout.pdf" },
                     base64: {
                       type: "string",
+                      format: "base64DocumentFormat",
                       example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
+                      errorMessage: { format: "Document is not valid." },
                     },
                   },
                 },
@@ -123,6 +132,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
             },
           },
         },
+        errorMessage: "Failed to update project",
       },
       response: {
         200: {
@@ -173,16 +183,8 @@ export function addHttpHandler(
 
       const user = extractUser(request as AuthenticatedRequest);
 
-      const bodyResult = validateRequestBody(request.body);
-
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to update project"));
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
-
-      const { projectId, subprojectId, workflowitemId, ...data } = bodyResult.data;
+      const { projectId, subprojectId, workflowitemId, ...data } = (request.body as RequestBodyV1)
+        .data;
 
       service
         .updateWorkflowitem(ctx, user, projectId, subprojectId, workflowitemId, data)

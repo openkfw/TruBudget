@@ -5,7 +5,6 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { Identity } from "./service/domain/organization/identity";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -27,31 +26,6 @@ interface RequestBodyV1 {
     identity: Identity;
     intent: Intent;
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: Project.idSchema.required(),
-    subprojectId: Subproject.idSchema.required(),
-    workflowitemId: Workflowitem.idSchema.required(),
-    identity: safeIdSchema.required(),
-    intent: Joi.valid(...workflowitemIntents).required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -77,20 +51,42 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
       body: {
         type: "object",
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             additionalProperties: false,
             properties: {
-              identity: { type: "string", example: "aSmith" },
-              intent: { type: "string", example: "global.createProject" },
-              projectId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
-              subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
-              workflowitemId: { type: "string", example: "6z28c69eg298c87e3899119e025eff1f" },
+              identity: { type: "string", format: "safeIdFormat", example: "aSmith" },
+              intent: {
+                type: "string",
+                enum: workflowitemIntents,
+                example: "global.createProject",
+              },
+              projectId: {
+                type: "string",
+                format: "projectIdFormat",
+                example: "4j28c69eg298c87e3899119e025eff1f",
+              },
+              subprojectId: {
+                type: "string",
+                format: "subprojectIdFormat",
+                example: "5t28c69eg298c87e3899119e025eff1f",
+              },
+              workflowitemId: {
+                type: "string",
+                format: "workflowitemIdFormat",
+                example: "6z28c69eg298c87e3899119e025eff1f",
+              },
             },
             required: ["identity", "intent", "workflowitemId", "subprojectId", "projectId"],
           },
         },
+        errorMessage: "Failed to revoke workflowitem permission",
       },
       response: {
         200: {
@@ -145,24 +141,13 @@ export function addHttpHandler(
 
         const user = extractUser(request as AuthenticatedRequest);
 
-        const bodyResult = validateRequestBody(request.body);
-
-        if (Result.isErr(bodyResult)) {
-          const { code, body } = toHttpError(
-            new VError(bodyResult, "failed to revoke workflowitem permission"),
-          );
-          request.log.error({ err: bodyResult }, "Invalid request body");
-          reply.status(code).send(body);
-          return;
-        }
-
         const {
           projectId,
           subprojectId,
           workflowitemId,
           identity: revokee,
           intent,
-        } = bodyResult.data;
+        } = (request.body as RequestBodyV1).data;
 
         service
           .revokeWorkflowitemPermission(

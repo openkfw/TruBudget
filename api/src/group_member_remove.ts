@@ -3,9 +3,7 @@ import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { extractUser } from "./handlerUtils";
@@ -20,28 +18,6 @@ interface RequestBodyV1 {
     groupId: string;
     userIds: string[];
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    groupId: Joi.string().required(),
-    userIds: Joi.array().items(safeIdSchema).required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -66,7 +42,12 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["groupId", "userIds"],
@@ -76,12 +57,14 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 type: "array",
                 items: {
                   type: "string",
+                  format: "safeIdFormat",
                   example: "aSmith",
                 },
               },
             },
           },
         },
+        errorMessage: "Failed to remove user from group",
       },
       response: {
         200: {
@@ -129,28 +112,8 @@ export function addHttpHandler(
 
       const user = extractUser(request as AuthenticatedRequest);
 
-      const bodyResult = validateRequestBody(request.body);
-
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(
-          new VError(bodyResult, "failed to remove user from group"),
-        );
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
-
-      let invokeService: Promise<Result.Type<void>>;
-      switch (bodyResult.apiVersion) {
-        case "1.0": {
-          const { groupId, userIds } = bodyResult.data;
-          invokeService = service.removeGroupMembers(ctx, user, groupId, userIds);
-          break;
-        }
-        default:
-          // Joi validates only existing apiVersions
-          assertUnreachable(bodyResult.apiVersion);
-      }
+      const { groupId, userIds } = (request.body as RequestBodyV1).data;
+      let invokeService = service.removeGroupMembers(ctx, user, groupId, userIds);
 
       invokeService
         .then((result) => {

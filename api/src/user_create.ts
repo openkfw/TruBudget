@@ -4,9 +4,7 @@ import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
-import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema, safePasswordSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -25,32 +23,6 @@ interface RequestBodyV1 {
       password: string;
     };
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    user: Joi.object({
-      id: safeIdSchema.required(),
-      displayName: safeStringSchema.required(),
-      organization: safeStringSchema.required(),
-      password: safePasswordSchema.required(),
-    }).required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 interface ResponseUserRecord {
@@ -82,7 +54,12 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["user"],
@@ -91,15 +68,28 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 type: "object",
                 required: ["id", "displayName", "organization", "password"],
                 properties: {
-                  id: { type: "string", example: "aSmith" },
-                  displayName: { type: "string", example: "Alice Smith" },
-                  organization: { type: "string", example: "Alice's Solutions & Co" },
-                  address: { type: "string", example: "ab2354defa123c01275a83bc1d" },
+                  id: { type: "string", format: "safeIdFormat", example: "aSmith" },
+                  displayName: {
+                    type: "string",
+                    format: "safeStringFormat",
+                    example: "Alice Smith",
+                  },
+                  organization: {
+                    type: "string",
+                    format: "safeStringFormat",
+                    example: "Alice's Solutions & Co",
+                  },
+                  password: {
+                    type: "string",
+                    format: "safePasswordFormat",
+                    example: "ab2354defa123c01275a83bc1d",
+                  },
                 },
               },
             },
           },
         },
+        errorMessage: "Failed to create user",
       },
       response: {
         200: {
@@ -178,33 +168,13 @@ export function addHttpHandler(
         groups: (request as AuthenticatedRequest).user.groups,
         address: (request as AuthenticatedRequest).user.address,
       };
-
-      const bodyResult = validateRequestBody(request.body);
-
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to create user"));
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
-
-      let invokeService: Promise<Result.Type<AuthToken>>;
-      switch (bodyResult.apiVersion) {
-        case "1.0": {
-          const data = bodyResult.data;
-          invokeService = service.createUser(ctx, serviceUser, {
-            userId: data.user.id,
-            displayName: data.user.displayName,
-            organization: data.user.organization,
-            passwordPlaintext: data.user.password,
-          });
-          break;
-        }
-        default:
-          // Joi validates only existing apiVersions
-          request.log.error({ err: bodyResult }, "Wrong api version specified");
-          assertUnreachable(bodyResult.apiVersion);
-      }
+      const data = (request.body as RequestBodyV1).data;
+      let invokeService = service.createUser(ctx, serviceUser, {
+        userId: data.user.id,
+        displayName: data.user.displayName,
+        organization: data.user.organization,
+        passwordPlaintext: data.user.password,
+      });
 
       invokeService
         .then((createdUserResult) => {

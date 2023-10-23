@@ -15,6 +15,7 @@ import {
 import * as Project from "./service/domain/workflow/project";
 import { ProjectedBudget } from "./service/domain/workflow/projected_budget";
 import { extractUser } from "./handlerUtils";
+import { isoCurrencyCodes } from "./service/domain/workflow/money";
 import Joi = require("joi");
 
 /**
@@ -28,30 +29,6 @@ interface RequestBodyV1 {
     currencyCode: CurrencyCode;
     value: MoneyAmount;
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: Project.idSchema.required(),
-    organization: Joi.string().required(),
-    currencyCode: currencyCodeSchema.required(),
-    value: moneyAmountSchema.required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -76,18 +53,28 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["projectId", "organization", "value", "currencyCode"],
             properties: {
-              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              projectId: {
+                type: "string",
+                format: "projectIdFormat",
+                example: "d0e8c69eg298c87e3899119e025eff1f",
+              },
               organization: { type: "string", example: "My Goverment Bank" },
-              currencyCode: { type: "string", example: "EUR" },
-              value: { type: "string", example: "500" },
+              currencyCode: { type: "string", enum: isoCurrencyCodes, example: "EUR" },
+              value: { type: "string", format: "moneyAmountFormat", example: "500" },
             },
           },
         },
+        errorMessage: "Failed to update projected budget",
       },
       response: {
         200: {
@@ -155,18 +142,8 @@ export function addHttpHandler(
 
         const user = extractUser(request as AuthenticatedRequest);
 
-        const bodyResult = validateRequestBody(request.body);
-
-        if (Result.isErr(bodyResult)) {
-          const { code, body } = toHttpError(
-            new VError(bodyResult, "failed to update projected budget"),
-          );
-          request.log.error({ err: bodyResult }, "Invalid request body");
-          reply.status(code).send(body);
-          return;
-        }
-
-        const { projectId, organization, value, currencyCode } = bodyResult.data;
+        const { projectId, organization, value, currencyCode } = (request.body as RequestBodyV1)
+          .data;
 
         service
           .updateProjectedBudget(ctx, user, projectId, organization, value, currencyCode)

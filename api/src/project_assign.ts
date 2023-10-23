@@ -4,7 +4,6 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
@@ -20,28 +19,6 @@ interface RequestBodyV1 {
     projectId: Project.Id;
     identity: string;
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: Project.idSchema.required(),
-    identity: safeIdSchema.required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -67,16 +44,26 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["identity", "projectId"],
             properties: {
-              identity: { type: "string", example: "aSmith" },
-              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+              identity: { type: "string", format: "safeIdFormat", example: "aSmith" },
+              projectId: {
+                type: "string",
+                format: "projectIdFormat",
+                example: "d0e8c69eg298c87e3899119e025eff1f",
+              },
             },
           },
         },
+        errorMessage: "Failed to assign project",
       },
       response: {
         200: {
@@ -125,16 +112,7 @@ export function addHttpHandler(
 
       const user = extractUser(request as AuthenticatedRequest);
 
-      const bodyResult = validateRequestBody(request.body);
-
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to assign project"));
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
-
-      const { projectId, identity: assignee } = bodyResult.data;
+      const { projectId, identity: assignee } = (request.body as RequestBodyV1).data;
 
       service
         .assignProject(ctx, user, projectId, assignee)

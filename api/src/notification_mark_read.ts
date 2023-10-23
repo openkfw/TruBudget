@@ -20,27 +20,6 @@ interface RequestBodyV1 {
   };
 }
 
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    notifications: Joi.array().items(Notification.idSchema).required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
-}
-
 /**
  * Creates the swagger schema for the `/notification.markRead` endpoint
  *
@@ -59,7 +38,12 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["notifications"],
@@ -68,6 +52,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 type: "array",
                 items: {
                   type: "string",
+                  format: "notificationIdFormat",
                   description: "Notification ID",
                   example: "2cfd0663-1770-4184-974e-63129061d389",
                 },
@@ -75,6 +60,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
             },
           },
         },
+        errorMessage: "Failed to mark notification",
       },
       response: {
         200: {
@@ -123,16 +109,7 @@ export function addHttpHandler(
 
         const user = extractUser(request as AuthenticatedRequest);
 
-        const bodyResult = validateRequestBody(request.body);
-
-        if (Result.isErr(bodyResult)) {
-          const { code, body } = toHttpError(new VError(bodyResult, "failed to mark notification"));
-          request.log.error({ err: bodyResult }, "Invalid request body");
-          reply.status(code).send(body);
-          return;
-        }
-
-        const { notifications } = bodyResult.data;
+        const { notifications } = (request.body as RequestBodyV1).data;
 
         try {
           const result = await service.markRead(ctx, user, notifications);

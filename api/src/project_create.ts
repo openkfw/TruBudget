@@ -13,6 +13,7 @@ import * as Project from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import * as ProjectCreate from "./service/project_create";
 import { extractUser } from "./handlerUtils";
+import { isoCurrencyCodes } from "./service/domain/workflow/money";
 import Joi = require("joi");
 
 /**
@@ -56,20 +57,6 @@ const requestBodyV1Schema = Joi.object({
   }).required(),
 });
 
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
-}
-
 /**
  * Creates the swagger schema for the `/global.createProject` endpoint
  *
@@ -94,7 +81,12 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["project"],
@@ -103,12 +95,28 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 type: "object",
                 required: ["displayName"],
                 properties: {
-                  id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                  status: { type: "string", example: "open" },
-                  displayName: { type: "string", example: "Build a town-project" },
-                  description: { type: "string", example: "A town should be built" },
-                  assignee: { type: "string", example: "aSmith" },
-                  thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
+                  id: {
+                    type: "string",
+                    format: "projectIdFormat",
+                    example: "d0e8c69eg298c87e3899119e025eff1f",
+                  },
+                  status: { type: "string", const: "open", example: "open" },
+                  displayName: {
+                    type: "string",
+                    format: "safeStringFormat",
+                    example: "Build a town-project",
+                  },
+                  description: {
+                    type: "string",
+                    format: "safeStringWithEmptyFormat",
+                    example: "A town should be built",
+                  },
+                  assignee: { type: "string", format: "safeIdFormat", example: "aSmith" },
+                  thumbnail: {
+                    type: "string",
+                    format: "safeStringFormat",
+                    example: "/Thumbnail_0001.jpg",
+                  },
                   projectedBudgets: {
                     type: "array",
                     items: {
@@ -116,18 +124,22 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                       required: ["organization", "value", "currencyCode"],
                       properties: {
                         organization: { type: "string", example: "My Goverment Bank" },
-                        value: { type: "string", example: "1000000" },
-                        currencyCode: { type: "string", example: "EUR" },
+                        value: { type: "string", format: "moneyAmountFormat", example: "1000000" },
+                        currencyCode: { type: "string", enum: isoCurrencyCodes, example: "EUR" },
                       },
                     },
                   },
                   additionalData: { type: "object", additionalProperties: true },
-                  tags: { type: "array", items: { type: "string", example: "test" } },
+                  tags: {
+                    type: "array",
+                    items: { type: "string", format: "safeStringFormat", example: "test" },
+                  },
                 },
               },
             },
           },
         },
+        errorMessage: "Failed to create project",
       },
       response: {
         200: {
@@ -179,16 +191,7 @@ export function addHttpHandler(
 
       const user = extractUser(request as AuthenticatedRequest);
 
-      const bodyResult = validateRequestBody(request.body);
-
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to create project"));
-        reply.status(code).send(body);
-        request.log.error({ err: bodyResult }, "Invalid Request body");
-        return;
-      }
-
-      const reqData: ProjectCreate.RequestData = bodyResult.data.project;
+      const reqData: ProjectCreate.RequestData = (request.body as RequestBodyV1).data.project;
 
       service
         .createProject(ctx, user, reqData)

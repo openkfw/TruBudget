@@ -2,9 +2,7 @@ import { FastifyInstance } from "fastify";
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 import { toHttpError } from "./http_errors";
-import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
@@ -22,30 +20,6 @@ interface RequestBodyV1 {
       password: string;
     };
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    user: Joi.object({
-      id: safeIdSchema.required(),
-      password: safeStringSchema.required(),
-    }).required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 interface LoginResponse {
@@ -78,7 +52,12 @@ const swaggerSchema = {
       type: "object",
       required: ["apiVersion", "data"],
       properties: {
-        apiVersion: { type: "string", example: "1.0" },
+        apiVersion: {
+          type: "string",
+          const: "1.0",
+          example: "1.0",
+          errorMessage: { const: "Invalid Api Version specified" },
+        },
         data: {
           type: "object",
           required: ["user"],
@@ -87,13 +66,14 @@ const swaggerSchema = {
               type: "object",
               required: ["id", "password"],
               properties: {
-                id: { type: "string", example: "mstein" },
-                password: { type: "string", example: "test" },
+                id: { type: "string", format: "safeIdFormat", example: "mstein" },
+                password: { type: "string", format: "safePasswordFormat", example: "test" },
               },
             },
           },
         },
       },
+      errorMessage: "Authentication failed",
     },
     response: {
       200: {
@@ -192,27 +172,9 @@ export function addHttpHandler(
 ): void {
   server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
-    const bodyResult = validateRequestBody(request.body);
 
-    if (Result.isErr(bodyResult)) {
-      const { code, body } = toHttpError(new VError(bodyResult, "authentication failed"));
-      request.log.error({ err: bodyResult }, "Invalid request body");
-      reply.status(code).send(body);
-      return;
-    }
-
-    let invokeService: Promise<Result.Type<AuthToken>>;
-    switch (bodyResult.apiVersion) {
-      case "1.0": {
-        const data = bodyResult.data;
-        invokeService = service.authenticate(ctx, data.user.id, data.user.password);
-        break;
-      }
-      default:
-        // Joi validates only existing apiVersions
-        request.log.error({ err: bodyResult }, "Wrong api version specified");
-        assertUnreachable(bodyResult.apiVersion);
-    }
+    const data = (request.body as RequestBodyV1).data;
+    let invokeService = service.authenticate(ctx, data.user.id, data.user.password);
 
     try {
       const tokenResult = await invokeService;

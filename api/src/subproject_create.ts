@@ -9,12 +9,13 @@ import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
-import { currencyCodeSchema } from "./service/domain/workflow/money";
+import { currencyCodeSchema, isoCurrencyCodes } from "./service/domain/workflow/money";
 import { idSchema as projectIdSchema } from "./service/domain/workflow/project";
 import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
 import { idSchema as subProjectIdSchema } from "./service/domain/workflow/subproject";
 import WorkflowitemType, {
   workflowitemTypeSchema,
+  workflowitemTypes,
 } from "./service/domain/workflowitem_types/types";
 import * as SubprojectCreate from "./service/subproject_create";
 import { extractUser } from "./handlerUtils";
@@ -65,20 +66,6 @@ const requestBodyV1Schema = Joi.object({
   }).required(),
 });
 
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
-}
-
 /**
  * Creates the swagger schema for the `/project.createSubproject` endpoint
  *
@@ -103,7 +90,12 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["projectId", "subproject"],
@@ -113,14 +105,26 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 type: "object",
                 required: ["displayName", "currency"],
                 properties: {
-                  id: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-                  status: { type: "string", example: "open" },
-                  displayName: { type: "string", example: "townproject" },
-                  description: { type: "string", example: "A town should be built" },
-                  assignee: { type: "string", example: "aSmith" },
-                  validator: { type: "string", example: "aSmith" },
-                  workflowitemType: { type: "string", example: "general" },
-                  currency: { type: "string", example: "EUR" },
+                  id: {
+                    type: "string",
+                    format: "subprojectIdSchema",
+                    example: "d0e8c69eg298c87e3899119e025eff1f",
+                  },
+                  status: { type: "string", const: "open", example: "open" },
+                  displayName: {
+                    type: "string",
+                    format: "safeStringFormat",
+                    example: "townproject",
+                  },
+                  description: {
+                    type: "string",
+                    format: "safeStringWithEmptyFormat",
+                    example: "A town should be built",
+                  },
+                  assignee: { type: "string", format: "safeIdFormat", example: "aSmith" },
+                  validator: { type: "string", format: "safeIdFormat", example: "aSmith" },
+                  workflowitemType: { type: "string", enum: workflowitemTypes, example: "general" },
+                  currency: { type: "string", enum: isoCurrencyCodes, example: "EUR" },
                   projectedBudgets: {
                     type: "array",
                     items: {
@@ -128,8 +132,8 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                       required: ["organization", "value", "currencyCode"],
                       properties: {
                         organization: { type: "string", example: "My Goverment Bank" },
-                        value: { type: "string", example: "1000000" },
-                        currencyCode: { type: "string", example: "EUR" },
+                        value: { type: "string", format: "moneyAmountFormat", example: "1000000" },
+                        currencyCode: { type: "string", enum: isoCurrencyCodes, example: "EUR" },
                       },
                     },
                   },
@@ -139,6 +143,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
             },
           },
         },
+        errorMessage: "Failed to create subproject",
       },
       response: {
         200: {
@@ -203,27 +208,20 @@ export function addHttpHandler(
 
         const user = extractUser(request as AuthenticatedRequest);
 
-        const bodyResult = validateRequestBody(request.body);
-
-        if (Result.isErr(bodyResult)) {
-          const { code, body } = toHttpError(new VError(bodyResult, "failed to create subproject"));
-          reply.status(code).send(body);
-          request.log.error({ err: bodyResult }, "Invalid Request body");
-          return;
-        }
+        const reqBody = request.body as RequestBodyV1;
 
         const reqData: SubprojectCreate.RequestData = {
-          projectId: bodyResult.data.projectId,
-          subprojectId: bodyResult.data.subproject.id,
-          status: bodyResult.data.subproject.status,
-          displayName: bodyResult.data.subproject.displayName,
-          description: bodyResult.data.subproject.description,
-          assignee: bodyResult.data.subproject.assignee,
-          validator: bodyResult.data.subproject.validator,
-          workflowitemType: bodyResult.data.subproject.workflowitemType,
-          currency: bodyResult.data.subproject.currency,
-          projectedBudgets: bodyResult.data.subproject.projectedBudgets,
-          additionalData: bodyResult.data.subproject.additionalData,
+          projectId: reqBody.data.projectId,
+          subprojectId: reqBody.data.subproject.id,
+          status: reqBody.data.subproject.status,
+          displayName: reqBody.data.subproject.displayName,
+          description: reqBody.data.subproject.description,
+          assignee: reqBody.data.subproject.assignee,
+          validator: reqBody.data.subproject.validator,
+          workflowitemType: reqBody.data.subproject.workflowitemType,
+          currency: reqBody.data.subproject.currency,
+          projectedBudgets: reqBody.data.subproject.projectedBudgets,
+          additionalData: reqBody.data.subproject.additionalData,
         };
 
         service

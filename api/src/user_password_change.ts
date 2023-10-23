@@ -4,7 +4,6 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema, safePasswordSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserChangePassword from "./service/domain/organization/user_password_change";
@@ -19,28 +18,6 @@ interface RequestBodyV1 {
     userId: string;
     newPassword: string;
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    userId: safeIdSchema.required(),
-    newPassword: safePasswordSchema.required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -65,16 +42,22 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["userId", "newPassword"],
             properties: {
-              userId: { type: "string", example: "aSmith" },
-              newPassword: { type: "string", example: "123456" },
+              userId: { type: "string", format: "safeIdFormat", example: "aSmith" },
+              newPassword: { type: "string", format: "safePasswordFormat", example: "123456" },
             },
           },
         },
+        errorMessage: "Failed to change user's password",
       },
       response: {
         200: {
@@ -127,19 +110,9 @@ export function addHttpHandler(
         address: (request as AuthenticatedRequest).user.address,
       };
 
-      const bodyResult = validateRequestBody(request.body);
       const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
 
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(
-          new VError(bodyResult, "failed to change user's password"),
-        );
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
-
-      const data = bodyResult.data;
+      const data = (request.body as RequestBodyV1).data;
       const reqData = {
         userId: data.userId,
         newPassword: data.newPassword,

@@ -13,7 +13,7 @@ export function isAmountOfMoney(value: string): boolean {
 
 export const conversionRateSchema = Joi.string().regex(/^[0-9]+(\.[0-9]+)?$/, "conversion rate");
 
-const isoCurrencyCodes = [
+export const isoCurrencyCodes = [
   "AFN",
   "EUR",
   "ALL",

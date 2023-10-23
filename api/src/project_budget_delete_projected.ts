@@ -4,10 +4,9 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { CurrencyCode, currencyCodeSchema } from "./service/domain/workflow/money";
+import { CurrencyCode, isoCurrencyCodes } from "./service/domain/workflow/money";
 import * as Project from "./service/domain/workflow/project";
 import { ProjectedBudget } from "./service/domain/workflow/projected_budget";
 import { extractUser } from "./handlerUtils";
@@ -23,29 +22,6 @@ interface RequestBodyV1 {
     organization: string;
     currencyCode: CurrencyCode;
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: Project.idSchema.required(),
-    organization: safeStringSchema.required(),
-    currencyCode: currencyCodeSchema.required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -66,17 +42,31 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["projectId", "organization", "currencyCode"],
             properties: {
-              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-              organization: { type: "string", example: "My Goverment Bank" },
-              currencyCode: { type: "string", example: "EUR" },
+              projectId: {
+                type: "string",
+                format: "projectIdFormat",
+                example: "d0e8c69eg298c87e3899119e025eff1f",
+              },
+              organization: {
+                type: "string",
+                format: "safeStringFormat",
+                example: "My Goverment Bank",
+              },
+              currencyCode: { type: "string", enum: isoCurrencyCodes, example: "EUR" },
             },
           },
         },
+        errorMessage: "Failed to delete projected budget",
       },
       response: {
         200: {
@@ -143,18 +133,7 @@ export function addHttpHandler(
 
         const user = extractUser(request as AuthenticatedRequest);
 
-        const bodyResult = validateRequestBody(request.body);
-
-        if (Result.isErr(bodyResult)) {
-          const { code, body } = toHttpError(
-            new VError(bodyResult, "failed to delete projected budget"),
-          );
-          request.log.error({ err: bodyResult }, "Invalid request body");
-          reply.status(code).send(body);
-          return;
-        }
-
-        const { projectId, organization, currencyCode } = bodyResult.data;
+        const { projectId, organization, currencyCode } = (request.body as RequestBodyV1).data;
 
         service
           .deleteProjectedBudget(ctx, user, projectId, organization, currencyCode)

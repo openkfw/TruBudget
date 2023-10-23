@@ -4,7 +4,6 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserDisable from "./service/domain/organization/user_disable";
@@ -18,27 +17,6 @@ interface RequestBodyV1 {
   data: {
     userId: string;
   };
-}
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    userId: safeIdSchema.required(),
-  }).required(),
-});
-
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
-
-/**
- * Validates the request body of the http request
- *
- * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
- */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
-  return !error ? value : error;
 }
 
 /**
@@ -63,15 +41,21 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         type: "object",
         required: ["apiVersion", "data"],
         properties: {
-          apiVersion: { type: "string", example: "1.0" },
+          apiVersion: {
+            type: "string",
+            const: "1.0",
+            example: "1.0",
+            errorMessage: { const: "Invalid Api Version specified" },
+          },
           data: {
             type: "object",
             required: ["userId"],
             properties: {
-              userId: { type: "string", example: "aSmith" },
+              userId: { type: "string", format: "safeIdFormat", example: "aSmith" },
             },
           },
         },
+        errorMessage: "Failed to disable an user",
       },
       response: {
         200: {
@@ -124,17 +108,9 @@ export function addHttpHandler(
         address: (request as AuthenticatedRequest).user.address,
       };
       const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
-      const bodyResult = validateRequestBody(request.body);
-
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to disable an user"));
-        request.log.error({ err: bodyResult }, "Invalid request body");
-        reply.status(code).send(body);
-        return;
-      }
 
       const revokee = {
-        userId: bodyResult.data.userId,
+        userId: (request.body as RequestBodyV1).data.userId,
       };
 
       service
