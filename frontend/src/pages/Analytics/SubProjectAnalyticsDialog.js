@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { connect } from "react-redux";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -57,67 +57,78 @@ const SubProjectAnalyticsDialog = ({
   closeAnalyticsDialog,
   storeDisplayCurrency,
   getExchangeRates,
-  projectedBudgets
-}) => (
-  <Dialog
-    fullScreen
-    open={open}
-    onClose={closeAnalyticsDialog}
-    aria-labelledby="responsive-dialog-title"
-    TransitionComponent={Transition}
-  >
-    <AppBar>
-      <Toolbar>
-        <IconButton
-          data-test="close-analytics-button"
-          color="inherit"
-          onClick={closeAnalyticsDialog}
-          aria-label="Close"
-          size="large"
-        >
-          <CloseIcon />
-        </IconButton>
-        <Typography variant="h6" color="inherit">
-          {strings.analytics.subproject_analytics}
-        </Typography>
-        <form autoComplete="off" style={styles.dropdown}>
-          <FormControl>
-            <Select
-              variant="standard"
-              value={displayCurrency || "EUR"}
-              onChange={(e) => {
-                storeDisplayCurrency(e.target.value);
-                getExchangeRates(e.target.value);
-              }}
-              inputProps={{
-                name: "currencies",
-                id: "currencies"
-              }}
-              data-test="select-currencies"
-              IconComponent={(props) => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
-              style={{ color: "white" }}
-            >
-              {getMenuItems(getCurrencies())}
-            </Select>
-          </FormControl>
-        </form>
-      </Toolbar>
-    </AppBar>
-    <div style={styles.container}>
-      <SubProjectAnalytics
-        projectId={projectId}
-        subProjectId={subProjectId}
-        projectedBudgets={projectedBudgets}
-        getExchangeRates={getExchangeRates}
-      />
-    </div>
-  </Dialog>
-);
+  projectedBudgets,
+  subprojectCurrency
+}) => {
+  // effect hook for displaying SubProject Analytics with (first) project currency
+  useEffect(() => {
+    if (subprojectCurrency) {
+      storeDisplayCurrency(subprojectCurrency);
+    }
+  }, [storeDisplayCurrency, subprojectCurrency]);
+
+  return (
+    <Dialog
+      fullScreen
+      open={open}
+      onClose={closeAnalyticsDialog}
+      aria-labelledby="responsive-dialog-title"
+      TransitionComponent={Transition}
+    >
+      <AppBar>
+        <Toolbar>
+          <IconButton
+            data-test="close-analytics-button"
+            color="inherit"
+            onClick={closeAnalyticsDialog}
+            aria-label="Close"
+            size="large"
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" color="inherit">
+            {strings.analytics.subproject_analytics}
+          </Typography>
+          <form autoComplete="off" style={styles.dropdown}>
+            <FormControl>
+              <Select
+                variant="standard"
+                value={displayCurrency || "EUR"}
+                onChange={(e) => {
+                  storeDisplayCurrency(e.target.value);
+                  getExchangeRates(e.target.value);
+                }}
+                inputProps={{
+                  name: "currencies",
+                  id: "currencies"
+                }}
+                data-test="select-currencies"
+                IconComponent={(props) => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
+                style={{ color: "white" }}
+              >
+                {getMenuItems(getCurrencies())}
+              </Select>
+            </FormControl>
+          </form>
+        </Toolbar>
+      </AppBar>
+      <div style={styles.container}>
+        <SubProjectAnalytics
+          projectId={projectId}
+          subProjectId={subProjectId}
+          projectedBudgets={projectedBudgets}
+          getExchangeRates={getExchangeRates}
+        />
+      </div>
+    </Dialog>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
     open: state.getIn(["analytics", "dialogOpen"]),
-    displayCurrency: state.getIn(["analytics", "currency"])
+    displayCurrency: state.getIn(["analytics", "currency"]),
+    subprojectCurrency: state.getIn(["analytics", "subproject", "currency"])
   };
 };
 const mapDispatchToProps = {
