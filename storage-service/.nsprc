@@ -1,10 +1,1 @@
-{
-  "1092317": {
-    "active": true,
-    "notes": "Ignored since there is no fix in the minio package (dev dependency) yet."
-  },
-  "1092310": {
-    "active": true,
-    "notes": "Ignored since there is no fix in the eslint package (dev dependency) yet."
-  }
-}
+{}
