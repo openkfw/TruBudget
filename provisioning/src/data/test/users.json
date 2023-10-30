@@ -2,36 +2,46 @@
   {
     "id": "thouse",
     "displayName": "Tom House",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "pkleffmann",
     "displayName": "Piet Kleffmann",
-    "password": "test"
+    "password": "test",
+    "permissions": [
+      "global.createProject",
+      "global.createUser"
+    ]
   },
   {
     "id": "mstein",
     "displayName": "Mauro Stein",
-    "password": "test"
+    "password": "test",
+    "permissions": ["all"]
   },
   {
     "id": "jdoe",
     "displayName": "John Doe",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "jxavier",
     "displayName": "Jane Xavier",
-    "password": "test"
+    "password": "test",
+    "permissions": ["all"]
   },
   {
     "id": "dviolin",
     "displayName": "Dana Violin",
-    "password": "test"
+    "password": "test",
+    "permissions":[]
   },
   {
     "id": "auditUser",
     "displayName": "Romina Checker",
-    "password": "test"
+    "password": "test",
+    "permissions":[]
   }
 ]
