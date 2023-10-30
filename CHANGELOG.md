@@ -17,6 +17,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [2.x.x] - TBD
+
+<!-- ## Unreleased -->
+
+<!-- ### Added -->
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+### Fixed
+
+- Fixed an issue when error message was displayed if a user uploaded document in a worfklowitem to which he had permissions based on group membership. [#1498](https://github.com/openkfw/TruBudget/issues/1498)
+
 ## [2.3.0] - 2023-10-13
 
 ### Fixed

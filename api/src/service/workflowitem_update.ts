@@ -158,21 +158,36 @@ export async function updateWorkflowitem(
   }
 
   async function getOrganizations(users: string[]): Promise<Result.Type<string[]>> {
-    logger.debug("Gathering Organizatinos based on users");
-
+    logger.debug("Gathering Organizations based on users");
     const organizations: string[] = [];
     for (const userId of users) {
-      const user = await UserQuery.getUser(conn, ctx, serviceUser, userId);
-      if (Result.isErr(user)) {
-        return new VError(user, "failed to get user");
-      }
-
-      const { organization } = user;
-
-      if (!organizations.includes(organization)) {
+      // check if grantee is user, get the user's organization
+      if (await UserQuery.userExists(conn, ctx, serviceUser, userId)) {
+        const user = await UserQuery.getUser(conn, ctx, serviceUser, userId);
+        if (Result.isErr(user)) {
+          return new VError(user, "failed to get user");
+        }
+        const { organization } = user;
         organizations.push(organization);
+
+        // check if grantee is group, get the organizations of all group members
+      } else if (await GroupQuery.groupExists(conn, ctx, serviceUser, userId)) {
+        const group = await GroupQuery.getGroup(conn, ctx, serviceUser, userId);
+        if (Result.isErr(group)) {
+          return new VError(group, "failed to get group");
+        }
+        const { members } = group;
+        for (const member of members) {
+          const user = await UserQuery.getUser(conn, ctx, serviceUser, member);
+          if (Result.isErr(user)) {
+            return new VError(user, "failed to get group member");
+          }
+          const { organization } = user;
+          organizations.push(organization);
+        }
       }
     }
+
     return organizations;
   }
 }
