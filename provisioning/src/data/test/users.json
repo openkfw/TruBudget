@@ -24,7 +24,7 @@
     "id": "jdoe",
     "displayName": "John Doe",
     "password": "test",
-    "permissions": []
+    "permissions": ["all"]
   },
   {
     "id": "jxavier",
