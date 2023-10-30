@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { connect } from "react-redux";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -57,60 +57,70 @@ const ProjectAnalyticsDialog = ({
   storeDisplayCurrency,
   getExchangeRates,
   projectProjectedBudgets
-}) => (
-  <Dialog
-    fullScreen
-    open={open}
-    onClose={closeAnalyticsDialog}
-    aria-labelledby="responsive-dialog-title"
-    TransitionComponent={Transition}
-  >
-    <AppBar>
-      <Toolbar style={styles.toolbar}>
-        <IconButton
-          color="inherit"
-          onClick={closeAnalyticsDialog}
-          data-test="close-analytics-button"
-          aria-label="Close"
-          size="large"
-        >
-          <CloseIcon />
-        </IconButton>
-        <Typography variant="h6" color="inherit">
-          {strings.analytics.project_analytics}
-        </Typography>
-        <form autoComplete="off" style={styles.dropdown}>
-          <FormControl>
-            <Select
-              variant="standard"
-              value={displayCurrency || "EUR"}
-              onChange={(e) => {
-                storeDisplayCurrency(e.target.value);
-                getExchangeRates(e.target.value);
-              }}
-              inputProps={{
-                name: "currencies",
-                id: "currencies"
-              }}
-              data-test="select-currencies"
-              IconComponent={(props) => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
-              style={{ color: "white" }}
-            >
-              {getMenuItems(getCurrencies())}
-            </Select>
-          </FormControl>
-        </form>
-      </Toolbar>
-    </AppBar>
-    <div style={styles.container}>
-      <ProjectAnalytics
-        projectId={projectId}
-        totalBudget={projectProjectedBudgets}
-        getExchangeRates={getExchangeRates}
-      />
-    </div>
-  </Dialog>
-);
+}) => {
+  // effect hook for displaying Project Analytics with (first) project currency
+  useEffect(() => {
+    if (projectProjectedBudgets[0]?.currencyCode) {
+      storeDisplayCurrency(projectProjectedBudgets[0]?.currencyCode);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectProjectedBudgets[0]?.currencyCode, storeDisplayCurrency, open]);
+
+  return (
+    <Dialog
+      fullScreen
+      open={open}
+      onClose={closeAnalyticsDialog}
+      aria-labelledby="responsive-dialog-title"
+      TransitionComponent={Transition}
+    >
+      <AppBar>
+        <Toolbar style={styles.toolbar}>
+          <IconButton
+            color="inherit"
+            onClick={closeAnalyticsDialog}
+            data-test="close-analytics-button"
+            aria-label="Close"
+            size="large"
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" color="inherit">
+            {strings.analytics.project_analytics}
+          </Typography>
+          <form autoComplete="off" style={styles.dropdown}>
+            <FormControl>
+              <Select
+                variant="standard"
+                value={displayCurrency || "EUR"}
+                onChange={(e) => {
+                  storeDisplayCurrency(e.target.value);
+                  getExchangeRates(e.target.value);
+                }}
+                inputProps={{
+                  name: "currencies",
+                  id: "currencies"
+                }}
+                data-test="select-currencies"
+                IconComponent={(props) => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
+                style={{ color: "white" }}
+              >
+                {getMenuItems(getCurrencies())}
+              </Select>
+            </FormControl>
+          </form>
+        </Toolbar>
+      </AppBar>
+      <div style={styles.container}>
+        <ProjectAnalytics
+          projectId={projectId}
+          totalBudget={projectProjectedBudgets}
+          getExchangeRates={getExchangeRates}
+        />
+      </div>
+    </Dialog>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {

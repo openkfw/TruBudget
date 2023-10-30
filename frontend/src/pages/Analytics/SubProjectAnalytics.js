@@ -66,6 +66,7 @@ class SubprojectAnalytics extends React.Component {
     this.props.getSubProjectKPIs(this.props.projectId, this.props.subProjectId);
     this.props.getExchangeRates(this.props.indicatedCurrency);
   }
+
   componentWillUnmount() {
     this.props.resetKPIs();
   }
