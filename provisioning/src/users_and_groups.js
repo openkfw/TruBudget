@@ -35,14 +35,15 @@ const provisionUsers = async (axios, folder, organization) => {
   try {
     const users = readJsonFile(folder + "users.json");
 
-    await Promise.allSettled(users.map((user) => createUser(axios, {id: user.id, displayName: user.displayName, password: user.password}, organization)));
+    await Promise.allSettled(users.map((user) => { log.info(`~> Adding user ${user.displayName}`); return createUser(axios, {id: user.id, displayName: user.displayName, password: user.password}, organization);}));
     const usersWithPermissions = users.filter((user) => Array.isArray(user.permissions) && user.permissions.length > 0);
     for (const user of usersWithPermissions) {
       if (user.permissions.includes("all")) {
+        log.info(`~> all Permissions granted to ${user.id}`);
         await grantAllPermissionsToUser(axios, user.id);
       } 
       else {
-        await Promise.allSettled(user.permissions.filter(intent => allowedIntents.includes(intent)).map((intent) => grantGlobalPermissionToUser(axios, intent, user.id)));
+        await Promise.allSettled(user.permissions.filter(intent => allowedIntents.includes(intent)).map((intent) => { log.info(`~> Granting permission ${intent} to ${user.id}`); return grantGlobalPermissionToUser(axios, intent, user.id);}));
       }
     }
   } catch (err) {
