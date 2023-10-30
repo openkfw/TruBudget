@@ -2,6 +2,8 @@ import axios from "axios";
 
 import config from "./config";
 
+const forexUrl = window?.injectedEnv?.REACT_APP_EXCHANGE_RATE_URL || config.exchangeRateUrl;
+
 const getRate = (series) => {
   // catch non existing series
   if (!series) return 0;
@@ -17,7 +19,7 @@ const getRate = (series) => {
 export async function getExchangeRates(baseCurrency = "EUR") {
   const instance = axios.create();
   delete instance.defaults.headers.common["Authorization"];
-  const response = await instance.get(config.exchangeRateUrl, { headers: {} });
+  const response = await instance.get(forexUrl, { headers: {} });
   const exchangeRates = {};
   if (response.data && response.data.dataSets && response.data.dataSets.length) {
     const series = response.data.dataSets[0].series;

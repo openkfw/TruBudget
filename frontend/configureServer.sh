@@ -75,7 +75,7 @@ fi
 
 if [[ ! -z "${REACT_APP_EXCHANGE_RATE_URL}" ]]; then
   echo "Adding the exchange rate API url to ${REACT_APP_EXCHANGE_RATE_URL}"
-  sed -i -e "/# exchangeRateApi/i\\ \   add_header Content-Security-Policy \"default-src 'self'; connect-src 'self' $REACT_APP_EXCHANGE_RATE_URL; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; child-src 'self' blob:; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; img-src 'self' data: https://validator.swagger.io;\";" /etc/nginx/conf.d/default.conf
+  sed -i -e "s|https://data-api.ecb.europa.eu/service/data/EXR/|& $REACT_APP_EXCHANGE_RATE_URL|" /etc/nginx/conf.d/default.conf
 fi
 
 
@@ -99,6 +99,7 @@ sed -i 's/REACT_APP_LOGGING_SERVICE_HOST_SSL: "false"/REACT_APP_LOGGING_SERVICE_
 sed -i 's/REACT_APP_LOGGING_PUSH_INTERVAL: "20"/REACT_APP_LOGGING_PUSH_INTERVAL: "'$REACT_APP_LOGGING_PUSH_INTERVAL'"/g' ${INJECT_FILE_PATH}
 sed -i 's/REACT_APP_AUTHPROXY_ENABLED: "false"/REACT_APP_AUTHPROXY_ENABLED: "'$REACT_APP_AUTHPROXY_ENABLED'"/g' ${INJECT_FILE_PATH}
 sed -i 's|REACT_APP_AUTHPROXY_URL: ""|REACT_APP_AUTHPROXY_URL: "'$REACT_APP_AUTHPROXY_URL'"|g' ${INJECT_FILE_PATH}
+sed -i 's|REACT_APP_EXCHANGE_RATE_URL: ""|REACT_APP_EXCHANGE_RATE_URL: "'$REACT_APP_EXCHANGE_RATE_URL'"|g' ${INJECT_FILE_PATH}
 
 nginx -g "daemon off;"
 
