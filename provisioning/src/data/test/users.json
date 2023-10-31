@@ -9,10 +9,7 @@
     "id": "pkleffmann",
     "displayName": "Piet Kleffmann",
     "password": "test",
-    "permissions": [
-      "global.createProject",
-      "global.createUser"
-    ]
+    "permissions": []
   },
   {
     "id": "mstein",
@@ -30,7 +27,7 @@
     "id": "jxavier",
     "displayName": "Jane Xavier",
     "password": "test",
-    "permissions": ["all"]
+    "permissions": []
   },
   {
     "id": "dviolin",
