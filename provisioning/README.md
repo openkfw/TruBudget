@@ -49,12 +49,18 @@ The default provisioning data is stored in `provisioning/src/data/test`.
 
 | Login ID   | Name           | Group  | Password |
 | ---------- | -------------- | ------ | -------- |
-| mstein     | Mauro Stein    | admins | test     |
+| mstein     | Mauro Stein    | admins, reviewers | test     |
 | jdoe       | John Doe       | admins | test     |
 | thouse     | Tom House      |        | test     |
-| pkleffmann | Piet Kleffmann |        | test     |
-| jxavier    | Jane Xavier    |        | test     |
+| pkleffmann | Piet Kleffmann |   reviewers | test     |
+| jxavier    | Jane Xavier    |   reviewers | test     |
 | dviolin    | Dana Violin    |        | test     |
 | auditUser  | Romina Checker |        | test     |
 
-For more information about the provisioning data, view the JSON objects [here](https://github.com/openkfw/TruBudget/tree/main/provisioning/src/data/test).
+
+ >New provisioning data can be added or the existing ones can be modified via the relevant JSON files located [here](https://github.com/openkfw/TruBudget/tree/main/provisioning/src/data/test).
+ 
+> All fields which are present 
+
+ For more information about the provisioning data, JSON objects can be found [here](https://github.com/openkfw/TruBudget/tree/main/provisioning/src/data/test). 
+ 

@@ -13,7 +13,7 @@ const provisionUsers = async (axios, folder, organization) => {
     const users = readJsonFile(folder + "users.json");
 
     await Promise.all(users.map((user) => { log.info(`~> Adding user ${user.displayName}`); return createUser(axios, {id: user.id, displayName: user.displayName, password: user.password}, organization);}));
-    const usersWithPermissions = users.filter((user) => Array.isArray(user.permissions) && user.permissions.length > 0);
+    const usersWithPermissions = users.filter((user) => user.permissions.length > 0);
     for (const user of usersWithPermissions) {
       if (user.permissions.includes("all")) {
         log.info(`~> all Permissions granted to ${user.id}`);
@@ -38,7 +38,7 @@ const provisionGroups = async (axios, folder) => {
   try {
     const groups = readJsonFile(folder + "groups.json");
     await Promise.all(groups.map((group) => createGroup(axios, group)));
-    const groupsWithUsers = groups.filter((group) => Array.isArray(group.users) && group.users.length > 0);
+    const groupsWithUsers = groups.filter((group) => group.users.length > 0);
     for (const group of groupsWithUsers) {
       await Promise.all(group.users.map((user) => addUserToGroup(axios, group.id, user)));
     }

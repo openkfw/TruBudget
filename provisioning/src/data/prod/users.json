@@ -2,141 +2,169 @@
   {
     "id": "thouse",
     "displayName": "Tom House",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "pkleffmann",
     "displayName": "Piet Kleffmann",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "mstein",
     "displayName": "Mauro Stein",
-    "password": "test"
+    "password": "test",
+    "permissions": ["all"]
   },
   {
     "id": "jdoe",
     "displayName": "John Doe",
-    "password": "test"
+    "password": "test",
+    "permissions": ["all"]
   },
   {
     "id": "jxavier",
     "displayName": "Jane Xavier",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "dviolin",
     "displayName": "Dana Violin",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "auditUser",
     "displayName": "Romina Checker",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "rfinance",
     "displayName": "Rose Finance",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "atutelle",
     "displayName": "Abbas Tutelle",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "pbailleur",
     "displayName": "Peter Bailleur",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "stresor",
     "displayName": "Simon Tresor",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "faudit",
     "displayName": "Fatime Audit",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "pchantier",
     "displayName": "Paul Chantier",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "ftender",
     "displayName": "Francis Tender",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "msiddiqui",
     "displayName": "Moz Siddiqui",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "aproducer",
     "displayName": "Anna Producer",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "kdeliverer",
     "displayName": "Kevin Deliverer",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "ccustoms",
     "displayName": "Carine Customs",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "sdistributor",
     "displayName": "Salif Distributor",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "fhealth",
     "displayName": "Flora Health",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "ihealth",
     "displayName": "Ibrahim Health",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "ahealth",
     "displayName": "Alice Health",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "ckfwpm",
     "displayName": "Chris KfW PM",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "rfoundation",
     "displayName": "Raheem Foundation",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "mmoh",
     "displayName": "Melvin Ministry of Health",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "jport",
     "displayName": "Jazmine Port Authority",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "iport",
     "displayName": "Issac Port Authority",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   },
   {
     "id": "dhospital",
     "displayName": "Dora Hospital",
-    "password": "test"
+    "password": "test",
+    "permissions": []
   }
 ]
