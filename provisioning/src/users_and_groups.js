@@ -12,7 +12,11 @@ const provisionUsers = async (axios, folder, organization) => {
   try {
     const users = readJsonFile(folder + "users.json");
 
-    await Promise.all(users.map((user) => { log.info(`~> Adding user ${user.displayName}`); return createUser(axios, {id: user.id, displayName: user.displayName, password: user.password}, organization);}));
+    for (const user of users) {
+      log.info(`~> Adding user ${user.displayName}`); 
+      await createUser(axios, {id: user.id, displayName: user.displayName, password: user.password}, organization);
+    }
+
     const usersWithPermissions = users.filter((user) => user.permissions.length > 0);
     for (const user of usersWithPermissions) {
       if (user.permissions.includes("all")) {
