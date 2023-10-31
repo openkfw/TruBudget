@@ -23,7 +23,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Added -->
 
-<!-- ### Changed -->
+### Changed
+
+- Changed hardcoded provisioning of user permissions and group users to a dynamic provisioning, where the user permissions and group users are read from json objects. [#1499](https://github.com/openkfw/TruBudget/issues/1499)
 
 <!-- ### Deprecated -->
 
