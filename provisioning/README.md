@@ -58,9 +58,7 @@ The default provisioning data is stored in `provisioning/src/data/test`.
 | auditUser  | Romina Checker |        | test     |
 
 
- >New provisioning data can be added or the existing ones can be modified via the relevant JSON files located [here](https://github.com/openkfw/TruBudget/tree/main/provisioning/src/data/test).
+ Source of the provisioning data are the JSON Objects which can be found [here](https://github.com/openkfw/TruBudget/tree/main/provisioning/src/data/test). New provisioning data can be added or the existing ones can be modified through the JSON objects.
  
-> All fields which are present 
-
- For more information about the provisioning data, JSON objects can be found [here](https://github.com/openkfw/TruBudget/tree/main/provisioning/src/data/test). 
+> All fields which are already present in the JSON objects are mandatory. Deleting these fields will fail the provisioning.
  
