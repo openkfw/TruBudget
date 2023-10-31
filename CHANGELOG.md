@@ -17,23 +17,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
-## [2.x.x] - TBD
-
-<!-- ## Unreleased -->
-
-<!-- ### Added -->
+## [2.4.0] - 2023-10-31
 
 ### Changed
 
 - Changed hardcoded provisioning of user permissions and group users to a dynamic provisioning, where the user permissions and group users are read from json objects. [#1499](https://github.com/openkfw/TruBudget/issues/1499)
 
-<!-- ### Deprecated -->
-
-<!-- ### Removed -->
+- Changed the button for switching between list view and tile view to a toggle button [#1479](https://github.com/openkfw/TruBudget/issues/1479)
 
 ### Fixed
 
 - Fixed an issue when error message was displayed if a user uploaded document in a worfklowitem to which he had permissions based on group membership. [#1498](https://github.com/openkfw/TruBudget/issues/1498)
+
+- Fixed an issue where the default currency shown in the dashboard was always EUR, to display the currency of the project [#1489](https://github.com/openkfw/TruBudget/issues/1489)
 
 ## [2.3.0] - 2023-10-13
 
@@ -1001,7 +997,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.3.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.4.0...main
+[2.3.0]: https://github.com/openkfw/TruBudget/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/openkfw/TruBudget/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/openkfw/TruBudget/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/openkfw/TruBudget/compare/v2.1.0...v2.2.0
