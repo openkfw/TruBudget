@@ -25,7 +25,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Possibility to create several workflowitems at once from pre-defined templates. [#1430](https://github.com/openkfw/TruBudget/issues/1430)
 
-<!-- ### Changed -->
+### Changed
+
+- Session token cookie is invalidated on user logout. [#1507](https://github.com/openkfw/TruBudget/issues/1507)
 
 <!-- ### Deprecated -->
 
