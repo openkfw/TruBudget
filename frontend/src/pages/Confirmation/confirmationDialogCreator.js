@@ -168,7 +168,7 @@ const _createDialogContent = (actionTableData, originalAction, marginTop) => {
       {additionalActionsContent}
       <div style={marginTop}>
         <Typography>{strings.confirmation.original_actions}</Typography>
-        {_createActionsTable(actionTableData, ActionTypes.Original)}
+        {_createActionsTable(actionTableData, ActionTypes.ORIGINAL)}
       </div>
     </>
   );

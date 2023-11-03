@@ -240,6 +240,12 @@ const de = {
     workflow_reject_reason: "Ablehnungsgrund"
   },
 
+  workflowTemplate: {
+    monitoring: "Überwachung / Ausführung",
+    tender: "Vergabe",
+    payments: "Zahlungen"
+  },
+
   snackbar: {
     update_succeed_message: "{0} erfolgreich geändert",
     creation_succeed_message: "{0} erfolgreich erstellt",

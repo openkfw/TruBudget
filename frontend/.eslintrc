@@ -46,8 +46,10 @@
   "rules": {
     "react/prop-types": "off",
     "react/display-name": "off",
+    "react/no-multi-comp": ["warn", { "ignoreStateless": true }],
     "no-var": "warn",
     "no-console": "warn",
+    "no-debugger": "warn",
     "import/named": "error",
     "semi-style": ["error", "last"],
     "semi": ["error", "always"],

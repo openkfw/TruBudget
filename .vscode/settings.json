@@ -10,6 +10,7 @@
     "./logging-service"
   ],
   "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs":"active",
   "editor.formatOnSave": true,
     "debug.internalConsoleOptions": "neverOpen",
     "editor.tabSize": 2,

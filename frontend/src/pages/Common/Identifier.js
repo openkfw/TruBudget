@@ -22,6 +22,7 @@ class Identifier extends Component {
           value={this.props.name}
           onChange={this.props.nameOnChange}
           data-test={this.props.commentId || "nameinput"}
+          disabled={this.props.disabled}
         />
 
         <TextInput
@@ -30,6 +31,7 @@ class Identifier extends Component {
           onChange={this.props.commentOnChange}
           multiline={true}
           data-test={this.props.commentId || "commentinput"}
+          disabled={this.props.disabled}
         />
       </div>
     );

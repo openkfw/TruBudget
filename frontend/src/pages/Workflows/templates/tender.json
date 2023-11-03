@@ -1,0 +1,26 @@
+{
+  "key": "tender",
+  "steps": [
+    {
+      "name": "Budget Allocation"
+    },
+    {
+      "name": "Tender Publication"
+    },
+    {
+      "name": "Tender Evaluation"
+    },
+    {
+      "name": "Contract Signature"
+    },
+    {
+      "name": "First Installment"
+    },
+    {
+      "name": "Progress Report"
+    },
+    {
+      "name": "Payment Installment"
+    }
+  ]
+}

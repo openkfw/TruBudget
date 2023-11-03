@@ -1,0 +1,14 @@
+{
+  "key": "monitoring",
+  "steps": [
+    {
+      "name": "Setup"
+    },
+    {
+      "name": "Execute"
+    },
+    {
+      "name": "Monitor"
+    }
+  ]
+}

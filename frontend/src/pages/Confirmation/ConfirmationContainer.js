@@ -19,7 +19,7 @@ import {
   assignWorkflowItem,
   closeSubproject,
   closeWorkflowItem,
-  createWorkflowItem,
+  createWorkflowItemAction,
   fetchWorkflowItemPermissions,
   grantWorkflowItemPermission,
   revokeWorkflowItemPermission,
@@ -259,7 +259,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         assignWorkflowItem(pId, pDisplayName, subpId, subpName, wId, wName, assigneeId, assigneeName, additionalActions)
       ),
-    createWorkflowitem: (...workflowitemData) => dispatch(createWorkflowItem(...workflowitemData)),
+    createWorkflowitem: (...workflowitemData) => dispatch(createWorkflowItemAction(...workflowitemData)),
     createSubProject: (...subprojectToAdd) => dispatch(createSubProject(...subprojectToAdd)),
     grantProjectPermission: (pId, pName, permission, granteeId, granteeName, additionalActions) =>
       dispatch(grantProjectPermission(pId, pName, permission, granteeId, granteeName, additionalActions, true)),

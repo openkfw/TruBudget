@@ -9,7 +9,8 @@ import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
 
 import {
   assignWorkflowItem,
-  createWorkflowItem,
+  createWorkflowFromTemplateAction,
+  createWorkflowItemAction,
   defaultWorkflowExchangeRate,
   editWorkflowItem,
   hideWorkflowDialog,
@@ -24,7 +25,8 @@ import {
   storeWorkflowExchangeRate,
   storeWorkflowitemType,
   storeWorkflowName,
-  storeWorkflowStatus
+  storeWorkflowStatus,
+  storeWorkflowTemplate
 } from "./actions";
 import WorkflowDialog from "./WorkflowDialog";
 
@@ -49,7 +51,7 @@ class WorkflowDialogContainer extends Component {
     const assignee = this.props.selectedAssignee;
     const assigneeDisplayName = this.props.users.find((u) => u.id === assignee).displayName;
 
-    this.props.createWorkflowitem(
+    this.props.createWorkflowitemSuper(
       projectId,
       subProjectId,
       displayName,
@@ -69,12 +71,56 @@ class WorkflowDialogContainer extends Component {
     );
   };
 
+  createWorkflowFromTemplate = ({
+    amount,
+    amountType,
+    currency,
+    description,
+    displayName,
+    dueDate,
+    exchangeRate,
+    projectDisplayName,
+    status,
+    subprojectDisplayName,
+    workflowDocuments,
+    workflowitemType,
+    workflowTemplate,
+    workflowitems
+  }) => {
+    const path = this.props.router.location.pathname.split("/");
+    const projectId = path[2];
+    const subprojectId = path[3];
+    const assignee = this.props.selectedAssignee;
+    const assigneeDisplayName = this.props.users.find((u) => u.id === assignee).displayName;
+
+    this.props.createWorkflowFromTemplateSuper({
+      projectId,
+      subprojectId,
+      displayName,
+      amount,
+      exchangeRate,
+      amountType,
+      currency,
+      description,
+      status,
+      workflowDocuments,
+      dueDate,
+      workflowitemType,
+      projectDisplayName,
+      subprojectDisplayName,
+      assignee,
+      assigneeDisplayName,
+      workflowitems
+    });
+  };
+
   render() {
     return (
       <WorkflowDialog
-        createWorkflowItem={this.createWorkflowItem}
-        onDialogCancel={this.props.hideWorkflowDialog}
         {...this.props}
+        createWorkflowItem={this.createWorkflowItem}
+        createWorkflowFromTemplate={this.createWorkflowFromTemplate}
+        onDialogCancel={this.props.hideWorkflowDialog}
       />
     );
   }
@@ -100,13 +146,16 @@ const mapStateToProps = (state) => {
     fixedWorkflowitemType: state.getIn(["workflow", "fixedWorkflowitemType"]),
     hasFixedWorkflowitemType: state.getIn(["workflow", "hasFixedWorkflowitemType"]),
     versions: state.getIn(["status", "versions"]),
-    storageServiceAvailable: state.getIn(["status", "storageServiceAvailable"])
+    storageServiceAvailable: state.getIn(["status", "storageServiceAvailable"]),
+    workflowTemplate: state.getIn(["workflow", "workflowTemplate"]),
+    workflowTemplates: state.getIn(["workflow", "workflowTemplates"])
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createWorkflowitem: (...workflowitemData) => dispatch(createWorkflowItem(...workflowitemData)),
+    createWorkflowitemSuper: (...workflowitemData) => dispatch(createWorkflowItemAction(...workflowitemData)),
+    createWorkflowFromTemplateSuper: (...data) => dispatch(createWorkflowFromTemplateAction(...data)),
     editWorkflowItem: (pId, sId, wId, changes) => dispatch(editWorkflowItem(pId, sId, wId, changes)),
     storeWorkflowComment: (comment) => dispatch(storeWorkflowComment(comment)),
     storeWorkflowCurrency: (currency) => dispatch(storeWorkflowCurrency(currency)),
@@ -117,6 +166,7 @@ const mapDispatchToProps = (dispatch) => {
     storeWorkflowStatus: (state) => dispatch(storeWorkflowStatus(state)),
     storeWorkflowDueDate: (dueDate) => dispatch(storeWorkflowDueDate(dueDate)),
     storeWorkflowitemType: (workflowitemType) => dispatch(storeWorkflowitemType(workflowitemType)),
+    storeWorkflowTemplate: (workflowTemplate) => dispatch(storeWorkflowTemplate(workflowTemplate)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
