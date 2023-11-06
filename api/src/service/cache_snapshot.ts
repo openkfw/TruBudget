@@ -66,12 +66,12 @@ import { Project } from "./domain/workflow/project";
 import { Workflowitem } from "./domain/workflow/workflowitem";
 import getValidConfig from "../config";
 
-const STREAM_BLACKLIST = [
-  // The organization address is written directly (i.e., not as event):
-  "organization",
-];
+const MAX_ITEM_COUNT = 0x7fffffff;
 
 const SNAPSHOT_KEY = "snapshot";
+const PROJECT_SNAPSHOT_EVENT_KEY = "project_snapshot_published";
+const SUBPROJECT_SNAPSHOT_EVENT_KEY = "subproject_snapshot_published";
+const WORKFLOWITEM_SNAPSHOT_EVENT_KEY = "workflowitem_snapshot_published";
 
 const { snapshotEventInterval: SNAPSHOT_EVENT_INTERVAL } = getValidConfig();
 
@@ -106,12 +106,12 @@ export async function getLatestSnapshot(
   key: string,
   eventType: string,
 ): Promise<Result.Type<Subproject> | Result.Type<Project> | Result.Type<Workflowitem>> {
-  let { searchKey, sourceFromSnapshot, parseFromSnapshot } = getSourceInfo(key, eventType);
-  if (searchKey.length == 0) {
+  const { searchKey, sourceFromSnapshot, parseFromSnapshot } = getSourceInfo(key, eventType);
+  if (searchKey.length === 0) {
     return new VError("Event Type is not a valid Snapshot type");
   }
 
-  let itemsInfoResult = await getItemsInfo(conn, ctx, streamName, key, searchKey);
+  const itemsInfoResult = await getItemsInfo(conn, streamName, key, searchKey);
   if (Result.isErr(itemsInfoResult)) {
     return itemsInfoResult;
   }
@@ -123,28 +123,27 @@ export async function getLatestSnapshot(
   let data;
   if (snapshotIndex != -1) {
     switch (eventType) {
-      case "project_snapshot_published":
+      case PROJECT_SNAPSHOT_EVENT_KEY:
         data = items[snapshotIndex].data.json.project;
         break;
-      case "subproject_snapshot_published":
+      case SUBPROJECT_SNAPSHOT_EVENT_KEY:
         data = items[snapshotIndex].data.json.subproject;
         break;
-      case "workflowitem_snapshot_published":
+      case WORKFLOWITEM_SNAPSHOT_EVENT_KEY:
         data = items[snapshotIndex].data.json.workflowitem;
         break;
     }
   }
   let lastOrderingEventItem;
-  if (eventType == "subproject_snapshot_published") {
+  if (eventType == SUBPROJECT_SNAPSHOT_EVENT_KEY) {
     logger.trace("Event Subproject snapshot publish");
     const rpcClient = conn.multichainClient.getRpcClient();
-    let items: Item[] = [];
-    items = await rpcClient.invoke(
+    const items: Item[] = await rpcClient.invoke(
       "liststreamkeyitems",
       streamName,
       key + "_workflowitem_ordering",
       false,
-      0x7fffffff,
+      MAX_ITEM_COUNT,
     );
     // Parse workflow reorder events because they are separate events saved on chain
     if (items.length > 0) {
@@ -155,17 +154,15 @@ export async function getLatestSnapshot(
   }
 
   if (lastIndex == snapshotIndex) {
-    let parsedData = parseFromSnapshot(data);
-    if (lastOrderingEventItem && eventType == "subproject_snapshot_published") {
-      let lastOrdering: WorkflowitemOrdering = lastOrderingEventItem.data.json.ordering;
-      if (
-        Result.isOk(parsedData) &&
-        lastOrdering !== (parsedData as Subproject).workflowitemOrdering
-      ) {
+    const parsedData = parseFromSnapshot(data);
+    if (lastOrderingEventItem && eventType === SUBPROJECT_SNAPSHOT_EVENT_KEY) {
+      const lastOrdering: WorkflowitemOrdering = lastOrderingEventItem.data.json.ordering;
+      const parsedSubproject = parsedData as Subproject;
+      if (Result.isOk(parsedData) && lastOrdering !== parsedSubproject.workflowitemOrdering) {
         logger.trace("Last snapshot data is not equal to latest ordering");
-        logger.trace("Snapshot order: " + (parsedData as Subproject).workflowitemOrdering);
+        logger.trace("Snapshot order: " + parsedSubproject.workflowitemOrdering);
         logger.trace("Last Ordering order: " + lastOrdering);
-        (parsedData as Subproject).workflowitemOrdering = lastOrdering;
+        parsedSubproject.workflowitemOrdering = lastOrdering;
       }
     }
     return parsedData;
@@ -173,13 +170,13 @@ export async function getLatestSnapshot(
 
   // snapshot is not up to date
   items = items.slice(snapshotIndex + 1);
-  let parsedEvents = parseBusinessEvents(items, streamName);
+  const parsedEvents = parseBusinessEvents(items, streamName);
   const businessEvents = parsedEvents.filter(Result.isOk);
   const sourcedData = sourceFromSnapshot(ctx, businessEvents, false, data);
 
   // if there are reordering events, apply it
-  if (lastOrderingEventItem && eventType == "subproject_snapshot_published") {
-    let lastOrdering: WorkflowitemOrdering = lastOrderingEventItem.data.json.ordering;
+  if (lastOrderingEventItem && eventType === SUBPROJECT_SNAPSHOT_EVENT_KEY) {
+    const lastOrdering: WorkflowitemOrdering = lastOrderingEventItem.data.json.ordering;
     if (Result.isOk(sourcedData)) {
       sourcedData.workflowitemOrdering = lastOrdering;
     }
@@ -197,12 +194,12 @@ export async function publishSnapshot(
   createEvent: Function,
   ordering?: WorkflowitemOrdering,
 ): Promise<{ canPublish: boolean; eventData: Result.Type<BusinessEvent> }> {
-  let { searchKey, sourceFromSnapshot } = getSourceInfo(key, eventType);
-  if (searchKey.length == 0) {
+  const { searchKey, sourceFromSnapshot } = getSourceInfo(key, eventType);
+  if (searchKey.length === 0) {
     return { canPublish: false, eventData: new VError("Event Type is not a valid Snapshot type") };
   }
 
-  let itemsInfoResult = await getItemsInfo(conn, ctx, streamName, key, searchKey);
+  const itemsInfoResult = await getItemsInfo(conn, streamName, key, searchKey);
   if (Result.isErr(itemsInfoResult)) {
     return { canPublish: false, eventData: itemsInfoResult };
   }
@@ -228,29 +225,29 @@ export async function publishSnapshot(
       };
     }
     switch (eventType) {
-      case "project_snapshot_published":
+      case PROJECT_SNAPSHOT_EVENT_KEY:
         data = items[snapshotIndex].data.json.project;
         break;
-      case "subproject_snapshot_published":
+      case SUBPROJECT_SNAPSHOT_EVENT_KEY:
         data = items[snapshotIndex].data.json.subproject;
         break;
-      case "workflowitem_snapshot_published":
+      case WORKFLOWITEM_SNAPSHOT_EVENT_KEY:
         data = items[snapshotIndex].data.json.workflowitem;
         break;
     }
     items = items.slice(snapshotIndex + 1);
   }
-  let parsedEvents = parseBusinessEvents(items, streamName);
+  const parsedEvents = parseBusinessEvents(items, streamName);
   const businessEvents = parsedEvents.filter(Result.isOk);
 
   const sourcedData = sourceFromSnapshot(ctx, businessEvents, false, data);
-  if (ordering && eventType == "subproject_snapshot_published") {
+  if (ordering && eventType === SUBPROJECT_SNAPSHOT_EVENT_KEY) {
     if (Result.isOk(sourcedData)) {
       sourcedData.workflowitemOrdering = ordering;
     }
   }
   let publishEvent: Result.Type<BusinessEvent>;
-  if (eventType == "workflowitem_snapshot_published") {
+  if (eventType === WORKFLOWITEM_SNAPSHOT_EVENT_KEY) {
     publishEvent = createEvent(
       ctx.source,
       creatingUser.id,
@@ -274,17 +271,17 @@ function getSourceInfo(
   let parseFromSnapshot: Function;
 
   switch (eventType) {
-    case "project_snapshot_published":
+    case PROJECT_SNAPSHOT_EVENT_KEY:
       searchKey = SNAPSHOT_KEY;
       sourceFromSnapshot = ProjectEventSourcing.sourceProjectFromSnapshot;
       parseFromSnapshot = ProjectEventSourcing.parseProjectFromSnapshot;
       break;
-    case "subproject_snapshot_published":
+    case SUBPROJECT_SNAPSHOT_EVENT_KEY:
       searchKey = key + "_" + SNAPSHOT_KEY;
       sourceFromSnapshot = SubprojectEventSourcing.sourceSubprojectFromSnapshot;
       parseFromSnapshot = SubprojectEventSourcing.parseSubprojectFromSnapshot;
       break;
-    case "workflowitem_snapshot_published":
+    case WORKFLOWITEM_SNAPSHOT_EVENT_KEY:
       searchKey = key + "_" + SNAPSHOT_KEY;
       sourceFromSnapshot = WorkflowitemEventSourcing.sourceWorkflowitemFromSnapshot;
       parseFromSnapshot = WorkflowitemEventSourcing.parseWorkflowitemFromSnapshot;
@@ -302,58 +299,65 @@ function getSourceInfo(
 
 async function getItemsInfo(
   conn: ConnToken,
-  ctx: Ctx,
   streamName: string,
   key: string,
   searchKey: string,
 ): Promise<Result.Type<{ items: Item[]; snapshotIndex: number }>> {
   const rpcClient = conn.multichainClient.getRpcClient();
-  let items: Item[] = [];
   try {
-    items = await rpcClient.invoke("liststreamkeyitems", streamName, key, false, 0x7fffffff);
+    const items: Item[] = await rpcClient.invoke(
+      "liststreamkeyitems",
+      streamName,
+      key,
+      false,
+      MAX_ITEM_COUNT,
+    );
     if (items.length == 0) {
       return new VError("Data Not Found");
     }
+
+    // Traverse the list reverse to get latest snapshot
+    let snapshotIndex = -1;
+    for (let i = items.length - 1; i >= 0; i--) {
+      const item = items[i];
+      if (item.keys.includes(searchKey)) {
+        snapshotIndex = i;
+        break;
+      }
+    }
+
+    return { items: items, snapshotIndex: snapshotIndex };
   } catch (e) {
     return new VError("Data Not Found");
   }
-
-  // Traverse the list reverse to get latest snapshot
-  let snapshotIndex = -1;
-  for (let i = items.length - 1; i >= 0; i--) {
-    let item = items[i];
-    if (item.keys.includes(searchKey)) {
-      snapshotIndex = i;
-      break;
-    }
-  }
-  return { items: items, snapshotIndex: snapshotIndex };
 }
 
 export function parseBusinessEvents(
   items: Item[],
   streamName: string,
 ): Array<Result.Type<BusinessEvent>> {
-  return items
-    .map((item) => {
-      const event = item.data.json;
-      if (!event) {
-        logger.warn(`ignoring event no item.data.json property found ${JSON.stringify(item)}`);
-        return;
-      }
-      if (event.intent) {
-        logger.warn(`ignoring event of intent ${event.intent}`);
-        return;
-      }
-      const parser = EVENT_PARSER_MAP[event.type];
-      if (parser === undefined) {
-        const eventType = event && event.type ? event.type : JSON.stringify(event);
-        logger.fatal({ streamName, item }, `Cache: Event type "${eventType}"" not implemented.`);
-        return;
-      }
-      return parser(event);
-    })
-    .filter((x) => x !== undefined);
+  return items.reduce(function (parsedEvents, item) {
+    const event = item.data.json;
+    if (!event) {
+      logger.warn(`ignoring event no item.data.json property found ${JSON.stringify(item)}`);
+      return parsedEvents;
+    }
+
+    if (event.intent) {
+      logger.warn(`ignoring event of intent ${event.intent}`);
+      return parsedEvents;
+    }
+
+    const parser = EVENT_PARSER_MAP[event.type];
+
+    if (parser === undefined) {
+      const eventType = event.type ? event.type : JSON.stringify(event);
+      logger.fatal({ streamName, item }, `Cache: Event type "${eventType}"" not implemented.`);
+      return parsedEvents;
+    }
+    parsedEvents.push(parser(event));
+    return parsedEvents;
+  }, [] as Result.Type<BusinessEvent>[]);
 }
 
 const EVENT_PARSER_MAP = {

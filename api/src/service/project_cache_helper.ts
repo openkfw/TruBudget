@@ -22,13 +22,19 @@ export async function getAllProjects(conn: ConnToken, ctx: Ctx): Promise<Project
   const streams = (await conn.multichainClient.streams()).filter(
     (stream) => stream.details.kind === "project",
   );
-  let projects: Array<Project.Project> = [];
-  let i;
-  for (i = 0; i <= streams.length - 1; i++) {
-    const projectResult = await getProject(conn, ctx, streams[i].name);
-    if (Result.isOk(projectResult)) {
-      projects.push(projectResult);
+
+  const projectPromises = streams.reduce((acc, currentStream, next) => {
+    acc.push(getProject(conn, ctx, currentStream.name));
+    return acc;
+  }, [] as Promise<Result.Type<Project.Project>>[]);
+
+  const results = await Promise.all(projectPromises);
+
+  return results.reduce((acc, currentResult, next) => {
+    const result = currentResult;
+    if (Result.isOk(result)) {
+      acc.push(result);
     }
-  }
-  return projects;
+    return acc;
+  }, [] as Project.Project[]);
 }

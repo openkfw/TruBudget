@@ -13,6 +13,8 @@ import { Item } from "./liststreamitems";
 import * as SnapshotService from "./cache_snapshot";
 import * as ProjectEventSourcing from "./domain/workflow/project_eventsourcing";
 
+const MAX_ITEM_COUNT = 0x7fffffff;
+
 export async function getProjectHistory(
   conn: ConnToken,
   ctx: Ctx,
@@ -36,7 +38,7 @@ export async function getProjectHistory(
             projectId,
             "self",
             false,
-            0x7fffffff,
+            MAX_ITEM_COUNT,
           );
           if (items.length == 0) {
             return new VError("Data Not Found");

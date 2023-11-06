@@ -15,6 +15,8 @@ import { Item } from "./liststreamitems";
 import * as SnapshotService from "./cache_snapshot";
 import * as WorkflowitemEventSourcing from "./domain/workflow/workflowitem_eventsourcing";
 
+const MAX_ITEM_COUNT = 0x7fffffff;
+
 export async function getWorkflowitemHistory(
   conn: ConnToken,
   ctx: Ctx,
@@ -42,7 +44,7 @@ export async function getWorkflowitemHistory(
             projectId,
             workflowitemId,
             false,
-            0x7fffffff,
+            MAX_ITEM_COUNT,
           );
           if (items.length == 0) {
             return new VError("Data Not Found");

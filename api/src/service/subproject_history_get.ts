@@ -14,6 +14,8 @@ import { Item } from "./liststreamitems";
 import * as SnapshotService from "./cache_snapshot";
 import * as SubprojectEventSourcing from "./domain/workflow/subproject_eventsourcing";
 
+const MAX_ITEM_COUNT = 0x7fffffff;
+
 export async function getSubprojectHistory(
   conn: ConnToken,
   ctx: Ctx,
@@ -39,7 +41,7 @@ export async function getSubprojectHistory(
             projectId,
             subprojectId,
             false,
-            0x7fffffff,
+            MAX_ITEM_COUNT,
           );
           if (items.length == 0) {
             return new VError("Data Not Found");

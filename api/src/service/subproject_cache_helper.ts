@@ -6,6 +6,8 @@ import * as Project from "./domain/workflow/project";
 import * as SnapshotService from "./cache_snapshot";
 import { Item } from "./liststreamitems";
 
+const MAX_ITEM_COUNT = 0x7fffffff;
+
 export async function getSubproject(
   conn: ConnToken,
   ctx: Ctx,
@@ -28,16 +30,28 @@ export async function getAllSubprojects(
 ): Promise<Subproject.Subproject[]> {
   const rpcClient = conn.multichainClient.getRpcClient();
   let items: Item[] = [];
-  items = await rpcClient.invoke("liststreamkeyitems", projectId, "subprojects", false, 0x7fffffff);
-  let subprojects: Array<Subproject.Subproject> = [];
-  let i;
-  for (i = 0; i <= items.length - 1; i++) {
-    if (items[i].data.json.type == "subproject_created") {
-      const result = await getSubproject(conn, ctx, projectId, items[i].data.json.subproject.id);
-      if (Result.isOk(result)) {
-        subprojects.push(result);
-      }
+  items = await rpcClient.invoke(
+    "liststreamkeyitems",
+    projectId,
+    "subprojects",
+    false,
+    MAX_ITEM_COUNT,
+  );
+
+  const subprojectPromises = items.reduce((acc, currentItem, next) => {
+    if (currentItem.data.json.type === "subproject_created") {
+      acc.push(getSubproject(conn, ctx, projectId, currentItem.data.json.subproject.id));
     }
-  }
-  return subprojects;
+    return acc;
+  }, [] as Promise<Result.Type<Subproject.Subproject>>[]);
+
+  const results = await Promise.all(subprojectPromises);
+
+  return results.reduce((acc, currentResult, next) => {
+    const result = currentResult;
+    if (Result.isOk(result)) {
+      acc.push(result);
+    }
+    return acc;
+  }, [] as Subproject.Subproject[]);
 }

@@ -7,6 +7,8 @@ import * as Project from "./domain/workflow/project";
 import * as SnapshotService from "./cache_snapshot";
 import { Item } from "./liststreamitems";
 
+const MAX_ITEM_COUNT = 0x7fffffff;
+
 export async function getWorkflowitem(
   conn: ConnToken,
   ctx: Ctx,
@@ -35,22 +37,23 @@ export async function getAllWorkflowitems(
     projectId,
     subprojectId + "_workflows",
     false,
-    0x7fffffff,
+    MAX_ITEM_COUNT,
   );
-  let workflowitems: Array<Workflowitem.Workflowitem> = [];
-  let i;
-  for (i = 0; i <= items.length - 1; i++) {
-    if (items[i].data.json.type == "workflowitem_created") {
-      const result = await getWorkflowitem(
-        conn,
-        ctx,
-        projectId,
-        items[i].data.json.workflowitem.id,
-      );
-      if (Result.isOk(result)) {
-        workflowitems.push(result);
-      }
+
+  const wfiPromises = items.reduce((acc, currentItem, next) => {
+    if (currentItem.data.json.type === "workflowitem_created") {
+      acc.push(getWorkflowitem(conn, ctx, projectId, currentItem.data.json.workflowitem.id));
     }
-  }
-  return workflowitems;
+    return acc;
+  }, [] as Promise<Result.Type<Workflowitem.Workflowitem>>[]);
+
+  const results = await Promise.all(wfiPromises);
+
+  return results.reduce((acc, currentResult, next) => {
+    const result = currentResult;
+    if (Result.isOk(result)) {
+      acc.push(result);
+    }
+    return acc;
+  }, [] as Workflowitem.Workflowitem[]);
 }
