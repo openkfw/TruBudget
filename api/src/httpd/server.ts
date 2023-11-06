@@ -16,7 +16,7 @@ import fastifyRateLimit from "@fastify/rate-limit";
 import * as path from "path";
 import { toHttpError } from "http_errors";
 import ajvErrors from "ajv-errors";
-import { addValidationFormats } from "lib/ajvValidation";
+import { addValidationFormats } from "../lib/ajvValidation";
 
 const DEFAULT_API_VERSION = "1.0";
 
