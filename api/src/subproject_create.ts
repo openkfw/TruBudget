@@ -4,19 +4,11 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
-import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
-import { currencyCodeSchema, isoCurrencyCodes } from "./service/domain/workflow/money";
-import { idSchema as projectIdSchema } from "./service/domain/workflow/project";
-import { projectedBudgetListSchema } from "./service/domain/workflow/projected_budget";
-import { idSchema as subProjectIdSchema } from "./service/domain/workflow/subproject";
-import WorkflowitemType, {
-  workflowitemTypeSchema,
-  workflowitemTypes,
-} from "./service/domain/workflowitem_types/types";
+import { isoCurrencyCodes } from "./service/domain/workflow/money";
+import WorkflowitemType, { workflowitemTypes } from "./service/domain/workflowitem_types/types";
 import * as SubprojectCreate from "./service/subproject_create";
 import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
@@ -46,25 +38,6 @@ interface RequestBodyV1 {
     };
   };
 }
-
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    projectId: projectIdSchema.required(),
-    subproject: Joi.object({
-      id: subProjectIdSchema,
-      status: Joi.valid("open"),
-      displayName: safeStringSchema.required(),
-      description: safeStringSchema.allow(""),
-      assignee: safeIdSchema,
-      validator: safeIdSchema,
-      workflowitemType: workflowitemTypeSchema,
-      currency: currencyCodeSchema.required(),
-      projectedBudgets: projectedBudgetListSchema,
-      additionalData: AdditionalData.schema,
-    }).required(),
-  }).required(),
-});
 
 /**
  * Creates the swagger schema for the `/project.createSubproject` endpoint
@@ -107,7 +80,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 properties: {
                   id: {
                     type: "string",
-                    format: "subprojectIdSchema",
+                    format: "subprojectIdFormat",
                     example: "d0e8c69eg298c87e3899119e025eff1f",
                   },
                   status: { type: "string", const: "open", example: "open" },
