@@ -1,0 +1,6 @@
+services:
+  logging-service:
+    build:
+      context: ../logging-service
+      dockerfile: Dockerfile
+    image: docker-compose-logging-service:local
