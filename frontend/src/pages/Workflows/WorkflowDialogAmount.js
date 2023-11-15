@@ -41,9 +41,15 @@ const styles = {
 };
 
 const WorkflowDialogAmount = (props) => {
-  const { workflowCurrency, subProjectCurrency, storeWorkflowCurrency, workflowAmountType, storeWorkflowAmountType } =
-    props;
-  const budgetDisabled = workflowAmountType === "N/A";
+  const {
+    workflowCurrency,
+    subProjectCurrency,
+    storeWorkflowCurrency,
+    workflowAmountType,
+    storeWorkflowAmountType,
+    disabled
+  } = props;
+  const budgetDisabled = workflowAmountType === "N/A" || disabled;
   const [isWorkflowAmountValid, setIsWorkflowAmountValid] = useState(true);
   const [isWorkflowExchangeRateValid, setIsWorkflowExchangeRateValid] = useState(true);
 
@@ -66,18 +72,21 @@ const WorkflowDialogAmount = (props) => {
             control={<Radio color="primary" />}
             label={strings.workflow.workflow_budget_na}
             data-test="amount-type-na"
+            disabled={disabled}
           />
           <FormControlLabel
             value="allocated"
             control={<Radio color="primary" />}
             label={strings.workflow.workflow_budget_allocated}
             data-test="amount-type-allocated"
+            disabled={disabled}
           />
           <FormControlLabel
             value="disbursed"
             control={<Radio color="primary" />}
             label={strings.workflow.workflow_budget_disbursed}
             data-test="amount-type-disbursed"
+            disabled={disabled}
           />
         </RadioGroup>
       </div>

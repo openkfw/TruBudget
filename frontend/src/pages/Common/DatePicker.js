@@ -26,7 +26,7 @@ const styles = {
   }
 };
 
-function DatePicker({ name, label, onChange, onDelete, datetime, id = "default" }) {
+function DatePicker({ name, label, onChange, onDelete, datetime, disabled, id = "default" }) {
   const dateValue = _isEmpty(datetime) ? null : datetime;
 
   const handleOnBlur = (date, name) => {
@@ -52,6 +52,7 @@ function DatePicker({ name, label, onChange, onDelete, datetime, id = "default" 
               }}
               onBlur={(date) => handleOnBlur(date)}
               renderInput={(params) => <TextField variant="standard" {...params} />}
+              disabled={disabled}
             />
           </LocalizationProvider>
         </div>

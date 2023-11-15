@@ -1,0 +1,14 @@
+{
+  "key": "payments",
+  "steps": [
+    {
+      "name": "Setup"
+    },
+    {
+      "name": "Execute"
+    },
+    {
+      "name": "Monitor"
+    }
+  ]
+}

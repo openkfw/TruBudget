@@ -245,6 +245,12 @@ const fr = {
     workflow_reject_reason: "Motif de rejet"
   },
 
+  workflowTemplate: {
+    monitoring: "Surveillance ou exécution",
+    tender: "Appel d'offres",
+    payments: "Paiements"
+  },
+
   snackbar: {
     update_succeed_message: "{0} modifiée",
     creation_succeed_message: "{0} créée",

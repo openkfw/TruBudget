@@ -309,6 +309,12 @@ const en = {
     workflow_reject_reason: "Reject reason"
   },
 
+  workflowTemplate: {
+    monitoring: "Monitoring / Execution",
+    tender: "Tender",
+    payments: "Payments"
+  },
+
   snackbar: {
     update_succeed_message: "Successfully modified {0}",
     creation_succeed_message: "Successfully created {0}",

@@ -311,6 +311,12 @@ const ka = {
     workflow_reject_reason: "უარყავი მიზეზი"
   },
 
+  workflowTemplate: {
+    monitoring: "მონიტორინგი/აღსრულება",
+    tender: "ჯილდო",
+    payments: "გადახდები"
+  },
+
   snackbar: {
     update_succeed_message: "წარმატებით შეცვლილია {0}",
     creation_succeed_message: "წარმატებით შეიქმნა {0}",

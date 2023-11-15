@@ -17,6 +17,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [2.x.x] - TBD
+
+<!-- ## Unreleased -->
+
+### Added
+
+- Possibility to create several workflowitems at once from pre-defined templates. [#1430](https://github.com/openkfw/TruBudget/issues/1430)
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
 ## [2.4.0] - 2023-10-31
 
 ### Changed

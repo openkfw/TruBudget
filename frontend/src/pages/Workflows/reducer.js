@@ -74,6 +74,7 @@ import {
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
   WORKFLOW_STATUS,
+  WORKFLOW_TEMPLATE,
   WORKFLOWITEM_TYPE,
   WORKFLOWITEMS_SELECTED
 } from "./actions";
@@ -169,7 +170,8 @@ const defaultState = fromJS({
   fixedWorkflowitemType: "",
   hasFixedWorkflowitemType: false,
   rejectReason: "",
-  isRejectReasonDialogShown: false
+  isRejectReasonDialogShown: false,
+  workflowTemplate: ""
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -502,6 +504,8 @@ export default function detailviewReducer(state = defaultState, action) {
         isRejectReasonDialogShown: false,
         rejectReason: ""
       });
+    case WORKFLOW_TEMPLATE:
+      return state.setIn(["workflowTemplate"], action.workflowTemplate);
     default:
       return state;
   }

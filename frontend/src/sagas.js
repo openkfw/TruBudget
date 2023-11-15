@@ -201,6 +201,7 @@ import {
   CLOSE_WORKFLOWITEM_SUCCESS,
   CREATE_WORKFLOW,
   CREATE_WORKFLOW_FAILURE,
+  CREATE_WORKFLOW_FROM_TEMPLATE,
   CREATE_WORKFLOW_SUCCESS,
   EDIT_WORKFLOW_ITEM,
   EDIT_WORKFLOW_ITEM_SUCCESS,
@@ -827,6 +828,55 @@ export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
         type: FETCH_ALL_SUBPROJECT_DETAILS,
         projectId: workflowitemData.projectId,
         subprojectId: workflowitemData.subprojectId,
+        showLoading: true
+      });
+      yield put({
+        type: CONFIRMATION_FINISHED
+      });
+    } catch (error) {
+      yield put({
+        type: CREATE_WORKFLOW_FAILURE,
+        message: error.message
+      });
+      throw error;
+    }
+  }, true);
+}
+
+// eslint-disable-next-line no-unused-vars
+export function* createWorkflowFromTemplateSaga({ type, ...workflowTemplateData }) {
+  const { projectId, subprojectId, workflowitems } = workflowTemplateData;
+
+  yield execute(function* () {
+    const additionalActions = yield select(getAdditionalActionsState);
+
+    const originalAction = {
+      intent: "subproject.createWorkflowitem",
+      identity: workflowTemplateData.assignee,
+      displayName: workflowTemplateData.displayName
+    };
+
+    try {
+      yield executeConfirmedAdditionalActionsSaga({
+        projectId: projectId,
+        subprojectId: subprojectId,
+        additionalActions
+      });
+      for (const wfItem of workflowitems) {
+        const { data } = yield* executeOriginalAction(
+          api.createWorkflowItem,
+          { ...originalAction, displayName: wfItem.displayName },
+          { ...workflowTemplateData, displayName: wfItem.displayName }
+        );
+        yield put({
+          type: CREATE_WORKFLOW_SUCCESS,
+          workflowitemId: data.workflowitem.id
+        });
+      }
+      yield put({
+        type: FETCH_ALL_SUBPROJECT_DETAILS,
+        projectId: workflowTemplateData.projectId,
+        subprojectId: workflowTemplateData.subprojectId,
         showLoading: true
       });
       yield put({
@@ -3243,6 +3293,7 @@ export default function* rootSaga() {
 
       // Workflow
       yield takeEvery(CREATE_WORKFLOW, createWorkflowItemSaga),
+      yield takeEvery(CREATE_WORKFLOW_FROM_TEMPLATE, createWorkflowFromTemplateSaga),
       yield takeEvery(EDIT_WORKFLOW_ITEM, editWorkflowItemSaga),
       yield takeEvery(REORDER_WORKFLOW_ITEMS, reorderWorkflowitemsSaga),
       yield takeLatest(FETCH_WORKFLOWITEM_PERMISSIONS, fetchWorkflowItemPermissionsSaga),

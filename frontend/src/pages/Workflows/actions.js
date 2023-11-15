@@ -35,6 +35,7 @@ export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
 export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
+export const CREATE_WORKFLOW_FROM_TEMPLATE = "CREATE_WORKFLOW_FROM_TEMPLATE";
 export const CREATE_WORKFLOW_FAILURE = "CREATE_WORKFLOW_FAILURE";
 export const CREATE_WORKFLOW_SUCCESS = "CREATE_WORKFLOW_SUCCESS";
 export const EDIT_WORKFLOW_ITEM = "EDIT_WORKFLOW_ITEM";
@@ -136,6 +137,8 @@ export const HIDE_REASON_DIALOG = "HIDE_REASON_DIALOG";
 export const REJECT_WORKFLOWITEM = "REJECT_WORKFLOWITEM";
 export const REJECT_WORKFLOWITEM_FAILURE = "REJECT_WORKFLOWITEM_FAILURE";
 export const CLEAR_REJECT_REASON = "CLEAR_REJECT_REASON";
+
+export const WORKFLOW_TEMPLATE = "WORKFLOW_TEMPLATE";
 
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
@@ -599,7 +602,7 @@ export function storeWorkflowItemsSelected(workflowItems) {
   };
 }
 
-export function createWorkflowItem(
+export function createWorkflowItemAction(
   projectId,
   subprojectId,
   displayName,
@@ -635,6 +638,49 @@ export function createWorkflowItem(
     subprojectDisplayName,
     assignee,
     assigneeDisplayName
+  };
+}
+
+export function createWorkflowFromTemplateAction({
+  projectId,
+  subprojectId,
+  displayName,
+  amount,
+  exchangeRate,
+  amountType,
+  currency,
+  description,
+  status,
+  documents,
+  dueDate,
+  workflowitemType,
+  projectDisplayName,
+  subprojectDisplayName,
+  assignee,
+  assigneeDisplayName,
+  template,
+  workflowitems
+}) {
+  return {
+    type: CREATE_WORKFLOW_FROM_TEMPLATE,
+    projectId,
+    subprojectId,
+    displayName,
+    amount: `${amount}`,
+    exchangeRate,
+    amountType,
+    currency,
+    description,
+    documents,
+    status,
+    dueDate,
+    workflowitemType,
+    projectDisplayName,
+    subprojectDisplayName,
+    assignee,
+    assigneeDisplayName,
+    template,
+    workflowitems
   };
 }
 
@@ -783,5 +829,12 @@ export function removeTemporaryPermission(permission, userId) {
     type: REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION,
     permission,
     userId
+  };
+}
+
+export function storeWorkflowTemplate(workflowTemplate) {
+  return {
+    type: WORKFLOW_TEMPLATE,
+    workflowTemplate
   };
 }

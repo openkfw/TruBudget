@@ -311,6 +311,12 @@ const pt = {
     workflow_reject_reason: "Rejeitar a razão"
   },
 
+  workflowTemplate: {
+    monitoring: "Monitoramento/Execução",
+    tender: "Concurso",
+    payments: "Pagamentos"
+  },
+
   snackbar: {
     update_succeed_message: "Modificado com sucesso {0}",
     creation_succeed_message: "{0} criado com sucesso",
