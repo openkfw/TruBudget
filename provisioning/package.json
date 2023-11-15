@@ -27,7 +27,7 @@
     "lint:fix": "eslint src --fix"
   },
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.6.0",
     "better-npm-audit": "^3.4.0",
     "trubudget-logging-service": "^1.1.3"
   },
