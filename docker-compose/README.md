@@ -169,8 +169,40 @@ docker compose --project-directory . -f e2e-test/docker-compose.yml up e2e-test
 
 ## Multi node setup
 
-tbd
+Multi-node setup consists of following services:
+- Alpha Blockchain Node
+- Alpha API Service
+- Alpha Frontend
+- Provisioning Service to provision Alpha API/Node
+- Beta Blockchain Node
+- Beta API Service
+- Beta Frontend
+
+### How to start it?
+Multi-node environment can be started with the following command (if current directory is docker-compose):
+
+`docker compose --project-directory . -f multi-node/docker-compose.yml`
+
+### Key points
+> Please check the docker compose file or environment variables to see which ports are used for alpha and beta services.
+
+> Since beta blockchain node requires approval to be able to join the network, you must first go to Nodes page on alpha-frontend and approve the new Organization/Node. Otherwise the beta-api won't be able to connect to the beta-node and will print out relevant errors.
 
 ## Logging-service
 
-tbd
+Logging service is started similarly to additional services. e.g: `-f logging-service/docker-compose.yml`
+
+It is although important to pay attention to the logging service relevant environment variables! Following variables are for the logging service itself:
+ - LOGGER_PORT
+ - LOG_LEVEL
+ - LOGGING_SERVICE_CACHE_DURATION
+ - LOGGING_SERVICE_NODE_ENV
+
+and variables below are used in frontend service:
+ - REACT_APP_LOGGING
+ - REACT_APP_LOG_LEVEL
+ - REACT_APP_LOGGING_SERVICE_HOST
+ - REACT_APP_LOGGING_SERVICE_PORT
+ - REACT_APP_LOGGING_SERVICE_HOST_SSL
+ - REACT_APP_LOGGING_PUSH_INTERVAL
+
