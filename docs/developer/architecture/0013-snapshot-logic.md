@@ -61,7 +61,7 @@ In addition to the common fields, following fields for given events are present:
 | subprojectId |
 | workflowitem* |
 
-With * marked fields are aggregable objects that contain the latest event and item data relevant to the item type. Below you can find more info about how these objects are created and the worklow.
+With * marked fields are aggregable objects that contain the latest event and item data relevant to the item type. Below you can find more info about how these objects are created and the workflow.
 
 
 ### Planned implementation with Snapshot logic
