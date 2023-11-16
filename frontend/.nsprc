@@ -2,9 +2,5 @@
   "1091236": {
     "active": true,
     "notes": "False positive for build tools."
-  },
-  "1094762": {
-    "active": true,
-    "notes": "No axios fix yet."
   }
 }

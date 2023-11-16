@@ -2,9 +2,5 @@
   "1092310": {
     "active": true,
     "notes": "Ignored since there is no fix in the packages (dev dependency 'semver') yet."
-  },
-  "1094762": {
-    "active": true,
-    "notes": "No axios fix yet."
   }
 }

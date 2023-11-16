@@ -3,10 +3,6 @@
     "active": true,
     "notes": "Ignored since there is no fix in the packages (dev dependency 'semver') yet."
   },
-  "1094762": {
-    "active": true,
-    "notes": "No axios fix yet."
-  },
   "1092448": {
     "active": true,
     "notes": "Ignored because we are not handling cookies 'using CookieJar in rejectPublicSuffixes=false'"
