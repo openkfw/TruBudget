@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/openkfw/TruBudget#readme",
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.6.2",
     "better-npm-audit": "^3.7.3",
     "cors": "^2.8.5",
     "exceljs": "^4.3.0",
@@ -50,5 +50,8 @@
     "prettier": "^2.8.8",
     "rimraf": "*",
     "typescript": "^4.7.4"
+  },
+  "overrides": {
+    "axios": "^1.6.2"
   }
 }

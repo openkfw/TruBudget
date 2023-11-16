@@ -23,7 +23,7 @@
     "nodemon": "^2.0.14"
   },
   "dependencies": {
-    "axios": "^0.23.0",
+    "axios": "^1.6.2",
     "better-npm-audit": "^3.4.0",
     "fastify": "^4.19.1",
     "fastify-cors": "^6.0.2",

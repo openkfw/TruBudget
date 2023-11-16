@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "async-each": "^1.0.3",
-    "axios": "^0.21.4",
+    "axios": "^1.6.2",
     "better-npm-audit": "^3.4.0",
     "exceljs": "^4.2.0",
     "fs": "0.0.1-security",
