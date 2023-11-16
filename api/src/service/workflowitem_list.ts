@@ -2,11 +2,12 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemList from "./domain/workflow/workflowitem_list";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
 
 export async function listWorkflowitems(
   conn: ConnToken,
@@ -17,16 +18,20 @@ export async function listWorkflowitems(
 ): Promise<Result.Type<Workflowitem.ScrubbedWorkflowitem[]>> {
   logger.debug({ projectId, subprojectId }, "Getting all workflowitems");
 
-  const workflowitemsResult = await Cache.withCache(conn, ctx, async (cache) =>
-    WorkflowitemList.getAllVisible(ctx, serviceUser, projectId, subprojectId, {
+  const workflowitemsResult = await WorkflowitemList.getAllVisible(
+    ctx,
+    serviceUser,
+    projectId,
+    subprojectId,
+    {
       getWorkflowitems: async (pId, spId) => {
-        return cache.getWorkflowitems(pId, spId);
+        return await WorkflowitemCacheHelper.getAllWorkflowitems(conn, ctx, pId, spId);
       },
       getWorkflowitemOrdering: async (pId, spId) => {
-        const subproject = await cache.getSubproject(pId, spId);
+        const subproject = await SubprojectCacheHelper.getSubproject(conn, ctx, pId, spId);
         return Result.map(subproject, (x) => x.workflowitemOrdering);
       },
-    }),
+    },
   );
 
   return Result.mapErr(

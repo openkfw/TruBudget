@@ -30,6 +30,7 @@ interface ProcessEnvVars {
   RATE_LIMIT: string;
   AUTHPROXY_ENABLED: string;
   AUTHPROXY_JWS_SIGNATURE: string;
+  SNAPSHOT_EVENT_INTERVAL: string;
 }
 
 /**
@@ -75,6 +76,7 @@ interface Config {
     authProxyCookie: string;
     jwsSignature: string | undefined;
   };
+  snapshotEventInterval: number;
 }
 
 /**
@@ -123,6 +125,7 @@ export const config: Config = {
     authProxyCookie: "authorizationToken",
     jwsSignature: process.env.AUTHPROXY_JWS_SIGNATURE || undefined,
   },
+  snapshotEventInterval: Number(process.env.SNAPSHOT_EVENT_INTERVAL) || 3,
 };
 
 /**

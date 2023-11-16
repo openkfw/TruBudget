@@ -3,11 +3,11 @@ import { VError } from "verror";
 
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as ProjectGet from "./domain/workflow/project_get";
+import * as ProjectCacheHelper from "./project_cache_helper";
 
 export async function getProject(
   conn: ConnToken,
@@ -17,13 +17,11 @@ export async function getProject(
 ): Promise<Result.Type<Project.Project>> {
   logger.debug({ projectId }, "Getting Project");
 
-  const projectResult = await Cache.withCache(conn, ctx, async (cache) =>
-    ProjectGet.getProject(ctx, serviceUser, projectId, {
-      getProject: async (pId) => {
-        return cache.getProject(pId);
-      },
-    }),
-  );
+  const projectResult = await ProjectGet.getProject(ctx, serviceUser, projectId, {
+    getProject: async (pId) => {
+      return await ProjectCacheHelper.getProject(conn, ctx, pId);
+    },
+  });
 
   return Result.mapErr(
     projectResult,

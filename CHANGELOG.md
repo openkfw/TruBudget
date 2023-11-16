@@ -71,6 +71,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 If you install TruBudget freshly, this is not an issue for you. If you update to this version, you might consider [migrating your data or downgrading MinIO](./storage-service/doc/migrate-minio.md).
 
 
+- Replaced API in-memory caching with data snapshots saved on blockchain for projects, subprojects and workflowitems. [#1108](https://github.com/openkfw/TruBudget/issues/1108)
+
 
 ## [2.2.1] - 2023-07-06
 

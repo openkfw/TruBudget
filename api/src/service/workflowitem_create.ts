@@ -19,7 +19,11 @@ import * as WorkflowitemCreate from "./domain/workflow/workflowitem_create";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
 import * as PublicKeyGet from "./public_key_get";
+import * as WorkflowitemSnapshotPublish from "./domain/workflow/workflowitem_snapshot_publish";
 import { store } from "./store";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
+import * as ProjectCacheHelper from "./project_cache_helper";
 
 export { RequestData } from "./domain/workflow/workflowitem_create";
 
@@ -38,7 +42,12 @@ export async function createWorkflowitem(
         subprojectId: string,
         workflowitemId: string,
       ) => {
-        const item = await cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
+        const item = await WorkflowitemCacheHelper.getWorkflowitem(
+          conn,
+          ctx,
+          projectId,
+          workflowitemId,
+        );
         return Result.isOk(item);
       },
       userExists: async (userId: string) => {
@@ -47,8 +56,9 @@ export async function createWorkflowitem(
       getUser: async (userId: string) => {
         return UserQuery.getUser(conn, ctx, serviceUser, userId);
       },
-      getSubproject: async (projectId: string, subprojectId: string) =>
-        cache.getSubproject(projectId, subprojectId),
+      getSubproject: async (projectId: string, subprojectId: string) => {
+        return await SubprojectCacheHelper.getSubproject(conn, ctx, projectId, subprojectId);
+      },
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
         return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
       },
@@ -64,13 +74,18 @@ export async function createWorkflowitem(
                   return cache.getDocumentUploadedEvents();
                 },
                 getAllProjects: async () => {
-                  return cache.getProjects();
+                  return await ProjectCacheHelper.getAllProjects(conn, ctx);
                 },
                 getAllSubprojects: async (projectId) => {
-                  return cache.getSubprojects(projectId);
+                  return await SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
                 },
                 getAllWorkflowitems: async (projectId, subprojectId) => {
-                  return cache.getWorkflowitems(projectId, subprojectId);
+                  return await WorkflowitemCacheHelper.getAllWorkflowitems(
+                    conn,
+                    ctx,
+                    projectId,
+                    subprojectId,
+                  );
                 },
               });
             },
@@ -93,13 +108,18 @@ export async function createWorkflowitem(
             return cache.getDocumentUploadedEvents();
           },
           getAllProjects: async () => {
-            return cache.getProjects();
+            return await ProjectCacheHelper.getAllProjects(conn, ctx);
           },
           getAllSubprojects: async (projectId) => {
-            return cache.getSubprojects(projectId);
+            return await SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
           },
           getAllWorkflowitems: async (projectId, subprojectId) => {
-            return cache.getWorkflowitems(projectId, subprojectId);
+            return await WorkflowitemCacheHelper.getAllWorkflowitems(
+              conn,
+              ctx,
+              projectId,
+              subprojectId,
+            );
           },
         });
       },
@@ -124,6 +144,18 @@ export async function createWorkflowitem(
         projectId = workflowitemEvent.projectId;
         subprojectId = workflowitemEvent.subprojectId;
         workflowitemId = workflowitemEvent.workflowitem.id;
+        const { eventData } = await WorkflowitemSnapshotPublish.publishWorkflowitemSnapshot(
+          ctx,
+          conn,
+          projectId,
+          workflowitemId,
+          serviceUser,
+        );
+        if (Result.isErr(eventData)) {
+          return new VError(eventData, "create workflowitem snapshot failed");
+        }
+        const publishEvent = eventData;
+        await store(conn, ctx, publishEvent, serviceUser.address);
         break;
 
       case "document_uploaded":

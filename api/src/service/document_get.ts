@@ -4,6 +4,9 @@ import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { StoredDocument } from "./domain/document/document";
 import * as DocumentGet from "./domain/document/document_get";
+import * as ProjectCacheHelper from "./project_cache_helper";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 
 export async function getDocuments(
   conn: ConnToken,
@@ -15,13 +18,18 @@ export async function getDocuments(
         return cache.getDocumentUploadedEvents();
       },
       getAllProjects: async () => {
-        return cache.getProjects();
+        return await ProjectCacheHelper.getAllProjects(conn, ctx);
       },
       getAllSubprojects: async (projectId) => {
-        return cache.getSubprojects(projectId);
+        return await SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
       },
       getAllWorkflowitems: async (projectId, subprojectId) => {
-        return cache.getWorkflowitems(projectId, subprojectId);
+        return await WorkflowitemCacheHelper.getAllWorkflowitems(
+          conn,
+          ctx,
+          projectId,
+          subprojectId,
+        );
       },
     }),
   );

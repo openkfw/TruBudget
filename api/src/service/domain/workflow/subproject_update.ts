@@ -41,7 +41,7 @@ export async function updateSubproject(
   data: RequestData,
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
-  const subproject = await repository.getSubproject(subprojectId, subprojectId);
+  const subproject = await repository.getSubproject(projectId, subprojectId);
 
   if (Result.isErr(subproject)) {
     return new NotFound(ctx, "subproject", subprojectId);

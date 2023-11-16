@@ -1,7 +1,6 @@
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
@@ -11,6 +10,7 @@ import * as WorkflowitemGetDetails from "./domain/workflow/workflowitem_get_deta
 import * as WorkflowitemGet from "./domain/workflow/workflowitem_get";
 import * as WorkflowitemDocumentDownloadService from "./workflowitem_document_download";
 import { StorageServiceClientI } from "./Client_storage_service.h";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 import logger from "lib/logger";
 
 export async function getWorkflowitemDetails(
@@ -24,12 +24,20 @@ export async function getWorkflowitemDetails(
 ): Promise<Result.Type<Workflowitem.Workflowitem>> {
   logger.debug({ projectId, subprojectId, workflowitemId }, "Getting workflowitem details");
 
-  const workflowitemResult = await Cache.withCache(conn, ctx, async (cache) =>
-    WorkflowitemGetDetails.getWorkflowitemDetails(ctx, serviceUser, workflowitemId, {
+  const workflowitemResult = await WorkflowitemGetDetails.getWorkflowitemDetails(
+    ctx,
+    serviceUser,
+    workflowitemId,
+    {
       getWorkflowitem: async () => {
-        return WorkflowitemGet.getWorkflowitem(ctx, serviceUser, workflowitemId, {
+        return await WorkflowitemGet.getWorkflowitem(ctx, serviceUser, workflowitemId, {
           getWorkflowitem: async () => {
-            return cache.getWorkflowitem(projectId, subprojectId, workflowitemId);
+            return await WorkflowitemCacheHelper.getWorkflowitem(
+              conn,
+              ctx,
+              projectId,
+              workflowitemId,
+            );
           },
         });
       },
@@ -45,7 +53,7 @@ export async function getWorkflowitemDetails(
           docId,
         );
       },
-    }),
+    },
   );
   return Result.mapErr(
     workflowitemResult,

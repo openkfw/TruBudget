@@ -1,1 +1,6 @@
-{}
+{
+  "1094239": {
+    "active": true,
+    "notes": "PostCSS line return parsing error"
+  }
+}

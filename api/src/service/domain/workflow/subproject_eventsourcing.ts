@@ -17,6 +17,94 @@ import { SubprojectTraceEvent } from "./subproject_trace_event";
 import * as SubprojectUpdated from "./subproject_updated";
 import * as WorkflowitemsReordered from "./workflowitems_reordered";
 
+export function sourceSubprojectFromSnapshot(
+  ctx: Ctx,
+  events: BusinessEvent[],
+  withLog: boolean,
+  subprojectJson?,
+): Result.Type<Subproject.Subproject> {
+  let subproject;
+  if (subprojectJson != undefined) {
+    subproject = parseSubprojectFromSnapshot(subprojectJson);
+  } else {
+    // no snapshot available, do event sourcing from creation
+    subproject = undefined;
+  }
+
+  for (const event of events) {
+    logger.trace({ event }, "Validating subproject Event by applying it");
+    if (!event.type.startsWith("subproject_") && event.type !== "workflowitems_reordered") {
+      continue;
+    }
+    const subprojectResult = sourceEventFromSnapshot(ctx, event, subproject);
+    if (Result.isOk(subprojectResult)) {
+      if (withLog) {
+        subprojectResult.log.push(newTraceEvent(subprojectResult, event));
+      }
+      subproject = subprojectResult;
+    }
+  }
+
+  return subproject;
+}
+
+function sourceEventFromSnapshot(
+  ctx: Ctx,
+  event: BusinessEvent,
+  subprojectI?: Subproject.Subproject,
+): Result.Type<Subproject.Subproject> {
+  const subprojectId = getSubprojectId(event);
+  let subproject: Result.Type<Subproject.Subproject>;
+  if (Result.isOk(subprojectId) && subprojectI && subprojectId === subprojectI.id) {
+    // The event refers to an existing subproject and to the same subproject, so
+    // the subproject should have been initialized already.
+
+    if (Result.isErr(subprojectI)) {
+      return new VError(`project ID ${subprojectId} found in event ${event.type} is invalid`);
+    }
+
+    subproject = newSubprojectFromEvent(ctx, subprojectI, event);
+    if (Result.isErr(subproject)) {
+      return subproject; // <- event-sourcing error
+    }
+  } else {
+    // The event does not refer to a subproject ID or snapshot data is missing, so it must be a creation event:
+    if (event.type !== "subproject_created") {
+      return new VError(
+        `event ${event.type} is not of type "subproject_created" but also ` +
+          "does not include a subproject ID",
+      );
+    }
+
+    subproject = SubprojectCreated.createFrom(ctx, event);
+    if (Result.isErr(subproject)) {
+      return new VError(subproject, "could not create subproject from event");
+    }
+  }
+
+  return subproject;
+}
+
+export function parseSubprojectFromSnapshot(subprojectJson): Subproject.Subproject {
+  return {
+    id: subprojectJson.id,
+    projectId: subprojectJson.projectId,
+    createdAt: subprojectJson.createdAt,
+    status: subprojectJson.status,
+    displayName: subprojectJson.displayName,
+    description: subprojectJson.description,
+    assignee: subprojectJson.assignee,
+    validator: subprojectJson.validator,
+    workflowitemType: subprojectJson.workflowitemType,
+    currency: subprojectJson.currency,
+    projectedBudgets: subprojectJson.projectedBudgets,
+    workflowitemOrdering: subprojectJson.workflowitemOrdering,
+    permissions: subprojectJson.permissions,
+    log: subprojectJson.log,
+    additionalData: subprojectJson.additionalData,
+  };
+}
+
 export function sourceSubprojects(
   ctx: Ctx,
   events: BusinessEvent[],

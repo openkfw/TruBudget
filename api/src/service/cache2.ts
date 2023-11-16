@@ -1,6 +1,5 @@
 import { EventEmitter } from "events";
 import { Ctx } from "../lib/ctx";
-import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
 import * as Result from "../result";
 import { MultichainClient } from "./Client.h";
@@ -10,7 +9,6 @@ import * as DocumentShared from "./domain/document/document_shared";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
 import * as DocumentValidated from "./domain/document/document_validated";
 import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
-import { NotFound } from "./domain/errors/not_found";
 import * as NodesLogged from "./domain/network/nodes_logged";
 import * as NodeDeclined from "./domain/network/node_declined";
 import * as NodeRegistered from "./domain/network/node_registered";
@@ -31,32 +29,27 @@ import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_g
 import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
 import * as NotificationCreated from "./domain/workflow/notification_created";
 import * as NotificationMarkedRead from "./domain/workflow/notification_marked_read";
-import * as Project from "./domain/workflow/project";
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
-import { sourceProjects } from "./domain/workflow/project_eventsourcing";
+import * as ProjectSnapshotPublished from "./domain/workflow/project_snapshot_published";
 import * as ProjectPermissionsGranted from "./domain/workflow/project_permission_granted";
 import * as ProjectPermissionsRevoked from "./domain/workflow/project_permission_revoked";
 import * as ProjectProjectedBudgetDeleted from "./domain/workflow/project_projected_budget_deleted";
 import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projected_budget_updated";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
-import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "./domain/workflow/subproject_closed";
 import * as SubprojectCreated from "./domain/workflow/subproject_created";
-import { sourceSubprojects } from "./domain/workflow/subproject_eventsourcing";
 import * as SubprojectPermissionsGranted from "./domain/workflow/subproject_permission_granted";
 import * as SubprojectPermissionsRevoked from "./domain/workflow/subproject_permission_revoked";
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
 import * as SubprojectUpdated from "./domain/workflow/subproject_updated";
-import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
-import { sourceWorkflowitems } from "./domain/workflow/workflowitem_eventsourcing";
 import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
@@ -65,6 +58,8 @@ import { Item } from "./liststreamitems";
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
   "organization",
+  // Snapshots are used for projects so we dont want to cache and aggregate project information
+  "project",
 ];
 
 type StreamName = string;
@@ -78,15 +73,6 @@ export type Cache2 = {
   streamState: Map<StreamName, StreamCursor>;
   // The cached content:
   eventsByStream: Map<StreamName, BusinessEvent[]>;
-
-  // Cached Aggregates:
-  cachedProjects: Map<Project.Id, Project.Project>;
-  cachedSubprojects: Map<Subproject.Id, Subproject.Subproject>;
-  cachedWorkflowItems: Map<Workflowitem.Id, Workflowitem.Workflowitem>;
-
-  // Lookup Tables for Aggregates
-  cachedSubprojectLookup: Map<Project.Id, Set<Subproject.Id>>;
-  cachedWorkflowitemLookup: Map<Subproject.Id, Set<Workflowitem.Id>>;
 };
 
 export function initCache(): Cache2 {
@@ -95,11 +81,6 @@ export function initCache(): Cache2 {
     isWriteLocked: false,
     streamState: new Map(),
     eventsByStream: new Map(),
-    cachedProjects: new Map(),
-    cachedSubprojects: new Map(),
-    cachedWorkflowItems: new Map(),
-    cachedSubprojectLookup: new Map(),
-    cachedWorkflowitemLookup: new Map(),
   };
 }
 
@@ -107,11 +88,6 @@ function clearCache(cache: Cache2): void {
   cache.ee.emit("release");
   cache.streamState.clear();
   cache.eventsByStream.clear();
-  cache.cachedProjects.clear();
-  cache.cachedSubprojects.clear();
-  cache.cachedWorkflowItems.clear();
-  cache.cachedSubprojectLookup.clear();
-  cache.cachedWorkflowitemLookup.clear();
 }
 
 interface CacheInstance {
@@ -122,24 +98,6 @@ interface CacheInstance {
   getNotificationEvents(userId: string): Result.Type<BusinessEvent[]>;
   getPublicKeyEvents(): Result.Type<BusinessEvent[]>;
 
-  // Project:
-  getProjects(): Promise<Project.Project[]>;
-  getProject(projectId: string): Promise<Result.Type<Project.Project>>;
-
-  // Subproject:
-  getSubprojects(projectId: string): Promise<Result.Type<Subproject.Subproject[]>>;
-  getSubproject(projectId: string, subprojectId: string): Result.Type<Subproject.Subproject>;
-
-  // Workflowitem:
-  getWorkflowitems(
-    _projectId: string,
-    subprojectId: string,
-  ): Promise<Result.Type<Workflowitem.Workflowitem[]>>;
-  getWorkflowitem(
-    projectId: string,
-    subprojectId: string,
-    workflowitemId: string,
-  ): Promise<Result.Type<Workflowitem.Workflowitem>>;
   getDocumentUploadedEvents(): Result.Type<BusinessEvent[]>;
   getStorageServiceUrlPublishedEvents(): Result.Type<BusinessEvent[]>;
   getSecretPublishedEvents(): Result.Type<BusinessEvent[]>;
@@ -232,96 +190,6 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
         }
       };
       return (cache.eventsByStream.get("documents") || []).filter(secretPhublishedFilter);
-    },
-
-    getProjects: async (): Promise<Project.Project[]> => {
-      logger.trace("Getting projects from cache");
-      return [...cache.cachedProjects.values()];
-    },
-
-    getProject: async (projectId: string): Promise<Result.Type<Project.Project>> => {
-      logger.trace(`Getting Project with id "${projectId}" from cache`);
-      const projects = [...cache.cachedProjects.values()];
-      const project = projects.find((x) => x.id === projectId);
-      if (project === undefined) {
-        return new NotFound(ctx, "project", projectId);
-      }
-      return project;
-    },
-
-    getSubprojects: async (projectId: string): Promise<Result.Type<Subproject.Subproject[]>> => {
-      logger.trace("Getting subprojects from cache");
-
-      // Look up subproject ids
-      const subprojectIDs = cache.cachedSubprojectLookup.get(projectId);
-      if (subprojectIDs === undefined) {
-        // Check if the project exists. If yes, it simply contains no subprojects
-        const project = cache.cachedProjects.get(projectId);
-        return project === undefined ? new NotFound(ctx, "project", projectId) : [];
-      }
-
-      const subprojects: Subproject.Subproject[] = [];
-      for (const id of subprojectIDs) {
-        const sp = cache.cachedSubprojects.get(id);
-        if (sp === undefined) {
-          return new NotFound(ctx, "subproject", id);
-        }
-        subprojects.push(sp);
-      }
-      return subprojects;
-    },
-
-    getSubproject: (
-      _projectId: string,
-      subprojectId: string,
-    ): Result.Type<Subproject.Subproject> => {
-      logger.trace(
-        `Getting Subproject from project ${_projectId} with id "${subprojectId}" from cache`,
-      );
-      const subproject = cache.cachedSubprojects.get(subprojectId);
-      if (subproject === undefined) {
-        return new NotFound(ctx, "subproject", subprojectId);
-      }
-      return subproject;
-    },
-
-    getWorkflowitems: async (
-      _projectId: string,
-      subprojectId: string,
-    ): Promise<Result.Type<Workflowitem.Workflowitem[]>> => {
-      logger.trace("Getting workflowitems from cache");
-      const workflowitemIDs = cache.cachedWorkflowitemLookup.get(subprojectId);
-      const workflowitems: Workflowitem.Workflowitem[] = [];
-      if (workflowitemIDs === undefined) {
-        // Check if the subproject exists. If yes, it simply contains no workflowitems
-        const subproject = cache.cachedSubprojects.get(subprojectId);
-        return subproject === undefined ? new NotFound(ctx, "subproject", subprojectId) : [];
-      }
-
-      for (const id of workflowitemIDs) {
-        const wf = cache.cachedWorkflowItems.get(id);
-        if (wf === undefined) {
-          return new NotFound(ctx, "workflowitem", id);
-        }
-        workflowitems.push(wf);
-      }
-      return workflowitems;
-    },
-
-    getWorkflowitem: async (
-      _projectId: string,
-      _subprojectId: string,
-      workflowitemId: string,
-    ): Promise<Result.Type<Workflowitem.Workflowitem>> => {
-      logger.trace(
-        `Getting Workflowitem from project ${_projectId} and ${_subprojectId} with id "${workflowitemId}" from cache`,
-      );
-
-      const workflowitem = cache.cachedWorkflowItems.get(workflowitemId);
-      if (workflowitem === undefined) {
-        return new NotFound(ctx, "workflowitem", workflowitemId);
-      }
-      return workflowitem;
     },
   };
 }
@@ -506,8 +374,6 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
     }
     addEventsToCache(cache, streamName, businessEvents);
 
-    updateAggregates(ctx, cache, businessEvents);
-
     if (logger.levelVal >= logger.levels.values.warn) {
       parsedEvents.filter(Result.isErr).forEach((x) => logger.warn(x));
     }
@@ -543,50 +409,6 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
   }
 }
 
-export function updateAggregates(ctx: Ctx, cache: Cache2, newEvents: BusinessEvent[]): void {
-  const { projects, errors: pErrors = [] } = sourceProjects(ctx, newEvents, cache.cachedProjects);
-  if (!isEmpty(pErrors)) logger.error({ err: pErrors }, "sourceProject caused error");
-
-  for (const project of projects) {
-    cache.cachedProjects.set(project.id, project);
-  }
-
-  const { subprojects, errors: spErrors = [] } = sourceSubprojects(
-    ctx,
-    newEvents,
-    cache.cachedSubprojects,
-  );
-  if (!isEmpty(spErrors)) logger.error({ err: spErrors }, "sourceSubproject caused error: ");
-
-  for (const subproject of subprojects) {
-    cache.cachedSubprojects.set(subproject.id, subproject);
-
-    const lookUp = cache.cachedSubprojectLookup.get(subproject.projectId);
-    if (lookUp === undefined) {
-      cache.cachedSubprojectLookup.set(subproject.projectId, new Set([subproject.id]));
-    } else {
-      lookUp.add(subproject.id);
-    }
-  }
-
-  const { workflowitems, errors: wErrors = [] } = sourceWorkflowitems(
-    ctx,
-    newEvents,
-    cache.cachedWorkflowItems,
-  );
-  if (!isEmpty(wErrors)) logger.error({ err: wErrors }, "sourceWorkflowitems caused error: ");
-
-  for (const workflowitem of workflowitems) {
-    cache.cachedWorkflowItems.set(workflowitem.id, workflowitem);
-    const lookUp = cache.cachedWorkflowitemLookup.get(workflowitem.subprojectId);
-    if (lookUp === undefined) {
-      cache.cachedWorkflowitemLookup.set(workflowitem.subprojectId, new Set([workflowitem.id]));
-    } else {
-      lookUp.add(workflowitem.id);
-    }
-  }
-}
-
 const EVENT_PARSER_MAP = {
   document_uploaded: DocumentUploaded.validate,
   secret_published: DocumentShared.validate,
@@ -603,6 +425,7 @@ const EVENT_PARSER_MAP = {
   project_assigned: ProjectAssigned.validate,
   project_closed: ProjectClosed.validate,
   project_created: ProjectCreated.validate,
+  project_snapshot_published: ProjectSnapshotPublished.validate,
   project_permission_granted: ProjectPermissionsGranted.validate,
   project_permission_revoked: ProjectPermissionsRevoked.validate,
   project_projected_budget_deleted: ProjectProjectedBudgetDeleted.validate,

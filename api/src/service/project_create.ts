@@ -2,12 +2,13 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
-import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import { ResourceMap } from "./domain/ResourceMap";
 import * as ProjectCreate from "./domain/workflow/project_create";
+import * as ProjectSnapshotPublish from "./domain/workflow/project_snapshot_publish";
 import { getGlobalPermissions } from "./global_permissions_get";
+import * as ProjectCacheHelper from "./project_cache_helper";
 import { store } from "./store";
 
 export { RequestData } from "./domain/workflow/project_create";
@@ -20,14 +21,12 @@ export async function createProject(
 ): Promise<Result.Type<ResourceMap>> {
   logger.debug({ req: requestData }, "Creating project");
 
-  const creationEventResult = await Cache.withCache(conn, ctx, async (cache) =>
-    ProjectCreate.createProject(ctx, serviceUser, requestData, {
-      getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
-      projectExists: async (projectId) => {
-        return Result.isOk(await cache.getProject(projectId));
-      },
-    }),
-  );
+  const creationEventResult = await ProjectCreate.createProject(ctx, serviceUser, requestData, {
+    getGlobalPermissions: async () => getGlobalPermissions(conn, ctx, serviceUser),
+    projectExists: async (projectId) => {
+      return Result.isOk(await ProjectCacheHelper.getProject(conn, ctx, projectId));
+    },
+  });
 
   if (Result.isErr(creationEventResult)) {
     return new VError(creationEventResult, "create project failed");
@@ -35,6 +34,18 @@ export async function createProject(
   const creationEvent = creationEventResult;
 
   await store(conn, ctx, creationEvent, serviceUser.address);
+
+  const { eventData } = await ProjectSnapshotPublish.publishProjectSnapshot(
+    ctx,
+    conn,
+    creationEvent.project.id,
+    serviceUser,
+  );
+  if (Result.isErr(eventData)) {
+    return new VError(eventData, "create project snapshot failed");
+  }
+  const publishEvent = eventData;
+  await store(conn, ctx, publishEvent, serviceUser.address);
 
   const resourceIds: ResourceMap = {
     project: { id: creationEvent.project.id },
