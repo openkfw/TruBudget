@@ -120,6 +120,7 @@ import ensureStorageServiceUrlPublished from "./system/ensureOrganizationUrlPubl
 import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserAuthenticateAdAPI from "./user_authenticateAd";
+import * as UserLogoutAPI from "./user_logout";
 import * as UserCreateAPI from "./user_create";
 import * as UserDisableAPI from "./user_disable";
 import * as UserEnableAPI from "./user_enable";
@@ -361,6 +362,8 @@ if (authProxy.enabled) {
     jwtSecret,
   );
 }
+
+UserLogoutAPI.addHttpHandler(server, URL_PREFIX);
 
 UserCreateAPI.addHttpHandler(server, URL_PREFIX, {
   createUser: (ctx, issuer, reqData) =>

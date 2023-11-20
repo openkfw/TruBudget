@@ -88,6 +88,8 @@ class Api {
       token
     });
 
+  logout = () => instance.post(`/user.logout`, {});
+
   disableUser = (userId) =>
     instance.post(`/global.disableUser`, {
       userId

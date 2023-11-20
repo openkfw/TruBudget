@@ -1571,6 +1571,7 @@ export function* declineNode({ node, showLoading }) {
 
 export function* logoutSaga() {
   yield execute(function* () {
+    yield callApi(api.logout);
     yield put({
       type: LOGOUT_SUCCESS
     });
