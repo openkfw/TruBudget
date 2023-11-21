@@ -2,20 +2,20 @@ const exportUrl = Cypress.env("EXPORT_SERVICE_BASE_URL") || `${Cypress.config("b
 
 let file = "cypress/downloads/TruBudget_Export.xlsx";
 
-before(() => {
-  //download directly to fixture folder, without pop-ups
-  if (Cypress.browser.name !== "firefox") {
-    cy.wrap(
-      Cypress.automation("remote:debugger:protocol", {
-        command: "Page.setDownloadBehavior",
-        params: { behavior: "allow", downloadPath: "cypress/downloads" },
-      }),
-      { log: false },
-    );
-  }
-});
+describe("Excel Export feature", function () {
+  beforeEach(() => {
+    //download directly to fixture folder, without pop-ups
+    if (Cypress.browser.name !== "firefox") {
+      cy.wrap(
+        Cypress.automation("remote:debugger:protocol", {
+          command: "Page.setDownloadBehavior",
+          params: { behavior: "allow", downloadPath: "cypress/downloads" },
+        }),
+        { log: false },
+      );
+    }
+  });
 
-describe("Excel Export feature", { testIsolation: false }, function () {
   it("Tests the export of an excel file in english", function () {
     cy.intercept(`${exportUrl}/download?lang=en`).as("export");
 
