@@ -19,7 +19,8 @@ const tar = require("tar-fs");
 const rawTar = require("tar-stream");
 const yaml = require("js-yaml");
 const shell = require("shelljs");
-const dotenvPlugin = require("cypress-dotenv");
+
+require("dotenv").config();
 
 function apiReportsReadiness(baseUrl) {
   return axios
@@ -235,6 +236,11 @@ module.exports = (on, config) => {
       return options;
     }
   });
-  config = dotenvPlugin(config);
+  config.env = {
+    BASE_URL: process.env.CYPRESS_BASE_URL,
+    API_BASE_URL: process.env.CYPRESS_API_BASE_URL,
+    ROOT_SECRET: process.env.CYPRESS_ROOT_SECRET,
+    EXPORT_SERVICE_BASE_URL: process.env.CYPRESS_EXPORT_SERVICE_BASE_URL
+  };
   return config;
 };
