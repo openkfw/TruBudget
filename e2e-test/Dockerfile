@@ -6,7 +6,7 @@ RUN CI=true npm ci
 
 RUN $(npm bin)/cypress verify
 
-COPY cypress.json ./
+COPY cypress.config.js ./
 COPY cypress cypress
 
 CMD $(npm bin)/cypress run
