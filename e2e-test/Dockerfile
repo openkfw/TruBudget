@@ -1,12 +1,12 @@
-FROM cypress/base:18.12.1
+FROM cypress/base:latest
 
 # copy test fixtures into the container
 COPY package*.json ./
 RUN CI=true npm ci
 
-RUN $(npm bin)/cypress verify
+RUN npm run cypress-verify
 
 COPY cypress.config.js ./
 COPY cypress cypress
 
-CMD $(npm bin)/cypress run
+CMD npm run e2etest
