@@ -1,5 +1,5 @@
-describe("Scroll Back To Top", () => {
-  before(function() {
+describe("Scroll Back To Top", { testIsolation: false }, () => {
+  before(function () {
     cy.login("mstein", "test");
     cy.visit(`/projects`);
   });
@@ -9,7 +9,7 @@ describe("Scroll Back To Top", () => {
   });
 
   it("On scroll, the button back to top should be visible ", () => {
-    cy.scrollTo(0, 520);
+    cy.scrollTo(0, 520, { duration: 500 });
     cy.get("[data-test=backToTop-button]").should("be.visible");
   });
 
