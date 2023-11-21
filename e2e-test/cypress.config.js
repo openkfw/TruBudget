@@ -15,12 +15,12 @@ module.exports = defineConfig({
     charts: true,
     reportPageTitle: "Trubduget E2E Tests Report",
     embeddedScreenshots: true,
-    inlineAssets: true
+    inlineAssets: true,
   },
   e2e: {
     setupNodeEvents,
     supportFile: "cypress/support/index.js",
     specPattern: "cypress/integration/*_spec.{js,jsx,ts,tsx}",
-    baseUrl: process.env.CYPRESS_BASE_URL || "http://localhost:3000"
-  }
+    baseUrl: process.env.CYPRESS_BASE_URL || "http://localhost:3000",
+  },
 });
