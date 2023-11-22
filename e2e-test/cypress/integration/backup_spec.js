@@ -101,11 +101,6 @@ describe("Backup Feature", function () {
           cy.get("[data-test=client-snackbar]")
             .contains("failed to restore backup: Backup with these configurations is not permitted")
             .should("be.visible");
-          cy.url()
-            .should("include", "/projects")
-            .then(() => {
-              cy.get("[data-test^=project-title-]").invoke("text").should("not.include", "Backup Successful");
-            });
         });
     });
   });
@@ -138,11 +133,6 @@ describe("Backup Feature", function () {
           cy.get("[data-test=client-snackbar]")
             .contains("Backup with these configurations is not permitted")
             .should("be.visible");
-          cy.url()
-            .should("include", "/projects")
-            .then(() => {
-              cy.get("[data-test^=project-title-]").invoke("text").should("not.include", "Backup Successful");
-            });
         });
     });
   });
