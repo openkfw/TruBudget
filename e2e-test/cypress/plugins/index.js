@@ -19,12 +19,13 @@ const tar = require("tar-fs");
 const rawTar = require("tar-stream");
 const yaml = require("js-yaml");
 const shell = require("shelljs");
-const dotenvPlugin = require("cypress-dotenv");
+
+require("dotenv").config();
 
 function apiReportsReadiness(baseUrl) {
   return axios
     .get(`${baseUrl}/api/readiness`)
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         console.log("API reports readiness!");
         return true;
@@ -33,7 +34,7 @@ function apiReportsReadiness(baseUrl) {
         return false;
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(`API is not ready yet: ${err}`);
       return false;
     });
@@ -42,7 +43,7 @@ function apiReportsReadiness(baseUrl) {
 function excelExportReportsReadiness(exportServiceBaseUrl) {
   return axios
     .get(`${exportServiceBaseUrl}/readiness`)
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         console.log("Excel-Export-Service reports readiness!");
         return true;
@@ -51,7 +52,7 @@ function excelExportReportsReadiness(exportServiceBaseUrl) {
         return false;
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(`Excel-Export-Service is not ready yet: ${err}`);
       return false;
     });
@@ -64,11 +65,11 @@ function isProvisioned(baseUrl) {
       data: {
         user: {
           id: "root",
-          password: process.env.CYPRESS_ROOT_SECRET
-        }
-      }
+          password: process.env.CYPRESS_ROOT_SECRET,
+        },
+      },
     })
-    .then(response => {
+    .then((response) => {
       /*
       response.headers["set-cookie"][0] => "token={JWT_Token}; Path=/; HttpOnly; Secure; SameSite=Strict"
       response.headers["set-cookie"][0].split(";")[0] => "token={JWT_Token}"
@@ -81,10 +82,10 @@ function isProvisioned(baseUrl) {
         .get(`${baseUrl}/api/provisioned`, {
           headers: {
             Authorization: "Bearer " + JWTtoken,
-            Cookie: cookie
-          }
+            Cookie: cookie,
+          },
         })
-        .then(response => {
+        .then((response) => {
           if (response.data.data.isProvisioned) {
             console.log("Trubudget is provisioned.");
             return true;
@@ -93,18 +94,18 @@ function isProvisioned(baseUrl) {
             return false;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(`Failed to GET ${baseUrl}/api/provisioned: ${err}`);
           return false;
         });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(`Authentication failed err: ${err}`);
       return false;
     });
 }
 
-const sleep = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+const sleep = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
 
 async function awaitApiReady(baseUrl, retries = 10, timeout = 2000) {
   let nRetries = retries;
@@ -178,7 +179,7 @@ async function modifyHash({ pathToFile, newHash, newBackup }) {
   const unTARer = rawTar.extract();
   const filePath = pathToFile.substring(0, pathToFile.lastIndexOf("/"));
 
-  unTARer.on("error", err => {
+  unTARer.on("error", (err) => {
     console.log(err.message);
     unTARer.destroy();
     return success;
@@ -195,8 +196,8 @@ async function modifyHash({ pathToFile, newHash, newBackup }) {
   });
   return checkFileExists({ file: `${filePath}/${newBackup}`, timeout: 500 });
 }
-const loadConfig = path => {
-  const config = yaml.safeLoad(fs.readFileSync(path, "utf8"));
+const loadConfig = (path) => {
+  const config = yaml.load(fs.readFileSync(path, "utf8"));
   shell.rm(path);
   return config;
 };
@@ -224,7 +225,7 @@ module.exports = (on, config) => {
     log(message) {
       console.log(message);
       return null;
-    }
+    },
   });
   on("before:browser:launch", (browser, options) => {
     const downloadDirectory = path.join(__dirname, "..", "fixtures");
@@ -235,6 +236,11 @@ module.exports = (on, config) => {
       return options;
     }
   });
-  config = dotenvPlugin(config);
+  config.env = {
+    BASE_URL: process.env.CYPRESS_BASE_URL,
+    API_BASE_URL: process.env.CYPRESS_API_BASE_URL,
+    ROOT_SECRET: process.env.CYPRESS_ROOT_SECRET,
+    EXPORT_SERVICE_BASE_URL: process.env.CYPRESS_EXPORT_SERVICE_BASE_URL,
+  };
   return config;
 };

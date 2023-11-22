@@ -1,5 +1,3 @@
-import "cypress-file-upload";
-
 let projectId;
 let subprojectId;
 let workflowitemId;
@@ -43,10 +41,14 @@ describe("Attaching a document to a workflowitem.", function() {
       .click();
 
     // "upload" the file:
-    cy.fixture(fileName).then(fileContent => {
-      cy.get("#docupload").attachFile(
-        { fileContent: JSON.stringify(fileContent), fileName, mimeType: "application/json" },
-        { subjectType: "input" }
+    cy.fixture(fileName, { encoding: null }).then(contents => {
+      cy.get("#docupload").selectFile(
+        {
+          contents,
+          fileName: fileName,
+          mimeType: "application/json"
+        },
+        { action: "select" }
       );
     });
     return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
@@ -76,10 +78,14 @@ describe("Attaching a document to a workflowitem.", function() {
       .click();
 
     // upload the same file, for validation:
-    cy.fixture(fileName).then(fileContent => {
-      cy.get("#docvalidation").attachFile(
-        { fileContent: JSON.stringify(fileContent), fileName, mimeType: "application/json" },
-        { subjectType: "input" }
+    cy.fixture(fileName, { encoding: null }).then(contents => {
+      cy.get("#docvalidation").selectFile(
+        {
+          contents,
+          fileName: fileName,
+          mimeType: "application/json"
+        },
+        { action: "select" }
       );
     });
 
@@ -114,10 +120,14 @@ describe("Attaching a document to a workflowitem.", function() {
 
     // upload wrong document
     const wrongFileName = "testdata.json";
-    cy.fixture(wrongFileName).then(fileContent => {
-      cy.get("#docvalidation").attachFile(
-        { fileContent: JSON.stringify(fileContent), fileName: wrongFileName, mimeType: "application/json" },
-        { subjectType: "input" }
+    cy.fixture(wrongFileName, { encoding: null }).then(contents => {
+      cy.get("#docvalidation").selectFile(
+        {
+          contents,
+          fileName: wrongFileName,
+          mimeType: "application/json"
+        },
+        { action: "select" }
       );
     });
 

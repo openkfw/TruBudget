@@ -1,41 +1,21 @@
-import "cypress-file-upload";
 const apiRoute = "/api";
 const baseUrl = Cypress.env("API_BASE_URL") || Cypress.config("baseUrl");
 let fileName = "backup.gz";
 
 let pathToFile = `cypress/fixtures/${fileName}`;
 
-describe("Backup Feature", function() {
+describe("Backup Feature", function () {
   before(() => {
     //download directly to fixture folder, without pop-ups
     if (Cypress.browser.name !== "firefox") {
       cy.wrap(
         Cypress.automation("remote:debugger:protocol", {
           command: "Page.setDownloadBehavior",
-          params: { behavior: "allow", downloadPath: "cypress/fixtures" }
+          params: { behavior: "allow", downloadPath: "cypress/fixtures" },
         }),
-        { log: false }
+        { log: false },
       );
     }
-
-    // a backup will be downloaded
-    cy.intercept(apiRoute + "/system.createBackup*").as("create");
-    cy.login("root", Cypress.env("ROOT_SECRET"));
-    cy.visit("/projects");
-    cy.get("[data-test=openSideNavbar]").click();
-    cy.get("[data-test=download-backup]").click();
-    cy.task("awaitApiReady", baseUrl);
-  });
-
-  beforeEach(() => {
-    //the user must be logged out before each test
-    cy.url().then(url => {
-      if (!url.includes("/login")) {
-        cy.get("[data-test=navbar-logout-button]").should("be.visible");
-        cy.get("[data-test=navbar-logout-button]").click({ force: true });
-        cy.location("pathname").should("eq", "/login");
-      }
-    });
   });
 
   after(() => {
@@ -43,49 +23,57 @@ describe("Backup Feature", function() {
     cy.task("checkFileExists", { file: pathToFile, timeout: 500 });
     cy.task("awaitApiReady", baseUrl);
 
-    cy.intercept(apiRoute + "/system.restoreBackup*").as("restore");
+    cy.intercept(apiRoute + "/system.restoreBackup").as("restore");
 
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=side-navigation]");
     //Upload file
-    cy.fixture(fileName, "binary").then(fileContent => {
-      const blob = Cypress.Blob.binaryStringToBlob(fileContent);
-      cy.get("#uploadBackup").attachFile(
-        { fileContent: blob, fileName, mimeType: "application/gzip", encoding: "utf-8" },
-        { subjectType: "input" }
+    cy.fixture(fileName, { encoding: null }).then((contents) => {
+      cy.get("#uploadBackup").selectFile(
+        {
+          contents,
+          fileName: fileName,
+          mimeType: "application/gzip",
+        },
+        { action: "select" },
       );
-    });
-    cy.task("deleteFile", pathToFile).then(success => {
-      expect(success).to.eq(true);
-    });
-    cy.wait("@restore").should(interception => {
-      expect(interception.response.statusCode).to.eq(200);
-      cy.task("awaitApiReady", baseUrl).then(() => {
-        cy.url().should("include", "/login");
+      cy.task("deleteFile", pathToFile).then((success) => {
+        expect(success).to.eq(true);
+      });
+      cy.wait("@restore").then((interception) => {
+        expect(interception.response.statusCode).to.eq(200);
+        cy.task("awaitApiReady", baseUrl).then(() => {
+          cy.url().should("include", "/login");
+        });
       });
     });
   });
 
-  it("Tests the download of a backup.gz file", function() {
+  it("Tests the download of a backup.gz file", function () {
+    cy.intercept(apiRoute + "/system.createBackup").as("create");
     cy.login("root", Cypress.env("ROOT_SECRET"));
-    cy.createBackup().then(headers => {
-      expect(headers).to.include({
+    cy.visit("/projects");
+    cy.get("[data-test=openSideNavbar]").click();
+    cy.get("[data-test=download-backup]").click();
+    cy.task("awaitApiReady", baseUrl);
+    cy.wait("@create").then((interception) => {
+      expect(interception.response.headers).to.include({
         "content-type": "application/gzip",
-        "content-disposition": 'attachment; filename="backup.gz"'
+        "content-disposition": 'attachment; filename="backup.gz"',
       });
     });
   });
 
-  it("Tests the restore of an invalid backup", function() {
+  it("Tests the restore of an invalid backup", function () {
     const invalidBackupFile = "backup_invalidHash.gz";
 
-    cy.task("modifyHash", { pathToFile, newHash: "wrongHash", newBackup: invalidBackupFile }).then(success => {
+    cy.task("modifyHash", { pathToFile, newHash: "wrongHash", newBackup: invalidBackupFile }).then((success) => {
       expect(success).to.eq(true);
     });
 
-    cy.intercept(apiRoute + "/system.restoreBackup*").as("restore");
+    cy.intercept(apiRoute + "/system.restoreBackup").as("restore");
 
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
@@ -93,18 +81,21 @@ describe("Backup Feature", function() {
     cy.get("[data-test=side-navigation]");
 
     //Upload file
-    cy.fixture(invalidBackupFile, "binary").then(fileContent => {
-      const blob = Cypress.Blob.binaryStringToBlob(fileContent);
-      cy.get("#uploadBackup").attachFile(
-        { fileContent: blob, fileName: invalidBackupFile, mimeType: "application/gzip", encoding: "utf-8" },
-        { subjectType: "input" }
+    cy.fixture(invalidBackupFile, { encoding: null }).then((contents) => {
+      cy.get("#uploadBackup").selectFile(
+        {
+          contents,
+          fileName: invalidBackupFile,
+          mimeType: "application/gzip",
+        },
+        { action: "select" },
       );
       cy.wait("@restore")
-        .should(interception => {
+        .should((interception) => {
           expect(interception.response.statusCode).to.eq(500);
         })
         .then(() => {
-          cy.task("deleteFile", `cypress/fixtures/${invalidBackupFile}`).then(success => {
+          cy.task("deleteFile", `cypress/fixtures/${invalidBackupFile}`).then((success) => {
             expect(success).to.eq(true);
           });
           cy.get("[data-test=client-snackbar]")
@@ -113,18 +104,16 @@ describe("Backup Feature", function() {
           cy.url()
             .should("include", "/projects")
             .then(() => {
-              cy.get("[data-test^=project-title-]")
-                .invoke("text")
-                .should("not.include", "Backup Successful");
+              cy.get("[data-test^=project-title-]").invoke("text").should("not.include", "Backup Successful");
             });
         });
     });
   });
 
-  it("Tests the restore of a backup with the wrong organisation", function() {
+  it("Tests the restore of a backup with the wrong organisation", function () {
     const wrongOrgaFile = "backup_orga_test.gz";
 
-    cy.intercept(apiRoute + "/system.restoreBackup*").as("restore");
+    cy.intercept(apiRoute + "/system.restoreBackup").as("restore");
     //Open side navigation
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
@@ -132,14 +121,17 @@ describe("Backup Feature", function() {
     cy.get("[data-test=side-navigation]");
 
     //Upload file
-    cy.fixture(wrongOrgaFile, "binary").then(fileContent => {
-      const blob = Cypress.Blob.binaryStringToBlob(fileContent);
-      cy.get("#uploadBackup").attachFile(
-        { fileContent: blob, fileName: wrongOrgaFile, mimeType: "application/gzip", encoding: "utf-8" },
-        { subjectType: "input" }
+    cy.fixture(wrongOrgaFile, { encoding: null }).then((contents) => {
+      cy.get("#uploadBackup").selectFile(
+        {
+          contents,
+          fileName: wrongOrgaFile,
+          mimeType: "application/gzip",
+        },
+        { action: "select" },
       );
       cy.wait("@restore")
-        .should(interception => {
+        .should((interception) => {
           expect(interception.response.statusCode).to.eq(500);
         })
         .then(() => {
@@ -149,9 +141,7 @@ describe("Backup Feature", function() {
           cy.url()
             .should("include", "/projects")
             .then(() => {
-              cy.get("[data-test^=project-title-]")
-                .invoke("text")
-                .should("not.include", "Backup Successful");
+              cy.get("[data-test^=project-title-]").invoke("text").should("not.include", "Backup Successful");
             });
         });
     });
