@@ -18,10 +18,13 @@ describe("Backup Feature", function () {
     }
   });
 
+  beforeEach(() => {
+    cy.task("awaitApiReady", baseUrl, 12, 15000);
+  });
+
   after(() => {
     //restore the backup to the original state
     cy.task("checkFileExists", { file: pathToFile, timeout: 500 });
-    cy.task("awaitApiReady", baseUrl);
 
     cy.intercept(apiRoute + "/system.restoreBackup").as("restore");
 
@@ -46,9 +49,7 @@ describe("Backup Feature", function () {
         .its("response.statusCode")
         .should("eq", 200)
         .then(() => {
-          cy.task("awaitApiReady", baseUrl).then(() => {
-            cy.url().should("include", "/login");
-          });
+          cy.url().should("include", "/login");
         });
     });
   });
@@ -59,7 +60,6 @@ describe("Backup Feature", function () {
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
     cy.get("[data-test=download-backup]").click();
-    cy.task("awaitApiReady", baseUrl);
     cy.wait("@create").then((interception) => {
       expect(interception.response.headers).to.include({
         "content-type": "application/gzip",
