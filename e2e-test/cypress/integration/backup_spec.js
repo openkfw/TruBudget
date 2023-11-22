@@ -19,7 +19,7 @@ describe("Backup Feature", function () {
   });
 
   beforeEach(() => {
-    cy.task("awaitApiReady", baseUrl, 12, 15000);
+    cy.task("awaitApiReady", baseUrl, 12);
   });
 
   after(() => {
@@ -31,7 +31,6 @@ describe("Backup Feature", function () {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
-    cy.get("[data-test=side-navigation]");
     //Upload file
     cy.fixture(fileName, { encoding: null }).then((contents) => {
       cy.get("#uploadBackup").selectFile(
@@ -80,7 +79,6 @@ describe("Backup Feature", function () {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
-    cy.get("[data-test=side-navigation]");
 
     //Upload file
     cy.fixture(invalidBackupFile, { encoding: null }).then((contents) => {
@@ -120,7 +118,6 @@ describe("Backup Feature", function () {
     cy.login("root", Cypress.env("ROOT_SECRET"));
     cy.visit("/projects");
     cy.get("[data-test=openSideNavbar]").click();
-    cy.get("[data-test=side-navigation]");
 
     //Upload file
     cy.fixture(wrongOrgaFile, { encoding: null }).then((contents) => {
