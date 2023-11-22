@@ -155,6 +155,8 @@ services:
       ORGANIZATION: ${ORGANIZATION}
       LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
+      PROVISIONING_SERVICE_USER: ${PROVISIONING_SERVICE_USER}
+      PROVISIONING_SERVICE_PASSWORD: ${PROVISIONING_SERVICE_PASSWORD}
     # volumes:
     #   - "../../provisioning/src:/usr/src/app/src:delegated"
     networks:

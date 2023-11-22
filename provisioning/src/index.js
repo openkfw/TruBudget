@@ -33,12 +33,6 @@ const DEFAULT_API_VERSION = "1.0";
 // List all files here that do not contain project data
 const projectBlacklist = ["users.json", "close_test.json", "groups.json"];
 
-// Executing admin user
-const serviceUser = {
-  id: "mstein",
-  password: "test",
-};
-
 axios.defaults.transformRequest = [
   (data, headers) => {
     if (typeof data === "object") {
@@ -661,6 +655,12 @@ const host = process.env.API_HOST || "localhost";
 const rootSecret = process.env.ROOT_SECRET || "root-secret";
 const organization = process.env.ORGANIZATION;
 let currentUser = { id: "root", password: rootSecret };
+
+// Executing admin user
+const serviceUser = {
+  id: process.env.PROVISIONING_SERVICE_USER || "mstein",
+  password: process.env.PROVISIONING_SERVICE_PASSWORD || "test",
+};
 
 if (!organization) {
   log.info("ORGANIZATION not set");
