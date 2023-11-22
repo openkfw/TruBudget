@@ -42,12 +42,14 @@ describe("Backup Feature", function () {
       cy.task("deleteFile", pathToFile).then((success) => {
         expect(success).to.eq(true);
       });
-      cy.wait("@restore").then((interception) => {
-        expect(interception.response.statusCode).to.eq(200);
-        cy.task("awaitApiReady", baseUrl).then(() => {
-          cy.url().should("include", "/login");
+      cy.wait("@restore")
+        .its("response.statusCode")
+        .should("eq", 200)
+        .then(() => {
+          cy.task("awaitApiReady", baseUrl).then(() => {
+            cy.url().should("include", "/login");
+          });
         });
-      });
     });
   });
 
@@ -91,9 +93,8 @@ describe("Backup Feature", function () {
         { action: "select" },
       );
       cy.wait("@restore")
-        .should((interception) => {
-          expect(interception.response.statusCode).to.eq(500);
-        })
+        .its("response.statusCode")
+        .should("eq", 500)
         .then(() => {
           cy.task("deleteFile", `cypress/fixtures/${invalidBackupFile}`).then((success) => {
             expect(success).to.eq(true);
@@ -101,6 +102,12 @@ describe("Backup Feature", function () {
           cy.get("[data-test=client-snackbar]")
             .contains("failed to restore backup: Backup with these configurations is not permitted")
             .should("be.visible");
+          // Check if the user is still logged in
+          cy.url()
+            .should("include", "/projects")
+            .then(() => {
+              cy.get("[id^=project-title-]").first().invoke("text").should("not.include", "Backup Successful");
+            });
         });
     });
   });
@@ -126,13 +133,18 @@ describe("Backup Feature", function () {
         { action: "select" },
       );
       cy.wait("@restore")
-        .should((interception) => {
-          expect(interception.response.statusCode).to.eq(500);
-        })
+        .its("response.statusCode")
+        .should("eq", 500)
         .then(() => {
           cy.get("[data-test=client-snackbar]")
             .contains("Backup with these configurations is not permitted")
             .should("be.visible");
+          // Check if the user is still logged in
+          cy.url()
+            .should("include", "/projects")
+            .then(() => {
+              cy.get("[id^=project-title-]").first().invoke("text").should("not.include", "Backup Successful");
+            });
         });
     });
   });
