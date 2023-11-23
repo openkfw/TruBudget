@@ -17,23 +17,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
-## [2.x.x] - TBD
-
-<!-- ## Unreleased -->
+## [2.5.0] - 2023-11-23
 
 ### Added
 
 - Possibility to create several workflowitems at once from pre-defined templates. [#1430](https://github.com/openkfw/TruBudget/issues/1430)
+- Add an option to configure the provisioning script to configure the executing user via environment variables. [#1530](https://github.com/openkfw/TruBudget/issues/1530)
 
 ### Changed
 
 - Session token cookie is invalidated on user logout. [#1507](https://github.com/openkfw/TruBudget/issues/1507)
+- Add an improvement to the api caching strategy, where snapshots are periodically written to the chain to improve performance during eventsourcing. [#1108](https://github.com/openkfw/TruBudget/issues/1108)
 
-<!-- ### Deprecated -->
 
-<!-- ### Removed -->
-
-<!-- ### Fixed -->
+### Fixed
+- Add multiple fixes to the e2e-tests and testing library cypress. [#1532](https://github.com/openkfw/TruBudget/issues/1532)[#1535](https://github.com/openkfw/TruBudget/issues/1535)
 
 ## [2.4.0] - 2023-10-31
 
@@ -1017,8 +1015,9 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.4.0...main
-[2.3.0]: https://github.com/openkfw/TruBudget/compare/v2.3.0...v2.4.0
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.5.0...main
+[2.5.0]: https://github.com/openkfw/TruBudget/compare/v2.4.0...v2.5.0
+[2.4.0]: https://github.com/openkfw/TruBudget/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/openkfw/TruBudget/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/openkfw/TruBudget/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/openkfw/TruBudget/compare/v2.1.0...v2.2.0
