@@ -4,6 +4,7 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGOUT = "LOGOUT";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const LOGIN_ERROR = "LOGIN_ERROR";
+export const LOGIN_LOADING = "LOGIN_LOADING";
 
 export const FETCH_USER = "FETCH_USER";
 export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
@@ -90,6 +91,13 @@ export function loginAdmin(user) {
 export function logoutAdmin() {
   return {
     type: ADMIN_LOGOUT
+  };
+}
+
+export function loginLoading(showLoading) {
+  return {
+    type: LOGIN_LOADING,
+    showLoading
   };
 }
 

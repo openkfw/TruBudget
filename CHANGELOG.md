@@ -5,11 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+<!-- ## [x.x.x] - YYYY-MM-DD -->
+
 <!-- ## Unreleased -->
 
 <!-- ### Added -->
 
 <!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
+## [2.5.x] - 2023-12-x
+
+<!-- ## Unreleased -->
+
+### Added
+
+- Loading indicator when user logs in with auth proxy to improve user experience [#1544](https://github.com/openkfw/TruBudget/pull/1544)
+
+### Changed
+
+- Live update of projects is paused when search functionality is used in table view. Otherwise search results were reset. [#1539](https://github.com/openkfw/TruBudget/pull/1539)
 
 <!-- ### Deprecated -->
 

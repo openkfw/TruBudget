@@ -21,6 +21,7 @@ import {
   FETCH_USER_SUCCESS,
   INIT_LANGUAGE,
   LOGIN_ERROR,
+  LOGIN_LOADING,
   LOGIN_SUCCESS,
   LOGOUT_SUCCESS,
   SET_LANGUAGE,
@@ -29,27 +30,28 @@ import {
 } from "./actions";
 
 export const defaultState = fromJS({
-  username: "",
-  password: "",
-  id: "",
-  emailAddress: "",
-  displayName: "",
-  organization: "",
-  allowedIntents: [],
-  groups: [],
-  avatarBackground: "/avatar_back.jpeg",
-  avatar: "/lego_avatar_female2.jpg",
-  isUserLoggedIn: false,
   adminLoginFailed: false,
-  language: "en-gb",
-  user: [],
-  groupList: [],
-  enabledUsers: [],
+  allowedIntents: [],
+  avatar: "/lego_avatar_female2.jpg",
+  avatarBackground: "/avatar_back.jpeg",
   disabledUsers: [],
-  userDisplayNameMap: {},
+  displayName: "",
+  emailAddress: "",
   emailServiceAvailable: false,
+  enabledUsers: [],
   exportServiceAvailable: false,
-  loginError: false
+  groupList: [],
+  groups: [],
+  id: "",
+  isUserLoggedIn: false,
+  language: "en-gb",
+  loading: false,
+  loginError: false,
+  organization: "",
+  password: "",
+  user: [],
+  userDisplayNameMap: {},
+  username: ""
 });
 
 const setTimeLocale = (language) => {
@@ -147,6 +149,10 @@ export default function loginReducer(state = defaultState, action) {
     case ADMIN_LOGOUT_SUCCESS:
     case LOGOUT_SUCCESS:
       return defaultState.set("language", state.get("language"));
+    case LOGIN_LOADING:
+      return state.merge({
+        loading: action.showLoading
+      });
     default:
       return state;
   }

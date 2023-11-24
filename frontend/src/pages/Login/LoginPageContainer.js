@@ -6,6 +6,7 @@ import {
   checkEmailService,
   checkExportService,
   initLanguage,
+  loginLoading,
   loginWithCredentials,
   loginWithToken,
   logout,
@@ -39,9 +40,11 @@ class LoginPageContainer extends Component {
     const path = from ? this.props.router.location.state.from : "/";
     const token = new URLSearchParams(this.props.location.search).get("token");
     if (token) {
+      this.props.setLoginLoading(true);
       this.props.loginWithToken(token);
     }
     if (this.props.isUserLoggedIn) {
+      this.props.setLoginLoading(false);
       this.props.router.navigate(path);
     }
   }
@@ -59,6 +62,7 @@ const mapDispatchToProps = (dispatch) => {
     logout: () => dispatch(logout()),
     loginWithCredentials: (username, password) => dispatch(loginWithCredentials(username, password)),
     loginWithToken: (token) => dispatch(loginWithToken(token)),
+    setLoginLoading: (showLoading) => dispatch(loginLoading(showLoading)),
     setLanguage: (language) => dispatch(setLanguage(language)),
     checkEmailService: () => dispatch(checkEmailService(false)),
     checkExportService: () => dispatch(checkExportService(false))
@@ -71,7 +75,8 @@ const mapStateToProps = (state) => {
     isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
     password: state.getIn(["login", "password"]),
     language: state.getIn(["login", "language"]),
-    loginError: state.getIn(["login", "loginError"])
+    loginError: state.getIn(["login", "loginError"]),
+    loading: state.getIn(["login", "loading"])
   };
 };
 
