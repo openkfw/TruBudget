@@ -1,0 +1,178 @@
+version: "3"
+
+networks:
+  mynetwork:
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+
+services:
+  alpha-node:
+    image: trubudget/blockchain:${TAG}
+    environment:
+      PORT: ${BLOCKCHAIN_PORT}
+      CHAINNAME: ${CHAINNAME}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+      P2P_PORT: ${P2P_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      MULTICHAIN_DIR: ${MULTICHAIN_DIR}
+      LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
+      NODE_ENV: ${ENVIRONMENT}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.2
+    ports:
+      - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting to the multichain daemon
+      - ${BLOCKCHAIN_PORT}:${BLOCKCHAIN_PORT} # port for requests to blockchain API
+      - ${P2P_PORT}:${P2P_PORT} # port for connecting beta nodes (P2P)
+
+  alpha-api:
+    image: trubudget/api:${TAG}
+    environment:
+      PORT: ${API_PORT}
+      ORGANIZATION: ${ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${ORGANIZATION_VAULT_SECRET}
+      MULTICHAIN_RPC_HOST: 172.21.0.2
+      MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
+      MULTICHAIN_RPC_USER: ${MULTICHAIN_RPC_USER}
+      ROOT_SECRET: ${ROOT_SECRET}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
+      BLOCKCHAIN_PORT: ${BLOCKCHAIN_PORT}
+      ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
+      SIGNING_METHOD: ${SIGNING_METHOD}
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: ${ENVIRONMENT}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+      LOG_LEVEL: ${API_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
+      CI_COMMIT_SHA: ${CI_COMMIT_SHA}
+      BUILDTIMESTAMP: ${BUILDTIMESTAMP}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    depends_on:
+      - alpha-node
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.3
+    ports:
+      - ${API_PORT}:${API_PORT}
+
+  provisioning:
+    image: trubudget/provisioning:${TAG}
+    environment:
+      API_HOST: 172.21.0.3
+      API_PORT: ${API_PORT}
+      ROOT_SECRET: ${ROOT_SECRET}
+      ORGANIZATION: ${ORGANIZATION}
+      PROVISIONING_TYPE: ${PROVISIONING_TYPE}
+      LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.5
+    depends_on:
+      - alpha-api
+
+  alpha-frontend:
+    image: trubudget/frontend:${TAG}
+    restart: always
+    environment:
+      NODE_ENV: ${ENVIRONMENT}
+      REACT_APP_VERSION: ${REACT_APP_VERSION}
+      API_HOST: 172.21.0.3
+      API_PORT: ${API_PORT}
+      INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
+    depends_on:
+      - alpha-api
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.4
+    ports:
+      - "${FRONTEND_PORT}:80"
+
+  beta-node:
+    image: trubudget/blockchain:latest
+    environment:
+      MULTICHAIN_RPC_PORT: ${BETA_MULTICHAIN_RPC_PORT}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
+      MULTICHAIN_RPC_USER: ${MULTICHAIN_RPC_USER}
+      ORGANIZATION: ${BETA_ORGANIZATION}
+      CHAINNAME: ${CHAINNAME}
+      RPC_ALLOW_IP: ${RPC_ALLOW_IP}
+      EXTERNAL_IP: ${EXTERNAL_IP}
+      PORT: ${BLOCKCHAIN_PORT}
+      # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
+      P2P_HOST: 172.21.0.2
+      P2P_PORT: ${P2P_PORT}
+      API_PROTO: ${EXTERNAL_ALPHA_API_PROTO}
+      API_HOST: 172.21.0.3 # API to send register request
+      API_PORT: ${EXTERNAL_ALPHA_API_PORT}
+      NODE_ENV: ${ENVIRONMENT}
+      JWT_SECRET: ${JWT_SECRET}
+      LOG_LEVEL: ${BLOCKCHAIN_LOG_LEVEL}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+      BLOCKNOTIFY_SCRIPT: ${BLOCKNOTIFY_SCRIPT}
+      MULTICHAIN_DIR: ${MULTICHAIN_DIR}
+      MULTICHAIN_FEED_ENABLED: ${MULTICHAIN_FEED_ENABLED}
+      CI_COMMIT_SHA: ${CI_COMMIT_SHA}
+      BUILDTIMESTAMP: ${BUILDTIMESTAMP}
+      EXPOSE_MC: ${EXPOSE_MC}
+    depends_on:
+      - alpha-node
+      - alpha-api
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.6
+    ports:
+      - ${BETA_MULTICHAIN_RPC_PORT}:${BETA_MULTICHAIN_RPC_PORT}
+      - "8086:${BLOCKCHAIN_PORT}"
+      - "7448:${P2P_PORT}" # beta-node port is 7448 on host
+    privileged: true
+
+  beta-api:
+    image: trubudget/api:${TAG}
+    environment:
+      PORT: ${BETA_API_PORT}
+      ORGANIZATION: ${BETA_ORGANIZATION}
+      ORGANIZATION_VAULT_SECRET: ${BETA_ORGANIZATION_VAULT_SECRET}
+      MULTICHAIN_RPC_HOST: 172.21.0.6
+      MULTICHAIN_RPC_PORT: ${BETA_MULTICHAIN_RPC_PORT}
+      MULTICHAIN_RPC_USER: ${MULTICHAIN_RPC_USER}
+      ROOT_SECRET: ${ROOT_SECRET}
+      MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
+      BLOCKCHAIN_PORT: 8086
+      ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      SIGNING_METHOD: ${SIGNING_METHOD}
+      NODE_ENV: ${ENVIRONMENT}
+      ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
+      LOG_LEVEL: ${API_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
+      CI_COMMIT_SHA: ${CI_COMMIT_SHA}
+      BUILDTIMESTAMP: ${BUILDTIMESTAMP}
+      PRETTY_PRINT: ${PRETTY_PRINT}
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.7
+    ports:
+      - ${BETA_API_PORT}:${BETA_API_PORT}
+    depends_on:
+      - beta-node
+
+  beta-frontend:
+    image: trubudget/frontend:${TAG}
+    restart: always
+    environment:
+      NODE_ENV: ${ENVIRONMENT}
+      REACT_APP_VERSION: ${REACT_APP_VERSION}
+      API_HOST: 172.21.0.7
+      API_PORT: ${BETA_API_PORT}
+      INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
+    depends_on:
+      - alpha-api
+    networks:
+      mynetwork:
+        ipv4_address: 172.21.0.8
+    ports:
+      - "${BETA_FRONTEND_PORT}:80"

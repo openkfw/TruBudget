@@ -1,0 +1,43 @@
+version: "3"
+services:
+  alpha-node:
+    build:
+      context: ../blockchain
+      dockerfile: Dockerfile
+    image: docker-compose-alpha-node:local
+
+  alpha-api:
+    build:
+      context: ../api
+      dockerfile: Dockerfile
+    image: docker-compose-alpha-api:local
+
+  provisioning:
+    build:
+      context: ../provisioning
+      dockerfile: Dockerfile
+    image: docker-compose-provisioning:local
+
+  alpha-frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: docker-compose-alpha-frontend:local
+
+  beta-node:
+    build:
+      context: ../blockchain
+      dockerfile: Dockerfile
+    image: docker-compose-beta-node:local
+
+  beta-api:
+    build: 
+      context: ../api
+      dockerfile: Dockerfile
+    image: docker-compose-beta-api:local
+
+  beta-frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: docker-compose-beta-frontend:local
