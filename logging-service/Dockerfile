@@ -1,4 +1,4 @@
-FROM node:18.4.0-alpine
+FROM node:20.9.0-alpine
 
 WORKDIR /home/node
 COPY index.js index.js

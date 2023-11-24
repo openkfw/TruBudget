@@ -13,16 +13,16 @@ const createPinoLogger = (name) => {
     prettyPrintInput.toLowerCase()
   );
 
-  const prettyPrint =
-    activatePrettyPrint === true
-      ? {
-          colorize: true,
-          levelFirst: false,
-          messageKey: "message",
-          translateTime: true,
-          crlf: false,
-        }
-      : false;
+  const transport = activatePrettyPrint === true ? {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      levelFirst: false,
+      messageKey: "message",
+      translateTime: true,
+      crlf: false,
+    },
+  } : {};
 
   const logLevelEnvironment = process.env.LOG_LEVEL || "info";
   const level = getLevel(logLevelEnvironment);
@@ -43,7 +43,7 @@ const createPinoLogger = (name) => {
     name,
     base,
     level,
-    prettyPrint,
+    transport,
     redact,
     messageKey,
   });
