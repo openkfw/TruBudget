@@ -5,6 +5,8 @@ export const FETCH_ALL_PROJECTS = "FETCH_ALL_PROJECTS";
 export const FETCH_ALL_PROJECTS_SUCCESS = "FETCH_ALL_PROJECTS_SUCCESS";
 
 export const LIVE_UPDATE_ALL_PROJECTS = "LIVE_UPDATE_ALL_PROJECTS";
+export const LIVE_UPDATE_ALL_PROJECTS_DISABLE = "LIVE_UPDATE_ALL_PROJECTS_DISABLE";
+export const LIVE_UPDATE_ALL_PROJECTS_ENABLE = "LIVE_UPDATE_ALL_PROJECTS_ENABLE";
 
 export const SHOW_CREATION_DIALOG = "SHOW_CREATION_DIALOG";
 export const HIDE_PROJECT_DIALOG = "HIDE_CREATION_DIALOG";
@@ -62,6 +64,18 @@ export function liveUpdateAllProjects(showLoading = false) {
   return {
     type: LIVE_UPDATE_ALL_PROJECTS,
     showLoading
+  };
+}
+
+export function disableAllProjectsLiveUpdates() {
+  return {
+    type: LIVE_UPDATE_ALL_PROJECTS_DISABLE
+  };
+}
+
+export function enableAllProjectsLiveUpdates() {
+  return {
+    type: LIVE_UPDATE_ALL_PROJECTS_ENABLE
   };
 }
 

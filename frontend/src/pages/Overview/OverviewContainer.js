@@ -13,7 +13,9 @@ import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
 import { fetchAllProjectDetails } from "../SubProjects/actions";
 
 import {
+  disableAllProjectsLiveUpdates,
   editProject,
+  enableAllProjectsLiveUpdates,
   fetchAllProjects,
   hideProjectAdditionalData,
   liveUpdateAllProjects,
@@ -87,6 +89,8 @@ class OverviewContainer extends Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     liveUpdate: () => dispatch(liveUpdateAllProjects()),
+    disableLiveUpdates: () => dispatch(disableAllProjectsLiveUpdates()),
+    enableLiveUpdates: () => dispatch(enableAllProjectsLiveUpdates()),
     showCreationDialog: () => dispatch(showCreationDialog()),
     showEditDialog: (id, displayName, description, thumbnail, projectedBudgets, tags) =>
       dispatch(showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags)),
