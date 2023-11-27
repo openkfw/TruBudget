@@ -1,3 +1,4 @@
+require("dotenv").config();
 const {
   API_HOST,
   API_PORT,
@@ -13,6 +14,7 @@ const logBuilder = require("./index");
 const axios = require("axios");
 const jwtCache = new Set();
 const logger = logBuilder.createPinoLogger("Trubudget-Frontend");
+
 const fastify = require("fastify")({
   logger: LOG_LEVEL === "trace" ? logger : undefined,
 });
@@ -22,15 +24,37 @@ setInterval(() => {
   jwtCache.clear();
 }, 60 * LOGGING_SERVICE_CACHE_DURATION * 1000);
 
-fastify.listen(LOGGER_PORT, "0.0.0.0", function (err, address) {
-  if (err) {
-    logger.fatal({ err }, "Error on binding fastify to IPv4 address");
-    process.exit(1);
-  }
-  logger.info(`server listening on ${address}`);
-});
 
-fastify.register(require("fastify-cors"), {
+const verifyJWTToken = async (tokenToValidate) => {
+  const possibleCacheHit = jwtCache.has(tokenToValidate);
+  if (possibleCacheHit) return possibleCacheHit;
+
+  const req = await axios.get(`http://${API_HOST}:${API_PORT}/api/version`, {
+    headers: {
+      Authorization: tokenToValidate,
+    },
+  });
+  jwtCache.add(tokenToValidate);
+  return req.status === 200;
+};
+
+const toStdOut = (logMsg) => {
+  logMsg.logMessages.forEach((e) => {
+    switch (e.what) {
+      case "Error":
+        logger.error(JSON.stringify(e));
+        break;
+      case "Trace":
+        logger.trace(JSON.stringify(e));
+        break;
+      default:
+        logger.info(JSON.stringify(e));
+        break;
+    }
+  });
+};
+
+fastify.register(require("@fastify/cors"), {
   // set CORS env var
   origin: "*",
 });
@@ -69,41 +93,9 @@ fastify.get("/alive", (req, res) => {
   });
 });
 
-const verifyJWTToken = async (tokenToValidate) => {
-  const possibleCacheHit = jwtCache.has(tokenToValidate);
-  if (possibleCacheHit) return possibleCacheHit;
-
-  const req = await axios.get(`http://${API_HOST}:${API_PORT}/api/version`, {
-    headers: {
-      Authorization: tokenToValidate,
-    },
-  });
-  jwtCache.add(tokenToValidate);
-  return req.status === 200;
-};
-
-const toStdOut = (logMsg) => {
-  logMsg.logMessages.forEach((e) => {
-    switch (e.what) {
-      case "Error":
-        logger.error(JSON.stringify(e));
-        break;
-      case "Trace":
-        logger.trace(JSON.stringify(e));
-        break;
-      default:
-        logger.info(JSON.stringify(e));
-        break;
-    }
-  });
-};
-
-const start = async () => {
-  try {
-    await fastify.listen(LOGGER_PORT);
-  } catch (err) {
-    logger.fatal({ err }, "Error creating the log-server");
+fastify.listen({ port: Number(LOGGER_PORT) }, (err) => {
+  if (err) {
+    logger.fatal({ err }, "Error on binding fastify to IPv4 address");
     process.exit(1);
   }
-};
-start();
+});
