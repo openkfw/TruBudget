@@ -9,6 +9,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import LinearProgress from "@mui/material/LinearProgress";
 import MenuItem from "@mui/material/MenuItem";
 
 import config from "../../config";
@@ -18,14 +19,15 @@ import Password from "../Common/Password";
 import Username from "../Common/Username";
 
 const LoginPage = ({
-  storeUsername,
-  storePassword,
-  username,
-  password,
-  loginWithCredentials,
-  loginError,
   language,
-  setLanguage
+  loading,
+  loginError,
+  loginWithCredentials,
+  password,
+  setLanguage,
+  storePassword,
+  storeUsername,
+  username
 }) => {
   const navigate = useNavigate();
   const connectedToAdminNode = -1;
@@ -143,6 +145,7 @@ const LoginPage = ({
             )}
           </Grid>
         </Box>
+        <Box>{loading && <LinearProgress />}</Box>
         <Divider />
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", float: "right" }}>
           <IconButton
