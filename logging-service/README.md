@@ -1,6 +1,6 @@
 # TruBudget Logging Config for Pino
 
-This is module exports a pino logger instance with a commen configuratino for the TruBudget project
+This is module exports a pino logger instance with a common configuration for the TruBudget project
 
 ## API
 
