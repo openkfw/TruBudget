@@ -22,7 +22,7 @@ const createPinoLogger = (name) => {
       translateTime: true,
       crlf: false,
     },
-  } : {};
+  } : undefined;
 
   const logLevelEnvironment = process.env.LOG_LEVEL || "info";
   const level = getLevel(logLevelEnvironment);

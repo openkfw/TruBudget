@@ -53,7 +53,7 @@
     "streamifier": "^0.1.1",
     "tar-fs": "^2.1.1",
     "tar-stream": "^2.2.0",
-    "trubudget-logging-service": "^1.1.6"
+    "trubudget-logging-service": "^1.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
@@ -70,7 +70,6 @@
     "prettier": "2.7.1"
   },
   "overrides": {
-    "get-func-name": "^2.0.1",
-    "axios": "^1.6.2"
+    "get-func-name": "^2.0.1"
   }
 }
