@@ -32,7 +32,7 @@ root      |  root-secret
 
 ### Environment Variables
 
-The environmental variables are located in the file `.env` (in the directory `scripts/development/`). You can change them directly. If you do not have an `.env` file, you can copy the `.env_example` file.
+The environmental variables are located in the file `.env` (in the directory `scripts/development/`). You can change them directly. If you do not have an `.env` file, you can copy the `.env.example` file.
 
 ### Options for Setup
 

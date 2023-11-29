@@ -9,7 +9,7 @@ Following guide is using the recommended command `docker compose` (v2).
 ## Environment Variables
 
 Environment variables for each service can be checked in the individual service `README.md` files.
-All environment variables are configured via `.env` file. The `.env_example` file can be used as first configuration by copying it to `.env` file:
+All environment variables are configured via `.env` file. The `.env.example` file can be used as first configuration by copying it to `.env` file:
 
 ```
 cp .env_example .env

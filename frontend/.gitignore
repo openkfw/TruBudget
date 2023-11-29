@@ -19,6 +19,9 @@ yarn-error.log*
 cypress/screenshots
 cypress/videos
 
+# dotenv environment variables file
+# .env
+
 # vscode
 .vscode
 .idea/

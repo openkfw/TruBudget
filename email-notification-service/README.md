@@ -49,7 +49,7 @@ install [Docker](https://www.docker.com/community-edition#/download)).
 
 ```bash
 cd docker-compose
-cp .env_example .env
+cp .env.example .env
 docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f email-notification-service/docker-compose.yml up
 ```
 

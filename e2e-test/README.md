@@ -18,7 +18,7 @@ CYPRESS_baseUrl=http://localhost:3000
 CYPRESS_BASE_URL=http://localhost:3000
 ```
 
-Those variables can be set in `.env` file also. `.env_example` file is prepared for easy creation (see Developer guide: [Environment variables](../docs/developer/developer-setup.md#environment-variables)). Thanks _cypress-dotenv_ module they can be available in the code. They have the same meaning like its Run Command Arguments conterparts.
+Those variables can be set in `.env` file also. `.env.example` file is prepared for easy creation (see Developer guide: [Environment variables](../docs/developer/developer-setup.md#environment-variables)). Thanks _cypress-dotenv_ module they can be available in the code. They have the same meaning like its Run Command Arguments conterparts.
 
 | Env Variable Name               | Default Value         | Description                                       |
 | ------------------------------- | --------------------- | ------------------------------------------------- |

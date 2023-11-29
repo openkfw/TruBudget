@@ -86,12 +86,12 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "start": "node ./hotReloadSetup && react-app-rewired start",
+    "start": "REACT_APP_VERSION=$npm_package_version node ./hotReloadSetup && react-app-rewired start",
     "audit": "better-npm-audit audit",
-    "build": "react-app-rewired build",
+    "build": "REACT_APP_VERSION=$npm_package_version react-app-rewired build",
     "test": "npm run check-translations",
     "eject": "react-scripts eject",
-    "check-translations": "node scripts/check-translations.js",
+    "check-translations": "REACT_APP_VERSION=$npm_package_version node scripts/check-translations.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "eslint-check": "eslint --print-config ./src/index.js | eslint-config-prettier-check",
