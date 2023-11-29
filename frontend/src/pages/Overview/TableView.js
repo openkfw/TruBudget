@@ -268,6 +268,8 @@ const formatTable = ({
 
 const TableView = (props) => {
   const {
+    disableLiveUpdates,
+    enableLiveUpdates,
     filteredProjects,
     showEditDialog,
     showProjectPermissions,
@@ -279,6 +281,7 @@ const TableView = (props) => {
     showNavSearchBar // to open the search bar for CardView in NavBar
   } = props;
 
+  const hasSearchTerm = searchTerm !== "";
   const projects = filteredProjects;
 
   const [status, setStatus] = useState("all");
@@ -299,6 +302,14 @@ const TableView = (props) => {
       searchTerm
     })
   );
+
+  useEffect(() => {
+    if (hasSearchTerm) {
+      disableLiveUpdates();
+    } else {
+      enableLiveUpdates();
+    }
+  }, [disableLiveUpdates, enableLiveUpdates, hasSearchTerm]);
 
   useEffect(() => {
     // Update Table when new project was created
@@ -322,7 +333,7 @@ const TableView = (props) => {
       return;
     }
     let filtered = projects;
-    const hasSearchTerm = searchTerm !== "";
+
     const hasStatus = status !== "all";
     const hasAssignee = assigneeId !== "all";
     const hasStartDate = startDate !== null;
@@ -375,15 +386,16 @@ const TableView = (props) => {
     );
   }, [
     projects,
-    searchTerm,
     status,
     assigneeId,
     startDate,
     endDate,
+    hasSearchTerm,
     showEditDialog,
     showProjectPermissions,
     showProjectAdditionalData,
     storeSearchTerm,
+    searchTerm,
     showNavSearchBar
   ]);
 

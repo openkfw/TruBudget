@@ -21,6 +21,8 @@ import {
   HIDE_PROJECT_ADDITIONAL_DATA,
   HIDE_PROJECT_DIALOG,
   HIDE_PROJECT_PERMISSIONS,
+  LIVE_UPDATE_ALL_PROJECTS_DISABLE,
+  LIVE_UPDATE_ALL_PROJECTS_ENABLE,
   PROJECT_COMMENT,
   PROJECT_CREATION_STEP,
   PROJECT_DELETED_PROJECTED_BUDGET,
@@ -237,8 +239,10 @@ export default function overviewReducer(state = defaultState, action) {
     case STORE_PROJECT_VIEW:
       return state.set("projectView", fromJS(action.projectView));
     case DISABLE_ALL_LIVE_UPDATES:
+    case LIVE_UPDATE_ALL_PROJECTS_DISABLE:
       return state.set("isLiveUpdateAllProjectsEnabled", false);
     case ENABLE_ALL_LIVE_UPDATES:
+    case LIVE_UPDATE_ALL_PROJECTS_ENABLE:
       return state.set("isLiveUpdateAllProjectsEnabled", true);
     default:
       return state;
