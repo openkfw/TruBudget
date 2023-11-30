@@ -59,7 +59,12 @@ export async function updateProjectedBudget(
   logger.trace({ issuer }, "Checking if user has permissions");
   if (issuer.id !== "root") {
     const intent = "project.budget.updateProjected";
-    if (!Project.permits(project, issuer, [intent])) {
+    if (
+      !(
+        Project.permits(project, issuer, [intent]) ||
+        Project.permits(project, issuer, ["project.update"])
+      )
+    ) {
       return new NotAuthorized({ ctx, userId: issuer.id, intent, target: project });
     }
   }
