@@ -1,0 +1,10 @@
+name: 'Audit Report'
+description: 'Run audit on projects and report vulnerabilities'
+inputs:
+    projects:
+      required: true
+    token:
+      required: true
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
