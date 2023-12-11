@@ -18,7 +18,7 @@ import * as WorkflowitemUpdated from "./workflowitem_updated";
 export function sourceWorkflowitemFromSnapshot(
   ctx: Ctx,
   events: BusinessEvent[],
-  withLog: boolean,
+  _withLog: boolean,
   workflowitemJson?,
 ): Result.Type<Workflowitem.Workflowitem> {
   let workflowitem;
@@ -36,9 +36,7 @@ export function sourceWorkflowitemFromSnapshot(
     }
     const workflowitemResult = sourceEventFromSnapshot(ctx, event, workflowitem);
     if (Result.isOk(workflowitemResult)) {
-      if (withLog) {
-        workflowitemResult.log.push(newTraceEvent(workflowitemResult, event));
-      }
+      workflowitemResult.log.push(newTraceEvent(workflowitemResult, event));
       workflowitem = workflowitemResult;
     }
   }
@@ -108,35 +106,6 @@ export function parseWorkflowitemFromSnapshot(workflowitemJson): Workflowitem.Wo
   };
 }
 
-export function sourceWorkflowitems(
-  ctx: Ctx,
-  events: BusinessEvent[],
-  origin?: Map<Workflowitem.Id, Workflowitem.Workflowitem>,
-): { workflowitems: Workflowitem.Workflowitem[]; errors: Error[] } {
-  const items =
-    origin === undefined
-      ? new Map<Workflowitem.Id, Workflowitem.Workflowitem>()
-      : new Map<Workflowitem.Id, Workflowitem.Workflowitem>(origin);
-  const errors: Error[] = [];
-
-  for (const event of events) {
-    logger.trace({ event }, "Validating workflowitem event by applying it");
-    if (!event.type.startsWith("workflowitem_")) {
-      continue;
-    }
-
-    const workflowitem = sourceEvent(ctx, event, items);
-    if (Result.isErr(workflowitem)) {
-      errors.push(workflowitem);
-    } else {
-      workflowitem.log.push(newTraceEvent(workflowitem, event));
-      items.set(workflowitem.id, workflowitem);
-    }
-  }
-
-  return { workflowitems: [...items.values()], errors };
-}
-
 function newTraceEvent(
   workflowitem: Workflowitem.Workflowitem,
   event: BusinessEvent,
@@ -152,46 +121,6 @@ function newTraceEvent(
       amountType: workflowitem.amountType,
     },
   };
-}
-
-function sourceEvent(
-  ctx: Ctx,
-  event: BusinessEvent,
-  workflowitems: Map<Workflowitem.Id, Workflowitem.Workflowitem>,
-): Result.Type<Workflowitem.Workflowitem> {
-  const workflowitemId = getWorkflowitemId(event);
-  let workflowitem: Result.Type<Workflowitem.Workflowitem>;
-  if (Result.isOk(workflowitemId)) {
-    // The event refers to an existing workflowitem, so
-    // the workflowitem should have been initialized already.
-
-    workflowitem = get(workflowitems, workflowitemId);
-    if (Result.isErr(workflowitem)) {
-      return new VError(
-        `workflowitem ID ${workflowitemId} found in event ${event.type} is invalid`,
-      );
-    }
-
-    workflowitem = newWorkflowitemFromEvent(ctx, workflowitem, event);
-    if (Result.isErr(workflowitem)) {
-      return workflowitem; // <- event-sourcing error
-    }
-  } else {
-    // The event does not refer to a workflowitem ID, so it must be a creation event:
-    if (event.type !== "workflowitem_created") {
-      return new VError(
-        `event ${event.type} is not of type "workflowitem_created" but also ` +
-          "does not include a workflowitem ID",
-      );
-    }
-
-    workflowitem = WorkflowitemCreated.createFrom(ctx, event);
-    if (Result.isErr(workflowitem)) {
-      return new VError(workflowitem, "could not create workflowitem from event");
-    }
-  }
-
-  return workflowitem;
 }
 
 function get(
@@ -264,6 +193,7 @@ export function newWorkflowitemFromEvent(
 type EventModule = {
   mutate: (workflowitem: Workflowitem.Workflowitem, event: BusinessEvent) => Result.Type<void>;
 };
+
 function getEventModule(event: BusinessEvent): Result.Type<EventModule> {
   switch (event.type) {
     case "workflowitem_document_validated":
