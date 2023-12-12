@@ -26,7 +26,7 @@ import OverflowTooltip from "../Common/OverflowTooltip";
 const styles = {
   card: {
     marginTop: "24px",
-    width: "800px"
+    width: "1000px"
   },
   container: {
     minHeight: "56px",
@@ -62,7 +62,7 @@ const styles = {
     flex: 1,
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "140px"
+    maxWidth: "none"
   },
   tableRow: {
     display: "flex",
@@ -77,7 +77,7 @@ const styles = {
     flex: 1,
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: "140px"
+    maxWidth: "none"
   }
 };
 
@@ -103,12 +103,12 @@ const generateHeader = (status, actionTableColumns) => {
         </TableCell>
       ) : null}
       {actionTableColumns.userOrGroupColumn ? (
-        <TableCell key={"header-identity"} style={{ ...styles.columnHeaderCell, flex: 3 }}>
-          <OverflowTooltip text={strings.confirmation.user_group} />
+        <TableCell key={"header-identity"} style={{ ...styles.columnHeaderCell, flex: 5 }}>
+          <OverflowTooltip text={strings.confirmation.user_group} maxWidth="none" />
         </TableCell>
       ) : null}
       {status ? (
-        <TableCell key={"header-status"} style={{ ...styles.columnHeaderCell, textAlign: "right", flex: 3 }}>
+        <TableCell key={"header-status"} style={{ ...styles.columnHeaderCell, textAlign: "right", flex: 1 }}>
           <OverflowTooltip text={strings.common.status} />
         </TableCell>
       ) : null}
@@ -145,14 +145,14 @@ const generateActions = (actions, executedActions, failedAction, users, groups, 
           </TableCell>
         ) : null}
         {actionTableColumns.userOrGroupColumn ? (
-          <TableCell key={index + "-userName"} style={{ ...styles.tableCell, flex: 3 }}>
-            <OverflowTooltip text={userOrGroup ? userOrGroup.displayName : ""} />
+          <TableCell key={index + "-userName"} style={{ ...styles.tableCell, flex: 5 }}>
+            <OverflowTooltip text={userOrGroup ? userOrGroup.displayName : ""} maxWidth="none" />
           </TableCell>
         ) : null}
         {status ? (
           <TableCell
             key={index + "-status"}
-            style={{ ...styles.tableCell, textAlign: "right", position: "relative", flex: 3 }}
+            style={{ ...styles.tableCell, textAlign: "right", position: "relative", flex: 1 }}
           >
             {getStatusIcon(executedActions, failedAction, action)}
           </TableCell>

@@ -49,9 +49,6 @@ const styles = {
     overflow: "hidden",
     textOverflow: "ellipsis"
   },
-  nameContainer: {
-    maxWidth: "200px"
-  },
   listSubHeader: { top: "auto" },
   disabled: {},
   closeButtonContainer: { float: "right", marginTop: -8 },
@@ -86,8 +83,8 @@ class SingleSelection extends Component {
           onClick={() => (id !== selectId ? this.props.onSelect(id, displayName) : undefined)}
         >
           <Radio style={styles.radioButton} disabled={disabled} checked={isChecked} />
-          <ListItemText data-test={`single-select-name-${id}`} style={styles.nameContainer}>
-            <OverflowTooltip text={displayName} />
+          <ListItemText data-test={`single-select-name-${id}`}>
+            <OverflowTooltip text={displayName} maxWidth="none" />
           </ListItemText>
         </MenuItem>
       );
