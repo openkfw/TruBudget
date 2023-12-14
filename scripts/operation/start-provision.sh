@@ -106,7 +106,7 @@ while [ "$1" != "" ]; do
 
     --with-frontend-logging)
         HAS_ENABLED_SERVICES=true
-        ENABLED_SERVICES="${ENABLED_SERVICES} logging-service"
+        ENABLED_SERVICES="${ENABLED_SERVICES} frontend-collector"
         shift # past argument
         ;;
 
@@ -217,9 +217,9 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
             ENABLED_SERVICES="${ENABLED_SERVICES} minio"
             echo "INFO: storage-service enabled"
 
-        elif [ "$word" = "logging-service" ]; then
+        elif [ "$word" = "frontend-collector" ]; then
             perl -pi -e 's/REACT_APP_LOGGING=.*/REACT_APP_LOGGING=true/g' ${SCRIPT_DIR}/.env
-            echo "INFO: logging-service enabled"
+            echo "INFO: frontend-collector enabled"
 
         else
             echo "${red}ERROR: Unknown service $word${colorReset}"

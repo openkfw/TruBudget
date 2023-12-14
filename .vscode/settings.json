@@ -7,7 +7,8 @@
     "./storage-service",
     "./excel-export-service",
     "./email-notification-service",
-    "./logging-service"
+    "./logging-service",
+    "./frontend-collector"
   ],
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs":"active",

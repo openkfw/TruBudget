@@ -257,9 +257,9 @@ services:
     depends_on:
       - alpha-api
 
-  logging-service:
+  frontend-collector:
     build:
-      context: ../../logging-service
+      context: ../../frontend-collector
     environment:
       LOGGER_PORT: ${LOGGER_PORT}
       API_HOST: alpha-api
