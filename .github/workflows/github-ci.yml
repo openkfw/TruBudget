@@ -55,7 +55,6 @@ jobs:
             excel-export-service,
             email-notification-service,
             storage-service,
-            logging-service,
             migration
           ]
 
@@ -118,7 +117,6 @@ jobs:
             excel-export-service,
             email-notification-service,
             storage-service,
-            logging-service,
             migration
           ]
         include:
@@ -138,8 +136,6 @@ jobs:
             image_name: trubudget/email-notification
           - project: storage-service
             image_name: trubudget/storage-service
-          - project: logging-service
-            image_name: trubudget/logging-service
           - project: migration
             image_name: trubudget/migration
     defaults:
