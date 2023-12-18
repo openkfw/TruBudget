@@ -48,7 +48,9 @@ describe("Project Permissions", function() {
   }
 
   function addPermission(permissions, intent, identity) {
-    permissions[intent].push(identity);
+    if (!permissions[intent].includes(identity)) {
+      permissions[intent].push(identity);
+    }
     return permissions;
   }
 

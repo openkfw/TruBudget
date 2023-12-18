@@ -1,6 +1,6 @@
 services:
-  logging-service:
+  logging-frontend-collector:
     build:
-      context: ../logging-service
+      context: ../frontend-collector
       dockerfile: Dockerfile
-    image: docker-compose-logging-service:local
+    image: docker-compose-frontend-collector:local

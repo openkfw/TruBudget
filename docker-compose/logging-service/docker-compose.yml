@@ -1,7 +1,7 @@
 version: "3"
 services:
-  logging-service:
-    image: trubudget/logging-service:${TAG}
+  frontend-collector:
+    image: trubudget/frontend-collector:${TAG}
     environment:
       LOGGER_PORT: ${LOGGER_PORT}
       API_HOST: ${API_HOST}

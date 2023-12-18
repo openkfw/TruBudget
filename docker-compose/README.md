@@ -190,7 +190,7 @@ Multi-node environment can be started with the following command (if current dir
 
 ## Logging-service
 
-Logging service is started similarly to additional services. e.g: `-f logging-service/docker-compose.yml`
+Logging service is started similarly to additional services. e.g: `-f frontend-collector/docker-compose.yml`
 
 It is although important to pay attention to the logging service relevant environment variables! Following variables are for the logging service itself:
  - LOGGER_PORT
