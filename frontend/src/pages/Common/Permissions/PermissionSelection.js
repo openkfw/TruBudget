@@ -35,7 +35,7 @@ const styles = {
     justifyContent: "flex-start"
   },
   nameContainer: {
-    maxWidth: "200px"
+    maxWidth: "none"
   }
 };
 
@@ -51,7 +51,7 @@ const renderSelection = (user, permissionedUser, intent, grant, revoke, myself, 
       >
         <Checkbox checked={checked} disabled={(u.id === myself && checked) || disabled} />
         <ListItemText style={styles.nameContainer}>
-          <OverflowTooltip text={u.displayName} />
+          <OverflowTooltip text={u.displayName} maxWidth={styles.nameContainer.maxWidth} />
         </ListItemText>
       </MenuItem>
     );
