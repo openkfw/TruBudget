@@ -21,6 +21,7 @@ services:
       LOG_LEVEL: ${API_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       RATE_LIMIT: ${RATE_LIMIT}
+      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING}
     # depends_on:
     #   - blockchain
     # networks:

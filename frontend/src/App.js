@@ -18,9 +18,9 @@ import LiveNotificationContainer from "./pages/Notifications/LiveNotificationCon
 import { muiTheme } from "./themes/theme";
 import { withRouter } from "./wrappers/withRouter";
 import { history, store } from "./store";
+
 dayjs.extend(isSameOrAfter);
 dayjs.extend(relativeTime);
-
 const LoginElement = withRouter(withInitialLoading(LoginPageContainer));
 
 export default function App() {

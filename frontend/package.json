@@ -27,6 +27,9 @@
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
     "@hapi/joi": "^17.1.1",
+    "@microsoft/applicationinsights-clickanalytics-js": "^3.0.5",
+    "@microsoft/applicationinsights-react-js": "^17.0.2",
+    "@microsoft/applicationinsights-web": "^3.0.5",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.2",
     "@mui/system": "^5.12.1",
@@ -86,7 +89,7 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "start": "REACT_APP_VERSION=$npm_package_version node ./hotReloadSetup && react-app-rewired start",
+    "start": "node ./hotReloadSetup && react-app-rewired start",
     "audit": "better-npm-audit audit",
     "build": "REACT_APP_VERSION=$npm_package_version react-app-rewired build",
     "test": "npm run check-translations",

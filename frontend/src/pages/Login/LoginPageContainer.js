@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import { appInsights } from "../../telemetry";
+
 import config from "./../../config";
 import {
   checkEmailService,
@@ -32,6 +34,7 @@ class LoginPageContainer extends Component {
 
   componentDidUpdate() {
     this.checkIfRedirect();
+    this.setAuthenticatedUser(this.props.userId);
   }
 
   checkIfRedirect() {
@@ -46,6 +49,16 @@ class LoginPageContainer extends Component {
     if (this.props.isUserLoggedIn) {
       this.props.setLoginLoading(false);
       this.props.router.navigate(path);
+    }
+  }
+
+  setAuthenticatedUser(signInId) {
+    if (!signInId) {
+      return;
+    }
+    const validatedId = signInId.replace(/[,;=| ]+/g, "_");
+    if (!Object.is(appInsights, null)) {
+      appInsights.setAuthenticatedUserContext(validatedId, undefined, true);
     }
   }
 
@@ -71,6 +84,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
+    userId: state.getIn(["login", "id"]),
     username: state.getIn(["login", "username"]),
     isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
     password: state.getIn(["login", "password"]),
