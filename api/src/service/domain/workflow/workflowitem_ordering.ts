@@ -1,5 +1,6 @@
 import { AssertionError } from "assert";
 import * as Workflowitem from "./workflowitem";
+import logger from "../../../lib/logger";
 
 export type WorkflowitemOrdering = Workflowitem.Id[];
 
@@ -73,7 +74,11 @@ function closedAt(item: Workflowitem.ScrubbedWorkflowitem): string | AssertionEr
   const traceEvent = item.log.find((e) => e.businessEvent.type === "workflowitem_closed");
 
   if (traceEvent === undefined || traceEvent.businessEvent.type !== "workflowitem_closed") {
-    return new AssertionError({ message: `Expected close event for workflowitem ${item.id}` });
+    const error = new AssertionError({
+      message: `Expected close event for workflowitem ${item.id}`,
+    });
+    logger.error(error, error.message);
+    return error;
   }
   const closeEvent = traceEvent.businessEvent;
 
