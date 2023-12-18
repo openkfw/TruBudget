@@ -17,5 +17,5 @@ jobs:
       - name: Audit projects and create issue reports
         uses: ./.github/actions/audit-report-action
         with:
-          projects: frontend,api,blockchain,provisioning,e2e-test,excel-export-service,email-notification-service,storage-service,logging-service,migration
+          projects: frontend,api,blockchain,provisioning,e2e-test,excel-export-service,email-notification-service,storage-service,logging-service,migration,frontend-collector
           token: ${{ secrets.GITHUB_TOKEN }}

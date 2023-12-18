@@ -8,11 +8,6 @@ const logMessages = [];
 const getToken = (state) => stateTransformer(state)?.login?.jwt || "";
 const getUserId = (state) => stateTransformer(state)?.login?.id || "";
 
-const setToken = (msg) => {
-  let t = msg.token;
-  instance.defaults.headers.common["Authorization"] = t ? `Bearer ${t}` : "";
-};
-
 export const createLogMsg = (state, log) => {
   if (config.logging.isEnabled === false) return;
   const msg = {
@@ -26,13 +21,6 @@ export const createLogMsg = (state, log) => {
 
 const pushLogToServer = async () => {
   if (instance && logMessages.length > 0) {
-    if (
-      instance.defaults.headers.common["Authorization"] === "" ||
-      instance.defaults.headers.common["Authorization"] === undefined
-    ) {
-      setToken(logMessages[0]);
-    }
-    // eslint-disable-next-line no-unused-vars
     const messages = logMessages.map(({ token, ...rest }) => rest).filter((m) => m.service !== undefined);
     await instance.post("/api", { logMessages: messages }).catch((ignore) => ignore);
     while (logMessages.length) {

@@ -215,9 +215,9 @@ services:
     ports:
       - "3000:80" # map nginx port 80 to localhost:3000
 
-  logging-service:
+  frontend-collector:
     build:
-      context: ../../logging-service
+      context: ../../frontend-collector
     environment:
       LOGGER_PORT: ${LOGGER_PORT}
       API_HOST: ${API_HOST}

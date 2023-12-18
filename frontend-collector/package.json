@@ -1,13 +1,13 @@
 {
-  "name": "trubudget-logging-service",
-  "version": "1.3.0",
-  "description": "This is module exports function that creates a pino logger instance with a commen configuration for the trubudget project",
-  "main": "index.js",
+  "name": "trubudget-frontend-collector",
+  "version": "1.0.0",
+  "description": "Collector for TruBudget frontend logs",
+  "main": "serve.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/openkfw/TruBudget.git"
   },
-  "author": "Laurenz Honauer",
+  "author": "Martin Mayr",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/openkfw/TruBudget/issues"
@@ -24,8 +24,9 @@
   },
   "dependencies": {
     "better-npm-audit": "^3.7.3",
-    "pino": "^8.16.2",
-    "pino-http": "^8.5.1",
-    "pino-pretty": "^10.2.3"
+    "dotenv": "^16.3.1",
+    "fastify": "^4.24.3",
+    "@fastify/cors": "^8.4.1",
+    "trubudget-logging-service": "^1.2.2"
   }
 }
