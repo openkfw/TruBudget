@@ -23,6 +23,9 @@ const config = {
   authProxy: {
     enabled: process.env.REACT_APP_AUTHPROXY_ENABLED === "true" || false,
     url: process.env.REACT_APP_AUTHPROXY_URL || "http://localhost:4000/signin"
+  },
+  telemetry: {
+    azureMonitorConnectionString: process.env.REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING || undefined
   }
 };
 

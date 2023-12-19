@@ -1,4 +1,4 @@
-FROM node:16.13.0-slim
+FROM node:18.4.0-slim
 
 # Default P2P Port:
 EXPOSE 7447

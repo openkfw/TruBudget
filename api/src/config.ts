@@ -77,6 +77,7 @@ interface Config {
     jwsSignature: string | undefined;
   };
   snapshotEventInterval: number;
+  azureMonitorConnectionString: string;
 }
 
 /**
@@ -126,6 +127,7 @@ export const config: Config = {
     jwsSignature: process.env.AUTHPROXY_JWS_SIGNATURE || undefined,
   },
   snapshotEventInterval: Number(process.env.SNAPSHOT_EVENT_INTERVAL) || 3,
+  azureMonitorConnectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
 };
 
 /**
