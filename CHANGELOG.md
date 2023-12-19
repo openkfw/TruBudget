@@ -19,23 +19,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
-## [2.5.x] - 2023-12-x
+## [2.7.x] - 2024-01-DD
 
 <!-- ## Unreleased -->
 
-### Added
+<!-- ### Added -->
 
-- Loading indicator when user logs in with auth proxy to improve user experience [#1544](https://github.com/openkfw/TruBudget/pull/1544)
-
-### Changed
-
-- Live update of projects is paused when search functionality is used in table view. Otherwise search results were reset. [#1539](https://github.com/openkfw/TruBudget/pull/1539)
+<!-- ### Changed -->
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
 
 <!-- ### Fixed -->
+
+## [2.6.0] - 2023-12-19
+
+### Added
+
+- Loading indicator when user logs in with auth proxy to improve user experience [#1544](https://github.com/openkfw/TruBudget/pull/1544)
+- Azure Telemetry was added to TruBudget which allows for centralized telemetry collection [#1555](https://github.com/openkfw/TruBudget/pull/1555)
+- Documentation on how to connect to an existing network was added [#1550](https://github.com/openkfw/TruBudget/pull/1550)
+
+### Changed
+
+- Live update of projects is paused when search functionality is used in table view. Otherwise search results were reset. [#1539](https://github.com/openkfw/TruBudget/pull/1539)
+- Input fields for usernames are wider [#1566](https://github.com/openkfw/TruBudget/pull/1566)
+
+
+### Fixed 
+- A bug which led to random sorting of workflowitems[#1565](https://github.com/openkfw/TruBudget/pull/1565)
+- Bug which caused TruBudget to not update user permissions [#1553](https://github.com/openkfw/TruBudget/pull/1553)
+- Bug which reset search results in TableView[#1539](https://github.com/openkfw/TruBudget/pull/1539)
 
 ## [2.5.0] - 2023-11-23
 
