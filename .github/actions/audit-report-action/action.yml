@@ -3,6 +3,16 @@ description: 'Run audit on projects and report vulnerabilities'
 inputs:
     projects:
       required: true
+    include-dev-dependencies:
+      required: true
+    include-unfixed:
+      required: false
+    severity-levels:
+      required: true
+    issue_title_prefix:
+      required: false
+    scan-type:
+      required: true
     token:
       required: true
 runs:
