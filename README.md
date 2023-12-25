@@ -24,7 +24,7 @@ If you want to try out TruBudget locally, you need to install [Docker](https://w
 For a very **quick and easy** TruBudget setup, run:
 
 ```bash
-cp scripts/operation/.env_example scripts/operation/.env
+cp scripts/operation/.env.example scripts/operation/.env
 bash scripts/operation/start-trubudget.sh --slim
 ```
 
