@@ -68,7 +68,7 @@ function addTagToList(currentTags, newTag, addProjectTag, setInvalidInput, setIn
   }
 }
 
-function TagEditor({ projectTags, addProjectTag, removeProjectTag }) {
+function TagEditor({ projectTags, addProjectTag, removeProjectTag, tagText }) {
   const [input, changeInput] = useState("");
   const [invalidInput, setInvalidInput] = useState(false);
   const [invalidInputMessage, setInvalidInputMessage] = useState(strings.common.tag_already_exists);
@@ -92,7 +92,7 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag }) {
           inputProps={{ maxLength: "15" }}
           style={{ marginRight: "20px" }}
           error={invalidInput}
-          helperText={!invalidInput ? strings.common.add_tag_text : invalidInputMessage}
+          helperText={!invalidInput ? tagText : invalidInputMessage}
           data-test="taginput"
         />
         <Button

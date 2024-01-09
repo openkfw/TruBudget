@@ -43,6 +43,7 @@ const baseWorkflowitem: Workflowitem = {
   additionalData: {},
   assignee: alice.id,
   workflowitemType: "general",
+  tags: [],
 };
 
 const stripOutDocumentId = (docs: DocumentReference[]): { hash: string }[] => {

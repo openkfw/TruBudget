@@ -1,7 +1,7 @@
 import React from "react";
 
 import ContentAdd from "@mui/icons-material/Add";
-import HistoryIcon from "@mui/icons-material/Reorder";
+import HistoryIcon from "@mui/icons-material/History";
 import Card from "@mui/material/Card";
 import Fab from "@mui/material/Fab";
 

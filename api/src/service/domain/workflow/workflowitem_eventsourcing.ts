@@ -103,6 +103,7 @@ export function parseWorkflowitemFromSnapshot(workflowitemJson): Workflowitem.Wo
     billingDate: workflowitemJson.billingDate,
     amount: workflowitemJson.amount,
     currency: workflowitemJson.currency,
+    tags: workflowitemJson.tags,
   };
 }
 

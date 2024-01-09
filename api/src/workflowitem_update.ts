@@ -34,6 +34,7 @@ interface RequestBodyV1 {
     dueDate?: string;
     documents?: UploadedDocument[];
     additionalData?: object;
+    tags?: string[];
   };
 }
 
@@ -105,6 +106,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
               projectId: { type: "string", example: "3r28c69eg298c87e3899119e025eff1f" },
               subprojectId: { type: "string", example: "5t28c69eg298c87e3899119e025eff1f" },
               workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
+              tags: { type: "array", items: { type: "string", example: "test" } },
               documents: {
                 type: "array",
                 items: {

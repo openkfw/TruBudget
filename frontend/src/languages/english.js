@@ -256,13 +256,13 @@ const en = {
 
   workflow: {
     add_item: "Create workflowitem",
+    add_tag_wfi_text: "Add tag to workflow item",
     approval_required: "Approval required",
     assignee: "Assignee",
     edit_item: "Edit workflowitem",
     exchange_rate: "Exchange rate",
-
+    search_text: "Search workflowitems",
     workflow_budget_allocated: "allocated",
-
     workflow_budget_disbursed: "paid",
     workflow_budget_na: "Not applicable",
     workflow_budget_status_allocated: "Assigned",
@@ -273,12 +273,12 @@ const en = {
     workflow_disable_sort: "Save",
     workflow_document_changed: "Changed",
     workflow_document_description: "Add name of document",
-    workflow_document_not_available: "Document is not available",
     workflow_document_name: "Document Name",
+    workflow_document_not_available: "Document is not available",
     workflow_document_validate: "Validate",
     workflow_document_validated: "Validated",
-    workflow_document_validation_ok: "Identical document",
     workflow_document_validation_not_ok: "Different document",
+    workflow_document_validation_ok: "Identical document",
     workflow_documents: "Documents",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
@@ -289,6 +289,7 @@ const en = {
     workflow_none: "None",
     workflow_permissions_title: "Set permissions for workflowitem",
     workflow_redacted: "Redacted",
+    workflow_reject_reason: "Reject reason",
     workflow_selection: "{0} workflowitems are selected",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflowitems",
@@ -302,11 +303,10 @@ const en = {
     workflowitem_details_history: "History",
     workflowitem_details_overview: "Overview",
     workflowitem_details: "Workflowitem details",
-    workflowitem_type: "Workflowitem type",
     workflowitem_type_general: "Create a workflowitem of type general.",
     workflowitem_type_restricted:
       "When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
-    workflow_reject_reason: "Reject reason"
+    workflowitem_type: "Workflowitem type"
   },
 
   workflowTemplate: {

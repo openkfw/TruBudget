@@ -8,12 +8,14 @@ import { storeSnackbarMessage } from "../Notifications/actions";
 import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
 
 import {
+  addWorkflowitemTag,
   assignWorkflowItem,
   createWorkflowFromTemplateAction,
   createWorkflowItemAction,
   defaultWorkflowExchangeRate,
   editWorkflowItem,
   hideWorkflowDialog,
+  removeWorkflowitemTag,
   setCurrentStep,
   storeWorkflowAmount,
   storeWorkflowAmountType,
@@ -43,7 +45,8 @@ class WorkflowDialogContainer extends Component {
     dueDate,
     workflowitemType,
     projectDisplayName,
-    subprojectDisplayName
+    subprojectDisplayName,
+    tags
   ) => {
     const path = this.props.router.location.pathname.split("/");
     const projectId = path[2];
@@ -67,7 +70,8 @@ class WorkflowDialogContainer extends Component {
       projectDisplayName,
       subprojectDisplayName,
       assignee,
-      assigneeDisplayName
+      assigneeDisplayName,
+      tags
     );
   };
 
@@ -128,27 +132,28 @@ class WorkflowDialogContainer extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
     creationDialogShown: state.getIn(["workflow", "creationDialogShown"]),
-    editDialogShown: state.getIn(["workflow", "editDialogShown"]),
-    dialogTitle: state.getIn(["workflow", "dialogTitle"]),
-    workflowItems: state.getIn(["workflow", "workflowItems"]),
-    currentStep: state.getIn(["workflow", "currentStep"]),
     currency: state.getIn(["workflow", "currency"]),
-    subProjectCurrency: state.getIn(["workflow", "subProjectCurrency"]),
+    currentStep: state.getIn(["workflow", "currentStep"]),
     currentUser: state.getIn(["login", "id"]),
-    selectedAssignee: state.getIn(["workflow", "workflowToAdd", "assignee"]),
-    users: state.getIn(["login", "enabledUsers"]),
-    projectDisplayName: state.getIn(["workflow", "parentProject", "displayName"]),
-    subprojectDisplayName: state.getIn(["workflow", "displayName"]),
-    subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
-    hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
+    dialogTitle: state.getIn(["workflow", "dialogTitle"]),
+    editDialogShown: state.getIn(["workflow", "editDialogShown"]),
     fixedWorkflowitemType: state.getIn(["workflow", "fixedWorkflowitemType"]),
     hasFixedWorkflowitemType: state.getIn(["workflow", "hasFixedWorkflowitemType"]),
-    versions: state.getIn(["status", "versions"]),
+    hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
+    projectDisplayName: state.getIn(["workflow", "parentProject", "displayName"]),
+    selectedAssignee: state.getIn(["workflow", "workflowToAdd", "assignee"]),
     storageServiceAvailable: state.getIn(["status", "storageServiceAvailable"]),
+    subProjectCurrency: state.getIn(["workflow", "subProjectCurrency"]),
+    subprojectDisplayName: state.getIn(["workflow", "displayName"]),
+    subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
+    tags: state.getIn(["workflow", "workflowToAdd", "tags"]),
+    users: state.getIn(["login", "enabledUsers"]),
+    versions: state.getIn(["status", "versions"]),
+    workflowItems: state.getIn(["workflow", "workflowItems"]),
     workflowTemplate: state.getIn(["workflow", "workflowTemplate"]),
-    workflowTemplates: state.getIn(["workflow", "workflowTemplates"])
+    workflowTemplates: state.getIn(["workflow", "workflowTemplates"]),
+    workflowToAdd: state.getIn(["workflow", "workflowToAdd"])
   };
 };
 
@@ -196,7 +201,9 @@ const mapDispatchToProps = (dispatch) => {
         )
       ),
     fetchVersions: () => dispatch(fetchVersions()),
-    setStorageServiceAvailable: (isAvailable) => dispatch(setStorageServiceAvailable(isAvailable))
+    setStorageServiceAvailable: (isAvailable) => dispatch(setStorageServiceAvailable(isAvailable)),
+    addWorkflowitemTag: (tag) => dispatch(addWorkflowitemTag(tag)),
+    removeWorkflowitemTag: (tag) => dispatch(removeWorkflowitemTag(tag))
   };
 };
 

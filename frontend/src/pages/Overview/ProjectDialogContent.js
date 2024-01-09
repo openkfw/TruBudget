@@ -40,6 +40,7 @@ const ProjectDialogContent = (props) => {
           addProjectTag={props.addProjectTag}
           removeProjectTag={props.removeProjectTag}
           projectTags={props.projectToAdd.tags}
+          tagText={strings.common.add_tag_text}
         />
       </div>
     </div>

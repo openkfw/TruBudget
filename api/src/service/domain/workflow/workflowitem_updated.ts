@@ -10,6 +10,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { safeStringSchema } from "../../../lib/joiValidation";
 
 type EventTypeType = "workflowitem_updated";
 const eventType: EventTypeType = "workflowitem_updated";
@@ -25,6 +26,7 @@ export interface Modification {
   dueDate?: string;
   documents?: DocumentReference[];
   additionalData?: object;
+  tags?: string[];
 }
 
 export const modificationSchema = Joi.object({
@@ -38,6 +40,7 @@ export const modificationSchema = Joi.object({
   dueDate: Joi.date().iso().allow(""),
   documents: Joi.array().items(documentReferenceSchema),
   additionalData: AdditionalData.schema,
+  tags: Joi.array().items(safeStringSchema),
 });
 
 export interface Event {
@@ -146,6 +149,7 @@ function updateProps(workflowitem: Workflowitem.Workflowitem, update: Modificati
     "exchangeRate",
     "billingDate",
     "dueDate",
+    "tags",
   ].forEach((propname) => {
     if (update[propname] !== undefined) {
       workflowitem[propname] = update[propname];

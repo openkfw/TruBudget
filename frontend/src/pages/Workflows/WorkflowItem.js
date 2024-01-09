@@ -93,6 +93,9 @@ const styles = {
   amountChip: {
     marginLeft: "16px"
   },
+  tagChip: {
+    color: "theme.palette.tag.main"
+  },
   statusChip: {
     marginLeft: "4px"
   },
@@ -129,6 +132,12 @@ const styles = {
     width: "20%",
     display: "flex",
     alignItems: "center"
+  },
+  tagCell: {
+    width: "8%",
+    display: "flex",
+    alignItems: "center",
+    marginLeft: "16px"
   },
   typographs: {
     overflow: "hidden",
@@ -247,7 +256,8 @@ const editWorkflow = (
     _status,
     documents,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    tags
   },
   props
 ) => {
@@ -265,7 +275,8 @@ const editWorkflow = (
     workflowitemCurrency,
     documents,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    tags
   );
 };
 
@@ -508,7 +519,8 @@ export const WorkflowItem = ({
     exchangeRate,
     currency: sourceCurrency,
     rejectReason,
-    additionalData
+    additionalData,
+    tags
   } = workflow.data;
   const allowedIntents = workflow.allowedIntents;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
@@ -572,6 +584,18 @@ export const WorkflowItem = ({
                     assignee={assignee}
                     status={status}
                   />
+                </div>
+                <div style={styles.tagCell}>
+                  {tags.length > 0 && (
+                    <Chip
+                      label={tags[0]}
+                      size="small"
+                      onClick={(event) => {
+                        props.storeWorkflowitemSearchTerm(`tag:${event.target.innerText}`);
+                      }}
+                      sx={{ backgroundColor: (theme) => theme.palette.tag.main, color: "white" }}
+                    />
+                  )}
                 </div>
                 {renderActionButtons({
                   canEditWorkflow,
