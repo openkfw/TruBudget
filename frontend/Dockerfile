@@ -1,11 +1,11 @@
-FROM node:18.4.0-alpine as builder
+FROM node:18-alpine as builder
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm ci --legacy-peer-deps
+RUN npm ci
 COPY . ./
 RUN npm run build
 
