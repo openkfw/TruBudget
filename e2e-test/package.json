@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "async-each": "^1.0.6",
-    "axios": "^1.6.2",
+    "axios": "^1.6.5",
     "better-npm-audit": "^3.7.3",
     "exceljs": "^4.4.0",
     "md5-file": "^5.0.0",

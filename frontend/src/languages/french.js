@@ -191,14 +191,14 @@ const fr = {
   },
 
   workflow: {
-    assignee: "Responsable",
     add_item: "Creer une étape de workflow",
+    add_tag_wfi_text: "Ajouter un tag sur l’étape de workflow",
     approval_required: "Approbation exigée",
+    assignee: "Responsable",
     edit_item: "Modifier l'étape de workflow",
     exchange_rate: "taux de change",
-
+    search_text: "rechercher des éléments",
     workflow_budget_allocated: "Engagé",
-
     workflow_budget_disbursed: "payé",
     workflow_budget_na: "N/A",
     workflow_budget_status_allocated: "Engagé",
@@ -210,21 +210,22 @@ const fr = {
     workflow_document_changed: "Modifié",
     workflow_document_description: "Description du document",
     workflow_document_name: "Nom du document",
+    workflow_document_not_available: "Document non disponible",
     workflow_document_validate: "Valider",
     workflow_document_validated: "Validé",
-    workflow_document_validation_ok: "Document identique",
     workflow_document_validation_not_ok: "Document différent",
+    workflow_document_validation_ok: "Document identique",
     workflow_documents: "Documents de l’étape de workflow",
     workflow_enable_sort: "Trier",
     workflow_fingerprint: "Empreinte digitale",
     workflow_name: "Nom de l’étape de workflow",
     workflow_next_step: "Prochaine étape",
-    workflow_document_not_available: "Document non disponible",
     workflow_no_actions: "Pas d'action",
     workflow_no_documents: "Pas de document",
     workflow_none: "blub",
     workflow_permissions_title: "Définir les autorisations sur l'étape de workflow",
     workflow_redacted: "Expurgé",
+    workflow_reject_reason: "Motif de rejet",
     workflow_selection: "Vous avez sélectionné {0} étapes de workflow ",
     workflow_submit_for_review: "Soumettre pour examen",
     workflow_table_title: "Liste des étapes",
@@ -238,11 +239,10 @@ const fr = {
     workflowitem_details_history: "Historique",
     workflowitem_details_overview: "Sommaire",
     workflowitem_details: "Détails de l’étape du workflow",
-    workflowitem_type: "Type de l’étape de workflow",
     workflowitem_type_general: "Créer une étape de workflow de type général.",
     workflowitem_type_restricted:
       "Lors de l'attribution d'un workflow restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation",
-    workflow_reject_reason: "Motif de rejet"
+    workflowitem_type: "Type de l’étape de workflow"
   },
 
   workflowTemplate: {

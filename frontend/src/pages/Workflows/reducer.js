@@ -2,6 +2,7 @@
 import Immutable, { fromJS } from "immutable";
 import _isEmpty from "lodash/isEmpty";
 
+import { convertToURLQuery } from "../../helper";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
 import { DISABLE_ALL_LIVE_UPDATES, ENABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
@@ -11,6 +12,7 @@ import { FETCH_SUBPROJECT_PERMISSIONS, FETCH_SUBPROJECT_PERMISSIONS_SUCCESS } fr
 
 import {
   ADD_TEMPORARY_WORKFLOWITEM_PERMISSION,
+  ADD_WORKFLOWITEM_TAG,
   ASSIGN_WORKFLOWITEM_SUCCESS,
   CLEAR_REJECT_REASON,
   CREATE_WORKFLOW_SUCCESS,
@@ -41,9 +43,12 @@ import {
   HIDE_WORKFLOWITEM_PERMISSIONS,
   OPEN_HISTORY,
   REMOVE_TEMPORARY_WORKFLOWITEM_PERMISSION,
+  REMOVE_WORKFLOWITEM_TAG,
   RESET_SUCCEEDED_WORKFLOWITEMS,
   REVOKE_WORKFLOWITEM_PERMISSION_SUCCESS,
   SAVE_WORKFLOW_ITEM_BEFORE_SORT,
+  SEARCH_TAGS_WORKFLOWITEM,
+  SEARCH_TERM_WORKFLOWITEM,
   SET_TOTAL_SUBPROJECT_HISTORY_ITEM_COUNT,
   SET_WORKFLOW_DRAWER_PERMISSIONS,
   SHOW_REASON_DIALOG,
@@ -55,6 +60,7 @@ import {
   SHOW_WORKFLOWITEM_ADDITIONAL_DATA,
   SHOW_WORKFLOWITEM_CONFIRMATION_DIALOG,
   SHOW_WORKFLOWITEM_PERMISSIONS,
+  STORE_FILTERED_WORKFLOWITEMS,
   STORE_REJECT_REASON,
   STORE_WORKFLOW_BATCH_ASSIGNEE,
   STORE_WORKFLOWACTIONS,
@@ -106,7 +112,8 @@ const defaultState = fromJS({
     status: "open",
     documents: [],
     workflowitemType: "general",
-    assignee: ""
+    assignee: "",
+    tags: []
   },
   showWorkflowPermissions: false,
   idsPermissionsUnassigned: [],
@@ -171,7 +178,10 @@ const defaultState = fromJS({
   hasFixedWorkflowitemType: false,
   rejectReason: "",
   isRejectReasonDialogShown: false,
-  workflowTemplate: ""
+  workflowTemplate: "",
+  filteredWorkflowitems: [],
+  searchTerm: "",
+  searchOnlyTags: false
 });
 
 export default function detailviewReducer(state = defaultState, action) {
@@ -192,8 +202,10 @@ export default function detailviewReducer(state = defaultState, action) {
         allowedIntents: fromJS(subproject.allowedIntents),
         assignee: fromJS(subproject.data.assignee),
         workflowItems: fromJS(workflowitems),
+        filteredWorkflowitems: fromJS(workflowitems),
         parentProject: fromJS(parentProject),
-        projectedBudgets: fromJS(subproject.data.projectedBudgets)
+        projectedBudgets: fromJS(subproject.data.projectedBudgets),
+        searchTerm: defaultState.get("searchTerm")
       });
     }
     case FETCH_WORKFLOWITEM_SUCCESS: {
@@ -221,7 +233,8 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("currency", action.currency)
           .set("documents", fromJS(action.documents))
           .set("dueDate", action.dueDate)
-          .set("workflowitemType", action.workflowitemType),
+          .set("workflowitemType", action.workflowitemType)
+          .set("tags", action.tags),
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
       });
@@ -411,9 +424,11 @@ export default function detailviewReducer(state = defaultState, action) {
     case TRIGGER_SUBPROJECT_APPLY_ACTIONS:
       return state.set("applyActions", !state.get("applyActions"));
     case UPDATE_WORKFLOW_ORDER:
-      return state.merge({
-        workflowItems: fromJS(action.workflowItems)
-      });
+      return state
+        .merge({
+          workflowItems: fromJS(action.workflowItems)
+        })
+        .set("filteredWorkflowitems", fromJS(action.workflowItems));
     case ENABLE_BUDGET_EDIT:
       return state.set("subProjectBudgetEditEnabled", action.budgetEditEnabled);
     case STORE_WORKFLOW_BATCH_ASSIGNEE:
@@ -506,6 +521,31 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case WORKFLOW_TEMPLATE:
       return state.setIn(["workflowTemplate"], action.workflowTemplate);
+    case ADD_WORKFLOWITEM_TAG: {
+      const tags = state.getIn(["workflowToAdd", "tags"]) || [];
+      if (!tags.some((tag) => tag === action.tag)) {
+        return state.setIn(["workflowToAdd", "tags"], [...tags, action.tag]);
+      }
+      return state;
+    }
+    case REMOVE_WORKFLOWITEM_TAG: {
+      const tags = state.getIn(["workflowToAdd", "tags"]);
+      return state.setIn(
+        ["workflowToAdd", "tags"],
+        tags.filter((tag) => tag !== action.tag)
+      );
+    }
+    case SEARCH_TERM_WORKFLOWITEM: {
+      const querySearchTerm = convertToURLQuery(action.searchTerm);
+      window.history.replaceState("", "Title", "?" + querySearchTerm);
+      return state.set("searchTerm", action.searchTerm);
+    }
+    case STORE_FILTERED_WORKFLOWITEMS: {
+      return state.set("filteredWorkflowitems", fromJS(action.filteredWorkflowitems));
+    }
+    case SEARCH_TAGS_WORKFLOWITEM: {
+      return state.set("searchOnlyTags", action.tagsOnly);
+    }
     default:
       return state;
   }

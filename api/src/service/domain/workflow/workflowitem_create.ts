@@ -47,6 +47,7 @@ export interface RequestData {
   documents?: UploadedDocument[];
   additionalData?: object;
   workflowitemType?: Type;
+  tags?: string[];
 }
 
 const requestDataSchema = Joi.object({
@@ -66,6 +67,7 @@ const requestDataSchema = Joi.object({
   documents: Joi.array().items(uploadedDocumentSchema),
   additionalData: AdditionalData.schema,
   workflowitemType: workflowitemTypeSchema,
+  tags: Joi.array().items(Project.tagsSchema),
 });
 
 export function validate(input): Result.Type<RequestData> {
@@ -188,6 +190,7 @@ export async function createWorkflowitem(
       permissions: newDefaultPermissionsFor(issuer.id),
       additionalData: reqData.additionalData || {},
       workflowitemType: reqData.workflowitemType || "general",
+      tags: reqData.tags || [],
     },
     new Date().toISOString(),
     issuer.metadata,

@@ -12,6 +12,7 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { safeStringSchema } from "../../../lib/joiValidation";
 
 type EventTypeType = "workflowitem_created";
 const eventType: EventTypeType = "workflowitem_created";
@@ -33,6 +34,7 @@ interface InitialData {
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
   workflowitemType?: Type;
+  tags?: string[];
 }
 
 const initialDataSchema = Joi.object({
@@ -51,6 +53,7 @@ const initialDataSchema = Joi.object({
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
   workflowitemType: workflowitemTypeSchema,
+  tags: Joi.array().items(safeStringSchema),
 }).options({ stripUnknown: true });
 
 export interface Event {
@@ -131,6 +134,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
     // Additional information (key-value store), e.g. external IDs:
     additionalData: initialData.additionalData,
     workflowitemType: initialData.workflowitemType,
+    tags: initialData.tags || [],
   };
 
   return Result.mapErr(

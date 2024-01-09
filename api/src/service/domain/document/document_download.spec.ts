@@ -95,6 +95,7 @@ const baseWorkflowitem: Workflowitem = {
   log: [],
   additionalData: {},
   workflowitemType: "general",
+  tags: [],
 };
 
 const secretPublished: DocumentShared.SecretPublished = {

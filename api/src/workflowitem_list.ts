@@ -80,6 +80,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                           exchangeRate: { type: "string", example: "1.0" },
                           additionalData: { type: "object", additionalProperties: true },
                           workflowitemType: { type: "string", example: "general" },
+                          tags: { type: "array", items: { type: "string", example: "test" } },
                           documents: {
                             type: "array",
                             items: {
@@ -135,6 +136,7 @@ interface ExposedWorkflowitem {
     documents: DocumentReference[];
     additionalData: object;
     workflowitemType: Type | undefined;
+    tags?: string[];
   };
 }
 
@@ -232,6 +234,7 @@ export function addHttpHandler(
                   documents: workflowitem.documents,
                   additionalData: workflowitem.additionalData,
                   workflowitemType: workflowitem.workflowitemType,
+                  tags: workflowitem.tags,
                 },
               };
               return exposedWorkflowitem;

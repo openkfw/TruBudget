@@ -30,7 +30,8 @@ const handleCreate = (props) => {
     documents,
     exchangeRate,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    tags
   } = workflowToAdd;
 
   createWorkflowItem(
@@ -45,7 +46,8 @@ const handleCreate = (props) => {
     dueDate,
     workflowitemType,
     projectDisplayName,
-    subprojectDisplayName
+    subprojectDisplayName,
+    tags
   );
 
   storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));

@@ -38,6 +38,7 @@ const baseWorkflowitem: Workflowitem = {
   log: [],
   additionalData: {},
   workflowitemType: "general",
+  tags: [],
 };
 
 const baseRepository = {

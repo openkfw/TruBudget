@@ -89,7 +89,8 @@ schemes
         projectDisplayName: Joi.string().required(),
         subprojectDisplayName: Joi.string().required(),
         assignee: Joi.string().required(),
-        assigneeDisplayName: Joi.string().required()
+        assigneeDisplayName: Joi.string().required(),
+        tags: Joi.array().items(Joi.string())
       })
     })
   )

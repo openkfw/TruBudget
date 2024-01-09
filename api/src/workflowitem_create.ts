@@ -42,6 +42,7 @@ interface RequestBodyV1 {
     documents?: UploadedDocument[];
     additionalData?: object;
     workflowitemType?: Type;
+    tags?: string[];
   };
 }
 
@@ -63,6 +64,7 @@ const requestBodyV1Schema = Joi.object({
     documents: Joi.array().items(uploadedDocumentSchema),
     additionalData: Joi.object(),
     workflowitemType: workflowitemTypeSchema,
+    tags: Joi.array().items(safeStringSchema),
   }).required(),
 });
 
@@ -134,6 +136,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
               },
               additionalData: { type: "object", additionalProperties: true },
               workflowitemType: { type: "string", example: "general" },
+              tags: { type: "array", items: { type: "string", example: "test" } },
             },
           },
         },
@@ -244,6 +247,7 @@ export function addHttpHandler(
           additionalData: bodyResult.data.additionalData,
           documents: bodyResult.data.documents,
           workflowitemType: bodyResult.data.workflowitemType,
+          tags: bodyResult.data.tags,
         };
 
         service
