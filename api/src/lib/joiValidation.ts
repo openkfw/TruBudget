@@ -19,7 +19,7 @@ export const safeIdSchema = JoiBase.string()
   .trim()
   .htmlStrip()
   .regex(/^([A-Za-zÀ-ÿ0-9-_]*)$/)
-  .max(50);
+  .max(64);
 
 export const safePasswordSchema = isProductionEnvironment()
   ? JoiBase.string()
