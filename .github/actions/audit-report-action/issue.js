@@ -16,15 +16,17 @@ export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, active
   const issueTitle = type === "fs" ? `${issueTitlePrefix} Project Vulnerabilities` : `${issueTitlePrefix} Image Vulnerabilities`;
 
   const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
-  if(vulnerabilityIssue && activeVulnerabilities.length > 0) {
-    await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
+  if(activeVulnerabilities.length > 0) {
+    if(vulnerabilityIssue) {
+      await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
+    } else {
+      await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
+    }
+  } else {
+    if(vulnerabilityIssue) {
+      await closeIssue(vulnerabilityIssue.number);
+    }
   } 
-  else if(vulnerabilityIssue && activeVulnerabilities.length == 0) {
-    await closeIssue(vulnerabilityIssue.number);
-  }
-  else {
-    await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
-  }
 }
 
 async function updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping) {
