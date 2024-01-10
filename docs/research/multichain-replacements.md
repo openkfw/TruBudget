@@ -123,8 +123,8 @@ OrbitDB is a distributed P2P database built on IPFS for data storage and Libp2p 
 - **Lacks the data validation and consensus mechanism.**
   - There are no consensus between nodes to make it up for the eventual consistency. Data consistency is a risk.
 - **Compatibility and breaking changes.**
- - Upgrade from 1.0 had many breaking changes.
- - Could potentially lead to an unwanted technical debt and refactoring efforts with it in the future.
+  - Upgrade from 1.0 had many breaking changes.
+  - Could potentially lead to an unwanted technical debt and refactoring efforts with it in the future.
 - **It also includes general concerns of the IPFS, since it is just an additional logical layer implemented on top of the IPFS.**
 
 ## ImmuDB
