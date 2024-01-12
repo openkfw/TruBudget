@@ -27,6 +27,14 @@ import * as ProjectCacheHelper from "./project_cache_helper";
 
 export { RequestData } from "./domain/workflow/workflowitem_create";
 
+export interface Service {
+  createWorkflowitem(
+    ctx: Ctx,
+    user: ServiceUser,
+    createRequest: WorkflowitemCreate.RequestData,
+  ): Promise<Result.Type<ResourceMap>>;
+}
+
 export async function createWorkflowitem(
   conn: ConnToken,
   storageServiceClient: StorageServiceClientI,
