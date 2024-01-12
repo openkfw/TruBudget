@@ -1,4 +1,4 @@
-FROM node:18.4.0-alpine
+FROM node:18-alpine
 
 ARG API_HOST=localhost
 ARG API_PORT=8080
@@ -20,7 +20,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY . ./
 
 # install app dependencies
-RUN npm ci --legacy-peer-deps
+RUN npm ci
 
 # replace default proxy with actual API HOST / PORT
 RUN sed -i "s/localhost:8080/${API_HOST}:${API_PORT}/g" package.json
