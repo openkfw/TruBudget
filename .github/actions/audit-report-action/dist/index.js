@@ -22,11 +22,11 @@ var config = __nccwpck_require__(152);
 const child_process = __nccwpck_require__(2081);
 
 async function pullImage(imageName) {
-  child_process.spawnSync("docker", ["pull", `trubudget/${imageName}`], {
+  child_process.spawnSync("docker", ["pull", `trubudget/${imageName}:main`], {
     encoding: 'utf-8',
     maxBuffer: config.Config.spawnProcessBufferSize
   });
-  child_process.spawnSync("docker", ["save", `trubudget/${imageName}`, "-o", `${imageName}.tar`], {
+  child_process.spawnSync("docker", ["save", `trubudget/${imageName}:main`, "-o", `${imageName}.tar`], {
     encoding: 'utf-8',
     maxBuffer: config.Config.spawnProcessBufferSize
   });
