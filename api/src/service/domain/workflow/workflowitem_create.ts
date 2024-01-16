@@ -114,6 +114,52 @@ function generateUniqueDocId(allDocuments: GenericDocument[]): string {
   }
 }
 
+const inheritSubprojectPermissions = (
+  workflowitemInitialPermissions: Permissions,
+  subprojectPermissions: Permissions,
+  workflowitemId?: string,
+): Permissions => {
+  const result = { ...workflowitemInitialPermissions };
+  for (const property in subprojectPermissions) {
+    let subprojectPermissionsProperty = property.replace("subproject.", "workflowitem.");
+
+    switch (property) {
+      case "subproject.viewDetails":
+        continue;
+      case "subproject.createWorkflowitem":
+        continue;
+      case "subproject.reorderWorkflowitems":
+        continue;
+      case "subproject.budget.updateProjected":
+        continue;
+      case "subproject.budget.deleteProjected":
+        continue;
+      default:
+        break;
+    }
+
+    if (!workflowitemIntents.includes(subprojectPermissionsProperty as Intent)) {
+      // won't happen unless Intents are modified and there is an error in the implementation
+      logger.error(
+        `Workflowitem ${workflowitemId} trying to inherit nonexistent property ${subprojectPermissionsProperty}`,
+      );
+      continue;
+    }
+
+    const permissions = [
+      ...new Set([
+        ...workflowitemInitialPermissions[subprojectPermissionsProperty],
+        ...subprojectPermissions[property],
+      ]),
+    ];
+    Object.defineProperty(result, subprojectPermissionsProperty, {
+      value: permissions,
+      enumerable: true,
+    });
+  }
+  return result;
+};
+
 export async function createWorkflowitem(
   ctx: Ctx,
   issuer: ServiceUser,
@@ -121,7 +167,6 @@ export async function createWorkflowitem(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const publisher = issuer.id;
-  const workflowitemId = reqData.workflowitemId || randomString();
   const documents: DocumentReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
 
@@ -175,7 +220,7 @@ export async function createWorkflowitem(
     reqData.projectId,
     reqData.subprojectId,
     {
-      id: workflowitemId,
+      id: reqData.workflowitemId || randomString(),
       status: reqData.status || "open",
       displayName: reqData.displayName,
       description: reqData.description || "",
@@ -290,12 +335,18 @@ export async function createWorkflowitem(
     workflowitemCreated.workflowitem.exchangeRate = "1.0";
   }
 
+  workflowitemCreated.workflowitem.permissions = inheritSubprojectPermissions(
+    workflowitemCreated.workflowitem.permissions,
+    subproject.permissions,
+    workflowitemCreated.workflowitem.id,
+  );
+
   return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
 
   function newDefaultPermissionsFor(userId: string): Permissions {
     // The user can always do anything anyway:
     if (userId === "root") return {};
-    const intents: Intent[] = workflowitemIntents;
+    const intents = workflowitemIntents;
     return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
   }
 }

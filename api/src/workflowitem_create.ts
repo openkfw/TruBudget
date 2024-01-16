@@ -7,8 +7,6 @@ import { Ctx } from "./lib/ctx";
 import { safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
-import { ServiceUser } from "./service/domain/organization/service_user";
-import { ResourceMap } from "./service/domain/ResourceMap";
 import {
   amountTypeSchema,
   conversionRateSchema,
@@ -189,17 +187,6 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
 }
 
 /**
- * Represents the service that creates a workflowitem
- */
-interface Service {
-  createWorkflowitem(
-    ctx: Ctx,
-    user: ServiceUser,
-    createRequest: WorkflowitemCreate.RequestData,
-  ): Promise<Result.Type<ResourceMap>>;
-}
-
-/**
  * Creates an http handler that handles incoming http requests for the `/subproject.createWorkflowitem` route
  *
  * @param server the current fastify server instance
@@ -209,7 +196,7 @@ interface Service {
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
-  service: Service,
+  service: WorkflowitemCreate.Service,
 ): void {
   server.register(async function () {
     server.post(
