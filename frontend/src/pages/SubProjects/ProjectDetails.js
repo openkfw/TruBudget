@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import BarChartIcon from "@mui/icons-material/BarChart";
@@ -23,6 +23,7 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
+import { useTourAppContext } from "../../context/tour.js";
 import { formattedTag, statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import ProjectAnalyticsDialog from "../Analytics/ProjectAnalyticsDialog";
@@ -115,6 +116,23 @@ const ProjectDetails = (props) => {
   const hasOpenSubprojects = !_isEmpty(subProjects.find((subproject) => subproject.data.status === "open"));
   const closeDisabled = !canClose || hasOpenSubprojects || projectStatus === "closed";
   const tags = displayTags(projectTags || []);
+
+  const {
+    setState,
+    state: { tourActive }
+  } = useTourAppContext();
+
+  const ref = useRef();
+
+  useEffect(() => {
+    if (tourActive && !ref.current) {
+      setTimeout(() => {
+        setState({ run: true });
+      }, 1200);
+      ref.current = true;
+    }
+  });
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>

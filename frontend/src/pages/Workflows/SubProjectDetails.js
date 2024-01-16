@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import AmountIcon from "@mui/icons-material/AccountBalance";
@@ -24,6 +24,7 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
+import { useTourAppContext } from "../../context/tour.js";
 import { statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
@@ -121,6 +122,23 @@ const SubProjectDetails = ({
   const validator = users.find((user) => user.id === subprojectValidator);
 
   const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
+
+  const {
+    setState,
+    state: { tourActive }
+  } = useTourAppContext();
+
+  const ref = useRef();
+
+  useEffect(() => {
+    if (tourActive && !ref.current) {
+      setTimeout(() => {
+        setState({ run: true });
+      }, 1200);
+      ref.current = true;
+    }
+  });
+
   return (
     <div style={styles.container}>
       <Card style={styles.card}>
