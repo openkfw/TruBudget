@@ -62,10 +62,46 @@ TBD
 TBD
 
 ### Cosmos
-TBD
+Cosmos SDK is specifically designed for the Cosmos ecosystem 
+
+The limitations of using Cosmos SDK to create a private blockchain network are not explicitly mentioned in the provided search results. However, it's important to note that Cosmos SDK is designed to facilitate the development of interconnected blockchains within the Cosmos ecosystem, and it provides a modular framework for building custom blockchains with interoperability features[2][3]. One potential limitation could be the level of isolation for a private blockchain built using Cosmos SDK, as the framework is primarily focused on enabling communication and interoperability between blockchains within the Cosmos network[1]. Developers intending to create fully isolated private blockchains may need to carefully consider the extent to which Cosmos SDK can support such a use case. Additionally, the scalability of private blockchains built with Cosmos SDK may be a consideration, as the framework is optimized for creating interconnected blockchains that can communicate with each other[5]. While the SDK offers benefits such as interoperability and modular development, developers should assess whether these features align with the specific requirements of their private blockchain network.
+
 
 ### Polkadot and Kusama
-TBD
+
+Polkadot is an open-source sharded multichain protocol with a focus on enabling cross-blockchain transfers of any type of data or asset, thereby allowing blockchains to be interoperable with each other. Polkadot describes a format for a network of blockchains, thus making it a layer-0 metaprotocol.
+
+Polkadot protocol connects the public and private chains (these are called Parachains) through its Relay Chain.  Relay Chain is the central chain in the Polkadot network for coordinating the whole ecosystem of parachains. 
+
+Kusama on the other hand is used as sort of a standalone canary network for the Polkadot for the experimentation and early-stage deployment purposes. However Polkadot can process more transactions per second, and is more suitable as a enterprise-level deployments.
+
+Both Polkadot and Kusama use Substrate SDK as primary blockchain SDK to create parachains. All chains created using Substrate SDK are seamlessly compatible with Polkadot and Kusama. For these reasons, we will mostly focus on Substrate SDK.
+
+A short overview of Polkadot Architecture:
+
+![Polkadot Architecture](Polkadot_Arch.png)
+
+#### Substrate SDK
+
+Substrate is a powerful blockchain development framework that allows developers to create blockchain solutions, including private blockchain networks.
+
+#### Key features
+- **A range of pre-built modules and libraries**
+  - These modules and libraries simplify and quicken the development process.
+- **Allows customized blockchains and private networks**
+- **Private chains are compatible to deploy on public Kusama and Polkadot networks.**
+- **Active developer community and regular updates**
+
+#### Key concerns
+- **The offered pre-built modules and libraries might not provide exact level of customization needed for specific use cases or industry level requirements.**
+  - This can either result in changing Substrate codebase or development of custom modules, which in both ways increase development time and effort.
+- **Designed for scalability, but might fall short in comparison to other blockchain frameworks, which offer higher transactions per seconds and a native private network support.**
+- **Offered security might end up not being sufficient for specific use cases.**
+- **Uses Rust as the framework language**
+  - Rust as a language is challenging to learn due it's ownership model in memory management.
+  - This can make onboarding and finding other developers harder.
+
+We do not recommend Polkadot/Kusama as a replacement due to Substrate SDK being Rust based. There are other similar blockchain frameworks, which offer multiple programming languages to choose from. Being locked into Rust as a language, would only make future onboarding of developers harder, as well as finding suitable replacements.
 
 ### Hyperledger Besu
 TBD
