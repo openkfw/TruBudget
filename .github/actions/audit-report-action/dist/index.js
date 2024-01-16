@@ -22,11 +22,11 @@ var config = __nccwpck_require__(152);
 const child_process = __nccwpck_require__(2081);
 
 async function pullImage(imageName) {
-  child_process.spawnSync("docker", ["pull", `trubudget/${imageName}`], {
+  child_process.spawnSync("docker", ["pull", `trubudget/${imageName}:main`], {
     encoding: 'utf-8',
     maxBuffer: config.Config.spawnProcessBufferSize
   });
-  child_process.spawnSync("docker", ["save", `trubudget/${imageName}`, "-o", `${imageName}.tar`], {
+  child_process.spawnSync("docker", ["save", `trubudget/${imageName}:main`, "-o", `${imageName}.tar`], {
     encoding: 'utf-8',
     maxBuffer: config.Config.spawnProcessBufferSize
   });
@@ -183,15 +183,17 @@ async function createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnera
   const issueTitle = type === "fs" ? `${issueTitlePrefix} Project Vulnerabilities` : `${issueTitlePrefix} Image Vulnerabilities`;
 
   const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
-  if(vulnerabilityIssue && activeVulnerabilities.length > 0) {
-    await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
+  if(activeVulnerabilities.length > 0) {
+    if(vulnerabilityIssue) {
+      await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
+    } else {
+      await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
+    }
+  } else {
+    if(vulnerabilityIssue) {
+      await closeIssue(vulnerabilityIssue.number);
+    }
   } 
-  else if(vulnerabilityIssue && activeVulnerabilities.length == 0) {
-    await closeIssue(vulnerabilityIssue.number);
-  }
-  else {
-    await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
-  }
 }
 
 async function updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping) {
