@@ -174,6 +174,7 @@ const DisableUserDialogContent = (props) => {
                 fetchUserAssignments(editId);
               }}
               title={strings.common.refresh_assignments}
+              alignTooltip={[60, 30]}
               icon={<RefreshIcon />}
               data-test={"refresh-assignments"}
               iconButtonStyle={{ float: "right", marginRight: "10px" }}
