@@ -168,4 +168,39 @@ OrbitDB is a distributed P2P database built on IPFS for data storage and Libp2p 
 TBD
 
 ## Corda R3
-TBD
+
+Corda is an open-source market leading DLT solution. We are here strictly evaluating the Corda 5, which is the newer and evolved version, which improves upon the Corda 4 with an architecture change. Previously Corda 4 was divided into Community and Enterprise Editions. This does not seem to be the case for Corda 5, as it is under Apache 2.0 License.
+
+### Infrastracture
+
+Corda 5 runtime consists of a distributed architecture, which is similar to a microservices approach. There are two terms, which are architecturally relevant:
+- Worker Processes
+- Virtual Nodes
+
+**Worker processes** are stateless services and each have their unique responsibilities. As they are stateless, they scale horizontally.
+
+**Virtual nodes** are a representation of identities on a network of application users. Virtual nodes are bound to their Corda deployments, meaning that they exist within a single Corda cluster and network. This means same name can exist in different clusters and networks, however the virtual node is abstracted from the runtime, thus through the Network Manager (MGM) a Corda deployment can support other networks' virtual nodes.
+
+![Virtual Nodes](VNodes.png)
+
+
+> Corda recommends the deployment of runtime environment as a Kubernetes Cluster with Helm charts, and thus provides workers as container images.
+
+Minimal setup of the architecture is as follows with suitable replicaCounts for worker processes configured:
+
+![Cluster setup](cluster.png)
+
+
+#### Key features
+- **Corda is a very well established product and has a large community.**
+- **Built for enterprise, thus for scalability and performance.**
+- **One of the big players in the enterprise scene.**
+- **Production ready on an enterprise level.**
+- **Corda 5 is open-source.**
+
+
+#### Key concerns
+- **More complicated setup and infrastracture.**
+  - If scalability is not concerned, it might be an overkill.
+  - Infrastracture requires more deployments such as a Postgres Database and Kafka, along with additional services.
+- **Uses Java/Kotlin. This clashes with our Javascript preference.**
