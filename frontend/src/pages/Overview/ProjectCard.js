@@ -88,6 +88,7 @@ const ProjectCard = ({
           </div>
         </Tooltip>
       </CardActions>
+      <div>Test Actions</div>
       <CardContent>
         <CardHeader
           data-test="project-header"
