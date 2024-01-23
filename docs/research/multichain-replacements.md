@@ -55,17 +55,67 @@ Following are the requirements to take into consideration either when looking fo
 > These requirements can be refined and subject to change during future discussions.
 
 ## Blockchain Frameworks
+### General Information about public blockchains
+Before going into explanations of certain blockchain frameworks that are public below, we do not really recommend usage of these for a couple of reasons.
+
+First of all, public blockchains are, as the name suggests, developed for public usage under the Web3 vision. These chains are not feature optimised for enterprise and the enterprise use cases. They lack key features, which makes them not so great fit for private usage such as identity management and privacy/permissioning on-chain. Public chains allow creation of key pairs/addresses anonymously (anyone can create as much addresses as they want), thus identity management is not really a considered feature in such chains. Also Web3 or public solutions as a persistence layer **does not scale well**.
+
+Public blockchains are categorized in different layers, which have different purposes such as interoperability and scalability. 
+
+- **Layer-0 protocols** are used mainly for interoperability purposes. Chains created on Layer-0 protocols can seamlessly work with Layer-1 chains. Thus Layer-0 protocols are used to create an ecosystem of networks of independent parallel blockchains.
+- **Layer-1 protocols** provide the infrastracture for the blockchain network. They usually come with a chosen consensus mechanism and is the foundation for many of the leading public blockchain networks as well as decentralized Apps and protocols. As the Blockchain Trilemma shows, Layer-1 protocols provide strong decentralization and security, but falls short when it comes to scalability.
+- **Layer-2 protocols** are used for scalability, which is what the Layer-1 protocols generally lack. Layer-2 chains are considered off-chain network and usually runs on top of an existing Layer-1 chain, thus inheriting the security features. Layer-2 chains can efficiently process transactions at higher throughput.
+
+For Layer-1 and Layer-2 chains, if one has to create a private deployment, this usually happens via forking an existing chain. Forking means copying the whole chain state up until a chosen block number. A forked chain will contain the state of the main chain. This is not really the best option since it increases the required storage size just to be able to run the chain. One solution is to fork from the genesis block, but then this possibly results in missing certain security and chain updates introduced in certain block numbers over the chain's lifetime.
+
+> e.g Ethereum blocksize is limited to 1 MB. Average block size on the network is 0.16 MB. Latest block at the time of writing this is 19069272. A full sync would require a minimum of at least 1TB storage.
+
+It's important to keep these in mind when reading the below products.
+
 ### Celo
-TBD
+Celo is a Layer-1 EVM Compatible blockchain product developed by cLabs.
+
+To spin up a running Celo node, the Celo mainnet usually needs to be forked. The drawbacks of forking is mentioned above.
+
+However there is another problem with Celo, that makes Celo not a suitable candidate. The team behind Celo has submitted a [proposal](https://celo.stake.id/#/proposal/116) on July 2023, which proposes to transition Celo from Layer 1 chain to a Ethereum Layer 2 solution. Proposal has been accepted by the community, thus confirming the transition plans. There are no set end dates on sight for this migration. According to the proposal, this change affects the validator nodes and developers, meaning that developing with Celo will require obvious refactoring efforts in the future as well as possible architectural replanning.
+
+This makes Celo an unfit candidate to build an architecture around.
 
 ### Polygon
-TBD
+Polygon is a Layer 2 chain on top of Ethereum. It offers two options for developers:
+- Building decentralized apps on top of the Polygon mainnet
+- Building application specific ZK (Zero-Knowledge) Layer 2 chains on top of Ethereum.
+
+As the latter is more fitting, Polygon offers Polygon CDK for building such chains.
+
+There are two possible chain setups:
+
+#### Validium
+Validium is a scaling solution that store transaction data off-chain. Hosting a validium network requires 6-7 nodes for different purposes, and 3 postgres instances. Docker-compose file for a functioning Validium network can be checked here: [docker-compose](https://github.com/Snapchain/zkValidium-quickstart/blob/main/docker-compose.yml#L12)
+
+#### Rollup
+Rollup is a scaling solution, which rolls up multiple transactions into batches which are eventually committed to the layer 1. This improves network speed. Similar to Validium, setting up a Rollup network needs multiple node deployments as well as db instances.
+
+Both of these setups depends on a Layer 1 as a base node. Developing a Layer-2 Chain automatically means that one has to also use a Layer-1 solution (in this case Ethereum). 
+
+Generally Layer-2 solutions improve Layer-1 chain scalability, but do not really solve the identity management and privacy/permissioning issues.
+
+It is open for discussion, but we do not recommend Layer-2 chains because of the complexity they introduce in comparison to other Layer solutions.
 
 ### Cosmos
-Cosmos SDK is specifically designed for the Cosmos ecosystem 
+Cosmos is a Layer-0 solution built for chain interoperability in mind. For developing application specific chains, Cosmos ecosystem offers Cosmos SDK. One advantage of Cosmos is that it also offers to build permissioned blockchains, which usually is not a feature offered by other public blockchains.
 
-The limitations of using Cosmos SDK to create a private blockchain network are not explicitly mentioned in the provided search results. However, it's important to note that Cosmos SDK is designed to facilitate the development of interconnected blockchains within the Cosmos ecosystem, and it provides a modular framework for building custom blockchains with interoperability features[2][3]. One potential limitation could be the level of isolation for a private blockchain built using Cosmos SDK, as the framework is primarily focused on enabling communication and interoperability between blockchains within the Cosmos network[1]. Developers intending to create fully isolated private blockchains may need to carefully consider the extent to which Cosmos SDK can support such a use case. Additionally, the scalability of private blockchains built with Cosmos SDK may be a consideration, as the framework is optimized for creating interconnected blockchains that can communicate with each other[5]. While the SDK offers benefits such as interoperability and modular development, developers should assess whether these features align with the specific requirements of their private blockchain network.
 
+#### Key features
+- Can build permissioned blockchains.
+- Blockchains are built out of modules.
+- Application-specific blockchains offer more freedom to make design choices for product optimization.
+- Good documentation
+  - Documentation also contains ADRs.
+
+#### Key concerns
+- Requires knowledge of Go.
+- Just like other public projects, it's support and existence is heavily tied to cryptocurrency market performance.
 
 ### Polkadot and Kusama
 
@@ -101,7 +151,7 @@ Substrate is a powerful blockchain development framework that allows developers 
   - Rust as a language is challenging to learn due it's ownership model in memory management.
   - This can make onboarding and finding other developers harder.
 
-We do not recommend Polkadot/Kusama as a replacement due to Substrate SDK being Rust based. There are other similar blockchain frameworks, which offer multiple programming languages to choose from. Being locked into Rust as a language, would only make future onboarding of developers harder, as well as finding suitable replacements.
+We do not recommend Polkadot/Kusama as a replacement due to Substrate SDK being Rust based. Being locked into Rust as a language, would only make future onboarding of developers harder, as well as finding suitable replacements. However if decided that this is not an issue, then Polkadot could be the only public blockchain solution that we might recommend.
 
 ### Hyperledger Besu
 TBD
