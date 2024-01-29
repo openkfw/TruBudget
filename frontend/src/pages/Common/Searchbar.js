@@ -71,7 +71,7 @@ const Searchbar = ({
               />
             </FormControl>
           </form>
-          {!isSearchBarDisplayedByDefault ? (
+          {searchTerm || !isSearchBarDisplayedByDefault ? (
             <ButtonBase
               data-test="clear-searchbar"
               onClick={() => {

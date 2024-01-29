@@ -471,7 +471,7 @@ const TableView = (props) => {
                 isSearchBarDisplayedByDefault={true}
                 searchDisabled={false}
                 safeOnChange={true}
-                previewText="Search Projects"
+                previewText={strings.project.project_searchtext}
                 searchTerm={searchTerm}
                 storeSearchTerm={(word) => storeSearchTerm(word)}
               />
