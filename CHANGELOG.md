@@ -19,19 +19,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
-## [2.7.x] - 2024-01-DD
+## [2.7.0] - 2024-01-31
 
-<!-- ## Unreleased -->
+### Added
 
-<!-- ### Added -->
+- Add automated security scanning. [#1573](https://github.com/openkfw/TruBudget/issues/1573) [#1567](https://github.com/openkfw/TruBudget/issues/1567)
+- Tags in Workflow items and respective filtering / search [#1568](https://github.com/openkfw/TruBudget/issues/1568)
+- Add tooltips [#1583](https://github.com/openkfw/TruBudget/issues/1583)
+- Show "delete search term" button in subproject and workflowitems list view [#1587](https://github.com/openkfw/TruBudget/issues/1587)
 
-<!-- ### Changed -->
+### Changed
 
-<!-- ### Deprecated -->
+- Subproject and workflowitems inherit project permissions [#1558](https://github.com/openkfw/TruBudget/issues/1558)
+- Increase length of user ID [#887](https://github.com/openkfw/TruBudget/issues/887)
 
-<!-- ### Removed -->
+### Fixed
+- Fix error of incorrectly displayed redacted workflowitem at workflow screen [#1563](https://github.com/openkfw/TruBudget/issues/1563)
+- Migration script fix allows to migrate documents to storage service in a migration to 2.x [#1333](https://github.com/openkfw/TruBudget/issues/1333)
 
-<!-- ### Fixed -->
 
 ## [2.6.0] - 2023-12-19
 
@@ -1050,7 +1055,9 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.5.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.7.0...main
+[2.7.0]: https://github.com/openkfw/TruBudget/compare/v2.6.0...v2.7.0
+[2.6.0]: https://github.com/openkfw/TruBudget/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/openkfw/TruBudget/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/openkfw/TruBudget/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/openkfw/TruBudget/compare/v2.2.1...v2.3.0

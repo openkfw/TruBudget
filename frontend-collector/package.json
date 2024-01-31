@@ -1,6 +1,6 @@
 {
   "name": "trubudget-frontend-collector",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Collector for TruBudget frontend logs",
   "main": "serve.js",
   "repository": {
