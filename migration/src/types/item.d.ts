@@ -25,3 +25,10 @@ export interface DataJSON {
   source: string;
   publisher: string;
 }
+
+export interface SecretPublishedEvent extends DataJSON {
+  type: "secret_published";
+  docId: string;
+  organization: string;
+  encryptedSecret: string;
+}

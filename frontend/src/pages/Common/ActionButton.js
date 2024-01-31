@@ -25,6 +25,23 @@ const ActionButton = ({
   alignTooltip = "bottom-end"
 }) => {
   const disabled = notVisible;
+  const tooltipAlignAttributes = Array.isArray(alignTooltip)
+    ? {
+        slotProps: {
+          popper: {
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: alignTooltip
+                }
+              }
+            ]
+          }
+        }
+      }
+    : { placement: alignTooltip };
+
   return (
     <div style={styles.actionButton}>
       <Tooltip
@@ -33,7 +50,7 @@ const ActionButton = ({
         disableFocusListener={disabled || title === ""}
         disableHoverListener={disabled || title === ""}
         disableTouchListener={disabled || title === ""}
-        placement={alignTooltip}
+        {...tooltipAlignAttributes}
       >
         <div>
           <IconButton

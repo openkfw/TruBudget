@@ -140,6 +140,14 @@ export const CLEAR_REJECT_REASON = "CLEAR_REJECT_REASON";
 
 export const WORKFLOW_TEMPLATE = "WORKFLOW_TEMPLATE";
 
+export const ADD_WORKFLOWITEM_TAG = "ADD_WORKFLOWITEM_TAG";
+export const REMOVE_WORKFLOWITEM_TAG = "REMOVE_WORKFLOWITEM_TAG";
+
+export const SEARCH_TERM_WORKFLOWITEM = "SEARCH_TERM_WORKFLOWITEM";
+export const STORE_FILTERED_WORKFLOWITEMS = "STORE_FILTERED_WORKFLOWITEMS";
+
+export const SEARCH_TAGS_WORKFLOWITEM = "SEARCH_TAGS_WORKFLOWITEM";
+
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
@@ -481,7 +489,8 @@ export function showEditDialog(
   currency,
   documents,
   dueDate,
-  workflowitemType
+  workflowitemType,
+  tags
 ) {
   return {
     type: SHOW_WORKFLOW_EDIT,
@@ -494,7 +503,8 @@ export function showEditDialog(
     currency,
     documents,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    tags
   };
 }
 
@@ -618,7 +628,8 @@ export function createWorkflowItemAction(
   projectDisplayName,
   subprojectDisplayName,
   assignee,
-  assigneeDisplayName
+  assigneeDisplayName,
+  tags
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -637,7 +648,8 @@ export function createWorkflowItemAction(
     projectDisplayName,
     subprojectDisplayName,
     assignee,
-    assigneeDisplayName
+    assigneeDisplayName,
+    tags
   };
 }
 
@@ -836,5 +848,40 @@ export function storeWorkflowTemplate(workflowTemplate) {
   return {
     type: WORKFLOW_TEMPLATE,
     workflowTemplate
+  };
+}
+
+export function addWorkflowitemTag(tag) {
+  return {
+    type: ADD_WORKFLOWITEM_TAG,
+    tag
+  };
+}
+
+export function removeWorkflowitemTag(tag) {
+  return {
+    type: REMOVE_WORKFLOWITEM_TAG,
+    tag
+  };
+}
+
+export function storeFilteredWorkflowitems(filteredWorkflowitems) {
+  return {
+    type: STORE_FILTERED_WORKFLOWITEMS,
+    filteredWorkflowitems
+  };
+}
+
+export function storeWorkflowitemSearchTerm(searchTerm) {
+  return {
+    type: SEARCH_TERM_WORKFLOWITEM,
+    searchTerm
+  };
+}
+
+export function setTagsOnly(tagsOnly) {
+  return {
+    type: SEARCH_TAGS_WORKFLOWITEM,
+    tagsOnly
   };
 }

@@ -12,7 +12,7 @@ interface Config {
 }
 
 const config: Config = {
-  port: Number(process.env.PORT) || 8090,
+  port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
   allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
   storage: {
     accessKey: process.env.MINIO_ACCESS_KEY || "minio",

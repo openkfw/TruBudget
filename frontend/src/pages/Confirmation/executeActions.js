@@ -115,7 +115,8 @@ export function executeActions(
           projectDisplayName,
           subprojectDisplayName,
           assignee,
-          assigneeDisplayName
+          assigneeDisplayName,
+          tags
         } = action.payload.workflowitem;
         createWorkflowitem(
           projectId,
@@ -133,7 +134,8 @@ export function executeActions(
           projectDisplayName,
           subprojectDisplayName,
           assignee,
-          assigneeDisplayName
+          assigneeDisplayName,
+          tags
         );
         break;
       }

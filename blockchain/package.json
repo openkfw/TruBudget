@@ -1,6 +1,6 @@
 {
   "name": "trubudget-blockchain",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
   "dependencies": {
     "@kubernetes/client-node": "1.0.0-rc2",
     "async-each": "^1.0.3",
-    "axios": "^1.6.2",
+    "axios": "^1.6.5",
     "better-npm-audit": "^3.7.3",
     "body-parser": "^1.20.0",
     "chai": "^4.3.9",

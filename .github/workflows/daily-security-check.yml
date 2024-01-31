@@ -1,0 +1,43 @@
+name: Daily Security Check for vulnerabilities in dependencies and images
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  audit: 
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Setup Trivy
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+      - name: Audit images
+        uses: ./.github/actions/audit-report-action
+        with:
+          projects: frontend,api,blockchain,provisioning,e2e-test,excel-export-service,email-notification-service,storage-service,migration,frontend-collector
+          include-dev-dependencies: false
+          issue_title_prefix: "Security Report:"
+          include-unfixed: false
+          severity-levels: CRITICAL,HIGH
+          scan-type: image
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Audit filesystem
+        uses: ./.github/actions/audit-report-action
+        with:
+          projects: frontend,api,blockchain,provisioning,e2e-test,excel-export-service,email-notification-service,storage-service,logging-service,migration,frontend-collector
+          include-dev-dependencies: false
+          issue_title_prefix: "Security Report:"
+          include-unfixed: true
+          severity-levels: CRITICAL,HIGH,MEDIUM,LOW
+          scan-type: fs
+          token: ${{ secrets.GITHUB_TOKEN }}

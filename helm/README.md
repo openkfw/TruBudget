@@ -106,4 +106,4 @@ To deploy the provisioning components in order to create some initial test data,
 
 ## Deploy E2E component to Kubernetes
 
-To deploy a isolated environemnt to execute E2E tests, check out the [e2e-test helm chart](./tests/README.md).
+To deploy a isolated environment to execute E2E tests, check out the [e2e-test helm chart](./tests/README.md).

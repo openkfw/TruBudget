@@ -3,8 +3,25 @@ description: 'Run audit on projects and report vulnerabilities'
 inputs:
     projects:
       required: true
+      description: ""
+    include-dev-dependencies:
+      required: true
+      description: ""
+    include-unfixed:
+      required: false
+      description: ""
+    severity-levels:
+      required: true
+      description: ""
+    issue_title_prefix:
+      required: false
+      description: ""
+    scan-type:
+      required: true
+      description: ""
     token:
       required: true
+      description: ""
 runs:
   using: 'node20'
   main: 'dist/index.js'

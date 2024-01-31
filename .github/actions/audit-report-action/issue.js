@@ -1,10 +1,11 @@
 import { Config } from "./config";
+import { parse } from 'node-html-parser';
 
 const octokit = Config.octokit;
 const repo = Config.repo;
 const issueTitlePrefix = Config.issueTitlePrefix;
 
-export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities) {
+export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities, type) {
   // Get all security labeled open issues
   const { data: securityOpenIssues } = await octokit.rest.issues.listForRepo({
     ...repo,
@@ -12,87 +13,96 @@ export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, active
     labels: ['security']
   });
 
-  const vulnerabilityIssues = securityOpenIssues.filter(issue => issue.title.includes(issueTitlePrefix));
+  const issueTitle = type === "fs" ? `${issueTitlePrefix} Project Vulnerabilities` : `${issueTitlePrefix} Image Vulnerabilities`;
 
-  await Promise.all(activeVulnerabilities.map((vulnerability) => {
-    const { source: id, name } = vulnerability.via[0];
-    const issueTitle = `${issueTitlePrefix} ${id} - ${name}`;
-    const issue = vulnerabilityIssues.filter(issue => issue.title === issueTitle)[0];
-    if (issue) {
-      updateExistingIssue(issue, vulnerabilityIdProjectMapping.get(id));
+  const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
+  if(activeVulnerabilities.length > 0) {
+    if(vulnerabilityIssue) {
+      await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
     } else {
-      createNewIssue(vulnerability, vulnerabilityIdProjectMapping.get(id), issueTitle);
+      await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
     }
-  }));
-
-  // Close issues referencing fixed vulnerabilities if not closed manually.
-  await closeOldIssues(vulnerabilityIssues, vulnerabilityIdProjectMapping);
+  } else {
+    if(vulnerabilityIssue) {
+      await closeIssue(vulnerabilityIssue.number);
+    }
+  } 
 }
 
-async function updateExistingIssue(issue, affectedProjects) {
-  const issueNumber = issue.number;
-  let issueBody = issue.body.replace(/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/gm, new Date(Date.now()).toLocaleDateString());
-  let appendClosingListTag = false;
+async function updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping) {
+  const issueNumber = vulnerabilityIssue.number;
+  const root = parse(vulnerabilityIssue.body);
+  root.querySelector('#last-scan-date').set_content(new Date(Date.now()).toLocaleDateString());
+  const currentIds = root.querySelectorAll('tr').filter(elem => elem.id && elem.id !== '').map(elem => elem.id);
 
-  for (const affectedProject of affectedProjects) {
-    const element = `<li>${affectedProject}</li>`;
-    if (!issueBody.includes(element)) {
-      issueBody = issueBody.replace(/\<\/ul\>/gm, element);
-      appendClosingListTag = true;
+  currentIds.forEach(id => {
+    if(vulnerabilityIdProjectMapping.has(id)) {
+      const affectedProjects = vulnerabilityIdProjectMapping.get(id);
+      
+      root.querySelector(`#${id}-projects`).childNodes.forEach(node => {
+        if(!affectedProjects.includes(node.innerText)) {
+          root.querySelector(`#${id}-projects`).removeChild(node);
+        }
+      });
+      const issueProjects = root.querySelector(`#${id}-projects`).childNodes.map(node => node.innerText);
+      affectedProjects.forEach(proj => {
+        if(!issueProjects.includes(proj)) {
+          root.querySelector(`#${id}-projects`).appendChild(parse(`<li>${proj}</li>`));
+        }
+      });
+    } 
+    else {
+      root.querySelector(`#${id}`).remove();
     }
-  }
-  return octokit.rest.issues.update({
+  });
+  activeVulnerabilities.forEach(vulnerability => {
+    if(!currentIds.includes(vulnerability.id)) {
+      const row = `<tr id="${vulnerability.id}"><td>${vulnerability.id}</td><td>${vulnerability.packageName}</td><td>${vulnerability.title}</td><td>${vulnerability.severity}</td><td>${vulnerability.status}</td><td>${vulnerability.fixedVersion ? vulnerability.fixedVersion : '-'}</td><td>${vulnerability.publishedDate ? vulnerability.publishedDate : '-'}</td><td><ul id="${vulnerability.id}-projects">${vulnerabilityIdProjectMapping.get(vulnerability.id).map(project => `<li>${project}</li>`).join("")}</ul></td><td><ul>${vulnerability.links.filter(link => link.includes("GHSA" || "nvd")).map(link => `<li><a href="${link}">${link}</a></li>`).join('')}</ul></td></tr>`;
+      const parent = root.querySelector("#table-body");
+      parent.appendChild(parse(row));
+    }
+  });
+
+  await octokit.rest.issues.update({
     ...repo,
     issue_number: issueNumber,
-    body: appendClosingListTag ? issueBody.concat('</ul>') : issueBody
+    body: root.toString()
   });
 }
 
-async function createNewIssue(vulnerability, affectedProjects, issueTitle) {
-  const { source: id, name, title, severity, url } = vulnerability.via[0];
-  const effects = vulnerability.effects;
-  const newIssueBody = `<h2 id="last-checked-date-">Last checked date:</h2>
-    <p>${new Date(Date.now()).toLocaleDateString()}</p>
-    <h2 id="vulnerability-information">Vulnerability Information</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Title</th>
-          <th>Severity</th>
-          <th>URL</th>
-          <th>Effects</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>${id}</td>
-          <td>${name}</td>
-          <td>${title}</td>
-          <td>${severity}</td>
-          <td><a href="${url}">${url}</a></td>
-          <td>${effects.toString()}</td>
-        </tr>
-      </tbody>
-    </table>
-    <h2 id="affected-projects">Affected Projects</h2>
-    <ul>
-      ${affectedProjects.map(project => `<li>${project}</li>`).join('')}
-    </ul>`;
+async function createNewIssue(vulnerabilities, vulnerabilityIdProjectMapping, issueTitle) {
+  const root = parse('');
+  root.appendChild(parse('<h2>Last scan date</h2>'));
+  root.appendChild(parse(`<p id="last-scan-date">${new Date(Date.now()).toLocaleDateString()}</p>`));
+  root.appendChild(parse('<h2 id="vulnerability-header">Present Vulnerabilities</h2>'));
+  root.appendChild(parse('<table></table>'));
 
-  return octokit.rest.issues.create({
+  root.querySelector('table').appendChild(parse('<thead><tr><th>Vulnerability ID</th><th>PkgName</th><th>Title</th><th>Severity</th><th>Status</th><th>Fixed Version</th><th>Published Date</th><th>Affects</th><th>Links</th></tr></thead>'));
+  root.querySelector('table').appendChild(parse('<tbody id="table-body"></tbody>'));
+
+  for(const vulnerability of vulnerabilities) {
+    if(vulnerability.links && Array.isArray(vulnerability.links) && vulnerability.links.length > 0) {
+      root.querySelector('#table-body').appendChild(parse(`<tr id="${vulnerability.id}"></tr>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td>${vulnerability.id}</td>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td>${vulnerability.packageName}</td>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td>${vulnerability.title}</td>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td>${vulnerability.severity}</td>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td>${vulnerability.status}</td>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td>${vulnerability.fixedVersion ? vulnerability.fixedVersion : '-'}</td>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td>${vulnerability.publishedDate ? vulnerability.publishedDate : '-'}</td>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td><ul id="${vulnerability.id}-projects">${[...new Set(vulnerabilityIdProjectMapping.get(vulnerability.id))].map(project => `<li>${project}</li>`).join("")}</ul></td>`));
+      root.querySelector(`#${vulnerability.id}`).appendChild(parse(`<td><ul>${vulnerability.links.filter(link => link.includes("GHSA" || "nvd")).map(link => `<li><a href="${link}">${link}</a></li>`).join('')}</ul></td>`));
+    }
+  }
+
+  await octokit.rest.issues.create({
     ...repo,
     title: issueTitle,
-    body: newIssueBody,
+    body: root.toString(),
     labels: ["security"]
   });
 }
 
-async function closeOldIssues(vulnerabilityIssues, vulnerabilityIdProjectMapping) {
-  const inactiveVulnerabilityIssues = vulnerabilityIssues.filter((vulnerabilityIssue) => {
-    const id = Number(vulnerabilityIssue.title.split(": ")[1].split(" - ")[0]);
-    return !vulnerabilityIdProjectMapping.has(id);
-  });
-  return Promise.all(inactiveVulnerabilityIssues.map((inactiveVulnerabilityIssue) => octokit.rest.issues.update({ ...repo, issue_number: inactiveVulnerabilityIssue.number, state: 'closed' })));
+async function closeIssue(issueNumber) {
+  await octokit.rest.issues.update({ ...repo, issue_number: issueNumber, state: 'closed' });
 }

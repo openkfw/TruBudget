@@ -1,6 +1,6 @@
 {
   "name": "trubudget-frontend",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "accounting": "^0.4.1",
     "array-move": "^4.0.0",
-    "axios": "^1.6.2",
+    "axios": "^1.6.5",
     "better-npm-audit": "^3.7.3",
     "chart.js": "^4.3.0",
     "content-disposition-attachment": "^0.3.1",

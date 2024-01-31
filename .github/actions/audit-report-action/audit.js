@@ -1,43 +1,76 @@
-const child_process = require('child_process');
+import { Config } from './config';
+import { pullImage } from './docker';
+import child_process from 'child_process';
 
-const SPAWN_PROCESS_BUFFER_SIZE = 10485760; // 10MB
+export async function performImageAudit(projectName) {
+  let image = projectName;
+  if(image === "excel-export-service" || image === "email-notification-service") {
+    image = image.replace("-service", "");
+  }
+  await pullImage(image);
+  const additionalArgs = ["image", "--input", `${image}.tar`, "--format", "json", "--exit-code", "1", "--vuln-type", "os"];
+  additionalArgs.push("--severity", Config.severityLevels);
 
-function extractVulnerabilities(rawVulnerabilities) {
-  return Object.values(rawVulnerabilities).filter(value => {
-    return !value.isDirect && Array.isArray(value.via) && typeof value.via[0] === 'object';
+  if (!Config.includeUnfixed) {
+    additionalArgs.push("--ignore-unfixed");
+  }
+
+  const result = child_process.spawnSync("trivy", additionalArgs, {
+    encoding: 'utf-8',
+    maxBuffer: Config.spawnProcessBufferSize
   });
+
+  const outputJSON = JSON.parse(result.stdout);
+  if(outputJSON.Results && outputJSON.Results.length > 0 && outputJSON.Results[0].Vulnerabilities && outputJSON.Results[0].Vulnerabilities.length > 0) {
+    return outputJSON.Results[0].Vulnerabilities.map(value => {
+      return {
+        id: value.VulnerabilityID, 
+        packageName: value.PkgName, 
+        status: value.Status, 
+        title: value.Title, 
+        severity: value.Severity,
+        fixedVersion: value.FixedVersion,
+        links: value.References,
+        publishedDate: value.PublishedDate
+        }
+    });
+  }
+  return [];
 }
 
-export async function runAudit(projectName) {
-  if (!projectName) {
-    throw new Error('A project name is required');
+export async function performFsAudit(projectName) {
+  console.info(`\n Performing File System audit on Project ${projectName}...`);
+
+  const additionalArgs = ["fs", `./${projectName}`, "--format", "json", "--exit-code", "1"];
+  additionalArgs.push("--severity", Config.severityLevels);
+
+  if (Config.includeDevDependencies) {
+    additionalArgs.push("--include-dev-deps");
   }
 
-  console.info(`\nAuditing ${projectName}...`);
-
-  process.chdir(projectName);
-
-  child_process.spawnSync("npm", ["ci", "--no-audit", "--legacy-peer-deps"], {
-    encoding: 'utf-8',
-    maxBuffer: SPAWN_PROCESS_BUFFER_SIZE
-  });
-
-  const result = child_process.spawnSync("npm", ["audit", "--json", "--omit=dev"], {
-    encoding: 'utf-8',
-    maxBuffer: SPAWN_PROCESS_BUFFER_SIZE
-  });
-
-  const auditRaw = JSON.parse(result.stdout);
-  let vulnerabilityList = [];
-
-  if (auditRaw.metadata?.vulnerabilities?.total > 0) {
-    console.info("Vulnerabilities found");
-    vulnerabilityList = extractVulnerabilities(auditRaw.vulnerabilities);
-  } else {
-    console.info("No vulnerabilities found");
+  if (!Config.includeUnfixed) {
+    additionalArgs.push("--ignore-unfixed");
   }
 
-  process.chdir("..");
+  const result = child_process.spawnSync("trivy", additionalArgs, {
+    encoding: 'utf-8',
+    maxBuffer: Config.spawnProcessBufferSize
+  });
 
-  return vulnerabilityList;
+  const outputJSON = JSON.parse(result.stdout);
+  if(outputJSON.Results && outputJSON.Results.length > 0 && outputJSON.Results[0].Vulnerabilities && outputJSON.Results[0].Vulnerabilities.length > 0) {
+    return outputJSON.Results[0].Vulnerabilities.map(value => {
+      return {
+        id: value.VulnerabilityID, 
+        packageName: value.PkgName, 
+        status: value.Status, 
+        title: value.Title, 
+        severity: value.Severity,
+        fixedVersion: value.FixedVersion,
+        links: value.References,
+        publishedDate: value.PublishedDate
+        }
+    });
+  }
+  return [];
 }

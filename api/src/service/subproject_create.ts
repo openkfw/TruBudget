@@ -13,6 +13,14 @@ import { store } from "./store";
 
 export { RequestData } from "./domain/workflow/subproject_create";
 
+export interface Service {
+  createSubproject(
+    ctx: Ctx,
+    user: ServiceUser,
+    createRequest: Subproject.RequestData,
+  ): Promise<Result.Type<ResourceMap>>;
+}
+
 export async function createSubproject(
   conn: ConnToken,
   ctx: Ctx,

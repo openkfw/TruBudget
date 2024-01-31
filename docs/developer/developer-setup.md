@@ -184,7 +184,8 @@ bash setupGitSecrets.sh
 
 ### Environment variables
 
-All projects in TruBudget (blockchain, api, frontend, etc) have a docker compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env.example` in each project directory. To use these environemnt variables, simply copy the `.env.example` file and rename it to `.env`.
+All projects in TruBudget (blockchain, api, frontend, etc) have a docker compose file that can be used to start the project with. In order to start the projects, some environment variables must be set. In order to make this easier, there are some files containing the environment variables called `.env.example` in each project directory. To use these environment variables, simply copy the `.env.example` file and rename it to `.env`.
+When you are setting the environment for the first time you can easily copy all `.env.example` file using bash command `find . -name '.env.example' -exec sh -c 'cp "$0" "${0%.example}"' {} \;`
 
 Starting a network (composed of multiple services) via scripts uses the environment variables locally in the same directory as the script instead of individual .env files under each service. Path is usually `scripts/*/.env`
 
@@ -198,7 +199,7 @@ If you want to start developing on Trubudget, you need to setup the application 
 
 > If you have installed Docker by following the above guide, then there is one extra step you have to do until this is fixed later. The scripts/development/start-dev.sh script file uses the "docker compose" command. However within your installation, the command is "docker compose". Until the script is modified to take this into consideration, you are required to change the "docker compose" commands in the script to "docker compose" locally. Using the IDE or nano/vim, change every "docker-compose" to "docker compose" before you start the script. Do NOT push these changes to the repository as this is only meant for local development.
 
-This is the fastest way you can run **all services** needed for development. Everything is started in one command:
+This is the fastest way you can run **all services** needed for development. If you are starting application for the first time run `cd api && npm run build && cd ..` to build api. Then everything could be started in one command:
 
 1.  in root directory execute: `bash scripts/development/start-dev.sh --slim` or `bash scripts/development/start-dev.sh --full`
 

@@ -82,6 +82,7 @@ const pt = {
     no_nodes: "Nenhum pedido de nós aditonais encontrado",
     no_notifications: "Nenhuma notificação encontrada",
     no_organizations: "Nenhum pedido de novas organizações foi encontrado",
+    no_permissions: "Você não tem permissão para realizar esta ação",
     no_resources: "Nenhum campo foi adicionado a este recurso",
     no_subprojects: "Nenhum subprojetos encontrado",
     no_users: "Nenhum usuário encontrado",
@@ -111,6 +112,7 @@ const pt = {
     submit: "Enviar",
     subproject: "Subprojeto",
     subprojects: "Subprojetos",
+    switch_to_table: "Mudar para visualização de tabela",
     tag_already_exists: "Tag já existe!",
     tag: "Tag",
     task_status: "Status da tarefa",
@@ -120,6 +122,7 @@ const pt = {
     update: "Atualizar",
     username: "Id do usuário",
     view: "Visualizar",
+    view_project_details: "Visualizar detalhes do projeto",
     workflowitem: "Item de workflow",
     dueDate: "Data de vencimento",
     dueDate_exceeded: "Data de vencimento excedida",
@@ -257,14 +260,16 @@ const pt = {
   },
 
   workflow: {
-    assignee: "Responsável",
     add_item: "Criar item de workflow",
+    add_tag_wfi_text: "Adicionar tag a item de workflow",
     approval_required: "Aprovação necessária",
+    assignee: "Responsável",
     edit_item: "Editar item de workflow",
+    exit_sort_mode:
+      "Este botão agora está desativado. Saia do modo de classificação para criar novos itens de fluxo de trabalho",
     exchange_rate: "Taxa de câmbio",
-
+    search_text: "Buscar",
     workflow_budget_allocated: "Alocado",
-
     workflow_budget_disbursed: "pago",
     workflow_budget_na: "Não se aplica",
     workflow_budget_status_allocated: "Atribuído",
@@ -276,14 +281,14 @@ const pt = {
     workflow_document_changed: "Alterado",
     workflow_document_description: "Digite um nome para o documento",
     workflow_document_name: "Nome do documento",
+    workflow_document_not_available: "Documento não disponível",
     workflow_document_validate: "Validar",
     workflow_document_validated: "Validado",
-    workflow_document_validation_ok: "Documento idêntico",
     workflow_document_validation_not_ok: "Documento diferente",
+    workflow_document_validation_ok: "Documento idêntico",
     workflow_documents: "Documentos",
     workflow_enable_sort: "Ordenar",
     workflow_fingerprint: "Miniatura",
-    workflow_document_not_available: "Documento não disponível",
     workflow_name: "Nome",
     workflow_next_step: "Próxima etapa",
     workflow_no_actions: "Nenhuma ação necessária",
@@ -291,6 +296,7 @@ const pt = {
     workflow_none: "Nenhum",
     workflow_permissions_title: "Configurar permissões para item de workflow",
     workflow_redacted: "Editado por privacidade",
+    workflow_reject_reason: "Rejeitar a razão",
     workflow_selection: "Você selecionaou {0} itens de workflows",
     workflow_submit_for_review: "Enviar para revisão",
     workflow_table_title: "Lista de itens de workflow",
@@ -304,11 +310,10 @@ const pt = {
     workflowitem_details_history: "Histórico",
     workflowitem_details_overview: "Visão geral",
     workflowitem_details: "Detalhes do item de workflow",
-    workflowitem_type: "Categoria do item de workflow",
     workflowitem_type_general: "Criar un item de workflow do tipo general.",
     workflowitem_type_restricted:
       "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização.",
-    workflow_reject_reason: "Rejeitar a razão"
+    workflowitem_type: "Categoria do item de workflow"
   },
 
   workflowTemplate: {

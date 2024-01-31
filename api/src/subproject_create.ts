@@ -7,7 +7,6 @@ import { Ctx } from "./lib/ctx";
 import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
-import { ServiceUser } from "./service/domain/organization/service_user";
 import { ResourceMap } from "./service/domain/ResourceMap";
 import { currencyCodeSchema } from "./service/domain/workflow/money";
 import { idSchema as projectIdSchema } from "./service/domain/workflow/project";
@@ -172,17 +171,6 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
 }
 
 /**
- * Represents the service that creates a subproject
- */
-interface Service {
-  createSubproject(
-    ctx: Ctx,
-    user: ServiceUser,
-    createRequest: SubprojectCreate.RequestData,
-  ): Promise<Result.Type<ResourceMap>>;
-}
-
-/**
  * Creates an http handler that handles incoming http requests for the `/project.createSubproject` route
  *
  * @param server the current fastify server instance
@@ -192,7 +180,7 @@ interface Service {
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
-  service: Service,
+  service: SubprojectCreate.Service,
 ): void {
   server.register(async function () {
     server.post(

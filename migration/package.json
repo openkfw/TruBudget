@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "start": "node ./dist/index.js",
-    "build": "tsc --outDir ./dist ./src/index.ts",
+    "build": "rimraf dist && tsc",
     "audit": "better-npm-audit audit"
   },
   "author": "Martin Mayr",
@@ -21,10 +21,12 @@
   },
   "dependencies": {
     "async": "^3.2.3",
-    "axios": "^1.6.2",
+    "axios": "^1.6.5",
     "dotenv": "^10.0.0",
+    "joi": "^17.11.0",
     "lodash": "^4.17.21",
     "multichain-node": "^2.2.0-version1.0.4",
+    "rimraf": "^5.0.5",
     "sodium-native": "^3.3.0",
     "tar-fs": "^2.1.1"
   }

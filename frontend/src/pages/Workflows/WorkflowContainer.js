@@ -1,15 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import _isEqual from "lodash/isEqual";
+import queryString from "query-string";
 
 import Typography from "@mui/material/Typography";
 
+import { convertToSearchBarString } from "../../helper";
 import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
 import globalStyles from "../../styles";
+import WebWorker from "../../WebWorker.js";
 import { withRouter } from "../../wrappers/withRouter";
 import { openAnalyticsDialog } from "../Analytics/actions";
 import AdditionalInfo from "../Common/AdditionalInfo";
+import worker from "../Common/filterProjects.worker.js";
 import InformationDialog from "../Common/InformationDialog";
 import { addDocument } from "../Documents/actions";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
@@ -22,7 +27,9 @@ import {
   closeSubproject,
   closeWorkflowItem,
   closeWorkflowitemDetailsDialog,
+  disableLiveUpdatesSubproject,
   disableWorkflowEdit,
+  enableLiveUpdatesSubproject,
   enableSubProjectBudgetEdit,
   enableWorkflowEdit,
   fetchAllSubprojectDetails,
@@ -36,12 +43,15 @@ import {
   postSubProjectEdit,
   reorderWorkflowItems,
   saveWorkflowItemsBeforeSort,
+  setTagsOnly,
   showCreateDialog,
   showEditDialog,
   showReasonDialog,
   showSubProjectAssignee,
   showWorkflowitemAdditionalData,
   showWorkflowItemPermissions,
+  storeFilteredWorkflowitems,
+  storeWorkflowitemSearchTerm,
   storeWorkflowItemsSelected,
   storeWorkflowType,
   updateWorkflowOrderOnState
@@ -67,6 +77,37 @@ class WorkflowContainer extends Component {
     this.props.setSelectedView(this.subprojectId, "subProject");
     this.props.fetchUser();
     this.props.fetchAllSubprojectDetails(this.projectId, this.subprojectId, true);
+
+    // Get Searchword from URL if available
+    if (this.props.router.location.search) {
+      const queryParameter = queryString.parse(this.props.router.location.search);
+      const searchTermString = convertToSearchBarString(queryString.stringify(queryParameter));
+      this.props.storeWorkflowitemSearchTerm(searchTermString);
+      // this.props.storeSubSearchBarDisplayed(true);
+    }
+    this.worker = new WebWorker(worker);
+
+    // Listen for postmessage from worker
+    this.worker.addEventListener("message", (event) => {
+      // worker uses property 'filteredProjects'
+      const filteredWorkflowitems = event.data ? event.data.filteredProjects : this.props.workflowItems;
+      this.props.storeFilteredWorkflowitems(filteredWorkflowitems);
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    const searchTermChanges = this.props.searchTerm !== prevProps.searchTerm;
+    const workflowItemsChange = !_isEqual(this.props.workflowItems, prevProps.workflowItems);
+
+    // Start searching
+    if (this.props.searchTerm && (searchTermChanges || workflowItemsChange)) {
+      this.worker.postMessage({ projects: this.props.workflowItems, searchTerm: this.props.searchTerm });
+    }
+    // Reset searchbar
+    if (!this.props.searchTerm && prevProps.searchTerm) {
+      this.props.storeFilteredWorkflowitems(this.props.workflowItems);
+      // this.props.storeSubSearchTermArray([]);
+    }
   }
 
   componentWillUnmount() {
@@ -185,7 +226,8 @@ const mapDispatchToProps = (dispatch, _ownProps) => {
       currency,
       documents,
       dueDate,
-      workflowitemType
+      workflowitemType,
+      tags
     ) =>
       dispatch(
         showEditDialog(
@@ -198,7 +240,8 @@ const mapDispatchToProps = (dispatch, _ownProps) => {
           currency,
           documents,
           dueDate,
-          workflowitemType
+          workflowitemType,
+          tags
         )
       ),
     saveWorkflowItemsBeforeSort: (workflowItems) => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
@@ -208,50 +251,58 @@ const mapDispatchToProps = (dispatch, _ownProps) => {
     showWorkflowitemAdditionalData: (wId) => dispatch(showWorkflowitemAdditionalData(wId)),
     hideWorkflowitemAdditionalData: () => dispatch(hideWorkflowitemAdditionalData()),
     showReasonDialog: (rejectReason) => dispatch(showReasonDialog(rejectReason)),
-    hideReasonDialog: () => dispatch(hideReasonDialog())
+    hideReasonDialog: () => dispatch(hideReasonDialog()),
+    storeFilteredWorkflowitems: (filteredWorkflowitems) => dispatch(storeFilteredWorkflowitems(filteredWorkflowitems)),
+    storeWorkflowitemSearchTerm: (searchTerm) => dispatch(storeWorkflowitemSearchTerm(searchTerm)),
+    setTagsOnly: (tagsOnly) => dispatch(setTagsOnly(tagsOnly)),
+    enableLiveUpdatesSubproject: () => dispatch(enableLiveUpdatesSubproject()),
+    disableLiveUpdatesSubproject: () => dispatch(disableLiveUpdatesSubproject())
   };
 };
 
 const mapStateToProps = (state) => {
   return {
-    id: state.getIn(["workflow", "id"]),
-    displayName: state.getIn(["workflow", "displayName"]),
-    description: state.getIn(["workflow", "description"]),
-    dueDate: state.getIn(["workflow", "dueDate"]),
-    status: state.getIn(["workflow", "status"]),
-    amount: state.getIn(["workflow", "amount"]),
-    currency: state.getIn(["workflow", "currency"]),
-    subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
-    fixedWorkflowitemType: state.getIn(["workflow", "fixedWorkflowitemType"]),
-    assignee: state.getIn(["workflow", "assignee"]),
-    created: state.getIn(["workflow", "created"]),
     allowedIntents: state.getIn(["workflow", "allowedIntents"]),
-    workflowItems: state.getIn(["workflow", "workflowItems"]),
-    workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
-    parentProject: state.getIn(["workflow", "parentProject"]),
-    subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
-    showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
-    showDetailsItem: state.getIn(["workflow", "showDetailsItem"]),
-    subProjects: state.getIn(["detailview", "subProjects"]),
-    workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"]),
+    amount: state.getIn(["workflow", "amount"]),
+    assignee: state.getIn(["workflow", "assignee"]),
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),
-    workflowDocuments: state.getIn(["documents", "tempDocuments"]),
-    validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
-    users: state.getIn(["login", "enabledUsers"]),
-    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
-    projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
+    created: state.getIn(["workflow", "created"]),
+    currency: state.getIn(["workflow", "currency"]),
+    currentUser: state.getIn(["login", "id"]),
+    description: state.getIn(["workflow", "description"]),
+    displayName: state.getIn(["workflow", "displayName"]),
+    dueDate: state.getIn(["workflow", "dueDate"]),
+    filteredWorkflowitems: state.getIn(["workflow", "filteredWorkflowitems"]),
+    fixedWorkflowitemType: state.getIn(["workflow", "fixedWorkflowitemType"]),
+    id: state.getIn(["workflow", "id"]),
     idForInfo: state.getIn(["workflow", "idForInfo"]),
-    isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"]),
-    isLoading: state.getIn(["workflow", "isHistoryLoading"]),
-    isRoot: state.getIn(["navbar", "isRoot"]),
-    permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"]),
     idsPermissionsUnassigned: state.getIn(["workflow", "idsPermissionsUnassigned"]),
     isDataLoading: state.getIn(["loading", "loadingVisible"]),
     isLiveUpdatesSubprojectEnabled: state.getIn(["workflow", "isLiveUpdatesSubprojectEnabled"]),
-    currentUser: state.getIn(["login", "id"]),
-    rejectReason: state.getIn(["workflow", "rejectReason"]),
+    isLoading: state.getIn(["workflow", "isHistoryLoading"]),
     isRejectReasonDialogShown: state.getIn(["workflow", "isRejectReasonDialogShown"]),
-    worflowDetailsInitialTab: state.getIn(["workflow", "worflowDetailsInitialTab"])
+    isRoot: state.getIn(["navbar", "isRoot"]),
+    isWorkflowitemAdditionalDataShown: state.getIn(["workflow", "isWorkflowitemAdditionalDataShown"]),
+    parentProject: state.getIn(["workflow", "parentProject"]),
+    permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"]),
+    projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
+    rejectReason: state.getIn(["workflow", "rejectReason"]),
+    searchTerm: state.getIn(["workflow", "searchTerm"]),
+    selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
+    showDetailsItem: state.getIn(["workflow", "showDetailsItem"]),
+    showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
+    status: state.getIn(["workflow", "status"]),
+    subProjectDetails: state.getIn(["workflow", "subProjectDetails"]),
+    subProjects: state.getIn(["detailview", "subProjects"]),
+    subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
+    tagsOnly: state.getIn(["workflow", "searchOnlyTags"]), // todo remove
+    users: state.getIn(["login", "enabledUsers"]),
+    validatedDocuments: state.getIn(["documents", "validatedDocuments"]),
+    worflowDetailsInitialTab: state.getIn(["workflow", "worflowDetailsInitialTab"]),
+    workflowDocuments: state.getIn(["documents", "tempDocuments"]),
+    workflowItems: state.getIn(["workflow", "workflowItems"]),
+    workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
+    workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"])
   };
 };
 

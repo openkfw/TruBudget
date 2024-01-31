@@ -1,6 +1,6 @@
 {
   "name": "trubudget-api",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -86,7 +86,7 @@
     "@types/sanitize-html": "^2.9.0",
     "@types/sodium-native": "^2.3.5",
     "ajv": "^8.12.0",
-    "axios": "^1.6.2",
+    "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
     "better-npm-audit": "^3.7.3",
     "content-disposition": "^0.5.4",

@@ -2,7 +2,7 @@
 
 ### Migrate an existing TruBudget instance to a new instance
 
-1. Create a backup of your old TruBudget instance. Make sure the source instance uses version 1.30.1
+1. Create a backup of your old TruBudget instance. Make sure the source instance uses version 1.30.0
 2. Download the latest TruBudget release (2.x), this instance will be the destination instance.
 3. With the release of TruBudget 2.0, some environment variables changed. Make sure to adapt the `.env` file on the
    destination instance to your need. If you are not already using the operation script now it's a great chance to start
@@ -12,14 +12,13 @@
 - `AUTOSTART: false`
 - `NODE_ENV: development`
 
-7. Use the operation script to bootstrap the new set-up. Make sure to enable all desired features (i.e.
-   storage-service). **If you do not use the operation script make sure the provisioning is disabled!**
+7. Use the operation script to bootstrap the new set-up. Make sure to enable all desired features. If you store documents on TruBudget instance, you must enable the document feature as documents will not be stored on chain!
 8. Copy the `.env.example` of the migration script to `.env` & set all variables accordingly.
-9. Run the migration script using `npm run start`
+9. Run the migration script using `npm run build && npm run start`
 10. Once the migration finished make sure to set following environment variables on the destination instance by
     changing the `.env` file
-    - AUTOSTART: true
-    - NODE_ENV: production
+    - `AUTOSTART: true`
+    - `NODE_ENV: production`
 
 #### Environment Variables
 

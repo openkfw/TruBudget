@@ -169,6 +169,7 @@ interface ExposedWorkflowitem {
     amount?: string | null;
     additionalData: object | null;
     workflowitemType?: WorkflowitemType;
+    tags: string[];
   };
   allowedIntents: Intent[];
 }
@@ -329,6 +330,7 @@ export function addHttpHandler(
               amount: workflowitem.amount,
               additionalData: workflowitem.additionalData,
               workflowitemType: workflowitem.workflowitemType,
+              tags: workflowitem.tags || [],
             },
           }));
 

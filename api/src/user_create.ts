@@ -183,6 +183,16 @@ export function addHttpHandler(
 
       if (Result.isErr(bodyResult)) {
         const { code, body } = toHttpError(new VError(bodyResult, "failed to create user"));
+        if (code == 409) {
+          request.log.warn({ warn: bodyResult }, "User already exists, skipping");
+          reply.status(200).send({
+            id: serviceUser.id,
+            displayName: "Name",
+            organization: "Orga",
+            address: serviceUser.address,
+          });
+          return;
+        }
         request.log.error({ err: bodyResult }, "Invalid request body");
         reply.status(code).send(body);
         return;

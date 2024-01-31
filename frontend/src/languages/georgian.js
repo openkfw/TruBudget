@@ -81,6 +81,7 @@ const ka = {
     no_nodes: "დამატებითი კვანძების მოთხოვნა ვერ მოიძებნა",
     no_notifications: "შეტყობინებები ვერ მოიძებნა",
     no_organizations: "ახალი ორგანიზაციების მოთხოვნა ვერ მოიძებნა",
+    no_permissions: "თქვენ არ გაქვთ ამ მოქმედების შესრულების ნებართვა",
     no_resources: "არცერთი ველი არ დაემატა ამ რესურსს",
     no_subprojects: "ქვეპროექტი ვერ მოიძებნა",
     no_users: "მომხმარებლები ვერ მოიძებნა",
@@ -110,6 +111,7 @@ const ka = {
     submit: "გაგზავნა",
     subproject: "ქვეპროექტი",
     subprojects: "ქვეპროექტები",
+    switch_to_table: "ცხრილის ხედზე გადართვა",
     tag_already_exists: "თაგი უკვე არსებობს!",
     tag: "თაგი",
     task_status: "დავალების სტატუსი",
@@ -119,6 +121,7 @@ const ka = {
     update: "განახლება",
     username: "მომხმარებლის სახელი",
     view: "ხილვა",
+    view_project_details: "იხილეთ პროექტის დეტალები",
     workflowitem: "Workflowitem",
     dueDate: "თარიღით",
     dueDate_exceeded: "დასრულდა თარიღი",
@@ -257,14 +260,15 @@ const ka = {
   },
 
   workflow: {
-    assignee: "პასუხისმგებელი",
     add_item: "Workflowitem-ის შექმნა",
+    add_tag_wfi_text: "ტეგის დამატება",
     approval_required: "აუცილებელია დადასტურება",
+    assignee: "პასუხისმგებელი",
+    search_text: "საძიებო ნივთები",
     edit_item: "Workflowitem-ის რედაქტირება",
+    exit_sort_mode: "ეს ღილაკი ახლა გამორთულია. დალაგების რეჟიმიდან გამოდით სამუშაო პროცესის ახალი ელემენტების შესაქმნელად",
     exchange_rate: "გაცვლითი კურსი",
-
     workflow_budget_allocated: "გამოყოფილი",
-
     workflow_budget_disbursed: "გადახდილი",
     workflow_budget_na: "Not applicable",
     workflow_budget_status_allocated: "Assigned",
@@ -276,14 +280,14 @@ const ka = {
     workflow_document_changed: "შეცვლილია",
     workflow_document_description: "დოკუმენტის სახელწოდების დამატება",
     workflow_document_name: "დოკუმენტის სახელწოდება",
+    workflow_document_not_available: "დოკუმენტი მიუწვდომელია",
     workflow_document_validate: "დამტკიცება",
     workflow_document_validated: "დამტკიცებულია",
-    workflow_document_validation_ok: "იდენტურია დოკუმენტი",
     workflow_document_validation_not_ok: "განსხვავებული დოკუმენტი",
+    workflow_document_validation_ok: "იდენტურია დოკუმენტი",
     workflow_documents: "დოკუმენტები",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
-    workflow_document_not_available: "დოკუმენტი მიუწვდომელია",
     workflow_name: "დასახელება",
     workflow_next_step: "შემდეგი ნაბიჯი",
     workflow_no_actions: "ქმედების განხორციელება არ არის საჭირო",
@@ -291,6 +295,7 @@ const ka = {
     workflow_none: "None",
     workflow_permissions_title: "Workflowitem-თან დაკავშირებით უფლებამოსილების მინიჭება",
     workflow_redacted: "Redacted",
+    workflow_reject_reason: "უარყავი მიზეზი",
     workflow_selection: "{0} Workflowitem-ები არჩეულია",
     workflow_submit_for_review: "განსახილველად გადაგზავნა",
     workflow_table_title: "Workflowitem-ები",
@@ -304,11 +309,10 @@ const ka = {
     workflowitem_details_history: "ისტორია",
     workflowitem_details_overview: "მიმოხილვა",
     workflowitem_details: "Workflowitem-ის დეტალები",
-    workflowitem_type: "Workflowitem ტიპი",
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
       "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას.",
-    workflow_reject_reason: "უარყავი მიზეზი"
+    workflowitem_type: "Workflowitem ტიპი"
   },
 
   workflowTemplate: {

@@ -35,6 +35,7 @@ export interface RequestData {
   dueDate?: string;
   documents?: UploadedDocument[];
   additionalData?: object;
+  tags?: string[];
 }
 
 export type EventData = WorkflowitemUpdated.Modification;

@@ -3,5 +3,5 @@ runs:
   using: "composite"
   steps:
     - name: Run Test
-      run: cd ${{ matrix.project }} && npm ci --legacy-peer-deps && npm test
+      run: cd ${{ matrix.project }} && npm ci && npm test
       shell: bash
