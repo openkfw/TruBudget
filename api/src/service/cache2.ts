@@ -338,7 +338,6 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
       newItems.push(...batch);
       first += batch.length;
     }
-
     // It would be nice to have a `panic!` macro, but whatever:
     if (isRebuild && (!newItems.length || !first)) {
       logger.fatal(
@@ -351,9 +350,11 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
 
     let cursorToLastItem: StreamCursor | undefined = cursor;
     // If there are new items, we update the cursor to point to the latest one:
-    const lastIndex = first - 1;
-    const lastTxid = newItems[newItems.length - 1].txid;
-    cursorToLastItem = { index: lastIndex, txid: lastTxid };
+    if (newItems.length > 0) {
+      const lastIndex = first - 1;
+      const lastTxid = newItems[newItems.length - 1].txid;
+      cursorToLastItem = { index: lastIndex, txid: lastTxid };
+    }
 
     if (cursorToLastItem !== undefined) {
       cache.streamState.set(streamName, cursorToLastItem);

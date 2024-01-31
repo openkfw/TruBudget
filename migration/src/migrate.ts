@@ -1,16 +1,12 @@
-import { AssertParams, assertStreamItem } from "./assert";
-import {
-  getAllStreamItems,
-  getAllStreams,
-  getFromTxOutData,
-} from "./helper/migrationHelper";
-import { createStream, createStreamItem, listStreams } from "./rpc";
-import { Item } from "./types/item";
+import {AssertParams, assertStreamItem} from "./assert";
+import {getAllStreamItems, getAllStreams} from "./helper/migrationHelper";
+import {createStream, createStreamItem, listStreams} from "./rpc";
+import {Item} from "./types/item";
 
 export interface MoveFunction {
   sourceChain: any;
-  destinationChain: any;
-  stream: string;
+  destinationChain?: any;
+  stream?: string;
   item: Item;
 }
 
@@ -39,9 +35,7 @@ export interface VerifyParams {
 
 export interface MigrateFunction {
   stream: string;
-
   function(params: MoveFunction): Promise<MigrationCompleted>;
-
   verifier(params: VerifyParams): Promise<boolean>;
 }
 
@@ -73,7 +67,7 @@ const migrateStream = async (
   sourceChain: any,
   destinationChain: any,
   stream: string,
-  mover?: MigrateFunction
+  mover?: MigrateFunction,
 ): Promise<MigrationCompleted[] | undefined> => {
   const allItemsOnChain = await getAllStreamItems(sourceChain, stream);
 
@@ -82,16 +76,8 @@ const migrateStream = async (
   for (const item of allItemsOnChain) {
     if (!mover) {
       try {
-        let itemToMigrate = item;
         const txId = item.txid;
 
-        if (
-          item.data &&
-          item.data.hasOwnProperty("vout") &&
-          item.data.hasOwnProperty("txid")
-        ) {
-          itemToMigrate = await getFromTxOutData(sourceChain, item);
-        }
         const req = await createStreamItem(
           destinationChain,
           stream,
@@ -110,7 +96,7 @@ const migrateStream = async (
           status: MigrationStatus.Ok,
         });
       } catch (error) {
-        throw new Error(error);
+        throw new Error(JSON.stringify(error));
       }
     } else {
       try {
@@ -131,11 +117,6 @@ const migrateStream = async (
           continue;
         }
 
-        console.log(
-          `Created key ${JSON.stringify(
-            item.keys
-          )} on destination chain with tx ${req.destinationChainTx}`
-        );
         result.push({
           destinationChainTx: req.destinationChainTx,
           sourceChainTx: req.sourceChainTx,
@@ -160,10 +141,11 @@ export const migrate = async (
     const streamsOnSourceChain = await getAllStreams(sourceChain);
     if (!streamsOnSourceChain) throw Error("No streams on source chain");
 
-    // filter out streams
+    //filter out streams
     const streamsOfInterest = streamsOnSourceChain.filter(
       (stream) => !streamBlacklist.includes(stream.name)
     );
+
 
     for (const stream of streamsOfInterest) {
       const customMigration = customMigrations[stream.name];
@@ -205,9 +187,11 @@ export const migrate = async (
           additionalData: streamItem.additionalData,
         };
 
-        !customMigration
-          ? await assertStreamItem(assertion)
-          : await customMigration.verifier(assertion);
+        if (streamItem.destinationChainTx != "Uploaded via API.") {
+          !customMigration
+            ? await assertStreamItem(assertion)
+            : await customMigration.verifier(assertion);
+        }
       }
     }
   } catch (error) {

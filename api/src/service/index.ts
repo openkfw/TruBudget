@@ -107,7 +107,7 @@ export async function revokeGlobalPermission(
   logger.debug({ intent, recipient }, "Revoking global permission");
   const permissions = await getGlobalPermissionList(conn);
 
-  if (Object.keys(permissions).length === 0) {
+  if (Object.keys(permissions).length == 0) {
     throw new VError("No global permissions found, escaping");
   }
 
