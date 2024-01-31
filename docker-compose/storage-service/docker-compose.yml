@@ -1,7 +1,8 @@
 version: "3"
 services:
   storage-service:
-    image: trubudget/storage-service:${TAG}
+    build: ../storage-service
+    # image: trubudget/storage-service:${TAG}
     environment:
       PORT: ${STORAGE_SERVICE_PORT}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${STORAGE_SERVICE_ACCESS_CONTROL_ALLOW_ORIGIN}
@@ -27,20 +28,13 @@ services:
     ports:
       - ${MINIO_PORT}:${MINIO_PORT}
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:9000/minio/health/live"
-        ]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
     # networks:
     #   mynetwork:
     #     ipv4_address: 172.21.0.3
-
 
   api:
     environment:
@@ -49,7 +43,7 @@ services:
       STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
 
-  frontend:
-    environment:
-      STORAGE_SERVICE_HOST: ${STORAGE_SERVICE_HOST}
-      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
+  # frontend:
+  #   environment:
+  #     STORAGE_SERVICE_HOST: ${STORAGE_SERVICE_HOST}
+  #     STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
