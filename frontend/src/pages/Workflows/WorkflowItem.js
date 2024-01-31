@@ -84,7 +84,7 @@ const styles = {
     borderLeft: "2px solid black",
     height: "38px",
     left: "25px",
-    bottom: "43px"
+    bottom: "35px"
   },
   buttonStyle: {
     minWidth: "30px",
@@ -629,46 +629,50 @@ export const RedactedWorkflowItem = ({
   workflowSortEnabled,
   disabled
 }) => {
-  const { status } = workflow.data;
+  const { id, status } = workflow.data;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
   const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
 
   return (
-    <Draggable draggableId={`draggable-${mapIndex}`} key={mapIndex} index={index} isDragDisabled={disabled}>
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          style={{
-            ...provided.draggableProps.style,
-            ...styles.containerItem
-          }}
-        >
-          {createLine(mapIndex === 0, workflowSelectable)}
-          <StepDot status={status} selectable={workflowSelectable} redacted={true} />
-          <Card
-            data-test="redacted-selectable-card"
-            elevation={workflowSelectable ? 1 : 0}
-            key={mapIndex}
-            style={styles.card}
+    <div style={styles.container} data-test={`workflowitem-container-${id}`}>
+      <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
+        {(provided) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            style={{
+              ...provided.draggableProps.style,
+              ...styles.containerItem
+            }}
           >
-            <div style={styles.workflowContent}>
-              <div style={{ flex: 1 }}>
-                <IconButton aria-label="Hidden Icon" style={styles.buttonStyle} size="large">
-                  <HiddenIcon />
-                </IconButton>
+            {createLine(mapIndex === 0, workflowSelectable)}
+            <StepDot status={status} selectable={workflowSelectable} redacted={true} />
+            <Card
+              data-test="redacted-selectable-card"
+              elevation={workflowSelectable ? 1 : 0}
+              key={mapIndex}
+              style={styles.card}
+            >
+              <div style={styles.workflowContent}>
+                <div style={{ flex: 1 }}>
+                  <IconButton aria-label="Hidden Icon" style={styles.buttonStyle} size="large">
+                    <HiddenIcon />
+                  </IconButton>
+                </div>
+                <div style={{ ...styles.text, ...styles.workflowCell, ...itemStyle }}>
+                  <Typography variant="body2" style={styles.typographs}>
+                    {strings.workflow.workflow_redacted}
+                  </Typography>
+                </div>
+                <div style={{ ...itemStyle, flex: 5 }}>{null}</div>
+                <div style={{ ...styles.chipRow, flex: 2 }}>{null}</div>
+                {null}
               </div>
-              <div style={{ ...itemStyle, ...styles.text, flex: 5 }}>
-                <Typography variant="body2">{strings.workflow.workflow_redacted}</Typography>
-              </div>
-              <div style={{ ...itemStyle, flex: 5 }}>{null}</div>
-              <div style={{ ...styles.chipRow, flex: 2 }}>{null}</div>
-              {null}
-            </div>
-          </Card>
-        </div>
-      )}
-    </Draggable>
+            </Card>
+          </div>
+        )}
+      </Draggable>
+    </div>
   );
 };
