@@ -154,7 +154,13 @@ Substrate is a powerful blockchain development framework that allows developers 
 We do not recommend Polkadot/Kusama as a replacement due to Substrate SDK being Rust based. Being locked into Rust as a language, would only make future onboarding of developers harder, as well as finding suitable replacements. However if decided that this is not an issue, then Polkadot could be the only public blockchain solution that we might recommend.
 
 ### Hyperledger Besu
-TBD
+
+More complicated setup for permissioned networks. Ethereum data storage has two possibilities: 
+- Smart contract space
+- Transaction Inputs
+
+#### Smart contract space
+
 
 ### Hyperledger Fabric
 TBD
