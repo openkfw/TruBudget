@@ -26,7 +26,8 @@ const config = {
   },
   telemetry: {
     azureMonitorConnectionString: process.env.REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING || undefined
-  }
+  },
+  pollingInterval: Number(process.env.REACT_APP_POLLING_INTERVAL) || 30000
 };
 
 export default config;

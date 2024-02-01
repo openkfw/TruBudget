@@ -1,5 +1,7 @@
 import { Component } from "react";
 
+import config from "../../config";
+
 class LiveUpdates extends Component {
   constructor(props) {
     super(props);
@@ -15,12 +17,12 @@ class LiveUpdates extends Component {
   }
 
   startLiveUpdates() {
-    const { update, interval = 5000, immediatly = false } = this.props;
+    const { update, interval = config.pollingInterval, immediately = false } = this.props;
     if (this.timer === undefined) {
       this.timer = setInterval(() => update(), interval);
     }
 
-    if (immediatly) update();
+    if (immediately) update();
   }
 
   stopLiveUpdates() {
