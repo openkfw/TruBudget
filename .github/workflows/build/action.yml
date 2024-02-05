@@ -19,7 +19,7 @@ runs:
     - name: Tag name
       id: tag_name
       run: |
-        echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+        echo "SOURCE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT        
       shell: bash
 
     - name: Run build
