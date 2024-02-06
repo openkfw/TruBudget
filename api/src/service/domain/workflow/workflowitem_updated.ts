@@ -3,7 +3,7 @@ import logger from "lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
-import { DocumentReference, documentReferenceSchema } from "../document/document";
+import { DocumentOrExternalLinkReference, DocumentReference, ExternalLinkReference, documentReferenceSchema } from "../document/document";
 import { Identity } from "../organization/identity";
 import { conversionRateSchema, moneyAmountSchema } from "./money";
 import * as Project from "./project";
@@ -24,7 +24,7 @@ export interface Modification {
   exchangeRate?: string;
   billingDate?: string;
   dueDate?: string;
-  documents?: DocumentReference[];
+  documents?: DocumentOrExternalLinkReference[];
   additionalData?: object;
   tags?: string[];
 }
@@ -172,7 +172,7 @@ function updateAdditionalData(
 
 function updateDocuments(
   workflowitem: Workflowitem.Workflowitem,
-  documents?: DocumentReference[],
+  documents?: DocumentOrExternalLinkReference[],
 ): Result.Type<void> {
   if (documents === undefined) {
     return;
@@ -180,13 +180,28 @@ function updateDocuments(
   // Existing documents are never overwritten. They are only allowed in the update if
   // they are equal to their existing record.
   for (const document of documents) {
-    const existingDocument = workflowitem.documents.find((x) => x.id === document.id);
-    if (existingDocument === undefined) {
+    const existingDocument = workflowitem.documents.find(
+      (x) => x.id === document.id && document.hasOwnProperty("hash"),
+    ) as DocumentReference | undefined;
+    const existingExternalLink = workflowitem.documents.find(
+      (x) => x.id === document.id && document.hasOwnProperty("link"),
+    ) as ExternalLinkReference | undefined;
+    if (existingDocument === undefined && existingExternalLink === undefined) {
       // This is a new document.
       workflowitem.documents.push(document);
+    } else if (existingExternalLink) {
+      // We already know a document with the same ID.
+      const justExternalLink = document as ExternalLinkReference;
+      if (existingExternalLink && existingExternalLink.link !== justExternalLink.link) {
+        return new VError(
+          `cannot update document external link ${document.id}, ` +
+            "as changing existing documents is not allowed",
+        );
+      }
     } else {
       // We already know a document with the same ID.
-      if (existingDocument.hash !== document.hash) {
+      const justDocument = document as DocumentReference;
+      if (existingDocument && existingDocument.hash !== justDocument.hash) {
         return new VError(
           `cannot update document ${document.id}, ` +
             "as changing existing documents is not allowed",

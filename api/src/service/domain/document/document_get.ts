@@ -2,7 +2,7 @@ import { VError } from "verror";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { DocumentReference, StoredDocument } from "./document";
+import { DocumentOrExternalLinkReference, StoredDocument } from "./document";
 import { sourceDocuments } from "./document_eventsourcing";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
@@ -52,9 +52,9 @@ export async function getDocumentInfo(
 
 export async function getAllDocumentReferences(
   repository: Repository,
-): Promise<Result.Type<DocumentReference[]>> {
+): Promise<Result.Type<DocumentOrExternalLinkReference[]>> {
   const projects: Project.Project[] = await repository.getAllProjects();
-  let documentReferences: DocumentReference[] = [];
+  let documentReferences: DocumentOrExternalLinkReference[] = [];
   for (const project of projects) {
     const allSubprojectsResult = await repository.getAllSubprojects(project.id);
 

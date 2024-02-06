@@ -6,7 +6,7 @@ import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
 import { Workflowitem } from "../workflow/workflowitem";
-import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
+import { DocumentOrExternalLinkReference, StoredDocument, UploadedDocument } from "./document";
 import { RequestData, shareDocument } from "./document_share";
 import { SecretPublished } from "./document_shared";
 
@@ -62,7 +62,7 @@ const documentFileName = "name";
 const organization = "organization";
 const organizationUrl = "url";
 
-const documents: DocumentReference[] = [
+const documents: DocumentOrExternalLinkReference[] = [
   {
     id: documentId,
     hash: documentHash,

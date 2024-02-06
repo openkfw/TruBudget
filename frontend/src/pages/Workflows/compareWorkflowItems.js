@@ -1,7 +1,7 @@
 import { toAmountString } from "../../helper";
 export const compareWorkflowItems = (originalItem, itemToCompare) => {
   function isNewDocument(doc) {
-    return Object.hasOwn(doc, "base64");
+    return Object.hasOwn(doc, "base64") || Object.hasOwn(doc, "link");
   }
 
   const modifiedOriginalItem = {

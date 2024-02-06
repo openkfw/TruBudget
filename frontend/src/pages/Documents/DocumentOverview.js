@@ -5,7 +5,8 @@ import _isUndefined from "lodash/isUndefined";
 import ValidationIcon from "@mui/icons-material/FindInPage";
 import FingerPrint from "@mui/icons-material/Fingerprint";
 import DownloadIcon from "@mui/icons-material/GetApp";
-import { TableHead } from "@mui/material";
+import LinkIcon from "@mui/icons-material/Link";
+import { TableHead, Tooltip } from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import Table from "@mui/material/Table";
@@ -125,17 +126,26 @@ class DocumentOverview extends Component {
             <OverflowTooltip text={fileName} maxWidth="200px" />
           </TableCell>
           <TableCell>
-            <div style={{ display: "flex" }}>
-              <FingerPrint style={{ paddingRight: "10px", paddingBottom: "0px" }} />
-              <OverflowTooltip text={hash} maxWidth="70px" />
-            </div>
+            {document.link ? (
+              <Tooltip title={document.link}>
+                <div style={{ overflow: "hidden", maxWidth: "170px", color: "#333333" }}>{document.link}</div>
+              </Tooltip>
+            ) : (
+              <div style={{ display: "flex" }}>
+                <FingerPrint style={{ paddingRight: "10px", paddingBottom: "0px" }} />
+                <OverflowTooltip text={hash} maxWidth="70px" />
+              </div>
+            )}
           </TableCell>
           <TableCell>
             <div style={styles.actionContainer}>
-              {this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
-              {document.id
-                ? this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)
-                : null}
+              {document.id &&
+                document.hash &&
+                this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
+              {document.id &&
+                document.hash &&
+                this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)}
+              {document.id && document.link && this.generateLinkButton(document)}
             </div>
           </TableCell>
         </TableRow>
@@ -157,7 +167,9 @@ class DocumentOverview extends Component {
             <Typography>{strings.common.name}</Typography>
           </TableCell>
           <TableCell>
-            <Typography>{strings.common.hash}</Typography>
+            <Typography>
+              {strings.common.hash}/{strings.common.link}
+            </Typography>
           </TableCell>
           <TableCell>
             <Typography>{strings.common.actions}</Typography>
@@ -202,6 +214,23 @@ class DocumentOverview extends Component {
       >
         <DownloadIcon />
         {strings.common.download}
+      </Button>
+    );
+  }
+
+  generateLinkButton(document) {
+    return (
+      <Button
+        aria-label="Open external link"
+        data-test="open-external-link"
+        component="span"
+        onClick={(event) => {
+          event.preventDefault();
+          window.open(document.link, "_blank");
+        }}
+      >
+        <LinkIcon />
+        {strings.common.open}
       </Button>
     );
   }
