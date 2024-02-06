@@ -61,6 +61,7 @@ const de = {
     incorrect_password: "Falsches Passwort",
     incorrect_username: "Unbekannte Login-ID",
     incorrect_username_or_password: "Ungültige Login-ID oder falsches Passwort",
+    link: "Link",
     next: "Weiter",
     no_budget: "Kein Budget gefunden",
     no_budget_project: "Um ein Budget für Ihr Projekt hinzuzufügen, gehen Sie zurück zur Hauptseite.",

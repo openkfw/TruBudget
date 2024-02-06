@@ -7,7 +7,7 @@ import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
 import { uploadDocument } from "./document_upload";
-import { DocumentReference, StoredDocument } from "./document";
+import { DocumentOrExternalLinkReference, StoredDocument } from "./document";
 import { VError } from "verror";
 
 const ctx: Ctx = {
@@ -42,7 +42,9 @@ const existingDocuments = [
     organizationUrl: "",
   },
 ];
-const documentReferences: DocumentReference[] = [{ id: docId, fileName, hash: "hash" }];
+const documentReferences: DocumentOrExternalLinkReference[] = [
+  { id: docId, fileName, hash: "hash" },
+];
 
 const requestData = {
   id,
@@ -52,7 +54,8 @@ const requestData = {
 
 const repository = {
   getAllDocumentInfos: (): Promise<StoredDocument[]> => Promise.resolve(existingDocuments),
-  getAllDocumentReferences: (): Promise<DocumentReference[]> => Promise.resolve(documentReferences),
+  getAllDocumentReferences: (): Promise<DocumentOrExternalLinkReference[]> =>
+    Promise.resolve(documentReferences),
   storeDocument: (_id, _name, _hash): Promise<any> =>
     Promise.resolve({
       id: "1",

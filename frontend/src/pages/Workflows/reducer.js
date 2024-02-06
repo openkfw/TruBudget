@@ -75,6 +75,7 @@ import {
   WORKFLOW_CREATION_STEP,
   WORKFLOW_CURRENCY,
   WORKFLOW_DOCUMENT,
+  WORKFLOW_DOCUMENT_EXTERNAL_LINK,
   WORKFLOW_DUEDATE,
   WORKFLOW_EXCHANGERATE,
   WORKFLOW_NAME,
@@ -343,6 +344,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case WORKFLOW_DOCUMENT:
       return state.updateIn(["workflowToAdd", "documents"], (documents) =>
         Immutable.List([...documents, Immutable.Map({ base64: action.base64, fileName: action.fileName })])
+      );
+    case WORKFLOW_DOCUMENT_EXTERNAL_LINK:
+      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
+        Immutable.List([...documents, Immutable.Map({ link: action.link, fileName: action.fileName })])
       );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);

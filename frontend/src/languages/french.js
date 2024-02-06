@@ -64,6 +64,7 @@ const fr = {
     incorrect_username_or_password: "Identifiant de connexion ou mot de passe incorrect",
     invalid_tag: "Tag invalide",
     invalid_format: "Format non valide",
+    link: "Lien",
     name: "compte utilisateur",
     next: "Suivant",
     no_budget: "Aucun budget trouvé",
