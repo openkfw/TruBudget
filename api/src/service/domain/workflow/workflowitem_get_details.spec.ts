@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
-import { DocumentOrExternalLinkReference, UploadedDocument } from "../document/document";
+import { DocumentReference, UploadedDocument } from "../document/document";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
@@ -38,7 +38,7 @@ const baseWorkflowitem: Workflowitem = {
   workflowitemType: "general",
 };
 
-const documentStoredInWorkflowitem: DocumentOrExternalLinkReference = {
+const documentStoredInWorkflowitem: DocumentReference = {
   id: "documentId",
   hash: "lakjflaksdjf",
   fileName: "file",

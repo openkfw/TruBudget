@@ -26,7 +26,7 @@ interface Update {
   currency?: string;
   amountType?: "N/A" | "disbursed" | "allocated";
   description?: string;
-  documents?: DocumentOrLink[];
+  documents?: Document[];
   exchangeRate?: string;
   billingDate?: string;
   dueDate?: string;
@@ -36,14 +36,6 @@ interface Document {
   hash: string;
   fileName?: string;
 }
-
-interface ExternalLink {
-  id: string;
-  link: string;
-  fileName: string;
-}
-
-type DocumentOrLink = Document | ExternalLink;
 
 export function init(rpcSettings: ConnectionSettings): ConnToken {
   logger.debug({ rpcSettings }, "Initialising RpcMultichainClient with rpcSettings");

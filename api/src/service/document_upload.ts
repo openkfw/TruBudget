@@ -7,7 +7,7 @@ import * as Cache from "./cache2";
 import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
 import { StoredDocument } from "./domain/document/document";
-import { sourceDocuments } from "./domain/document/document_eventsourcing";
+import { processDocumentEvents } from "./domain/document/document_eventsourcing";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import { ServiceUser } from "./domain/organization/service_user";
@@ -70,7 +70,7 @@ export async function documentUpload(
     await store(conn, ctx, event, serviceUser.address);
   }
 
-  const { documents } = sourceDocuments(ctx, newEvents);
+  const { documents } = processDocumentEvents(ctx, newEvents);
   const newDocument = documents.find((doc) => doc.fileName === requestData.fileName);
 
   if (!newDocument) {

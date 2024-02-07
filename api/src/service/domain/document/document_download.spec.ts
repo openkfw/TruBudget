@@ -3,7 +3,7 @@ import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
 import { Workflowitem } from "../workflow/workflowitem";
-import { DocumentOrExternalLinkReference, StoredDocument, UploadedDocument } from "./document";
+import { DocumentReference, StoredDocument, UploadedDocument } from "./document";
 import * as DocumentShared from "./document_shared";
 import { getDocument } from "./workflowitem_document_download";
 import VError from "verror";
@@ -57,7 +57,7 @@ const documentInfoExternalStorage: StoredDocument = {
   organizationUrl: "organizationUrl",
 };
 
-const documentReferences: DocumentOrExternalLinkReference[] = [
+const documentReferences: DocumentReference[] = [
   {
     id: "guid1",
     hash,

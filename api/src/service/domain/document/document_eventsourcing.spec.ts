@@ -4,7 +4,7 @@ import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
 import { StoredDocument } from "./document";
-import { sourceDocuments, sourceSecrets } from "./document_eventsourcing";
+import { processDocumentEvents, sourceSecrets } from "./document_eventsourcing";
 
 const alice: ServiceUser = {
   id: "alice",
@@ -60,7 +60,7 @@ const secretPublishedEvent: BusinessEvent = {
 
 describe("Document eventsourcing", () => {
   it("Document Uploaded: source documents from storage service", async () => {
-    const result = await sourceDocuments(ctx, [uploadedDocumentEvent, storageServiceEvent]);
+    const result = processDocumentEvents(ctx, [uploadedDocumentEvent, storageServiceEvent]);
     assert.isTrue(Result.isOk(result));
     const { documents } = result;
     assert.isTrue(Result.isOk(documents));
@@ -68,7 +68,7 @@ describe("Document eventsourcing", () => {
   });
 
   it("Document Uploaded: empty organization returns errors", async () => {
-    const result = await sourceDocuments(ctx, [
+    const result = processDocumentEvents(ctx, [
       { ...uploadedDocumentEvent, organization: "" },
       storageServiceEvent,
     ]);
@@ -79,7 +79,7 @@ describe("Document eventsourcing", () => {
   });
 
   it("Document Uploaded: empty fileName returns errors", async () => {
-    const result = await sourceDocuments(ctx, [
+    const result = processDocumentEvents(ctx, [
       { ...uploadedDocumentEvent, fileName: "" },
       storageServiceEvent,
     ]);
@@ -92,7 +92,7 @@ describe("Document eventsourcing", () => {
 
 describe("Secret eventsourcing", () => {
   it("Secret published: source secret from event", async () => {
-    const result = await sourceSecrets(ctx, [secretPublishedEvent]);
+    const result = sourceSecrets(ctx, [secretPublishedEvent]);
     assert.isTrue(Result.isOk(result));
     const { secrets } = result;
     assert.isTrue(Result.isOk(secrets));
@@ -100,14 +100,14 @@ describe("Secret eventsourcing", () => {
   });
 
   it("Secret published: empty organization returns errors", async () => {
-    const result = await sourceSecrets(ctx, [{ ...secretPublishedEvent, organization: "" }]);
+    const result = sourceSecrets(ctx, [{ ...secretPublishedEvent, organization: "" }]);
     assert.isTrue(Result.isOk(result));
     const { secrets, errors } = result;
     assert.isEmpty(secrets);
     assert.isTrue(Result.isErr(errors[0]));
   });
   it("Secret published: empty encrypted secret returns errors", async () => {
-    const result = await sourceSecrets(ctx, [{ ...secretPublishedEvent, encryptedSecret: "" }]);
+    const result = sourceSecrets(ctx, [{ ...secretPublishedEvent, encryptedSecret: "" }]);
     assert.isTrue(Result.isOk(result));
     const { secrets, errors } = result;
     assert.isEmpty(secrets);

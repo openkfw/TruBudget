@@ -2,8 +2,8 @@ import { VError } from "verror";
 import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { DocumentOrExternalLinkReference, StoredDocument } from "./document";
-import { sourceDocuments } from "./document_eventsourcing";
+import { DocumentReference, StoredDocument } from "./document";
+import { processDocumentEvents } from "./document_eventsourcing";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
@@ -30,10 +30,11 @@ export async function getAllDocumentInfos(
     return new VError(documentEvents, "fetch storage documents events failed");
   }
 
-  const { documents } = sourceDocuments(ctx, documentEvents);
+  const { documents } = processDocumentEvents(ctx, documentEvents);
   return documents;
 }
 
+// todo what does it do with deleted document?
 export async function getDocumentInfo(
   ctx: Ctx,
   docId: string,
@@ -52,9 +53,9 @@ export async function getDocumentInfo(
 
 export async function getAllDocumentReferences(
   repository: Repository,
-): Promise<Result.Type<DocumentOrExternalLinkReference[]>> {
+): Promise<Result.Type<DocumentReference[]>> {
   const projects: Project.Project[] = await repository.getAllProjects();
-  let documentReferences: DocumentOrExternalLinkReference[] = [];
+  let documentReferences: DocumentReference[] = [];
   for (const project of projects) {
     const allSubprojectsResult = await repository.getAllSubprojects(project.id);
 

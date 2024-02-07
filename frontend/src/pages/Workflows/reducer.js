@@ -5,6 +5,7 @@ import _isEmpty from "lodash/isEmpty";
 import { convertToURLQuery } from "../../helper";
 import strings from "../../localizeStrings";
 import { CONFIRMATION_CANCELLED, CONFIRMATION_CONFIRMED } from "../Confirmation/actions";
+import { DELETE_DOCUMENT_SUCCESS } from "../Documents/actions";
 import { DISABLE_ALL_LIVE_UPDATES, ENABLE_ALL_LIVE_UPDATES } from "../Navbar/actions";
 import { HIDE_HISTORY } from "../Notifications/actions";
 import { FETCH_PROJECT_PERMISSIONS, FETCH_PROJECT_PERMISSIONS_SUCCESS } from "../Overview/actions";
@@ -75,7 +76,6 @@ import {
   WORKFLOW_CREATION_STEP,
   WORKFLOW_CURRENCY,
   WORKFLOW_DOCUMENT,
-  WORKFLOW_DOCUMENT_EXTERNAL_LINK,
   WORKFLOW_DUEDATE,
   WORKFLOW_EXCHANGERATE,
   WORKFLOW_NAME,
@@ -345,10 +345,6 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.updateIn(["workflowToAdd", "documents"], (documents) =>
         Immutable.List([...documents, Immutable.Map({ base64: action.base64, fileName: action.fileName })])
       );
-    case WORKFLOW_DOCUMENT_EXTERNAL_LINK:
-      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
-        Immutable.List([...documents, Immutable.Map({ link: action.link, fileName: action.fileName })])
-      );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
     case CREATE_WORKFLOW_SUCCESS:
@@ -551,6 +547,10 @@ export default function detailviewReducer(state = defaultState, action) {
     case SEARCH_TAGS_WORKFLOWITEM: {
       return state.set("searchOnlyTags", action.tagsOnly);
     }
+    case DELETE_DOCUMENT_SUCCESS:
+      return state.updateIn(["showDetailsItem", "data", "documents"], (documents) =>
+        Immutable.List([...documents.filter((doc) => doc.id !== action.payload.documentId)])
+      );
     default:
       return state;
   }

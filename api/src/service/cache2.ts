@@ -7,6 +7,7 @@ import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
 import * as DocumentShared from "./domain/document/document_shared";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
+import * as DocumentDeleted from "./domain/document/document_deleted";
 import * as DocumentValidated from "./domain/document/document_validated";
 import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
 import * as NodesLogged from "./domain/network/nodes_logged";
@@ -154,10 +155,12 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
       return cache.eventsByStream.get("public_keys") || [];
     },
     getDocumentUploadedEvents: (): Result.Type<BusinessEvent[]> => {
-      logger.trace("Getting document uploaded events");
+      logger.trace("Getting document uploaded and deleted events");
       const documentFilter = (event): boolean => {
         switch (event.type) {
           case "document_uploaded":
+            return true;
+          case "document_deleted":
             return true;
           case "storage_service_url_published":
             return true;
@@ -412,6 +415,7 @@ function addEventsToCache(cache: Cache2, streamName: string, newEvents: Business
 
 const EVENT_PARSER_MAP = {
   document_uploaded: DocumentUploaded.validate,
+  document_deleted: DocumentDeleted.validate,
   secret_published: DocumentShared.validate,
   storage_service_url_published: StorageServiceUrlUpdated.validate,
   global_permission_granted: GlobalPermissionsGranted.validate,

@@ -7,7 +7,7 @@ import { ServiceUser } from "../organization/service_user";
 import { Project } from "../workflow/project";
 import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
-import { DocumentOrExternalLinkReference, UploadedDocument } from "./document";
+import { DocumentReference, UploadedDocument } from "./document";
 import { documentValidate } from "./document_validate";
 import { BusinessEvent } from "../business_event";
 
@@ -91,7 +91,7 @@ const uploadedDocument: UploadedDocument = {
   base64: "lakjflaksdjf",
   fileName: uploadedDocumentFileName,
 };
-const documentReference: DocumentOrExternalLinkReference[] = [
+const documentReference: DocumentReference[] = [
   {
     id: uploadedDocumentId,
     hash: "hash1",

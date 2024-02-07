@@ -7,7 +7,7 @@ import { Project } from "../workflow/project";
 import { Subproject } from "../workflow/subproject";
 import { Workflowitem } from "../workflow/workflowitem";
 
-import { DocumentOrExternalLinkReference, UploadedDocument } from "./document";
+import { DocumentReference, UploadedDocument } from "./document";
 import { getAllDocumentInfos, getAllDocumentReferences, getDocumentInfo } from "./document_get";
 
 const ctx: Ctx = {
@@ -39,7 +39,7 @@ const uploadEvent: BusinessEvent = {
   fileName: uploadedDocument.fileName,
   organization: "organization",
 };
-const documentReference: DocumentOrExternalLinkReference[] = [
+const documentReference: DocumentReference[] = [
   {
     id: uploadEvent.docId,
     hash: "hash1",

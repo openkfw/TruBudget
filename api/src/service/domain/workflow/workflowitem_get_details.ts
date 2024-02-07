@@ -2,6 +2,7 @@ import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
 import * as Result from "../../../result";
 import * as WorkflowitemDocument from "../document/document";
+import { DocumentReference } from "../document/document";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
@@ -41,10 +42,10 @@ export async function getWorkflowitemDetails(
 }
 
 async function setDocumentAvailability(
-  documents: WorkflowitemDocument.DocumentOrExternalLinkReference[],
+  documents: DocumentReference[],
   repository: Repository,
-): Promise<WorkflowitemDocument.DocumentOrExternalLinkReference[]> {
-  const docsWithAvailability: WorkflowitemDocument.DocumentOrExternalLinkReference[] = [];
+): Promise<DocumentReference[]> {
+  const docsWithAvailability: DocumentReference[] = [];
 
   for (const doc of documents) {
     const result = await repository.downloadDocument(doc.id);

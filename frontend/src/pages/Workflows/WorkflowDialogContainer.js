@@ -23,7 +23,6 @@ import {
   storeWorkflowComment,
   storeWorkflowCurrency,
   storeWorkflowDocument,
-  storeWorkflowDocumentExternalLink,
   storeWorkflowDueDate,
   storeWorkflowExchangeRate,
   storeWorkflowitemType,
@@ -177,7 +176,6 @@ const mapDispatchToProps = (dispatch) => {
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
     storeWorkflowDocument: (payload, fileName) => dispatch(storeWorkflowDocument(payload, fileName)),
-    storeWorkflowDocumentExternalLink: (link, fileName) => dispatch(storeWorkflowDocumentExternalLink(link, fileName)),
     defaultWorkflowExchangeRate: (exchangeRate) => dispatch(defaultWorkflowExchangeRate(exchangeRate)),
     storeWorkflowAssignee: (assignee) => dispatch(storeWorkflowAssignee(assignee)),
     assignWorkflowItem: (

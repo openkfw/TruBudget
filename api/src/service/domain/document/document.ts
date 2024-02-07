@@ -11,6 +11,10 @@ export interface StoredDocument {
   organizationUrl: string;
 }
 
+export interface DeletedDocument {
+  id: string;
+}
+
 export const storedDocumentSchema = Joi.object({
   id: Joi.string().required(),
   fileName: Joi.string().required(),
@@ -25,29 +29,16 @@ export interface DocumentReference {
   available?: boolean;
 }
 
-export interface ExternalLinkReference {
-  id: string;
-  fileName: string;
-  link: string;
-  available?: boolean;
+export interface DeleteDocumentResponse {
+  status: number;
 }
 
-export type DocumentOrExternalLinkReference = DocumentReference | ExternalLinkReference;
-
-export const documentReferenceSchema = Joi.alternatives([
-  Joi.object({
-    id: Joi.string().required(),
-    fileName: Joi.string().required(),
-    hash: Joi.string().required(),
-    available: Joi.boolean(),
-  }),
-  Joi.object({
-    id: Joi.string().required(),
-    fileName: Joi.string().required(),
-    link: Joi.string().required(),
-    available: Joi.boolean(),
-  }),
-]);
+export const documentReferenceSchema = Joi.object({
+  id: Joi.string().required(),
+  fileName: Joi.string().required(),
+  hash: Joi.string().required(),
+  available: Joi.boolean(),
+});
 
 export interface UploadedDocument extends GenericDocument {
   id: string;
@@ -55,32 +46,14 @@ export interface UploadedDocument extends GenericDocument {
   fileName: string;
 }
 
-export interface DocumentLink extends GenericDocument {
-  id: string;
-  link: string;
-  fileName: string;
-}
-
-export type UploadedDocumentOrLink = UploadedDocument | DocumentLink;
-
-export const uploadedDocumentSchema = Joi.alternatives([
-  Joi.object({
-    id: Joi.string(),
-    base64: Joi.string()
-      .required()
-      .max(67000000)
-      .error(() => new Error("Document is not valid")),
-    fileName: Joi.string(),
-  }),
-  Joi.object({
-    id: Joi.string(),
-    link: Joi.string()
-      .uri()
-      .required()
-      .error(() => new Error("Link is not valid")),
-    fileName: Joi.string(),
-  }),
-]);
+export const uploadedDocumentSchema = Joi.object({
+  id: Joi.string(),
+  base64: Joi.string()
+    .required()
+    .max(67000000)
+    .error(() => new Error("Document is not valid")),
+  fileName: Joi.string(),
+});
 
 export interface GenericDocument {
   id: string;
@@ -102,18 +75,11 @@ export async function hashDocuments(
 ): Promise<Result.Type<DocumentReference[]>> {
   const documentReference: DocumentReference[] = [];
   for (const doc of documents || []) {
-    // uploaded document
-    if ("base64" in doc) {
-      const hashedDocumentResult = await hashDocument(doc);
-      if (Result.isErr(hashedDocumentResult)) {
-        return new VError(hashedDocumentResult, `failed to hash document ${doc.id}`);
-      }
-      documentReference.push(hashedDocumentResult);
-
-      // external link, no need to hash
-    } else {
-      documentReference.push(doc);
+    const hashedDocumentResult = await hashDocument(doc);
+    if (Result.isErr(hashedDocumentResult)) {
+      return new VError(hashedDocumentResult, `failed to hash document ${doc.id}`);
     }
+    documentReference.push(hashedDocumentResult);
   }
   return documentReference;
 }

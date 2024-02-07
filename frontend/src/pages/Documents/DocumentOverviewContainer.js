@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 
-import { downloadDocument, validateDocument } from "./actions";
+import { deleteDocument, downloadDocument, validateDocument } from "./actions";
 import DocumentOverview from "./DocumentOverview";
 
 class DocumentOverviewContainer extends Component {
@@ -17,7 +17,9 @@ const mapDispatchToProps = (dispatch) => {
     validateDocument: (hash, base64String, id, projectId, subprojectId, workflowitemId) =>
       dispatch(validateDocument(hash, base64String, id, projectId, subprojectId, workflowitemId)),
     downloadDocument: (projectId, subprojectId, workflowitemId, documentId) =>
-      dispatch(downloadDocument(projectId, subprojectId, workflowitemId, documentId))
+      dispatch(downloadDocument(projectId, subprojectId, workflowitemId, documentId)),
+    deleteDocument: (projectId, subprojectId, workflowitemId, documentId) =>
+      dispatch(deleteDocument(projectId, subprojectId, workflowitemId, documentId))
   };
 };
 
