@@ -64,6 +64,7 @@ const pt = {
     incorrect_username_or_password: "ID ou palavra-passe de início de sessão incorrecta",
     invalid_tag: "Tag inválida",
     invalid_format: "Formato inválido",
+    link: "Link",
     name: "Nome ou descrição do usuário",
     next: "Próximo",
     no_budget: "Nenhum orçamento encontrado",

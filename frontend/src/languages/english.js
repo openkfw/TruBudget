@@ -64,6 +64,7 @@ const en = {
     incorrect_username_or_password: "Incorrect login ID or password",
     invalid_tag: "Invalid tag",
     invalid_format: "Invalid format",
+    link: "Link",
     name: "Name",
     next: "Next",
     no_budget: "No budget found",

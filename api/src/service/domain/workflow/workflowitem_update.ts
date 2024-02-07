@@ -7,10 +7,11 @@ import { config } from "../../../config";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import {
-  DocumentReference,
+  DocumentOrExternalLinkReference,
   GenericDocument,
   hashDocument,
   UploadedDocument,
+  UploadedDocumentOrLink,
 } from "../document/document";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
@@ -33,7 +34,7 @@ export interface RequestData {
   exchangeRate?: string;
   billingDate?: string;
   dueDate?: string;
-  documents?: UploadedDocument[];
+  documents?: UploadedDocumentOrLink[];
   additionalData?: object;
   tags?: string[];
 }
@@ -85,11 +86,16 @@ export async function updateWorkflowitem(
     return new NotFound(ctx, "workflowitem", workflowitemId);
   }
 
-  const documents: DocumentReference[] = [];
+  const documents: DocumentOrExternalLinkReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (modification.documents && modification.documents.length > 0) {
-    if (config.documentFeatureEnabled) {
+    const documentsCount = modification.documents.filter((d) => d.hasOwnProperty("base64")).length;
+
+    if (
+      config.documentFeatureEnabled ||
+      (documentsCount === 0 && config.documentExternalLinksEnabled)
+    ) {
       const existingDocuments = await repository.getAllDocumentReferences();
       if (Result.isErr(existingDocuments)) {
         return new VError(existingDocuments, "cannot get documents");
@@ -99,16 +105,24 @@ export async function updateWorkflowitem(
       // preparation for workflowitem_updated event
       for (const doc of modification.documents || []) {
         doc.id = generateUniqueDocId(existingDocuments);
-        const hashedDocumentResult = await hashDocument(doc);
-        if (Result.isErr(hashedDocumentResult)) {
-          return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+        if ("base64" in doc) {
+          const hashedDocumentResult = await hashDocument(doc);
+          if (Result.isErr(hashedDocumentResult)) {
+            return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+          }
+          documents.push(hashedDocumentResult);
+        } else {
+          documents.push(doc);
         }
-        documents.push(hashedDocumentResult);
       }
       // upload documents to storage service
       // generate document events (document_uploaded, secret_published)
+      const onlyDocuments = modification.documents.filter(
+        (d) => "base64" in d,
+      ) as UploadedDocument[];
+
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
-        modification.documents.map(async (d) => {
+        onlyDocuments.map(async (d) => {
           return repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
         }),
       );

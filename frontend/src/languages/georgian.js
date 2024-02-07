@@ -64,6 +64,7 @@ const ka = {
     incorrect_username_or_password: "არასწორი შესვლის პირადობა ან პაროლი",
     invalid_tag: "თაგი არასწორია",
     invalid_format: "არასწორი ფორმატი",
+    link: "Ბმული",
     name: "სახელი",
     next: "შემდეგ",
     no_budget: "ბიუჯეტი ვერ მოიძებნა",

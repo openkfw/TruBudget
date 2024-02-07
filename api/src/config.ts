@@ -19,6 +19,7 @@ interface ProcessEnvVars {
   CI_COMMIT_SHA: string;
   BUILDTIMESTAMP: string;
   DOCUMENT_FEATURE_ENABLED: string;
+  DOCUMENT_EXTERNAL_LINKS_ENABLED: string;
   STORAGE_SERVICE_HOST: string;
   STORAGE_SERVICE_PORT: string;
   STORAGE_SERVICE_EXTERNAL_URL: string;
@@ -61,6 +62,7 @@ interface Config {
   ciCommitSha: string;
   buildTimeStamp: string;
   documentFeatureEnabled: boolean;
+  documentExternalLinksEnabled: boolean;
   storageService: {
     host: string;
     port: number;
@@ -110,6 +112,8 @@ export const config: Config = {
   ciCommitSha: process.env.CI_COMMIT_SHA || "",
   buildTimeStamp: process.env.BUILDTIMESTAMP || "",
   documentFeatureEnabled: process.env.DOCUMENT_FEATURE_ENABLED === "true" ? true : false,
+  documentExternalLinksEnabled:
+    process.env.DOCUMENT_EXTERNAL_LINKS_ENABLED === "true" ? true : false,
   storageService: {
     host: process.env.STORAGE_SERVICE_HOST || "localhost",
     port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,

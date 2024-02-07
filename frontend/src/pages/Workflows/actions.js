@@ -33,6 +33,7 @@ export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
 export const WORKFLOW_DUEDATE = "WORKFLOW_DUEDATE";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
+export const WORKFLOW_DOCUMENT_EXTERNAL_LINK = "WORKFLOW_DOCUMENT_EXTERNAL_LINK";
 export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_FROM_TEMPLATE = "CREATE_WORKFLOW_FROM_TEMPLATE";
@@ -536,6 +537,14 @@ export function storeWorkflowDocument(base64, fileName) {
   return {
     type: WORKFLOW_DOCUMENT,
     base64: base64,
+    fileName: fileName
+  };
+}
+
+export function storeWorkflowDocumentExternalLink(link, fileName) {
+  return {
+    type: WORKFLOW_DOCUMENT_EXTERNAL_LINK,
+    link: link,
     fileName: fileName
   };
 }
