@@ -53,6 +53,8 @@ import {
   storeFilteredWorkflowitems,
   storeWorkflowitemSearchTerm,
   storeWorkflowItemsSelected,
+  storeWorkflowSearchBarDisplayed,
+  storeWorkflowSearchTermArray,
   storeWorkflowType,
   updateWorkflowOrderOnState
 } from "./actions";
@@ -77,13 +79,14 @@ class WorkflowContainer extends Component {
     this.props.setSelectedView(this.subprojectId, "subProject");
     this.props.fetchUser();
     this.props.fetchAllSubprojectDetails(this.projectId, this.subprojectId, true);
+    this.setState({ isDataFetched: true });
 
     // Get Searchword from URL if available
     if (this.props.router.location.search) {
       const queryParameter = queryString.parse(this.props.router.location.search);
       const searchTermString = convertToSearchBarString(queryString.stringify(queryParameter));
       this.props.storeWorkflowitemSearchTerm(searchTermString);
-      // this.props.storeSubSearchBarDisplayed(true);
+      this.props.storeWorkflowSearchBarDisplayed(true);
     }
     this.worker = new WebWorker(worker);
 
@@ -91,7 +94,9 @@ class WorkflowContainer extends Component {
     this.worker.addEventListener("message", (event) => {
       // worker uses property 'filteredProjects'
       const filteredWorkflowitems = event.data ? event.data.filteredProjects : this.props.workflowItems;
+      const searchTerms = event.data.searchTerms;
       this.props.storeFilteredWorkflowitems(filteredWorkflowitems);
+      this.props.storeWorkflowSearchTermArray(searchTerms);
     });
   }
 
@@ -106,7 +111,7 @@ class WorkflowContainer extends Component {
     // Reset searchbar
     if (!this.props.searchTerm && prevProps.searchTerm) {
       this.props.storeFilteredWorkflowitems(this.props.workflowItems);
-      // this.props.storeSubSearchTermArray([]);
+      this.props.storeWorkflowSearchTermArray([]);
     }
   }
 
@@ -162,6 +167,10 @@ class WorkflowContainer extends Component {
               closeWorkflowItem={this.closeWorkflowItem}
               rejectWorkflowItem={this.rejectWorkflowItem}
               isDataLoading={this.props.isDataLoading}
+              storeSearchTerm={this.props.storeWorkflowitemSearchTerm}
+              searchTerm={this.props.searchTerm}
+              searchBarDisplayed={this.props.searchBarDisplayed}
+              searchTermArray={this.props.searchTerms}
             />
           </div>
           <WorkflowDialogContainer location={this.props.location} />
@@ -256,7 +265,10 @@ const mapDispatchToProps = (dispatch, _ownProps) => {
     storeWorkflowitemSearchTerm: (searchTerm) => dispatch(storeWorkflowitemSearchTerm(searchTerm)),
     setTagsOnly: (tagsOnly) => dispatch(setTagsOnly(tagsOnly)),
     enableLiveUpdatesSubproject: () => dispatch(enableLiveUpdatesSubproject()),
-    disableLiveUpdatesSubproject: () => dispatch(disableLiveUpdatesSubproject())
+    disableLiveUpdatesSubproject: () => dispatch(disableLiveUpdatesSubproject()),
+    storeWorkflowSearchBarDisplayed: (workflowSearchBarDisplayed) =>
+      dispatch(storeWorkflowSearchBarDisplayed(workflowSearchBarDisplayed)),
+    storeWorkflowSearchTermArray: (searchTerms) => dispatch(storeWorkflowSearchTermArray(searchTerms))
   };
 };
 
@@ -288,6 +300,8 @@ const mapStateToProps = (state) => {
     projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
     rejectReason: state.getIn(["workflow", "rejectReason"]),
     searchTerm: state.getIn(["workflow", "searchTerm"]),
+    searchBarDisplayed: state.getIn(["workflow", "searchBarDisplayed"]),
+    searchTerms: state.getIn(["workflow", "searchTerms"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     showDetailsItem: state.getIn(["workflow", "showDetailsItem"]),
     showWorkflowDetails: state.getIn(["workflow", "showDetails"]),
