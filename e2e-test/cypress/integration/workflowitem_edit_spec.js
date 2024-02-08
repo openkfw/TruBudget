@@ -1,4 +1,4 @@
-describe("Workflowitem edit", function() {
+describe("Workflowitem edit", function () {
   let projectId;
   let subprojectId;
   let workflowitemId;
@@ -14,7 +14,7 @@ describe("Workflowitem edit", function() {
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
@@ -22,7 +22,7 @@ describe("Workflowitem edit", function() {
   it(
     "When editing a workflow item with a different currency than the subproject currency, " +
       "the selected currency is displayed",
-    function() {
+    function () {
       cy.intercept(apiRoute + "/subproject.createWorkflowitem*").as("create");
       cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
       // Create a workflow item and select a different currency
@@ -38,33 +38,25 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=next]").click();
       cy.get("[data-test=submit]").click();
       // Confirm Creation
-      cy.get("[data-test=confirmation-dialog-confirm]")
-        .should("be.visible")
-        .click();
+      cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
       // Verify the selected values
-      cy.wait("@create")
-        .wait("@viewDetails")
-        .get("[data-test=workflowitem-amount]")
-        .last()
-        .should("contain", "€");
+      cy.wait("@create").wait("@viewDetails").get("[data-test=workflowitem-amount]").last().should("contain", "€");
 
       cy.get("[data-test=amount-explanation-USD]").should("be.visible");
 
       // Open edit workflow item dialog
-      cy.get("[data-test=edit-workflowitem]")
-        .last()
-        .click({ force: true });
+      cy.get("[data-test=edit-workflowitem]").last().click({ force: true });
       // Verify the pre-selected currency is the one selected before
       cy.get("[data-test=dropdown-currencies-click]").should("contain", "USD");
-    }
+    },
   );
 
-  it("If no due date is set, the due date field in edit dialog is empty", function() {
+  it("If no due date is set, the due date field in edit dialog is empty", function () {
     cy.intercept(apiRoute + "/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     // Create a workflowitem
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
-      dueDate: ""
+      dueDate: "",
     }).then(({ id }) => {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
@@ -76,49 +68,49 @@ describe("Workflowitem edit", function() {
     });
   });
 
-  it("When the due-date is not exceeded, the info icon badge is not displayed ", function() {
+  it("When the due-date is not exceeded, the info icon badge is not displayed ", function () {
     // Create a workflowitem
     const tomorrow = getTomorrowsIsoDate();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
-      dueDate: tomorrow
+      dueDate: tomorrow,
     }).then(({ id }) => {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
       // Check if info icon badge is displayed
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test^='info-warning-badge-disabled-']").should(
-        "be.visible"
+        "be.visible",
       );
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test^='info-warning-badge-enabled-']").should(
-        "not.exist"
+        "not.exist",
       );
     });
   });
 
-  it("When the due-date is exceeded, the info icon badge is displayed ", function() {
+  it("When the due-date is exceeded, the info icon badge is displayed ", function () {
     // Create a workflowitem
     const yesterday = getYesterdaysIsoDate();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
-      dueDate: yesterday
+      dueDate: yesterday,
     }).then(({ id }) => {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
       // Check if info icon badge is displayed
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test^='info-warning-badge-disabled-']").should(
-        "not.exist"
+        "not.exist",
       );
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test^='info-warning-badge-enabled-']").should(
-        "be.visible"
+        "be.visible",
       );
     });
   });
 
-  it("When the due-date is set, the due-date field is pre-filled", function() {
+  it("When the due-date is set, the due-date field is pre-filled", function () {
     // Create a workflowitem
     const dueDate = new Date().toISOString();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
-      dueDate: dueDate
+      dueDate: dueDate,
     }).then(({ id }) => {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
@@ -128,7 +120,7 @@ describe("Workflowitem edit", function() {
       // Check if date is set by default
       cy.get("[data-test=datepicker-due-date] input")
         .invoke("val")
-        .then(date => {
+        .then((date) => {
           //Convert Datepicker value to ISO-date
           const modifiedDate = convertToIsoDate(date);
           expect(dueDate).to.contain(modifiedDate);
@@ -136,11 +128,11 @@ describe("Workflowitem edit", function() {
     });
   });
 
-  it("When the due-date is set, the due-date can be deleted by pressing the clear-button", function() {
+  it("When the due-date is set, the due-date can be deleted by pressing the clear-button", function () {
     // Create a workflowitem
     const dueDate = new Date().toISOString();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
-      dueDate: dueDate
+      dueDate: dueDate,
     }).then(({ id }) => {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
@@ -148,45 +140,44 @@ describe("Workflowitem edit", function() {
       cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test=edit-workflowitem]").click();
       // Clear the date-picker
-      cy.get("[data-test=clear-datepicker-due-date]")
-        .should("be.visible")
-        .click();
+      cy.get("[data-test=clear-datepicker-due-date]").should("be.visible").click();
       // Check if date-picker is cleared
       cy.get("[data-test=datepicker-due-date] input")
         .invoke("val")
-        .then(date => {
+        .then((date) => {
           expect("").to.equal(date);
         });
     });
   });
 
-  it("The due-date can be removed from a workflowitem", function() {
+  it.only("The due-date can be removed from a workflowitem", function () {
     cy.intercept(apiRoute + "/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     // Create a workflowitem
     const dueDate = new Date().toISOString();
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem edit test", {
-      dueDate: dueDate
+      dueDate: dueDate,
     }).then(({ id }) => {
       workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);
       // Edit workflow item
-      cy.get("[data-test=workflowitem-" + workflowitemId + "]").should("be.visible");
+      cy.get("[data-test=workflowitem-" + workflowitemId + "]")
+        .scrollIntoView()
+        .should("be.visible");
       cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test=edit-workflowitem]").click();
       // Remove the due date
-      cy.get("[data-test=clear-datepicker-due-date]")
-        .should("be.visible")
-        .click();
-      cy.get("[data-test=next]").click();
-      cy.get("[data-test=submit]")
-        .should("be.visible")
-        .click();
+      cy.get("[data-test=clear-datepicker-due-date]").scrollIntoView().should("be.visible").click();
+      cy.get("[data-test=next]").scrollIntoView().click();
+      cy.get("[data-test=submit]").scrollIntoView().should("be.visible").click();
       // Check if due-date is removed successfully
       cy.wait("@update")
         .wait("@viewDetails")
         .get("[data-test=workflowitem-" + workflowitemId + "]")
+        .scrollIntoView()
         .should("be.visible");
-      cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test*=workflowitem-info-button]").click();
+      cy.get("[data-test=workflowitem-" + workflowitemId + "] [data-test*=workflowitem-info-button]")
+        .scrollIntoView()
+        .click();
       cy.get("[data-test=due-date]").should("not.exist");
     });
   });

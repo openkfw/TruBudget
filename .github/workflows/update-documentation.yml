@@ -20,7 +20,7 @@ jobs:
       - name: Set SHA
         id: sha
         run: |
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Generate and format API docs
         run: echo "Generating api documentation" && cd api && npm ci --no-audit && npm run build-docs
         shell: bash
