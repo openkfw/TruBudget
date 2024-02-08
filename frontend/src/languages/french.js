@@ -42,6 +42,7 @@ const fr = {
     disbursement: "Paiement prévus",
     disconnected: "Déconnecté",
     display_name: "Afficher un nom",
+    delete: "Supprimer",
     done: "Terminé",
     download: "Télécharger",
     edit: "Modifier",
@@ -200,7 +201,8 @@ const fr = {
     approval_required: "Approbation exigée",
     assignee: "Responsable",
     edit_item: "Modifier l'étape de workflow",
-    exit_sort_mode: "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow",
+    exit_sort_mode:
+      "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow",
     exchange_rate: "taux de change",
     search_text: "rechercher des éléments",
     workflow_budget_allocated: "Engagé",

@@ -171,12 +171,7 @@ export async function createWorkflowitem(
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (reqData.documents?.length) {
-    const documentsCount = reqData.documents.filter((d) => d.base64).length;
-
-    if (
-      config.documentFeatureEnabled ||
-      (documentsCount === 0 && config.documentExternalLinksEnabled)
-    ) {
+    if (config.documentFeatureEnabled) {
       logger.trace(
         { req: reqData },
         "Trying to hash documents in preparation for workflowitem_created event",

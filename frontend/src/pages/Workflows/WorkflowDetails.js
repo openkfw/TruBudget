@@ -71,7 +71,7 @@ const removeNewLines = (text) => {
   return formattedText;
 };
 
-function Overview({ users, workflowitem }) {
+const Overview = ({ users, workflowitem }) => {
   const { displayName, description, amountType, assignee, amount, currency, dueDate, workflowitemType, rejectReason } =
     { ...workflowitem?.data };
   const status = rejectReason ? "rejected" : workflowitem.data.status;
@@ -147,17 +147,18 @@ function Overview({ users, workflowitem }) {
       </ListItem>
     </List>
   );
-}
+};
 
-function Documents({
+const Documents = ({
   documents,
   validateDocument,
   validatedDocuments,
   _showWorkflowDetails,
   projectId,
   subprojectId,
-  workflowitemId
-}) {
+  workflowitemId,
+  workflowitemStatus
+}) => {
   return (
     <DocumentOverviewContainer
       id={strings.workflow.workflow_documents}
@@ -167,11 +168,12 @@ function Documents({
       projectId={projectId}
       subprojectId={subprojectId}
       workflowitemId={workflowitemId}
+      workflowitemStatus={workflowitemStatus}
     />
   );
-}
+};
 
-function WorkflowDetails({
+const WorkflowDetails = ({
   workflowitem,
   showWorkflowDetails,
   hideWorkflowDetails,
@@ -182,7 +184,7 @@ function WorkflowDetails({
   projectId,
   subProjectId: subprojectId,
   worflowDetailsInitialTab
-}) {
+}) => {
   const [selectedTab, setSelectedTab] = useState(worflowDetailsInitialTab);
   useEffect(() => {
     if (!showWorkflowDetails) {
@@ -208,7 +210,8 @@ function WorkflowDetails({
           validatedDocuments,
           projectId,
           subprojectId,
-          workflowitemId: workflowitem.data.id
+          workflowitemId: workflowitem.data.id,
+          workflowitemStatus: workflowitem.data.status
         }}
       />
     );
@@ -244,6 +247,6 @@ function WorkflowDetails({
       </DialogActions>
     </Dialog>
   );
-}
+};
 
 export default WorkflowDetails;
