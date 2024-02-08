@@ -150,7 +150,7 @@ describe("Workflowitem edit", function () {
     });
   });
 
-  it.only("The due-date can be removed from a workflowitem", function () {
+  it("The due-date can be removed from a workflowitem", function () {
     cy.intercept(apiRoute + "/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     // Create a workflowitem
