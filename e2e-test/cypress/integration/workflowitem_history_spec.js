@@ -89,7 +89,6 @@ describe("Workflowitem's history", function () {
       .get("[data-test=history-list] li.history-item")
       .first()
       .scrollIntoView()
-      .scrollIntoView()
       .should("be.visible");
 
     cy.get("[data-test=workflowitem-documents-tab]").click();
@@ -99,7 +98,6 @@ describe("Workflowitem's history", function () {
     cy.wait("@viewHistory")
       .get("[data-test=history-list] li.history-item")
       .first()
-      .scrollIntoView()
       .scrollIntoView()
       .should("be.visible");
   });
