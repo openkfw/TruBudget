@@ -149,6 +149,9 @@ export const STORE_FILTERED_WORKFLOWITEMS = "STORE_FILTERED_WORKFLOWITEMS";
 
 export const SEARCH_TAGS_WORKFLOWITEM = "SEARCH_TAGS_WORKFLOWITEM";
 
+export const WORKFLOW_SEARCH_BAR_DISPLAYED = "WORKFLOW_SEARCH_BAR_DISPLAYED";
+export const WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY = "WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY";
+
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
@@ -892,5 +895,19 @@ export function setTagsOnly(tagsOnly) {
   return {
     type: SEARCH_TAGS_WORKFLOWITEM,
     tagsOnly
+  };
+}
+
+export function storeWorkflowSearchBarDisplayed(searchBarDisplayed) {
+  return {
+    type: WORKFLOW_SEARCH_BAR_DISPLAYED,
+    searchBarDisplayed
+  };
+}
+
+export function storeWorkflowSearchTermArray(searchTerms) {
+  return {
+    type: WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY,
+    searchTerms
   };
 }
