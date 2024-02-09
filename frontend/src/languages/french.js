@@ -535,6 +535,7 @@ const fr = {
     workflowitem_revokePermission_details: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_revokePermission: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_update_docs: "{0} a ajouté des documents au workflow {1} ",
+    workflowitem_delete_docs: "{0} a supprimé des documents du workflow {1} ",
     workflowitem_update: "{0} a modifié le workflow {1} ",
     workflowitem_update_amount: "{0} a modifié le workflow {1} budget dans {2}",
     workflowitem_document_validated: "{0} document d'élément de flux de travail validé nommé {1} dans {2} ",
