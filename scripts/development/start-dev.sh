@@ -19,6 +19,7 @@ Help() {
     echo "  --slim                          Starts a TruBudget instance with alpha-node, alpha-api, provisioning and frontend."
     echo "  --full                          Starts a TruBudget instance with alpha-node, emaildb, minio, alpha-api, email-service,"
     echo "                                  provisioning, excel-export-service, storage and frontend."
+    echo "  --no-frontend                   Disable running frontend in docker container in order to start frontend locally."
     echo "  --build                         Force building."
     echo "  --enable-service [services...]  Starts additional services to the TruBudget instance."
     echo "                                  Available services: email-service, excel-export-service, storage-service"
@@ -53,6 +54,7 @@ BETA_SERVICES=""
 IS_FULL=false
 HAS_BETA=false
 IS_REBUILDING=false
+START_FRONTEND_IN_CONTAINER=true
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -90,6 +92,11 @@ while [ "$1" != "" ]; do
         # -d means the containers start in detached mode -> no logging
         LOG_OPTION="-d"
         IS_LOG_ENABLED=false
+        shift # past argument
+        ;;
+
+    --no-frontend)
+        START_FRONTEND_IN_CONTAINER=false
         shift # past argument
         ;;
 
@@ -277,10 +284,16 @@ else
     if [ "$WITH_PROVISIONING" = false ]; then
         # Default Setup here
         echo "INFO: Setup slim TruBudget environment without provisioning ..."
-        COMPOSE_SERVICES="alpha-node alpha-api frontend"
+        COMPOSE_SERVICES="alpha-node alpha-api"
+        if [ "$START_FRONTEND_IN_CONTAINER" = true ]; then
+            COMPOSE_SERVICES="$COMPOSE_SERVICES frontend"
+        fi
     else
         echo "INFO: Setup slim TruBudget environment with provisioning ..."
-        COMPOSE_SERVICES="alpha-node alpha-api provisioning frontend"
+        COMPOSE_SERVICES="alpha-node alpha-api provisioning"
+        if [ "$START_FRONTEND_IN_CONTAINER" = true ]; then
+            COMPOSE_SERVICES="$COMPOSE_SERVICES frontend"
+        fi
     fi
 fi
 
@@ -309,4 +322,8 @@ $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"
+fi
+
+if [ "$START_FRONTEND_IN_CONTAINER" = false ]; then
+    echo "INFO: Docker container are started without frontend. You have to start it in separate window."
 fi
