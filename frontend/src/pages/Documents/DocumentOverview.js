@@ -14,6 +14,7 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
@@ -136,10 +137,16 @@ class DocumentOverview extends Component {
             <OverflowTooltip text={fileName} maxWidth="200px" />
           </TableCell>
           <TableCell>
-            <div style={{ display: "flex" }}>
-              <FingerPrint style={{ paddingRight: "10px", paddingBottom: "0px" }} />
-              <OverflowTooltip text={hash} maxWidth="70px" />
-            </div>
+            {document.link ? (
+              <Tooltip title={document.link}>
+                <div style={{ overflow: "hidden", maxWidth: "170px", color: "#333333" }}>{document.link}</div>
+              </Tooltip>
+            ) : (
+              <div style={{ display: "flex" }}>
+                <FingerPrint style={{ paddingRight: "10px", paddingBottom: "0px" }} />
+                <OverflowTooltip text={hash} maxWidth="70px" />
+              </div>
+            )}
           </TableCell>
           <TableCell>
             <div style={styles.actionContainer}>
