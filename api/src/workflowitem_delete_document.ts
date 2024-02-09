@@ -135,7 +135,7 @@ export function addHttpHandler(
             throw new VError(documentResult, "workflowitem.deleteDocument");
           }
 
-          reply.status(204).send("TODO: OK deleted");
+          reply.status(204).send("NO CONTENT");
         } catch (err) {
           const { code, body } = toHttpError(err);
           request.log.error({ err }, "Error while deleting workflowitem document");
