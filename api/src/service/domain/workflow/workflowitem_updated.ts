@@ -30,7 +30,7 @@ export interface Modification {
   billingDate?: string;
   dueDate?: string;
   documents?: DocumentOrExternalLinkReference[];
-  documentsDeleted?: DocumentReference[];
+  documentsDeleted?: DocumentOrExternalLinkReference[];
   additionalData?: object;
   tags?: string[];
 }
@@ -183,8 +183,8 @@ function updateAdditionalData(
 
 function updateDocuments(
   workflowitem: Workflowitem.Workflowitem,
-  documents?: DocumentReference[],
-  documentsDeleted?: DocumentReference[],
+  documents?: DocumentOrExternalLinkReference[],
+  documentsDeleted?: DocumentOrExternalLinkReference[],
 ): Result.Type<void> {
   // Existing documents are never overwritten. They are only allowed in the update if
   // they are equal to their existing record.
