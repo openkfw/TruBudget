@@ -18,8 +18,15 @@ class LiveUpdates extends Component {
 
   startLiveUpdates() {
     const { update, interval = config.pollingInterval, immediately = false } = this.props;
+    let pollInterval = interval;
+    if (
+      window?.injectedEnv?.REACT_APP_POLLING_INTERVAL &&
+      Number.isInteger(Number(window?.injectedEnv?.REACT_APP_POLLING_INTERVAL))
+    ) {
+      pollInterval = Number(window.injectedEnv.REACT_APP_POLLING_INTERVAL);
+    }
     if (this.timer === undefined) {
-      this.timer = setInterval(() => update(), interval);
+      this.timer = setInterval(() => update(), pollInterval);
     }
 
     if (immediately) update();
