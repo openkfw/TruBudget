@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import { TourAppProvider } from "../../context/tour";
 import ScrollTop from "../Common/ScrollTop";
 import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
 import NotFound from "../Error/NotFound";
@@ -17,6 +18,7 @@ import UserManagementContainer from "../Users/UserManagementContainer";
 import WorkflowContainer from "../Workflows/WorkflowContainer";
 
 import Footer from "./Footer";
+import TourWrapper from "./TourWrapper";
 
 const SubprojectElement = withInitialLoading(WorkflowContainer);
 const ProjectsElement = withInitialLoading(OverviewContainer);
@@ -52,20 +54,23 @@ const Main = (props) => {
         <NavbarContainer />
       </div>
       <div className="container" style={{ marginTop: "48px" }}>
-        <ConfirmationContainer />
-        <Routes>
-          <Route exact path="/" element={<Navigate to="/projects" replace />} />
-          <Route exact path="/projects/:project/:subproject" element={<SubprojectElement />} />
-          <Route exact path="/projects" element={<ProjectsElement />} />
-          <Route exact path="/projects/:project" element={<ProjectElement />} />
-          <Route exact path="/notifications" element={<NotificationsElement />} />
-          <Route exact path="/users" element={<UserManagementContainer />} />
-          <Route exact path="/nodes" element={<NodesContainer />} />
-          <Route exact path="/status" element={<StatusContainer />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <ScrollTop window={props.window} />
-        <Footer />
+        <TourAppProvider>
+          <TourWrapper />
+          <ConfirmationContainer />
+          <Routes>
+            <Route exact path="/" element={<Navigate to="/projects" replace />} />
+            <Route exact path="/projects/:project/:subproject" element={<SubprojectElement />} />
+            <Route exact path="/projects" element={<ProjectsElement />} />
+            <Route exact path="/projects/:project" element={<ProjectElement />} />
+            <Route exact path="/notifications" element={<NotificationsElement />} />
+            <Route exact path="/users" element={<UserManagementContainer />} />
+            <Route exact path="/nodes" element={<NodesContainer />} />
+            <Route exact path="/status" element={<StatusContainer />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <ScrollTop window={props.window} />
+          <Footer />
+        </TourAppProvider>
       </div>
     </div>
   );

@@ -8,6 +8,8 @@ import Tooltip from "@mui/material/Tooltip";
 
 import strings from "../../localizeStrings";
 
+import { useTourAppContext } from "../../context/tour";
+
 import CardView from "./CardView";
 import TableView from "./TableView";
 
@@ -18,6 +20,15 @@ const styles = {
 };
 
 const Overview = (props) => {
+  const {
+    setState,
+    state: { run }
+  } = useTourAppContext();
+
+  const handleClickStart = () => {
+    setState({ run: true, stepIndex: 0, tourActive: true });
+  };
+
   return (
     <Box>
       <Box sx={{ display: "flex" }}>
@@ -42,6 +53,7 @@ const Overview = (props) => {
             </IconButton>
           </Tooltip>
         )}
+        {!run && <button onClick={handleClickStart}>start tour</button>}
       </Box>
       {props.projectView === "card" && (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
