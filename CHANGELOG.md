@@ -19,6 +19,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
+## [2.8.0] - 2024-MM-DD
+
+<!-- ## Unreleased -->
+
+<!-- ### Added -->
+
+### Changed
+
+- authorizationToken issued by auth proxy is signed using RS256 (#1661)[https://github.com/openkfw/TruBudget/issues/1661]
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
+
 ## [2.7.0] - 2024-01-31
 
 ### Added
