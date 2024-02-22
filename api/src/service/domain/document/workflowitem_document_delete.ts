@@ -90,7 +90,7 @@ async function deleteDocumentFromExternalStorage(
 
   // send the request to the local storage service
   let documentFromStorage: DeleteDocumentResponse;
-  // i don't understand this condition
+
   if (config.documentFeatureEnabled && documentInfo.organization === config.organization) {
     documentFromStorage = await repository.deleteDocumentFromStorage(documentId, decryptedSecret);
   } else {
