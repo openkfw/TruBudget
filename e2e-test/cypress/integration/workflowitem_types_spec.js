@@ -1,4 +1,4 @@
-describe("Workflowitem types", function() {
+describe("Workflowitem types", function () {
   let projectId;
   let subprojectId;
   const apiRoute = "/api";
@@ -14,35 +14,29 @@ describe("Workflowitem types", function() {
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("Creating restricted workflowitem is possible", function() {
+  it("Creating restricted workflowitem is possible", function () {
     cy.get("[data-test=createWorkflowitem]").click();
     cy.get("[data-test=nameinput] input").type("restricted");
 
     // Select workflowitem type
-    cy.get("[data-test=dropdown-types-click]")
-      .should("be.visible")
-      .click();
+    cy.get("[data-test=dropdown-types-click]").should("be.visible").click();
     cy.get("[data-value=restricted]").click();
     cy.get("[data-test=next]").click();
     cy.get("[data-test=submit]").click();
 
-    cy.get("[data-test=confirmation-dialog-confirm]")
-      .should("be.visible")
-      .click();
+    cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
 
     // Check workflowitem details
-    cy.get(`[data-test*=workflowitem-info-button]`)
-      .last()
-      .click();
+    cy.get(`[data-test*=workflowitem-info-button]`).last().click();
     cy.get("[data-test=workflowitemInfoType]").should("contain", "restricted");
   });
 
-  it("A workflowitem of type restricted grants and revokes permissions when it's assigned", function() {
+  it("A workflowitem of type restricted grants and revokes permissions when it's assigned", function () {
     const assignee = { name: "Tom House", id: "thouse" };
     cy.intercept(apiRoute + "/project.intent.listPermissions*").as("listProjectPermissions");
     cy.intercept(apiRoute + "/subproject.intent.listPermissions*").as("listSubprojectPermissions");
@@ -51,7 +45,7 @@ describe("Workflowitem types", function() {
 
     cy.createWorkflowitem(projectId, subprojectId, "workflowitemTypeTest", {
       workflowitemType: "restricted",
-      assignee: "mstein"
+      assignee: "mstein",
     }).then(({ id }) => {
       let workflowitemId = id;
       cy.visit(`/projects/${projectId}/${subprojectId}`);

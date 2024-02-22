@@ -1,4 +1,4 @@
-describe("Attachment icon", function() {
+describe("Attachment icon", function () {
   let projectId;
   let subprojectId;
 
@@ -15,16 +15,16 @@ describe("Attachment icon", function() {
       });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("If documents array is empty, the attachedFile icon badge is not displayed", function() {
+  it("If documents array is empty, the attachedFile icon badge is not displayed", function () {
     // Create a workflow item
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test", {
       amountType: "N/A",
-      documents: []
+      documents: [],
     }).then(({ id }) => {
       let workflowitemId = id;
       // Check if attach file icon badge is NOT displayed
@@ -32,7 +32,7 @@ describe("Attachment icon", function() {
     });
   });
 
-  it("If documents array is not empty, the attachedFile icon badge is displayed", function() {
+  it("If documents array is not empty, the attachedFile icon badge is displayed", function () {
     // Create a workflow item
     cy.createWorkflowitem(projectId, subprojectId, "workflowitem assign test", {
       amountType: "N/A",
@@ -40,11 +40,12 @@ describe("Attachment icon", function() {
         {
           id: "classroom-contract",
           base64: "dGVzdCBiYXNlNjRTdHJpbmc=",
-          fileName: "test-document"
-        }
-      ]
+          fileName: "test-document",
+        },
+      ],
     }).then(({ id }) => {
       let workflowitemId = id;
+      cy.reload();
       // Check if attach file icon badge is NOT displayed
       cy.get(`[data-test^='attachment-file-badge-show-${workflowitemId}']`).should("be.visible");
     });
