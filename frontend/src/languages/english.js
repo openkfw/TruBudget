@@ -92,6 +92,8 @@ const en = {
     not_assigned: "Not assigned",
     not_disbursed: "Not paid",
     not_ok: "Not OK",
+    off: "Off",
+    on: "On",
     ok: "Ok",
     not_projected: "Not projected",
     open: "Open",

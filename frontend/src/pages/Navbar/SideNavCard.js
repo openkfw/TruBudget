@@ -8,6 +8,7 @@ import ExportIcon from "@mui/icons-material/ListAlt";
 import SocialNotificationIcon from "@mui/icons-material/NotificationsActive";
 import UsersIcon from "@mui/icons-material/PeopleOutline";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
@@ -18,6 +19,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Subheader from "@mui/material/ListSubheader";
+import Stack from "@mui/material/Stack";
+import Switch from "@mui/material/Switch";
 
 import strings from "../../localizeStrings";
 
@@ -25,25 +28,36 @@ import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
 
 const SideNavCard = ({
-  avatarBackground,
   avatar,
-  displayName,
-  organization,
-  nodeDashboardEnabled,
-  groups,
-  userId,
+  avatarBackground,
   createBackup,
-  restoreBackup,
+  disableLiveUpdates,
+  displayName,
+  enableLiveUpdates,
+  environment,
   exportData,
-  showUserProfile,
-  fetchEmailAddress,
   exportServiceAvailable,
-  environment
+  fetchEmailAddress,
+  groups,
+  isLiveUpdateAllProjectsEnabled,
+  nodeDashboardEnabled,
+  organization,
+  restoreBackup,
+  showUserProfile,
+  userId
 }) => {
   const navigate = useNavigate();
   const openUserProfile = () => {
     fetchEmailAddress();
     showUserProfile();
+  };
+
+  const toggleLiveUpdates = () => {
+    if (isLiveUpdateAllProjectsEnabled) {
+      disableLiveUpdates();
+    } else {
+      enableLiveUpdates();
+    }
   };
 
   return (
@@ -152,6 +166,22 @@ const SideNavCard = ({
           <Divider />
         </List>
       ) : null}
+      <Divider />
+      <List>
+        <Subheader>{strings.navigation.rtUpdates}</Subheader>
+        <div style={{ paddingLeft: "24px" }}>
+          <Stack direction={"row"}>
+            <Typography style={{ paddingTop: "6px" }}>{strings.common.off}</Typography>
+            <Switch
+              value={"liveUpdateSwitch"}
+              checked={isLiveUpdateAllProjectsEnabled}
+              onChange={() => toggleLiveUpdates()}
+            />
+            <Typography style={{ paddingTop: "6px" }}>{strings.common.on}</Typography>
+          </Stack>
+        </div>
+      </List>
+      <Divider />
       <List>
         {groups.length ? <Subheader> {strings.users.groups} </Subheader> : null}
         {groups.map((group) => {

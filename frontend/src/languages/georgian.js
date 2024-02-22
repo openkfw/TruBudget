@@ -92,6 +92,8 @@ const ka = {
     not_assigned: "არ არის გამოყოფილი",
     not_disbursed: "გადაუხდელი",
     not_ok: "Not OK",
+    off: "გამორთული",
+    on: "ჩართული",
     ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
     open: "Open",
@@ -267,7 +269,8 @@ const ka = {
     assignee: "პასუხისმგებელი",
     search_text: "საძიებო ნივთები",
     edit_item: "Workflowitem-ის რედაქტირება",
-    exit_sort_mode: "ეს ღილაკი ახლა გამორთულია. დალაგების რეჟიმიდან გამოდით სამუშაო პროცესის ახალი ელემენტების შესაქმნელად",
+    exit_sort_mode:
+      "ეს ღილაკი ახლა გამორთულია. დალაგების რეჟიმიდან გამოდით სამუშაო პროცესის ახალი ელემენტების შესაქმნელად",
     exchange_rate: "გაცვლითი კურსი",
     workflow_budget_allocated: "გამოყოფილი",
     workflow_budget_disbursed: "გადახდილი",

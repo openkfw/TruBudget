@@ -87,6 +87,8 @@ const de = {
     not_projected: "Nicht projiziert",
     not_disbursed: "Nicht ausgezahlt",
     not_ok: "Nicht Ok",
+    off: "Aus",
+    on: "An",
     ok: "Ok",
     open: "Offen",
     organization: "Organisation",
@@ -197,7 +199,8 @@ const de = {
     approval_required: "Bestätigung benötigt",
     assignee: "Verantwortlicher",
     edit_item: "Workflowitem ändern",
-    exit_sort_mode: "Diese Schaltfläche ist jetzt deaktiviert. Verlassen Sie den Sortiermodus, um neue Workflow-Elemente zu erstellen",
+    exit_sort_mode:
+      "Diese Schaltfläche ist jetzt deaktiviert. Verlassen Sie den Sortiermodus, um neue Workflow-Elemente zu erstellen",
     exchange_rate: "Wechselkurs",
     search_text: "Workflowitems durchsuchen",
     workflow_budget_allocated: "Zugeteilt",
