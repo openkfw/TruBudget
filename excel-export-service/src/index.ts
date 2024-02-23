@@ -49,8 +49,10 @@ excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) =
   next();
 });
 
+excelService.disable("x-powered-by");
 excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) => {
   res.setHeader("Content-Security-Policy", "default-src 'self'");
+  res.removeHeader("X-Powered-By");
   next();
 });
 

@@ -24,6 +24,13 @@ emailService.use(createPinoExpressLogger(logger));
 emailService.use(express.json());
 emailService.use(cors({ origin: config.allowOrigin }));
 
+emailService.disable("x-powered-by");
+emailService.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self'");
+  res.removeHeader("X-Powered-By");
+  next();
+});
+
 // JWT secret
 if (config.authentication === "jwt") {
   configureJWT();
