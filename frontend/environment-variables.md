@@ -14,6 +14,7 @@
 | REACT_APP_AUTHPROXY_ENABLED                     | `false`                                                                             | Enables rendering of auth proxy login button                                                                                                                                                                  |
 | REACT_APP_AUTHPROXY_URL                         | `http://localhost:4000/signin`                                                      | auth proxy ingress. Required if REACT_APP_AUTHPROXY_ENABLED is set to true                                                                                                                                    |
 | REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING | _undefined_                                                                         | Azure Application Insights Connection String                                                                                                                                                                  |
+| REACT_APP_POLLING_INTERVAL                      | 5000                                                                                | How often is data fetched from the server, in milliseconds. We recommend setting to 30000 (30 seconds), maybe longer if you experience performance issues.                                                    |
 
 ### Email-Service
 

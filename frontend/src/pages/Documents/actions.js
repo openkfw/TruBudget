@@ -4,6 +4,8 @@ export const ADD_DOCUMENT = "ADD_DOCUMENT";
 export const ADD_DOCUMENT_SUCCESS = "ADD_DOCUMENT_SUCCESS";
 export const CLEAR_DOCUMENTS = "CLEAR_DOCUMENTS";
 export const DOWNLOAD_DOCUMENT = "DOWNLOAD_DOCUMENT";
+export const DELETE_DOCUMENT = "DELETE_DOCUMENT";
+export const DELETE_DOCUMENT_SUCCESS = "DELETE_DOCUMENT_SUCCESS";
 
 export function validateDocument(hash, base64String, id, projectId, subprojectId, workflowitemId) {
   return {
@@ -34,6 +36,16 @@ export function clearDocuments(hash) {
 export function downloadDocument(projectId, subprojectId, workflowitemId, documentId) {
   return {
     type: DOWNLOAD_DOCUMENT,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    documentId
+  };
+}
+
+export function deleteDocument(projectId, subprojectId, workflowitemId, documentId) {
+  return {
+    type: DELETE_DOCUMENT,
     projectId,
     subprojectId,
     workflowitemId,
