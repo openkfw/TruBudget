@@ -86,9 +86,7 @@ schemes
               fileName: Joi.string().allow("")
             },
             {
-              link: Joi.string()
-                .uri()
-                .required(),
+              link: Joi.string().uri().required(),
               fileName: Joi.string().allow("")
             }
           ])

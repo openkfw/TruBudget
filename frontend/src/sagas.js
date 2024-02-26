@@ -30,6 +30,8 @@ import {
 } from "./pages/Confirmation/actions.js";
 import {
   CLEAR_DOCUMENTS,
+  DELETE_DOCUMENT,
+  DELETE_DOCUMENT_SUCCESS,
   DOWNLOAD_DOCUMENT,
   VALIDATE_DOCUMENT,
   VALIDATE_DOCUMENT_SUCCESS
@@ -1856,6 +1858,16 @@ export function* downloadDocumentSaga({ projectId, subprojectId, workflowitemId,
   }, showLoading);
 }
 
+export function* deleteDocumentSaga({ projectId, subprojectId, workflowitemId, documentId, showLoading = true }) {
+  yield execute(function* () {
+    yield callApi(api.deleteDocument, projectId, subprojectId, workflowitemId, documentId);
+    yield put({
+      type: DELETE_DOCUMENT_SUCCESS,
+      payload: { projectId, subprojectId, workflowitemId, documentId }
+    });
+  }, showLoading);
+}
+
 export function* fetchAllSubprojectDetailsSaga({ projectId, subprojectId, showLoading }) {
   yield execute(function* () {
     const { data } = yield callApi(api.viewSubProjectDetails, projectId, subprojectId);
@@ -3310,6 +3322,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE, fetchFirstWorkflowitemHistoryPageSaga),
       yield takeEvery(FETCH_WORKFLOWITEM, fetchWorkflowitemSaga),
       yield takeLeading(DOWNLOAD_DOCUMENT, downloadDocumentSaga),
+      yield takeLeading(DELETE_DOCUMENT, deleteDocumentSaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),

@@ -546,6 +546,13 @@ class Api {
           return Promise.resolve({ data: {} });
         }
       });
+
+  deleteDocument = (projectId, subprojectId, workflowitemId, documentId) =>
+    instance.delete(
+      removeEmptyQueryParams(
+        `/workflowitem.deleteDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
+      )
+    );
 }
 
 /**
