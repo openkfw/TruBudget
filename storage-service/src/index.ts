@@ -8,6 +8,7 @@ import {
 } from "trubudget-logging-service";
 import config from "./config";
 import {
+  deleteDocument,
   downloadAsPromised,
   establishConnection,
   getMinioStatus,
@@ -25,6 +26,14 @@ interface DocumentUploadRequest extends express.Request {
   log: Logger;
 }
 interface DocumentDownloadRequest extends express.Request {
+  query: {
+    docId: string;
+    secret: string;
+  };
+  log: Logger;
+}
+
+interface DocumentDeleteRequest extends express.Request {
   query: {
     docId: string;
     secret: string;
@@ -179,6 +188,47 @@ app.get(
         req.log.error(
           { err },
           "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio",
+        );
+      }
+      res.status(404).end();
+    });
+  },
+);
+
+app.delete(
+  "/delete",
+  query("docId").isString(),
+  (req: DocumentDeleteRequest, res: express.Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      req.log.error({ err: errors }, "Error while validating request");
+      return res.status(404).end();
+    }
+    const docId: string = req.query.docId;
+
+    // the secret should be in the headers
+    const secret = req.headers.secret;
+    if (!secret) {
+      res.status(404).end();
+    }
+
+    // first get document
+    (async (): Promise<void> => {
+      req.log.debug({ req }, `Deleting document ${docId}`);
+      const result = await downloadAsPromised(docId);
+
+      //check if the given secret matches the one form the metadata
+      if (result.meta.secret !== secret) {
+        res.status(404).end();
+      } else {
+        deleteDocument(docId);
+        res.send(204).end();
+      }
+    })().catch((err) => {
+      if (err.code === "NoSuchBucket") {
+        req.log.error(
+          { err },
+          "NoSuchBucket at /delete. Please restart storage-service to create a new bucket at minio",
         );
       }
       res.status(404).end();

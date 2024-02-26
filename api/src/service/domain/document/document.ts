@@ -11,6 +11,10 @@ export interface StoredDocument {
   organizationUrl: string;
 }
 
+export interface DeletedDocument {
+  id: string;
+}
+
 export const storedDocumentSchema = Joi.object({
   id: Joi.string().required(),
   fileName: Joi.string().required(),
@@ -23,6 +27,10 @@ export interface DocumentReference {
   fileName: string;
   hash: string;
   available?: boolean;
+}
+
+export interface DeleteDocumentResponse {
+  status: number;
 }
 
 export interface ExternalLinkReference {

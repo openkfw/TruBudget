@@ -96,6 +96,7 @@ import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
 import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
+import * as WorkflowitemDocumentDeleteService from "./service/workflowitem_document_delete";
 import * as WorkflowitemGetService from "./service/workflowitem_get";
 import * as WorkflowitemGetDetailsService from "./service/workflowitem_get_details";
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
@@ -135,6 +136,7 @@ import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
 import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
+import * as WorkflowitemDocumentDeleteAPI from "./workflowitem_delete_document";
 import * as WorkflowitemListAPI from "./workflowitem_list";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
@@ -842,6 +844,20 @@ WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
 WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
   getDocument: (ctx, user, projectId, subprojectId, workflowitemId, documentId) =>
     WorkflowitemDocumentDownloadService.getDocument(
+      db,
+      storageServiceClient,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      documentId,
+    ),
+});
+
+WorkflowitemDocumentDeleteAPI.addHttpHandler(server, URL_PREFIX, {
+  deleteDocument: (ctx, user, projectId, subprojectId, workflowitemId, documentId) =>
+    WorkflowitemDocumentDeleteService.deleteDocument(
       db,
       storageServiceClient,
       ctx,
