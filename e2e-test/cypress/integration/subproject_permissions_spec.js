@@ -151,10 +151,8 @@ describe("Subproject Permissions", function () {
   });
 
   it("Submitting the permission dialog after adding a user opens a confirmation dialog", function () {
-    cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
-    cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
-      .should("be.visible")
-      .click();
+    cy.get(`[data-test=subproject-${subprojectId}]`).should("be.visible");
+    cy.get(`[data-test=subproject-${subprojectId}] [data-test*=spp-button]`).should("be.visible").click();
     // Open permission search popup
     cy.get("[data-test='permission-select-subproject.intent.grantPermission']").click();
     // Select and add a User

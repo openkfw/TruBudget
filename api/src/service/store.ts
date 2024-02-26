@@ -202,7 +202,7 @@ export async function store(
         publisherAddress,
       );
 
-    case "document_uploaded":
+    case "document_uploaded": {
       await ensureStreamExists(conn, ctx, "documents", "documents");
       return writeTo(
         conn,
@@ -214,7 +214,20 @@ export async function store(
         },
         publisherAddress,
       );
-      break;
+    }
+    case "document_deleted": {
+      await ensureStreamExists(conn, ctx, "documents", "documents");
+      return writeTo(
+        conn,
+        ctx,
+        {
+          stream: "documents",
+          keys: [event.docId],
+          event,
+        },
+        publisherAddress,
+      );
+    }
     case "storage_service_url_published":
       await ensureStreamExists(conn, ctx, "documents", "documents");
       return writeTo(

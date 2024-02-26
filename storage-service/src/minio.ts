@@ -176,6 +176,10 @@ export const downloadAsPromised = (file: string): Promise<FileWithMeta> => {
   });
 };
 
+export const deleteDocument = async (file: string): Promise<void> => {
+  return minioClient.removeObject(bucketName, file);
+};
+
 const getMetadata = (fileHash: string, cb: Function): void => {
   minioClient.statObject(bucketName, fileHash, (err, stat: FullStat) => {
     if (err) {
