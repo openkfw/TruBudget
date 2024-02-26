@@ -143,8 +143,10 @@ describe("Users/Groups Dashboard", function () {
     cy.get("[data-test=password-new-user-confirm] input")
       .type("differentPassword1")
       .should("have.value", "differentPassword1");
+    cy.get("body").click(0, 0);
     cy.get("[data-test=submit]").should("be.disabled");
     cy.get("[data-test=password-new-user-confirm]").contains("Passwords don't match");
+    cy.get("[data-test=cancel]").click();
   });
 
   it("A validation error message is shown if password isn't at least 8 characters long", function () {
