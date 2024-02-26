@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Possibility to delete uploaded files from external storage. [#1488](https://github.com/openkfw/TruBudget/issues/1488)
+- Operator has an option to customize live update interval via REACT_APP_POLLING_INTERVAL frontend env variable [#1635](https://github.com/openkfw/TruBudget/issues/1635)
 
 <!-- ### Changed -->
 

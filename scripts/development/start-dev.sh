@@ -316,9 +316,6 @@ if [ "$IS_REBUILDING" = true ]; then
     $COMPOSE build $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 fi
 
-# Start docker containers
-echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
-$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"
@@ -327,3 +324,8 @@ fi
 if [ "$START_FRONTEND_IN_CONTAINER" = false ]; then
     echo "INFO: Docker container are started without frontend. You have to start it in separate window."
 fi
+
+# Start docker containers
+echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
+$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
+
