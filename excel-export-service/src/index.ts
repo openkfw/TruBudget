@@ -3,6 +3,7 @@ import * as cors from "cors";
 import * as express from "express";
 import { createPinoExpressLogger } from "trubudget-logging-service";
 import * as URL from "url";
+import helmet from "helmet";
 import { getApiReadiness, getApiVersion } from "./api";
 import { config } from "./config";
 import { writeXLSX } from "./excel";
@@ -49,10 +50,9 @@ excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) =
   next();
 });
 
-excelService.disable("x-powered-by");
+excelService.use(helmet());
 excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) => {
   res.setHeader("Content-Security-Policy", "default-src 'self'");
-  res.removeHeader("X-Powered-By");
   next();
 });
 

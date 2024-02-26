@@ -29,6 +29,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
+    "helmet": "^7.1.0",
     "minio": "^7.1.0",
     "trubudget-logging-service": "^1.2.2",
     "url": "^0.11.0",

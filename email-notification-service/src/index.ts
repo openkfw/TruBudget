@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import { body, query } from "express-validator";
 import { createPinoExpressLogger } from "trubudget-logging-service";
+import helmet from "helmet";
 import config from "./config";
 import DbConnector from "./db";
 import logger from "./logger";
@@ -24,10 +25,9 @@ emailService.use(createPinoExpressLogger(logger));
 emailService.use(express.json());
 emailService.use(cors({ origin: config.allowOrigin }));
 
-emailService.disable("x-powered-by");
+emailService.use(helmet());
 emailService.use((req, res, next) => {
   res.setHeader("Content-Security-Policy", "default-src 'self'");
-  res.removeHeader("X-Powered-By");
   next();
 });
 

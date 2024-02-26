@@ -6,6 +6,7 @@ import {
   createPinoExpressLogger,
   createPinoLogger,
 } from "trubudget-logging-service";
+import helmet from "helmet";
 import config from "./config";
 import {
   deleteDocument,
@@ -56,10 +57,9 @@ app.use(cors());
 app.use(createPinoExpressLogger(log));
 app.options(config.allowOrigin, cors());
 
-app.disable("x-powered-by");
+app.use(helmet());
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy", "default-src 'self'");
-  res.removeHeader("X-Powered-By");
   next();
 });
 
