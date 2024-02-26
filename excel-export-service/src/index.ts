@@ -51,10 +51,6 @@ excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) =
 });
 
 excelService.use(helmet());
-excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'");
-  next();
-});
 
 excelService.get("/liveness", (req, res) => {
   res

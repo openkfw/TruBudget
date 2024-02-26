@@ -58,10 +58,6 @@ app.use(createPinoExpressLogger(log));
 app.options(config.allowOrigin, cors());
 
 app.use(helmet());
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'");
-  next();
-});
 
 const allowOrigins = config.allowOrigin.split(",");
 

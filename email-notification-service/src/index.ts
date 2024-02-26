@@ -26,10 +26,6 @@ emailService.use(express.json());
 emailService.use(cors({ origin: config.allowOrigin }));
 
 emailService.use(helmet());
-emailService.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'");
-  next();
-});
 
 // JWT secret
 if (config.authentication === "jwt") {
