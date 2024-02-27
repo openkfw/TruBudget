@@ -18,6 +18,11 @@ import {
   removeTemporaryPermission,
   removeUsers,
   revokeGlobalPermission,
+  setConfirmPassword,
+  setDisplayName,
+  setIsUserFormValid,
+  setPassword,
+  setUsername,
   setUsernameInvalid,
   storeGroupId,
   storeGroupName,
@@ -88,7 +93,8 @@ const mapStateToProps = (state) => {
     newPasswordsMatch: state.getIn(["users", "newPasswordsMatch"]),
     usernameInvalid: state.getIn(["users", "usernameInvalid"]),
     authenticationFailed: state.getIn(["users", "authenticationFailed"]),
-    isRoot: state.getIn(["navbar", "isRoot"])
+    isRoot: state.getIn(["navbar", "isRoot"]),
+    isUserFormValid: state.getIn(["users", "isUserFormValid"])
   };
 };
 
@@ -116,7 +122,12 @@ const mapDispatchToProps = (dispatch) => {
     storeNewPasswordsMatch: (newPasswordsMatch) => dispatch(storeNewPasswordsMatch(newPasswordsMatch)),
     setUsernameInvalid: (usernameInvalid) => dispatch(setUsernameInvalid(usernameInvalid)),
     addTemporaryPermission: (permission, userId) => dispatch(addTemporaryPermission(permission, userId)),
-    removeTemporaryPermission: (permission, userId) => dispatch(removeTemporaryPermission(permission, userId))
+    removeTemporaryPermission: (permission, userId) => dispatch(removeTemporaryPermission(permission, userId)),
+    setUsername: (username) => dispatch(setUsername(username)),
+    setDisplayName: (displayName) => dispatch(setDisplayName(displayName)),
+    setPassword: (password) => dispatch(setPassword(password)),
+    setConfirmPassword: (confirmPassword) => dispatch(setConfirmPassword(confirmPassword)),
+    setIsUserFormValid: (isUserFormValid) => dispatch(setIsUserFormValid(isUserFormValid))
   };
 };
 

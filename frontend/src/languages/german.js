@@ -312,7 +312,11 @@ const de = {
       "Vor dem Deaktivieren muss für diesen Benutzer die Zuordnung zu folgenden Elementen aufgehoben werden",
     not_assigned_message:
       "Dieser Benutzer ist keinem Projekt, Subprojekt und Workflowitem zugeordnet und kann deaktiviert werden.",
-    hidden_assignments: "Weitere ausgeblendete {0}"
+    hidden_assignments: "Weitere ausgeblendete {0}",
+    account_name_error: "Der Kontoname darf nicht leer sein",
+    login_id_error: "Die Anmelde-ID darf nicht leer sein",
+    password_error: "Passwort kann nicht leer sein",
+    confirm_password_error: "Bestätigen Sie, dass das Passwort nicht leer sein darf"
   },
   userProfile: {
     invalid_email_address: "Ungültige E-Mail Adresse"

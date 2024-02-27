@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import strings from "../../localizeStrings";
@@ -21,16 +21,6 @@ const createActions = (permissions, temporayPermissions) => {
   });
 
   return actions;
-};
-
-const checkPasswordComplexity = (password) => {
-  const regex = /^(?=.*[A-Za-zÀ-ÿ].*)(?=.*[0-9].*)([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ])*$/;
-  const valid = password.trim().match(regex);
-  return valid;
-};
-
-const checkPasswordLength = (password) => {
-  return password.length >= 8;
 };
 
 const Dialog = (props) => {
@@ -59,9 +49,9 @@ const Dialog = (props) => {
     allowedIntents,
     grantGlobalPermission,
     revokeGlobalPermission,
-    setUsernameInvalid,
     addUsers,
-    removeUsers
+    removeUsers,
+    isUserFormValid
   } = props;
 
   const [editGroupAddMembers, setEditGroupAddMembers] = React.useState([]);
@@ -79,47 +69,10 @@ const Dialog = (props) => {
   const { username, password, displayName, hasAdminPermissions } = userToAdd;
   let title = "";
 
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [hasNewPasswordFailed, setHasNewPasswordFailed] = useState(false);
-  const [passwordNotComplex, setPasswordNotComplex] = useState(false);
-  const [passwordTooShort, setPasswordTooShort] = useState(false);
-  const [failedText, setFailedText] = useState("");
-
   const { groupId, name: groupName, groupUsers } = groupToAdd;
   let steps, handleSubmitFunc;
 
   const handleAddUser = () => {
-    if (username === "root") {
-      setUsernameInvalid(true);
-      return;
-    }
-
-    if (!checkPasswordLength(password)) {
-      setPasswordTooShort(true);
-      setFailedText(`${strings.users.password_conditions_preface} ${strings.users.password_conditions_length}`);
-      return;
-    }
-
-    if (!checkPasswordComplexity(password)) {
-      setPasswordNotComplex(true);
-      setFailedText(
-        `${strings.users.password_conditions_preface} ${strings.users.password_conditions_letter}; ${strings.users.password_conditions_number}`
-      );
-      return;
-    }
-
-    if (confirmPassword !== password) {
-      setHasNewPasswordFailed(true);
-      setFailedText(strings.users.no_password_match);
-      return;
-    }
-
-    setHasNewPasswordFailed(false);
-    setUsernameInvalid(false);
-    setPasswordTooShort(false);
-    setPasswordNotComplex(false);
-    setFailedText("");
-
     createUser(displayName, userOrganization, username, password);
 
     if (hasAdminPermissions) {
@@ -137,16 +90,8 @@ const Dialog = (props) => {
       steps = [
         {
           title: strings.users.add_user,
-          content: (
-            <UserDialogContent
-              {...props}
-              user={userToAdd}
-              setConfirmPassword={setConfirmPassword}
-              hasNewPasswordFailed={hasNewPasswordFailed || passwordNotComplex || passwordTooShort}
-              failedText={failedText}
-            />
-          ),
-          nextDisabled: _isEmpty(username) || _isEmpty(password) || _isEmpty(confirmPassword) || _isEmpty(displayName)
+          content: <UserDialogContent {...props} />,
+          nextDisabled: !isUserFormValid
         }
       ];
       handleSubmitFunc = handleAddUser;

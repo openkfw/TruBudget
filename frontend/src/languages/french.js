@@ -314,7 +314,11 @@ const fr = {
     assigned_message: "Avant d'être désactivé, cet utilisateur doit être désassigné des éléments suivants",
     not_assigned_message:
       "Cet utilisateur n'est affecté à aucun projet, composante et étape de workflow et peut être désactivé",
-    hidden_assignments: "Encore expurgé {0}"
+    hidden_assignments: "Encore expurgé {0}",
+    account_name_error: "Le nom du compte ne peut pas être vide",
+    login_id_error: `L'ID de connexion ne peut pas être vide`,
+    password_error: "Le mot de passe ne peut pas être vide",
+    confirm_password_error: "Confirmer que le mot de passe ne peut pas être vide"
   },
 
   nodesDashboard: {
