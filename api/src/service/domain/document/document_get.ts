@@ -3,7 +3,7 @@ import { Ctx } from "lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { DocumentOrExternalLinkReference, StoredDocument } from "./document";
-import { sourceDocuments } from "./document_eventsourcing";
+import { processDocumentEvents } from "./document_eventsourcing";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
@@ -30,7 +30,7 @@ export async function getAllDocumentInfos(
     return new VError(documentEvents, "fetch storage documents events failed");
   }
 
-  const { documents } = sourceDocuments(ctx, documentEvents);
+  const { documents } = processDocumentEvents(ctx, documentEvents);
   return documents;
 }
 

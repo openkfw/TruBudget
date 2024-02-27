@@ -172,7 +172,6 @@ export async function createWorkflowitem(
 
   if (reqData.documents?.length) {
     const documentsCount = reqData.documents.filter((d) => d.base64).length;
-
     if (
       config.documentFeatureEnabled ||
       (documentsCount === 0 && config.documentExternalLinksEnabled)

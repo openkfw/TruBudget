@@ -6,6 +6,7 @@ import { config } from "../config";
 import { decrypt, encrypt } from "../lib/symmetricCrypto";
 import * as Result from "../result";
 import {
+  DeleteResponse,
   StorageObject,
   StorageServiceClientI,
   UploadResponse,
@@ -131,6 +132,29 @@ export default class StorageServiceClient implements StorageServiceClientI {
     }
 
     return documentObject;
+  }
+
+  public async deleteObject(id: string, secret: string): Promise<Result.Type<DeleteResponse>> {
+    logger.info(`Deleting document with id: "${id}"`);
+
+    const url = `/delete?docId=${id}`;
+    const axiosConfig = {
+      headers: {
+        secret: secret,
+      },
+    };
+    const deleteResponse = await this.axiosInstance.delete(url, axiosConfig);
+
+    if (Result.isErr(deleteResponse)) {
+      logger.error(`Error while deleting document ${id} from storage service.`);
+      return new VError(deleteResponse, "Deleting object failed");
+    } else if (deleteResponse.status !== 204) {
+      logger.error(`Error while deleting document ${id} from storage service.`);
+      return new VError("Deleting object failed");
+    }
+    return {
+      status: 204,
+    };
   }
 
   public getAxiosInstance(): AxiosInstance {

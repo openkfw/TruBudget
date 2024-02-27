@@ -2,17 +2,19 @@ import React, { Component } from "react";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 
+import DeleteIcon from "@mui/icons-material/Delete";
 import ValidationIcon from "@mui/icons-material/FindInPage";
 import FingerPrint from "@mui/icons-material/Fingerprint";
 import DownloadIcon from "@mui/icons-material/GetApp";
 import LinkIcon from "@mui/icons-material/Link";
-import { TableHead, Tooltip } from "@mui/material";
+import { TableHead } from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
@@ -113,7 +115,16 @@ class DocumentOverview extends Component {
   };
 
   generateDocumentList = () => {
-    const { workflowitemId, projectId, subprojectId, documents, validatedDocuments, downloadDocument } = this.props;
+    const {
+      workflowitemId,
+      projectId,
+      subprojectId,
+      documents,
+      validatedDocuments,
+      downloadDocument,
+      deleteDocument,
+      workflowitemStatus
+    } = this.props;
     const header = this.generateDocumentListHeader();
     const rows = documents.map((document, index) => {
       let validated = undefined;
@@ -146,6 +157,16 @@ class DocumentOverview extends Component {
                 document.hash &&
                 this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)}
               {document.id && document.link && this.generateLinkButton(document)}
+              {document.id
+                ? this.renderDeleteButton({
+                    deleteDocument,
+                    projectId,
+                    subprojectId,
+                    workflowitemId,
+                    document,
+                    workflowitemStatus
+                  })
+                : null}
             </div>
           </TableCell>
         </TableRow>
@@ -167,9 +188,7 @@ class DocumentOverview extends Component {
             <Typography>{strings.common.name}</Typography>
           </TableCell>
           <TableCell>
-            <Typography>
-              {strings.common.hash}/{strings.common.link}
-            </Typography>
+            <Typography>{strings.common.hash}</Typography>
           </TableCell>
           <TableCell>
             <Typography>{strings.common.actions}</Typography>
@@ -186,7 +205,15 @@ class DocumentOverview extends Component {
   );
 
   render = () => {
-    const { documents, validatedDocuments, workflowitemId, projectId, subprojectId, downloadDocument } = this.props;
+    const {
+      documents,
+      validatedDocuments,
+      workflowitemId,
+      projectId,
+      subprojectId,
+      downloadDocument,
+      workflowitemStatus
+    } = this.props;
     return (
       <Table>
         {_isEmpty(documents)
@@ -197,7 +224,8 @@ class DocumentOverview extends Component {
               subprojectId,
               documents,
               validatedDocuments,
-              downloadDocument
+              downloadDocument,
+              workflowitemStatus
             })}
       </Table>
     );
@@ -231,6 +259,20 @@ class DocumentOverview extends Component {
       >
         <LinkIcon />
         {strings.common.open}
+      </Button>
+    );
+  }
+
+  renderDeleteButton({ deleteDocument, projectId, subprojectId, workflowitemId, document, workflowitemStatus }) {
+    return (
+      <Button
+        data-test="delete-document"
+        component="span"
+        disabled={!document.available || workflowitemStatus !== "open"}
+        onClick={() => deleteDocument(projectId, subprojectId, workflowitemId, document.id)}
+      >
+        <DeleteIcon />
+        {strings.common.delete}
       </Button>
     );
   }
