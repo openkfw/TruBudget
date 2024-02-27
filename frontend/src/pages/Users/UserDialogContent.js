@@ -65,16 +65,15 @@ const UserDialogContent = ({
   };
 
   const userSchemaJoi = Joi.object({
-    accountname: Joi.string().required().message(strings.users.account_name_error),
+    accountname: Joi.string().required(),
     username: Joi.string().required().regex(usernameRegex).message(strings.users.username_invalid),
     password: Joi.string()
       .required()
-      .min(8)
       .regex(passwordRegex)
       .message(
         `${strings.users.password_conditions_preface} ${strings.users.password_conditions_letter}; ${strings.users.password_conditions_number}`
       ),
-    confirmPassword: Joi.string().valid(Joi.ref("password")).message(strings.users.no_password_match)
+    confirmPassword: Joi.string().valid(Joi.ref("password")).required()
   });
 
   const userSchema = Yup.object().shape({
