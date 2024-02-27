@@ -1,5 +1,6 @@
 import React from "react";
 import { Field, Form, Formik } from "formik";
+import Joi from "joi";
 import * as Yup from "yup";
 
 import NameIcon from "@mui/icons-material/AssignmentInd";
@@ -8,6 +9,7 @@ import UsernameIcon from "@mui/icons-material/Person";
 import OrgaIcon from "@mui/icons-material/StoreMallDirectory";
 import { Typography } from "@mui/material";
 
+import { joiFormikAdapter } from "../../helpers/joiFormikAdaptor";
 import strings from "../../localizeStrings";
 import FormTextField from "../Common/FormTextField";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
@@ -62,6 +64,19 @@ const UserDialogContent = ({
     confirmPassword: ""
   };
 
+  const userSchemaJoi = Joi.object({
+    accountname: Joi.string().required().message(strings.users.account_name_error),
+    username: Joi.string().required().regex(usernameRegex).message(strings.users.username_invalid),
+    password: Joi.string()
+      .required()
+      .min(8)
+      .regex(passwordRegex)
+      .message(
+        `${strings.users.password_conditions_preface} ${strings.users.password_conditions_letter}; ${strings.users.password_conditions_number}`
+      ),
+    confirmPassword: Joi.string().valid(Joi.ref("password")).message(strings.users.no_password_match)
+  });
+
   const userSchema = Yup.object().shape({
     accountname: Yup.string().required(`${strings.users.account_name_error}`),
     username: Yup.string()
@@ -95,7 +110,7 @@ const UserDialogContent = ({
         <Typography variant="body2">{strings.users.privacy_notice}</Typography>
       </span>
       <div style={styles.textInputContainer}>
-        <Formik initialValues={initialValues} validationSchema={userSchema}>
+        <Formik initialValues={initialValues} validationSchema={joiFormikAdapter(userSchemaJoi)}>
           {({ values, errors, touched, isValid }) => (
             <Form>
               <TextInputWithIcon
