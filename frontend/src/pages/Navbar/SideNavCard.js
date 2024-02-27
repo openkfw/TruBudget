@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import StatusIcon from "@mui/icons-material/Build";
@@ -52,13 +52,13 @@ const SideNavCard = ({
     showUserProfile();
   };
 
-  const toggleLiveUpdates = () => {
+  const toggleLiveUpdates = useCallback(() => {
     if (isLiveUpdateAllProjectsEnabled) {
       disableLiveUpdates();
     } else {
       enableLiveUpdates();
     }
-  };
+  }, [disableLiveUpdates, enableLiveUpdates, isLiveUpdateAllProjectsEnabled]);
 
   return (
     <div
