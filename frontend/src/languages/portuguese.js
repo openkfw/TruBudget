@@ -186,7 +186,7 @@ const pt = {
       "Este usuário não está atribuído a nenhum projeto, subprojeto e item de fluxo de trabalho e pode ser desativado",
     hidden_assignments: "Mais redigido {0}",
     account_name_error: "O nome da conta não pode ficar vazio",
-    login_id_errror: "O ID de login não pode ficar vazio",
+    login_id_error: "O ID de login não pode ficar vazio",
     password_error: "A senha não pode ficar vazia",
     confirm_password_error: "A confirmação da senha não pode ficar vazia"
   },

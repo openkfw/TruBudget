@@ -314,7 +314,7 @@ const de = {
       "Dieser Benutzer ist keinem Projekt, Subprojekt und Workflowitem zugeordnet und kann deaktiviert werden.",
     hidden_assignments: "Weitere ausgeblendete {0}",
     account_name_error: "Der Kontoname darf nicht leer sein",
-    login_id_errror: "Die Anmelde-ID darf nicht leer sein",
+    login_id_error: "Die Anmelde-ID darf nicht leer sein",
     password_error: "Passwort kann nicht leer sein",
     confirm_password_error: "Bestätigen Sie, dass das Passwort nicht leer sein darf"
   },
