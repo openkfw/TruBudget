@@ -94,6 +94,8 @@ const pt = {
     not_assigned: "Não atribuído",
     not_disbursed: "Não pago",
     not_ok: "Não OK",
+    off: "Desligado",
+    on: "Ligado",
     ok: "Ok",
     not_projected: "Não projetado",
     open: "Aberto",

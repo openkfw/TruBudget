@@ -88,6 +88,8 @@ const de = {
     not_projected: "Nicht projiziert",
     not_disbursed: "Nicht ausgezahlt",
     not_ok: "Nicht Ok",
+    off: "Aus",
+    on: "An",
     ok: "Ok",
     open: "Offen",
     organization: "Organisation",
