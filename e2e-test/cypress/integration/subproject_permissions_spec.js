@@ -164,8 +164,6 @@ describe("Subproject Permissions", function () {
       .click();
     // Close permission search popup
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.get("body").click();
-    cy.wait("@viewDetailsProject");
     cy.get("[data-test=permission-selection-popup]").should("not.exist");
     cy.get("[data-test=permission-submit]").click();
     // Open confirmation
@@ -188,7 +186,7 @@ describe("Subproject Permissions", function () {
         .click();
       // Close permission search popup
       cy.get("[data-test=permission-search] input").type("{esc}");
-      cy.wait("@viewDetailsProject");
+      cy.wait(500);
       cy.get("[data-test=permission-selection-popup]").should("not.exist");
       cy.get("[data-test=permission-submit]").click();
       // Open confirmation
@@ -234,7 +232,7 @@ describe("Subproject Permissions", function () {
           .click();
         // Close permission search popup
         cy.get("[data-test=permission-search] input").type("{esc}");
-        cy.wait("@viewDetailsProject");
+        cy.wait(500);
         cy.get("[data-test=permission-selection-popup]").should("not.exist");
         cy.get("[data-test=permission-submit]").should("be.disabled");
       },
@@ -268,7 +266,7 @@ describe("Subproject Permissions", function () {
           .click();
         // Close permission search popup
         cy.get("[data-test=permission-search] input").type("{esc}");
-        cy.wait("@viewDetailsProject");
+        cy.wait(500);
         cy.get("[data-test=permission-selection-popup]").should("not.exist");
         cy.get("[data-test=permission-submit]").should("be.disabled");
       });
@@ -305,7 +303,7 @@ describe("Subproject Permissions", function () {
       .click();
     // Close permission popup
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.wait("@viewDetailsProject");
+    cy.wait(500);
     cy.get("[data-test=permission-selection-popup]").should("not.exist");
     cy.get("[data-test=permission-submit]").click();
     // Open confirmation
@@ -334,7 +332,7 @@ describe("Subproject Permissions", function () {
       .click();
     // Close permission search popup
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.wait("@viewDetailsProject");
+    cy.wait(500);
     cy.get("[data-test=permission-selection-popup]").should("not.exist");
     cy.get("[data-test=permission-submit]").click();
     // Open confirmation
@@ -368,7 +366,7 @@ describe("Subproject Permissions", function () {
           .click();
         // Close permission search popup
         cy.get("[data-test=permission-search] input").type("{esc}");
-        cy.wait("@viewDetailsProject");
+        cy.wait(500);
         cy.get("[data-test=permission-selection-popup]").should("not.exist");
         cy.get("[data-test=permission-submit]").click();
         // Confirmation opens
@@ -405,7 +403,7 @@ describe("Subproject Permissions", function () {
       .click();
     // Close permission search popup
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.wait("@viewDetailsProject");
+    cy.wait(500);
     cy.get("[data-test=permission-selection-popup]").should("not.exist");
     // Open confirmation
     cy.get("[data-test=permission-submit]").click();
@@ -419,9 +417,10 @@ describe("Subproject Permissions", function () {
       cy.get("[data-test=actions-table-body]").should("be.visible").children().should("have.length", 1);
     });
     cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
-    cy.wait(["@viewDetailsProject", "@listSubprojectPermissions"]);
+    cy.wait(["@listSubprojectPermissions"]);
 
     // Remove project.update permission
+    cy.wait(["@grantSubprojectPermission", "@listSubprojectPermissions"]);
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
     cy.get("[data-test=subproject-" + subprojectId + "] [data-test*=spp-button]")
       .should("be.visible")
@@ -437,7 +436,6 @@ describe("Subproject Permissions", function () {
       .should("be.visible")
       .click();
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.wait("@viewDetailsProject");
     cy.get("[data-test=permission-selection-popup]").should("not.exist");
     cy.get("[data-test=permission-submit]").click();
     cy.get("[data-test=confirmation-dialog-confirm]").click();
@@ -484,7 +482,7 @@ describe("Subproject Permissions", function () {
         .click();
       // Close permission search popup
       cy.get("[data-test=permission-search] input").type("{esc}");
-      cy.wait("@viewDetailsProject");
+      cy.wait(500);
       cy.get("[data-test=permission-selection-popup]").should("not.exist");
       cy.get("[data-test=permission-submit]").should("be.visible").click();
       cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"]);
@@ -498,7 +496,7 @@ describe("Subproject Permissions", function () {
       });
       // Confirm additional actions
       cy.get("[data-test=confirmation-dialog-confirm]").click();
-      cy.wait(["@viewDetailsProject", "@listSubprojectPermissions"]);
+      cy.wait(["@listSubprojectPermissions"]);
 
       // Check permissions has changed
       // Permissions before testing equal the previous permissions + additional actions
@@ -524,7 +522,7 @@ describe("Subproject Permissions", function () {
       .click();
     // Close permission search popup
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.wait("@viewDetailsProject");
+    cy.wait(500);
     cy.get("[data-test=permission-selection-popup]").should("not.exist");
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
@@ -559,7 +557,7 @@ describe("Subproject Permissions", function () {
     });
     // Close permission search popup
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.wait("@viewDetailsProject").get("[data-test=permission-selection-popup]").should("not.exist");
+    cy.wait(500).get("[data-test=permission-selection-popup]").should("not.exist");
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
     cy.wait(["@listProjectPermissions", "@listSubprojectPermissions"])
@@ -581,10 +579,7 @@ describe("Subproject Permissions", function () {
 
     // Check permissions has changed
     // Due to liveUpdate, viewDetailsProjectAfterSubmit has to be waited for 3 times
-    cy.wait("@viewDetailsProjectAfterSubmit")
-      .wait("@viewDetailsProjectAfterSubmit")
-      .wait("@viewDetailsProjectAfterSubmit")
-      .visit(`/projects/${projectId}`);
+    cy.wait(5000).visit(`/projects/${projectId}`);
     cy.get("[data-test=subproject-" + subprojectId + "]")
       .should("be.visible")
       .within(() => {
@@ -627,7 +622,7 @@ describe("Subproject Permissions", function () {
     });
     // Close permission search popup
     cy.get("[data-test=permission-search] input").type("{esc}");
-    cy.wait("@viewDetailsProject");
+    cy.wait(500);
     cy.get("[data-test=permission-selection-popup]").should("not.exist");
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
@@ -708,7 +703,7 @@ describe("Subproject Permissions", function () {
       cy.get("[data-test=permission-search] input").type("{esc}");
 
       // Submit selection
-      cy.wait("@viewDetailsProject").get("[data-test=permission-selection-popup]").should("not.exist");
+      cy.wait(500).get("[data-test=permission-selection-popup]").should("not.exist");
 
       cy.get("[data-test=permission-submit]").click();
     });
@@ -716,7 +711,7 @@ describe("Subproject Permissions", function () {
     // Confirms the Actions and waits for Screen to Load
     cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
 
-    cy.wait("@viewDetailsProject");
+    cy.wait(500);
 
     // Assert that the Page did not Crash and Sub-Project is still visible
     cy.get("[data-test=subproject-" + subprojectId + "]").should("be.visible");
