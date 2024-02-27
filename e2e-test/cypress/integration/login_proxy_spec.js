@@ -3,12 +3,15 @@ describe("Login with proxy", () => {
     cy.visit(`/`);
   });
 
+  // cookie is valid until 2030
+  // if changes are required, generate a new cookie using Auth Proxy, and with extended expiration
+
   it("should login with a valid cookie", () => {
     cy.setCookie(
       "authorizationToken",
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJtc3RlaW4iLCJtZXRhZGF0YSI6eyJleHRlcm5hbElkIjoie1wib2lkXCI6XCIwZjUzNzg2ZS00ZTZkLTRlYWEtODA5Zi00OGRmNzU2NDg3NGJcIixcInRzXCI6MTcwOTAxODcxODkzN30ifSwiY3NyZiI6IldJS0FGR081QWl0X2puWmYiLCJqdGkiOiJhZWUxNzJhMC0wNzJjLTRjZjMtYjE0ZC05MzBhNDk4ZTljMTYiLCJpYXQiOjE3MDkwMTg3MTgsImV4cCI6MTcwOTAxOTMxOH0.BLRN92toZDVgmgKiQ7bp92VuQ8fl4okWR2lLQNWpQ0QaSI1Wjm8kyxj0A0OaLRSzLqQhQol29yeC_5oNKqaBFXVaGBMvecStFCPgcumxjrs3LpWsMYCoHdkY_aW6j9rxyje2Wkfp3TLfJZqR7dfswEOa-MQw99ZV6KTq0ssvovFlfWELdIHH40JkBbBQ30z3i7vYxQLJ_j7b5UWV3Tuu9FxMuSQiVOQeA24vRT-0pgIBHVPaHgsJRDl7XdCd44WKvHob-SSsdzseV54EPNaLoiSN4CGsOTFgYv_h3rUTUjCUeBDFjhmjocBUp4sgyE4-MlZ6epYv2ecqYQdUogVkGA",
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJtc3RlaW4iLCJtZXRhZGF0YSI6eyJleHRlcm5hbElkIjoie1wib2lkXCI6XCJhMGUxNGQ3OS01ZDFkLTQ2OTQtYTg3My0xMzQ2MDQ2YzE4YmVcIixcInRzXCI6MTcwOTAyMDE4MjQ3NH0ifSwiY3NyZiI6IjUtWnJpQTh0YUI5V3hWZTkiLCJqdGkiOiI4YjJkMTJlZS1hZmQzLTQ3MGItYWE1My1iMjAwY2NjMmE0MzgiLCJpYXQiOjE3MDkwMjAxODIsImV4cCI6MTkyMjMxMzYwMH0.AeG-Usjuci3i88IUahRYdrIgfxHbKtmrVZSEOTFySSfDN1idPepLmtRwb2LOQ50RKdKSnQgWLt84RaUBn8BY31sMQl1JzGUfNv_hPNUBCcLZXu1WXC7IzPiyq5VoPDJiy90mY3Njo25j4jIuXINxJPPgkeBNPVN5LVzYxJGH6KkAuPQXhsyKD_fLRbO1ef7B-0aebTdtGGuqUOFtPq56JclyBJuwiAT_4iFo4BhejBlzjqL6SaSXPOP_QZAPsNKL8wwGHcrBaY3b8vUdVUyBqMVJEioO6clJPhAO6qqlICwUnepQAGOg3H8-ckgQin82cjmbVHnbqju6Lu8gAuX34g",
     );
-    cy.visit("/login?token=WIKAFGO5Ait_jnZf");
+    cy.visit("/login?token=5-ZriA8taB9WxVe9");
 
     cy.get("#logoutbutton").should("be.visible");
   });
