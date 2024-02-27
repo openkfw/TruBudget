@@ -184,7 +184,7 @@ const en = {
     not_assigned_message: "This user is not assigned to any project, subproject and workflowitem and can be disabled",
     hidden_assignments: "Further redacted {0}",
     account_name_error: "Account name cannot be empty",
-    login_id_errror: "Login ID cannot be empty",
+    login_id_error: "Login ID cannot be empty",
     password_error: "Password cannot be empty",
     confirm_password_error: "Confirm password cannot be empty"
   },

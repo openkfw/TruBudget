@@ -65,7 +65,7 @@ const UserDialogContent = ({
   const userSchema = Yup.object().shape({
     accountname: Yup.string().required(`${strings.users.account_name_error}`),
     username: Yup.string()
-      .required(`${strings.users.login_id_errror}`)
+      .required(`${strings.users.login_id_error}`)
       .matches(usernameRegex, strings.users.username_invalid)
       .notOneOf(["root"], strings.users.username_invalid),
     password: Yup.string()
