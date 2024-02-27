@@ -94,6 +94,8 @@ const fr = {
     not_assigned: "Non engagé",
     not_disbursed: "Non payé",
     not_ok: "Pas OK",
+    off: "Désactivé",
+    on: "Activé",
     ok: "Ok",
     not_projected: "Non estimé",
     open: "Ouvert",

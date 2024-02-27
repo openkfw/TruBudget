@@ -93,6 +93,8 @@ const ka = {
     not_assigned: "არ არის გამოყოფილი",
     not_disbursed: "გადაუხდელი",
     not_ok: "Not OK",
+    off: "გამორთული",
+    on: "ჩართული",
     ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
     open: "Open",

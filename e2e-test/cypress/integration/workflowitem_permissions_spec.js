@@ -13,8 +13,8 @@ const projectDisplayname = "p-witem-assign";
 const subprojectDisplayname = "subp-witem-assign";
 const workflowitemDisplayname = "witem-witem-assign";
 
-describe("Workflowitem Permissions", function() {
-  beforeEach(function() {
+describe("Workflowitem Permissions", function () {
+  beforeEach(function () {
     cy.login();
     cy.createProject(projectDisplayname, "workflowitem assign test").then(({ id }) => {
       projectId = id;
@@ -24,13 +24,13 @@ describe("Workflowitem Permissions", function() {
           workflowitemId = id;
           cy.visit(`/projects/${projectId}/${subprojectId}`);
           permissionsBeforeTesting = { project: {}, subproject: {}, workflowitem: {} };
-          cy.listProjectPermissions(projectId).then(permissions => {
+          cy.listProjectPermissions(projectId).then((permissions) => {
             permissionsBeforeTesting.project = permissions;
           });
-          cy.listSubprojectPermissions(projectId, subprojectId).then(permissions => {
+          cy.listSubprojectPermissions(projectId, subprojectId).then((permissions) => {
             permissionsBeforeTesting.subproject = permissions;
           });
-          cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then(permissions => {
+          cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then((permissions) => {
             permissionsBeforeTesting.workflowitem = permissions;
           });
         });
@@ -39,13 +39,13 @@ describe("Workflowitem Permissions", function() {
   });
 
   function assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId, workflowitemId) {
-    cy.listProjectPermissions(projectId).then(permissions => {
+    cy.listProjectPermissions(projectId).then((permissions) => {
       expect(permissions).to.deep.equal(permissionsBeforeTesting.project);
     });
-    cy.listSubprojectPermissions(projectId, subprojectId).then(permissions => {
+    cy.listSubprojectPermissions(projectId, subprojectId).then((permissions) => {
       expect(permissions).to.deep.equal(permissionsBeforeTesting.subproject);
     });
-    cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then(permissions => {
+    cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then((permissions) => {
       expect(permissions).to.deep.equal(permissionsBeforeTesting.workflowitem);
     });
   }
@@ -69,7 +69,7 @@ describe("Workflowitem Permissions", function() {
   }
 
   function removePermission(permissions, intent, identity) {
-    permissions[intent] = permissions[intent].filter(id => {
+    permissions[intent] = permissions[intent].filter((id) => {
       return id !== identity;
     });
     return permissions;
@@ -77,10 +77,7 @@ describe("Workflowitem Permissions", function() {
 
   function changePermissionInGui(intent, identity) {
     cy.get(`[data-test='permission-select-${intent}']`).click();
-    cy.get("[data-test=permission-list]")
-      .find(`li[value*='${identity}']`)
-      .click()
-      .type("{esc}");
+    cy.get("[data-test=permission-list]").find(`li[value*='${identity}']`).click().type("{esc}");
   }
 
   function additionalActionTableIncludes(permissionText, amountOfPermissions = 6) {
@@ -96,24 +93,22 @@ describe("Workflowitem Permissions", function() {
   }
 
   function filterPermissionsById(permissions, id) {
-    return Object.keys(permissions).filter(intent => permissions[intent].includes(id));
+    return Object.keys(permissions).filter((intent) => permissions[intent].includes(id));
   }
 
   function assertTableData(tableTestData, expectedValues) {
     const intentTable = [];
     cy.get(`[data-test='${tableTestData}'`)
       .find("td")
-      .each(element => {
+      .each((element) => {
         intentTable.push(element.text());
       })
       .wrap(intentTable)
       .should("deep.equal", expectedValues);
   }
 
-  it("Show worklfowitem permissions correctly", function() {
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+  it("Show worklfowitem permissions correctly", function () {
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     cy.get("[data-test=permission-container]").should("be.visible");
     cy.get("[data-test=view-list]")
       .should("be.visible")
@@ -154,76 +149,55 @@ describe("Workflowitem Permissions", function() {
     cy.get("[data-test=permission-container]").should("not.exist");
   });
 
-  it("Canceling the permission dialog neither revokes nor grant permissions ", function() {
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+  it("Canceling the permission dialog neither revokes nor grant permissions ", function () {
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     cy.get("[data-test=permission-close]").click();
     assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId, workflowitemId);
   });
 
-  it("Submitting the permission dialog without any changes neither revokes nor grant permissions and close the dialog", function() {
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+  it("Submitting the permission dialog without any changes neither revokes nor grant permissions and close the dialog", function () {
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     cy.get("[data-test=permission-submit]").click();
     cy.get("[data-test=permission-container]").should("not.exist");
     assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId, workflowitemId);
   });
 
-  it("Submitting the permission dialog after adding a user opens a confirmation dialog", function() {
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+  it("Submitting the permission dialog after adding a user opens a confirmation dialog", function () {
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     cy.get("[data-test='permission-select-workflowitem.intent.grantPermission']").click();
-    cy.get("[data-test='permission-list']")
-      .find(`li[value*='${testUser.id}']`)
-      .click()
-      .type("{esc}");
+    cy.get("[data-test='permission-list']").find(`li[value*='${testUser.id}']`).click().type("{esc}");
     cy.get("[data-test=permission-submit]").click();
-    cy.get("[data-test=confirmation-dialog-cancel]")
-      .should("be.visible")
-      .click();
+    cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible").click();
   });
 
-  it("Submitting the permission dialog after removing a user opens a confirmation dialog", function() {
+  it("Submitting the permission dialog after removing a user opens a confirmation dialog", function () {
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", testUser.id);
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     cy.get("[data-test='permission-select-workflowitem.list']").click();
-    cy.get("[data-test='permission-list']")
-      .find(`li[value*='${testUser.id}']`)
-      .click()
-      .type("{esc}");
+    cy.get("[data-test='permission-list']").find(`li[value*='${testUser.id}']`).click().type("{esc}");
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
-    cy.get("[data-test=confirmation-dialog-cancel]")
-      .should("be.visible")
-      .click();
+    cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible").click();
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", testUser.id);
   });
 
-  it("Revoke a permission from myself is not allowed", function() {
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+  it("Revoke a permission from myself is not allowed", function () {
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     cy.get("[data-test='permission-select-workflowitem.intent.grantPermission']").click();
-    cy.get("[data-test='permission-list']")
-      .find(`li[value*='${executingUser.id}'] input`)
-      .should("be.disabled");
+    cy.get("[data-test='permission-list']").find(`li[value*='${executingUser.id}'] input`).should("be.disabled");
   });
 
-  it("Submitting the permission dialog without workflowitem.intent.grantPermission disables the submit button when adding user", function() {
+  it("Submitting the permission dialog without workflowitem.intent.grantPermission disables the submit button when adding user", function () {
     const intent = "workflowitem.intent.grantPermission";
     // Grant workflowitem.intent.grantPermission to other user first because it's not allowed to revoke the last user
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, testUser2.id);
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, testUser.id);
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, executingUser.id);
 
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+    // cypress needs reload because permission changes are made via api calls
+    cy.reload();
+
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     // Add permission
     changePermissionInGui("workflowitem.intent.grantPermission", testUser.id);
     cy.get("[data-test=permission-submit]").should("be.disabled");
@@ -239,16 +213,17 @@ describe("Workflowitem Permissions", function() {
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, intent, executingUser.id);
   });
 
-  it("Submitting the permission dialog without workflowitem.intent.revokePermission disables the submit button when removing user", function() {
+  it("Submitting the permission dialog without workflowitem.intent.revokePermission disables the submit button when removing user", function () {
     const grantIntent = "workflowitem.intent.grantPermission";
     const revokeIntent = "workflowitem.intent.revokePermission";
 
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, grantIntent, testUser.id);
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, revokeIntent, executingUser.id);
 
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+    // cypress needs reload because permission changes are made via api calls
+    cy.reload();
+
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     // Remove permission
     changePermissionInGui("workflowitem.intent.grantPermission", testUser.id);
     cy.get("[data-test=permission-submit]").should("be.disabled");
@@ -263,7 +238,7 @@ describe("Workflowitem Permissions", function() {
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, grantIntent, testUser.id);
   });
 
-  it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function() {
+  it("User having 'view permissions'- permission only can view but not grant/revoke permissions", function () {
     const grantIntent = "workflowitem.intent.grantPermission";
     const revokeIntent = "workflowitem.intent.revokePermission";
 
@@ -272,49 +247,37 @@ describe("Workflowitem Permissions", function() {
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, grantIntent, executingUser.id);
     cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, revokeIntent, executingUser.id);
 
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+    // cypress needs reload because permission changes are made via api calls
+    cy.reload();
+
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     cy.get(`[data-test='permission-select-workflowitem.list']`).click();
     cy.get("[data-test=read-only-permissions-text]").should("be.visible");
-    cy.get("[data-test=permission-list]")
-      .find(`li[value*='${testUser.id}']`)
-      .find("input")
-      .should("be.disabled");
+    cy.get("[data-test=permission-list]").find(`li[value*='${testUser.id}']`).find("input").should("be.disabled");
 
     cy.login(testUser2.id, "test");
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, grantIntent, executingUser.id);
     cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, revokeIntent, executingUser.id);
   });
 
-  it("Granting update permissions views 5 additional permissions needed", function() {
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+  it("Granting update permissions views 5 additional permissions needed", function () {
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     // Add permission
     changePermissionInGui("workflowitem.update", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
     // 5 additional actions
     cy.get("[data-test=additional-actions]").within(() => {
-      cy.get("[data-test=actions-table-body]")
-        .should("be.visible")
-        .children()
-        .should("have.length", 5);
+      cy.get("[data-test=actions-table-body]").should("be.visible").children().should("have.length", 5);
     });
     // 1 original action
     cy.get("[data-test=original-actions]").within(() => {
-      cy.get("[data-test=actions-table-body]")
-        .should("be.visible")
-        .children()
-        .should("have.length", 1);
+      cy.get("[data-test=actions-table-body]").should("be.visible").children().should("have.length", 1);
     });
   });
 
-  it("Granting revoke permissions views 8 additional permissions needed including 'view permission'-permissions", function() {
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+  it("Granting revoke permissions views 8 additional permissions needed including 'view permission'-permissions", function () {
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     // Add permission
     changePermissionInGui("workflowitem.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
@@ -322,48 +285,39 @@ describe("Workflowitem Permissions", function() {
     additionalActionTableIncludes("view permissions", 8);
   });
 
-  it("Granting view permissions doesn't additionally view the same permission", function() {
+  it("Granting view permissions doesn't additionally view the same permission", function () {
     cy.grantProjectPermission(projectId, "project.viewDetails", testUser.id);
     cy.grantProjectPermission(projectId, "project.list", testUser.id);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id);
     cy.grantSubprojectPermission(projectId, subprojectId, "subproject.list", testUser.id);
 
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     // Add permission
     changePermissionInGui("workflowitem.list", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
     cy.get("[data-test=additional-actions]").should("not.exist");
     cy.get("[data-test=original-actions]").should("be.visible");
-    cy.get("[data-test=confirmation-dialog-cancel]")
-      .should("be.visible")
-      .click();
+    cy.get("[data-test=confirmation-dialog-cancel]").should("be.visible").click();
 
     //Reset permissions
     Cypress.Promise.all([
       cy.revokeProjectPermission(projectId, "project.viewDetails", testUser.id),
       cy.revokeProjectPermission(projectId, "project.list", testUser.id),
       cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.viewDetails", testUser.id),
-      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.list", testUser.id)
+      cy.revokeSubprojectPermission(projectId, subprojectId, "subproject.list", testUser.id),
     ]);
   });
 
-  it("Executing additional actions grants permissions correctly", function() {
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+  it("Executing additional actions grants permissions correctly", function () {
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     // Add permission
     changePermissionInGui("workflowitem.intent.revokePermission", testUser.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens
     // listPermissions calls are done
     cy.get("[data-test=additional-actions]").within(() => {
-      cy.get("[data-test=actions-table-body]")
-        .should("be.visible")
-        .children()
-        .should("have.length", 8);
+      cy.get("[data-test=actions-table-body]").should("be.visible").children().should("have.length", 8);
     });
     // Make sure cypress waits for future listPermissions calls
     cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
@@ -386,7 +340,7 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testUser.id
+        testUser.id,
       ),
       cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", testUser.id),
       cy.revokeWorkflowitemPermission(
@@ -394,14 +348,14 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.revokePermission",
-        testUser.id
-      )
+        testUser.id,
+      ),
     ]).then(() => {
       assertUnchangedPermissions(permissionsBeforeTesting, projectId, subprojectId, workflowitemId);
     });
   });
 
-  it("Executing additional actions as normal user extended through group permissions", function() {
+  it("Executing additional actions as normal user extended through group permissions", function () {
     cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
 
     Cypress.Promise.all([
@@ -418,7 +372,7 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testGroupId
+        testGroupId,
       ),
       cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", testGroupId),
       cy.grantWorkflowitemPermission(
@@ -426,27 +380,22 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.grantPermission",
-        testGroupId
-      )
+        testGroupId,
+      ),
     ]).then(() => {
       permissionsBeforeTesting.project["project.intent.grantPermission"].push(testGroupId);
       permissionsBeforeTesting.workflowitem["intent.grantPermission"].push(testGroupId);
       // user from testgroup grant other group some permission
       cy.login(testUser2.id, "test");
 
-      cy.get("[data-test=show-workflowitem-permissions]")
-        .first()
-        .click();
+      cy.get("[data-test=show-workflowitem-permissions]").first().click();
       // Add permission
       changePermissionInGui("workflowitem.intent.revokePermission", groupToGivePermissions);
       cy.get("[data-test=permission-submit]").click();
       // Confirmation opens
       // listPermissions calls are done
       cy.get("[data-test=additional-actions]").within(() => {
-        cy.get("[data-test=actions-table-body]")
-          .should("be.visible")
-          .children()
-          .should("have.length", 8);
+        cy.get("[data-test=actions-table-body]").should("be.visible").children().should("have.length", 8);
       });
       // Make sure cypress waits for future listPermissions calls
       cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
@@ -466,7 +415,7 @@ describe("Workflowitem Permissions", function() {
             subprojectId,
             workflowitemId,
             "workflowitem.intent.listPermissions",
-            testGroupId
+            testGroupId,
           ),
           cy.revokeWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.list", testGroupId),
           cy.revokeWorkflowitemPermission(
@@ -474,25 +423,23 @@ describe("Workflowitem Permissions", function() {
             subprojectId,
             workflowitemId,
             "workflowitem.intent.revokePermission",
-            groupToGivePermissions
-          )
+            groupToGivePermissions,
+          ),
         ]).then(() => {
           assertUnchangedPermissions(
             addViewPermissions(permissionsBeforeTesting, groupToGivePermissions),
             projectId,
             subprojectId,
-            workflowitemId
+            workflowitemId,
           );
         });
       });
     });
   });
 
-  it("Granting assign/grant/revoke permissions additionally generates an action to grant 'list permissions'-permissions", function() {
+  it("Granting assign/grant/revoke permissions additionally generates an action to grant 'list permissions'-permissions", function () {
     // Check assign
-    cy.get("[data-test=show-workflowitem-permissions]")
-      .first()
-      .click();
+    cy.get("[data-test=show-workflowitem-permissions]").first().click();
     changePermissionInGui("workflowitem.assign", testUser3.id);
     cy.get("[data-test=permission-submit]").click();
     // Confirmation opens (for workflowitem.assign intent, project.intent.listPermission and subproject.intent.listPermissions are needed)
@@ -514,7 +461,7 @@ describe("Workflowitem Permissions", function() {
     cy.get("[data-test=confirmation-dialog-cancel]").click();
   });
 
-  it("Confirmation of revoking multiple permissions changes permissions correctly", function() {
+  it("Confirmation of revoking multiple permissions changes permissions correctly", function () {
     let permissionsCopy;
     Cypress.Promise.all([
       cy.grantProjectPermission(projectId, "project.list", testUser.id),
@@ -528,22 +475,20 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testUser.id
-      )
+        testUser.id,
+      ),
     ]).then(() => {
-      cy.listProjectPermissions(projectId).then(permissions => {
+      cy.listProjectPermissions(projectId).then((permissions) => {
         permissionsBeforeTesting.project = permissions;
       });
-      cy.listSubprojectPermissions(projectId, subprojectId).then(permissions => {
+      cy.listSubprojectPermissions(projectId, subprojectId).then((permissions) => {
         permissionsBeforeTesting.subproject = permissions;
       });
-      cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then(permissions => {
+      cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then((permissions) => {
         permissionsBeforeTesting.workflowitem = permissions;
         permissionsCopy = _cloneDeep(permissionsBeforeTesting);
 
-        cy.get("[data-test=show-workflowitem-permissions]")
-          .first()
-          .click();
+        cy.get("[data-test=show-workflowitem-permissions]").first().click();
         // Remove permissions
         changePermissionInGui("workflowitem.update", testUser.id);
         changePermissionInGui("workflowitem.list", testUser.id);
@@ -560,13 +505,13 @@ describe("Workflowitem Permissions", function() {
         permissionsCopy.workflowitem = removePermission(
           permissionsCopy.workflowitem,
           "workflowitem.update",
-          testUser.id
+          testUser.id,
         );
         permissionsCopy.workflowitem = removePermission(permissionsCopy.workflowitem, "workflowitem.list", testUser.id);
         permissionsCopy.workflowitem = removePermission(
           permissionsCopy.workflowitem,
           "workflowitem.intent.listPermissions",
-          testUser.id
+          testUser.id,
         );
 
         // Check if the 3 permissions are revoked correctly
@@ -581,7 +526,7 @@ describe("Workflowitem Permissions", function() {
     });
   });
 
-  it("Grant group Permission and test if their users have them", function() {
+  it("Grant group Permission and test if their users have them", function () {
     let filteredWorkflowPermissions;
     Cypress.Promise.all([
       cy.grantProjectPermission(projectId, "project.list", testGroupId),
@@ -597,14 +542,14 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testGroupId
-      )
+        testGroupId,
+      ),
     ]).then(() => {
       // login as group-user
       cy.login(testUser2.id, "test");
       cy.visit(`/projects`);
 
-      cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then(permissions => {
+      cy.listWorkflowitemPermissions(projectId, subprojectId, workflowitemId).then((permissions) => {
         filteredWorkflowPermissions = filterPermissionsById(permissions, testGroupId);
         let isWorkflowtPermissionSet =
           filteredWorkflowPermissions.includes("workflowitem.list") &&
@@ -627,12 +572,12 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testGroupId
+        testGroupId,
       );
     });
   });
 
-  it("Shows permission required dialog when grant permissions on intents is missing", function() {
+  it("Shows permission required dialog when grant permissions on intents is missing", function () {
     cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
 
     Cypress.Promise.all([
@@ -652,9 +597,9 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testUser4.id
+        testUser4.id,
       ),
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.assign", testUser4.id)
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.assign", testUser4.id),
     ]).then(() => {
       // Visit Subproject with Test User
       cy.login(testUser4.id, "test");
@@ -664,10 +609,7 @@ describe("Workflowitem Permissions", function() {
       cy.get("[data-test=single-select]").click();
 
       // Try to assign it to Test User 2
-      cy.get("[data-test='single-select-list']")
-        .find(`li[value*='${testUser2.id}']`)
-        .scrollIntoView()
-        .click();
+      cy.get("[data-test='single-select-list']").find(`li[value*='${testUser2.id}']`).scrollIntoView().click();
 
       cy.wait("@listWorkflowitemPermissions");
 
@@ -694,13 +636,13 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testUser4.id
+        testUser4.id,
       );
     });
   });
 
   //not working
-  it("Lists required permissions and permitted users in PermissionRequired dialog", function() {
+  it("Lists required permissions and permitted users in PermissionRequired dialog", function () {
     cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
 
     Cypress.Promise.all([
@@ -720,9 +662,9 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testUser4.id
+        testUser4.id,
       ),
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.assign", testUser4.id)
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.assign", testUser4.id),
     ]).then(() => {
       // Visit Subproject with Test User
       cy.login(testUser4.id, "test");
@@ -749,7 +691,7 @@ describe("Workflowitem Permissions", function() {
         "Grant subproject permissions",
         "Workflowitem",
         "witem-witem-assign",
-        "Grant workflowitem permission"
+        "Grant workflowitem permission",
       ];
       assertTableData("permission-required-intent-table", intentValues);
 
@@ -773,12 +715,12 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testUser4.id
+        testUser4.id,
       );
     });
   });
 
-  it("Lists workflowItem grant permission", function() {
+  it("Lists workflowItem grant permission", function () {
     cy.intercept(apiRoute + "/workflowitem.intent.listPermissions*").as("listWorkflowitemPermissions");
 
     Cypress.Promise.all([
@@ -800,9 +742,9 @@ describe("Workflowitem Permissions", function() {
         subprojectId,
         workflowitemId,
         "workflowitem.intent.listPermissions",
-        testUser4.id
+        testUser4.id,
       ),
-      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.assign", testUser4.id)
+      cy.grantWorkflowitemPermission(projectId, subprojectId, workflowitemId, "workflowitem.assign", testUser4.id),
     ]).then(() => {
       // Visit Subproject with Test User
       cy.login(testUser4.id, "test");
@@ -812,10 +754,7 @@ describe("Workflowitem Permissions", function() {
       cy.get("[data-test=single-select]").click();
 
       // Try to assign it to Test User 2
-      cy.get("[data-test='single-select-list']")
-        .find(`li[value*='${testUser2.id}']`)
-        .scrollIntoView()
-        .click();
+      cy.get("[data-test='single-select-list']").find(`li[value*='${testUser2.id}']`).scrollIntoView().click();
 
       cy.wait("@listWorkflowitemPermissions");
 
@@ -851,7 +790,7 @@ describe("Workflowitem Permissions", function() {
       subprojectId,
       workflowitemId,
       "workflowitem.intent.listPermissions",
-      testUser4.id
+      testUser4.id,
     );
   });
 });

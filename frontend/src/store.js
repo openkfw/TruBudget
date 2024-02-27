@@ -8,7 +8,7 @@ import { createLogger } from "redux-logger";
 import createSagaMiddleware from "redux-saga";
 
 import loggerOptions from "./logging/logger";
-import { loadState, persistState } from "./localStorage";
+import { loadFromLocalStorage, saveToLocalStorage } from "./localStorage";
 import rootReducer, { createReduxHistory, routerMiddleware } from "./reducers";
 import rootSaga from "./sagas";
 
@@ -21,7 +21,7 @@ function configureTBStore() {
   // 3. redux-debounced
   // 4. redux-logger with custom options
 
-  const persistedState = loadState();
+  const persistedState = loadFromLocalStorage();
 
   const store = configureStore({
     reducer: rootReducer,
@@ -34,7 +34,7 @@ function configureTBStore() {
   });
 
   store.subscribe(() => {
-    persistState(store.getState());
+    saveToLocalStorage(store.getState());
   });
 
   // Extensions
