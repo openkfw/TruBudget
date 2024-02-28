@@ -19,22 +19,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
 
-## [2.8.0] - YYYY-MM-DD
 
-<!-- ## Unreleased -->
+## [2.8.0] - 2024-02-28
 
 ### Added
 
 - Possibility to delete uploaded files from external storage. [#1488](https://github.com/openkfw/TruBudget/issues/1488)
 - Operator has an option to customize live update interval via REACT_APP_POLLING_INTERVAL frontend env variable [#1635](https://github.com/openkfw/TruBudget/issues/1635)
+- Possibility to switch to disable/enable live update by user [#1665](https://github.com/openkfw/TruBudget/issues/1665)
+- Possibility to upload external document link instead of document [#1569](https://github.com/openkfw/TruBudget/issues/1569)
 
-<!-- ### Changed -->
+### Changed
 
-<!-- ### Deprecated -->
+- Dialog form validation for new user creation [#1660](https://github.com/openkfw/TruBudget/issues/1660)
 
-<!-- ### Removed -->
+### Fixed
 
-<!-- ### Fixed -->
+- Fixed search query in workflowitems not processed from URL [#1627](https://github.com/openkfw/TruBudget/issues/1627)
+
 
 ## [2.7.0] - 2024-01-31
 
@@ -1072,7 +1074,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.7.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.8.0...main
+[2.8.0]: https://github.com/openkfw/TruBudget/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/openkfw/TruBudget/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/openkfw/TruBudget/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/openkfw/TruBudget/compare/v2.4.0...v2.5.0

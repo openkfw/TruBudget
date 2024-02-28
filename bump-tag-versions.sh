@@ -22,6 +22,7 @@ for project in "${trubudget_projects[@]}"; do
         echo "Auditing all dependencies ..."
         eval "npm run audit"
     fi
+    eval "npm install"
     eval "cd .."
 done
 
@@ -29,3 +30,4 @@ eval "npm install --no-audit"
 eval "npm audit fix"
 echo "Auditing dependencies ..."
 eval "npm run audit"
+eval "npm install --no-audit"
