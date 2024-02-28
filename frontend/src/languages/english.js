@@ -182,7 +182,11 @@ const en = {
     assigned_workflowitems: "Assigned workflowitems",
     assigned_message: "Before disabling, this user has to be unassigned from following elements",
     not_assigned_message: "This user is not assigned to any project, subproject and workflowitem and can be disabled",
-    hidden_assignments: "Further redacted {0}"
+    hidden_assignments: "Further redacted {0}",
+    account_name_error: "Account name cannot be empty",
+    login_id_error: "Login ID cannot be empty",
+    password_error: "Password cannot be empty",
+    confirm_password_error: "Confirm password cannot be empty"
   },
 
   userProfile: {

@@ -20,7 +20,9 @@ import {
   REMOVE_INITIAL_USER,
   REMOVE_TEMPORARY_GLOBAL_PERMISSION,
   RESET_USER,
+  SET_CONFIRM_PASSWORD,
   SET_DISPLAYNAME,
+  SET_IS_USER_FORM_VALID,
   SET_ORGANIZATION,
   SET_PASSWORD,
   SET_USERNAME,
@@ -38,6 +40,7 @@ const defaultState = fromJS({
   userToAdd: {
     username: "",
     password: "",
+    confirmPassword: "",
     organization: "",
     displayName: ""
   },
@@ -57,7 +60,8 @@ const defaultState = fromJS({
   newPassword: "",
   newPasswordConfirmation: "",
   newPasswordsMatch: true,
-  usernameInvalid: false
+  usernameInvalid: false,
+  isUserFormValid: false
 });
 
 export default function userDashboardReducer(state = defaultState, action) {
@@ -90,6 +94,10 @@ export default function userDashboardReducer(state = defaultState, action) {
       return state.setIn(["userToAdd", "username"], action.username);
     case SET_PASSWORD:
       return state.setIn(["userToAdd", "password"], action.password);
+    case SET_CONFIRM_PASSWORD:
+      return state.setIn(["userToAdd", "confirmPassword"], action.confirmPassword);
+    case SET_IS_USER_FORM_VALID:
+      return state.set("isUserFormValid", action.isUserFormValid);
     case RESET_USER:
       return state.set("userToAdd", defaultState.get("userToAdd"));
     case TAB_INDEX:
