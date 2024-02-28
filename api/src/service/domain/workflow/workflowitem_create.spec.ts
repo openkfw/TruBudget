@@ -148,4 +148,26 @@ describe("Create workflowitem", () => {
     assert.isTrue(Result.isErr(result));
     assert.instanceOf(Result.unwrapErr(result), PreconditionError);
   });
+
+  it("creates a workflow", async () => {
+    const data: WorkflowitemCreate.RequestData = {
+      projectId: "test",
+      subprojectId: "dummy-subproject",
+      displayName: "test",
+      amountType: "N/A",
+      workflowitemType: "restricted",
+    };
+
+    const result = await WorkflowitemCreate.createWorkflowitem(ctx, alice, data, {
+      workflowitemExists: async (_projectId, _subprojectId, _workflowitemId) => false,
+      userExists: async (_userId) => true,
+      getUser: async (_userId) => normalUser,
+      getSubproject: async () => baseSubproject,
+      applyWorkflowitemType: () => [],
+      uploadDocumentToStorageService: () => Promise.resolve([]),
+      getAllDocumentReferences: async () => [],
+    });
+
+    assert.isFalse(Result.isErr(result));
+  });
 });

@@ -42,6 +42,7 @@ const pt = {
     disbursement: "Pagamentos programados",
     disconnected: "Desligada",
     display_name: "Mostrar nome",
+    delete: "Deletar",
     done: "Finalizar",
     download: "Download",
     edit: "Editar",
@@ -64,6 +65,7 @@ const pt = {
     incorrect_username_or_password: "ID ou palavra-passe de início de sessão incorrecta",
     invalid_tag: "Tag inválida",
     invalid_format: "Formato inválido",
+    link: "Link",
     name: "Nome ou descrição do usuário",
     next: "Próximo",
     no_budget: "Nenhum orçamento encontrado",
@@ -92,6 +94,8 @@ const pt = {
     not_assigned: "Não atribuído",
     not_disbursed: "Não pago",
     not_ok: "Não OK",
+    off: "Desligado",
+    on: "Ligado",
     ok: "Ok",
     not_projected: "Não projetado",
     open: "Aberto",
@@ -180,7 +184,11 @@ const pt = {
     assigned_message: "Antes de desabilitar, este usuário deve ser desatribuído nos seguintes elementos",
     not_assigned_message:
       "Este usuário não está atribuído a nenhum projeto, subprojeto e item de fluxo de trabalho e pode ser desativado",
-    hidden_assignments: "Mais redigido {0}"
+    hidden_assignments: "Mais redigido {0}",
+    account_name_error: "O nome da conta não pode ficar vazio",
+    login_id_error: "O ID de login não pode ficar vazio",
+    password_error: "A senha não pode ficar vazia",
+    confirm_password_error: "A confirmação da senha não pode ficar vazia"
   },
 
   userProfile: {
@@ -530,6 +538,7 @@ const pt = {
     workflowitem_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_revokePermission: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_update_docs: "{0} adicionou documentos ao item de workflow {1} ",
+    workflowitem_delete_docs: "{0} excluiu documentos do item de workflow {1} ",
     workflowitem_update: "{0} modificou o item de workflow {1} ",
     workflowitem_update_amount: "{0} modificou o item de workflow {1} despesas dentro {2} ",
     workflowitem_document_validated: "{0} documento de item de fluxo de trabalho validado denominado {1} em {2} ",

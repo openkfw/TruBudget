@@ -14,6 +14,10 @@ export interface StorageObject {
   base64: Base64String;
 }
 
+export interface DeleteResponse {
+  status: number;
+}
+
 export interface UploadResponse {
   id: string;
   secret: string;
@@ -44,4 +48,5 @@ export interface StorageServiceClientI {
    * @param secret secret to access the object's data
    */
   downloadObject(id: string, secret: string): Promise<Result.Type<StorageObject>>;
+  deleteObject(id: string, secret: string): Promise<Result.Type<DeleteResponse>>;
 }

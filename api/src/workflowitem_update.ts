@@ -5,7 +5,7 @@ import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
-import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
+import { UploadedDocumentOrLink, uploadedDocumentSchema } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
@@ -32,7 +32,7 @@ interface RequestBodyV1 {
     exchangeRate?: string;
     billingDate?: string;
     dueDate?: string;
-    documents?: UploadedDocument[];
+    documents?: UploadedDocumentOrLink[];
     additionalData?: object;
     tags?: string[];
   };
@@ -117,6 +117,10 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                     base64: {
                       type: "string",
                       example: "aGVsbG8gdGhpcyBpcyBhIHRlc3QgZm9yIHRoZSBhcGkgZG9j",
+                    },
+                    link: {
+                      type: "string",
+                      example: "https://www.example.com",
                     },
                   },
                 },

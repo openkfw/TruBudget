@@ -9,7 +9,7 @@ import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import {
-  DocumentReference,
+  DocumentOrExternalLinkReference,
   GenericDocument,
   hashDocument,
   UploadedDocument,
@@ -167,11 +167,15 @@ export async function createWorkflowitem(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const publisher = issuer.id;
-  const documents: DocumentReference[] = [];
+  const documents: DocumentOrExternalLinkReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (reqData.documents?.length) {
-    if (config.documentFeatureEnabled) {
+    const documentsCount = reqData.documents.filter((d) => d.base64).length;
+    if (
+      config.documentFeatureEnabled ||
+      (documentsCount === 0 && config.documentExternalLinksEnabled)
+    ) {
       logger.trace(
         { req: reqData },
         "Trying to hash documents in preparation for workflowitem_created event",
@@ -183,23 +187,29 @@ export async function createWorkflowitem(
       // preparation for workflowitem_created event
       for (const doc of reqData.documents || []) {
         doc.id = generateUniqueDocId(existingDocuments);
-        const hashedDocumentResult = await hashDocument(doc);
-        if (Result.isErr(hashedDocumentResult)) {
-          return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+        if ("base64" in doc) {
+          const hashedDocumentResult = await hashDocument(doc);
+          if (Result.isErr(hashedDocumentResult)) {
+            return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+          }
+          documents.push(hashedDocumentResult);
+        } else {
+          documents.push(doc);
         }
-        documents.push(hashedDocumentResult);
       }
       // upload documents to storage service
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
-        reqData.documents.map(async (document) => {
-          logger.trace({ document }, "Trying to upload document to storage service");
-          return repository.uploadDocumentToStorageService(
-            document.fileName || "",
-            document.base64,
-            document.id,
-          );
-        }),
+        reqData.documents
+          .filter((document) => "base64" in document)
+          .map(async (document) => {
+            logger.trace({ document }, "Trying to upload document to storage service");
+            return repository.uploadDocumentToStorageService(
+              document.fileName || "",
+              document.base64,
+              document.id,
+            );
+          }),
       );
       for (const result of documentUploadedEventsResults) {
         if (Result.isErr(result)) {

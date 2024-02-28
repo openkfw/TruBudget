@@ -33,6 +33,7 @@ export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
 export const WORKFLOW_DUEDATE = "WORKFLOW_DUEDATE";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
+export const WORKFLOW_DOCUMENT_EXTERNAL_LINK = "WORKFLOW_DOCUMENT_EXTERNAL_LINK";
 export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_FROM_TEMPLATE = "CREATE_WORKFLOW_FROM_TEMPLATE";
@@ -147,6 +148,9 @@ export const SEARCH_TERM_WORKFLOWITEM = "SEARCH_TERM_WORKFLOWITEM";
 export const STORE_FILTERED_WORKFLOWITEMS = "STORE_FILTERED_WORKFLOWITEMS";
 
 export const SEARCH_TAGS_WORKFLOWITEM = "SEARCH_TAGS_WORKFLOWITEM";
+
+export const WORKFLOW_SEARCH_BAR_DISPLAYED = "WORKFLOW_SEARCH_BAR_DISPLAYED";
+export const WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY = "WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY";
 
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
@@ -537,6 +541,14 @@ export function storeWorkflowDocument(base64, fileName) {
   };
 }
 
+export function storeWorkflowDocumentExternalLink(link, fileName) {
+  return {
+    type: WORKFLOW_DOCUMENT_EXTERNAL_LINK,
+    link: link,
+    fileName: fileName
+  };
+}
+
 export function storeWorkflowitemType(workflowitemType) {
   return {
     type: WORKFLOWITEM_TYPE,
@@ -883,5 +895,19 @@ export function setTagsOnly(tagsOnly) {
   return {
     type: SEARCH_TAGS_WORKFLOWITEM,
     tagsOnly
+  };
+}
+
+export function storeWorkflowSearchBarDisplayed(searchBarDisplayed) {
+  return {
+    type: WORKFLOW_SEARCH_BAR_DISPLAYED,
+    searchBarDisplayed
+  };
+}
+
+export function storeWorkflowSearchTermArray(searchTerms) {
+  return {
+    type: WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY,
+    searchTerms
   };
 }

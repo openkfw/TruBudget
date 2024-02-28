@@ -4,6 +4,7 @@ import { BusinessEvent } from "./domain/business_event";
 import * as DocumentShared from "./domain/document/document_shared";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
 import * as DocumentValidated from "./domain/document/document_validated";
+import * as DocumentDeleted from "./domain/document/document_deleted";
 import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
 import * as NodesLogged from "./domain/network/nodes_logged";
 import * as NodeDeclined from "./domain/network/node_declined";
@@ -107,6 +108,7 @@ export async function getLatestSnapshot(
   eventType: string,
 ): Promise<Result.Type<Subproject> | Result.Type<Project> | Result.Type<Workflowitem>> {
   const { searchKey, sourceFromSnapshot, parseFromSnapshot } = getSourceInfo(key, eventType);
+
   if (searchKey.length === 0) {
     return new VError("Event Type is not a valid Snapshot type");
   }
@@ -362,6 +364,7 @@ export function parseBusinessEvents(
 
 const EVENT_PARSER_MAP = {
   document_uploaded: DocumentUploaded.validate,
+  document_deleted: DocumentDeleted.validate,
   secret_published: DocumentShared.validate,
   storage_service_url_published: StorageServiceUrlUpdated.validate,
   global_permission_granted: GlobalPermissionsGranted.validate,

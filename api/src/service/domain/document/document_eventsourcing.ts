@@ -3,12 +3,13 @@ import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
 import * as DocumentUploaded from "./document_uploaded";
+import * as DocumentDeleted from "./document_deleted";
 import * as DocumentShared from "./document_shared";
 import { applyStorageServiceUrls as applyStorageServiceUrl } from "./storage_service_url_eventsourcing";
 import logger from "lib/logger";
-import { StoredDocument } from "./document";
+import { DeletedDocument, StoredDocument } from "./document";
 
-export function sourceDocuments(
+export function processDocumentEvents(
   ctx: Ctx,
   events: BusinessEvent[],
 ): { documents: StoredDocument[]; errors: Error[] } {
@@ -39,10 +40,19 @@ function apply(
   errors: EventSourcingError[],
 ): void {
   logger.trace({ event }, "Applying document event");
-  if (event.type === "document_uploaded") {
-    newDocumentFromEvent(ctx, documents, event, errors);
-  } else if (event.type === "storage_service_url_published") {
-    applyStorageServiceUrl(urls, event);
+  switch (event.type) {
+    case "document_uploaded": {
+      newDocumentFromEvent(ctx, documents, event, errors);
+      break;
+    }
+    case "storage_service_url_published": {
+      applyStorageServiceUrl(urls, event);
+      break;
+    }
+    case "document_deleted": {
+      deleteDocumentFromEvent(ctx, documents, event, errors);
+      break;
+    }
   }
 }
 
@@ -66,6 +76,26 @@ function newDocumentFromEvent(
   }
 
   documents.push(result);
+}
+
+function deleteDocumentFromEvent(
+  ctx: Ctx,
+  documents: StoredDocument[],
+  event: DocumentDeleted.Event,
+  errors: EventSourcingError[],
+): void {
+  const document: DeletedDocument = {
+    id: event.docId,
+  };
+
+  const result = DocumentDeleted.validateDocument(document);
+  if (Result.isErr(result)) {
+    errors.push(new EventSourcingError({ ctx, event }, result));
+    return;
+  }
+  const idx = documents.findIndex((e) => e.id === event.docId);
+
+  documents.splice(idx, 1);
 }
 
 export function sourceSecrets(

@@ -86,6 +86,8 @@ const stringifyHistoryEvent = (businessEvent, snapshot, getUserDisplayname) => {
         return formatString(strings.history.workflowitem_update_docs, createdBy, displayName);
       } else if (update && update.amount) {
         return formatString(strings.history.workflowitem_update_amount, createdBy, update.amount, displayName);
+      } else if (update.documentsDeleted && !_isEmpty(update.documentsDeleted)) {
+        return formatString(strings.history.workflowitem_delete_docs, createdBy, displayName);
       } else {
         return formatString(strings.history.workflowitem_update, createdBy, displayName);
       }

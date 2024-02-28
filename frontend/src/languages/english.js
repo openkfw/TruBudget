@@ -42,6 +42,7 @@ const en = {
     disbursement: "Projected",
     disconnected: "Offline",
     display_name: "Display Name",
+    delete: "Delete",
     done: "Done",
     download: "Download",
     edit: "Edit",
@@ -64,6 +65,7 @@ const en = {
     incorrect_username_or_password: "Incorrect login ID or password",
     invalid_tag: "Invalid tag",
     invalid_format: "Invalid format",
+    link: "Link",
     name: "Name",
     next: "Next",
     no_budget: "No budget found",
@@ -91,6 +93,8 @@ const en = {
     not_assigned: "Not assigned",
     not_disbursed: "Not paid",
     not_ok: "Not OK",
+    off: "Off",
+    on: "On",
     ok: "Ok",
     not_projected: "Not projected",
     open: "Open",
@@ -178,7 +182,11 @@ const en = {
     assigned_workflowitems: "Assigned workflowitems",
     assigned_message: "Before disabling, this user has to be unassigned from following elements",
     not_assigned_message: "This user is not assigned to any project, subproject and workflowitem and can be disabled",
-    hidden_assignments: "Further redacted {0}"
+    hidden_assignments: "Further redacted {0}",
+    account_name_error: "Account name cannot be empty",
+    login_id_error: "Login ID cannot be empty",
+    password_error: "Password cannot be empty",
+    confirm_password_error: "Confirm password cannot be empty"
   },
 
   userProfile: {
@@ -525,6 +533,7 @@ const en = {
     workflowitem_revokePermission_details: "{0} revoked permission {1} from {2} on {3}",
     workflowitem_revokePermission: "{0} revoked permission {1} from {2}",
     workflowitem_update_docs: "{0} added documents to workflowitem {1} ",
+    workflowitem_delete_docs: "{0} deleted documents from workflowitem {1} ",
     workflowitem_update: "{0} changed workflowitem {1} ",
     workflowitem_update_amount: "{0} changed workflowitem {1} budget in {2} ",
     workflowitem_document_validated: "{0} validated workflowitem document named {1} in {2} ",

@@ -42,6 +42,7 @@ const fr = {
     disbursement: "Paiement prévus",
     disconnected: "Déconnecté",
     display_name: "Afficher un nom",
+    delete: "Supprimer",
     done: "Terminé",
     download: "Télécharger",
     edit: "Modifier",
@@ -64,6 +65,7 @@ const fr = {
     incorrect_username_or_password: "Identifiant de connexion ou mot de passe incorrect",
     invalid_tag: "Tag invalide",
     invalid_format: "Format non valide",
+    link: "Lien",
     name: "compte utilisateur",
     next: "Suivant",
     no_budget: "Aucun budget trouvé",
@@ -92,6 +94,8 @@ const fr = {
     not_assigned: "Non engagé",
     not_disbursed: "Non payé",
     not_ok: "Pas OK",
+    off: "Désactivé",
+    on: "Activé",
     ok: "Ok",
     not_projected: "Non estimé",
     open: "Ouvert",
@@ -199,7 +203,8 @@ const fr = {
     approval_required: "Approbation exigée",
     assignee: "Responsable",
     edit_item: "Modifier l'étape de workflow",
-    exit_sort_mode: "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow",
+    exit_sort_mode:
+      "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow",
     exchange_rate: "taux de change",
     search_text: "rechercher des éléments",
     workflow_budget_allocated: "Engagé",
@@ -309,7 +314,11 @@ const fr = {
     assigned_message: "Avant d'être désactivé, cet utilisateur doit être désassigné des éléments suivants",
     not_assigned_message:
       "Cet utilisateur n'est affecté à aucun projet, composante et étape de workflow et peut être désactivé",
-    hidden_assignments: "Encore expurgé {0}"
+    hidden_assignments: "Encore expurgé {0}",
+    account_name_error: "Le nom du compte ne peut pas être vide",
+    login_id_error: `L'ID de connexion ne peut pas être vide`,
+    password_error: "Le mot de passe ne peut pas être vide",
+    confirm_password_error: "Confirmer que le mot de passe ne peut pas être vide"
   },
 
   nodesDashboard: {
@@ -532,6 +541,7 @@ const fr = {
     workflowitem_revokePermission_details: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_revokePermission: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_update_docs: "{0} a ajouté des documents au workflow {1} ",
+    workflowitem_delete_docs: "{0} a supprimé des documents du workflow {1} ",
     workflowitem_update: "{0} a modifié le workflow {1} ",
     workflowitem_update_amount: "{0} a modifié le workflow {1} budget dans {2}",
     workflowitem_document_validated: "{0} document d'élément de flux de travail validé nommé {1} dans {2} ",

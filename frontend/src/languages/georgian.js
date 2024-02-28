@@ -42,6 +42,7 @@ const ka = {
     disbursement: "დაგეგმილი გადახდები",
     disconnected: "offline",
     display_name: "სახელის ჩვენება",
+    delete: "წაშლა",
     done: "შესრულებულია",
     download: "ჩამოტვირთვა",
     edit: "რედაქტირება",
@@ -64,6 +65,7 @@ const ka = {
     incorrect_username_or_password: "არასწორი შესვლის პირადობა ან პაროლი",
     invalid_tag: "თაგი არასწორია",
     invalid_format: "არასწორი ფორმატი",
+    link: "Ბმული",
     name: "სახელი",
     next: "შემდეგ",
     no_budget: "ბიუჯეტი ვერ მოიძებნა",
@@ -91,6 +93,8 @@ const ka = {
     not_assigned: "არ არის გამოყოფილი",
     not_disbursed: "გადაუხდელი",
     not_ok: "Not OK",
+    off: "გამორთული",
+    on: "ჩართული",
     ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
     open: "Open",
@@ -179,7 +183,11 @@ const ka = {
     assigned_message: "გამორთვამდე ეს მომხმარებელი უნდა დაეკისროს შემდეგ ელემენტებს",
     not_assigned_message:
       "ამ მომხმარებელს არ ენიჭება რაიმე პროექტი, ქვეპროექტი და სამუშაო წრე და შეიძლება გამორთული იყოს",
-    hidden_assignments: "შემდგომი რედაქტირება {0}"
+    hidden_assignments: "შემდგომი რედაქტირება {0}",
+    account_name_error: "ანგარიშის სახელი არ შეიძლება იყოს ცარიელი",
+    login_id_error: "შესვლის ID არ შეიძლება იყოს ცარიელი",
+    password_error: "პაროლი არ შეიძლება იყოს ცარიელი",
+    confirm_password_error: "დაადასტურეთ, რომ პაროლი არ შეიძლება იყოს ცარიელი"
   },
 
   userProfile: {
@@ -266,7 +274,8 @@ const ka = {
     assignee: "პასუხისმგებელი",
     search_text: "საძიებო ნივთები",
     edit_item: "Workflowitem-ის რედაქტირება",
-    exit_sort_mode: "ეს ღილაკი ახლა გამორთულია. დალაგების რეჟიმიდან გამოდით სამუშაო პროცესის ახალი ელემენტების შესაქმნელად",
+    exit_sort_mode:
+      "ეს ღილაკი ახლა გამორთულია. დალაგების რეჟიმიდან გამოდით სამუშაო პროცესის ახალი ელემენტების შესაქმნელად",
     exchange_rate: "გაცვლითი კურსი",
     workflow_budget_allocated: "გამოყოფილი",
     workflow_budget_disbursed: "გადახდილი",
@@ -527,6 +536,7 @@ const ka = {
     workflowitem_revokePermission_details: "{0} გაუუქმა {2}-სა და {3}-ს ნებართვა {1}",
     workflowitem_revokePermission: "{0} გაუუქმა {2}-ს ნებართვა {1}",
     workflowitem_update_docs: "{0} დაამატა დოკუმენტები workflowitem-ს {1} ",
+    workflowitem_delete_docs: "{0} წაშლილი დოკუმენტები სამუშაო პროცესიდან {1}",
     workflowitem_update: "{0} შეცვალა workflowitem-ი {1} ",
     workflowitem_update_amount: "{0} შეცვალა workflowitem-ი {1} ბიუჯეტი წელს {2}",
     workflowitem_document_validated: "{0} დადასტურებულია workflowitem სისტემაში მითითებული დოკუმენტ {1} ი {2} ",

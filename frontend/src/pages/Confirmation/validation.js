@@ -79,10 +79,18 @@ schemes
         amountType: Joi.string().required(),
         currency: Joi.string().required(),
         description: Joi.string().allow(""),
-        documents: Joi.array().items({
-          base64: Joi.string().required().allow(""),
-          fileName: Joi.string().allow("")
-        }),
+        documents: Joi.array().items(
+          Joi.alternatives([
+            {
+              base64: Joi.string().required().allow(""),
+              fileName: Joi.string().allow("")
+            },
+            {
+              link: Joi.string().uri().required(),
+              fileName: Joi.string().allow("")
+            }
+          ])
+        ),
         status: Joi.string().valid("open"),
         dueDate: Joi.date().allow(null),
         workflowitemType: Joi.string().valid("restricted", "general"),

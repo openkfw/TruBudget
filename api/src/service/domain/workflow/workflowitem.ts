@@ -4,7 +4,7 @@ import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
-import { DocumentReference, documentReferenceSchema } from "../document/document";
+import { DocumentOrExternalLinkReference, documentReferenceSchema } from "../document/document";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
@@ -35,7 +35,7 @@ export interface Workflowitem {
   status: "open" | "closed";
   rejectReason?: string;
   assignee: string;
-  documents: DocumentReference[];
+  documents: DocumentOrExternalLinkReference[];
   permissions: Permissions;
   log: WorkflowitemTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:

@@ -43,6 +43,7 @@ const de = {
     disbursement: "Auszahlung",
     disconnected: "Offline",
     display_name: "Anzeige-Name",
+    delete: "Löschen",
     done: "Fertig",
     download: "Download",
     edit: "Ändern",
@@ -61,6 +62,7 @@ const de = {
     incorrect_password: "Falsches Passwort",
     incorrect_username: "Unbekannte Login-ID",
     incorrect_username_or_password: "Ungültige Login-ID oder falsches Passwort",
+    link: "Link",
     next: "Weiter",
     no_budget: "Kein Budget gefunden",
     no_budget_project: "Um ein Budget für Ihr Projekt hinzuzufügen, gehen Sie zurück zur Hauptseite.",
@@ -86,6 +88,8 @@ const de = {
     not_projected: "Nicht projiziert",
     not_disbursed: "Nicht ausgezahlt",
     not_ok: "Nicht Ok",
+    off: "Aus",
+    on: "An",
     ok: "Ok",
     open: "Offen",
     organization: "Organisation",
@@ -196,7 +200,8 @@ const de = {
     approval_required: "Bestätigung benötigt",
     assignee: "Verantwortlicher",
     edit_item: "Workflowitem ändern",
-    exit_sort_mode: "Diese Schaltfläche ist jetzt deaktiviert. Verlassen Sie den Sortiermodus, um neue Workflow-Elemente zu erstellen",
+    exit_sort_mode:
+      "Diese Schaltfläche ist jetzt deaktiviert. Verlassen Sie den Sortiermodus, um neue Workflow-Elemente zu erstellen",
     exchange_rate: "Wechselkurs",
     search_text: "Workflowitems durchsuchen",
     workflow_budget_allocated: "Zugeteilt",
@@ -307,7 +312,11 @@ const de = {
       "Vor dem Deaktivieren muss für diesen Benutzer die Zuordnung zu folgenden Elementen aufgehoben werden",
     not_assigned_message:
       "Dieser Benutzer ist keinem Projekt, Subprojekt und Workflowitem zugeordnet und kann deaktiviert werden.",
-    hidden_assignments: "Weitere ausgeblendete {0}"
+    hidden_assignments: "Weitere ausgeblendete {0}",
+    account_name_error: "Der Kontoname darf nicht leer sein",
+    login_id_error: "Die Anmelde-ID darf nicht leer sein",
+    password_error: "Passwort kann nicht leer sein",
+    confirm_password_error: "Bestätigen Sie, dass das Passwort nicht leer sein darf"
   },
   userProfile: {
     invalid_email_address: "Ungültige E-Mail Adresse"
@@ -509,6 +518,7 @@ const de = {
     workflowitem_revokePermission_details: "{0} widerrief die Erlaubnis {1} für {2} am {3}",
     workflowitem_revokePermission: "{0} widerrief die Erlaubnis {1} von {3} von {2}",
     workflowitem_update_docs: "{0} fügte Dokumente zu Workflowitem {1} hinzu",
+    workflowitem_delete_docs: "{0} löschte Dokumente von Workflowitem {1}",
     workflowitem_update: "{0} veränderte Workflowitem {1} ",
     workflowitem_update_amount: "{0} veränderte Workflowitem {1} Budget in {2} ",
     workflowitem_document_validated: "{0} validiertes Workflowitem-Dokument mit dem Namen {1} in {2} ",

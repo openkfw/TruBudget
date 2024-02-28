@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
 
+import DeleteIcon from "@mui/icons-material/Delete";
 import ValidationIcon from "@mui/icons-material/FindInPage";
 import FingerPrint from "@mui/icons-material/Fingerprint";
 import DownloadIcon from "@mui/icons-material/GetApp";
+import LinkIcon from "@mui/icons-material/Link";
 import { TableHead } from "@mui/material";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
@@ -12,6 +14,7 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
@@ -112,7 +115,16 @@ class DocumentOverview extends Component {
   };
 
   generateDocumentList = () => {
-    const { workflowitemId, projectId, subprojectId, documents, validatedDocuments, downloadDocument } = this.props;
+    const {
+      workflowitemId,
+      projectId,
+      subprojectId,
+      documents,
+      validatedDocuments,
+      downloadDocument,
+      deleteDocument,
+      workflowitemStatus
+    } = this.props;
     const header = this.generateDocumentListHeader();
     const rows = documents.map((document, index) => {
       let validated = undefined;
@@ -125,16 +137,35 @@ class DocumentOverview extends Component {
             <OverflowTooltip text={fileName} maxWidth="200px" />
           </TableCell>
           <TableCell>
-            <div style={{ display: "flex" }}>
-              <FingerPrint style={{ paddingRight: "10px", paddingBottom: "0px" }} />
-              <OverflowTooltip text={hash} maxWidth="70px" />
-            </div>
+            {document.link ? (
+              <Tooltip title={document.link}>
+                <div style={{ overflow: "hidden", maxWidth: "170px", color: "#333333" }}>{document.link}</div>
+              </Tooltip>
+            ) : (
+              <div style={{ display: "flex" }}>
+                <FingerPrint style={{ paddingRight: "10px", paddingBottom: "0px" }} />
+                <OverflowTooltip text={hash} maxWidth="70px" />
+              </div>
+            )}
           </TableCell>
           <TableCell>
             <div style={styles.actionContainer}>
-              {this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
+              {document.id &&
+                document.hash &&
+                this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
+              {document.id &&
+                document.hash &&
+                this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)}
+              {document.id && document.link && this.generateLinkButton(document)}
               {document.id
-                ? this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)
+                ? this.renderDeleteButton({
+                    deleteDocument,
+                    projectId,
+                    subprojectId,
+                    workflowitemId,
+                    document,
+                    workflowitemStatus
+                  })
                 : null}
             </div>
           </TableCell>
@@ -174,7 +205,15 @@ class DocumentOverview extends Component {
   );
 
   render = () => {
-    const { documents, validatedDocuments, workflowitemId, projectId, subprojectId, downloadDocument } = this.props;
+    const {
+      documents,
+      validatedDocuments,
+      workflowitemId,
+      projectId,
+      subprojectId,
+      downloadDocument,
+      workflowitemStatus
+    } = this.props;
     return (
       <Table>
         {_isEmpty(documents)
@@ -185,7 +224,8 @@ class DocumentOverview extends Component {
               subprojectId,
               documents,
               validatedDocuments,
-              downloadDocument
+              downloadDocument,
+              workflowitemStatus
             })}
       </Table>
     );
@@ -202,6 +242,37 @@ class DocumentOverview extends Component {
       >
         <DownloadIcon />
         {strings.common.download}
+      </Button>
+    );
+  }
+
+  generateLinkButton(document) {
+    return (
+      <Button
+        aria-label="Open external link"
+        data-test="open-external-link"
+        component="span"
+        onClick={(event) => {
+          event.preventDefault();
+          window.open(document.link, "_blank");
+        }}
+      >
+        <LinkIcon />
+        {strings.common.open}
+      </Button>
+    );
+  }
+
+  renderDeleteButton({ deleteDocument, projectId, subprojectId, workflowitemId, document, workflowitemStatus }) {
+    return (
+      <Button
+        data-test="delete-document"
+        component="span"
+        disabled={!document.available || workflowitemStatus !== "open"}
+        onClick={() => deleteDocument(projectId, subprojectId, workflowitemId, document.id)}
+      >
+        <DeleteIcon />
+        {strings.common.delete}
       </Button>
     );
   }
