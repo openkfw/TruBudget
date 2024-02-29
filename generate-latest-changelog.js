@@ -60,7 +60,10 @@ ${changelogText}`);
 
   const newText = file.replace(template, `${template}
   
-  ${newReleaseChangelog}`);
+  ${newReleaseChangelog}`)
+    .replace(/\[unreleased\]: https:\/\/github\.com\/openkfw\/TruBudget\/compare\/v(\d+\.\d+\.\d+)\.\.\.main[\r\n]\[(\d+\.\d+\.\d+)\]/m,
+    `[unreleased]: https://github.com/openkfw/TruBudget/compare/v${version}...main\n[${version}]: https://github.com/openkfw/TruBudget/compare/v$1...v${version}\n[$1]`
+    );
 
   fs.writeFileSync(changelogPath, newText, 'utf-8');
 }
