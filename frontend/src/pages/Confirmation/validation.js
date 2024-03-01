@@ -1,198 +1,199 @@
-import Joi from "@hapi/joi";
+import * as Yup from "yup";
 
-const validationForIdNamePermissionneeded = Joi.object({
-  id: Joi.string().required(),
-  displayName: Joi.string().required(),
-  listPermissionsNeeded: Joi.boolean()
+const documentSchema1 = Yup.object().shape({
+  base64: Yup.string().required().ensure(),
+  fileName: Yup.string().ensure()
 });
 
-const validatorForIdName = Joi.object({
-  id: Joi.string().required(),
-  displayName: Joi.string()
+const documentSchema2 = Yup.object().shape({
+  link: Yup.string().url().required(),
+  fileName: Yup.string().ensure()
 });
 
-const validatorForId = Joi.object({ id: Joi.string().required() });
+const validationForIdNamePermissionneeded = Yup.object({
+  id: Yup.string().required(),
+  displayName: Yup.string().required(),
+  listPermissionsNeeded: Yup.boolean()
+});
 
-const schemes = new Map();
-schemes
+const validatorForIdName = Yup.object({
+  id: Yup.string().required(),
+  displayName: Yup.string()
+});
+
+const validatorForId = Yup.object({ id: Yup.string().required() });
+
+const schemas = new Map();
+schemas
   .set(
     "project.assign",
-    Joi.object({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      assignee: Joi.object().concat(validatorForIdName)
+    Yup.object({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      assignee: Yup.object().concat(validatorForIdName)
     })
   )
   .set(
     "project.createSubproject",
-    Joi.object({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      validator: Joi.object().optional(),
-      subproject: Joi.object({
-        listPermissionsNeeded: Joi.boolean(),
-        projectId: Joi.string().required(),
-        displayName: Joi.string().required(),
-        validator: Joi.object().optional(),
-        projectedBudgets: Joi.array()
-          .items({
-            organization: Joi.string().required(),
-            value: Joi.string().required(),
-            currencyCode: Joi.string().required()
-          })
+    Yup.object({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      validator: Yup.object().optional(),
+      subproject: Yup.object({
+        listPermissionsNeeded: Yup.boolean(),
+        projectId: Yup.string().required(),
+        displayName: Yup.string().required(),
+        validator: Yup.object().optional(),
+        projectedBudgets: Yup.array()
+          .of(
+            Yup.object().shape({
+              organization: Yup.string().required(),
+              value: Yup.string().required(),
+              currencyCode: Yup.string().required()
+            })
+          )
           .optional(),
-        currency: Joi.string().required(),
-        description: Joi.string().allow(""),
-        workflowitemType: Joi.string().valid("restricted", "general", ""),
-        subprojectDisplayName: Joi.string().required()
+        currency: Yup.string().required(),
+        description: Yup.string().ensure(),
+        workflowitemType: Yup.string().oneOf(["restricted", "general", ""]),
+        subprojectDisplayName: Yup.string().required()
       })
     })
   )
   .set(
     "subproject.assign",
-    Joi.object({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      assignee: Joi.object().concat(validatorForIdName),
-      subproject: Joi.object().concat(validationForIdNamePermissionneeded)
+    Yup.object({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      assignee: Yup.object().concat(validatorForIdName),
+      subproject: Yup.object().concat(validationForIdNamePermissionneeded)
     })
   )
   .set(
     "workflowitem.assign",
-    Joi.object({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      assignee: Joi.object().concat(validatorForIdName),
-      subproject: Joi.object().concat(validationForIdNamePermissionneeded),
-      workflowitem: Joi.object().concat(validationForIdNamePermissionneeded)
+    Yup.object({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      assignee: Yup.object().concat(validatorForIdName),
+      subproject: Yup.object().concat(validationForIdNamePermissionneeded),
+      workflowitem: Yup.object().concat(validationForIdNamePermissionneeded)
     })
   )
   .set(
     "subproject.createWorkflowitem",
-    Joi.object({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      assignee: Joi.object().concat(validatorForIdName),
-      subproject: Joi.object().concat(validationForIdNamePermissionneeded),
-      workflowitem: Joi.object({
-        listPermissionsNeeded: Joi.boolean(),
-        projectId: Joi.string().required(),
-        subprojectId: Joi.string().required(),
-        displayName: Joi.string().required(),
-        amount: Joi.string().allow(""),
-        exchangeRate: Joi.number(),
-        amountType: Joi.string().required(),
-        currency: Joi.string().required(),
-        description: Joi.string().allow(""),
-        documents: Joi.array().items(
-          Joi.alternatives([
-            {
-              base64: Joi.string().required().allow(""),
-              fileName: Joi.string().allow("")
-            },
-            {
-              link: Joi.string().uri().required(),
-              fileName: Joi.string().allow("")
-            }
-          ])
-        ),
-        status: Joi.string().valid("open"),
-        dueDate: Joi.date().allow(null),
-        workflowitemType: Joi.string().valid("restricted", "general"),
-        projectDisplayName: Joi.string().required(),
-        subprojectDisplayName: Joi.string().required(),
-        assignee: Joi.string().required(),
-        assigneeDisplayName: Joi.string().required(),
-        tags: Joi.array().items(Joi.string())
+    Yup.object({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      assignee: Yup.object().concat(validatorForIdName),
+      subproject: Yup.object().concat(validationForIdNamePermissionneeded),
+      workflowitem: Yup.object({
+        listPermissionsNeeded: Yup.boolean(),
+        projectId: Yup.string().required(),
+        subprojectId: Yup.string().required(),
+        displayName: Yup.string().required(),
+        amount: Yup.string().ensure(),
+        exchangeRate: Yup.number(),
+        amountType: Yup.string().required(),
+        currency: Yup.string().required(),
+        description: Yup.string().ensure(),
+        documents: Yup.array().of(Yup.lazy((value) => (value && value.base64 ? documentSchema1 : documentSchema2))),
+        status: Yup.string().oneOf(["open"]),
+        dueDate: Yup.date().nullable(),
+        workflowitemType: Yup.string().oneOf(["restricted", "general"]),
+        projectDisplayName: Yup.string().required(),
+        subprojectDisplayName: Yup.string().required(),
+        assignee: Yup.string().required(),
+        assigneeDisplayName: Yup.string().required(),
+        tags: Yup.array().of(Yup.string())
       })
     })
   )
   .set(
     "project.close",
-    Joi.object().keys({
-      project: Joi.object().concat(validatorForId)
+    Yup.object().shape({
+      project: Yup.object().concat(validatorForId)
     })
   )
   .set(
     "subproject.close",
-    Joi.object().keys({
-      project: Joi.object().concat(validatorForId),
-      subproject: Joi.object().concat(validatorForId)
+    Yup.object().shape({
+      project: Yup.object().concat(validatorForId),
+      subproject: Yup.object().concat(validatorForId)
     })
   )
   .set(
     "workflowitem.close",
-    Joi.object().keys({
-      project: Joi.object().concat(validatorForId),
-      subproject: Joi.object().concat(validatorForId),
-      workflowitem: Joi.object().concat(validatorForId),
-      isRejectDialog: Joi.boolean()
+    Yup.object().shape({
+      project: Yup.object().concat(validatorForId),
+      subproject: Yup.object().concat(validatorForId),
+      workflowitem: Yup.object().concat(validatorForId),
+      isRejectDialog: Yup.boolean()
     })
   )
   .set(
     "project.intent.grantPermission",
-    Joi.object().keys({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      grantee: Joi.object().concat(validatorForIdName),
-      intent: Joi.string().required()
+    Yup.object().shape({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      grantee: Yup.object().concat(validatorForIdName),
+      intent: Yup.string().required()
     })
   )
   .set(
     "project.intent.revokePermission",
-    Joi.object().keys({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      revokee: Joi.object().concat(validatorForIdName),
-      intent: Joi.string().required()
+    Yup.object().shape({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      revokee: Yup.object().concat(validatorForIdName),
+      intent: Yup.string().required()
     })
   )
   .set(
     "subproject.intent.grantPermission",
-    Joi.object().keys({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      subproject: Joi.object().concat(validationForIdNamePermissionneeded),
-      grantee: Joi.object().concat(validatorForIdName),
-      intent: Joi.string().required()
+    Yup.object().shape({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      subproject: Yup.object().concat(validationForIdNamePermissionneeded),
+      grantee: Yup.object().concat(validatorForIdName),
+      intent: Yup.string().required()
     })
   )
   .set(
     "subproject.intent.revokePermission",
-    Joi.object().keys({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      subproject: Joi.object().concat(validationForIdNamePermissionneeded),
-      revokee: Joi.object().concat(validatorForIdName),
-      intent: Joi.string().required()
+    Yup.object().shape({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      subproject: Yup.object().concat(validationForIdNamePermissionneeded),
+      revokee: Yup.object().concat(validatorForIdName),
+      intent: Yup.string().required()
     })
   )
   .set(
     "workflowitem.intent.grantPermission",
-    Joi.object().keys({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      subproject: Joi.object().concat(validationForIdNamePermissionneeded),
-      workflowitem: Joi.object().concat(validationForIdNamePermissionneeded),
-      grantee: Joi.object().concat(validatorForIdName),
-      intent: Joi.string().required()
+    Yup.object().shape({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      subproject: Yup.object().concat(validationForIdNamePermissionneeded),
+      workflowitem: Yup.object().concat(validationForIdNamePermissionneeded),
+      grantee: Yup.object().concat(validatorForIdName),
+      intent: Yup.string().required()
     })
   )
   .set(
     "workflowitem.intent.revokePermission",
-    Joi.object().keys({
-      project: Joi.object().concat(validationForIdNamePermissionneeded),
-      subproject: Joi.object().concat(validationForIdNamePermissionneeded),
-      workflowitem: Joi.object().concat(validationForIdNamePermissionneeded),
-      revokee: Joi.object().concat(validatorForIdName),
-      intent: Joi.string().required()
+    Yup.object().shape({
+      project: Yup.object().concat(validationForIdNamePermissionneeded),
+      subproject: Yup.object().concat(validationForIdNamePermissionneeded),
+      workflowitem: Yup.object().concat(validationForIdNamePermissionneeded),
+      revokee: Yup.object().concat(validatorForIdName),
+      intent: Yup.string().required()
     })
   )
   .set(
     "global.enableUser",
-    Joi.object().keys({
-      userId: Joi.string().required()
+    Yup.object().shape({
+      userId: Yup.string().required()
     })
   )
   .set(
     "global.disableUser",
-    Joi.object().keys({
-      userId: Joi.string().required()
+    Yup.object().shape({
+      userId: Yup.string().required()
     })
   );
 
 export const validate = (intent, payload) => {
-  const schema = schemes.get(intent);
+  const schema = schemas.get(intent);
   if (!schema) throw new Error(`Validation schema for intent ${intent} not implemented yet`);
   const validatePayload = schema.validate(payload, { abortEarly: false }, (error) => error);
   if (!validatePayload.error) {
