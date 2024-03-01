@@ -1,9 +1,13 @@
 import * as Yup from "yup";
 
-Yup.addMethod(Yup.MixedSchema, "oneOfSchemas", (schemas) => {
-  return this.test("one-of-schemas", "Not all items in ${path} match one of the allowed schemas", (item) =>
-    schemas.some((schema) => schema.isValidSync(item, { strict: true }))
-  );
+const documentSchema1 = Yup.object().shape({
+  base64: Yup.string().required().ensure(),
+  fileName: Yup.string().ensure()
+});
+
+const documentSchema2 = Yup.object().shape({
+  link: Yup.string().url().required(),
+  fileName: Yup.string().ensure()
 });
 
 const validationForIdNamePermissionneeded = Yup.object({
@@ -39,11 +43,13 @@ schemas
         displayName: Yup.string().required(),
         validator: Yup.object().optional(),
         projectedBudgets: Yup.array()
-          .of({
-            organization: Yup.string().required(),
-            value: Yup.string().required(),
-            currencyCode: Yup.string().required()
-          })
+          .of(
+            Yup.object().shape({
+              organization: Yup.string().required(),
+              value: Yup.string().required(),
+              currencyCode: Yup.string().required()
+            })
+          )
           .optional(),
         currency: Yup.string().required(),
         description: Yup.string().ensure(),
@@ -85,18 +91,7 @@ schemas
         amountType: Yup.string().required(),
         currency: Yup.string().required(),
         description: Yup.string().ensure(),
-        documents: Yup.array().of(
-          Yup.mixed().oneOfSchemas([
-            {
-              base64: Yup.string().required().ensure(),
-              fileName: Yup.string().ensure()
-            },
-            {
-              link: Yup.string().url().required(),
-              fileName: Yup.string().ensure()
-            }
-          ])
-        ),
+        documents: Yup.array().of(Yup.lazy((value) => (value && value.base64 ? documentSchema1 : documentSchema2))),
         status: Yup.string().oneOf(["open"]),
         dueDate: Yup.date().nullable(),
         workflowitemType: Yup.string().oneOf(["restricted", "general"]),
