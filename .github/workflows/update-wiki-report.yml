@@ -14,6 +14,8 @@ jobs:
           repository: openkfw/TruBudget.wiki
       - name: Validate the files
         run: |
+          git config user.email "trubudget.devteam@accenture.com"
+          git config user.name "System bot"
           echo "some data for the file" >> Security-vulnerability-report.md
           git add .
           git commit -m "Test change"
