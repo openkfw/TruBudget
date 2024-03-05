@@ -1,0 +1,17 @@
+name: Label issue in review
+on:
+  pull_request:
+    types: [opened, edited]
+    branches:
+      - main
+jobs:
+  update-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out my other private repo
+        uses: actions/checkout@v4
+        with:
+          repository: openkfw/TruBudget.wiki
+      - name: Validate the files
+        run: ls
+        shell: bash
