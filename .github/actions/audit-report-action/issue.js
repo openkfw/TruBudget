@@ -1,5 +1,6 @@
 import { Config } from "./config";
 import { parse } from 'node-html-parser';
+import * as core from '@actions/core';
 
 const octokit = Config.octokit;
 const repo = Config.repo;
@@ -15,6 +16,7 @@ export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, active
   });
 
   const issueTitle = type === "fs" ? `${tag}: ${issueTitlePrefix} Project Vulnerabilities` : `${tag}: ${issueTitlePrefix} Image Vulnerabilities`;
+  const issueCategory = type === "fs" ? `npm audit` : `docker image audit`;
 
   const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
   if(activeVulnerabilities.length > 0) {
@@ -28,6 +30,9 @@ export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, active
       await closeIssue(vulnerabilityIssue.number);
     }
   } 
+
+  const markdown = createMarkdownList(activeVulnerabilities, vulnerabilityIdProjectMapping, issueCategory, tag);
+  core.setOutput("markdown", markdown);
 }
 
 async function updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping) {
@@ -102,6 +107,30 @@ async function createNewIssue(vulnerabilities, vulnerabilityIdProjectMapping, is
     body: root.toString(),
     labels: ["security"]
   });
+}
+
+
+function createMarkdownList(vulnerabilities, vulnerabilityIdProjectMapping, category, tag) {
+  let md = '';
+  md += '## Present Vulnerabilities';
+
+  md += '| SUBSCRIPTIONID | RESOURCEGROUP | VULNID | IDENTIFICATIONDATE | CATEGORY | CVE | CVSS	SEVERITY | DISPLAYNAME | RESOURCEID | RESOURCEID_SINGLE | AKTIV | HOST | OSDETAILS |\n';
+  md += '|----------------|---------------|--------|--------------------|----------|-----|---------------|-------------|------------|-------------------|-------|------|-----------|\n';
+  // md += '| Vulnerability ID | PkgName | Title | Severity | Status | Fixed Version | Published Date | Affects |\n';
+  // md += '|------------------|---------|-------|----------|--------|---------------|----------------|---------|';
+
+  for(const vulnerability of vulnerabilities) {
+    if(vulnerability.links && Array.isArray(vulnerability.links) && vulnerability.links.length > 0) {
+      for (const project of [...new Set(vulnerabilityIdProjectMapping.get(vulnerability.id))]) {
+        // md += `| ${vulnerability.id} | ${vulnerability.packageName} | ${vulnerability.title} | ${vulnerability.severity} | ${vulnerability.status} | ${vulnerability.fixedVersion ? vulnerability.fixedVersion : '-'} | ${vulnerability.publishedDate ? vulnerability.publishedDate : '-'} | ${project} |\n`;
+        md += `| | | ${vulnerability.id} | ${vulnerability.publishedDate ? vulnerability.publishedDate : '-'} | ${category} | ${vulnerability.id} | ${vulnerability.severity} | ${vulnerability.title} | ${project}-${tag} | ${project}-${tag} | Yes |  | package: ${vulnerability.packageName}, status: ${vulnerability.status}, fixedVersion: ${vulnerability.fixedVersion ? vulnerability.fixedVersion : '-'} |\n`;
+      }
+    }
+  }
+
+  md += `Last scan date: ${new Date(Date.now()).toLocaleDateString()}\n\n\n`;
+
+  return md;
 }
 
 async function closeIssue(issueNumber) {

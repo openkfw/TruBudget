@@ -25,6 +25,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install trivy
       - name: Audit images
+        id: audit-images
         uses: ./.github/actions/audit-report-action
         with:
           projects: frontend,api,blockchain,provisioning,e2e-test,excel-export-service,email-notification-service,storage-service,migration,frontend-collector
@@ -35,6 +36,19 @@ jobs:
           scan-type: image
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{matrix.tags}}
+      - name: Check out wiki repo
+        uses: actions/checkout@v4
+        with:
+          repository: openkfw/TruBudget.wiki
+      - name: Update wiki
+        run: |
+          git config user.email "trubudget.devteam@accenture.com"
+          git config user.name "System bot"
+          echo "${{ steps.audit-images.outputs.markdown }}" > Security-vulnerability-report-images-${{matrix.tags}}.md
+          git add .
+          git commit -m "Test change"
+          git push
+        shell: bash
 
   audit-libraries: 
     strategy:
@@ -63,6 +77,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install trivy
       - name: Audit filesystem
+        id: audit-filesystem
         uses: ./tools/.github/actions/audit-report-action
         with:
           projects: frontend,api,blockchain,provisioning,e2e-test,excel-export-service,email-notification-service,storage-service,logging-service,migration,frontend-collector

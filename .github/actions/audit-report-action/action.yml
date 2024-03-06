@@ -25,6 +25,9 @@ inputs:
     tag:
       required: true
       description: "Which release tag to run scan on"
+outputs:
+  markdown: 
+    description: 'Markdown table with list of vulnerabilities'
 runs:
   using: 'node20'
   main: 'dist/index.js'
