@@ -4,26 +4,27 @@ const { createOrUpdateIssues } = require('./issue');
 
 const run = async function() {
   if(Config.scanType === 'fs') {
-    await doFsAudit();
-  } else {
-    await doImageAudit();
-  }
+  await doFsAudit(Config.tag);
+} else {
+  await doImageAudit(Config.tag);
+}
 }
 
-async function doImageAudit() {
-  console.info("Performing image auditing on projects");
-  await doAudit('image');
+
+async function doImageAudit(tag) {
+  console.info(`Performing image auditing of projects on tag ${tag}`);
+  return await doAudit('image', tag);
 }
 
-async function doFsAudit() {
-  console.info("Performing file system auditing on projects");
-  await doAudit('fs');
+async function doFsAudit(tag) {
+  console.info(`Performing file system auditing on projects on tag ${tag}`);
+  await doAudit('fs', tag);
 }
 
-async function doAudit(type) {
+async function doAudit(type, tag) {
   const vulnerabilityIdProjectMapping = new Map();
   const activeVulnerabilities = [];
-  const projectsVulnerabilities = await Promise.all(Config.projects.map(type==='fs' ? performFsAudit : performImageAudit));
+  const projectsVulnerabilities = await Promise.all(Config.projects.map((project) => { return type==='fs' ? performFsAudit(project, tag) :  performImageAudit(project, tag)}));
   for (let i = 0; i < projectsVulnerabilities.length; i++) {
     const projectName = Config.projects[i];
     const projectVulnerabilities = projectsVulnerabilities[i];
@@ -37,7 +38,7 @@ async function doAudit(type) {
       }
     }
   }
-  await createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities, type);
+  return await createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities, type, tag);
 }
 
 validateConfig();

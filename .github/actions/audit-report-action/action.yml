@@ -22,6 +22,9 @@ inputs:
     token:
       required: true
       description: ""
+    tag:
+      required: true
+      description: "Which release tag to run scan on"
 runs:
   using: 'node20'
   main: 'dist/index.js'

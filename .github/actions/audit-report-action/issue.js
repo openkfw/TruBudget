@@ -5,7 +5,8 @@ const octokit = Config.octokit;
 const repo = Config.repo;
 const issueTitlePrefix = Config.issueTitlePrefix;
 
-export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities, type) {
+export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities, type, tag = "main") {
+  console.info(`Creating or updating issues for ${type} vulnerabilities on tag ${tag}`);
   // Get all security labeled open issues
   const { data: securityOpenIssues } = await octokit.rest.issues.listForRepo({
     ...repo,
@@ -13,7 +14,7 @@ export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, active
     labels: ['security']
   });
 
-  const issueTitle = type === "fs" ? `${issueTitlePrefix} Project Vulnerabilities` : `${issueTitlePrefix} Image Vulnerabilities`;
+  const issueTitle = type === "fs" ? `${tag}: ${issueTitlePrefix} Project Vulnerabilities` : `${tag}: ${issueTitlePrefix} Image Vulnerabilities`;
 
   const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
   if(activeVulnerabilities.length > 0) {
