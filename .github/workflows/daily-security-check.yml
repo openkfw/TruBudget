@@ -44,7 +44,7 @@ jobs:
         run: |
           git config user.email "trubudget.devteam@accenture.com"
           git config user.name "System bot"
-          echo "${{ steps.audit-images.outputs.markdown }}" > Security-vulnerability-report-images-${{matrix.tags}}.md
+          echo "${{ steps.audit-images.outputs.markdown }}" > ${{matrix.tags}}-Security-vulnerability-report-images.md
           git add .
           git commit -m "Test change"
           git push
@@ -88,4 +88,17 @@ jobs:
           scan-type: fs
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ matrix.releases }}
+      - name: Check out wiki repo
+        uses: actions/checkout@v4
+        with:
+          repository: openkfw/TruBudget.wiki
+      - name: Update wiki
+        run: |
+          git config user.email "trubudget.devteam@accenture.com"
+          git config user.name "System bot"
+          echo "${{ steps.audit-filesystem.outputs.markdown }}" > ${{matrix.releases}}-Security-vulnerability-report-libraries.md
+          git add .
+          git commit -m "Test change"
+          git push
+        shell: bash
           
