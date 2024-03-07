@@ -139,6 +139,9 @@ services:
       LOG_LEVEL: ${PROVISIONING_LOG_LEVEL}
       PROVISIONING_SERVICE_USER: ${PROVISIONING_SERVICE_USER}
       PROVISIONING_SERVICE_PASSWORD: ${PROVISIONING_SERVICE_PASSWORD}
+      PROVISIONING_BETA: ${PROVISIONING_BETA}
+    # volumes:
+    #   - ../../betaProvisioning:/home/node/src/data
     networks:
       mynetwork:
         ipv4_address: 172.21.0.6
@@ -312,3 +315,4 @@ services:
 volumes:
   alphaVolume:
   beta1Volume:
+  # betaProvisioning:
