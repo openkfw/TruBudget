@@ -89,7 +89,7 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag, tagText }) {
             if (event.target.value === "" || validTagRegex.test(event.target.value)) changeInput(event.target.value);
           }}
           multiline={false}
-          inputProps={{ maxLength: "15" }}
+          inputProps={{ maxLength: "25" }}
           style={{ marginRight: "20px" }}
           error={invalidInput}
           helperText={!invalidInput ? tagText : invalidInputMessage}
