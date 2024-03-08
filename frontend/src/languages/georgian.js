@@ -187,7 +187,16 @@ const ka = {
     account_name_error: "ანგარიშის სახელი არ შეიძლება იყოს ცარიელი",
     login_id_error: "შესვლის ID არ შეიძლება იყოს ცარიელი",
     password_error: "პაროლი არ შეიძლება იყოს ცარიელი",
-    confirm_password_error: "დაადასტურეთ, რომ პაროლი არ შეიძლება იყოს ცარიელი"
+    confirm_password_error: "დაადასტურეთ, რომ პაროლი არ შეიძლება იყოს ცარიელი",
+    account_name_conditions_preface: "თქვენი ანგარიშის სახელი უნდა:",
+    account_name_conditions_forbidden: "არ შეიცავს სპეციალურ სიმბოლოებს",
+    account_name_conditions_solution: `ამის ნაცვლად გამოიყენეთ "-", "_" ან სივრცე`,
+    account_name_conditions_length: "იყოს მინიმუმ 4 სიმბოლო",
+    login_id_no_root: `შესვლის ID არ შეიძლება იყოს "root"`,
+    login_id_conditions_preface: "თქვენი შესვლის ID უნდა:",
+    login_id_conditions_length: "იყოს მინიმუმ 4 სიმბოლო",
+    login_id_conditions_forbidden: "არ შეიცავს სივრცეებს ​​ან სპეციალურ სიმბოლოებს",
+    login_id_conditions_solution: `ამის ნაცვლად გამოიყენეთ "-", "_" ან camelCase`
   },
 
   userProfile: {
