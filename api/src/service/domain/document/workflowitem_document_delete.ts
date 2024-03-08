@@ -7,16 +7,17 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as WorkflowitemUpdated from "../workflow/workflowitem_updated";
-import { ExternalLinkReference, StoredDocument } from "./document";
+import { DocumentOrExternalLinkReference, ExternalLinkReference, StoredDocument } from "./document";
 import * as DocumentDeleted from "./document_deleted";
 import * as DocumentShared from "./document_shared";
 import VError = require("verror");
 import { BusinessEvent } from "../business_event";
 import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
 
-function isDocumentLink(obj: any): obj is ExternalLinkReference {
+function isDocumentLink(obj: DocumentOrExternalLinkReference): obj is ExternalLinkReference {
   return "link" in obj;
 }
+
 interface DeleteDocumentResponse {
   status: number;
 }
@@ -162,88 +163,87 @@ export async function deleteDocument(
   }
 
   if (isDocumentLink(document)) {
-    logger.trace("Document ", documentId, "...");
+    logger.trace("Document ", documentId, " is a url ...");
+  } else {
+    logger.trace("Trying to find document: ", documentId, "via storage service ...");
+
+    // Try to delete document from storage service
+    const documentFromStorage = await deleteDocumentFromExternalStorage(
+      ctx,
+      repository,
+      documentId,
+      workflowitem,
+    );
+
+    if (Result.isErr(documentFromStorage)) {
+      return new VError(
+        new NotFound(ctx, "document", documentId),
+        `Error while deleting document from storage for workflowitem ${workflowitem.id} ERROR HERE: ${documentFromStorage}`,
+      );
+    } else if (!documentFromStorage) {
+      return new VError(
+        new NotFound(ctx, "document", documentId),
+        `Couldn't find document from storage for workflowitem ${workflowitem.id}`,
+      );
+    }
+  }
+  // Create a new DocumentDeleted event
+  const newDocumentDeleteEvent = DocumentDeleted.createEvent(
+    ctx.source,
+    user.id,
+    documentId,
+    undefined,
+    user.metadata,
+  );
+
+  if (Result.isErr(newDocumentDeleteEvent)) {
+    return new VError(newDocumentDeleteEvent, "Cannot delete document");
   }
 
-  logger.trace("Trying to find document: ", documentId, "via storage service ...");
+  // Create a new WorkflowitemUpdated event
+  const workflowitemUpdateEvent = WorkflowitemUpdated.createEvent(
+    ctx.source,
+    user.id,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    {
+      documentsDeleted: workflowitem.documents.filter((e) => e.id === documentId),
+    },
+  );
 
-  // Try to delete document from storage service
-  const documentFromStorage = await deleteDocumentFromExternalStorage(
+  if (Result.isErr(workflowitemUpdateEvent)) {
+    return new VError(workflowitemUpdateEvent, "Cannot update workflowitem");
+  }
+
+  logger.trace({ event: workflowitemUpdateEvent }, "Checking event validity");
+
+  // Create a new updated workflowitem
+  const updatedWorkflowitemResult = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
     ctx,
-    repository,
-    documentId,
+    workflowitem,
+    workflowitemUpdateEvent,
+  );
+
+  if (Result.isErr(updatedWorkflowitemResult)) {
+    return new VError(updatedWorkflowitemResult, "New event validation failed");
+  }
+
+  const updatedWorkflowitem = updatedWorkflowitemResult;
+
+  // Apply the workflowitem type events
+  const workflowitemTypeEventsResult = repository.applyWorkflowitemType(
+    workflowitemUpdateEvent,
     workflowitem,
   );
 
-  if (Result.isErr(documentFromStorage)) {
-    return new VError(
-      new NotFound(ctx, "document", documentId),
-      `Error while deleting document from storage for workflowitem ${workflowitem.id} ERROR HERE: ${documentFromStorage}`,
-    );
-  } else if (!documentFromStorage) {
-    return new VError(
-      new NotFound(ctx, "document", documentId),
-      `Couldn't find document from storage for workflowitem ${workflowitem.id}`,
-    );
-  } else {
-    // Create a new DocumentDeleted event
-    const newDocumentDeleteEvent = DocumentDeleted.createEvent(
-      ctx.source,
-      user.id,
-      documentId,
-      undefined,
-      user.metadata,
-    );
-
-    if (Result.isErr(newDocumentDeleteEvent)) {
-      return new VError(newDocumentDeleteEvent, "Cannot delete document");
-    }
-
-    // Create a new WorkflowitemUpdated event
-    const workflowitemUpdateEvent = WorkflowitemUpdated.createEvent(
-      ctx.source,
-      user.id,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      {
-        documentsDeleted: workflowitem.documents.filter((e) => e.id === documentId),
-      },
-    );
-
-    if (Result.isErr(workflowitemUpdateEvent)) {
-      return new VError(workflowitemUpdateEvent, "Cannot update workflowitem");
-    }
-
-    logger.trace({ event: workflowitemUpdateEvent }, "Checking event validity");
-
-    // Create a new updated workflowitem
-    const updatedWorkflowitemResult = WorkflowitemEventSourcing.newWorkflowitemFromEvent(
-      ctx,
-      workflowitem,
-      workflowitemUpdateEvent,
-    );
-
-    if (Result.isErr(updatedWorkflowitemResult)) {
-      return new VError(updatedWorkflowitemResult, "New event validation failed");
-    }
-
-    const updatedWorkflowitem = updatedWorkflowitemResult;
-
-    // Apply the workflowitem type events
-    const workflowitemTypeEventsResult = repository.applyWorkflowitemType(
-      workflowitemUpdateEvent,
-      workflowitem,
-    );
-
-    if (Result.isErr(workflowitemTypeEventsResult)) {
-      return new VError(workflowitemTypeEventsResult, "Failed to apply workflowitem type");
-    }
-
-    const workflowitemTypeEvents = workflowitemTypeEventsResult;
-
-    return {
-      newEvents: [newDocumentDeleteEvent, workflowitemUpdateEvent, ...workflowitemTypeEvents],
-    };
+  if (Result.isErr(workflowitemTypeEventsResult)) {
+    return new VError(workflowitemTypeEventsResult, "Failed to apply workflowitem type");
   }
+
+  const workflowitemTypeEvents = workflowitemTypeEventsResult;
+
+  return {
+    newEvents: [newDocumentDeleteEvent, workflowitemUpdateEvent, ...workflowitemTypeEvents],
+  };
 }

@@ -110,7 +110,7 @@ const DocumentUpload = ({
               style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}
               data-test="workflowitemDocumentFileName"
             >
-              <Typography variant="body1">
+              <Typography variant="body1" component="div">
                 {document.fileName}
                 {document.link && (
                   <Tooltip title={document.link}>
