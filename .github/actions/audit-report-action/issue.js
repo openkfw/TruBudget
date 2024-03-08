@@ -114,13 +114,13 @@ function createMarkdownList(vulnerabilities, vulnerabilityIdProjectMapping, cate
   let md = '';
   md += `## Present Vulnerabilities (${category}) in version: ${tag}\n\n`;
 
-  md += '| SUBSCRIPTIONID | RESOURCEGROUP | VULNID | IDENTIFICATIONDATE | CATEGORY | CVE | CVSS	SEVERITY | DISPLAYNAME | RESOURCEID | RESOURCEID_SINGLE | AKTIV | HOST | OSDETAILS |\n';
-  md += '|----------------|---------------|--------|--------------------|----------|-----|---------------|-------------|------------|-------------------|-------|------|-----------|\n';
+  md += '| SUBSCRIPTIONID | RESOURCEGROUP | VULNID | IDENTIFICATIONDATE | CATEGORY | CVE | CVSS |	SEVERITY | DISPLAYNAME | RESOURCEID | RESOURCEID_SINGLE | AKTIV | HOST | OSDETAILS |\n';
+  md += '|----------------|---------------|--------|--------------------|----------|-----|------|----------|-------------|------------|-------------------|-------|------|-----------|\n';
 
   for(const vulnerability of vulnerabilities) {
     if(vulnerability.links && Array.isArray(vulnerability.links) && vulnerability.links.length > 0) {
       for (const project of [...new Set(vulnerabilityIdProjectMapping.get(vulnerability.id))]) {
-        md += `| | | ${vulnerability.id} | ${vulnerability.publishedDate ? vulnerability.publishedDate : '-'} | ${category} | ${vulnerability.id} | ${vulnerability.severity} | ${vulnerability.title} | ${project}-${tag} | ${project}-${tag} | Yes |  | package: ${vulnerability.packageName}, status: ${vulnerability.status}, fixedVersion: ${vulnerability.fixedVersion ? vulnerability.fixedVersion : '-'} |\n`;
+        md += `| - | - | ${vulnerability.id} | ${vulnerability.publishedDate ? vulnerability.publishedDate : '-'} | ${category} | ${vulnerability.id} | | ${vulnerability.severity} | ${vulnerability.title} | ${project}-${tag} | ${project}-${tag} | Yes |  | package: ${vulnerability.packageName}, status: ${vulnerability.status}, fixedVersion: ${vulnerability.fixedVersion ? vulnerability.fixedVersion : '-'} |\n`;
       }
     }
   }
