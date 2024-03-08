@@ -318,7 +318,16 @@ const fr = {
     account_name_error: "Le nom du compte ne peut pas être vide",
     login_id_error: `L'ID de connexion ne peut pas être vide`,
     password_error: "Le mot de passe ne peut pas être vide",
-    confirm_password_error: "Confirmer que le mot de passe ne peut pas être vide"
+    confirm_password_error: "Confirmer que le mot de passe ne peut pas être vide",
+    account_name_conditions_preface: "Le nom de votre compte doit:",
+    account_name_conditions_forbidden: "Ne contient pas de caractères spéciaux",
+    account_name_conditions_solution: `Utilisez plutôt "-", "_" ou un espace`,
+    account_name_conditions_length: "Comporter au moins 4 caractères",
+    login_id_no_root: `L'ID de connexion ne peut pas être "root"`,
+    login_id_conditions_preface: "Votre identifiant de connexion doit",
+    login_id_conditions_length: "Comporter au moins 4 caractères",
+    login_id_conditions_forbidden: "Ne contient pas d'espaces ni de caractères spéciaux",
+    login_id_conditions_solution: `Utilisez plutôt "-", "_" ou camelCase`
   },
 
   nodesDashboard: {
