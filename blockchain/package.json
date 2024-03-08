@@ -70,6 +70,7 @@
     "prettier": "2.7.1"
   },
   "overrides": {
-    "get-func-name": "^2.0.1"
+    "get-func-name": "^2.0.1",
+    "jose": "^2.0.7"
   }
 }
