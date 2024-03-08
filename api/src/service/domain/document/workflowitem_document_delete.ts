@@ -7,13 +7,16 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as WorkflowitemUpdated from "../workflow/workflowitem_updated";
-import { StoredDocument } from "./document";
+import { ExternalLinkReference, StoredDocument } from "./document";
 import * as DocumentDeleted from "./document_deleted";
 import * as DocumentShared from "./document_shared";
 import VError = require("verror");
 import { BusinessEvent } from "../business_event";
 import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
 
+function isDocumentLink(obj: any): obj is ExternalLinkReference {
+  return "link" in obj;
+}
 interface DeleteDocumentResponse {
   status: number;
 }
@@ -149,12 +152,17 @@ export async function deleteDocument(
     return new NotAuthorized({ ctx, userId: user.id, intent, target: workflowitem });
   }
 
+  const document = workflowitem.documents.find((d) => d.id === documentId);
   // Check if the document is linked to the workflowitem
-  if (!workflowitem.documents.some((d) => d.id === documentId)) {
+  if (!document) {
     return new VError(
       new NotFound(ctx, "document", documentId),
       `Workflowitem ${workflowitem.displayName} has no link to document`,
     );
+  }
+
+  if (isDocumentLink(document)) {
+    logger.trace("Document ", documentId, "...");
   }
 
   logger.trace("Trying to find document: ", documentId, "via storage service ...");

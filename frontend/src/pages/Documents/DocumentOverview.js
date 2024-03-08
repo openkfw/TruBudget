@@ -268,7 +268,7 @@ class DocumentOverview extends Component {
       <Button
         data-test="delete-document"
         component="span"
-        disabled={!document.available || workflowitemStatus !== "open"}
+        disabled={(!document.available && !document.link) || workflowitemStatus !== "open"}
         onClick={() => deleteDocument(projectId, subprojectId, workflowitemId, document.id)}
       >
         <DeleteIcon />
