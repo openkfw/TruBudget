@@ -190,7 +190,7 @@ const en = {
     account_name_conditions_preface: "Your account name must:",
     account_name_conditions_forbidden: "Not contain special characters",
     account_name_conditions_solution: `Use "-", "_" or space instead`,
-    account_name_conditions_length: "Be at least 3 characters long",
+    account_name_conditions_length: "Be at least 4 characters long",
     login_id_no_root: `Login ID cannot be "root"`,
     login_id_conditions_preface: "Your login ID must:",
     login_id_conditions_length: "Be at least 4 characters long",

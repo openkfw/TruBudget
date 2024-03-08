@@ -320,7 +320,7 @@ const de = {
     account_name_conditions_preface: "Ihr Kontoname muss:",
     account_name_conditions_forbidden: "Enthält keine Sonderzeichen",
     account_name_conditions_solution: `Verwenden Sie stattdessen „-“, „_“ oder ein Leerzeichen`,
-    account_name_conditions_length: "Mindestens 3 Zeichen lang sein",
+    account_name_conditions_length: "Mindestens 4 Zeichen lang sein",
     login_id_no_root: `Die Anmelde-ID darf nicht „root“ sein.`,
     login_id_conditions_preface: "Ihre Login-ID muss:",
     login_id_conditions_length: "Mindestens 4 Zeichen lang sein",

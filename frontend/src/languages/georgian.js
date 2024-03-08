@@ -191,7 +191,7 @@ const ka = {
     account_name_conditions_preface: "თქვენი ანგარიშის სახელი უნდა:",
     account_name_conditions_forbidden: "არ შეიცავს სპეციალურ სიმბოლოებს",
     account_name_conditions_solution: `ამის ნაცვლად გამოიყენეთ "-", "_" ან სივრცე`,
-    account_name_conditions_length: "იყოს მინიმუმ 3 სიმბოლო",
+    account_name_conditions_length: "იყოს მინიმუმ 4 სიმბოლო",
     login_id_no_root: `შესვლის ID არ შეიძლება იყოს "root"`,
     login_id_conditions_preface: "თქვენი შესვლის ID უნდა:",
     login_id_conditions_length: "იყოს მინიმუმ 4 სიმბოლო",

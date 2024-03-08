@@ -66,7 +66,7 @@ const UserDialogContent = ({
   const userSchema = Yup.object().shape({
     accountname: Yup.string()
       .required(`${strings.users.account_name_error}`)
-      .min(3, `${strings.users.account_name_conditions_preface} ${strings.users.account_name_conditions_length}`)
+      .min(4, `${strings.users.account_name_conditions_preface} ${strings.users.account_name_conditions_length}`)
       .matches(
         accountnameRegex,
         `${strings.users.account_name_conditions_preface} ${strings.users.account_name_conditions_forbidden}; ${strings.users.account_name_conditions_solution}`

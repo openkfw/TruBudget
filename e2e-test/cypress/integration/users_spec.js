@@ -207,16 +207,16 @@ describe("Users/Groups Dashboard", function () {
     cy.get("[data-test=cancel]").click();
   });
 
-  it("Accountname must be at least 3 characters long", function () {
+  it("Accountname must be at least 4 characters long", function () {
     cy.login();
     cy.visit("/users");
     cy.get("[data-test=create]").click();
-    cy.get("[data-test=accountname] input").type("us").should("have.value", "us");
+    cy.get("[data-test=accountname] input").type("new").should("have.value", "new");
     cy.get("[data-test=username] input").type("newUser").should("have.value", "newUser");
     cy.get("[data-test=password-new-user] input").type("password1").should("have.value", "password1");
     cy.get("[data-test=password-new-user-confirm] input").type("password1").should("have.value", "password1");
     cy.get("[data-test=submit]").should("be.disabled");
-    cy.get("[data-test=accountname]").contains("Your account name must: Be at least 3 characters long");
+    cy.get("[data-test=accountname]").contains("Your account name must: Be at least 4 characters long");
     cy.get("[data-test=cancel]").click();
   });
 
