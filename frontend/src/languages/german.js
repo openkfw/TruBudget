@@ -316,7 +316,16 @@ const de = {
     account_name_error: "Der Kontoname darf nicht leer sein",
     login_id_error: "Die Anmelde-ID darf nicht leer sein",
     password_error: "Passwort kann nicht leer sein",
-    confirm_password_error: "Bestätigen Sie, dass das Passwort nicht leer sein darf"
+    confirm_password_error: "Bestätigen Sie, dass das Passwort nicht leer sein darf",
+    account_name_conditions_preface: "Ihr Kontoname muss:",
+    account_name_conditions_forbidden: "Enthält keine Sonderzeichen",
+    account_name_conditions_solution: `Verwenden Sie stattdessen „-“, „_“ oder ein Leerzeichen`,
+    account_name_conditions_length: "Mindestens 3 Zeichen lang sein",
+    login_id_no_root: `Die Anmelde-ID darf nicht „root“ sein.`,
+    login_id_conditions_preface: "Ihre Login-ID muss:",
+    login_id_conditions_length: "Mindestens 4 Zeichen lang sein",
+    login_id_conditions_forbidden: "Enthält keine Leerzeichen oder Sonderzeichen",
+    login_id_conditions_solution: `Verwenden Sie stattdessen „-“, „_“ oder camelCase`
   },
   userProfile: {
     invalid_email_address: "Ungültige E-Mail Adresse"

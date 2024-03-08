@@ -188,7 +188,16 @@ const pt = {
     account_name_error: "O nome da conta não pode ficar vazio",
     login_id_error: "O ID de login não pode ficar vazio",
     password_error: "A senha não pode ficar vazia",
-    confirm_password_error: "A confirmação da senha não pode ficar vazia"
+    confirm_password_error: "A confirmação da senha não pode ficar vazia",
+    account_name_conditions_preface: "O nome da sua conta deve:",
+    account_name_conditions_forbidden: "Não contém caracteres especiais",
+    account_name_conditions_solution: `Use "-", "_" ou espaço`,
+    account_name_conditions_length: "Ter pelo menos 3 caracteres",
+    login_id_no_root: `O ID de login não pode ser "root"`,
+    login_id_conditions_preface: "Seu ID de login deve:",
+    login_id_conditions_length: "Ter pelo menos 4 caracteres",
+    login_id_conditions_forbidden: "Não contém espaços ou caracteres especiais",
+    login_id_conditions_solution: `Use "-", "_" ou camelCase`
   },
 
   userProfile: {

@@ -107,7 +107,7 @@ describe("Users/Groups Dashboard", function () {
       });
   });
 
-  it("New user cannot be named 'root'", function () {
+  it("User cannot be named 'root'", function () {
     cy.login();
     cy.visit("/users");
     cy.get("[data-test=create]").click();
@@ -116,11 +116,11 @@ describe("Users/Groups Dashboard", function () {
     cy.get("[data-test=password-new-user] input").type("Testing1").should("have.value", "Testing1");
     cy.get("[data-test=password-new-user-confirm] input").type("Testing1").should("have.value", "Testing1");
     cy.get("[data-test=submit]").should("be.disabled");
-    cy.get("#username-helper-text").contains("Invalid login ID");
+    cy.get("#username-helper-text").contains(`Login ID cannot be "root"`);
     cy.get("[data-test=cancel]").click();
   });
 
-  it("New user cannot have space in the name", function () {
+  it("User cannot have space in the name", function () {
     cy.login();
     cy.visit("/users");
     cy.get("[data-test=create]").click();
@@ -129,11 +129,28 @@ describe("Users/Groups Dashboard", function () {
     cy.get("[data-test=password-new-user] input").type("Testing1").should("have.value", "Testing1");
     cy.get("[data-test=password-new-user-confirm] input").type("Testing1").should("have.value", "Testing1");
     cy.get("[data-test=submit]").should("be.disabled");
-    cy.get("#username-helper-text").contains("Invalid login ID");
+    cy.get("#username-helper-text").contains(
+      `Your login ID must: Not contain spaces or special characters; Use "-", "_" or camelCase instead`,
+    );
     cy.get("[data-test=cancel]").click();
   });
 
-  it("An info is shown if the password and confirmation-password are not equal", function () {
+  it("User cannot have special characters in the name", function () {
+    cy.login();
+    cy.visit("/users");
+    cy.get("[data-test=create]").click();
+    cy.get("[data-test=accountname] input").type("Test User").should("have.value", "Test User");
+    cy.get("[data-test=username] input").type("test@user").should("have.value", "test@user");
+    cy.get("[data-test=password-new-user] input").type("Testing1").should("have.value", "Testing1");
+    cy.get("[data-test=password-new-user-confirm] input").type("Testing1").should("have.value", "Testing1");
+    cy.get("[data-test=submit]").should("be.disabled");
+    cy.get("#username-helper-text").contains(
+      `Your login ID must: Not contain spaces or special characters; Use "-", "_" or camelCase instead`,
+    );
+    cy.get("[data-test=cancel]").click();
+  });
+
+  it("Password and confirmation-password are not equal", function () {
     cy.login();
     cy.visit("/users");
     cy.get("[data-test=create]").click();
@@ -149,7 +166,7 @@ describe("Users/Groups Dashboard", function () {
     cy.get("[data-test=cancel]").click();
   });
 
-  it("A validation error message is shown if password isn't at least 8 characters long", function () {
+  it("Password must be at least 8 characters long", function () {
     cy.login();
     cy.visit("/users");
     cy.get("[data-test=create]").click();
@@ -162,7 +179,7 @@ describe("Users/Groups Dashboard", function () {
     cy.get("[data-test=cancel]").click();
   });
 
-  it("A validation error message is shown if password doesn't contain at least one number", function () {
+  it("Password must contain at least one number", function () {
     cy.login();
     cy.visit("/users");
     cy.get("[data-test=create]").click();
@@ -177,7 +194,7 @@ describe("Users/Groups Dashboard", function () {
     cy.get("[data-test=cancel]").click();
   });
 
-  it("A validation error message is shown if the accountname is touched but stays empty", function () {
+  it("Accountname is touched but stays empty", function () {
     cy.login();
     cy.visit("/users");
     cy.get("[data-test=create]").click();
@@ -187,6 +204,47 @@ describe("Users/Groups Dashboard", function () {
     cy.get("[data-test=password-new-user-confirm] input").type("password1").should("have.value", "password1");
     cy.get("[data-test=submit]").should("be.disabled");
     cy.get("[data-test=accountname]").contains("Account name cannot be empty");
+    cy.get("[data-test=cancel]").click();
+  });
+
+  it("Accountname must be at least 3 characters long", function () {
+    cy.login();
+    cy.visit("/users");
+    cy.get("[data-test=create]").click();
+    cy.get("[data-test=accountname] input").type("us").should("have.value", "us");
+    cy.get("[data-test=username] input").type("newUser").should("have.value", "newUser");
+    cy.get("[data-test=password-new-user] input").type("password1").should("have.value", "password1");
+    cy.get("[data-test=password-new-user-confirm] input").type("password1").should("have.value", "password1");
+    cy.get("[data-test=submit]").should("be.disabled");
+    cy.get("[data-test=accountname]").contains("Your account name must: Be at least 3 characters long");
+    cy.get("[data-test=cancel]").click();
+  });
+
+  it("Accountname must not contain any special characters", function () {
+    cy.login();
+    cy.visit("/users");
+    cy.get("[data-test=create]").click();
+    cy.get("[data-test=accountname] input").type("New@User").should("have.value", "New@User");
+    cy.get("[data-test=username] input").type("newUser").should("have.value", "newUser");
+    cy.get("[data-test=password-new-user] input").type("password1").should("have.value", "password1");
+    cy.get("[data-test=password-new-user-confirm] input").type("password1").should("have.value", "password1");
+    cy.get("[data-test=submit]").should("be.disabled");
+    cy.get("[data-test=accountname]").contains(
+      `Your account name must: Not contain special characters; Use "-", "_" or space instead`,
+    );
+    cy.get("[data-test=cancel]").click();
+  });
+
+  it("Login ID must be at least 4 characters long", function () {
+    cy.login();
+    cy.visit("/users");
+    cy.get("[data-test=create]").click();
+    cy.get("[data-test=accountname] input").type("newUser").should("have.value", "newUser");
+    cy.get("[data-test=username] input").type("new").should("have.value", "new");
+    cy.get("[data-test=password-new-user] input").type("password1").should("have.value", "password1");
+    cy.get("[data-test=password-new-user-confirm] input").type("password1").should("have.value", "password1");
+    cy.get("[data-test=submit]").should("be.disabled");
+    cy.get("[data-test=username]").contains("Your login ID must: Be at least 4 characters long");
     cy.get("[data-test=cancel]").click();
   });
 });

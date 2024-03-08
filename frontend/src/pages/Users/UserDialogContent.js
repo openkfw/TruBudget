@@ -52,6 +52,7 @@ const UserDialogContent = ({
   setOrganization,
   setIsUserFormValid
 }) => {
+  const accountnameRegex = /^([A-Za-zÀ-ÿ0-9-_ ]*)$/;
   const usernameRegex = /^([A-Za-zÀ-ÿ0-9-_]*)$/;
   const passwordRegex = /^(?=.*[A-Za-zÀ-ÿ].*)(?=.*[0-9].*)([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ])*$/;
 
@@ -63,21 +64,35 @@ const UserDialogContent = ({
   };
 
   const userSchema = Yup.object().shape({
-    accountname: Yup.string().required(`${strings.users.account_name_error}`),
+    accountname: Yup.string()
+      .required(`${strings.users.account_name_error}`)
+      .min(3, `${strings.users.account_name_conditions_preface} ${strings.users.account_name_conditions_length}`)
+      .matches(
+        accountnameRegex,
+        `${strings.users.account_name_conditions_preface} ${strings.users.account_name_conditions_forbidden}; ${strings.users.account_name_conditions_solution}`
+      )
+      .trim(),
     username: Yup.string()
       .required(`${strings.users.login_id_error}`)
-      .matches(usernameRegex, strings.users.username_invalid)
-      .notOneOf(["root"], strings.users.username_invalid),
+      .min(4, `${strings.users.login_id_conditions_preface} ${strings.users.login_id_conditions_length}`)
+      .matches(
+        usernameRegex,
+        `${strings.users.login_id_conditions_preface} ${strings.users.login_id_conditions_forbidden}; ${strings.users.login_id_conditions_solution}`
+      )
+      .notOneOf(["root"], strings.users.login_id_no_root)
+      .trim(),
     password: Yup.string()
       .required(`${strings.users.password_error}`)
       .min(8, `${strings.users.password_conditions_preface} ${strings.users.password_conditions_length}`)
       .matches(
         passwordRegex,
         `${strings.users.password_conditions_preface} ${strings.users.password_conditions_letter}; ${strings.users.password_conditions_number}`
-      ),
+      )
+      .trim(),
     confirmPassword: Yup.string()
       .required(`${strings.users.confirm_password_error}`)
       .oneOf([Yup.ref("password"), null], strings.users.no_password_match)
+      .trim()
   });
 
   const handleIsFormValid = (errors, isValid) => {
