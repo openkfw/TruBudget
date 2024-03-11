@@ -3,5 +3,5 @@ runs:
   using: "composite"
   steps:
     - name: Audit project ${{ matrix.project }}
-      run: cd ${{ matrix.project }} && npm ci --no-audit --legacy-peer-deps && npm run audit -- --production
+      run: cd ${{ matrix.project }} && npm ci --no-audit && npm run audit -- --production
       shell: bash
