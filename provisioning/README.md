@@ -14,7 +14,7 @@ The provisioning project creates a bunch of test data via api requests.
 | LOG_LEVEL         | info          | Defines the log output. Supported levels are `trace`, `debug`, `info`, `warn`, `error`, `fatal`                                                                                                                                                                               |
 | PROVISIONING_SERVICE_USER | mstein | Provisioning service user. Custom user should be defined in `users.json` and have appropriate permissions. |
 | PROVISIONING_SERVICE_PASSWORD | test | |
-| PROVISIONING_BETA | false | Flag for additional provisioning of users and groups. This can be applied to already provisioned TruBudget chain. | 
+| PROVISIONING_BETA | `false` | Flag for additional provisioning of users and groups. If set to `true`, provisioning tries to create users and groups in already provisioned TB chain. | 
 
 ## Setup
 
