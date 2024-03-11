@@ -199,9 +199,15 @@ class DocumentOverview extends Component {
   };
 
   generateEmptyList = () => (
-    <div style={{ backgroundColor: "#f3f3f3" }}>
-      <DocumentEmptyState captionText={strings.common.no_documents_info_text} />
-    </div>
+    <TableBody>
+      <TableRow>
+        <TableCell>
+          <div style={{ backgroundColor: "#f3f3f3" }}>
+            <DocumentEmptyState captionText={strings.common.no_documents_info_text} />
+          </div>
+        </TableCell>
+      </TableRow>
+    </TableBody>
   );
 
   render = () => {
@@ -268,7 +274,7 @@ class DocumentOverview extends Component {
       <Button
         data-test="delete-document"
         component="span"
-        disabled={!document.available || workflowitemStatus !== "open"}
+        disabled={(!document.available && !document.link) || workflowitemStatus !== "open"}
         onClick={() => deleteDocument(projectId, subprojectId, workflowitemId, document.id)}
       >
         <DeleteIcon />
