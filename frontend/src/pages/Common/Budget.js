@@ -40,7 +40,7 @@ const styles = {
   helpIcon: { color: "rgba(0,0, 0, 0.42)", marginTop: "20px", marginBottom: "7px", fontSize: "x-large" }
 };
 
-const CustomHelpTooltip = (props) => {
+const CustomInfoTooltip = (props) => {
   const [open, setOpen] = useState(false);
 
   const handleTooltipOpen = () => {
@@ -299,7 +299,7 @@ const Budget = (props) => {
                       }}
                       disabled={isEditing}
                     />
-                    <CustomHelpTooltip title="Placeholder for Organization" />
+                    <CustomInfoTooltip title={strings.subproject.organization_info} />
                   </>
                 ) : (
                   <div style={styles.inputContainer}>
@@ -313,7 +313,7 @@ const Budget = (props) => {
                     >
                       {getOrganizationMenuItems(projectProjectedBudgets)}
                     </DropDown>
-                    <CustomHelpTooltip title="Placeholder for Organization" />
+                    <CustomInfoTooltip title={strings.subproject.organization_info} />
                   </div>
                 )}
 
@@ -351,7 +351,7 @@ const Budget = (props) => {
                   error={!isValidBudgetAmountAdd}
                   helperText={!isValidBudgetAmountAdd ? strings.common.invalid_format : ""}
                 />
-                <CustomHelpTooltip title="Placeholder for Total budget" />
+                <CustomInfoTooltip title={strings.subproject.total_budget_info} />
               </div>
             </TableCell>
             <TableCell align="right">
