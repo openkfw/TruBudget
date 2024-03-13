@@ -8,28 +8,30 @@ const issueTitlePrefix = Config.issueTitlePrefix;
 
 export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities, type, tag = "main") {
   console.info(`Creating or updating issues for ${type} vulnerabilities on tag ${tag}`);
-  // Get all security labeled open issues
-  const { data: securityOpenIssues } = await octokit.rest.issues.listForRepo({
-    ...repo,
-    state: 'open',
-    labels: ['security']
-  });
-
-  const issueTitle = type === "fs" ? `${tag}: ${issueTitlePrefix} Project Vulnerabilities` : `${tag}: ${issueTitlePrefix} Image Vulnerabilities`;
+  
+  const issueTitle = type === "fs" ? `${issueTitlePrefix} Project Vulnerabilities` : `${issueTitlePrefix} Image Vulnerabilities`;
   const issueCategory = type === "fs" ? `npm audit` : `docker image audit`;
 
-  const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
-  if(activeVulnerabilities.length > 0) {
-    if(vulnerabilityIssue) {
-      await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
-    } else {
-      await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
-    }
-  } else {
-    if(vulnerabilityIssue) {
-      await closeIssue(vulnerabilityIssue.number);
-    }
-  } 
+  if (tag === "main") {
+    // Get all security labeled open issues
+    const { data: securityOpenIssues } = await octokit.rest.issues.listForRepo({
+      ...repo,
+      state: 'open',
+      labels: ['security']
+    });
+    const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
+    if(activeVulnerabilities.length > 0) {
+        if(vulnerabilityIssue) {
+          await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
+        } else {
+          await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
+        }
+      } else {
+        if(vulnerabilityIssue) {
+          await closeIssue(vulnerabilityIssue.number);
+        }
+    } 
+  }
 
   const markdown = createMarkdownList(activeVulnerabilities, vulnerabilityIdProjectMapping, issueCategory, tag);
   core.setOutput("markdown", markdown);
