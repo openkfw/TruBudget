@@ -12,6 +12,7 @@ import {
   showWorkflowItemPreview,
   storePermissions,
   storeWorkflowItemBatchAssignee,
+  storeWorkflowItemsBulkAction,
   submitBatchForWorkflow
 } from "./actions";
 import WorkflowEditDrawer from "./WorkflowEditDrawer";
@@ -39,6 +40,7 @@ const mapStateToProps = (state) => {
     permissions: state.getIn(["workflow", "permissions", "workflowitem"]),
     users: state.getIn(["login", "enabledUsers"]),
     groups: state.getIn(["login", "groupList"]),
+    projects: state.getIn(["overview", "projects"]),
     workflowActions: state.getIn(["workflow", "workflowActions"]),
     submittedWorkflowItems: state.getIn(["workflow", "submittedWorkflowItems"]),
     failedWorkflowItem: state.getIn(["workflow", "failedWorkflowItem"]),
@@ -47,7 +49,8 @@ const mapStateToProps = (state) => {
     myself: state.getIn(["login", "id"]),
     subprojectId: state.getIn(["workflow", "id"]),
     hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
-    subprojectValidator: state.getIn(["workflow", "subprojectValidator"])
+    subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
+    workflowitemsBulkAction: state.getIn(["workflow", "workflowitemsBulkAction"])
   };
 };
 
@@ -61,6 +64,7 @@ const mapDispatchToProps = (dispatch) => {
     storePermissions: (permissions) => dispatch(storePermissions(permissions)),
     showWorkflowItemPreview: (pId, subprojectId, resources, assignee, permissions) =>
       dispatch(showWorkflowItemPreview(pId, subprojectId, resources, assignee, permissions)),
+    storeWorkflowItemsBulkAction: (bulkActionType) => dispatch(storeWorkflowItemsBulkAction(bulkActionType)),
     disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),
     editWorkflowitems: (pId, subpId, actions) => dispatch(submitBatchForWorkflow(pId, subpId, actions, false))
   };

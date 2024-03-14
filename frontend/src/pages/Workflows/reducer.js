@@ -86,6 +86,7 @@ import {
   WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY,
   WORKFLOW_TEMPLATE,
   WORKFLOWITEM_TYPE,
+  WORKFLOWITEMS_BULK_ACTION,
   WORKFLOWITEMS_SELECTED
 } from "./actions";
 
@@ -102,6 +103,7 @@ const defaultState = fromJS({
   created: 0,
   allowedIntents: [],
   workflowItems: [],
+  workflowitemsBulkAction: "",
   workflowItemsBeforeSort: [],
   parentProject: {},
   workflowToAdd: {
@@ -449,6 +451,8 @@ export default function detailviewReducer(state = defaultState, action) {
         idsPermissionsUnassigned: state.get("idsPermissionsUnassigned").filter((id) => !getSelectedIds.includes(id))
       });
     }
+    case WORKFLOWITEMS_BULK_ACTION:
+      return state.set("workflowitemsBulkAction", action.bulkActionType);
     case SHOW_SUBPROJECT_ASSIGNEES:
       return state.set("showSubProjectAssignee", true);
     case HIDE_SUBPROJECT_ASSIGNEES:

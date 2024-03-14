@@ -1,6 +1,7 @@
 import React from "react";
 import _isEmpty from "lodash/isEmpty";
 
+import { MenuItem, Select } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -61,11 +62,14 @@ const WorkflowEditDrawer = (props) => {
     tempDrawerAssignee,
     tempDrawerPermissions,
     storeAssignee,
+    projects,
     projectId,
     subprojectId,
     myself,
     subprojectValidator,
-    hasSubprojectValidator
+    storeWorkflowItemsBulkAction,
+    hasSubprojectValidator,
+    workflowitemsBulkAction
   } = props;
   const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
 
@@ -87,11 +91,73 @@ const WorkflowEditDrawer = (props) => {
     storePermissions(permissions);
   };
 
-  const isOpen = !_isEmpty(selectedWorkflowItems);
+  const handleCancelDrawer = () => {
+    disableWorkflowEdit();
+    storeWorkflowItemsBulkAction("");
+  };
+
+  const isOpen = !_isEmpty(selectedWorkflowItems) && workflowitemsBulkAction !== "";
   const usersAndGroups = [...users, ...groups];
 
   // Only render the drawer if there are elements selected
   if (!isOpen) return null;
+
+  const renderContent = () => {
+    if (workflowitemsBulkAction === "permissions") {
+      return (
+        <>
+          <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
+            {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
+          </Typography>
+          <Typography style={styles.infoContainer} color="error" variant="subtitle1">
+            {strings.preview.overwrite_warning}
+          </Typography>
+          <div>
+            <Card style={styles.assigneeCard}>
+              <CardHeader subheader="Assignee" />
+              <CardContent style={styles.assigneeContainer}>
+                <SingleSelection
+                  disabled={hasSubprojectValidator}
+                  selectId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
+                  selectableItems={users}
+                  onSelect={assign}
+                />
+              </CardContent>
+            </Card>
+            <PermissionTable
+              permissions={permissions}
+              intentOrder={workflowItemIntentOrder}
+              userList={usersAndGroups}
+              addTemporaryPermission={grantPermission}
+              removeTemporaryPermission={revokePermission}
+              temporaryPermissions={permissions}
+              myself={myself}
+            />
+          </div>
+        </>
+      );
+    } else if (workflowitemsBulkAction === "copy") {
+      return (
+        <>
+          <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
+            {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
+          </Typography>
+          <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
+            Copy workflowitems
+          </Typography>
+          <div>
+            <Select>
+              {projects.map((project) => (
+                <MenuItem key={project.id} value={project.id}>
+                  {project.displayName}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+        </>
+      );
+    }
+  };
 
   return (
     <Drawer open={isOpen} variant="persistent" anchor="right">
@@ -112,38 +178,11 @@ const WorkflowEditDrawer = (props) => {
         >
           {strings.preview.overwrite}
         </Button>
-        <Button variant="contained" color="secondary" onClick={() => disableWorkflowEdit()}>
+        <Button variant="contained" color="secondary" onClick={handleCancelDrawer}>
           {strings.common.cancel}
         </Button>
       </Box>
-      <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
-        {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
-      </Typography>
-      <Typography style={styles.infoContainer} color="error" variant="subtitle1">
-        {strings.preview.overwrite_warning}
-      </Typography>
-      <div>
-        <Card style={styles.assigneeCard}>
-          <CardHeader subheader="Assignee" />
-          <CardContent style={styles.assigneeContainer}>
-            <SingleSelection
-              disabled={hasSubprojectValidator}
-              selectId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
-              selectableItems={users}
-              onSelect={assign}
-            />
-          </CardContent>
-        </Card>
-        <PermissionTable
-          permissions={permissions}
-          intentOrder={workflowItemIntentOrder}
-          userList={usersAndGroups}
-          addTemporaryPermission={grantPermission}
-          removeTemporaryPermission={revokePermission}
-          temporaryPermissions={permissions}
-          myself={myself}
-        />
-      </div>
+      {renderContent()}
     </Drawer>
   );
 };

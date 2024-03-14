@@ -11,6 +11,7 @@ export const SET_WORKFLOW_DRAWER_PERMISSIONS = "SET_WORKFLOW_DRAWER_PERMISSIONS"
 export const CLOSE_DRAWER = "CLOSE_DRAWER";
 
 export const WORKFLOWITEMS_SELECTED = "WORKFLOWITEMS_SELECTED";
+export const WORKFLOWITEMS_BULK_ACTION = "WORKFLOWITEMS_BULK_ACTION";
 
 export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
@@ -621,6 +622,13 @@ export function storeWorkflowItemsSelected(workflowItems) {
   return {
     type: WORKFLOWITEMS_SELECTED,
     workflowItems
+  };
+}
+
+export function storeWorkflowItemsBulkAction(bulkActionType) {
+  return {
+    type: WORKFLOWITEMS_BULK_ACTION,
+    bulkActionType
   };
 }
 

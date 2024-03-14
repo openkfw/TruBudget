@@ -1,6 +1,9 @@
 import React from "react";
 import { arrayMoveImmutable } from "array-move";
 
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import KeyIcon from "@mui/icons-material/Key";
+import { Button } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
@@ -14,13 +17,65 @@ import WorkflowEmptyState from "./WorkflowEmptyState";
 import WorkflowitemSearch from "./WorkflowitemSearch";
 import WorkflowList from "./WorkflowList";
 
+const styles = {
+  bulkActionButton: {
+    marginRight: "5px"
+  }
+};
+
 const WorkflowTableHeader = (props) => {
+  const { enableWorkflowEdit, disableWorkflowEdit, workflowSortEnabled, storeWorkflowItemsBulkAction } = props;
+
+  const handlePermissionBulkActionButton = () => {
+    storeWorkflowItemsBulkAction("permissions");
+  };
+
+  const handleCopyBulkActionButton = () => {
+    storeWorkflowItemsBulkAction("copy");
+  };
+
   return (
     <Card>
       <CardHeader title={strings.workflow.workflow_table_title} />
       <Grid container>
         <Grid xs={12} md={12}>
           <WorkflowitemSearch {...props} />
+        </Grid>
+      </Grid>
+      <Grid container style={{ margin: "5px 15px" }}>
+        <Grid xs={12} md={12}>
+          <Button variant="outlined" size="small" onClick={enableWorkflowEdit} style={styles.bulkActionButton}>
+            select all
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            disabled={!workflowSortEnabled}
+            onClick={disableWorkflowEdit}
+            style={styles.bulkActionButton}
+          >
+            deselect all
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            disabled={!workflowSortEnabled}
+            onClick={handlePermissionBulkActionButton}
+            startIcon={<KeyIcon />}
+            style={styles.bulkActionButton}
+          >
+            change permissions
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            disabled={!workflowSortEnabled}
+            onClick={handleCopyBulkActionButton}
+            startIcon={<ContentCopyIcon />}
+            style={styles.bulkActionButton}
+          >
+            copy workflowitems
+          </Button>
         </Grid>
       </Grid>
 
