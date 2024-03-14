@@ -379,6 +379,15 @@ class Api {
       workflowitemId
     });
 
+  validateHash = (newHash, projectId, subprojectId, workflowitemId, documentId) =>
+    instance.post(`/workflowitem.validateHash`, {
+      hash: newHash,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      documentId
+    });
+
   listWorkflowItemPermissions = (projectId, subprojectId, workflowitemId) =>
     instance.get(
       removeEmptyQueryParams(

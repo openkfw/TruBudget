@@ -34,6 +34,7 @@ import {
   DELETE_DOCUMENT_SUCCESS,
   DOWNLOAD_DOCUMENT,
   VALIDATE_DOCUMENT,
+  VALIDATE_DOCUMENT_FE,
   VALIDATE_DOCUMENT_SUCCESS
 } from "./pages/Documents/actions";
 import { cancelDebounce, hideLoadingIndicator, showLoadingIndicator } from "./pages/Loading/actions.js";
@@ -934,6 +935,17 @@ export function* validateDocumentSaga({ base64String, hash, id, projectId, subpr
     yield put({
       type: VALIDATE_DOCUMENT_SUCCESS,
       isIdentical: data.isIdentical
+    });
+  }, false);
+}
+
+export function* validateDocumentClientsideSaga({ hash, newHash, id }) {
+  yield execute(function* () {
+    const isIdentical = newHash === hash;
+
+    yield put({
+      type: VALIDATE_DOCUMENT_SUCCESS,
+      isIdentical: isIdentical
     });
   }, false);
 }
@@ -3316,6 +3328,7 @@ export default function* rootSaga() {
       yield takeEvery(ASSIGN_WORKFLOWITEM, assignWorkflowItemSaga),
       yield takeEvery(HIDE_WORKFLOW_DETAILS, hideWorkflowDetailsSaga),
       yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga),
+      yield takeEvery(VALIDATE_DOCUMENT_FE, validateDocumentClientsideSaga),
       yield takeEvery(SHOW_WORKFLOW_PREVIEW, fetchWorkflowActionsSaga),
       yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
       yield takeEvery(FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE, fetchNextWorkflowitemHistoryPageSaga),

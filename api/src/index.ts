@@ -143,6 +143,7 @@ import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
+import * as WorkflowitemValidateHashAPI from "./workflowitem_validate_hash";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 
@@ -839,6 +840,30 @@ WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
       subprojectId,
       workflowitemId,
     ),
+});
+
+WorkflowitemValidateHashAPI.addHttpHandler(server, URL_PREFIX, {
+  matches: (
+    expectedSHA256: string,
+    ctx,
+    user,
+    projectId,
+    subprojectId,
+    workflowitemId,
+    documentId,
+  ) => {
+    return DocumentValidationService.isSameHash(
+      expectedSHA256,
+      db,
+      ctx,
+      storageServiceClient,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      documentId,
+    );
+  },
 });
 
 WorkflowitemsDocumentDownloadAPI.addHttpHandler(server, URL_PREFIX, {
