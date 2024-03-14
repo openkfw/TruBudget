@@ -15,8 +15,6 @@ import * as ProjectCacheHelper from "./project_cache_helper";
 import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 import { hashBase64String } from "./domain/document/document";
-import { getDocument } from "./workflowitem_document_download";
-import StorageServiceClient from "./Client_storage_service";
 
 /**
  * Returns true if the given hash matches the given document.
@@ -92,44 +90,5 @@ export async function isSameDocument(
     await store(conn, ctx, event, serviceUser.address);
   }
 
-  return isDocumentValid;
-}
-
-/**
- * Returns true if the given hash matches the hash of a given document.
- */
-export async function isSameHash(
-  expectedSHA256: string,
-  conn: ConnToken,
-  ctx: Ctx,
-  storageServiceClient: StorageServiceClient,
-  serviceUser: ServiceUser,
-  projectId: Project.Id,
-  subprojectId: Subproject.Id,
-  workflowitemId: Workflowitem.Id,
-  documentId: string,
-): Promise<Result.Type<boolean>> {
-  logger.debug(`Validating wether passed hash matches document "${documentId}"`);
-
-  let isDocumentValid = false;
-  try {
-    const document = await getDocument(
-      conn,
-      storageServiceClient,
-      ctx,
-      serviceUser,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      documentId,
-    );
-    if (Result.isErr(document)) {
-      return new VError(document, "failed to validate document");
-    }
-    const computedHash = await hashBase64String(document.base64);
-    isDocumentValid = computedHash === expectedSHA256;
-  } catch (error) {
-    return new VError(error, "compare documents failed");
-  }
   return isDocumentValid;
 }
