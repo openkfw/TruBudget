@@ -39,5 +39,7 @@
     "eslint-plugin-import": "^2.22.1",
     "nodemon": "^2.0.3"
   },
-  "overrides": {}
+  "overrides": {
+    "follow-redirects": "^1.15.6"
+  }
 }
