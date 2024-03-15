@@ -71,6 +71,7 @@
   },
   "overrides": {
     "get-func-name": "^2.0.1",
-    "jose": "^2.0.7"
+    "jose": "^2.0.7",
+    "follow-redirects": "^1.15.6"
   }
 }
