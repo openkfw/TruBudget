@@ -51,5 +51,8 @@
     "prettier": "^2.8.8",
     "rimraf": "*",
     "typescript": "^4.7.4"
+  },
+  "overrides": {
+    "follow-redirects": "^1.15.6"
   }
 }

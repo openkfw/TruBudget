@@ -46,5 +46,8 @@
     "shelljs": "^0.8.5",
     "tar-fs": "^3.0.4",
     "tar-stream": "^3.1.6"
+  },
+  "overrides": {
+    "follow-redirects": "^1.15.6"
   }
 }
