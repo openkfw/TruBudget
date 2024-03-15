@@ -273,7 +273,9 @@ const ka = {
     subproject_general_workflowitem_type: "დაუშვით მხოლოდ workflowitem ტიპის ზოგადი",
     subproject_restricted_workflowitem_type:
       "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
-    workflowitem_assignee: "ნაგულისხმევი მიმღები"
+    workflowitem_assignee: "ნაგულისხმევი მიმღები",
+    organization_info: "Organization",
+    total_budget_info: "Total budget"
   },
 
   workflow: {

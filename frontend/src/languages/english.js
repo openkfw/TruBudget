@@ -271,7 +271,9 @@ const en = {
     subproject_general_workflowitem_type: "Only allow workflowitems of type general",
     subproject_restricted_workflowitem_type:
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
-    workflowitem_assignee: "Default assignee"
+    workflowitem_assignee: "Default assignee",
+    organization_info: "Organization",
+    total_budget_info: "Total budget"
   },
 
   workflow: {
