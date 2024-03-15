@@ -1,7 +1,7 @@
 import React from "react";
 
 import CancelIcon from "@mui/icons-material/Cancel";
-import { IconButton } from "@mui/material";
+import { Alert, IconButton } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -129,6 +129,7 @@ const SubprojectDialogContent = (props) => {
                 />
               </div>
             </div>
+            <Alert severity="warning">{strings.subproject.default_assignee_warning}</Alert>
           </>
         ) : null}
       </div>
