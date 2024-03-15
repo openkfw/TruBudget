@@ -1,5 +1,8 @@
 import React from "react";
+import { ErrorMessage, Form, Formik } from "formik";
+import * as Yup from "yup";
 
+import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -58,6 +61,9 @@ const styles = {
   },
   button: {
     margin: (theme) => theme.spacing(1)
+  },
+  textInput: {
+    width: "40%"
   }
 };
 
@@ -181,27 +187,86 @@ const NodeVoting = ({
     approveNewNodeForExistingOrganization(address)
   );
 
+  const initialValues = {
+    organization: "",
+    node: ""
+  };
+
+  const orgValidationSchema = Yup.object().shape({
+    organization: Yup.string().required(`${strings.nodesDashboard.organization_error}`),
+    node: Yup.string().required(`${strings.nodesDashboard.organization_node_error}`)
+  });
+
+  const handleSubmit = (values, actions) => {
+    alert(JSON.stringify(values, null, 2));
+    actions.resetForm();
+  };
+
   return (
-    <div style={styles.container} data-test="node-voting">
-      <Card style={styles.card}>
-        <CardHeader title={strings.nodesDashboard.new_organization} />
-        {isDataLoading ? (
-          <div />
-        ) : (
-          <CardContent style={styles.cardContent}>
-            <>{newOrgaNodes.length ? newOrgaNodesListEntries : <NewOrganizationsEmptyState />}</>
-          </CardContent>
-        )}
-      </Card>
-      <Card style={styles.card}>
-        <CardHeader title={strings.nodesDashboard.additional_organization_node} />
-        {isDataLoading ? (
-          <div />
-        ) : (
-          <CardContent style={styles.cardContent}>
-            <>{existingOrgaNodes.length ? existingOrgaNodesListEntries : <ExistingNodesEmptyState />}</>
-          </CardContent>
-        )}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={styles.container} data-test="node-voting">
+        <Card style={styles.card}>
+          <CardHeader title={strings.nodesDashboard.new_organization} />
+          {isDataLoading ? (
+            <div />
+          ) : (
+            <CardContent style={styles.cardContent}>
+              <>{newOrgaNodes.length ? newOrgaNodesListEntries : <NewOrganizationsEmptyState />}</>
+            </CardContent>
+          )}
+        </Card>
+        <Card style={styles.card}>
+          <CardHeader title={strings.nodesDashboard.additional_organization_node} />
+          {isDataLoading ? (
+            <div />
+          ) : (
+            <CardContent style={styles.cardContent}>
+              <>{existingOrgaNodes.length ? existingOrgaNodesListEntries : <ExistingNodesEmptyState />}</>
+            </CardContent>
+          )}
+        </Card>
+      </div>
+      <Card style={{ marginTop: "30px" }}>
+        <CardHeader title={strings.nodesDashboard.add_organization} />
+        <CardContent>
+          <Formik initialValues={initialValues} validationSchema={orgValidationSchema} onSubmit={handleSubmit}>
+            {({ values, errors, touched, isValid, handleChange, handleBlur }) => (
+              <Form style={{ display: "flex", justifyContent: "space-around" }}>
+                <TextField
+                  style={styles.textInput}
+                  name="organization"
+                  label={strings.common.organization}
+                  value={values.organization}
+                  error={Boolean(errors.organization) && touched.organization}
+                  helperText={
+                    <ErrorMessage name="organization">
+                      {(msg) => <span style={{ color: "red" }}>{msg}</span>}
+                    </ErrorMessage>
+                  }
+                  data-test="organization"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <TextField
+                  style={styles.textInput}
+                  name="node"
+                  label={strings.nodesDashboard.organization_node}
+                  value={values.node}
+                  error={Boolean(errors.node) && touched.node}
+                  helperText={
+                    <ErrorMessage name="node">{(msg) => <span style={{ color: "red" }}>{msg}</span>}</ErrorMessage>
+                  }
+                  data-test="node"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Button type="submit" disabled={!isValid}>
+                  {strings.common.submit}
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        </CardContent>
       </Card>
     </div>
   );

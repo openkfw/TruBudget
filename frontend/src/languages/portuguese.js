@@ -217,7 +217,11 @@ const pt = {
     declined_by: "Recusado por",
     connection_status: "Status da conexão",
     last_seen: "Visto pela última vez",
-    admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'"
+    admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'",
+    add_organization: "Adicionar nova organização",
+    organization_error: "A organização não pode ficar vazia",
+    organization_node_error: "O nó não pode estar vazio",
+    organization_node: "Nó"
   },
 
   login: {

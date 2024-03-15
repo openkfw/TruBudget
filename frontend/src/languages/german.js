@@ -347,7 +347,11 @@ const de = {
     connection_status: "Verbindungsstatus",
     last_seen: "Zuletzt gesehen",
     admin_description:
-      "Der Administratorknoten ist der Anfangsknoten des Netzwerks und verfügt über zusätzliche 'Mine' und 'Admin' Berechtigungen."
+      "Der Administratorknoten ist der Anfangsknoten des Netzwerks und verfügt über zusätzliche 'Mine' und 'Admin' Berechtigungen.",
+    add_organization: "Neue Organisation hinzufügen",
+    organization_error: "Die Organisation darf nicht leer sein",
+    organization_node_error: "Der Knoten darf nicht leer sein",
+    organization_node: "Knoten"
   },
 
   preview: {

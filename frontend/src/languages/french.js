@@ -346,7 +346,11 @@ const fr = {
     connection_status: "Statut de connexion",
     last_seen: "Vu pour la dernière fois",
     admin_description:
-      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
+      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'",
+    add_organization: "Ajouter une nouvelle organisation",
+    organization_error: "L'organisation ne peut pas être vide",
+    organization_node_error: "Le nœud ne peut pas être vide",
+    organization_node: "Nœud"
   },
 
   preview: {

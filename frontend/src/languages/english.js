@@ -216,7 +216,11 @@ const en = {
     connection_status: "Connection status",
     last_seen: "Last seen",
     admin_description:
-      "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
+      "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions",
+    add_organization: "Add new Organization",
+    organization_error: "Organization cannot be empty",
+    organization_node_error: "Node cannot be empty",
+    organization_node: "Node"
   },
 
   login: {
