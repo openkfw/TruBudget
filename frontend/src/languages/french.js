@@ -194,7 +194,9 @@ const fr = {
     subproject_general_workflowitem_type: "Autoriser uniquement les éléments de workflow de type général",
     subproject_restricted_workflowitem_type:
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
-    workflowitem_assignee: "Default assignee"
+    workflowitem_assignee: "Default assignee",
+    organization_info: "Organization",
+    total_budget_info: "Total budget"
   },
 
   workflow: {

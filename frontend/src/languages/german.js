@@ -191,7 +191,9 @@ const de = {
     subproject_general_workflowitem_type: "Nur Workflow-Elemente vom Typ 'general' zulassen",
     subproject_restricted_workflowitem_type:
       "Nur Workflow-Elemente vom Typ 'eingeschränkt' zulassen. Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
-    workflowitem_assignee: "Vorausgewählter Verantwortlicher"
+    workflowitem_assignee: "Vorausgewählter Verantwortlicher",
+    organization_info: "Organization",
+    total_budget_info: "Total budget"
   },
 
   workflow: {
