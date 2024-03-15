@@ -113,6 +113,7 @@
     "moment": false
   },
   "overrides": {
-    "yaml": "^2.2.2"
+    "yaml": "^2.2.2",
+    "follow-redirects": "^1.15.6"
   }
 }
