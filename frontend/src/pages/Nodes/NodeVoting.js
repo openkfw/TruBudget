@@ -18,7 +18,7 @@ import { canApproveNode } from "../../permissions";
 import { ExistingNodesEmptyState, NewOrganizationsEmptyState } from "./NodesEmptyStates";
 
 const styles = {
-  container: {
+  cardRow: {
     marginTop: 40,
     display: "flex",
     flexDirection: "row",
@@ -50,6 +50,14 @@ const styles = {
     alignItems: "space-around"
   },
   listItem: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  formContainer: {
+    display: "flex",
+    justifyContent: "space-around"
+  },
+  cardList: {
     display: "flex",
     flexDirection: "column"
   },
@@ -173,7 +181,8 @@ const NodeVoting = ({
   allowedIntents,
   isDataLoading,
   organization,
-  declineNode
+  declineNode,
+  registerNewOrganization
 }) => {
   const canApprove = canApproveNode(allowedIntents);
   const visibleNodes = filterDeclinedNodes(nodes, organization);
@@ -189,22 +198,24 @@ const NodeVoting = ({
 
   const initialValues = {
     organization: "",
-    node: ""
+    nodeAddress: ""
   };
 
   const orgValidationSchema = Yup.object().shape({
     organization: Yup.string().required(`${strings.nodesDashboard.organization_error}`),
-    node: Yup.string().required(`${strings.nodesDashboard.organization_node_error}`)
+    nodeAddress: Yup.string().required(`${strings.nodesDashboard.node_address_error}`)
   });
 
   const handleSubmit = (values, actions) => {
+    const { organization, nodeAddress } = values;
     alert(JSON.stringify(values, null, 2));
+    registerNewOrganization(organization, nodeAddress);
     actions.resetForm();
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <div style={styles.container} data-test="node-voting">
+    <div style={styles.cardList}>
+      <div style={styles.cardRow} data-test="node-voting">
         <Card style={styles.card}>
           <CardHeader title={strings.nodesDashboard.new_organization} />
           {isDataLoading ? (
@@ -231,7 +242,7 @@ const NodeVoting = ({
         <CardContent>
           <Formik initialValues={initialValues} validationSchema={orgValidationSchema} onSubmit={handleSubmit}>
             {({ values, errors, touched, isValid, handleChange, handleBlur }) => (
-              <Form style={{ display: "flex", justifyContent: "space-around" }}>
+              <Form style={styles.formContainer}>
                 <TextField
                   style={styles.textInput}
                   name="organization"
@@ -249,14 +260,16 @@ const NodeVoting = ({
                 />
                 <TextField
                   style={styles.textInput}
-                  name="node"
-                  label={strings.nodesDashboard.organization_node}
-                  value={values.node}
-                  error={Boolean(errors.node) && touched.node}
+                  name="nodeAddress"
+                  label={strings.nodesDashboard.node_address}
+                  value={values.nodeAddress}
+                  error={Boolean(errors.nodeAddress) && touched.nodeAddress}
                   helperText={
-                    <ErrorMessage name="node">{(msg) => <span style={{ color: "red" }}>{msg}</span>}</ErrorMessage>
+                    <ErrorMessage name="nodeAddress">
+                      {(msg) => <span style={{ color: "red" }}>{msg}</span>}
+                    </ErrorMessage>
                   }
-                  data-test="node"
+                  data-test="node-address"
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />

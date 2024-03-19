@@ -350,8 +350,8 @@ const de = {
       "Der Administratorknoten ist der Anfangsknoten des Netzwerks und verfügt über zusätzliche 'Mine' und 'Admin' Berechtigungen.",
     add_organization: "Neue Organisation hinzufügen",
     organization_error: "Die Organisation darf nicht leer sein",
-    organization_node_error: "Der Knoten darf nicht leer sein",
-    organization_node: "Knoten"
+    node_address_error: "Die Knotenadresse darf nicht leer sein",
+    node_address: "Knotenadresse"
   },
 
   preview: {

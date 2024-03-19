@@ -161,6 +161,8 @@ class Api {
     instance.post(`/network.approveNewNodeForExistingOrganization`, {
       address
     });
+  createNewOrganization = (organization, address) =>
+    instance.post(`/network.registerNodeManual`, { organization, address });
   declineNode = (node) =>
     instance.post(`/network.declineNode`, {
       node

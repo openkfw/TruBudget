@@ -219,8 +219,8 @@ const en = {
       "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions",
     add_organization: "Add new Organization",
     organization_error: "Organization cannot be empty",
-    organization_node_error: "Node cannot be empty",
-    organization_node: "Node"
+    node_address_error: "Node address cannot be empty",
+    node_address: "Node address"
   },
 
   login: {

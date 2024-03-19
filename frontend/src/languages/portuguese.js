@@ -220,8 +220,8 @@ const pt = {
     admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'",
     add_organization: "Adicionar nova organização",
     organization_error: "A organização não pode ficar vazia",
-    organization_node_error: "O nó não pode estar vazio",
-    organization_node: "Nó"
+    node_address_error: "O endereço do nó não pode ficar vazio",
+    node_address: "Endereço do nó"
   },
 
   login: {

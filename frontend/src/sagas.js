@@ -79,7 +79,8 @@ import {
   DECLINE_NODE,
   DECLINE_NODE_SUCCESS,
   FETCH_NODES,
-  FETCH_NODES_SUCCESS
+  FETCH_NODES_SUCCESS,
+  REGISTER_NEW_ORGANIZATION
 } from "./pages/Nodes/actions.js";
 import {
   FETCH_ALL_NOTIFICATIONS,
@@ -1556,6 +1557,19 @@ export function* approveNewNodeForOrganizationSaga({ address, showLoading }) {
       show: true
     });
   }, showLoading);
+}
+
+export function* registerNewOrganizationSaga({ organization, address }) {
+  yield execute(function* () {
+    yield callApi(api.registerNewOrganization, organization, address);
+    yield put({
+      type: REGISTER_NEW_ORGANIZATION
+    });
+    yield put({
+      type: FETCH_NODES,
+      show: true
+    });
+  }, true);
 }
 
 export function* declineNode({ node, showLoading }) {

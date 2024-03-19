@@ -349,8 +349,8 @@ const fr = {
       "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'",
     add_organization: "Ajouter une nouvelle organisation",
     organization_error: "L'organisation ne peut pas être vide",
-    organization_node_error: "Le nœud ne peut pas être vide",
-    organization_node: "Nœud"
+    node_address_error: "L'adresse du nœud ne peut pas être vide",
+    node_address: "Adresse du nœud"
   },
 
   preview: {
