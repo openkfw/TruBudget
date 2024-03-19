@@ -208,7 +208,6 @@ const NodeVoting = ({
 
   const handleSubmit = (values, actions) => {
     const { organization, nodeAddress } = values;
-    alert(JSON.stringify(values, null, 2));
     registerNewOrganization(organization, nodeAddress);
     actions.resetForm();
   };
