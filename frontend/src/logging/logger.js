@@ -21,7 +21,7 @@ export const createLogMsg = (state, log) => {
 
 const pushLogToServer = async () => {
   if (instance && logMessages.length > 0) {
-    const messages = logMessages.map(({ token, ...rest }) => rest).filter((m) => m.service !== undefined);
+    const messages = logMessages.map(({ ...rest }) => rest).filter((m) => m.service !== undefined);
     await instance.post("/api", { logMessages: messages }).catch((ignore) => ignore);
     while (logMessages.length) {
       logMessages.pop();

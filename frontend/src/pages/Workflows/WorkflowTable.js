@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { arrayMoveImmutable } from "array-move";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -26,14 +26,12 @@ const styles = {
 const WorkflowTableHeader = (props) => {
   const {
     enableWorkflowEdit,
-    fetchAllProjectDetails,
     workflowSortEnabled,
     storeWorkflowItemsBulkAction,
     storeWorkflowItemsSelected,
     selectedWorkflowItems,
     workflowItems
   } = props;
-
 
   const handleSelectAllButton = () => {
     selectedWorkflowItems.splice(0, selectedWorkflowItems.length);

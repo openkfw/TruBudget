@@ -230,13 +230,15 @@ const WorkflowEditDrawer = (props) => {
                   </Select>
                 </FormControl>
 
-                <Button
-                  variant="contained"
-                  onClick={handleCopySubmit}
-                  disabled={!selectedSubproject || selectedSubproject === ""}
-                >
-                  Copy
-                </Button>
+                <FormControl fullWidth style={{ marginTop: "15px" }}>
+                  <Button
+                    variant="contained"
+                    onClick={handleCopySubmit}
+                    disabled={!selectedSubproject || selectedSubproject === ""}
+                  >
+                    Copy
+                  </Button>
+                </FormControl>
               </CardContent>
             </Card>
           </div>
