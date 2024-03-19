@@ -3,9 +3,12 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
+import { fetchAllProjects } from "../Overview/actions";
+import { fetchAllProjectDetailsNotCurrentProject } from "../SubProjects/actions";
 
 import {
   assignWorkflowItem,
+  createWorkflowItemAction,
   disableWorkflowEdit,
   hideWorkflowItemPreview,
   resetSucceededWorkflowitems,
@@ -33,6 +36,7 @@ const mapStateToProps = (state) => {
   return {
     previewDialogShown: state.getIn(["workflow", "previewDialogShown"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
+    loadedProjectDetails: state.getIn(["navbar", "loadedProjectDetails"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
     tempDrawerAssignee: state.getIn(["workflow", "tempDrawerAssignee"]),
@@ -59,6 +63,10 @@ const mapDispatchToProps = (dispatch) => {
     hideWorkflowItemPreview: () => dispatch(hideWorkflowItemPreview()),
     assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
       dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
+    createWorkflowItem: (...data) => dispatch(createWorkflowItemAction(...data)),
+    fetchAllProjects: () => dispatch(fetchAllProjects()),
+    fetchAllProjectDetailsNotCurrentProject: (projectId, showLoading) =>
+      dispatch(fetchAllProjectDetailsNotCurrentProject(projectId, showLoading)),
     resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems()),
     storeAssignee: (assignee) => dispatch(storeWorkflowItemBatchAssignee(assignee)),
     storePermissions: (permissions) => dispatch(storePermissions(permissions)),

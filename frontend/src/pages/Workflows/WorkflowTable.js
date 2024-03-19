@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { arrayMoveImmutable } from "array-move";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -24,7 +24,29 @@ const styles = {
 };
 
 const WorkflowTableHeader = (props) => {
-  const { enableWorkflowEdit, disableWorkflowEdit, workflowSortEnabled, storeWorkflowItemsBulkAction } = props;
+  const {
+    enableWorkflowEdit,
+    fetchAllProjectDetails,
+    workflowSortEnabled,
+    storeWorkflowItemsBulkAction,
+    storeWorkflowItemsSelected,
+    selectedWorkflowItems,
+    workflowItems
+  } = props;
+
+
+  const handleSelectAllButton = () => {
+    selectedWorkflowItems.splice(0, selectedWorkflowItems.length);
+    selectedWorkflowItems.push(...workflowItems);
+    storeWorkflowItemsSelected(selectedWorkflowItems);
+    enableWorkflowEdit();
+  };
+
+  const handleDeselectAllButton = () => {
+    selectedWorkflowItems.splice(0, selectedWorkflowItems.length);
+    storeWorkflowItemsSelected(selectedWorkflowItems);
+    // disableWorkflowEdit();
+  };
 
   const handlePermissionBulkActionButton = () => {
     storeWorkflowItemsBulkAction("permissions");
@@ -44,14 +66,20 @@ const WorkflowTableHeader = (props) => {
       </Grid>
       <Grid container style={{ margin: "5px 15px" }}>
         <Grid xs={12} md={12}>
-          <Button variant="outlined" size="small" onClick={enableWorkflowEdit} style={styles.bulkActionButton}>
+          <Button
+            variant="outlined"
+            size="small"
+            disabled={selectedWorkflowItems.length === workflowItems.length}
+            onClick={handleSelectAllButton}
+            style={styles.bulkActionButton}
+          >
             select all
           </Button>
           <Button
             variant="outlined"
             size="small"
-            disabled={!workflowSortEnabled}
-            onClick={disableWorkflowEdit}
+            disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
+            onClick={handleDeselectAllButton}
             style={styles.bulkActionButton}
           >
             deselect all

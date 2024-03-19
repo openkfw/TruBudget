@@ -28,6 +28,9 @@ export const SUBPROJECT_DELETED_PROJECTED_BUDGET = "SUBPROJECT_DELETED_PROJECTED
 export const FETCH_ALL_PROJECT_DETAILS = "FETCH_ALL_PROJECT_DETAILS";
 export const FETCH_ALL_PROJECT_DETAILS_SUCCESS = "FETCH_ALL_PROJECT_DETAILS_SUCCESS";
 
+export const FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT = "FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT";
+export const FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS = "FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS";
+
 export const SHOW_PROJECT_ASSIGNEES = "SHOW_PROJECT_ASSIGNEES";
 export const HIDE_PROJECT_ASSIGNEES = "HIDE_PROJECT_ASSIGNEES";
 
@@ -135,6 +138,14 @@ export function revokeSubProjectPermission(
 export function fetchAllProjectDetails(projectId, showLoading = false) {
   return {
     type: FETCH_ALL_PROJECT_DETAILS,
+    projectId,
+    showLoading
+  };
+}
+
+export function fetchAllProjectDetailsNotCurrentProject(projectId, showLoading = false) {
+  return {
+    type: FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT,
     projectId,
     showLoading
   };

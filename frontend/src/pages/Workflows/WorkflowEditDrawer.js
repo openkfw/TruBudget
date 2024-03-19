@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import _isEmpty from "lodash/isEmpty";
 
-import { MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -58,7 +58,11 @@ const WorkflowEditDrawer = (props) => {
     storePermissions,
     users,
     groups,
+    createWorkflowItem,
     disableWorkflowEdit,
+    fetchAllProjects,
+    fetchAllProjectDetailsNotCurrentProject,
+    loadedProjectDetails,
     tempDrawerAssignee,
     tempDrawerPermissions,
     storeAssignee,
@@ -71,7 +75,23 @@ const WorkflowEditDrawer = (props) => {
     hasSubprojectValidator,
     workflowitemsBulkAction
   } = props;
+
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [selectedSubprojectId, setSelectedSubprojectId] = useState("");
+  const [selectedSubproject, setSelectedSubproject] = useState(null);
   const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
+
+  useEffect(() => {
+    fetchAllProjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleProjectSelectionChange = (e) => {
+    const projectId = e.target.value;
+    fetchAllProjectDetailsNotCurrentProject(projectId, true);
+    setSelectedProjectId(projectId);
+    setSelectedSubproject("");
+  };
 
   const assign = (assignee) => {
     storeAssignee(assignee);
@@ -91,7 +111,45 @@ const WorkflowEditDrawer = (props) => {
     storePermissions(permissions);
   };
 
+  const handleSubprojectSelectChange = (e) => {
+    const subProjectId = e.target.value;
+    setSelectedSubprojectId(subProjectId);
+    setSelectedSubproject(subProjectId);
+  };
+
   const handleCancelDrawer = () => {
+    // disableWorkflowEdit();
+    storeWorkflowItemsBulkAction("");
+  };
+
+  const handleCopySubmit = () => {
+    selectedWorkflowItems.forEach((workflowItem) => {
+      const { amount, amountType, assignee, currency, displayName, exchangeRate, description, workflowitemType } =
+        workflowItem.data;
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+
+      createWorkflowItem(
+        selectedProjectId,
+        selectedSubprojectId,
+        displayName,
+        amount || 1, // amount,
+        exchangeRate || "1.0", // exchangeRate,
+        amountType,
+        currency || "EUR", // currency,
+        description,
+        "open", // status
+        [], // documents
+        nextYear.toISOString(), // dueDate
+        workflowitemType,
+        projects.find((p) => p.data.id === selectedProjectId).data?.displayName || "", // projectDisplayName,
+        loadedProjectDetails?.subprojects?.find((sp) => sp.data.id === selectedSubprojectId).data?.displayName, // subprojectDisplayName,
+        assignee,
+        assignee, // assigneeDisplayName,
+        []
+      );
+    });
+
     disableWorkflowEdit();
     storeWorkflowItemsBulkAction("");
   };
@@ -143,16 +201,44 @@ const WorkflowEditDrawer = (props) => {
             {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
           </Typography>
           <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
-            Copy workflowitems
+            This functionality allows you to copy all selected workflow items to the destination subproject including
+            amounts and assigned persons. Copied workflow items will be in open status so can edit them afterwards.
           </Typography>
           <div>
-            <Select>
-              {projects.map((project) => (
-                <MenuItem key={project.id} value={project.id}>
-                  {project.displayName}
-                </MenuItem>
-              ))}
-            </Select>
+            <Card style={styles.assigneeCard}>
+              <CardHeader subheader="" />
+              <CardContent style={styles.assigneeContainer}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Select project</InputLabel>
+                  <Select label="Select project" defaultValue="" onChange={handleProjectSelectionChange}>
+                    {projects.map((project) => (
+                      <MenuItem key={project.data.id} value={project.data.id}>
+                        {project.data.displayName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Select subproject</InputLabel>
+                  <Select label="Select subproject" defaultValue="" onChange={handleSubprojectSelectChange}>
+                    {loadedProjectDetails?.subprojects?.map((subproject) => (
+                      <MenuItem key={subproject.data.id} value={subproject.data.id}>
+                        {subproject.data.displayName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <Button
+                  variant="contained"
+                  onClick={handleCopySubmit}
+                  disabled={!selectedSubproject || selectedSubproject === ""}
+                >
+                  Copy
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </>
       );

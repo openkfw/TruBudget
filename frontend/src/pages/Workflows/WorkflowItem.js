@@ -215,13 +215,20 @@ const StepDot = (props) => {
     if (event.target.checked) {
       selectedWorkflowItems.push(currentWorkflowItem);
     } else {
-      selectedWorkflowItems.splice(selectedWorkflowItems.indexOf(currentWorkflowItem), 1);
+      selectedWorkflowItems.splice(
+        selectedWorkflowItems.findIndex((item) => item.data.id === currentWorkflowItem.data.id),
+        1
+      );
     }
     storeWorkflowItemsSelected(selectedWorkflowItems);
   };
   return isWorkflowItemSelectable(redacted, sortEnabled, allowedIntents) ? (
     <div style={styles.checkbox}>
-      <Checkbox onChange={updateSelectedList} data-test="check-workflowitem" />
+      <Checkbox
+        onChange={updateSelectedList}
+        checked={!!selectedWorkflowItems.find((item) => item.data.id === currentWorkflowItem.data.id)}
+        data-test="check-workflowitem"
+      />
     </div>
   ) : (
     <Paper style={styles.dots} elevation={2} disabled={selectable}>
