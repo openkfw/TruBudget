@@ -112,7 +112,7 @@ Clone the repository from Github:
 If you haven't done the SSH setup so far, please follow the instructions on how to setup your [SSH-connection](https://help.github.com/en/articles/connecting-to-github-with-ssh)
 
 ```bash
-git clone https://github.com/openkfw/TruBudget.git
+git clone git@github.com:openkfw/TruBudget.git
 ```
 
 - HTTPS:
