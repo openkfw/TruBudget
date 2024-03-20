@@ -210,7 +210,11 @@ const WorkflowEditDrawer = (props) => {
                   <InputLabel id="demo-simple-select-label">
                     {strings.workflow.workflow_selection_select_project}
                   </InputLabel>
-                  <Select label={strings.workflow.workflow_selection_select_project} defaultValue="" onChange={handleProjectSelectionChange}>
+                  <Select
+                    label={strings.workflow.workflow_selection_select_project}
+                    defaultValue=""
+                    onChange={handleProjectSelectionChange}
+                  >
                     {projects.map((project) => (
                       <MenuItem key={project.data.id} value={project.data.id}>
                         {project.data.displayName}
@@ -220,8 +224,14 @@ const WorkflowEditDrawer = (props) => {
                 </FormControl>
 
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">{strings.workflow.workflow_selection_select_subproject}</InputLabel>
-                  <Select label={strings.workflow.workflow_selection_select_subproject} defaultValue="" onChange={handleSubprojectSelectChange}>
+                  <InputLabel id="demo-simple-select-label">
+                    {strings.workflow.workflow_selection_select_subproject}
+                  </InputLabel>
+                  <Select
+                    label={strings.workflow.workflow_selection_select_subproject}
+                    defaultValue=""
+                    onChange={handleSubprojectSelectChange}
+                  >
                     {loadedProjectDetails?.subprojects?.map((subproject) => (
                       <MenuItem key={subproject.data.id} value={subproject.data.id}>
                         {subproject.data.displayName}
@@ -236,7 +246,7 @@ const WorkflowEditDrawer = (props) => {
                     onClick={handleCopySubmit}
                     disabled={!selectedSubproject || selectedSubproject === ""}
                   >
-                    Copy
+                    {strings.common.copy}
                   </Button>
                 </FormControl>
               </CardContent>

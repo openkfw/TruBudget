@@ -43,6 +43,7 @@ const WorkflowTableHeader = (props) => {
   const handleDeselectAllButton = () => {
     selectedWorkflowItems.splice(0, selectedWorkflowItems.length);
     storeWorkflowItemsSelected(selectedWorkflowItems);
+    storeWorkflowItemsBulkAction("");
   };
 
   const handlePermissionBulkActionButton = () => {

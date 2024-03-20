@@ -196,6 +196,7 @@ const StepDot = (props) => {
     selectable,
     redacted,
     storeWorkflowItemsSelected,
+    storeWorkflowItemsBulkAction,
     selectedWorkflowItems,
     currentWorkflowItem,
     allowedIntents
@@ -221,6 +222,9 @@ const StepDot = (props) => {
       );
     }
     storeWorkflowItemsSelected(selectedWorkflowItems);
+    if (selectedWorkflowItems.length === 0) {
+      storeWorkflowItemsBulkAction("");
+    }
   };
   return isWorkflowItemSelectable(redacted, sortEnabled, allowedIntents) ? (
     <div style={styles.checkbox}>
@@ -515,7 +519,13 @@ export const WorkflowItem = ({
   currentUser,
   ...props
 }) => {
-  const { storeWorkflowItemsSelected, selectedWorkflowItems, currency: targetCurrency, disabled } = props;
+  const {
+    storeWorkflowItemsSelected,
+    storeWorkflowItemsBulkAction,
+    selectedWorkflowItems,
+    currency: targetCurrency,
+    disabled
+  } = props;
   const {
     id,
     status,
@@ -557,6 +567,7 @@ export const WorkflowItem = ({
               status={status}
               selectable={workflowSelectable}
               storeWorkflowItemsSelected={storeWorkflowItemsSelected}
+              storeWorkflowItemsBulkAction={storeWorkflowItemsBulkAction}
               currentWorkflowItem={workflow}
               selectedWorkflowItems={selectedWorkflowItems}
               allowedIntents={allowedIntents}
