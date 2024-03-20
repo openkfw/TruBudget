@@ -1,3 +1,5 @@
+import { sha256 } from "js-sha256";
+
 let projectId;
 let subprojectId;
 let workflowitemId;
@@ -26,7 +28,30 @@ describe("Attaching a document to a workflowitem.", function () {
 
   beforeEach(function () {
     cy.login();
-    cy.visit(`/projects/${projectId}/${subprojectId}`);
+    cy.visit(`/projects/${projectId}/${subprojectId}`, {
+      // Mock crypto.subtle.digest, because it is not supported in headless mode
+      onBeforeLoad: (win) => {
+        const originalCrypto = win.crypto;
+        delete win.crypto; // delete if running in browser, so it can be mocked
+        win.crypto = {
+          getRandomValues: originalCrypto.getRandomValues.bind(originalCrypto), // copy the existing getRandomValues method
+          subtle: {
+            digest: async (algorithm, data) => {
+              if (algorithm === "SHA-256") {
+                const message = new TextDecoder().decode(data);
+                const hash = sha256(message);
+                const hashArray = Array.from(new Uint8Array(hash.length / 2));
+                for (let i = 0; i < hash.length; i += 2) {
+                  hashArray[i / 2] = parseInt(hash.substring(i, i + 2), 16);
+                }
+                return new Uint8Array(hashArray);
+              }
+              throw new Error(`Unsupported algorithm: ${algorithm}`);
+            },
+          },
+        };
+      },
+    });
   });
 
   const uploadDocument = (fileName) => {
@@ -82,7 +107,7 @@ describe("Attaching a document to a workflowitem.", function () {
     });
 
     // make sure the validation was successful:
-    cy.wait("@validate").get(`[data-test=validation-button]`).should("contain", "Identical");
+    cy.wait(200).get(`[data-test=validation-button]`).should("contain", "Identical");
   });
 
   it("Validation of wrong document fails.", function () {
@@ -118,7 +143,7 @@ describe("Attaching a document to a workflowitem.", function () {
     });
 
     // make sure the validation was not successful:
-    cy.wait("@validate").get(`[data-test=validation-button]`).should("contain", "Different");
+    cy.wait(200).get(`[data-test=validation-button]`).should("contain", "Different");
   });
 
   it("The filename and document name are shown correctly", function () {
