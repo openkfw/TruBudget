@@ -9,7 +9,7 @@ import { approveNewOrganization } from "../network/controller/approveNewOrganiza
 import { declineNode } from "../network/controller/declineNode";
 import { getNodeList } from "../network/controller/list";
 import { getActiveNodes } from "../network/controller/listActive";
-import { registerNode } from "../network/controller/registerNode";
+import { registerNode, registerNodeManual } from "../network/controller/registerNode";
 import { voteForNetworkPermission } from "../network/controller/vote";
 import StorageServiceClient from "../service/Client_storage_service";
 import { ConnToken } from "../service/conn";
@@ -271,6 +271,16 @@ export const registerRoutes = (
       getSchemaWithoutAuth("registerNode"),
       (request, reply) => {
         registerNode(multichainClient, request as AuthenticatedRequest)
+          .then((response) => send(reply, response))
+          .catch((err) => handleError(request, reply, err));
+      },
+    );
+
+    server.post(
+      `${urlPrefix}/network.registerNodeManual`,
+      getSchema(server, "registerNode"),
+      (request, reply) => {
+        registerNodeManual(conn, ctx(request), issuer(request), request as AuthenticatedRequest)
           .then((response) => send(reply, response))
           .catch((err) => handleError(request, reply, err));
       },
