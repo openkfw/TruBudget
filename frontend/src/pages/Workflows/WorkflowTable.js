@@ -43,7 +43,6 @@ const WorkflowTableHeader = (props) => {
   const handleDeselectAllButton = () => {
     selectedWorkflowItems.splice(0, selectedWorkflowItems.length);
     storeWorkflowItemsSelected(selectedWorkflowItems);
-    // disableWorkflowEdit();
   };
 
   const handlePermissionBulkActionButton = () => {
@@ -58,50 +57,50 @@ const WorkflowTableHeader = (props) => {
     <Card>
       <CardHeader title={strings.workflow.workflow_table_title} />
       <Grid container>
-        <Grid xs={12} md={12}>
+        <Grid xs={12} sm={12} md={3}>
           <WorkflowitemSearch {...props} />
         </Grid>
-      </Grid>
-      <Grid container style={{ margin: "5px 15px" }}>
-        <Grid xs={12} md={12}>
-          <Button
-            variant="outlined"
-            size="small"
-            disabled={selectedWorkflowItems.length === workflowItems.length}
-            onClick={handleSelectAllButton}
-            style={styles.bulkActionButton}
-          >
-            select all
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
-            onClick={handleDeselectAllButton}
-            style={styles.bulkActionButton}
-          >
-            deselect all
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            disabled={!workflowSortEnabled}
-            onClick={handlePermissionBulkActionButton}
-            startIcon={<KeyIcon />}
-            style={styles.bulkActionButton}
-          >
-            change permissions
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            disabled={!workflowSortEnabled}
-            onClick={handleCopyBulkActionButton}
-            startIcon={<ContentCopyIcon />}
-            style={styles.bulkActionButton}
-          >
-            copy workflowitems
-          </Button>
+        <Grid xs={12} sm={12} md={9}>
+          <div style={{ margin: "19px 15px 5px 15px" }}>
+            <Button
+              variant="outlined"
+              size="small"
+              disabled={selectedWorkflowItems.length === workflowItems.length}
+              onClick={handleSelectAllButton}
+              style={styles.bulkActionButton}
+            >
+              {strings.common.select_all}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
+              onClick={handleDeselectAllButton}
+              style={styles.bulkActionButton}
+            >
+              {strings.common.deselect_all}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              disabled={!workflowSortEnabled}
+              onClick={handlePermissionBulkActionButton}
+              startIcon={<KeyIcon />}
+              style={styles.bulkActionButton}
+            >
+              {strings.users.edit_permissions}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              disabled={!workflowSortEnabled}
+              onClick={handleCopyBulkActionButton}
+              startIcon={<ContentCopyIcon />}
+              style={styles.bulkActionButton}
+            >
+              {strings.common.copy}
+            </Button>
+          </div>
         </Grid>
       </Grid>
 

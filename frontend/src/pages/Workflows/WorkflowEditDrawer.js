@@ -118,7 +118,6 @@ const WorkflowEditDrawer = (props) => {
   };
 
   const handleCancelDrawer = () => {
-    // disableWorkflowEdit();
     storeWorkflowItemsBulkAction("");
   };
 
@@ -201,16 +200,17 @@ const WorkflowEditDrawer = (props) => {
             {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
           </Typography>
           <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
-            This functionality allows you to copy all selected workflow items to the destination subproject including
-            amounts and assigned persons. Copied workflow items will be in open status so can edit them afterwards.
+            {strings.workflow.workflow_selection_copy_description}
           </Typography>
           <div>
             <Card style={styles.assigneeCard}>
               <CardHeader subheader="" />
               <CardContent style={styles.assigneeContainer}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Select project</InputLabel>
-                  <Select label="Select project" defaultValue="" onChange={handleProjectSelectionChange}>
+                  <InputLabel id="demo-simple-select-label">
+                    {strings.workflow.workflow_selection_select_project}
+                  </InputLabel>
+                  <Select label={strings.workflow.workflow_selection_select_project} defaultValue="" onChange={handleProjectSelectionChange}>
                     {projects.map((project) => (
                       <MenuItem key={project.data.id} value={project.data.id}>
                         {project.data.displayName}
@@ -220,8 +220,8 @@ const WorkflowEditDrawer = (props) => {
                 </FormControl>
 
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Select subproject</InputLabel>
-                  <Select label="Select subproject" defaultValue="" onChange={handleSubprojectSelectChange}>
+                  <InputLabel id="demo-simple-select-label">{strings.workflow.workflow_selection_select_subproject}</InputLabel>
+                  <Select label={strings.workflow.workflow_selection_select_subproject} defaultValue="" onChange={handleSubprojectSelectChange}>
                     {loadedProjectDetails?.subprojects?.map((subproject) => (
                       <MenuItem key={subproject.data.id} value={subproject.data.id}>
                         {subproject.data.displayName}

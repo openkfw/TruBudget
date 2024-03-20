@@ -14,7 +14,7 @@ import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
 const styles = {
   editButtonContainer: {
     position: "absolute",
-    top: "194px",
+    top: "160px",
     left: "7px"
   },
   editButton: {
