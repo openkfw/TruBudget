@@ -83,7 +83,7 @@ const WorkflowTableHeader = (props) => {
             <Button
               variant="outlined"
               size="small"
-              disabled={!workflowSortEnabled}
+              disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
               onClick={handlePermissionBulkActionButton}
               startIcon={<KeyIcon />}
               style={styles.bulkActionButton}
@@ -93,7 +93,7 @@ const WorkflowTableHeader = (props) => {
             <Button
               variant="outlined"
               size="small"
-              disabled={!workflowSortEnabled}
+              disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
               onClick={handleCopyBulkActionButton}
               startIcon={<ContentCopyIcon />}
               style={styles.bulkActionButton}
