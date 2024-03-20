@@ -1,4 +1,5 @@
 export const images = [
+  { src: "/Default_thumbnail.jpg" },
   {
     src: "/Thumbnail_0001.jpg"
   },
