@@ -1,5 +1,5 @@
 describe("Users/Groups Dashboard", { testIsolation: false }, function () {
-  // Generate random IDs since every ID can only exists once in the multichain
+  // Generate random IDs since every ID can only exists once in the multichain.
   const testUserName = `passwordChangeUser_${Math.floor(Math.random() * 1000000)}`;
   const testUserNamePassword = "test1234";
   before(() => {
