@@ -146,6 +146,7 @@
     "lib": "dist/lib"
   },
   "overrides": {
-    "postcss": "^8.4.31"
+    "postcss": "^8.4.31",
+    "follow-redirects": "^1.15.6"
   }
 }
