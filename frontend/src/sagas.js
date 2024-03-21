@@ -139,6 +139,8 @@ import {
   EDIT_SUBPROJECT,
   EDIT_SUBPROJECT_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS,
+  FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT,
+  FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   FETCH_FIRST_PROJECT_HISTORY_PAGE,
   FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS,
@@ -1607,6 +1609,16 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
     const projectDetails = yield callApi(api.viewProjectDetails, projectId);
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
+      ...projectDetails.data
+    });
+  }, showLoading);
+}
+
+export function* fetchAllProjectDetailsNotCurrentProjectSaga({ projectId, showLoading }) {
+  yield execute(function* () {
+    const projectDetails = yield callApi(api.viewProjectDetails, projectId);
+    yield put({
+      type: FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS,
       ...projectDetails.data
     });
   }, showLoading);
@@ -3303,6 +3315,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_FIRST_PROJECT_HISTORY_PAGE, fetchFirstProjectHistoryPageSaga),
       yield takeEvery(CLOSE_PROJECT, closeProjectSaga),
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga),
+      yield takeEvery(FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT, fetchAllProjectDetailsNotCurrentProjectSaga),
 
       // Subproject
       yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga),
