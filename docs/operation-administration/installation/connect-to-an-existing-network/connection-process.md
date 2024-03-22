@@ -75,6 +75,7 @@ http://localhost:8080/api/documentation/static/index.html#/network
 ### Connection process via REST API
 
 A beta node sends a registration request (`network.registerNode`) to the alpha API automatically on startup.
+Alternatively, beta node can be manually registered in the UI in the Nodes screen.
 The network must now vote for the new organization (`network.voteForPermission`).
 If enough votes exists an organization can approve the beta node (`network.approveNewOrganization`).
 After successful approval the beta node can connect to the alpha note via Peer to Peer and synchronize its data.
