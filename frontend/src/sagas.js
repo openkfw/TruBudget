@@ -942,7 +942,7 @@ export function* validateDocumentSaga({ base64String, hash, id, projectId, subpr
   }, false);
 }
 
-export function* validateDocumentClientsideSaga({ hash, newHash, id }) {
+export function* validateDocumentClientsideSaga({ hash, newHash }) {
   yield execute(function* () {
     const isIdentical = newHash === hash;
 
@@ -1576,9 +1576,6 @@ export function* approveNewNodeForOrganizationSaga({ address, showLoading }) {
 export function* registerNewOrganizationSaga({ organization, address }) {
   yield execute(function* () {
     yield callApi(api.registerNewOrganization, organization, address);
-    yield put({
-      type: REGISTER_NEW_ORGANIZATION
-    });
     yield put({
       type: FETCH_NODES,
       show: true
@@ -3300,6 +3297,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_NODES, fetchNodesSaga),
       yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga),
       yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga),
+      yield takeEvery(REGISTER_NEW_ORGANIZATION, registerNewOrganizationSaga),
       yield takeEvery(DECLINE_NODE, declineNode),
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
       yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),

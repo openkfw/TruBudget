@@ -8,8 +8,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
@@ -24,13 +22,8 @@ const styles = {
     flexDirection: "row",
     justifyContent: "space-between"
   },
-  nodeCard: {
-    width: "40%",
-    paddingBottom: "20px"
-  },
   card: {
-    width: "48%",
-    paddingBottom: "20px"
+    width: "48%"
   },
   cardDiv: {
     width: "100%",
@@ -50,8 +43,18 @@ const styles = {
     alignItems: "space-around"
   },
   listItem: {
+    paddingLeft: "16px",
+    paddingRight: "16px"
+  },
+  orgInfo: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
+    paddingBottom: "15px"
+  },
+  buttonGroup: {
+    display: "flex",
+    justifyContent: "space-between",
+    paddingBottom: "15px"
   },
   formContainer: {
     display: "flex",
@@ -68,7 +71,9 @@ const styles = {
     marginRight: (theme) => theme.spacing(1)
   },
   button: {
-    margin: (theme) => theme.spacing(1)
+    margin: (theme) => theme.spacing(1),
+    minWidth: "100px",
+    width: "200px"
   },
   textInput: {
     width: "40%"
@@ -130,30 +135,24 @@ const getDeclinersString = (decliners) => {
 const getListEntries = (nodes, canApprove, declineNode, approveNode) => {
   return nodes.map((node) => {
     return (
-      <div key={node.address.address}>
-        <ListItem key={node.address.address}>
-          <ListItemText
-            primary={
-              <div style={styles.listItem}>
-                <Typography variant="subtitle1"> {node.address.organization}</Typography>
-              </div>
-            }
-            secondary={
-              <Typography component={"span"} variant="body2" style={styles.listItem}>
-                <Typography variant="body2" display="block" component={"span"}>
-                  {`${strings.nodesDashboard.address}: ${node.address.address} `}
-                </Typography>
-                <Typography variant="body2" display="block" component={"span"}>
-                  {getDeclinersString(node.currentAccess.decliners)}
-                </Typography>
-              </Typography>
-            }
-          />
+      <div style={styles.listItem} key={node.address.address}>
+        <div style={styles.orgInfo}>
+          <Typography variant="subtitle1"> {node.address.organization}</Typography>
+          <Typography component={"span"} variant="body2">
+            <Typography variant="body2" display="block" component={"span"} style={{ overflowWrap: "break-word" }}>
+              {`${strings.nodesDashboard.address}: ${node.address.address} `}
+            </Typography>
+            <Typography variant="body2" display="block" component={"span"}>
+              {getDeclinersString(node.currentAccess.decliners)}
+            </Typography>
+          </Typography>
+        </div>
+        <div style={styles.buttonGroup}>
           <Button
             variant="contained"
             disabled={node.myVote !== "none" || !canApprove}
-            color="primary"
-            style={styles.button}
+            color="success"
+            style={{ ...styles.button, marginRight: "10px" }}
             onClick={() => approveNode(node.address)}
           >
             {strings.nodesDashboard.approve}
@@ -161,13 +160,13 @@ const getListEntries = (nodes, canApprove, declineNode, approveNode) => {
           <Button
             variant="contained"
             disabled={node.myVote !== "none" || !canApprove}
-            color="primary"
+            color="secondary"
             style={styles.button}
             onClick={() => declineNode(node.address)}
           >
             {strings.nodesDashboard.decline}
           </Button>
-        </ListItem>
+        </div>
         <Divider />
       </div>
     );
