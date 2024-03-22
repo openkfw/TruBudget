@@ -42,7 +42,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         },
         {
           in: "query",
-          name: "pageSize",
+          name: "limit",
           description: "The number of items per page",
           required: false,
           schema: { type: "integer", minimum: 1 },
@@ -109,7 +109,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
               type: "object",
               properties: {
                 totalRecords: { type: "integer", example: 100 },
-                pageSize: { type: "integer", example: 10 },
+                limit: { type: "integer", example: 10 },
                 totalPages: { type: "integer", example: 10 },
                 currentPage: { type: "integer", example: 1 },
                 nextPage: { type: "string", example: "/v2/project.list?page=2", nullable: true },
@@ -147,7 +147,7 @@ interface ExposedProject {
 
 interface Pagination {
   totalRecords: number;
-  pageSize: number;
+  limit: number;
   totalPages: number;
   currentPage: number;
   nextPage?: string | null;
@@ -177,7 +177,7 @@ export function addHttpHandler(
   server.register(async function () {
     server.get(`${urlPrefix}/v2/project.list`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
-      const query = request.query as { page?: number; pageSize?: number };
+      const query = request.query as { page?: number; limit?: number };
       const user = extractUser(request as AuthenticatedRequest);
 
       const mapToExposedProject = (project: Project.Project): ExposedProject => {
@@ -208,25 +208,22 @@ export function addHttpHandler(
         })
         .then((projects: ExposedProject[]): [Array<ExposedProject>, Pagination] => {
           // todo check params for validity (type, number, etc.). or make funcs to extract sanitazied params
-          const pageSize = query.pageSize || 10;
+          const limit = query.limit || 10;
           const chunkPage = query.page ? query.page - 1 : 0;
           // todo chain another call to take ExposedProject[] and chunk it, return items and pagination objects, so response can be easily assembled in the next then
           // todo if user requests page that doesn't exist, return empty data.items and pagination data
-          const pageChunks = chunkArray(projects, query.pageSize || 10);
+          const pageChunks = chunkArray(projects, query.limit || 10);
           const items = pageChunks[chunkPage] || [];
 
-          const isNextPage = chunkPage + 2 <= Math.ceil(projects.length / pageSize);
+          const isNextPage = chunkPage + 2 <= Math.ceil(projects.length / limit);
 
           const pagination: Pagination = {
             totalRecords: projects.length,
-            pageSize,
-            totalPages: Math.ceil(projects.length / pageSize),
+            limit,
+            totalPages: Math.ceil(projects.length / limit),
             currentPage: chunkPage + 1,
-            nextPage: isNextPage
-              ? `/v2/project.list?page=${chunkPage + 2}&pageSize=${pageSize}`
-              : null,
-            prevPage:
-              chunkPage > 0 ? `/v2/project.list?page=${chunkPage}&pageSize=${pageSize}` : null,
+            nextPage: isNextPage ? `/v2/project.list?page=${chunkPage + 2}&limit=${limit}` : null,
+            prevPage: chunkPage > 0 ? `/v2/project.list?page=${chunkPage}&limit=${limit}` : null,
           };
 
           return [items, pagination];
