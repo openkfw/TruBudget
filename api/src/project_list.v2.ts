@@ -207,12 +207,12 @@ export function addHttpHandler(
           return result.map(mapToExposedProject);
         })
         .then((projects: ExposedProject[]): [Array<ExposedProject>, Pagination] => {
-          // todo check params for validity (type, number, etc.). or make funcs to extract sanitazied params
+          // todo check params for validity (type, number, etc.). or make funcs to extract sanitized params
           const limit = query.limit || 10;
           const chunkPage = query.page ? query.page - 1 : 0;
-          // todo chain another call to take ExposedProject[] and chunk it, return items and pagination objects, so response can be easily assembled in the next then
-          // todo if user requests page that doesn't exist, return empty data.items and pagination data
+
           const pageChunks = chunkArray(projects, query.limit || 10);
+          // if user requests page that doesn't exist, return empty data.items and pagination data
           const items = pageChunks[chunkPage] || [];
 
           const isNextPage = chunkPage + 2 <= Math.ceil(projects.length / limit);
