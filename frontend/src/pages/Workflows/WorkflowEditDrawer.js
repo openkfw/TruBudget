@@ -203,7 +203,7 @@ const WorkflowEditDrawer = (props) => {
             {strings.workflow.workflow_selection_copy_description}
           </Typography>
           <div>
-            <Card style={styles.assigneeCard}>
+            <Card style={styles.assigneeCard} data-test="copy-table">
               <CardHeader subheader="" />
               <CardContent style={styles.assigneeContainer}>
                 <FormControl fullWidth>
@@ -276,7 +276,7 @@ const WorkflowEditDrawer = (props) => {
         >
           {strings.preview.overwrite}
         </Button>
-        <Button variant="contained" color="secondary" onClick={handleCancelDrawer}>
+        <Button variant="contained" color="secondary" onClick={handleCancelDrawer} data-test="cancel-batch-side-panel">
           {strings.common.cancel}
         </Button>
       </Box>

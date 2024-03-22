@@ -156,6 +156,7 @@ function initMultichain() {
         blockNotifyArg,
         externalIpArg,
         multichainDir,
+        ORGANIZATION,
       ),
     );
     setTimeout(
