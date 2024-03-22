@@ -14,7 +14,8 @@ import { extractUser } from "./handlerUtils";
 import { chunkArray } from "./lib/chunkArray";
 
 /**
- * Creates the swagger schema for the `/project.list` endpoint
+ * Creates the swagger schema for the `v2/project.list` endpoint
+ * This is a comment.
  *
  * @param server fastify server
  * @returns the swagger schema for this endpoint
@@ -111,8 +112,8 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 pageSize: { type: "integer", example: 10 },
                 totalPages: { type: "integer", example: 10 },
                 currentPage: { type: "integer", example: 1 },
-                nextPage: { type: "integer", example: 2, nullable: true },
-                prevPage: { type: "integer", example: 1, nullable: true },
+                nextPage: { type: "string", example: "/v2/project.list?page=2", nullable: true },
+                prevPage: { type: "string", example: null, nullable: true },
               },
             },
           },
@@ -123,6 +124,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
   };
 }
 
+// tdo move elsewhere, list v1 uses it too
 interface ExposedProject {
   allowedIntents: Intent[];
   data: {
@@ -143,6 +145,16 @@ interface ExposedProject {
   };
 }
 
+interface Pagination {
+  totalRecords: number;
+  pageSize: number;
+  totalPages: number;
+  currentPage: number;
+  nextPage?: string | null;
+  prevPage?: string | null;
+}
+
+// todo move interface to service because it's used also in project_list.ts
 /**
  * Represents the service that lists projects
  */
@@ -151,7 +163,7 @@ interface Service {
 }
 
 /**
- * Creates an http handler that handles incoming http requests for the `/project.list` route
+ * Creates an http handler that handles incoming http requests for the `/v2/project.list` route
  *
  * @param server the current fastify server instance
  * @param urlPrefix the prefix of the http url
@@ -168,7 +180,7 @@ export function addHttpHandler(
       const query = request.query as { page?: number; pageSize?: number };
       const user = extractUser(request as AuthenticatedRequest);
 
-      const mapProject = (project: Project.Project): ExposedProject => {
+      const mapToExposedProject = (project: Project.Project): ExposedProject => {
         return {
           allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
           data: {
@@ -190,32 +202,46 @@ export function addHttpHandler(
         .listProjects(ctx, user)
         .then((result) => {
           if (Result.isErr(result)) {
-            throw new VError(result, "project.list failed");
+            throw new VError(result, "/v2/project.list failed");
           }
-          request.log.debug("Mapping intents and timestamp of projects");
-          return result.map(mapProject);
-        }) // todo chain another call to take ExposedProject[] and chunk it, return items and pagination objects, so response can be easily assembled in the next then
-        .then((projects: ExposedProject[]) => {
+          return result.map(mapToExposedProject);
+        })
+        .then((projects: ExposedProject[]): [Array<ExposedProject>, Pagination] => {
+          // todo check params for validity (type, number, etc.). or make funcs to extract sanitazied params
+          const pageSize = query.pageSize || 10;
+          const chunkPage = query.page ? query.page - 1 : 0;
+          // todo chain another call to take ExposedProject[] and chunk it, return items and pagination objects, so response can be easily assembled in the next then
           // todo if user requests page that doesn't exist, return empty data.items and pagination data
-          // https://www.youtube.com/watch?v=5uz1bIV03ng
-          const projectChunks = chunkArray(projects, query.pageSize || 10);
+          const pageChunks = chunkArray(projects, query.pageSize || 10);
+          const items = pageChunks[chunkPage] || [];
 
-          const code = 200;
+          const isNextPage = chunkPage + 2 <= Math.ceil(projects.length / pageSize);
+
+          const pagination: Pagination = {
+            totalRecords: projects.length,
+            pageSize,
+            totalPages: Math.ceil(projects.length / pageSize),
+            currentPage: chunkPage + 1,
+            nextPage: isNextPage
+              ? `/v2/project.list?page=${chunkPage + 2}&pageSize=${pageSize}`
+              : null,
+            prevPage:
+              chunkPage > 0 ? `/v2/project.list?page=${chunkPage}&pageSize=${pageSize}` : null,
+          };
+
+          return [items, pagination];
+        })
+        .then((result) => {
+          const [items, pagination] = result;
+
           const body = {
             apiVersion: "2.0",
             data: {
-              items: projectChunks[query.page ? query.page - 1 : 0],
+              items,
             },
-            pagination: {
-              totalRecords: projects.length,
-              pageSize: query.pageSize || 10,
-              totalPages: projectChunks.length,
-              currentPage: query.page || 1,
-              nextPage: null, //todo
-              prevPage: null, //todo
-            },
+            pagination,
           };
-          reply.status(code).send(body);
+          reply.status(200).send(body);
         })
         .catch((err) => {
           const { code, body } = toHttpError(err);
