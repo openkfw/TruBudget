@@ -80,7 +80,8 @@ import {
   DECLINE_NODE,
   DECLINE_NODE_SUCCESS,
   FETCH_NODES,
-  FETCH_NODES_SUCCESS
+  FETCH_NODES_SUCCESS,
+  REGISTER_NEW_ORGANIZATION
 } from "./pages/Nodes/actions.js";
 import {
   FETCH_ALL_NOTIFICATIONS,
@@ -941,7 +942,7 @@ export function* validateDocumentSaga({ base64String, hash, id, projectId, subpr
   }, false);
 }
 
-export function* validateDocumentClientsideSaga({ hash, newHash, id }) {
+export function* validateDocumentClientsideSaga({ hash, newHash }) {
   yield execute(function* () {
     const isIdentical = newHash === hash;
 
@@ -1570,6 +1571,16 @@ export function* approveNewNodeForOrganizationSaga({ address, showLoading }) {
       show: true
     });
   }, showLoading);
+}
+
+export function* registerNewOrganizationSaga({ organization, address }) {
+  yield execute(function* () {
+    yield callApi(api.registerNewOrganization, organization, address);
+    yield put({
+      type: FETCH_NODES,
+      show: true
+    });
+  }, true);
 }
 
 export function* declineNode({ node, showLoading }) {
@@ -3286,6 +3297,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_NODES, fetchNodesSaga),
       yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga),
       yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga),
+      yield takeEvery(REGISTER_NEW_ORGANIZATION, registerNewOrganizationSaga),
       yield takeEvery(DECLINE_NODE, declineNode),
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
       yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),
