@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-describe("Workflowitem batch test", function() {
+describe("Workflowitem batch test", function () {
   let projectId,
     subprojectId,
     workflowitem1,
@@ -65,19 +65,19 @@ describe("Workflowitem batch test", function() {
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     cy.login();
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("Swapping workflowitems", function() {
+  it("Swapping workflowitems", function () {
     cy.get("[data-test=enable-workflowitem-sort]").click();
     movePiece(`[data-test=workflowitem-${workflowitem1}`, `[data-test=workflowitem-${workflowitem2}`);
     cy.get("[data-test=submit-workflowitem-sort]").click();
 
     // WF1 and WF2 swapped:
     cy.reload();
-    cy.get(`[data-test^=workflowitem-container`).then(sortedElements => {
+    cy.get(`[data-test^=workflowitem-container`).then((sortedElements) => {
       expect(sortedElements[0]).to.contain("workflowitem batch test 2");
       expect(sortedElements[1]).to.contain("workflowitem batch test 1");
       expect(sortedElements[2]).to.contain("workflowitem batch test 3");
@@ -86,17 +86,27 @@ describe("Workflowitem batch test", function() {
     });
   });
 
-  it("Reordering button is disabled if ther subproject is closed", function() {
+  it("Reordering button is disabled if ther subproject is closed", function () {
     cy.visit(`/projects/${projectId}/${subprojectIdClosed}`);
     cy.get("[data-test=enable-workflowitem-sort]").should("be.disabled");
   });
 
-  it("When selecting a Checkbox, the preview dialog opens", function() {
+  it("When selecting a Checkbox, and click permissions button, the preview dialog opens", function () {
     cy.get("[data-test=enable-workflowitem-sort]").click();
-    cy.get("[data-test=check-workflowitem]")
-      .first()
-      .click();
+    cy.get("[data-test=check-workflowitem]").first().click();
+    cy.wait(100);
+    cy.get("[data-test=open-batch-workflow-items-permission-table]").click();
     cy.get("[data-test=permission-table]").should("be.visible");
+    cy.get("[data-test=cancel-batch-side-panel]").click();
+  });
+
+  it("When selecting a Checkbox, and click permissions button, the preview dialog opens", function () {
+    cy.get("[data-test=enable-workflowitem-sort]").click();
+    cy.get("[data-test=check-workflowitem]").first().click();
+    cy.wait(100);
+    cy.get("[data-test=open-batch-workflow-items-copy-table]").click();
+    cy.get("[data-test=copy-table]").should("be.visible");
+    cy.get("[data-test=cancel-batch-side-panel]").click();
   });
 });
 
