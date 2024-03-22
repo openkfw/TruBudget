@@ -69,6 +69,7 @@ const WorkflowTableHeader = (props) => {
               disabled={selectedWorkflowItems.length === workflowItems.length}
               onClick={handleSelectAllButton}
               style={styles.bulkActionButton}
+              data-test="select-all-workflow-items"
             >
               {strings.common.select_all}
             </Button>
@@ -78,6 +79,7 @@ const WorkflowTableHeader = (props) => {
               disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
               onClick={handleDeselectAllButton}
               style={styles.bulkActionButton}
+              data-test="deselect-all-workflow-items"
             >
               {strings.common.deselect_all}
             </Button>
@@ -88,6 +90,7 @@ const WorkflowTableHeader = (props) => {
               onClick={handlePermissionBulkActionButton}
               startIcon={<KeyIcon />}
               style={styles.bulkActionButton}
+              data-test="open-batch-workflow-items-permission-table"
             >
               {strings.users.edit_permissions}
             </Button>
@@ -98,6 +101,7 @@ const WorkflowTableHeader = (props) => {
               onClick={handleCopyBulkActionButton}
               startIcon={<ContentCopyIcon />}
               style={styles.bulkActionButton}
+              data-test="open-batch-workflow-items-copy-table"
             >
               {strings.common.copy}
             </Button>
