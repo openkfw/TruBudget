@@ -32,6 +32,7 @@ function startBeta(
   blockNotifyArg,
   externalIpArg,
   multichainDir,
+  organization,
 ) {
   const prog = "multichaind";
 
@@ -93,12 +94,17 @@ function startBeta(
 
   mc.stdout.on("data", (data) => {
     mdLog.debug(`${data}`);
-    const regex = /[0-9a-zA-Z]{30,40}/;
-    const match = regex.exec(data);
-    // Store own wallet address into global "address"
-    if (match) {
-      address = match[0];
-      log.info("Wallet address registered. Entry added in nodes stream of network of alpha node, approval needed.");
+    if (data.includes("default address:")) {
+      const regex = /[0-9a-zA-Z]{30,40}/;
+      const match = regex.exec(data);
+      // Store own wallet address into global "address"
+      if (match) {
+        address = match[0];
+        // higher log level to be easier to see in the logs
+        mdLog.warn(
+          `***** Organization ${organization} and wallet address ${address} needs to be registered and approved at alpha node. *****`,
+        );
+      }
     }
   });
 
@@ -115,7 +121,7 @@ function askAlphaForPermissions(address, organization, proto, host, port, certPa
   const url = `${proto}://${host}:${port}/api/network.registerNode`;
   log.info(`Trying to register at ${url}`);
   if (certPath) {
-    log.debug(`Connecting with alpha node using certificate ${certPath}, ca ${certCaPath},key ${certKeyPath} ...`);
+    mdLog.debug(`Connecting with alpha node using certificate ${certPath}, ca ${certCaPath},key ${certKeyPath} ...`);
 
     const httpsAgent = new https.Agent(
       certCaPath && certKeyPath
@@ -153,6 +159,8 @@ function askAlphaForPermissions(address, organization, proto, host, port, certPa
 }
 
 async function registerNodeAtAlpha(organization, proto, host, port, certPath, certCaPath, certKeyPath) {
+  // TODO (future) change to retry loop with exponential backoff?
+
   const retryIntervalMs = 10000;
   try {
     log.info(`Waiting for registration at alpha node (${host}:${port})`);

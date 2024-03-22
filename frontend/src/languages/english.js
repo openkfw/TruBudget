@@ -35,9 +35,11 @@ const en = {
     comment: "Comment",
     completion: "Completion",
     confirm: "Confirm",
+    copy: "Copy",
     create: "Create",
     created: "Created",
     currency: "Currency",
+    deselect_all: "Deselect all",
     disbursed_budget: "Paid Budget",
     disbursement: "Projected",
     disconnected: "Offline",
@@ -110,6 +112,7 @@ const en = {
     reject: "Reject",
     rejected: "Rejected",
     search: "Search",
+    select_all: "Select all",
     show_permissions: "Show Permissions",
     status: "Status",
     submit: "Submit",
@@ -147,6 +150,7 @@ const en = {
     current_user_password: "Your password",
     edit_group: "Edit Group",
     edit_permissions_for: "Edit permissions for",
+    edit_permissions: "Edit permissions",
     group_created: "Group successfully created",
     groups: "Groups",
     invalid_password: "Password invalid",
@@ -277,7 +281,8 @@ const en = {
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
     workflowitem_assignee: "Default assignee",
     organization_info: "Organization",
-    total_budget_info: "Total budget"
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
@@ -318,6 +323,9 @@ const en = {
     workflow_redacted: "Redacted",
     workflow_reject_reason: "Reject reason",
     workflow_selection: "{0} workflowitems are selected",
+    workflow_selection_copy_description: "This functionality allows you to copy all selected workflow items to the destination subproject including amounts and assigned persons. Copied workflow items will be in open status so can edit them afterwards.",
+    workflow_selection_select_project: "Select project",
+    workflow_selection_select_subproject: "Select subproject",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflowitems",
     workflow_title_description: "Name of the workflowitem",

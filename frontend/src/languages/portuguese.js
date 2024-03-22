@@ -35,9 +35,11 @@ const pt = {
     comment: "Comentário",
     completion: "Conclusão",
     confirm: "Confirme",
+    copy: "Copy",
     create: "Criar",
     created: "Data de criação",
     currency: "Moeda",
+    deselect_all: "Desmarcar todos",
     disbursed_budget: "Custo pago",
     disbursement: "Pagamentos programados",
     disconnected: "Desligada",
@@ -111,6 +113,7 @@ const pt = {
     reject: "Rejeitar",
     rejected: "Rejeitado",
     search: "Procurar",
+    select_all: "Selecionar tudo",
     show_permissions: "Mostrar permissões",
     status: "Status",
     submit: "Enviar",
@@ -148,6 +151,7 @@ const pt = {
     current_user_password: "Sua Senha",
     edit_group: "Editar grupo",
     edit_permissions_for: "Editar permissões para",
+    edit_permissions: "Editar permissões",
     group_created: "Grupo de usuários criado com sucesso",
     groups: "Grupos",
     invalid_password: "Sehna inválida",
@@ -279,7 +283,8 @@ const pt = {
       "Permitir apenas item de fluxo de trabalho do tipo restrito. Ao atribuir um item de fluxo de trabalho restrito, as permissões são concedidas e revogadas automaticamente. O atribuidor manterá apenas as permissões de visualização.",
     workflowitem_assignee: "Cessionário padrão",
     organization_info: "Organization",
-    total_budget_info: "Total budget"
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
@@ -321,6 +326,10 @@ const pt = {
     workflow_redacted: "Editado por privacidade",
     workflow_reject_reason: "Rejeitar a razão",
     workflow_selection: "Você selecionaou {0} itens de workflows",
+    workflow_selection_copy_description:
+      "Esta funcionalidade permite copiar todos os itens de fluxo de trabalho selecionados para o subprojeto de destino, incluindo valores e pessoas atribuídas. Os itens de fluxo de trabalho copiados estarão com status aberto, portanto você poderá editá-los posteriormente.",
+    workflow_selection_select_project: "Selecione o projeto",
+    workflow_selection_select_subproject: "Selecione subprojeto",
     workflow_submit_for_review: "Enviar para revisão",
     workflow_table_title: "Lista de itens de workflow",
     workflow_title_description: "Descrição do item de workflow",

@@ -126,7 +126,7 @@ export async function hashDocuments(
   return documentReference;
 }
 
-async function hashBase64String(base64String: string): Promise<string> {
+export async function hashBase64String(base64String: string): Promise<string> {
   return new Promise<string>((resolve) => {
     const hash = crypto.createHash("sha256");
     hash.update(Buffer.from(base64String, "base64"));

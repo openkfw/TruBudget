@@ -89,7 +89,6 @@ class WorkflowDialogContainer extends Component {
     subprojectDisplayName,
     workflowDocuments,
     workflowitemType,
-    workflowTemplate,
     workflowitems
   }) => {
     const path = this.props.router.location.pathname.split("/");

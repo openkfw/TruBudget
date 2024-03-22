@@ -48,7 +48,7 @@ export const defaultState = fromJS({
     id: "",
     displayName: "",
     description: "",
-    thumbnail: "/Thumbnail_0001.jpg",
+    thumbnail: "/Default_thumbnail.jpg",
     projectedBudgets: [],
     deletedProjectedBudgets: [],
     additionalData: {},
