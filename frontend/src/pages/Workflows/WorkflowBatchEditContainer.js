@@ -3,15 +3,19 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
+import { fetchAllProjects } from "../Overview/actions";
+import { fetchAllProjectDetailsNotCurrentProject } from "../SubProjects/actions";
 
 import {
   assignWorkflowItem,
+  createWorkflowItemAction,
   disableWorkflowEdit,
   hideWorkflowItemPreview,
   resetSucceededWorkflowitems,
   showWorkflowItemPreview,
   storePermissions,
   storeWorkflowItemBatchAssignee,
+  storeWorkflowItemsBulkAction,
   submitBatchForWorkflow
 } from "./actions";
 import WorkflowEditDrawer from "./WorkflowEditDrawer";
@@ -32,6 +36,7 @@ const mapStateToProps = (state) => {
   return {
     previewDialogShown: state.getIn(["workflow", "previewDialogShown"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
+    loadedProjectDetails: state.getIn(["navbar", "loadedProjectDetails"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     tempDrawerPermissions: state.getIn(["workflow", "tempDrawerPermissions"]),
     tempDrawerAssignee: state.getIn(["workflow", "tempDrawerAssignee"]),
@@ -39,6 +44,7 @@ const mapStateToProps = (state) => {
     permissions: state.getIn(["workflow", "permissions", "workflowitem"]),
     users: state.getIn(["login", "enabledUsers"]),
     groups: state.getIn(["login", "groupList"]),
+    projects: state.getIn(["overview", "projects"]),
     workflowActions: state.getIn(["workflow", "workflowActions"]),
     submittedWorkflowItems: state.getIn(["workflow", "submittedWorkflowItems"]),
     failedWorkflowItem: state.getIn(["workflow", "failedWorkflowItem"]),
@@ -47,7 +53,8 @@ const mapStateToProps = (state) => {
     myself: state.getIn(["login", "id"]),
     subprojectId: state.getIn(["workflow", "id"]),
     hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
-    subprojectValidator: state.getIn(["workflow", "subprojectValidator"])
+    subprojectValidator: state.getIn(["workflow", "subprojectValidator"]),
+    workflowitemsBulkAction: state.getIn(["workflow", "workflowitemsBulkAction"])
   };
 };
 
@@ -56,11 +63,16 @@ const mapDispatchToProps = (dispatch) => {
     hideWorkflowItemPreview: () => dispatch(hideWorkflowItemPreview()),
     assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
       dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
+    createWorkflowItem: (...data) => dispatch(createWorkflowItemAction(...data)),
+    fetchAllProjects: () => dispatch(fetchAllProjects()),
+    fetchAllProjectDetailsNotCurrentProject: (projectId, showLoading) =>
+      dispatch(fetchAllProjectDetailsNotCurrentProject(projectId, showLoading)),
     resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems()),
     storeAssignee: (assignee) => dispatch(storeWorkflowItemBatchAssignee(assignee)),
     storePermissions: (permissions) => dispatch(storePermissions(permissions)),
     showWorkflowItemPreview: (pId, subprojectId, resources, assignee, permissions) =>
       dispatch(showWorkflowItemPreview(pId, subprojectId, resources, assignee, permissions)),
+    storeWorkflowItemsBulkAction: (bulkActionType) => dispatch(storeWorkflowItemsBulkAction(bulkActionType)),
     disableWorkflowEdit: () => dispatch(disableWorkflowEdit()),
     editWorkflowitems: (pId, subpId, actions) => dispatch(submitBatchForWorkflow(pId, subpId, actions, false))
   };
