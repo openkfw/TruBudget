@@ -340,8 +340,10 @@ function* handleError(error) {
   console.error("API-Error: ", error.response || "No response from API");
 
   if (error.response && error.response.status === 401) {
-    // which status should we use?
-    yield call(logoutSaga);
+    // no need to logout if 401 is from user.authenticate
+    if (!error.response.config.url.includes("/user.authenticate")) {
+      yield call(logoutSaga);
+    }
   } else if (error.response && error.response.data && error.response.data.error.message) {
     yield put({
       type: SNACKBAR_MESSAGE,
