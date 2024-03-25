@@ -11,7 +11,10 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import { extractUser } from "./handlerUtils";
-import { chunkArray } from "./lib/chunkArray";
+import { Pagination, paginate } from "./lib/pagination";
+import { isNumber } from "./lib/validation";
+
+const API_VERSION = "2.0";
 
 /**
  * Creates the swagger schema for the `v2/project.list` endpoint
@@ -46,6 +49,13 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
           description: "The number of items per page",
           required: false,
           schema: { type: "integer", minimum: 1 },
+        },
+        {
+          in: "query",
+          name: "sort",
+          description: "The field to sort by",
+          required: false,
+          schema: { type: "string" },
         },
       ],
       response: {
@@ -145,15 +155,6 @@ interface ExposedProject {
   };
 }
 
-interface Pagination {
-  totalRecords: number;
-  limit: number;
-  totalPages: number;
-  currentPage: number;
-  nextPage?: string | null;
-  prevPage?: string | null;
-}
-
 // todo move interface to service because it's used also in project_list.ts
 /**
  * Represents the service that lists projects
@@ -206,33 +207,30 @@ export function addHttpHandler(
           }
           return result.map(mapToExposedProject);
         })
+        .then((projects: ExposedProject[]): Array<ExposedProject> => {
+          // todo sort
+          return projects;
+        })
         .then((projects: ExposedProject[]): [Array<ExposedProject>, Pagination] => {
-          // todo check params for validity (type, number, etc.). or make funcs to extract sanitized params
-          const limit = query.limit || 10;
-          const chunkPage = query.page ? query.page - 1 : 0;
-
-          const pageChunks = chunkArray(projects, query.limit || 10);
-          // if user requests page that doesn't exist, return empty data.items and pagination data
-          const items = pageChunks[chunkPage] || [];
-
-          const isNextPage = chunkPage + 2 <= Math.ceil(projects.length / limit);
-
-          const pagination: Pagination = {
-            totalRecords: projects.length,
-            limit,
-            totalPages: Math.ceil(projects.length / limit),
-            currentPage: chunkPage + 1,
-            nextPage: isNextPage ? `/v2/project.list?page=${chunkPage + 2}&limit=${limit}` : null,
-            prevPage: chunkPage > 0 ? `/v2/project.list?page=${chunkPage}&limit=${limit}` : null,
-          };
-
-          return [items, pagination];
+          if (query.page && !isNumber(query.page)) {
+            throw new VError(
+              { name: "BadRequest" },
+              "Invalid query parameters: page must be a number",
+            );
+          }
+          if (query.limit && !isNumber(query.limit)) {
+            throw new VError(
+              { name: "BadRequest" },
+              "Invalid query parameters: limit must be a number",
+            );
+          }
+          return paginate<ExposedProject>("/v2/project.list", projects, query.page, query.limit);
         })
         .then((result) => {
           const [items, pagination] = result;
 
           const body = {
-            apiVersion: "2.0",
+            apiVersion: API_VERSION,
             data: {
               items,
             },
@@ -241,7 +239,7 @@ export function addHttpHandler(
           reply.status(200).send(body);
         })
         .catch((err) => {
-          const { code, body } = toHttpError(err);
+          const { code, body } = toHttpError(err, API_VERSION);
           request.log.error({ err }, "Error while listing projects");
           reply.status(code).send(body);
         });
