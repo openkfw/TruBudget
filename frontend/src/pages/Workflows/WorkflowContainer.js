@@ -51,6 +51,7 @@ import {
   showWorkflowitemAdditionalData,
   showWorkflowItemPermissions,
   storeFilteredWorkflowitems,
+  storeWorkflowItemsBulkAction,
   storeWorkflowitemSearchTerm,
   storeWorkflowItemsSelected,
   storeWorkflowSearchBarDisplayed,
@@ -256,6 +257,7 @@ const mapDispatchToProps = (dispatch, _ownProps) => {
     saveWorkflowItemsBeforeSort: (workflowItems) => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),
     addDocument: (payload, name) => dispatch(addDocument(payload, name)),
     storeWorkflowItemsSelected: (workflowItems) => dispatch(storeWorkflowItemsSelected(workflowItems)),
+    storeWorkflowItemsBulkAction: (bulkActionType) => dispatch(storeWorkflowItemsBulkAction(bulkActionType)),
     openAnalyticsDialog: () => dispatch(openAnalyticsDialog()),
     showWorkflowitemAdditionalData: (wId) => dispatch(showWorkflowitemAdditionalData(wId)),
     hideWorkflowitemAdditionalData: () => dispatch(hideWorkflowitemAdditionalData()),
@@ -316,6 +318,7 @@ const mapStateToProps = (state) => {
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
+    workflowitemsBulkAction: state.getIn(["workflow", "workflowitemsBulkAction"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"])
   };
 };

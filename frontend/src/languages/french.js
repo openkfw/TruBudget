@@ -35,9 +35,11 @@ const fr = {
     comment: "Commentaire",
     completion: "Achèvement",
     confirm: "Confirmer",
+    copy: "Copy",
     create: "Créer",
     created: "Date de création",
     currency: "Devise",
+    deselect_all: "Tout déselectionner",
     disbursed_budget: "Montants payés",
     disbursement: "Paiement prévus",
     disconnected: "Déconnecté",
@@ -111,6 +113,7 @@ const fr = {
     reject: "Rejette",
     rejected: " Rejeté",
     search: "Chercher",
+    select_all: "Tout sélectionner",
     show_permissions: "Afficher les autorisations",
     status: "Statut",
     submit: "Soumettre",
@@ -239,6 +242,10 @@ const fr = {
     workflow_redacted: "Expurgé",
     workflow_reject_reason: "Motif de rejet",
     workflow_selection: "Vous avez sélectionné {0} étapes de workflow ",
+    workflow_selection_copy_description:
+      "Cette fonctionnalité vous permet de copier tous les éléments de workflow sélectionnés vers le sous-projet de destination, y compris les montants et les personnes affectées. Les éléments de flux de travail copiés seront en statut ouvert et vous pourrez donc les modifier par la suite.",
+    workflow_selection_select_project: "Sélectionnez un projet",
+    workflow_selection_select_subproject: "Sélectionner un sous-projet",
     workflow_submit_for_review: "Soumettre pour examen",
     workflow_table_title: "Liste des étapes",
     workflow_title_description: "Description du titre de l’étape de workflow",
@@ -281,6 +288,7 @@ const fr = {
     current_user_password: "Votre mot de passe",
     edit_group: "Éditer un groupe",
     edit_permissions_for: "Éditer les autorisations pour",
+    edit_permissions: "Éditer les autorisations",
     group_created: "Groupe créé avec succès",
     groups: "Groupes",
     invalid_password: "Mot de passe invalide",
@@ -347,7 +355,11 @@ const fr = {
     connection_status: "Statut de connexion",
     last_seen: "Vu pour la dernière fois",
     admin_description:
-      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
+      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'",
+    add_organization: "Ajouter une nouvelle organisation",
+    organization_error: "L'organisation ne peut pas être vide",
+    node_address_error: "L'adresse du nœud ne peut pas être vide",
+    node_address: "Adresse du nœud"
   },
 
   preview: {

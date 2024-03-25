@@ -7,7 +7,13 @@ import NotAuthorized from "../Error/NotAuthorized";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 
-import { approveNewNodeForExistingOrganization, approveNewOrganization, declineNode, fetchNodes } from "./actions";
+import {
+  approveNewNodeForExistingOrganization,
+  approveNewOrganization,
+  declineNode,
+  fetchNodes,
+  registerNewOrganization
+} from "./actions";
 import Nodes from "./Nodes";
 
 class NodesContainer extends Component {
@@ -40,6 +46,7 @@ const mapDispatchToProps = (dispatch) => {
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
     approveNewOrganization: (organization) => dispatch(approveNewOrganization(organization)),
     approveNewNodeForExistingOrganization: (address) => dispatch(approveNewNodeForExistingOrganization(address)),
+    registerNewOrganization: (organization, address) => dispatch(registerNewOrganization(organization, address)),
     declineNode: (node) => dispatch(declineNode(node))
   };
 };

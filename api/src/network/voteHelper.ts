@@ -1,3 +1,4 @@
+import { getOrganizationAddress } from "../organization/organization";
 import { AuthToken } from "../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { Ctx } from "../lib/ctx";
@@ -20,7 +21,18 @@ export async function voteHelper(
 ): Promise<HttpResponse> {
   const multichain = conn.multichainClient;
 
-  const callerAddress = user.organizationAddress;
+  const callerAddress = await getOrganizationAddress(multichain, user.organization);
+  if (!callerAddress) {
+    const message = `Organization address not found for ${user.organization}`;
+    logger.error({ err: { user, callerAddress, targetAddress, vote } }, message);
+    return [404, { apiVersion: "1.0", error: { code: 404, message } }];
+  }
+  if (callerAddress !== user.organizationAddress) {
+    const message = `Organization address mismatch: ${callerAddress} !== ${user.organizationAddress} (from token)`;
+    logger.error({ err: { user, callerAddress, targetAddress, vote } }, message);
+    return [409, { apiVersion: "1.0", error: { code: 409, message } }];
+  }
+
   const currentVote = await getCurrentVote(multichain, callerAddress, targetAddress);
   const currentAccess = await getCurrentAccess(multichain, targetAddress);
   logger.debug({ callerAddress, targetAddress, currentVote, currentAccess }, "Preparing vote");

@@ -36,9 +36,11 @@ const de = {
     comment_description: "Schreibe Kommentare",
     completion: "Fertigstellung",
     confirm: "Bestätigen",
+    copy: "Copy",
     create: "Erstellen",
     created: "Erstellt",
     currency: "Währung",
+    deselect_all: "Alle abwählen",
     disbursed_budget: "Ausgezahltes Budget",
     disbursement: "Auszahlung",
     disconnected: "Offline",
@@ -104,6 +106,7 @@ const de = {
     reject: " Ablehnen",
     rejected: "Abgelehnt",
     search: "Suche",
+    select_all: "Alles auswählen",
     show_permissions: "Zeige Berechtigungen",
     status: "Status",
     submit: "Fertig",
@@ -236,6 +239,10 @@ const de = {
     workflow_redacted: "Redigiert",
     workflow_reject_reason: "Ablehnungsgrund",
     workflow_selection: "Du hast {0} workflows ausgewählt",
+    workflow_selection_copy_description:
+      "Mit dieser Funktionalität können Sie alle ausgewählten Workflow-Elemente einschließlich der Beträge und zugewiesenen Personen in das Ziel-Unterprojekt kopieren. Kopierte Workflow-Elemente haben den Status „Offen“, sodass sie anschließend bearbeitet werden können.",
+    workflow_selection_select_project: "Projekt auswählen",
+    workflow_selection_select_subproject: "Teilprojekt auswählen",
     workflow_submit_for_review: "Zum Review freigeben",
     workflow_table_title: "Workflowitems",
     workflow_title_description: "Name des Workflowitems",
@@ -282,6 +289,7 @@ const de = {
     add_group: "Benutzergruppe",
     edit_group: "Benutzergruppe ändern",
     edit_permissions_for: "Ändere Berechtigungen für",
+    edit_permissions: "Ändere Berechtigungen",
     current_user_password: "Ihr Passwort",
     new_user_password: "Neues Passwort",
     new_user_password_confirmation: "Bestätigen Sie das neue Password",
@@ -348,7 +356,11 @@ const de = {
     connection_status: "Verbindungsstatus",
     last_seen: "Zuletzt gesehen",
     admin_description:
-      "Der Administratorknoten ist der Anfangsknoten des Netzwerks und verfügt über zusätzliche 'Mine' und 'Admin' Berechtigungen."
+      "Der Administratorknoten ist der Anfangsknoten des Netzwerks und verfügt über zusätzliche 'Mine' und 'Admin' Berechtigungen.",
+    add_organization: "Neue Organisation hinzufügen",
+    organization_error: "Die Organisation darf nicht leer sein",
+    node_address_error: "Die Knotenadresse darf nicht leer sein",
+    node_address: "Knotenadresse"
   },
 
   preview: {

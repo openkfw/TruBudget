@@ -35,9 +35,11 @@ const en = {
     comment: "Comment",
     completion: "Completion",
     confirm: "Confirm",
+    copy: "Copy",
     create: "Create",
     created: "Created",
     currency: "Currency",
+    deselect_all: "Deselect all",
     disbursed_budget: "Paid Budget",
     disbursement: "Projected",
     disconnected: "Offline",
@@ -110,6 +112,7 @@ const en = {
     reject: "Reject",
     rejected: "Rejected",
     search: "Search",
+    select_all: "Select all",
     show_permissions: "Show Permissions",
     status: "Status",
     submit: "Submit",
@@ -147,6 +150,7 @@ const en = {
     current_user_password: "Your password",
     edit_group: "Edit Group",
     edit_permissions_for: "Edit permissions for",
+    edit_permissions: "Edit permissions",
     group_created: "Group successfully created",
     groups: "Groups",
     invalid_password: "Password invalid",
@@ -216,7 +220,11 @@ const en = {
     connection_status: "Connection status",
     last_seen: "Last seen",
     admin_description:
-      "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
+      "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions",
+    add_organization: "Add new Organization",
+    organization_error: "Organization cannot be empty",
+    node_address_error: "Node address cannot be empty",
+    node_address: "Node address"
   },
 
   login: {
@@ -315,6 +323,9 @@ const en = {
     workflow_redacted: "Redacted",
     workflow_reject_reason: "Reject reason",
     workflow_selection: "{0} workflowitems are selected",
+    workflow_selection_copy_description: "This functionality allows you to copy all selected workflow items to the destination subproject including amounts and assigned persons. Copied workflow items will be in open status so can edit them afterwards.",
+    workflow_selection_select_project: "Select project",
+    workflow_selection_select_subproject: "Select subproject",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflowitems",
     workflow_title_description: "Name of the workflowitem",

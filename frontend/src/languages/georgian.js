@@ -35,9 +35,11 @@ const ka = {
     comment: "კომენტარი",
     completion: "დასრულება",
     confirm: "დადასტურება",
+    copy: "Copy",
     create: "შექმნა",
     created: "შექმნილია",
     currency: "ვალუტა",
+    deselect_all: "Გააუქმეთ ყველა მონიშვნა",
     disbursed_budget: "გადახდილი ღირებულება",
     disbursement: "დაგეგმილი გადახდები",
     disconnected: "offline",
@@ -110,6 +112,7 @@ const ka = {
     reject: "Უარყოს",
     rejected: "უარყოფილი",
     search: "ძიება",
+    select_all: "Მონიშნე ყველა",
     show_permissions: "მაჩვენე ნებართვები",
     status: "სტატუსი",
     submit: "გაგზავნა",
@@ -147,6 +150,7 @@ const ka = {
     current_user_password: "შენი პაროლი",
     edit_group: "ჯგუფის რედაქტირება",
     edit_permissions_for: "ნებართვის რედაქტირება",
+    edit_permissions: "ნებართვების რედაქტირება",
     group_created: "ჯგუფი წარმატებით შექმნილია",
     groups: "ჯგუფები",
     invalid_password: "პაროლი არასწორია",
@@ -217,7 +221,11 @@ const ka = {
     connection_status: "კავშირის სტატუსი",
     last_seen: "ბოლო ნახვა",
     admin_description:
-      "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
+      "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები",
+    add_organization: "დაამატეთ ახალი ორგანიზაცია",
+    organization_error: "ორგანიზაცია არ შეიძლება იყოს ცარიელი",
+    node_address_error: "კვანძის მისამართი არ შეიძლება იყოს ცარიელი",
+    node_address: "კვანძის მისამართი"
   },
 
   login: {
@@ -318,6 +326,10 @@ const ka = {
     workflow_redacted: "Redacted",
     workflow_reject_reason: "უარყავი მიზეზი",
     workflow_selection: "{0} Workflowitem-ები არჩეულია",
+    workflow_selection_copy_description:
+      "ეს ფუნქცია საშუალებას გაძლევთ დააკოპიროთ სამუშაო პროცესის ყველა არჩეული ელემენტი დანიშნულების ქვეპროექტში თანხების და მინიჭებული პირების ჩათვლით. კოპირებული სამუშაო პროცესის ელემენტები იქნება ღია სტატუსში, ასე რომ, მათი შემდგომი რედაქტირება შესაძლებელია.",
+    workflow_selection_select_project: "აირჩიეთ პროექტი",
+    workflow_selection_select_subproject: "აირჩიეთ ქვეპროექტი",
     workflow_submit_for_review: "განსახილველად გადაგზავნა",
     workflow_table_title: "Workflowitem-ები",
     workflow_title_description: "Workflowitem-ის სახელწოდება",
