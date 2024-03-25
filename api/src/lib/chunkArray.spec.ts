@@ -10,28 +10,28 @@ describe("chunkArray", () => {
       [4, 5, 6],
       [7, 8, 9],
     ];
-    expect(chunkArray(array, chunkSize)).to.equal(expected);
+    expect(chunkArray(array, chunkSize)).to.deep.equal(expected);
   });
 
   it("should handle chunk sizes that do not evenly divide the array length", () => {
     const array = [1, 2, 3, 4, 5, 6, 7];
     const chunkSize = 3;
     const expected = [[1, 2, 3], [4, 5, 6], [7]];
-    expect(chunkArray(array, chunkSize)).to.equal(expected);
+    expect(chunkArray(array, chunkSize)).to.deep.equal(expected);
   });
 
   it("should handle a chunk size of 1", () => {
     const array = [1, 2, 3];
     const chunkSize = 1;
     const expected = [[1], [2], [3]];
-    expect(chunkArray(array, chunkSize)).to.equal(expected);
+    expect(chunkArray(array, chunkSize)).to.deep.equal(expected);
   });
 
   it("should handle a chunk size greater than the array length", () => {
     const array = [1, 2, 3];
     const chunkSize = 5;
     const expected = [[1, 2, 3]];
-    expect(chunkArray(array, chunkSize)).to.equal(expected);
+    expect(chunkArray(array, chunkSize)).to.deep.equal(expected);
   });
 
   it("should handle a chunk size of 0 and default to 10", () => {
@@ -57,10 +57,13 @@ describe("chunkArray", () => {
     expect(chunkArray(array, chunkSize)).to.deep.equal(expected);
   });
 
-  it("should handle an alphabetic string as chunk size", () => {
-    const array = Array.from({ length: 100 }, (_, i) => i + 1);
+  it("should default to 10 chunk size if given alphabetic string", () => {
+    const array = Array.from({ length: 35 }, (_, i) => i + 1);
     const chunkSize = "abc";
-    const expected = [array];
+    const expected: number[][] = [];
+    for (let i = 0; i < array.length; i += 10) {
+      expected.push(array.slice(i, i + 10));
+    }
     expect(chunkArray(array, chunkSize)).to.deep.equal(expected);
   });
 });
