@@ -54,6 +54,15 @@ class DocumentOverview extends Component {
     super();
     this.input = {};
   }
+
+  hashValue = async (base64String) => {
+    const data = Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0));
+    const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    return hashHex;
+  };
+
   getPropsForValidationButton = (validated, available) => {
     let style = {};
     let label = "";
@@ -100,10 +109,18 @@ class DocumentOverview extends Component {
             if (event.target.files[0]) {
               const file = event.target.files[0];
               const reader = new FileReader();
-              reader.onloadend = (e) => {
+              reader.onloadend = async (e) => {
                 if (e.target.result !== undefined) {
-                  const dataUrl = e.target.result.split(";base64,")[1];
-                  this.props.validateDocument(hash, dataUrl, id, projectId, subprojectId, workflowitemId);
+                  const dataBase64 = e.target.result.split(";base64,")[1];
+                  const newHash = await this.hashValue(dataBase64);
+                  this.props.validateDocument({
+                    hash,
+                    newHash,
+                    projectId,
+                    subprojectId,
+                    workflowitemId,
+                    documentId: id
+                  });
                 }
               };
               reader.readAsDataURL(file);
@@ -199,9 +216,15 @@ class DocumentOverview extends Component {
   };
 
   generateEmptyList = () => (
-    <div style={{ backgroundColor: "#f3f3f3" }}>
-      <DocumentEmptyState captionText={strings.common.no_documents_info_text} />
-    </div>
+    <TableBody>
+      <TableRow>
+        <TableCell>
+          <div style={{ backgroundColor: "#f3f3f3" }}>
+            <DocumentEmptyState captionText={strings.common.no_documents_info_text} />
+          </div>
+        </TableCell>
+      </TableRow>
+    </TableBody>
   );
 
   render = () => {
@@ -268,7 +291,7 @@ class DocumentOverview extends Component {
       <Button
         data-test="delete-document"
         component="span"
-        disabled={!document.available || workflowitemStatus !== "open"}
+        disabled={(!document.available && !document.link) || workflowitemStatus !== "open"}
         onClick={() => deleteDocument(projectId, subprojectId, workflowitemId, document.id)}
       >
         <DeleteIcon />

@@ -35,9 +35,11 @@ const ka = {
     comment: "კომენტარი",
     completion: "დასრულება",
     confirm: "დადასტურება",
+    copy: "Copy",
     create: "შექმნა",
     created: "შექმნილია",
     currency: "ვალუტა",
+    deselect_all: "Გააუქმეთ ყველა მონიშვნა",
     disbursed_budget: "გადახდილი ღირებულება",
     disbursement: "დაგეგმილი გადახდები",
     disconnected: "offline",
@@ -110,6 +112,7 @@ const ka = {
     reject: "Უარყოს",
     rejected: "უარყოფილი",
     search: "ძიება",
+    select_all: "Მონიშნე ყველა",
     show_permissions: "მაჩვენე ნებართვები",
     status: "სტატუსი",
     submit: "გაგზავნა",
@@ -147,6 +150,7 @@ const ka = {
     current_user_password: "შენი პაროლი",
     edit_group: "ჯგუფის რედაქტირება",
     edit_permissions_for: "ნებართვის რედაქტირება",
+    edit_permissions: "ნებართვების რედაქტირება",
     group_created: "ჯგუფი წარმატებით შექმნილია",
     groups: "ჯგუფები",
     invalid_password: "პაროლი არასწორია",
@@ -187,7 +191,16 @@ const ka = {
     account_name_error: "ანგარიშის სახელი არ შეიძლება იყოს ცარიელი",
     login_id_error: "შესვლის ID არ შეიძლება იყოს ცარიელი",
     password_error: "პაროლი არ შეიძლება იყოს ცარიელი",
-    confirm_password_error: "დაადასტურეთ, რომ პაროლი არ შეიძლება იყოს ცარიელი"
+    confirm_password_error: "დაადასტურეთ, რომ პაროლი არ შეიძლება იყოს ცარიელი",
+    account_name_conditions_preface: "თქვენი ანგარიშის სახელი უნდა:",
+    account_name_conditions_forbidden: "არ შეიცავს სპეციალურ სიმბოლოებს",
+    account_name_conditions_solution: `ამის ნაცვლად გამოიყენეთ "-", "_" ან სივრცე`,
+    account_name_conditions_length: "იყოს მინიმუმ 4 სიმბოლო",
+    login_id_no_root: `შესვლის ID არ შეიძლება იყოს "root"`,
+    login_id_conditions_preface: "თქვენი შესვლის ID უნდა:",
+    login_id_conditions_length: "იყოს მინიმუმ 4 სიმბოლო",
+    login_id_conditions_forbidden: "არ შეიცავს სივრცეებს ​​ან სპეციალურ სიმბოლოებს",
+    login_id_conditions_solution: `ამის ნაცვლად გამოიყენეთ "-", "_" ან camelCase`
   },
 
   userProfile: {
@@ -208,7 +221,11 @@ const ka = {
     connection_status: "კავშირის სტატუსი",
     last_seen: "ბოლო ნახვა",
     admin_description:
-      "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
+      "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები",
+    add_organization: "დაამატეთ ახალი ორგანიზაცია",
+    organization_error: "ორგანიზაცია არ შეიძლება იყოს ცარიელი",
+    node_address_error: "კვანძის მისამართი არ შეიძლება იყოს ცარიელი",
+    node_address: "კვანძის მისამართი"
   },
 
   login: {
@@ -264,7 +281,10 @@ const ka = {
     subproject_general_workflowitem_type: "დაუშვით მხოლოდ workflowitem ტიპის ზოგადი",
     subproject_restricted_workflowitem_type:
       "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
-    workflowitem_assignee: "ნაგულისხმევი მიმღები"
+    workflowitem_assignee: "ნაგულისხმევი მიმღები",
+    organization_info: "Organization",
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
@@ -306,6 +326,10 @@ const ka = {
     workflow_redacted: "Redacted",
     workflow_reject_reason: "უარყავი მიზეზი",
     workflow_selection: "{0} Workflowitem-ები არჩეულია",
+    workflow_selection_copy_description:
+      "ეს ფუნქცია საშუალებას გაძლევთ დააკოპიროთ სამუშაო პროცესის ყველა არჩეული ელემენტი დანიშნულების ქვეპროექტში თანხების და მინიჭებული პირების ჩათვლით. კოპირებული სამუშაო პროცესის ელემენტები იქნება ღია სტატუსში, ასე რომ, მათი შემდგომი რედაქტირება შესაძლებელია.",
+    workflow_selection_select_project: "აირჩიეთ პროექტი",
+    workflow_selection_select_subproject: "აირჩიეთ ქვეპროექტი",
     workflow_submit_for_review: "განსახილველად გადაგზავნა",
     workflow_table_title: "Workflowitem-ები",
     workflow_title_description: "Workflowitem-ის სახელწოდება",

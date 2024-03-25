@@ -6,6 +6,7 @@ import {
   createPinoExpressLogger,
   createPinoLogger,
 } from "trubudget-logging-service";
+import helmet from "helmet";
 import config from "./config";
 import {
   deleteDocument,
@@ -55,6 +56,8 @@ const app = express();
 app.use(cors());
 app.use(createPinoExpressLogger(log));
 app.options(config.allowOrigin, cors());
+
+app.use(helmet());
 
 const allowOrigins = config.allowOrigin.split(",");
 

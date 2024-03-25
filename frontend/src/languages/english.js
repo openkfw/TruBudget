@@ -35,9 +35,11 @@ const en = {
     comment: "Comment",
     completion: "Completion",
     confirm: "Confirm",
+    copy: "Copy",
     create: "Create",
     created: "Created",
     currency: "Currency",
+    deselect_all: "Deselect all",
     disbursed_budget: "Paid Budget",
     disbursement: "Projected",
     disconnected: "Offline",
@@ -110,6 +112,7 @@ const en = {
     reject: "Reject",
     rejected: "Rejected",
     search: "Search",
+    select_all: "Select all",
     show_permissions: "Show Permissions",
     status: "Status",
     submit: "Submit",
@@ -147,6 +150,7 @@ const en = {
     current_user_password: "Your password",
     edit_group: "Edit Group",
     edit_permissions_for: "Edit permissions for",
+    edit_permissions: "Edit permissions",
     group_created: "Group successfully created",
     groups: "Groups",
     invalid_password: "Password invalid",
@@ -186,7 +190,16 @@ const en = {
     account_name_error: "Account name cannot be empty",
     login_id_error: "Login ID cannot be empty",
     password_error: "Password cannot be empty",
-    confirm_password_error: "Confirm password cannot be empty"
+    confirm_password_error: "Confirm password cannot be empty",
+    account_name_conditions_preface: "Your account name must:",
+    account_name_conditions_forbidden: "Not contain special characters",
+    account_name_conditions_solution: `Use "-", "_" or space instead`,
+    account_name_conditions_length: "Be at least 4 characters long",
+    login_id_no_root: `Login ID cannot be "root"`,
+    login_id_conditions_preface: "Your login ID must:",
+    login_id_conditions_length: "Be at least 4 characters long",
+    login_id_conditions_forbidden: "Not contain spaces or special characters",
+    login_id_conditions_solution: `Use "-", "_" or camelCase instead`
   },
 
   userProfile: {
@@ -207,7 +220,11 @@ const en = {
     connection_status: "Connection status",
     last_seen: "Last seen",
     admin_description:
-      "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions"
+      "The admin node is the initial node of the network and has additional 'mine' and 'admin' permissions",
+    add_organization: "Add new Organization",
+    organization_error: "Organization cannot be empty",
+    node_address_error: "Node address cannot be empty",
+    node_address: "Node address"
   },
 
   login: {
@@ -262,7 +279,10 @@ const en = {
     subproject_general_workflowitem_type: "Only allow workflowitems of type general",
     subproject_restricted_workflowitem_type:
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
-    workflowitem_assignee: "Default assignee"
+    workflowitem_assignee: "Default assignee",
+    organization_info: "Organization",
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
@@ -303,6 +323,9 @@ const en = {
     workflow_redacted: "Redacted",
     workflow_reject_reason: "Reject reason",
     workflow_selection: "{0} workflowitems are selected",
+    workflow_selection_copy_description: "This functionality allows you to copy all selected workflow items to the destination subproject including amounts and assigned persons. Copied workflow items will be in open status so can edit them afterwards.",
+    workflow_selection_select_project: "Select project",
+    workflow_selection_select_subproject: "Select subproject",
     workflow_submit_for_review: "Submit for Review",
     workflow_table_title: "Workflowitems",
     workflow_title_description: "Name of the workflowitem",

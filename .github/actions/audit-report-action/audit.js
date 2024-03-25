@@ -2,12 +2,12 @@ import { Config } from './config';
 import { pullImage } from './docker';
 import child_process from 'child_process';
 
-export async function performImageAudit(projectName) {
+export async function performImageAudit(projectName, tag) {
   let image = projectName;
   if(image === "excel-export-service" || image === "email-notification-service") {
     image = image.replace("-service", "");
   }
-  await pullImage(image);
+  await pullImage(image, tag);
   const additionalArgs = ["image", "--input", `${image}.tar`, "--format", "json", "--exit-code", "1", "--vuln-type", "os"];
   additionalArgs.push("--severity", Config.severityLevels);
 

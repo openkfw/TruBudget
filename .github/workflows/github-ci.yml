@@ -92,10 +92,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci --legacy-peer-deps
+      - run: npm ci
 
       - name: Check for Changes in ${{ matrix.project }}
-        uses: marceloprado/has-changed-path@v1
+        uses: marceloprado/has-changed-path@v1.0.1
         id: run-test
         with:
           paths: ${{ matrix.project }}

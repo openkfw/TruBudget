@@ -650,10 +650,38 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
   }
 };
 
+const provisionBetaNode = async (host, port, rootSecret, organization) => {
+  try {
+    const folder =
+      process.env.PROVISIONING_TYPE === "PROD"
+        ? "./src/data/prod/"
+        : "./src/data/test/";
+
+    axios.defaults.baseURL = `http://${host}:${port}/api`;
+    log.info("Axios baseURL is set to " + axios.defaults.baseURL);
+    axios.defaults.timeout = 10000;
+
+    await isApiReady(axios);
+
+    currentUser.id = "root";
+    currentUser.password = rootSecret;
+    await impersonate(currentUser);
+
+    log.info("Start to beta-provisioning users");
+    await provisionUsers(axios, folder, organization);
+    log.info("Start to beta-provisioning groups");
+    await provisionGroups(axios, folder);
+  } catch (err) {
+    log.warn({ err }, "Beta-provisioning failed");
+    process.exit(1);
+  }
+};
+
 const port = process.env.API_PORT || 8080;
 const host = process.env.API_HOST || "localhost";
 const rootSecret = process.env.ROOT_SECRET || "root-secret";
 const organization = process.env.ORGANIZATION;
+const isBeta = process.env.PROVISIONING_BETA === "true" || false;
 let currentUser = { id: "root", password: rootSecret };
 
 // Executing admin user
@@ -671,7 +699,14 @@ if (!rootSecret) {
   process.exit(1);
 }
 
-provisionBlockchain(host, port, rootSecret, organization).then(() => {
-  log.info("\x1b[32m%s\x1b[0m", "Successfully provisioned Trubudget!");
-  process.exit(0);
-});
+if (isBeta) {
+  provisionBetaNode(host, port, rootSecret, organization).then(() => {
+    log.info("\x1b[32m%s\x1b[0m", "Successfully beta-provisioned Trubudget!");
+    process.exit(0);
+  });
+} else {
+  provisionBlockchain(host, port, rootSecret, organization).then(() => {
+    log.info("\x1b[32m%s\x1b[0m", "Successfully provisioned Trubudget!");
+    process.exit(0);
+  });
+}
