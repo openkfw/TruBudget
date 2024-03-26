@@ -11,7 +11,7 @@
         "currencyCode":"EUR"
      },
      {
-        "organization":"MaliMinistère de l'Économie et des Finances du Mali",
+        "organization":"Ministère de l'Économie et des Finances du Mali",
         "value":"400000",
         "currencyCode":"EUR"
      }
@@ -88,36 +88,40 @@
               "partnerPM"
            ],
            "subproject.intent.grantPermission":[
-            "mstein",
-            "jxavier",
-            "bankPM",
-            "partnerPM"
-         ],"subproject.reorderWorkflowitems":[
-          "mstein",
-          "jxavier",
-          "bankPM",
-          "partnerPM"
-       ],"subproject.close":[
-        "mstein",
-        "jxavier",
-        "bankPM"
-        
-     ],"subproject.viewHistory":[
-      "mstein",
-      "jxavier",
-      "bankPM",
-      "partnerPM"
-   ],"subproject.update":[
-    "mstein",
-    "jxavier",
-    "bankPM",
-    "partnerPM"
- ],"subproject.assign":[
-  "mstein",
-  "jxavier",
-  "bankPM",
-  "partnerPM"
-]
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.reorderWorkflowitems":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.close":[
+              "mstein",
+              "jxavier",
+              "bankPM"
+           ],
+           "subproject.viewHistory":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.update":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.assign":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ]
         },
         "workflows":[
            {
@@ -149,7 +153,6 @@
                     "partnerPM",
                     "bankPM"
                  ]
-
               }
            },
            {
@@ -446,461 +449,2751 @@
         ]
      },
      {
-        "displayName":"Consultancy supervision",
-        "description":"No description.",
+        "displayName":"Drilling campaign I",
+        "description":"All steps related to the first drilling campaign",
         "status":"open",
         "currency":"EUR",
         "projectedBudgets":[
            {
-              "organization":"ACMECorp",
-              "value":"750000",
+              "organization":"KfW",
+              "value":"2000000",
               "currencyCode":"EUR"
            }
         ],
-        "assignee":"partnerPM",
+        "assignee":"KfW",
         "permissions":{
            "subproject.list":[
+              "mstein",
+              "jxavier",
+              "bankPM",
               "partnerPM"
            ],
            "subproject.viewDetails":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.listPermissions":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.grantPermission":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.reorderWorkflowitems":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.close":[
+              "mstein",
+              "jxavier",
+              "bankPM"
+           ],
+           "subproject.viewHistory":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.update":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.assign":[
+              "mstein",
+              "jxavier",
+              "bankPM",
               "partnerPM"
            ]
         },
         "workflows":[
            {
-              "displayName":"Budget allocation",
-              "status":"closed",
-              "assignee":"partnerPM",
+              "displayName":"Tender documents agreed",
+              "status":"open",
+              "assignee":"bankPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.listPermissions":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.grantPermission":[
+                    "partnerPM",
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Tender publication",
-              "status":"closed",
+              "displayName":"Optional evaluation report PQ completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Tender evaluation",
+              "displayName":"Technical evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Contract signature",
+              "displayName":"Financial evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amount":720000,
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional pre-award discussion completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Draft contract agreed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Contract amendments completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Signed contract completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Advanced payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":500000,
               "currency":"EUR",
               "amountType":"allocated",
-              "exchangeRate":"1.0",
-              "permissions":{
-                 "workflowitem.list":[
-                    "partnerPM"
-                 ]
-              }
-           },
-           {
-              "displayName":"Execution monitoring",
-              "assignee":"partnerPM",
-              "amountType":"N/A",
-              "permissions":{
-                 "workflowitem.list":[
-                    "partnerPM"
-                 ]
-              }
-           },
-           {
-              "displayName":"Payment advance installment",
-              "assignee":"partnerPM",
-              "amount":400000,
-              "currency":"EUR",
-              "amountType":"disbursed",
-              "exchangeRate":"1.0",
-              "permissions":{
-                 "workflowitem.list":[
-                    "partnerPM"
-                 ]
-              }
-           },
-           {
-              "displayName":"Payment interim installment",
-              "assignee":"partnerPM",
-              "amount":172000,
-              "currency":"EUR",
-              "amountType":"disbursed",
-              "exchangeRate":"1.0",
-              "permissions":{
-                 "workflowitem.list":[
-                    "partnerPM"
-                 ]
-              }
-           },
-           {
-              "displayName":"Payment final installment",
-              "assignee":"partnerPM",
-              "amount":148000,
-              "currency":"EUR",
-              "amountType":"disbursed",
               "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
                     "partnerPM",
-                    ""
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Completion subproject",
+              "displayName":"Installment Nr. 1 disbursed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amountType":"N/A",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 2 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 3 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Final payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            }
         ]
      },
      {
-        "displayName":"Construction lot 1",
-        "description":"No description.",
+        "displayName":"Drilling campaign II",
+        "description":"All steps related to the drilling campaign II",
+        "status":"open",
         "currency":"EUR",
         "projectedBudgets":[
            {
-              "organization":"ACMECorp",
-              "value":"1750000",
+              "organization":"KfW",
+              "value":"2000000",
               "currencyCode":"EUR"
            }
         ],
-        "assignee":"partnerPM",
+        "assignee":"KfW",
         "permissions":{
            "subproject.list":[
+              "mstein",
+              "jxavier",
+              "bankPM",
               "partnerPM"
            ],
            "subproject.viewDetails":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.listPermissions":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.grantPermission":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.reorderWorkflowitems":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.close":[
+              "mstein",
+              "jxavier",
+              "bankPM"
+           ],
+           "subproject.viewHistory":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.update":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.assign":[
+              "mstein",
+              "jxavier",
+              "bankPM",
               "partnerPM"
            ]
         },
         "workflows":[
            {
-              "displayName":"Budget allocation",
-              "status":"closed",
-              "assignee":"partnerPM",
+              "displayName":"Tender documents agreed",
+              "status":"open",
+              "assignee":"bankPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.listPermissions":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.grantPermission":[
+                    "partnerPM",
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Tender publication",
-              "status":"closed",
+              "displayName":"Optional evaluation report PQ completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Tender evaluation",
+              "displayName":"Technical evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Contract signature",
+              "displayName":"Financial evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amount":1680000,
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional pre-award discussion completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Draft contract agreed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Contract amendments completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Signed contract completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Advanced payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":500000,
               "currency":"EUR",
               "amountType":"allocated",
               "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Execution monitoring",
+              "displayName":"Installment Nr. 1 disbursed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amountType":"N/A",
-              "permissions":{
-                 "workflowitem.list":[
-                    "partnerPM"
-                 ]
-              }
-           },
-           {
-              "displayName":"Payment advance installment",
-              "assignee":"partnerPM",
-              "amount":336000,
+              "amount":350000,
               "currency":"EUR",
-              "amountType":"disbursed",
+              "amountType":"allocated",
               "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Payment interim installment",
+              "displayName":"Installment Nr. 2 disbursed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amount":1176000,
+              "amount":350000,
               "currency":"EUR",
-              "amountType":"disbursed",
+              "amountType":"allocated",
               "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Payment final installment",
+              "displayName":"Installment Nr. 3 disbursed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amount":168000,
+              "amount":350000,
               "currency":"EUR",
-              "amountType":"disbursed",
+              "amountType":"allocated",
               "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Completion subproject",
+              "displayName":"Final payment disbursed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amountType":"N/A",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            }
         ]
      },
      {
-        "displayName":"Construction lot 2",
-        "description":"No description.",
+        "displayName":"Water supply infrastructure",
+        "description":"All steps related to the water supply",
+        "status":"open",
         "currency":"EUR",
         "projectedBudgets":[
            {
-              "organization":"ACMECorp",
-              "value":"2500000",
+              "organization":"KfW",
+              "value":"4000000",
               "currencyCode":"EUR"
            }
         ],
-        "assignee":"partnerPM",
+        "assignee":"KfW",
         "permissions":{
            "subproject.list":[
+              "mstein",
+              "jxavier",
+              "bankPM",
               "partnerPM"
            ],
            "subproject.viewDetails":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.listPermissions":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.grantPermission":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.reorderWorkflowitems":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.close":[
+              "mstein",
+              "jxavier",
+              "bankPM"
+           ],
+           "subproject.viewHistory":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.update":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.assign":[
+              "mstein",
+              "jxavier",
+              "bankPM",
               "partnerPM"
            ]
         },
         "workflows":[
            {
-              "displayName":"Budget allocation",
-              "status":"closed",
-              "assignee":"partnerPM",
+              "displayName":"Tender documents agreed",
+              "status":"open",
+              "assignee":"bankPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.listPermissions":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.grantPermission":[
+                    "partnerPM",
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Tender publication",
-              "status":"closed",
+              "displayName":"Optional evaluation report PQ completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Tender evaluation",
+              "displayName":"Technical evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Contract signature",
+              "displayName":"Financial evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amount":1680000,
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional pre-award discussion completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Draft contract agreed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Contract amendments completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Signed contract completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Advanced payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":500000,
               "currency":"EUR",
               "amountType":"allocated",
               "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Execution monitoring",
+              "displayName":"Installment Nr. 1 disbursed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amountType":"N/A",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 2 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 3 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Final payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            }
         ]
      },
      {
-        "displayName":"Furniture",
-        "description":"No description.",
+        "displayName":"Restoration of distribution network Timbuktu South",
+        "description":"All steps related to the network",
+        "status":"open",
         "currency":"EUR",
         "projectedBudgets":[
            {
-              "organization":"ACMECorp",
-              "value":"500000",
+              "organization":"KfW",
+              "value":"2000000",
               "currencyCode":"EUR"
            }
         ],
-        "assignee":"partnerPM",
+        "assignee":"KfW",
         "permissions":{
            "subproject.list":[
+              "mstein",
+              "jxavier",
+              "bankPM",
               "partnerPM"
            ],
            "subproject.viewDetails":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.listPermissions":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.grantPermission":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.reorderWorkflowitems":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.close":[
+              "mstein",
+              "jxavier",
+              "bankPM"
+           ],
+           "subproject.viewHistory":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.update":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.assign":[
+              "mstein",
+              "jxavier",
+              "bankPM",
               "partnerPM"
            ]
         },
         "workflows":[
            {
-              "displayName":"Budget allocation",
-              "status":"closed",
-              "assignee":"partnerPM",
+              "displayName":"Tender documents agreed",
+              "status":"open",
+              "assignee":"bankPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.listPermissions":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.grantPermission":[
+                    "partnerPM",
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Tender publication",
-              "status":"closed",
+              "displayName":"Optional evaluation report PQ completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Tender evaluation",
+              "displayName":"Technical evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Contract signature",
+              "displayName":"Financial evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
-              "amount":300000,
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional pre-award discussion completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Draft contract agreed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Contract amendments completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Signed contract completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Advanced payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":500000,
               "currency":"EUR",
               "amountType":"allocated",
               "exchangeRate":"1.0",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Execution monitoring",
+              "displayName":"Installment Nr. 1 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 2 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 3 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Final payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           }
+        ]
+     },
+     {
+        "displayName":"Sanitary Timbuktu City centre",
+        "description":"All steps related to the sanitary services",
+        "status":"open",
+        "currency":"EUR",
+        "projectedBudgets":[
+           {
+              "organization":"KfW",
+              "value":"3000000",
+              "currencyCode":"EUR"
+           }
+        ],
+        "assignee":"KfW",
+        "permissions":{
+           "subproject.list":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.viewDetails":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.listPermissions":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.grantPermission":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.reorderWorkflowitems":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.close":[
+              "mstein",
+              "jxavier",
+              "bankPM"
+           ],
+           "subproject.viewHistory":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.update":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.assign":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ]
+        },
+        "workflows":[
+           {
+              "displayName":"Tender documents agreed",
+              "status":"open",
+              "assignee":"bankPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.listPermissions":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.grantPermission":[
+                    "partnerPM",
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional evaluation report PQ completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            },
            {
-              "displayName":"Payment advance installment",
-              "assignee":"partnerPM",
-              "amount":100000,
-              "currency":"EUR",
-              "amountType":"disbursed",
-              "exchangeRate":"1.0",
-              "permissions":{
-                 "workflowitem.list":[
-                    "partnerPM"
-                 ]
-              }
-           },
-           {
-              "displayName":"Payment interim installment",
-              "assignee":"partnerPM",
-              "amount":100000,
-              "currency":"EUR",
-              "amountType":"disbursed",
-              "exchangeRate":"1.0",
-              "permissions":{
-                 "workflowitem.list":[
-                    "partnerPM"
-                 ]
-              }
-           },
-           {
-              "displayName":"Payment final installment",
-              "assignee":"partnerPM",
-              "amount":100000,
-              "currency":"EUR",
-              "amountType":"disbursed",
-              "exchangeRate":"1.0",
-              "permissions":{
-                 "workflowitem.list":[
-                    "partnerPM"
-                 ]
-              }
-           },
-           {
-              "displayName":"Completion subproject",
+              "displayName":"Technical evaluation report completed",
+              "status":"open",
               "assignee":"partnerPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
-                    "partnerPM"
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Financial evaluation report completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional pre-award discussion completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Draft contract agreed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Contract amendments completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Signed contract completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Advanced payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":500000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 1 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 2 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 3 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Final payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           }
+        ]
+     },
+     {
+        "displayName":"Cash for work actions - contre la faim",
+        "description":"All steps related to the cash services",
+        "status":"open",
+        "currency":"EUR",
+        "projectedBudgets":[
+           {
+              "organization":"KfW",
+              "value":"3000000",
+              "currencyCode":"EUR"
+           }
+        ],
+        "assignee":"KfW",
+        "permissions":{
+           "subproject.list":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.viewDetails":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.listPermissions":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.grantPermission":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.reorderWorkflowitems":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.close":[
+              "mstein",
+              "jxavier",
+              "bankPM"
+           ],
+           "subproject.viewHistory":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.update":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.assign":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ]
+        },
+        "workflows":[
+           {
+              "displayName":"Tender documents agreed",
+              "status":"open",
+              "assignee":"bankPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.listPermissions":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.grantPermission":[
+                    "partnerPM",
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional evaluation report PQ completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Technical evaluation report completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Financial evaluation report completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional pre-award discussion completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Draft contract agreed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Contract amendments completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Signed contract completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Advanced payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":500000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 1 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 2 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 3 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Final payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           }
+        ]
+     },
+     {
+        "displayName":"Security services and risk",
+        "description":"All steps related to the risk services",
+        "status":"open",
+        "currency":"EUR",
+        "projectedBudgets":[
+           {
+              "organization":"KfW",
+              "value":"1500000",
+              "currencyCode":"EUR"
+           }
+        ],
+        "assignee":"KfW",
+        "permissions":{
+           "subproject.list":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.viewDetails":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.listPermissions":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.intent.grantPermission":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.reorderWorkflowitems":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.close":[
+              "mstein",
+              "jxavier",
+              "bankPM"
+           ],
+           "subproject.viewHistory":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.update":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ],
+           "subproject.assign":[
+              "mstein",
+              "jxavier",
+              "bankPM",
+              "partnerPM"
+           ]
+        },
+        "workflows":[
+           {
+              "displayName":"Tender documents agreed",
+              "status":"open",
+              "assignee":"bankPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.listPermissions":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.intent.grantPermission":[
+                    "partnerPM",
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional evaluation report PQ completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Technical evaluation report completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Financial evaluation report completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Optional pre-award discussion completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Draft contract agreed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Contract amendments completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Signed contract completed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amountType":"N/A",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Advanced payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":500000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 1 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 2 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Installment Nr. 3 disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
+                 ]
+              }
+           },
+           {
+              "displayName":"Final payment disbursed",
+              "status":"open",
+              "assignee":"partnerPM",
+              "amount":350000,
+              "currency":"EUR",
+              "amountType":"allocated",
+              "exchangeRate":"1.0",
+              "permissions":{
+                 "workflowitem.list":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.update":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.assign":[
+                    "partnerPM",
+                    "bankPM"
+                 ],
+                 "workflowitem.close":[
+                    "bankPM"
                  ]
               }
            }
