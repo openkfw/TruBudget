@@ -40,5 +40,18 @@
     "displayName": "Romina Checker",
     "password": "test",
     "permissions":[]
+  },
+  {
+    "id": "partnerPM",
+    "displayName": "Partner PEA PM",
+    "password": "test",
+    "permissions":[]
+  },
+  {
+    "id": "bankPM",
+    "displayName": "Bank PM",
+    "password": "test",
+    "permissions":[]
   }
+
 ]
