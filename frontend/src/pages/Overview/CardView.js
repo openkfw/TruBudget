@@ -120,7 +120,7 @@ const getTableEntries = ({
     } = data;
     const budgets = <BudgetsList budgets={projectedBudgets} />;
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
-    const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/amazon_cover.jpg";
+    const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/Thumbnail_0008.jpg";
     const dateString = unixTsToString(creationUnixTs);
     const isOpen = status === "open";
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
