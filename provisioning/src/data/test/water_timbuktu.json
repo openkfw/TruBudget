@@ -123,7 +123,7 @@
            {
               "displayName":"Tender documents agreed",
               "status":"open",
-              "assignee":"partnerPM",
+              "assignee":"bankPM",
               "amountType":"N/A",
               "permissions":{
                  "workflowitem.list":[
