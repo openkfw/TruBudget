@@ -215,7 +215,7 @@ export async function authenticateWithToken(
   let verifiedToken;
   try {
     const base64SigningKey = config.authProxy.jwsSignature as string;
-    verifiedToken = verifyToken(token, Buffer.from(base64SigningKey, "base64"));
+    verifiedToken = verifyToken(token, Buffer.from(base64SigningKey, "base64"), "RS256");
   } catch (err) {
     const cause = new VError(err, "There was a problem verifying the authorization token");
     return new AuthenticationFailed({ ctx, organization, userId: "" }, cause);
