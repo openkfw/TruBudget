@@ -1,0 +1,207 @@
+{
+  "displayName": "Climate EcoFund, Call Central America",
+  "description": "Call for a project in Central America financed by a foundation",
+  "thumbnail": "/Thumbnail_0008.jpg",
+  "status": "open",
+  "assignee": "ckfwpm",
+  "projectedBudgets": [
+    {
+      "organization": "Foundation",
+      "value": "200000",
+      "currencyCode": "USD"
+    },
+    {
+      "organization": "Projectfunds KfW",
+      "value": "1000000",
+      "currencyCode": "EUR"
+    },
+    {
+      "organization": "BMGF",
+      "value": "5000000",
+      "currencyCode": "USD"
+    }
+  ],
+  "permissions": {
+    "project.viewDetails": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.list": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.assign": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.intent.listPermissions": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.intent.grantPermission": [
+      "mstein",
+      "ckfwpm"
+    ],
+    "project.intent.revokePermission": [
+      "mstein",
+      "ckfwpm"
+    ]
+  },
+  "subprojects": [
+    {
+      "displayName": "Call for proposal concept",
+      "description": "No description.",
+      "status": "open",
+      "currency": "USD",
+      "assignee": "ckfwpm",
+      "permissions": {
+        "subproject.list": [
+          "ckfwpm"
+        ],
+        "subproject.viewDetails": [
+          "ckfwpm"
+        ]
+      },
+      "workflows": [
+        {
+          "displayName": "Concept paper",
+          "assignee": "ckfwpm",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "ckfwpm"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "displayName": "Proposal Alpha",
+      "description": "No description.",
+      "status": "open",
+      "currency": "USD",
+      "projectedBudgets": [
+        {
+          "organization": "Foundation",
+          "value": "3000000",
+          "currencyCode": "EUR"
+        }
+      ],
+      "assignee": "ckfwpm",
+      "permissions": {
+        "subproject.list": [
+          "ckfwpm"
+        ],
+        "subproject.viewDetails": [
+          "ckfwpm"
+        ]
+      },
+      "workflows": [
+        {
+          "displayName": "Submission",
+          "assignee": "rfoundation",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "rfoundation"
+            ]
+          }
+        },
+        {
+          "displayName": "Proof of eligibility",
+          "assignee": "rfoundation",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "rfoundation"
+            ]
+          }
+        },
+        {
+          "displayName": "Evaluation",
+          "assignee": "rfoundation",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "rfoundation"
+            ]
+          }
+        },
+        {
+          "displayName": "Final decision",
+          "assignee": "rfoundation",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "rfoundation"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "displayName": "Proposal Beta",
+      "description": "No description.",
+      "status": "open",
+      "currency": "USD",
+      "projectedBudgets": [
+        {
+          "organization": "Foundation",
+          "value": "2800000",
+          "currencyCode": "EUR"
+        }
+      ],
+      "assignee": "ckfwpm",
+      "permissions": {
+        "subproject.list": [
+          "ckfwpm"
+        ],
+        "subproject.viewDetails": [
+          "ckfwpm"
+        ]
+      },
+      "workflows": [
+        {
+          "displayName": "Submission",
+          "assignee": "rfoundation",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "rfoundation"
+            ]
+          }
+        },
+        {
+          "displayName": "Proof of eligibility",
+          "assignee": "rfoundation",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "rfoundation"
+            ]
+          }
+        },
+        {
+          "displayName": "Evaluation",
+          "assignee": "rfoundation",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "rfoundation"
+            ]
+          }
+        },
+        {
+          "displayName": "Final decision",
+          "assignee": "rfoundation",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "rfoundation"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

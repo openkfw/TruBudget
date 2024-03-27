@@ -1,4 +1,4 @@
-import logger from "lib/logger";
+import logger from "../lib/logger";
 import { VError } from "verror";
 import { encryptWithKey } from "../lib/asymmetricCrypto";
 import { Ctx } from "../lib/ctx";

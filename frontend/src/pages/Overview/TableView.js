@@ -272,14 +272,18 @@ const TableView = (props) => {
     enabledUsers,
     enableLiveUpdates,
     filteredProjects,
+    isDataLoading,
     isLiveUpdateAllProjectsEnabled,
+    pagination,
     searchTerm,
     showCreationDialog,
     showEditDialog,
     showNavSearchBar, // to open the search bar for CardView in NavBar,
     showProjectAdditionalData,
     showProjectPermissions,
-    storeSearchTerm
+    storeSearchTerm,
+    setPage,
+    setRowsPerPage
   } = props;
 
   const hasSearchTerm = searchTerm !== "";
@@ -550,7 +554,17 @@ const TableView = (props) => {
         data={table}
         title={actionsMemo}
         highlightOnHover
-        pagination
+        progressPending={isDataLoading}
+        pagination={true}
+        paginationServer={true}
+        paginationTotalRows={pagination?.totalRecords}
+        onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+          return setRowsPerPage(currentRowsPerPage, currentPage);
+        }}
+        onChangePage={(page, _totalRows) => {
+          return setPage(page);
+        }}
+        paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
         data-test="project-list"
       />
     </>
