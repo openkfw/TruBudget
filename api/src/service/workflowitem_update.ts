@@ -142,7 +142,7 @@ export async function updateWorkflowitem(
   );
   if (canPublish) {
     if (Result.isErr(eventData)) {
-      return new VError(eventData, "create workflowitem snapshot failed");
+      return new VError(eventData, "update workflowitem snapshot failed");
     }
     const publishEvent = eventData;
     await store(conn, ctx, publishEvent, serviceUser.address);

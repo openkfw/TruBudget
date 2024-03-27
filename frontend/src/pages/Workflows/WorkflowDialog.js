@@ -30,7 +30,8 @@ const handleCreate = (props) => {
     documents,
     exchangeRate,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    tags
   } = workflowToAdd;
 
   createWorkflowItem(
@@ -45,7 +46,8 @@ const handleCreate = (props) => {
     dueDate,
     workflowitemType,
     projectDisplayName,
-    subprojectDisplayName
+    subprojectDisplayName,
+    tags
   );
 
   storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));
@@ -164,6 +166,7 @@ const WorkflowDialog = (props) => {
     editDialogShown,
     creationDialogShown,
     storeWorkflowDocument,
+    storeWorkflowDocumentExternalLink,
     currentUser,
     storeWorkflowAssignee,
     hasSubprojectValidator,
@@ -176,7 +179,6 @@ const WorkflowDialog = (props) => {
     fetchVersions,
     versions,
     setStorageServiceAvailable,
-    storageServiceAvailable,
     workflowTemplate,
     dialogTitle,
     hideWorkflowDialog
@@ -241,6 +243,7 @@ const WorkflowDialog = (props) => {
     content: (
       <DocumentUpload
         storeWorkflowDocument={storeWorkflowDocument}
+        storeWorkflowDocumentExternalLink={storeWorkflowDocumentExternalLink}
         workflowDocuments={workflowToAdd.documents}
         {...props}
       />
@@ -266,7 +269,7 @@ const WorkflowDialog = (props) => {
     }
   ];
 
-  if (storageServiceAvailable || !(editDialogShown || creationDialogShown)) {
+  if (editDialogShown || creationDialogShown) {
     steps.push(documentStep);
   }
 

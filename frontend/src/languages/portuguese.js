@@ -35,13 +35,16 @@ const pt = {
     comment: "Comentário",
     completion: "Conclusão",
     confirm: "Confirme",
+    copy: "Copy",
     create: "Criar",
     created: "Data de criação",
     currency: "Moeda",
+    deselect_all: "Desmarcar todos",
     disbursed_budget: "Custo pago",
     disbursement: "Pagamentos programados",
     disconnected: "Desligada",
     display_name: "Mostrar nome",
+    delete: "Deletar",
     done: "Finalizar",
     download: "Download",
     edit: "Editar",
@@ -64,6 +67,7 @@ const pt = {
     incorrect_username_or_password: "ID ou palavra-passe de início de sessão incorrecta",
     invalid_tag: "Tag inválida",
     invalid_format: "Formato inválido",
+    link: "Link",
     name: "Nome ou descrição do usuário",
     next: "Próximo",
     no_budget: "Nenhum orçamento encontrado",
@@ -82,6 +86,7 @@ const pt = {
     no_nodes: "Nenhum pedido de nós aditonais encontrado",
     no_notifications: "Nenhuma notificação encontrada",
     no_organizations: "Nenhum pedido de novas organizações foi encontrado",
+    no_permissions: "Você não tem permissão para realizar esta ação",
     no_resources: "Nenhum campo foi adicionado a este recurso",
     no_subprojects: "Nenhum subprojetos encontrado",
     no_users: "Nenhum usuário encontrado",
@@ -91,6 +96,8 @@ const pt = {
     not_assigned: "Não atribuído",
     not_disbursed: "Não pago",
     not_ok: "Não OK",
+    off: "Desligado",
+    on: "Ligado",
     ok: "Ok",
     not_projected: "Não projetado",
     open: "Aberto",
@@ -106,11 +113,13 @@ const pt = {
     reject: "Rejeitar",
     rejected: "Rejeitado",
     search: "Procurar",
+    select_all: "Selecionar tudo",
     show_permissions: "Mostrar permissões",
     status: "Status",
     submit: "Enviar",
     subproject: "Subprojeto",
     subprojects: "Subprojetos",
+    switch_to_table: "Mudar para visualização de tabela",
     tag_already_exists: "Tag já existe!",
     tag: "Tag",
     task_status: "Status da tarefa",
@@ -120,6 +129,7 @@ const pt = {
     update: "Atualizar",
     username: "Id do usuário",
     view: "Visualizar",
+    view_project_details: "Visualizar detalhes do projeto",
     workflowitem: "Item de workflow",
     dueDate: "Data de vencimento",
     dueDate_exceeded: "Data de vencimento excedida",
@@ -141,6 +151,7 @@ const pt = {
     current_user_password: "Sua Senha",
     edit_group: "Editar grupo",
     edit_permissions_for: "Editar permissões para",
+    edit_permissions: "Editar permissões",
     group_created: "Grupo de usuários criado com sucesso",
     groups: "Grupos",
     invalid_password: "Sehna inválida",
@@ -177,7 +188,20 @@ const pt = {
     assigned_message: "Antes de desabilitar, este usuário deve ser desatribuído nos seguintes elementos",
     not_assigned_message:
       "Este usuário não está atribuído a nenhum projeto, subprojeto e item de fluxo de trabalho e pode ser desativado",
-    hidden_assignments: "Mais redigido {0}"
+    hidden_assignments: "Mais redigido {0}",
+    account_name_error: "O nome da conta não pode ficar vazio",
+    login_id_error: "O ID de login não pode ficar vazio",
+    password_error: "A senha não pode ficar vazia",
+    confirm_password_error: "A confirmação da senha não pode ficar vazia",
+    account_name_conditions_preface: "O nome da sua conta deve:",
+    account_name_conditions_forbidden: "Não contém caracteres especiais",
+    account_name_conditions_solution: `Use "-", "_" ou espaço`,
+    account_name_conditions_length: "Ter pelo menos 4 caracteres",
+    login_id_no_root: `O ID de login não pode ser "root"`,
+    login_id_conditions_preface: "Seu ID de login deve:",
+    login_id_conditions_length: "Ter pelo menos 4 caracteres",
+    login_id_conditions_forbidden: "Não contém espaços ou caracteres especiais",
+    login_id_conditions_solution: `Use "-", "_" ou camelCase`
   },
 
   userProfile: {
@@ -197,7 +221,11 @@ const pt = {
     declined_by: "Recusado por",
     connection_status: "Status da conexão",
     last_seen: "Visto pela última vez",
-    admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'"
+    admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'",
+    add_organization: "Adicionar nova organização",
+    organization_error: "A organização não pode ficar vazia",
+    node_address_error: "O endereço do nó não pode ficar vazio",
+    node_address: "Endereço do nó"
   },
 
   login: {
@@ -253,18 +281,23 @@ const pt = {
     subproject_general_workflowitem_type: "Permitir apenas itens de fluxo de trabalho do tipo geral",
     subproject_restricted_workflowitem_type:
       "Permitir apenas item de fluxo de trabalho do tipo restrito. Ao atribuir um item de fluxo de trabalho restrito, as permissões são concedidas e revogadas automaticamente. O atribuidor manterá apenas as permissões de visualização.",
-    workflowitem_assignee: "Cessionário padrão"
+    workflowitem_assignee: "Cessionário padrão",
+    organization_info: "Organization",
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
-    assignee: "Responsável",
     add_item: "Criar item de workflow",
+    add_tag_wfi_text: "Adicionar tag a item de workflow",
     approval_required: "Aprovação necessária",
+    assignee: "Responsável",
     edit_item: "Editar item de workflow",
+    exit_sort_mode:
+      "Este botão agora está desativado. Saia do modo de classificação para criar novos itens de fluxo de trabalho",
     exchange_rate: "Taxa de câmbio",
-
+    search_text: "Buscar",
     workflow_budget_allocated: "Alocado",
-
     workflow_budget_disbursed: "pago",
     workflow_budget_na: "Não se aplica",
     workflow_budget_status_allocated: "Atribuído",
@@ -276,14 +309,14 @@ const pt = {
     workflow_document_changed: "Alterado",
     workflow_document_description: "Digite um nome para o documento",
     workflow_document_name: "Nome do documento",
+    workflow_document_not_available: "Documento não disponível",
     workflow_document_validate: "Validar",
     workflow_document_validated: "Validado",
-    workflow_document_validation_ok: "Documento idêntico",
     workflow_document_validation_not_ok: "Documento diferente",
+    workflow_document_validation_ok: "Documento idêntico",
     workflow_documents: "Documentos",
     workflow_enable_sort: "Ordenar",
     workflow_fingerprint: "Miniatura",
-    workflow_document_not_available: "Documento não disponível",
     workflow_name: "Nome",
     workflow_next_step: "Próxima etapa",
     workflow_no_actions: "Nenhuma ação necessária",
@@ -291,7 +324,12 @@ const pt = {
     workflow_none: "Nenhum",
     workflow_permissions_title: "Configurar permissões para item de workflow",
     workflow_redacted: "Editado por privacidade",
+    workflow_reject_reason: "Rejeitar a razão",
     workflow_selection: "Você selecionaou {0} itens de workflows",
+    workflow_selection_copy_description:
+      "Esta funcionalidade permite copiar todos os itens de fluxo de trabalho selecionados para o subprojeto de destino, incluindo valores e pessoas atribuídas. Os itens de fluxo de trabalho copiados estarão com status aberto, portanto você poderá editá-los posteriormente.",
+    workflow_selection_select_project: "Selecione o projeto",
+    workflow_selection_select_subproject: "Selecione subprojeto",
     workflow_submit_for_review: "Enviar para revisão",
     workflow_table_title: "Lista de itens de workflow",
     workflow_title_description: "Descrição do item de workflow",
@@ -304,11 +342,10 @@ const pt = {
     workflowitem_details_history: "Histórico",
     workflowitem_details_overview: "Visão geral",
     workflowitem_details: "Detalhes do item de workflow",
-    workflowitem_type: "Categoria do item de workflow",
     workflowitem_type_general: "Criar un item de workflow do tipo general.",
     workflowitem_type_restricted:
       "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização.",
-    workflow_reject_reason: "Rejeitar a razão"
+    workflowitem_type: "Categoria do item de workflow"
   },
 
   workflowTemplate: {
@@ -525,6 +562,7 @@ const pt = {
     workflowitem_revokePermission_details: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_revokePermission: "{0} revogou permissão {1} em {3} de {2}",
     workflowitem_update_docs: "{0} adicionou documentos ao item de workflow {1} ",
+    workflowitem_delete_docs: "{0} excluiu documentos do item de workflow {1} ",
     workflowitem_update: "{0} modificou o item de workflow {1} ",
     workflowitem_update_amount: "{0} modificou o item de workflow {1} despesas dentro {2} ",
     workflowitem_document_validated: "{0} documento de item de fluxo de trabalho validado denominado {1} em {2} ",

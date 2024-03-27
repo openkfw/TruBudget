@@ -15,6 +15,7 @@ import * as UserPermissionGranted from "./organization/user_permission_granted";
 import * as UserPermissionRevoked from "./organization/user_permission_revoked";
 import * as DocumentValidated from "./document/document_validated";
 import * as DocumentUploaded from "./document/document_uploaded";
+import * as DocumentDeleted from "./document/document_deleted";
 import * as DocumentShared from "./document/document_shared";
 import * as GlobalPermissionsGranted from "./workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./workflow/global_permission_revoked";
@@ -96,6 +97,7 @@ export type BusinessEvent =
   | PublicKeyPublished.Event
   | PublicKeyUpdated.Event
   | DocumentUploaded.Event
+  | DocumentDeleted.Event
   | DocumentShared.Event
   | OrganizationUrlUpdated.Event
   | ProvisioningStarted.Event

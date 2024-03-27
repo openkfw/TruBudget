@@ -3,7 +3,10 @@ import { fromJS } from "immutable";
 import { convertToURLQuery } from "../../helper";
 import { FETCH_EMAIL_ADDRESS_SUCCESS } from "../Login/actions";
 import { CREATE_PROJECT_SUCCESS } from "../Overview/actions";
-import { FETCH_ALL_PROJECT_DETAILS_SUCCESS } from "../SubProjects/actions";
+import {
+  FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS,
+  FETCH_ALL_PROJECT_DETAILS_SUCCESS
+} from "../SubProjects/actions";
 import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from "../Workflows/actions";
 
 import {
@@ -62,6 +65,8 @@ export default function navbarReducer(state = defaultState, action) {
       });
     case FETCH_ALL_PROJECT_DETAILS_SUCCESS:
       return state.set("currentProject", action.project.data.displayName);
+    case FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS:
+      return state.set("loadedProjectDetails", { subprojects: action.subprojects, project: action.project.data });
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS:
       return state.merge({
         currentSubProject: action.subproject.data.displayName,

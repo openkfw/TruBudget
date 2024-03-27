@@ -161,6 +161,8 @@ class Api {
     instance.post(`/network.approveNewNodeForExistingOrganization`, {
       address
     });
+  registerNewOrganization = (organization, address) =>
+    instance.post(`/network.registerNodeManual`, { organization, address });
   declineNode = (node) =>
     instance.post(`/network.declineNode`, {
       node
@@ -546,6 +548,13 @@ class Api {
           return Promise.resolve({ data: {} });
         }
       });
+
+  deleteDocument = (projectId, subprojectId, workflowitemId, documentId) =>
+    instance.delete(
+      removeEmptyQueryParams(
+        `/workflowitem.deleteDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
+      )
+    );
 }
 
 /**

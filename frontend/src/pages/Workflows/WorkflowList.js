@@ -3,7 +3,7 @@ import { DragDropContext } from "react-beautiful-dnd";
 import _isEmpty from "lodash/isEmpty";
 
 import DoneIcon from "@mui/icons-material/Check";
-import EditIcon from "@mui/icons-material/Edit";
+import ReorderIcon from "@mui/icons-material/Reorder";
 import Fab from "@mui/material/Fab";
 
 import { canReorderWorkflowItems } from "../../permissions.js";
@@ -14,7 +14,7 @@ import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
 const styles = {
   editButtonContainer: {
     position: "absolute",
-    top: "72px",
+    top: "160px",
     left: "7px"
   },
   editButton: {
@@ -40,13 +40,16 @@ const renderSortButton = (props) => (
     aria-label="enable workflowitem sort"
     size="small"
     disabled={
-      !canReorderWorkflowItems(props.allowedIntents) || props.status === "closed" || _isEmpty(props.workflowItems)
+      !canReorderWorkflowItems(props.allowedIntents) ||
+      props.status === "closed" ||
+      _isEmpty(props.workflowItems) ||
+      props.searchTerm.length > 0
     }
     onClick={() => handleEnableWorkflowEdit(props)}
     style={styles.editButton}
     data-test="enable-workflowitem-sort"
   >
-    <EditIcon />
+    <ReorderIcon />
   </Fab>
 );
 
@@ -80,7 +83,7 @@ const handleSubmitEdit = (props) => {
   props.disableWorkflowEdit();
 };
 
-const getSortableItems = ({ workflowItems, ...props }) => {
+const renderSortableItems = ({ workflowItems, ...props }) => {
   let nextWorkflowNotSelectable = false;
 
   return workflowItems.map((workflow, index) => {
@@ -121,7 +124,7 @@ const WorkflowList = (props) => {
     onSortEnd({ oldIndex: result.source.index, newIndex: result.destination.index });
   };
 
-  const sortableItems = getSortableItems(props);
+  const sortableItems = renderSortableItems(props);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

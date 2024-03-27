@@ -269,16 +269,17 @@ const formatTable = ({
 const TableView = (props) => {
   const {
     disableLiveUpdates,
+    enabledUsers,
     enableLiveUpdates,
     filteredProjects,
-    showEditDialog,
-    showProjectPermissions,
-    showProjectAdditionalData,
-    showCreationDialog,
-    enabledUsers,
-    storeSearchTerm,
+    isLiveUpdateAllProjectsEnabled,
     searchTerm,
-    showNavSearchBar // to open the search bar for CardView in NavBar
+    showCreationDialog,
+    showEditDialog,
+    showNavSearchBar, // to open the search bar for CardView in NavBar,
+    showProjectAdditionalData,
+    showProjectPermissions,
+    storeSearchTerm
   } = props;
 
   const hasSearchTerm = searchTerm !== "";
@@ -304,12 +305,15 @@ const TableView = (props) => {
   );
 
   useEffect(() => {
-    if (hasSearchTerm) {
-      disableLiveUpdates();
-    } else {
-      enableLiveUpdates();
+    // only enable live updates if they were enabled before
+    if (isLiveUpdateAllProjectsEnabled) {
+      if (hasSearchTerm) {
+        disableLiveUpdates();
+      } else {
+        enableLiveUpdates();
+      }
     }
-  }, [disableLiveUpdates, enableLiveUpdates, hasSearchTerm]);
+  }, [disableLiveUpdates, enableLiveUpdates, hasSearchTerm, isLiveUpdateAllProjectsEnabled]);
 
   useEffect(() => {
     // Update Table when new project was created
@@ -471,7 +475,7 @@ const TableView = (props) => {
                 isSearchBarDisplayedByDefault={true}
                 searchDisabled={false}
                 safeOnChange={true}
-                previewText="Search Projects"
+                previewText={strings.project.project_searchtext}
                 searchTerm={searchTerm}
                 storeSearchTerm={(word) => storeSearchTerm(word)}
               />

@@ -30,7 +30,7 @@
       "editor.formatOnSave": true
     },
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
+      "source.fixAll": "explicit"
     },
     "workbench.editor.highlightModifiedTabs": true,
     "prettier.requireConfig": true,

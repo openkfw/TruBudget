@@ -13,8 +13,8 @@ for project in "${trubudget_projects[@]}"; do
     eval "cd $project"
     echo "Bumping $project ..."
     eval "perl -pi -e 's/\"version\": .*/\"version\": \"$trubudget_version\",/' ./package.json"
-    eval "npm install --legacy-peer-deps --no-audit"
-    eval "npm audit fix --legacy-peer-deps"
+    eval "npm install --no-audit"
+    eval "npm audit fix"
     if [ $project == frontend ]; then
         echo "Auditing only production dependencies ..."
         eval "npm run audit -- --production"
@@ -22,6 +22,7 @@ for project in "${trubudget_projects[@]}"; do
         echo "Auditing all dependencies ..."
         eval "npm run audit"
     fi
+    eval "npm install"
     eval "cd .."
 done
 
@@ -29,3 +30,4 @@ eval "npm install --no-audit"
 eval "npm audit fix"
 echo "Auditing dependencies ..."
 eval "npm run audit"
+eval "npm install --no-audit"

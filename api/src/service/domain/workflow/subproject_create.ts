@@ -9,7 +9,6 @@ import * as AdditionalData from "../additional_data";
 import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
-import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import * as AuthToken from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
@@ -58,6 +57,46 @@ interface Repository {
   subprojectExists(projectId: string, subprojectId: string): Promise<boolean>;
   projectPermissions(projectId: string): Promise<Result.Type<Permissions>>;
 }
+
+const inheritProjectPermissions = (
+  subprojectInitialPermissions: Permissions,
+  projectPermissions: Permissions,
+  subprojectId?: string,
+): Permissions => {
+  const result = { ...subprojectInitialPermissions };
+  for (const property in projectPermissions) {
+    let subprojectPermissionsProperty = property.replace("project.", "subproject.");
+
+    switch (property) {
+      case "project.createSubproject": {
+        subprojectPermissionsProperty = "subproject.createWorkflowitem";
+        break;
+      }
+      default:
+        break;
+    }
+
+    if (!subprojectIntents.includes(subprojectPermissionsProperty as Intent)) {
+      // won't happen unless Intents are modified and there is an error in the implementation
+      logger.error(
+        `Subproject ${subprojectId} trying to inherit nonexistent property ${subprojectPermissionsProperty}`,
+      );
+      continue;
+    }
+
+    const permissions = [
+      ...new Set([
+        ...subprojectInitialPermissions[subprojectPermissionsProperty],
+        ...projectPermissions[property],
+      ]),
+    ];
+    Object.defineProperty(result, subprojectPermissionsProperty, {
+      value: permissions,
+      enumerable: true,
+    });
+  }
+  return result;
+};
 
 export async function createSubproject(
   ctx: Ctx,
@@ -112,21 +151,15 @@ export async function createSubproject(
     return new AlreadyExists(ctx, createEvent, createEvent.subproject.id);
   }
 
-  const projectPermissionsResult = await repository.projectPermissions(projectId);
-  if (Result.isErr(projectPermissionsResult)) {
-    const error = new PreconditionError(
-      ctx,
-      createEvent,
-      `cannot get project permissions for project ${projectId}: ${projectPermissionsResult.message}`,
-    );
-    return error;
-  }
-
-  // Check authorization (if not root):
   logger.trace({ user: issuer }, "Checking authorization of user");
   const projectPermissions = await repository.projectPermissions(projectId);
   if (Result.isErr(projectPermissions)) {
-    return new NotFound(ctx, "project", projectId);
+    const error = new PreconditionError(
+      ctx,
+      createEvent,
+      `cannot get project permissions for project ${projectId}: ${projectPermissions.message}`,
+    );
+    return error;
   }
 
   if (issuer.id !== "root") {
@@ -146,6 +179,12 @@ export async function createSubproject(
       "user 'root' is not allowed to create subprojects",
     );
   }
+
+  createEvent.subproject.permissions = inheritProjectPermissions(
+    createEvent.subproject.permissions,
+    projectPermissions,
+    createEvent.subproject.id,
+  );
 
   logger.trace({ event: createEvent }, "Checking if Event is valid");
   const result = SubprojectCreated.createFrom(ctx, createEvent);

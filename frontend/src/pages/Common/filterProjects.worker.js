@@ -47,11 +47,12 @@ const filterProjectsWorker = () => {
   function includesSearchTerm(project, searchTermsWithoutPrefix) {
     return searchTermsWithoutPrefix.every((searchTerm) => {
       return (
-        project.data.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.data.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (project.data.tags !== undefined
-          ? project.data.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-          : false)
+        project.data.displayName &&
+        (project.data.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          project.data.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (project.data.tags !== undefined
+            ? project.data.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+            : false))
       );
     });
   }

@@ -30,8 +30,11 @@ import {
 } from "./pages/Confirmation/actions.js";
 import {
   CLEAR_DOCUMENTS,
+  DELETE_DOCUMENT,
+  DELETE_DOCUMENT_SUCCESS,
   DOWNLOAD_DOCUMENT,
   VALIDATE_DOCUMENT,
+  VALIDATE_DOCUMENT_FE,
   VALIDATE_DOCUMENT_SUCCESS
 } from "./pages/Documents/actions";
 import { cancelDebounce, hideLoadingIndicator, showLoadingIndicator } from "./pages/Loading/actions.js";
@@ -77,7 +80,8 @@ import {
   DECLINE_NODE,
   DECLINE_NODE_SUCCESS,
   FETCH_NODES,
-  FETCH_NODES_SUCCESS
+  FETCH_NODES_SUCCESS,
+  REGISTER_NEW_ORGANIZATION
 } from "./pages/Nodes/actions.js";
 import {
   FETCH_ALL_NOTIFICATIONS,
@@ -136,6 +140,8 @@ import {
   EDIT_SUBPROJECT,
   EDIT_SUBPROJECT_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS,
+  FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT,
+  FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS,
   FETCH_ALL_PROJECT_DETAILS_SUCCESS,
   FETCH_FIRST_PROJECT_HISTORY_PAGE,
   FETCH_FIRST_PROJECT_HISTORY_PAGE_SUCCESS,
@@ -936,6 +942,17 @@ export function* validateDocumentSaga({ base64String, hash, id, projectId, subpr
   }, false);
 }
 
+export function* validateDocumentClientsideSaga({ hash, newHash }) {
+  yield execute(function* () {
+    const isIdentical = newHash === hash;
+
+    yield put({
+      type: VALIDATE_DOCUMENT_SUCCESS,
+      isIdentical: isIdentical
+    });
+  }, false);
+}
+
 export function* executeConfirmedAdditionalActionsSaga({
   additionalActions,
   showLoading,
@@ -1556,6 +1573,16 @@ export function* approveNewNodeForOrganizationSaga({ address, showLoading }) {
   }, showLoading);
 }
 
+export function* registerNewOrganizationSaga({ organization, address }) {
+  yield execute(function* () {
+    yield callApi(api.registerNewOrganization, organization, address);
+    yield put({
+      type: FETCH_NODES,
+      show: true
+    });
+  }, true);
+}
+
 export function* declineNode({ node, showLoading }) {
   yield execute(function* () {
     yield callApi(api.declineNode, node);
@@ -1593,6 +1620,16 @@ export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
     const projectDetails = yield callApi(api.viewProjectDetails, projectId);
     yield put({
       type: FETCH_ALL_PROJECT_DETAILS_SUCCESS,
+      ...projectDetails.data
+    });
+  }, showLoading);
+}
+
+export function* fetchAllProjectDetailsNotCurrentProjectSaga({ projectId, showLoading }) {
+  yield execute(function* () {
+    const projectDetails = yield callApi(api.viewProjectDetails, projectId);
+    yield put({
+      type: FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS,
       ...projectDetails.data
     });
   }, showLoading);
@@ -1853,6 +1890,16 @@ export function* fetchWorkflowitemSaga({
 export function* downloadDocumentSaga({ projectId, subprojectId, workflowitemId, documentId, showLoading = true }) {
   yield execute(function* () {
     yield callApi(api.downloadDocument, projectId, subprojectId, workflowitemId, documentId);
+  }, showLoading);
+}
+
+export function* deleteDocumentSaga({ projectId, subprojectId, workflowitemId, documentId, showLoading = true }) {
+  yield execute(function* () {
+    yield callApi(api.deleteDocument, projectId, subprojectId, workflowitemId, documentId);
+    yield put({
+      type: DELETE_DOCUMENT_SUCCESS,
+      payload: { projectId, subprojectId, workflowitemId, documentId }
+    });
   }, showLoading);
 }
 
@@ -3250,6 +3297,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_NODES, fetchNodesSaga),
       yield takeEvery(APPROVE_ORGANIZATION, approveNewOrganizationSaga),
       yield takeEvery(APPROVE_NEW_NODE_FOR_ORGANIZATION, approveNewNodeForOrganizationSaga),
+      yield takeEvery(REGISTER_NEW_ORGANIZATION, registerNewOrganizationSaga),
       yield takeEvery(DECLINE_NODE, declineNode),
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
       yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),
@@ -3279,6 +3327,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_FIRST_PROJECT_HISTORY_PAGE, fetchFirstProjectHistoryPageSaga),
       yield takeEvery(CLOSE_PROJECT, closeProjectSaga),
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga),
+      yield takeEvery(FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT, fetchAllProjectDetailsNotCurrentProjectSaga),
 
       // Subproject
       yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga),
@@ -3304,12 +3353,14 @@ export default function* rootSaga() {
       yield takeEvery(ASSIGN_WORKFLOWITEM, assignWorkflowItemSaga),
       yield takeEvery(HIDE_WORKFLOW_DETAILS, hideWorkflowDetailsSaga),
       yield takeEvery(VALIDATE_DOCUMENT, validateDocumentSaga),
+      yield takeEvery(VALIDATE_DOCUMENT_FE, validateDocumentClientsideSaga),
       yield takeEvery(SHOW_WORKFLOW_PREVIEW, fetchWorkflowActionsSaga),
       yield takeEvery(SUBMIT_BATCH_FOR_WORKFLOW, submitBatchForWorkflowSaga),
       yield takeEvery(FETCH_NEXT_WORKFLOWITEM_HISTORY_PAGE, fetchNextWorkflowitemHistoryPageSaga),
       yield takeEvery(FETCH_FIRST_WORKFLOWITEM_HISTORY_PAGE, fetchFirstWorkflowitemHistoryPageSaga),
       yield takeEvery(FETCH_WORKFLOWITEM, fetchWorkflowitemSaga),
       yield takeLeading(DOWNLOAD_DOCUMENT, downloadDocumentSaga),
+      yield takeLeading(DELETE_DOCUMENT, deleteDocumentSaga),
 
       // Notifications
       yield takeEvery(FETCH_ALL_NOTIFICATIONS, fetchNotificationsSaga),

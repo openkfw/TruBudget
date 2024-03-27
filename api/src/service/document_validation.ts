@@ -1,4 +1,3 @@
-import * as crypto from "crypto";
 import logger from "lib/logger";
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
@@ -15,6 +14,7 @@ import VError = require("verror");
 import * as ProjectCacheHelper from "./project_cache_helper";
 import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
+import { hashBase64String } from "./domain/document/document";
 
 /**
  * Returns true if the given hash matches the given document.
@@ -37,9 +37,8 @@ export async function isSameDocument(
 
   let isDocumentValid = false;
   try {
-    const hash = crypto.createHash("sha256");
-    hash.update(Buffer.from(documentBase64, "base64"));
-    const computedHash = hash.digest("hex");
+    const computedHash = await hashBase64String(documentBase64);
+    isDocumentValid = computedHash === expectedSHA256;
     isDocumentValid = computedHash === expectedSHA256;
   } catch (error) {
     return new VError(error, "compare documents failed");

@@ -7,6 +7,7 @@ import { convertToSearchBarString, toJS } from "../../helper";
 import { withRouter } from "../../wrappers/withRouter";
 import { fetchEmailAddress, logout } from "../Login/actions";
 import FlyInNotifications from "../Notifications/FlyInNotifications";
+import { disableAllProjectsLiveUpdates, enableAllProjectsLiveUpdates } from "../Overview/actions";
 
 import {
   createBackup,
@@ -62,56 +63,59 @@ class NavbarContainer extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    toggleSidebar: () => dispatch(toggleSidebar()),
-    logout: () => dispatch(logout()),
-    fetchActivePeers: () => dispatch(fetchActivePeers()),
     createBackup: () => dispatch(createBackup()),
-    restoreBackup: (file) => dispatch(restoreBackup(file)),
-    exportData: (devModeEnvironment) => dispatch(exportData(devModeEnvironment)),
-    storeSearchTerm: (searchTerm) => dispatch(storeSearchTerm(searchTerm)),
-    storeSearchBarDisplayed: (searchBarDisplayed) => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
-    setIsRoot: (isRoot) => dispatch(setIsRoot(isRoot)),
-    showUserProfile: () => dispatch(showUserProfile()),
-    fetchEmailAddress: () => dispatch(fetchEmailAddress()),
-    saveEmailAddress: (emailAddress) => dispatch(saveEmailAddress(emailAddress)),
-    storeTempEmailAddress: (emailAddress) => dispatch(storeTempEmailAddress(emailAddress)),
-    setValidEmailAddressInput: (valid) => dispatch(setValidEmailAddressInput(valid)),
+    disableLiveUpdates: () => dispatch(disableAllProjectsLiveUpdates()),
+    enableLiveUpdates: () => dispatch(enableAllProjectsLiveUpdates()),
     enableUserProfileEdit: () => dispatch(enableUserProfileEdit()),
-    hideUserProfile: () => dispatch(hideUserProfile())
+    exportData: (devModeEnvironment) => dispatch(exportData(devModeEnvironment)),
+    fetchActivePeers: () => dispatch(fetchActivePeers()),
+    fetchEmailAddress: () => dispatch(fetchEmailAddress()),
+    hideUserProfile: () => dispatch(hideUserProfile()),
+    logout: () => dispatch(logout()),
+    restoreBackup: (file) => dispatch(restoreBackup(file)),
+    saveEmailAddress: (emailAddress) => dispatch(saveEmailAddress(emailAddress)),
+    setIsRoot: (isRoot) => dispatch(setIsRoot(isRoot)),
+    setValidEmailAddressInput: (valid) => dispatch(setValidEmailAddressInput(valid)),
+    showUserProfile: () => dispatch(showUserProfile()),
+    storeSearchBarDisplayed: (searchBarDisplayed) => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
+    storeSearchTerm: (searchTerm) => dispatch(storeSearchTerm(searchTerm)),
+    storeTempEmailAddress: (emailAddress) => dispatch(storeTempEmailAddress(emailAddress)),
+    toggleSidebar: () => dispatch(toggleSidebar())
   };
 };
 
 const mapStateToProps = (state) => {
   return {
-    showSidebar: state.getIn(["navbar", "showSidebar"]),
-    peers: state.getIn(["navbar", "peers"]),
-    numberOfActivePeers: state.getIn(["navbar", "numberOfActivePeers"]),
-    notifications: state.getIn(["notifications", "notifications"]),
-    newNotifications: state.getIn(["notifications", "newNotifications"]),
-    route: state.getIn(["route", "locationBeforeTransitions"]),
-    streamNames: state.getIn(["navbar", "streamNames"]),
-    displayName: state.getIn(["login", "displayName"]),
-    userId: state.getIn(["login", "id"]),
-    organization: state.getIn(["login", "organization"]),
+    allowedIntents: state.getIn(["login", "allowedIntents"]),
     avatar: state.getIn(["login", "avatar"]),
     avatarBackground: state.getIn(["login", "avatarBackground"]),
     currentProject: state.getIn(["navbar", "currentProject"]),
     currentSubProject: state.getIn(["navbar", "currentSubProject"]),
-    allowedIntents: state.getIn(["login", "allowedIntents"]),
-    groups: state.getIn(["login", "groups"]),
-    unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
-    latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
-    searchTerm: state.getIn(["navbar", "searchTerm"]),
-    searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
-    isRoot: state.getIn(["login", "isRoot"]),
-    open: state.getIn(["navbar", "userProfileOpen"]),
-    tempEmailAddress: state.getIn(["navbar", "tempEmailAddress"]),
-    userProfileEdit: state.getIn(["navbar", "userProfileEdit"]),
+    displayName: state.getIn(["login", "displayName"]),
     emailAddress: state.getIn(["login", "emailAddress"]),
     emailServiceAvailable: state.getIn(["login", "emailServiceAvailable"]),
     exportServiceAvailable: state.getIn(["login", "exportServiceAvailable"]),
+    groups: state.getIn(["login", "groups"]),
     isEmailAddressInputValid: state.getIn(["navbar", "isEmailAddressInputValid"]),
-    projectView: state.getIn(["overview", "projectView"])
+    isLiveUpdateAllProjectsEnabled: state.getIn(["overview", "isLiveUpdateAllProjectsEnabled"]),
+    isRoot: state.getIn(["login", "isRoot"]),
+    latestFlyInId: state.getIn(["notifications", "latestFlyInId"]),
+    newNotifications: state.getIn(["notifications", "newNotifications"]),
+    notifications: state.getIn(["notifications", "notifications"]),
+    numberOfActivePeers: state.getIn(["navbar", "numberOfActivePeers"]),
+    open: state.getIn(["navbar", "userProfileOpen"]),
+    organization: state.getIn(["login", "organization"]),
+    peers: state.getIn(["navbar", "peers"]),
+    projectView: state.getIn(["overview", "projectView"]),
+    route: state.getIn(["route", "locationBeforeTransitions"]),
+    searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
+    searchTerm: state.getIn(["navbar", "searchTerm"]),
+    showSidebar: state.getIn(["navbar", "showSidebar"]),
+    streamNames: state.getIn(["navbar", "streamNames"]),
+    tempEmailAddress: state.getIn(["navbar", "tempEmailAddress"]),
+    unreadNotificationCount: state.getIn(["notifications", "unreadNotificationCount"]),
+    userId: state.getIn(["login", "id"]),
+    userProfileEdit: state.getIn(["navbar", "userProfileEdit"])
   };
 };
 

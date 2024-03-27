@@ -54,9 +54,11 @@ const Searchbar = ({
                 autoFocus={!isSearchBarDisplayedByDefault}
                 onChange={safeOnChange ? (event) => storeSearchTerm(event.target.value) : null}
                 onKeyDown={(e) => {
-                  if (!isSearchBarDisplayedByDefault && (e.key === "Escape" || e.key === "Esc")) {
+                  if (e.key === "Escape" || e.key === "Esc") {
                     storeSearchTerm("");
-                    storeSearchBarDisplayed(false);
+                    if (!isSearchBarDisplayedByDefault) {
+                      storeSearchBarDisplayed(false);
+                    }
                   } else if (e.key === "Enter") {
                     storeSearchTerm(e.target.value);
                   }
@@ -69,7 +71,7 @@ const Searchbar = ({
               />
             </FormControl>
           </form>
-          {!isSearchBarDisplayedByDefault ? (
+          {searchTerm || !isSearchBarDisplayedByDefault ? (
             <ButtonBase
               data-test="clear-searchbar"
               onClick={() => {

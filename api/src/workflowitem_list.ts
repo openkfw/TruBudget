@@ -10,7 +10,7 @@ import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
-import { DocumentReference } from "./service/domain/document/document";
+import { DocumentOrExternalLinkReference } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
@@ -80,6 +80,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                           exchangeRate: { type: "string", example: "1.0" },
                           additionalData: { type: "object", additionalProperties: true },
                           workflowitemType: { type: "string", example: "general" },
+                          tags: { type: "array", items: { type: "string", example: "test" } },
                           documents: {
                             type: "array",
                             items: {
@@ -90,6 +91,10 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                                   type: "string",
                                   example:
                                     "F315FAA31B5B70089E7F464E718191EAF5F93E61BB5FDCDCEF32AF258B80B4B2",
+                                },
+                                link: {
+                                  type: "string",
+                                  example: "https://www.example.com",
                                 },
                                 fileName: { type: "string", example: "myFile.pdf" },
                                 documentId: {
@@ -132,9 +137,10 @@ interface ExposedWorkflowitem {
     billingDate: string | null | undefined;
     dueDate: string | null | undefined;
     exchangeRate: string | null | undefined;
-    documents: DocumentReference[];
+    documents: DocumentOrExternalLinkReference[];
     additionalData: object;
     workflowitemType: Type | undefined;
+    tags?: string[];
   };
 }
 
@@ -232,6 +238,7 @@ export function addHttpHandler(
                   documents: workflowitem.documents,
                   additionalData: workflowitem.additionalData,
                   workflowitemType: workflowitem.workflowitemType,
+                  tags: workflowitem.tags,
                 },
               };
               return exposedWorkflowitem;

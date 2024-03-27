@@ -71,7 +71,7 @@ const ProjectCard = ({
           marginTop: "-40px"
         }}
       >
-        <Tooltip id="tooltip-pview" title={strings.common.view}>
+        <Tooltip id="tooltip-pview" title={strings.common.view_project_details}>
           <div>
             <Fab
               aria-label="view project"

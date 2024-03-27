@@ -18,20 +18,77 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Removed -->
 
 <!-- ### Fixed -->
-
-## [2.7.x] - 2024-01-DD
+    
+## [2.9.0] - 2024-03-25
 
 <!-- ## Unreleased -->
 
-<!-- ### Added -->
+### Added
 
-<!-- ### Changed -->
+- More tooltips or help adornments for text inputs [#1698](https://api.github.com/repos/openkfw/TruBudget/issues/1698)
+- Option to validate documents on the client side [#1708](https://api.github.com/repos/openkfw/TruBudget/issues/1708)
+- Possibility to manually register new organizations and nodes [#1728](https://api.github.com/repos/openkfw/TruBudget/issues/1728)
+- Increased number of allowed characters for a tag [#1713](https://api.github.com/repos/openkfw/TruBudget/issues/1713)
+- More descriptive validation messages [#1704](https://api.github.com/repos/openkfw/TruBudget/issues/1704)
+- More tooltips or help adornments for text inputs [#1698](https://api.github.com/repos/openkfw/TruBudget/issues/1698)
+- Option to bulk-add users to provisioned TB chain [#1686](https://api.github.com/repos/openkfw/TruBudget/issues/1686)
+- Deletion of of document urls [#1663](https://api.github.com/repos/openkfw/TruBudget/issues/1663)
+- HSTS Headers [#1657](https://api.github.com/repos/openkfw/TruBudget/issues/1657)
+- New set of backdrop images for the UI [#1647](https://api.github.com/repos/openkfw/TruBudget/issues/1647)
+
+
+### Changed
+
+- Documentation regarding Beta-Node [#1701](https://api.github.com/repos/openkfw/TruBudget/issues/1701)
+- Workflowitems templates [#1699](https://api.github.com/repos/openkfw/TruBudget/issues/1699)
+- Default assignee behaviour [#1720](https://api.github.com/repos/openkfw/TruBudget/issues/1720)
+- Default image for new project [#1714](https://api.github.com/repos/openkfw/TruBudget/issues/1714)
 
 <!-- ### Deprecated -->
 
-<!-- ### Removed -->
+### Removed
+
+- Remove additional information about the server in requests [#1655](https://api.github.com/repos/openkfw/TruBudget/issues/1655)
 
 <!-- ### Fixed -->
+
+
+## [2.8.0] - 2024-02-28
+
+### Added
+
+- Possibility to delete uploaded files from external storage. [#1488](https://github.com/openkfw/TruBudget/issues/1488)
+- Operator has an option to customize live update interval via REACT_APP_POLLING_INTERVAL frontend env variable [#1635](https://github.com/openkfw/TruBudget/issues/1635)
+- Possibility to switch to disable/enable live update by user [#1665](https://github.com/openkfw/TruBudget/issues/1665)
+- Possibility to upload external document link instead of document [#1569](https://github.com/openkfw/TruBudget/issues/1569)
+
+### Changed
+
+- Dialog form validation for new user creation [#1660](https://github.com/openkfw/TruBudget/issues/1660)
+
+### Fixed
+
+- Fixed search query in workflowitems not processed from URL [#1627](https://github.com/openkfw/TruBudget/issues/1627)
+
+
+## [2.7.0] - 2024-01-31
+
+### Added
+
+- Add automated security scanning. [#1573](https://github.com/openkfw/TruBudget/issues/1573) [#1567](https://github.com/openkfw/TruBudget/issues/1567)
+- Tags in Workflow items and respective filtering / search [#1568](https://github.com/openkfw/TruBudget/issues/1568)
+- Add tooltips [#1583](https://github.com/openkfw/TruBudget/issues/1583)
+- Show "delete search term" button in subproject and workflowitems list view [#1587](https://github.com/openkfw/TruBudget/issues/1587)
+
+### Changed
+
+- Subproject and workflowitems inherit project permissions [#1558](https://github.com/openkfw/TruBudget/issues/1558)
+- Increase length of user ID [#887](https://github.com/openkfw/TruBudget/issues/887)
+
+### Fixed
+- Fix error of incorrectly displayed redacted workflowitem at workflow screen [#1563](https://github.com/openkfw/TruBudget/issues/1563)
+- Migration script fix allows to migrate documents to storage service in a migration to 2.x [#1333](https://github.com/openkfw/TruBudget/issues/1333)
+
 
 ## [2.6.0] - 2023-12-19
 
@@ -1050,7 +1107,12 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.5.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.9.0...main
+[2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.9.0
+[2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.8.0...v2.9.0
+[2.8.0]: https://github.com/openkfw/TruBudget/compare/v2.7.0...v2.8.0
+[2.7.0]: https://github.com/openkfw/TruBudget/compare/v2.6.0...v2.7.0
+[2.6.0]: https://github.com/openkfw/TruBudget/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/openkfw/TruBudget/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/openkfw/TruBudget/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/openkfw/TruBudget/compare/v2.2.1...v2.3.0

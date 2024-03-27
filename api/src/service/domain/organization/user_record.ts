@@ -10,7 +10,7 @@ import { ServiceUser } from "./service_user";
 import { UserTraceEvent, userTraceEventSchema } from "./user_trace_event";
 
 export type Id = string;
-export const idSchema = Joi.string().max(32);
+export const idSchema = Joi.string().max(64);
 
 export interface UserRecord {
   id: string;

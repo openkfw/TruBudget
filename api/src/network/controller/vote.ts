@@ -13,6 +13,7 @@ import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as GlobalPermissionsGet from "../../service/global_permissions_get";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
+import { getOrganizationAddress } from "../../organization/organization";
 
 export async function voteForNetworkPermission(
   conn: ConnToken,
@@ -41,10 +42,22 @@ export async function voteForNetworkPermission(
   const targetAddress: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
   const vote: AccessVote.T = value("vote", input.vote, AccessVote.isValid);
 
-  // Grant or revoke? We need to find out our current vote to know..
-  const callerAddress = req.user.organizationAddress;
+  // we cannot rely on organization address from http request, it should be at least verified against the server data
+  const callerAddress = await getOrganizationAddress(multichain, req.user.organization);
+  if (!callerAddress) {
+    const message = `Organization address not found for ${req.user.organization}`;
+    logger.error({ err: { issuer, callerAddress, targetAddress, vote } }, message);
+    return [404, { apiVersion: "1.0", error: { code: 404, message } }];
+  }
+  if (callerAddress !== req.user.organizationAddress) {
+    const message = `Organization address mismatch: ${callerAddress} !== ${req.user.organizationAddress} (from token)`;
+    logger.error({ err: { issuer, callerAddress, targetAddress, vote } }, message);
+    return [409, { apiVersion: "1.0", error: { code: 409, message } }];
+  }
+
   const currentVote = await getCurrentVote(multichain, callerAddress, targetAddress);
 
+  // Grant or revoke? We need to find out our current vote to know..
   const [operation, permissions] = computeWhatToDo(currentVote, vote);
 
   if (operation === "grant") {

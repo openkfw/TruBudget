@@ -10,7 +10,7 @@ import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
-import { DocumentReference } from "./service/domain/document/document";
+import { DocumentOrExternalLinkReference } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
@@ -165,10 +165,11 @@ interface ExposedWorkflowitem {
     description: string | null;
     status: string;
     assignee: string | undefined | null;
-    documents: DocumentReference[];
+    documents: DocumentOrExternalLinkReference[];
     amount?: string | null;
     additionalData: object | null;
     workflowitemType?: WorkflowitemType;
+    tags: string[];
   };
   allowedIntents: Intent[];
 }
@@ -329,6 +330,7 @@ export function addHttpHandler(
               amount: workflowitem.amount,
               additionalData: workflowitem.additionalData,
               workflowitemType: workflowitem.workflowitemType,
+              tags: workflowitem.tags || [],
             },
           }));
 

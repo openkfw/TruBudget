@@ -35,13 +35,16 @@ const ka = {
     comment: "კომენტარი",
     completion: "დასრულება",
     confirm: "დადასტურება",
+    copy: "Copy",
     create: "შექმნა",
     created: "შექმნილია",
     currency: "ვალუტა",
+    deselect_all: "Გააუქმეთ ყველა მონიშვნა",
     disbursed_budget: "გადახდილი ღირებულება",
     disbursement: "დაგეგმილი გადახდები",
     disconnected: "offline",
     display_name: "სახელის ჩვენება",
+    delete: "წაშლა",
     done: "შესრულებულია",
     download: "ჩამოტვირთვა",
     edit: "რედაქტირება",
@@ -64,6 +67,7 @@ const ka = {
     incorrect_username_or_password: "არასწორი შესვლის პირადობა ან პაროლი",
     invalid_tag: "თაგი არასწორია",
     invalid_format: "არასწორი ფორმატი",
+    link: "Ბმული",
     name: "სახელი",
     next: "შემდეგ",
     no_budget: "ბიუჯეტი ვერ მოიძებნა",
@@ -81,6 +85,7 @@ const ka = {
     no_nodes: "დამატებითი კვანძების მოთხოვნა ვერ მოიძებნა",
     no_notifications: "შეტყობინებები ვერ მოიძებნა",
     no_organizations: "ახალი ორგანიზაციების მოთხოვნა ვერ მოიძებნა",
+    no_permissions: "თქვენ არ გაქვთ ამ მოქმედების შესრულების ნებართვა",
     no_resources: "არცერთი ველი არ დაემატა ამ რესურსს",
     no_subprojects: "ქვეპროექტი ვერ მოიძებნა",
     no_users: "მომხმარებლები ვერ მოიძებნა",
@@ -90,6 +95,8 @@ const ka = {
     not_assigned: "არ არის გამოყოფილი",
     not_disbursed: "გადაუხდელი",
     not_ok: "Not OK",
+    off: "გამორთული",
+    on: "ჩართული",
     ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
     open: "Open",
@@ -105,11 +112,13 @@ const ka = {
     reject: "Უარყოს",
     rejected: "უარყოფილი",
     search: "ძიება",
+    select_all: "Მონიშნე ყველა",
     show_permissions: "მაჩვენე ნებართვები",
     status: "სტატუსი",
     submit: "გაგზავნა",
     subproject: "ქვეპროექტი",
     subprojects: "ქვეპროექტები",
+    switch_to_table: "ცხრილის ხედზე გადართვა",
     tag_already_exists: "თაგი უკვე არსებობს!",
     tag: "თაგი",
     task_status: "დავალების სტატუსი",
@@ -119,6 +128,7 @@ const ka = {
     update: "განახლება",
     username: "მომხმარებლის სახელი",
     view: "ხილვა",
+    view_project_details: "იხილეთ პროექტის დეტალები",
     workflowitem: "Workflowitem",
     dueDate: "თარიღით",
     dueDate_exceeded: "დასრულდა თარიღი",
@@ -140,6 +150,7 @@ const ka = {
     current_user_password: "შენი პაროლი",
     edit_group: "ჯგუფის რედაქტირება",
     edit_permissions_for: "ნებართვის რედაქტირება",
+    edit_permissions: "ნებართვების რედაქტირება",
     group_created: "ჯგუფი წარმატებით შექმნილია",
     groups: "ჯგუფები",
     invalid_password: "პაროლი არასწორია",
@@ -176,7 +187,20 @@ const ka = {
     assigned_message: "გამორთვამდე ეს მომხმარებელი უნდა დაეკისროს შემდეგ ელემენტებს",
     not_assigned_message:
       "ამ მომხმარებელს არ ენიჭება რაიმე პროექტი, ქვეპროექტი და სამუშაო წრე და შეიძლება გამორთული იყოს",
-    hidden_assignments: "შემდგომი რედაქტირება {0}"
+    hidden_assignments: "შემდგომი რედაქტირება {0}",
+    account_name_error: "ანგარიშის სახელი არ შეიძლება იყოს ცარიელი",
+    login_id_error: "შესვლის ID არ შეიძლება იყოს ცარიელი",
+    password_error: "პაროლი არ შეიძლება იყოს ცარიელი",
+    confirm_password_error: "დაადასტურეთ, რომ პაროლი არ შეიძლება იყოს ცარიელი",
+    account_name_conditions_preface: "თქვენი ანგარიშის სახელი უნდა:",
+    account_name_conditions_forbidden: "არ შეიცავს სპეციალურ სიმბოლოებს",
+    account_name_conditions_solution: `ამის ნაცვლად გამოიყენეთ "-", "_" ან სივრცე`,
+    account_name_conditions_length: "იყოს მინიმუმ 4 სიმბოლო",
+    login_id_no_root: `შესვლის ID არ შეიძლება იყოს "root"`,
+    login_id_conditions_preface: "თქვენი შესვლის ID უნდა:",
+    login_id_conditions_length: "იყოს მინიმუმ 4 სიმბოლო",
+    login_id_conditions_forbidden: "არ შეიცავს სივრცეებს ​​ან სპეციალურ სიმბოლოებს",
+    login_id_conditions_solution: `ამის ნაცვლად გამოიყენეთ "-", "_" ან camelCase`
   },
 
   userProfile: {
@@ -197,7 +221,11 @@ const ka = {
     connection_status: "კავშირის სტატუსი",
     last_seen: "ბოლო ნახვა",
     admin_description:
-      "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები"
+      "ადმინისტრატორის კვანძი არის ქსელის საწყისი კვანძი და აქვს დამატებითი 'ჩემი' და 'ადმინისტრატორის' ნებართვები",
+    add_organization: "დაამატეთ ახალი ორგანიზაცია",
+    organization_error: "ორგანიზაცია არ შეიძლება იყოს ცარიელი",
+    node_address_error: "კვანძის მისამართი არ შეიძლება იყოს ცარიელი",
+    node_address: "კვანძის მისამართი"
   },
 
   login: {
@@ -253,18 +281,23 @@ const ka = {
     subproject_general_workflowitem_type: "დაუშვით მხოლოდ workflowitem ტიპის ზოგადი",
     subproject_restricted_workflowitem_type:
       "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
-    workflowitem_assignee: "ნაგულისხმევი მიმღები"
+    workflowitem_assignee: "ნაგულისხმევი მიმღები",
+    organization_info: "Organization",
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
-    assignee: "პასუხისმგებელი",
     add_item: "Workflowitem-ის შექმნა",
+    add_tag_wfi_text: "ტეგის დამატება",
     approval_required: "აუცილებელია დადასტურება",
+    assignee: "პასუხისმგებელი",
+    search_text: "საძიებო ნივთები",
     edit_item: "Workflowitem-ის რედაქტირება",
+    exit_sort_mode:
+      "ეს ღილაკი ახლა გამორთულია. დალაგების რეჟიმიდან გამოდით სამუშაო პროცესის ახალი ელემენტების შესაქმნელად",
     exchange_rate: "გაცვლითი კურსი",
-
     workflow_budget_allocated: "გამოყოფილი",
-
     workflow_budget_disbursed: "გადახდილი",
     workflow_budget_na: "Not applicable",
     workflow_budget_status_allocated: "Assigned",
@@ -276,14 +309,14 @@ const ka = {
     workflow_document_changed: "შეცვლილია",
     workflow_document_description: "დოკუმენტის სახელწოდების დამატება",
     workflow_document_name: "დოკუმენტის სახელწოდება",
+    workflow_document_not_available: "დოკუმენტი მიუწვდომელია",
     workflow_document_validate: "დამტკიცება",
     workflow_document_validated: "დამტკიცებულია",
-    workflow_document_validation_ok: "იდენტურია დოკუმენტი",
     workflow_document_validation_not_ok: "განსხვავებული დოკუმენტი",
+    workflow_document_validation_ok: "იდენტურია დოკუმენტი",
     workflow_documents: "დოკუმენტები",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
-    workflow_document_not_available: "დოკუმენტი მიუწვდომელია",
     workflow_name: "დასახელება",
     workflow_next_step: "შემდეგი ნაბიჯი",
     workflow_no_actions: "ქმედების განხორციელება არ არის საჭირო",
@@ -291,7 +324,12 @@ const ka = {
     workflow_none: "None",
     workflow_permissions_title: "Workflowitem-თან დაკავშირებით უფლებამოსილების მინიჭება",
     workflow_redacted: "Redacted",
+    workflow_reject_reason: "უარყავი მიზეზი",
     workflow_selection: "{0} Workflowitem-ები არჩეულია",
+    workflow_selection_copy_description:
+      "ეს ფუნქცია საშუალებას გაძლევთ დააკოპიროთ სამუშაო პროცესის ყველა არჩეული ელემენტი დანიშნულების ქვეპროექტში თანხების და მინიჭებული პირების ჩათვლით. კოპირებული სამუშაო პროცესის ელემენტები იქნება ღია სტატუსში, ასე რომ, მათი შემდგომი რედაქტირება შესაძლებელია.",
+    workflow_selection_select_project: "აირჩიეთ პროექტი",
+    workflow_selection_select_subproject: "აირჩიეთ ქვეპროექტი",
     workflow_submit_for_review: "განსახილველად გადაგზავნა",
     workflow_table_title: "Workflowitem-ები",
     workflow_title_description: "Workflowitem-ის სახელწოდება",
@@ -304,11 +342,10 @@ const ka = {
     workflowitem_details_history: "ისტორია",
     workflowitem_details_overview: "მიმოხილვა",
     workflowitem_details: "Workflowitem-ის დეტალები",
-    workflowitem_type: "Workflowitem ტიპი",
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
       "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას.",
-    workflow_reject_reason: "უარყავი მიზეზი"
+    workflowitem_type: "Workflowitem ტიპი"
   },
 
   workflowTemplate: {
@@ -523,6 +560,7 @@ const ka = {
     workflowitem_revokePermission_details: "{0} გაუუქმა {2}-სა და {3}-ს ნებართვა {1}",
     workflowitem_revokePermission: "{0} გაუუქმა {2}-ს ნებართვა {1}",
     workflowitem_update_docs: "{0} დაამატა დოკუმენტები workflowitem-ს {1} ",
+    workflowitem_delete_docs: "{0} წაშლილი დოკუმენტები სამუშაო პროცესიდან {1}",
     workflowitem_update: "{0} შეცვალა workflowitem-ი {1} ",
     workflowitem_update_amount: "{0} შეცვალა workflowitem-ი {1} ბიუჯეტი წელს {2}",
     workflowitem_document_validated: "{0} დადასტურებულია workflowitem სისტემაში მითითებული დოკუმენტ {1} ი {2} ",

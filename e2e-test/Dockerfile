@@ -1,4 +1,4 @@
-FROM cypress/base:20.9.0
+FROM cypress/base:20.11.1
 
 # copy test fixtures into the container
 COPY package*.json ./

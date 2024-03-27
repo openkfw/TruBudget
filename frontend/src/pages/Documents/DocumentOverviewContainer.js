@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 
-import { downloadDocument, validateDocument } from "./actions";
+import { deleteDocument, downloadDocument, validateDocumentClientside } from "./actions";
 import DocumentOverview from "./DocumentOverview";
 
 class DocumentOverviewContainer extends Component {
@@ -14,10 +14,12 @@ class DocumentOverviewContainer extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    validateDocument: (hash, base64String, id, projectId, subprojectId, workflowitemId) =>
-      dispatch(validateDocument(hash, base64String, id, projectId, subprojectId, workflowitemId)),
+    validateDocument: ({ hash, newHash, projectId, subprojectId, workflowitemId, documentId }) =>
+      dispatch(validateDocumentClientside({ hash, newHash, projectId, subprojectId, workflowitemId, documentId })),
     downloadDocument: (projectId, subprojectId, workflowitemId, documentId) =>
-      dispatch(downloadDocument(projectId, subprojectId, workflowitemId, documentId))
+      dispatch(downloadDocument(projectId, subprojectId, workflowitemId, documentId)),
+    deleteDocument: (projectId, subprojectId, workflowitemId, documentId) =>
+      dispatch(deleteDocument(projectId, subprojectId, workflowitemId, documentId))
   };
 };
 

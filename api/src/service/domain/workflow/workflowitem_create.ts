@@ -9,7 +9,7 @@ import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import {
-  DocumentReference,
+  DocumentOrExternalLinkReference,
   GenericDocument,
   hashDocument,
   UploadedDocument,
@@ -47,6 +47,7 @@ export interface RequestData {
   documents?: UploadedDocument[];
   additionalData?: object;
   workflowitemType?: Type;
+  tags?: string[];
 }
 
 const requestDataSchema = Joi.object({
@@ -66,6 +67,7 @@ const requestDataSchema = Joi.object({
   documents: Joi.array().items(uploadedDocumentSchema),
   additionalData: AdditionalData.schema,
   workflowitemType: workflowitemTypeSchema,
+  tags: Joi.array().items(Project.tagsSchema),
 });
 
 export function validate(input): Result.Type<RequestData> {
@@ -112,6 +114,52 @@ function generateUniqueDocId(allDocuments: GenericDocument[]): string {
   }
 }
 
+const inheritSubprojectPermissions = (
+  workflowitemInitialPermissions: Permissions,
+  subprojectPermissions: Permissions,
+  workflowitemId?: string,
+): Permissions => {
+  const result = { ...workflowitemInitialPermissions };
+  for (const property in subprojectPermissions) {
+    let subprojectPermissionsProperty = property.replace("subproject.", "workflowitem.");
+
+    switch (property) {
+      case "subproject.viewDetails":
+        continue;
+      case "subproject.createWorkflowitem":
+        continue;
+      case "subproject.reorderWorkflowitems":
+        continue;
+      case "subproject.budget.updateProjected":
+        continue;
+      case "subproject.budget.deleteProjected":
+        continue;
+      default:
+        break;
+    }
+
+    if (!workflowitemIntents.includes(subprojectPermissionsProperty as Intent)) {
+      // won't happen unless Intents are modified and there is an error in the implementation
+      logger.error(
+        `Workflowitem ${workflowitemId} trying to inherit nonexistent property ${subprojectPermissionsProperty}`,
+      );
+      continue;
+    }
+
+    const permissions = [
+      ...new Set([
+        ...workflowitemInitialPermissions[subprojectPermissionsProperty],
+        ...subprojectPermissions[property],
+      ]),
+    ];
+    Object.defineProperty(result, subprojectPermissionsProperty, {
+      value: permissions,
+      enumerable: true,
+    });
+  }
+  return result;
+};
+
 export async function createWorkflowitem(
   ctx: Ctx,
   issuer: ServiceUser,
@@ -119,12 +167,15 @@ export async function createWorkflowitem(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const publisher = issuer.id;
-  const workflowitemId = reqData.workflowitemId || randomString();
-  const documents: DocumentReference[] = [];
+  const documents: DocumentOrExternalLinkReference[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (reqData.documents?.length) {
-    if (config.documentFeatureEnabled) {
+    const documentsCount = reqData.documents.filter((d) => d.base64).length;
+    if (
+      config.documentFeatureEnabled ||
+      (documentsCount === 0 && config.documentExternalLinksEnabled)
+    ) {
       logger.trace(
         { req: reqData },
         "Trying to hash documents in preparation for workflowitem_created event",
@@ -136,23 +187,29 @@ export async function createWorkflowitem(
       // preparation for workflowitem_created event
       for (const doc of reqData.documents || []) {
         doc.id = generateUniqueDocId(existingDocuments);
-        const hashedDocumentResult = await hashDocument(doc);
-        if (Result.isErr(hashedDocumentResult)) {
-          return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+        if ("base64" in doc) {
+          const hashedDocumentResult = await hashDocument(doc);
+          if (Result.isErr(hashedDocumentResult)) {
+            return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+          }
+          documents.push(hashedDocumentResult);
+        } else {
+          documents.push(doc);
         }
-        documents.push(hashedDocumentResult);
       }
       // upload documents to storage service
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
-        reqData.documents.map(async (document) => {
-          logger.trace({ document }, "Trying to upload document to storage service");
-          return repository.uploadDocumentToStorageService(
-            document.fileName || "",
-            document.base64,
-            document.id,
-          );
-        }),
+        reqData.documents
+          .filter((document) => "base64" in document)
+          .map(async (document) => {
+            logger.trace({ document }, "Trying to upload document to storage service");
+            return repository.uploadDocumentToStorageService(
+              document.fileName || "",
+              document.base64,
+              document.id,
+            );
+          }),
       );
       for (const result of documentUploadedEventsResults) {
         if (Result.isErr(result)) {
@@ -173,7 +230,7 @@ export async function createWorkflowitem(
     reqData.projectId,
     reqData.subprojectId,
     {
-      id: workflowitemId,
+      id: reqData.workflowitemId || randomString(),
       status: reqData.status || "open",
       displayName: reqData.displayName,
       description: reqData.description || "",
@@ -188,6 +245,7 @@ export async function createWorkflowitem(
       permissions: newDefaultPermissionsFor(issuer.id),
       additionalData: reqData.additionalData || {},
       workflowitemType: reqData.workflowitemType || "general",
+      tags: reqData.tags || [],
     },
     new Date().toISOString(),
     issuer.metadata,
@@ -287,12 +345,18 @@ export async function createWorkflowitem(
     workflowitemCreated.workflowitem.exchangeRate = "1.0";
   }
 
+  workflowitemCreated.workflowitem.permissions = inheritSubprojectPermissions(
+    workflowitemCreated.workflowitem.permissions,
+    subproject.permissions,
+    workflowitemCreated.workflowitem.id,
+  );
+
   return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
 
   function newDefaultPermissionsFor(userId: string): Permissions {
     // The user can always do anything anyway:
     if (userId === "root") return {};
-    const intents: Intent[] = workflowitemIntents;
+    const intents = workflowitemIntents;
     return intents.reduce((obj, intent) => ({ ...obj, [intent]: [userId] }), {});
   }
 }

@@ -12,6 +12,7 @@ import DatePicker from "../Common/DatePicker";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
 import SingleSelection from "../Common/SingleSelection";
+import TagEditor from "../Common/TagEditor";
 
 import * as templates from "./templates/workflowTemplates";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
@@ -84,7 +85,8 @@ const WorkflowDialogContent = (props) => {
     storeWorkflowAmountType,
     storeWorkflowCurrency,
     storeWorkflowExchangeRate,
-    defaultWorkflowExchangeRate
+    defaultWorkflowExchangeRate,
+    tags
   } = props;
   const { workflowitemType } = workflowToAdd;
   const isWorkflowFromTemplate = !!workflowTemplate;
@@ -201,6 +203,15 @@ const WorkflowDialogContent = (props) => {
           workflowCurrency={workflowToAdd.currency}
           defaultWorkflowExchangeRate={defaultWorkflowExchangeRate}
           disabled={isWorkflowFromTemplate}
+        />
+      </div>
+      <Divider />
+      <div>
+        <TagEditor
+          addProjectTag={props.addWorkflowitemTag}
+          removeProjectTag={props.removeWorkflowitemTag}
+          projectTags={tags}
+          tagText={strings.workflow.add_tag_wfi_text}
         />
       </div>
     </div>

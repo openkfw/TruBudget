@@ -1,17 +1,17 @@
-FROM node:18.4.0-alpine as builder
+FROM node:18-alpine as builder
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm ci --legacy-peer-deps
+RUN npm ci
 COPY . ./
 RUN npm run build
 
 ######
 
-FROM nginx:1.21.6-alpine
+FROM nginx:1.25-alpine
 
 ARG USE_SSL
 ARG SSL_DOMAIN

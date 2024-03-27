@@ -1,0 +1,104 @@
+name: Daily Security Check for Vulnerabilities
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  audit-images: 
+    runs-on: ubuntu-latest
+    if: always()
+    strategy:
+      matrix:
+        tags: ["main", "v2.8.0"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Setup Trivy
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+      - name: Audit images
+        id: audit-images
+        uses: ./.github/actions/audit-report-action
+        with:
+          projects: frontend,api,blockchain,provisioning,e2e-test,excel-export-service,email-notification-service,storage-service,migration,frontend-collector
+          include-dev-dependencies: false
+          issue_title_prefix: "Security Report:"
+          include-unfixed: false
+          severity-levels: CRITICAL,HIGH
+          scan-type: image
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{matrix.tags}}
+      - name: Check out wiki repo
+        uses: actions/checkout@v4
+        with:
+          repository: openkfw/TruBudget.wiki
+      - name: Update wiki
+        run: |
+          git config user.email "trubudget.devteam@accenture.com"
+          git config user.name "System bot"
+          echo "${{ steps.audit-images.outputs.markdown }}" > ${{matrix.tags}}-Security-vulnerability-report-images.md
+          git add .
+          git commit -m "Test change"
+          git push
+        shell: bash
+
+  audit-libraries: 
+    strategy:
+      matrix:
+        releases: ["main", "v2.8.0"]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout scanned branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.releases }}
+      - name: Checkout current branch with action
+        uses: actions/checkout@v4
+        with:
+          path: ./tools
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Setup Trivy
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+      - name: Audit filesystem
+        id: audit-filesystem
+        uses: ./tools/.github/actions/audit-report-action
+        with:
+          projects: frontend,api,blockchain,provisioning,e2e-test,excel-export-service,email-notification-service,storage-service,logging-service,migration,frontend-collector
+          include-dev-dependencies: false
+          issue_title_prefix: "Security Report:"
+          include-unfixed: true
+          severity-levels: CRITICAL,HIGH,MEDIUM,LOW
+          scan-type: fs
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ matrix.releases }}
+      - name: Check out wiki repo
+        uses: actions/checkout@v4
+        with:
+          repository: openkfw/TruBudget.wiki
+      - name: Update wiki
+        run: |
+          git config user.email "trubudget.devteam@accenture.com"
+          git config user.name "System bot"
+          echo "${{ steps.audit-filesystem.outputs.markdown }}" > ${{matrix.releases}}-Security-vulnerability-report-libraries.md
+          git add .
+          git commit -m "Test change"
+          git push
+        shell: bash
+          

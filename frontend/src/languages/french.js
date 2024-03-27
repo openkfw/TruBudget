@@ -35,13 +35,16 @@ const fr = {
     comment: "Commentaire",
     completion: "Achèvement",
     confirm: "Confirmer",
+    copy: "Copy",
     create: "Créer",
     created: "Date de création",
     currency: "Devise",
+    deselect_all: "Tout déselectionner",
     disbursed_budget: "Montants payés",
     disbursement: "Paiement prévus",
     disconnected: "Déconnecté",
     display_name: "Afficher un nom",
+    delete: "Supprimer",
     done: "Terminé",
     download: "Télécharger",
     edit: "Modifier",
@@ -64,6 +67,7 @@ const fr = {
     incorrect_username_or_password: "Identifiant de connexion ou mot de passe incorrect",
     invalid_tag: "Tag invalide",
     invalid_format: "Format non valide",
+    link: "Lien",
     name: "compte utilisateur",
     next: "Suivant",
     no_budget: "Aucun budget trouvé",
@@ -82,6 +86,7 @@ const fr = {
     no_nodes: "Aucune demande de nœuds supplémentaires n'a été trouvée",
     no_notifications: "Aucune notification trouvée",
     no_organizations: "Aucune demande de nouvelles organisations n'a été trouvée",
+    no_permissions: "Vous n'êtes pas autorisé à effectuer cette action",
     no_resources: "Aucun champ n'a été ajouté à cette ressource",
     no_subprojects: "Aucun composante trouvé",
     no_users: "Aucun utilisateur trouvé",
@@ -91,6 +96,8 @@ const fr = {
     not_assigned: "Non engagé",
     not_disbursed: "Non payé",
     not_ok: "Pas OK",
+    off: "Désactivé",
+    on: "Activé",
     ok: "Ok",
     not_projected: "Non estimé",
     open: "Ouvert",
@@ -106,11 +113,13 @@ const fr = {
     reject: "Rejette",
     rejected: " Rejeté",
     search: "Chercher",
+    select_all: "Tout sélectionner",
     show_permissions: "Afficher les autorisations",
     status: "Statut",
     submit: "Soumettre",
     subproject: "Composante",
     subprojects: "Composantes",
+    switch_to_table: "Passer à la vue tableau",
     tag_already_exists: "Le tag existe déjà!",
     tag: "Tag",
     task_status: "Etat de la tâche",
@@ -120,6 +129,7 @@ const fr = {
     update: "Mettre à jour",
     username: "Identifiant",
     view: "Vue",
+    view_project_details: "Afficher les détails du projet",
     workflowitem: "Étape de workflow",
     dueDate: "Date d'échéance",
     dueDate_exceeded: "Date d'échéance dépassée",
@@ -187,18 +197,23 @@ const fr = {
     subproject_general_workflowitem_type: "Autoriser uniquement les éléments de workflow de type général",
     subproject_restricted_workflowitem_type:
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
-    workflowitem_assignee: "Default assignee"
+    workflowitem_assignee: "Default assignee",
+    organization_info: "Organization",
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
-    assignee: "Responsable",
     add_item: "Creer une étape de workflow",
+    add_tag_wfi_text: "Ajouter un tag sur l’étape de workflow",
     approval_required: "Approbation exigée",
+    assignee: "Responsable",
     edit_item: "Modifier l'étape de workflow",
+    exit_sort_mode:
+      "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow",
     exchange_rate: "taux de change",
-
+    search_text: "rechercher des éléments",
     workflow_budget_allocated: "Engagé",
-
     workflow_budget_disbursed: "payé",
     workflow_budget_na: "N/A",
     workflow_budget_status_allocated: "Engagé",
@@ -210,22 +225,27 @@ const fr = {
     workflow_document_changed: "Modifié",
     workflow_document_description: "Description du document",
     workflow_document_name: "Nom du document",
+    workflow_document_not_available: "Document non disponible",
     workflow_document_validate: "Valider",
     workflow_document_validated: "Validé",
-    workflow_document_validation_ok: "Document identique",
     workflow_document_validation_not_ok: "Document différent",
+    workflow_document_validation_ok: "Document identique",
     workflow_documents: "Documents de l’étape de workflow",
     workflow_enable_sort: "Trier",
     workflow_fingerprint: "Empreinte digitale",
     workflow_name: "Nom de l’étape de workflow",
     workflow_next_step: "Prochaine étape",
-    workflow_document_not_available: "Document non disponible",
     workflow_no_actions: "Pas d'action",
     workflow_no_documents: "Pas de document",
     workflow_none: "blub",
     workflow_permissions_title: "Définir les autorisations sur l'étape de workflow",
     workflow_redacted: "Expurgé",
+    workflow_reject_reason: "Motif de rejet",
     workflow_selection: "Vous avez sélectionné {0} étapes de workflow ",
+    workflow_selection_copy_description:
+      "Cette fonctionnalité vous permet de copier tous les éléments de workflow sélectionnés vers le sous-projet de destination, y compris les montants et les personnes affectées. Les éléments de flux de travail copiés seront en statut ouvert et vous pourrez donc les modifier par la suite.",
+    workflow_selection_select_project: "Sélectionnez un projet",
+    workflow_selection_select_subproject: "Sélectionner un sous-projet",
     workflow_submit_for_review: "Soumettre pour examen",
     workflow_table_title: "Liste des étapes",
     workflow_title_description: "Description du titre de l’étape de workflow",
@@ -238,11 +258,10 @@ const fr = {
     workflowitem_details_history: "Historique",
     workflowitem_details_overview: "Sommaire",
     workflowitem_details: "Détails de l’étape du workflow",
-    workflowitem_type: "Type de l’étape de workflow",
     workflowitem_type_general: "Créer une étape de workflow de type général.",
     workflowitem_type_restricted:
       "Lors de l'attribution d'un workflow restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation",
-    workflow_reject_reason: "Motif de rejet"
+    workflowitem_type: "Type de l’étape de workflow"
   },
 
   workflowTemplate: {
@@ -269,6 +288,7 @@ const fr = {
     current_user_password: "Votre mot de passe",
     edit_group: "Éditer un groupe",
     edit_permissions_for: "Éditer les autorisations pour",
+    edit_permissions: "Éditer les autorisations",
     group_created: "Groupe créé avec succès",
     groups: "Groupes",
     invalid_password: "Mot de passe invalide",
@@ -305,7 +325,20 @@ const fr = {
     assigned_message: "Avant d'être désactivé, cet utilisateur doit être désassigné des éléments suivants",
     not_assigned_message:
       "Cet utilisateur n'est affecté à aucun projet, composante et étape de workflow et peut être désactivé",
-    hidden_assignments: "Encore expurgé {0}"
+    hidden_assignments: "Encore expurgé {0}",
+    account_name_error: "Le nom du compte ne peut pas être vide",
+    login_id_error: `L'ID de connexion ne peut pas être vide`,
+    password_error: "Le mot de passe ne peut pas être vide",
+    confirm_password_error: "Confirmer que le mot de passe ne peut pas être vide",
+    account_name_conditions_preface: "Le nom de votre compte doit:",
+    account_name_conditions_forbidden: "Ne contient pas de caractères spéciaux",
+    account_name_conditions_solution: `Utilisez plutôt "-", "_" ou un espace`,
+    account_name_conditions_length: "Comporter au moins 4 caractères",
+    login_id_no_root: `L'ID de connexion ne peut pas être "root"`,
+    login_id_conditions_preface: "Votre identifiant de connexion doit",
+    login_id_conditions_length: "Comporter au moins 4 caractères",
+    login_id_conditions_forbidden: "Ne contient pas d'espaces ni de caractères spéciaux",
+    login_id_conditions_solution: `Utilisez plutôt "-", "_" ou camelCase`
   },
 
   nodesDashboard: {
@@ -322,7 +355,11 @@ const fr = {
     connection_status: "Statut de connexion",
     last_seen: "Vu pour la dernière fois",
     admin_description:
-      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'"
+      "Le nœud d'administration est le nœud initial du réseau et dispose d'autorisations supplémentaires 'mine' et 'admin'",
+    add_organization: "Ajouter une nouvelle organisation",
+    organization_error: "L'organisation ne peut pas être vide",
+    node_address_error: "L'adresse du nœud ne peut pas être vide",
+    node_address: "Adresse du nœud"
   },
 
   preview: {
@@ -528,6 +565,7 @@ const fr = {
     workflowitem_revokePermission_details: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_revokePermission: "{0} a révoqué l'autorisation {1} à {3} de {2}",
     workflowitem_update_docs: "{0} a ajouté des documents au workflow {1} ",
+    workflowitem_delete_docs: "{0} a supprimé des documents du workflow {1} ",
     workflowitem_update: "{0} a modifié le workflow {1} ",
     workflowitem_update_amount: "{0} a modifié le workflow {1} budget dans {2}",
     workflowitem_document_validated: "{0} document d'élément de flux de travail validé nommé {1} dans {2} ",

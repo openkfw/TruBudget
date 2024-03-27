@@ -11,6 +11,7 @@ export const SET_WORKFLOW_DRAWER_PERMISSIONS = "SET_WORKFLOW_DRAWER_PERMISSIONS"
 export const CLOSE_DRAWER = "CLOSE_DRAWER";
 
 export const WORKFLOWITEMS_SELECTED = "WORKFLOWITEMS_SELECTED";
+export const WORKFLOWITEMS_BULK_ACTION = "WORKFLOWITEMS_BULK_ACTION";
 
 export const SHOW_WORKFLOW_EDIT = "SHOW_WORKFLOW_EDIT";
 
@@ -33,6 +34,7 @@ export const WORKFLOW_STATUS = "WORKFLOW_STATUS";
 export const WORKFLOW_DUEDATE = "WORKFLOW_DUEDATE";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
+export const WORKFLOW_DOCUMENT_EXTERNAL_LINK = "WORKFLOW_DOCUMENT_EXTERNAL_LINK";
 export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_FROM_TEMPLATE = "CREATE_WORKFLOW_FROM_TEMPLATE";
@@ -139,6 +141,17 @@ export const REJECT_WORKFLOWITEM_FAILURE = "REJECT_WORKFLOWITEM_FAILURE";
 export const CLEAR_REJECT_REASON = "CLEAR_REJECT_REASON";
 
 export const WORKFLOW_TEMPLATE = "WORKFLOW_TEMPLATE";
+
+export const ADD_WORKFLOWITEM_TAG = "ADD_WORKFLOWITEM_TAG";
+export const REMOVE_WORKFLOWITEM_TAG = "REMOVE_WORKFLOWITEM_TAG";
+
+export const SEARCH_TERM_WORKFLOWITEM = "SEARCH_TERM_WORKFLOWITEM";
+export const STORE_FILTERED_WORKFLOWITEMS = "STORE_FILTERED_WORKFLOWITEMS";
+
+export const SEARCH_TAGS_WORKFLOWITEM = "SEARCH_TAGS_WORKFLOWITEM";
+
+export const WORKFLOW_SEARCH_BAR_DISPLAYED = "WORKFLOW_SEARCH_BAR_DISPLAYED";
+export const WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY = "WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY";
 
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
@@ -481,7 +494,8 @@ export function showEditDialog(
   currency,
   documents,
   dueDate,
-  workflowitemType
+  workflowitemType,
+  tags
 ) {
   return {
     type: SHOW_WORKFLOW_EDIT,
@@ -494,7 +508,8 @@ export function showEditDialog(
     currency,
     documents,
     dueDate,
-    workflowitemType
+    workflowitemType,
+    tags
   };
 }
 
@@ -523,6 +538,14 @@ export function storeWorkflowDocument(base64, fileName) {
   return {
     type: WORKFLOW_DOCUMENT,
     base64: base64,
+    fileName: fileName
+  };
+}
+
+export function storeWorkflowDocumentExternalLink(link, fileName) {
+  return {
+    type: WORKFLOW_DOCUMENT_EXTERNAL_LINK,
+    link: link,
     fileName: fileName
   };
 }
@@ -602,6 +625,13 @@ export function storeWorkflowItemsSelected(workflowItems) {
   };
 }
 
+export function storeWorkflowItemsBulkAction(bulkActionType) {
+  return {
+    type: WORKFLOWITEMS_BULK_ACTION,
+    bulkActionType
+  };
+}
+
 export function createWorkflowItemAction(
   projectId,
   subprojectId,
@@ -618,7 +648,8 @@ export function createWorkflowItemAction(
   projectDisplayName,
   subprojectDisplayName,
   assignee,
-  assigneeDisplayName
+  assigneeDisplayName,
+  tags
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -637,7 +668,8 @@ export function createWorkflowItemAction(
     projectDisplayName,
     subprojectDisplayName,
     assignee,
-    assigneeDisplayName
+    assigneeDisplayName,
+    tags
   };
 }
 
@@ -836,5 +868,54 @@ export function storeWorkflowTemplate(workflowTemplate) {
   return {
     type: WORKFLOW_TEMPLATE,
     workflowTemplate
+  };
+}
+
+export function addWorkflowitemTag(tag) {
+  return {
+    type: ADD_WORKFLOWITEM_TAG,
+    tag
+  };
+}
+
+export function removeWorkflowitemTag(tag) {
+  return {
+    type: REMOVE_WORKFLOWITEM_TAG,
+    tag
+  };
+}
+
+export function storeFilteredWorkflowitems(filteredWorkflowitems) {
+  return {
+    type: STORE_FILTERED_WORKFLOWITEMS,
+    filteredWorkflowitems
+  };
+}
+
+export function storeWorkflowitemSearchTerm(searchTerm) {
+  return {
+    type: SEARCH_TERM_WORKFLOWITEM,
+    searchTerm
+  };
+}
+
+export function setTagsOnly(tagsOnly) {
+  return {
+    type: SEARCH_TAGS_WORKFLOWITEM,
+    tagsOnly
+  };
+}
+
+export function storeWorkflowSearchBarDisplayed(searchBarDisplayed) {
+  return {
+    type: WORKFLOW_SEARCH_BAR_DISPLAYED,
+    searchBarDisplayed
+  };
+}
+
+export function storeWorkflowSearchTermArray(searchTerms) {
+  return {
+    type: WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY,
+    searchTerms
   };
 }

@@ -2,6 +2,8 @@ export const SET_DISPLAYNAME = "SET_DISPLAYNAME";
 export const SET_ORGANIZATION = "SET_ORGANIZATION";
 export const SET_USERNAME = "SET_USERNAME";
 export const SET_PASSWORD = "SET_PASSWORD";
+export const SET_CONFIRM_PASSWORD = "SET_CONFIRM_PASSWORD";
+export const SET_IS_USER_FORM_VALID = "SET_IS_USER_FORM_VALID";
 
 export const SET_ADMIN_PERMISSIONS = "SET_ADMIN_PERMISSIONS";
 
@@ -166,6 +168,20 @@ export function setPassword(password) {
   return {
     type: SET_PASSWORD,
     password
+  };
+}
+
+export function setConfirmPassword(confirmPassword) {
+  return {
+    type: SET_CONFIRM_PASSWORD,
+    confirmPassword
+  };
+}
+
+export function setIsUserFormValid(isUserFormValid) {
+  return {
+    type: SET_IS_USER_FORM_VALID,
+    isUserFormValid
   };
 }
 

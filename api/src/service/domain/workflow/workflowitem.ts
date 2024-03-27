@@ -4,7 +4,7 @@ import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
-import { DocumentReference, documentReferenceSchema } from "../document/document";
+import { DocumentOrExternalLinkReference, documentReferenceSchema } from "../document/document";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
@@ -13,6 +13,7 @@ import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { moneyAmountSchema } from "./money";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
+import { safeStringSchema } from "../../../lib/joiValidation";
 
 export type Id = string;
 
@@ -34,12 +35,13 @@ export interface Workflowitem {
   status: "open" | "closed";
   rejectReason?: string;
   assignee: string;
-  documents: DocumentReference[];
+  documents: DocumentOrExternalLinkReference[];
   permissions: Permissions;
   log: WorkflowitemTraceEvent[];
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
   workflowitemType?: Type;
+  tags?: string[]; // todo not optional?
 }
 
 export interface RedactedWorkflowitem {
@@ -63,6 +65,7 @@ export interface RedactedWorkflowitem {
   log: WorkflowitemTraceEvent[];
   additionalData: {};
   workflowitemType?: Type;
+  tags?: string[];
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -129,6 +132,7 @@ export const schema = Joi.object().keys({
   log: Joi.array().required().items(workflowitemTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
   workflowitemType: workflowitemTypeSchema,
+  tags: Joi.array().items(safeStringSchema),
 });
 
 export function validate(input): Result.Type<Workflowitem> {
@@ -172,6 +176,7 @@ export function redact(workflowitem: Workflowitem): RedactedWorkflowitem {
     permissions: {},
     log: redactLog(workflowitem.log),
     additionalData: {},
+    tags: workflowitem.tags || [],
   };
 }
 
