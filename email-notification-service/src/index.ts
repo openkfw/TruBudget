@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import { body, query } from "express-validator";
 import { createPinoExpressLogger } from "trubudget-logging-service";
+import helmet from "helmet";
 import config from "./config";
 import DbConnector from "./db";
 import logger from "./logger";
@@ -23,6 +24,8 @@ const emailService = express();
 emailService.use(createPinoExpressLogger(logger));
 emailService.use(express.json());
 emailService.use(cors({ origin: config.allowOrigin }));
+
+emailService.use(helmet());
 
 // JWT secret
 if (config.authentication === "jwt") {

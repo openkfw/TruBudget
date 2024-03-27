@@ -10,6 +10,8 @@ export const APPROVE_NEW_NODE_FOR_ORGANIZATION_SUCCESS = "APPROVE_NEW_NODE_FOR_O
 export const DECLINE_NODE = "DECLINE_NODE";
 export const DECLINE_NODE_SUCCESS = "DECLINE_NODE_SUCCESS";
 
+export const REGISTER_NEW_ORGANIZATION = "REGISTER_NEW_ORGANIZATION";
+
 export function fetchNodes(showLoading = false) {
   return {
     type: FETCH_NODES,
@@ -36,5 +38,12 @@ export function declineNode(node, showLoading = false) {
     type: DECLINE_NODE,
     node,
     showLoading
+  };
+}
+export function registerNewOrganization(organization, address) {
+  return {
+    type: REGISTER_NEW_ORGANIZATION,
+    organization,
+    address
   };
 }

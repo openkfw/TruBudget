@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Joi from "@hapi/joi";
+import * as Yup from "yup";
 
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkIcon from "@mui/icons-material/Link";
@@ -36,7 +36,7 @@ const styles = {
   }
 };
 
-const uriValidation = Joi.string().uri().required();
+const uriValidation = Yup.string().url().required();
 
 const DocumentUpload = ({
   storeWorkflowDocument,
@@ -110,7 +110,7 @@ const DocumentUpload = ({
               style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}
               data-test="workflowitemDocumentFileName"
             >
-              <Typography variant="body1">
+              <Typography variant="body1" component="div">
                 {document.fileName}
                 {document.link && (
                   <Tooltip title={document.link}>

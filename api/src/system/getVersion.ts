@@ -49,6 +49,8 @@ export const getVersion = async (
   multichainClient: MultichainClient,
   storageServiceClient: StorageServiceClient,
 ): Promise<HttpResponse> => {
+  // TODO (future): If any of axios requests fails, the whole getVersion request fails
+  // TODO (future): Resolve promises PromiseAllSettled and handle errors
   if (config.documentFeatureEnabled) {
     return [
       200,

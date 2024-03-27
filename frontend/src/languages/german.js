@@ -36,9 +36,11 @@ const de = {
     comment_description: "Schreibe Kommentare",
     completion: "Fertigstellung",
     confirm: "Bestätigen",
+    copy: "Copy",
     create: "Erstellen",
     created: "Erstellt",
     currency: "Währung",
+    deselect_all: "Alle abwählen",
     disbursed_budget: "Ausgezahltes Budget",
     disbursement: "Auszahlung",
     disconnected: "Offline",
@@ -104,6 +106,7 @@ const de = {
     reject: " Ablehnen",
     rejected: "Abgelehnt",
     search: "Suche",
+    select_all: "Alles auswählen",
     show_permissions: "Zeige Berechtigungen",
     status: "Status",
     submit: "Fertig",
@@ -191,7 +194,10 @@ const de = {
     subproject_general_workflowitem_type: "Nur Workflow-Elemente vom Typ 'general' zulassen",
     subproject_restricted_workflowitem_type:
       "Nur Workflow-Elemente vom Typ 'eingeschränkt' zulassen. Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
-    workflowitem_assignee: "Vorausgewählter Verantwortlicher"
+    workflowitem_assignee: "Vorausgewählter Verantwortlicher",
+    organization_info: "Organization",
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
@@ -233,6 +239,10 @@ const de = {
     workflow_redacted: "Redigiert",
     workflow_reject_reason: "Ablehnungsgrund",
     workflow_selection: "Du hast {0} workflows ausgewählt",
+    workflow_selection_copy_description:
+      "Mit dieser Funktionalität können Sie alle ausgewählten Workflow-Elemente einschließlich der Beträge und zugewiesenen Personen in das Ziel-Unterprojekt kopieren. Kopierte Workflow-Elemente haben den Status „Offen“, sodass sie anschließend bearbeitet werden können.",
+    workflow_selection_select_project: "Projekt auswählen",
+    workflow_selection_select_subproject: "Teilprojekt auswählen",
     workflow_submit_for_review: "Zum Review freigeben",
     workflow_table_title: "Workflowitems",
     workflow_title_description: "Name des Workflowitems",
@@ -279,6 +289,7 @@ const de = {
     add_group: "Benutzergruppe",
     edit_group: "Benutzergruppe ändern",
     edit_permissions_for: "Ändere Berechtigungen für",
+    edit_permissions: "Ändere Berechtigungen",
     current_user_password: "Ihr Passwort",
     new_user_password: "Neues Passwort",
     new_user_password_confirmation: "Bestätigen Sie das neue Password",
@@ -316,7 +327,16 @@ const de = {
     account_name_error: "Der Kontoname darf nicht leer sein",
     login_id_error: "Die Anmelde-ID darf nicht leer sein",
     password_error: "Passwort kann nicht leer sein",
-    confirm_password_error: "Bestätigen Sie, dass das Passwort nicht leer sein darf"
+    confirm_password_error: "Bestätigen Sie, dass das Passwort nicht leer sein darf",
+    account_name_conditions_preface: "Ihr Kontoname muss:",
+    account_name_conditions_forbidden: "Enthält keine Sonderzeichen",
+    account_name_conditions_solution: `Verwenden Sie stattdessen „-“, „_“ oder ein Leerzeichen`,
+    account_name_conditions_length: "Mindestens 4 Zeichen lang sein",
+    login_id_no_root: `Die Anmelde-ID darf nicht „root“ sein.`,
+    login_id_conditions_preface: "Ihre Login-ID muss:",
+    login_id_conditions_length: "Mindestens 4 Zeichen lang sein",
+    login_id_conditions_forbidden: "Enthält keine Leerzeichen oder Sonderzeichen",
+    login_id_conditions_solution: `Verwenden Sie stattdessen „-“, „_“ oder camelCase`
   },
   userProfile: {
     invalid_email_address: "Ungültige E-Mail Adresse"
@@ -336,7 +356,11 @@ const de = {
     connection_status: "Verbindungsstatus",
     last_seen: "Zuletzt gesehen",
     admin_description:
-      "Der Administratorknoten ist der Anfangsknoten des Netzwerks und verfügt über zusätzliche 'Mine' und 'Admin' Berechtigungen."
+      "Der Administratorknoten ist der Anfangsknoten des Netzwerks und verfügt über zusätzliche 'Mine' und 'Admin' Berechtigungen.",
+    add_organization: "Neue Organisation hinzufügen",
+    organization_error: "Die Organisation darf nicht leer sein",
+    node_address_error: "Die Knotenadresse darf nicht leer sein",
+    node_address: "Knotenadresse"
   },
 
   preview: {

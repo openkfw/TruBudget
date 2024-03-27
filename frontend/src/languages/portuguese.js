@@ -35,9 +35,11 @@ const pt = {
     comment: "Comentário",
     completion: "Conclusão",
     confirm: "Confirme",
+    copy: "Copy",
     create: "Criar",
     created: "Data de criação",
     currency: "Moeda",
+    deselect_all: "Desmarcar todos",
     disbursed_budget: "Custo pago",
     disbursement: "Pagamentos programados",
     disconnected: "Desligada",
@@ -111,6 +113,7 @@ const pt = {
     reject: "Rejeitar",
     rejected: "Rejeitado",
     search: "Procurar",
+    select_all: "Selecionar tudo",
     show_permissions: "Mostrar permissões",
     status: "Status",
     submit: "Enviar",
@@ -148,6 +151,7 @@ const pt = {
     current_user_password: "Sua Senha",
     edit_group: "Editar grupo",
     edit_permissions_for: "Editar permissões para",
+    edit_permissions: "Editar permissões",
     group_created: "Grupo de usuários criado com sucesso",
     groups: "Grupos",
     invalid_password: "Sehna inválida",
@@ -188,7 +192,16 @@ const pt = {
     account_name_error: "O nome da conta não pode ficar vazio",
     login_id_error: "O ID de login não pode ficar vazio",
     password_error: "A senha não pode ficar vazia",
-    confirm_password_error: "A confirmação da senha não pode ficar vazia"
+    confirm_password_error: "A confirmação da senha não pode ficar vazia",
+    account_name_conditions_preface: "O nome da sua conta deve:",
+    account_name_conditions_forbidden: "Não contém caracteres especiais",
+    account_name_conditions_solution: `Use "-", "_" ou espaço`,
+    account_name_conditions_length: "Ter pelo menos 4 caracteres",
+    login_id_no_root: `O ID de login não pode ser "root"`,
+    login_id_conditions_preface: "Seu ID de login deve:",
+    login_id_conditions_length: "Ter pelo menos 4 caracteres",
+    login_id_conditions_forbidden: "Não contém espaços ou caracteres especiais",
+    login_id_conditions_solution: `Use "-", "_" ou camelCase`
   },
 
   userProfile: {
@@ -208,7 +221,11 @@ const pt = {
     declined_by: "Recusado por",
     connection_status: "Status da conexão",
     last_seen: "Visto pela última vez",
-    admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'"
+    admin_description: "O nó admin é o nó inicial da rede e tem permissões adicionais 'mine' e 'admin'",
+    add_organization: "Adicionar nova organização",
+    organization_error: "A organização não pode ficar vazia",
+    node_address_error: "O endereço do nó não pode ficar vazio",
+    node_address: "Endereço do nó"
   },
 
   login: {
@@ -264,7 +281,10 @@ const pt = {
     subproject_general_workflowitem_type: "Permitir apenas itens de fluxo de trabalho do tipo geral",
     subproject_restricted_workflowitem_type:
       "Permitir apenas item de fluxo de trabalho do tipo restrito. Ao atribuir um item de fluxo de trabalho restrito, as permissões são concedidas e revogadas automaticamente. O atribuidor manterá apenas as permissões de visualização.",
-    workflowitem_assignee: "Cessionário padrão"
+    workflowitem_assignee: "Cessionário padrão",
+    organization_info: "Organization",
+    total_budget_info: "Total budget",
+    default_assignee_warning: "Default assignee cannot be changed once Subproject is created"
   },
 
   workflow: {
@@ -306,6 +326,10 @@ const pt = {
     workflow_redacted: "Editado por privacidade",
     workflow_reject_reason: "Rejeitar a razão",
     workflow_selection: "Você selecionaou {0} itens de workflows",
+    workflow_selection_copy_description:
+      "Esta funcionalidade permite copiar todos os itens de fluxo de trabalho selecionados para o subprojeto de destino, incluindo valores e pessoas atribuídas. Os itens de fluxo de trabalho copiados estarão com status aberto, portanto você poderá editá-los posteriormente.",
+    workflow_selection_select_project: "Selecione o projeto",
+    workflow_selection_select_subproject: "Selecione subprojeto",
     workflow_submit_for_review: "Enviar para revisão",
     workflow_table_title: "Lista de itens de workflow",
     workflow_title_description: "Descrição do item de workflow",

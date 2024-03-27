@@ -73,6 +73,7 @@ export async function getNodeList(
   // - ADMIN ACCESS: the organization has admin permission and, by extension, permissions
   // to do anything with the network (while respecting the settings for admin consensus).
 
+  // TODO (future): The current implementation does not consider the case where the organizationAddress from user's request is invalid
   const myAddress: WalletAddress = req.user.organizationAddress;
   const dtoList: NodeInfoDto[] = nodes.map((info) => dtoFromNodeInfo(info, myAddress));
 

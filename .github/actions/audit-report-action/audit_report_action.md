@@ -10,6 +10,10 @@ After performing the scan, action opens or modifies an issue in the backlog.
 
 As stated in GitHub documentation, including node_modules can cause problems. Action code and packages are compiled into one file (`dist/index.js`) used for distribution using a tool `vercel/ncc`.
 
+```shell
+ncc build index.js --license licenses.txt
+```
+
 You need to have it installed globally using 
 ```shell
 npm i -g @vercel/ncc

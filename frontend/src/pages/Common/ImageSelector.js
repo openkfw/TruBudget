@@ -2,6 +2,8 @@ import React from "react";
 
 import FilledStar from "@mui/icons-material/Star";
 import NotFilledStar from "@mui/icons-material/StarBorder";
+import Avatar from "@mui/material/Avatar";
+import blue from "@mui/material/colors/indigo";
 import IconButton from "@mui/material/IconButton";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
@@ -36,6 +38,9 @@ const styles = {
   },
   listTile: {
     height: "100%"
+  },
+  imageListItem: {
+    overflow: "hidden"
   }
 };
 
@@ -56,12 +61,20 @@ const ImageSelector = ({ onTouchTap, selectedImage }) => {
           }}
         >
           {images.map((image) => (
-            <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src}>
+            <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src} style={styles.imageListItem}>
               <img alt={image.src} src={image.src} />
               <ImageListItemBar
                 actionIcon={
                   <IconButton aria-label="star icon" size="large">
-                    {selectedImage === image.src ? <FilledStar color="primary" /> : <NotFilledStar color="primary" />}
+                    {selectedImage === image.src ? (
+                      <Avatar sx={{ bgcolor: blue[500] }}>
+                        <FilledStar color="white" />
+                      </Avatar>
+                    ) : (
+                      <Avatar sx={{ bgcolor: "#cccccc" }}>
+                        <NotFilledStar color="white" />
+                      </Avatar>
+                    )}
                   </IconButton>
                 }
                 title=" " // Otherwise the action buttons would not be visible

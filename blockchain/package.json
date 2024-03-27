@@ -1,6 +1,6 @@
 {
   "name": "trubudget-blockchain",
-  "version": "2.7.0",
+  "version": "2.9.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -43,7 +43,7 @@
     "better-npm-audit": "^3.7.3",
     "body-parser": "^1.20.0",
     "chai": "^4.3.9",
-    "express": "^4.18.1",
+    "express": "^4.19.2",
     "ignore": "^5.2.0",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
@@ -70,6 +70,8 @@
     "prettier": "2.7.1"
   },
   "overrides": {
-    "get-func-name": "^2.0.1"
+    "get-func-name": "^2.0.1",
+    "jose": "^2.0.7",
+    "follow-redirects": "^1.15.6"
   }
 }

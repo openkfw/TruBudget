@@ -11,6 +11,14 @@
 
 ### Description
 
+
+### How to test
+
+1. <E.g. login as user XYZ>
+2. <E.g. try to create new subproject>
+3. <E.g. You should not see error in console>
+4. ...
+
 <!-- Adding following line closes the mentioned issue automatically when the PR is merged -->
 <!-- e.g. "Closes #123" -->
 

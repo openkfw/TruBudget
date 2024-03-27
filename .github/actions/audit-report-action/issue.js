@@ -1,32 +1,40 @@
 import { Config } from "./config";
 import { parse } from 'node-html-parser';
+import * as core from '@actions/core';
 
 const octokit = Config.octokit;
 const repo = Config.repo;
 const issueTitlePrefix = Config.issueTitlePrefix;
 
-export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities, type) {
-  // Get all security labeled open issues
-  const { data: securityOpenIssues } = await octokit.rest.issues.listForRepo({
-    ...repo,
-    state: 'open',
-    labels: ['security']
-  });
-
+export async function createOrUpdateIssues(vulnerabilityIdProjectMapping, activeVulnerabilities, type, tag = "main") {
+  console.info(`Creating or updating issues for ${type} vulnerabilities on tag ${tag}`);
+  
   const issueTitle = type === "fs" ? `${issueTitlePrefix} Project Vulnerabilities` : `${issueTitlePrefix} Image Vulnerabilities`;
+  const issueCategory = type === "fs" ? `npm audit` : `docker image audit`;
 
-  const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
-  if(activeVulnerabilities.length > 0) {
-    if(vulnerabilityIssue) {
-      await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
-    } else {
-      await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
-    }
-  } else {
-    if(vulnerabilityIssue) {
-      await closeIssue(vulnerabilityIssue.number);
-    }
-  } 
+  if (tag === "main") {
+    // Get all security labeled open issues
+    const { data: securityOpenIssues } = await octokit.rest.issues.listForRepo({
+      ...repo,
+      state: 'open',
+      labels: ['security']
+    });
+    const vulnerabilityIssue = securityOpenIssues.find(issue => issue.title === issueTitle);
+    if(activeVulnerabilities.length > 0) {
+        if(vulnerabilityIssue) {
+          await updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping);
+        } else {
+          await createNewIssue(activeVulnerabilities, vulnerabilityIdProjectMapping, issueTitle);
+        }
+      } else {
+        if(vulnerabilityIssue) {
+          await closeIssue(vulnerabilityIssue.number);
+        }
+    } 
+  }
+
+  const markdown = createMarkdownList(activeVulnerabilities, vulnerabilityIdProjectMapping, issueCategory, tag);
+  core.setOutput("markdown", markdown);
 }
 
 async function updateExistingIssue(vulnerabilityIssue, activeVulnerabilities, vulnerabilityIdProjectMapping) {
@@ -101,6 +109,27 @@ async function createNewIssue(vulnerabilities, vulnerabilityIdProjectMapping, is
     body: root.toString(),
     labels: ["security"]
   });
+}
+
+
+function createMarkdownList(vulnerabilities, vulnerabilityIdProjectMapping, category, tag) {
+  let md = '';
+  md += `## Present Vulnerabilities (${category}) in version: ${tag}\n\n`;
+
+  md += '| SUBSCRIPTIONID | RESOURCEGROUP | VULNID | IDENTIFICATIONDATE | CATEGORY | CVE | CVSS |	SEVERITY | DISPLAYNAME | RESOURCEID | RESOURCEID_SINGLE | AKTIV | HOST | OSDETAILS |\n';
+  md += '|----------------|---------------|--------|--------------------|----------|-----|------|----------|-------------|------------|-------------------|-------|------|-----------|\n';
+
+  for(const vulnerability of vulnerabilities) {
+    if(vulnerability.links && Array.isArray(vulnerability.links) && vulnerability.links.length > 0) {
+      for (const project of [...new Set(vulnerabilityIdProjectMapping.get(vulnerability.id))]) {
+        md += `| - | - | ${vulnerability.id} | ${vulnerability.publishedDate ? vulnerability.publishedDate : '-'} | ${category} | ${vulnerability.id} | | ${vulnerability.severity} | ${vulnerability.title} | ${project}-${tag} | ${project}-${tag} | Yes |  | package: ${vulnerability.packageName}, status: ${vulnerability.status}, fixedVersion: ${vulnerability.fixedVersion ? vulnerability.fixedVersion : '-'} |\n`;
+      }
+    }
+  }
+
+  md += `\nLast scan date: ${new Date(Date.now()).toLocaleDateString()}\n\n\n`;
+
+  return md;
 }
 
 async function closeIssue(issueNumber) {

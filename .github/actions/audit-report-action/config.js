@@ -11,6 +11,7 @@ export const Config = {
   issueTitlePrefix: core.getInput('issue_title_prefix') || 'Security Report:',
   octokit: github.getOctokit(core.getInput('token')),
   repo: github.context.repo,
+  tag: core.getInput('tag'),
   spawnProcessBufferSize: 10485760 // 10MB
 };
 

@@ -4,7 +4,7 @@ runs:
   using: "composite"
   steps:
     - name: Install node in ${{ matrix.project }}
-      run: cd ${{ matrix.project }} && npm ci --legacy-peer-deps
+      run: cd ${{ matrix.project }} && npm ci
       shell: bash
 
     - name: Run Lint in ${{ matrix.project }}
