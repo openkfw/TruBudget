@@ -1,0 +1,608 @@
+{
+  "displayName": "Carribean Biodiversity Fund",
+  "description": "Projects in 2023",
+  "status": "open",
+  "assignee": "jxavier",
+  "projectedBudgets": [
+    {
+      "organization": "Donor",
+      "value": "30000000",
+      "currencyCode": "EUR"
+    }
+  ],
+  "permissions": {
+    "project.viewDetails": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.list": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.assign": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.listPermissions": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.grantPermission": [
+      "mstein",
+      "jxavier"
+    ],
+    "project.intent.revokePermission": [
+      "mstein",
+      "jxavier"
+    ]
+  },
+  "subprojects": [
+    {
+      "displayName": "Design studies",
+      "description": "No description",
+      "status": "closed",
+      "currency": "EUR",
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "500000",
+          "currencyCode": "EUR"
+        }
+      ],
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
+      },
+      "workflows": [
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender evaluation",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Contract signature",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amount": 500000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "First installment",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Progress report",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amount": 100000,
+          "currency": "EUR",
+          "amountType": "disbursed",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Payment interim installment",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amount": 100000,
+          "currency": "EUR",
+          "amountType": "disbursed",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Payment final installment",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amount": 300000,
+          "currency": "EUR",
+          "amountType": "disbursed",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "displayName": "Consultancy supervision",
+      "description": "No description",
+      "status": "open",
+      "currency": "EUR",
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "1500000",
+          "currencyCode": "EUR"
+        }
+      ],
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
+      },
+      "workflows": [
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender evaluation",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Contract signature",
+          "assignee": "jxavier",
+          "amount": 1500000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "First installment",
+          "assignee": "jxavier",
+          "amount": 500000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Payment interim installment",
+          "assignee": "jxavier",
+          "amount": 500000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Progress report",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Payment final installment",
+          "assignee": "jxavier",
+          "amount": 500000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "displayName": "Construction lot 1",
+      "description": "No description",
+      "currency": "EUR",
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "15000000",
+          "currencyCode": "EUR"
+        }
+      ],
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
+      },
+      "workflows": [
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender evaluation",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Contract signature",
+          "assignee": "jxavier",
+          "amount": 15000000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "First installment",
+          "assignee": "jxavier",
+          "amount": 5000000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Progress report",
+          "assignee": "jxavier",
+          "amount": 5000000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Payment final installment",
+          "assignee": "jxavier",
+          "amount": 10000000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Completion subproject",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "displayName": "Construction lot 2",
+      "description": "No description",
+      "currency": "EUR",
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "8000000",
+          "currencyCode": "EUR"
+        }
+      ],
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
+      },
+      "workflows": [
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender evaluation",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Contract signature",
+          "assignee": "jxavier",
+          "amount": 8000000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "First installment",
+          "assignee": "jxavier",
+          "amount": 3000000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Progress report",
+          "assignee": "jxavier",
+          "currency": "EUR",
+          "amount": 3000000,
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Payment final installment",
+          "assignee": "jxavier",
+          "amount": 5000000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "displayName": "Equipment",
+      "description": "No description",
+      "currency": "EUR",
+      "projectedBudgets": [
+        {
+          "organization": "ACMECorp",
+          "value": "3000000",
+          "currencyCode": "EUR"
+        }
+      ],
+      "assignee": "jxavier",
+      "permissions": {
+        "subproject.list": [
+          "jxavier"
+        ],
+        "subproject.viewDetails": [
+          "jxavier"
+        ]
+      },
+      "workflows": [
+        {
+          "displayName": "Budget allocation",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender publication",
+          "status": "closed",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Tender evaluation",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Contract signature",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "First installment",
+          "assignee": "jxavier",
+          "amount": 1500000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Progress report",
+          "assignee": "jxavier",
+          "amountType": "N/A",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        },
+        {
+          "displayName": "Payment final installment",
+          "assignee": "jxavier",
+          "amount": 1500000,
+          "currency": "EUR",
+          "amountType": "allocated",
+          "exchangeRate": "1.0",
+          "permissions": {
+            "workflowitem.list": [
+              "jxavier"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
