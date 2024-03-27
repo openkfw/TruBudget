@@ -113,17 +113,21 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                     },
                   },
                 },
-              },
-            },
-            pagination: {
-              type: "object",
-              properties: {
-                totalRecords: { type: "integer", example: 100 },
-                limit: { type: "integer", example: 10 },
-                totalPages: { type: "integer", example: 10 },
-                currentPage: { type: "integer", example: 1 },
-                nextPage: { type: "string", example: "/v2/project.list?page=2", nullable: true },
-                prevPage: { type: "string", example: null, nullable: true },
+                pagination: {
+                  type: "object",
+                  properties: {
+                    totalRecords: { type: "integer", example: 100 },
+                    limit: { type: "integer", example: 10 },
+                    totalPages: { type: "integer", example: 10 },
+                    currentPage: { type: "integer", example: 1 },
+                    nextPage: {
+                      type: "string",
+                      example: "/v2/project.list?page=2",
+                      nullable: true,
+                    },
+                    prevPage: { type: "string", example: null, nullable: true },
+                  },
+                },
               },
             },
           },
@@ -233,8 +237,8 @@ export function addHttpHandler(
             apiVersion: API_VERSION,
             data: {
               items,
+              pagination,
             },
-            pagination,
           };
           reply.status(200).send(body);
         })

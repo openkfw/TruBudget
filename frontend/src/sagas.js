@@ -108,13 +108,16 @@ import {
   FETCH_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_FAILURE,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
+  FETCH_PROJECTS_V2_SUCCESS,
   GRANT_PROJECT_PERMISSION,
   GRANT_PROJECT_PERMISSION_FAILURE,
   GRANT_PROJECT_PERMISSION_SUCCESS,
   LIVE_UPDATE_ALL_PROJECTS,
   REVOKE_PROJECT_PERMISSION,
   REVOKE_PROJECT_PERMISSION_FAILURE,
-  REVOKE_PROJECT_PERMISSION_SUCCESS
+  REVOKE_PROJECT_PERMISSION_SUCCESS,
+  SET_PAGE,
+  SET_ROWS_PER_PAGE
 } from "./pages/Overview/actions";
 import {
   FETCH_EMAIL_SERVICE_VERSION,
@@ -307,6 +310,13 @@ const getExportServiceAvailable = (state) => {
 
 const getWorkflowitemRejectReason = (state) => {
   return state.getIn(["workflow", "rejectReason"]);
+};
+
+const getPaginationState = (state) => {
+  return {
+    currentPage: state.getIn(["overview", "page"]),
+    limit: state.getIn(["overview", "limit"])
+  };
 };
 
 function* execute(fn, showLoading = false, errorCallback = undefined) {
@@ -1607,6 +1617,7 @@ export function* logoutSaga() {
   });
 }
 
+// TODO do something with this after the new API is implemented?
 export function* fetchAllProjectsSaga({ showLoading }) {
   yield execute(function* () {
     const [{ data }] = yield all([yield callApi(api.listProjects)]);
@@ -1615,6 +1626,21 @@ export function* fetchAllProjectsSaga({ showLoading }) {
       projects: data.items
     });
   }, showLoading);
+}
+
+export function* fetchProjectsV2Saga({ page, limit }) {
+  const paginationState = yield select(getPaginationState);
+  if (!limit) {
+    limit = paginationState.limit;
+  }
+  yield execute(function* () {
+    const [{ data }] = yield all([yield callApi(api.listProjectsV2, page, limit)]);
+    yield put({
+      type: FETCH_PROJECTS_V2_SUCCESS,
+      projects: data.items,
+      pagination: data.pagination
+    });
+  }, false);
 }
 
 export function* fetchAllProjectDetailsSaga({ projectId, showLoading }) {
@@ -3330,6 +3356,8 @@ export default function* rootSaga() {
       yield takeEvery(CLOSE_PROJECT, closeProjectSaga),
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga),
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT, fetchAllProjectDetailsNotCurrentProjectSaga),
+      yield takeEvery(SET_PAGE, fetchProjectsV2Saga),
+      yield takeEvery(SET_ROWS_PER_PAGE, fetchProjectsV2Saga),
 
       // Subproject
       yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga),

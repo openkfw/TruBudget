@@ -112,7 +112,7 @@ const getTableEntries = ({
       id,
       description,
       status,
-      thumbnail = "/Thumbnail_0008.jpg",
+      thumbnail = "Default_thumbnail.jpg",
       creationUnixTs,
       projectedBudgets,
       additionalData,
@@ -120,7 +120,7 @@ const getTableEntries = ({
     } = data;
     const budgets = <BudgetsList budgets={projectedBudgets} />;
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
-    const imagePath = !_isEmpty(thumbnail) ? thumbnail : "/Thumbnail_0008.jpg";
+    const imagePath = !_isEmpty(thumbnail) ? thumbnail : "Default_thumbnail.jpg";
     const dateString = unixTsToString(creationUnixTs);
     const isOpen = status === "open";
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
