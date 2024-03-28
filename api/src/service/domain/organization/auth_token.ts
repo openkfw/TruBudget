@@ -9,7 +9,7 @@ import { ServiceUser } from "./service_user";
 import * as UserRecord from "./user_record";
 import { UserMetadata } from "../metadata";
 
-export interface AuthToken {
+export interface InternalAuthToken {
   userId: UserRecord.Id;
   displayName: string;
   address: string;
@@ -39,7 +39,7 @@ export async function fromUserRecord(
   user: UserRecord.UserRecord,
   repository: Repository,
   metadata?: UserMetadata,
-): Promise<Result.Type<AuthToken>> {
+): Promise<Result.Type<InternalAuthToken>> {
   logger.trace({ user }, "Getting groups of user by userrecord");
   const groupsResult = await repository.getGroupsForUser(user.id);
   if (Result.isErr(groupsResult)) {

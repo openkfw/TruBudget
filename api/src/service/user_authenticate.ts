@@ -38,7 +38,7 @@ export async function authenticate(
   ctx: Ctx,
   userId: string,
   password: string,
-): Promise<Result.Type<AuthToken.AuthToken>> {
+): Promise<Result.Type<AuthToken.InternalAuthToken>> {
   logger.debug({ userId, organization }, "Authenticating user");
   // The special "root" user is not on the chain:
   if (userId === "root") {
@@ -66,7 +66,7 @@ async function authenticateRoot(
   organization: string,
   rootSecret: string,
   password: string,
-): Promise<Result.Type<AuthToken.AuthToken>> {
+): Promise<Result.Type<AuthToken.InternalAuthToken>> {
   logger.debug("Authenticating Root user");
 
   if (typeof conn.multichainClient === "undefined") {
@@ -111,7 +111,7 @@ export async function authenticateUser(
   organizationSecret: string,
   userId: string,
   password: string,
-): Promise<Result.Type<AuthToken.AuthToken>> {
+): Promise<Result.Type<AuthToken.InternalAuthToken>> {
   // Use root as the service user to ensure we see all the data:
   const nodeAddress = await getselfaddress(conn.multichainClient);
   const rootUser = { id: "root", groups: [], address: nodeAddress };
@@ -195,7 +195,7 @@ export async function authenticateWithToken(
   ctx: Ctx,
   token: string,
   csrf: string,
-): Promise<Result.Type<AuthToken.AuthToken>> {
+): Promise<Result.Type<AuthToken.InternalAuthToken>> {
   logger.debug({ organization }, "Authenticating user with token");
   // config check
   if (config.authProxy.enabled && !config.authProxy.jwsSignature) {
