@@ -27,11 +27,6 @@ export async function voteHelper(
     logger.error({ err: { user, callerAddress, targetAddress, vote } }, message);
     return [404, { apiVersion: "1.0", error: { code: 404, message } }];
   }
-  if (callerAddress !== user.organizationAddress) {
-    const message = `Organization address mismatch: ${callerAddress} !== ${user.organizationAddress} (from token)`;
-    logger.error({ err: { user, callerAddress, targetAddress, vote } }, message);
-    return [409, { apiVersion: "1.0", error: { code: 409, message } }];
-  }
 
   const currentVote = await getCurrentVote(multichain, callerAddress, targetAddress);
   const currentAccess = await getCurrentAccess(multichain, targetAddress);

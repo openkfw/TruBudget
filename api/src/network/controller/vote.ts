@@ -42,17 +42,11 @@ export async function voteForNetworkPermission(
   const targetAddress: Nodes.WalletAddress = value("address", input.address, isNonemptyString);
   const vote: AccessVote.T = value("vote", input.vote, AccessVote.isValid);
 
-  // we cannot rely on organization address from http request, it should be at least verified against the server data
   const callerAddress = await getOrganizationAddress(multichain, req.user.organization);
   if (!callerAddress) {
     const message = `Organization address not found for ${req.user.organization}`;
     logger.error({ err: { issuer, callerAddress, targetAddress, vote } }, message);
     return [404, { apiVersion: "1.0", error: { code: 404, message } }];
-  }
-  if (callerAddress !== req.user.organizationAddress) {
-    const message = `Organization address mismatch: ${callerAddress} !== ${req.user.organizationAddress} (from token)`;
-    logger.error({ err: { issuer, callerAddress, targetAddress, vote } }, message);
-    return [409, { apiVersion: "1.0", error: { code: 409, message } }];
   }
 
   const currentVote = await getCurrentVote(multichain, callerAddress, targetAddress);

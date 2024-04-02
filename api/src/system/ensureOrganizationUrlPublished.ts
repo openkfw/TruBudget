@@ -16,7 +16,7 @@ export default async function ensureStorageServiceUrlPublished(
 ): Promise<Result.Type<void>> {
   const ctx: Ctx = { requestId: "system", source: "internal" };
   const nodeAddress = await getselfaddress(conn.multichainClient);
-  const serviceUser: ServiceUser = { id: "system", groups: [], address: nodeAddress };
+  const serviceUser: ServiceUser = { id: "system", address: nodeAddress };
 
   const storageServiceUrl = `${config.storageService.externalUrl}`;
   const storageServiceUrlOnChain = await storageServiceUrlGet(conn, ctx, config.organization); // will be undefined if this is the first time starting the api

@@ -7,7 +7,7 @@ import { BusinessEvent } from "../business_event";
 import { DocumentOrExternalLinkReference, documentReferenceSchema } from "../document/document";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
-import { ServiceUser } from "../organization/service_user";
+import { DomainUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { moneyAmountSchema } from "./money";
@@ -142,7 +142,7 @@ export function validate(input): Result.Type<Workflowitem> {
 
 export function permits(
   workflowitem: Workflowitem,
-  actingUser: ServiceUser,
+  actingUser: DomainUser,
   intents: Intent[],
 ): boolean {
   const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {

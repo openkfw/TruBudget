@@ -6,7 +6,7 @@ import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
-import { AuthToken } from "./service/domain/organization/auth_token";
+import { InternalAuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
@@ -169,7 +169,7 @@ const swaggerSchema = {
  * Represents the service that authenticates a user
  */
 interface Service {
-  authenticate(ctx: Ctx, userId: string, password: string): Promise<Result.Type<AuthToken>>;
+  authenticate(ctx: Ctx, userId: string, password: string): Promise<Result.Type<InternalAuthToken>>;
   getGroupsForUser(
     ctx: Ctx,
     serviceUser: ServiceUser,
@@ -201,7 +201,7 @@ export function addHttpHandler(
       return;
     }
 
-    let invokeService: Promise<Result.Type<AuthToken>>;
+    let invokeService: Promise<Result.Type<InternalAuthToken>>;
     switch (bodyResult.apiVersion) {
       case "1.0": {
         const data = bodyResult.data;
@@ -224,7 +224,7 @@ export function addHttpHandler(
 
       const groupsResult = await service.getGroupsForUser(
         ctx,
-        { id: token.userId, groups: token.groups, address: token.address },
+        { id: token.userId, address: token.address },
         token.userId,
       );
       if (Result.isErr(groupsResult)) {
@@ -269,14 +269,13 @@ export function addHttpHandler(
  * @param secret a secret to be used to sign the jwt token with
  * @returns a string containing the encoded JWT token
  */
-function createJWT(token: AuthToken, secret: string): string {
+function createJWT(token: InternalAuthToken, secret: string): string {
   return jsonwebtoken.sign(
     {
       userId: token.userId,
       address: token.address,
       organization: token.organization,
       organizationAddress: token.organizationAddress,
-      groups: token.groups,
     },
     secret,
     { expiresIn: "8h" },

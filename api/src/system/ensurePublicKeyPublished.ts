@@ -61,7 +61,7 @@ export default async function ensurePublicKeyPublished(
   const ctx: Ctx = { requestId: "system", source: "internal" };
 
   const nodeAddress = await getselfaddress(conn.multichainClient);
-  const serviceUser: ServiceUser = { id: "system", groups: [], address: nodeAddress };
+  const serviceUser: ServiceUser = { id: "system", address: nodeAddress };
 
   // check if public key exists else return
   let organizationPublicKeyResult = await getPublicKey(conn, ctx, organization);

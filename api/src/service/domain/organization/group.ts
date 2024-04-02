@@ -7,7 +7,7 @@ import { Permissions, permissionsSchema } from "../permissions";
 import { canAssumeIdentity } from "./auth_token";
 import { GroupTraceEvent, groupTraceEventSchema } from "./group_trace_event";
 import { Identity } from "./identity";
-import { ServiceUser } from "./service_user";
+import { DomainUser } from "./service_user";
 
 export type Id = string;
 export const idSchema = Joi.string();
@@ -44,7 +44,7 @@ export function validate(input): Result.Type<Group> {
   return !error ? value : error;
 }
 
-export function permits(group: Group, actingUser: ServiceUser, intents: Intent[]): boolean {
+export function permits(group: Group, actingUser: DomainUser, intents: Intent[]): boolean {
   const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
     const eligibles = group.permissions[intent] || [];
     return acc.concat(eligibles);

@@ -8,7 +8,7 @@ import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import { safeIdSchema, safePasswordSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
-import { AuthToken } from "./service/domain/organization/auth_token";
+import { InternalAuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserCreate from "./service/domain/organization/user_create";
 
@@ -154,7 +154,7 @@ interface Service {
     ctx: Ctx,
     serviceUser: ServiceUser,
     requestData: UserCreate.RequestData,
-  ): Promise<Result.Type<AuthToken>>;
+  ): Promise<Result.Type<InternalAuthToken>>;
 }
 
 /**
@@ -198,7 +198,7 @@ export function addHttpHandler(
         return;
       }
 
-      let invokeService: Promise<Result.Type<AuthToken>>;
+      let invokeService: Promise<Result.Type<InternalAuthToken>>;
       switch (bodyResult.apiVersion) {
         case "1.0": {
           const data = bodyResult.data;

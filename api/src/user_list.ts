@@ -9,6 +9,7 @@ import * as Group from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
 import { Permissions } from "./service/domain/permissions";
+import { extractUser } from "./handlerUtils";
 
 /**
  * Creates the swagger schema for the `/user.list` endpoint
@@ -95,14 +96,10 @@ export function addHttpHandler(
     server.get(`${urlPrefix}/user.list`, mkSwaggerSchema(server), async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const issuer: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+      const user = extractUser(request as AuthenticatedRequest);
 
       try {
-        const usersResult = await service.listUsers(ctx, issuer);
+        const usersResult = await service.listUsers(ctx, user);
         if (Result.isErr(usersResult)) {
           throw new VError(usersResult, "user.list failed");
         }
@@ -114,7 +111,7 @@ export function addHttpHandler(
           permissions: user.permissions,
         }));
 
-        const groupsResult = await service.listGroups(ctx, issuer);
+        const groupsResult = await service.listGroups(ctx, user);
         if (Result.isErr(groupsResult)) throw new VError(groupsResult, "user.list failed");
         const groups: ExposedIdentity[] = groupsResult.map((group) => ({
           id: group.id,

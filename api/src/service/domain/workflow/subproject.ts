@@ -5,13 +5,13 @@ import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
-import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import { SubprojectTraceEvent, subprojectTraceEventSchema } from "./subproject_trace_event";
+import { DomainUser } from "../organization/service_user";
 
 export type Id = string;
 
@@ -63,7 +63,7 @@ export function validate(input): Result.Type<Subproject> {
 
 export function permits(
   subproject: Subproject,
-  actingUser: ServiceUser,
+  actingUser: DomainUser,
   intents: Intent[],
 ): boolean {
   const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {

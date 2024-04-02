@@ -22,7 +22,7 @@ export async function createUser(
   ctx: Ctx,
   serviceUser: ServiceUser,
   requestData: UserCreate.RequestData,
-): Promise<Result.Type<AuthToken.AuthToken>> {
+): Promise<Result.Type<AuthToken.InternalAuthToken>> {
   logger.debug({ req: requestData }, "Creating user");
 
   const newEventsResult = await UserCreate.createUser(ctx, serviceUser, requestData, {

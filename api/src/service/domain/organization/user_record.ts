@@ -6,7 +6,7 @@ import * as AdditionalData from "../additional_data";
 import { Permissions, permissionsSchema } from "../permissions";
 import { canAssumeIdentity } from "./auth_token";
 import { Identity } from "./identity";
-import { ServiceUser } from "./service_user";
+import { DomainUser } from "./service_user";
 import { UserTraceEvent, userTraceEventSchema } from "./user_trace_event";
 
 export type Id = string;
@@ -43,7 +43,7 @@ export function validate(input): Result.Type<UserRecord> {
   return !error ? value : error;
 }
 
-export function permits(user: UserRecord, actingUser: ServiceUser, intents: Intent[]): boolean {
+export function permits(user: UserRecord, actingUser: DomainUser, intents: Intent[]): boolean {
   const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
     const eligibles = user.permissions[intent] || [];
     return acc.concat(eligibles);

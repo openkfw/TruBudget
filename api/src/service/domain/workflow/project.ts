@@ -5,10 +5,10 @@ import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
-import { ServiceUser } from "../organization/service_user";
 import { Permissions, permissionsSchema } from "../permissions";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import { ProjectTraceEvent, projectTraceEventSchema } from "./project_trace_event";
+import { DomainUser } from "../organization/service_user";
 
 export type Id = string;
 
@@ -53,7 +53,7 @@ export function validate(input): Result.Type<Project> {
   return error === undefined ? (input as Project) : error;
 }
 
-export function permits(project: Project, actingUser: ServiceUser, intents: Intent[]): boolean {
+export function permits(project: Project, actingUser: DomainUser, intents: Intent[]): boolean {
   const eligibleIdentities: Identity[] = intents.reduce((acc: Identity[], intent: Intent) => {
     const eligibles = project.permissions[intent] || [];
     return acc.concat(eligibles);
