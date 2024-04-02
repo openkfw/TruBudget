@@ -70,7 +70,8 @@ import {
   RESTORE_BACKUP,
   RESTORE_BACKUP_SUCCESS,
   SAVE_EMAIL_ADDRESS,
-  SAVE_EMAIL_ADDRESS_SUCCESS
+  SAVE_EMAIL_ADDRESS_SUCCESS,
+  SEARCH_TERM
 } from "./pages/Navbar/actions.js";
 import {
   APPROVE_NEW_NODE_FOR_ORGANIZATION,
@@ -314,9 +315,13 @@ const getWorkflowitemRejectReason = (state) => {
 
 const getPaginationState = (state) => {
   return {
-    currentPage: state.getIn(["overview", "page"]),
+    page: state.getIn(["overview", "page"]),
     limit: state.getIn(["overview", "limit"])
   };
+};
+
+const getSearchTermState = (state) => {
+  return state.getIn(["navbar", "searchTerm"]);
 };
 
 function* execute(fn, showLoading = false, errorCallback = undefined) {
@@ -1630,11 +1635,15 @@ export function* fetchAllProjectsSaga({ showLoading }) {
 
 export function* fetchProjectsV2Saga({ page, limit }) {
   const paginationState = yield select(getPaginationState);
+  const searchTerm = yield select(getSearchTermState);
   if (!limit) {
     limit = paginationState.limit;
   }
+  if (!page) {
+    page = paginationState.page;
+  }
   yield execute(function* () {
-    const [{ data }] = yield all([yield callApi(api.listProjectsV2, page, limit)]);
+    const [{ data }] = yield all([yield callApi(api.listProjectsV2, page, limit, searchTerm)]);
     yield put({
       type: FETCH_PROJECTS_V2_SUCCESS,
       projects: data.items,
@@ -3358,6 +3367,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT, fetchAllProjectDetailsNotCurrentProjectSaga),
       yield takeEvery(SET_PAGE, fetchProjectsV2Saga),
       yield takeEvery(SET_ROWS_PER_PAGE, fetchProjectsV2Saga),
+      yield takeLeading(SEARCH_TERM, fetchProjectsV2Saga),
 
       // Subproject
       yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga),

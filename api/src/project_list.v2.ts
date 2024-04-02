@@ -57,6 +57,13 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
           required: false,
           schema: { type: "string" },
         },
+        {
+          in: "query",
+          name: "search",
+          description: "The field to search by",
+          required: false,
+          schema: { type: "string" },
+        },
       ],
       response: {
         200: {
@@ -182,7 +189,11 @@ export function addHttpHandler(
   server.register(async function () {
     server.get(`${urlPrefix}/v2/project.list`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
-      const query = request.query as { page?: number; limit?: number };
+      const query = request.query as {
+        search?: string;
+        page?: number; //string?
+        limit?: number; //string?
+      };
       const user = extractUser(request as AuthenticatedRequest);
 
       const mapToExposedProject = (project: Project.Project): ExposedProject => {
@@ -214,6 +225,16 @@ export function addHttpHandler(
         .then((projects: ExposedProject[]): Array<ExposedProject> => {
           // todo sort
           return projects;
+        })
+        .then((projects: ExposedProject[]): Array<ExposedProject> => {
+          if (query.search && query.search.length > 0) {
+            const searchTerm = query.search.toLowerCase();
+            return projects.filter(
+              (project) =>
+                project.data.displayName.toLowerCase().includes(searchTerm) ||
+                project.data.tags.some((item) => item.toLowerCase().includes(searchTerm)),
+            );
+          } else return projects;
         })
         .then((projects: ExposedProject[]): [Array<ExposedProject>, Pagination] => {
           if (query.page && !isNumber(query.page)) {
