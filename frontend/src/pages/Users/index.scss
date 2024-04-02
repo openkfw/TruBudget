@@ -1,0 +1,43 @@
+.table-cell {
+  vertical-align: top;
+}
+
+.disable-user-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.625rem;
+}
+
+.info-area-container {
+  float: left;
+}
+
+.info-area {
+  display: flex;
+  flex-direction: row;
+  margin: 0.625rem;
+}
+
+.hidden-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.info-icon {
+  font-size: 1.25rem;
+  margin-right: 0.625rem;
+}
+
+.error-area {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.refresh-icon {
+  float: right;
+}
+
+.checkbox {
+  padding: 0.3rem;
+}

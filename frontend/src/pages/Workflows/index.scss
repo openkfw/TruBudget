@@ -1,0 +1,8 @@
+@import "../index.scss";
+
+.hide {
+  opacity: 0;
+  &.grab-cursor {
+    cursor: -webkit-grab;
+  }
+}

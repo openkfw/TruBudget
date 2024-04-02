@@ -23,10 +23,8 @@ const OverflowTooltip = ({ text = "", maxWidth = "140px" }) => {
     <Tooltip data-test="overflow-tooltip" title={text} disableHoverListener={!isOverflowed}>
       <div
         ref={textElementRef}
+        className="overflow-tooltip"
         style={{
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
           maxWidth: maxWidth
         }}
       >

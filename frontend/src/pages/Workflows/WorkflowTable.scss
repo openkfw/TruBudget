@@ -1,0 +1,52 @@
+.bulk-actions {
+  margin: 1.25rem 1rem 0.3rem 1rem;
+}
+
+.bulk-action-button {
+  margin-right: 0.3rem;
+}
+
+.workflow-card-content {
+  position: relative;
+}
+
+.workflow-table-header {
+  display: flex;
+  align-items: center;
+  padding-left: 6;
+  justify-content: space-around;
+}
+
+.workflow-empty-state {
+  background-color: var(--mui-palette-empty-state);
+}
+
+.workflow-item-table {
+  padding-bottom: 0.5rem;
+}
+
+div.columns:nth-last-of-type(6) {
+  width: 15%;
+  padding-left: 0.25rem;
+}
+
+div.columns:nth-last-of-type(5) {
+  width: 25%;
+}
+
+div.columns:nth-last-of-type(4) {
+  width: 20%;
+}
+
+div.columns:nth-last-of-type(3) {
+  width: 20%;
+}
+
+div.columns:nth-last-of-type(2) {
+  width: 10%;
+}
+
+div.columns:nth-last-of-type(1) {
+  width: 10%;
+  text-align: center;
+}

@@ -26,12 +26,6 @@ import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
 
-const styles = {
-  editIcon: {
-    color: "black"
-  }
-};
-
 const ProjectCard = ({
   index,
   id,
@@ -164,7 +158,7 @@ const ProjectCard = ({
               title={strings.common.show_permissions}
               icon={<PermissionIcon />}
               data-test={`pp-button-${index}`}
-              iconButtonStyle={styles.editIcon}
+              className="edit-icon"
             />
             <ActionButton
               ariaLabel="show edit dialog"
@@ -176,7 +170,7 @@ const ProjectCard = ({
               icon={<EditIcon />}
               id={`pe-button-${index}`}
               data-test={`pe-button`}
-              iconButtonStyle={styles.editIcon}
+              className="edit-icon"
             />
           </ListItem>
         </List>

@@ -19,23 +19,7 @@ import strings from "../../localizeStrings";
 import { closeAnalyticsDialog, getExchangeRates, storeDisplayCurrency } from "./actions";
 import SubProjectAnalytics from "./SubProjectAnalytics";
 
-const styles = {
-  container: {
-    marginTop: "68px"
-  },
-  toolbar: {
-    display: "flex"
-  },
-  dropdown: {
-    marginLeft: "auto",
-    marginTop: "0"
-  },
-  loadingCharts: {
-    marginTop: "16px",
-    display: "flex",
-    justifyContent: "center"
-  }
-};
+import "./index.scss";
 
 function getMenuItems(currencies) {
   return currencies.map((currency, index) => {
@@ -89,7 +73,7 @@ const SubProjectAnalyticsDialog = ({
           <Typography variant="h6" color="inherit">
             {strings.analytics.subproject_analytics}
           </Typography>
-          <form autoComplete="off" style={styles.dropdown}>
+          <form autoComplete="off" className="dropdown">
             <FormControl>
               <Select
                 variant="standard"
@@ -112,7 +96,7 @@ const SubProjectAnalyticsDialog = ({
           </form>
         </Toolbar>
       </AppBar>
-      <div style={styles.container}>
+      <div className="dialog-container">
         <SubProjectAnalytics
           projectId={projectId}
           subProjectId={subProjectId}

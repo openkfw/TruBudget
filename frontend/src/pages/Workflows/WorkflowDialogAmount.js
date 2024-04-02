@@ -19,26 +19,7 @@ import {
 import strings from "../../localizeStrings";
 import DropDown from "../Common/NewDropdown";
 
-const styles = {
-  container: {
-    marginTop: 20,
-    display: "flex",
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-around",
-    alignItems: "center"
-  },
-  selections: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  buttons: {
-    width: "auto",
-    whiteSpace: "nowrap",
-    marginLeft: "20px",
-    marginRight: "20px"
-  }
-};
+import "./WorkflowDialogAmount.scss";
 
 const WorkflowDialogAmount = (props) => {
   const {
@@ -59,10 +40,10 @@ const WorkflowDialogAmount = (props) => {
   }, [workflowCurrency, subProjectCurrency, storeWorkflowCurrency]);
 
   return (
-    <div style={styles.container}>
+    <div className="workflow-dialog-amount">
       <div>
         <RadioGroup
-          style={styles.selections}
+          className="selections"
           name="workflowAmountType"
           value={workflowAmountType}
           onChange={(_event, value) => storeWorkflowAmountType(value)}
@@ -132,16 +113,9 @@ const showAmountInputFields = (
   const currencies = getCurrencies();
   const floatingLabelText = strings.workflow.workflow_budget;
   return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center"
-      }}
-    >
+    <div className="amount-input-fields">
       <DropDown
-        style={{ minWidth: 160 }}
+        className="currency-dropdown"
         floatingLabel={strings.common.currency}
         value={workflowCurrency}
         onChange={(value) => {
@@ -170,12 +144,9 @@ const showAmountInputFields = (
         multiline={false}
         aria-label="amount"
         data-test="amountinput"
-        style={{
-          width: "20%",
-          paddingRight: 20
-        }}
+        className="amount-input"
       />
-      <Typography style={{ alignSelf: "center", marginRight: "16px" }}>x</Typography>
+      <Typography className="typography-field">x</Typography>
       <TextField
         variant="standard"
         label={strings.workflow.exchange_rate}
@@ -192,16 +163,10 @@ const showAmountInputFields = (
         aria-label="rate"
         data-test="rateinput"
         disabled={workflowCurrency === subProjectCurrency}
-        style={{
-          width: "20%",
-          paddingRight: 20
-        }}
+        className="amount-input"
       />
-      <div style={{ alignSelf: "center", marginRight: "16px", display: "flex" }}>
-        <Typography
-          style={{ alignSelf: "center", marginRight: "16px", fontSize: "16px" }}
-          data-test="calculated-result"
-        >
+      <div className="typography-field-with-currency">
+        <Typography className="typography-field" data-test="calculated-result">
           {"= " + subProjectCurrency + " "}
           {exchangeRate ? toAmountString(fromAmountString(workflowAmount) * fromAmountString(exchangeRate)) : "-"}
         </Typography>

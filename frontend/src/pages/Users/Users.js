@@ -22,20 +22,6 @@ const styles = {
   customWidth: {
     width: "100%",
     marginTop: "40px"
-  },
-  createButtonContainer: {
-    display: "flex",
-    flexDirection: "column",
-    position: "absolute",
-    alignItems: "flex-end",
-    top: "80px",
-    right: "-20px",
-    width: "30%",
-    height: 20
-  },
-  createButton: {
-    position: "absolute",
-    marginTop: -20
   }
 };
 
@@ -52,15 +38,7 @@ const renderTab = (props) => {
       const isAllowedToCreateUser = allowedIntents.includes("global.createUser");
       return (
         <>
-          {isAllowedToCreateUser ? (
-            <CreateButton
-              styles={{
-                createButtonContainer: styles.createButtonContainer,
-                createButton: styles.createButton
-              }}
-              onClick={() => showDashboardDialog("addUser")}
-            />
-          ) : null}
+          {isAllowedToCreateUser ? <CreateButton onClick={() => showDashboardDialog("addUser")} /> : null}
           <UsersTable {...props} users={enabledUsers} CustomEmptyState={EnabledUserEmptyState} />
         </>
       );
@@ -70,15 +48,7 @@ const renderTab = (props) => {
       const isAllowedToCreateGroup = allowedIntents.includes("global.createGroup");
       return (
         <>
-          {isAllowedToCreateGroup ? (
-            <CreateButton
-              styles={{
-                createButtonContainer: styles.createButtonContainer,
-                createButton: styles.createButton
-              }}
-              onClick={() => showDashboardDialog("addGroup")}
-            />
-          ) : null}
+          {isAllowedToCreateGroup ? <CreateButton onClick={() => showDashboardDialog("addGroup")} /> : null}
           {groups.length > 0 ? <GroupTable {...props} /> : <UserGroupsEmptyState />}
         </>
       );

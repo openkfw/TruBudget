@@ -1,0 +1,47 @@
+.workflow-dialog-amount {
+  margin-top: 1.25rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.selections {
+  display: flex;
+  flex-direction: row;
+}
+
+.buttons {
+  width: auto;
+  white-space: nowrap;
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+}
+
+.amount-input-fields {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.amount-input {
+  width: 20%;
+  padding-right: 1.25rem;
+}
+
+.typography-field {
+  align-self: center;
+  margin-right: 1rem;
+}
+
+.typography-field-with-currency {
+  display: flex;
+  align-self: center;
+  margin-right: 1rem;
+}
+
+.currency-dropdown {
+  min-width: 160px;
+}

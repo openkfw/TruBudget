@@ -147,6 +147,7 @@ const WorkflowDialogContent = (props) => {
         <div style={styles.container}>
           <div style={styles.inputContainer}>
             <DatePicker
+              className="date-picker workflow"
               id="due-date"
               label={strings.common.dueDate}
               datetime={workflowToAdd.dueDate}

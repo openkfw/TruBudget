@@ -47,11 +47,7 @@ const PermissionTable = ({
     <div>
       {intentOrder.map((section) => {
         return (
-          <Card
-            key={section.name + "section"}
-            style={{ marginTop: "12px", marginBottom: "12px" }}
-            data-test="permission-table"
-          >
+          <Card key={section.name + "section"} className="permission-table" data-test="permission-table">
             <CardHeader subheader={strings.permissions[section.name]} />
             <CardContent>
               <List data-test={`${section.name}-list`}>
