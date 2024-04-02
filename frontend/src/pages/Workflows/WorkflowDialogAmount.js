@@ -41,36 +41,42 @@ const WorkflowDialogAmount = (props) => {
 
   return (
     <div className="workflow-dialog-amount">
-      <div>
-        <RadioGroup
-          className="selections"
-          name="workflowAmountType"
-          value={workflowAmountType}
-          onChange={(_event, value) => storeWorkflowAmountType(value)}
-        >
-          <FormControlLabel
-            value="N/A"
-            control={<Radio color="primary" />}
-            label={strings.workflow.workflow_budget_na}
-            data-test="amount-type-na"
-            disabled={disabled}
-          />
-          <FormControlLabel
-            value="allocated"
-            control={<Radio color="primary" />}
-            label={strings.workflow.workflow_budget_allocated}
-            data-test="amount-type-allocated"
-            disabled={disabled}
-          />
-          <FormControlLabel
-            value="disbursed"
-            control={<Radio color="primary" />}
-            label={strings.workflow.workflow_budget_disbursed}
-            data-test="amount-type-disbursed"
-            disabled={disabled}
-          />
-        </RadioGroup>
-      </div>
+      <RadioGroup
+        name="workflowAmountType"
+        value={workflowAmountType}
+        onChange={(_event, value) => storeWorkflowAmountType(value)}
+      >
+        <div className="amount-checkbox-container">
+          <div>
+            <FormControlLabel
+              value="N/A"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_na}
+              data-test="amount-type-na"
+              disabled={disabled}
+            />
+          </div>
+          <div>
+            <FormControlLabel
+              value="allocated"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_allocated}
+              data-test="amount-type-allocated"
+              disabled={disabled}
+            />
+          </div>
+          <div>
+            <FormControlLabel
+              value="disbursed"
+              control={<Radio color="primary" />}
+              label={strings.workflow.workflow_budget_disbursed}
+              data-test="amount-type-disbursed"
+              disabled={disabled}
+            />
+          </div>
+        </div>
+      </RadioGroup>
+
       {!budgetDisabled
         ? showAmountInputFields(
             props,

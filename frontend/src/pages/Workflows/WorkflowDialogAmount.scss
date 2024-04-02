@@ -1,10 +1,5 @@
 .workflow-dialog-amount {
   margin-top: 1.25rem;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
 }
 
 .selections {
@@ -24,6 +19,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin-bottom: 1.25rem;
 }
 
 .amount-input {
@@ -44,4 +40,11 @@
 
 .currency-dropdown {
   min-width: 160px;
+}
+
+.amount-checkbox-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-bottom: 1rem;
 }
