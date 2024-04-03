@@ -9,34 +9,7 @@ import strings from "../../localizeStrings";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
 import UserSelection from "../Common/UserSelection";
 
-const styles = {
-  container: {},
-  customWidth: {},
-  createButton: {},
-  createButtonContainer: {},
-  textInputContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-around"
-  },
-  textInput: {
-    width: "50%"
-  },
-  divider: {
-    marginTop: 20,
-    marginBottom: 20
-  },
-  infoIcon: {
-    fontSize: 20,
-    marginRight: "10px"
-  },
-  info: {
-    display: "flex",
-    paddingRight: 20,
-    marginLeft: 10,
-    marginBottom: 20
-  }
-};
+import "./GroupDialogContent.scss";
 
 const GroupDialogContent = ({
   enabledUsers,
@@ -52,13 +25,13 @@ const GroupDialogContent = ({
   const { groupId, displayName, groupUsers } = group;
   return (
     <div>
-      <span style={styles.info}>
-        <InfoIcon style={styles.infoIcon} />
+      <span className="info">
+        <InfoIcon className="info-icon" />
         <Typography variant="body2">{strings.users.privacy_notice}</Typography>
       </span>
-      <div style={styles.textInputContainer}>
+      <div className="group-dialog-container">
         <TextInputWithIcon
-          style={styles.textInput}
+          className="group-dialog-input"
           label={editMode ? groupId : strings.common.id}
           error={false}
           disabled={editMode}
@@ -67,7 +40,7 @@ const GroupDialogContent = ({
           onChange={(event) => storeGroupId(event.target.value)}
         />
         <TextInputWithIcon
-          style={styles.textInput}
+          className="group-dialog-input"
           label={editMode ? displayName : strings.common.name}
           data-test="groupname"
           error={false}

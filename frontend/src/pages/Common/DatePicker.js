@@ -11,22 +11,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  searchField: {
-    display: "flex",
-    flexDirection: "row",
-    opacity: "0.8",
-    boxShadow: "none"
-  },
-  clearButton: {
-    width: 35,
-    height: 35,
-    alignSelf: "flex-end",
-    marginLeft: "5px"
-  }
-};
+import "./DatePicker.scss";
 
-function DatePicker({ name, label, onChange, onDelete, datetime, disabled, id = "default" }) {
+function DatePicker({ name, label, onChange, onDelete, datetime, disabled, id = "default", className }) {
   const dateValue = _isEmpty(datetime) ? null : datetime;
 
   const handleOnBlur = (date, name) => {
@@ -35,8 +22,8 @@ function DatePicker({ name, label, onChange, onDelete, datetime, disabled, id = 
   };
 
   return (
-    <div style={styles.searchField}>
-      <form style={styles.form} noValidate>
+    <div className={className}>
+      <form noValidate>
         <div data-test={`datepicker-${id}`}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePickerMui
@@ -61,7 +48,7 @@ function DatePicker({ name, label, onChange, onDelete, datetime, disabled, id = 
         aria-label="cancel"
         data-test={`clear-datepicker-${id}`}
         onClick={onDelete}
-        style={styles.clearButton}
+        className="clear-button"
         size="large"
       >
         <CancelIcon color="action" />

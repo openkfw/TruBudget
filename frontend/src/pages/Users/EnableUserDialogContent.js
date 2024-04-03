@@ -6,25 +6,13 @@ import { Typography } from "@mui/material";
 import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
 
-const styles = {
-  infoArea: {
-    display: "flex",
-    flexDirection: "row",
-    margin: "10px"
-  },
-  infoIcon: {
-    fontSize: 20,
-    marginRight: "10px"
-  }
-};
-
 const EnableUserDialog = (props) => {
   const { editId } = props;
   const dialogText = formatString(strings.users.enable_userId_confirm, editId);
 
   return (
-    <div style={styles.infoArea}>
-      <InfoIcon style={styles.infoIcon} />
+    <div className="info-area">
+      <InfoIcon className="info-icon" />
       <Typography variant="body2">{dialogText}</Typography>
     </div>
   );

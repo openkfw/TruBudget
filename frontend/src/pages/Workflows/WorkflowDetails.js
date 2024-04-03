@@ -24,44 +24,7 @@ import DocumentOverviewContainer from "../Documents/DocumentOverviewContainer";
 
 import WorkflowitemHistoryTab from "./WorkflowitemHistoryTab/WorkflowHistoryTab";
 
-const styles = {
-  alert: {
-    border: (theme) => `3px solid ${theme.palette.warning.main}`,
-    width: 37,
-    height: 37
-  },
-  textfield: {
-    width: "50%",
-    right: -30
-  },
-  closeButton: {
-    left: 650,
-    position: "absolute",
-    top: 20
-  },
-  avatarCard: {
-    width: "45%",
-    left: "35px"
-  },
-  dialog: {
-    width: "95%"
-  },
-  paper: {
-    width: "70%",
-    marginTop: "10px"
-  },
-  dialogContent: {
-    width: "500px"
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  displayName: {
-    wordBreak: "break-word"
-  }
-};
+import "./WorkflowDetails.scss";
 
 const removeNewLines = (text) => {
   let formattedText = "";
@@ -88,7 +51,7 @@ const Overview = ({ users, workflowitem }) => {
           data-test="workflowitemInfoDisplayName"
           primary={displayName}
           secondary={trimmedComment}
-          style={styles.displayName}
+          className="display-name"
         />
       </ListItem>
       <ListItem>
@@ -115,7 +78,7 @@ const Overview = ({ users, workflowitem }) => {
       {dueDate ? (
         <ListItem>
           <ListItemAvatar>
-            <Avatar sx={isDateReached(dueDate) && status === "open" ? styles.alert : null} data-test="due-date">
+            <Avatar className={isDateReached(dueDate) && status === "open" ? "alert" : ""} data-test="due-date">
               <AccessAlarmIcon />
             </Avatar>
           </ListItemAvatar>
@@ -226,13 +189,13 @@ const WorkflowDetails = ({
   return (
     <Dialog
       open={showWorkflowDetails}
-      style={styles.dialog}
+      className="dialog"
       TransitionProps={{
         onExited: closeWorkflowitemDetailsDialog
       }}
     >
       <DialogTitle data-test="workflowInfoDialog">{strings.workflow.workflowitem_details}</DialogTitle>
-      <DialogContent style={styles.dialogContent}>
+      <DialogContent className="dialog-content">
         <Tabs value={selectedTab} onChange={(_, index) => setSelectedTab(index)}>
           <Tab data-test="workflowitem-overview-tab" label={strings.workflow.workflowitem_details_overview} />
           <Tab data-test="workflowitem-documents-tab" label={strings.workflow.workflowitem_details_documents} />

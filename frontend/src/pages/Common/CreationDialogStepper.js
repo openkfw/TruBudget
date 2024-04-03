@@ -10,11 +10,6 @@ const getStepContent = ({ currentStep = 0, steps }) => {
   return steps[currentStep].content;
 };
 
-const styles = {
-  contentStyle: { margin: "0 16px", minWidth: "500px" },
-  multiStep: { width: "90%" }
-};
-
 const getSteps = (steps, editable, setCurrentStep) => {
   return steps
     .slice(0, steps.length)
@@ -34,21 +29,14 @@ const CreationDialogStepper = (props) => {
   return (
     <div>
       {numberOfSteps > 1 ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: "20px"
-          }}
-        >
-          <Stepper style={styles.multiStep} nonLinear={editable} activeStep={currentStep}>
+        <div className="stepper">
+          <Stepper className="multi-step" nonLinear={editable} activeStep={currentStep}>
             {getSteps(steps, editable, setCurrentStep)}
           </Stepper>
           <Divider />
         </div>
       ) : null}
-      <div style={styles.contentStyle}>
+      <div className="content-style">
         <div>{getStepContent(props)}</div>
       </div>
     </div>

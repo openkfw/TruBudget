@@ -19,25 +19,7 @@ import strings from "../../../localizeStrings";
 import ActionButton from "../ActionButton";
 import OverflowTooltip from "../OverflowTooltip";
 
-const styles = {
-  closeButtonContainer: { float: "right", marginTop: -8 },
-  closeButtonSize: { fontSize: 15 },
-  itemContainer: { maxHeight: "65vh", overflow: "auto", boxShadow: "none" },
-  fixLabel: { top: "auto" },
-  warning: { marginRight: "8px" },
-  warningContainer: { display: "flex", alignItems: "center", justifyContent: "center" },
-  select: {
-    width: "350px"
-  },
-  formControlContainer: {
-    display: "flex",
-    margin: 16,
-    justifyContent: "flex-start"
-  },
-  nameContainer: {
-    maxWidth: "none"
-  }
-};
+import "./PermissionSelection.scss";
 
 const renderSelection = (user, permissionedUser, intent, grant, revoke, myself, disabled) =>
   user.map((u) => {
@@ -50,8 +32,8 @@ const renderSelection = (user, permissionedUser, intent, grant, revoke, myself, 
         onClick={checked ? () => revoke(intent, u.id) : () => grant(intent, u.id)}
       >
         <Checkbox checked={checked} disabled={(u.id === myself && checked) || disabled} />
-        <ListItemText style={styles.nameContainer}>
-          <OverflowTooltip text={u.displayName} maxWidth={styles.nameContainer.maxWidth} />
+        <ListItemText className="name-container">
+          <OverflowTooltip text={u.displayName} maxWidth="none" />
         </ListItemText>
       </MenuItem>
     );
@@ -93,7 +75,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <>
-          <ListSubheader style={styles.fixLabel}> {strings.users.users} </ListSubheader>
+          <ListSubheader className="fix-label"> {strings.users.users} </ListSubheader>
           {selection}
         </>
       );
@@ -117,7 +99,7 @@ class PermissionSelection extends Component {
     if (selection.length > 0) {
       return (
         <>
-          <ListSubheader style={styles.fixLabel}> {strings.users.groups} </ListSubheader>
+          <ListSubheader className="fix-label"> {strings.users.groups} </ListSubheader>
           {selection}
         </>
       );
@@ -143,7 +125,7 @@ class PermissionSelection extends Component {
         <Select
           variant="standard"
           multiple
-          style={styles.select}
+          className="select"
           autoWidth
           value={selections}
           renderValue={(s) => s.join(", ")}
@@ -152,32 +134,32 @@ class PermissionSelection extends Component {
           onOpen={openSelect}
           onClose={closeSelect}
         >
-          <div style={styles.closeButtonContainer}>
+          <div className="close-button-container">
             <ActionButton
               ariaLabel="close"
               data-test={"close-select"}
               onClick={closeSelect}
               title={strings.common.close}
-              iconButtonStyle={{ width: 15, height: 15 }}
-              icon={<CloseIcon style={styles.closeButtonSize} />}
+              className="icon-button-style"
+              icon={<CloseIcon className="close-button-size" />}
             />
           </div>
           {this.props.disabled ? (
-            <ListSubheader style={styles.warningContainer} component="div">
-              <Warning style={styles.warning} />
+            <ListSubheader className="warning-container" component="div">
+              <Warning className="warning" />
               <Typography data-test="read-only-permissions-text" variant="caption">
                 {strings.permissions.read_only}
               </Typography>
             </ListSubheader>
           ) : null}
-          <div style={styles.formControlContainer}>
+          <div className="form-control-container">
             <FormControl data-test="permission-search">
               <InputLabel>{strings.common.search}</InputLabel>
               <Input value={this.state.searchTerm} onChange={(e) => this.setState({ searchTerm: e.target.value })} />
             </FormControl>
           </div>
           <div data-test="permission-list">
-            <Paper style={styles.itemContainer}>
+            <Paper className="item-container">
               <List>
                 {selectedUsers}
                 {selectedGroups}

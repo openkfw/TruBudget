@@ -155,6 +155,7 @@ const UserDialogContent = ({
               />
               <Field
                 name="password"
+                className="password short"
                 iconDisplayed={true}
                 label={strings.common.password}
                 password={values.password}
@@ -169,6 +170,7 @@ const UserDialogContent = ({
               />
               <Field
                 name="confirmPassword"
+                className="password short"
                 iconDisplayed={true}
                 label={strings.users.new_user_password_confirmation}
                 password={values.confirmPassword}

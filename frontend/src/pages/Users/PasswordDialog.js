@@ -14,16 +14,7 @@ import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
 import Password from "../Common/Password";
 
-const styles = {
-  paperRoot: {
-    width: "100%",
-    overflow: "scrollable"
-  },
-  container: {},
-  customWidth: {},
-  createButtonContainer: {},
-  createButton: {}
-};
+import "./PasswordDialog.scss";
 
 const validate = (newPassword) => {
   const minLength = 8;
@@ -135,7 +126,7 @@ const PasswordDialog = (props) => {
   const tooltipTitle = (
     <div>
       {strings.users.password_conditions_preface}
-      <ul style={{ marginTop: 1 }}>
+      <ul>
         <li>{strings.users.password_conditions_length}</li>
         <li>{strings.users.password_conditions_letter}</li>
         <li>{strings.users.password_conditions_number}</li>
@@ -149,19 +140,20 @@ const PasswordDialog = (props) => {
   return (
     <Dialog
       disableRestoreFocus
-      style={{ paper: styles.paperRoot }}
+      className="password-paper-root"
       open={passwordDialogShown}
       maxWidth="md"
       data-test="creation-dialog"
     >
       <DialogTitle>{title}</DialogTitle>
-      <div style={styles.contentStyle}>
+      <div>
         <div>
           {!isRoot ? (
-            <Card style={styles.card}>
+            <Card>
               <CardHeader subheader={formatString(strings.users.type_current_password, props.userId)} />
               <CardContent>
                 <Password
+                  className="password"
                   iconDisplayed={false}
                   data-test="user-password-textfield"
                   label={strings.users.current_user_password}
@@ -175,10 +167,11 @@ const PasswordDialog = (props) => {
             </Card>
           ) : null}
 
-          <Card style={styles.card}>
+          <Card>
             <CardHeader subheader={formatString(strings.users.type_new_password, editId)} />
             <CardContent>
               <Password
+                className="password"
                 iconDisplayed={false}
                 data-test="new-password-textfield"
                 label={strings.users.new_user_password}
@@ -190,6 +183,7 @@ const PasswordDialog = (props) => {
                 tooltipTitle={tooltipTitle}
               />
               <Password
+                className="password"
                 iconDisplayed={false}
                 data-test="new-password-confirmation-textfield"
                 label={strings.users.new_user_password_confirmation}
@@ -200,16 +194,8 @@ const PasswordDialog = (props) => {
                 type={fieldType}
                 failedText={failedText}
               />
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
-              >
-                <Button color="primary" onClick={toggleFieldType} style={{ widht: "50%" }}>
+              <div className="show-password">
+                <Button color="primary" onClick={toggleFieldType}>
                   {(fieldType === "password" ? "Show" : "Hide") + " passwords"}
                 </Button>
               </div>

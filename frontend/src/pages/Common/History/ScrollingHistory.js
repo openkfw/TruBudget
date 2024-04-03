@@ -5,18 +5,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import HistoryList from "./HistoryList";
 
-const styles = {
-  loader: {
-    fontFamily: "Roboto",
-    fontStyle: "normal",
-    fontWeight: 400,
-    display: "flex",
-    justifyContent: "center",
-
-    padding: "16px 0px"
-  }
-};
-
 export default class ScrollingHistory extends React.Component {
   componentDidMount() {
     this.props.fetchNext();
@@ -34,7 +22,7 @@ export default class ScrollingHistory extends React.Component {
         }}
         hasMore={hasMore}
         loader={
-          <div key={0} style={styles.loader}>
+          <div key={0} className="loader">
             {<CircularProgress />}
           </div>
         }

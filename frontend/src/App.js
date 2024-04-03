@@ -6,7 +6,7 @@ import * as isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import * as relativeTime from "dayjs/plugin/relativeTime";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 
-import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
+import { Experimental_CssVarsProvider as CssVarsProvider, StyledEngineProvider } from "@mui/material/styles";
 
 import "./logging/console";
 
@@ -28,7 +28,7 @@ export default function App() {
     <Provider store={store}>
       <Router history={history}>
         <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={muiTheme}>
+          <CssVarsProvider theme={muiTheme}>
             <LiveNotificationContainer />
             <Routes>
               <Route key={1} exact path="/login" element={<LoginElement />} />
@@ -41,7 +41,7 @@ export default function App() {
                 }
               />
             </Routes>
-          </ThemeProvider>
+          </CssVarsProvider>
         </StyledEngineProvider>
       </Router>
     </Provider>

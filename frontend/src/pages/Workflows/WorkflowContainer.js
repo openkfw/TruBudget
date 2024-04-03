@@ -9,7 +9,6 @@ import { convertToSearchBarString } from "../../helper";
 import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
-import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import { withRouter } from "../../wrappers/withRouter";
 import { openAnalyticsDialog } from "../Analytics/actions";
@@ -64,6 +63,8 @@ import Workflow from "./Workflow";
 import WorkflowBatchEditContainer from "./WorkflowBatchEditContainer";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
+
+import "./WorkflowContainer.scss";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -145,7 +146,7 @@ class WorkflowContainer extends Component {
     return (
       <div>
         {!this.props.workflowSortEnabled ? this.addLiveUpdates() : null}
-        <div style={globalStyles.innerContainer}>
+        <div className="inner-container">
           <div>
             <SubProjectDetails
               {...this.props}

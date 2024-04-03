@@ -5,14 +5,6 @@ import Fab from "@mui/material/Fab";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
 import Zoom from "@mui/material/Zoom";
 
-const styles = {
-  root: {
-    position: "fixed",
-    bottom: (theme) => theme.spacing(5),
-    right: (theme) => theme.spacing(5)
-  }
-};
-
 const ScrollTop = (props) => {
   const { window } = props;
 
@@ -37,7 +29,7 @@ const ScrollTop = (props) => {
         aria-label="scroll back to top"
         data-test="backToTop-button"
         onClick={handleClick}
-        sx={{ ...styles.root }}
+        className="scroll-top"
       >
         <KeyboardArrowUpIcon />
       </Fab>

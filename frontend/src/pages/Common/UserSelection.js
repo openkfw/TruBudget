@@ -18,48 +18,7 @@ import strings from "../../localizeStrings";
 import ActionButton from "./ActionButton";
 import OverflowTooltip from "./OverflowTooltip";
 
-const styles = {
-  container: { marginTop: "30px" },
-  closeButtonContainer: { float: "right", marginTop: -8 },
-  closeButtonSize: { fontSize: 15 },
-  userSelection: { display: "flex", justifyContent: "center", placeItems: "flex-end" },
-  userIcon: {
-    marginTop: "5px",
-    marginRight: "20px",
-    marginBottom: "5px"
-  },
-  chip: {
-    margin: (theme) => `${theme.spacing(0.5)} ${theme.spacing(0.25)}`
-  },
-  chipSelection: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    marginTop: "20px",
-    flexWrap: "wrap"
-  },
-  formControl: {
-    width: "200px"
-  },
-  formControlContainer: {
-    display: "flex",
-    margin: 16,
-    justifyContent: "flex-start"
-  },
-  label: {
-    whiteSpace: "nowrap",
-    width: "-webkit-fill-available",
-    overflow: "hidden",
-    textOverflow: "ellipsis"
-  },
-  itemContainer: {
-    maxHeight: "70vh",
-    overflow: "auto",
-    maxWidth: "300px",
-    minWidth: "300px",
-    boxShadow: "none"
-  }
-};
+import "./UserSelection.scss";
 
 function UserSelection(props) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -115,13 +74,13 @@ function UserSelection(props) {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.userSelection}>
-        <div style={styles.userIcon}>
+    <div className="user-selection-container">
+      <div className="user-selection">
+        <div className="user-icon">
           <UserIcon />
         </div>
-        <FormControl data-test="add-user-container" style={styles.formControl}>
-          <InputLabel style={styles.label} shrink={false}>
+        <FormControl data-test="add-user-container" className="form-control">
+          <InputLabel className="label" shrink={false}>
             {selectedItems.length + " " + strings.users.selected_users}
           </InputLabel>
           <Select
@@ -133,17 +92,17 @@ function UserSelection(props) {
             onOpen={openSelect}
             onClose={closeSelect}
           >
-            <div style={styles.closeButtonContainer}>
+            <div className="close-button-container">
               <ActionButton
                 ariaLabel="close"
                 data-test={"close-select"}
                 onClick={closeSelect}
                 title={strings.common.close}
-                iconButtonStyle={{ width: 15, height: 15 }}
-                icon={<CloseIcon style={styles.closeButtonSize} />}
+                className="icon-button-style"
+                icon={<CloseIcon className="close-button-size" />}
               />
             </div>
-            <div style={styles.formControlContainer}>
+            <div className="form-control-container">
               <FormControl>
                 <InputLabel>{strings.common.search}</InputLabel>
                 <Input
@@ -156,21 +115,21 @@ function UserSelection(props) {
               </FormControl>
             </div>
             <div data-test="user-list">
-              <Paper style={styles.itemContainer}>
+              <Paper className="item-container">
                 <List>{suggestedUsers}</List>
               </Paper>
             </div>
           </Select>
         </FormControl>
       </div>
-      <div style={styles.chipSelection}>
+      <div className="chip-selection">
         {selectedItems.map((item) => (
           <Chip
             data-test={`user-chip-${item}`}
             key={item}
             tabIndex={-1}
             label={item}
-            style={styles.chip}
+            className="chip"
             onDelete={() => handleDelete(item)}
           />
         ))}
