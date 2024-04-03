@@ -17,16 +17,7 @@ import ActionButton from "../Common/ActionButton";
 
 import { DisabledUserEmptyState } from "./UsersGroupsEmptyStates";
 
-const styles = {
-  flex: {
-    justifyContent: "flex-end",
-    display: "flex"
-  },
-  flexColumn: {
-    padding: "4px 10px 4px 2px",
-    flexDirection: "column"
-  }
-};
+import "./UsersTable.scss";
 
 const sortUsers = (users) => {
   return _sortBy(users, (user) => user.organization && user.id);
@@ -71,8 +62,8 @@ const renderUser = (props) => {
       </TableCell>
       <TableCell>{displayUser.displayName}</TableCell>
       <TableCell>{displayUser.organization}</TableCell>
-      <TableCell style={styles.flexColumn}>
-        <div style={styles.flex}>{renderActionButtons(props)}</div>
+      <TableCell className="actions-column">
+        <div className="actions">{renderActionButtons(props)}</div>
       </TableCell>
     </TableRow>
   );

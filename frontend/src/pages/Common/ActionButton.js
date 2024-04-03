@@ -3,15 +3,6 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 
-const styles = {
-  actionButton: {
-    width: "25%"
-  },
-  hide: {
-    opacity: 0
-  }
-};
-
 const ActionButton = ({
   ariaLabel,
   notVisible,
@@ -21,7 +12,7 @@ const ActionButton = ({
   id,
   // eslint-disable-next-line no-useless-computed-key
   ["data-test"]: dataTest,
-  iconButtonStyle,
+  className,
   alignTooltip = "bottom-end"
 }) => {
   const disabled = notVisible;
@@ -43,7 +34,7 @@ const ActionButton = ({
     : { placement: alignTooltip };
 
   return (
-    <div style={styles.actionButton}>
+    <div className="action-button">
       <Tooltip
         id={"tooltip-" + title}
         title={notVisible ? "" : title}
@@ -56,7 +47,7 @@ const ActionButton = ({
           <IconButton
             aria-label={ariaLabel}
             onClick={onClick}
-            style={notVisible ? { ...styles.hide } : iconButtonStyle}
+            className={notVisible ? "hide" : className}
             disabled={disabled}
             data-test={dataTest}
             id={id}

@@ -31,6 +31,8 @@ import StyledBadge from "../Common/StyledBadge";
 
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
+import "./index.scss";
+
 const styles = {
   text: {
     fontSize: "14px"
@@ -308,7 +310,7 @@ const getInfoButton = (props, status, workflowSortEnabled, workflow) => {
         <IconButton
           aria-label="show info"
           disabled={workflowSortEnabled}
-          style={getButtonStyle(workflowSortEnabled, status)}
+          className={getButtonStyle(workflowSortEnabled, status)}
           onClick={() => openWorkflowDetails(projectId, subProjectId, workflow.id)}
           data-test={`workflowitem-info-button-${workflow.id}`}
           size="large"
@@ -385,12 +387,12 @@ const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurren
 const getButtonStyle = (workflowSortEnabled, status) => {
   if (workflowSortEnabled) {
     if (status === "closed") {
-      return styles.hide;
+      return "hide";
     } else {
-      return { ...styles.hide, ...styles.setGrabCursor };
+      return "hide grab-cursor";
     }
   }
-  return {};
+  return "";
 };
 
 const getCardStyle = (workflowSortEnabled, status, rejected) => {
@@ -440,7 +442,7 @@ const renderActionButtons = ({
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="additional-workflowitem-data-icon"
-          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+          className={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
           ariaLabel="edit workflowitem"
@@ -451,7 +453,7 @@ const renderActionButtons = ({
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="edit-workflowitem"
-          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+          className={getButtonStyle(workflowSortEnabled, status)}
         />
         {workflowSortEnabled || permissionsDisabled ? null : (
           <ActionButton
@@ -463,7 +465,7 @@ const renderActionButtons = ({
             workflowSortEnabled={workflowSortEnabled}
             status={status}
             data-test="show-workflowitem-permissions"
-            iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+            className={getButtonStyle(workflowSortEnabled, status)}
           />
         )}
 
@@ -476,7 +478,7 @@ const renderActionButtons = ({
               title={closeDisabled ? "" : strings.common.reject}
               workflowSortEnabled={workflowSortEnabled}
               status={status}
-              iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+              className={getButtonStyle(workflowSortEnabled, status)}
               data-test="reject-workflowitem"
             />
 
@@ -487,7 +489,7 @@ const renderActionButtons = ({
               title={closeDisabled ? "" : strings.common.close}
               workflowSortEnabled={workflowSortEnabled}
               status={status}
-              iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+              className={getButtonStyle(workflowSortEnabled, status)}
               data-test="close-workflowitem"
             />
           </>
@@ -501,7 +503,7 @@ const renderActionButtons = ({
           title={strings.common.rejected}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
-          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+          className={getButtonStyle(workflowSortEnabled, status)}
           data-test="closed-workflowitem-reject-reason"
         />
       </div>

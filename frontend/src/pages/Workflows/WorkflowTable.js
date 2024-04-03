@@ -17,11 +17,7 @@ import WorkflowEmptyState from "./WorkflowEmptyState";
 import WorkflowitemSearch from "./WorkflowitemSearch";
 import WorkflowList from "./WorkflowList";
 
-const styles = {
-  bulkActionButton: {
-    marginRight: "5px"
-  }
-};
+import "./WorkflowTable.scss";
 
 const WorkflowTableHeader = (props) => {
   const {
@@ -62,13 +58,13 @@ const WorkflowTableHeader = (props) => {
           <WorkflowitemSearch {...props} />
         </Grid>
         <Grid xs={12} sm={12} md={9}>
-          <div style={{ margin: "19px 15px 5px 15px" }}>
+          <div className="bulk-actions">
             <Button
               variant="outlined"
               size="small"
               disabled={selectedWorkflowItems.length === workflowItems.length}
               onClick={handleSelectAllButton}
-              style={styles.bulkActionButton}
+              className="bulk-action-button"
               data-test="select-all-workflow-items"
             >
               {strings.common.select_all}
@@ -78,7 +74,7 @@ const WorkflowTableHeader = (props) => {
               size="small"
               disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
               onClick={handleDeselectAllButton}
-              style={styles.bulkActionButton}
+              className="bulk-action-button"
               data-test="deselect-all-workflow-items"
             >
               {strings.common.deselect_all}
@@ -89,7 +85,7 @@ const WorkflowTableHeader = (props) => {
               disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
               onClick={handlePermissionBulkActionButton}
               startIcon={<KeyIcon />}
-              style={styles.bulkActionButton}
+              className="bulk-action-button"
               data-test="open-batch-workflow-items-permission-table"
             >
               {strings.users.edit_permissions}
@@ -100,7 +96,7 @@ const WorkflowTableHeader = (props) => {
               disabled={!workflowSortEnabled || selectedWorkflowItems.length === 0}
               onClick={handleCopyBulkActionButton}
               startIcon={<ContentCopyIcon />}
-              style={styles.bulkActionButton}
+              className="bulk-action-button"
               data-test="open-batch-workflow-items-copy-table"
             >
               {strings.common.copy}
@@ -109,34 +105,23 @@ const WorkflowTableHeader = (props) => {
         </Grid>
       </Grid>
 
-      <CardContent>
-        <div>
-          <div style={{ position: "relative" }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                paddingLeft: "6",
-                justifyContent: "space-between"
-              }}
-            >
-              <div style={{ width: "8%", paddingLeft: "4px" }} />
-              <div style={{ width: "25%" }}>
-                <Typography variant="body1">{strings.workflow.workflow_type_workflow}</Typography>
-              </div>
-              <div style={{ width: "25%" }}>
-                <Typography variant="body1">{strings.common.budget}</Typography>
-              </div>
-              <div style={{ width: "22%" }}>
-                <Typography variant="body1">{strings.workflow.assignee}</Typography>
-              </div>
-              <div style={{ width: "10%" }}>
-                <Typography variant="body1">{strings.common.tag}</Typography>
-              </div>
-              <div style={{ width: "10%", textAlign: "center" }}>
-                <Typography variant="body1">{strings.common.actions}</Typography>
-              </div>
-            </div>
+      <CardContent className="workfow-card-content">
+        <div className="workflow-table-header">
+          <div className="columns" />
+          <div className="columns">
+            <Typography variant="body1">{strings.workflow.workflow_type_workflow}</Typography>
+          </div>
+          <div className="columns">
+            <Typography variant="body1">{strings.common.budget}</Typography>
+          </div>
+          <div className="columns">
+            <Typography variant="body1">{strings.workflow.assignee}</Typography>
+          </div>
+          <div className="columns">
+            <Typography variant="body1">{strings.common.tag}</Typography>
+          </div>
+          <div className="columns">
+            <Typography variant="body1">{strings.common.actions}</Typography>
           </div>
         </div>
       </CardContent>
@@ -153,7 +138,7 @@ const createWorkflowItems = ({ workflowItems, ...props }) => {
   return workflowItems?.length > 0 ? (
     <WorkflowList lockAxis={"y"} workflowItems={workflowItems} onSortEnd={onSortEnd} {...props} />
   ) : (
-    <div style={{ backgroundColor: "#f3f3f3" }}>
+    <div className="workflow-empty-state">
       <WorkflowEmptyState />
     </div>
   );
@@ -165,7 +150,7 @@ const WorkflowTable = (props) => {
   const workflowItems = filteredWorkflowitems;
 
   return (
-    <div data-test="workflowitem-table" style={{ paddingBottom: "8px" }}>
+    <div data-test="workflowitem-table" className="workflow-item-table">
       <WorkflowTableHeader {...props} />
       {createWorkflowItems({ ...props, workflowItems })}
       {showDetailsItem && <WorkflowDetails workflowitem={showDetailsItem} {...props} />}

@@ -2,21 +2,12 @@ import React, { Component } from "react";
 
 import TextInput from "./TextInput";
 
-const styles = {
-  inputDiv: {
-    marginTop: 15,
-    marginBottom: 15,
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  }
-};
+import "./index.scss";
 
 class Identifier extends Component {
   render() {
     return (
-      <div style={styles.inputDiv}>
+      <div className="identifier">
         <TextInput
           label={this.props.nameLabel}
           value={this.props.name}

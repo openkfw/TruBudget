@@ -20,47 +20,7 @@ import strings from "../../localizeStrings";
 import ActionButton from "./ActionButton";
 import OverflowTooltip from "./OverflowTooltip";
 
-const styles = {
-  formControl: {
-    minWidth: "200px",
-    maxWidth: "200px"
-  },
-  radioButton: {
-    height: "10px"
-  },
-  selectValue: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center"
-  },
-  formControlContainer: {
-    display: "flex",
-    margin: 16,
-    justifyContent: "flex-start"
-  },
-  select: {
-    maxWidth: "200px",
-    "&$disabled": {
-      cursor: "-webkit-grab"
-    }
-  },
-  assigneeTypography: {
-    overflow: "hidden",
-    textOverflow: "ellipsis"
-  },
-  listSubHeader: { top: "auto" },
-  disabled: {},
-  closeButtonContainer: { float: "right", marginTop: -8 },
-  closeButtonSize: { fontSize: 15 },
-  itemContainer: { maxHeight: "70vh", overflow: "auto", boxShadow: "none" },
-  clearButton: {
-    width: 45,
-    height: 45,
-    alignSelf: "flex-end",
-    marginLeft: "5px"
-  }
-};
+import "./SingleSelection.scss";
 
 class SingleSelection extends Component {
   constructor() {
@@ -82,7 +42,7 @@ class SingleSelection extends Component {
           data-test={isChecked ? "selected-item" : "not-selected-item"}
           onClick={() => (id !== selectId ? this.props.onSelect(id, displayName) : undefined)}
         >
-          <Radio style={styles.radioButton} disabled={disabled} checked={isChecked} />
+          <Radio className="radio-button" disabled={disabled} checked={isChecked} />
           <ListItemText data-test={`single-select-name-${id}`}>
             <OverflowTooltip text={displayName} maxWidth="none" />
           </ListItemText>
@@ -109,7 +69,7 @@ class SingleSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader style={styles.listSubHeader}> {strings.users.users} </ListSubheader>
+          <ListSubheader className="list-sub-header"> {strings.users.users} </ListSubheader>
           {selection}
         </div>
       );
@@ -129,7 +89,7 @@ class SingleSelection extends Component {
     if (selection.length > 0) {
       return (
         <div>
-          <ListSubheader style={styles.listSubHeader}> {strings.users.groups} </ListSubheader>
+          <ListSubheader className="list-sub-header"> {strings.users.groups} </ListSubheader>
           {selection}
         </div>
       );
@@ -143,17 +103,6 @@ class SingleSelection extends Component {
     const suggestedUsers = this.renderUserSelection(selectableItems, selectId, disabled);
     const suggestedGroups = this.renderGroupSelection(selectableItems, selectId, disabled);
     const selectedItem = selectableItems.find((s) => s.id === selectId);
-    const getSortStyles = () => {
-      if (workflowSortEnabled) {
-        if (status !== "closed") {
-          return {
-            select: styles.select,
-            disabled: styles.disabled
-          };
-        }
-      }
-      return;
-    };
 
     const openSelect = () => {
       if (this.props.onOpen !== undefined) this.props.onOpen();
@@ -169,21 +118,19 @@ class SingleSelection extends Component {
         <FormControl
           data-test={"single-select-container" + (disabled ? "-disabled" : "")}
           disabled={disabled}
-          style={styles.formControl}
+          className="form-control"
         >
           <InputLabel htmlFor={selectId}>{floatingLabel}</InputLabel>
           <Select
             data-test={"single-select" + (disabled ? "-disabled" : "")}
             variant="standard"
-            style={{
-              ...getSortStyles()
-            }}
+            className={workflowSortEnabled && status !== "closed" ? "select" : ""}
             value={selectedItem ? this.renderTitle(selectedItem) : []}
             renderValue={(name) => {
               return selectedItem ? (
-                <div style={styles.selectValue}>
-                  <Checkbox style={styles.radioButton} disabled={disabled} checked={true} />
-                  <Typography disabled={disabled} variant="body1" style={styles.assigneeTypography}>
+                <div className="select-value">
+                  <Checkbox className="radio-button" disabled={disabled} checked={true} />
+                  <Typography disabled={disabled} variant="body1" className="assignee-typography">
                     {name}
                   </Typography>
                 </div>
@@ -194,17 +141,17 @@ class SingleSelection extends Component {
             onOpen={openSelect}
             onClose={closeSelect}
           >
-            <div style={styles.closeButtonContainer}>
+            <div className="close-button-container">
               <ActionButton
                 ariaLabel="close"
                 data-test={"close-select"}
                 onClick={closeSelect}
                 title={strings.common.close}
-                iconButtonStyle={{ width: 15, height: 15 }}
-                icon={<CloseIcon style={styles.closeButtonSize} />}
+                className="icon-button-style"
+                icon={<CloseIcon className="close-button-size" />}
               />
             </div>
-            <div style={styles.formControlContainer}>
+            <div className="form-control-container">
               <FormControl>
                 <InputLabel>{strings.common.search}</InputLabel>
                 <Input
@@ -215,7 +162,7 @@ class SingleSelection extends Component {
               </FormControl>
             </div>
             <div data-test="single-select-list">
-              <Paper style={styles.itemContainer}>
+              <Paper className="item-container">
                 <List>
                   {suggestedUsers}
                   {suggestedGroups}
@@ -228,7 +175,7 @@ class SingleSelection extends Component {
           <IconButton
             aria-label="cancel"
             data-test={"clear-validator"}
-            style={styles.clearButton}
+            className="clear-button"
             onClick={onClearItem}
             size="large"
           >

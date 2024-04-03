@@ -9,26 +9,6 @@ import Dropdown from "../../Common/NewDropdown";
 
 import useHistoryState from "./historyHook";
 
-const styles = {
-  searchActions: {
-    marginTop: "24px"
-  },
-
-  formControl: {
-    marginTop: "24px",
-    width: "-webkit-fill-available"
-  },
-
-  datepicker: {
-    padding: "5px",
-    marginLeft: "19px",
-    minWidth: 200,
-    display: "flex",
-    flexDirection: "row"
-  },
-  dropdown: { minWidth: 200, marginRight: "16px" }
-};
-
 const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
   const [{ startAt, endAt, publisher, eventType }, mergeState, clearState] = useHistoryState();
 
@@ -61,8 +41,8 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
   return (
     <div>
       <DatePicker
+        className="date-picker"
         id="filter-startat"
-        style={styles.datepicker}
         label={strings.history.start_date}
         name="startAt"
         datetime={startAt}
@@ -70,8 +50,8 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
         onDelete={onDeleteStartAt}
       />
       <DatePicker
+        className="date-picker"
         id="filter-endat"
-        style={styles.datepicker}
         label={strings.history.end_date}
         name="endAt"
         datetime={endAt}
@@ -80,7 +60,7 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
       />
 
       <Dropdown
-        style={styles.dropdown}
+        style={{ minWidth: "200px", marginLeft: "1rem" }}
         value={publisher}
         floatingLabel={strings.history.publisher}
         onChange={(value) => mergeState({ publisher: value })}
@@ -91,7 +71,7 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
       </Dropdown>
 
       <Dropdown
-        style={styles.dropdown}
+        style={{ minWidth: "200px", marginLeft: "1rem" }}
         value={eventType}
         floatingLabel={strings.history.event_type}
         onChange={(value) => mergeState({ eventType: value })}
@@ -101,7 +81,7 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
         {getMenuItems(eventTypes)}
       </Dropdown>
 
-      <div style={styles.searchActions}>
+      <div className="search-actions">
         <Button aria-label="reset" data-test="reset" color="secondary" onClick={onReset}>
           {strings.common.reset}
         </Button>

@@ -71,6 +71,7 @@ const LoginPage = ({
             <Grid item xs>
               <Username username={username} storeUsername={storeUsername} failed={loginError} id="username" />
               <Password
+                className="password short"
                 password={password}
                 iconDisplayed={true}
                 storePassword={storePassword}

@@ -1,0 +1,21 @@
+.group-dialog-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.group-dialog-input {
+  width: 50%;
+}
+
+.divider {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.info {
+  display: flex;
+  padding-right: 1.25rem;
+  margin-left: 0.625rem;
+  margin-bottom: 1.25rem;
+}

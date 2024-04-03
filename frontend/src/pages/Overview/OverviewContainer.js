@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import _isEqual from "lodash/isEqual";
 
 import { toJS } from "../../helper";
-import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import AdditionalInfo from "../Common/AdditionalInfo";
 import worker from "../Common/filterProjects.worker.js";
@@ -67,7 +66,7 @@ class OverviewContainer extends Component {
     return (
       <div id="overviewpage">
         {this.props.isLiveUpdateAllProjectsEnabled ? <LiveUpdates update={this.update} /> : null}
-        <div style={globalStyles.innerContainer}>
+        <div className="inner-container">
           <Overview {...this.props} />
           <ProjectDialogContainer location={this.props.location} />
           <AdditionalInfo

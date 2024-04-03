@@ -1,0 +1,15 @@
+.create-button-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  align-items: flex-end;
+  top: 5rem;
+  right: -1.25rem;
+  width: 30%;
+  height: 1.25rem;
+}
+
+.create-button {
+  position: absolute;
+  margin-top: -1.25rem;
+}
