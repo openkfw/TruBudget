@@ -1,0 +1,23 @@
+.tag-container {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+}
+
+.input {
+  margin: 0.3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+.tags {
+  margin: 0.3rem;
+}
+
+.tag-textfield {
+  margin-right: 1.25rem;
+}

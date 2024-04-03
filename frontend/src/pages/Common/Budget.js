@@ -27,18 +27,7 @@ import strings from "../../localizeStrings";
 
 import DropDown from "./NewDropdown";
 
-const styles = {
-  inputfield: { minWidth: 200, marginRight: "16px", flexGrow: "1" },
-  inputFieldWithIcon: { minWidth: 200, flexGrow: "1" },
-  inputContainer: {
-    display: "flex",
-    width: "45%",
-    paddingRight: 20,
-    alignItems: "flex-end"
-  },
-  cell: { display: "flex", justifyContent: "space-between" },
-  helpIcon: { color: "rgba(0,0, 0, 0.42)", marginTop: "20px", marginBottom: "7px", fontSize: "x-large" }
-};
+import "./Budget.scss";
 
 const CustomInfoTooltip = (props) => {
   const [open, setOpen] = useState(false);
@@ -60,7 +49,7 @@ const CustomInfoTooltip = (props) => {
         disableFocusListener
         disableHoverListener
       >
-        <InfoOutlinedIcon style={styles.helpIcon} onClick={handleTooltipOpen} />
+        <InfoOutlinedIcon className="help-icon" onClick={handleTooltipOpen} />
       </Tooltip>
     </ClickAwayListener>
   );
@@ -280,12 +269,12 @@ const Budget = (props) => {
         <TableBody>
           <TableRow key={`pb-row-add`}>
             <TableCell>
-              <div style={styles.cell}>
+              <div className="cell">
                 {_isEmpty(projectProjectedBudgets) ? (
                   <>
                     <TextField
                       variant="standard"
-                      style={styles.inputFieldWithIcon}
+                      className="input-field-with-icon"
                       label={strings.common.organization}
                       value={organization}
                       onChange={(e) => {
@@ -302,9 +291,9 @@ const Budget = (props) => {
                     <CustomInfoTooltip title={strings.subproject.organization_info} />
                   </>
                 ) : (
-                  <div style={styles.inputContainer}>
+                  <div className="input-container">
                     <DropDown
-                      style={styles.inputFieldWithIcon}
+                      className="input-field-with-icon"
                       value={organization}
                       floatingLabel={strings.common.organization}
                       onChange={(e) => setOrganization(e)}
@@ -318,7 +307,7 @@ const Budget = (props) => {
                 )}
 
                 <DropDown
-                  style={styles.inputfield}
+                  className="input-field"
                   value={currency}
                   floatingLabel={strings.common.currency}
                   onChange={(currency) => {
@@ -347,7 +336,7 @@ const Budget = (props) => {
                   multiline={false}
                   aria-label="projectedbudget"
                   id="projectedbudgetinput"
-                  style={styles.inputFieldWithIcon}
+                  className="input-field-with-icon"
                   error={!isValidBudgetAmountAdd}
                   helperText={!isValidBudgetAmountAdd ? strings.common.invalid_format : ""}
                 />

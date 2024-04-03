@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
-import globalStyles from "../../styles";
 
 import {
   disableLiveUpdates,
@@ -39,7 +38,7 @@ class NotificationPageContainer extends Component {
 
   render() {
     return (
-      <div style={globalStyles.innerContainer}>
+      <div className="inner-container">
         {!this.state.isDataFetched ? <div /> : <NotificationPage {...this.props} />}
       </div>
     );

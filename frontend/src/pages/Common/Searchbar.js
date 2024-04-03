@@ -12,26 +12,8 @@ import Tooltip from "@mui/material/Tooltip";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  searchBar: {
-    display: "flex"
-  },
-  searchField: {
-    margin: "17px",
-    width: "270px",
-    display: "flex",
-    flexDirection: "row",
-    opacity: "0.8",
-    boxShadow: "none"
-  },
-  formField: {
-    width: "90%"
-  },
-  formControlField: {
-    width: "97%",
-    paddingLeft: "5px"
-  }
-};
+import "./Searchbar.scss";
+
 const Searchbar = ({
   searchBarDisplayed = true,
   searchDisabled,
@@ -43,11 +25,11 @@ const Searchbar = ({
   isSearchBarDisplayedByDefault = false
 }) => {
   return (
-    <div style={styles.searchBar} data-test="search-bar">
+    <div className="search-bar" data-test="search-bar">
       {searchBarDisplayed && !searchDisabled ? (
-        <Paper style={styles.searchField}>
-          <form onSubmit={(e) => e.preventDefault()} style={styles.formField}>
-            <FormControl style={styles.formControlField} data-test="search-input">
+        <Paper className="search-field">
+          <form onSubmit={(e) => e.preventDefault()} className="form">
+            <FormControl className="form-control-search" data-test="search-input">
               <Input
                 value={searchTerm}
                 placeholder={previewText}

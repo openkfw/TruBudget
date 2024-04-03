@@ -14,43 +14,15 @@ import strings from "../../localizeStrings";
 
 import { images } from "./images";
 
-const styles = {
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    alignContent: "center"
-  },
-  gridList: {
-    display: "flex",
-    flexWrap: "nowrap",
-    overflowX: "auto"
-  },
-  gridTile: {
-    width: "100%",
-    height: "100%"
-  },
-  subHeader: {
-    paddingLeft: "0px"
-  },
-  tileBar: {
-    background: "transparent",
-    marginBottom: "50px"
-  },
-  listTile: {
-    height: "100%"
-  },
-  imageListItem: {
-    overflow: "hidden"
-  }
-};
+import "./ImageSelector.scss";
 
 const ImageSelector = ({ onTouchTap, selectedImage }) => {
   return (
     <>
-      <div style={styles.root}>
-        <Subheader style={styles.subHeader}>{strings.common.thumbnail}</Subheader>
+      <div className="root">
+        <Subheader className="sub-header">{strings.common.thumbnail}</Subheader>
       </div>
-      <div style={styles.root}>
+      <div className="root">
         <ImageList
           rowHeight={150}
           sx={{
@@ -61,7 +33,7 @@ const ImageSelector = ({ onTouchTap, selectedImage }) => {
           }}
         >
           {images.map((image) => (
-            <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src} style={styles.imageListItem}>
+            <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src} className="image-list-item">
               <img alt={image.src} src={image.src} />
               <ImageListItemBar
                 actionIcon={
@@ -78,7 +50,7 @@ const ImageSelector = ({ onTouchTap, selectedImage }) => {
                   </IconButton>
                 }
                 title=" " // Otherwise the action buttons would not be visible
-                style={styles.tileBar}
+                className="tile-bar"
                 actionPosition="right"
               />
             </ImageListItem>

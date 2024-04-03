@@ -33,6 +33,7 @@ const FilterMenu = (props) => {
       <Box sx={{ display: "flex", margin: "0px", animation: `${flyInAnimation} 1s ease` }}>
         <Box sx={{ marginLeft: "0px" }}>
           <DatePicker
+            className="date-picker"
             id="filter-start"
             label={strings.history.start_date}
             name="start"
@@ -41,6 +42,7 @@ const FilterMenu = (props) => {
             onDelete={() => setStartDate(null)}
           />
           <DatePicker
+            className="date-picker"
             id="filter-end"
             label={strings.history.end_date}
             name="end"

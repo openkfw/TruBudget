@@ -6,7 +6,6 @@ import queryString from "query-string";
 import { toJS } from "../../helper";
 import { convertToSearchBarString } from "../../helper";
 import { canAssignProject, canCreateSubProject } from "../../permissions";
-import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import { withRouter } from "../../wrappers/withRouter";
 import { openAnalyticsDialog } from "../Analytics/actions";
@@ -106,7 +105,7 @@ class SubProjectContainer extends Component {
     return (
       <div>
         {this.props.isLiveUpdatesProjectEnabled ? <LiveUpdates update={this.update} /> : null}
-        <div style={globalStyles.innerContainer}>
+        <div className="inner-container">
           {!this.state.isDataFetched ? (
             <div />
           ) : (

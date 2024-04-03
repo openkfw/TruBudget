@@ -262,7 +262,7 @@ const WorkflowDialog = (props) => {
         (amountType !== "N/A" && amount === "") ||
         (amountType !== "N/A" && (!Number.isFinite(exchangeRate) || exchangeRate === 0)),
       content: (
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div className="workflow-dialog-content">
           <WorkflowDialogContent {...props} />
         </div>
       )

@@ -1,0 +1,26 @@
+.item-container {
+  max-height: 65vh;
+  overflow: auto;
+  box-shadow: none;
+}
+
+.fix-label {
+  top: auto;
+}
+
+.warning {
+  margin-right: 0.5rem;
+}
+
+.warningContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.select {
+  width: 350px;
+}
+
+.name-container {
+  max-width: none;
+}

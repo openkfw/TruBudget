@@ -7,29 +7,7 @@ import FormGroup from "@mui/material/FormGroup";
 import strings from "../../localizeStrings";
 import { globalIntentOrder } from "../../permissions";
 
-const styles = {
-  root: {
-    width: "100%"
-  },
-  expansionPanel: {
-    boxShadow: "none"
-  },
-  heading: {
-    fontSize: (theme) => theme.typography.pxToRem(15),
-    fontWeight: (theme) => theme.typography.fontWeightMedium
-  },
-  detailsDiv: {
-    width: "100%"
-  },
-  checkbox: {
-    padding: "5px"
-  },
-  formGroupDiv: {
-    display: "flex",
-    width: "100%",
-    justifyContent: "center"
-  }
-};
+import "./GlobalPermissions.scss";
 
 const renderPermissions = (
   globalPermissions,
@@ -52,7 +30,7 @@ const renderPermissions = (
           data-test={`permission-${intent}`}
           control={
             <Checkbox
-              style={styles.checkbox}
+              className="checkbox"
               checked={checked}
               disabled={!disabled}
               onChange={() =>
@@ -67,7 +45,7 @@ const renderPermissions = (
       );
     });
     return (
-      <div key={index} style={styles.formGroupDiv}>
+      <div key={index} className="form-group">
         <FormGroup>{intents}</FormGroup>
       </div>
     );
@@ -94,8 +72,8 @@ const GlobalPermissions = (props) => {
   );
 
   return (
-    <div style={styles.root} data-test="global-permissions-dialog">
-      <div style={styles.detailsDiv}>{permissions}</div>
+    <div className="global-permissions" data-test="global-permissions-dialog">
+      <div className="details">{permissions}</div>
     </div>
   );
 };

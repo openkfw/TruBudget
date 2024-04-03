@@ -1,0 +1,30 @@
+.input-field {
+  min-width: 200px;
+  margin-right: 1rem;
+  flex-grow: 1;
+}
+
+.input-field-with-icon {
+  min-width: 200px;
+  flex-grow: 1;
+}
+
+.input-container {
+  display: flex;
+  width: 45%;
+  padding-right: 1.25rem;
+  align-items: flex-end;
+}
+
+.cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.help-icon {
+  color: rgba(0, 0, 0, 0.42);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-size: x-large;
+}

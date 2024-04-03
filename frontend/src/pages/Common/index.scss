@@ -1,0 +1,123 @@
+@import "../index.scss";
+
+.paper-root {
+  overflow: scroll;
+}
+
+.information-paper-root {
+  width: 100%;
+  overflow: visible;
+}
+
+.content-style {
+  margin: 0 1rem;
+  min-width: 500px;
+}
+
+.stepper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.multi-step {
+  width: 90%;
+}
+
+.identifier {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.overflow-tooltip {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.password-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  margin-top: 1.25rem;
+  margin-right: 1.25rem;
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2.5rem;
+}
+
+.selectable-pill {
+  cursor: pointer;
+  margin: 0.125rem;
+  font-size: 1rem;
+  display: inline-flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  border-radius: 12px;
+  color: white;
+}
+
+.text-field {
+  width: 45%;
+  padding-right: 1.25rem;
+}
+
+.text-input-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+label {
+  white-space: nowrap;
+  width: -webkit-fill-available;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.form-control-container {
+  display: flex;
+  margin: 1rem;
+  justify-content: flex-start;
+}
+
+.form-control {
+  width: 200px;
+}
+
+.close-button-size {
+  font-size: 1rem;
+}
+
+.close-button-container {
+  float: right;
+  margin-top: -0.5rem;
+}
+
+.icon-button-style {
+  width: 1rem;
+  height: 1rem;
+}
+
+.action-button {
+  width: 25%;
+}
+
+.hide {
+  opacity: 0;
+}

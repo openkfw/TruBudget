@@ -2,9 +2,9 @@ import amber from "@mui/material/colors/amber";
 import red from "@mui/material/colors/deepOrange";
 import grey from "@mui/material/colors/grey";
 import blue from "@mui/material/colors/indigo";
-import { createTheme } from "@mui/material/styles";
+import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 
-export const muiTheme = createTheme({
+export const muiTheme = extendTheme({
   palette: {
     primary: blue,
     secondary: red,
@@ -22,7 +22,8 @@ export const muiTheme = createTheme({
       main: blue[400],
       selected: blue[900]
     },
-    tonalOffset: 0.6
+    tonalOffset: 0.6,
+    empty: { state: grey[100] }
   },
   components: {
     MuiTextField: {

@@ -6,12 +6,7 @@ import SingleSelection from "../Common/SingleSelection";
 
 import { assignWorkflowItem } from "./actions";
 
-const styles = {
-  assigneeContainer: {
-    width: "100%",
-    cursor: "-webkit-grab"
-  }
-};
+import "./WorkflowAssigneeContainer.scss";
 
 class WorkflowAssigneeContainer extends Component {
   getWorkflowAssignee = (workflowItems, selectedId) => {
@@ -42,7 +37,7 @@ class WorkflowAssigneeContainer extends Component {
     const assignee = this.getWorkflowAssignee(workflowItems, workflowitemId);
 
     return (
-      <div style={styles.assigneeContainer} data-test={`workflowitem-assignee-${workflowitemId}`}>
+      <div className="assignee-container" data-test={`workflowitem-assignee-${workflowitemId}`}>
         <SingleSelection
           selectId={assignee}
           disabled={disabled || workflowSortEnabled || hasSubprojectValidator}
