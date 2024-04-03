@@ -64,6 +64,23 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
           required: false,
           schema: { type: "string" },
         },
+        {
+          in: "query",
+          name: "sort",
+          description: "The field to sort by",
+          required: false,
+          schema: { type: "string" },
+        },
+        {
+          in: "query",
+          name: "order",
+          description: "The order to sort by",
+          required: false,
+          schema: {
+            type: "string",
+            enum: ["asc", "desc"],
+          },
+        },
       ],
       response: {
         200: {
