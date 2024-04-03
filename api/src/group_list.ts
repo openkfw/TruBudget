@@ -1,6 +1,5 @@
 import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
@@ -8,6 +7,8 @@ import * as Result from "./result";
 import * as Group from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
+import { extractUser } from "handlerUtils";
+import { AuthenticatedRequest } from "httpd/lib";
 
 /**
  * Creates the swagger schema for the `/group.list` endpoint
@@ -94,10 +95,7 @@ export function addHttpHandler(
     server.get(`${urlPrefix}/group.list`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const issuer: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+      const issuer = extractUser(request as AuthenticatedRequest);
 
       service
         .listGroups(ctx, issuer)

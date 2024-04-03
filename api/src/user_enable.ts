@@ -9,6 +9,7 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserEnable from "./service/domain/organization/user_enable";
 import Joi = require("joi");
+import { extractUser } from "handlerUtils";
 
 /**
  * Represents the request body of the endpoints
@@ -118,11 +119,7 @@ export function addHttpHandler(
     server.post(`${urlPrefix}/global.enableUser`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const issuer: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+      const issuer = extractUser(request as AuthenticatedRequest);
       const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
       const bodyResult = validateRequestBody(request.body);
 

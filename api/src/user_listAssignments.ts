@@ -10,6 +10,7 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { UserAssignments } from "./service/domain/workflow/user_assignments";
 import { RequestData } from "./service/domain/workflow/user_assignments_get";
+import { extractUser } from "handlerUtils";
 
 /**
  * Creates the swagger schema for the `/global.listAssignments` endpoint
@@ -94,11 +95,7 @@ export function addHttpHandler(
       mkSwaggerSchema(server),
       async (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
-        const issuer: ServiceUser = {
-          id: (request as AuthenticatedRequest).user.userId,
-          groups: (request as AuthenticatedRequest).user.groups,
-          address: (request as AuthenticatedRequest).user.address,
-        };
+        const issuer = extractUser(request as AuthenticatedRequest);
 
         const requestData: RequestData = { userId: request.query.userId };
         const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;

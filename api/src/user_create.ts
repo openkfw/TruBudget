@@ -11,6 +11,7 @@ import * as Result from "./result";
 import { InternalAuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserCreate from "./service/domain/organization/user_create";
+import { extract } from "tar-fs";
 
 /**
  * Represents the request body of the endpoint
@@ -173,12 +174,7 @@ export function addHttpHandler(
     server.post(`${urlPrefix}/global.createUser`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const serviceUser: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
-
+      const serviceUser = extract(request as AuthenticatedRequest);
       const bodyResult = validateRequestBody(request.body);
 
       if (Result.isErr(bodyResult)) {
