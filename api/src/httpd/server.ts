@@ -32,18 +32,37 @@ const ajv = new Ajv({
   keywords: ["example"],
 });
 
-const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
+const addTokenHandling = (
+  server: FastifyInstance,
+  jwt: { secretOrPrivateKey: string; publicKey: string; algorithm: string },
+): void => {
   server.register(fastifyCookie, {
     parseOptions: {},
   } as FastifyCookieOptions);
 
-  server.register(fastifyJwt, {
-    secret: jwtSecret,
-    cookie: {
-      cookieName: "token",
-      signed: false,
-    },
-  });
+  if (jwt.algorithm === "RS256") {
+    server.register(fastifyJwt, {
+      secret: {
+        private: Buffer.from(jwt.secretOrPrivateKey, "base64"),
+        public: Buffer.from(jwt.publicKey, "base64"),
+      },
+      sign: {
+        algorithm: jwt.algorithm,
+      },
+      cookie: {
+        cookieName: "token",
+        signed: false,
+      },
+    });
+  } else {
+    server.register(fastifyJwt, {
+      secret: jwt.secretOrPrivateKey,
+      cookie: {
+        cookieName: "token",
+        signed: false,
+      },
+    });
+  }
 
   server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -137,7 +156,7 @@ const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: n
 };
 
 export const createBasicApp = (
-  jwtSecret: string,
+  jwt: { secretOrPrivateKey: string; publicKey: string; algorithm: string },
   urlPrefix: string,
   apiPort: number,
   accessControlAllowOrigin: string,
@@ -171,7 +190,7 @@ export const createBasicApp = (
     };
   });
 
-  addTokenHandling(server, jwtSecret);
+  addTokenHandling(server, jwt);
   addLogging(server);
 
   server.addContentTypeParser("application/gzip", async function (request, payload) {

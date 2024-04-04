@@ -15,7 +15,9 @@ interface ProcessEnvVars {
   MULTICHAIN_RPC_USER: string;
   MULTICHAIN_RPC_PASSWORD: string;
   BLOCKCHAIN_PORT: string;
+  JWT_ALGORITHM: string;
   JWT_SECRET: string;
+  JWT_PUBLIC_KEY: string;
   CI_COMMIT_SHA: string;
   BUILDTIMESTAMP: string;
   DOCUMENT_FEATURE_ENABLED: string;
@@ -56,7 +58,11 @@ interface Config {
     host: string;
     port: number;
   };
-  jwtSecret: string;
+  jwt: {
+    secretOrPrivateKey: string;
+    publicKey: string;
+    algorithm: string;
+  };
   npmPackageVersion: string;
   // Continues Integration
   ciCommitSha: string;
@@ -106,7 +112,11 @@ export const config: Config = {
     host: process.env.MULTICHAIN_RPC_HOST || "localhost",
     port: Number(process.env.BLOCKCHAIN_PORT) || 8085,
   },
-  jwtSecret: process.env.JWT_SECRET || randomString(32),
+  jwt: {
+    secretOrPrivateKey: process.env.JWT_SECRET || randomString(32),
+    publicKey: process.env.JWT_PUBLIC_KEY || "",
+    algorithm: process.env.JWT_ALGORITHM || "HS256",
+  },
   npmPackageVersion: process.env.npm_package_version || "",
   // Continues Integration
   ciCommitSha: process.env.CI_COMMIT_SHA || "",
@@ -206,6 +216,22 @@ const getValidConfig = (): Config => {
     exitIfMissing(requiredDocEnvVars);
   }
 
+  const jwtAlgorithm: string = process.env.JWT_ALGORITHM;
+  if (
+    !(
+      jwtAlgorithm === "HS256" ||
+      jwtAlgorithm === "RS256" ||
+      jwtAlgorithm === undefined ||
+      jwtAlgorithm === ""
+    )
+  ) {
+    logger.fatal("JWT_ALGORITHM must be either HS256 or RS256 or empty (defaults to HS256)");
+    process.exit(1);
+  }
+
+  logger.error(Buffer.from(config.jwt.publicKey, "base64").toString("utf-8"));
+  logger.error(Buffer.from(config.jwt.secretOrPrivateKey, "base64").toString("utf-8"));
+  logger.error(JSON.stringify(config.jwt, null, 2));
   return config;
 };
 /**
