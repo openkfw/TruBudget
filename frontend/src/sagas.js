@@ -3365,9 +3365,9 @@ export default function* rootSaga() {
       yield takeEvery(CLOSE_PROJECT, closeProjectSaga),
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS, fetchAllProjectDetailsSaga),
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT, fetchAllProjectDetailsNotCurrentProjectSaga),
-      yield takeEvery(SET_PAGE, fetchProjectsV2Saga),
-      yield takeEvery(SET_ROWS_PER_PAGE, fetchProjectsV2Saga),
-      yield takeLeading(SEARCH_TERM, fetchProjectsV2Saga),
+      yield takeLatest(SET_PAGE, fetchProjectsV2Saga),
+      yield takeLatest(SET_ROWS_PER_PAGE, fetchProjectsV2Saga),
+      yield takeLatest(SEARCH_TERM, fetchProjectsV2Saga),
 
       // Subproject
       yield takeEvery(FETCH_ALL_SUBPROJECT_DETAILS, fetchAllSubprojectDetailsSaga),
