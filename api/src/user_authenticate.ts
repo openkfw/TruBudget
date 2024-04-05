@@ -11,6 +11,8 @@ import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
 
+const MAX_GROUPS_LENGTH = 3000;
+
 /**
  * Represents the request body of the endpoint
  */
@@ -270,13 +272,18 @@ export function addHttpHandler(
  * @returns a string containing the encoded JWT token
  */
 function createJWT(token: AuthToken, secret: string): string {
+  // when server tries to cram too much data into the cookie, browser will reject it
+  function setGroups(): string[] | null {
+    return token.groups.join(",").length < MAX_GROUPS_LENGTH ? token.groups : null;
+  }
+
   return jsonwebtoken.sign(
     {
       userId: token.userId,
       address: token.address,
       organization: token.organization,
       organizationAddress: token.organizationAddress,
-      groups: token.groups.join(",").length < 3000 ? token.groups : null, // if server tries to cram too much data into the cookie, browser will reject it
+      groups: setGroups(),
     },
     secret,
     { expiresIn: "8h" },
