@@ -276,7 +276,7 @@ function createJWT(token: AuthToken, secret: string): string {
       address: token.address,
       organization: token.organization,
       organizationAddress: token.organizationAddress,
-      groups: token.groups,
+      groups: token.groups.join(",").length < 3000 ? token.groups : null, // if server tries to cram too much data into the cookie, browser will reject it
     },
     secret,
     { expiresIn: "8h" },
