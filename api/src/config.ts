@@ -229,9 +229,6 @@ const getValidConfig = (): Config => {
     process.exit(1);
   }
 
-  logger.error(Buffer.from(config.jwt.publicKey, "base64").toString("utf-8"));
-  logger.error(Buffer.from(config.jwt.secretOrPrivateKey, "base64").toString("utf-8"));
-  logger.error(JSON.stringify(config.jwt, null, 2));
   return config;
 };
 /**
