@@ -58,6 +58,7 @@ export const STORE_PROJECT_VIEW = "STORE_PROJECT_VIEW";
 
 export const SET_PAGE = "SET_PAGE";
 export const SET_ROWS_PER_PAGE = "SET_ROWS_PER_PAGE";
+export const SET_SORT = "SET_SORT";
 
 export function fetchAllProjects(showLoading = false) {
   return {
@@ -310,4 +311,10 @@ export const setRowsPerPage = (limit, page) => ({
   type: SET_ROWS_PER_PAGE,
   limit,
   page
+});
+
+export const setSort = (column, direction) => ({
+  type: SET_SORT,
+  column,
+  direction
 });

@@ -128,6 +128,7 @@ const rawColumns = [
       </Typography>
     ),
     selector: (row) => row.data.projectName,
+    sortField: "name",
     sortable: true,
     compact: false,
     minWidth: "15rem",
@@ -141,6 +142,7 @@ const rawColumns = [
       </Typography>
     ),
     selector: (row) => row.data.projectStatus,
+    sortField: "status",
     sortable: true,
     compact: true,
     minWidth: "5rem",
@@ -154,6 +156,7 @@ const rawColumns = [
       </Typography>
     ),
     selector: (row) => row.data.creationUnixTs, // time in ms to use the built-in sort
+    sortField: "date",
     sortable: true,
     compact: true,
     minWidth: "10rem",
@@ -167,6 +170,7 @@ const rawColumns = [
       </Typography>
     ),
     selector: (row) => row.data.assignee,
+    sortField: "assignee",
     sortable: true,
     compact: true,
     minWidth: "5rem",
@@ -283,7 +287,8 @@ const TableView = (props) => {
     showProjectPermissions,
     storeSearchTerm,
     setPage,
-    setRowsPerPage
+    setRowsPerPage,
+    setSort
   } = props;
 
   const hasSearchTerm = searchTerm !== "";
@@ -564,6 +569,10 @@ const TableView = (props) => {
         onChangePage={(page, _totalRows) => {
           return setPage(page);
         }}
+        onSort={(column, sortDirection) => {
+          return setSort(column.sortField, sortDirection);
+        }}
+        sortServer
         paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
         data-test="project-list"
       />

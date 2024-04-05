@@ -21,6 +21,7 @@ import {
   setPage,
   setProjectView,
   setRowsPerPage,
+  setSort,
   showCreationDialog,
   showEditDialog,
   showProjectAdditionalData,
@@ -108,7 +109,8 @@ const mapDispatchToProps = (dispatch) => {
     setProjectView: (view) => dispatch(setProjectView(view)),
     editProject: (projectId, changes) => dispatch(editProject(projectId, changes, undefined)),
     setPage: (page) => dispatch(setPage(page)),
-    setRowsPerPage: (rowsPerPage, page) => dispatch(setRowsPerPage(rowsPerPage, page))
+    setRowsPerPage: (rowsPerPage, page) => dispatch(setRowsPerPage(rowsPerPage, page)),
+    setSort: (column, direction) => dispatch(setSort(column, direction))
   };
 };
 
