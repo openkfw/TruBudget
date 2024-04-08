@@ -7,9 +7,11 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
+import "./SubProjectEmptyState.scss";
+
 const SubprojectEmptyState = () => {
   return (
-    <CardContent style={{ textAlign: "center" }}>
+    <CardContent className="sub-project-empty-state">
       <List>
         <ListItem>
           <img

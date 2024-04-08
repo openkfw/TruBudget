@@ -281,7 +281,7 @@ const renderActionButtons = ({
 
   return (
     <div className="action-cell">
-      <div className="actions">
+      <div className="workflow-item-actions">
         <ActionButton
           ariaLabel="show additional data"
           notVisible={additionalDataDisabled || status === "closed" || additionalDataDisabled}
