@@ -1,0 +1,30 @@
+.side-navigation {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.side-navigation-header {
+  background-size: cover;
+  height: 100px;
+  position: relative;
+  width: 100%;
+  min-width: 300px;
+}
+
+.side-navigation-header-list {
+  padding-top: 1rem;
+}
+
+.info-user {
+  padding: 0;
+}
+
+.real-time-updates-container {
+  padding-left: 1.5rem;
+}
+
+.real-time-typography {
+  padding-top: 0.375rem;
+}

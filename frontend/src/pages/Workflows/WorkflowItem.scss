@@ -1,0 +1,217 @@
+@import "./index.scss";
+
+.tooltip {
+  margin: 0;
+  padding: 0 0.3rem 0 1rem;
+}
+
+.tooltip-item {
+  font-size: 0.75rem;
+  margin: 0.3rem 0;
+}
+
+.dots {
+  height: 1.25rem;
+  width: 1.25rem;
+  text-align: center;
+  display: inline-block;
+  position: absolute;
+  z-index: 20;
+  top: 21px;
+  left: 16px;
+  border-radius: 10px;
+}
+
+.workflow-checkbox {
+  height: 1.25rem;
+  width: 1.25rem;
+  text-align: center;
+  display: inline-block;
+  position: absolute;
+  top: 8px;
+  left: 5px;
+  border-radius: 10px;
+}
+
+.workflow-item-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.action-button {
+  width: 25%;
+}
+
+.line {
+  position: absolute;
+  border-left: 2px solid black;
+  height: 100%;
+  left: 25px;
+  bottom: 35px;
+  &.not-selectable {
+    opacity: 0.2;
+  }
+}
+
+.first-line {
+  position: absolute;
+  border-left: 2px solid black;
+  height: 2.3rem;
+  left: 25px;
+  bottom: 35px;
+}
+
+.button-style {
+  min-width: 30px;
+  margin-left: 0.3rem;
+}
+
+.amount-chip {
+  margin-left: 1rem;
+}
+
+.tag-chip {
+  color: var(--mui-palette-tag-main);
+}
+
+.status-chip {
+  margin-left: 0.25rem;
+}
+
+.chip-label {
+  font-size: 0.625rem;
+}
+
+.chip-container {
+  display: flex;
+  align-items: center;
+}
+
+.redacted {
+  font-style: italic;
+}
+
+.chip {
+  margin: 0.25rem;
+}
+
+.workflow-item-content {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+}
+
+.info-cell {
+  width: 8%;
+  display: flex;
+  align-items: center;
+}
+
+.workflow-cell {
+  width: 25%;
+  display: flex;
+  align-items: center;
+  &.not-selectable {
+    opacity: 0.3;
+  }
+}
+
+.redacted-workflow-cell {
+  width: 25%;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  &.not-selectable {
+    opacity: 0.3;
+  }
+}
+
+.action-cell {
+  width: 20%;
+  display: flex;
+  align-items: center;
+}
+
+.tag-cell {
+  width: 8%;
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+}
+
+.typographs {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.workflow-item-card {
+  margin-left: 3rem;
+  margin-right: 0.625rem;
+  &.green {
+    background-color: #f1f8e9;
+  }
+  &.red {
+    background-color: #ffebee;
+  }
+  &.grab-cursor {
+    cursor: -webkit-grab;
+  }
+}
+
+.workflow-item-container {
+  position: relative;
+}
+
+.container-item {
+  margin: 0 0 1rem 0;
+}
+
+.workflow-icon {
+  width: 0.875rem;
+  height: 1.25rem;
+  opacity: 1;
+  &.not-selectable {
+    opacity: 0.3;
+  }
+}
+
+.amount-field-container {
+  display: flex;
+}
+
+.amount-field {
+  padding-top: 0.25rem;
+  padding-left: 0.25rem;
+}
+
+.item-by-default {
+  margin-left: 15vh;
+  margin-right: 0.625rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.chip-row {
+  flex: 2;
+}
+
+.redacted-item-style {
+  padding: 0;
+  &.not-selectable {
+    opacity: 0.3;
+  }
+}
+
+.redacted-big-item-style {
+  padding: 0;
+  flex: 5;
+  &.not-selectable {
+    opacity: 0.3;
+  }
+}
+
+.hidden-icon-container {
+  flex: 1;
+}

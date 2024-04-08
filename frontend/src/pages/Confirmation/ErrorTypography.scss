@@ -1,0 +1,27 @@
+.error-typography-warning {
+  background-color: rgb(255, 165, 0, 0.7);
+  color: black;
+  border-style: solid;
+  border-radius: 4px;
+  border-color: orange;
+  padding: 0.125rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-typography-error {
+  background-color: rgb(255, 0, 0, 0.7);
+  color: black;
+  border-style: solid;
+  border-radius: 4px;
+  border-color: red;
+  padding: 0.125rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.warning-icon {
+  margin-left: 0.25rem;
+}

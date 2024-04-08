@@ -1,0 +1,21 @@
+.main-navbar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  white-space: nowrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-left: 0.75rem;
+}
+
+.breadcrumb {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

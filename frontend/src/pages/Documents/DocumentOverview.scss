@@ -1,0 +1,43 @@
+@import "./index.scss";
+
+.validation-button-not-validated {
+  white-space: nowrap;
+}
+
+.document-validation-input {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+}
+
+.document-action-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.noHorizontalPadding {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.document-link {
+  overflow: hidden;
+  max-width: 170px;
+  color: #333333;
+}
+
+.finger-print-container {
+  display: flex;
+}
+
+.finger-print {
+  padding-right: 0.625rem;
+  padding-bottom: 0.625rem;
+}

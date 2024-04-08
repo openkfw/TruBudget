@@ -18,11 +18,11 @@ import {
   storeSubProjectName,
   storeSubProjectValidator
 } from "./actions";
-import SubprojectDialog from "./SubprojectDialog";
+import SubProjectDialog from "./SubProjectDialog";
 
-class SubprojectDialogContainer extends Component {
+class SubProjectDialogContainer extends Component {
   render() {
-    return <SubprojectDialog {...this.props} />;
+    return <SubProjectDialog {...this.props} />;
   }
 }
 
@@ -81,4 +81,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(SubprojectDialogContainer)));
+export default connect(mapStateToProps, mapDispatchToProps)(withInitialLoading(toJS(SubProjectDialogContainer)));

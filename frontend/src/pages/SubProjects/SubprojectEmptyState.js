@@ -7,15 +7,6 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  subtitle: {
-    color: (theme) => theme.palette.grey.dark
-  },
-  caption: {
-    color: (theme) => theme.palette.grey.main
-  }
-};
-
 const SubprojectEmptyState = () => {
   return (
     <CardContent style={{ textAlign: "center" }}>
@@ -28,12 +19,12 @@ const SubprojectEmptyState = () => {
           />
         </ListItem>
         <ListItem>
-          <Typography variant="subtitle1" style={styles.subtitle}>
+          <Typography variant="subtitle1" className="subtitle">
             {strings.common.no_subprojects}
           </Typography>
         </ListItem>
         <ListItem>
-          <Typography variant="caption" style={styles.caption}>
+          <Typography variant="caption" className="caption">
             {strings.common.no_items_text}
           </Typography>
         </ListItem>

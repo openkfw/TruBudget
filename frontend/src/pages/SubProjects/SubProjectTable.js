@@ -29,49 +29,10 @@ import {
 } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
 
-import SubProjectEmptyState from "./SubprojectEmptyState";
+import SubProjectEmptyState from "./SubProjectEmptyState";
 import SubProjectSearch from "./SubProjectSearch";
 
-const styles = {
-  subprojectTable: {
-    tableLayout: "fixed"
-  },
-  tableText: {
-    fontSize: "14px"
-  },
-  displayName: {
-    fontSize: "14px",
-    width: "40%",
-    overflow: "hidden",
-    textOverflow: "ellipsis"
-  },
-  projectdBudget: {
-    fontSize: "14px",
-    width: "30%"
-  },
-  status: {
-    fontSize: "14px",
-    width: "15%"
-  },
-  actions: {
-    fontSize: "14px",
-    width: "25%"
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "center"
-  },
-  button: {
-    width: "33%"
-  },
-  budgetContainer: {
-    display: "flex",
-    flexWrap: "wrap"
-  },
-  budget: {
-    margin: "4px"
-  }
-};
+import "./SubProjectTable.scss";
 
 const displaySubprojectBudget = (budgets) => {
   const consolidatedBudgets = budgets.reduce((acc, next) => {
@@ -83,7 +44,7 @@ const displaySubprojectBudget = (budgets) => {
   for (const currencyCode in consolidatedBudgets) {
     const numberOfBudgets = consolidatedBudgets[currencyCode].length;
     display.push(
-      <div key={`projectedBudget-sp-${currencyCode}`} style={styles.budget}>
+      <div key={`projectedBudget-sp-${currencyCode}`} className="sub-project-budget">
         <Tooltip
           title={
             <div>
@@ -109,7 +70,7 @@ const displaySubprojectBudget = (budgets) => {
     );
   }
 
-  return <div style={styles.budgetContainer}>{display}</div>;
+  return <div className="sub-project-budget-container">{display}</div>;
 };
 
 const getTableEntries = ({
@@ -136,7 +97,7 @@ const getTableEntries = ({
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
         <TableRow key={index} data-test={`subproject-${id}`}>
-          <TableCell style={styles.displayName} data-test={`subproject-title-${index}`}>
+          <TableCell className="sub-project-name" data-test={`subproject-title-${index}`}>
             <Highlighter
               data-test="highlighted-displayname"
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
@@ -144,17 +105,17 @@ const getTableEntries = ({
               textToHighlight={displayName}
             />
           </TableCell>
-          <TableCell style={styles.projectdBudget}>{amountString}</TableCell>
-          <TableCell style={styles.status}>
+          <TableCell className="sub-project-projected-budget">{amountString}</TableCell>
+          <TableCell className="sub-project-status">
             <Highlighter
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
               searchWords={searchTermArray}
               textToHighlight={statusMapping(status)}
             />
           </TableCell>
-          <TableCell style={styles.actions}>
-            <div style={styles.buttonContainer}>
-              <div style={styles.button}>
+          <TableCell className="sub-project-actions">
+            <div className="sub-project-button-container">
+              <div className="sub-project-button">
                 <ActionButton
                   ariaLabel="show subproject data"
                   notVisible={additionalDataEmpty}
@@ -166,7 +127,7 @@ const getTableEntries = ({
                   data-test={`subproject-additionaldata-${index}`}
                 />
               </div>
-              <div style={styles.button}>
+              <div className="sub-project-button">
                 <ActionButton
                   ariaLabel="show edit dialog"
                   notVisible={!isOpen || editDisabled}
@@ -176,7 +137,7 @@ const getTableEntries = ({
                   data-test={`subproject-edit-button-${index}`}
                 />
               </div>
-              <div style={styles.button}>
+              <div className="sub-project-button">
                 <ActionButton
                   ariaLabel="show subproject permissions"
                   notVisible={!canViewPermissions}
@@ -186,7 +147,7 @@ const getTableEntries = ({
                   data-test={"spp-button-" + index}
                 />
               </div>
-              <div style={styles.button}>
+              <div className="sub-project-button">
                 <ActionButton
                   ariaLabel="show subproject"
                   notVisible={!canViewSubProjectDetails(allowedIntents)}
@@ -250,13 +211,13 @@ const SubProjectTable = ({
         storeSearchTerm={storeSubSearchTerm}
       />
       {subProjects.length > 0 ? (
-        <Table data-test="ssp-table" style={styles.subprojectTable}>
+        <Table data-test="ssp-table" className="sub-project-table">
           <TableHead>
             <TableRow data-test="subproject-row">
-              <TableCell style={styles.displayName}>{strings.common.subproject}</TableCell>
-              <TableCell style={styles.projectdBudget}>{strings.common.projected_budget}</TableCell>
-              <TableCell style={styles.status}>{strings.common.status}</TableCell>
-              <TableCell style={styles.actions}> </TableCell>
+              <TableCell className="sub-project-name">{strings.common.subproject}</TableCell>
+              <TableCell className="sub-project-projected-budget">{strings.common.projected_budget}</TableCell>
+              <TableCell className="sub-project-status">{strings.common.status}</TableCell>
+              <TableCell className="sub-project-actions"> </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>{tableEntries}</TableBody>

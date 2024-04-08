@@ -1,0 +1,16 @@
+.fly-in-notifications {
+  position: absolute;
+  transition: all 500ms ease-in;
+}
+
+.fly-in-notification-card {
+  width: 300px;
+  margin-bottom: 0.5rem;
+}
+
+.fly-in-notifications-container {
+  position: fixed;
+  top: 60px;
+  right: 16px;
+  z-index: 2000;
+}
