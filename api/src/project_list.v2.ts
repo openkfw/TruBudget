@@ -13,6 +13,7 @@ import * as Project from "./service/domain/workflow/project";
 import { extractUser } from "./handlerUtils";
 import { Pagination, paginate } from "./lib/pagination";
 import { isNumber } from "./lib/validation";
+import { RequestGenericInterface } from "fastify";
 
 const API_VERSION = "2.0";
 
@@ -191,6 +192,14 @@ interface Service {
   listProjects(ctx: Ctx, user: ServiceUser): Promise<Result.Type<Project.Project[]>>;
 }
 
+interface QueryV2 extends RequestGenericInterface {
+  page: number;
+  limit: number;
+  search?: string;
+  sort?: string;
+  order?: string;
+}
+
 /**
  * Creates an http handler that handles incoming http requests for the `/v2/project.list` route
  *
@@ -204,106 +213,104 @@ export function addHttpHandler(
   service: Service,
 ): void {
   server.register(async function () {
-    server.get(`${urlPrefix}/v2/project.list`, mkSwaggerSchema(server), (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
-      const query = request.query as {
-        search?: string;
-        page?: number; //string?
-        limit?: number; //string?
-        sort?: string;
-        order?: string;
-      };
-      const user = extractUser(request as AuthenticatedRequest);
+    server.get<{ Querystring: QueryV2 }>(
+      `${urlPrefix}/v2/project.list`,
+      mkSwaggerSchema(server),
+      (request, reply) => {
+        const ctx: Ctx = { requestId: request.id, source: "http" };
+        const query = request.query as QueryV2;
+        const user = extractUser(request as AuthenticatedRequest);
 
-      const mapToExposedProject = (project: Project.Project): ExposedProject => {
-        return {
-          allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
-          data: {
-            id: project.id,
-            creationUnixTs: toUnixTimestampStr(project.createdAt),
-            status: project.status,
-            displayName: project.displayName,
-            assignee: project.assignee,
-            description: project.description,
-            thumbnail: project.thumbnail,
-            projectedBudgets: project.projectedBudgets,
-            additionalData: project.additionalData,
-            tags: project.tags,
-          },
-        };
-      };
-
-      const filterProjects = (projects: ExposedProject[]): ExposedProject[] => {
-        if (query.search && query.search.length > 0) {
-          const searchTerm = query.search.toLowerCase();
-          return projects.filter(
-            (project) =>
-              project.data.displayName.toLowerCase().includes(searchTerm) ||
-              project.data.tags.some((item) => item.toLowerCase().includes(searchTerm)),
-          );
-        } else return projects;
-      };
-
-      const sortProjects = (projects: ExposedProject[]): ExposedProject[] => {
-        if (query?.sort) {
-          if (query.sort === "name") {
-            projects.sort((a, b) => a.data.displayName.localeCompare(b.data.displayName));
-          } else if (query.sort === "date") {
-            projects.sort((a, b) => a.data.creationUnixTs.localeCompare(b.data.creationUnixTs));
-          } else if (query.sort === "status") {
-            projects.sort((a, b) => a.data.status.localeCompare(b.data.status));
-          } else if (query.sort === "assignee") {
-            projects.sort((a, b) => (a.data.assignee || "").localeCompare(b.data.assignee || ""));
-          }
-        }
-        if (query?.order === "desc") projects.reverse();
-        return projects;
-      };
-
-      const paginateProjects = (projects: ExposedProject[]): [ExposedProject[], Pagination] => {
-        if (query.page && !isNumber(query.page)) {
-          throw new VError(
-            { name: "BadRequest" },
-            "Invalid query parameters: page must be a number",
-          );
-        }
-        if (query.limit && !isNumber(query.limit)) {
-          throw new VError(
-            { name: "BadRequest" },
-            "Invalid query parameters: limit must be a number",
-          );
-        }
-        return paginate<ExposedProject>("/v2/project.list", projects, query.page, query.limit);
-      };
-
-      service
-        .listProjects(ctx, user)
-        .then((result) => {
-          if (Result.isErr(result)) {
-            throw new VError(result, "/v2/project.list failed");
-          }
-          return result.map(mapToExposedProject);
-        })
-        .then(filterProjects)
-        .then(sortProjects)
-        .then(paginateProjects)
-        .then((result) => {
-          const [items, pagination] = result;
-
-          const body = {
-            apiVersion: API_VERSION,
+        const mapToExposedProject = (project: Project.Project): ExposedProject => {
+          return {
+            allowedIntents: getAllowedIntents([user.id].concat(user.groups), project.permissions),
             data: {
-              items,
-              pagination,
+              id: project.id,
+              creationUnixTs: toUnixTimestampStr(project.createdAt),
+              status: project.status,
+              displayName: project.displayName,
+              assignee: project.assignee,
+              description: project.description,
+              thumbnail: project.thumbnail,
+              projectedBudgets: project.projectedBudgets,
+              additionalData: project.additionalData,
+              tags: project.tags,
             },
           };
-          reply.status(200).send(body);
-        })
-        .catch((err) => {
-          const { code, body } = toHttpError(err, API_VERSION);
-          request.log.error({ err }, "Error while listing projects");
-          reply.status(code).send(body);
-        });
-    });
+        };
+
+        const filterProjects = (projects: ExposedProject[]): ExposedProject[] => {
+          if (query.search && query.search.length > 0) {
+            const searchTerm = query.search.toLowerCase();
+            return projects.filter(
+              (project) =>
+                project.data.displayName.toLowerCase().includes(searchTerm) ||
+                project.data.tags.some((item) => item.toLowerCase().includes(searchTerm)),
+            );
+          } else return projects;
+        };
+
+        const sortProjects = (projects: ExposedProject[]): ExposedProject[] => {
+          if (query?.sort) {
+            if (query.sort === "name") {
+              projects.sort((a, b) => a.data.displayName.localeCompare(b.data.displayName));
+            } else if (query.sort === "date") {
+              projects.sort((a, b) => a.data.creationUnixTs.localeCompare(b.data.creationUnixTs));
+            } else if (query.sort === "status") {
+              projects.sort((a, b) => a.data.status.localeCompare(b.data.status));
+            } else if (query.sort === "assignee") {
+              projects.sort((a, b) => (a.data.assignee || "").localeCompare(b.data.assignee || ""));
+            }
+          }
+          if (query?.order === "desc") projects.reverse();
+          return projects;
+        };
+
+        const paginateProjects = (projects: ExposedProject[]): [ExposedProject[], Pagination] => {
+          if (query.page && !isNumber(query.page)) {
+            throw new VError(
+              { name: "BadRequest" },
+              "Invalid query parameters: page must be a number",
+            );
+          }
+          if (query.limit && !isNumber(query.limit)) {
+            throw new VError(
+              { name: "BadRequest" },
+              "Invalid query parameters: limit must be a number",
+            );
+          }
+          return paginate<ExposedProject>("/v2/project.list", projects, query);
+        };
+
+        service
+          .listProjects(ctx, user)
+          .then((result) => {
+            if (Result.isErr(result)) {
+              throw new VError(result, "/v2/project.list failed");
+            }
+            return result.map(mapToExposedProject);
+          })
+          .then(filterProjects)
+          .then(sortProjects)
+          .then(paginateProjects)
+          .then((result) => {
+            const [items, pagination] = result;
+
+            const body = {
+              apiVersion: API_VERSION,
+              data: {
+                items,
+                pagination,
+              },
+            };
+            reply.status(200).send(body);
+          })
+          .catch((err) => {
+            const { code, body } = toHttpError(err, API_VERSION);
+            request.log.error({ err }, "Error while listing projects");
+            reply.status(code).send(body);
+          });
+      },
+    );
   });
 }
