@@ -118,7 +118,8 @@ import {
   REVOKE_PROJECT_PERMISSION_FAILURE,
   REVOKE_PROJECT_PERMISSION_SUCCESS,
   SET_PAGE,
-  SET_ROWS_PER_PAGE
+  SET_ROWS_PER_PAGE,
+  SET_SORT
 } from "./pages/Overview/actions";
 import {
   FETCH_EMAIL_SERVICE_VERSION,
@@ -316,7 +317,8 @@ const getWorkflowitemRejectReason = (state) => {
 const getPaginationState = (state) => {
   return {
     page: state.getIn(["overview", "page"]),
-    limit: state.getIn(["overview", "limit"])
+    limit: state.getIn(["overview", "limit"]),
+    sort: state.getIn(["overview", "sort"])
   };
 };
 
@@ -1633,7 +1635,7 @@ export function* fetchAllProjectsSaga({ showLoading }) {
   }, showLoading);
 }
 
-export function* fetchProjectsV2Saga({ page, limit }) {
+export function* fetchProjectsV2Saga({ page, limit, column, direction }) {
   const paginationState = yield select(getPaginationState);
   const searchTerm = yield select(getSearchTermState);
   if (!limit) {
@@ -1642,8 +1644,14 @@ export function* fetchProjectsV2Saga({ page, limit }) {
   if (!page) {
     page = paginationState.page;
   }
+  if (!column) {
+    column = paginationState.sort.column;
+  }
+  if (!direction) {
+    direction = paginationState.sort.direction;
+  }
   yield execute(function* () {
-    const [{ data }] = yield all([yield callApi(api.listProjectsV2, page, limit, searchTerm)]);
+    const [{ data }] = yield all([yield callApi(api.listProjectsV2, page, limit, searchTerm, column, direction)]);
     yield put({
       type: FETCH_PROJECTS_V2_SUCCESS,
       projects: data.items,
@@ -3367,6 +3375,7 @@ export default function* rootSaga() {
       yield takeEvery(FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT, fetchAllProjectDetailsNotCurrentProjectSaga),
       yield takeLatest(SET_PAGE, fetchProjectsV2Saga),
       yield takeLatest(SET_ROWS_PER_PAGE, fetchProjectsV2Saga),
+      yield takeLatest(SET_SORT, fetchProjectsV2Saga),
       yield takeLatest(SEARCH_TERM, fetchProjectsV2Saga),
 
       // Subproject

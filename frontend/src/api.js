@@ -168,8 +168,12 @@ class Api {
       node
     });
   listProjects = () => instance.get(`/project.list`);
-  listProjectsV2 = (page, limit, searchTerm) =>
-    instance.get(removeEmptyQueryParams(`/v2/project.list?page=${page}&limit=${limit}&search=${searchTerm}`));
+  listProjectsV2 = (page, limit, searchTerm, column, direction) =>
+    instance.get(
+      removeEmptyQueryParams(
+        `/v2/project.list?page=${page}&limit=${limit}&search=${searchTerm}&sort=${column}&order=${direction}`
+      )
+    );
 
   listSubprojects = (projectId) => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
 

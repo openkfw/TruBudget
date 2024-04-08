@@ -69,7 +69,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
           name: "sort",
           description: "The field to sort by",
           required: false,
-          schema: { type: "string" },
+          schema: { type: "string", enum: ["name", "date", "status", "assignee"] },
         },
         {
           in: "query",
@@ -210,6 +210,8 @@ export function addHttpHandler(
         search?: string;
         page?: number; //string?
         limit?: number; //string?
+        sort?: string;
+        order?: string;
       };
       const user = extractUser(request as AuthenticatedRequest);
 
@@ -231,6 +233,49 @@ export function addHttpHandler(
         };
       };
 
+      const filterProjects = (projects: ExposedProject[]): ExposedProject[] => {
+        if (query.search && query.search.length > 0) {
+          const searchTerm = query.search.toLowerCase();
+          return projects.filter(
+            (project) =>
+              project.data.displayName.toLowerCase().includes(searchTerm) ||
+              project.data.tags.some((item) => item.toLowerCase().includes(searchTerm)),
+          );
+        } else return projects;
+      };
+
+      const sortProjects = (projects: ExposedProject[]): ExposedProject[] => {
+        if (query?.sort) {
+          if (query.sort === "name") {
+            projects.sort((a, b) => a.data.displayName.localeCompare(b.data.displayName));
+          } else if (query.sort === "date") {
+            projects.sort((a, b) => a.data.creationUnixTs.localeCompare(b.data.creationUnixTs));
+          } else if (query.sort === "status") {
+            projects.sort((a, b) => a.data.status.localeCompare(b.data.status));
+          } else if (query.sort === "assignee") {
+            projects.sort((a, b) => (a.data.assignee || "").localeCompare(b.data.assignee || ""));
+          }
+        }
+        if (query?.order === "desc") projects.reverse();
+        return projects;
+      };
+
+      const paginateProjects = (projects: ExposedProject[]): [ExposedProject[], Pagination] => {
+        if (query.page && !isNumber(query.page)) {
+          throw new VError(
+            { name: "BadRequest" },
+            "Invalid query parameters: page must be a number",
+          );
+        }
+        if (query.limit && !isNumber(query.limit)) {
+          throw new VError(
+            { name: "BadRequest" },
+            "Invalid query parameters: limit must be a number",
+          );
+        }
+        return paginate<ExposedProject>("/v2/project.list", projects, query.page, query.limit);
+      };
+
       service
         .listProjects(ctx, user)
         .then((result) => {
@@ -239,35 +284,9 @@ export function addHttpHandler(
           }
           return result.map(mapToExposedProject);
         })
-        .then((projects: ExposedProject[]): Array<ExposedProject> => {
-          // todo sort
-          return projects;
-        })
-        .then((projects: ExposedProject[]): Array<ExposedProject> => {
-          if (query.search && query.search.length > 0) {
-            const searchTerm = query.search.toLowerCase();
-            return projects.filter(
-              (project) =>
-                project.data.displayName.toLowerCase().includes(searchTerm) ||
-                project.data.tags.some((item) => item.toLowerCase().includes(searchTerm)),
-            );
-          } else return projects;
-        })
-        .then((projects: ExposedProject[]): [Array<ExposedProject>, Pagination] => {
-          if (query.page && !isNumber(query.page)) {
-            throw new VError(
-              { name: "BadRequest" },
-              "Invalid query parameters: page must be a number",
-            );
-          }
-          if (query.limit && !isNumber(query.limit)) {
-            throw new VError(
-              { name: "BadRequest" },
-              "Invalid query parameters: limit must be a number",
-            );
-          }
-          return paginate<ExposedProject>("/v2/project.list", projects, query.page, query.limit);
-        })
+        .then(filterProjects)
+        .then(sortProjects)
+        .then(paginateProjects)
         .then((result) => {
           const [items, pagination] = result;
 

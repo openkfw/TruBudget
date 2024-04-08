@@ -33,6 +33,7 @@ import {
   REMOVE_TEMPORARY_PROJECT_PERMISSION,
   SET_PAGE,
   SET_ROWS_PER_PAGE,
+  SET_SORT,
   SHOW_CREATION_DIALOG,
   SHOW_EDIT_DIALOG,
   SHOW_PROJECT_ADDITIONAL_DATA,
@@ -83,7 +84,8 @@ export const defaultState = fromJS({
   projectView: "card",
   isLiveUpdateAllProjectsEnabled: true,
   page: 1,
-  limit: 10
+  limit: 10,
+  sort: { column: null, direction: null }
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -266,6 +268,8 @@ export default function overviewReducer(state = defaultState, action) {
       return state.set("page", action.page);
     case SET_ROWS_PER_PAGE:
       return state.set("limit", action.limit).set("page", action.page);
+    case SET_SORT:
+      return state.set("sort", { column: action.column, direction: action.direction });
     default:
       return state;
   }

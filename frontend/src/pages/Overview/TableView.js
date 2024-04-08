@@ -563,15 +563,9 @@ const TableView = (props) => {
         pagination={true}
         paginationServer={true}
         paginationTotalRows={pagination?.totalRecords}
-        onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
-          return setRowsPerPage(currentRowsPerPage, currentPage);
-        }}
-        onChangePage={(page, _totalRows) => {
-          return setPage(page);
-        }}
-        onSort={(column, sortDirection) => {
-          return setSort(column.sortField, sortDirection);
-        }}
+        onChangeRowsPerPage={(currentRowsPerPage, currentPage) => setRowsPerPage(currentRowsPerPage, currentPage)}
+        onChangePage={(page, _totalRows) => setPage(page)}
+        onSort={(column, sortDirection) => setSort(column.sortField, sortDirection)}
         sortServer
         paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
         data-test="project-list"
