@@ -158,6 +158,7 @@ const de = {
   project: {
     add_new_project: "Neues Project hinzufügen",
     assignee: "Verantwortlicher",
+    cards_per_page: "Karten pro Seite",
     project_budget: "Budget",
     project_budget_amount: "Project Budget Anzahl",
     project_close_info: "Mindestens ein Subproject wurde noch nicht geschlossen.",

@@ -241,6 +241,7 @@ const en = {
   project: {
     add_new_project: "Add new project",
     assignee: "Owner",
+    cards_per_page: "Cards per page",
     project_budget_amount: "Project budget amount",
     project_budget: "Budget",
     project_close_info: "At least one subproject item has not been closed yet.",
@@ -254,7 +255,8 @@ const en = {
     project_thumbnail: "Thumbnail",
     project_title_description: "Name of the project",
     project_title: "Project title",
-    project_searchtext: "Search projects"
+    project_searchtext: "Search projects",
+    rows_per_page: "Rows per page"
   },
 
   subproject: {
@@ -323,7 +325,8 @@ const en = {
     workflow_redacted: "Redacted",
     workflow_reject_reason: "Reject reason",
     workflow_selection: "{0} workflowitems are selected",
-    workflow_selection_copy_description: "This functionality allows you to copy all selected workflow items to the destination subproject including amounts and assigned persons. Copied workflow items will be in open status so can edit them afterwards.",
+    workflow_selection_copy_description:
+      "This functionality allows you to copy all selected workflow items to the destination subproject including amounts and assigned persons. Copied workflow items will be in open status so can edit them afterwards.",
     workflow_selection_select_project: "Select project",
     workflow_selection_select_subproject: "Select subproject",
     workflow_submit_for_review: "Submit for Review",

@@ -129,6 +129,7 @@ const CardView = (props) => {
         rowsPerPage={pagination?.limit}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+        labelRowsPerPage={strings.project.cards_per_page}
       />
       <div aria-label="projects" className="projects-table-entries">
         {tableEntries}
@@ -161,6 +162,7 @@ const CardView = (props) => {
         rowsPerPage={pagination?.limit}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+        labelRowsPerPage={strings.project.cards_per_page}
       />
     </>
   );
