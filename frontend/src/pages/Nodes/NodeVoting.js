@@ -15,70 +15,7 @@ import { canApproveNode } from "../../permissions";
 
 import { ExistingNodesEmptyState, NewOrganizationsEmptyState } from "./NodesEmptyStates";
 
-const styles = {
-  cardRow: {
-    marginTop: 40,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  card: {
-    width: "48%"
-  },
-  cardDiv: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  cardHeader: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-
-  cardContent: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "space-around"
-  },
-  listItem: {
-    paddingLeft: "16px",
-    paddingRight: "16px"
-  },
-  orgInfo: {
-    display: "flex",
-    flexDirection: "column",
-    paddingBottom: "15px"
-  },
-  buttonGroup: {
-    display: "flex",
-    justifyContent: "space-between",
-    paddingBottom: "15px"
-  },
-  formContainer: {
-    display: "flex",
-    justifyContent: "space-around"
-  },
-  cardList: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  rightIcon: {
-    marginLeft: (theme) => theme.spacing(1)
-  },
-  leftIcon: {
-    marginRight: (theme) => theme.spacing(1)
-  },
-  button: {
-    margin: (theme) => theme.spacing(1),
-    minWidth: "100px",
-    width: "200px"
-  },
-  textInput: {
-    width: "40%"
-  }
-};
+import "./NodeVoting.scss";
 
 const splitNodes = (nodes) => {
   /*
@@ -135,11 +72,11 @@ const getDeclinersString = (decliners) => {
 const getListEntries = (nodes, canApprove, declineNode, approveNode) => {
   return nodes.map((node) => {
     return (
-      <div style={styles.listItem} key={node.address.address}>
-        <div style={styles.orgInfo}>
+      <div className="org-list-entries" key={node.address.address}>
+        <div className="org-info">
           <Typography variant="subtitle1"> {node.address.organization}</Typography>
           <Typography component={"span"} variant="body2">
-            <Typography variant="body2" display="block" component={"span"} style={{ overflowWrap: "break-word" }}>
+            <Typography variant="body2" display="block" component={"span"} className="wrap-content">
               {`${strings.nodesDashboard.address}: ${node.address.address} `}
             </Typography>
             <Typography variant="body2" display="block" component={"span"}>
@@ -147,12 +84,12 @@ const getListEntries = (nodes, canApprove, declineNode, approveNode) => {
             </Typography>
           </Typography>
         </div>
-        <div style={styles.buttonGroup}>
+        <div className="org-button-group">
           <Button
             variant="contained"
             disabled={node.myVote !== "none" || !canApprove}
             color="success"
-            style={{ ...styles.button, marginRight: "10px" }}
+            className="org-button"
             onClick={() => approveNode(node.address)}
           >
             {strings.nodesDashboard.approve}
@@ -161,7 +98,7 @@ const getListEntries = (nodes, canApprove, declineNode, approveNode) => {
             variant="contained"
             disabled={node.myVote !== "none" || !canApprove}
             color="secondary"
-            style={styles.button}
+            className="org-button"
             onClick={() => declineNode(node.address)}
           >
             {strings.nodesDashboard.decline}
@@ -212,44 +149,44 @@ const NodeVoting = ({
   };
 
   return (
-    <div style={styles.cardList}>
-      <div style={styles.cardRow} data-test="node-voting">
-        <Card style={styles.card}>
+    <div className="nodes-card-list">
+      <div className="nodes-voting-cards" data-test="node-voting">
+        <Card className="node-voting-card">
           <CardHeader title={strings.nodesDashboard.new_organization} />
           {isDataLoading ? (
             <div />
           ) : (
-            <CardContent style={styles.cardContent}>
+            <CardContent className="node-voting-card-content">
               <>{newOrgaNodes.length ? newOrgaNodesListEntries : <NewOrganizationsEmptyState />}</>
             </CardContent>
           )}
         </Card>
-        <Card style={styles.card}>
+        <Card className="node-voting-card">
           <CardHeader title={strings.nodesDashboard.additional_organization_node} />
           {isDataLoading ? (
             <div />
           ) : (
-            <CardContent style={styles.cardContent}>
+            <CardContent className="node-voting-card-content">
               <>{existingOrgaNodes.length ? existingOrgaNodesListEntries : <ExistingNodesEmptyState />}</>
             </CardContent>
           )}
         </Card>
       </div>
-      <Card style={{ marginTop: "30px" }}>
+      <Card className="new-organization-card">
         <CardHeader title={strings.nodesDashboard.add_organization} />
         <CardContent>
           <Formik initialValues={initialValues} validationSchema={orgValidationSchema} onSubmit={handleSubmit}>
             {({ values, errors, touched, isValid, handleChange, handleBlur }) => (
-              <Form style={styles.formContainer}>
+              <Form className="new-organization-form">
                 <TextField
-                  style={styles.textInput}
+                  className="org-text-input"
                   name="organization"
                   label={strings.common.organization}
                   value={values.organization}
                   error={Boolean(errors.organization) && touched.organization}
                   helperText={
                     <ErrorMessage name="organization">
-                      {(msg) => <span style={{ color: "red" }}>{msg}</span>}
+                      {(msg) => <span className="error-message">{msg}</span>}
                     </ErrorMessage>
                   }
                   data-test="organization"
@@ -257,14 +194,14 @@ const NodeVoting = ({
                   onBlur={handleBlur}
                 />
                 <TextField
-                  style={styles.textInput}
+                  className="org-text-input"
                   name="nodeAddress"
                   label={strings.nodesDashboard.node_address}
                   value={values.nodeAddress}
                   error={Boolean(errors.nodeAddress) && touched.nodeAddress}
                   helperText={
                     <ErrorMessage name="nodeAddress">
-                      {(msg) => <span style={{ color: "red" }}>{msg}</span>}
+                      {(msg) => <span className="error-message">{msg}</span>}
                     </ErrorMessage>
                   }
                   data-test="node-address"

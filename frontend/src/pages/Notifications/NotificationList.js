@@ -11,17 +11,7 @@ import strings from "../../localizeStrings";
 import NotificationEmptyState from "./NotificationEmptyState";
 import NotificationListItems from "./NotificationListItems";
 
-const styles = {
-  button: {
-    marginTop: 20,
-    marginRight: 30
-  },
-  paginationDiv: {
-    display: "flex",
-    width: "100%",
-    justifyContent: "flex-end"
-  }
-};
+import "./NotificationList.scss";
 
 const markPageAsRead = (markMultipleNotificationsAsRead, notifications, notificationPage) => {
   const notificationIds = notifications.map((notification) => notification.id);
@@ -53,11 +43,11 @@ const NotificationList = (props) => {
   return (
     <Card>
       <CardHeader title="Notifications" action={null} />
-      <div style={{ display: "flex", verticalAlign: "middle", padding: "11px 16px" }}>
+      <div className="read-all-button-container">
         <Button
           variant="outlined"
           onClick={() => markPageAsRead(markMultipleNotificationsAsRead, notifications, currentPage)}
-          style={styles.button}
+          className="read-all-button"
           data-test="read-multiple-notifications"
           disabled={!allNotificationsRead}
         >
@@ -82,7 +72,7 @@ const NotificationList = (props) => {
           )}
         </List>
       )}
-      <div style={styles.paginationDiv}>
+      <div className="notifications-pagination">
         <TablePagination
           component="div"
           rowsPerPageOptions={rowsPerPageOptions}

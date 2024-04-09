@@ -91,7 +91,7 @@ class ProjectAnalytics extends React.Component {
 
     return !this.props.isFetchingKPIs ? (
       <>
-        <div className="container">
+        <div className="analytics-container">
           <div className="top-container">
             <div className="table">
               <Table data-test="projected-budget-table">

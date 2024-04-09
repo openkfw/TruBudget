@@ -7,27 +7,7 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingLeft: "12px",
-    paddingRight: "12px",
-    whiteSpace: "nowrap"
-  },
-  breadcrumbs: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    marginLeft: "12px"
-  },
-  breadcrumb: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  }
-};
+import "./MainNavbarNavigation.scss";
 
 const getStaticBreadcrumb = (name) => {
   switch (name) {
@@ -93,8 +73,8 @@ const createBreadcrumb = (
     const isLastItem = index === paths.length - 1;
     const displayedName = index ? formattedPathName : strings.navigation.main_site;
     return (
-      <div key={index} style={styles.breadcrumb}>
-        <div>{index ? <ChevronRight color="primary" style={styles.breadcrumb} /> : null}</div>
+      <div key={index} className="breadcrumb">
+        <div>{index ? <ChevronRight color="primary" className="breadcrumb" /> : null}</div>
         <Button
           disabled={isLastItem || pathName === ""}
           data-test={`breadcrumb-${displayedName}`}
@@ -121,11 +101,11 @@ const MainNavbarNavigation = ({
 }) => {
   const navigate = useNavigate();
   return (
-    <div style={styles.container}>
+    <div className="main-navbar-container">
       <Typography variant="button" color={"primary"}>
         {strings.login.frontend_name}
       </Typography>
-      <div style={styles.breadcrumbs}>
+      <div className="breadcrumbs">
         {createBreadcrumb(route, navigate, currentProject, currentSubProject, storeSearchTerm, storeSearchBarDisplayed)}
       </div>
     </div>

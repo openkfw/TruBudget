@@ -26,6 +26,8 @@ import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
 
+import "./ProjectCard.scss";
+
 const ProjectCard = ({
   index,
   id,
@@ -46,7 +48,6 @@ const ProjectCard = ({
   description,
   thumbnail,
   tags,
-  parentStyles,
   imagePath,
   searchTermArray
 }) => {
@@ -54,22 +55,14 @@ const ProjectCard = ({
   const navigate = useNavigate();
 
   return (
-    <Card aria-label="project" key={index} style={parentStyles.card} data-test={`project-card-${id}`}>
-      <CardMedia style={parentStyles.media} image={imagePath} />
-      <CardActions
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          height: "20px",
-          alignItems: "flex-end",
-          marginTop: "-40px"
-        }}
-      >
+    <Card aria-label="project" key={index} className="project-card" data-test={`project-card-${id}`}>
+      <CardMedia className="project-card-media" image={imagePath} />
+      <CardActions className="project-card-actions">
         <Tooltip id="tooltip-pview" title={strings.common.view_project_details}>
           <div>
             <Fab
               aria-label="view project"
-              style={parentStyles.button}
+              className="view-project-button"
               disabled={!canViewProjectDetails(allowedIntents)}
               color="primary"
               onClick={() => {
@@ -85,10 +78,10 @@ const ProjectCard = ({
       <CardContent>
         <CardHeader
           data-test="project-header"
-          style={parentStyles.cardHeader}
+          className="project-card-header"
           title={
             <div
-              style={parentStyles.cardTitle}
+              className="project-card-title"
               id={`project-title-${index}`}
               data-test={`project-title-${displayName}`}
             >
@@ -108,31 +101,23 @@ const ProjectCard = ({
             />
           }
         />
-        <List
-          sx={{
-            marginTop: "5px",
-            height: "200px",
-            overflow: "scroll",
-            overflowY: "auto",
-            overflowX: "hidden"
-          }}
-        >
+        <List className="project-list">
           {projectedBudgets.length === 0 ? null : (
-            <ListItem style={parentStyles.listItem}>
+            <ListItem className="project-list-item">
               <ListItemIcon>
                 <AmountIcon />
               </ListItemIcon>
               <ListItemText data-test="project-budget" primary={budgets} secondary={strings.common.budget} />
             </ListItem>
           )}
-          <ListItem style={parentStyles.listItem}>
+          <ListItem className="project-list-item">
             <ListItemIcon>
               <DateIcon />
             </ListItemIcon>
             <ListItemText data-test="project-creation-date" primary={dateString} secondary={strings.common.created} />
           </ListItem>
           {displayedTags.length > 0 ? (
-            <ListItem style={{ ...parentStyles.listItem, marginTop: "13px" }} data-test="overview-taglist">
+            <ListItem className="project-list-item tags" data-test="overview-taglist">
               <ListItemIcon>
                 <LabelIcon />
               </ListItemIcon>
@@ -140,7 +125,7 @@ const ProjectCard = ({
             </ListItem>
           ) : null}
 
-          <ListItem style={parentStyles.editContainer}>
+          <ListItem className="list-edit-container">
             <ActionButton
               ariaLabel="show project"
               notVisible={additionalDataEmpty}

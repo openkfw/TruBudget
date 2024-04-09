@@ -15,47 +15,7 @@ import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
 import PreviewDialog from "../Common/PreviewDialog";
 
-const styles = {
-  tableBody: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  headerRow: {
-    display: "flex",
-    height: "40px"
-  },
-  headerCell: {
-    fontSize: "16px",
-    alignSelf: "center",
-    textAlign: "center",
-    flex: "1",
-    borderBottom: "unset"
-  },
-  columnHeaderCell: {
-    fontSize: "14px",
-    alignSelf: "center",
-    flex: "1",
-    padding: "0px 0px 0px 8px"
-  },
-  workflowRow: {
-    display: "flex",
-    height: "30px",
-    borderBottom: "unset"
-  },
-  workflowCell: {
-    fontSize: "14px",
-    borderBottom: "unset",
-    padding: "0px 0px 0px 8px",
-    flex: 1
-  },
-  infoContainer: {
-    margin: "0px 36px 10px 36px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    maxWidth: "500px"
-  }
-};
+import "./WorkflowPreviewDialog.scss";
 
 const getTableEntries = (props) => {
   const { workflowActions, submittedWorkflowItems, failedWorkflowItem } = props;
@@ -77,13 +37,13 @@ const getTableEntries = (props) => {
 function addHeader(table, headline) {
   table.push(
     <React.Fragment key={headline}>
-      <TableRow style={styles.headerRow} key={headline}>
-        <TableCell style={styles.headerCell}>{headline}</TableCell>
+      <TableRow className="header-row" key={headline}>
+        <TableCell className="header-cell">{headline}</TableCell>
       </TableRow>
-      <TableRow style={styles.headerRow} key={headline + "-columns"}>
-        <TableCell style={{ ...styles.columnHeaderCell, flex: 6 }}>{strings.common.workflowitem}</TableCell>
-        <TableCell style={{ ...styles.columnHeaderCell, flex: 12 }}>{strings.common.action}</TableCell>
-        <TableCell style={{ ...styles.columnHeaderCell, textAlign: "right" }}>{strings.common.status}</TableCell>
+      <TableRow className="header-row" key={headline + "-columns"}>
+        <TableCell className="column-header-cell medium">{strings.common.workflowitem}</TableCell>
+        <TableCell className="column-header-cell large">{strings.common.action}</TableCell>
+        <TableCell className="column-header-cell right">{strings.common.status}</TableCell>
       </TableRow>
     </React.Fragment>
   );
@@ -94,12 +54,12 @@ function addActions(table, actions, failedWorkflowItem, submittedWorkflowItems) 
   actions.forEach((action, index) => {
     table.push(
       <TableRow
-        style={styles.workflowRow}
+        className="workflow-row"
         key={index + "-" + action.displayName + "-" + action.action + "-" + action.identity}
       >
-        <TableCell style={{ ...styles.workflowCell, flex: 6 }}>{action.displayName}:</TableCell>
-        <TableCell style={{ ...styles.workflowCell, flex: 12 }}>{getActionText(action)}</TableCell>
-        <TableCell style={{ ...styles.workflowCell, textAlign: "right" }}>
+        <TableCell className="workflow-row-cell medium">{action.displayName}:</TableCell>
+        <TableCell className="workflow-row-cell large">{getActionText(action)}</TableCell>
+        <TableCell className="workflow-row-cell right">
           {getStatusIcon(submittedWorkflowItems, failedWorkflowItem, action)}
         </TableCell>
       </TableRow>
@@ -175,20 +135,12 @@ const WorkflowPreviewDialog = (props) => {
 
   const preview = (
     <>
-      <Typography style={styles.infoContainer} color="error" variant="subtitle1">
+      <Typography className="workflow-preview-typography" color="error" variant="subtitle1">
         {strings.preview.overwrite_warning}
       </Typography>
-      <Box
-        sx={{
-          minWidth: "600px",
-          overflowY: "scroll",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
+      <Box className="workflow-preview-dialog-box">
         <Table>
-          <TableBody style={styles.tableBody}>{getTableEntries(props)}</TableBody>
+          <TableBody className="table-body">{getTableEntries(props)}</TableBody>
         </Table>
       </Box>
       {submitInProgress ? <LinearProgress color="primary" /> : null}
