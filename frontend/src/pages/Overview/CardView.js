@@ -5,6 +5,7 @@ import ContentAdd from "@mui/icons-material/Add";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
+import TablePagination from "@mui/material/TablePagination";
 import Tooltip from "@mui/material/Tooltip";
 
 import { statusMapping, unixTsToString } from "../../helper";
@@ -107,32 +108,61 @@ const getTableEntries = ({
 };
 
 const CardView = (props) => {
-  const { isRoot, allowedIntents, showCreationDialog } = props;
+  const { isRoot, allowedIntents, showCreationDialog, pagination, setRowsPerPage, page, setPage } = props;
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage + 1);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10), 1);
+  };
+
   const tableEntries = getTableEntries(props);
   return (
-    <div aria-label="projects" className="projects-table-entries">
-      {tableEntries}
-      <Card data-test="project-creation" className="add-project-card">
-        <div className="add-project-content">
-          <CardActions>
-            <Tooltip id="tooltip-pcreate" title={strings.common.create}>
-              <div>
-                <Fab
-                  className="content-add-button"
-                  aria-label="create"
-                  disabled={!canCreateProject(allowedIntents) || isRoot}
-                  onClick={() => showCreationDialog()}
-                  color="primary"
-                  data-test="create-project-button"
-                >
-                  <ContentAdd />
-                </Fab>
-              </div>
-            </Tooltip>
-          </CardActions>
-        </div>
-      </Card>
-    </div>
+    <>
+      <TablePagination
+        component="div"
+        count={pagination?.totalRecords}
+        page={page - 1}
+        onPageChange={handleChangePage}
+        rowsPerPage={pagination?.limit}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+      />
+      <div aria-label="projects" className="projects-table-entries">
+        {tableEntries}
+        <Card data-test="project-creation" className="add-project-card">
+          <div className="add-project-content">
+            <CardActions>
+              <Tooltip id="tooltip-pcreate" title={strings.common.create}>
+                <div>
+                  <Fab
+                    className="content-add-button"
+                    aria-label="create"
+                    disabled={!canCreateProject(allowedIntents) || isRoot}
+                    onClick={() => showCreationDialog()}
+                    color="primary"
+                    data-test="create-project-button"
+                  >
+                    <ContentAdd />
+                  </Fab>
+                </div>
+              </Tooltip>
+            </CardActions>
+          </div>
+        </Card>
+      </div>
+      <TablePagination
+        component="div"
+        count={pagination?.totalRecords}
+        page={page - 1}
+        onPageChange={handleChangePage}
+        rowsPerPage={pagination?.limit}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+      />
+    </>
   );
 };
 

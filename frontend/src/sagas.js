@@ -2973,7 +2973,7 @@ export function* restoreBackupSaga({ file, showLoading = true }) {
 // LiveUpdate Sagas
 export function* liveUpdateAllProjectsSaga() {
   yield execute(function* () {
-    yield fetchAllProjectsSaga({ loading: false });
+    yield fetchProjectsV2Saga({ loading: false });
   }, false);
 }
 export function* liveUpdateProjectSaga({ projectId }) {
@@ -3361,7 +3361,7 @@ export default function* rootSaga() {
       yield takeLeading(LIVE_UPDATE_NOTIFICATIONS, liveUpdateNotificationsSaga),
 
       // Project
-      yield takeEvery(FETCH_ALL_PROJECTS, fetchAllProjectsSaga),
+      yield takeEvery(FETCH_ALL_PROJECTS, fetchProjectsV2Saga),
       yield takeEvery(CREATE_PROJECT, createProjectSaga),
       yield takeEvery(EDIT_PROJECT, editProjectSaga),
       yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga),

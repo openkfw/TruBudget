@@ -127,6 +127,7 @@ const mapStateToProps = (state) => {
     isRoot: state.getIn(["navbar", "isRoot"]),
     loggedInUser: state.getIn(["login", "loggedInUser"]),
     permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
+    page: state.getIn(["overview", "page"]),
     pagination: state.getIn(["overview", "pagination"]),
     projects: state.getIn(["overview", "projects"]),
     projectView: state.getIn(["overview", "projectView"]),
