@@ -18,6 +18,8 @@ import Dropdown from "../Common/NewDropdown";
 import Password from "../Common/Password";
 import Username from "../Common/Username";
 
+import "./LoginPage.scss";
+
 const LoginPage = ({
   language,
   loading,
@@ -36,32 +38,10 @@ const LoginPage = ({
   const authProxyUri = window?.injectedEnv?.REACT_APP_AUTHPROXY_URL || config.authProxy.url;
 
   return (
-    <div
-      data-test="loginpage"
-      id="loginpage"
-      style={{
-        backgroundImage: 'url("/welcome.jpg")',
-        backgroundSize: "cover",
-        width: "100%",
-        height: "100vh",
-        position: "absolute",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column"
-      }}
-    >
-      <Card style={{ width: isAuthProxyEnabled ? "600px" : "350px", zIndex: 1100, opacity: 0.9 }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
-          <div style={{ width: "70%" }}>
+    <div data-test="loginpage" id="loginpage" className="login-page-container">
+      <Card className={isAuthProxyEnabled ? "login-card with-authproxy" : "login-card"}>
+        <div className="login-card-content">
+          <div className="login-card-header">
             <CardHeader title={strings.login.frontend_name} subheader={strings.login.frontend_description} />
           </div>
         </div>
@@ -82,23 +62,8 @@ const LoginPage = ({
                 id="password"
                 data-test="password-field"
               />
-              <div
-                style={{
-                  paddingTop: "10px",
-                  paddingBottom: "20px",
-                  display: "flex",
-                  flexDirection: "row",
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "space-between"
-                }}
-              >
-                <Dropdown
-                  value={language}
-                  id="language_selection"
-                  onChange={setLanguage}
-                  style={{ marginLeft: "10px" }}
-                >
+              <div className="login-card-footer">
+                <Dropdown value={language} id="language_selection" onChange={setLanguage} className="login-dropdown">
                   <MenuItem value="en-gb">{strings.language.english}</MenuItem>
                   <MenuItem value="fr">{strings.language.french}</MenuItem>
                   <MenuItem value="pt">{strings.language.portuguese}</MenuItem>
@@ -108,7 +73,7 @@ const LoginPage = ({
                 <Button
                   disabled={isLoginDisabled}
                   aria-label="loginbutton"
-                  style={{ marginRight: 20, marginTop: 5 }}
+                  className="login-button"
                   onClick={() => loginWithCredentials(username, password)}
                   variant="contained"
                   id="loginbutton"
@@ -121,19 +86,10 @@ const LoginPage = ({
               <>
                 <Divider orientation="vertical" flexItem></Divider>
                 <Grid item xs>
-                  <div
-                    style={{
-                      padding: "20px",
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "100%",
-                      alignItems: "center",
-                      justifyContent: "space-between"
-                    }}
-                  >
+                  <div className="login-button-proxy-container">
                     <Button
                       aria-label="loginbutton"
-                      style={{ marginRight: 20, marginTop: 5 }}
+                      className="login-button"
                       onClick={() => window.open(authProxyUri, "_self")}
                       variant="contained"
                       id="orgaloginbutton"
@@ -148,7 +104,7 @@ const LoginPage = ({
         </Box>
         <Box>{loading && <LinearProgress />}</Box>
         <Divider />
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", float: "right" }}>
+        <div className="admin-settings">
           <IconButton
             aria-label="admin settings"
             disabled={!(connectedToAdminNode > -1)}

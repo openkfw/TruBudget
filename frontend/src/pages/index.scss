@@ -40,3 +40,31 @@
   display: flex;
   justify-content: space-between;
 }
+
+.text-input {
+  width: 50%;
+}
+
+.clear-button {
+  width: 2rem;
+  height: 2rem;
+  align-self: flex-end;
+  margin-left: 0.3rem;
+}
+
+.empty-state-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.table-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.custom-width {
+  width: 100%;
+  margin-top: 2rem;
+}

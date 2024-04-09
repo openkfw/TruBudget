@@ -8,7 +8,7 @@ import HistoryDrawer from "../Common/History/HistoryDrawer";
 import { hideHistory } from "../Notifications/actions";
 import { fetchFirstSubprojectHistoryPage, fetchNextSubprojectHistoryPage } from "../Workflows/actions";
 
-function SubprojectHistoryDrawer({
+function SubProjectHistoryDrawer({
   projectId,
   subprojectId,
   doShow,
@@ -64,4 +64,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubprojectHistoryDrawer));
+export default connect(mapStateToProps, mapDispatchToProps)(toJS(SubProjectHistoryDrawer));

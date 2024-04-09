@@ -30,53 +30,7 @@ import BudgetEmptyState from "../Common/BudgetEmptyState";
 
 import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
 
-const styles = {
-  container: {
-    display: "flex",
-    height: "30%",
-    flex: 1,
-    flexDirection: "row",
-    width: "100%",
-    marginBottom: "24px",
-    justifyContent: "space-between"
-  },
-  card: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-between"
-  },
-  projectedBudget: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "18px",
-    width: "32%"
-  },
-  projectDetails: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "18px",
-    width: "31%",
-    overflowWrap: "break-word"
-  },
-  projectAssignee: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "18px",
-    width: "31%"
-  },
-  analytics: {
-    padding: "12px 0 ",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  tableCell: {
-    padding: "5px"
-  }
-};
+import "./ProjectDetails.scss";
 
 const displayTags = (tags) => {
   return tags.map((tag, i) => (
@@ -116,9 +70,9 @@ const ProjectDetails = (props) => {
   const closeDisabled = !canClose || hasOpenSubprojects || projectStatus === "closed";
   const tags = displayTags(projectTags || []);
   return (
-    <div style={styles.container}>
-      <Card style={styles.card}>
-        <List style={styles.projectDetails}>
+    <div className="project-details-container">
+      <Card className="project-details-card">
+        <List className="project-details-list">
           <ListItem>
             {projectName ? (
               <ListItemAvatar>
@@ -146,7 +100,7 @@ const ProjectDetails = (props) => {
             </ListItem>
           ) : null}
         </List>
-        <div style={styles.projectedBudget} data-test="project-projected-budget">
+        <div className="project-projected-budget" data-test="project-projected-budget">
           <Typography variant="body1">{strings.common.total_budget}</Typography>
           {isDataLoading ? (
             <div />
@@ -155,11 +109,11 @@ const ProjectDetails = (props) => {
               <Table padding="none">
                 <TableHead>
                   <TableRow>
-                    <TableCell style={styles.tableCell}>{strings.common.organization}</TableCell>
-                    <TableCell style={styles.tableCell} align="right">
+                    <TableCell className="project-table-cell">{strings.common.organization}</TableCell>
+                    <TableCell className="project-table-cell" align="right">
                       {strings.common.amount}
                     </TableCell>
-                    <TableCell style={styles.tableCell} align="right">
+                    <TableCell className="project-table-cell" align="right">
                       {strings.common.currency}
                     </TableCell>
                   </TableRow>
@@ -167,18 +121,18 @@ const ProjectDetails = (props) => {
                 <TableBody>
                   {projectProjectedBudgets.map((budget) => (
                     <TableRow key={budget.organization + budget.currencyCode}>
-                      <TableCell style={styles.tableCell}>{budget.organization}</TableCell>
-                      <TableCell style={styles.tableCell} align="right">
+                      <TableCell className="project-table-cell">{budget.organization}</TableCell>
+                      <TableCell className="project-table-cell" align="right">
                         {toAmountString(budget.value)}
                       </TableCell>
-                      <TableCell style={styles.tableCell} align="right">
+                      <TableCell className="project-table-cell" align="right">
                         {budget.currencyCode}
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <div style={styles.analytics}>
+              <div className="project-analytics">
                 <Button
                   variant="outlined"
                   color="primary"
@@ -194,7 +148,7 @@ const ProjectDetails = (props) => {
             <BudgetEmptyState text={strings.common.no_budget_project} />
           )}
         </div>
-        <List style={styles.projectAssignee}>
+        <List className="project-assignee">
           <ListItem>
             <ListItemAvatar>
               <Avatar>{statusIcon}</Avatar>
@@ -222,7 +176,7 @@ const ProjectDetails = (props) => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar style={styles.assingeeIcon}>
+              <Avatar>
                 <AssigneeIcon />
               </Avatar>
             </ListItemAvatar>

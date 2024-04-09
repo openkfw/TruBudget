@@ -12,37 +12,9 @@ import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
 import SingleSelection from "../Common/SingleSelection";
 
-const subprojectWorkflowItemTypes = ["general", "restricted"];
+import "./SubProjectDialogContent.scss";
 
-const styles = {
-  dropdown: {
-    minWidth: 200
-  },
-  inputContainer: {
-    display: "flex",
-    width: "45%",
-    paddingRight: 20,
-    alignItems: "center"
-  },
-  infoIcon: {
-    fontSize: 20,
-    marginTop: 15,
-    padding: 8
-  },
-  container: {
-    marginTop: 20,
-    marginBottom: 20,
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-between"
-  },
-  clearButton: {
-    width: 45,
-    height: 45,
-    alignSelf: "flex-end",
-    marginLeft: "5px"
-  }
-};
+const subprojectWorkflowItemTypes = ["general", "restricted"];
 
 function getMenuItems(currencies) {
   return currencies.map((currency, index) => {
@@ -64,7 +36,7 @@ const getDropdownMenuItems = (types) => {
   });
 };
 
-const SubprojectDialogContent = (props) => {
+const SubProjectDialogContent = (props) => {
   const currencies = getCurrencies();
 
   return (
@@ -82,10 +54,10 @@ const SubprojectDialogContent = (props) => {
         />
         {!props.editDialogShown ? (
           <>
-            <div style={styles.container}>
-              <div style={styles.inputContainer}>
+            <div className="sub-project-dialog-container">
+              <div className="sub-project-dialog-input-container">
                 <Dropdown
-                  style={styles.dropdown}
+                  className="dropdown"
                   value={props.subprojectToAdd.currency}
                   floatingLabel={strings.subproject.subproject_currency}
                   onChange={(v) => props.storeSubProjectCurrency(v)}
@@ -95,9 +67,9 @@ const SubprojectDialogContent = (props) => {
                 </Dropdown>
               </div>
 
-              <div style={styles.inputContainer}>
+              <div className="sub-project-dialog-input-container">
                 <Dropdown
-                  style={styles.dropdown}
+                  className="dropdown"
                   floatingLabel={strings.subproject.fixed_workflowitem_type}
                   value={props.selectedWorkflowitemType}
                   onChange={(value) => props.storeFixedWorkflowitemType(value)}
@@ -109,7 +81,7 @@ const SubprojectDialogContent = (props) => {
                   <IconButton
                     aria-label="cancel"
                     data-test={"clear-workflowitem-type"}
-                    style={styles.clearButton}
+                    className="clear-button"
                     onClick={() => props.storeFixedWorkflowitemType("")}
                     size="large"
                   >
@@ -118,7 +90,7 @@ const SubprojectDialogContent = (props) => {
                 ) : null}
               </div>
 
-              <div style={styles.inputContainer}>
+              <div className="sub-project-dialog-input-container">
                 <SingleSelection
                   selectId={props.selectedValidator}
                   selectableItems={props.users}
@@ -148,4 +120,4 @@ const SubprojectDialogContent = (props) => {
   );
 };
 
-export default SubprojectDialogContent;
+export default SubProjectDialogContent;

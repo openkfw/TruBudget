@@ -6,20 +6,7 @@ import Typography from "@mui/material/Typography";
 import NavbarIcons from "./NavbarIcons";
 import ProjectSearch from "./ProjectSearch";
 
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    flexGrow: 1,
-    whiteSpace: "nowrap",
-    overflow: "auto"
-  },
-  organization: {
-    paddingRight: "10px"
-  }
-};
+import "./RightNavbarNavigation.scss";
 
 const RightNavbarNavigation = ({
   peers,
@@ -37,7 +24,7 @@ const RightNavbarNavigation = ({
   let location = useLocation();
   const searchVisible = location.pathname === "/projects" && projectView === "card";
   return (
-    <div style={styles.container}>
+    <div className="right-navbar-container">
       {searchVisible ? (
         <ProjectSearch
           searchBarDisplayed={searchBarDisplayed}
@@ -46,7 +33,7 @@ const RightNavbarNavigation = ({
           storeSearchTerm={storeSearchTerm}
         />
       ) : null}
-      <Typography variant="button" color="primary" style={styles.organization}>
+      <Typography variant="button" color="primary" className="organization">
         {organization}
       </Typography>
       <NavbarIcons
