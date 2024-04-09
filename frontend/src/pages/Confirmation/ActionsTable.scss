@@ -1,0 +1,85 @@
+.actions-table-card {
+  margin-top: 1.5rem;
+  width: 1000px;
+}
+
+.actions-table-container {
+  min-height: 4rem;
+  max-height: 11.25rem;
+}
+
+.actions-table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.actions-table-text-row {
+  display: flex;
+  height: 2.5rem;
+}
+
+.actions-table-head-row {
+  display: flex;
+  height: 2.5rem;
+}
+
+.actions-table-header-cell {
+  font-size: 1rem;
+  text-align: left;
+  flex: 1;
+  border-bottom: unset;
+  padding: 0;
+}
+
+.actions-table-column-header-cell {
+  font-weight: bold;
+  background-color: transparent;
+  font-size: 0.875rem;
+  border-bottom: unset;
+  padding: 0 0.5rem 0.25rem 0.5rem;
+  align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: none;
+  &.small {
+    flex: 1;
+  }
+  &.medium {
+    flex: 3;
+  }
+  &.large {
+    flex: 5;
+  }
+  &.right-align {
+    text-align: right;
+  }
+}
+
+.actions-table-row {
+  display: flex;
+  min-height: 2rem;
+  border-bottom: unset;
+}
+
+.actions-table-cell {
+  font-size: 0.875rem;
+  border-bottom: unset;
+  padding: 0 0.5rem 0.25rem 0.5rem;
+  align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: none;
+  &.small {
+    flex: 1;
+  }
+  &.medium {
+    flex: 3;
+  }
+  &.large {
+    flex: 5;
+  }
+  &.right-relative {
+    text-align: right;
+    position: relative;
+  }
+}

@@ -16,37 +16,7 @@ import strings from "../../localizeStrings";
 
 import { getParentData, intentMapping, isAllowedToSee, parseURI } from "./helper";
 
-const styles = {
-  row: {
-    display: "flex",
-    flex: 1
-  },
-  projectMetadata: {
-    flex: 3
-  },
-  title: {
-    flex: 5
-  },
-  author: {
-    flex: 2
-  },
-  button: {
-    flex: 1,
-    display: "flex",
-    justifyContent: "center"
-  },
-  read: {
-    flex: 1,
-    opacity: 0.3
-  },
-  unread: {
-    flex: 1,
-    opacity: 1
-  },
-  unreadMessage: {
-    backgroundColor: (theme) => theme.palette.grey.light
-  }
-};
+import "./NotificationListItems.scss";
 
 const NotificationListItems = ({ notifications, markNotificationAsRead, notificationsPerPage, notificationOffset }) => {
   const navigate = useNavigate();
@@ -68,30 +38,35 @@ const NotificationListItems = ({ notifications, markNotificationAsRead, notifica
         <Divider />
         <ListItem
           component="div"
-          sx={!isRead ? `${styles.row} ${styles.unreadMessage}` : `${styles.row}`}
+          className={isRead ? "notification-row" : "notification-row unread-message"}
           key={index}
           button={isRead ? false : true}
           data-test={testLabel}
           onClick={isRead ? undefined : () => markNotificationAsRead(id, notificationOffset, notificationsPerPage)}
         >
-          <div style={isRead ? styles.read : styles.unread}>
+          <div className={isRead ? "read" : "unread"}>
             <ListItemIcon>{isRead ? <Read /> : <Unread />}</ListItemIcon>
           </div>
           <ListItemText
-            style={styles.projectMetadata}
+            className="project-meta-data"
             component="div"
             primary={projectDisplayName}
             secondary={subprojectDisplayName}
           />
-          <ListItemText data-test={`${testLabel}-${index}`} style={styles.title} component="div" primary={message} />
+          <ListItemText
+            data-test={`${testLabel}-${index}`}
+            className="notification-title"
+            component="div"
+            primary={message}
+          />
           <ListItemText
             data-test={`${dateTestLabel}-${index}`}
-            style={styles.author}
+            className="notification-author"
             component="div"
             primary={businessEvent.publisher}
             secondary={createdAt}
           />
-          <div style={styles.button}>
+          <div className="view-button-container">
             {isAllowedToSee(notification) ? (
               <Tooltip id="tooltip-inspect" title={strings.common.view}>
                 <div>

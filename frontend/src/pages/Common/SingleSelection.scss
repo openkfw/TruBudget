@@ -1,3 +1,5 @@
+@import "../index.scss";
+
 .radio-button {
   height: 0.625rem;
 }
@@ -29,11 +31,4 @@
   max-height: 70vh;
   overflow: auto;
   box-shadow: none;
-}
-
-.clear-button {
-  width: 2.5rem;
-  height: 2.5rem;
-  align-self: flex-end;
-  margin-left: 0.3rem;
 }

@@ -11,29 +11,7 @@ import { canReorderWorkflowItems } from "../../permissions.js";
 import { StrictModeDroppable as Droppable } from "./StrictModeDroppable.js";
 import { RedactedWorkflowItem, WorkflowItem } from "./WorkflowItem";
 
-const styles = {
-  editButtonContainer: {
-    position: "absolute",
-    top: "160px",
-    left: "7px"
-  },
-  editButton: {
-    position: "relative",
-    zIndex: 2
-  },
-  workflowItemsContainer: {
-    width: "100%",
-    height: "20%",
-    margin: "0 auto",
-    overflow: "auto",
-    backgroundColor: "#f3f3f3",
-    border: "1px solid #EFEFEF",
-    borderRadius: 3
-  },
-  sortableContainer: {
-    marginTop: "15px"
-  }
-};
+import "./WorkflowList.scss";
 
 const renderSortButton = (props) => (
   <Fab
@@ -46,7 +24,7 @@ const renderSortButton = (props) => (
       props.searchTerm.length > 0
     }
     onClick={() => handleEnableWorkflowEdit(props)}
-    style={styles.editButton}
+    className="edit-button"
     data-test="enable-workflowitem-sort"
   >
     <ReorderIcon />
@@ -65,7 +43,7 @@ const renderSubmitSortButton = (props) => (
     aria-label="submit workflowitem sort"
     size="small"
     onClick={() => handleSubmitEdit(props)}
-    style={styles.editButton}
+    className="edit-button"
     data-test="submit-workflowitem-sort"
   >
     <DoneIcon />
@@ -130,11 +108,11 @@ const WorkflowList = (props) => {
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable">
         {(provided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps} style={{ ...styles.workflowItemsContainer }}>
-            <div style={styles.editButtonContainer}>
+          <div ref={provided.innerRef} {...provided.droppableProps} className="workflow-list-container">
+            <div className="edit-button-container">
               {!props.workflowSortEnabled ? renderSortButton(props) : renderSubmitSortButton(props)}
             </div>
-            <div style={styles.sortableContainer}>{sortableItems}</div>
+            <div className="sortable-container">{sortableItems}</div>
             {provided.placeholder}
           </div>
         )}

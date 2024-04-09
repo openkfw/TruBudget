@@ -9,7 +9,7 @@ import TableRow from "@mui/material/TableRow";
 
 import strings from "../../localizeStrings";
 
-import ApprovedNodestableEntry from "./ApprovedNodestableEntry";
+import ApprovedNodesTableEntry from "./ApprovedNodesTableEntry";
 
 const groupBy = (nodes) => {
   return nodes.reduce((acc, node) => {
@@ -44,7 +44,7 @@ const ApprovedNodesTable = (props) => {
         </TableHead>
         <TableBody data-test="approved-nodes-table-body">
           {groupedNodes.map((nodeGroup) => {
-            return <ApprovedNodestableEntry key={nodeGroup.organization} nodeGroup={nodeGroup} nodes={nodes} />;
+            return <ApprovedNodesTableEntry key={nodeGroup.organization} nodeGroup={nodeGroup} nodes={nodes} />;
           })}
         </TableBody>
       </Table>

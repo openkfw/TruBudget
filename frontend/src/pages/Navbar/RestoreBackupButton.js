@@ -5,37 +5,17 @@ import Button from "@mui/material/Button";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  button: {
-    margin: (theme) => theme.spacing(1)
-  },
-  leftIcon: {
-    marginRight: (theme) => theme.spacing(1)
-  },
-  iconSmall: {
-    fontSize: 20
-  },
-  uploadInput: {
-    cursor: "pointer",
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: "100%",
-    opacity: 0
-  }
-};
+import "./RestoreBackupButton.scss";
 
 const RestoreBackupButton = ({ restoreBackup }) => {
   return (
-    <Button variant="contained" id="upload" color="primary" sx={styles.button} data-test="restore-backup">
-      <Upload sx={{ ...styles.leftIcon, ...styles.iconSmall }} />
+    <Button className="backup-button" variant="contained" id="upload" color="primary" data-test="restore-backup">
+      <Upload className="small-icon" />
       {strings.navigation.restore}
       <input
         id="uploadBackup"
         type="file"
-        style={styles.uploadInput}
+        className="upload-input"
         onChange={(event) => {
           if (event.target.files) {
             const file = event.target.files[0];

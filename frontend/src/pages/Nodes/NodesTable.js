@@ -7,18 +7,6 @@ import Tabs from "@mui/material/Tabs";
 import ApprovedNodesTable from "./ApprovedNodesTable";
 import DeclinedNodesTable from "./DeclinedNodesTable";
 
-const styles = {
-  container: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-  customWidth: {
-    width: "100%",
-    marginTop: "40px"
-  }
-};
-
 const renderTab = (tabIndex, props) => {
   switch (tabIndex) {
     case 0:
@@ -34,8 +22,8 @@ const renderTab = (tabIndex, props) => {
 const NodesTable = (props) => {
   const [tabIndex, setTabIndex] = useState(0);
   return (
-    <div data-test="nodesDashboard" style={styles.container}>
-      <div style={styles.customWidth}>
+    <div data-test="nodesDashboard" className="table-container">
+      <div className="custom-width">
         <AppBar position="static" color="default">
           <Tabs
             value={tabIndex}

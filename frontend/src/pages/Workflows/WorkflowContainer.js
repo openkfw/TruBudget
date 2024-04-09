@@ -20,7 +20,7 @@ import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
 import { openHistory } from "../Notifications/actions";
-import SubprojectHistoryDrawer from "../SubProjects/SubprojectHistoryDrawer";
+import SubProjectHistoryDrawer from "../SubProjects/SubProjectHistoryDrawer";
 
 import {
   closeSubproject,
@@ -183,7 +183,7 @@ class WorkflowContainer extends Component {
             {...this.props}
           />
 
-          <SubprojectHistoryDrawer projectId={this.projectId} subprojectId={this.subprojectId} />
+          <SubProjectHistoryDrawer projectId={this.projectId} subprojectId={this.subprojectId} />
           <WorkflowBatchEditContainer projectId={this.projectId} subProjectId={this.subprojectId} />
           <InformationDialog
             dialogShown={this.props.isRejectReasonDialogShown}

@@ -20,66 +20,7 @@ import SelectablePill from "../Common/SelectablePill";
 import BudgetsList from "./BudgetsList";
 import ProjectCard from "./ProjectCard";
 
-const styles = {
-  card: {
-    maxWidth: "310px",
-    margin: "35px",
-    width: "35%",
-    height: "580px"
-  },
-  cardHeader: {
-    paddingLeft: 0
-  },
-  listItem: {
-    opacity: "1"
-  },
-  media: {
-    paddingTop: "70%"
-  },
-  button: {
-    minHeight: "56px"
-  },
-  editContainer: {
-    display: "flex",
-    maxHeight: "10px",
-    alignItems: "center",
-    marginTop: "10px",
-    justifyContent: "flex-end"
-  },
-  cardTitle: {
-    textOverflow: "ellipsis",
-    width: "250px",
-    whiteSpace: "nowrap",
-    paddingTop: "10px",
-    overflow: "hidden"
-  },
-  addProject: {
-    height: "580px",
-    margin: "35px",
-    width: "300px",
-    opacity: "0.7"
-  },
-  addProjectContent: {
-    display: "flex",
-    backgroundColor: "lightgray",
-    flexDirection: "row",
-    maxWidth: "350px",
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  tableEntries: {
-    backgroundColor: "transparent",
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  }
-};
+import "./CardView.scss";
 
 const displayTags = ({ tags, storeSearchTerm, showNavSearchBar, searchTermArray }) => {
   return tags.map((tag) => (
@@ -157,7 +98,6 @@ const getTableEntries = ({
           description={description}
           thumbnail={thumbnail}
           tags={tags}
-          parentStyles={styles}
           imagePath={imagePath}
           searchTermArray={searchTermArray}
         />
@@ -170,15 +110,15 @@ const CardView = (props) => {
   const { isRoot, allowedIntents, showCreationDialog } = props;
   const tableEntries = getTableEntries(props);
   return (
-    <div aria-label="projects" style={styles.tableEntries}>
+    <div aria-label="projects" className="projects-table-entries">
       {tableEntries}
-      <Card data-test="project-creation" style={styles.addProject}>
-        <div style={styles.addProjectContent}>
+      <Card data-test="project-creation" className="add-project-card">
+        <div className="add-project-content">
           <CardActions>
             <Tooltip id="tooltip-pcreate" title={strings.common.create}>
               <div>
                 <Fab
-                  style={styles.button}
+                  className="content-add-button"
                   aria-label="create"
                   disabled={!canCreateProject(allowedIntents) || isRoot}
                   onClick={() => showCreationDialog()}

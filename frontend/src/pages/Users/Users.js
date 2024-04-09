@@ -13,18 +13,6 @@ import GroupTable from "./GroupTable";
 import { DisabledUserEmptyState, EnabledUserEmptyState, UserGroupsEmptyState } from "./UsersGroupsEmptyStates";
 import UsersTable from "./UsersTable";
 
-const styles = {
-  container: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-  customWidth: {
-    width: "100%",
-    marginTop: "40px"
-  }
-};
-
 const renderTab = (props) => {
   const { tabIndex, allowedIntents, isDataLoading, enabledUsers, groups, disabledUsers, showDashboardDialog } = props;
 
@@ -78,8 +66,8 @@ const renderTab = (props) => {
 const Users = (props) => {
   const { tabIndex, setTabIndex } = props;
   return (
-    <div data-test="userdashboard" style={styles.container}>
-      <div style={styles.customWidth}>
+    <div data-test="userdashboard" className="table-container">
+      <div className="custom-width">
         <AppBar position="static" color="default">
           <Tabs
             value={tabIndex}

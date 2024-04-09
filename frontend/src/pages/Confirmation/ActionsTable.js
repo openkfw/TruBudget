@@ -13,6 +13,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import strings from "../../localizeStrings";
 import OverflowTooltip from "../Common/OverflowTooltip";
 
+import "./ActionsTable.scss";
+
 /**
  ** @actions Displayed by the table in following format
  **
@@ -23,92 +25,34 @@ import OverflowTooltip from "../Common/OverflowTooltip";
  ** }
  */
 
-const styles = {
-  card: {
-    marginTop: "24px",
-    width: "1000px"
-  },
-  container: {
-    minHeight: "56px",
-    maxHeight: "180px"
-  },
-  tableBody: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  textRow: {
-    display: "flex",
-    height: "40px"
-  },
-  headerRow: {
-    display: "flex",
-    height: "40px"
-  },
-  headerCell: {
-    fontSize: "16px",
-    textAlign: "left",
-    flex: "1",
-    borderBottom: "unset",
-    padding: "0px"
-  },
-  columnHeaderCell: {
-    fontWeight: "bold",
-    backgroundColor: "transparent",
-
-    fontSize: "14px",
-    borderBottom: "unset",
-    padding: "0px 8px 4px 8px",
-    alignSelf: "center",
-    flex: 1,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    maxWidth: "none"
-  },
-  tableRow: {
-    display: "flex",
-    minHeight: "30px",
-    borderBottom: "unset"
-  },
-  tableCell: {
-    fontSize: "14px",
-    borderBottom: "unset",
-    padding: "0px 8px 4px 8px",
-    alignSelf: "center",
-    flex: 1,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    maxWidth: "none"
-  }
-};
-
 const generateHeader = (status, actionTableColumns) => {
   return (
-    <TableRow style={styles.headerRow} key={"header"}>
-      <TableCell key={"header-type"} style={{ ...styles.columnHeaderCell, flex: 3 }}>
+    <TableRow className="actions-table-head-row" key={"header"}>
+      <TableCell key={"header-type"} className="actions-table-column-header-cell medium">
         <OverflowTooltip text={strings.common.type} />
       </TableCell>
       {actionTableColumns.nameColumn ? (
-        <TableCell key={"header-displayName"} style={{ ...styles.columnHeaderCell, flex: 3 }}>
+        <TableCell key={"header-displayName"} className="actions-table-column-header-cell medium">
           <OverflowTooltip text={strings.common.name} />
         </TableCell>
       ) : null}
       {actionTableColumns.permissionColumn ? (
-        <TableCell key={"header-permission"} style={{ ...styles.columnHeaderCell, flex: 3 }}>
+        <TableCell key={"header-permission"} className="actions-table-column-header-cell medium">
           <OverflowTooltip text={strings.common.permission} />
         </TableCell>
       ) : null}
       {actionTableColumns.actionColumn ? (
-        <TableCell key={"header-action"} style={{ ...styles.columnHeaderCell, flex: 3 }}>
+        <TableCell key={"header-action"} className="actions-table-column-header-cell medium">
           <OverflowTooltip text={strings.common.actions} />
         </TableCell>
       ) : null}
       {actionTableColumns.userOrGroupColumn ? (
-        <TableCell key={"header-identity"} style={{ ...styles.columnHeaderCell, flex: 5 }}>
+        <TableCell key={"header-identity"} className="actions-table-column-header-cell large">
           <OverflowTooltip text={strings.confirmation.user_group} maxWidth="none" />
         </TableCell>
       ) : null}
       {status ? (
-        <TableCell key={"header-status"} style={{ ...styles.columnHeaderCell, textAlign: "right", flex: 1 }}>
+        <TableCell key={"header-status"} className="actions-table-column-header-cell small right-align">
           <OverflowTooltip text={strings.common.status} />
         </TableCell>
       ) : null}
@@ -125,35 +69,32 @@ const generateActions = (actions, executedActions, failedAction, users, groups, 
       users.find((user) => user.id === action.identity) || groups.find((group) => group.groupId === action.identity);
 
     actionsTable.push(
-      <TableRow style={styles.tableRow} key={index + "-" + action.displayName + "-" + action.permission}>
-        <TableCell key={index + "-type"} style={{ ...styles.tableCell, flex: 3 }}>
+      <TableRow className="actions-table-row" key={index + "-" + action.displayName + "-" + action.permission}>
+        <TableCell key={index + "-type"} className="actions-table-cell medium">
           {type}
         </TableCell>
         {actionTableColumns.nameColumn ? (
-          <TableCell key={index + "-displayName"} style={{ ...styles.tableCell, flex: 3 }}>
+          <TableCell key={index + "-displayName"} className="actions-table-cell medium">
             <OverflowTooltip text={action.displayName} />
           </TableCell>
         ) : null}
         {actionTableColumns.permissionColumn ? (
-          <TableCell key={index + "-permission"} style={{ ...styles.tableCell, flex: 3 }}>
+          <TableCell key={index + "-permission"} className="actions-table-cell medium">
             <OverflowTooltip text={makeReadable(action.permission)} />
           </TableCell>
         ) : null}
         {actionTableColumns.actionColumn ? (
-          <TableCell key={index + "-action"} style={{ ...styles.tableCell, flex: 3 }}>
+          <TableCell key={index + "-action"} className="actions-table-cell medium">
             <OverflowTooltip text={makeReadable(action.intent)} />
           </TableCell>
         ) : null}
         {actionTableColumns.userOrGroupColumn ? (
-          <TableCell key={index + "-userName"} style={{ ...styles.tableCell, flex: 5 }}>
+          <TableCell key={index + "-userName"} className="actions-table-cell large">
             <OverflowTooltip text={userOrGroup ? userOrGroup.displayName : ""} maxWidth="none" />
           </TableCell>
         ) : null}
         {status ? (
-          <TableCell
-            key={index + "-status"}
-            style={{ ...styles.tableCell, textAlign: "right", position: "relative", flex: 1 }}
-          >
+          <TableCell key={index + "-status"} className="actions-table-cell small right-relative">
             {getStatusIcon(executedActions, failedAction, action)}
           </TableCell>
         ) : null}
@@ -222,13 +163,13 @@ const ActionsTable = (props) => {
 
   return actions ? (
     <>
-      <Card style={styles.card} data-test={dataTest}>
-        <TableContainer style={styles.container}>
+      <Card className="actions-table-card" data-test={dataTest}>
+        <TableContainer className="actions-table-container">
           <Table aria-label="sticky table" data-test="actions-table">
             <TableHead data-test="actions-table-head" key={"wrapper"}>
               {generateHeader(status, actionTableColumns)}
             </TableHead>
-            <TableBody data-test="actions-table-body" style={styles.tableBody}>
+            <TableBody data-test="actions-table-body" className="actions-table-body">
               {generateActions(actions, executedActions, failedAction, users, groups, status, actionTableColumns)}
             </TableBody>
           </Table>

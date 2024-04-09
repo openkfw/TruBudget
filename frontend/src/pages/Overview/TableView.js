@@ -30,6 +30,8 @@ import SelectablePill from "../Common/SelectablePill";
 import BudgetsList from "./BudgetsList";
 import FilterMenu from "./FilterMenu";
 
+import "./TableView.scss";
+
 // Documentation for this custom react data table:
 // https://react-data-table-component.netlify.app/?path=/story/columns-cells-custom-cells--custom-cells
 
@@ -48,7 +50,7 @@ const ProjectButtons = ({
 
   const navigate = useNavigate();
   return (
-    <Box sx={{ display: "flex", gap: "20px" }}>
+    <Box className="project-buttons-box">
       <ActionButton
         ariaLabel="show project data"
         notVisible={isAdditionalDataEmpty}
@@ -123,7 +125,7 @@ const rawColumns = [
   {
     id: "project_name_column",
     name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+      <Typography variant="subtitle2" className="project-column">
         {strings.common.project}
       </Typography>
     ),
@@ -137,7 +139,7 @@ const rawColumns = [
   {
     id: "project_status_column",
     name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+      <Typography variant="subtitle2" className="project-column">
         {strings.common.status}
       </Typography>
     ),
@@ -151,7 +153,7 @@ const rawColumns = [
   {
     id: "project_date_column",
     name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+      <Typography variant="subtitle2" className="project-column">
         {strings.common.created}
       </Typography>
     ),
@@ -165,7 +167,7 @@ const rawColumns = [
   {
     id: "project_assignee_column",
     name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+      <Typography variant="subtitle2" className="project-column">
         {strings.common.assignee}
       </Typography>
     ),
@@ -179,7 +181,7 @@ const rawColumns = [
   {
     id: "project_tags_column",
     name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+      <Typography variant="subtitle2" className="project-column">
         {strings.common.tags}
       </Typography>
     ),
@@ -192,7 +194,7 @@ const rawColumns = [
   {
     id: "project_budgets_column",
     name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+      <Typography variant="subtitle2" className="project-column">
         {strings.common.budget}
       </Typography>
     ),
@@ -205,7 +207,7 @@ const rawColumns = [
   {
     id: "action_buttons_column",
     name: (
-      <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+      <Typography variant="subtitle2" className="project-column">
         {strings.common.actions}
       </Typography>
     ),
@@ -248,7 +250,7 @@ const formatTable = ({
           />
         ),
         Tags: (
-          <Box sx={{ display: "flex", flexWrap: "wrap", overflow: "auto", maxHeight: "100px" }}>
+          <Box className="project-tags-box">
             {project.data.tags?.map((tag) => (
               <SelectablePill
                 key={tag}
@@ -468,18 +470,9 @@ const TableView = (props) => {
   const actionsMemo = useMemo(
     () => (
       <>
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginTop: "30px",
-            marginBottom: "30px"
-          }}
-        >
-          <Box sx={{ display: "block" }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box className="project-actions-box">
+          <Box className="project-box-block">
+            <Box className="project-actions">
               <Searchbar
                 isSearchBarDisplayedByDefault={true}
                 searchDisabled={false}
@@ -495,7 +488,7 @@ const TableView = (props) => {
                 data-test="open-filter"
               />
             </Box>
-            <Box sx={{ marginLeft: "23px" }}>
+            <Box className="filter-menu-box">
               {showFilter && (
                 <FilterMenu
                   startDate={startDate}
@@ -512,7 +505,7 @@ const TableView = (props) => {
               )}
             </Box>
           </Box>
-          <Box sx={{ marginRight: "150px" }}>
+          <Box className="table-view-editor-box">
             <TableViewEditor
               showTags={showTags}
               setShowTags={setShowTags}
@@ -540,10 +533,10 @@ const TableView = (props) => {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+      <Box className="create-project-box">
         <div>
           <Fab
-            sx={{ height: "64px", width: "64px", marginBottom: "-120px", marginRight: "-32px" }}
+            className="project-add-button"
             aria-label="create"
             disabled={!canCreateProject(props.allowedIntents)}
             onClick={() => showCreationDialog()}
