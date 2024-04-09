@@ -124,7 +124,10 @@ export const config: Config = {
   signingMethod: process.env.SIGNING_METHOD || "node",
   nodeEnv: process.env.NODE_ENV || "production",
   accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
-  rateLimit: process.env.RATE_LIMIT === "" ? undefined : Number(process.env.RATE_LIMIT),
+  rateLimit:
+    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
+      ? undefined
+      : Number(process.env.RATE_LIMIT),
   authProxy: {
     enabled: process.env.AUTHPROXY_ENABLED === "true" || false,
     authProxyCookie: "authorizationToken",
