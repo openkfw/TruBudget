@@ -133,6 +133,7 @@ services:
       AUTHENTICATION: ${AUTHENTICATION}
       LOG_LEVEL: ${EMAIL_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
+      RATE_LIMIT: ${RATE_LIMIT}
     # volume for hot reloading
     volumes:
       - "../../email-notification-service/src:/home/node/src:delegated"
