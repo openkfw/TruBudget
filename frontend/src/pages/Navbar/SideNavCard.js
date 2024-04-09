@@ -27,6 +27,8 @@ import strings from "../../localizeStrings";
 import DownloadBackupButton from "./DownloadBackupButton";
 import RestoreBackupButton from "./RestoreBackupButton";
 
+import "./SideNavCard.scss";
+
 const SideNavCard = ({
   avatar,
   avatarBackground,
@@ -61,34 +63,15 @@ const SideNavCard = ({
   }, [disableLiveUpdates, enableLiveUpdates, isLiveUpdateAllProjectsEnabled]);
 
   return (
-    <div
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        overflowY: "auto"
-      }}
-      data-test="side-navigation"
-    >
+    <div className="side-navigation" data-test="side-navigation">
       <div
         style={{
-          background: `url('${avatarBackground}') no-repeat`,
-          backgroundSize: "cover",
-          height: "100px",
-          position: "relative",
-          width: "100%",
-          minWidth: "300px"
+          background: `url('${avatarBackground}') no-repeat`
         }}
+        className="side-navigation-header"
       >
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center"
-          }}
-        >
-          <ListItem style={{ paddingTop: "16px" }}>
+        <div>
+          <ListItem className="side-navigation-header-list">
             <ListItemIcon>
               <IconButton aria-label="avatar icon" size="large">
                 <ListItemAvatar>
@@ -97,7 +80,7 @@ const SideNavCard = ({
               </IconButton>
             </ListItemIcon>
             <ListItemText
-              style={{ padding: "0px" }}
+              className="info-user"
               primary={<span>{displayName}</span>}
               secondary={<span>{organization}</span>}
             />
@@ -169,15 +152,15 @@ const SideNavCard = ({
       <Divider />
       <List>
         <Subheader>{strings.navigation.rtUpdates}</Subheader>
-        <div style={{ paddingLeft: "24px" }}>
+        <div className="real-time-updates-container">
           <Stack direction={"row"}>
-            <Typography style={{ paddingTop: "6px" }}>{strings.common.off}</Typography>
+            <Typography className="real-time-typography">{strings.common.off}</Typography>
             <Switch
               value={"liveUpdateSwitch"}
               checked={isLiveUpdateAllProjectsEnabled}
               onChange={() => toggleLiveUpdates()}
             />
-            <Typography style={{ paddingTop: "6px" }}>{strings.common.on}</Typography>
+            <Typography className="real-time-typography">{strings.common.on}</Typography>
           </Stack>
         </div>
       </List>

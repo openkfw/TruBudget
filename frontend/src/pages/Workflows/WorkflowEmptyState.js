@@ -1,43 +1,26 @@
 import React from "react";
 
 import { CardContent } from "@mui/material";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  subtitle: {
-    color: (theme) => theme.palette.grey.dark
-  },
-  caption: {
-    color: (theme) => theme.palette.grey.main
-  }
-};
+import "./WorkflowEmptyState.scss";
 
 const WorkflowEmptyState = () => {
   return (
-    <CardContent style={{ textAlign: "center" }}>
-      <List>
-        <ListItem>
-          <img
-            src="/images-for-empty-state/workflow-items-empty-state.png"
-            alt={strings.common.no_workflow_items}
-            width="505vw"
-          />
-        </ListItem>
-        <ListItem>
-          <Typography variant="subtitle1" style={styles.subtitle}>
-            {strings.common.no_workflow_items}
-          </Typography>
-        </ListItem>
-        <ListItem>
-          <Typography variant="caption" style={styles.caption}>
-            {strings.common.no_items_text}
-          </Typography>
-        </ListItem>
-      </List>
+    <CardContent className="workflow-empty-state">
+      <img
+        src="/images-for-empty-state/workflow-items-empty-state.png"
+        alt={strings.common.no_workflow_items}
+        width="505vw"
+      />
+      <Typography variant="subtitle1" className="subtitle">
+        {strings.common.no_workflow_items}
+      </Typography>
+      <Typography variant="caption" className="caption">
+        {strings.common.no_items_text}
+      </Typography>
     </CardContent>
   );
 };

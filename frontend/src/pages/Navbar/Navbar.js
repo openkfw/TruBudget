@@ -8,6 +8,8 @@ import MainNavbarNavigation from "./MainNavbarNavigation";
 import RightNavbarNavigation from "./RightNavbarNavigation";
 import SideNav from "./SideNav";
 
+import "./Navbar.scss";
+
 const Navbar = ({
   toggleSidebar,
   numberOfActivePeers,
@@ -40,13 +42,7 @@ const Navbar = ({
 }) => {
   return (
     <div>
-      <AppBar
-        sx={{
-          backgroundColor: "transparent",
-          boxShadow: "none"
-        }}
-        position="absolute"
-      >
+      <AppBar className="navbar">
         <Toolbar id="back-to-top">
           <LeftNavbarNavigation toggleSidebar={toggleSidebar} />
           <MainNavbarNavigation

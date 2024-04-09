@@ -10,20 +10,6 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  icon: {
-    marginTop: "20px",
-    marginRight: "20px"
-  }
-};
-
 const handleEnter = (e, action = () => {}) => {
   if (e.charCode === 13) {
     action();
@@ -41,6 +27,7 @@ const UserPassword = ({
   id,
   iconDisplayed,
   tooltipTitle,
+  className,
   ...props
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -48,13 +35,13 @@ const UserPassword = ({
     setIsPasswordVisible(!isPasswordVisible);
   };
   return (
-    <div style={styles.container}>
-      {iconDisplayed ? <PasswordIcon style={styles.icon} /> : null}
+    <div className="password-container">
+      {iconDisplayed ? <PasswordIcon className="icon" /> : null}
       <Tooltip title={tooltipTitle ? tooltipTitle : ""} placement="right">
         <TextField
           name={name}
           data-test={props["data-test"] || "password-textfield"}
-          style={{ width: "50%" }}
+          className={className}
           variant="standard"
           error={error}
           label={label}

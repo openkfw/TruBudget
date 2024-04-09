@@ -1,0 +1,18 @@
+.root {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.sub-header {
+  padding-left: 0;
+}
+
+.tile-bar {
+  background: transparent;
+  margin-bottom: 3rem;
+}
+
+.image-list-item {
+  overflow: hidden;
+}

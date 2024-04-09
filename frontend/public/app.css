@@ -3,26 +3,13 @@ body {
   padding: 0px !important;
 
   /*  default font */
-  font-family: "Roboto","Helvetica","Arial","sans-serif";
+  font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.5;
   letter-spacing: 0.00938em;
 }
-.container {
-  flex: 1;
-  width: 74%;
-}
 
 .noFocus {
   outline: 0;
 }
-
-@media (max-width: 1000px) {
-  .container {
-    flex: 1;
-    width: 74%;
-  }
-}
-
-

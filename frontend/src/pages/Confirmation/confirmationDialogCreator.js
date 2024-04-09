@@ -25,7 +25,7 @@ const ActionTypes = {
 Object.freeze(ActionTypes);
 
 export class ConfirmationDialogCreator {
-  constructor(confirmationDialogProps, paperRootStyle, open, onCancel) {
+  constructor(confirmationDialogProps, open, onCancel) {
     ({
       executedAdditionalActions: this.executedAdditionalActions,
       originalActions: this.originalActions,
@@ -57,7 +57,6 @@ export class ConfirmationDialogCreator {
       failureMessage: this.failureMessage
     } = confirmationDialogProps);
 
-    this.paperRootStyle = paperRootStyle;
     this.open = open;
     this.onCancel = onCancel;
   }

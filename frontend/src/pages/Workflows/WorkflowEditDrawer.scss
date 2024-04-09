@@ -1,0 +1,28 @@
+.assignee-card {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.selected-workflow-items-display {
+  padding-top: 2.25rem;
+  text-align: center;
+}
+
+.info-container {
+  margin: 1.5rem 2.25rem 0 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+}
+
+.assignee-content {
+  padding: 2rem;
+}
+
+.space-box {
+  margin: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

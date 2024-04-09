@@ -1,0 +1,35 @@
+.notification-row {
+  display: flex;
+  flex: 1;
+  &.unread-message {
+    background-color: var(--mui-palette-grey-light);
+  }
+}
+
+.project-meta-data {
+  flex: 3;
+}
+
+.notification-title {
+  flex: 5;
+}
+
+.notification-author {
+  flex: 2;
+}
+
+.view-button-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.read {
+  flex: 1;
+  opacity: 0.3;
+}
+
+.unread {
+  flex: 1;
+  opacity: 1;
+}

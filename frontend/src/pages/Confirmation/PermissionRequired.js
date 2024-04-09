@@ -6,12 +6,7 @@ import Card from "@mui/material/Card";
 import { capitalize } from "../../helper";
 import strings from "../../localizeStrings";
 
-const styles = {
-  table: {
-    marginTop: "1em",
-    marginBottom: "1em"
-  }
-};
+import "./PermissionRequired.scss";
 
 const PermissionRequired = (props) => {
   const { actions, grantPermissionUserMap } = props;
@@ -23,16 +18,16 @@ const PermissionRequired = (props) => {
   return (
     <React.Fragment>
       <Typography>{strings.confirmation.no_permission_warning}</Typography>
-      <IntentTable unpermittedIntents={unpermittedIntents} style={styles.table} />
+      <IntentTable unpermittedIntents={unpermittedIntents} className="permission-required-table" />
 
       <Typography>{strings.confirmation.no_permission_help}</Typography>
-      <UsersTable grantPermissionUserMap={grantPermissionUserMap} style={styles.table} />
+      <UsersTable grantPermissionUserMap={grantPermissionUserMap} className="permission-required-table" />
     </React.Fragment>
   );
 };
 
-const IntentTable = ({ unpermittedIntents, style }) => (
-  <Card style={style}>
+const IntentTable = ({ unpermittedIntents, className }) => (
+  <Card className={className}>
     <TableContainer>
       <Table data-test="permission-required-intent-table">
         <TableHead>
@@ -60,8 +55,8 @@ const createIntentTableRow = (action, index) => {
   );
 };
 
-const UsersTable = ({ grantPermissionUserMap, style }) => (
-  <Card style={style}>
+const UsersTable = ({ grantPermissionUserMap, className }) => (
+  <Card className={className}>
     <TableContainer>
       <Table data-test="permission-required-user-table">
         <TableHead>

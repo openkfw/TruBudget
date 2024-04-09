@@ -4,18 +4,9 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  subtitle: {
-    color: (theme) => theme.palette.grey.dark
-  },
-  caption: {
-    color: (theme) => theme.palette.grey.main
-  }
-};
-
 const NewOrganizationsEmptyState = () => {
   return (
-    <table style={{ alignItems: "center" }}>
+    <table className="empty-state-table">
       <tbody>
         <tr>
           <td width="200vw">
@@ -26,7 +17,7 @@ const NewOrganizationsEmptyState = () => {
             />
           </td>
           <td>
-            <Typography variant="body2" style={styles.caption}>
+            <Typography variant="body2" className="caption">
               {strings.common.no_organizations}
             </Typography>
           </td>
@@ -38,7 +29,7 @@ const NewOrganizationsEmptyState = () => {
 
 const ExistingNodesEmptyState = () => {
   return (
-    <table style={{ alignItems: "center" }}>
+    <table className="empty-state-table">
       <tbody>
         <tr>
           <td width="200vw">
@@ -49,7 +40,7 @@ const ExistingNodesEmptyState = () => {
             />
           </td>
           <td>
-            <Typography variant="body2" style={styles.caption}>
+            <Typography variant="body2" className="caption">
               {strings.common.no_nodes}
             </Typography>
           </td>
@@ -61,7 +52,7 @@ const ExistingNodesEmptyState = () => {
 
 const DeclinedNodesEmptyState = () => {
   return (
-    <table style={{ alignItems: "center" }}>
+    <table className="empty-state-table">
       <tbody>
         <tr>
           <td width="200vw">
@@ -72,7 +63,7 @@ const DeclinedNodesEmptyState = () => {
             />
           </td>
           <td>
-            <Typography variant="body2" style={styles.caption}>
+            <Typography variant="body2" className="caption">
               No declined nodes found
             </Typography>
           </td>

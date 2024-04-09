@@ -1,0 +1,11 @@
+@import "../index.scss";
+
+.error-card {
+  width: 100%;
+  position: relative;
+  z-index: 1100;
+}
+
+.error-card-content {
+  text-align: center;
+}

@@ -10,12 +10,6 @@ import strings from "../../localizeStrings";
 
 import CreationDialogStepper from "./CreationDialogStepper";
 
-const styles = {
-  paperRoot: {
-    overflow: "scrollable"
-  }
-};
-
 const getDialogActions = (props, handleCancel, handleBack, handleNext, handleSubmit) => {
   const { numberOfSteps, currentStep = 0, steps } = props;
 
@@ -92,13 +86,7 @@ const handleNext = (props) => props.setCurrentStep(props.currentStep + 1);
 const CreationDialog = (props) => {
   const { dialogShown, title, handleSubmit } = props;
   return (
-    <Dialog
-      disableRestoreFocus
-      style={{ paper: styles.paperRoot }}
-      open={dialogShown}
-      maxWidth="xl"
-      data-test="creation-dialog"
-    >
+    <Dialog disableRestoreFocus className="paper-root" open={dialogShown} maxWidth="xl" data-test="creation-dialog">
       <DialogTitle> {title}</DialogTitle>
       <CreationDialogStepper {...props} />
       <DialogActions>{getDialogActions(props, handleCancel, handleBack, handleNext, handleSubmit)}</DialogActions>

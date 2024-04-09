@@ -37,7 +37,8 @@ const Dropdown = (props) => {
     disabled,
     formStyle,
     error,
-    errorText
+    errorText,
+    className
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +46,13 @@ const Dropdown = (props) => {
   return (
     <form autoComplete="off" style={formStyle}>
       <div style={styles.flexContainer}>
-        <FormControl disabled={disabled} style={style} data-test={`dropdown-${id}`} error={error || false}>
+        <FormControl
+          disabled={disabled}
+          style={style}
+          className={className}
+          data-test={`dropdown-${id}`}
+          error={error || false}
+        >
           <InputLabel>{floatingLabel}</InputLabel>
           <Select
             variant="standard"
@@ -78,7 +85,7 @@ const Dropdown = (props) => {
                   data-test={"close-select"}
                   onClick={() => setIsOpen(false)}
                   title={strings.common.close}
-                  iconButtonStyle={{ width: 15, height: 15 }}
+                  className="icon-button-style"
                   icon={<CloseIcon style={styles.closeButtonSize} />}
                 />
               </div>

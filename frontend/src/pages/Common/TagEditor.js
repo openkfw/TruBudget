@@ -7,25 +7,7 @@ import TextField from "@mui/material/TextField";
 import { formattedTag } from "../../helper";
 import strings from "../../localizeStrings";
 
-const styles = {
-  container: {
-    marginTop: "15px",
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    justifyContent: "center"
-  },
-  input: {
-    margin: "5px",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "baseline"
-  },
-  tags: {
-    margin: "5px"
-  }
-};
+import "./TagEditor.scss";
 
 const displayTags = (tags, deleteTag) => {
   return tags !== undefined
@@ -75,8 +57,8 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag, tagText }) {
   const validTagRegex = /^([A-Za-zÀ-ÿ0-9])*[A-Za-zÀ-ÿ0-9-_]+$/;
 
   return (
-    <div style={styles.container}>
-      <div style={styles.input}>
+    <div className="tag-container">
+      <div className="input">
         <TextField
           value={input}
           label={strings.common.tag}
@@ -90,7 +72,7 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag, tagText }) {
           }}
           multiline={false}
           inputProps={{ maxLength: "25" }}
-          style={{ marginRight: "20px" }}
+          className="tag-textfield"
           error={invalidInput}
           helperText={!invalidInput ? tagText : invalidInputMessage}
           data-test="taginput"
@@ -106,7 +88,7 @@ function TagEditor({ projectTags, addProjectTag, removeProjectTag, tagText }) {
           {strings.common.add}
         </Button>
       </div>
-      <div style={styles.tags} data-test="taglist">
+      <div className="tags" data-test="taglist">
         {displayTags(projectTags, (value) => removeProjectTag(value))}
       </div>
     </div>
