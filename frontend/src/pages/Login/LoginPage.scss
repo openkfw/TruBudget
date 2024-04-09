@@ -1,0 +1,67 @@
+.login-page-container {
+  background-image: url(../../../public/welcome.jpg);
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.login-card {
+  width: 350px;
+  z-index: 1100;
+  opacity: 0.9;
+  &.with-authproxy {
+    width: 600px;
+  }
+}
+
+.login-card-header {
+  width: 70%;
+}
+
+.login-card-content {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card-footer {
+  padding-top: 0.625rem;
+  padding-bottom: 1.25rem;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-dropdown {
+  margin-left: 0.625rem;
+}
+
+.login-button {
+  margin-right: 1.25rem;
+  margin-top: 0.3rem;
+}
+
+.admin-settings {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  float: right;
+}
+
+.login-button-proxy-container {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}

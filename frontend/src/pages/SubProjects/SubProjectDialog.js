@@ -5,7 +5,7 @@ import { compareObjects, fromAmountString, isEmptyDeep, shortenedDisplayName } f
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
 
-import SubprojectDialogContent from "./SubprojectDialogContent";
+import SubProjectDialogContent from "./SubProjectDialogContent";
 
 const handleCreate = (props) => {
   const {
@@ -63,7 +63,7 @@ const handleEdit = (props) => {
   onDialogCancel();
 };
 
-const SubprojectDialog = (props) => {
+const SubProjectDialog = (props) => {
   const {
     subprojectToAdd,
     dialogTitle,
@@ -100,7 +100,7 @@ const SubprojectDialog = (props) => {
   const steps = [
     {
       title: strings.project.project_details,
-      content: <SubprojectDialogContent {...props} />,
+      content: <SubProjectDialogContent {...props} />,
       nextDisabled: _isEmpty(subprojectToAdd.displayName) || _isEmpty(subprojectToAdd.currency) || !hasChanges
     }
   ];
@@ -120,4 +120,4 @@ const SubprojectDialog = (props) => {
   );
 };
 
-export default SubprojectDialog;
+export default SubProjectDialog;

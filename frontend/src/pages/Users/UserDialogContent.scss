@@ -1,0 +1,21 @@
+@import "../index.scss";
+
+.user-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2.9rem;
+}
+
+.user-dialog-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+  margin-left: 0.625rem;
+}
+
+.info {
+  display: flex;
+  padding-right: 1.25rem;
+}

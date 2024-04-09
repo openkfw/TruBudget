@@ -1,0 +1,25 @@
+@import "../index.scss";
+
+.dropdown {
+  min-width: 200px;
+}
+
+.sub-project-dialog-input-container {
+  display: flex;
+  padding-right: 1.25rem;
+  align-items: center;
+}
+
+.sub-project-dialog-info-icon {
+  font-size: 1.25rem;
+  margin-top: 1rem;
+  padding: 0.5rem;
+}
+
+.sub-project-dialog-container {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}

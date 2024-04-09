@@ -16,45 +16,19 @@ import Tooltip from "@mui/material/Tooltip";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  shapeCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: "50%",
-    display: "block",
-    margin: "0 auto"
-  },
-  box: {
-    margin: 1,
-    marginLeft: 35,
-    marginRight: 35,
-    paddingLeft: 0,
-    paddingRight: 0
-  },
-  cell: {
-    minWidth: "250px",
-    maxWidth: "250px"
-  },
-  infoIcon: {
-    marginLeft: "5px",
-    marginBottom: "-7px",
-    fontSize: "x-large",
-    color: "dimgrey"
-  }
-};
+import "./ApprovedNodesTableEntry.scss";
 
 const renderTimeStampString = (node) => {
   return node.lastSeen ? dayjs(node.lastSeen).format("MMM D, YYYY") : "";
 };
 
-const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
+const ApprovedNodesTableEntry = ({ nodeGroup, nodes }) => {
   const [open, setOpen] = React.useState(false);
 
   const renderTableRow = (node) => {
-    const circleColor = node.isConnected ? "green" : "red";
     const circle = (
       <div
-        style={{ ...styles.shapeCircle, backgroundColor: circleColor }}
+        className={node.isConnected ? "circle green" : "circle red"}
         data-test={`status-${node.address.organization}`}
       />
     );
@@ -62,11 +36,11 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
 
     return (
       <TableRow key={node.address.address}>
-        <TableCell align="center" style={styles.cell}>
+        <TableCell align="center" className="approved-node-cell">
           {" "}
           {node.address.address}{" "}
         </TableCell>
-        <TableCell style={{ textAlign: "-webkit-center" }}>{circle}</TableCell>
+        <TableCell className="center-cell">{circle}</TableCell>
         <TableCell align="center">{formatLastSeen}</TableCell>
       </TableRow>
     );
@@ -77,7 +51,7 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
       <TableCell>
         {permissions}
         <Tooltip title={strings.nodesDashboard.admin_description} placement="right">
-          <InfoOutlinedIcon style={styles.infoIcon} />
+          <InfoOutlinedIcon className="node-info-icon" />
         </Tooltip>
       </TableCell>
     ) : (
@@ -105,19 +79,19 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
         {renderPermissionCell(nodeGroup.permissions)}
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell className="no-padding-cell" colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box style={styles.box}>
+            <Box className="approved-node-box">
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" style={styles.cell}>
+                    <TableCell align="center" className="approved-node-cell">
                       {strings.nodesDashboard.nodes} {strings.nodesDashboard.address}
                     </TableCell>
-                    <TableCell align="center" style={styles.cell}>
+                    <TableCell align="center" className="approved-node-cell">
                       {strings.nodesDashboard.connection_status}
                     </TableCell>
-                    <TableCell align="center" style={styles.cell}>
+                    <TableCell align="center" className="approved-node-cell">
                       {strings.nodesDashboard.last_seen}
                     </TableCell>
                   </TableRow>
@@ -135,4 +109,4 @@ const ApprovedNodestableEntry = ({ nodeGroup, nodes }) => {
     </React.Fragment>
   );
 };
-export default ApprovedNodestableEntry;
+export default ApprovedNodesTableEntry;

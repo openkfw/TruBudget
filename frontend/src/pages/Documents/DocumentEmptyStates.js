@@ -7,19 +7,10 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  subtitle: {
-    color: (theme) => theme.palette.grey.dark
-  },
-  caption: {
-    color: (theme) => theme.palette.grey.main
-  }
-};
-
 const DocumentEmptyState = (props) => {
   const { captionText } = props;
   return (
-    <CardContent style={{ textAlign: "center" }}>
+    <CardContent>
       <List>
         <ListItem>
           <img
@@ -29,12 +20,12 @@ const DocumentEmptyState = (props) => {
           />
         </ListItem>
         <ListItem>
-          <Typography variant="subtitle1" style={styles.subtitle}>
+          <Typography variant="subtitle1" className="subtitle">
             {strings.common.no_documents}
           </Typography>
         </ListItem>
         <ListItem>
-          <Typography variant="caption" style={styles.caption}>
+          <Typography variant="caption" className="caption">
             {captionText ? captionText : strings.common.no_documents_upload_text}
           </Typography>
         </ListItem>
