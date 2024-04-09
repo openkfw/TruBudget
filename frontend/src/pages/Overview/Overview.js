@@ -11,22 +11,18 @@ import strings from "../../localizeStrings";
 import CardView from "./CardView";
 import TableView from "./TableView";
 
-const styles = {
-  button: {
-    margin: "10px"
-  }
-};
+import "./Overview.scss";
 
 const Overview = (props) => {
   return (
     <Box>
-      <Box sx={{ display: "flex" }}>
+      <Box className="overview-box">
         {props.projectView === "table" ? (
           <IconButton
             aria-label="view grid"
             onClick={() => props.setProjectView("card")}
             data-test="set-card-view"
-            sx={styles.button}
+            className="view-button"
           >
             <GridViewIcon color="primary" />
           </IconButton>
@@ -36,7 +32,7 @@ const Overview = (props) => {
               aria-label="view list"
               onClick={() => props.setProjectView("table")}
               data-test="set-table-view"
-              sx={styles.button}
+              className="view-button"
             >
               <ViewListIcon color="primary" />
             </IconButton>
@@ -44,7 +40,7 @@ const Overview = (props) => {
         )}
       </Box>
       {props.projectView === "card" && (
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Box className="card-view-box">
           <CardView {...props} />
         </Box>
       )}

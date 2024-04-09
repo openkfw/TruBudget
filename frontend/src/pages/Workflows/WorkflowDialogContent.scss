@@ -1,0 +1,24 @@
+.workflow-dialog-container {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dropdown {
+  min-width: 200px;
+}
+
+.workflow-input-container {
+  display: flex;
+  width: 45%;
+  padding-right: 1.25rem;
+  align-items: flex-end;
+}
+
+.info-icon {
+  margin-left: 0.3rem;
+  margin-bottom: 0.45rem;
+  font-size: x-large;
+}

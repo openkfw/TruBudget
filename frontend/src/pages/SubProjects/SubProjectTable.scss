@@ -1,0 +1,47 @@
+.sub-project-table {
+  table-layout: fixed;
+}
+
+.table-text {
+  font-size: 0.875rem;
+}
+
+.sub-project-name {
+  font-size: 0.875rem;
+  width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sub-project-projected-budget {
+  font-size: 0.875rem;
+  width: 30%;
+}
+
+.sub-project-status {
+  font-size: 0.875rem;
+  width: 15%;
+}
+
+.sub-project-actions {
+  font-size: 0.875rem;
+  width: 25%;
+}
+
+.sub-project-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.sub-project-button {
+  width: 33%;
+}
+
+.sub-project-budget-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sub-project-budget {
+  margin: 0.25rem;
+}

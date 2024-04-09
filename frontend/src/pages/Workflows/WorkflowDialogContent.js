@@ -17,31 +17,9 @@ import TagEditor from "../Common/TagEditor";
 import * as templates from "./templates/workflowTemplates";
 import WorkflowDialogAmount from "./WorkflowDialogAmount";
 
-const types = ["general", "restricted"];
+import "./WorkflowDialogContent.scss";
 
-const styles = {
-  container: {
-    marginTop: 20,
-    marginBottom: 20,
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-between"
-  },
-  dropdown: {
-    minWidth: 200
-  },
-  inputContainer: {
-    display: "flex",
-    width: "45%",
-    paddingRight: 20,
-    alignItems: "flex-end"
-  },
-  infoIcon: {
-    marginLeft: "5px",
-    marginBottom: "7px",
-    fontSize: "x-large"
-  }
-};
+const types = ["general", "restricted"];
 
 const renderDropdownMenuItems = (types) => {
   return types.map((type, index) => {
@@ -109,9 +87,9 @@ const WorkflowDialogContent = (props) => {
 
   return (
     <div data-test={"workflow-dialog-content"}>
-      <div style={styles.inputContainer}>
+      <div className="workflow-input-container">
         <Dropdown
-          style={styles.dropdown}
+          className="dropdown"
           floatingLabel={"Workflow template"}
           value={workflowTemplate}
           onChange={(value) => storeWorkflowTemplate(value)}
@@ -123,7 +101,6 @@ const WorkflowDialogContent = (props) => {
           <IconButton
             aria-label="cancel"
             data-test={"clear-workflowitem-template"}
-            style={styles.clearButton}
             onClick={() => storeWorkflowTemplate("")}
             size="large"
           >
@@ -144,8 +121,8 @@ const WorkflowDialogContent = (props) => {
           commentOnChange={storeWorkflowComment}
           disabled={isWorkflowFromTemplate}
         />
-        <div style={styles.container}>
-          <div style={styles.inputContainer}>
+        <div className="workflow-dialog-container">
+          <div className="workflow-input-container">
             <DatePicker
               className="date-picker workflow"
               id="due-date"
@@ -162,10 +139,10 @@ const WorkflowDialogContent = (props) => {
           </div>
           {creationDialogShown ? (
             <>
-              <div style={styles.inputContainer}>
+              <div className="workflow-input-container">
                 <Dropdown
                   disabled={hasFixedWorkflowitemType || isWorkflowFromTemplate}
-                  style={styles.dropdown}
+                  className="dropdown"
                   floatingLabel={strings.workflow.workflowitem_type}
                   value={hasFixedWorkflowitemType ? fixedWorkflowitemType : workflowitemType}
                   onChange={(value) => storeWorkflowitemType(value)}
@@ -174,10 +151,10 @@ const WorkflowDialogContent = (props) => {
                   {renderDropdownMenuItems(types)}
                 </Dropdown>
                 <Tooltip title={getWorkflowitemTypeInfo(workflowitemType)} placement="right">
-                  <InfoOutlinedIcon style={styles.infoIcon} />
+                  <InfoOutlinedIcon className="info-icon" />
                 </Tooltip>
               </div>
-              <div style={styles.inputContainer}>
+              <div className="workflow-input-container">
                 <SingleSelection
                   disabled={hasSubprojectValidator || isWorkflowFromTemplate}
                   floatingLabel={strings.subproject.workflowitem_assignee}
