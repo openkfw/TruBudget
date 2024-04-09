@@ -1,0 +1,54 @@
+.project-buttons-box {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.project-column {
+  font-size: 1.1rem;
+}
+
+.project-tags-box {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: auto;
+  max-height: 100px;
+}
+
+.project-actions-box {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.project-actions {
+  display: flex;
+  align-items: center;
+}
+
+.project-box-block {
+  display: block;
+}
+
+.filter-menu-box {
+  margin-left: 1.5rem;
+}
+
+.table-view-editor-box {
+  margin-right: 9.5rem;
+}
+
+.create-project-box {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.project-add-button {
+  height: 4rem;
+  width: 4rem;
+  margin-bottom: -7.5rem;
+  margin-right: -2rem;
+}

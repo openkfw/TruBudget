@@ -23,31 +23,7 @@ import withInitialLoading from "../Loading/withInitialLoading";
 
 import { DocumentEmptyState } from "./DocumentEmptyStates";
 
-const styles = {
-  validationButtonNotValidated: {
-    whiteSpace: "nowrap"
-  },
-  validationInput: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: "100%",
-    opacity: 0
-  },
-  actionContainer: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "flex-start"
-  },
-  noHorizontalPadding: {
-    paddingRight: "0px",
-    paddingLeft: "0px"
-  }
-};
+import "./DocumentOverview.scss";
 
 class DocumentOverview extends Component {
   constructor() {
@@ -64,7 +40,7 @@ class DocumentOverview extends Component {
   };
 
   getPropsForValidationButton = (validated, available) => {
-    let style = {};
+    let className = {};
     let label = "";
     let color = undefined;
     const disabled = !available;
@@ -75,13 +51,11 @@ class DocumentOverview extends Component {
       color = "success";
     } else {
       label = strings.workflow.workflow_document_changed + "!";
-      style = {
-        ...styles.validationButtonNotValidated
-      };
+      className = "validation-button-not-validated";
       color = "error";
     }
 
-    return { style, label, color, disabled };
+    return { className, label, color, disabled };
   };
 
   getValidationText = (validated) => {
@@ -104,7 +78,7 @@ class DocumentOverview extends Component {
         <Input
           id="docvalidation"
           type="file"
-          style={styles.validationInput}
+          className="document-validation-input"
           onChange={(event) => {
             if (event.target.files[0]) {
               const file = event.target.files[0];
@@ -156,17 +130,17 @@ class DocumentOverview extends Component {
           <TableCell>
             {document.link ? (
               <Tooltip title={document.link}>
-                <div style={{ overflow: "hidden", maxWidth: "170px", color: "#333333" }}>{document.link}</div>
+                <div className="document-link">{document.link}</div>
               </Tooltip>
             ) : (
-              <div style={{ display: "flex" }}>
-                <FingerPrint style={{ paddingRight: "10px", paddingBottom: "0px" }} />
+              <div className="finger-print-container">
+                <FingerPrint className="finger-print" />
                 <OverflowTooltip text={hash} maxWidth="70px" />
               </div>
             )}
           </TableCell>
           <TableCell>
-            <div style={styles.actionContainer}>
+            <div className="document-action-container">
               {document.id &&
                 document.hash &&
                 this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
@@ -219,7 +193,7 @@ class DocumentOverview extends Component {
     <TableBody>
       <TableRow>
         <TableCell>
-          <div style={{ backgroundColor: "#f3f3f3" }}>
+          <div className="document-empty-state-bg">
             <DocumentEmptyState captionText={strings.common.no_documents_info_text} />
           </div>
         </TableCell>

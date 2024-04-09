@@ -10,27 +10,13 @@ import strings from "../../localizeStrings";
 
 import SubProjectTable from "./SubProjectTable";
 
+import "./SubProjects.scss";
+
 const SubProjects = (props) => {
   return (
-    <div
-      data-test="sub-projects"
-      style={{
-        position: "relative",
-        width: "100%",
-        whiteSpace: "nowrap"
-      }}
-    >
+    <div data-test="sub-projects" className="sub-projects">
       <Card>{props.isDataLoading ? null : <SubProjectTable {...props} />}</Card>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          position: "absolute",
-          alignItems: "center",
-          top: "16px",
-          right: "-26px"
-        }}
-      >
+      <div className="sub-projects-container">
         <Tooltip
           title={
             !props.canCreateSubProject
@@ -46,10 +32,7 @@ const SubProjects = (props) => {
               disabled={!props.canCreateSubProject || props.projectStatus === "closed"}
               onClick={props.showSubprojectDialog}
               color="primary"
-              style={{
-                position: "relative",
-                zIndex: 20
-              }}
+              className="sub-projects-create"
               data-test="subproject-create-button"
             >
               <ContentAdd />
@@ -62,10 +45,7 @@ const SubProjects = (props) => {
             data-test="project-history-button"
             size="small"
             onClick={props.openHistory}
-            style={{
-              position: "relative",
-              marginTop: "8px"
-            }}
+            className="sub-projects-history"
           >
             <HistoryIcon />
           </Fab>

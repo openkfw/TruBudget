@@ -31,54 +31,7 @@ import BudgetEmptyState from "../Common/BudgetEmptyState";
 
 import SubProjectAssigneeContainer from "./SubProjectAssigneeContainer";
 
-const styles = {
-  container: {
-    display: "flex",
-    height: "30%",
-    flex: 1,
-    flexDirection: "row",
-    width: "100%",
-    marginBottom: "24px",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-  card: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-between"
-  },
-  projectedBudget: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "18px",
-    width: "32%"
-  },
-  subprojectDetails: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "18px",
-    width: "31%",
-    overflowWrap: "break-word"
-  },
-  subprojectAssignee: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "18px",
-    width: "31%"
-  },
-  analytics: {
-    padding: "12px 0 ",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  tableCell: {
-    padding: "5px"
-  }
-};
+import "./SubProjectDetails.scss";
 
 const subProjectCanBeClosed = (subProjectIsClosed, userIsAllowedToClose, workflowItems) => {
   const hasOpenWorkflowitems = !_isEmpty(workflowItems.find((workflowItem) => workflowItem.data.status === "open"));
@@ -122,9 +75,9 @@ const SubProjectDetails = ({
 
   const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
   return (
-    <div style={styles.container}>
-      <Card style={styles.card}>
-        <List style={styles.subprojectDetails}>
+    <div className="sub-project-details-container">
+      <Card className="sub-project-card">
+        <List className="sub-project-details">
           <ListItem data-test="subproject-details-displayname">
             {displayName ? (
               <ListItemAvatar>
@@ -161,7 +114,7 @@ const SubProjectDetails = ({
           ) : null}
         </List>
 
-        <div style={styles.projectedBudget} data-test="subproject-projected-budget">
+        <div className="projected-budget" data-test="subproject-projected-budget">
           <Typography variant="body1">{strings.common.projected_budget}</Typography>
           {isDataLoading ? (
             <div />
@@ -170,11 +123,11 @@ const SubProjectDetails = ({
               <Table padding="none">
                 <TableHead>
                   <TableRow>
-                    <TableCell style={styles.tableCell}>{strings.common.organization}</TableCell>
-                    <TableCell style={styles.tableCell} align="right">
+                    <TableCell className="sub-project-table-cell">{strings.common.organization}</TableCell>
+                    <TableCell className="sub-project-table-cell" align="right">
                       {strings.common.amount}
                     </TableCell>
-                    <TableCell style={styles.tableCell} align="right">
+                    <TableCell className="sub-project-table-cell" align="right">
                       {strings.common.currency}
                     </TableCell>
                   </TableRow>
@@ -182,18 +135,18 @@ const SubProjectDetails = ({
                 <TableBody>
                   {projectedBudgets.map((budget) => (
                     <TableRow key={budget.organization + budget.currencyCode}>
-                      <TableCell style={styles.tableCell}>{budget.organization}</TableCell>
-                      <TableCell style={styles.tableCell} align="right">
+                      <TableCell className="sub-project-table-cell">{budget.organization}</TableCell>
+                      <TableCell className="sub-project-table-cell" align="right">
                         {toAmountString(budget.value)}
                       </TableCell>
-                      <TableCell style={styles.tableCell} align="right">
+                      <TableCell className="sub-project-table-cell" align="right">
                         {budget.currencyCode}
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <div style={styles.analytics}>
+              <div className="analytics">
                 <Button
                   variant="outlined"
                   color="primary"
@@ -209,7 +162,7 @@ const SubProjectDetails = ({
             <BudgetEmptyState text={strings.common.no_budget_subproject} />
           )}
         </div>
-        <List style={styles.subprojectAssignee}>
+        <List className="sub-project-assignee">
           <ListItem>
             <ListItemAvatar>
               <Avatar>{statusIcon}</Avatar>

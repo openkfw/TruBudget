@@ -11,11 +11,9 @@ import Typography from "@mui/material/Typography";
 
 import { getParentData, intentMapping, isAllowedToSee, parseURI } from "./helper";
 
+import "./FlyInNotifications.scss";
+
 const styles = {
-  notification: {
-    position: "absolute",
-    transition: "all 500ms ease-in"
-  },
   notificationTransition: {
     entering: { right: "-400px" },
     entered: { right: "0px" },
@@ -34,13 +32,7 @@ export default class FlyInNotification extends Component {
       const message = intentMapping(notification);
       const { projectDisplayName, subprojectDisplayName } = getParentData(notification);
       return (
-        <Card
-          key={id + "flyin"}
-          style={{
-            width: "300px",
-            marginBottom: "8px"
-          }}
-        >
+        <Card key={id + "flyin"} className="fly-in-notification-card">
           <CardHeader
             avatar={<Avatar>{publisher ? publisher[0].toString().toUpperCase() : "?"}</Avatar>}
             action={
@@ -68,22 +60,10 @@ export default class FlyInNotification extends Component {
 
   render() {
     return (
-      <div
-        style={{
-          position: "fixed",
-          top: "60px",
-          right: "16px",
-          zIndex: 2000
-        }}
-      >
+      <div className="fly-in-notifications-container">
         <Transition in={this.props.show} timeout={{ enter: 500, exit: 500 }}>
           {(state) => (
-            <div
-              style={{
-                ...styles.notification,
-                ...styles.notificationTransition[state]
-              }}
-            >
+            <div className="fly-in-notifications" style={styles.notificationTransition[state]}>
               {this.getMessages()}
             </div>
           )}

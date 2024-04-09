@@ -2,37 +2,11 @@ import React from "react";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
-const styles = {
-  container: {
-    display: "flex",
-    flex: 1,
-    flexDirection: "column",
-    position: "fixed",
-    left: 0,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    top: "40%",
-    width: "100%",
-    height: "100%",
-    zIndex: 2000
-  },
-  refreshContainer: {
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "top",
-    justifyContent: "center",
-    marginRight: "50px"
-  },
-  refresh: {
-    display: "inline-block",
-    position: "relative"
-  }
-};
+import "./RefreshIndicator.scss";
 
 const Refresh = () => (
-  <div style={styles.container}>
-    <div style={styles.refreshContainer}>
+  <div className="refresh-indicator-container">
+    <div className="refresh-indicators">
       <CircularProgress
         data-test="loading-indicator"
         size={50}
@@ -40,7 +14,7 @@ const Refresh = () => (
         top={0}
         percentage={50}
         color="primary"
-        style={styles.refresh}
+        className="circular-progress"
       />
     </div>
   </div>

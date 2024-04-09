@@ -1,0 +1,22 @@
+.confirmation-paper-root {
+  overflow: visible;
+}
+
+.confirmation-loading-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: top;
+  justify-content: center;
+  margin-right: 3rem;
+}
+
+.confirmation-loading-indicator {
+  display: inline-block;
+  position: relative;
+  padding: 3rem;
+}
+
+.confirmation-dialog-content {
+  padding-bottom: 0;
+}

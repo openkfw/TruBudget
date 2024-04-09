@@ -11,54 +11,7 @@ import { isEmailAddressValid } from "../../helper";
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
 
-const styles = {
-  paperRoot: {
-    width: "50%",
-    overflow: "scrollable"
-  },
-  flex: {
-    display: "flex"
-  },
-  title: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: "auto"
-  },
-  displayName: {
-    marginLeft: "8px"
-  },
-  card: {
-    display: "flex",
-    alignItems: "center"
-  },
-  editButton: {
-    marginRight: "16px"
-  },
-  cardHeader: {
-    width: "100%"
-  },
-  cardHeaderAvatar: {
-    margin: "0px 32px 0px 32px"
-  },
-  cardText: {
-    marginLeft: "8px",
-    display: "flex",
-    flexDirection: "column"
-  },
-  emailTextField: {
-    width: "-webkit-fill-available",
-    marginRight: "32px"
-  },
-  cardHeaderAction: {
-    flexGrow: 1,
-    display: "flex",
-    justifyContent: "flex-end"
-  },
-  closeButton: {
-    marginLeft: "auto"
-  }
-};
+import "./UserProfile.scss";
 
 const UserProfile = ({
   hideUserProfile,
@@ -77,15 +30,15 @@ const UserProfile = ({
   enableUserProfileEdit
 }) => {
   return (
-    <Dialog onClose={hideUserProfile} style={{ paper: styles.paperRoot }} open={open} data-test="user-profile-dialog">
-      <DialogTitle style={styles.flex}>
-        <div style={styles.title}>
-          <Avatar style={styles.avatar} src={avatar} />
-          <Typography style={styles.displayName}>{displayName}</Typography>
+    <Dialog onClose={hideUserProfile} className="user-paper-root" open={open} data-test="user-profile-dialog">
+      <DialogTitle className="user-dialog-title">
+        <div className="user-title">
+          <Avatar src={avatar} />
+          <Typography className="user-name">{displayName}</Typography>
         </div>
         <IconButton
           aria-label="close"
-          style={styles.closeButton}
+          className="user-close-button"
           onClick={hideUserProfile}
           data-test="close-user-profile"
           size="large"
@@ -98,27 +51,23 @@ const UserProfile = ({
           avatar={<GroupIcon aria-label="organization"></GroupIcon>}
           title={strings.common.organization}
           subheader={organization}
-          style={{ avatar: styles.cardHeaderAvatar, root: styles.cardHeader }}
+          className="user-card-header"
         />
       </Card>
       {emailServiceAvailable ? (
-        <Card data-test="email-address-input" style={styles.card}>
+        <Card data-test="email-address-input" className="user-card">
           <CardHeader
             avatar={<EmailIcon aria-label="email"></EmailIcon>}
             title={strings.common.email}
             subheader={!userProfileEdit ? emailAddress || "-" : undefined}
-            style={{
-              avatar: styles.cardHeaderAvatar,
-              root: styles.cardHeader,
-              action: styles.cardHeaderAction
-            }}
+            className="user-card-header"
             action={
               userProfileEdit ? (
-                <>
+                <div className="user-card-header-action">
                   {isEmailAddressInputValid ? (
                     <TextField
                       variant="standard"
-                      style={styles.emailTextField}
+                      className="email-text-field"
                       label={strings.common.email}
                       onChange={(e) => storeTempEmailAddress(e.target.value)}
                     />
@@ -127,14 +76,14 @@ const UserProfile = ({
                       variant="standard"
                       error
                       helperText={strings.userProfile.invalid_email_address}
-                      style={styles.emailTextField}
+                      className="email-text-field"
                       label={strings.common.email}
                       onChange={(e) => storeTempEmailAddress(e.target.value)}
                     />
                   )}
                   <ActionButton
                     ariaLabel="confirm email"
-                    style={styles.editButton}
+                    className="edit-button"
                     onClick={() => {
                       if (isEmailAddressValid(tempEmailAddress)) {
                         setValidEmailAddressInput(true);
@@ -146,11 +95,11 @@ const UserProfile = ({
                     title={strings.common.done}
                     icon={<DoneIcon />}
                   />
-                </>
+                </div>
               ) : (
                 <ActionButton
                   ariaLabel="edit"
-                  style={styles.editButton}
+                  className="edit-button"
                   onClick={enableUserProfileEdit}
                   title={strings.common.edit}
                   icon={<EditIcon />}
