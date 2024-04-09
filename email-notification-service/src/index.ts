@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { body, query } from "express-validator";
+import rateLimit from "express-rate-limit";
 import { createPinoExpressLogger } from "trubudget-logging-service";
 import helmet from "helmet";
 import config from "./config";
@@ -27,11 +28,20 @@ emailService.use(cors({ origin: config.allowOrigin }));
 
 emailService.use(helmet());
 
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: config.rateLimit || 100, // limit each IP to 100 requests per windowMs
+});
+
 // JWT secret
 if (config.authentication === "jwt") {
   configureJWT();
 } else {
   logger.info("No authentication method configured");
+}
+
+if (config.rateLimit) {
+  emailService.use(limiter);
 }
 
 // Routes

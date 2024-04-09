@@ -27,6 +27,7 @@ interface Config {
   };
   email: Mail.Options;
   allowOrigin: string;
+  rateLimit: number | undefined;
 }
 
 const config: Config = {
@@ -59,6 +60,10 @@ const config: Config = {
     text: process.env.EMAIL_TEXT || "You have received a notification.",
   },
   allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
+  rateLimit:
+    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
+      ? undefined
+      : Number(process.env.RATE_LIMIT),
 };
 
 export default config;

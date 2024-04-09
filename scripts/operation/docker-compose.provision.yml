@@ -118,6 +118,7 @@ services:
       PORT: ${EMAIL_PORT}
       AUTHENTICATION: ${AUTHENTICATION}
       LOG_LEVEL: ${EMAIL_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.5
