@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import { body, query } from "express-validator";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import { createPinoExpressLogger } from "trubudget-logging-service";
 import helmet from "helmet";
 import config from "./config";
@@ -20,12 +21,25 @@ import {
 import isBodyValid from "./validation";
 
 // Setup
+let corsOptions = {
+  credentials: config.authentication === "jwt" ? true : false,
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
+  origin: function (origin: any, callback: any) {
+    if (config.allowOrigin === "*") {
+      callback(null, true);
+    } else if (config.allowOrigin.split(";").includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
 const db = new DbConnector();
 const emailService = express();
 emailService.use(createPinoExpressLogger(logger));
 emailService.use(express.json());
-emailService.use(cors({ origin: config.allowOrigin }));
-
+emailService.use(cors(corsOptions));
+emailService.use(cookieParser());
 emailService.use(helmet());
 
 const limiter = rateLimit({
@@ -312,21 +326,27 @@ function isAllowed(requestedUserId: string, res: express.Response): boolean {
 
 function configureJWT(): void {
   logger.info("Configure with JWT authentication ...");
-  if (!process.env.JWT_SECRET) {
+
+  if (process.env.JWT_ALGORITHM !== "RS256" && !process.env.JWT_SECRET) {
     logger.error(
       "The 'JWT_SECRET' env variable is not set. Without the JWT secret of the token providing Trubudget API the server cannot identify the user.",
     );
     process.exit();
   }
-  const jwtSecret: string = process.env.JWT_SECRET;
-  if (jwtSecret.length < 32) {
-    logger.warn("The JWT secret key should be at least 32 characters long.");
+  if (process.env.JWT_ALGORITHM === "RS256" && !process.env.JWT_PUBLIC_KEY) {
+    logger.error(
+      "JWT algorithm is set to RS256, but no public key in'JWT_PUBLIC_KEY' is provided.",
+    );
+    process.exit();
   }
   // Add middlewares
-  emailService.all("/user*", (req, res, next) =>
-    Middleware.verifyUserJWT(req, res, next, jwtSecret),
-  );
+  if ((process.env.JWT_ALGORITHM !== "RS256" && process.env.JWT_SECRET?.length) ?? 0 < 32) {
+    logger.warn("The JWT secret key should be at least 32 characters long.");
+  }
+
+  // Add middlewares
+  emailService.all("/user*", (req, res, next) => Middleware.verifyUserJWT(req, res, next));
   emailService.all("/notification*", (req, res, next) =>
-    Middleware.verifyNotificationJWT(req, res, next, jwtSecret),
+    Middleware.verifyNotificationJWT(req, res, next),
   );
 }
