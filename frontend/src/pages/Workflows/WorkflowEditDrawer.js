@@ -214,7 +214,7 @@ const WorkflowEditDrawer = (props) => {
                   </Select>
                 </FormControl>
 
-                <FormControl fullWidth style={{ marginTop: "15px" }}>
+                <FormControl fullWidth className="copy-button">
                   <Button
                     variant="contained"
                     onClick={handleCopySubmit}
