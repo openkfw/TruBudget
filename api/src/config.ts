@@ -1,6 +1,12 @@
 import logger from "./lib/logger";
 import { randomString } from "./service/hash";
 
+export interface JwtConfig {
+  secretOrPrivateKey: string;
+  publicKey: string;
+  algorithm: "HS256" | "RS256";
+}
+
 /**
  * Shows all environment variables that the api can contain
  * @notExported
@@ -58,11 +64,7 @@ interface Config {
     host: string;
     port: number;
   };
-  jwt: {
-    secretOrPrivateKey: string;
-    publicKey: string;
-    algorithm: string;
-  };
+  jwt: JwtConfig;
   npmPackageVersion: string;
   // Continues Integration
   ciCommitSha: string;
@@ -115,7 +117,10 @@ export const config: Config = {
   jwt: {
     secretOrPrivateKey: process.env.JWT_SECRET || randomString(32),
     publicKey: process.env.JWT_PUBLIC_KEY || "",
-    algorithm: process.env.JWT_ALGORITHM || "HS256",
+    algorithm:
+      process.env.JWT_ALGORITHM && process.env.JWT_ALGORITHM.toLocaleLowerCase() === "rs256"
+        ? "RS256"
+        : "HS256",
   },
   npmPackageVersion: process.env.npm_package_version || "",
   // Continues Integration

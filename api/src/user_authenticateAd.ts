@@ -9,7 +9,7 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
-import { config } from "./config";
+import { JwtConfig, config } from "./config";
 
 /**
  * Represents the request body of the endpoint
@@ -179,7 +179,7 @@ export function addHttpHandler(
   server: FastifyInstance,
   urlPrefix: string,
   service: Service,
-  jwt: { secretOrPrivateKey: string; algorithm: string },
+  jwt: JwtConfig,
 ): void {
   server.post(
     `${urlPrefix}/user.authenticateAd`,
@@ -223,11 +223,7 @@ export function addHttpHandler(
           throw new VError(tokenResult, "authentication failed");
         }
         const token = tokenResult;
-        const signedJwt = createJWTWithMeta(
-          token,
-          jwt.secretOrPrivateKey,
-          jwt.algorithm as "HS256" | "RS256",
-        );
+        const signedJwt = createJWTWithMeta(token, jwt.secretOrPrivateKey, jwt.algorithm);
 
         const groupsResult = await service.getGroupsForUser(
           ctx,

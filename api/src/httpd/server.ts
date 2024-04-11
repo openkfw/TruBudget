@@ -17,6 +17,7 @@ import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import fastifyRateLimit from "@fastify/rate-limit";
 import * as path from "path";
+import { JwtConfig } from "../config";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -32,10 +33,7 @@ const ajv = new Ajv({
   keywords: ["example"],
 });
 
-const addTokenHandling = (
-  server: FastifyInstance,
-  jwt: { secretOrPrivateKey: string; publicKey: string; algorithm: string },
-): void => {
+const addTokenHandling = (server: FastifyInstance, jwt: JwtConfig): void => {
   server.register(fastifyCookie, {
     parseOptions: {},
   } as FastifyCookieOptions);
@@ -156,7 +154,7 @@ const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: n
 };
 
 export const createBasicApp = (
-  jwt: { secretOrPrivateKey: string; publicKey: string; algorithm: string },
+  jwt: JwtConfig,
   urlPrefix: string,
   apiPort: number,
   accessControlAllowOrigin: string,

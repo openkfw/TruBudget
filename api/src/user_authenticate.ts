@@ -10,6 +10,7 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
+import { JwtConfig } from "./config";
 
 /**
  * Represents the request body of the endpoint
@@ -188,7 +189,7 @@ export function addHttpHandler(
   server: FastifyInstance,
   urlPrefix: string,
   service: Service,
-  jwt: { secretOrPrivateKey: string; algorithm: string },
+  jwt: JwtConfig,
 ): void {
   server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
@@ -273,7 +274,11 @@ export function addHttpHandler(
  * @param secretOrPrivateKey a secret or private key to be used to sign the jwt token with
  * @returns a string containing the encoded JWT token
  */
-function createJWT(token: AuthToken, key: string, algorithm: "HS256" | "RS256" = "HS256"): string {
+function createJWT(
+  token: AuthToken,
+  key: string,
+  algorithm: JwtConfig["algorithm"] = "HS256",
+): string {
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
   return jsonwebtoken.sign(
     {
