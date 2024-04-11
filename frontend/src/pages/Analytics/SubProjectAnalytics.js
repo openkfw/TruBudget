@@ -126,10 +126,8 @@ class SubprojectAnalytics extends React.Component {
 const NumberChart = ({ title, budget, currency, dataTest }) => (
   <Card className="card">
     <CardContent className="number-content">
-      <Typography style={{ flex: 1 }} variant="overline">
-        {title}
-      </Typography>
-      <Typography style={{ flex: 1 }} data-test={dataTest} variant="h6">
+      <Typography variant="overline">{title}</Typography>
+      <Typography data-test={dataTest} variant="h6">
         {toAmountString(budget, currency)}
       </Typography>
     </CardContent>
@@ -140,10 +138,8 @@ const RatioChart = ({ title, budget, dataTest }) => {
   return (
     <Card className="card">
       <CardContent className="ratio-content">
-        <Typography style={{ flex: 1 }} variant="overline">
-          {title}
-        </Typography>
-        <Typography style={{ flex: 1 }} data-test={dataTest} variant="h6">
+        <Typography variant="overline">{title}</Typography>
+        <Typography data-test={dataTest} variant="h6">
           {isValidBudget ? `${(budget * 100).toFixed(2)}%` : "-"}
         </Typography>
       </CardContent>
@@ -157,7 +153,7 @@ const Chart = ({ title, chart, dataTest }) => (
       <Typography data-test={dataTest} variant="overline">
         {title}
       </Typography>
-      <div style={{ flex: 1 }}>{chart}</div>
+      <div>{chart}</div>
     </CardContent>
   </Card>
 );
