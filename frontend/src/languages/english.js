@@ -255,8 +255,7 @@ const en = {
     project_thumbnail: "Thumbnail",
     project_title_description: "Name of the project",
     project_title: "Project title",
-    project_searchtext: "Search projects",
-    rows_per_page: "Rows per page"
+    project_searchtext: "Search projects"
   },
 
   subproject: {
