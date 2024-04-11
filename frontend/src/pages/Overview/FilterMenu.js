@@ -25,7 +25,7 @@ const FilterMenu = (props) => {
   } = props;
 
   return (
-    <Box data-test="filter-menu" style={{}}>
+    <Box data-test="filter-menu">
       <Box className="filter-menu">
         <Box>
           <DatePicker

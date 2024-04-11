@@ -87,8 +87,8 @@ const SubProjectAnalyticsDialog = ({
                   id: "currencies"
                 }}
                 data-test="select-currencies"
-                IconComponent={(props) => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
-                style={{ color: "white" }}
+                IconComponent={(props) => <ArrowDropDownIcon {...props} className="white-icon" />}
+                className="white-currency"
               >
                 {getMenuItems(getCurrencies())}
               </Select>
