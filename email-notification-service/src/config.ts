@@ -72,10 +72,7 @@ const config: Config = {
   jwt: {
     secretOrPrivateKey: process.env.JWT_SECRET || "",
     publicKey: process.env.JWT_PUBLIC_KEY || "",
-    algorithm:
-      process.env.JWT_ALGORITHM && process.env.JWT_ALGORITHM.toLocaleLowerCase() === "rs256"
-        ? "RS256"
-        : "HS256",
+    algorithm: process.env.JWT_ALGORITHM === "RS256" ? "RS256" : "HS256",
   },
 };
 

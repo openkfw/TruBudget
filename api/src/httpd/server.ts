@@ -69,6 +69,7 @@ const addTokenHandling = (server: FastifyInstance, jwt: JwtConfig): void => {
       }
       await request.jwtVerify();
     } catch (err) {
+      logger.error(err, "Authentication error");
       request.log.debug(err, "Authentication error");
       reply.status(401).send({
         apiVersion: DEFAULT_API_VERSION,
