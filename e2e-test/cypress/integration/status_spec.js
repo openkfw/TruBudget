@@ -1,8 +1,6 @@
 describe("Component Versions", function () {
-  let exportUrl, apiBaseUrl, apiUrl;
+  let exportUrl;
   before(() => {
-    apiBaseUrl = Cypress.env("API_BASE_URL") || Cypress.config("baseUrl");
-    apiUrl = apiBaseUrl + "/api";
     exportUrl = Cypress.env("EXPORT_SERVICE_BASE_URL") || `${Cypress.config("baseUrl")}/api/export/xlsx`;
   });
 
@@ -21,7 +19,7 @@ describe("Component Versions", function () {
   });
 
   it("Shows versions of basic services (frontend,api,blockchain,multichain) correctly", function () {
-    cy.intercept(apiUrl + "/version").as("fetchVersions");
+    cy.intercept("/version").as("fetchVersions");
     cy.login();
     cy.visit(`/status`);
     cy.get("[data-test=status-table-body]")
