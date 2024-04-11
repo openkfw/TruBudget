@@ -19,7 +19,7 @@ describe("Component Versions", function () {
   });
 
   it("Shows versions of basic services (frontend,api,blockchain,multichain) correctly", function () {
-    cy.intercept("/version").as("fetchVersions");
+    cy.intercept("/api/version").as("fetchVersions");
     cy.login();
     cy.visit(`/status`);
     cy.get("[data-test=status-table-body]")
