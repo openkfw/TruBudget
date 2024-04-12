@@ -493,7 +493,7 @@ class Api {
   };
   checkEmailService = () => {
     const path = this.getEmailServiceUrl("readiness");
-    return instance.get(path);
+    return instance.get(path, { withCredentials: true });
   };
   fetchEmailServiceVersion = () => {
     const path = this.getEmailServiceUrl("version");
@@ -502,21 +502,21 @@ class Api {
   insertEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.insert");
-    return instance.post(path, data);
+    return instance.post(path, data, { withCredentials: true });
   };
   updateEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.update");
-    return instance.post(path, data);
+    return instance.post(path, data, { withCredentials: true });
   };
   deleteEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.delete");
-    return instance.post(path, data);
+    return instance.post(path, data, { withCredentials: true });
   };
   getEmailAddress = (id) => {
     const path = this.getEmailServiceUrl(`user.getEmailAddress?id=${id}`);
-    return instance.get(path);
+    return instance.get(path, { withCredentials: true });
   };
 
   getWorkflowItem = (projectId, subprojectId, workflowitemId) => {

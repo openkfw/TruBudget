@@ -17,6 +17,7 @@ import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import fastifyRateLimit from "@fastify/rate-limit";
 import * as path from "path";
+import { JwtConfig } from "../config";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -32,18 +33,34 @@ const ajv = new Ajv({
   keywords: ["example"],
 });
 
-const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
+const addTokenHandling = (server: FastifyInstance, jwt: JwtConfig): void => {
   server.register(fastifyCookie, {
     parseOptions: {},
   } as FastifyCookieOptions);
 
-  server.register(fastifyJwt, {
-    secret: jwtSecret,
-    cookie: {
-      cookieName: "token",
-      signed: false,
-    },
-  });
+  if (jwt.algorithm === "RS256") {
+    server.register(fastifyJwt, {
+      secret: {
+        private: Buffer.from(jwt.secretOrPrivateKey, "base64"),
+        public: Buffer.from(jwt.publicKey, "base64"),
+      },
+      sign: {
+        algorithm: jwt.algorithm,
+      },
+      cookie: {
+        cookieName: "token",
+        signed: false,
+      },
+    });
+  } else {
+    server.register(fastifyJwt, {
+      secret: jwt.secretOrPrivateKey,
+      cookie: {
+        cookieName: "token",
+        signed: false,
+      },
+    });
+  }
 
   server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -52,6 +69,7 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
       }
       await request.jwtVerify();
     } catch (err) {
+      logger.error(err, "Authentication error");
       request.log.debug(err, "Authentication error");
       reply.status(401).send({
         apiVersion: DEFAULT_API_VERSION,
@@ -137,7 +155,7 @@ const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: n
 };
 
 export const createBasicApp = (
-  jwtSecret: string,
+  jwt: JwtConfig,
   urlPrefix: string,
   apiPort: number,
   accessControlAllowOrigin: string,
@@ -171,7 +189,7 @@ export const createBasicApp = (
     };
   });
 
-  addTokenHandling(server, jwtSecret);
+  addTokenHandling(server, jwt);
   addLogging(server);
 
   server.addContentTypeParser("application/gzip", async function (request, payload) {

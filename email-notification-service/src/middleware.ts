@@ -1,6 +1,7 @@
 import { Request } from "express";
 import jwt from "jsonwebtoken";
 import logger from "./logger";
+import config from "./config";
 
 interface InvalidJWTResponseBody {
   message: string;
@@ -21,26 +22,26 @@ interface AuthNotificationToken {
   exp: number;
 }
 
-export const verifyUserJWT = (req: Request, res, next, secret: string): void => {
+export const verifyUserJWT = (req: Request, res, next): void => {
   logger.trace("Verifying User-JWT ...");
   const token: string = getJWTToken(req);
 
-  verifyJWTToken(token, secret)
+  verifyJWTToken(token)
     .then((decodedToken: AuthUserToken) => {
       res.locals.userId = decodedToken.userId;
       next();
     })
     .catch((err) => {
-      logger.trace({ err, token }, "User-JWT invalid");
+      logger.error({ err, token }, "User-JWT invalid");
       const body: InvalidJWTResponseBody = { message: "Invalid JWT token provided." };
       res.status(400).json(body);
     });
 };
-export const verifyNotificationJWT = (req: Request, res, next, secret: string): void => {
+export const verifyNotificationJWT = (req: Request, res, next): void => {
   logger.trace("Verifying Notification-JWT ...");
   const token: string = getJWTToken(req);
 
-  verifyJWTToken(token, secret)
+  verifyJWTToken(token)
     .then((decodedToken: AuthNotificationToken) => {
       res.locals.id = decodedToken.id;
       next();
@@ -52,18 +53,24 @@ export const verifyNotificationJWT = (req: Request, res, next, secret: string): 
     });
 };
 
-const verifyJWTToken = (
-  token: string,
-  secret: string,
-): Promise<AuthUserToken | AuthNotificationToken> => {
+const verifyJWTToken = (token: string): Promise<AuthUserToken | AuthNotificationToken> => {
+  const secret =
+    config.jwt.algorithm === "RS256"
+      ? Buffer.from(config.jwt.publicKey, "base64").toString()
+      : config.jwt.secretOrPrivateKey;
   return new Promise((resolve, reject) => {
-    jwt.verify(token, secret, (err, decodedToken: AuthUserToken) => {
-      if (err || !decodedToken) {
-        return reject(err);
-      }
+    jwt.verify(
+      token,
+      secret as string,
+      { algorithms: [config.jwt.algorithm] },
+      (err, decodedToken: AuthUserToken) => {
+        if (err || !decodedToken) {
+          return reject(err);
+        }
 
-      resolve(decodedToken);
-    });
+        resolve(decodedToken);
+      },
+    );
   });
 };
 

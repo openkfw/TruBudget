@@ -9,7 +9,7 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
-import { config } from "./config";
+import { JwtConfig, config } from "./config";
 
 /**
  * Represents the request body of the endpoint
@@ -179,7 +179,7 @@ export function addHttpHandler(
   server: FastifyInstance,
   urlPrefix: string,
   service: Service,
-  jwtSecret: string,
+  jwt: JwtConfig,
 ): void {
   server.post(
     `${urlPrefix}/user.authenticateAd`,
@@ -223,7 +223,7 @@ export function addHttpHandler(
           throw new VError(tokenResult, "authentication failed");
         }
         const token = tokenResult;
-        const signedJwt = createJWT(token, jwtSecret);
+        const signedJwt = createJWTWithMeta(token, jwt.secretOrPrivateKey, jwt.algorithm);
 
         const groupsResult = await service.getGroupsForUser(
           ctx,
@@ -274,7 +274,12 @@ export function addHttpHandler(
  * @param secret a secret to be used to sign the jwt token with
  * @returns a string containing the encoded JWT token
  */
-function createJWT(token: AuthToken, secret: string): string {
+function createJWTWithMeta(
+  token: AuthToken,
+  key: string,
+  algorithm: "HS256" | "RS256" = "HS256",
+): string {
+  const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
   return jsonwebtoken.sign(
     {
       userId: token.userId,
@@ -284,7 +289,7 @@ function createJWT(token: AuthToken, secret: string): string {
       groups: token.groups,
       metadata: token.metadata,
     },
-    secret,
-    { expiresIn: "8h" },
+    secretOrPrivateKey,
+    { expiresIn: "8h", algorithm },
   );
 }
