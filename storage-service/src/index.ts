@@ -10,11 +10,11 @@ import helmet from "helmet";
 import config from "./config";
 import {
   deleteDocument,
-  downloadAsPromised,
+  downloadDocument,
   establishConnection,
-  getMinioStatus,
-  uploadAsPromised,
-} from "./minio";
+  getStorageProviderStatus,
+  uploadDocument,
+} from "./storage";
 
 interface DocumentUploadRequest extends express.Request {
   query: {
@@ -97,7 +97,7 @@ app.get("/liveness", (req, res) => {
 });
 
 app.get("/readiness", async (req, res) => {
-  const { status, statusText } = await getMinioStatus();
+  const { status, statusText } = await getStorageProviderStatus();
 
   res
     .status(status)
@@ -106,7 +106,7 @@ app.get("/readiness", async (req, res) => {
 });
 
 app.get("/readiness", async (req, res) => {
-  const { status } = await getMinioStatus();
+  const { status } = await getStorageProviderStatus();
   res.status(status);
   res.send(status === 200);
 });
@@ -141,7 +141,7 @@ app.post(
 
     (async (): Promise<void> => {
       log.debug({ req }, "Uploading document");
-      const result = await uploadAsPromised(docId, content, {
+      const result = await uploadDocument(docId, content, {
         fileName,
         docId,
       });
@@ -178,7 +178,7 @@ app.get(
     // first get document
     (async (): Promise<void> => {
       req.log.debug({ req }, "Downloading document");
-      const result = await downloadAsPromised(docId);
+      const result = await downloadDocument(docId);
 
       //check if the given secret matches the one form the metadata
       if (result.meta.secret !== secret) {
@@ -218,7 +218,7 @@ app.delete(
     // first get document
     (async (): Promise<void> => {
       req.log.debug({ req }, `Deleting document ${docId}`);
-      const result = await downloadAsPromised(docId);
+      const result = await downloadDocument(docId);
 
       //check if the given secret matches the one form the metadata
       if (result.meta.secret !== secret) {

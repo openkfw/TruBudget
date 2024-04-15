@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  azure-storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - ${AZURE_BLOB_PORT}:${AZURE_BLOB_PORT}
+    # command: server /data
+    # volume for persisting data
+    # volumes:
+    #   - /azureBlobVolume:/data
+    healthcheck: 
+      test: nc 127.0.0.1 10000 -z
+      interval: 30s
+      retries: 3
+    restart: always
+    # command: "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --loose"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.18
+
+  storage-service:
+    depends_on:
+      - azure-storage
+      - alpha-api

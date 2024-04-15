@@ -19,6 +19,7 @@ Help() {
     echo "  --slim                          Starts a TruBudget instance with alpha-node, alpha-api, provisioning and frontend."
     echo "  --full                          Starts a TruBudget instance with alpha-node, emaildb, minio, alpha-api, email-service,"
     echo "                                  provisioning, excel-export-service, storage and frontend."
+    echo "  --use-azure-storage             Use Azure blob storage (locally Azurite) instead of Min.io storage for local development"
     echo "  --no-frontend                   Disable running frontend in docker container in order to start frontend locally."
     echo "  --build                         Force building."
     echo "  --enable-service [services...]  Starts additional services to the TruBudget instance."
@@ -51,6 +52,7 @@ PRUNE_DATA=false
 COMPOSE_SERVICES=""
 ENABLED_SERVICES=""
 BETA_SERVICES=""
+STORAGE_PROVIDER=""
 IS_FULL=false
 HAS_BETA=false
 IS_REBUILDING=false
@@ -68,10 +70,11 @@ while [ "$1" != "" ]; do
         ;;
 
     --slim2)
-        # Same as SLim but with storage-service and minio
+        # Same as SLim but with storage-service and minio/azure blob
         IS_SLIM=true
         HAS_ENABLED_SERVICES=true
         ENABLED_SERVICES=" storage-service"
+        STORAGE_PROVIDER="minio"
         if [ "$IS_FULL" = true ]; then
             echo "Either --slim or --full"
             exit 1
@@ -81,6 +84,7 @@ while [ "$1" != "" ]; do
 
     --full)
         IS_FULL=true
+        STORAGE_PROVIDER="minio"
         if [ "$IS_SLIM" = true ]; then
             echo "Either --slim or --full"
             exit 1
@@ -92,6 +96,11 @@ while [ "$1" != "" ]; do
         # -d means the containers start in detached mode -> no logging
         LOG_OPTION="-d"
         IS_LOG_ENABLED=false
+        shift # past argument
+        ;;
+
+    --use-azure-storage)
+        STORAGE_PROVIDER="azure-storage"
         shift # past argument
         ;;
 
@@ -184,12 +193,13 @@ done
 #npx browserslist@latest --update-db
 
 if [ "$PRUNE_DATA" = true ]; then
-    echo -n "${orange}WARNING: Do you really want to prune the data of multichain, minio and emailDB? This cannot be undone! (y/N)${colorReset}"
+    echo -n "${orange}WARNING: Do you really want to prune the data of multichain, minio/azure blob and emailDB? This cannot be undone! (y/N)${colorReset}"
     read answer
     if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
         sudo rm -r /alphaVolume
         sudo rm -r /beta1Volume
         sudo rm -r /minioVolume
+        sudo rm -r /azureBlobVolume
         sudo rm -r /emaildbVolume
     else
         echo "INFO: Nothing deleted, script will exit ..."
@@ -247,7 +257,7 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
 
         elif [ "$word" = "storage-service" ]; then
             perl -pi -e 's/DOCUMENT_FEATURE_ENABLED=.*/DOCUMENT_FEATURE_ENABLED=true/g' ${SCRIPT_DIR}/.env
-            ENABLED_SERVICES="${ENABLED_SERVICES} minio"
+            ENABLED_SERVICES="${ENABLED_SERVICES} ${STORAGE_PROVIDER}"
             echo "INFO: storage-service enabled"
 
         elif [ "$word" = "frontend-collector" ]; then
@@ -275,10 +285,10 @@ fi
 if [ "$IS_FULL" = true ]; then
     if [ "$WITH_PROVISIONING" = false ]; then
         echo "INFO: Setup full TruBudget environment without provisioning ..."
-        COMPOSE_SERVICES="alpha-node emaildb minio alpha-api email-service excel-export-service storage-service frontend"
+        COMPOSE_SERVICES="alpha-node emaildb ${STORAGE_PROVIDER} alpha-api email-service excel-export-service storage-service frontend"
     else
         echo "INFO: Setup full TruBudget environment with provisioning ..."
-        COMPOSE_SERVICES="alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend"
+        COMPOSE_SERVICES="alpha-node emaildb ${STORAGE_PROVIDER} alpha-api email-service excel-export-service storage-service provisioning frontend"
     fi
 else
     if [ "$WITH_PROVISIONING" = false ]; then
@@ -305,7 +315,17 @@ else
   COMPOSE_COMMAND="docker compose"
 fi
 
-COMPOSE="$COMPOSE_COMMAND -f $SCRIPT_DIR/docker-compose.yml -p trubudget-dev --env-file $SCRIPT_DIR/.env"
+COMPOSE="$COMPOSE_COMMAND -f $SCRIPT_DIR/docker-compose.yml"
+# add additional docker-compose file in case we want to add a storage provider
+if [[ $COMPOSE_SERVICES =~ "storage-service" ]]; then
+  if [ "$STORAGE_PROVIDER" = "minio" ]; then
+    COMPOSE="$COMPOSE -f $SCRIPT_DIR/docker-compose.minio.yml"
+  elif [ "$STORAGE_PROVIDER" = "azure-storage" ]; then
+    COMPOSE="$COMPOSE -f $SCRIPT_DIR/docker-compose.azure-storage.yml"
+  fi
+fi
+COMPOSE="$COMPOSE -p trubudget-dev --env-file $SCRIPT_DIR/.env"
+
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
