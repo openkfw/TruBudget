@@ -110,7 +110,7 @@ const getTableEntries = ({
 const CardView = (props) => {
   const { isRoot, allowedIntents, showCreationDialog, pagination, setRowsPerPage, page, setPage } = props;
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (_event, newPage) => {
     setPage(newPage + 1);
   };
 

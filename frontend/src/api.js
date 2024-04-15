@@ -580,6 +580,7 @@ const removeEmptyQueryParams = (url) => {
   const newQueryParams = queryParams
     .split("&")
     .filter((param) => {
+      // eslint-disable-next-line no-unused-vars
       const [key, value] = param.split("=");
       return value && value !== "undefined";
     })
