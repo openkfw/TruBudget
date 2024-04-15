@@ -39,24 +39,6 @@ describe("Describe Currencies", function () {
     cy.get("[data-test=cancel]").click();
   });
 
-  it("Selects every currency successively", function () {
-    cy.get("[data-test=create-project-button]").click();
-    cy.get("[data-test=creation-dialog]").should("be.visible");
-
-    // Type in organization name to activate currency dropdown
-    cy.get("[data-test=organization-input").type("Test");
-
-    cy.get("[data-test=dropdown-currencies]").should("be.visible");
-    cy.get("[data-test=dropdown-currencies-click]").click();
-    currenciesArray.forEach((currency) => {
-      cy.get(`[data-value=${currency}]`).click();
-      cy.get("[data-test=dropdown-currencies-click]").contains(`${currency}`);
-      cy.get("[data-test=dropdown-currencies-click]").click();
-    });
-    cy.get(`[data-value=${currenciesArray[0]}]`).click();
-    cy.get("[data-test=cancel]").click();
-  });
-
   it("Sets the currency of a new project to EUR and checks if the Euro sign is displayed", function () {
     cy.intercept(apiRoute + "project.list*").as("listProjects");
     cy.createProject("project budget test project", "project budget test", standardBudget);

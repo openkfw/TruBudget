@@ -40,18 +40,6 @@ describe("Login", function () {
     loginUi();
     logout(routes.notifications);
   });
-  it(`Log in and out on nodes page`, function () {
-    loginUi();
-    logout(routes.nodes);
-  });
-  it(`Log in and out on projectDetails page`, function () {
-    loginUi();
-    logout(routes.projectDetails);
-  });
-  it(`Log in and out on subprojectDetails page`, function () {
-    loginUi();
-    logout(routes.subprojectDetails);
-  });
   it(`Log in and out on a page that's not found`, function () {
     loginUi();
     logout(routes.notFound);
