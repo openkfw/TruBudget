@@ -28,6 +28,11 @@ interface Config {
   email: Mail.Options;
   allowOrigin: string;
   rateLimit: number | undefined;
+  jwt: {
+    secretOrPrivateKey: string;
+    publicKey: string;
+    algorithm: "HS256" | "RS256";
+  };
 }
 
 const config: Config = {
@@ -64,6 +69,11 @@ const config: Config = {
     process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
       ? undefined
       : Number(process.env.RATE_LIMIT),
+  jwt: {
+    secretOrPrivateKey: process.env.JWT_SECRET || "",
+    publicKey: process.env.JWT_PUBLIC_KEY || "",
+    algorithm: process.env.JWT_ALGORITHM === "RS256" ? "RS256" : "HS256",
+  },
 };
 
 export default config;

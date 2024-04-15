@@ -205,7 +205,9 @@ const loadConfig = (path) => {
 const updateMetadataFile = async (config, newHash, metadataPath) => {
   shell.touch(metadataPath);
   const ts = Date.now();
-  const organisation = config.hasOwnProperty("Organisation") ? `\nOrganisation: ${config.Organisation}` : "";
+  const organisation = Object.prototype.hasOwnProperty.call(config, "Organisation")
+    ? `\nOrganisation: ${config.Organisation}`
+    : "";
   shell
     .echo(`ChainName: ${config.ChainName}${organisation}\nTimestamp: ${ts}\nDirectoryHash: ${newHash}\n`)
     .to(metadataPath);

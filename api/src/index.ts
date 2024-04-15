@@ -158,7 +158,7 @@ const {
   organization,
   organizationVaultSecret,
   rootSecret,
-  jwtSecret,
+  jwt,
   port,
   storageService,
   documentFeatureEnabled,
@@ -219,7 +219,7 @@ if (documentFeatureEnabled) {
 const storageServiceClient = new StorageServiceClient(storageServiceSettings);
 
 const server = createBasicApp(
-  jwtSecret,
+  jwt,
   URL_PREFIX,
   port,
   accessControlAllowOrigin,
@@ -342,7 +342,7 @@ UserAuthenticateAPI.addHttpHandler(
     getGroupsForUser: (ctx, serviceUser, userId) =>
       GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
   },
-  jwtSecret,
+  jwt,
 );
 
 if (authProxy.enabled) {
@@ -362,7 +362,7 @@ if (authProxy.enabled) {
       getGroupsForUser: (ctx, serviceUser, userId) =>
         GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
     },
-    jwtSecret,
+    jwt,
   );
 }
 
