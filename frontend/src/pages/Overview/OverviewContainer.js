@@ -18,7 +18,10 @@ import {
   fetchAllProjects,
   hideProjectAdditionalData,
   liveUpdateAllProjects,
+  setPage,
   setProjectView,
+  setRowsPerPage,
+  setSort,
   showCreationDialog,
   showEditDialog,
   showProjectAdditionalData,
@@ -104,30 +107,36 @@ const mapDispatchToProps = (dispatch) => {
     fetchUser: () => dispatch(fetchUser(true)),
     fetchAllProjectDetails: (projectId) => dispatch(fetchAllProjectDetails(projectId, false)),
     setProjectView: (view) => dispatch(setProjectView(view)),
-    editProject: (projectId, changes) => dispatch(editProject(projectId, changes, undefined))
+    editProject: (projectId, changes) => dispatch(editProject(projectId, changes, undefined)),
+    setPage: (page) => dispatch(setPage(page)),
+    setRowsPerPage: (rowsPerPage, page) => dispatch(setRowsPerPage(rowsPerPage, page)),
+    setSort: (column, direction) => dispatch(setSort(column, direction))
   };
 };
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.getIn(["overview", "projects"]),
-    filteredProjects: state.getIn(["overview", "filteredProjects"]),
     allowedIntents: state.getIn(["login", "allowedIntents"]),
-    loggedInUser: state.getIn(["login", "loggedInUser"]),
-    roles: state.getIn(["login", "roles"]),
-    idForInfo: state.getIn(["overview", "idForInfo"]),
-    isProjectAdditionalDataShown: state.getIn(["overview", "isProjectAdditionalDataShown"]),
-    searchTermString: state.getIn(["navbar", "searchTerm"]),
-    isRoot: state.getIn(["navbar", "isRoot"]),
-    permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
-    highlightingRegex: state.getIn(["overview", "highlightingRegex"]),
-    searchTermArray: state.getIn(["overview", "searchTerms"]), // only for WebWorker
-    searchTerm: state.getIn(["navbar", "searchTerm"]), // searchTerm in SearchBar
-    users: state.getIn(["login", "enabledUsers"]),
-    subProjects: state.getIn(["detailview", "subProjects"]),
-    projectView: state.getIn(["overview", "projectView"]),
     enabledUsers: state.getIn(["login", "enabledUsers"]),
-    isLiveUpdateAllProjectsEnabled: state.getIn(["overview", "isLiveUpdateAllProjectsEnabled"])
+    filteredProjects: state.getIn(["overview", "filteredProjects"]),
+    highlightingRegex: state.getIn(["overview", "highlightingRegex"]),
+    idForInfo: state.getIn(["overview", "idForInfo"]),
+    isDataLoading: state.getIn(["loading", "loadingVisible"]),
+    isLiveUpdateAllProjectsEnabled: state.getIn(["overview", "isLiveUpdateAllProjectsEnabled"]),
+    isProjectAdditionalDataShown: state.getIn(["overview", "isProjectAdditionalDataShown"]),
+    isRoot: state.getIn(["navbar", "isRoot"]),
+    loggedInUser: state.getIn(["login", "loggedInUser"]),
+    permissionDialogShown: state.getIn(["overview", "permissionDialogShown"]),
+    page: state.getIn(["overview", "page"]),
+    pagination: state.getIn(["overview", "pagination"]),
+    projects: state.getIn(["overview", "projects"]),
+    projectView: state.getIn(["overview", "projectView"]),
+    roles: state.getIn(["login", "roles"]),
+    searchTerm: state.getIn(["navbar", "searchTerm"]), // searchTerm in SearchBar
+    searchTermArray: state.getIn(["overview", "searchTerms"]), // only for WebWorker
+    searchTermString: state.getIn(["navbar", "searchTerm"]),
+    subProjects: state.getIn(["detailview", "subProjects"]),
+    users: state.getIn(["login", "enabledUsers"])
   };
 };
 

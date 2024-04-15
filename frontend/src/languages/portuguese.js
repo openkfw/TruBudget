@@ -242,6 +242,7 @@ const pt = {
   project: {
     add_new_project: "Criar novo projeto",
     assignee: "Proprietário",
+    cards_per_page: "Projetos por página",
     project_budget_amount: "Valor do orçamento do projeto",
     project_budget: "Orçamento",
     project_close_info: "Pelo menos um subprojeto permanece aberto",
