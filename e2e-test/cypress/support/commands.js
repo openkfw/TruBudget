@@ -45,6 +45,9 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
         allowedIntents: response.body.data.user.allowedIntents,
         ...opts,
       },
+      overview: {
+        limit: 100,
+      },
     };
     localStorage.setItem("state", JSON.stringify(state));
     /*
