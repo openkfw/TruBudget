@@ -17,6 +17,12 @@ import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import fastifyRateLimit from "@fastify/rate-limit";
 import * as path from "path";
+import { ConnToken } from "service";
+import { Ctx } from "lib/ctx";
+import { ServiceUser } from "service/domain/organization/service_user";
+import { Identity } from "service/domain/organization/identity";
+import * as Result from "../result";
+import * as Group from "../service/domain/organization/group";
 import { JwtConfig } from "../config";
 
 const DEFAULT_API_VERSION = "1.0";
@@ -97,6 +103,39 @@ const addLogging = (server: FastifyInstance): void => {
       payload,
     });
     done();
+  });
+};
+
+export const addGroupsPreHandler = async (
+  server: FastifyInstance,
+  conn: ConnToken,
+  groupsFn: (
+    conn: ConnToken,
+    ctx: Ctx,
+    serviceUser: ServiceUser,
+    targetUserId: Identity,
+  ) => Promise<Result.Type<Group.Group[]>>,
+): Promise<void> => {
+  server.addHook("preHandler", async (request: AuthenticatedRequest, reply) => {
+    if (request.user && !request.user.groups) {
+      try {
+        const ctx = { requestId: request.id, source: "http" };
+        const user = {
+          id: request.user?.userId,
+          groups: request.user?.groups,
+          address: request.user?.address,
+          metadata: request.user?.metadata,
+        };
+        const groupsResult = await groupsFn(conn, ctx, user, user.id);
+        if (Result.isErr(groupsResult)) {
+          throw new Error(groupsResult.message);
+        }
+        const groups = groupsResult;
+        request.user.groups = groups.map((group) => group.id);
+      } catch (err) {
+        logger.error({ err }, `preHandler failed to get groups for user ${request.user?.userId}`);
+      }
+    }
   });
 };
 

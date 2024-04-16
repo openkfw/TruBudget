@@ -12,7 +12,7 @@ import * as GroupMemberAddAPI from "./group_member_add";
 import * as GroupMemberRemoveAPI from "./group_member_remove";
 import * as GroupPermissionsListAPI from "./group_permissions_list";
 import { registerRoutes } from "./httpd/router";
-import { createBasicApp } from "./httpd/server";
+import * as Server from "./httpd/server";
 import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -218,7 +218,7 @@ if (documentFeatureEnabled) {
 }
 const storageServiceClient = new StorageServiceClient(storageServiceSettings);
 
-const server = createBasicApp(
+const server = Server.createBasicApp(
   jwt,
   URL_PREFIX,
   port,
@@ -891,6 +891,9 @@ ProvisioningEndAPI.addHttpHandler(server, URL_PREFIX, {
 ProvisioningStatusAPI.addHttpHandler(server, URL_PREFIX, {
   getProvisionStatus: (ctx, user) => ProvisioningStatusService.getProvisionStatus(db, ctx, user),
 });
+
+//** Adds user's groups to request */
+Server.addGroupsPreHandler(server, db, GroupQueryService.getGroupsForUser);
 
 /*
  * Run the server.

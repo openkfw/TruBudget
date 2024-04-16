@@ -11,6 +11,8 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
 import { JwtConfig, config } from "./config";
 
+const MAX_GROUPS_LENGTH = 3000;
+
 /**
  * Represents the request body of the endpoint
  */
@@ -271,14 +273,18 @@ export function addHttpHandler(
  * Creates a JWT Token containing information about the user
  *
  * @param token the current {@link AuthToken} containing information about the user
- * @param secret a secret to be used to sign the jwt token with
  * @returns a string containing the encoded JWT token
  */
 function createJWTWithMeta(
   token: AuthToken,
   key: string,
-  algorithm: "HS256" | "RS256" = "HS256",
+  algorithm: JwtConfig["algorithm"] = "HS256",
 ): string {
+  // when server tries to cram too much data into the cookie, browser will reject it
+  function setGroups(): string[] | null {
+    return token.groups.join(",").length < MAX_GROUPS_LENGTH ? token.groups : null;
+  }
+
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
   return jsonwebtoken.sign(
     {
@@ -286,7 +292,7 @@ function createJWTWithMeta(
       address: token.address,
       organization: token.organization,
       organizationAddress: token.organizationAddress,
-      groups: token.groups,
+      groups: setGroups(),
       metadata: token.metadata,
     },
     secretOrPrivateKey,
