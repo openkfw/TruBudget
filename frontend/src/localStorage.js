@@ -5,6 +5,7 @@ import { defaultState as loginState } from "./pages/Login/reducer";
 import {
   LIVE_UPDATE_ALL_PROJECTS_DISABLE,
   LIVE_UPDATE_ALL_PROJECTS_ENABLE,
+  SET_ROWS_PER_PAGE,
   STORE_PROJECT_VIEW
 } from "./pages/Overview/actions";
 import { defaultState as overviewState } from "./pages/Overview/reducer";
@@ -28,7 +29,8 @@ const parseFromState = (state) => ({
   },
   overview: {
     projectView: state.getIn(["overview", "projectView"]),
-    isLiveUpdateAllProjectsEnabled: state.getIn(["overview", "isLiveUpdateAllProjectsEnabled"])
+    isLiveUpdateAllProjectsEnabled: state.getIn(["overview", "isLiveUpdateAllProjectsEnabled"]),
+    limit: state.getIn(["overview", "limit"])
   }
 });
 
@@ -57,6 +59,7 @@ export const saveToLocalStorage = (state) => {
   const action = parseActions(state);
   try {
     switch (action) {
+      case SET_ROWS_PER_PAGE:
       case LIVE_UPDATE_ALL_PROJECTS_DISABLE:
       case LIVE_UPDATE_ALL_PROJECTS_ENABLE:
       case LOGIN_SUCCESS:

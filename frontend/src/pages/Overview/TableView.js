@@ -130,6 +130,7 @@ const rawColumns = [
       </Typography>
     ),
     selector: (row) => row.data.projectName,
+    sortField: "name",
     sortable: true,
     compact: false,
     minWidth: "15rem",
@@ -143,6 +144,7 @@ const rawColumns = [
       </Typography>
     ),
     selector: (row) => row.data.projectStatus,
+    sortField: "status",
     sortable: true,
     compact: true,
     minWidth: "5rem",
@@ -156,6 +158,7 @@ const rawColumns = [
       </Typography>
     ),
     selector: (row) => row.data.creationUnixTs, // time in ms to use the built-in sort
+    sortField: "date",
     sortable: true,
     compact: true,
     minWidth: "10rem",
@@ -169,6 +172,7 @@ const rawColumns = [
       </Typography>
     ),
     selector: (row) => row.data.assignee,
+    sortField: "assignee",
     sortable: true,
     compact: true,
     minWidth: "5rem",
@@ -274,14 +278,19 @@ const TableView = (props) => {
     enabledUsers,
     enableLiveUpdates,
     filteredProjects,
+    isDataLoading,
     isLiveUpdateAllProjectsEnabled,
+    pagination,
     searchTerm,
     showCreationDialog,
     showEditDialog,
     showNavSearchBar, // to open the search bar for CardView in NavBar,
     showProjectAdditionalData,
     showProjectPermissions,
-    storeSearchTerm
+    storeSearchTerm,
+    setPage,
+    setRowsPerPage,
+    setSort
   } = props;
 
   const hasSearchTerm = searchTerm !== "";
@@ -543,7 +552,15 @@ const TableView = (props) => {
         data={table}
         title={actionsMemo}
         highlightOnHover
-        pagination
+        progressPending={isDataLoading}
+        pagination={true}
+        paginationServer={true}
+        paginationTotalRows={pagination?.totalRecords}
+        onChangeRowsPerPage={(currentRowsPerPage, currentPage) => setRowsPerPage(currentRowsPerPage, currentPage)}
+        onChangePage={(page, _totalRows) => setPage(page)}
+        onSort={(column, sortDirection) => setSort(column.sortField, sortDirection)}
+        sortServer
+        paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
         data-test="project-list"
       />
     </>

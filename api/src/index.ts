@@ -29,6 +29,7 @@ import * as ProjectProjectedBudgetUpdateAPI from "./project_budget_update_projec
 import * as ProjectCloseAPI from "./project_close";
 import * as ProjectCreateAPI from "./project_create";
 import * as ProjectListAPI from "./project_list";
+import * as ProjectListV2API from "./project_list.v2";
 import * as ProjectPermissionsListAPI from "./project_permissions_list";
 import * as ProjectPermissionGrantAPI from "./project_permission_grant";
 import * as ProjectPermissionRevokeAPI from "./project_permission_revoke";
@@ -157,7 +158,7 @@ const {
   organization,
   organizationVaultSecret,
   rootSecret,
-  jwtSecret,
+  jwt,
   port,
   storageService,
   documentFeatureEnabled,
@@ -218,7 +219,7 @@ if (documentFeatureEnabled) {
 const storageServiceClient = new StorageServiceClient(storageServiceSettings);
 
 const server = Server.createBasicApp(
-  jwtSecret,
+  jwt,
   URL_PREFIX,
   port,
   accessControlAllowOrigin,
@@ -341,7 +342,7 @@ UserAuthenticateAPI.addHttpHandler(
     getGroupsForUser: (ctx, serviceUser, userId) =>
       GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
   },
-  jwtSecret,
+  jwt,
 );
 
 if (authProxy.enabled) {
@@ -361,7 +362,7 @@ if (authProxy.enabled) {
       getGroupsForUser: (ctx, serviceUser, userId) =>
         GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
     },
-    jwtSecret,
+    jwt,
   );
 }
 
@@ -517,6 +518,10 @@ ProjectPermissionsListAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 ProjectListAPI.addHttpHandler(server, URL_PREFIX, {
+  listProjects: (ctx, user) => ProjectListService.listProjects(db, ctx, user),
+});
+
+ProjectListV2API.addHttpHandler(server, URL_PREFIX, {
   listProjects: (ctx, user) => ProjectListService.listProjects(db, ctx, user),
 });
 

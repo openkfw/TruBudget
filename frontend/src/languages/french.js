@@ -158,6 +158,7 @@ const fr = {
   project: {
     add_new_project: "Ajouter un nouveau projet",
     assignee: "propriétaire",
+    cards_per_page: "Cartes par page",
     project_budget_amount: "Montant du budget du projet",
     project_budget: "Budget du projet",
     project_close_info: "Au moins une composante n'est pas encore terminée",

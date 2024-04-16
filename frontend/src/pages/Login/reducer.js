@@ -37,7 +37,7 @@ export const defaultState = fromJS({
   disabledUsers: [],
   displayName: "",
   emailAddress: "",
-  emailServiceAvailable: false,
+  emailServiceAvailable: true,
   enabledUsers: [],
   exportServiceAvailable: false,
   groupList: [],

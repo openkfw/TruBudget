@@ -178,7 +178,7 @@ const SideNavCard = ({
           );
         })}
       </List>
-      <div style={{ flexGrow: 1 }} />
+      <div className="growing-div" />
     </div>
   );
 };

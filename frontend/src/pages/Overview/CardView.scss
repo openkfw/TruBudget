@@ -30,3 +30,21 @@
 .content-add-button {
   min-height: 56px;
 }
+
+.MuiTablePagination-actions {
+  button {
+    color: white;
+    background-color: var(--mui-palette-primary-600);
+    &:hover {
+      background-color: var(--mui-palette-primary-800);
+    }
+    &:disabled {
+      color: var(--mui-palette-action-disabled);
+      background-color: var(--mui-palette-grey-600);
+      opacity: 0.6;
+    }
+    &:last-child {
+      margin-left: 0.5rem;
+    }
+  }
+}

@@ -7,7 +7,7 @@ import strings from "../../localizeStrings";
 const BudgetEmptyState = (props) => {
   const { text } = props;
   return (
-    <table style={{ alignItems: "center" }}>
+    <table>
       <tbody>
         <tr height="200vh">
           <td style={{ maxWidth: "200vw" }}>
