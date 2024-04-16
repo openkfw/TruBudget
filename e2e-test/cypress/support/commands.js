@@ -25,6 +25,13 @@ const baseUrl = Cypress.env("API_BASE_URL") || Cypress.config("baseUrl");
 //let token = undefined;
 let cookie = undefined;
 
+beforeEach(() => {
+  cy.intercept("**/*.jpeg", { statusCode: 200, body: "", headers: { "Content-Type": "image/jpeg" } });
+  cy.intercept("**/*.jpg", { statusCode: 200, body: "", headers: { "Content-Type": "image/jpeg" } });
+  cy.intercept("**/*.png", { statusCode: 200, body: "", headers: { "Content-Type": "image/png" } });
+  cy.intercept("**/*.webp", { statusCode: 200, body: "", headers: { "Content-Type": "image/webp" } });
+});
+
 Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { language: "en-gb" }) => {
   cy.request({
     url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
@@ -44,6 +51,9 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
         organization: response.body.data.user.organization,
         allowedIntents: response.body.data.user.allowedIntents,
         ...opts,
+      },
+      overview: {
+        limit: 100,
       },
     };
     localStorage.setItem("state", JSON.stringify(state));

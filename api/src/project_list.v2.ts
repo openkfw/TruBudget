@@ -240,13 +240,70 @@ export function addHttpHandler(
         };
 
         const filterProjects = (projects: ExposedProject[]): ExposedProject[] => {
+          const extractFromSearchTerms = (searchTerms: string[], prefix: string): string[] => {
+            return searchTerms.reduce((extractedTerms: string[], searchTerm: string) => {
+              const [searchTermPrefix, searchTermWithoutPrefix] = searchTerm.split(":");
+              if (searchTermPrefix === prefix && searchTermWithoutPrefix) {
+                extractedTerms.push(searchTermWithoutPrefix.trim());
+              }
+              return extractedTerms;
+            }, []);
+          };
+
+          const includesSearchTerm = (
+            project: ExposedProject,
+            searchTermsWithoutPrefix: string[],
+          ): boolean => {
+            return searchTermsWithoutPrefix.every((searchTerm) => {
+              const lowerCaseSearchTerm = searchTerm.toLowerCase();
+              const displayNameMatches = project.data.displayName
+                ?.toLowerCase()
+                .includes(lowerCaseSearchTerm);
+              const statusMatches = project.data.status.toLowerCase().includes(lowerCaseSearchTerm);
+              const tagMatches = project.data.tags?.some((tag) =>
+                tag.toLowerCase().includes(lowerCaseSearchTerm),
+              );
+
+              return displayNameMatches || statusMatches || tagMatches;
+            });
+          };
+
           if (query.search && query.search.length > 0) {
-            const searchTerm = query.search.toLowerCase();
-            return projects.filter(
-              (project) =>
-                project.data.displayName.toLowerCase().includes(searchTerm) ||
-                project.data.tags.some((item) => item.toLowerCase().includes(searchTerm)),
+            const searchTermString = query.search.toLowerCase();
+            const unfilteredSearchTerms = searchTermString.split(" ");
+            const prefixes = ["name", "tag", "status"];
+            const searchedTerms = prefixes.reduce(
+              (acc, prefix) => {
+                acc[prefix] = extractFromSearchTerms(unfilteredSearchTerms, prefix);
+                return acc;
+              },
+              { name: "", status: "", tag: "" },
             );
+
+            const searchTermsWithoutPrefix = unfilteredSearchTerms.filter(
+              (searchTerm) => !searchTerm.includes(":") && searchTerm.length !== 0,
+            );
+
+            const filteredProjects = projects.filter((project) => {
+              const checks = {
+                name:
+                  searchedTerms.name.length === 0 ||
+                  project.data.displayName.toLowerCase().includes(searchedTerms.name),
+                status:
+                  searchedTerms.status.length === 0 ||
+                  project.data.status.toLowerCase().includes(searchedTerms.status),
+                tag:
+                  !searchedTerms.tag ||
+                  searchedTerms.tag.length === 0 ||
+                  project.data.tags.some((item) => item.toLowerCase().includes(searchedTerms.tag)),
+                searchTerm:
+                  searchTermsWithoutPrefix.length === 0 ||
+                  includesSearchTerm(project, searchTermsWithoutPrefix),
+              };
+              return Object.values(checks).every(Boolean);
+            });
+
+            return filteredProjects;
           } else return projects;
         };
 
