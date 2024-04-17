@@ -122,6 +122,7 @@ const CardView = (props) => {
   return (
     <>
       <TablePagination
+        className="card-view-pagination"
         data-test="card-pagination-north"
         component="div"
         count={pagination?.totalRecords}
@@ -156,6 +157,7 @@ const CardView = (props) => {
         </Card>
       </div>
       <TablePagination
+        className="card-view-pagination"
         data-test="card-pagination-south"
         component="div"
         count={pagination?.totalRecords}
