@@ -25,6 +25,7 @@ import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import * as ProjectCacheHelper from "./project_cache_helper";
 import { store } from "./store";
+import { updateWorkflowItemRepository } from "repository/workflowitems";
 
 export type RequestData = WorkflowitemUpdate.RequestData;
 
@@ -50,78 +51,7 @@ export async function updateWorkflowitem(
       subprojectId,
       workflowitemId,
       modification,
-      {
-        getWorkflowitem: async (id) => {
-          return WorkflowitemCacheHelper.getWorkflowitem(conn, ctx, projectId, id);
-        },
-        getUsersForIdentity: async (identity) => {
-          return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
-        },
-        applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
-          return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
-        },
-        uploadDocumentToStorageService: (fileName, documentBase64, id) => {
-          return DocumentUpload.uploadDocument(
-            ctx,
-            serviceUser,
-            { fileName, documentBase64, id },
-            {
-              getAllDocumentReferences: async () => {
-                return DocumentGet.getAllDocumentReferences({
-                  getDocumentsEvents: async () => {
-                    return cache.getDocumentUploadedEvents();
-                  },
-                  getAllProjects: async () => {
-                    return ProjectCacheHelper.getAllProjects(conn, ctx);
-                  },
-                  getAllSubprojects: async (projectId) => {
-                    return SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
-                  },
-                  getAllWorkflowitems: async (projectId, subprojectId) => {
-                    return WorkflowitemCacheHelper.getAllWorkflowitems(
-                      conn,
-                      ctx,
-                      projectId,
-                      subprojectId,
-                    );
-                  },
-                });
-              },
-              storeDocument: async (id, name, hash) => {
-                return storageServiceClient.uploadObject(id, name, hash);
-              },
-              getPublicKey: async (organization) => {
-                return PublicKeyGet.getPublicKey(conn, ctx, organization);
-              },
-              encryptWithKey: async (secret, publicKey) => {
-                return encryptWithKey(secret, publicKey);
-              },
-              getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
-            },
-          );
-        },
-        getAllDocumentReferences: async () => {
-          return DocumentGet.getAllDocumentReferences({
-            getDocumentsEvents: async () => {
-              return cache.getDocumentUploadedEvents();
-            },
-            getAllProjects: async () => {
-              return ProjectCacheHelper.getAllProjects(conn, ctx);
-            },
-            getAllSubprojects: async (projectId) => {
-              return SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
-            },
-            getAllWorkflowitems: async (projectId, subprojectId) => {
-              return WorkflowitemCacheHelper.getAllWorkflowitems(
-                conn,
-                ctx,
-                projectId,
-                subprojectId,
-              );
-            },
-          });
-        },
-      },
+      updateWorkflowItemRepository(conn, storageServiceClient, ctx, serviceUser, projectId, subprojectId, workflowitemId, modification, cache),
     );
   });
   if (Result.isErr(updateWorkflowitemResult)) {

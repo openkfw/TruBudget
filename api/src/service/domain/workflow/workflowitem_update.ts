@@ -15,15 +15,14 @@ import {
 } from "../document/document";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
-import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
-import * as UserRecord from "../organization/user_record";
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import { Repository } from "repository/workflowitems";
 
 export interface RequestData {
   displayName?: string;
@@ -41,21 +40,6 @@ export interface RequestData {
 
 export type EventData = WorkflowitemUpdated.Modification;
 export const requestDataSchema = WorkflowitemUpdated.modificationSchema;
-
-interface Repository {
-  getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
-  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
-  applyWorkflowitemType(
-    event: BusinessEvent,
-    workflowitem: Workflowitem.Workflowitem,
-  ): Result.Type<BusinessEvent[]>;
-  uploadDocumentToStorageService(
-    fileName: string,
-    documentBase64: string,
-    id: string,
-  ): Promise<Result.Type<BusinessEvent[]>>;
-  getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
-}
 
 function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string): boolean {
   return allDocuments.some((doc) => doc.id === docId);
