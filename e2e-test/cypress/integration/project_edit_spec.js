@@ -62,7 +62,6 @@ describe("Project Edit", function () {
     cy.visit(`/projects`);
     cy.revokeProjectPermission(projectId, "project.update", executingUser);
     cy.login(executingUser, "test");
-    cy.visit(`/projects`);
     cy.get(`[data-test=project-card-${projectId}]`).within(() => {
       cy.get("[data-test=pe-button]").should("have.css", "opacity", "0").should("be.disabled");
     });
@@ -146,8 +145,10 @@ describe("Project Edit", function () {
   });
 
   // List View tests
-  it("Editing the title is possible in list view", function () {
+  it("Editing the title is possible in table view", function () {
     cy.get(`[data-testid=ViewListIcon]`).click();
+    cy.get('select[aria-label="Rows per page:"]').select("100");
+
     cy.get(`[aria-label="Last Page"]`).then(($btn) => {
       if ($btn.attr("disabled") != true) {
         $btn.click();
@@ -181,6 +182,7 @@ describe("Project Edit", function () {
 
   it("Editing title without a change isn't possible in list view", function () {
     cy.get(`[data-testid=ViewListIcon]`).click();
+    cy.get('select[aria-label="Rows per page:"]').select("100");
     cy.get(`[aria-label="Last Page"]`).then(($btn) => {
       if ($btn.attr("disabled") != true) {
         $btn.click();
@@ -288,6 +290,7 @@ describe("Project Edit", function () {
       projectId = id;
       cy.visit(`/projects`);
       cy.get(`[data-testid=ViewListIcon]`).click();
+      cy.get('select[aria-label="Rows per page:"]').select("100");
       cy.get(`[aria-label="Last Page"]`).then(($btn) => {
         if ($btn.attr("disabled") != true) {
           $btn.click();

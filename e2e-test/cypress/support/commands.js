@@ -25,15 +25,22 @@ const baseUrl = Cypress.env("API_BASE_URL") || Cypress.config("baseUrl");
 //let token = undefined;
 let cookie = undefined;
 
+beforeEach(() => {
+  cy.intercept("**/*.jpeg", { statusCode: 200, body: "", headers: { "Content-Type": "image/jpeg" } });
+  cy.intercept("**/*.jpg", { statusCode: 200, body: "", headers: { "Content-Type": "image/jpeg" } });
+  cy.intercept("**/*.png", { statusCode: 200, body: "", headers: { "Content-Type": "image/png" } });
+  cy.intercept("**/*.webp", { statusCode: 200, body: "", headers: { "Content-Type": "image/webp" } });
+});
+
 Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { language: "en-gb" }) => {
   cy.request({
     url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
     method: "POST",
     body: {
       apiVersion: "1.0",
-      data: { user: { id: username, password: password } }
-    }
-  }).then(response => {
+      data: { user: { id: username, password: password } },
+    },
+  }).then((response) => {
     const state = {
       login: {
         isUserLoggedIn: true,
@@ -43,14 +50,20 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
         displayName: response.body.data.user.displayName,
         organization: response.body.data.user.organization,
         allowedIntents: response.body.data.user.allowedIntents,
-        ...opts
-      }
+        ...opts,
+      },
+      overview: {
+        limit: 100,
+      },
     };
     localStorage.setItem("state", JSON.stringify(state));
     /*
      * The token is in the cookie header we need to extract it:
      */
     cookie = response.headers["set-cookie"][0];
+    const JWTtoken = response.headers["set-cookie"][0].split(";")[0].replace("token=", "");
+
+    cy.setCookie("token", JWTtoken);
   });
 });
 
@@ -59,7 +72,7 @@ Cypress.Commands.add("addUser", (username, userId, password, organization = "KfW
     url: `${baseUrl}/api/global.createUser`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -68,13 +81,13 @@ Cypress.Commands.add("addUser", (username, userId, password, organization = "KfW
           id: userId,
           displayName: username,
           organization: organization,
-          password: password
-        }
-      }
-    }
+          password: password,
+        },
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body));
+    .then((body) => Cypress.Promise.resolve(body));
 });
 
 Cypress.Commands.add("fetchProjects", () => {
@@ -82,23 +95,23 @@ Cypress.Commands.add("fetchProjects", () => {
     url: `${baseUrl}/api/project.list`,
     method: "GET",
     headers: {
-      Cookie: cookie
-    }
+      Cookie: cookie,
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data.items));
+    .then((body) => Cypress.Promise.resolve(body.data.items));
 });
 
-Cypress.Commands.add("fetchSubprojects", projectId => {
+Cypress.Commands.add("fetchSubprojects", (projectId) => {
   cy.request({
     url: `${baseUrl}/api/project.viewDetails?projectId=${projectId}`,
     method: "GET",
     headers: {
-      Cookie: cookie
-    }
+      Cookie: cookie,
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data.subprojects));
+    .then((body) => Cypress.Promise.resolve(body.data.subprojects));
 });
 
 Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName, opts = {}) => {
@@ -106,7 +119,7 @@ Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName
     url: `${baseUrl}/api/subproject.createWorkflowitem`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -115,15 +128,15 @@ Cypress.Commands.add("createWorkflowitem", (projectId, subprojectId, displayName
         subprojectId: subprojectId,
         displayName: displayName,
         amountType: "N/A",
-        ...opts
-      }
-    }
+        ...opts,
+      },
+    },
   })
     .its("body")
-    .then(body =>
+    .then((body) =>
       Cypress.Promise.resolve({
-        id: body.data.workflowitem.id
-      })
+        id: body.data.workflowitem.id,
+      }),
     );
 });
 
@@ -134,7 +147,7 @@ Cypress.Commands.add(
       url: `${baseUrl}/api/global.createProject`,
       method: "POST",
       headers: {
-        Cookie: cookie
+        Cookie: cookie,
       },
       body: {
         apiVersion: "1.0",
@@ -144,18 +157,18 @@ Cypress.Commands.add(
             description,
             projectedBudgets,
             thumbnail,
-            ...opts
-          }
-        }
-      }
+            ...opts,
+          },
+        },
+      },
     })
       .its("body")
-      .then(body =>
+      .then((body) =>
         Cypress.Promise.resolve({
-          id: body.data.project.id
-        })
+          id: body.data.project.id,
+        }),
       );
-  }
+  },
 );
 
 Cypress.Commands.add("updateProject", (projectId, opts = {}) => {
@@ -163,18 +176,18 @@ Cypress.Commands.add("updateProject", (projectId, opts = {}) => {
     url: `${baseUrl}/api/project.update`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         projectId,
-        ...opts
-      }
-    }
+        ...opts,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
@@ -182,18 +195,18 @@ Cypress.Commands.add("updateProjectAssignee", (projectId, identity) => {
     url: `${baseUrl}/api/project.assign`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         projectId,
-        identity
-      }
-    }
+        identity,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("updateSubprojectAssignee", (projectId, subprojectId, identity) => {
@@ -201,19 +214,19 @@ Cypress.Commands.add("updateSubprojectAssignee", (projectId, subprojectId, ident
     url: `${baseUrl}/api/subproject.assign`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         projectId,
         subprojectId,
-        identity
-      }
-    }
+        identity,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("updateWorkflowitemAssignee", (projectId, subprojectId, workflowitemId, identity) => {
@@ -221,7 +234,7 @@ Cypress.Commands.add("updateWorkflowitemAssignee", (projectId, subprojectId, wor
     url: `${baseUrl}/api/workflowitem.assign`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -229,12 +242,12 @@ Cypress.Commands.add("updateWorkflowitemAssignee", (projectId, subprojectId, wor
         projectId,
         subprojectId,
         workflowitemId,
-        identity
-      }
-    }
+        identity,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EUR", opts = {}) => {
@@ -242,7 +255,7 @@ Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EU
     url: `${baseUrl}/api/project.createSubproject`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -251,16 +264,16 @@ Cypress.Commands.add("createSubproject", (projectId, displayName, currency = "EU
         subproject: {
           displayName,
           currency,
-          ...opts
-        }
-      }
-    }
+          ...opts,
+        },
+      },
+    },
   })
     .its("body")
-    .then(body =>
+    .then((body) =>
       Cypress.Promise.resolve({
-        id: body.data.subproject.id
-      })
+        id: body.data.subproject.id,
+      }),
     );
 });
 
@@ -269,19 +282,19 @@ Cypress.Commands.add("grantProjectPermission", (projectId, intent, identity) => 
     url: `${baseUrl}/api/project.intent.grantPermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         projectId: projectId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("revokeProjectPermission", (projectId, intent, identity) => {
@@ -289,19 +302,19 @@ Cypress.Commands.add("revokeProjectPermission", (projectId, intent, identity) =>
     url: `${baseUrl}/api/project.intent.revokePermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         projectId: projectId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("grantSubprojectPermission", (projectId, subprojectId, intent, identity) => {
@@ -309,7 +322,7 @@ Cypress.Commands.add("grantSubprojectPermission", (projectId, subprojectId, inte
     url: `${baseUrl}/api/subproject.intent.grantPermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -317,12 +330,12 @@ Cypress.Commands.add("grantSubprojectPermission", (projectId, subprojectId, inte
         projectId: projectId,
         subprojectId: subprojectId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("revokeSubprojectPermission", (projectId, subprojectId, intent, identity) => {
@@ -330,7 +343,7 @@ Cypress.Commands.add("revokeSubprojectPermission", (projectId, subprojectId, int
     url: `${baseUrl}/api/subproject.intent.revokePermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -338,12 +351,12 @@ Cypress.Commands.add("revokeSubprojectPermission", (projectId, subprojectId, int
         projectId: projectId,
         subprojectId: subprojectId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("grantWorkflowitemPermission", (projectId, subprojectId, workflowitemId, intent, identity) => {
@@ -351,7 +364,7 @@ Cypress.Commands.add("grantWorkflowitemPermission", (projectId, subprojectId, wo
     url: `${baseUrl}/api/workflowitem.intent.grantPermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -360,12 +373,12 @@ Cypress.Commands.add("grantWorkflowitemPermission", (projectId, subprojectId, wo
         subprojectId: subprojectId,
         workflowitemId: workflowitemId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("revokeWorkflowitemPermission", (projectId, subprojectId, workflowitemId, intent, identity) => {
@@ -373,7 +386,7 @@ Cypress.Commands.add("revokeWorkflowitemPermission", (projectId, subprojectId, w
     url: `${baseUrl}/api/workflowitem.intent.revokePermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -382,12 +395,12 @@ Cypress.Commands.add("revokeWorkflowitemPermission", (projectId, subprojectId, w
         subprojectId: subprojectId,
         workflowitemId: workflowitemId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("updateSubprojectPermissions", (projectId, subprojectId, intent, identity) => {
@@ -395,7 +408,7 @@ Cypress.Commands.add("updateSubprojectPermissions", (projectId, subprojectId, in
     url: `${baseUrl}/api/subproject.intent.grantPermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -403,12 +416,12 @@ Cypress.Commands.add("updateSubprojectPermissions", (projectId, subprojectId, in
         projectId: projectId,
         subprojectId: subprojectId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("grantUserPermissions", (userId, intent, identity) => {
@@ -416,19 +429,19 @@ Cypress.Commands.add("grantUserPermissions", (userId, intent, identity) => {
     url: `${baseUrl}/api/user.intent.grantPermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         userId: userId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("revokeUserPermissions", (userId, intent, identity) => {
@@ -436,37 +449,37 @@ Cypress.Commands.add("revokeUserPermissions", (userId, intent, identity) => {
     url: `${baseUrl}/api/user.intent.revokePermission`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         userId: userId,
         identity: identity,
-        intent: intent
-      }
-    }
+        intent: intent,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
-Cypress.Commands.add("closeProject", projectId => {
+Cypress.Commands.add("closeProject", (projectId) => {
   cy.request({
     url: `${baseUrl}/api/project.close`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
-        projectId
-      }
-    }
+        projectId,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("closeSubproject", (projectId, subprojectId) => {
@@ -474,18 +487,18 @@ Cypress.Commands.add("closeSubproject", (projectId, subprojectId) => {
     url: `${baseUrl}/api/subproject.close`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         projectId,
-        subprojectId
-      }
-    }
+        subprojectId,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("closeWorkflowitem", (projectId, subprojectId, workflowitemId) => {
@@ -493,19 +506,19 @@ Cypress.Commands.add("closeWorkflowitem", (projectId, subprojectId, workflowitem
     url: `${baseUrl}/api/workflowitem.close`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         projectId,
         subprojectId,
-        workflowitemId
-      }
-    }
+        workflowitemId,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("updateWorkflowitem", (projectId, subprojectId, workflowitemId, opts = {}) => {
@@ -513,7 +526,7 @@ Cypress.Commands.add("updateWorkflowitem", (projectId, subprojectId, workflowite
     url: `${baseUrl}/api/workflowitem.update`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -521,12 +534,12 @@ Cypress.Commands.add("updateWorkflowitem", (projectId, subprojectId, workflowite
         projectId,
         subprojectId,
         workflowitemId,
-        ...opts
-      }
-    }
+        ...opts,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("reorderWorkflowitems", (projectId, subprojectId, ordering) => {
@@ -534,19 +547,19 @@ Cypress.Commands.add("reorderWorkflowitems", (projectId, subprojectId, ordering)
     url: `${baseUrl}/api/subproject.reorderWorkflowitems`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
       data: {
         projectId,
         subprojectId,
-        ordering
-      }
-    }
+        ordering,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("assignWorkflowitem", (projectId, subprojectId, workflowitemId, identity) => {
@@ -554,7 +567,7 @@ Cypress.Commands.add("assignWorkflowitem", (projectId, subprojectId, workflowite
     url: `${baseUrl}/api/workflowitem.assign`,
     method: "POST",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
     body: {
       apiVersion: "1.0",
@@ -562,12 +575,12 @@ Cypress.Commands.add("assignWorkflowitem", (projectId, subprojectId, workflowite
         projectId,
         subprojectId,
         workflowitemId,
-        identity
-      }
-    }
+        identity,
+      },
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("getUserList", () => {
@@ -575,23 +588,23 @@ Cypress.Commands.add("getUserList", () => {
     url: `${baseUrl}/api/user.list`,
     method: "GET",
     headers: {
-      Cookie: cookie
-    }
+      Cookie: cookie,
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data.items));
+    .then((body) => Cypress.Promise.resolve(body.data.items));
 });
 
-Cypress.Commands.add("listProjectPermissions", projectId => {
+Cypress.Commands.add("listProjectPermissions", (projectId) => {
   cy.request({
     url: `${baseUrl}/api/project.intent.listPermissions?projectId=${projectId}`,
     method: "GET",
     headers: {
-      Cookie: cookie
-    }
+      Cookie: cookie,
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("listSubprojectPermissions", (projectId, subprojectId) => {
@@ -599,11 +612,11 @@ Cypress.Commands.add("listSubprojectPermissions", (projectId, subprojectId) => {
     url: `${baseUrl}/api/subproject.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}`,
     method: "GET",
     headers: {
-      Cookie: cookie
-    }
+      Cookie: cookie,
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("listWorkflowitemPermissions", (projectId, subprojectId, workflowitemId) => {
@@ -611,11 +624,11 @@ Cypress.Commands.add("listWorkflowitemPermissions", (projectId, subprojectId, wo
     url: `${baseUrl}/api/workflowitem.intent.listPermissions?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`,
     method: "GET",
     headers: {
-      Cookie: cookie
-    }
+      Cookie: cookie,
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("listWorkflowitems", (projectId, subprojectId, workflowitemId) => {
@@ -623,11 +636,11 @@ Cypress.Commands.add("listWorkflowitems", (projectId, subprojectId, workflowitem
     url: `${baseUrl}/api/workflowitem.list?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}`,
     method: "GET",
     headers: {
-      Cookie: cookie
-    }
+      Cookie: cookie,
+    },
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });
 
 Cypress.Commands.add("createBackup", () => {
@@ -635,12 +648,12 @@ Cypress.Commands.add("createBackup", () => {
     url: `${baseUrl}/api/system.createBackup`,
     method: "GET",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
-    timeout: 60000
+    timeout: 60000,
   })
     .its("headers")
-    .then(headers => Cypress.Promise.resolve(headers));
+    .then((headers) => Cypress.Promise.resolve(headers));
 });
 
 Cypress.Commands.add("getVersion", () => {
@@ -648,10 +661,10 @@ Cypress.Commands.add("getVersion", () => {
     url: `${baseUrl}/api/version`,
     method: "GET",
     headers: {
-      Cookie: cookie
+      Cookie: cookie,
     },
-    timeout: 60000
+    timeout: 60000,
   })
     .its("body")
-    .then(body => Cypress.Promise.resolve(body.data));
+    .then((body) => Cypress.Promise.resolve(body.data));
 });

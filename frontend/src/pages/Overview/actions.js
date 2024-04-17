@@ -4,6 +4,9 @@ export const CREATE_PROJECT_SUCCESS = "CREATE_PROJECT_SUCCESS";
 export const FETCH_ALL_PROJECTS = "FETCH_ALL_PROJECTS";
 export const FETCH_ALL_PROJECTS_SUCCESS = "FETCH_ALL_PROJECTS_SUCCESS";
 
+export const FETCH_PROJECTS_V2 = "FETCH_PROJECTS_V2";
+export const FETCH_PROJECTS_V2_SUCCESS = "FETCH_PROJECTS_V2_SUCCESS";
+
 export const LIVE_UPDATE_ALL_PROJECTS = "LIVE_UPDATE_ALL_PROJECTS";
 export const LIVE_UPDATE_ALL_PROJECTS_DISABLE = "LIVE_UPDATE_ALL_PROJECTS_DISABLE";
 export const LIVE_UPDATE_ALL_PROJECTS_ENABLE = "LIVE_UPDATE_ALL_PROJECTS_ENABLE";
@@ -52,6 +55,10 @@ export const STORE_FILTERED_PROJECTS = "STORE_FILTERED_PROJECTS";
 export const STORE_SEARCH_TERMS_AS_ARRAY = "STORE_SEARCH_TERMS_AS_ARRAY";
 
 export const STORE_PROJECT_VIEW = "STORE_PROJECT_VIEW";
+
+export const SET_PAGE = "SET_PAGE";
+export const SET_ROWS_PER_PAGE = "SET_ROWS_PER_PAGE";
+export const SET_SORT = "SET_SORT";
 
 export function fetchAllProjects(showLoading = false) {
   return {
@@ -294,3 +301,20 @@ export function setProjectView(projectView) {
     projectView
   };
 }
+
+export const setPage = (page) => ({
+  type: SET_PAGE,
+  page
+});
+
+export const setRowsPerPage = (limit, page) => ({
+  type: SET_ROWS_PER_PAGE,
+  limit,
+  page
+});
+
+export const setSort = (column, direction) => ({
+  type: SET_SORT,
+  column,
+  direction
+});

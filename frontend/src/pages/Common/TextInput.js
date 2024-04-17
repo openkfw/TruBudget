@@ -2,13 +2,6 @@ import React from "react";
 
 import TextField from "@mui/material/TextField";
 
-const styles = {
-  textField: {
-    width: "45%",
-    paddingRight: 20
-  }
-};
-
 const TextInput = ({
   label,
   helperText,
@@ -29,7 +22,7 @@ const TextInput = ({
     onFocus={onFocus}
     helperText={helperText}
     multiline={multiline}
-    style={styles.textField}
+    className="text-field"
     disabled={disabled}
     value={value}
     id={id}

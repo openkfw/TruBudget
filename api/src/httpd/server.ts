@@ -17,6 +17,13 @@ import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import fastifyRateLimit from "@fastify/rate-limit";
 import * as path from "path";
+import { ConnToken } from "service";
+import { Ctx } from "lib/ctx";
+import { ServiceUser } from "service/domain/organization/service_user";
+import { Identity } from "service/domain/organization/identity";
+import * as Result from "../result";
+import * as Group from "../service/domain/organization/group";
+import { JwtConfig } from "../config";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -32,18 +39,34 @@ const ajv = new Ajv({
   keywords: ["example"],
 });
 
-const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
+const addTokenHandling = (server: FastifyInstance, jwt: JwtConfig): void => {
   server.register(fastifyCookie, {
     parseOptions: {},
   } as FastifyCookieOptions);
 
-  server.register(fastifyJwt, {
-    secret: jwtSecret,
-    cookie: {
-      cookieName: "token",
-      signed: false,
-    },
-  });
+  if (jwt.algorithm === "RS256") {
+    server.register(fastifyJwt, {
+      secret: {
+        private: Buffer.from(jwt.secretOrPrivateKey, "base64"),
+        public: Buffer.from(jwt.publicKey, "base64"),
+      },
+      sign: {
+        algorithm: jwt.algorithm,
+      },
+      cookie: {
+        cookieName: "token",
+        signed: false,
+      },
+    });
+  } else {
+    server.register(fastifyJwt, {
+      secret: jwt.secretOrPrivateKey,
+      cookie: {
+        cookieName: "token",
+        signed: false,
+      },
+    });
+  }
 
   server.decorate("authenticate", async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -52,6 +75,7 @@ const addTokenHandling = (server: FastifyInstance, jwtSecret: string): void => {
       }
       await request.jwtVerify();
     } catch (err) {
+      logger.error(err, "Authentication error");
       request.log.debug(err, "Authentication error");
       reply.status(401).send({
         apiVersion: DEFAULT_API_VERSION,
@@ -79,6 +103,39 @@ const addLogging = (server: FastifyInstance): void => {
       payload,
     });
     done();
+  });
+};
+
+export const addGroupsPreHandler = async (
+  server: FastifyInstance,
+  conn: ConnToken,
+  groupsFn: (
+    conn: ConnToken,
+    ctx: Ctx,
+    serviceUser: ServiceUser,
+    targetUserId: Identity,
+  ) => Promise<Result.Type<Group.Group[]>>,
+): Promise<void> => {
+  server.addHook("preHandler", async (request: AuthenticatedRequest, reply) => {
+    if (request.user && !request.user.groups) {
+      try {
+        const ctx = { requestId: request.id, source: "http" };
+        const user = {
+          id: request.user?.userId,
+          groups: request.user?.groups,
+          address: request.user?.address,
+          metadata: request.user?.metadata,
+        };
+        const groupsResult = await groupsFn(conn, ctx, user, user.id);
+        if (Result.isErr(groupsResult)) {
+          throw new Error(groupsResult.message);
+        }
+        const groups = groupsResult;
+        request.user.groups = groups.map((group) => group.id);
+      } catch (err) {
+        logger.error({ err }, `preHandler failed to get groups for user ${request.user?.userId}`);
+      }
+    }
   });
 };
 
@@ -137,7 +194,7 @@ const registerSwagger = (server: FastifyInstance, urlPrefix: string, _apiPort: n
 };
 
 export const createBasicApp = (
-  jwtSecret: string,
+  jwt: JwtConfig,
   urlPrefix: string,
   apiPort: number,
   accessControlAllowOrigin: string,
@@ -171,7 +228,7 @@ export const createBasicApp = (
     };
   });
 
-  addTokenHandling(server, jwtSecret);
+  addTokenHandling(server, jwt);
   addLogging(server);
 
   server.addContentTypeParser("application/gzip", async function (request, payload) {

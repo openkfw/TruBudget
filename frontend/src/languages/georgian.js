@@ -242,6 +242,7 @@ const ka = {
   project: {
     add_new_project: "ახალი პროექტის დამატება",
     assignee: "მფლობელი",
+    cards_per_page: "ბარათები გვერდზე",
     project_budget_amount: "პროექტის ბიუჯეტი",
     project_budget: "ბიუჯეტი",
     project_close_info: "მინიმუმ ერთი ქვეპროექტი არ არის დახურული.",

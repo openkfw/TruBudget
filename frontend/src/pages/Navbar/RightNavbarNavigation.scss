@@ -1,0 +1,13 @@
+.right-navbar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: auto;
+}
+
+.organization {
+  padding-right: 0.625rem;
+}

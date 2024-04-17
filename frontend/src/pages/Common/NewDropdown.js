@@ -10,21 +10,7 @@ import strings from "../../localizeStrings";
 
 import ActionButton from "./ActionButton";
 
-const styles = {
-  closeButtonContainer: {
-    marginTop: -8,
-    display: "flex",
-    justifyContent: "flex-end"
-  },
-  closeButton: { marginLeft: 10 },
-  closeButtonSize: { fontSize: 15 },
-  flexContainer: {
-    display: "flex",
-    height: "100%",
-    alignItems: "flex-end"
-  },
-  itemContainer: { maxHeight: "35vh", overflow: "auto", boxShadow: "none" }
-};
+import "./NewDropdown.scss";
 
 const Dropdown = (props) => {
   const {
@@ -35,7 +21,6 @@ const Dropdown = (props) => {
     onChange,
     style,
     disabled,
-    formStyle,
     error,
     errorText,
     className
@@ -44,8 +29,8 @@ const Dropdown = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <form autoComplete="off" style={formStyle}>
-      <div style={styles.flexContainer}>
+    <form autoComplete="off">
+      <div className="dropdown-container">
         <FormControl
           disabled={disabled}
           style={style}
@@ -78,15 +63,15 @@ const Dropdown = (props) => {
             }}
             SelectDisplayProps={{ "data-test": `dropdown-${id}-click`, "data-disabled": disabled }}
           >
-            <div style={styles.closeButtonContainer}>
-              <div style={styles.closeButton}>
+            <div className="dropdown-close-button-container">
+              <div className="close-button">
                 <ActionButton
                   ariaLabel="close"
                   data-test={"close-select"}
                   onClick={() => setIsOpen(false)}
                   title={strings.common.close}
                   className="icon-button-style"
-                  icon={<CloseIcon style={styles.closeButtonSize} />}
+                  icon={<CloseIcon className="close-button-size" />}
                 />
               </div>
             </div>

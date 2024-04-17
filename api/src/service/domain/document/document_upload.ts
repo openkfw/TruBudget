@@ -1,5 +1,5 @@
 import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import logger from "../../../lib/logger";
 import { VError } from "verror";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
