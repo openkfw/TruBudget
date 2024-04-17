@@ -1,10 +1,9 @@
 .main-navbar-container {
+  position: relative;
+  top: 4rem;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  white-space: nowrap;
+  margin-left: 3rem;
 }
 
 .breadcrumbs {

@@ -7,6 +7,8 @@ import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
 import NotFound from "../Error/NotFound";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
+import { storeSearchBarDisplayed, storeSearchTerm } from "../Navbar/actions";
+import MainNavbarNavigation from "../Navbar/MainNavbarNavigation";
 import NavbarContainer from "../Navbar/NavbarContainer";
 import NodesContainer from "../Nodes/NodesContainer";
 import NotificationPageContainer from "../Notifications/NotificationPageContainer";
@@ -31,6 +33,14 @@ const Main = (props) => {
       <div className="main-image" />
       <div className="main-nav">
         <NavbarContainer />
+        <MainNavbarNavigation
+          history={props.history}
+          route={props.route}
+          currentProject={props.currentProject}
+          currentSubProject={props.currentSubProject}
+          storeSearchBarDisplayed={props.storeSearchBarDisplayed}
+          storeSearchTerm={props.storeSearchTerm}
+        />
       </div>
       <div className="main-container">
         <ConfirmationContainer />
@@ -58,12 +68,26 @@ class MainContainer extends Component {
   }
 
   render() {
-    return <Main />;
+    return <Main {...this.props} />;
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    initLanguage: () => dispatch(initLanguage())
+    initLanguage: () => dispatch(initLanguage()),
+    storeSearchBarDisplayed: (searchBarDisplayed) => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
+    storeSearchTerm: (searchTerm) => dispatch(storeSearchTerm(searchTerm))
   };
 };
-export default connect(null, mapDispatchToProps)(MainContainer);
+
+const mapStateToProps = (state) => {
+  return {
+    currentProject: state.getIn(["navbar", "currentProject"]),
+    currentSubProject: state.getIn(["navbar", "currentSubProject"]),
+    route: state.getIn(["route", "locationBeforeTransitions"]),
+    searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
+    searchTerm: state.getIn(["navbar", "searchTerm"])
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainContainer);
