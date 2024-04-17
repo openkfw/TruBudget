@@ -150,7 +150,7 @@ app.post(
       if (err.code === "NoSuchBucket") {
         req.log.error(
           { err },
-          "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio",
+          "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
         );
       }
       res.status(500).send(err).end();
@@ -190,7 +190,7 @@ app.get(
       if (err.code === "NoSuchBucket") {
         req.log.error(
           { err },
-          "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio",
+          "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
         );
       }
       res.status(404).end();
@@ -231,7 +231,7 @@ app.delete(
       if (err.code === "NoSuchBucket") {
         req.log.error(
           { err },
-          "NoSuchBucket at /delete. Please restart storage-service to create a new bucket at minio",
+          "NoSuchBucket at /delete. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
         );
       }
       res.status(404).end();

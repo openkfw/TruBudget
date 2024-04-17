@@ -33,7 +33,7 @@ The following diagram shows the exact communication protocols used between each 
 ## Data Storage
 In TruBudget two types of data storage are used:
 - On-Chain - Most of the persistent data such as events is stored on the blockchain using [Multichain](https://www.multichain.com/).
-- Off-Chain - [Minio](https://min.io/) is used as blob storage for documents, and [Postgres](https://www.postgresql.org/) is used for emails. 
+- Off-Chain - [Minio](https://min.io/) or Azure blob storage [Azure](https://azure.microsoft.com/en-us/products/storage/blobs) is used as blob storage for documents, and [Postgres](https://www.postgresql.org/) is used for emails. 
 
 ## Multiple nodes architecture
 Following architecture diagram shows a network with 3 nodes from 3 different organizations including the tech stack and communication protocols.

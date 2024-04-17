@@ -7,16 +7,11 @@ import { FileWithMeta, Metadata, sleep } from "./storage";
 const containerName: string = config.azureBlobStorage.containerName;
 
 async function streamToString(readableStream): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const chunks: string[] = [];
-    readableStream.on("data", (data) => {
-      chunks.push(data.toString());
-    });
-    readableStream.on("end", () => {
-      resolve(chunks.join(""));
-    });
-    readableStream.on("error", reject);
-  });
+  let data = "";
+  for await (const chunk of readableStream) {
+    data += chunk;
+  }
+  return data;
 }
 
 async function streamToBuffer(readableStream): Promise<Buffer> {

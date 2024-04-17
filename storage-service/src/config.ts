@@ -6,7 +6,6 @@ interface MinioConfig {
   bucketName: string;
 }
 interface AzureBlobConfig {
-  azureAccountName: string;
   azureStorageUrl: string;
   azureConnectionString: string | undefined;
   containerName: string;
@@ -34,7 +33,6 @@ const config: Config = {
     bucketName: process.env.MINIO_BUCKET_NAME || "trubudget",
   },
   azureBlobStorage: {
-    azureAccountName: process.env.AZURE_ACCOUNT_NAME || "",
     azureConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
     azureStorageUrl:
       process.env.AZURE_STORAGE_URL && process.env.AZURE_STORAGE_URL !== ""

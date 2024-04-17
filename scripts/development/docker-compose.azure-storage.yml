@@ -4,7 +4,7 @@ services:
   azure-storage:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
-      - ${AZURE_BLOB_PORT}:${AZURE_BLOB_PORT}
+      - ${AZURE_STORAGE_PORT}:${AZURE_STORAGE_PORT}
     # command: server /data
     # volume for persisting data
     # volumes:
