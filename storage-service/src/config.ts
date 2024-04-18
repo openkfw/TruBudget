@@ -14,6 +14,7 @@ interface Config {
   port: number;
   allowOrigin: string;
   storageProvider: string;
+  rateLimit: number | undefined;
   storage: MinioConfig;
   azureBlobStorage: AzureBlobConfig;
 }
@@ -21,6 +22,10 @@ interface Config {
 const config: Config = {
   port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
   allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
+  rateLimit:
+    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
+      ? undefined
+      : Number(process.env.RATE_LIMIT),
   storageProvider:
     process.env.STORAGE_PROVIDER === "azure-storage"
       ? "azure-storage"
