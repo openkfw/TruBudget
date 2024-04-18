@@ -7,7 +7,7 @@ import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
 import NotFound from "../Error/NotFound";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
-import MainNavbarNavigation from "../Navbar/MainNavbarNavigation";
+import Breadcrumbs from "../Navbar/Breadcrumbs";
 import NavbarContainer from "../Navbar/NavbarContainer";
 import NodesContainer from "../Nodes/NodesContainer";
 import NotificationPageContainer from "../Notifications/NotificationPageContainer";
@@ -32,7 +32,7 @@ const Main = (props) => {
       <div className="main-image" />
       <div className="main-nav">
         <NavbarContainer />
-        <MainNavbarNavigation />
+        <Breadcrumbs />
       </div>
       <div className="main-container">
         <ConfirmationContainer />
