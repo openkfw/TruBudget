@@ -10,7 +10,7 @@ import strings from "../../localizeStrings";
 
 import { storeSearchBarDisplayed, storeSearchTerm } from "./actions";
 
-import "./MainNavbarNavigation.scss";
+import "./Breadcrumbs.scss";
 
 const getStaticBreadcrumb = (name) => {
   switch (name) {
@@ -95,13 +95,7 @@ const createBreadcrumb = (
   });
 };
 
-const MainNavbarNavigation = ({
-  route,
-  currentProject,
-  currentSubProject,
-  storeSearchTerm,
-  storeSearchBarDisplayed
-}) => {
+const Breadcrumbs = ({ route, currentProject, currentSubProject, storeSearchTerm, storeSearchBarDisplayed }) => {
   const navigate = useNavigate();
   return (
     <div className="main-navbar-container">
@@ -132,4 +126,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainNavbarNavigation);
+export default connect(mapStateToProps, mapDispatchToProps)(Breadcrumbs);
