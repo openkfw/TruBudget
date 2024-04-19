@@ -27,9 +27,12 @@ async function streamToBuffer(readableStream): Promise<Buffer> {
   });
 }
 
-const blobServiceClient = BlobServiceClient.fromConnectionString(
-  config.azureBlobStorage.azureConnectionString || "",
-);
+let blobServiceClient;
+if (config.storageProvider === "azure-storage") {
+  blobServiceClient = BlobServiceClient.fromConnectionString(
+    config.azureBlobStorage.azureConnectionString || "",
+  );
+}
 
 export const getAzureBlobStatus = async (): Promise<{
   status: number;
