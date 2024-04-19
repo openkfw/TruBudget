@@ -7,6 +7,7 @@ import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
 import NotFound from "../Error/NotFound";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
+import Breadcrumbs from "../Navbar/Breadcrumbs";
 import NavbarContainer from "../Navbar/NavbarContainer";
 import NodesContainer from "../Nodes/NodesContainer";
 import NotificationPageContainer from "../Notifications/NotificationPageContainer";
@@ -31,6 +32,7 @@ const Main = (props) => {
       <div className="main-image" />
       <div className="main-nav">
         <NavbarContainer />
+        <Breadcrumbs />
       </div>
       <div className="main-container">
         <ConfirmationContainer />
@@ -61,9 +63,11 @@ class MainContainer extends Component {
     return <Main />;
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
     initLanguage: () => dispatch(initLanguage())
   };
 };
+
 export default connect(null, mapDispatchToProps)(MainContainer);

@@ -4,7 +4,6 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
 import LeftNavbarNavigation from "./LeftNavbarNavigation";
-import MainNavbarNavigation from "./MainNavbarNavigation";
 import RightNavbarNavigation from "./RightNavbarNavigation";
 import SideNav from "./SideNav";
 
@@ -17,14 +16,11 @@ const Navbar = ({
   unreadNotificationCount,
   showSidebar,
   history,
-  route,
   logout,
   displayName,
   organization,
   avatar,
   avatarBackground,
-  currentProject,
-  currentSubProject,
   allowedIntents,
   groups,
   userId,
@@ -45,14 +41,6 @@ const Navbar = ({
       <AppBar className="navbar">
         <Toolbar id="back-to-top">
           <LeftNavbarNavigation toggleSidebar={toggleSidebar} />
-          <MainNavbarNavigation
-            history={history}
-            route={route}
-            currentProject={currentProject}
-            currentSubProject={currentSubProject}
-            storeSearchBarDisplayed={storeSearchBarDisplayed}
-            storeSearchTerm={storeSearchTerm}
-          />
           <RightNavbarNavigation
             organization={organization}
             unreadNotificationCount={unreadNotificationCount}

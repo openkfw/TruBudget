@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import ChevronRight from "@mui/icons-material/ChevronRight";
@@ -7,7 +8,9 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-import "./MainNavbarNavigation.scss";
+import { storeSearchBarDisplayed, storeSearchTerm } from "./actions";
+
+import "./Breadcrumbs.scss";
 
 const getStaticBreadcrumb = (name) => {
   switch (name) {
@@ -92,13 +95,7 @@ const createBreadcrumb = (
   });
 };
 
-const MainNavbarNavigation = ({
-  route,
-  currentProject,
-  currentSubProject,
-  storeSearchTerm,
-  storeSearchBarDisplayed
-}) => {
+const Breadcrumbs = ({ route, currentProject, currentSubProject, storeSearchTerm, storeSearchBarDisplayed }) => {
   const navigate = useNavigate();
   return (
     <div className="main-navbar-container">
@@ -112,4 +109,21 @@ const MainNavbarNavigation = ({
   );
 };
 
-export default MainNavbarNavigation;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    storeSearchBarDisplayed: (searchBarDisplayed) => dispatch(storeSearchBarDisplayed(searchBarDisplayed)),
+    storeSearchTerm: (searchTerm) => dispatch(storeSearchTerm(searchTerm))
+  };
+};
+
+const mapStateToProps = (state) => {
+  return {
+    currentProject: state.getIn(["navbar", "currentProject"]),
+    currentSubProject: state.getIn(["navbar", "currentSubProject"]),
+    route: state.getIn(["route", "locationBeforeTransitions"]),
+    searchBarDisplayed: state.getIn(["navbar", "searchBarDisplayed"]),
+    searchTerm: state.getIn(["navbar", "searchTerm"])
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Breadcrumbs);
