@@ -17,6 +17,9 @@ all services.
 | MINIO_PORT                  | 9000          | Port of connected Minio                                                                         |
 | MINIO_HOST                  | localhost     | IP address of connected Minio server                                                            |
 | MINIO_BUCKET_NAME           | trubudget     | Bucket name of the connected Minio server                                                       |
+| AZURE_STORAGE_CONNECTION_STRING | DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://host.docker.internal:10000/devstoreaccount1;QueueEndpoint=http://host.docker.internal:10001/devstoreaccount1;   | Connection string for Azure blob storage on Azure or locally on Azurite |
+| AZURE_STORAGE_PORT           | 10000     | Port on which Azurite is running. Required only with local development environment                                                       |
+| AZURE_CONTAINER_NAME           | container     | Container name of the connected Azure blob storage. Container will be created if it doesn't exists                                                       |
 | LOG_LEVEL                   | info          | Defines the log output. Supported levels are `trace`, `debug`, `info`, `warn`, `error`, `fatal` |
 
 ### API

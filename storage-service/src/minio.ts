@@ -4,29 +4,13 @@ import { v4 } from "uuid";
 import config from "./config";
 import { log } from "./index";
 import * as Stream from "stream";
-
-interface Metadata extends Minio.ItemBucketMetadata {
-  "Content-Type"?: string;
-  fileName: string;
-  docId: string;
-  secret?: string;
-}
-
-interface MetadataWithName extends Metadata {
-  name: string;
-}
-
-interface FullStat {
-  size: number;
-  metaData: MetadataWithName;
-  lastModified: Date;
-  etag: string;
-}
-
-interface FileWithMeta {
-  data: string;
-  meta: MetadataWithName;
-}
+import {
+  FileWithMeta,
+  FullStat,
+  Metadata,
+  MetadataWithName,
+  sleep,
+} from "./storage";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const minioClient: Minio.Client = new Minio.Client({
@@ -205,12 +189,6 @@ export const getMetadataAsPromised = (
 export const getReadiness = async (): Promise<void> => {
   minioClient.listBuckets(function (err, _buckets) {
     if (err) return log.error(err);
-  });
-};
-
-const sleep = (ms): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
   });
 };
 

@@ -100,7 +100,7 @@ Let's analyze the use case:
 - no test data needed
   The provisioning project is used to generate test data. We don't need it so we can skip it.
 - data should not be lost (documents and blockchain data)
-  To make sure we don't loose any data we need to know where we are storing data. Documents are stored in minio via storage-service and all other data is stored onchain via blockchain service.
+  To make sure we don't loose any data we need to know where we are storing data. Documents are stored in minio or azure blob storage via storage-service and all other data is stored onchain via blockchain service.
   This means we need to focus on the blockchain and the storage-service components. We can find persistence.docker-compose.yml files in these two service folders so we add them to our command `storage-service/persistence.docker-compose.yml` and `blockchain/persistence.docker-compose.yml`
 - frontend needed for api interaction
   This means we need the api to interact with the blockchain and the frontend to show a dashboard to interact with. `api/docker-compose.yml` and `frontend/docker-compose.yml`

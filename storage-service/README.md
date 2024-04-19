@@ -4,7 +4,7 @@ The storage service is responsible for saving/deleting/accessing documents to Mi
 It is an optional feature that allows TruBudget users to upload & download documents, while restricting the access to
 the documents through TruBudget's permission system. If it is not enabled TruBudget will work without the document
 feature.
-In the future the storage-service can be extended to support other storage types. For now only minio is supported.
+In the future the storage-service can be extended to support other storage types. For now minio and Azure blob storage is supported.
 
 ## Getting Started
 
@@ -33,7 +33,7 @@ The cluster contains:
 To start the storage-service without docker, you need to start all desired service yourself with the right environment
 variables. To set these environment variables, read the documentation of the services in their folder or use the
 .env_example file of the storage-service. We recommend to start Minio with docker since the configuration is much easier.
-You can use the docker-compose-minio.yaml file to start it. To start Minio without docker we refer to
+To start Minio without docker we refer to
 their [official documentation](https://docs.min.io/docs/minio-quickstart-guide.html).
 
 Follow this service start order to start the environment without docker (assuming minio is already started):
@@ -53,13 +53,13 @@ npm start
 
 ### Endpoints
 
-| Method | Endpoint   | Description                                  |
-| ------ | ---------- | -------------------------------------------- |
-| GET    | /readiness | Checks if storage service and minio is ready |
-| GET    | /liveness  | Checks if storage services is up             |
-| GET    | /version   | Get the current version of the service       |
-| GET    | /download  | Download a document (docId + secret needed)  |
-| POST   | /upload    | Upload a document                            |
+| Method | Endpoint   | Description                                    |
+| ------ | ---------- | ---------------------------------------------- |
+| GET    | /readiness | Checks if storage service (and minio is ready) |
+| GET    | /liveness  | Checks if storage services is up               |
+| GET    | /version   | Get the current version of the service         |
+| GET    | /download  | Download a document (docId + secret needed)    |
+| POST   | /upload    | Upload a document                              |
 
 ### Environment Variables
 
