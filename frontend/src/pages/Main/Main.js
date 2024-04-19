@@ -32,9 +32,9 @@ const Main = (props) => {
       <div className="main-image" />
       <div className="main-nav">
         <NavbarContainer />
-        <Breadcrumbs />
       </div>
       <div className="main-container">
+        <Breadcrumbs />
         <ConfirmationContainer />
         <Routes>
           <Route exact path="/" element={<Navigate to="/projects" replace />} />

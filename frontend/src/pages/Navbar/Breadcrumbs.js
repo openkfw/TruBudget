@@ -98,7 +98,7 @@ const createBreadcrumb = (
 const Breadcrumbs = ({ route, currentProject, currentSubProject, storeSearchTerm, storeSearchBarDisplayed }) => {
   const navigate = useNavigate();
   return (
-    <div className="main-navbar-container">
+    <div className="breadcrumbs-container">
       <Typography variant="button" color={"primary"}>
         {strings.login.frontend_name}
       </Typography>
