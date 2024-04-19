@@ -199,7 +199,6 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.8
     depends_on:
-      - azure-storage
       - alpha-api
     ports:
       - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"

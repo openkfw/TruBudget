@@ -60,33 +60,33 @@ export const uploadDocument = async (
   content: string,
   metaData: Metadata = { fileName: "default", docId: "123" },
 ): Promise<string> => {
-  if (config.storageProvider === "minio") {
-    return await uploadAsPromised(file, content, metaData);
-  } else {
+  if (config.storageProvider === "azure-storage") {
     return await upload(file, content, metaData);
+  } else {
+    return await uploadAsPromised(file, content, metaData);
   }
 };
 
 export const downloadDocument = async (file: string): Promise<FileWithMeta> => {
-  if (config.storageProvider === "minio") {
-    return await downloadAsPromised(file);
-  } else {
+  if (config.storageProvider === "azure-storage") {
     return await download(file);
+  } else {
+    return await downloadAsPromised(file);
   }
 };
 
 export const deleteDocument = async (file: string): Promise<void> => {
-  if (config.storageProvider === "minio") {
-    return await deleteDocumentMinio(file);
-  } else {
+  if (config.storageProvider === "azure-storage") {
     return await deleteDocumentAzureBlob(file);
+  } else {
+    return await deleteDocumentMinio(file);
   }
 };
 
 export const establishConnection = async (): Promise<void> => {
-  if (config.storageProvider === "minio") {
-    return await establishConnectionMinio();
-  } else {
+  if (config.storageProvider === "azure-storage") {
     return await establishConnectionAzureBlob();
+  } else {
+    return await establishConnectionMinio();
   }
 };
