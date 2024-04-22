@@ -35,13 +35,15 @@ const ApprovedNodesTableEntry = ({ nodeGroup, nodes }) => {
     const formatLastSeen = renderTimeStampString(node);
 
     return (
-      <TableRow key={node.address.address}>
-        <TableCell align="center" className="approved-node-cell">
+      <TableRow key={node.address.address} className="approved-node-body">
+        <TableCell align="center" className="approved-node-cell node-address">
           {" "}
           {node.address.address}{" "}
         </TableCell>
-        <TableCell className="center-cell">{circle}</TableCell>
-        <TableCell align="center">{formatLastSeen}</TableCell>
+        <TableCell className="approved-node-cell status">{circle}</TableCell>
+        <TableCell align="center" className="approved-node-cell last-seen">
+          {formatLastSeen}
+        </TableCell>
       </TableRow>
     );
   };
@@ -81,17 +83,17 @@ const ApprovedNodesTableEntry = ({ nodeGroup, nodes }) => {
       <TableRow>
         <TableCell className="no-padding-cell" colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box className="approved-node-box">
+            <Box>
               <Table size="small">
                 <TableHead>
-                  <TableRow>
-                    <TableCell align="center" className="approved-node-cell">
+                  <TableRow className="approved-node-header">
+                    <TableCell align="center" className="approved-node-cell node-address">
                       {strings.nodesDashboard.nodes} {strings.nodesDashboard.address}
                     </TableCell>
-                    <TableCell align="center" className="approved-node-cell">
+                    <TableCell align="center" className="approved-node-cell status">
                       {strings.nodesDashboard.connection_status}
                     </TableCell>
-                    <TableCell align="center" className="approved-node-cell">
+                    <TableCell align="center" className="approved-node-cell last-seen">
                       {strings.nodesDashboard.last_seen}
                     </TableCell>
                   </TableRow>

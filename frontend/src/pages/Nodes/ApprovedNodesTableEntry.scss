@@ -1,3 +1,5 @@
+@import "../../mixins.scss";
+
 .circle {
   width: 1.25rem;
   height: 1.25rem;
@@ -12,17 +14,29 @@
   }
 }
 
-.approved-node-box {
-  margin: 1;
-  margin-left: 2rem;
-  margin-right: 2rem;
-  padding-left: 0;
-  padding-right: 0;
+.approved-node-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.approved-node-body {
+  display: flex;
+  justify-content: space-between;
 }
 
 .approved-node-cell {
-  min-width: 250px;
-  max-width: 250px;
+  &.node-address {
+    flex: 2;
+    @include tablet {
+      overflow-wrap: anywhere;
+    }
+  }
+  &.status {
+    flex: 1;
+  }
+  &.last-seen {
+    flex: 1;
+  }
 }
 
 .node-info-icon {
