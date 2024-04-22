@@ -23,13 +23,14 @@ const Dropdown = (props) => {
     disabled,
     error,
     errorText,
-    className
+    className,
+    formClassName
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <form autoComplete="off">
+    <form className={formClassName} autoComplete="off">
       <div className="dropdown-container">
         <FormControl
           disabled={disabled}

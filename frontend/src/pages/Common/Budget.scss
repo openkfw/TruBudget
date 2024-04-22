@@ -1,25 +1,25 @@
+@import "../../mixins.scss";
+
 .input-field {
   min-width: 200px;
-  margin-right: 1rem;
   flex-grow: 1;
-}
-
-.input-field-with-icon {
-  min-width: 200px;
-  flex-grow: 1;
+  @include tablet {
+    width: 50%;
+  }
 }
 
 .input-container {
   display: flex;
-  width: 45%;
+  width: 50%;
   padding-right: 1.25rem;
-  align-items: flex-end;
-}
-
-.cell {
-  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: row;
+  @include tablet {
+    &:nth-of-type(2n) {
+      padding-right: 0;
+    }
+  }
 }
 
 .help-icon {
@@ -27,4 +27,58 @@
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
   font-size: x-large;
+}
+
+.add-organization-budget {
+  margin-top: 0.3rem;
+  display: flex;
+  width: 100%;
+  @include tablet {
+    justify-content: center;
+    flex-direction: column;
+  }
+}
+
+.organiaztion-info {
+  min-width: 50%;
+}
+
+.add-org-button {
+  margin-top: 0.5rem;
+  margin-bottom: 0.3rem;
+  @include tablet {
+    width: 50%;
+  }
+}
+
+.first-budget-row {
+  width: 70%;
+}
+
+.second-budget-row {
+  width: 30%;
+  &.without-width {
+    width: auto;
+  }
+}
+
+.first-budget-row,
+.second-budget-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  @include tablet {
+    width: 100%;
+  }
+}
+
+.dropdown-form {
+  width: 100%;
+  margin-right: 1rem;
+  &.currency {
+    @include tablet {
+      width: 50%;
+    }
+  }
 }
