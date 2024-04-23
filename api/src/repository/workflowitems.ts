@@ -48,7 +48,7 @@ export const updateWorkflowItemRepository = (
   modification: WorkflowitemUpdate.RequestData,
   cache,
 ): Repository => ({
-  getWorkflowitem: async (id) => {
+  getWorkflowitem: async (id: string): Promise<Result.Type<Workflowitem.Workflowitem>> => {
     return WorkflowitemCacheHelper.getWorkflowitem(conn, ctx, projectId, id);
   },
   getUsersForIdentity: async (identity) => {
