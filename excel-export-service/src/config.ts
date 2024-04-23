@@ -3,6 +3,7 @@ interface Config {
   apiPort: number;
   serverPort: number;
   accessControlAllowOrigin: string;
+  rateLimit: number | undefined;
 }
 
 export const config: Config = {
@@ -10,4 +11,8 @@ export const config: Config = {
   apiPort: (process.env.API_PORT && parseInt(process.env.API_PORT, 10)) || 8080,
   serverPort: (process.env.PORT && parseInt(process.env.PORT, 10)) || 8888,
   accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
+  rateLimit:
+    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
+      ? undefined
+      : Number(process.env.RATE_LIMIT),
 };

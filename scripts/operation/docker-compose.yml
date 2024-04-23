@@ -160,6 +160,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       MODE: DEBUG
       LOG_LEVEL: ${EXCEL_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.7
