@@ -19,7 +19,7 @@ Help() {
     echo "  --slim                          Starts a TruBudget instance with alpha-node, alpha-api, provisioning and frontend."
     echo "  --full                          Starts a TruBudget instance with alpha-node, emaildb, minio, alpha-api, email-service,"
     echo "                                  provisioning, excel-export-service, storage and frontend."
-    echo "  --use-azure-storage             Use Azure blob storage (locally Azurite) instead of Min.io storage for local development"
+    echo "  --use-azure-storage             Use Azure blob storage (locally Azurite) instead of Min.io storage for local development."
     echo "  --no-frontend                   Disable running frontend in docker container in order to start frontend locally."
     echo "  --build                         Force building."
     echo "  --build-only [services...]      Force building only mentioned services."
