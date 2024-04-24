@@ -265,98 +265,96 @@ const Budget = (props) => {
         </TableBody>
       </Table>
 
-      <Table>
-        <TableBody>
-          <TableRow key={`pb-row-add`}>
-            <TableCell>
-              <div className="cell">
-                {_isEmpty(projectProjectedBudgets) ? (
-                  <>
-                    <TextField
-                      variant="standard"
-                      className="input-field-with-icon"
-                      label={strings.common.organization}
-                      value={organization}
-                      onChange={(e) => {
-                        setOrganization(e.target.value);
-                      }}
-                      type="text"
-                      aria-label="organization"
-                      id="organizationinput"
-                      inputProps={{
-                        "data-test": "organization-input"
-                      }}
-                      disabled={isEditing}
-                    />
-                    <CustomInfoTooltip title={strings.subproject.organization_info} />
-                  </>
-                ) : (
-                  <div className="input-container">
-                    <DropDown
-                      className="input-field-with-icon"
-                      value={organization}
-                      floatingLabel={strings.common.organization}
-                      onChange={(e) => setOrganization(e)}
-                      id="organizations"
-                      disabled={isEditing}
-                    >
-                      {getOrganizationMenuItems(projectProjectedBudgets)}
-                    </DropDown>
-                    <CustomInfoTooltip title={strings.subproject.organization_info} />
-                  </div>
-                )}
-
-                <DropDown
-                  className="input-field"
-                  value={currency}
-                  floatingLabel={strings.common.currency}
-                  onChange={(currency) => {
-                    setCurrency(currency);
-                  }}
-                  id="currencies"
-                  disabled={isEditing}
-                  error={!isSaveable}
-                  errorText={strings.common.projected_budget_exists}
-                >
-                  {getCurrencyMenuItems(currencies)}
-                </DropDown>
-                <TextField
-                  variant="standard"
-                  label={strings.common.total_budget}
-                  data-test="projected-budget"
-                  disabled={isEditing}
-                  value={budgetAmountAdd}
-                  onChange={(v) => {
-                    if (numberSignsRegex.test(v.target.value)) {
-                      setBudgetAmountAdd(v.target.value);
-                      setIsValidBudgetAmountAdd(validateLanguagePattern(v.target.value) || _isEmpty(v.target.value));
-                    }
-                  }}
-                  type="text"
-                  multiline={false}
-                  aria-label="projectedbudget"
-                  id="projectedbudgetinput"
-                  className="input-field-with-icon"
-                  error={!isValidBudgetAmountAdd}
-                  helperText={!isValidBudgetAmountAdd ? strings.common.invalid_format : ""}
-                />
-                <CustomInfoTooltip title={strings.subproject.total_budget_info} />
-              </div>
-            </TableCell>
-            <TableCell align="right">
-              <Button
-                variant="contained"
-                color="secondary"
-                data-test="add-projected-budget"
-                disabled={!budgetAmountAdd || !currency || !organization || !isSaveable || !isValidBudgetAmountAdd}
-                onClick={saveProjectedBudget}
+      <div className="add-organization-budget">
+        <div className="first-budget-row">
+          {_isEmpty(projectProjectedBudgets) ? (
+            <div className="input-container">
+              <TextField
+                variant="standard"
+                className="input-field"
+                label={strings.common.organization}
+                value={organization}
+                onChange={(e) => {
+                  setOrganization(e.target.value);
+                }}
+                type="text"
+                aria-label="organization"
+                id="organizationinput"
+                inputProps={{
+                  "data-test": "organization-input"
+                }}
+                disabled={isEditing}
+              />
+              <CustomInfoTooltip title={strings.subproject.organization_info} />
+            </div>
+          ) : (
+            <div className="input-container">
+              <DropDown
+                formClassName="dropdown-form"
+                className="input-field"
+                value={organization}
+                floatingLabel={strings.common.organization}
+                onChange={(e) => setOrganization(e)}
+                id="organizations"
+                disabled={isEditing}
               >
-                {`${strings.common.add}`}
-              </Button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+                {getOrganizationMenuItems(projectProjectedBudgets)}
+              </DropDown>
+              <CustomInfoTooltip title={strings.subproject.organization_info} />
+            </div>
+          )}
+          <div className="input-container">
+            <TextField
+              variant="standard"
+              label={strings.common.total_budget}
+              data-test="projected-budget"
+              disabled={isEditing}
+              value={budgetAmountAdd}
+              onChange={(v) => {
+                if (numberSignsRegex.test(v.target.value)) {
+                  setBudgetAmountAdd(v.target.value);
+                  setIsValidBudgetAmountAdd(validateLanguagePattern(v.target.value) || _isEmpty(v.target.value));
+                }
+              }}
+              type="text"
+              multiline={false}
+              aria-label="projectedbudget"
+              id="projectedbudgetinput"
+              className="input-field"
+              error={!isValidBudgetAmountAdd}
+              helperText={!isValidBudgetAmountAdd ? strings.common.invalid_format : ""}
+            />
+            <CustomInfoTooltip title={strings.subproject.total_budget_info} />
+          </div>
+        </div>
+        <div className={_isEmpty(projectProjectedBudgets) ? "second-budget-row" : "second-budget-row without-width"}>
+          <DropDown
+            formClassName="dropdown-form currency"
+            className="input-field"
+            value={currency}
+            floatingLabel={strings.common.currency}
+            onChange={(currency) => {
+              setCurrency(currency);
+            }}
+            id="currencies"
+            disabled={isEditing}
+            error={!isSaveable}
+            errorText={strings.common.projected_budget_exists}
+          >
+            {getCurrencyMenuItems(currencies)}
+          </DropDown>
+          <Button
+            className="add-org-button"
+            variant="contained"
+            color="secondary"
+            data-test="add-projected-budget"
+            disabled={!budgetAmountAdd || !currency || !organization || !isSaveable || !isValidBudgetAmountAdd}
+            onClick={saveProjectedBudget}
+          >
+            {`${strings.common.add}`}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
