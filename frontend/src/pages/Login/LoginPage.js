@@ -35,7 +35,7 @@ const LoginPage = ({
   const connectedToAdminNode = -1;
   const isLoginDisabled = username === "" || password === "";
   const isAuthProxyEnabled = window?.injectedEnv?.REACT_APP_AUTHPROXY_ENABLED === "true" || config.authProxy.enabled;
-  const authProxyUri = window?.injectedEnv?.REACT_APP_AUTHPROXY_URL || config.authProxy.url;
+  const authProxyUri = "/oidc";
 
   return (
     <div data-test="loginpage" id="loginpage" className="login-page-container">

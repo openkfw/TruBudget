@@ -11,7 +11,9 @@ import { Experimental_CssVarsProvider as CssVarsProvider, StyledEngineProvider }
 import "./logging/console";
 
 import withInitialLoading from "./pages/Loading/withInitialLoading";
+import Callback from "./pages/Login/Callback";
 import LoginPageContainer from "./pages/Login/LoginPageContainer";
+import OidcClient from "./pages/Login/OidcClient";
 import PrivateRoute from "./pages/Login/PrivateRoute";
 import Main from "./pages/Main/Main";
 import LiveNotificationContainer from "./pages/Notifications/LiveNotificationContainer";
@@ -32,6 +34,8 @@ export default function App() {
             <LiveNotificationContainer />
             <Routes>
               <Route key={1} exact path="/login" element={<LoginElement />} />
+              <Route key={2} exact path="/oidc" element={<OidcClient />} />
+              <Route key={3} exact path="/callback" element={<Callback />} />
               <Route
                 path="*"
                 element={
