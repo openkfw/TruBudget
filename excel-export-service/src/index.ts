@@ -91,7 +91,11 @@ excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpre
   if (req.cookies && req.cookies.token) {
     req.headers.authorization = req.cookies.token;
   } else if (req.headers.cookie) {
-    req.headers.authorization = `Bearer ${req.headers.cookie.split("=")[1]}`;
+    const cookies = req.headers.cookie.split("; ");
+    const authToken = cookies.find((cookie) => cookie.startsWith("token="));
+    if (authToken) {
+      req.headers.authorization = `Bearer ${authToken.split("=")[1]}`;
+    }
   }
   const token = req.headers.authorization;
   if (!token) {

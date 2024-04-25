@@ -246,7 +246,7 @@ if [ "$HAS_ENABLED_SERVICES" = true ]; then
         if [ "$word" = "email-service" ]; then
             # Enable Services
             perl -pi -e 's/EMAIL_SERVICE_ENABLED=.*/EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
-            perl -pi -e 's/MULTICHAIN_FEED_ENABLED=.*/MULTICHAIN_FEED_ENABLED=true/g' ${SCRIPT_DIR}/.env
+            perl -pi -e 's/MULTICHAIN_FEED_ENABLED=.*/MULTICHAIN_FEED_ENABLED=false/g' ${SCRIPT_DIR}/.env # Disable multichain feed, not working on ARM processors; todo switch according to architecture (ex. uname -m command in bash)
             perl -pi -e 's/REACT_APP_EMAIL_SERVICE_ENABLED=.*/REACT_APP_EMAIL_SERVICE_ENABLED=true/g' ${SCRIPT_DIR}/.env
             ENABLED_SERVICES="${ENABLED_SERVICES} emaildb"
             echo "INFO: email-service enabled"
@@ -347,5 +347,5 @@ fi
 
 # Start docker containers
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
-$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES #--build alpha-api
+$COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
