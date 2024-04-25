@@ -40,6 +40,10 @@ The environmental variables are located in the file `.env` (in the directory `sc
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | --slim                         | Starts a TruBudget instance with alpha-node, alpha-api, provisioning and frontend.                                                               |
 | --full                         | Starts a TruBudget instance with alpha-node, emaildb, minio (or azure-storage), alpha-api, email-service, provisioning, excel-export-service, storage and frontend. |
+| --use-azure-storage            | Use Azure blob storage (locally Azurite) instead of Min.io storage for local development. |
+| --no-frontend                  | Disable running frontend in docker container in order to start frontend locally. |
+| --build                        | Force building.                      |
+| --build-only [services...]     | Force building only mentioned services. |
 | --enable-service [services...] | Starts additional services to the TruBudget instance. Available services: email-service, excel-export-service, storage-service                   |
 |  --use-azure-storage           |  Use Azure blob storage (locally Azurite) instead of Min.io storage for local development |
 | --no-log                       | Disable logs of all docker-containers                                                                                                            |

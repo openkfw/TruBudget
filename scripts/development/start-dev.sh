@@ -19,9 +19,10 @@ Help() {
     echo "  --slim                          Starts a TruBudget instance with alpha-node, alpha-api, provisioning and frontend."
     echo "  --full                          Starts a TruBudget instance with alpha-node, emaildb, minio, alpha-api, email-service,"
     echo "                                  provisioning, excel-export-service, storage and frontend."
-    echo "  --use-azure-storage             Use Azure blob storage (locally Azurite) instead of Min.io storage for local development"
+    echo "  --use-azure-storage             Use Azure blob storage (locally Azurite) instead of Min.io storage for local development."
     echo "  --no-frontend                   Disable running frontend in docker container in order to start frontend locally."
     echo "  --build                         Force building."
+    echo "  --build-only [services...]      Force building only mentioned services."
     echo "  --enable-service [services...]  Starts additional services to the TruBudget instance."
     echo "                                  Available services: email-service, excel-export-service, storage-service"
     echo "  --no-log                        Disable logs of all docker-containers"
@@ -56,6 +57,8 @@ STORAGE_PROVIDER=""
 IS_FULL=false
 HAS_BETA=false
 IS_REBUILDING=false
+IS_PARTLY_REBUILDING=false
+BUILD_SERVICES=""
 START_FRONTEND_IN_CONTAINER=true
 
 while [ "$1" != "" ]; do
@@ -159,6 +162,19 @@ while [ "$1" != "" ]; do
     -h | --help)
         Help
         exit 1
+        ;;
+
+    --build-only)
+        if [ "$IS_REBUILDING" = true ]; then
+            echo "You already enabled building of all services by using --build! Exiting ..."
+            exit 1
+        fi
+        IS_PARTLY_REBUILDING=true
+        shift # past argument --build-only
+        # --build-only must be the last argument if used
+        # save all words right from option --build-only
+        BUILD_SERVICES=$@
+        break
         ;;
 
     --enable-service)
@@ -336,6 +352,10 @@ if [ "$IS_REBUILDING" = true ]; then
     $COMPOSE build $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 fi
 
+if [ "$IS_PARTLY_REBUILDING" = true ]; then
+    echo "INFO: Re-build only selected images"
+    $COMPOSE build $BUILD_SERVICES
+fi
 
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"
