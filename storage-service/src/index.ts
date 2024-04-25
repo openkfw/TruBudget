@@ -1,6 +1,7 @@
 import * as cors from "cors";
 import * as express from "express";
 import { body, query, validationResult } from "express-validator";
+import rateLimit from "express-rate-limit";
 import { Logger } from "pino";
 import {
   createPinoExpressLogger,
@@ -58,6 +59,15 @@ app.use(createPinoExpressLogger(log));
 app.options(config.allowOrigin, cors());
 
 app.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: config.rateLimit || 100, // limit each IP to 100 requests per windowMs
+});
+
+if (config.rateLimit) {
+  app.use(limiter);
+}
 
 const allowOrigins = config.allowOrigin.split(",");
 

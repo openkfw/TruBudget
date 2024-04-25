@@ -176,6 +176,7 @@ services:
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
       LOG_LEVEL: ${STORAGE_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.8

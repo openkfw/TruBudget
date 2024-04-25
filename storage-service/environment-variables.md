@@ -21,6 +21,7 @@ all services.
 | AZURE_STORAGE_PORT           | 10000     | Port on which Azurite is running. Required only with local development environment                                                       |
 | AZURE_CONTAINER_NAME           | container     | Container name of the connected Azure blob storage. Container will be created if it doesn't exists                                                       |
 | LOG_LEVEL                   | info          | Defines the log output. Supported levels are `trace`, `debug`, `info`, `warn`, `error`, `fatal` |
+| RATE_LIMIT                   | 100          | Defines the limit each IP to {RATE_LIMIT} requests per windowMs (1 minute) |
 
 ### API
 
