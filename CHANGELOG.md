@@ -35,7 +35,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Default image for new projects [#1714](https://github.com/openkfw/TruBudget/issues/1714)
-- Increase the number of allowed characters for a tag [#1713](https://github.com/openkfw/TruBudget/issues/1713)
 - Optimized width styles in project, sub project elements [#1798](https://github.com/openkfw/TruBudget/issues/1798)
 - Optimized Budget row styles in Project and SubProject dialogs [#1790](https://github.com/openkfw/TruBudget/issues/1790)
 - Optimized images' format and sizes [#1753](https://github.com/openkfw/TruBudget/issues/1753)
