@@ -18,6 +18,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Removed -->
 
 <!-- ### Fixed -->
+  
+  
+## [2.10.0] - 2024-04-26
+
+<!-- ## Unreleased -->
+
+### Added
+  
+- UI: Add element for registration of new organizations and nodes [#1728](https://github.com/openkfw/TruBudget/issues/1728)
+- Modify default assignee behaviour [#1720](https://github.com/openkfw/TruBudget/issues/1720)
+- Add option to validate documents on the client side [#1708](https://github.com/openkfw/TruBudget/issues/1708)
+- Frontend: More descriptive validation messages - create user form [#1704](https://github.com/openkfw/TruBudget/issues/1704)
+- Documentation Fix Regarding Beta-Node [#1701](https://github.com/openkfw/TruBudget/issues/1701)
+- PoC: How to implement workflowitems templates [#1699](https://github.com/openkfw/TruBudget/issues/1699)
+- More tooltips or help adornments for text inputs [#1698](https://github.com/openkfw/TruBudget/issues/1698)
+- blockchain: Bulk add users to provisioned TB chain [#1686](https://github.com/openkfw/TruBudget/issues/1686)
+- Create standardised issue report [#1670](https://github.com/openkfw/TruBudget/issues/1670)
+- #1488 follow-up: Deletion of of document urls should be possible [#1663](https://github.com/openkfw/TruBudget/issues/1663)
+- Add HSTS Headers [#1657](https://github.com/openkfw/TruBudget/issues/1657)
+- New set of backdrop images for the UI [#1647](https://github.com/openkfw/TruBudget/issues/1647)
+- Provisioning Dataset with more exciting Demo data [#1365](https://github.com/openkfw/TruBudget/issues/1365)
+
+
+### Changed
+
+- Default image for new project should not be the pens [#1714](https://github.com/openkfw/TruBudget/issues/1714)
+- Increase the number of allowed characters for a tag [#1713](https://github.com/openkfw/TruBudget/issues/1713)
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+<!-- ### Fixed -->
     
 ## [2.9.0] - 2024-03-25
 
@@ -25,30 +58,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- More tooltips or help adornments for text inputs [#1698](https://api.github.com/repos/openkfw/TruBudget/issues/1698)
-- Option to validate documents on the client side [#1708](https://api.github.com/repos/openkfw/TruBudget/issues/1708)
-- Possibility to manually register new organizations and nodes [#1728](https://api.github.com/repos/openkfw/TruBudget/issues/1728)
-- Increased number of allowed characters for a tag [#1713](https://api.github.com/repos/openkfw/TruBudget/issues/1713)
-- More descriptive validation messages [#1704](https://api.github.com/repos/openkfw/TruBudget/issues/1704)
-- More tooltips or help adornments for text inputs [#1698](https://api.github.com/repos/openkfw/TruBudget/issues/1698)
-- Option to bulk-add users to provisioned TB chain [#1686](https://api.github.com/repos/openkfw/TruBudget/issues/1686)
-- Deletion of of document urls [#1663](https://api.github.com/repos/openkfw/TruBudget/issues/1663)
-- HSTS Headers [#1657](https://api.github.com/repos/openkfw/TruBudget/issues/1657)
-- New set of backdrop images for the UI [#1647](https://api.github.com/repos/openkfw/TruBudget/issues/1647)
+- More tooltips or help adornments for text inputs [#1698](https://github.com/openkfw/TruBudget/issues/1698)
+- Option to validate documents on the client side [#1708](https://github.com/openkfw/TruBudget/issues/1708)
+- Possibility to manually register new organizations and nodes [#1728](https://github.com/openkfw/TruBudget/issues/1728)
+- Increased number of allowed characters for a tag [#1713](https://github.com/openkfw/TruBudget/issues/1713)
+- More descriptive validation messages [#1704](https://github.com/openkfw/TruBudget/issues/1704)
+- More tooltips or help adornments for text inputs [#1698](https://github.com/openkfw/TruBudget/issues/1698)
+- Option to bulk-add users to provisioned TB chain [#1686](https://github.com/openkfw/TruBudget/issues/1686)
+- Deletion of of document urls [#1663](https://github.com/openkfw/TruBudget/issues/1663)
+- HSTS Headers [#1657](https://github.com/openkfw/TruBudget/issues/1657)
+- New set of backdrop images for the UI [#1647](https://github.com/openkfw/TruBudget/issues/1647)
 
 
 ### Changed
 
-- Documentation regarding Beta-Node [#1701](https://api.github.com/repos/openkfw/TruBudget/issues/1701)
-- Workflowitems templates [#1699](https://api.github.com/repos/openkfw/TruBudget/issues/1699)
-- Default assignee behaviour [#1720](https://api.github.com/repos/openkfw/TruBudget/issues/1720)
-- Default image for new project [#1714](https://api.github.com/repos/openkfw/TruBudget/issues/1714)
+- Documentation regarding Beta-Node [#1701](https://github.com/openkfw/TruBudget/issues/1701)
+- Workflowitems templates [#1699](https://github.com/openkfw/TruBudget/issues/1699)
+- Default assignee behaviour [#1720](https://github.com/openkfw/TruBudget/issues/1720)
+- Default image for new project [#1714](https://github.com/openkfw/TruBudget/issues/1714)
 
 <!-- ### Deprecated -->
 
 ### Removed
 
-- Remove additional information about the server in requests [#1655](https://api.github.com/repos/openkfw/TruBudget/issues/1655)
+- Remove additional information about the server in requests [#1655](https://github.com/openkfw/TruBudget/issues/1655)
 
 <!-- ### Fixed -->
 
@@ -1107,7 +1140,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.9.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.10.0...main
+[2.10.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.9.0
 [2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/openkfw/TruBudget/compare/v2.7.0...v2.8.0
