@@ -34,12 +34,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - PoC: How to implement workflowitems templates [#1699](https://github.com/openkfw/TruBudget/issues/1699)
 - More tooltips or help adornments for text inputs [#1698](https://github.com/openkfw/TruBudget/issues/1698)
 - blockchain: Bulk add users to provisioned TB chain [#1686](https://github.com/openkfw/TruBudget/issues/1686)
-- Create standardised issue report [#1670](https://github.com/openkfw/TruBudget/issues/1670)
-- #1488 follow-up: Deletion of of document urls should be possible [#1663](https://github.com/openkfw/TruBudget/issues/1663)
+- Deletion of of document urls should be possible [#1663](https://github.com/openkfw/TruBudget/issues/1663)
 - Add HSTS Headers [#1657](https://github.com/openkfw/TruBudget/issues/1657)
 - New set of backdrop images for the UI [#1647](https://github.com/openkfw/TruBudget/issues/1647)
 - Provisioning Dataset with more exciting Demo data [#1365](https://github.com/openkfw/TruBudget/issues/1365)
-
+- Rate limiter in backend services [#1654](https://github.com/openkfw/TruBudget/issues/1654)
 
 ### Changed
 
