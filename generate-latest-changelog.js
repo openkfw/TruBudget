@@ -31,7 +31,7 @@ const run = async () => {
   })
 
   const response = await octokit.request('GET /search/issues', {
-    q: 'is:closed is:issue milestone:"TruBudget 2.9.0"',
+    q: `is:closed is:issue milestone:"TruBudget ${version}"`,
     headers: {
       'X-GitHub-Api-Version': '2022-11-28'
     }
@@ -46,8 +46,9 @@ const run = async () => {
   const issues = response.data.items;
 
   let changelogText = '';
+  console.log(issues[0]);
   issues.forEach(issue => {
-    changelogText += `- ${issue.title} [#${issue.number}](${issue.url})\n`;
+    changelogText += `- ${issue.title} [#${issue.number}](${issue.html_url})\n`;
   });
 
   const file = fs.readFileSync(changelogPath, 'utf-8');
