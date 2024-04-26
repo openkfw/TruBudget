@@ -1,6 +1,10 @@
+header,
 body {
-  overflow: visible !important;
-  padding: 0px !important;
+  padding: 0 !important;
+}
+
+body {
+  overflow: auto !important;
 
   /*  default font */
   font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
