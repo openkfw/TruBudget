@@ -26,30 +26,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
   
-- UI: Add element for registration of new organizations and nodes [#1728](https://github.com/openkfw/TruBudget/issues/1728)
-- Modify default assignee behaviour [#1720](https://github.com/openkfw/TruBudget/issues/1720)
-- Add option to validate documents on the client side [#1708](https://github.com/openkfw/TruBudget/issues/1708)
-- Frontend: More descriptive validation messages - create user form [#1704](https://github.com/openkfw/TruBudget/issues/1704)
-- Documentation Fix Regarding Beta-Node [#1701](https://github.com/openkfw/TruBudget/issues/1701)
-- PoC: How to implement workflowitems templates [#1699](https://github.com/openkfw/TruBudget/issues/1699)
-- More tooltips or help adornments for text inputs [#1698](https://github.com/openkfw/TruBudget/issues/1698)
-- blockchain: Bulk add users to provisioned TB chain [#1686](https://github.com/openkfw/TruBudget/issues/1686)
-- Deletion of of document urls should be possible [#1663](https://github.com/openkfw/TruBudget/issues/1663)
-- Add HSTS Headers [#1657](https://github.com/openkfw/TruBudget/issues/1657)
-- New set of backdrop images for the UI [#1647](https://github.com/openkfw/TruBudget/issues/1647)
-- Provisioning Dataset with more exciting Demo data [#1365](https://github.com/openkfw/TruBudget/issues/1365)
+- Pagination of projects in card view and table view [#1126](https://github.com/openkfw/TruBudget/issues/1126)
+- User's pagination settings are persisted even if browser or computer is restarted [#1775](https://github.com/openkfw/TruBudget/issues/1775)
 - Rate limiter in backend services [#1654](https://github.com/openkfw/TruBudget/issues/1654)
+- Support for Azure Blob storage in addition to min.io [#1656](https://github.com/openkfw/TruBudget/issues/1656)
+- Option to sign JWTs using RS256 [#1658](https://github.com/openkfw/TruBudget/issues/1658)
 
 ### Changed
 
-- Default image for new project should not be the pens [#1714](https://github.com/openkfw/TruBudget/issues/1714)
+- Default image for new projects [#1714](https://github.com/openkfw/TruBudget/issues/1714)
 - Increase the number of allowed characters for a tag [#1713](https://github.com/openkfw/TruBudget/issues/1713)
+- Optimized width styles in project, sub project elements [#1798](https://github.com/openkfw/TruBudget/issues/1798)
+- Optimized Budget row styles in Project and SubProject dialogs [#1790](https://github.com/openkfw/TruBudget/issues/1790)
+- Optimized images' format and sizes [#1753](https://github.com/openkfw/TruBudget/issues/1753)
+- Redesigned pagination buttons to be more readable [#1773](https://github.com/openkfw/TruBudget/issues/1773)
+- Better margins for tablet resolution [#1777](https://github.com/openkfw/TruBudget/issues/1777)
 
 <!-- ### Deprecated -->
 
 <!-- ### Removed -->
 
-<!-- ### Fixed -->
+### Fixed
+
+- Header padding issue when modal or dropdown are open [#1800](https://github.com/openkfw/TruBudget/issues/1800)
+- Login issue when a user is assigned in too many groups [#1755](https://github.com/openkfw/TruBudget/issues/1755)
+- Fixed email-service not working with authentication turned on [#1769](https://github.com/openkfw/TruBudget/issues/1769)
+- Breadcrumb position [#1786](https://github.com/openkfw/TruBudget/issues/1786)
+
+
     
 ## [2.9.0] - 2024-03-25
 
@@ -74,7 +78,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Documentation regarding Beta-Node [#1701](https://github.com/openkfw/TruBudget/issues/1701)
 - Workflowitems templates [#1699](https://github.com/openkfw/TruBudget/issues/1699)
 - Default assignee behaviour [#1720](https://github.com/openkfw/TruBudget/issues/1720)
-- Default image for new project [#1714](https://github.com/openkfw/TruBudget/issues/1714)
 
 <!-- ### Deprecated -->
 
