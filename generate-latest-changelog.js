@@ -46,7 +46,6 @@ const run = async () => {
   const issues = response.data.items;
 
   let changelogText = '';
-  console.log(issues[0]);
   issues.forEach(issue => {
     changelogText += `- ${issue.title} [#${issue.number}](${issue.html_url})\n`;
   });
