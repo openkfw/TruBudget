@@ -46,7 +46,7 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
       })
       .then((response) => {
         if (response.status === 502 && retries > 0) {
-          cy.wait(500);
+          cy.wait(1000);
           return loginRequest(retries - 1);
         } else if (response.status >= 400) {
           throw new Error(`Request failed with status ${response.status}`);
