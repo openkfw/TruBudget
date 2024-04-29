@@ -4,14 +4,9 @@ import Transition from "react-transition-group/Transition";
 
 import RefreshIndicator from "./RefreshIndicator";
 
+import "./withInitialLoading.scss";
+
 const styles = {
-  container: {
-    position: "relative"
-  },
-  content: {
-    transition: `opacity 500ms ease-in-out`,
-    opacity: 1
-  },
   contentTransition: {
     entering: {
       opacity: 1
@@ -37,16 +32,11 @@ const mapStateToProps = (state) => {
 const withInitialLoading = (ComponentToEnhance) => {
   return connect(mapStateToProps)((props) => {
     return (
-      <div style={styles.container}>
+      <div className="with-initial-loading-container">
         {props.loading ? <RefreshIndicator /> : null}
         <Transition in={props.loading} timeout={0}>
           {(state) => (
-            <div
-              style={{
-                ...styles.content,
-                ...styles.contentTransition[state]
-              }}
-            >
+            <div className="with-initial-loading-content" style={styles.contentTransition[state]}>
               <ComponentToEnhance {...props} />
             </div>
           )}

@@ -9,7 +9,6 @@ import { convertToSearchBarString } from "../../helper";
 import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
 import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
-import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import { withRouter } from "../../wrappers/withRouter";
 import { openAnalyticsDialog } from "../Analytics/actions";
@@ -21,7 +20,7 @@ import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
 import { setSelectedView } from "../Navbar/actions";
 import { openHistory } from "../Notifications/actions";
-import SubprojectHistoryDrawer from "../SubProjects/SubprojectHistoryDrawer";
+import SubProjectHistoryDrawer from "../SubProjects/SubProjectHistoryDrawer";
 
 import {
   closeSubproject,
@@ -64,6 +63,8 @@ import Workflow from "./Workflow";
 import WorkflowBatchEditContainer from "./WorkflowBatchEditContainer";
 import WorkflowDialogContainer from "./WorkflowDialogContainer";
 import WorkflowItemPermissionsContainer from "./WorkflowItemPermissionsContainer";
+
+import "./WorkflowContainer.scss";
 
 class WorkflowContainer extends Component {
   constructor(props) {
@@ -145,7 +146,7 @@ class WorkflowContainer extends Component {
     return (
       <div>
         {!this.props.workflowSortEnabled ? this.addLiveUpdates() : null}
-        <div style={globalStyles.innerContainer}>
+        <div className="inner-container">
           <div>
             <SubProjectDetails
               {...this.props}
@@ -182,7 +183,7 @@ class WorkflowContainer extends Component {
             {...this.props}
           />
 
-          <SubprojectHistoryDrawer projectId={this.projectId} subprojectId={this.subprojectId} />
+          <SubProjectHistoryDrawer projectId={this.projectId} subprojectId={this.subprojectId} />
           <WorkflowBatchEditContainer projectId={this.projectId} subProjectId={this.subprojectId} />
           <InformationDialog
             dialogShown={this.props.isRejectReasonDialogShown}

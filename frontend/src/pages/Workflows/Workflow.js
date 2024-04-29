@@ -11,6 +11,8 @@ import { canCreateWorkflowItems } from "../../permissions";
 
 import WorkflowTable from "./WorkflowTable";
 
+import "./Workflow.scss";
+
 const Workflow = (props) => {
   const subprojectStatus = props.status;
   const allowedToCreateWorkflows = canCreateWorkflowItems(props.allowedIntents) && !props.isRoot;
@@ -36,24 +38,9 @@ const Workflow = (props) => {
   }
 
   return (
-    <div
-      style={{
-        width: "100%",
-        position: "relative"
-      }}
-    >
+    <div className="workflow-container">
       <Card>{props.isDataLoading ? <div /> : <WorkflowTable {...props} />}</Card>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          position: "absolute",
-          alignItems: "center",
-          top: "16px",
-          right: "-26px",
-          zIndex: 10
-        }}
-      >
+      <div className="workflow-buttons">
         {/* Button is disabled either if the user is not allowed to edit or the user is in "sort" mode */}
         <Tooltip title={createWorkflowButtonTitle}>
           <span>
@@ -62,9 +49,7 @@ const Workflow = (props) => {
               data-test="createWorkflowitem"
               color="primary"
               onClick={() => props.showCreateDialog()}
-              style={{
-                position: "relative"
-              }}
+              className="add-fab"
             >
               <ContentAdd />
             </Fab>
@@ -77,11 +62,7 @@ const Workflow = (props) => {
           disabled={props.workflowSortEnabled}
           onClick={props.openHistory}
           color="default"
-          style={{
-            position: "relative",
-            marginTop: "8px",
-            zIndex: 2
-          }}
+          className="history-fab"
         >
           <HistoryIcon />
         </Fab>

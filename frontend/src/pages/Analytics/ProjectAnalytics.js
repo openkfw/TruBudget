@@ -18,6 +18,8 @@ import strings from "../../localizeStrings";
 
 import { getProjectKPIs, resetKPIs } from "./actions";
 
+import "./index.scss";
+
 /**
  * ProjectAnalytics should provide a dashboard which visualizes aggregate informations about the selected Project
  * - Total Budget: Sum of projected budgets
@@ -28,31 +30,6 @@ import { getProjectKPIs, resetKPIs } from "./actions";
  * - Indication Assigned Budget: Assigned budget / projected budget
  * - Indication Disbursed Budget:  Disbursed budget / assigned budget
  */
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  table: {
-    width: "80%",
-    margin: "auto"
-  },
-  topContainer: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "24px"
-  },
-  warning: {
-    backgroundColor: "rgb(255, 165, 0, 0.7)",
-    color: "black",
-    borderStyle: "solid",
-    borderRadius: "4px",
-    borderColor: "orange",
-    padding: "2px",
-    textAlign: "center"
-  }
-};
 
 class ProjectAnalytics extends React.Component {
   componentDidMount() {
@@ -114,9 +91,9 @@ class ProjectAnalytics extends React.Component {
 
     return !this.props.isFetchingKPIs ? (
       <>
-        <div style={styles.container}>
-          <div style={styles.topContainer}>
-            <div style={styles.table}>
+        <div className="analytics-container">
+          <div className="top-container">
+            <div className="table">
               <Table data-test="projected-budget-table">
                 <TableHead>
                   <TableRow>
@@ -162,7 +139,7 @@ class ProjectAnalytics extends React.Component {
               assignedBudget={assignedBudget}
             />
           ) : (
-            <Typography style={styles.warning} data-test="redacted-warning">
+            <Typography className="warning" data-test="redacted-warning">
               {strings.analytics.insufficient_permissions_text}
             </Typography>
           )}
@@ -172,46 +149,13 @@ class ProjectAnalytics extends React.Component {
   }
 }
 
-const dashboardStyles = {
-  container: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center"
-  },
-  card: {
-    width: "300px",
-    height: "300px",
-    margin: "12px"
-  },
-  ratioContent: {
-    height: "87%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  numberContent: {
-    height: "87%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  chartContent: {
-    height: "87%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  }
-};
-
 const onlyPositive = (number) => (number < 0 ? 0 : number);
 
 const NumberChart = ({ title, budget, currency, dataTest }) => (
-  <Card style={dashboardStyles.card}>
-    <CardContent style={dashboardStyles.numberContent}>
-      <Typography style={{ flex: 1 }} variant="overline">
-        {title}
-      </Typography>
-      <Typography style={{ flex: 1 }} variant="h6" data-test={dataTest}>
+  <Card className="card">
+    <CardContent className="number-content">
+      <Typography variant="overline">{title}</Typography>
+      <Typography variant="h6" data-test={dataTest}>
         {toAmountString(budget, currency)}
       </Typography>
     </CardContent>
@@ -220,12 +164,10 @@ const NumberChart = ({ title, budget, currency, dataTest }) => (
 const RatioChart = ({ title, budget, dataTest }) => {
   const isValidBudget = !isNaN(budget) && isFinite(budget);
   return (
-    <Card style={dashboardStyles.card}>
-      <CardContent style={dashboardStyles.ratioContent}>
-        <Typography style={{ flex: 1 }} variant="overline">
-          {title}
-        </Typography>
-        <Typography style={{ flex: 1 }} data-test={dataTest} variant="h6">
+    <Card className="card">
+      <CardContent className="ratio-content">
+        <Typography variant="overline">{title}</Typography>
+        <Typography data-test={dataTest} variant="h6">
           {isValidBudget ? `${(budget * 100).toFixed(2)}%` : "-"}
         </Typography>
       </CardContent>
@@ -234,10 +176,10 @@ const RatioChart = ({ title, budget, dataTest }) => {
 };
 
 const Chart = ({ title, chart }) => (
-  <Card style={dashboardStyles.card}>
-    <CardContent style={dashboardStyles.chartContent}>
+  <Card className="card">
+    <CardContent className="chart-content">
       <Typography variant="overline">{title}</Typography>
-      <div style={{ flex: 1 }}>{chart}</div>
+      <div>{chart}</div>
     </CardContent>
   </Card>
 );
@@ -251,7 +193,7 @@ const Dashboard = ({
   disbursedBudget
 }) => {
   return (
-    <div style={dashboardStyles.container}>
+    <div className="dashboard-container">
       <NumberChart
         title={strings.common.total_budget}
         budget={totalBudget}

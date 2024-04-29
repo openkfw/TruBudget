@@ -5,7 +5,7 @@ import logger from "./lib/logger";
  * Represents the body of an error
  */
 interface ErrorBody {
-  apiVersion: "1.0";
+  apiVersion: "1.0" | "2.0";
   error: {
     code: number;
     message: string;
@@ -18,7 +18,10 @@ interface ErrorBody {
  * @param error
  * @returns an error object containing appropriate status code and an {@link ErrorBody}
  */
-export function toHttpError(error: unknown | unknown[]): { code: number; body: ErrorBody } {
+export function toHttpError(
+  error: unknown | unknown[],
+  version = "1.0",
+): { code: number; body: ErrorBody } {
   const errors = error instanceof Array ? error : [error];
   const httpErrors = errors.map(convertError);
   const httpError = httpErrors.reduce((acc, err) => ({
@@ -26,14 +29,14 @@ export function toHttpError(error: unknown | unknown[]): { code: number; body: E
     message: acc.message === "" ? err.message : `${acc.message}, ${err.message}`,
   }));
   // don't reveal details in case of authentication issue
-  // replace error message sent to client with generic "authentication failed"
-  if (httpError.code === 400) {
+  // replace error message sent to client with generic "Authentication Failed"
+  if (httpError.code === 401) {
     return {
       code: httpError.code,
-      body: toErrorBody({ code: httpError.code, message: "authentication failed" }),
+      body: toErrorBody({ code: httpError.code, message: "Authentication Failed" }, version),
     };
   }
-  return { code: httpError.code, body: toErrorBody(httpError) };
+  return { code: httpError.code, body: toErrorBody(httpError, version) };
 }
 
 /**
@@ -66,8 +69,10 @@ function handleError(error: Error): { code: number; message: string } {
   switch (name) {
     case "BadRequest":
     case "ValidationError":
-    case "AuthenticationFailed":
       return { code: 400, message: error.message };
+
+    case "AuthenticationFailed":
+      return { code: 401, message: error.message };
 
     case "NotAuthorized":
       return { code: 403, message: error.message };
@@ -110,9 +115,9 @@ function selectHighLevelCause(error: Error): string {
  * @param param0 object containing the code and error message of an error
  * @returns an {@link ErrorBody} that contains the API version and the actual error
  */
-function toErrorBody({ code, message }): ErrorBody {
+function toErrorBody({ code, message }, version = "1.0"): ErrorBody {
   return {
-    apiVersion: "1.0",
+    apiVersion: version as "1.0" | "2.0",
     error: {
       code,
       message,

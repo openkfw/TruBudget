@@ -3,16 +3,12 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import { keyframes } from "@mui/system";
 
 import strings from "../../localizeStrings";
 import DatePicker from "../Common/DatePicker";
 import DropDown from "../Common/NewDropdown";
 
-const flyInAnimation = keyframes`
-0%   { opacity: 0; }
-100% { opacity: 1; }
-`;
+import "./FilterMenu.scss";
 
 const FilterMenu = (props) => {
   const {
@@ -29,10 +25,11 @@ const FilterMenu = (props) => {
   } = props;
 
   return (
-    <Box data-test="filter-menu" style={{}}>
-      <Box sx={{ display: "flex", margin: "0px", animation: `${flyInAnimation} 1s ease` }}>
-        <Box sx={{ marginLeft: "0px" }}>
+    <Box data-test="filter-menu">
+      <Box className="filter-menu">
+        <Box>
           <DatePicker
+            className="date-picker"
             id="filter-start"
             label={strings.history.start_date}
             name="start"
@@ -41,6 +38,7 @@ const FilterMenu = (props) => {
             onDelete={() => setStartDate(null)}
           />
           <DatePicker
+            className="date-picker"
             id="filter-end"
             label={strings.history.end_date}
             name="end"
@@ -51,7 +49,7 @@ const FilterMenu = (props) => {
         </Box>
         <Box>
           <DropDown
-            style={{ minWidth: 200, marginLeft: "10px" }}
+            className="filter-dropdown"
             value={status}
             floatingLabel={strings.common.status}
             onChange={(x) => setStatus(x)}
@@ -69,7 +67,7 @@ const FilterMenu = (props) => {
           </DropDown>
 
           <DropDown
-            style={{ minWidth: 200, marginLeft: "10px" }}
+            className="filter-dropdown"
             value={assigneeId}
             floatingLabel={strings.common.assignee}
             onChange={(x) => setAssigneeId(x)}
@@ -88,7 +86,7 @@ const FilterMenu = (props) => {
           </DropDown>
         </Box>
       </Box>
-      <Box sx={{ marginLeft: "0px", marginTop: "10px" }}>
+      <Box className="reset-button-box">
         <Button aria-label="reset" data-test="reset-table-view" color="secondary" onClick={handleReset}>
           {strings.common.reset}
         </Button>

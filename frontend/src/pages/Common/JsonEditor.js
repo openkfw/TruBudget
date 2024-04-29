@@ -2,6 +2,8 @@ import React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { JSONEditor as VanillaJsonEditor } from "vanilla-jsoneditor";
 
+import "./JsonEditor.scss";
+
 // Component copied from https://codesandbox.io/s/svelte-jsoneditor-react-59wxz
 export default function JsonEditor({ data = {}, onChange }) {
   const refContainer = useRef(null);
@@ -42,7 +44,5 @@ export default function JsonEditor({ data = {}, onChange }) {
     }
   }, [changeDataCallback, data, dataObject, onChange]);
 
-  return (
-    <div style={{ display: "flex", maxWidth: "700px" }} ref={refContainer} data-test={`project-additional-data`}></div>
-  );
+  return <div className="json-editor" ref={refContainer} data-test={`project-additional-data`}></div>;
 }

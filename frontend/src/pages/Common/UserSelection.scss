@@ -1,0 +1,35 @@
+.user-selection-container {
+  margin-top: 2rem;
+}
+
+.user-selection {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.user-icon {
+  margin-top: 0.3rem;
+  margin-right: 1.25rem;
+  margin-bottom: 0.3rem;
+}
+
+.chip {
+  margin: 0.25rem 0.125rem;
+}
+
+.chip-selection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.item-container {
+  max-height: 70vh;
+  overflow: auto;
+  max-width: 300px;
+  min-width: 300px;
+  box-shadow: none;
+}

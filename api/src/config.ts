@@ -1,6 +1,12 @@
 import logger from "./lib/logger";
 import { randomString } from "./service/hash";
 
+export interface JwtConfig {
+  secretOrPrivateKey: string;
+  publicKey: string;
+  algorithm: "HS256" | "RS256";
+}
+
 /**
  * Shows all environment variables that the api can contain
  * @notExported
@@ -15,7 +21,9 @@ interface ProcessEnvVars {
   MULTICHAIN_RPC_USER: string;
   MULTICHAIN_RPC_PASSWORD: string;
   BLOCKCHAIN_PORT: string;
+  JWT_ALGORITHM: string;
   JWT_SECRET: string;
+  JWT_PUBLIC_KEY: string;
   CI_COMMIT_SHA: string;
   BUILDTIMESTAMP: string;
   DOCUMENT_FEATURE_ENABLED: string;
@@ -56,7 +64,7 @@ interface Config {
     host: string;
     port: number;
   };
-  jwtSecret: string;
+  jwt: JwtConfig;
   npmPackageVersion: string;
   // Continues Integration
   ciCommitSha: string;
@@ -106,7 +114,11 @@ export const config: Config = {
     host: process.env.MULTICHAIN_RPC_HOST || "localhost",
     port: Number(process.env.BLOCKCHAIN_PORT) || 8085,
   },
-  jwtSecret: process.env.JWT_SECRET || randomString(32),
+  jwt: {
+    secretOrPrivateKey: process.env.JWT_SECRET || randomString(32),
+    publicKey: process.env.JWT_PUBLIC_KEY || "",
+    algorithm: process.env.JWT_ALGORITHM === "RS256" ? "RS256" : "HS256",
+  },
   npmPackageVersion: process.env.npm_package_version || "",
   // Continues Integration
   ciCommitSha: process.env.CI_COMMIT_SHA || "",
@@ -124,7 +136,10 @@ export const config: Config = {
   signingMethod: process.env.SIGNING_METHOD || "node",
   nodeEnv: process.env.NODE_ENV || "production",
   accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
-  rateLimit: process.env.RATE_LIMIT === "" ? undefined : Number(process.env.RATE_LIMIT),
+  rateLimit:
+    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
+      ? undefined
+      : Number(process.env.RATE_LIMIT),
   authProxy: {
     enabled: process.env.AUTHPROXY_ENABLED === "true" || false,
     authProxyCookie: "authorizationToken",
@@ -204,6 +219,19 @@ const getValidConfig = (): Config => {
   if (process.env.DOCUMENT_FEATURE_ENABLED === "true") {
     const requiredDocEnvVars = ["STORAGE_SERVICE_EXTERNAL_URL"];
     exitIfMissing(requiredDocEnvVars);
+  }
+
+  const jwtAlgorithm: string = process.env.JWT_ALGORITHM;
+  if (
+    !(
+      jwtAlgorithm === "HS256" ||
+      jwtAlgorithm === "RS256" ||
+      jwtAlgorithm === undefined ||
+      jwtAlgorithm === ""
+    )
+  ) {
+    logger.fatal("JWT_ALGORITHM must be either HS256 or RS256 or empty (defaults to HS256)");
+    process.exit(1);
   }
 
   return config;

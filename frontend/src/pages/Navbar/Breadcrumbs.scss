@@ -1,0 +1,20 @@
+.breadcrumbs-container {
+  position: relative;
+  top: 1rem;
+  display: flex;
+  align-items: center;
+  margin-left: 0.3rem;
+}
+
+.breadcrumbs {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-left: 0.75rem;
+}
+
+.breadcrumb {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

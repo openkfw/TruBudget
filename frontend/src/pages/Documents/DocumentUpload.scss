@@ -1,0 +1,47 @@
+@import "./index.scss";
+
+.or-label {
+  padding-top: 0.3rem;
+  vertical-align: middle;
+}
+
+.document-upload-button {
+  vertical-align: middle;
+}
+
+.document-upload-input {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+}
+
+.document-link-cell {
+  text-align: center;
+  background-color: #f3f3f3;
+}
+
+.document-upload-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.document-upload-table {
+  width: 40%;
+}
+
+.document-upload-flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 0.625rem;
+}
+
+.document-external-link-input {
+  margin-right: 0.3rem;
+}

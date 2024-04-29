@@ -1,0 +1,23 @@
+@import "../index.scss";
+
+.close-button {
+  margin-left: 0.625rem;
+}
+
+.dropdown-close-button-container {
+  margin-top: -0.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dropdown-container {
+  display: flex;
+  height: 100%;
+  align-items: flex-end;
+}
+
+.item-container {
+  max-height: 35vh;
+  overflow: auto;
+  box-shadow: none;
+}

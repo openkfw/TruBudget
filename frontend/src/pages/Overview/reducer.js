@@ -18,6 +18,7 @@ import {
   EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT,
   FETCH_ALL_PROJECTS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
+  FETCH_PROJECTS_V2_SUCCESS,
   HIDE_PROJECT_ADDITIONAL_DATA,
   HIDE_PROJECT_DIALOG,
   HIDE_PROJECT_PERMISSIONS,
@@ -30,6 +31,9 @@ import {
   PROJECT_THUMBNAIL,
   REMOVE_PROJECT_TAG,
   REMOVE_TEMPORARY_PROJECT_PERMISSION,
+  SET_PAGE,
+  SET_ROWS_PER_PAGE,
+  SET_SORT,
   SHOW_CREATION_DIALOG,
   SHOW_EDIT_DIALOG,
   SHOW_PROJECT_ADDITIONAL_DATA,
@@ -41,6 +45,14 @@ import {
 
 export const defaultState = fromJS({
   projects: Set(),
+  pagination: {
+    totalRecords: 0,
+    limit: 10,
+    totalPages: 1,
+    currentPage: 1,
+    nextPage: null,
+    prevPage: null
+  },
   filteredProjects: Set(),
   creationDialogShown: false,
   editDialogShown: false,
@@ -70,7 +82,10 @@ export const defaultState = fromJS({
   isProjectAdditionalDataShown: false,
   searchTerms: [],
   projectView: "card",
-  isLiveUpdateAllProjectsEnabled: true
+  isLiveUpdateAllProjectsEnabled: true,
+  page: 1,
+  limit: 10,
+  sort: { column: null, direction: null }
 });
 
 export default function overviewReducer(state = defaultState, action) {
@@ -204,11 +219,16 @@ export default function overviewReducer(state = defaultState, action) {
     case PROJECT_CREATION_STEP:
       return state.set("currentStep", action.step);
     case FETCH_ALL_PROJECTS_SUCCESS:
+    case FETCH_PROJECTS_V2_SUCCESS:
       // While searching, fetching projects may not update the project list
       if (state.get("searchTerms").size === 0) {
         state = state.set("filteredProjects", action.projects);
       }
-      return state.set("projects", fromJS(action.projects));
+      state = state.set("projects", fromJS(action.projects));
+      if (action.pagination) {
+        state = state.set("pagination", fromJS(action.pagination));
+      }
+      return state;
     case ADD_TEMPORARY_PROJECT_PERMISSION:
       return state.updateIn(["temporaryPermissions", action.permission], (users) => users.push(action.userId));
     case REMOVE_TEMPORARY_PROJECT_PERMISSION:
@@ -244,6 +264,12 @@ export default function overviewReducer(state = defaultState, action) {
     case ENABLE_ALL_LIVE_UPDATES:
     case LIVE_UPDATE_ALL_PROJECTS_ENABLE:
       return state.set("isLiveUpdateAllProjectsEnabled", true);
+    case SET_PAGE:
+      return state.set("page", action.page);
+    case SET_ROWS_PER_PAGE:
+      return state.set("limit", action.limit).set("page", action.page);
+    case SET_SORT:
+      return state.set("sort", { column: action.column, direction: action.direction });
     default:
       return state;
   }

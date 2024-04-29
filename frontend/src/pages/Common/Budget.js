@@ -27,18 +27,7 @@ import strings from "../../localizeStrings";
 
 import DropDown from "./NewDropdown";
 
-const styles = {
-  inputfield: { minWidth: 200, marginRight: "16px", flexGrow: "1" },
-  inputFieldWithIcon: { minWidth: 200, flexGrow: "1" },
-  inputContainer: {
-    display: "flex",
-    width: "45%",
-    paddingRight: 20,
-    alignItems: "flex-end"
-  },
-  cell: { display: "flex", justifyContent: "space-between" },
-  helpIcon: { color: "rgba(0,0, 0, 0.42)", marginTop: "20px", marginBottom: "7px", fontSize: "x-large" }
-};
+import "./Budget.scss";
 
 const CustomInfoTooltip = (props) => {
   const [open, setOpen] = useState(false);
@@ -60,7 +49,7 @@ const CustomInfoTooltip = (props) => {
         disableFocusListener
         disableHoverListener
       >
-        <InfoOutlinedIcon style={styles.helpIcon} onClick={handleTooltipOpen} />
+        <InfoOutlinedIcon className="help-icon" onClick={handleTooltipOpen} />
       </Tooltip>
     </ClickAwayListener>
   );
@@ -276,98 +265,96 @@ const Budget = (props) => {
         </TableBody>
       </Table>
 
-      <Table>
-        <TableBody>
-          <TableRow key={`pb-row-add`}>
-            <TableCell>
-              <div style={styles.cell}>
-                {_isEmpty(projectProjectedBudgets) ? (
-                  <>
-                    <TextField
-                      variant="standard"
-                      style={styles.inputFieldWithIcon}
-                      label={strings.common.organization}
-                      value={organization}
-                      onChange={(e) => {
-                        setOrganization(e.target.value);
-                      }}
-                      type="text"
-                      aria-label="organization"
-                      id="organizationinput"
-                      inputProps={{
-                        "data-test": "organization-input"
-                      }}
-                      disabled={isEditing}
-                    />
-                    <CustomInfoTooltip title={strings.subproject.organization_info} />
-                  </>
-                ) : (
-                  <div style={styles.inputContainer}>
-                    <DropDown
-                      style={styles.inputFieldWithIcon}
-                      value={organization}
-                      floatingLabel={strings.common.organization}
-                      onChange={(e) => setOrganization(e)}
-                      id="organizations"
-                      disabled={isEditing}
-                    >
-                      {getOrganizationMenuItems(projectProjectedBudgets)}
-                    </DropDown>
-                    <CustomInfoTooltip title={strings.subproject.organization_info} />
-                  </div>
-                )}
-
-                <DropDown
-                  style={styles.inputfield}
-                  value={currency}
-                  floatingLabel={strings.common.currency}
-                  onChange={(currency) => {
-                    setCurrency(currency);
-                  }}
-                  id="currencies"
-                  disabled={isEditing}
-                  error={!isSaveable}
-                  errorText={strings.common.projected_budget_exists}
-                >
-                  {getCurrencyMenuItems(currencies)}
-                </DropDown>
-                <TextField
-                  variant="standard"
-                  label={strings.common.total_budget}
-                  data-test="projected-budget"
-                  disabled={isEditing}
-                  value={budgetAmountAdd}
-                  onChange={(v) => {
-                    if (numberSignsRegex.test(v.target.value)) {
-                      setBudgetAmountAdd(v.target.value);
-                      setIsValidBudgetAmountAdd(validateLanguagePattern(v.target.value) || _isEmpty(v.target.value));
-                    }
-                  }}
-                  type="text"
-                  multiline={false}
-                  aria-label="projectedbudget"
-                  id="projectedbudgetinput"
-                  style={styles.inputFieldWithIcon}
-                  error={!isValidBudgetAmountAdd}
-                  helperText={!isValidBudgetAmountAdd ? strings.common.invalid_format : ""}
-                />
-                <CustomInfoTooltip title={strings.subproject.total_budget_info} />
-              </div>
-            </TableCell>
-            <TableCell align="right">
-              <Button
-                variant="contained"
-                color="secondary"
-                data-test="add-projected-budget"
-                disabled={!budgetAmountAdd || !currency || !organization || !isSaveable || !isValidBudgetAmountAdd}
-                onClick={saveProjectedBudget}
+      <div className="add-organization-budget">
+        <div className="first-budget-row">
+          {_isEmpty(projectProjectedBudgets) ? (
+            <div className="input-container">
+              <TextField
+                variant="standard"
+                className="input-field"
+                label={strings.common.organization}
+                value={organization}
+                onChange={(e) => {
+                  setOrganization(e.target.value);
+                }}
+                type="text"
+                aria-label="organization"
+                id="organizationinput"
+                inputProps={{
+                  "data-test": "organization-input"
+                }}
+                disabled={isEditing}
+              />
+              <CustomInfoTooltip title={strings.subproject.organization_info} />
+            </div>
+          ) : (
+            <div className="input-container">
+              <DropDown
+                formClassName="dropdown-form"
+                className="input-field"
+                value={organization}
+                floatingLabel={strings.common.organization}
+                onChange={(e) => setOrganization(e)}
+                id="organizations"
+                disabled={isEditing}
               >
-                {`${strings.common.add}`}
-              </Button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+                {getOrganizationMenuItems(projectProjectedBudgets)}
+              </DropDown>
+              <CustomInfoTooltip title={strings.subproject.organization_info} />
+            </div>
+          )}
+          <div className="input-container">
+            <TextField
+              variant="standard"
+              label={strings.common.total_budget}
+              data-test="projected-budget"
+              disabled={isEditing}
+              value={budgetAmountAdd}
+              onChange={(v) => {
+                if (numberSignsRegex.test(v.target.value)) {
+                  setBudgetAmountAdd(v.target.value);
+                  setIsValidBudgetAmountAdd(validateLanguagePattern(v.target.value) || _isEmpty(v.target.value));
+                }
+              }}
+              type="text"
+              multiline={false}
+              aria-label="projectedbudget"
+              id="projectedbudgetinput"
+              className="input-field"
+              error={!isValidBudgetAmountAdd}
+              helperText={!isValidBudgetAmountAdd ? strings.common.invalid_format : ""}
+            />
+            <CustomInfoTooltip title={strings.subproject.total_budget_info} />
+          </div>
+        </div>
+        <div className={_isEmpty(projectProjectedBudgets) ? "second-budget-row" : "second-budget-row without-width"}>
+          <DropDown
+            formClassName="dropdown-form currency"
+            className="input-field"
+            value={currency}
+            floatingLabel={strings.common.currency}
+            onChange={(currency) => {
+              setCurrency(currency);
+            }}
+            id="currencies"
+            disabled={isEditing}
+            error={!isSaveable}
+            errorText={strings.common.projected_budget_exists}
+          >
+            {getCurrencyMenuItems(currencies)}
+          </DropDown>
+          <Button
+            className="add-org-button"
+            variant="contained"
+            color="secondary"
+            data-test="add-projected-budget"
+            disabled={!budgetAmountAdd || !currency || !organization || !isSaveable || !isValidBudgetAmountAdd}
+            onClick={saveProjectedBudget}
+          >
+            {`${strings.common.add}`}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

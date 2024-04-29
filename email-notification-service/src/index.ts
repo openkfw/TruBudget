@@ -1,6 +1,8 @@
 import cors from "cors";
 import express from "express";
 import { body, query } from "express-validator";
+import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import { createPinoExpressLogger } from "trubudget-logging-service";
 import helmet from "helmet";
 import config from "./config";
@@ -19,19 +21,41 @@ import {
 import isBodyValid from "./validation";
 
 // Setup
+let corsOptions = {
+  credentials: config.authentication === "jwt" ? true : false,
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
+  origin: function (origin: any, callback: any) {
+    if (config.allowOrigin === "*") {
+      callback(null, true);
+    } else if (config.allowOrigin.split(";").includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
 const db = new DbConnector();
 const emailService = express();
 emailService.use(createPinoExpressLogger(logger));
 emailService.use(express.json());
-emailService.use(cors({ origin: config.allowOrigin }));
-
+emailService.use(cors(corsOptions));
+emailService.use(cookieParser());
 emailService.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: config.rateLimit || 100, // limit each IP to 100 requests per windowMs
+});
 
 // JWT secret
 if (config.authentication === "jwt") {
   configureJWT();
 } else {
   logger.info("No authentication method configured");
+}
+
+if (config.rateLimit) {
+  emailService.use(limiter);
 }
 
 // Routes
@@ -302,21 +326,27 @@ function isAllowed(requestedUserId: string, res: express.Response): boolean {
 
 function configureJWT(): void {
   logger.info("Configure with JWT authentication ...");
-  if (!process.env.JWT_SECRET) {
+
+  if (config.jwt.algorithm === "HS256" && !config.jwt.secretOrPrivateKey) {
     logger.error(
       "The 'JWT_SECRET' env variable is not set. Without the JWT secret of the token providing Trubudget API the server cannot identify the user.",
     );
     process.exit();
   }
-  const jwtSecret: string = process.env.JWT_SECRET;
-  if (jwtSecret.length < 32) {
-    logger.warn("The JWT secret key should be at least 32 characters long.");
+  if (config.jwt.algorithm === "RS256" && !config.jwt.publicKey) {
+    logger.error(
+      "JWT algorithm is set to RS256, but no public key in'JWT_PUBLIC_KEY' is provided.",
+    );
+    process.exit();
   }
+
+  if (config.jwt.algorithm === "HS256" && config.jwt.secretOrPrivateKey.length < 32) {
+    logger.warn("JWT_SECRET should be at least 32 characters long.");
+  }
+
   // Add middlewares
-  emailService.all("/user*", (req, res, next) =>
-    Middleware.verifyUserJWT(req, res, next, jwtSecret),
-  );
+  emailService.all("/user*", (req, res, next) => Middleware.verifyUserJWT(req, res, next));
   emailService.all("/notification*", (req, res, next) =>
-    Middleware.verifyNotificationJWT(req, res, next, jwtSecret),
+    Middleware.verifyNotificationJWT(req, res, next),
   );
 }

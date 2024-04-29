@@ -15,33 +15,7 @@ import { workflowItemIntentOrder } from "../../permissions";
 import PermissionTable from "../Common/Permissions/PermissionsTable";
 import SingleSelection from "../Common/SingleSelection";
 
-const styles = {
-  assigneeCard: {
-    marginTop: "12px",
-    marginBottom: "12px"
-  },
-  selectedWorkflowItemsDisplay: {
-    paddingTop: "36px",
-    align: "center",
-    textAlign: "center"
-  },
-  infoContainer: {
-    margin: "24px 36px 0px 36px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    maxWidth: "500px"
-  },
-  assigneeContainer: {
-    padding: "32px"
-  },
-  spaceBox: {
-    margin: "20px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center"
-  }
-};
+import "./WorkflowEditDrawer.scss";
 
 const getDefaultPermissions = () => {
   const permissions = workflowItemIntentOrder.reduce((acc, next) => {
@@ -163,16 +137,16 @@ const WorkflowEditDrawer = (props) => {
     if (workflowitemsBulkAction === "permissions") {
       return (
         <>
-          <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
+          <Typography className="info-container" color="primary" variant="subtitle1">
             {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
           </Typography>
-          <Typography style={styles.infoContainer} color="error" variant="subtitle1">
+          <Typography className="info-container" color="error" variant="subtitle1">
             {strings.preview.overwrite_warning}
           </Typography>
           <div>
-            <Card style={styles.assigneeCard}>
+            <Card className="assignee-card">
               <CardHeader subheader="Assignee" />
-              <CardContent style={styles.assigneeContainer}>
+              <CardContent>
                 <SingleSelection
                   disabled={hasSubprojectValidator}
                   selectId={hasSubprojectValidator ? subprojectValidator : tempDrawerAssignee}
@@ -196,16 +170,16 @@ const WorkflowEditDrawer = (props) => {
     } else if (workflowitemsBulkAction === "copy") {
       return (
         <>
-          <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
+          <Typography className="info-container" color="primary" variant="subtitle1">
             {strings.formatString(strings.workflow.workflow_selection, selectedWorkflowItems.length)}
           </Typography>
-          <Typography style={styles.infoContainer} color="primary" variant="subtitle1">
+          <Typography className="info-container" color="primary" variant="subtitle1">
             {strings.workflow.workflow_selection_copy_description}
           </Typography>
           <div>
-            <Card style={styles.assigneeCard} data-test="copy-table">
+            <Card className="assignee-card" data-test="copy-table">
               <CardHeader subheader="" />
-              <CardContent style={styles.assigneeContainer}>
+              <CardContent className="assignee-content">
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">
                     {strings.workflow.workflow_selection_select_project}
@@ -240,7 +214,7 @@ const WorkflowEditDrawer = (props) => {
                   </Select>
                 </FormControl>
 
-                <FormControl fullWidth style={{ marginTop: "15px" }}>
+                <FormControl fullWidth className="copy-button">
                   <Button
                     variant="contained"
                     onClick={handleCopySubmit}
@@ -259,7 +233,7 @@ const WorkflowEditDrawer = (props) => {
 
   return (
     <Drawer open={isOpen} variant="persistent" anchor="right">
-      <Box sx={styles.spaceBox}>
+      <Box className="space-box">
         <Button
           variant="contained"
           color="primary"

@@ -16,34 +16,7 @@ import { formatString } from "../../helper";
 import strings from "../../localizeStrings";
 import ActionButton from "../Common/ActionButton";
 
-const styles = {
-  tableCell: {
-    verticalAlign: "top"
-  },
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "10px"
-  },
-  infoArea: {
-    display: "flex",
-    flexDirection: "row",
-    margin: "10px"
-  },
-  hiddenInfo: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  infoIcon: {
-    fontSize: 20,
-    marginRight: "10px"
-  },
-  errorArea: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  }
-};
+import "./index.scss";
 
 const formatUserAssignments = (assignments, hasHiddenAssignments, assignmentType) => {
   if (_isEmpty(assignments) && !hasHiddenAssignments) {
@@ -63,7 +36,7 @@ const formatUserAssignments = (assignments, hasHiddenAssignments, assignmentType
       url = `${baseurl}/projects/${assignment.projectId}/${assignment.subprojectId}`;
     }
     return (
-      <div key={assignment.id} style={styles.container}>
+      <div key={assignment.id} className="disable-user-container">
         <a href={url} target="_blank" rel="noopener noreferrer">
           {assignment.displayName}
         </a>
@@ -78,8 +51,8 @@ const formatHiddenAssignments = (hasHiddenAssignments, assignmentType) => {
   }
   const hiddenAssignmentInfo = formatString(strings.users.hidden_assignments, assignmentType);
   return (
-    <div style={styles.hiddenInfo}>
-      <InfoIcon style={styles.infoIcon} />
+    <div className="hidden-info">
+      <InfoIcon className="info-icon" />
       <Typography variant="body2">{hiddenAssignmentInfo}</Typography>
     </div>
   );
@@ -101,15 +74,15 @@ const getUserAssignmentsTable = (userAssignments) => {
         </TableHead>
         <TableBody id="usertablebody">
           <TableRow>
-            <TableCell style={styles.tableCell} data-test="project-assignments">
+            <TableCell className="table-cell" data-test="project-assignments">
               {formatUserAssignments(userAssignments.projects, hasHiddenProjects, "project")}
               {formatHiddenAssignments(hasHiddenProjects, "projects")}
             </TableCell>
-            <TableCell style={styles.tableCell} data-test="subproject-assignments">
+            <TableCell className="table-cell" data-test="subproject-assignments">
               {formatUserAssignments(userAssignments.subprojects, hasHiddenSubprojects, "subproject")}
               {formatHiddenAssignments(hasHiddenSubprojects, "subprojects")}
             </TableCell>
-            <TableCell style={styles.tableCell} data-test="workflowitem-assignments">
+            <TableCell className="table-cell" data-test="workflowitem-assignments">
               {formatUserAssignments(userAssignments.workflowitems, hasHiddenWorkflowitems, "workflowitem")}
               {formatHiddenAssignments(hasHiddenWorkflowitems, "workflowitems")}
             </TableCell>
@@ -159,11 +132,11 @@ const DisableUserDialogContent = (props) => {
   return (
     <div>
       {isUserAssigned && isUserAssignmentsFetched ? (
-        <div style={styles.container}>
-          <div style={styles.errorArea}>
-            <div style={{ float: "left" }}>
-              <div style={styles.infoArea}>
-                <InfoIcon style={styles.infoIcon} data-test="info-hidden-assignment" />
+        <div className="disable-user-container">
+          <div className="error-area">
+            <div className="info-area-container">
+              <div className="info-area">
+                <InfoIcon className="info-icon" data-test="info-hidden-assignment" />
                 <Typography variant="body2">{strings.users.assigned_message}</Typography>
               </div>
             </div>
@@ -177,7 +150,7 @@ const DisableUserDialogContent = (props) => {
               alignTooltip={[60, 30]}
               icon={<RefreshIcon />}
               data-test={"refresh-assignments"}
-              iconButtonStyle={{ float: "right", marginRight: "10px" }}
+              className="refresh-icon"
             />
           </div>
           <Card>
@@ -187,8 +160,8 @@ const DisableUserDialogContent = (props) => {
       ) : null}
 
       {!isUserAssigned && isUserAssignmentsFetched ? (
-        <div style={styles.infoArea}>
-          <InfoIcon style={styles.infoIcon} />
+        <div className="info-area">
+          <InfoIcon className="info-icon" />
           <Typography variant="body2">{strings.users.not_assigned_message}</Typography>
         </div>
       ) : null}

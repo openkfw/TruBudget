@@ -1,0 +1,52 @@
+.user-paper-root {
+  width: 100%;
+}
+
+.user-dialog-title {
+  display: flex;
+}
+
+.user-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.user-name {
+  margin-left: 0.5rem;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+}
+
+.user-edit-button {
+  margin-right: 1rem;
+}
+
+.user-card-header {
+  width: 100%;
+}
+
+.user-card-text {
+  margin-left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.email-text-field {
+  width: -webkit-fill-available;
+  margin-right: 2rem;
+}
+
+.user-close-button {
+  margin-left: auto;
+}
+
+.user-card-header-action {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}

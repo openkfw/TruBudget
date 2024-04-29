@@ -10,21 +10,7 @@ import strings from "../../localizeStrings";
 
 import ActionButton from "./ActionButton";
 
-const styles = {
-  closeButtonContainer: {
-    marginTop: -8,
-    display: "flex",
-    justifyContent: "flex-end"
-  },
-  closeButton: { marginLeft: 10 },
-  closeButtonSize: { fontSize: 15 },
-  flexContainer: {
-    display: "flex",
-    height: "100%",
-    alignItems: "flex-end"
-  },
-  itemContainer: { maxHeight: "35vh", overflow: "auto", boxShadow: "none" }
-};
+import "./NewDropdown.scss";
 
 const Dropdown = (props) => {
   const {
@@ -35,17 +21,24 @@ const Dropdown = (props) => {
     onChange,
     style,
     disabled,
-    formStyle,
     error,
-    errorText
+    errorText,
+    className,
+    formClassName
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <form autoComplete="off" style={formStyle}>
-      <div style={styles.flexContainer}>
-        <FormControl disabled={disabled} style={style} data-test={`dropdown-${id}`} error={error || false}>
+    <form className={formClassName} autoComplete="off">
+      <div className="dropdown-container">
+        <FormControl
+          disabled={disabled}
+          style={style}
+          className={className}
+          data-test={`dropdown-${id}`}
+          error={error || false}
+        >
           <InputLabel>{floatingLabel}</InputLabel>
           <Select
             variant="standard"
@@ -71,15 +64,15 @@ const Dropdown = (props) => {
             }}
             SelectDisplayProps={{ "data-test": `dropdown-${id}-click`, "data-disabled": disabled }}
           >
-            <div style={styles.closeButtonContainer}>
-              <div style={styles.closeButton}>
+            <div className="dropdown-close-button-container">
+              <div className="close-button">
                 <ActionButton
                   ariaLabel="close"
                   data-test={"close-select"}
                   onClick={() => setIsOpen(false)}
                   title={strings.common.close}
-                  iconButtonStyle={{ width: 15, height: 15 }}
-                  icon={<CloseIcon style={styles.closeButtonSize} />}
+                  className="icon-button-style"
+                  icon={<CloseIcon className="close-button-size" />}
                 />
               </div>
             </div>

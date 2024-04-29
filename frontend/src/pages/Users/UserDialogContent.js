@@ -13,35 +13,7 @@ import FormTextField from "../Common/FormTextField";
 import TextInputWithIcon from "../Common/TextInputWithIcon";
 import UserPassword from "../Common/UserPassword";
 
-const styles = {
-  textInputContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    marginTop: "30px"
-  },
-  textInput: {
-    width: "50%"
-  },
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "20px",
-    marginLeft: "10px"
-  },
-  infoIcon: {
-    fontSize: 20,
-    marginRight: "10px"
-  },
-  info: {
-    display: "flex",
-    paddingRight: 20
-  },
-  customWidth: {},
-  createButtonContainer: {},
-  createButton: {}
-};
+import "./UserDialogContent.scss";
 
 const UserDialogContent = ({
   organization,
@@ -104,17 +76,17 @@ const UserDialogContent = ({
   };
 
   return (
-    <div style={styles.container}>
-      <span style={styles.info}>
-        <InfoIcon style={styles.infoIcon} />
+    <div className="user-dialog-container">
+      <span className="info">
+        <InfoIcon className="info-icon" />
         <Typography variant="body2">{strings.users.privacy_notice}</Typography>
       </span>
-      <div style={styles.textInputContainer}>
+      <div className="user-form">
         <Formik initialValues={initialValues} validationSchema={userSchema}>
           {({ values, errors, touched, isValid }) => (
             <Form>
               <TextInputWithIcon
-                style={styles.textInput}
+                className="text-input"
                 label={strings.common.organization}
                 value={organization}
                 data-test="organization"
@@ -125,7 +97,7 @@ const UserDialogContent = ({
               />
               <Field
                 name="accountname"
-                style={styles.textInput}
+                className="text-input"
                 label={strings.users.account_name}
                 value={values.accountname}
                 icon={<NameIcon />}
@@ -155,6 +127,7 @@ const UserDialogContent = ({
               />
               <Field
                 name="password"
+                className="password short"
                 iconDisplayed={true}
                 label={strings.common.password}
                 password={values.password}
@@ -169,6 +142,7 @@ const UserDialogContent = ({
               />
               <Field
                 name="confirmPassword"
+                className="password short"
                 iconDisplayed={true}
                 label={strings.users.new_user_password_confirmation}
                 password={values.confirmPassword}

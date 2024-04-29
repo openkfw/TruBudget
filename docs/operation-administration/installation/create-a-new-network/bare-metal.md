@@ -437,6 +437,8 @@ MINIO_SECRET_KEY.
 If the document doesn't show up at the minio dashboard check all related environment variables again.
 The document-download can be checked via workflowitem info button.
 
+In Azure you can check the uploaded documents directly via Azure portal.
+
 ## Log-Rotation
 
 As stated above in the hint sections, the logs can be printed to files like `api.log`. For operational purposes it is

@@ -6,7 +6,6 @@ import queryString from "query-string";
 import { toJS } from "../../helper";
 import { convertToSearchBarString } from "../../helper";
 import { canAssignProject, canCreateSubProject } from "../../permissions";
-import globalStyles from "../../styles";
 import WebWorker from "../../WebWorker.js";
 import { withRouter } from "../../wrappers/withRouter";
 import { openAnalyticsDialog } from "../Analytics/actions";
@@ -34,8 +33,8 @@ import {
 } from "./actions";
 import ProjectDetails from "./ProjectDetails";
 import ProjectHistoryDrawer from "./ProjectHistoryDrawer";
-import SubprojectDialogContainer from "./SubprojectDialogContainer";
-import SubprojectPermissionsContainer from "./SubprojectPermissionsContainer";
+import SubProjectDialogContainer from "./SubProjectDialogContainer";
+import SubProjectPermissionsContainer from "./SubProjectPermissionsContainer";
 import SubProjects from "./SubProjects";
 
 class SubProjectContainer extends Component {
@@ -106,7 +105,7 @@ class SubProjectContainer extends Component {
     return (
       <div>
         {this.props.isLiveUpdatesProjectEnabled ? <LiveUpdates update={this.update} /> : null}
-        <div style={globalStyles.innerContainer}>
+        <div className="inner-container">
           {!this.state.isDataFetched ? (
             <div />
           ) : (
@@ -136,7 +135,7 @@ class SubProjectContainer extends Component {
           )}
           <ProjectHistoryDrawer projectId={projectId} />
           {this.props.permissionDialogShown ? (
-            <SubprojectPermissionsContainer projectId={projectId} subProjects={this.props.filteredSubProjects} />
+            <SubProjectPermissionsContainer projectId={projectId} subProjects={this.props.filteredSubProjects} />
           ) : null}
           <AdditionalInfo
             resources={this.props.filteredSubProjects}
@@ -144,7 +143,7 @@ class SubProjectContainer extends Component {
             hideAdditionalData={this.props.hideSubProjectAdditionalData}
             {...this.props}
           />
-          <SubprojectDialogContainer location={this.props.router.location} />
+          <SubProjectDialogContainer location={this.props.router.location} />
         </div>
       </div>
     );

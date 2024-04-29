@@ -5,30 +5,23 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  subtitle: {
-    color: (theme) => theme.palette.grey.dark
-  },
-  caption: {
-    color: (theme) => theme.palette.grey.main
-  }
-};
+import "./UsersGroupsEmptyStates.scss";
 
 // Source of images: https://undraw.co/illustrations
 // selected color code: #53BBFE
 
 const EnabledUserEmptyState = () => {
   return (
-    <Paper style={{ textAlign: "center" }}>
+    <Paper className="paper padded">
       <img
         src="images-for-empty-state/enabled-users-table-empty-state.png"
         alt={strings.common.no_users}
         width="505vw"
       />
-      <Typography variant="subtitle1" style={styles.subtitle}>
+      <Typography variant="subtitle1" className="subtitle">
         {strings.common.no_users}
       </Typography>
-      <Typography variant="caption" style={styles.caption}>
+      <Typography variant="caption" className="caption">
         {strings.common.no_users_text}
       </Typography>
       <br />
@@ -38,13 +31,13 @@ const EnabledUserEmptyState = () => {
 
 const DisabledUserEmptyState = () => {
   return (
-    <Paper style={{ textAlign: "center" }}>
+    <Paper className="paper">
       <img
         src="images-for-empty-state/disabled-users-table-empty-state.png"
         alt={strings.common.no_users}
         width="505vw"
       />
-      <Typography variant="subtitle1" style={styles.subtitle}>
+      <Typography variant="subtitle1" className="subtitle">
         {strings.common.no_disabled_users}
       </Typography>
       <br />
@@ -54,16 +47,16 @@ const DisabledUserEmptyState = () => {
 
 const UserGroupsEmptyState = () => {
   return (
-    <Paper style={{ textAlign: "center" }}>
+    <Paper className="paper padded">
       <img
         src="images-for-empty-state/users-group-table-empty-state.png"
         alt={strings.common.no_groups}
         width="597vw"
       />
-      <Typography variant="subtitle1" style={styles.subtitle}>
+      <Typography variant="subtitle1" className="subtitle">
         {strings.common.no_groups}
       </Typography>
-      <Typography variant="caption" style={styles.caption}>
+      <Typography variant="caption" className="caption">
         {strings.common.no_groups_text}
       </Typography>
       <br />

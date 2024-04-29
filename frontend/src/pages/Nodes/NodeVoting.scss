@@ -1,0 +1,72 @@
+.nodes-voting-cards {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.node-voting-card {
+  width: 48%;
+}
+
+.node-voting-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: space-around;
+}
+
+.org-list-entries {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-top: 1rem;
+  &:first-of-type {
+    margin-top: 0;
+  }
+}
+
+.org-info {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
+}
+
+.org-button-group {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.new-organization-form {
+  display: flex;
+  justify-content: space-around;
+}
+
+.nodes-card-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.org-button {
+  margin: 0.5rem;
+  min-width: 100px;
+  width: 200px;
+  &:first-of-type {
+    margin-right: 0.625rem;
+  }
+}
+
+.org-text-input {
+  width: 40%;
+}
+
+.new-organization-card {
+  margin-top: 2rem;
+}
+
+.wrap-content {
+  overflow-wrap: break-word;
+}
+
+.error-message {
+  color: red;
+}

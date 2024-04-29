@@ -1,0 +1,89 @@
+.analytics-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.table {
+  width: 80%;
+  margin: auto;
+}
+
+.top-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.warning {
+  background-color: rgb(255, 165, 0, 0.7);
+  color: black;
+  border-style: solid;
+  border-radius: 0.25rem;
+  border-color: orange;
+  padding: 0.125rem;
+  text-align: center;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  width: 300px;
+  height: 300px;
+  margin: 0.75rem;
+}
+
+.ratio-content {
+  height: 87%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.number-content {
+  height: 87%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-content {
+  height: 87%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.charts {
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-bottom: 20%;
+}
+
+.statistics {
+  padding: 0.75rem;
+}
+
+.dialog-container {
+  margin-top: 4rem;
+}
+
+.toolbar {
+  display: flex;
+}
+
+.dropdown {
+  margin-left: auto;
+  margin-top: 0;
+}
+
+.white-currency {
+  color: white;
+}
+
+.white-icon {
+  color: white;
+}

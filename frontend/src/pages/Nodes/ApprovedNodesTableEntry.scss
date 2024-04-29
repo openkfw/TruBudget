@@ -1,0 +1,56 @@
+@import "../../mixins.scss";
+
+.circle {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
+  &.green {
+    background-color: green;
+  }
+  &.red {
+    background-color: red;
+  }
+}
+
+.approved-node-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.approved-node-body {
+  display: flex;
+  justify-content: space-between;
+}
+
+.approved-node-cell {
+  &.node-address {
+    flex: 2;
+    @include tablet {
+      overflow-wrap: anywhere;
+    }
+  }
+  &.status {
+    flex: 1;
+  }
+  &.last-seen {
+    flex: 1;
+  }
+}
+
+.node-info-icon {
+  margin-left: 0.3rem;
+  margin-bottom: -0.5rem;
+  font-size: x-large;
+  color: dimgrey;
+}
+
+.center-cell {
+  text-align: -webkit-center;
+}
+
+.no-padding-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+}

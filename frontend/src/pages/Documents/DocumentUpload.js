@@ -16,25 +16,7 @@ import strings from "../../localizeStrings";
 
 import { DocumentEmptyState } from "./DocumentEmptyStates";
 
-const styles = {
-  orLabel: {
-    paddingTop: "5px",
-    verticalAlign: "middle"
-  },
-  uploadButton: {
-    verticalAlign: "middle"
-  },
-  uploadInput: {
-    cursor: "pointer",
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: "100%",
-    opacity: 0
-  }
-};
+import "./DocumentUpload.scss";
 
 const uriValidation = Yup.string().url().required();
 
@@ -106,10 +88,7 @@ const DocumentUpload = ({
       {workflowDocuments.length > 0 ? (
         workflowDocuments.map((document, index) => (
           <TableRow key={`${index}-${document.fileName}`}>
-            <TableCell
-              style={{ textAlign: "center", backgroundColor: "#f3f3f3" }}
-              data-test="workflowitemDocumentFileName"
-            >
+            <TableCell className="document-link-cell" data-test="workflowitemDocumentFileName">
               <Typography variant="body1" component="div">
                 {document.fileName}
                 {document.link && (
@@ -131,7 +110,7 @@ const DocumentUpload = ({
         ))
       ) : (
         <TableRow>
-          <TableCell style={{ backgroundColor: "#f3f3f3" }}>
+          <TableCell className="document-empty-state-bg">
             <DocumentEmptyState />
           </TableCell>
         </TableRow>
@@ -141,19 +120,19 @@ const DocumentUpload = ({
 
   return (
     <div>
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-        <Table style={{ width: "40%" }}>{body}</Table>
+      <div className="document-upload-container">
+        <Table className="document-upload-table">{body}</Table>
       </div>
       {storageServiceAvailable && (
         <>
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginTop: "10px" }}>
-            <Button style={styles.uploadButton} component="div">
+          <div className="document-upload-flex-container">
+            <Button className="document-upload-button" component="div">
               <UploadIcon />
               {strings.workflow.workflow_upload_document}
               <input
                 id="docupload"
                 type="file"
-                style={styles.uploadInput}
+                className="document-upload-input"
                 onChange={(event) => {
                   if (event.target.files) {
                     const file = event.target.files[0];
@@ -172,12 +151,12 @@ const DocumentUpload = ({
               />
             </Button>
           </div>
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginTop: "10px" }}>
-            <div style={styles.orLabel}>or</div>
+          <div className="document-upload-flex-container">
+            <div className="or-label">or</div>
           </div>
         </>
       )}
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginTop: "10px" }}>
+      <div className="document-upload-flex-container">
         <TextField
           id="external-document-url"
           label="External link URL"
@@ -185,7 +164,7 @@ const DocumentUpload = ({
           onChange={handleExternalDocumentUrlChange}
           error={externalDocumentUrlError}
           helperText={externalDocumentUrlHelperText}
-          style={{ marginRight: "5px" }}
+          className="document-external-link-input"
         />
         <TextField
           id="external-document-url"
@@ -196,10 +175,10 @@ const DocumentUpload = ({
           helperText={externalDocumentNameHelperText}
         />
       </div>
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", marginTop: "10px" }}>
+      <div className="document-upload-flex-container">
         <Button
           onClick={addExternalLink}
-          style={styles.uploadButton}
+          className="document-upload-button"
           component="div"
           disabled={
             externalDocumentUrlError ||

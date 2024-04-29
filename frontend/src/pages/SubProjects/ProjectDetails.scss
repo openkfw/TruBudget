@@ -1,0 +1,48 @@
+.project-details-container {
+  display: flex;
+  height: 30%;
+  flex: 1;
+  flex-direction: row;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  justify-content: space-between;
+}
+
+.project-details-card {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.project-projected-budget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1.125rem;
+}
+
+.project-details-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1.125rem;
+  overflow-wrap: break-word;
+}
+
+.project-assignee {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1.125rem;
+}
+
+.project-analytics {
+  padding: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.project-table-cell {
+  padding: 0.3rem;
+}

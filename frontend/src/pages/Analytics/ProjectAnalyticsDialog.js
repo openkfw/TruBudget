@@ -19,23 +19,7 @@ import strings from "../../localizeStrings";
 import { closeAnalyticsDialog, getExchangeRates, storeDisplayCurrency } from "./actions";
 import ProjectAnalytics from "./ProjectAnalytics";
 
-const styles = {
-  container: {
-    marginTop: "68px"
-  },
-  toolbar: {
-    display: "flex"
-  },
-  dropdown: {
-    marginLeft: "auto",
-    marginTop: "0"
-  },
-  loadingCharts: {
-    marginTop: "16px",
-    display: "flex",
-    justifyContent: "center"
-  }
-};
+import "./index.scss";
 
 function getMenuItems(currencies) {
   return currencies.map((currency, index) => {
@@ -75,7 +59,7 @@ const ProjectAnalyticsDialog = ({
       TransitionComponent={Transition}
     >
       <AppBar>
-        <Toolbar style={styles.toolbar}>
+        <Toolbar className="toolbar">
           <IconButton
             color="inherit"
             onClick={closeAnalyticsDialog}
@@ -88,7 +72,7 @@ const ProjectAnalyticsDialog = ({
           <Typography variant="h6" color="inherit">
             {strings.analytics.project_analytics}
           </Typography>
-          <form autoComplete="off" style={styles.dropdown}>
+          <form autoComplete="off" className="dropdown">
             <FormControl>
               <Select
                 variant="standard"
@@ -102,8 +86,8 @@ const ProjectAnalyticsDialog = ({
                   id: "currencies"
                 }}
                 data-test="select-currencies"
-                IconComponent={(props) => <ArrowDropDownIcon {...props} style={{ color: "white" }} />}
-                style={{ color: "white" }}
+                IconComponent={(props) => <ArrowDropDownIcon {...props} className="white-icon" />}
+                className="white-currency"
               >
                 {getMenuItems(getCurrencies())}
               </Select>
@@ -111,7 +95,7 @@ const ProjectAnalyticsDialog = ({
           </form>
         </Toolbar>
       </AppBar>
-      <div style={styles.container}>
+      <div className="dialog-container">
         <ProjectAnalytics
           projectId={projectId}
           totalBudget={projectProjectedBudgets}

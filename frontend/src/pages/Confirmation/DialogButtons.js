@@ -6,19 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  dialogActions: {
-    margin: "8px 4px 8px 24px"
-  },
-  progessContainer: {
-    flex: "auto"
-  },
-  progressInfo: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start"
-  }
-};
+import "./DialogButtons.scss";
 
 const DialogButtons = (props) => {
   const {
@@ -40,10 +28,10 @@ const DialogButtons = (props) => {
   const totalActionsLength = additionalActions?.length + originalActions?.length + postActions?.length;
 
   return (
-    <DialogActions style={styles.dialogActions}>
+    <DialogActions className="confirmation-dialog-actions">
       {submitable && !hasFailure && (
-        <div style={styles.progessContainer}>
-          <Typography key="progressInfo" style={styles.progressInfo} data-test="actions-counter">
+        <div className="progress-info-typography-container">
+          <Typography key="progressInfo" className="progress-info-typography" data-test="actions-counter">
             {strings.formatString(strings.preview.actions_done, executedActions.length, totalActionsLength)}
           </Typography>
         </div>

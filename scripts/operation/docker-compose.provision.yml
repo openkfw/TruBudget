@@ -118,6 +118,7 @@ services:
       PORT: ${EMAIL_PORT}
       AUTHENTICATION: ${AUTHENTICATION}
       LOG_LEVEL: ${EMAIL_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.5
@@ -157,6 +158,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       MODE: DEBUG
       LOG_LEVEL: ${EXCEL_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.7
@@ -175,6 +177,7 @@ services:
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
       LOG_LEVEL: ${STORAGE_LOG_LEVEL}
+      RATE_LIMIT: ${RATE_LIMIT}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.8

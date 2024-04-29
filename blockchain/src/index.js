@@ -58,7 +58,7 @@ const emailAuthSecret = process.env.JWT_SECRET;
 
 const EMAIL_SERVICE_ENABLED = process.env.EMAIL_SERVICE_ENABLED === "true" ? true : false;
 const MULTICHAIN_FEED_ENABLED = process.env.MULTICHAIN_FEED_ENABLED === "true" ? true : false;
-const isMultichainFeedEnabled = EMAIL_SERVICE_ENABLED || MULTICHAIN_FEED_ENABLED;
+const isMultichainFeedEnabled = MULTICHAIN_FEED_ENABLED;
 
 const ENV = process.env.NODE_ENV || "production";
 

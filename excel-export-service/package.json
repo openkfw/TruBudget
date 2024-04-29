@@ -1,6 +1,6 @@
 {
   "name": "excel-export",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "private": true,
   "description": "Export TruBudget data to Excel",
   "main": "src/index.js",
@@ -28,7 +28,8 @@
     "better-npm-audit": "^3.7.3",
     "cors": "^2.8.5",
     "exceljs": "^4.3.0",
-    "express": "^4.18.1",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
     "helmet": "^7.1.0",
     "jwt-decode": "^3.1.2",
     "localized-strings": "^0.2.4",

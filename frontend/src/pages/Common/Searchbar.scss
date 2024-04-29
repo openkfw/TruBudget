@@ -1,0 +1,22 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+}
+
+.search-field {
+  margin: 1rem;
+  width: 270px;
+  display: flex;
+  flex-direction: row;
+  opacity: 0.8;
+  box-shadow: none;
+}
+
+.form {
+  width: 90%;
+}
+
+.form-control-search {
+  width: 97%;
+  padding-left: 0.3rem;
+}

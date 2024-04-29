@@ -27,6 +27,12 @@ interface Config {
   };
   email: Mail.Options;
   allowOrigin: string;
+  rateLimit: number | undefined;
+  jwt: {
+    secretOrPrivateKey: string;
+    publicKey: string;
+    algorithm: "HS256" | "RS256";
+  };
 }
 
 const config: Config = {
@@ -59,6 +65,15 @@ const config: Config = {
     text: process.env.EMAIL_TEXT || "You have received a notification.",
   },
   allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
+  rateLimit:
+    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
+      ? undefined
+      : Number(process.env.RATE_LIMIT),
+  jwt: {
+    secretOrPrivateKey: process.env.JWT_SECRET || "",
+    publicKey: process.env.JWT_PUBLIC_KEY || "",
+    algorithm: process.env.JWT_ALGORITHM === "RS256" ? "RS256" : "HS256",
+  },
 };
 
 export default config;

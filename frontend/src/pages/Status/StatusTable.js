@@ -4,27 +4,11 @@ import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableR
 
 import strings from "../../localizeStrings";
 
+import "./StatusTable.scss";
+
 const FAST_CONNECTION_PING = 500;
 const AVERAGE_CONNECTION_PING = 2000;
 const SLOW_CONNECTION_PING = 4000;
-
-const styles = {
-  container: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center"
-  },
-  customWidth: {
-    width: "100%",
-    marginTop: "40px"
-  },
-  shapeCircle: {
-    backgroundColor: (theme) => theme.palette.primary.secondary,
-    width: 20,
-    height: 20,
-    borderRadius: "50%"
-  }
-};
 
 const getConnectionDescription = (ping) => {
   if (!ping) {
@@ -68,7 +52,7 @@ function renderCircularProgressRow(service) {
       <TableCell>
         <CircularProgress size={20} />
       </TableCell>
-      <TableCell style={{ textAlign: "-webkit-center" }}>
+      <TableCell className="centered-table-cell">
         <CircularProgress size={20} />
       </TableCell>
       <TableCell />
@@ -116,7 +100,7 @@ const StatusTable = (props) => {
     const ping = filteredVersions[service].ping;
     const release = filteredVersions[service].release || "?";
     const { circleColor, connectionDescription } = getConnectionDescription(ping);
-    const circle = <div style={{ ...styles.shapeCircle, backgroundColor: circleColor }} />;
+    const circle = <div className="status-circle" style={{ backgroundColor: circleColor }} />;
     if (!isFetchingVersion(service)) {
       return (
         <TableRow key={`status-${service}-row`}>
@@ -125,7 +109,7 @@ const StatusTable = (props) => {
           <TableCell>
             <Typography>{ping ? `${ping.toFixed(0)} ms` : strings.status.no_ping_available}</Typography>
           </TableCell>
-          <TableCell style={{ textAlign: "-webkit-center" }}>{circle}</TableCell>
+          <TableCell className="centered-table-cell">{circle}</TableCell>
           <TableCell>
             <Typography>{connectionDescription}</Typography>
           </TableCell>
@@ -150,8 +134,8 @@ const StatusTable = (props) => {
   }, {});
 
   return (
-    <div data-test="status-dashboard" style={styles.container}>
-      <div style={styles.customWidth}>
+    <div data-test="status-dashboard" className="table-container">
+      <div className="custom-width">
         <Paper>
           <Table>
             <TableHead>
@@ -159,7 +143,7 @@ const StatusTable = (props) => {
                 <TableCell>{strings.status.service}</TableCell>
                 <TableCell>{strings.status.version}</TableCell>
                 <TableCell>{strings.status.ping}</TableCell>
-                <TableCell style={{ textAlign: "center" }}>{strings.status.connection}</TableCell>
+                <TableCell className="centered-table-cell">{strings.status.connection}</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>

@@ -16,8 +16,6 @@ import HiddenIcon from "@mui/icons-material/VisibilityOff";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 import Chip from "@mui/material/Chip";
-import green from "@mui/material/colors/lightGreen";
-import red from "@mui/material/colors/red";
 import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
@@ -31,162 +29,16 @@ import StyledBadge from "../Common/StyledBadge";
 
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
-const styles = {
-  text: {
-    fontSize: "14px"
-  },
-  tooltip: {
-    margin: "0px",
-    padding: "0px 5px 0px 15px"
-  },
-  tooltipItem: {
-    fontSize: "12px",
-    margin: "5px 0"
-  },
-  dots: {
-    height: 20,
-    width: 20,
-    textAlign: "center",
-    display: "inline-block",
-    position: "absolute",
-    zIndex: "20",
-    top: "21px",
-    left: "16px",
-    borderRadius: "10px"
-  },
-  checkbox: {
-    height: 20,
-    width: 20,
-    textAlign: "center",
-    display: "inline-block",
-    position: "absolute",
-    top: "8px",
-    left: "5px",
-    borderRadius: "10px"
-  },
-  actions: {
-    display: "flex",
-    justifyContent: "center",
-    width: "100%"
-  },
-  actionButton: {
-    width: "25%"
-  },
-  line: {
-    position: "absolute",
-    borderLeft: "2px solid black",
-    height: "100%",
-    left: "25px",
-    bottom: "35px"
-  },
-  firstLine: {
-    position: "absolute",
-    borderLeft: "2px solid black",
-    height: "38px",
-    left: "25px",
-    bottom: "35px"
-  },
-  buttonStyle: {
-    minWidth: "30px",
-    marginLeft: "5px"
-  },
-  amountChip: {
-    marginLeft: "16px"
-  },
-  tagChip: {
-    color: "theme.palette.tag.main"
-  },
-  statusChip: {
-    marginLeft: "4px"
-  },
-  chipLabel: {
-    fontSize: 10
-  },
-  chipDiv: {
-    display: "flex",
-    alignItems: "center"
-  },
-  redacted: {
-    fontStyle: "italic"
-  },
-  chip: {
-    margin: 4
-  },
-  workflowContent: {
-    display: "flex",
-    justifyContent: "space-between",
-    overflow: "hidden",
-    padding: "4px 8px 4px 4px"
-  },
-  infoCell: {
-    width: "8%",
-    display: "flex",
-    alignItems: "center"
-  },
-  workflowCell: {
-    width: "25%",
-    display: "flex",
-    alignItems: "center"
-  },
-  actionCell: {
-    width: "20%",
-    display: "flex",
-    alignItems: "center"
-  },
-  tagCell: {
-    width: "8%",
-    display: "flex",
-    alignItems: "center",
-    marginLeft: "16px"
-  },
-  typographs: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    width: "100%"
-  },
-  card: {
-    marginLeft: "50px",
-    marginRight: "10px"
-  },
-  container: {
-    position: "relative"
-  },
-  containerItem: {
-    margin: "0 0 15px 0"
-  },
-  icon: {
-    width: "14px",
-    height: "20px"
-  },
-  hide: {
-    opacity: 0
-  },
-  amountFieldContainer: {
-    display: "flex"
-  },
-  amountField: {
-    paddingTop: "4px",
-    paddingLeft: "4px"
-  },
-  setGrabCursor: {
-    cursor: "-webkit-grab"
-  },
-  itemByDefault: {
-    marginLeft: "15vh",
-    marginRight: "10px",
-    marginTop: "15px",
-    marginBottom: "15px"
-  }
-};
+import "./WorkflowItem.scss";
 
 const createLine = (isFirst, selectable) => {
-  let style = {};
+  let className = "";
   if (isFirst && selectable) {
-    style = styles.firstLine;
+    className = "first-line";
   } else {
-    style = { ...styles.line, opacity: selectable ? 1 : 0.2 };
+    className = selectable ? "line" : "line not-selectable";
   }
-  return <div style={style} />;
+  return <div className={className} />;
 };
 
 const StepDot = (props) => {
@@ -227,7 +79,7 @@ const StepDot = (props) => {
     }
   };
   return isWorkflowItemSelectable(redacted, sortEnabled, allowedIntents) ? (
-    <div style={styles.checkbox}>
+    <div className="workflow-checkbox">
       <Checkbox
         onChange={updateSelectedList}
         checked={!!selectedWorkflowItems.find((item) => item.data.id === currentWorkflowItem.data.id)}
@@ -235,8 +87,8 @@ const StepDot = (props) => {
       />
     </div>
   ) : (
-    <Paper style={styles.dots} elevation={2} disabled={selectable}>
-      <Icon style={{ ...styles.icon, opacity: selectable ? 1 : 0.3 }} />
+    <Paper className="dots" elevation={2} disabled={selectable}>
+      <Icon className={selectable ? "workflow-icon" : "workflow-icon not-selectable"} />
     </Paper>
   );
 };
@@ -303,12 +155,12 @@ const getInfoButton = (props, status, workflowSortEnabled, workflow) => {
         data-test={
           showBadge ? `info-warning-badge-enabled-${workflow.id}` : `info-warning-badge-disabled-${workflow.id}`
         }
-        style={styles.buttonStyle}
+        className="button-style"
       >
         <IconButton
           aria-label="show info"
           disabled={workflowSortEnabled}
-          style={getButtonStyle(workflowSortEnabled, status)}
+          className={getButtonStyle(workflowSortEnabled, status)}
           onClick={() => openWorkflowDetails(projectId, subProjectId, workflow.id)}
           data-test={`workflowitem-info-button-${workflow.id}`}
           size="large"
@@ -332,11 +184,11 @@ const getAttachmentButton = ({ openWorkflowDetails, projectId, subProjectId }, w
           variant="dot"
           invisible={!showAttachFileBadge}
           data-test={`attachment-file-badge-show-${workflow.id}`}
-          style={styles.buttonStyle}
+          className="button-style"
         >
           <IconButton
             aria-label="show attachment"
-            style={{ cursor: "default" }}
+            className="default-cursor"
             data-test={`workflowitem-attachment-file-button-${workflow.id}`}
             size="large"
             onClick={() => {
@@ -368,15 +220,15 @@ const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurren
   );
   const isAmountDisplayed = amount !== undefined && exchangeRate !== undefined;
   return (
-    <div style={styles.amountFieldContainer}>
+    <div className="amount-field-container">
       {isAmountDisplayed ? (
-        <div style={styles.chipDiv}>
+        <div className="chip-container">
           <div>{amountToShow}</div>
-          <div style={styles.amountField}>{fromAmountString(exchangeRate) !== 1 ? amountExplaination : null}</div>
+          <div className="amount-field">{fromAmountString(exchangeRate) !== 1 ? amountExplaination : null}</div>
         </div>
       ) : null}
       <div>
-        <Chip style={styles.amountChip} label={amountTypes(type)} />
+        <Chip className="amount-chip" label={amountTypes(type)} />
       </div>
     </div>
   );
@@ -385,26 +237,25 @@ const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurren
 const getButtonStyle = (workflowSortEnabled, status) => {
   if (workflowSortEnabled) {
     if (status === "closed") {
-      return styles.hide;
+      return "hide";
     } else {
-      return { ...styles.hide, ...styles.setGrabCursor };
+      return "hide grab-cursor";
     }
   }
-  return {};
+  return "";
 };
 
 const getCardStyle = (workflowSortEnabled, status, rejected) => {
-  let style = {};
   if (status === "closed" && !rejected) {
-    style = { background: green[50] };
+    return "workflow-item-card green";
   }
   if (status === "closed" && rejected) {
-    style = { background: red[50] };
+    return "workflow-item-card red";
   }
   if (status !== "closed" && workflowSortEnabled) {
-    style = { ...style, ...styles.setGrabCursor };
+    return "workflow-item-card grab-cursor";
   }
-  return style;
+  return "workflow-item-card";
 };
 
 const renderActionButtons = ({
@@ -429,8 +280,8 @@ const renderActionButtons = ({
   const statusIsClosed = workflowSortEnabled || status === "closed" || closeDisabled;
 
   return (
-    <div style={styles.actionCell}>
-      <div style={styles.actions}>
+    <div className="action-cell">
+      <div className="workflow-item-actions">
         <ActionButton
           ariaLabel="show additional data"
           notVisible={additionalDataDisabled || status === "closed" || additionalDataDisabled}
@@ -440,7 +291,7 @@ const renderActionButtons = ({
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="additional-workflowitem-data-icon"
-          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+          className={getButtonStyle(workflowSortEnabled, status)}
         />
         <ActionButton
           ariaLabel="edit workflowitem"
@@ -451,7 +302,7 @@ const renderActionButtons = ({
           workflowSortEnabled={workflowSortEnabled}
           status={status}
           data-test="edit-workflowitem"
-          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+          className={getButtonStyle(workflowSortEnabled, status)}
         />
         {workflowSortEnabled || permissionsDisabled ? null : (
           <ActionButton
@@ -463,7 +314,7 @@ const renderActionButtons = ({
             workflowSortEnabled={workflowSortEnabled}
             status={status}
             data-test="show-workflowitem-permissions"
-            iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+            className={getButtonStyle(workflowSortEnabled, status)}
           />
         )}
 
@@ -476,7 +327,7 @@ const renderActionButtons = ({
               title={closeDisabled ? "" : strings.common.reject}
               workflowSortEnabled={workflowSortEnabled}
               status={status}
-              iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+              className={getButtonStyle(workflowSortEnabled, status)}
               data-test="reject-workflowitem"
             />
 
@@ -487,7 +338,7 @@ const renderActionButtons = ({
               title={closeDisabled ? "" : strings.common.close}
               workflowSortEnabled={workflowSortEnabled}
               status={status}
-              iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+              className={getButtonStyle(workflowSortEnabled, status)}
               data-test="close-workflowitem"
             />
           </>
@@ -501,7 +352,7 @@ const renderActionButtons = ({
           title={strings.common.rejected}
           workflowSortEnabled={workflowSortEnabled}
           status={status}
-          iconButtonStyle={getButtonStyle(workflowSortEnabled, status)}
+          className={getButtonStyle(workflowSortEnabled, status)}
           data-test="closed-workflowitem-reject-reason"
         />
       </div>
@@ -541,7 +392,6 @@ export const WorkflowItem = ({
   } = workflow.data;
   const allowedIntents = workflow.allowedIntents;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
-  const itemStyle = workflowSelectable ? {} : { opacity: 0.31 };
   const canEditWorkflow = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
   const infoButton = getInfoButton(props, status, workflowSortEnabled, workflow.data);
   const attachmentButton = getAttachmentButton(props, workflow.data);
@@ -549,7 +399,7 @@ export const WorkflowItem = ({
   const canCloseWorkflow = currentUser === assignee && workflowSelectable && status !== "closed";
 
   return (
-    <div style={styles.container} data-test={`workflowitem-container-${id}`}>
+    <div className="workflow-item-container" data-test={`workflowitem-container-${id}`}>
       <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
         {(provided) => (
           <div
@@ -557,9 +407,9 @@ export const WorkflowItem = ({
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             style={{
-              ...provided.draggableProps.style,
-              ...styles.containerItem
+              ...provided.draggableProps.style
             }}
+            className="container-item"
           >
             {createLine(mapIndex === 0, workflowSelectable)}
             <StepDot
@@ -576,24 +426,24 @@ export const WorkflowItem = ({
               data-test="selectable-card"
               elevation={workflowSelectable ? 1 : 0}
               key={mapIndex}
-              style={{ ...getCardStyle(workflowSortEnabled, status, rejectReason), ...styles.card }}
+              className={getCardStyle(workflowSortEnabled, status, rejectReason)}
             >
-              <div style={styles.workflowContent} data-test={`workflowitem-${id}`}>
-                <div style={styles.infoCell}>{infoButton}</div>
-                <div style={styles.infoCell}>{attachmentButton}</div>
-                <div style={{ ...styles.text, ...styles.workflowCell, ...itemStyle }}>
-                  <Typography variant="body2" style={styles.typographs}>
+              <div className="workflow-item-content" data-test={`workflowitem-${id}`}>
+                <div className="info-cell">{infoButton}</div>
+                <div className="info-cell">{attachmentButton}</div>
+                <div className={workflowSelectable ? "workflow-cell" : "workflow-cell not-selectable"}>
+                  <Typography variant="body2" className="typographs">
                     {displayName}
                   </Typography>
                 </div>
-                <div style={{ ...styles.workflowCell, ...itemStyle }}>
-                  <Typography variant="body2" style={styles.typographs} component="div" data-test="workflowitem-amount">
+                <div className={workflowSelectable ? "workflow-cell" : "workflow-cell not-selectable"}>
+                  <Typography variant="body2" className="typographs" component="div" data-test="workflowitem-amount">
                     {amountType === "N/A"
                       ? amountTypes(amountType)
                       : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
                   </Typography>
                 </div>
-                <div style={styles.workflowCell} data-test="outside">
+                <div className="workflow-cell" data-test="outside">
                   <WorkflowAssigneeContainer
                     workflowitemId={id}
                     workflowitemDisplayName={displayName}
@@ -603,7 +453,7 @@ export const WorkflowItem = ({
                     status={status}
                   />
                 </div>
-                <div style={styles.tagCell}>
+                <div className="tag-cell">
                   {tags.length > 0 && (
                     <Chip
                       label={tags[0]}
@@ -649,10 +499,9 @@ export const RedactedWorkflowItem = ({
 }) => {
   const { id, status } = workflow.data;
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
-  const itemStyle = workflowSelectable ? { padding: 0 } : { padding: 0, opacity: 0.3 };
 
   return (
-    <div style={styles.container} data-test={`workflowitem-container-${id}`}>
+    <div className="workflow-item-container" data-test={`workflowitem-container-${id}`}>
       <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
         {(provided) => (
           <div
@@ -660,9 +509,9 @@ export const RedactedWorkflowItem = ({
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             style={{
-              ...provided.draggableProps.style,
-              ...styles.containerItem
+              ...provided.draggableProps.style
             }}
+            className="container-item"
           >
             {createLine(mapIndex === 0, workflowSelectable)}
             <StepDot status={status} selectable={workflowSelectable} redacted={true} />
@@ -670,21 +519,27 @@ export const RedactedWorkflowItem = ({
               data-test="redacted-selectable-card"
               elevation={workflowSelectable ? 1 : 0}
               key={mapIndex}
-              style={styles.card}
+              className="workflow-item-card"
             >
-              <div style={styles.workflowContent}>
-                <div style={{ flex: 1 }}>
-                  <IconButton aria-label="Hidden Icon" style={styles.buttonStyle} size="large">
+              <div className="workflow-item-content">
+                <div className="hidden-icon-container">
+                  <IconButton aria-label="Hidden Icon" className="button-style" size="large">
                     <HiddenIcon />
                   </IconButton>
                 </div>
-                <div style={{ ...styles.text, ...styles.workflowCell, ...itemStyle }}>
-                  <Typography variant="body2" style={styles.typographs}>
+                <div
+                  className={workflowSelectable ? "redacted-workflow-cell" : "redacted-workflow-cell not-selectable"}
+                >
+                  <Typography variant="body2" className="typographs">
                     {strings.workflow.workflow_redacted}
                   </Typography>
                 </div>
-                <div style={{ ...itemStyle, flex: 5 }}>{null}</div>
-                <div style={{ ...styles.chipRow, flex: 2 }}>{null}</div>
+                <div
+                  className={workflowSelectable ? "redacted-big-item-style" : "redacted-big-item-style not-selectable"}
+                >
+                  {null}
+                </div>
+                <div className="chip-row">{null}</div>
                 {null}
               </div>
             </Card>

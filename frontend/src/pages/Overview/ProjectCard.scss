@@ -1,0 +1,55 @@
+.project-card {
+  margin: 2.2rem;
+  height: 580px;
+}
+
+.project-card-actions {
+  display: flex;
+  flex-direction: column;
+  height: 1.25rem;
+  align-items: flex-end;
+  margin-top: -2.5rem;
+}
+
+.project-card-header {
+  padding-left: 0;
+}
+
+.project-list-item {
+  opacity: 1;
+  &.tags {
+    margin-top: 0.75rem;
+  }
+}
+
+.project-card-media {
+  padding-top: 70%;
+}
+
+.view-project-button {
+  min-height: 56px;
+}
+
+.list-edit-container {
+  display: flex;
+  max-height: 0.625rem;
+  align-items: center;
+  margin-top: 0.625rem;
+  justify-content: flex-end;
+}
+
+.project-card-title {
+  text-overflow: ellipsis;
+  width: 250px;
+  white-space: nowrap;
+  padding-top: 0.625rem;
+  overflow: hidden;
+}
+
+.project-list {
+  margin-top: 0.3rem;
+  height: 200px;
+  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

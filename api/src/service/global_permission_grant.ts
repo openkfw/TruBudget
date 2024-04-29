@@ -20,7 +20,7 @@ export async function grantGlobalPermission(
   grantee: Identity,
   permission: Intent,
 ): Promise<Result.Type<void>> {
-  logger.debug({ permission, grantee }, "Grantig global permission");
+  logger.debug({ permission, grantee }, "Granting global permission");
   const result = await GlobalPermissionsGrant.grantGlobalPermission(
     ctx,
     serviceUser,

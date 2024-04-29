@@ -1,0 +1,69 @@
+.table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-row {
+  display: flex;
+  height: 2.5rem;
+}
+.header-cell {
+  align-self: center;
+  text-align: center;
+  flex: 1;
+  border-bottom: unset;
+}
+
+.column-header-cell {
+  font-size: 0.875rem;
+  align-self: center;
+  flex: 1;
+  padding: 0 0 0 0.5rem;
+  &.medium {
+    flex: 6;
+  }
+  &.large {
+    flex: 12;
+  }
+  &.right {
+    text-align: right;
+  }
+}
+
+.workflow-row {
+  display: flex;
+  height: 30px;
+  border-bottom: unset;
+}
+
+.workflow-row-cell {
+  font-size: 0.875rem;
+  border-bottom: unset;
+  padding: 0 0 0 0.5rem;
+  flex: 1;
+  &.medium {
+    flex: 6;
+  }
+  &.large {
+    flex: 12;
+  }
+  &.right {
+    text-align: right;
+  }
+}
+
+.workflow-preview-typography {
+  margin: 0px 2.375rem 0.625rem 2.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 500px;
+}
+
+.workflow-preview-dialog-box {
+  min-width: 600px;
+  overflow-y: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

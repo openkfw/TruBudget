@@ -4,24 +4,15 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-const styles = {
-  subtitle: {
-    color: (theme) => theme.palette.grey.dark
-  },
-  caption: {
-    color: (theme) => theme.palette.grey.main
-  }
-};
-
 const NotificationEmptyState = () => {
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="empty-state-table">
       <img
         src="images-for-empty-state/notification-empty-state.png"
         alt={strings.common.no_notifications}
         width="505vw"
       />
-      <Typography variant="body1" style={styles.caption}>
+      <Typography variant="body1" className="caption">
         {strings.common.no_notifications}
       </Typography>
     </div>

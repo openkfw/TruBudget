@@ -168,6 +168,13 @@ class Api {
       node
     });
   listProjects = () => instance.get(`/project.list`);
+  listProjectsV2 = (page, limit, searchTerm, column, direction) =>
+    instance.get(
+      removeEmptyQueryParams(
+        `/v2/project.list?page=${page}&limit=${limit}&search=${searchTerm}&sort=${column}&order=${direction}`
+      )
+    );
+
   listSubprojects = (projectId) => instance.get(removeEmptyQueryParams(`/subproject.list?projectId=${projectId}`));
 
   createProject = (displayName, description, thumbnail, projectedBudgets, tags, additionalData) =>
@@ -493,7 +500,7 @@ class Api {
   };
   checkEmailService = () => {
     const path = this.getEmailServiceUrl("readiness");
-    return instance.get(path);
+    return instance.get(path, { withCredentials: true });
   };
   fetchEmailServiceVersion = () => {
     const path = this.getEmailServiceUrl("version");
@@ -502,21 +509,21 @@ class Api {
   insertEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.insert");
-    return instance.post(path, data);
+    return instance.post(path, data, { withCredentials: true });
   };
   updateEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.update");
-    return instance.post(path, data);
+    return instance.post(path, data, { withCredentials: true });
   };
   deleteEmailAddress = (id, emailAddress) => {
     const data = { user: { id, emailAddress } };
     const path = this.getEmailServiceUrl("user.delete");
-    return instance.post(path, data);
+    return instance.post(path, data, { withCredentials: true });
   };
   getEmailAddress = (id) => {
     const path = this.getEmailServiceUrl(`user.getEmailAddress?id=${id}`);
-    return instance.get(path);
+    return instance.get(path, { withCredentials: true });
   };
 
   getWorkflowItem = (projectId, subprojectId, workflowitemId) => {
@@ -564,10 +571,22 @@ class Api {
 
  */
 const removeEmptyQueryParams = (url) => {
-  return url
-    .replace(/[^=&]+=(&|$)/g, "") // removes a parameter if the '=' is followed by a '&' or if it's the end of the line
-    .replace(/[^=&]+=(undefined|$)/g, "") // removes a parameter if the '=' is followed by 'undefined'
-    .replace(/&$/, ""); // removes any leftover '$'
+  const [baseUrl, queryParams] = url.split("?");
+
+  if (!queryParams) {
+    return url;
+  }
+
+  const newQueryParams = queryParams
+    .split("&")
+    .filter((param) => {
+      // eslint-disable-next-line no-unused-vars
+      const [key, value] = param.split("=");
+      return value && value !== "undefined";
+    })
+    .join("&");
+
+  return newQueryParams ? `${baseUrl}?${newQueryParams}` : baseUrl;
 };
 
 export default Api;

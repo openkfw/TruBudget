@@ -112,7 +112,7 @@ Clone the repository from Github:
 If you haven't done the SSH setup so far, please follow the instructions on how to setup your [SSH-connection](https://help.github.com/en/articles/connecting-to-github-with-ssh)
 
 ```bash
-git clone https://github.com/openkfw/TruBudget.git
+git clone git@github.com:openkfw/TruBudget.git
 ```
 
 - HTTPS:
@@ -216,6 +216,7 @@ Following services are dockerized with hot-reloading:
 - Email Database
 - Storage Service
 - Minio Database (external document storage)
+- Azurite (external document storage)
 
 If the script is started with `--slim`, only the Blockchain, API, Provisioning and Frontend will be started.
 For further details how to use the script, print out its help section with `bash scripts/development/start-dev.sh --help`.
@@ -459,7 +460,7 @@ If you want to start this service or simply see more details regarding this feat
 
 #### Storage-Service (Optional)
 
-The storage service is responsible for saving/accessing documents to Minio, an external storage server.
+The storage service is responsible for saving/accessing documents to Minio or Azure blob storage, both an external storage server.
 
 More details and how to enable the storage service with an external storage can be found in [README.md](https://github.com/openkfw/TruBudget/blob/main/storage-service/README.md) file.
 

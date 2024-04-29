@@ -1,6 +1,7 @@
 import * as cors from "cors";
 import * as express from "express";
 import { body, query, validationResult } from "express-validator";
+import rateLimit from "express-rate-limit";
 import { Logger } from "pino";
 import {
   createPinoExpressLogger,
@@ -10,11 +11,11 @@ import helmet from "helmet";
 import config from "./config";
 import {
   deleteDocument,
-  downloadAsPromised,
+  downloadDocument,
   establishConnection,
-  getMinioStatus,
-  uploadAsPromised,
-} from "./minio";
+  getStorageProviderStatus,
+  uploadDocument,
+} from "./storage";
 
 interface DocumentUploadRequest extends express.Request {
   query: {
@@ -59,6 +60,15 @@ app.options(config.allowOrigin, cors());
 
 app.use(helmet());
 
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: config.rateLimit || 100, // limit each IP to 100 requests per windowMs
+});
+
+if (config.rateLimit) {
+  app.use(limiter);
+}
+
 const allowOrigins = config.allowOrigin.split(",");
 
 app.use(
@@ -97,7 +107,7 @@ app.get("/liveness", (req, res) => {
 });
 
 app.get("/readiness", async (req, res) => {
-  const { status, statusText } = await getMinioStatus();
+  const { status, statusText } = await getStorageProviderStatus();
 
   res
     .status(status)
@@ -106,7 +116,7 @@ app.get("/readiness", async (req, res) => {
 });
 
 app.get("/readiness", async (req, res) => {
-  const { status } = await getMinioStatus();
+  const { status } = await getStorageProviderStatus();
   res.status(status);
   res.send(status === 200);
 });
@@ -141,7 +151,7 @@ app.post(
 
     (async (): Promise<void> => {
       log.debug({ req }, "Uploading document");
-      const result = await uploadAsPromised(docId, content, {
+      const result = await uploadDocument(docId, content, {
         fileName,
         docId,
       });
@@ -150,7 +160,7 @@ app.post(
       if (err.code === "NoSuchBucket") {
         req.log.error(
           { err },
-          "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio",
+          "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
         );
       }
       res.status(500).send(err).end();
@@ -178,7 +188,7 @@ app.get(
     // first get document
     (async (): Promise<void> => {
       req.log.debug({ req }, "Downloading document");
-      const result = await downloadAsPromised(docId);
+      const result = await downloadDocument(docId);
 
       //check if the given secret matches the one form the metadata
       if (result.meta.secret !== secret) {
@@ -190,7 +200,7 @@ app.get(
       if (err.code === "NoSuchBucket") {
         req.log.error(
           { err },
-          "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio",
+          "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
         );
       }
       res.status(404).end();
@@ -218,7 +228,7 @@ app.delete(
     // first get document
     (async (): Promise<void> => {
       req.log.debug({ req }, `Deleting document ${docId}`);
-      const result = await downloadAsPromised(docId);
+      const result = await downloadDocument(docId);
 
       //check if the given secret matches the one form the metadata
       if (result.meta.secret !== secret) {
@@ -231,7 +241,7 @@ app.delete(
       if (err.code === "NoSuchBucket") {
         req.log.error(
           { err },
-          "NoSuchBucket at /delete. Please restart storage-service to create a new bucket at minio",
+          "NoSuchBucket at /delete. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
         );
       }
       res.status(404).end();

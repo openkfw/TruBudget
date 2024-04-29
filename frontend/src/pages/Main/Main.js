@@ -7,6 +7,7 @@ import ConfirmationContainer from "../Confirmation/ConfirmationContainer";
 import NotFound from "../Error/NotFound";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { initLanguage } from "../Login/actions";
+import Breadcrumbs from "../Navbar/Breadcrumbs";
 import NavbarContainer from "../Navbar/NavbarContainer";
 import NodesContainer from "../Nodes/NodesContainer";
 import NotificationPageContainer from "../Notifications/NotificationPageContainer";
@@ -18,6 +19,8 @@ import WorkflowContainer from "../Workflows/WorkflowContainer";
 
 import Footer from "./Footer";
 
+import "./Main.scss";
+
 const SubprojectElement = withInitialLoading(WorkflowContainer);
 const ProjectsElement = withInitialLoading(OverviewContainer);
 const ProjectElement = withInitialLoading(SubProjectContainer);
@@ -25,33 +28,13 @@ const NotificationsElement = withInitialLoading(NotificationPageContainer);
 
 const Main = (props) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flex: "1",
-        flexDirection: "column",
-        alignItems: "center",
-        backgroundImage: "linear-gradient(135deg, #5a9bbe 0%,#1b618c 100%)",
-        minHeight: "100vh"
-      }}
-    >
-      <div
-        style={{
-          backgroundImage: 'url("/navbar_back5edit.jpeg")',
-          backgroundSize: "cover",
-          position: "absolute",
-          height: "auto",
-          width: "100%",
-          top: 0,
-          left: 0,
-          minHeight: "100%",
-          clipPath: "polygon(0 0,100% 0,100% 100%,0 70%)"
-        }}
-      />
-      <div style={{ width: "100%" }}>
+    <div className="main">
+      <div className="main-image" />
+      <div className="main-nav">
         <NavbarContainer />
       </div>
-      <div className="container" style={{ marginTop: "48px" }}>
+      <div className="main-container">
+        <Breadcrumbs />
         <ConfirmationContainer />
         <Routes>
           <Route exact path="/" element={<Navigate to="/projects" replace />} />
@@ -80,9 +63,11 @@ class MainContainer extends Component {
     return <Main />;
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
     initLanguage: () => dispatch(initLanguage())
   };
 };
+
 export default connect(null, mapDispatchToProps)(MainContainer);

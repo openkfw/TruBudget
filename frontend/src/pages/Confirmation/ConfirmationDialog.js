@@ -11,27 +11,7 @@ import strings from "../../localizeStrings";
 
 import { ConfirmationDialogCreator } from "./confirmationDialogCreator";
 
-const styles = {
-  paperRoot: {
-    overflow: "visible"
-  },
-  loadingContainer: {
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "top",
-    justifyContent: "center",
-    marginRight: "50px"
-  },
-  loadingIndicator: {
-    display: "inline-block",
-    position: "relative",
-    padding: "50px"
-  },
-  dialogContent: {
-    paddingBottom: "0px"
-  }
-};
+import "./ConfirmationDialog.scss";
 
 // Implement a new confirmation dialog by setting  title, content and confirmButtonText
 const ConfirmationDialog = (props) => {
@@ -77,7 +57,6 @@ const ConfirmationDialog = (props) => {
       requestedPermissions,
       permittedToGrant
     },
-    styles.paperRoot,
     open,
     onCancel
   );
@@ -93,11 +72,11 @@ const ConfirmationDialog = (props) => {
 
 function buildDialogWithLoadingIndicator(open, isListPermissionsRequiredFromApi, onCancel, requestedPermissions) {
   return (
-    <Dialog style={{ paper: styles.paperRoot }} open={open} data-test="confirmation-dialog">
+    <Dialog className="confirmation-paper-root" open={open} data-test="confirmation-dialog">
       {isListPermissionsRequiredFromApi ? (
         <React.Fragment>
           <DialogTitle data-test="confirmation-dialog-title">{strings.confirmation.permissions_required}</DialogTitle>
-          <DialogContent style={styles.dialogContent}>
+          <DialogContent className="confirmation-dialog-content">
             <Typography>{strings.confirmation.list_permissions_required_text}</Typography>
           </DialogContent>
           <DialogActions>
@@ -111,14 +90,14 @@ function buildDialogWithLoadingIndicator(open, isListPermissionsRequiredFromApi,
           </DialogActions>
         </React.Fragment>
       ) : (
-        <div style={styles.loadingContainer}>
+        <div className="confirmation-loading-container">
           <CircularProgress
             size={50}
             left={0}
             top={0}
             percentage={50}
             color="primary"
-            style={styles.loadingIndicator}
+            className="confirmation-loading-indicator"
           />
         </div>
       )}

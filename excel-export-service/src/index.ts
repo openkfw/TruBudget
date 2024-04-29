@@ -4,6 +4,7 @@ import * as express from "express";
 import { createPinoExpressLogger } from "trubudget-logging-service";
 import * as URL from "url";
 import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { getApiReadiness, getApiVersion } from "./api";
 import { config } from "./config";
 import { writeXLSX } from "./excel";
@@ -52,6 +53,15 @@ excelService.use((req: CustomExpressRequest, res: CustomExpressResponse, next) =
 
 excelService.use(helmet());
 
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: config.rateLimit || 100, // limit each IP to 100 requests per windowMs
+});
+
+if (config.rateLimit) {
+  excelService.use(limiter);
+}
+
 excelService.get("/liveness", (req, res) => {
   res
     .status(200)
@@ -91,7 +101,11 @@ excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpre
   if (req.cookies && req.cookies.token) {
     req.headers.authorization = req.cookies.token;
   } else if (req.headers.cookie) {
-    req.headers.authorization = `Bearer ${req.headers.cookie.split("=")[1]}`;
+    const cookies = req.headers.cookie.split("; ");
+    const authToken = cookies.find((cookie) => cookie.startsWith("token="));
+    if (authToken) {
+      req.headers.authorization = `Bearer ${authToken.split("=")[1]}`;
+    }
   }
   const token = req.headers.authorization;
   if (!token) {
