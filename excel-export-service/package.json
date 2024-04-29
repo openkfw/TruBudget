@@ -1,6 +1,6 @@
 {
   "name": "excel-export",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "private": true,
   "description": "Export TruBudget data to Excel",
   "main": "src/index.js",

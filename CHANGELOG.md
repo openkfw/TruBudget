@@ -18,6 +18,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Removed -->
 
 <!-- ### Fixed -->
+
+## [2.10.0] - 2024-04-26
+
+### Added
+
+- Pagination of projects in card view and table view [#1126](https://github.com/openkfw/TruBudget/issues/1126)
+- User's pagination settings are persisted even if browser or computer is restarted [#1775](https://github.com/openkfw/TruBudget/issues/1775)
+- Rate limiter in backend services [#1654](https://github.com/openkfw/TruBudget/issues/1654)
+- Support for Azure Blob storage in addition to min.io [#1656](https://github.com/openkfw/TruBudget/issues/1656)
+- Option to sign JWTs using RS256 [#1658](https://github.com/openkfw/TruBudget/issues/1658)
+
+### Changed
+
+- Default image for new projects [#1714](https://github.com/openkfw/TruBudget/issues/1714)
+- Optimized width styles in project, sub project elements [#1798](https://github.com/openkfw/TruBudget/issues/1798)
+- Optimized Budget row styles in Project and SubProject dialogs [#1790](https://github.com/openkfw/TruBudget/issues/1790)
+- Optimized images' format and sizes [#1753](https://github.com/openkfw/TruBudget/issues/1753)
+- Redesigned pagination buttons to be more readable [#1773](https://github.com/openkfw/TruBudget/issues/1773)
+- Better margins for tablet resolution [#1777](https://github.com/openkfw/TruBudget/issues/1777)
+
+### Fixed
+
+- Header padding issue when modal or dropdown are open [#1800](https://github.com/openkfw/TruBudget/issues/1800)
+- Login issue when a user is assigned in too many groups [#1755](https://github.com/openkfw/TruBudget/issues/1755)
+- Fixed email-service not working with authentication turned on [#1769](https://github.com/openkfw/TruBudget/issues/1769)
+- Breadcrumb position [#1786](https://github.com/openkfw/TruBudget/issues/1786)
+
     
 ## [2.9.0] - 2024-03-25
 
@@ -1107,7 +1134,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.9.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.10.0...main
+[2.10.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.9.0
 [2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/openkfw/TruBudget/compare/v2.7.0...v2.8.0
