@@ -33,14 +33,30 @@ beforeEach(() => {
 });
 
 Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { language: "en-gb" }) => {
-  cy.request({
-    url: `${baseUrl}/api/user.authenticate`, // assuming you've exposed a seeds route
-    method: "POST",
-    body: {
-      apiVersion: "1.0",
-      data: { user: { id: username, password: password } },
-    },
-  }).then((response) => {
+  const loginRequest = (retries = 3) => {
+    return cy
+      .request({
+        url: `${baseUrl}/api/user.authenticate`,
+        method: "POST",
+        failOnStatusCode: false, // do not fail on non 2xx or 3xx status codes
+        body: {
+          apiVersion: "1.0",
+          data: { user: { id: username, password: password } },
+        },
+      })
+      .then((response) => {
+        if (response.status === 502 && retries > 0) {
+          cy.wait(1000);
+          return loginRequest(retries - 1);
+        } else if (response.status >= 400) {
+          throw new Error(`Request failed with status ${response.status}`);
+        } else {
+          return response;
+        }
+      });
+  };
+
+  loginRequest().then((response) => {
     const state = {
       login: {
         isUserLoggedIn: true,
