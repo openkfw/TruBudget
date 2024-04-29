@@ -220,6 +220,7 @@ describe("Project Analytics", function () {
     // Open dialog
     cy.get("[data-test=details-analytics-button]").should("be.visible").click({ force: true });
     cy.get("[data-test=select-currencies]").should("be.visible").click();
+    cy.wait(300);
     cy.get("[data-test=currency-menuitem-USD]")
       .scrollIntoView({ behavior: "auto", block: "start", inline: "nearest" })
       .should("be.visible")
