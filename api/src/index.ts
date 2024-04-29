@@ -105,7 +105,6 @@ import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
-import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
@@ -142,12 +141,11 @@ import * as WorkflowitemListAPI from "./workflowitem_list";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
-import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 
-const URL_PREFIX = "/api";
+export const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
 
 /*
@@ -197,7 +195,7 @@ logger.info(
   `All data published to the chain will be signed using the ${signingMethod} signing method`,
 );
 
-const db = Multichain.init(rpcSettings);
+export const db = Multichain.init(rpcSettings);
 const { multichainClient } = db;
 
 let storageServiceSettings: AxiosRequestConfig;
@@ -216,9 +214,9 @@ if (documentFeatureEnabled) {
     timeout: 2500,
   };
 }
-const storageServiceClient = new StorageServiceClient(storageServiceSettings);
+export const storageServiceClient = new StorageServiceClient(storageServiceSettings);
 
-const server = Server.createBasicApp(
+export const server = Server.createBasicApp(
   jwt,
   URL_PREFIX,
   port,
@@ -808,19 +806,19 @@ WorkflowitemPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
     ),
 });
 
-WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
-  updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>
-    WorkflowitemUpdateService.updateWorkflowitem(
-      db,
-      storageServiceClient,
-      ctx,
-      user,
-      projectId,
-      subprojectId,
-      workflowitemId,
-      data,
-    ),
-});
+// WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+//   updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>
+//     WorkflowitemUpdateService.updateWorkflowitem(
+//       db,
+//       storageServiceClient,
+//       ctx,
+//       user,
+//       projectId,
+//       subprojectId,
+//       workflowitemId,
+//       data,
+//     ),
+// });
 
 WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
   matches: (

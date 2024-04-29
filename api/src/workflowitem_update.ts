@@ -11,9 +11,12 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import * as WorkflowitemUpdated from "./service/domain/workflow/workflowitem_updated";
-import * as WorkflowitemUpdate from "./service/workflowitem_update";
+import * as WorkflowitemUpdate from "./service/workflowitem_update_service";
 import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
+import { URL_PREFIX, db, server, storageServiceClient } from "index";
+import * as WorkflowitemUpdateService from "./service/workflowitem_update_service";
+import logger from "lib/logger";
 
 /**
  * Represents the request body of the endpoint
@@ -161,53 +164,62 @@ interface Service {
   ): Promise<Result.Type<void>>;
 }
 
-/**
- * Creates an http handler that handles incoming http requests for the `/workflowitem.update` route
- *
- * @param server the current fastify server instance
- * @param urlPrefix the prefix of the http url
- * @param service the service {@link Service} object used to offer an interface to the domain logic
- */
-export function addHttpHandler(
-  server: AugmentedFastifyInstance,
-  urlPrefix: string,
-  service: Service,
-): void {
-  server.register(async function () {
-    server.post(`${urlPrefix}/workflowitem.update`, mkSwaggerSchema(server), (request, reply) => {
-      const ctx: Ctx = { requestId: request.id, source: "http" };
+// /**
+//  * Creates an http handler that handles incoming http requests for the `/workflowitem.update` route
+//  *
+//  * @param server the current fastify server instance
+//  * @param urlPrefix the prefix of the http url
+//  * @param service the service {@link Service} object used to offer an interface to the domain logic
+//  */
+// export function addHttpHandler(
+//   server: AugmentedFastifyInstance,
+//   urlPrefix: string,
+//   service: Service,
+// ): void {
+logger.log("haloooooo workflowitem.update");
 
-      const user = extractUser(request as AuthenticatedRequest);
+server.register(async function () {
+  server.post(`${URL_PREFIX}/workflowitem.update`, mkSwaggerSchema(server), (request, reply) => {
+    const ctx: Ctx = { requestId: request.id, source: "http" };
 
-      const bodyResult = validateRequestBody(request.body);
+    const user = extractUser(request as AuthenticatedRequest);
 
-      if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(new VError(bodyResult, "failed to update project"));
-        request.log.error({ err: bodyResult }, "Invalid request body");
+    const bodyResult = validateRequestBody(request.body);
+
+    if (Result.isErr(bodyResult)) {
+      const { code, body } = toHttpError(new VError(bodyResult, "failed to update project"));
+      request.log.error({ err: bodyResult }, "Invalid request body");
+      reply.status(code).send(body);
+      return;
+    }
+
+    const { projectId, subprojectId, workflowitemId, ...data } = bodyResult.data;
+
+    WorkflowitemUpdateService.updateWorkflowitem(
+      db,
+      storageServiceClient,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      data,
+    )
+      .then((result) => {
+        if (Result.isErr(result)) {
+          throw new VError(result, "workflowitem.update failed");
+        }
+        const code = 200;
+        const body = {
+          apiVersion: "1.0",
+          data: {},
+        };
         reply.status(code).send(body);
-        return;
-      }
-
-      const { projectId, subprojectId, workflowitemId, ...data } = bodyResult.data;
-
-      service
-        .updateWorkflowitem(ctx, user, projectId, subprojectId, workflowitemId, data)
-        .then((result) => {
-          if (Result.isErr(result)) {
-            throw new VError(result, "workflowitem.update failed");
-          }
-          const code = 200;
-          const body = {
-            apiVersion: "1.0",
-            data: {},
-          };
-          reply.status(code).send(body);
-        })
-        .catch((err) => {
-          const { code, body } = toHttpError(err);
-          request.log.error({ err }, "Error while updating workflowitem");
-          reply.status(code).send(body);
-        });
-    });
+      })
+      .catch((err) => {
+        const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while updating workflowitem");
+        reply.status(code).send(body);
+      });
   });
-}
+});

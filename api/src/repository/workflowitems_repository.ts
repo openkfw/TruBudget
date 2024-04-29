@@ -11,7 +11,7 @@ import * as UserQuery from "../service/domain/organization/user_query";
 import * as Project from "../service/domain/workflow/project";
 import * as Subproject from "../service/domain/workflow/subproject";
 import * as Workflowitem from "../service/domain/workflow/workflowitem";
-import * as WorkflowitemUpdate from "../service/domain/workflow/workflowitem_update";
+import * as WorkflowitemUpdate from "../service/domain/workflow/workflowitem_update_domain";
 import * as TypeEvents from "../service/domain/workflowitem_types/apply_workflowitem_type";
 import * as PublicKeyGet from "../service/public_key_get";
 import * as WorkflowitemCacheHelper from "../service/workflowitem_cache_helper";

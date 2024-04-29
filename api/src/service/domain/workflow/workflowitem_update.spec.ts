@@ -8,7 +8,7 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { DocumentReference } from "../document/document";
 import { Workflowitem } from "./workflowitem";
-import { updateWorkflowitem } from "./workflowitem_update";
+import { updateWorkflowitem } from "./workflowitem_update_domain";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";
