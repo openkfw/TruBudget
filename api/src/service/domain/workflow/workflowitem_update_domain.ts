@@ -22,7 +22,6 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import { Repository } from "repository/workflowitems_repository";
 
 export interface RequestData {
   displayName?: string;
@@ -63,7 +62,7 @@ export async function updateWorkflowitem(
   subprojectId: Subproject.Id,
   workflowitemId: Workflowitem.Id,
   modification: RequestData,
-  repository: Repository,
+  repository,
 ): Promise<Result.Type<{ newEvents: BusinessEvent[]; workflowitem: Workflowitem.Workflowitem }>> {
   const workflowitem = await repository.getWorkflowitem(workflowitemId);
   if (Result.isErr(workflowitem)) {

@@ -142,6 +142,7 @@ import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
+import WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 
@@ -806,19 +807,7 @@ WorkflowitemPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
     ),
 });
 
-// WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
-//   updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>
-//     WorkflowitemUpdateService.updateWorkflowitem(
-//       db,
-//       storageServiceClient,
-//       ctx,
-//       user,
-//       projectId,
-//       subprojectId,
-//       workflowitemId,
-//       data,
-//     ),
-// });
+server.register(WorkflowitemUpdateAPI);
 
 WorkflowitemValidateDocumentAPI.addHttpHandler(server, URL_PREFIX, {
   matches: (

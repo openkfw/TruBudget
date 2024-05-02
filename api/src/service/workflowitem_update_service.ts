@@ -17,9 +17,30 @@ import * as WorkflowitemUpdate from "./domain/workflow/workflowitem_update_domai
 import * as WorkflowitemSnapshotPublish from "./domain/workflow/workflowitem_snapshot_publish";
 import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 import { store } from "./store";
-import { updateWorkflowItemRepository } from "repository/workflowitems_repository";
+import {
+  applyWorkflowitemType,
+  getAllDocumentReferences,
+  getUsersForIdentity,
+  getWorkflowitem,
+  uploadDocumentToStorageService,
+} from "../repository/repository";
 
 export type RequestData = WorkflowitemUpdate.RequestData;
+
+export interface Repository {
+  getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
+  applyWorkflowitemType(
+    event: BusinessEvent,
+    workflowitem: Workflowitem.Workflowitem,
+  ): Result.Type<BusinessEvent[]>;
+  uploadDocumentToStorageService(
+    fileName: string,
+    documentBase64: string,
+    id: string,
+  ): Promise<Result.Type<BusinessEvent[]>>;
+  getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
+}
 
 export async function updateWorkflowitem(
   conn: ConnToken,
@@ -43,17 +64,19 @@ export async function updateWorkflowitem(
       subprojectId,
       workflowitemId,
       modification,
-      updateWorkflowItemRepository(
-        conn,
-        storageServiceClient,
-        ctx,
-        serviceUser,
-        projectId,
-        subprojectId,
-        workflowitemId,
-        modification,
-        cache,
-      ),
+      {
+        getWorkflowitem: getWorkflowitem(conn, ctx, projectId),
+        getUsersForIdentity: getUsersForIdentity(conn, ctx, serviceUser),
+        applyWorkflowitemType: applyWorkflowitemType(ctx, serviceUser),
+        uploadDocumentToStorageService: uploadDocumentToStorageService(
+          conn,
+          ctx,
+          serviceUser,
+          storageServiceClient,
+          cache,
+        ),
+        getAllDocumentReferences: getAllDocumentReferences(conn, ctx, cache),
+      },
     );
   });
   if (Result.isErr(updateWorkflowitemResult)) {

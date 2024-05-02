@@ -16,7 +16,6 @@ import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
 import { URL_PREFIX, db, server, storageServiceClient } from "index";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update_service";
-import logger from "lib/logger";
 
 /**
  * Represents the request body of the endpoint
@@ -176,9 +175,9 @@ interface Service {
 //   urlPrefix: string,
 //   service: Service,
 // ): void {
-logger.log("haloooooo workflowitem.update");
 
-server.register(async function () {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export default () =>
   server.post(`${URL_PREFIX}/workflowitem.update`, mkSwaggerSchema(server), (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
 
@@ -222,4 +221,3 @@ server.register(async function () {
         reply.status(code).send(body);
       });
   });
-});
