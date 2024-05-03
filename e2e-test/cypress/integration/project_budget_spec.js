@@ -38,14 +38,14 @@ describe("Project budget test", function () {
   }
 
   beforeEach(() => {
-    cy.login();
-    cy.visit("/projects");
     cy.intercept({ method: "GET", url: apiRoutev2 + "**/project.list*" }).as("listProjects");
     cy.intercept({ method: "GET", url: apiRoute + "/project.viewDetails*" }).as("viewDetailsProject");
     cy.intercept({ method: "POST", url: apiRoute + "/global.createProject" }).as("createProject");
     cy.intercept({ method: "POST", url: apiRoute + "/project.createSubproject" }).as("createSubproject");
     cy.intercept({ method: "POST", url: apiRoute + "/project.budget.deleteProjected" }).as("deleteBudget");
     cy.intercept({ method: "POST", url: apiRoute + "/project.budget.updateProjected" }).as("updateBudget");
+    cy.login();
+    cy.visit("/projects").wait("@listProjects");
     setProjectsPerPage(100);
   });
 
@@ -217,6 +217,8 @@ describe("Project budget test", function () {
       cy.wait("@updateBudget");
       cy.wait("@updateBudget");
       cy.wait("@listProjects");
+      cy.visit(`/projects`).wait("@listProjects");
+      cy.wait(500);
       // Check if changes have been saved
       cy.get("[data-test=pe-button]").last().click();
       // Check if editing worked properly
