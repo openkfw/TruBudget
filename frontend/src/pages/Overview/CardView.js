@@ -23,6 +23,14 @@ import ProjectCard from "./ProjectCard";
 
 import "./CardView.scss";
 
+const webpVersion = (imagePath) => {
+  // if imagePath matches Thumbnail_*.jpg, replace .jpg with .webp
+  if (imagePath.match(/Thumbnail_\d+.jpg/)) {
+    return imagePath.replace(".jpg", ".webp");
+  }
+  return imagePath;
+};
+
 const displayTags = ({ tags, storeSearchTerm, showNavSearchBar, searchTermArray }) => {
   return tags.map((tag) => (
     <SelectablePill
@@ -62,7 +70,7 @@ const getTableEntries = ({
     } = data;
     const budgets = <BudgetsList budgets={projectedBudgets} />;
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
-    const imagePath = !_isEmpty(thumbnail) ? thumbnail : "Default_thumbnail.jpg";
+    const imagePath = !_isEmpty(thumbnail) ? webpVersion(thumbnail) : "Default_thumbnail.jpg";
     const dateString = unixTsToString(creationUnixTs);
     const isOpen = status === "open";
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
