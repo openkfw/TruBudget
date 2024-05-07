@@ -245,7 +245,7 @@ emailService.get(
           user: { id, emailAddress },
         });
       } else {
-        logger.trace("Email address" + emailAddress + " not found");
+        logger.info("Email address" + emailAddress + " not found");
         res.status(404).send({
           user: { id, emailAddress: "Not Found" },
         });
