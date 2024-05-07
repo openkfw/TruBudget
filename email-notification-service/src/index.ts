@@ -20,6 +20,12 @@ import {
 } from "./types";
 import isBodyValid from "./validation";
 
+if (config.email.from === undefined) {
+  logger.warn(
+    "The 'EMAIL_FROM' env variable is not set. The email service will not be able to send emails.",
+  );
+}
+
 // Setup
 let corsOptions = {
   credentials: config.authentication === "jwt" ? true : false,

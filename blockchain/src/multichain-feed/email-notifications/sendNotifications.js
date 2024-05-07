@@ -145,8 +145,7 @@ const absolutePath = process.cwd() + "/" + path;
 let token = "";
 (async () => {
   while (true) {
-    // todo delete
-    log.info("Checking for new notifications");
+    log.trace("Checking for new notifications");
     try {
       // Check/Send/Delete notification transaction files in notification directory
       await sendNotifications(absolutePath, emailServiceSocketAddress, token, ssl);
