@@ -28,7 +28,7 @@ if (config.email.from === undefined) {
 
 // Setup
 let corsOptions = {
-  credentials: config.authentication === "jwt" ? true : false,
+  credentials: true,
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
   origin: function (origin: any, callback: any) {
     if (config.allowOrigin === "*") {
